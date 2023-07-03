@@ -9,6 +9,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
+name = "nil"
+version = "0.1.0"
+dependencies = [
+ "nil-scheme-vm",
+]
+
+[[package]]
+name = "nil-scheme-vm"
+version = "0.1.0"
+dependencies = [
+ "num-derive",
+ "num-traits",
+]
+
+[[package]]
 name = "num-derive"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -44,21 +59,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "573015e8ab27661678357f27dc26460738fd2b6c86e46f386fde94cb5d913105"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "nil-scheme-vm"
-version = "0.1.0"
-dependencies = [
- "num-derive",
- "num-traits",
-]
-
-[[package]]
-name = "rvm"
-version = "0.1.0"
-dependencies = [
- "nil-scheme-vm",
 ]
 
 [[package]]
