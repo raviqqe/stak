@@ -2,12 +2,13 @@ use crate::cons::Cons;
 use crate::number::Number;
 use crate::{value::Value, Error};
 use alloc::{vec, vec::Vec};
+use core::fmt::{self, Display, Formatter};
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 
 #[allow(dead_code)]
-#[derive(Debug, Default)]
+#[derive(Default)]
 pub struct Vm<const N: usize> {
     heap: Vec<Value>,
     allocation_index: usize,
@@ -29,12 +30,12 @@ impl<const N: usize> Vm<N> {
         }
     }
 
-    pub fn car(&self, index: Number) -> Value {
-        self.heap[index.to_usize()]
+    pub fn car(&self, cons: Cons) -> Value {
+        self.heap[cons.index()]
     }
 
-    pub fn cdr(&self, index: Number) -> Value {
-        self.heap[index.to_usize() + 1]
+    pub fn cdr(&self, cons: Cons) -> Value {
+        self.heap[cons.index() + 1]
     }
 
     fn car_mut(&mut self, cons: Cons) -> &mut Value {
@@ -62,7 +63,19 @@ impl<const N: usize> Vm<N> {
         *self.cdr_mut(new) = cons.into();
     }
 
-    pub fn run(&self) -> Result<(), Error> {
+    pub fn run(&mut self) -> Result<(), Error> {
+        Ok(())
+    }
+}
+
+impl<const N: usize> Display for Vm<N> {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        for index in 0..self.allocation_index / 2 {
+            let cons = Cons::new(index as u64);
+
+            write!(formatter, "{} {}", self.car(cons), self.cdr(cons))?;
+        }
+
         Ok(())
     }
 }
@@ -75,8 +88,19 @@ mod tests {
     const HEAP_SIZE: usize = 1 << 8;
 
     #[test]
+    fn create() {
+        let vm = Vm::<HEAP_SIZE>::new();
+
+        insta::assert_display_snapshot!(vm);
+    }
+
+    #[test]
     fn run_nothing() {
-        Vm::<HEAP_SIZE>::new().run().unwrap();
+        let mut vm = Vm::<HEAP_SIZE>::new();
+
+        vm.run().unwrap();
+
+        insta::assert_display_snapshot!(vm);
     }
 
     #[test]
@@ -85,6 +109,6 @@ mod tests {
 
         vm.append(Number::new(1).into(), ZERO.into());
 
-        insta::assert_debug_snapshot!(vm);
+        insta::assert_display_snapshot!(vm);
     }
 }

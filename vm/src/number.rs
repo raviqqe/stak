@@ -1,3 +1,5 @@
+use core::fmt::{self, Display, Formatter};
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Number(u64);
 
@@ -6,7 +8,13 @@ impl Number {
         Self(number)
     }
 
-    pub const fn to_usize(self) -> usize {
-        self.0 as usize
+    pub const fn to_u64(self) -> u64 {
+        self.0 as u64
+    }
+}
+
+impl Display for Number {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        write!(formatter, "n{}", self.0)
     }
 }

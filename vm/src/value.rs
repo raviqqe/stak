@@ -1,4 +1,5 @@
 use crate::{cons::Cons, number::Number};
+use core::fmt::{self, Display, Formatter};
 
 #[allow(dead_code)]
 #[derive(Copy, Clone, Eq, Debug, PartialEq)]
@@ -43,5 +44,14 @@ impl From<Cons> for Value {
 impl From<Number> for Value {
     fn from(number: Number) -> Self {
         Self::Number(number)
+    }
+}
+
+impl Display for Value {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        match self {
+            Self::Cons(cons) => write!(formatter, "{}", cons),
+            Self::Number(number) => write!(formatter, "{}", number),
+        }
     }
 }
