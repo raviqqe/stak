@@ -56,11 +56,13 @@ impl<const N: usize> Vm<N> {
         cons
     }
 
-    pub fn append(&mut self, value: Value, cons: Value) {
-        let new = self.allocate();
+    pub fn append(&mut self, car: Value, cdr: Value) -> Cons {
+        let cons = self.allocate();
 
-        *self.car_mut(new) = value.into();
-        *self.cdr_mut(new) = cons.into();
+        *self.car_mut(cons) = car.into();
+        *self.cdr_mut(cons) = cdr.into();
+
+        cons
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
@@ -71,9 +73,9 @@ impl<const N: usize> Vm<N> {
 impl<const N: usize> Display for Vm<N> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for index in 0..self.allocation_index / 2 {
-            let cons = Cons::new(index as u64);
+            let cons = Cons::new(2 * index as u64);
 
-            write!(formatter, "{} {}", self.car(cons), self.cdr(cons))?;
+            write!(formatter, "{} {}\n", self.car(cons), self.cdr(cons))?;
         }
 
         Ok(())
@@ -107,7 +109,11 @@ mod tests {
     fn create_list() {
         let mut vm = Vm::<HEAP_SIZE>::new();
 
-        vm.append(Number::new(1).into(), ZERO.into());
+        let list = vm.append(Number::new(1).into(), ZERO.into());
+
+        insta::assert_display_snapshot!(vm);
+
+        vm.append(Number::new(2).into(), list.into());
 
         insta::assert_display_snapshot!(vm);
     }
