@@ -92,7 +92,7 @@ impl<const N: usize> Vm<N> {
     fn copy_value(&mut self, value: Value) -> Value {
         if let Some(cons) = value.to_cons() {
             let value = if self.car(cons) == Self::GC_COPIED_CAR {
-                // Get a moved pointer.
+                // Get a forward pointer.
                 self.cdr(cons)
             } else {
                 let copy = self.allocate_raw();
