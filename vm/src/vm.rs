@@ -1,7 +1,7 @@
 use crate::{
     error::Error,
     instruction::Instruction,
-    object::Object,
+    value::Value,
     primitive::Primitive,
     rib::{self, Rib, RibMut},
 };
@@ -11,8 +11,8 @@ use std::{
     ops::{Add, Div, Mul, Sub},
 };
 
-const MAX_OBJECT_COUNT: usize = 1 << 14;
-const SPACE_SIZE: usize = MAX_OBJECT_COUNT * rib::FIELD_COUNT;
+const MAX_VALUE_COUNT: usize = 1 << 14;
+const SPACE_SIZE: usize = MAX_VALUE_COUNT * rib::FIELD_COUNT;
 const HEAP_SIZE: usize = SPACE_SIZE * 2;
 const HEAP_BOTTOM: usize = 0;
 const HEAP_MIDDLE: usize = HEAP_SIZE / 2;
@@ -21,25 +21,25 @@ const HEAP_TOP: usize = HEAP_SIZE;
 
 const INSTRUCTION_WEIGHTS: [u64; 6] = [20, 30, 0, 10, 11, 4];
 
-const ZERO: Object = Object::Number(0);
+const ZERO: Value = Value::Number(0);
 
-const PAIR_TAG: Object = ZERO;
-const CLOSURE_TAG: Object = Object::Number(1);
-const SYMBOL_TAG: Object = Object::Number(2);
-const STRING_TAG: Object = Object::Number(3);
-const SINGLETON_TAG: Object = Object::Number(5);
+const PAIR_TAG: Value = ZERO;
+const CLOSURE_TAG: Value = Value::Number(1);
+const SYMBOL_TAG: Value = Value::Number(2);
+const STRING_TAG: Value = Value::Number(3);
+const SINGLETON_TAG: Value = Value::Number(5);
 
 pub struct Vm<'a> {
     // Roots
-    stack: Object,
-    program_counter: Object,
-    r#false: Object,
+    stack: Value,
+    program_counter: Value,
+    r#false: Value,
 
     position: usize,
     input: &'a [u8],
 
-    heap: Vec<Object>,
-    symbol_table: Object,
+    heap: Vec<Value>,
+    symbol_table: Value,
 
     allocation_index: usize,
     allocation_limit: usize,
@@ -90,9 +90,9 @@ impl<'a> Vm<'a> {
         self.initialize_stack();
     }
 
-    fn initialize_global(&mut self, object: Object) {
+    fn initialize_global(&mut self, value: Value) {
         // TODO Review this.
-        *self.get_car_mut(self.get_car(self.symbol_table)) = object;
+        *self.get_car_mut(self.get_car(self.symbol_table)) = value;
         self.symbol_table = self.get_cdr(self.symbol_table);
     }
 
@@ -105,7 +105,7 @@ impl<'a> Vm<'a> {
         *self.get_cdr_mut(self.stack) = ZERO;
         *self.get_tag_mut(self.stack) = instruction;
 
-        *self.get_car_mut(instruction) = Object::Number(Instruction::Halt as u64);
+        *self.get_car_mut(instruction) = Value::Number(Instruction::Halt as u64);
         // TODO Do we need these?
         *self.get_cdr_mut(instruction) = ZERO;
         *self.get_tag_mut(instruction) = PAIR_TAG;
@@ -142,7 +142,7 @@ impl<'a> Vm<'a> {
                         debug_assert!(!argument_count.is_rib());
 
                         let parameter_info = self.get_car(code).to_raw();
-                        let parameter_count = Object::Number(parameter_info >> 1);
+                        let parameter_count = Value::Number(parameter_info >> 1);
                         let variadic = parameter_info & 1 != 0;
 
                         let mut stack = self.allocate_rib(ZERO, procedure, PAIR_TAG);
@@ -155,7 +155,7 @@ impl<'a> Vm<'a> {
                         }
 
                         argument_count =
-                            Object::Number(argument_count.to_raw() - parameter_count.to_raw());
+                            Value::Number(argument_count.to_raw() - parameter_count.to_raw());
 
                         if variadic {
                             todo!("{}", argument_count.to_raw());
@@ -168,7 +168,7 @@ impl<'a> Vm<'a> {
 
                         let c2 = self.get_list_tail(
                             stack,
-                            Object::Number(parameter_count.to_raw() + if variadic { 1 } else { 0 }),
+                            Value::Number(parameter_count.to_raw() + if variadic { 1 } else { 0 }),
                         );
 
                         if jump {
@@ -227,16 +227,16 @@ impl<'a> Vm<'a> {
         self.program_counter = self.get_tag(self.program_counter);
     }
 
-    fn pop(&mut self) -> Object {
+    fn pop(&mut self) -> Value {
         let value = self.get_car(self.stack);
         self.stack = self.get_cdr(self.stack);
         value
     }
 
-    fn push(&mut self, car: Object, tag: Object) {
+    fn push(&mut self, car: Value, tag: Value) {
         self.heap[self.allocation_index..self.allocation_index + rib::FIELD_COUNT]
             .copy_from_slice(&[car, self.stack, tag]);
-        self.stack = Object::Rib(self.allocation_index as u64);
+        self.stack = Value::Rib(self.allocation_index as u64);
         self.allocation_index += rib::FIELD_COUNT;
 
         if self.allocation_index == self.allocation_limit {
@@ -244,7 +244,7 @@ impl<'a> Vm<'a> {
         }
     }
 
-    fn allocate_rib(&mut self, car: Object, cdr: Object, tag: Object) -> Object {
+    fn allocate_rib(&mut self, car: Value, cdr: Value, tag: Value) -> Value {
         self.push(car, cdr);
         let stack = self.get_cdr(self.stack);
         let allocated = self.stack;
@@ -257,7 +257,7 @@ impl<'a> Vm<'a> {
         allocated
     }
 
-    fn allocate_rib2(&mut self, car: Object, cdr: Object, tag: Object) -> Object {
+    fn allocate_rib2(&mut self, car: Value, cdr: Value, tag: Value) -> Value {
         self.push(car, tag);
         let stack = self.get_cdr(self.stack);
         let allocated = self.stack;
@@ -269,7 +269,7 @@ impl<'a> Vm<'a> {
         allocated
     }
 
-    fn get_rib(&self, index: Object) -> Rib<'_> {
+    fn get_rib(&self, index: Value) -> Rib<'_> {
         let index = index.to_raw() as usize;
 
         Rib::new(
@@ -279,7 +279,7 @@ impl<'a> Vm<'a> {
         )
     }
 
-    fn get_rib_mut(&mut self, index: Object) -> RibMut<'_> {
+    fn get_rib_mut(&mut self, index: Value) -> RibMut<'_> {
         let index = index.to_raw() as usize;
 
         RibMut::new(
@@ -289,39 +289,39 @@ impl<'a> Vm<'a> {
         )
     }
 
-    fn get_car(&self, index: Object) -> Object {
+    fn get_car(&self, index: Value) -> Value {
         self.get_rib(index).car()
     }
 
-    fn get_cdr(&self, index: Object) -> Object {
+    fn get_cdr(&self, index: Value) -> Value {
         self.get_rib(index).cdr()
     }
 
-    fn get_tag(&self, index: Object) -> Object {
+    fn get_tag(&self, index: Value) -> Value {
         self.get_rib(index).tag()
     }
 
-    fn get_car_mut(&mut self, index: Object) -> &mut Object {
+    fn get_car_mut(&mut self, index: Value) -> &mut Value {
         self.get_rib_mut(index).car_mut()
     }
 
-    fn get_cdr_mut(&mut self, index: Object) -> &mut Object {
+    fn get_cdr_mut(&mut self, index: Value) -> &mut Value {
         self.get_rib_mut(index).cdr_mut()
     }
 
-    fn get_tag_mut(&mut self, index: Object) -> &mut Object {
+    fn get_tag_mut(&mut self, index: Value) -> &mut Value {
         self.get_rib_mut(index).tag_mut()
     }
 
-    fn get_true(&self) -> Object {
+    fn get_true(&self) -> Value {
         self.get_car(self.r#false)
     }
 
-    fn get_nil(&self) -> Object {
+    fn get_nil(&self) -> Value {
         self.get_cdr(self.r#false)
     }
 
-    fn get_boolean(&self, value: bool) -> Object {
+    fn get_boolean(&self, value: bool) -> Value {
         if value {
             self.get_true()
         } else {
@@ -329,7 +329,7 @@ impl<'a> Vm<'a> {
         }
     }
 
-    fn get_list_length(&mut self, mut list: Object) -> Object {
+    fn get_list_length(&mut self, mut list: Value) -> Value {
         let mut len = 0;
 
         while list.is_rib() && self.get_tag(list).to_raw() == 0 {
@@ -337,40 +337,40 @@ impl<'a> Vm<'a> {
             list = self.get_cdr(list)
         }
 
-        Object::Number(len)
+        Value::Number(len)
     }
 
-    fn get_list_tail(&self, list: Object, index: Object) -> Object {
+    fn get_list_tail(&self, list: Value, index: Value) -> Value {
         if index.to_raw() == 0 {
             list
         } else {
-            self.get_list_tail(self.get_cdr(list), Object::Number(index.to_raw() - 1))
+            self.get_list_tail(self.get_cdr(list), Value::Number(index.to_raw() - 1))
         }
     }
 
-    fn get_symbol_ref(&self, index: Object) -> Object {
+    fn get_symbol_ref(&self, index: Value) -> Value {
         self.get_rib(self.get_list_tail(self.symbol_table, index))
             .car()
     }
 
-    fn get_operand(&self, object: Object) -> Object {
-        self.get_rib(if object.is_rib() {
-            object
+    fn get_operand(&self, value: Value) -> Value {
+        self.get_rib(if value.is_rib() {
+            value
         } else {
-            self.get_list_tail(self.stack, object)
+            self.get_list_tail(self.stack, value)
         })
         .car()
     }
 
-    fn get_procedure(&self) -> Object {
+    fn get_procedure(&self) -> Value {
         self.get_operand(self.get_cdr(self.program_counter))
     }
 
-    fn get_code(&self) -> Object {
+    fn get_code(&self) -> Value {
         self.get_car(self.get_procedure())
     }
 
-    fn get_continuation(&self) -> Object {
+    fn get_continuation(&self) -> Value {
         let mut stack = self.stack;
 
         while self.get_tag(stack).to_raw() != 0 {
@@ -384,11 +384,11 @@ impl<'a> Vm<'a> {
         self.stack.to_raw() as usize
     }
 
-    fn get_tos(&self) -> Object {
+    fn get_tos(&self) -> Value {
         self.heap[self.get_tos_index()]
     }
 
-    fn get_tos_mut(&mut self) -> &mut Object {
+    fn get_tos_mut(&mut self) -> &mut Value {
         let index = self.get_tos_index();
         &mut self.heap[index]
     }
@@ -482,7 +482,7 @@ impl<'a> Vm<'a> {
                 // TODO Handle errors.
                 stdin().read_exact(&mut buffer).unwrap();
 
-                self.push(Object::Number(buffer[0] as u64), PAIR_TAG);
+                self.push(Value::Number(buffer[0] as u64), PAIR_TAG);
             }
             Primitive::PutC => {
                 let x = self.pop();
@@ -496,7 +496,7 @@ impl<'a> Vm<'a> {
         let x = self.pop().to_raw();
         let y = self.pop().to_raw();
 
-        self.push(Object::Number(operate(x, y)), PAIR_TAG);
+        self.push(Value::Number(operate(x, y)), PAIR_TAG);
     }
 
     fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) {
@@ -541,7 +541,7 @@ impl<'a> Vm<'a> {
                 }
                 b';' => break,
                 character => {
-                    name = self.allocate_rib(Object::Number(character as u64), name, PAIR_TAG);
+                    name = self.allocate_rib(Value::Number(character as u64), name, PAIR_TAG);
                 }
             }
         }
@@ -549,7 +549,7 @@ impl<'a> Vm<'a> {
         self.initialize_symbol(name);
     }
 
-    fn initialize_symbol(&mut self, name: Object) {
+    fn initialize_symbol(&mut self, name: Value) {
         let len = self.get_list_length(name);
         let list = self.allocate_rib(name, len, STRING_TAG);
         let symbol = self.allocate_rib(self.r#false, list, SYMBOL_TAG);
@@ -564,7 +564,7 @@ impl<'a> Vm<'a> {
 
         loop {
             let x = self.read_code();
-            n = Object::Number(x as u64);
+            n = Value::Number(x as u64);
             op = -1;
 
             while n.to_raw() > {
@@ -572,7 +572,7 @@ impl<'a> Vm<'a> {
                 d = INSTRUCTION_WEIGHTS[op as usize];
                 d + 2
             } {
-                n = Object::Number(n.to_raw() - d - 3);
+                n = Value::Number(n.to_raw() - d - 3);
             }
 
             if x > 90 {
@@ -584,10 +584,10 @@ impl<'a> Vm<'a> {
                 }
 
                 n = if n.to_raw() == d {
-                    Object::Number(self.read_integer(0) as u64)
+                    Value::Number(self.read_integer(0) as u64)
                 } else if n.to_raw() > d {
                     let integer = self.read_integer((n.to_raw() - d - 1) as i64);
-                    self.get_symbol_ref(Object::Number(integer as u64))
+                    self.get_symbol_ref(Value::Number(integer as u64))
                 } else if op < 3 {
                     self.get_symbol_ref(n)
                 } else {
@@ -595,8 +595,8 @@ impl<'a> Vm<'a> {
                 };
 
                 if op > 4 {
-                    let object = self.pop();
-                    let rib2 = self.allocate_rib2(n, ZERO, object);
+                    let value = self.pop();
+                    let rib2 = self.allocate_rib2(n, ZERO, value);
                     n = self.allocate_rib(rib2, self.get_nil(), CLOSURE_TAG);
 
                     if self.stack.to_raw() == ZERO.to_raw() {
@@ -616,7 +616,7 @@ impl<'a> Vm<'a> {
             println!("decode: {} {}", op, x);
 
             // TODO Review this.
-            let instruction = self.allocate_rib(Object::Number(op as u64), n, ZERO);
+            let instruction = self.allocate_rib(Value::Number(op as u64), n, ZERO);
             *self.get_tag_mut(instruction) = self.get_tos();
             *self.get_tos_mut() = instruction;
         }

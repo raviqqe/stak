@@ -1,6 +1,6 @@
 mod error;
 mod instruction;
-mod object;
+mod value;
 mod primitive;
 mod rib;
 mod vm;
