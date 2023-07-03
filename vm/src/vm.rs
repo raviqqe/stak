@@ -7,8 +7,8 @@ const ZERO: Number = Number::new(0);
 
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
-    stack: Value,
     heap: Vec<Value>,
+    stack: Value,
     allocation_index: usize,
     odd_gc: bool,
 }
@@ -21,8 +21,8 @@ impl<const N: usize> Vm<N> {
 
     pub fn new() -> Self {
         Self {
-            stack: ZERO.into(),
             heap: vec![ZERO.into(); Self::HEAP_SIZE],
+            stack: ZERO.into(),
             allocation_index: 0,
             odd_gc: false,
         }
