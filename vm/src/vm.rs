@@ -255,6 +255,17 @@ mod tests {
         }
 
         #[test]
+        fn collect_deep_stack() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            vm.push(Number::new(1).into());
+            vm.push(Number::new(2).into());
+            vm.collect_garbages();
+
+            insta::assert_display_snapshot!(vm);
+        }
+
+        #[test]
         fn collect_cycle() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
