@@ -2,8 +2,8 @@
 pub struct Number(u64);
 
 impl Number {
-    pub fn new(index: u64) -> Self {
-        Self(index)
+    pub fn new(number: u64) -> Self {
+        Self(number)
     }
 
     pub fn to_usize(self) -> usize {
