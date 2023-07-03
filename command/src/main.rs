@@ -4,11 +4,11 @@ use vm::{Error, Vm};
 fn main() {
     if let Err(error) = Vm::new(b"").run() {
         match error {
-            Error::ArgumentCount => todo!(),
+            Error::ArgumentCount => eprintln!("invalid argument count"),
             Error::IllegalInstruction => todo!(),
             Error::IllegalPrimitive => todo!(),
         }
 
-        exit(1)
+        exit(1);
     }
 }
