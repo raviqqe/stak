@@ -1,9 +1,11 @@
 use crate::{value::Value, Error};
+use alloc::{vec, vec::Vec};
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Value = Value::Number(0);
 
 #[allow(dead_code)]
+#[derive(Default)]
 pub struct Vm<const N: usize> {
     heap: Vec<Value>,
 }
