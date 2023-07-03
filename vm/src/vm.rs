@@ -19,6 +19,7 @@ impl<const N: usize> Vm<N> {
     const HEAP_SIZE: usize = Self::SPACE_SIZE * 2;
     const HEAP_MIDDLE: usize = Self::SPACE_SIZE;
     const HEAP_TOP: usize = Self::HEAP_SIZE;
+    const GC_COPIED_CAR: Value = Value::Cons(Cons::new(Self::HEAP_SIZE as u64));
 
     pub fn new() -> Self {
         Self {
@@ -43,15 +44,20 @@ impl<const N: usize> Vm<N> {
     }
 
     pub fn allocate(&mut self) -> Cons {
-        let cons = Cons::new(self.allocation_index as u64);
-        self.allocation_index += CONS_FIELD_COUNT;
+        let cons = self.allocate_raw();
 
         debug_assert!(self.allocation_index <= self.allocation_limit());
 
         if self.allocation_index == self.allocation_limit() {
-            self.gc();
+            self.collect_garbages();
         }
 
+        cons
+    }
+
+    fn allocate_raw(&mut self) -> Cons {
+        let cons = Cons::new(self.allocation_index as u64);
+        self.allocation_index += CONS_FIELD_COUNT;
         cons
     }
 
@@ -63,9 +69,40 @@ impl<const N: usize> Vm<N> {
         }
     }
 
-    fn gc(&mut self) {
-        let to_space = if self.odd_gc { 0 } else { Self::HEAP_MIDDLE };
-        self.odd_gc = true;
+    fn collect_garbages(&mut self) {
+        self.allocation_index = if self.odd_gc { 0 } else { Self::HEAP_MIDDLE };
+        self.odd_gc = !self.odd_gc;
+
+        if let Some(cons) = self.stack.to_cons() {
+            self.copy_value(cons.index());
+        }
+    }
+
+    fn copy_value(&mut self, index: usize) {
+        let value = self.heap[index];
+
+        if let Some(cons) = value.to_cons() {
+            let car = self.car(cons);
+
+            let value = if car == Self::GC_COPIED_CAR {
+                self.cdr(cons)
+            } else {
+                let copy = self.allocate_raw();
+
+                *self.car_mut(copy) = car;
+                *self.cdr_mut(copy) = self.cdr(cons);
+                *self.car_mut(cons) = Self::GC_COPIED_CAR;
+                *self.cdr_mut(cons) = copy.into();
+
+                copy.into()
+            };
+
+            self.heap[index] = value;
+        }
+    }
+
+    fn copy_values(&mut self) {
+        todo!();
     }
 
     fn car(&self, cons: Cons) -> Value {
