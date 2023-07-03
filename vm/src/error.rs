@@ -3,4 +3,5 @@ pub enum Error {
     ArgumentCount,
     IllegalInstruction,
     IllegalPrimitive,
+    OutOfMemory,
 }

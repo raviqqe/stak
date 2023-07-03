@@ -9,6 +9,7 @@ fn main() {
             Error::ArgumentCount => eprintln!("invalid argument count"),
             Error::IllegalInstruction => todo!(),
             Error::IllegalPrimitive => todo!(),
+            Error::OutOfMemory => eprintln!("out of memory"),
         }
 
         exit(1);

@@ -15,6 +15,6 @@ impl Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "c{}", self.0)
+        write!(formatter, "c{:x}", self.0)
     }
 }
