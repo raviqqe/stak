@@ -113,7 +113,11 @@ mod tests {
 
         insta::assert_display_snapshot!(vm);
 
-        vm.append(Number::new(2).into(), list.into());
+        let list = vm.append(Number::new(2).into(), list.into());
+
+        insta::assert_display_snapshot!(vm);
+
+        vm.append(Number::new(3).into(), list.into());
 
         insta::assert_display_snapshot!(vm);
     }
