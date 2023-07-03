@@ -70,6 +70,12 @@ impl<const N: usize> Vm<N> {
     }
 }
 
+impl<const N: usize> Default for Vm<N> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<const N: usize> Display for Vm<N> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for index in 0..self.allocation_index / 2 {
