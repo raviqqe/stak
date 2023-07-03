@@ -28,11 +28,11 @@ impl<const N: usize> Vm<N> {
         }
     }
 
-    pub fn car(&self, cons: Cons) -> Value {
+    fn car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
-    pub fn cdr(&self, cons: Cons) -> Value {
+    fn cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 
