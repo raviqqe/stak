@@ -1,8 +1,7 @@
 mod error;
 mod instruction;
-mod value;
 mod primitive;
-mod rib;
+mod value;
 mod vm;
 
 pub use error::Error;

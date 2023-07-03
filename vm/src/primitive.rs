@@ -3,12 +3,12 @@ use num_traits::FromPrimitive;
 
 #[derive(Clone, Copy, FromPrimitive)]
 pub enum Primitive {
-    Rib,
+    Cons,
     Id,
     Pop,
     Skip,
     Close,
-    IsRib,
+    IsCons,
     Field0,
     Field1,
     Field2,
