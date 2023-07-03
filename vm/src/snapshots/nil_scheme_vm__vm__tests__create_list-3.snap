@@ -1,0 +1,8 @@
+---
+source: vm/src/vm.rs
+expression: vm
+---
+n1 n0
+n2 c0
+n3 c2
+
