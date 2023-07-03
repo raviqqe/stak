@@ -46,9 +46,9 @@ impl<const N: usize> Vm<N> {
     pub fn allocate(&mut self) -> Cons {
         let cons = self.allocate_raw();
 
-        debug_assert!(self.allocation_index <= self.allocation_limit());
+        debug_assert!(self.allocation_index <= self.allocation_end());
 
-        if self.allocation_index == self.allocation_limit() {
+        if self.allocation_index == self.allocation_end() {
             self.collect_garbages();
         }
 
@@ -61,7 +61,15 @@ impl<const N: usize> Vm<N> {
         cons
     }
 
-    fn allocation_limit(&self) -> usize {
+    fn allocation_start(&self) -> usize {
+        if self.odd_gc {
+            Self::HEAP_MIDDLE
+        } else {
+            0
+        }
+    }
+
+    fn allocation_end(&self) -> usize {
         if self.odd_gc {
             Self::HEAP_TOP
         } else {
@@ -71,33 +79,36 @@ impl<const N: usize> Vm<N> {
 
     fn collect_garbages(&mut self) {
         self.allocation_index = if self.odd_gc { 0 } else { Self::HEAP_MIDDLE };
-        self.odd_gc = !self.odd_gc;
 
-        if let Some(cons) = self.stack.to_cons() {
-            self.copy_value(cons.index());
+        self.stack = self.copy_value(self.stack);
+
+        for index in self.allocation_start()..self.allocation_end() {
+            self.heap[index] = self.copy_value(self.heap[index]);
         }
+
+        self.odd_gc = !self.odd_gc;
     }
 
-    fn copy_value(&mut self, index: usize) {
-        let value = self.heap[index];
-
+    fn copy_value(&mut self, value: Value) -> Value {
         if let Some(cons) = value.to_cons() {
-            let car = self.car(cons);
-
-            let value = if car == Self::GC_COPIED_CAR {
+            let value = if self.car(cons) == Self::GC_COPIED_CAR {
+                // Get a moved pointer.
                 self.cdr(cons)
             } else {
                 let copy = self.allocate_raw();
 
-                *self.car_mut(copy) = car;
+                *self.car_mut(copy) = self.car(cons);
                 *self.cdr_mut(copy) = self.cdr(cons);
+
                 *self.car_mut(cons) = Self::GC_COPIED_CAR;
                 *self.cdr_mut(cons) = copy.into();
 
                 copy.into()
             };
 
-            self.heap[index] = value;
+            value
+        } else {
+            value
         }
     }
 
