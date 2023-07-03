@@ -10,7 +10,7 @@ pub struct Vm<const N: usize> {
     stack: Value,
     heap: Vec<Value>,
     allocation_index: usize,
-    allocation_limit: usize,
+    odd_gc: bool,
 }
 
 #[allow(dead_code)]
@@ -25,8 +25,47 @@ impl<const N: usize> Vm<N> {
             stack: ZERO.into(),
             heap: vec![ZERO.into(); Self::HEAP_SIZE],
             allocation_index: 0,
-            allocation_limit: Self::HEAP_MIDDLE,
+            odd_gc: false,
         }
+    }
+
+    pub fn run(&mut self) -> Result<(), Error> {
+        Ok(())
+    }
+
+    pub fn append(&mut self, car: Value, cdr: Value) -> Cons {
+        let cons = self.allocate();
+
+        *self.car_mut(cons) = car;
+        *self.cdr_mut(cons) = cdr;
+
+        cons
+    }
+
+    pub fn allocate(&mut self) -> Cons {
+        let cons = Cons::new(self.allocation_index as u64);
+        self.allocation_index += CONS_FIELD_COUNT;
+
+        debug_assert!(self.allocation_index <= self.allocation_limit());
+
+        if self.allocation_index == self.allocation_limit() {
+            self.gc();
+        }
+
+        cons
+    }
+
+    fn allocation_limit(&self) -> usize {
+        if self.odd_gc {
+            Self::HEAP_TOP
+        } else {
+            Self::HEAP_MIDDLE
+        }
+    }
+
+    fn gc(&mut self) {
+        let to_space = if self.odd_gc { 0 } else { Self::HEAP_MIDDLE };
+        self.odd_gc = true;
     }
 
     fn car(&self, cons: Cons) -> Value {
@@ -43,30 +82,6 @@ impl<const N: usize> Vm<N> {
 
     fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
         &mut self.heap[cons.index() + 1]
-    }
-
-    pub fn allocate(&mut self) -> Cons {
-        let cons = Cons::new(self.allocation_index as u64);
-        self.allocation_index += CONS_FIELD_COUNT;
-
-        if self.allocation_index == self.allocation_limit {
-            todo!("gc")
-        }
-
-        cons
-    }
-
-    pub fn append(&mut self, car: Value, cdr: Value) -> Cons {
-        let cons = self.allocate();
-
-        *self.car_mut(cons) = car;
-        *self.cdr_mut(cons) = cdr;
-
-        cons
-    }
-
-    pub fn run(&mut self) -> Result<(), Error> {
-        Ok(())
     }
 }
 
