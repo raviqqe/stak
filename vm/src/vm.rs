@@ -111,10 +111,6 @@ impl<const N: usize> Vm<N> {
         }
     }
 
-    fn copy_values(&mut self) {
-        todo!();
-    }
-
     fn car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
