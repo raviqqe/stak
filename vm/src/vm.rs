@@ -202,6 +202,22 @@ mod tests {
 
     mod stack {
         use super::*;
+
+        #[test]
+        fn pop_nothing() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            assert_eq!(vm.pop(), None);
+        }
+
+        #[test]
+        fn push_and_pop() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            vm.push(Number::new(42).into());
+
+            assert_eq!(vm.pop(), Some(Number::new(42).into()));
+        }
     }
 
     mod garbage_collection {
