@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-vm = { package = "ribbit-vm", path = "../vm" }
+vm = { package = "nil-scheme-vm", path = "../vm" }

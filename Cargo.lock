@@ -47,7 +47,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "ribbit-vm"
+name = "nil-scheme-vm"
 version = "0.1.0"
 dependencies = [
  "num-derive",
@@ -58,7 +58,7 @@ dependencies = [
 name = "rvm"
 version = "0.1.0"
 dependencies = [
- "ribbit-vm",
+ "nil-scheme-vm",
 ]
 
 [[package]]

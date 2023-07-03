@@ -1,5 +1,5 @@
 [package]
-name = "ribbit-vm"
+name = "nil-scheme-vm"
 version = "0.1.0"
 edition = "2021"
 
