@@ -1,0 +1,6 @@
+[workspace]
+members = ["command", "vm"]
+
+[profile.release]
+lto = true
+panic = "abort"
