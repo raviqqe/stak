@@ -1,25 +1,20 @@
 use crate::{value::Value, Error};
 
 const CONS_FIELD_COUNT: usize = 2;
-const MAX_VALUE_COUNT: usize = 1 << 14;
-const SPACE_SIZE: usize = MAX_VALUE_COUNT * CONS_FIELD_COUNT;
-const HEAP_SIZE: usize = SPACE_SIZE * 2;
-#[allow(dead_code)]
-const HEAP_TOP: usize = HEAP_SIZE;
-
 const ZERO: Value = Value::Number(0);
 
 #[allow(dead_code)]
-pub struct Vm {
+pub struct Vm<const N: usize> {
     heap: Vec<Value>,
-    heap_size: usize,
 }
 
-impl Vm {
-    pub fn new(heap_size: usize) -> Self {
+impl<const N: usize> Vm<N> {
+    const SPACE_SIZE: usize = N * CONS_FIELD_COUNT;
+    const HEAP_SIZE: usize = Self::SPACE_SIZE * 2;
+
+    pub fn new() -> Self {
         Self {
-            heap: vec![ZERO; HEAP_SIZE],
-            heap_size,
+            heap: vec![ZERO; Self::HEAP_SIZE],
         }
     }
 
@@ -32,8 +27,10 @@ impl Vm {
 mod tests {
     use super::*;
 
+    const HEAP_SIZE: usize = 1 << 8;
+
     #[test]
     fn run_nothing() {
-        Vm::new(0).run().unwrap();
+        Vm::<HEAP_SIZE>::new().run().unwrap();
     }
 }
