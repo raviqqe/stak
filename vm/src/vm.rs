@@ -218,6 +218,17 @@ mod tests {
 
             assert_eq!(vm.pop(), Some(Number::new(42).into()));
         }
+
+        #[test]
+        fn push_and_pop_twice() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            vm.push(Number::new(1).into());
+            vm.push(Number::new(2).into());
+
+            assert_eq!(vm.pop(), Some(Number::new(2).into()));
+            assert_eq!(vm.pop(), Some(Number::new(1).into()));
+        }
     }
 
     mod garbage_collection {
