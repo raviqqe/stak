@@ -101,6 +101,7 @@ impl<const N: usize> Vm<N> {
                 *self.cdr_mut(copy) = self.cdr(cons);
 
                 *self.car_mut(cons) = Self::GC_COPIED_CAR;
+                // Set a forward pointer.
                 *self.cdr_mut(cons) = copy.into();
 
                 copy.into()
