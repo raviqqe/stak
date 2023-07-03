@@ -1,14 +1,12 @@
 use crate::{cons::Cons, number::Number};
 use core::fmt::{self, Display, Formatter};
 
-#[allow(dead_code)]
 #[derive(Copy, Clone, Eq, Debug, PartialEq)]
 pub enum Value {
     Cons(Cons),
     Number(Number),
 }
 
-#[allow(dead_code)]
 impl Value {
     pub const fn to_cons(self) -> Option<Cons> {
         if let Self::Cons(x) = self {

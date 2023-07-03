@@ -5,7 +5,6 @@ use core::fmt::{self, Display, Formatter};
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 
-#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
     stack: Value,
@@ -14,12 +13,10 @@ pub struct Vm<const N: usize> {
     odd_gc: bool,
 }
 
-#[allow(dead_code)]
 impl<const N: usize> Vm<N> {
     const SPACE_SIZE: usize = N * CONS_FIELD_COUNT;
     const HEAP_SIZE: usize = Self::SPACE_SIZE * 2;
     const HEAP_MIDDLE: usize = Self::SPACE_SIZE;
-    const HEAP_TOP: usize = Self::HEAP_SIZE;
     const GC_COPIED_CAR: Cons = Cons::new(Self::HEAP_SIZE as u64);
 
     pub fn new() -> Self {
@@ -44,13 +41,13 @@ impl<const N: usize> Vm<N> {
         Ok(cons)
     }
 
-    fn push(&mut self, value: Value) -> Result<(), Error> {
+    pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.append(value, self.stack)?.into();
 
         Ok(())
     }
 
-    fn pop(&mut self) -> Option<Value> {
+    pub fn pop(&mut self) -> Option<Value> {
         if let Some(cons) = self.stack.to_cons() {
             let value = self.car(cons);
             self.stack = self.cdr(cons);
