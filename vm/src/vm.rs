@@ -91,7 +91,7 @@ impl<const N: usize> Vm<N> {
 
     fn copy_value(&mut self, value: Value) -> Value {
         if let Some(cons) = value.to_cons() {
-            let value = if self.car(cons) == Self::GC_COPIED_CAR {
+            if self.car(cons) == Self::GC_COPIED_CAR {
                 // Get a forward pointer.
                 self.cdr(cons)
             } else {
@@ -105,9 +105,7 @@ impl<const N: usize> Vm<N> {
                 *self.cdr_mut(cons) = copy.into();
 
                 copy.into()
-            };
-
-            value
+            }
         } else {
             value
         }
