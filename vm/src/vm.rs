@@ -12,12 +12,14 @@ const ZERO: Value = Value::Number(0);
 #[allow(dead_code)]
 pub struct Vm {
     heap: Vec<Value>,
+    heap_size: usize,
 }
 
 impl Vm {
-    pub fn new() -> Self {
+    pub fn new(heap_size: usize) -> Self {
         Self {
             heap: vec![ZERO; HEAP_SIZE],
+            heap_size,
         }
     }
 
@@ -32,6 +34,6 @@ mod tests {
 
     #[test]
     fn run_nothing() {
-        Vm::new().run().unwrap();
+        Vm::new(0).run().unwrap();
     }
 }
