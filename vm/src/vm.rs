@@ -85,11 +85,7 @@ impl<const N: usize> Vm<N> {
     }
 
     fn allocation_end(&self) -> usize {
-        if self.odd_gc {
-            Self::HEAP_TOP
-        } else {
-            Self::HEAP_MIDDLE
-        }
+        self.allocation_start() + Self::SPACE_SIZE
     }
 
     fn collect_garbages(&mut self) {
