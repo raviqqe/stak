@@ -35,17 +35,19 @@ impl<const N: usize> Vm<N> {
         Ok(())
     }
 
-    fn append(&mut self, car: Value, cdr: Value) -> Cons {
-        let cons = self.allocate();
+    fn append(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+        let cons = self.allocate()?;
 
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
 
-        cons
+        Ok(cons)
     }
 
-    fn push(&mut self, value: Value) {
-        self.stack = self.append(value, self.stack).into();
+    fn push(&mut self, value: Value) -> Result<(), Error> {
+        self.stack = self.append(value, self.stack)?.into();
+
+        Ok(())
     }
 
     fn pop(&mut self) -> Option<Value> {
@@ -58,16 +60,20 @@ impl<const N: usize> Vm<N> {
         }
     }
 
-    pub fn allocate(&mut self) -> Cons {
+    pub fn allocate(&mut self) -> Result<Cons, Error> {
         let cons = self.allocate_raw();
 
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
         if self.allocation_index == Self::SPACE_SIZE {
             self.collect_garbages();
+
+            if self.allocation_index == Self::SPACE_SIZE {
+                return Err(Error::OutOfMemory);
+            }
         }
 
-        cons
+        Ok(cons)
     }
 
     fn allocate_raw(&mut self) -> Cons {
@@ -185,15 +191,15 @@ mod tests {
     fn create_list() {
         let mut vm = Vm::<HEAP_SIZE>::new();
 
-        let list = vm.append(Number::new(1).into(), ZERO.into());
+        let list = vm.append(Number::new(1).into(), ZERO.into()).unwrap();
 
         insta::assert_display_snapshot!(vm);
 
-        let list = vm.append(Number::new(2).into(), list.into());
+        let list = vm.append(Number::new(2).into(), list.into()).unwrap();
 
         insta::assert_display_snapshot!(vm);
 
-        vm.append(Number::new(3).into(), list.into());
+        vm.append(Number::new(3).into(), list.into()).unwrap();
 
         insta::assert_display_snapshot!(vm);
     }
@@ -212,7 +218,7 @@ mod tests {
         fn push_and_pop() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            vm.push(Number::new(42).into());
+            vm.push(Number::new(42).into()).unwrap();
 
             assert_eq!(vm.pop(), Some(Number::new(42).into()));
         }
@@ -221,8 +227,8 @@ mod tests {
         fn push_and_pop_twice() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            vm.push(Number::new(1).into());
-            vm.push(Number::new(2).into());
+            vm.push(Number::new(1).into()).unwrap();
+            vm.push(Number::new(2).into()).unwrap();
 
             assert_eq!(vm.pop(), Some(Number::new(2).into()));
             assert_eq!(vm.pop(), Some(Number::new(1).into()));
@@ -236,7 +242,7 @@ mod tests {
         fn collect_cons() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            vm.allocate();
+            vm.allocate().unwrap();
             vm.collect_garbages();
 
             insta::assert_display_snapshot!(vm);
@@ -246,7 +252,7 @@ mod tests {
         fn collect_stack() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            vm.push(Number::new(42).into());
+            vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages();
 
             insta::assert_display_snapshot!(vm);
@@ -256,8 +262,8 @@ mod tests {
         fn collect_deep_stack() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            vm.push(Number::new(1).into());
-            vm.push(Number::new(2).into());
+            vm.push(Number::new(1).into()).unwrap();
+            vm.push(Number::new(2).into()).unwrap();
             vm.collect_garbages();
 
             insta::assert_display_snapshot!(vm);
@@ -267,7 +273,7 @@ mod tests {
         fn collect_cycle() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            let cons = vm.allocate();
+            let cons = vm.allocate().unwrap();
             *vm.cdr_mut(cons) = cons.into();
 
             vm.collect_garbages();
