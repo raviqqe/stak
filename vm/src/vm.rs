@@ -6,8 +6,8 @@ const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 
 #[allow(dead_code)]
-#[derive(Default)]
 pub struct Vm<const N: usize> {
+    stack: Value,
     heap: Vec<Value>,
     allocation_index: usize,
     allocation_limit: usize,
@@ -22,6 +22,7 @@ impl<const N: usize> Vm<N> {
 
     pub fn new() -> Self {
         Self {
+            stack: ZERO.into(),
             heap: vec![ZERO.into(); Self::HEAP_SIZE],
             allocation_index: 0,
             allocation_limit: Self::HEAP_MIDDLE,
