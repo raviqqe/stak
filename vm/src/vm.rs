@@ -1,6 +1,4 @@
-use crate::cons::Cons;
-use crate::number::Number;
-use crate::{value::Value, Error};
+use crate::{cons::Cons, number::Number, value::Value, Error};
 use alloc::{vec, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
@@ -39,11 +37,11 @@ impl<const N: usize> Vm<N> {
     }
 
     fn car_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index() as usize]
+        &mut self.heap[cons.index()]
     }
 
     fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index() as usize + 1]
+        &mut self.heap[cons.index() + 1]
     }
 
     pub fn allocate(&mut self) -> Cons {
@@ -60,8 +58,8 @@ impl<const N: usize> Vm<N> {
     pub fn append(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = self.allocate();
 
-        *self.car_mut(cons) = car.into();
-        *self.cdr_mut(cons) = cdr.into();
+        *self.car_mut(cons) = car;
+        *self.cdr_mut(cons) = cdr;
 
         cons
     }
@@ -76,7 +74,7 @@ impl<const N: usize> Display for Vm<N> {
         for index in 0..self.allocation_index / 2 {
             let cons = Cons::new(2 * index as u64);
 
-            write!(formatter, "{} {}\n", self.car(cons), self.cdr(cons))?;
+            writeln!(formatter, "{} {}", self.car(cons), self.cdr(cons))?;
         }
 
         Ok(())
