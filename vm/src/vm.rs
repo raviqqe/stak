@@ -6,6 +6,7 @@ const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 
 #[allow(dead_code)]
+#[derive(Debug)]
 pub struct Vm<const N: usize> {
     stack: Value,
     heap: Vec<Value>,
@@ -46,9 +47,9 @@ impl<const N: usize> Vm<N> {
     pub fn allocate(&mut self) -> Cons {
         let cons = self.allocate_raw();
 
-        debug_assert!(self.allocation_index <= self.allocation_end());
+        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
-        if self.allocation_index == self.allocation_end() {
+        if self.allocation_index == Self::SPACE_SIZE {
             self.collect_garbages();
         }
 
@@ -56,7 +57,7 @@ impl<const N: usize> Vm<N> {
     }
 
     fn allocate_raw(&mut self) -> Cons {
-        let cons = Cons::new(self.allocation_index as u64);
+        let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
         self.allocation_index += CONS_FIELD_COUNT;
         cons
     }
@@ -78,15 +79,16 @@ impl<const N: usize> Vm<N> {
     }
 
     fn collect_garbages(&mut self) {
-        self.allocation_index = if self.odd_gc { 0 } else { Self::HEAP_MIDDLE };
+        let old_range = self.allocation_start()..self.allocation_end();
+
+        self.allocation_index = 0;
+        self.odd_gc = !self.odd_gc;
 
         self.stack = self.copy_value(self.stack);
 
-        for index in self.allocation_start()..self.allocation_end() {
+        for index in old_range {
             self.heap[index] = self.copy_value(self.heap[index]);
         }
-
-        self.odd_gc = !self.odd_gc;
     }
 
     fn copy_value(&mut self, value: Value) -> Value {
@@ -137,7 +139,7 @@ impl<const N: usize> Default for Vm<N> {
 impl<const N: usize> Display for Vm<N> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for index in 0..self.allocation_index / 2 {
-            let cons = Cons::new(2 * index as u64);
+            let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
 
             writeln!(formatter, "{} {}", self.car(cons), self.cdr(cons))?;
         }
@@ -184,5 +186,35 @@ mod tests {
         vm.append(Number::new(3).into(), list.into());
 
         insta::assert_display_snapshot!(vm);
+    }
+
+    mod garbage_collection {
+        use super::*;
+
+        #[test]
+        fn collect_cons() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            vm.allocate();
+            vm.collect_garbages();
+
+            insta::assert_display_snapshot!(vm);
+        }
+
+        #[test]
+        fn collect_stack() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            let cons = vm.allocate();
+
+            *vm.car_mut(cons) = Number::new(1).into();
+            *vm.cdr_mut(cons) = Number::new(2).into();
+
+            vm.stack = cons.into();
+
+            vm.collect_garbages();
+
+            insta::assert_display_snapshot!(vm);
+        }
     }
 }
