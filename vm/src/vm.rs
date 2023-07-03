@@ -87,7 +87,6 @@ impl<const N: usize> Vm<N> {
         self.stack = self.copy_value(self.stack);
 
         for index in old_range {
-            let index = 2 * index;
             self.heap[index] = self.copy_value(self.heap[index]);
         }
     }
