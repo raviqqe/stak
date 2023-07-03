@@ -2,7 +2,9 @@
 
 extern crate alloc;
 
+mod cons;
 mod error;
+mod number;
 mod value;
 mod vm;
 
