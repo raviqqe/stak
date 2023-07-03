@@ -9,7 +9,7 @@ pub enum Value {
 
 #[allow(dead_code)]
 impl Value {
-    pub const fn to_reference(self) -> Option<Cons> {
+    pub const fn to_cons(self) -> Option<Cons> {
         if let Self::Cons(x) = self {
             Some(x)
         } else {
