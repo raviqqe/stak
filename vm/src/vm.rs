@@ -4,10 +4,10 @@ use crate::{value::Value, Error};
 use alloc::{vec, vec::Vec};
 
 const CONS_FIELD_COUNT: usize = 2;
-const ZERO: Value = Value::Number(0);
+const ZERO: Number = Number::new(0);
 
 #[allow(dead_code)]
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct Vm<const N: usize> {
     heap: Vec<Value>,
     allocation_index: usize,
@@ -23,7 +23,7 @@ impl<const N: usize> Vm<N> {
 
     pub fn new() -> Self {
         Self {
-            heap: vec![ZERO; Self::HEAP_SIZE],
+            heap: vec![ZERO.into(); Self::HEAP_SIZE],
             allocation_index: 0,
             allocation_limit: Self::HEAP_MIDDLE,
         }
@@ -37,7 +37,15 @@ impl<const N: usize> Vm<N> {
         self.heap[index.to_usize() + 1]
     }
 
-    pub fn allocate(&self) -> Cons {
+    fn car_mut(&mut self, cons: Cons) -> &mut Value {
+        &mut self.heap[cons.index() as usize]
+    }
+
+    fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
+        &mut self.heap[cons.index() as usize + 1]
+    }
+
+    pub fn allocate(&mut self) -> Cons {
         if self.allocation_index == self.allocation_limit {
             todo!("gc")
         }
@@ -47,8 +55,11 @@ impl<const N: usize> Vm<N> {
         cons
     }
 
-    pub fn append(&self, index: Number, cons: Cons) -> Value {
-        self.heap[index as usize + 1]
+    pub fn append(&mut self, value: Value, cons: Value) {
+        let new = self.allocate();
+
+        *self.car_mut(new) = value.into();
+        *self.cdr_mut(new) = cons.into();
     }
 
     pub fn run(&self) -> Result<(), Error> {
@@ -59,11 +70,21 @@ impl<const N: usize> Vm<N> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::format;
 
     const HEAP_SIZE: usize = 1 << 8;
 
     #[test]
     fn run_nothing() {
         Vm::<HEAP_SIZE>::new().run().unwrap();
+    }
+
+    #[test]
+    fn create_list() {
+        let mut vm = Vm::<HEAP_SIZE>::new();
+
+        vm.append(Number::new(1).into(), ZERO.into());
+
+        insta::assert_debug_snapshot!(vm);
     }
 }
