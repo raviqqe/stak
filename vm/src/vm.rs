@@ -35,13 +35,27 @@ impl<const N: usize> Vm<N> {
         Ok(())
     }
 
-    pub fn append(&mut self, car: Value, cdr: Value) -> Cons {
+    fn append(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = self.allocate();
 
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
 
         cons
+    }
+
+    fn push(&mut self, value: Value) {
+        self.stack = self.append(value, self.stack).into();
+    }
+
+    fn pop(&mut self) -> Option<Value> {
+        if let Some(cons) = self.stack.to_cons() {
+            let value = self.car(cons);
+            self.stack = self.cdr(cons);
+            Some(value)
+        } else {
+            None
+        }
     }
 
     pub fn allocate(&mut self) -> Cons {
@@ -186,6 +200,10 @@ mod tests {
         insta::assert_display_snapshot!(vm);
     }
 
+    mod stack {
+        use super::*;
+    }
+
     mod garbage_collection {
         use super::*;
 
@@ -203,13 +221,7 @@ mod tests {
         fn collect_stack() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            let cons = vm.allocate();
-
-            *vm.car_mut(cons) = Number::new(1).into();
-            *vm.cdr_mut(cons) = Number::new(2).into();
-
-            vm.stack = cons.into();
-
+            vm.push(Number::new(42).into());
             vm.collect_garbages();
 
             insta::assert_display_snapshot!(vm);
