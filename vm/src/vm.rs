@@ -4,27 +4,27 @@ use core::fmt::{self, Display, Formatter};
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
+const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
     heap: Vec<Value>,
     stack: Value,
     allocation_index: usize,
-    odd_gc: bool,
+    gc_inverse: bool,
 }
 
 impl<const N: usize> Vm<N> {
     const SPACE_SIZE: usize = N * CONS_FIELD_COUNT;
     const HEAP_SIZE: usize = Self::SPACE_SIZE * 2;
     const HEAP_MIDDLE: usize = Self::SPACE_SIZE;
-    const GC_COPIED_CAR: Cons = Cons::new(Self::HEAP_SIZE as u64);
 
     pub fn new() -> Self {
         Self {
             heap: vec![ZERO.into(); Self::HEAP_SIZE],
             stack: ZERO.into(),
             allocation_index: 0,
-            odd_gc: false,
+            gc_inverse: false,
         }
     }
 
@@ -80,7 +80,7 @@ impl<const N: usize> Vm<N> {
     }
 
     fn allocation_start(&self) -> usize {
-        if self.odd_gc {
+        if self.gc_inverse {
             Self::HEAP_MIDDLE
         } else {
             0
@@ -111,7 +111,7 @@ impl<const N: usize> Vm<N> {
 
     fn collect_garbages(&mut self) {
         self.allocation_index = 0;
-        self.odd_gc = !self.odd_gc;
+        self.gc_inverse = !self.gc_inverse;
 
         self.stack = self.copy_value(self.stack);
 
@@ -122,7 +122,7 @@ impl<const N: usize> Vm<N> {
 
     fn copy_value(&mut self, value: Value) -> Value {
         if let Some(cons) = value.to_cons() {
-            if self.car(cons) == Self::GC_COPIED_CAR.into() {
+            if self.car(cons) == GC_COPIED_CAR.into() {
                 // Get a forward pointer.
                 self.cdr(cons)
             } else {
@@ -131,7 +131,7 @@ impl<const N: usize> Vm<N> {
                 *self.car_mut(copy) = self.car(cons);
                 *self.cdr_mut(copy) = self.cdr(cons);
 
-                *self.car_mut(cons) = Self::GC_COPIED_CAR.into();
+                *self.car_mut(cons) = GC_COPIED_CAR.into();
                 // Set a forward pointer.
                 *self.cdr_mut(cons) = copy.into();
 
