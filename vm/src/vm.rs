@@ -79,23 +79,19 @@ impl<const N: usize> Vm<N> {
     }
 
     fn collect_garbages(&mut self) {
-        let old_range = self.allocation_start()..self.allocation_end();
-
         self.allocation_index = 0;
         self.odd_gc = !self.odd_gc;
 
         self.stack = self.copy_value(self.stack);
 
-        for index in old_range {
+        for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index]);
         }
     }
 
     fn copy_value(&mut self, value: Value) -> Value {
         if let Some(cons) = value.to_cons() {
-            if cons == Self::GC_COPIED_CAR {
-                value
-            } else if self.car(cons) == Self::GC_COPIED_CAR.into() {
+            if self.car(cons) == Self::GC_COPIED_CAR.into() {
                 // Get a forward pointer.
                 self.cdr(cons)
             } else {
@@ -155,7 +151,7 @@ mod tests {
     use super::*;
     use std::format;
 
-    const HEAP_SIZE: usize = 1 << 8;
+    const HEAP_SIZE: usize = 1 << 4;
 
     #[test]
     fn create() {
@@ -213,6 +209,18 @@ mod tests {
             *vm.cdr_mut(cons) = Number::new(2).into();
 
             vm.stack = cons.into();
+
+            vm.collect_garbages();
+
+            insta::assert_display_snapshot!(vm);
+        }
+
+        #[test]
+        fn collect_cycle() {
+            let mut vm = Vm::<HEAP_SIZE>::new();
+
+            let cons = vm.allocate();
+            *vm.cdr_mut(cons) = cons.into();
 
             vm.collect_garbages();
 
