@@ -20,7 +20,7 @@ impl<const N: usize> Vm<N> {
     const HEAP_SIZE: usize = Self::SPACE_SIZE * 2;
     const HEAP_MIDDLE: usize = Self::SPACE_SIZE;
     const HEAP_TOP: usize = Self::HEAP_SIZE;
-    const GC_COPIED_CAR: Value = Value::Cons(Cons::new(Self::HEAP_SIZE as u64));
+    const GC_COPIED_CAR: Cons = Cons::new(Self::HEAP_SIZE as u64);
 
     pub fn new() -> Self {
         Self {
@@ -87,13 +87,16 @@ impl<const N: usize> Vm<N> {
         self.stack = self.copy_value(self.stack);
 
         for index in old_range {
+            let index = 2 * index;
             self.heap[index] = self.copy_value(self.heap[index]);
         }
     }
 
     fn copy_value(&mut self, value: Value) -> Value {
         if let Some(cons) = value.to_cons() {
-            if self.car(cons) == Self::GC_COPIED_CAR {
+            if cons == Self::GC_COPIED_CAR {
+                value
+            } else if self.car(cons) == Self::GC_COPIED_CAR.into() {
                 // Get a forward pointer.
                 self.cdr(cons)
             } else {
@@ -102,7 +105,7 @@ impl<const N: usize> Vm<N> {
                 *self.car_mut(copy) = self.car(cons);
                 *self.cdr_mut(copy) = self.cdr(cons);
 
-                *self.car_mut(cons) = Self::GC_COPIED_CAR;
+                *self.car_mut(cons) = Self::GC_COPIED_CAR.into();
                 // Set a forward pointer.
                 *self.cdr_mut(cons) = copy.into();
 
