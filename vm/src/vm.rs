@@ -47,12 +47,13 @@ impl<const N: usize> Vm<N> {
     }
 
     pub fn allocate(&mut self) -> Cons {
+        let cons = Cons::new(self.allocation_index as u64);
+        self.allocation_index += CONS_FIELD_COUNT;
+
         if self.allocation_index == self.allocation_limit {
             todo!("gc")
         }
 
-        let cons = Cons::new(self.allocation_index as u64);
-        self.allocation_index += CONS_FIELD_COUNT;
         cons
     }
 
