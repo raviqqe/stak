@@ -1,13 +1,15 @@
+use crate::{cons::Cons, number::Number};
+
 #[allow(dead_code)]
 #[derive(Copy, Clone, Eq, Debug, PartialEq)]
 pub enum Value {
-    Number(u64),
-    Cons(u64),
+    Number(Number),
+    Cons(Cons),
 }
 
 #[allow(dead_code)]
 impl Value {
-    pub const fn to_number(self) -> Option<u64> {
+    pub const fn to_number(self) -> Option<Number> {
         if let Self::Number(x) = self {
             Some(x)
         } else {
@@ -15,7 +17,7 @@ impl Value {
         }
     }
 
-    pub const fn to_reference(self) -> Option<u64> {
+    pub const fn to_reference(self) -> Option<Cons> {
         if let Self::Cons(x) = self {
             Some(x)
         } else {
