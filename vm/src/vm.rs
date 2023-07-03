@@ -88,6 +88,24 @@ impl<const N: usize> Vm<N> {
         self.allocation_start() + Self::SPACE_SIZE
     }
 
+    fn car(&self, cons: Cons) -> Value {
+        self.heap[cons.index()]
+    }
+
+    fn cdr(&self, cons: Cons) -> Value {
+        self.heap[cons.index() + 1]
+    }
+
+    fn car_mut(&mut self, cons: Cons) -> &mut Value {
+        &mut self.heap[cons.index()]
+    }
+
+    fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
+        &mut self.heap[cons.index() + 1]
+    }
+
+    // Garbage collection
+
     fn collect_garbages(&mut self) {
         self.allocation_index = 0;
         self.odd_gc = !self.odd_gc;
@@ -119,22 +137,6 @@ impl<const N: usize> Vm<N> {
         } else {
             value
         }
-    }
-
-    fn car(&self, cons: Cons) -> Value {
-        self.heap[cons.index()]
-    }
-
-    fn cdr(&self, cons: Cons) -> Value {
-        self.heap[cons.index() + 1]
-    }
-
-    fn car_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index()]
-    }
-
-    fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index() + 1]
     }
 }
 
