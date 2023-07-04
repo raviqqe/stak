@@ -84,6 +84,7 @@ impl<const N: usize> Vm<N> {
                         self.cdr(self.program_counter)
                     })?;
                 }
+                Instruction::HALT => return Ok(()),
                 _ => return Err(Error::IllegalInstruction),
             }
         }
