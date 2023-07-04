@@ -11,6 +11,10 @@ impl Cons {
     pub const fn index(self) -> usize {
         self.0 as usize
     }
+
+    pub const fn tag(self) -> u8 {
+        todo!()
+    }
 }
 
 impl Display for Cons {

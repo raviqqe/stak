@@ -50,9 +50,7 @@ impl<const N: usize> Vm<N> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         loop {
-            let instruction = self.car(self.program_counter);
-
-            match Self::to_u8(instruction)? {
+            match Self::to_cons(self.cdr(self.program_counter))?.tag() {
                 Instruction::APPLY => {
                     todo!()
                 }
