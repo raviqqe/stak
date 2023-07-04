@@ -1,6 +1,5 @@
 use core::fmt::{self, Display, Formatter};
 
-#[repr(transparent)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Number(u64);
 
