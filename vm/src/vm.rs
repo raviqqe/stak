@@ -366,16 +366,15 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::FixedBufferDevice;
     use std::format;
 
     const HEAP_SIZE: usize = CONS_FIELD_COUNT * 16;
 
-    struct FakeDevice {}
-
-    impl Device for FakeDevice {}
+    type FakeDevice = FixedBufferDevice<16, 16>;
 
     fn create_vm() -> Vm<HEAP_SIZE, FakeDevice> {
-        Vm::<HEAP_SIZE, _>::new(FakeDevice {}).unwrap()
+        Vm::<HEAP_SIZE, _>::new(FakeDevice::new()).unwrap()
     }
 
     #[test]
