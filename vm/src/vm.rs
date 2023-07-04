@@ -93,7 +93,7 @@ impl<const N: usize> Vm<N> {
 
     fn operand(&self) -> Result<Cons, Error> {
         Ok(match self.car(self.program_counter) {
-            Value::Cons(cons) => cons,
+            Value::Cons(cons) => cons, // Direct reference to a symbol
             Value::Number(index) => self.tail(self.stack, index)?,
         })
     }
