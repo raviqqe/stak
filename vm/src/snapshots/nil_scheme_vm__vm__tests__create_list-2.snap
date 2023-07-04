@@ -4,7 +4,8 @@ expression: vm
 ---
 n0 n0
 n0 n0
-c0 c2
-n1 c4
-n2 c6
+c0:0 c2:0
+n0 c4:5
+n1 c4:0
+n2 c8:0
 

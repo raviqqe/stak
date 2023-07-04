@@ -45,6 +45,11 @@ impl<const N: usize> Vm<N> {
         self.nil = self.allocate(r#false.into(), r#true.into())?;
         self.stack = self.nil;
 
+        self.program_counter = self.allocate(
+            ZERO.into(),
+            self.nil.set_tag(Instruction::Halt as u8).into(),
+        )?;
+
         Ok(())
     }
 
