@@ -1,4 +1,6 @@
-use crate::{cons::Cons, number::Number, primitive::Primitive, value::Value, Error};
+use crate::{
+    cons::Cons, instruction::Instruction, number::Number, primitive::Primitive, value::Value, Error,
+};
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Sub},
@@ -50,8 +52,7 @@ impl<const N: usize> Vm<N> {
         loop {
             let instruction = self.car(self.program_counter);
 
-            match instruction.to_raw() {
-                Instruction::HALT => return Ok(()),
+            match self.to_u8(instruction)? {
                 Instruction::APPLY => {
                     let jump = self.get_tag(self.program_counter) == ZERO;
                     let procedure = self.get_procedure();
