@@ -143,11 +143,11 @@ impl<const N: usize> Vm<N> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = if self.pop()? == self.boolean(true) {
-                        self.cdr(self.program_counter)
+                    self.program_counter = Self::to_cons(if self.pop()? == self.boolean(true) {
+                        self.car(self.program_counter)
                     } else {
-                        self.tag(self.program_counter)
-                    };
+                        self.cdr(self.program_counter)
+                    })?;
                 }
                 _ => return Err(Error::IllegalInstruction),
             }
