@@ -71,11 +71,12 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if jump {
-                                self.program_counter = self.get_continuation();
-                                *self.get_cdr_mut(self.stack) = self.get_car(self.program_counter);
+                                let continuation = self.continuation()?;
+                                *self.cdr_mut(self.stack) = self.car(continuation);
+                                self.program_counter = Self::to_cons(self.cdr(continuation))?;
+                            } else {
+                                self.advance_program_counter()?;
                             }
-
-                            self.advance_program_counter();
                         }
                     }
                 }
