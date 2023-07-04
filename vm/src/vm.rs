@@ -10,6 +10,7 @@ use core::{
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
+const FRAME_TAG: u8 = 1;
 
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
@@ -58,15 +59,52 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         loop {
-            let cdr = Self::to_cons(self.cdr(self.program_counter))?;
+            let instruction = Self::to_cons(self.cdr(self.program_counter))?;
 
-            match cdr.tag() {
+            match instruction.tag() {
                 Instruction::APPLY => {
-                    let jump = cdr.index() == 0;
+                    let jump = instruction.index() == 0;
                     let procedure = self.operand()?;
+                    let argument_count = self.pop()?;
 
                     match self.car(procedure) {
-                        Value::Cons(_code) => todo!(),
+                        Value::Cons(code) => {
+                            let parameter_info = Self::to_u64(self.car(code))?;
+                            let parameter_count = Number::new(parameter_info >> 1);
+                            let variadic = parameter_info & 1 != 0;
+
+                            let mut stack = self.allocate(ZERO.into(), procedure.into())?;
+                            *self.car_mut(self.program_counter) = code.into();
+
+                            // TODO Support variadic arguments.
+                            if parameter_count.into() != argument_count {
+                                return Err(Error::ArgumentCount);
+                            }
+
+                            for _ in 0..parameter_count.to_u64() {
+                                let argument = self.pop()?;
+                                stack = self.append(argument, stack)?;
+                            }
+
+                            let frame = self.tail(stack, parameter_count)?;
+
+                            if jump {
+                                let frame = self.frame()?;
+
+                                *self.car_mut(frame) = self.car(frame);
+                                *self.cdr_mut(frame) =
+                                    Self::to_cons(self.cdr(frame))?.set_tag(FRAME_TAG).into();
+                            } else {
+                                *self.car_mut(frame) = self.stack.into();
+                                *self.cdr_mut(frame) = self.cdr(self.program_counter);
+                            }
+
+                            self.stack = stack;
+
+                            let next_counter = self.car(self.program_counter);
+                            *self.car_mut(self.program_counter) = instruction.into();
+                            self.program_counter = Self::to_cons(self.cdr_value(next_counter)?)?;
+                        }
                         Value::Number(primitive) => {
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
@@ -125,7 +163,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
     fn frame(&self) -> Result<Cons, Error> {
         let mut stack = self.stack;
 
-        while Self::to_cons(self.cdr(stack))?.tag() == 0 {
+        while Self::to_cons(self.cdr(stack))?.tag() != FRAME_TAG {
             stack = Self::to_cons(self.cdr(stack))?;
         }
 
