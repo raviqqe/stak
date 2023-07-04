@@ -48,9 +48,7 @@ impl<const N: usize> Vm<N> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         loop {
-            let instruction = self.get_car(self.program_counter);
-            #[cfg(feature = "trace")]
-            println!("instruction: {}", instruction.to_raw());
+            let instruction = self.car(self.program_counter);
 
             match instruction.to_raw() {
                 Instruction::HALT => return Ok(()),
