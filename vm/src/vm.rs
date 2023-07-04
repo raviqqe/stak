@@ -156,6 +156,8 @@ impl<const N: usize> Vm<N> {
 
     fn advance_program_counter(&mut self) -> Result<(), Error> {
         self.program_counter = Self::to_cons(self.cdr(self.program_counter))?;
+
+        Ok(())
     }
 
     fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
