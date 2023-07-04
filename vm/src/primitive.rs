@@ -17,8 +17,8 @@ pub enum Primitive {
     Subtract,
     Multiply,
     Divide,
-    GetC,
-    PutC,
+    Read,
+    Write,
 }
 
 impl Primitive {
@@ -38,6 +38,6 @@ impl Primitive {
     pub const SUBTRACT: u8 = Self::Subtract as _;
     pub const MULTIPLY: u8 = Self::Multiply as _;
     pub const DIVIDE: u8 = Self::Divide as _;
-    pub const GET_C: u8 = Self::GetC as _;
-    pub const PUT_C: u8 = Self::PutC as _;
+    pub const READ: u8 = Self::Read as _;
+    pub const WRITE: u8 = Self::Write as _;
 }

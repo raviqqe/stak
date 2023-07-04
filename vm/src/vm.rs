@@ -1,5 +1,6 @@
 use crate::{
-    cons::Cons, instruction::Instruction, number::Number, primitive::Primitive, value::Value, Error,
+    cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
+    value::Value, Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -11,7 +12,8 @@ const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 
 #[derive(Debug)]
-pub struct Vm<const N: usize> {
+pub struct Vm<const N: usize, T: Device> {
+    device: T,
     program_counter: Cons,
     stack: Cons,
     nil: Cons,
@@ -20,11 +22,12 @@ pub struct Vm<const N: usize> {
     heap: [Value; N],
 }
 
-impl<const N: usize> Vm<N> {
+impl<T: Device, const N: usize> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
-    pub fn new() -> Result<Self, Error> {
+    pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
+            device,
             program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
@@ -93,7 +96,7 @@ impl<const N: usize> Vm<N> {
 
     fn operand(&self) -> Result<Cons, Error> {
         Ok(match self.car(self.program_counter) {
-            Value::Cons(cons) => cons,
+            Value::Cons(cons) => cons, // Direct reference to a symbol
             Value::Number(index) => self.tail(self.stack, index)?,
         })
     }
@@ -272,18 +275,13 @@ impl<const N: usize> Vm<N> {
             Primitive::SUBTRACT => self.operate_binary(Sub::sub)?,
             Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
-            Primitive::GET_C => {
-                let buffer = [0u8];
-
-                // TODO
-                // stdin().read_exact(&mut buffer)?;
-
-                self.push(Number::new(buffer[0] as u64).into())?;
+            Primitive::READ => {
+                let byte = self.device.read().unwrap();
+                self.push(Number::new(byte as u64).into())?;
             }
-            Primitive::PUT_C => {
-                let _x = self.pop()?;
-
-                todo!();
+            Primitive::WRITE => {
+                let byte = self.pop()?;
+                self.device.write(Self::to_u64(byte)? as u8).unwrap();
             }
             _ => return Err(Error::IllegalPrimitive),
         }
@@ -348,7 +346,7 @@ impl<const N: usize> Vm<N> {
     }
 }
 
-impl<const N: usize> Display for Vm<N> {
+impl<T: Device, const N: usize> Display for Vm<N, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for index in 0..self.allocation_index / 2 {
             let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
@@ -363,20 +361,27 @@ impl<const N: usize> Display for Vm<N> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::FixedBufferDevice;
     use std::format;
 
     const HEAP_SIZE: usize = CONS_FIELD_COUNT * 16;
 
+    type FakeDevice = FixedBufferDevice<16, 16>;
+
+    fn create_vm() -> Vm<HEAP_SIZE, FakeDevice> {
+        Vm::<HEAP_SIZE, _>::new(FakeDevice::new()).unwrap()
+    }
+
     #[test]
     fn create() {
-        let vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let vm = create_vm();
 
         insta::assert_display_snapshot!(vm);
     }
 
     #[test]
     fn run_nothing() {
-        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let mut vm = create_vm();
 
         vm.run().unwrap();
 
@@ -385,7 +390,7 @@ mod tests {
 
     #[test]
     fn run_nothing_after_garbage_collection() {
-        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let mut vm = create_vm();
 
         vm.collect_garbages().unwrap();
         vm.run().unwrap();
@@ -395,7 +400,7 @@ mod tests {
 
     #[test]
     fn create_list() {
-        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let mut vm = create_vm();
 
         let list = vm.append(Number::new(1).into(), vm.nil).unwrap();
 
@@ -415,14 +420,14 @@ mod tests {
 
         #[test]
         fn pop_nothing() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             assert_eq!(vm.pop(), Err(Error::StackUnderflow));
         }
 
         #[test]
         fn push_and_pop() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(42).into()).unwrap();
 
@@ -431,7 +436,7 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -446,7 +451,7 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             vm.collect_garbages().unwrap();
@@ -456,7 +461,7 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages().unwrap();
@@ -466,7 +471,7 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -477,7 +482,7 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
