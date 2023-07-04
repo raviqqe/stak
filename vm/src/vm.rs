@@ -1,5 +1,4 @@
 use crate::{cons::Cons, number::Number, value::Value, Error};
-use alloc::{vec, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
 const CONS_FIELD_COUNT: usize = 2;
@@ -8,19 +7,18 @@ const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
-    heap: Vec<Value>,
+    heap: [Value; N],
     stack: Value,
     allocation_index: usize,
     gc_inverse: bool,
 }
 
 impl<const N: usize> Vm<N> {
-    const SPACE_SIZE: usize = N * CONS_FIELD_COUNT;
-    const HEAP_SIZE: usize = 2 * Self::SPACE_SIZE;
+    const SPACE_SIZE: usize = N / 2;
 
     pub fn new() -> Self {
         Self {
-            heap: vec![ZERO.into(); Self::HEAP_SIZE],
+            heap: [ZERO.into(); N],
             stack: ZERO.into(),
             allocation_index: 0,
             gc_inverse: false,
@@ -80,7 +78,7 @@ impl<const N: usize> Vm<N> {
 
     fn allocation_start(&self) -> usize {
         if self.gc_inverse {
-            Self::HEAP_SIZE / 2
+            N / 2
         } else {
             0
         }
@@ -165,7 +163,7 @@ mod tests {
     use super::*;
     use std::format;
 
-    const HEAP_SIZE: usize = 1 << 4;
+    const HEAP_SIZE: usize = CONS_FIELD_COUNT * 16;
 
     #[test]
     fn create() {
