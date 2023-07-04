@@ -143,10 +143,10 @@ impl<const N: usize> Vm<N> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = if self.pop().to_raw() != self.r#false.to_raw() {
-                        self.get_cdr(self.program_counter)
+                    self.program_counter = if self.pop()? == self.boolean(true) {
+                        self.cdr(self.program_counter)
                     } else {
-                        self.get_tag(self.program_counter)
+                        self.tag(self.program_counter)
                     };
                 }
                 _ => return Err(Error::IllegalInstruction),
