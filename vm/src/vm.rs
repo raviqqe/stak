@@ -124,10 +124,10 @@ impl<const N: usize> Vm<N> {
                 Instruction::SET => {
                     let x = self.pop();
 
-                    let rib = if !self.get_cdr(self.program_counter).is_rib() {
-                        self.get_list_tail(self.stack, self.get_cdr(self.program_counter))
+                    let rib = if !self.cdr(self.program_counter).is_rib() {
+                        self.list_tail(self.stack, self.cdr(self.program_counter))
                     } else {
-                        self.get_cdr(self.program_counter)
+                        self.cdr(self.program_counter)
                     };
 
                     *self.get_car_mut(rib) = x;
@@ -135,14 +135,11 @@ impl<const N: usize> Vm<N> {
                     self.advance_program_counter();
                 }
                 Instruction::GET => {
-                    self.push(
-                        self.get_operand(self.get_cdr(self.program_counter)),
-                        PAIR_TAG,
-                    );
+                    self.push(self.get_operand(self.cdr(self.program_counter)));
                     self.advance_program_counter();
                 }
                 Instruction::CONSTANT => {
-                    self.push(self.get_cdr(self.program_counter), PAIR_TAG);
+                    self.push(self.cdr(self.program_counter));
                     self.advance_program_counter();
                 }
                 Instruction::IF => {
@@ -155,6 +152,10 @@ impl<const N: usize> Vm<N> {
                 _ => return Err(Error::IllegalInstruction),
             }
         }
+    }
+
+    fn advance_program_counter(&mut self) {
+        self.program_counter = self.cdr(self.program_counter);
     }
 
     fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
