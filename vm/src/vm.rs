@@ -312,25 +312,27 @@ impl<const N: usize> Vm<N> {
     // Garbage collection
 
     fn collect_garbages(&mut self) -> Result<(), Error> {
+        #[cfg(test)]
+        std::println!("before:\n{}", self);
         self.allocation_index = 0;
         self.gc_inverse = !self.gc_inverse;
 
-        self.program_counter = Self::to_cons(self.copy_value(self.program_counter.into()))?;
-        self.stack = Self::to_cons(self.copy_value(self.stack.into()))?;
-        self.nil = Self::to_cons(self.copy_value(self.nil.into()))?;
+        self.program_counter = Self::to_cons(self.copy_value(self.program_counter.into())?)?;
+        self.stack = Self::to_cons(self.copy_value(self.stack.into())?)?;
+        self.nil = Self::to_cons(self.copy_value(self.nil.into())?)?;
 
         for index in self.allocation_start()..self.allocation_end() {
-            self.heap[index] = self.copy_value(self.heap[index]);
+            self.heap[index] = self.copy_value(self.heap[index])?;
         }
 
         Ok(())
     }
 
-    fn copy_value(&mut self, value: Value) -> Value {
-        if let Some(cons) = value.to_cons() {
+    fn copy_value(&mut self, value: Value) -> Result<Value, Error> {
+        Ok(if let Some(cons) = value.to_cons() {
             if self.car(cons) == GC_COPIED_CAR.into() {
                 // Get a forward pointer.
-                self.cdr(cons)
+                Self::to_cons(self.cdr(cons))?
             } else {
                 let copy = self.allocate_raw(self.car(cons), self.cdr(cons));
 
@@ -340,9 +342,11 @@ impl<const N: usize> Vm<N> {
 
                 copy.into()
             }
+            .set_tag(cons.tag())
+            .into()
         } else {
             value
-        }
+        })
     }
 }
 
