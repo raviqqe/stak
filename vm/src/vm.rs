@@ -18,7 +18,7 @@ pub struct Vm<const N: usize, T: Device> {
     stack: Cons,
     nil: Cons,
     allocation_index: usize,
-    gc_inverse: bool,
+    space: bool,
     heap: [Value; N],
 }
 
@@ -32,7 +32,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
             stack: Cons::new(0),
             nil: Cons::new(0),
             allocation_index: 0,
-            gc_inverse: false,
+            space: false,
             heap: [ZERO.into(); N],
         };
 
@@ -158,7 +158,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn allocation_start(&self) -> usize {
-        if self.gc_inverse {
+        if self.space {
             N / 2
         } else {
             0
@@ -311,7 +311,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
     fn collect_garbages(&mut self) -> Result<(), Error> {
         self.allocation_index = 0;
-        self.gc_inverse = !self.gc_inverse;
+        self.space = !self.space;
 
         self.program_counter = Self::to_cons(self.copy_value(self.program_counter.into())?)?;
         self.stack = Self::to_cons(self.copy_value(self.stack.into())?)?;
