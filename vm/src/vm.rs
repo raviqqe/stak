@@ -92,7 +92,7 @@ impl<const N: usize> Vm<N> {
     }
 
     fn operand(&self) -> Result<Cons, Error> {
-        Ok(match self.cdr(self.program_counter) {
+        Ok(match self.car(self.program_counter) {
             Value::Cons(cons) => cons,
             Value::Number(index) => self.tail(self.stack, index)?,
         })
