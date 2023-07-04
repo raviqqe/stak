@@ -315,7 +315,9 @@ impl<const N: usize> Vm<N> {
         self.allocation_index = 0;
         self.gc_inverse = !self.gc_inverse;
 
+        self.program_counter = Self::to_cons(self.copy_value(self.program_counter.into()))?;
         self.stack = Self::to_cons(self.copy_value(self.stack.into()))?;
+        self.nil = Self::to_cons(self.copy_value(self.nil.into()))?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index]);
