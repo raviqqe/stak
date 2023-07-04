@@ -132,15 +132,15 @@ impl<const N: usize> Vm<N> {
 
                     *self.get_car_mut(rib) = x;
 
-                    self.advance_program_counter();
+                    self.advance_program_counter()?;
                 }
                 Instruction::GET => {
                     self.push(self.get_operand(self.cdr(self.program_counter)));
-                    self.advance_program_counter();
+                    self.advance_program_counter()?;
                 }
                 Instruction::CONSTANT => {
                     self.push(self.cdr(self.program_counter));
-                    self.advance_program_counter();
+                    self.advance_program_counter()?;
                 }
                 Instruction::IF => {
                     self.program_counter = if self.pop().to_raw() != self.r#false.to_raw() {
@@ -154,8 +154,8 @@ impl<const N: usize> Vm<N> {
         }
     }
 
-    fn advance_program_counter(&mut self) {
-        self.program_counter = self.cdr(self.program_counter);
+    fn advance_program_counter(&mut self) -> Result<(), Error> {
+        self.program_counter = Self::to_cons(self.cdr(self.program_counter))?;
     }
 
     fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
