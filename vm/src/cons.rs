@@ -20,7 +20,7 @@ impl Cons {
     }
 
     pub const fn set_tag(self, tag: u8) -> Self {
-        Self(self.0 | (tag as u64) & TAG_MASK)
+        Self(self.0 | tag as u64 & TAG_MASK)
     }
 }
 
