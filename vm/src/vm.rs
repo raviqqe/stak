@@ -52,7 +52,7 @@ impl<const N: usize> Vm<N> {
         loop {
             let instruction = self.car(self.program_counter);
 
-            match self.to_u8(instruction)? {
+            match Self::to_u8(instruction)? {
                 Instruction::APPLY => {
                     let jump = self.get_tag(self.program_counter) == ZERO;
                     let procedure = self.get_procedure();
