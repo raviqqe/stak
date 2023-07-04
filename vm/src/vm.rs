@@ -138,6 +138,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
         if self.allocation_index == Self::SPACE_SIZE {
             self.collect_garbages()?;
 
+            debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
+
             if self.allocation_index == Self::SPACE_SIZE {
                 return Err(Error::OutOfMemory);
             }
