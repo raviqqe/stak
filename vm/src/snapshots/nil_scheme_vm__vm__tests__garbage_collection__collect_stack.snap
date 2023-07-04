@@ -2,5 +2,8 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-n42 n0
+n42 c12
+c14 c16
+n0 n0
+n0 n0
 

@@ -11,7 +11,8 @@ const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
     heap: [Value; N],
-    stack: Value,
+    stack: Cons,
+    nil: Cons,
     allocation_index: usize,
     gc_inverse: bool,
 }
@@ -19,13 +20,28 @@ pub struct Vm<const N: usize> {
 impl<const N: usize> Vm<N> {
     const SPACE_SIZE: usize = N / 2;
 
-    pub fn new() -> Self {
-        Self {
+    pub fn new() -> Result<Self, Error> {
+        let mut vm = Self {
             heap: [ZERO.into(); N],
-            stack: ZERO.into(),
+            stack: Cons::new(0),
+            nil: Cons::new(0),
             allocation_index: 0,
             gc_inverse: false,
-        }
+        };
+
+        vm.initialize()?;
+
+        Ok(vm)
+    }
+
+    fn initialize(&mut self) -> Result<(), Error> {
+        let r#false = self.allocate(ZERO.into(), ZERO.into())?;
+        let r#true = self.allocate(ZERO.into(), ZERO.into())?;
+
+        self.nil = self.allocate(r#false.into(), r#true.into())?;
+        self.stack = self.nil;
+
+        Ok(())
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
@@ -33,32 +49,27 @@ impl<const N: usize> Vm<N> {
     }
 
     fn append(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
-        let cons = self.allocate()?;
-
-        *self.car_mut(cons) = car;
-        *self.cdr_mut(cons) = cdr;
-
-        Ok(cons)
+        self.allocate(car, cdr)
     }
 
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
-        self.stack = self.append(value, self.stack)?.into();
+        self.stack = self.append(value, self.stack.into())?.into();
 
         Ok(())
     }
 
     pub fn pop(&mut self) -> Result<Value, Error> {
-        if let Some(cons) = self.stack.to_cons() {
-            let value = self.car(cons);
-            self.stack = self.cdr(cons);
-            Ok(value)
-        } else {
-            Err(Error::StackUnderflow)
+        if self.stack == self.nil {
+            return Err(Error::StackUnderflow);
         }
+
+        let value = self.car(self.stack);
+        self.stack = Self::to_cons(self.cdr(self.stack))?;
+        Ok(value)
     }
 
-    pub fn allocate(&mut self) -> Result<Cons, Error> {
-        let cons = self.allocate_raw();
+    pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+        let cons = self.allocate_raw(car, cdr);
 
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
@@ -73,9 +84,14 @@ impl<const N: usize> Vm<N> {
         Ok(cons)
     }
 
-    fn allocate_raw(&mut self) -> Cons {
+    fn allocate_raw(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
+
+        *self.car_mut(cons) = car;
+        *self.cdr_mut(cons) = cdr;
+
         self.allocation_index += CONS_FIELD_COUNT;
+
         cons
     }
 
@@ -99,6 +115,14 @@ impl<const N: usize> Vm<N> {
         self.heap[cons.index() + 1]
     }
 
+    fn car_value(&self, cons: Value) -> Result<Value, Error> {
+        Ok(self.car(Self::to_cons(cons)?))
+    }
+
+    fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
+        Ok(self.cdr(Self::to_cons(cons)?))
+    }
+
     fn car_mut(&mut self, cons: Cons) -> &mut Value {
         &mut self.heap[cons.index()]
     }
@@ -107,8 +131,28 @@ impl<const N: usize> Vm<N> {
         &mut self.heap[cons.index() + 1]
     }
 
+    fn car_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
+        Ok(&mut self.heap[Self::to_cons(cons)?.index()])
+    }
+
+    fn cdr_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
+        Ok(&mut self.heap[Self::to_cons(cons)?.index() + 1])
+    }
+
     fn boolean(&self, value: bool) -> Value {
-        todo!()
+        if value {
+            self.cdr(self.nil)
+        } else {
+            self.car(self.nil)
+        }
+    }
+
+    fn to_cons(value: Value) -> Result<Cons, Error> {
+        value.to_cons().ok_or(Error::ConsExpected)
+    }
+
+    fn to_u64(value: Value) -> Result<u64, Error> {
+        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u64())
     }
 
     // Primitive operations
@@ -116,9 +160,9 @@ impl<const N: usize> Vm<N> {
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::CONS => {
-                let cons = self.allocate()?;
-                *self.car_mut(cons) = self.pop()?;
-                *self.cdr_mut(cons) = self.pop()?;
+                let car = self.pop()?;
+                let cdr = self.pop()?;
+                let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
             }
             Primitive::ID => {
@@ -134,35 +178,33 @@ impl<const N: usize> Vm<N> {
                 self.push(x)?;
             }
             Primitive::CLOSE => {
-                let cons = self.allocate()?;
-
-                *self.car_mut(cons) = self.pop()?;
-                *self.cdr_mut(cons) = self.stack;
+                let car = self.pop()?;
+                let cons = self.allocate(car, self.stack.into())?;
 
                 self.push(cons.into())?;
             }
             Primitive::IS_CONS => {
                 let x = self.pop()?;
-                self.push(self.boolean(x.is_cons()));
+                self.push(self.boolean(x.is_cons()))?;
             }
             Primitive::CAR => {
                 let x = self.pop()?;
-                self.push(self.car(x))?;
+                self.push(self.car_value(x)?)?;
             }
             Primitive::CDR => {
-                let x = self.pop();
-                self.push(self.cdr(x))?;
+                let x = self.pop()?;
+                self.push(self.cdr_value(x)?)?;
             }
             Primitive::SET_CAR => {
                 let x = self.pop()?;
                 let y = self.pop()?;
-                *self.car_mut(x) = y;
+                *self.car_value_mut(x)? = y;
                 self.push(y)?;
             }
             Primitive::SET_CDR => {
                 let x = self.pop()?;
                 let y = self.pop()?;
-                *self.cdr_mut(x) = y;
+                *self.cdr_value_mut(x)? = y;
                 self.push(y)?;
             }
             Primitive::EQUAL => self.operate_comparison(|x, y| x == y)?,
@@ -184,14 +226,15 @@ impl<const N: usize> Vm<N> {
 
                 todo!();
             }
+            _ => return Err(Error::IllegalPrimitive),
         }
 
         Ok(())
     }
 
     fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) -> Result<(), Error> {
-        let x = self.to_number(self.pop()?)?;
-        let y = self.to_number(self.pop()?)?;
+        let x = Self::to_u64(self.pop()?)?;
+        let y = Self::to_u64(self.pop()?)?;
 
         self.push(Number::new(operate(x, y)).into())?;
 
@@ -199,29 +242,27 @@ impl<const N: usize> Vm<N> {
     }
 
     fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) -> Result<(), Error> {
-        let x = self.to_number(self.pop()?)?;
-        let y = self.to_number(self.pop()?)?;
+        let x = Self::to_u64(self.pop()?)?;
+        let y = Self::to_u64(self.pop()?)?;
 
         self.push(self.boolean(operate(x, y)))?;
 
         Ok(())
     }
 
-    fn to_number(&self, value: Value) -> Result<u64, Error> {
-        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u64())
-    }
-
     // Garbage collection
 
-    fn collect_garbages(&mut self) {
+    fn collect_garbages(&mut self) -> Result<(), Error> {
         self.allocation_index = 0;
         self.gc_inverse = !self.gc_inverse;
 
-        self.stack = self.copy_value(self.stack);
+        self.stack = Self::to_cons(self.copy_value(self.stack.into()))?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index]);
         }
+
+        Ok(())
     }
 
     fn copy_value(&mut self, value: Value) -> Value {
@@ -230,10 +271,7 @@ impl<const N: usize> Vm<N> {
                 // Get a forward pointer.
                 self.cdr(cons)
             } else {
-                let copy = self.allocate_raw();
-
-                *self.car_mut(copy) = self.car(cons);
-                *self.cdr_mut(copy) = self.cdr(cons);
+                let copy = self.allocate_raw(self.car(cons), self.cdr(cons));
 
                 *self.car_mut(cons) = GC_COPIED_CAR.into();
                 // Set a forward pointer.
@@ -244,12 +282,6 @@ impl<const N: usize> Vm<N> {
         } else {
             value
         }
-    }
-}
-
-impl<const N: usize> Default for Vm<N> {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -274,14 +306,14 @@ mod tests {
 
     #[test]
     fn create() {
-        let vm = Vm::<HEAP_SIZE>::new();
+        let vm = Vm::<HEAP_SIZE>::new().unwrap();
 
         insta::assert_display_snapshot!(vm);
     }
 
     #[test]
     fn run_nothing() {
-        let mut vm = Vm::<HEAP_SIZE>::new();
+        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
         vm.run().unwrap();
 
@@ -290,7 +322,7 @@ mod tests {
 
     #[test]
     fn create_list() {
-        let mut vm = Vm::<HEAP_SIZE>::new();
+        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
         let list = vm.append(Number::new(1).into(), ZERO.into()).unwrap();
 
@@ -310,14 +342,14 @@ mod tests {
 
         #[test]
         fn pop_nothing() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             assert_eq!(vm.pop(), Err(Error::StackUnderflow));
         }
 
         #[test]
         fn push_and_pop() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             vm.push(Number::new(42).into()).unwrap();
 
@@ -326,7 +358,7 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -341,9 +373,9 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
-            vm.allocate().unwrap();
+            vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             vm.collect_garbages();
 
             insta::assert_display_snapshot!(vm);
@@ -351,7 +383,7 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages();
@@ -361,7 +393,7 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -372,9 +404,9 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut vm = Vm::<HEAP_SIZE>::new();
+            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
-            let cons = vm.allocate().unwrap();
+            let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
 
             vm.collect_garbages();
