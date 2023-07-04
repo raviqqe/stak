@@ -58,19 +58,11 @@ impl<const N: usize> Vm<N> {
                 }
                 Instruction::SET => {
                     let x = self.pop()?;
-
-                    let cons = if self.car(self.program_counter).is_number() {
-                        self.list_tail(self.stack, self.cdr(self.program_counter))
-                    } else {
-                        self.cdr(self.program_counter)
-                    };
-
-                    *self.car_mut(cons) = x;
-
+                    *self.car_mut(self.operand()?) = x;
                     self.advance_program_counter()?;
                 }
                 Instruction::GET => {
-                    self.push(self.get_operand(self.cdr(self.program_counter)));
+                    self.push(self.car(self.operand()?))?;
                     self.advance_program_counter()?;
                 }
                 Instruction::CONSTANT => {
@@ -94,6 +86,22 @@ impl<const N: usize> Vm<N> {
         self.program_counter = Self::to_cons(self.cdr(self.program_counter))?;
 
         Ok(())
+    }
+
+    fn operand(&self) -> Result<Cons, Error> {
+        Ok(match self.cdr(self.program_counter) {
+            Value::Cons(cons) => cons,
+            Value::Number(index) => self.tail(self.stack, index)?,
+        })
+    }
+
+    fn tail(&self, mut list: Cons, mut index: Number) -> Result<Cons, Error> {
+        while index != ZERO {
+            list = Self::to_cons(self.cdr(list))?;
+            index = Number::new(index.to_u64() - 1);
+        }
+
+        Ok(list)
     }
 
     fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
