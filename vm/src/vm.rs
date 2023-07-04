@@ -71,10 +71,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if jump {
-                                let continuation = self.continuation()?;
+                                let frame = self.frame()?;
 
-                                *self.cdr_mut(self.stack) = self.car(continuation);
-                                self.program_counter = Self::to_cons(self.cdr(continuation))?;
+                                // Keep a value at the top of stack.
+                                *self.cdr_mut(self.stack) = self.car(frame);
+                                self.program_counter = Self::to_cons(self.cdr(frame))?;
                             } else {
                                 self.advance_program_counter()?;
                             }
@@ -120,7 +121,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
         })
     }
 
-    fn continuation(&self) -> Result<Cons, Error> {
+    fn frame(&self) -> Result<Cons, Error> {
         let mut stack = self.stack;
 
         while Self::to_cons(self.cdr(stack))?.tag() == 0 {
