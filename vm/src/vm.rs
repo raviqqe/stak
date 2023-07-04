@@ -382,6 +382,16 @@ mod tests {
     }
 
     #[test]
+    fn run_nothing_after_garbage_collection() {
+        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+
+        vm.collect_garbages().unwrap();
+        vm.run().unwrap();
+
+        insta::assert_display_snapshot!(vm);
+    }
+
+    #[test]
     fn create_list() {
         let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
