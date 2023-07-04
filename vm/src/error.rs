@@ -3,5 +3,7 @@ pub enum Error {
     ArgumentCount,
     IllegalInstruction,
     IllegalPrimitive,
+    NumberExpected,
     OutOfMemory,
+    StackUnderflow,
 }

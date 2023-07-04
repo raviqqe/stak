@@ -1,5 +1,8 @@
-use crate::{cons::Cons, number::Number, value::Value, Error};
-use core::fmt::{self, Display, Formatter};
+use crate::{cons::Cons, number::Number, primitive::Primitive, value::Value, Error};
+use core::{
+    fmt::{self, Display, Formatter},
+    ops::{Add, Div, Mul, Sub},
+};
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
@@ -44,13 +47,13 @@ impl<const N: usize> Vm<N> {
         Ok(())
     }
 
-    pub fn pop(&mut self) -> Option<Value> {
+    pub fn pop(&mut self) -> Result<Value, Error> {
         if let Some(cons) = self.stack.to_cons() {
             let value = self.car(cons);
             self.stack = self.cdr(cons);
-            Some(value)
+            Ok(value)
         } else {
-            None
+            Err(Error::StackUnderflow)
         }
     }
 
@@ -104,119 +107,108 @@ impl<const N: usize> Vm<N> {
         &mut self.heap[cons.index() + 1]
     }
 
+    fn boolean(&self, value: bool) -> Value {
+        todo!()
+    }
+
     // Primitive operations
 
-    fn operate_primitive(&mut self, primitive: Primitive) {
-        #[cfg(feature = "trace")]
-        println!("primitive: {}", primitive as usize);
-
+    fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
-            Primitive::Rib => {
-                let rib = self.allocate_rib(ZERO, ZERO, ZERO);
-                *self.get_car_mut(rib) = self.pop();
-                *self.get_cdr_mut(rib) = self.pop();
-                *self.get_tag_mut(rib) = self.pop();
-                self.push(rib, PAIR_TAG);
+            Primitive::CONS => {
+                let cons = self.allocate()?;
+                *self.car_mut(cons) = self.pop()?;
+                *self.cdr_mut(cons) = self.pop()?;
+                self.push(cons.into())?;
             }
-            Primitive::Id => {
-                let x = self.pop();
-                self.push(x, PAIR_TAG);
+            Primitive::ID => {
+                let x = self.pop()?;
+                self.push(x)?;
             }
-            Primitive::Pop => {
-                self.pop();
+            Primitive::POP => {
+                self.pop()?;
             }
-            Primitive::Skip => {
-                let x = self.pop();
-                self.pop();
-                self.push(x, PAIR_TAG);
+            Primitive::SKIP => {
+                let x = self.pop()?;
+                self.pop()?;
+                self.push(x)?;
             }
-            Primitive::Close => {
-                // TODO Review this.
-                let x = self.get_car(self.get_tos());
-                let y = self.get_cdr(self.stack);
+            Primitive::CLOSE => {
+                let cons = self.allocate()?;
 
-                *self.get_tos_mut() = self.allocate_rib(x, y, CLOSURE_TAG);
+                *self.car_mut(cons) = self.pop()?;
+                *self.cdr_mut(cons) = self.stack;
+
+                self.push(cons.into())?;
             }
-            Primitive::IsRib => {
+            Primitive::IS_CONS => {
+                let x = self.pop()?;
+                self.push(self.boolean(x.is_cons()));
+            }
+            Primitive::CAR => {
+                let x = self.pop()?;
+                self.push(self.car(x))?;
+            }
+            Primitive::CDR => {
                 let x = self.pop();
-                self.push(self.get_boolean(x.is_rib()), PAIR_TAG);
+                self.push(self.cdr(x))?;
             }
-            Primitive::Field0 => {
-                let x = self.pop();
-                self.push(self.get_car(x), PAIR_TAG);
+            Primitive::SET_CAR => {
+                let x = self.pop()?;
+                let y = self.pop()?;
+                *self.car_mut(x) = y;
+                self.push(y)?;
             }
-            Primitive::Field1 => {
-                let x = self.pop();
-                self.push(self.get_cdr(x), PAIR_TAG);
+            Primitive::SET_CDR => {
+                let x = self.pop()?;
+                let y = self.pop()?;
+                *self.cdr_mut(x) = y;
+                self.push(y)?;
             }
-            Primitive::Field2 => {
-                let x = self.pop();
-                self.push(self.get_tag(x), PAIR_TAG)
-            }
-            Primitive::SetField0 => {
-                let x = self.pop();
-                let y = self.pop();
-                *self.get_car_mut(x) = y;
-                self.push(y, PAIR_TAG);
-            }
-            Primitive::SetField1 => {
-                let x = self.pop();
-                let y = self.pop();
-                *self.get_cdr_mut(x) = y;
-                self.push(y, PAIR_TAG);
-            }
-            Primitive::SetField2 => {
-                let x = self.pop();
-                let y = self.pop();
-                *self.get_tag_mut(x) = y;
-                self.push(y, PAIR_TAG);
-            }
-            Primitive::Equal => {
-                self.operate_comparison(|x, y| x == y);
-            }
-            Primitive::LessThan => {
-                self.operate_comparison(|x, y| x < y);
-            }
-            Primitive::Add => {
-                self.operate_binary(Add::add);
-            }
-            Primitive::Subtract => {
-                self.operate_binary(Sub::sub);
-            }
-            Primitive::Multiply => {
-                self.operate_binary(Mul::mul);
-            }
-            Primitive::Divide => {
-                self.operate_binary(Div::div);
-            }
-            Primitive::GetC => {
+            Primitive::EQUAL => self.operate_comparison(|x, y| x == y)?,
+            Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
+            Primitive::ADD => self.operate_binary(Add::add)?,
+            Primitive::SUBTRACT => self.operate_binary(Sub::sub)?,
+            Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
+            Primitive::DIVIDE => self.operate_binary(Div::div)?,
+            Primitive::GET_C => {
                 let mut buffer = [0u8];
 
-                // TODO Handle errors.
-                stdin().read_exact(&mut buffer).unwrap();
+                // TODO
+                // stdin().read_exact(&mut buffer)?;
 
-                self.push(Object::Number(buffer[0] as u64), PAIR_TAG);
+                self.push(Number::new(buffer[0] as u64).into());
             }
-            Primitive::PutC => {
-                let x = self.pop();
+            Primitive::PUT_C => {
+                let x = self.pop()?;
 
-                print!("{}", x.to_raw() as u8 as char);
+                todo!();
             }
         }
+
+        Ok(())
     }
 
-    fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) {
-        let x = self.pop().to_raw();
-        let y = self.pop().to_raw();
+    fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) -> Result<(), Error> {
+        let x = self.to_number(self.pop()?)?;
+        let y = self.to_number(self.pop()?)?;
 
-        self.push(Object::Number(operate(x, y)), PAIR_TAG);
+        self.push(Number::new(operate(x, y)).into())?;
+
+        Ok(())
     }
 
-    fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) {
-        let x = self.pop().to_raw();
-        let y = self.pop().to_raw();
+    fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) -> Result<(), Error> {
+        let x = self.to_number(self.pop()?)?;
+        let y = self.to_number(self.pop()?)?;
 
-        self.push(self.get_boolean(operate(x, y)), PAIR_TAG);
+        self.push(self.boolean(operate(x, y)))?;
+
+        Ok(())
+    }
+
+    fn to_number(&self, value: Value) -> Result<u64, Error> {
+        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u64())
     }
 
     // Garbage collection

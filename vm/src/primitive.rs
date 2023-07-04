@@ -6,13 +6,11 @@ pub enum Primitive {
     Pop,
     Skip,
     Close,
-    IsRib,
-    Field0,
-    Field1,
-    Field2,
-    SetField0,
-    SetField1,
-    SetField2,
+    IsCons,
+    Car,
+    Cdr,
+    SetCar,
+    SetCdr,
     Equal,
     LessThan,
     Add,
@@ -29,13 +27,11 @@ impl Primitive {
     pub const POP: u8 = Self::Pop as u8;
     pub const SKIP: u8 = Self::Skip as u8;
     pub const CLOSE: u8 = Self::Close as u8;
-    pub const IS_RIB: u8 = Self::IsRib as u8;
-    pub const FIELD0: u8 = Self::Field0 as u8;
-    pub const FIELD1: u8 = Self::Field1 as u8;
-    pub const FIELD2: u8 = Self::Field2 as u8;
-    pub const SET_FIELD0: u8 = Self::SetField0 as u8;
-    pub const SET_FIELD1: u8 = Self::SetField1 as u8;
-    pub const SET_FIELD2: u8 = Self::SetField2 as u8;
+    pub const IS_CONS: u8 = Self::IsCons as u8;
+    pub const CAR: u8 = Self::Car as u8;
+    pub const CDR: u8 = Self::Cdr as u8;
+    pub const SET_CAR: u8 = Self::SetCar as u8;
+    pub const SET_CDR: u8 = Self::SetCdr as u8;
     pub const EQUAL: u8 = Self::Equal as u8;
     pub const LESS_THAN: u8 = Self::LessThan as u8;
     pub const ADD: u8 = Self::Add as u8;
