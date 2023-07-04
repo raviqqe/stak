@@ -73,9 +73,9 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             if jump {
                                 let frame = self.frame()?;
 
+                                self.program_counter = Self::to_cons(self.car(frame))?;
                                 // Keep a value at the top of stack.
                                 *self.cdr_mut(self.stack) = self.cdr(frame);
-                                self.program_counter = Self::to_cons(self.car(frame))?;
                             } else {
                                 self.advance_program_counter()?;
                             }
