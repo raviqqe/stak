@@ -312,8 +312,6 @@ impl<const N: usize> Vm<N> {
     // Garbage collection
 
     fn collect_garbages(&mut self) -> Result<(), Error> {
-        #[cfg(test)]
-        std::println!("before:\n{}", self);
         self.allocation_index = 0;
         self.gc_inverse = !self.gc_inverse;
 
