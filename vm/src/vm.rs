@@ -261,7 +261,7 @@ impl<const N: usize> Vm<N> {
     }
 
     fn to_u8(value: Value) -> Result<u8, Error> {
-        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u8())
+        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u64() as u8)
     }
 
     // Primitive operations
