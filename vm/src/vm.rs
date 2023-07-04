@@ -16,8 +16,7 @@ pub struct Vm<const N: usize> {
 
 impl<const N: usize> Vm<N> {
     const SPACE_SIZE: usize = N * CONS_FIELD_COUNT;
-    const HEAP_SIZE: usize = Self::SPACE_SIZE * 2;
-    const HEAP_MIDDLE: usize = Self::SPACE_SIZE;
+    const HEAP_SIZE: usize = 2 * Self::SPACE_SIZE;
 
     pub fn new() -> Self {
         Self {
@@ -81,7 +80,7 @@ impl<const N: usize> Vm<N> {
 
     fn allocation_start(&self) -> usize {
         if self.gc_inverse {
-            Self::HEAP_MIDDLE
+            Self::HEAP_SIZE / 2
         } else {
             0
         }
