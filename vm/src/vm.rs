@@ -48,8 +48,8 @@ impl<const N: usize> Vm<N> {
         Ok(())
     }
 
-    fn append(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
-        self.allocate(car, cdr)
+    fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
+        self.allocate(car, cdr.into())
     }
 
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
@@ -157,7 +157,7 @@ impl<const N: usize> Vm<N> {
 
     // Primitive operations
 
-    fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
+    pub fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::CONS => {
                 let car = self.pop()?;
@@ -324,7 +324,7 @@ mod tests {
     fn create_list() {
         let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
-        let list = vm.append(Number::new(1).into(), ZERO.into()).unwrap();
+        let list = vm.append(Number::new(1).into(), vm.nil).unwrap();
 
         insta::assert_display_snapshot!(vm);
 
