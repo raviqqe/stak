@@ -65,13 +65,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
                 Instruction::APPLY => {
                     let jump = instruction.index() == 0;
                     let procedure = self.operand()?;
-                    let argument_count = self.pop()?;
 
                     match self.car(procedure) {
                         Value::Cons(code) => {
-                            let parameter_info = Self::to_u64(self.car(code))?;
-                            let parameter_count = Number::new(parameter_info >> 1);
-                            let variadic = parameter_info & 1 != 0;
+                            let argument_count = Self::to_u64(self.pop()?)?;
+                            let parameter_count = Self::to_u64(self.car(code))?;
 
                             let mut stack = self.allocate(ZERO.into(), procedure.into())?;
                             *self.car_mut(self.program_counter) = code.into();
@@ -81,7 +79,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            for _ in 0..parameter_count.to_u64() {
+                            for _ in 0..parameter_count {
                                 let argument = self.pop()?;
                                 stack = self.append(argument, stack)?;
                             }
