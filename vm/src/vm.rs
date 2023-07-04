@@ -122,15 +122,15 @@ impl<const N: usize> Vm<N> {
                     }
                 }
                 Instruction::SET => {
-                    let x = self.pop();
+                    let x = self.pop()?;
 
-                    let rib = if !self.cdr(self.program_counter).is_rib() {
+                    let cons = if self.car(self.program_counter).is_number() {
                         self.list_tail(self.stack, self.cdr(self.program_counter))
                     } else {
                         self.cdr(self.program_counter)
                     };
 
-                    *self.get_car_mut(rib) = x;
+                    *self.get_car_mut(cons) = x;
 
                     self.advance_program_counter()?;
                 }
