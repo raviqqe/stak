@@ -260,8 +260,8 @@ impl<const N: usize> Vm<N> {
         value.to_cons().ok_or(Error::ConsExpected)
     }
 
-    fn to_u64(value: Value) -> Result<u64, Error> {
-        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u64())
+    fn to_u8(value: Value) -> Result<u8, Error> {
+        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u8())
     }
 
     // Primitive operations

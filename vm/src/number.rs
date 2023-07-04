@@ -8,7 +8,6 @@ impl Number {
         Self(number)
     }
 
-    #[allow(dead_code)]
     pub const fn to_u64(self) -> u64 {
         self.0
     }
