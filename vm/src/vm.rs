@@ -11,6 +11,7 @@ const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
     heap: [Value; N],
+    program_counter: Cons,
     stack: Cons,
     nil: Cons,
     allocation_index: usize,
@@ -23,6 +24,7 @@ impl<const N: usize> Vm<N> {
     pub fn new() -> Result<Self, Error> {
         let mut vm = Self {
             heap: [ZERO.into(); N],
+            program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
             allocation_index: 0,
@@ -45,7 +47,115 @@ impl<const N: usize> Vm<N> {
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
-        Ok(())
+        loop {
+            let instruction = self.get_car(self.program_counter);
+            #[cfg(feature = "trace")]
+            println!("instruction: {}", instruction.to_raw());
+
+            match instruction.to_raw() {
+                Instruction::HALT => return Ok(()),
+                Instruction::APPLY => {
+                    let jump = self.get_tag(self.program_counter) == ZERO;
+                    let procedure = self.get_procedure();
+                    let code = self.get_code();
+                    let mut argument_count = self.pop();
+
+                    if !code.is_rib() {
+                        self.operate_primitive(
+                            Primitive::try_from(code.to_raw())
+                                .map_err(|_| Error::IllegalPrimitive)?,
+                        );
+
+                        if jump {
+                            self.program_counter = self.get_continuation();
+                            *self.get_cdr_mut(self.stack) = self.get_car(self.program_counter);
+                        }
+
+                        self.advance_program_counter();
+                    } else {
+                        debug_assert!(!self.get_car(code).is_rib());
+                        debug_assert!(!argument_count.is_rib());
+
+                        let parameter_info = self.get_car(code).to_raw();
+                        let parameter_count = Object::Number(parameter_info >> 1);
+                        let variadic = parameter_info & 1 != 0;
+
+                        let mut stack = self.allocate_rib(ZERO, procedure, PAIR_TAG);
+                        *self.get_car_mut(self.program_counter) = code;
+
+                        if (!variadic && parameter_count != argument_count)
+                            || (variadic && parameter_count.to_raw() > argument_count.to_raw())
+                        {
+                            return Err(Error::ArgumentCount);
+                        }
+
+                        argument_count =
+                            Object::Number(argument_count.to_raw() - parameter_count.to_raw());
+
+                        if variadic {
+                            todo!("{}", argument_count.to_raw());
+                        }
+
+                        for _ in 0..parameter_count.to_raw() {
+                            let argument = self.pop();
+                            stack = self.allocate_rib(argument, stack, PAIR_TAG);
+                        }
+
+                        let c2 = self.get_list_tail(
+                            stack,
+                            Object::Number(parameter_count.to_raw() + if variadic { 1 } else { 0 }),
+                        );
+
+                        if jump {
+                            let continuation = self.get_continuation();
+                            *self.get_car_mut(c2) = self.get_car(continuation);
+                            *self.get_tag_mut(c2) = self.get_tag(continuation);
+                        } else {
+                            *self.get_car_mut(c2) = self.stack;
+                            *self.get_tag_mut(c2) = self.get_tag(self.program_counter);
+                        }
+
+                        self.stack = stack;
+
+                        let next_counter = self.get_car(self.program_counter);
+                        *self.get_car_mut(self.program_counter) = instruction;
+                        self.program_counter = self.get_tag(next_counter);
+                    }
+                }
+                Instruction::SET => {
+                    let x = self.pop();
+
+                    let rib = if !self.get_cdr(self.program_counter).is_rib() {
+                        self.get_list_tail(self.stack, self.get_cdr(self.program_counter))
+                    } else {
+                        self.get_cdr(self.program_counter)
+                    };
+
+                    *self.get_car_mut(rib) = x;
+
+                    self.advance_program_counter();
+                }
+                Instruction::GET => {
+                    self.push(
+                        self.get_operand(self.get_cdr(self.program_counter)),
+                        PAIR_TAG,
+                    );
+                    self.advance_program_counter();
+                }
+                Instruction::CONSTANT => {
+                    self.push(self.get_cdr(self.program_counter), PAIR_TAG);
+                    self.advance_program_counter();
+                }
+                Instruction::IF => {
+                    self.program_counter = if self.pop().to_raw() != self.r#false.to_raw() {
+                        self.get_cdr(self.program_counter)
+                    } else {
+                        self.get_tag(self.program_counter)
+                    };
+                }
+                _ => return Err(Error::IllegalInstruction),
+            }
+        }
     }
 
     fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
