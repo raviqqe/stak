@@ -275,18 +275,13 @@ impl<T: Device, const N: usize> Vm<N, T> {
             Primitive::SUBTRACT => self.operate_binary(Sub::sub)?,
             Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
-            Primitive::GET_C => {
-                let buffer = [0u8];
-
-                // TODO
-                // stdin().read_exact(&mut buffer)?;
-
-                self.push(Number::new(buffer[0] as u64).into())?;
+            Primitive::READ => {
+                let byte = self.device.read().unwrap();
+                self.push(Number::new(byte as u64).into())?;
             }
-            Primitive::PUT_C => {
-                let _x = self.pop()?;
-
-                todo!();
+            Primitive::WRITE => {
+                let byte = self.pop()?;
+                self.device.write(Self::to_u64(byte)? as u8).unwrap();
             }
             _ => return Err(Error::IllegalPrimitive),
         }
