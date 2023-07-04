@@ -338,7 +338,7 @@ impl<const N: usize> Vm<N> {
                 // Set a forward pointer.
                 *self.cdr_mut(cons) = copy.into();
 
-                copy.into()
+                copy
             }
             .set_tag(cons.tag())
             .into()
