@@ -69,7 +69,7 @@ impl<const N: usize> Vm<N> {
                     self.advance_program_counter()?;
                 }
                 Instruction::CONSTANT => {
-                    self.push(self.cdr(self.program_counter))?;
+                    self.push(self.car(self.program_counter))?;
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
