@@ -121,6 +121,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
         })
     }
 
+    // (return-address . (tag 1 stack))
     fn frame(&self) -> Result<Cons, Error> {
         let mut stack = self.stack;
 
