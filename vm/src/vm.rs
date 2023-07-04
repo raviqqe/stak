@@ -72,6 +72,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
                             if jump {
                                 let continuation = self.continuation()?;
+
                                 *self.cdr_mut(self.stack) = self.car(continuation);
                                 self.program_counter = Self::to_cons(self.cdr(continuation))?;
                             } else {
