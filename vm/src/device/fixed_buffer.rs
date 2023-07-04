@@ -18,8 +18,8 @@ impl<const I: usize, const O: usize> FixedBufferDevice<I, O> {
         }
     }
 
-    pub fn input(&self) -> &[u8] {
-        &self.input[..self.input_index]
+    pub fn input_mut(&mut self) -> &mut [u8] {
+        &mut self.input
     }
 
     pub fn output(&self) -> &[u8] {
