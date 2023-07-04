@@ -54,72 +54,7 @@ impl<const N: usize> Vm<N> {
 
             match Self::to_u8(instruction)? {
                 Instruction::APPLY => {
-                    let jump = self.get_tag(self.program_counter) == ZERO;
-                    let procedure = self.get_procedure();
-                    let code = self.get_code();
-                    let mut argument_count = self.pop();
-
-                    if !code.is_rib() {
-                        self.operate_primitive(
-                            Primitive::try_from(code.to_raw())
-                                .map_err(|_| Error::IllegalPrimitive)?,
-                        );
-
-                        if jump {
-                            self.program_counter = self.get_continuation();
-                            *self.get_cdr_mut(self.stack) = self.get_car(self.program_counter);
-                        }
-
-                        self.advance_program_counter();
-                    } else {
-                        debug_assert!(!self.get_car(code).is_rib());
-                        debug_assert!(!argument_count.is_rib());
-
-                        let parameter_info = self.get_car(code).to_raw();
-                        let parameter_count = Object::Number(parameter_info >> 1);
-                        let variadic = parameter_info & 1 != 0;
-
-                        let mut stack = self.allocate_rib(ZERO, procedure, PAIR_TAG);
-                        *self.get_car_mut(self.program_counter) = code;
-
-                        if (!variadic && parameter_count != argument_count)
-                            || (variadic && parameter_count.to_raw() > argument_count.to_raw())
-                        {
-                            return Err(Error::ArgumentCount);
-                        }
-
-                        argument_count =
-                            Object::Number(argument_count.to_raw() - parameter_count.to_raw());
-
-                        if variadic {
-                            todo!("{}", argument_count.to_raw());
-                        }
-
-                        for _ in 0..parameter_count.to_raw() {
-                            let argument = self.pop();
-                            stack = self.allocate_rib(argument, stack, PAIR_TAG);
-                        }
-
-                        let c2 = self.get_list_tail(
-                            stack,
-                            Object::Number(parameter_count.to_raw() + if variadic { 1 } else { 0 }),
-                        );
-
-                        if jump {
-                            let continuation = self.get_continuation();
-                            *self.get_car_mut(c2) = self.get_car(continuation);
-                            *self.get_tag_mut(c2) = self.get_tag(continuation);
-                        } else {
-                            *self.get_car_mut(c2) = self.stack;
-                            *self.get_tag_mut(c2) = self.get_tag(self.program_counter);
-                        }
-
-                        self.stack = stack;
-
-                        let next_counter = self.get_car(self.program_counter);
-                        *self.get_car_mut(self.program_counter) = instruction;
-                        self.program_counter = self.get_tag(next_counter);
-                    }
+                    todo!()
                 }
                 Instruction::SET => {
                     let x = self.pop()?;
@@ -130,7 +65,7 @@ impl<const N: usize> Vm<N> {
                         self.cdr(self.program_counter)
                     };
 
-                    *self.get_car_mut(cons) = x;
+                    *self.car_mut(cons) = x;
 
                     self.advance_program_counter()?;
                 }
