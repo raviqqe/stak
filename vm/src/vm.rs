@@ -104,6 +104,121 @@ impl<const N: usize> Vm<N> {
         &mut self.heap[cons.index() + 1]
     }
 
+    // Primitive operations
+
+    fn operate_primitive(&mut self, primitive: Primitive) {
+        #[cfg(feature = "trace")]
+        println!("primitive: {}", primitive as usize);
+
+        match primitive {
+            Primitive::Rib => {
+                let rib = self.allocate_rib(ZERO, ZERO, ZERO);
+                *self.get_car_mut(rib) = self.pop();
+                *self.get_cdr_mut(rib) = self.pop();
+                *self.get_tag_mut(rib) = self.pop();
+                self.push(rib, PAIR_TAG);
+            }
+            Primitive::Id => {
+                let x = self.pop();
+                self.push(x, PAIR_TAG);
+            }
+            Primitive::Pop => {
+                self.pop();
+            }
+            Primitive::Skip => {
+                let x = self.pop();
+                self.pop();
+                self.push(x, PAIR_TAG);
+            }
+            Primitive::Close => {
+                // TODO Review this.
+                let x = self.get_car(self.get_tos());
+                let y = self.get_cdr(self.stack);
+
+                *self.get_tos_mut() = self.allocate_rib(x, y, CLOSURE_TAG);
+            }
+            Primitive::IsRib => {
+                let x = self.pop();
+                self.push(self.get_boolean(x.is_rib()), PAIR_TAG);
+            }
+            Primitive::Field0 => {
+                let x = self.pop();
+                self.push(self.get_car(x), PAIR_TAG);
+            }
+            Primitive::Field1 => {
+                let x = self.pop();
+                self.push(self.get_cdr(x), PAIR_TAG);
+            }
+            Primitive::Field2 => {
+                let x = self.pop();
+                self.push(self.get_tag(x), PAIR_TAG)
+            }
+            Primitive::SetField0 => {
+                let x = self.pop();
+                let y = self.pop();
+                *self.get_car_mut(x) = y;
+                self.push(y, PAIR_TAG);
+            }
+            Primitive::SetField1 => {
+                let x = self.pop();
+                let y = self.pop();
+                *self.get_cdr_mut(x) = y;
+                self.push(y, PAIR_TAG);
+            }
+            Primitive::SetField2 => {
+                let x = self.pop();
+                let y = self.pop();
+                *self.get_tag_mut(x) = y;
+                self.push(y, PAIR_TAG);
+            }
+            Primitive::Equal => {
+                self.operate_comparison(|x, y| x == y);
+            }
+            Primitive::LessThan => {
+                self.operate_comparison(|x, y| x < y);
+            }
+            Primitive::Add => {
+                self.operate_binary(Add::add);
+            }
+            Primitive::Subtract => {
+                self.operate_binary(Sub::sub);
+            }
+            Primitive::Multiply => {
+                self.operate_binary(Mul::mul);
+            }
+            Primitive::Divide => {
+                self.operate_binary(Div::div);
+            }
+            Primitive::GetC => {
+                let mut buffer = [0u8];
+
+                // TODO Handle errors.
+                stdin().read_exact(&mut buffer).unwrap();
+
+                self.push(Object::Number(buffer[0] as u64), PAIR_TAG);
+            }
+            Primitive::PutC => {
+                let x = self.pop();
+
+                print!("{}", x.to_raw() as u8 as char);
+            }
+        }
+    }
+
+    fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) {
+        let x = self.pop().to_raw();
+        let y = self.pop().to_raw();
+
+        self.push(Object::Number(operate(x, y)), PAIR_TAG);
+    }
+
+    fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) {
+        let x = self.pop().to_raw();
+        let y = self.pop().to_raw();
+
+        self.push(self.get_boolean(operate(x, y)), PAIR_TAG);
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self) {

@@ -6,6 +6,7 @@ extern crate std;
 mod cons;
 mod error;
 mod number;
+mod primitive;
 mod value;
 mod vm;
 
