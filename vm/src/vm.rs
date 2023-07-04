@@ -53,7 +53,7 @@ impl<const N: usize> Vm<N> {
     }
 
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
-        self.stack = self.append(value, self.stack.into())?.into();
+        self.stack = self.append(value, self.stack)?;
 
         Ok(())
     }
@@ -74,7 +74,7 @@ impl<const N: usize> Vm<N> {
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
         if self.allocation_index == Self::SPACE_SIZE {
-            self.collect_garbages();
+            self.collect_garbages()?;
 
             if self.allocation_index == Self::SPACE_SIZE {
                 return Err(Error::OutOfMemory);
@@ -214,15 +214,15 @@ impl<const N: usize> Vm<N> {
             Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
             Primitive::GET_C => {
-                let mut buffer = [0u8];
+                let buffer = [0u8];
 
                 // TODO
                 // stdin().read_exact(&mut buffer)?;
 
-                self.push(Number::new(buffer[0] as u64).into());
+                self.push(Number::new(buffer[0] as u64).into())?;
             }
             Primitive::PUT_C => {
-                let x = self.pop()?;
+                let _x = self.pop()?;
 
                 todo!();
             }
@@ -328,11 +328,11 @@ mod tests {
 
         insta::assert_display_snapshot!(vm);
 
-        let list = vm.append(Number::new(2).into(), list.into()).unwrap();
+        let list = vm.append(Number::new(2).into(), list).unwrap();
 
         insta::assert_display_snapshot!(vm);
 
-        vm.append(Number::new(3).into(), list.into()).unwrap();
+        vm.append(Number::new(3).into(), list).unwrap();
 
         insta::assert_display_snapshot!(vm);
     }
@@ -376,7 +376,7 @@ mod tests {
             let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
-            vm.collect_garbages();
+            vm.collect_garbages().unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
@@ -386,7 +386,7 @@ mod tests {
             let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
 
             vm.push(Number::new(42).into()).unwrap();
-            vm.collect_garbages();
+            vm.collect_garbages().unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
@@ -397,7 +397,7 @@ mod tests {
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
-            vm.collect_garbages();
+            vm.collect_garbages().unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
@@ -409,7 +409,7 @@ mod tests {
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
 
-            vm.collect_garbages();
+            vm.collect_garbages().unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
