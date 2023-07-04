@@ -1,5 +1,6 @@
 use crate::{
-    cons::Cons, instruction::Instruction, number::Number, primitive::Primitive, value::Value, Error,
+    cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
+    value::Value, Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -11,7 +12,8 @@ const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 
 #[derive(Debug)]
-pub struct Vm<const N: usize> {
+pub struct Vm<const N: usize, T: Device> {
+    device: T,
     program_counter: Cons,
     stack: Cons,
     nil: Cons,
@@ -20,11 +22,12 @@ pub struct Vm<const N: usize> {
     heap: [Value; N],
 }
 
-impl<const N: usize> Vm<N> {
+impl<T: Device, const N: usize> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
-    pub fn new() -> Result<Self, Error> {
+    pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
+            device,
             program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
@@ -348,7 +351,7 @@ impl<const N: usize> Vm<N> {
     }
 }
 
-impl<const N: usize> Display for Vm<N> {
+impl<T: Device, const N: usize> Display for Vm<N, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for index in 0..self.allocation_index / 2 {
             let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
@@ -367,16 +370,24 @@ mod tests {
 
     const HEAP_SIZE: usize = CONS_FIELD_COUNT * 16;
 
+    struct FakeDevice {}
+
+    impl Device for FakeDevice {}
+
+    fn create_vm() -> Vm<HEAP_SIZE, FakeDevice> {
+        Vm::<HEAP_SIZE, _>::new(FakeDevice {}).unwrap()
+    }
+
     #[test]
     fn create() {
-        let vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let vm = create_vm();
 
         insta::assert_display_snapshot!(vm);
     }
 
     #[test]
     fn run_nothing() {
-        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let mut vm = create_vm();
 
         vm.run().unwrap();
 
@@ -385,7 +396,7 @@ mod tests {
 
     #[test]
     fn run_nothing_after_garbage_collection() {
-        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let mut vm = create_vm();
 
         vm.collect_garbages().unwrap();
         vm.run().unwrap();
@@ -395,7 +406,7 @@ mod tests {
 
     #[test]
     fn create_list() {
-        let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+        let mut vm = create_vm();
 
         let list = vm.append(Number::new(1).into(), vm.nil).unwrap();
 
@@ -415,14 +426,14 @@ mod tests {
 
         #[test]
         fn pop_nothing() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             assert_eq!(vm.pop(), Err(Error::StackUnderflow));
         }
 
         #[test]
         fn push_and_pop() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(42).into()).unwrap();
 
@@ -431,7 +442,7 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -446,7 +457,7 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             vm.collect_garbages().unwrap();
@@ -456,7 +467,7 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages().unwrap();
@@ -466,7 +477,7 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -477,7 +488,7 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut vm = Vm::<HEAP_SIZE>::new().unwrap();
+            let mut vm = create_vm();
 
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
