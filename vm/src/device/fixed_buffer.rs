@@ -17,6 +17,14 @@ impl<const I: usize, const O: usize> FixedBufferDevice<I, O> {
             output_index: 0,
         }
     }
+
+    pub fn input(&self) -> &[u8] {
+        &self.input[..self.input_index]
+    }
+
+    pub fn output(&self) -> &[u8] {
+        &self.output[..self.output_index]
+    }
 }
 
 impl<const I: usize, const O: usize> Default for FixedBufferDevice<I, O> {
