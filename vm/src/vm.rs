@@ -312,7 +312,7 @@ mod tests {
         fn pop_nothing() {
             let mut vm = Vm::<HEAP_SIZE>::new();
 
-            assert_eq!(vm.pop(), None);
+            assert_eq!(vm.pop(), Err(Error::StackUnderflow));
         }
 
         #[test]
@@ -321,7 +321,7 @@ mod tests {
 
             vm.push(Number::new(42).into()).unwrap();
 
-            assert_eq!(vm.pop(), Some(Number::new(42).into()));
+            assert_eq!(vm.pop(), Ok(Number::new(42).into()));
         }
 
         #[test]
@@ -331,8 +331,8 @@ mod tests {
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
 
-            assert_eq!(vm.pop(), Some(Number::new(2).into()));
-            assert_eq!(vm.pop(), Some(Number::new(1).into()));
+            assert_eq!(vm.pop(), Ok(Number::new(2).into()));
+            assert_eq!(vm.pop(), Ok(Number::new(1).into()));
         }
     }
 
