@@ -12,12 +12,12 @@ const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 
 #[derive(Debug)]
 pub struct Vm<const N: usize> {
-    heap: [Value; N],
     program_counter: Cons,
     stack: Cons,
     nil: Cons,
     allocation_index: usize,
     gc_inverse: bool,
+    heap: [Value; N],
 }
 
 impl<const N: usize> Vm<N> {
@@ -25,12 +25,12 @@ impl<const N: usize> Vm<N> {
 
     pub fn new() -> Result<Self, Error> {
         let mut vm = Self {
-            heap: [ZERO.into(); N],
             program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
             allocation_index: 0,
             gc_inverse: false,
+            heap: [ZERO.into(); N],
         };
 
         vm.initialize()?;
