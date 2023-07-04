@@ -75,26 +75,21 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             *self.car_mut(self.program_counter) = code.into();
 
                             // TODO Support variadic arguments.
-                            if parameter_count != argument_count {
+                            if argument_count != parameter_count {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            for _ in 0..parameter_count {
-                                let argument = self.pop()?;
-                                stack = self.append(argument, stack)?;
-                            }
-
-                            let frame = self.tail(stack, Number::new(parameter_count))?;
+                            let top = self.tail(stack, Number::new(parameter_count))?;
 
                             if jump {
                                 let frame = self.frame()?;
 
-                                *self.car_mut(frame) = self.car(frame);
-                                *self.cdr_mut(frame) =
+                                *self.car_mut(top) = self.car(frame);
+                                *self.cdr_mut(top) =
                                     Self::to_cons(self.cdr(frame))?.set_tag(FRAME_TAG).into();
                             } else {
-                                *self.car_mut(frame) = self.stack.into();
-                                *self.cdr_mut(frame) = self.cdr(self.program_counter);
+                                *self.car_mut(top) = self.cdr(self.program_counter);
+                                *self.cdr_mut(top) = self.stack.set_tag(FRAME_TAG).into();
                             }
 
                             self.stack = stack;
