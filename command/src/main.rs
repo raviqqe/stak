@@ -20,5 +20,5 @@ fn main() {
 }
 
 fn run() -> Result<(), Error> {
-    Vm::<HEAP_SIZE, _>::new(FixedBufferDevice::<0, 0>::new())?.run()
+    Vm::<HEAP_SIZE, FixedBufferDevice<0, 0>>::new(Default::default())?.run()
 }
