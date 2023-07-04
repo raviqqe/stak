@@ -58,9 +58,26 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         loop {
-            match Self::to_cons(self.cdr(self.program_counter))?.tag() {
+            let cdr = Self::to_cons(self.cdr(self.program_counter))?;
+
+            match cdr.tag() {
                 Instruction::APPLY => {
-                    todo!()
+                    let jump = cdr.index() == 0;
+                    let procedure = self.operand()?;
+
+                    match self.car(procedure) {
+                        Value::Cons(_code) => todo!(),
+                        Value::Number(primitive) => {
+                            self.operate_primitive(primitive.to_u64() as u8)?;
+
+                            if jump {
+                                self.program_counter = self.get_continuation();
+                                *self.get_cdr_mut(self.stack) = self.get_car(self.program_counter);
+                            }
+
+                            self.advance_program_counter();
+                        }
+                    }
                 }
                 Instruction::SET => {
                     let x = self.pop()?;
@@ -99,6 +116,16 @@ impl<T: Device, const N: usize> Vm<N, T> {
             Value::Cons(cons) => cons, // Direct reference to a symbol
             Value::Number(index) => self.tail(self.stack, index)?,
         })
+    }
+
+    fn continuation(&self) -> Result<Cons, Error> {
+        let mut stack = self.stack;
+
+        while Self::to_cons(self.cdr(stack))?.tag() == 0 {
+            stack = Self::to_cons(self.cdr(stack))?;
+        }
+
+        Ok(stack)
     }
 
     fn tail(&self, mut list: Cons, mut index: Number) -> Result<Cons, Error> {
