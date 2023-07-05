@@ -55,7 +55,7 @@ checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 name = "nil"
 version = "0.1.0"
 dependencies = [
- "nil-scheme-vm",
+ "stak-vm",
 ]
 
 [[package]]
@@ -66,7 +66,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "nil-scheme-vm"
+name = "stak-vm"
 version = "0.1.0"
 dependencies = [
  "insta",
