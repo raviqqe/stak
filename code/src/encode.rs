@@ -39,7 +39,6 @@ fn encode_u64(codes: &mut Vec<u8>, mut number: u64) {
         codes.push((if rest { -1 } else { 1 } * part as i64) as u8);
 
         number /= BASE;
-
         rest = true;
 
         number != 0
