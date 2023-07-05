@@ -59,6 +59,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "nil-code"
+version = "0.1.0"
+dependencies = [
+ "insta",
+]
+
+[[package]]
 name = "nil-scheme-vm"
 version = "0.1.0"
 dependencies = [
