@@ -67,6 +67,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                     let procedure = self.operand()?;
 
                     match self.car(procedure) {
+                        // (parameter-count . actual-code)
                         Value::Cons(code) => {
                             let argument_count = Self::to_u64(self.pop()?)?;
                             let parameter_count = Self::to_u64(self.car(code))?;
