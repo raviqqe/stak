@@ -79,11 +79,13 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
+                            let last_argument = self.tail(stack, Number::new(parameter_count))?;
+
                             if jump {
-                                *self.cdr_mut(self.tail(stack, Number::new(parameter_count))?) =
-                                    self.frame()?.into();
+                                *self.cdr_mut(last_argument) = self.frame()?.into();
                                 self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
+                                // Reuse an argument count cons as a new frame.
                                 *self.car_mut(last_argument) = self.cdr(self.program_counter);
                                 *self.cdr_mut(last_argument) = self.stack.set_tag(FRAME_TAG).into();
                             }
