@@ -66,11 +66,12 @@ impl<T: Device, const N: usize> Vm<N, T> {
                     let jump = instruction.index() == 0;
                     // (code . environment)
                     let procedure = self.operand()?;
+                    let stack = self.stack;
+                    let argument_count = Self::to_u64(self.pop()?)?;
 
                     match self.car(procedure) {
                         // (parameter-count . actual-code)
                         Value::Cons(code) => {
-                            let argument_count = Self::to_u64(self.pop()?)?;
                             let parameter_count = Self::to_u64(self.car(code))?;
 
                             // TODO Support variadic arguments.
@@ -78,24 +79,15 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let bottom = self.tail(self.stack, Number::new(parameter_count))?;
-
                             if jump {
-                                let frame = self.frame()?;
-
-                                // TODO Do we need a new cons for a frame or is this destructive
-                                // update of a frame cons safe?
-                                //
-                                // This logic should work even when below_frame == frame.
-                                *self.car_mut(bottom) = self.car(frame);
-                                // A frame tag must have already been set.
-                                *self.cdr_mut(bottom) = self.cdr(frame);
+                                *self.cdr_mut(self.tail(stack, Number::new(parameter_count))?) =
+                                    self.frame()?.into();
                             } else {
-                                *self.car_mut(bottom) = self.cdr(self.program_counter);
-                                *self.cdr_mut(bottom) = self.stack.set_tag(FRAME_TAG).into();
+                                *self.car_mut(last_argument) = self.cdr(self.program_counter);
+                                *self.cdr_mut(last_argument) = self.stack.set_tag(FRAME_TAG).into();
                             }
 
-                            *self.car_mut(self.program_counter) = instruction.into();
+                            self.stack = Self::to_cons(self.cdr(stack))?;
                             self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
