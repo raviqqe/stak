@@ -64,6 +64,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
             match instruction.tag() {
                 Instruction::APPLY => {
                     let jump = instruction.index() == 0;
+                    // (code . environment)
                     let procedure = self.operand()?;
 
                     match self.car(procedure) {
@@ -72,7 +73,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             let argument_count = Self::to_u64(self.pop()?)?;
                             let parameter_count = Self::to_u64(self.car(code))?;
 
-                            let mut stack = self.append(procedure.into(), self.nil)?;
+                            let stack = self.append(procedure.into(), self.nil)?;
                             *self.car_mut(self.program_counter) = code.into();
 
                             // TODO Support variadic arguments.
