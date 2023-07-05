@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-vm = { package = "nil-scheme-vm", path = "../vm" }
+vm = { package = "stak-vm", path = "../vm" }
