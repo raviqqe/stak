@@ -82,30 +82,26 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             let last_argument = self.tail(stack, Number::new(parameter_count))?;
 
                             if jump {
-                                // TODO
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                                 // Handle the case where a parameter count is zero.
+                                // i.e. last_argument == stack
                                 self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
-                                // TODO
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(stack) = self
                                     .allocate(
                                         self.cdr(self.program_counter),
-                                        Self::to_cons(self.cdr(last_argument))?
-                                            .set_tag(FRAME_TAG)
-                                            .into(),
+                                        self.cdr(last_argument),
                                     )?
-                                    .into();
-                                *self.cdr_mut(stack) = Self::to_cons(self.cdr(last_argument))?
-                                    .set_tag(FRAME_TAG)
                                     .into();
                                 *self.cdr_mut(last_argument) = stack.into();
                             }
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                self.cdr_value(procedure)?;
+                                Self::to_cons(self.cdr_value(procedure)?)?
+                                    .set_tag(FRAME_TAG)
+                                    .into();
                             self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
