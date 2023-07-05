@@ -96,9 +96,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
                             self.stack = stack;
 
-                            let next_counter = self.car(self.program_counter);
                             *self.car_mut(self.program_counter) = instruction.into();
-                            self.program_counter = Self::to_cons(self.cdr_value(next_counter)?)?;
+                            self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
                             self.operate_primitive(primitive.to_u64() as u8)?;
