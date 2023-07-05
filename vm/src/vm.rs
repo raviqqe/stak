@@ -103,7 +103,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 let frame = self.frame()?;
 
                                 self.program_counter = Self::to_cons(self.car(frame))?;
-                                // Keep a value at the top of stack.
+                                // Keep a value at the top of a stack.
                                 *self.cdr_mut(self.stack) = self.cdr(frame);
                             } else {
                                 self.advance_program_counter()?;
