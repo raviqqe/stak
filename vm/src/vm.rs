@@ -283,10 +283,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                 let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
             }
-            Primitive::ID => {
-                let x = self.pop()?;
-                self.push(x)?;
-            }
+            Primitive::ID => {}
             Primitive::POP => {
                 self.pop()?;
             }
