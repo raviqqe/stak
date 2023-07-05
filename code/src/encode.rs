@@ -1,4 +1,4 @@
-use crate::{Instruction, Program};
+use crate::{Instruction, Operand, Program};
 use alloc::vec;
 use alloc::vec::Vec;
 
@@ -17,8 +17,14 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
             Instruction::Apply(operand, bool) => todo!(),
-            Instruction::Set(operand) => todo!(),
-            Instruction::Get(operand) => todo!(),
+            Instruction::Set(operand) => {
+                encode_operand(codes, *operand);
+                codes.push(Instruction::CONSTANT)
+            }
+            Instruction::Get(operand) => {
+                encode_operand(codes, *operand);
+                codes.push(Instruction::CONSTANT)
+            }
             Instruction::Constant(number) => {
                 encode_u64(codes, *number);
                 codes.push(Instruction::CONSTANT)
@@ -26,6 +32,13 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
             Instruction::If(r#then, r#else) => todo!(),
             Instruction::Halt => codes.push(Instruction::HALT),
         }
+    }
+}
+
+fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
+    match operand {
+        Operand::Global(number) => encode_u64(codes, number),
+        Operand::Local(number) => encode_u64(codes, (number as i64 * -1) as u64),
     }
 }
 

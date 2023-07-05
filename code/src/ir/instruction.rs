@@ -1,6 +1,5 @@
-use alloc::vec::Vec;
-
 use crate::Operand;
+use alloc::vec::Vec;
 
 #[derive(Debug)]
 pub enum Instruction {

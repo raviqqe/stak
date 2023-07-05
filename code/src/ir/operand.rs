@@ -1,5 +1,5 @@
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum Operand {
-    Global(usize),
-    Local(usize),
+    Global(u64),
+    Local(u64),
 }
