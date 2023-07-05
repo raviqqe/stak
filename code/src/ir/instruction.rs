@@ -8,7 +8,6 @@ pub enum Instruction {
     Get(Operand),
     Constant(u64),
     If(Vec<Instruction>, Vec<Instruction>),
-    Halt,
 }
 
 impl Instruction {
@@ -17,5 +16,4 @@ impl Instruction {
     pub const GET: u8 = 2;
     pub const CONSTANT: u8 = 3;
     pub const IF: u8 = 4;
-    pub const HALT: u8 = 5;
 }

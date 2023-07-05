@@ -30,7 +30,6 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 codes.push(Instruction::CONSTANT)
             }
             Instruction::If(r#then, r#else) => todo!(),
-            Instruction::Halt => codes.push(Instruction::HALT),
         }
     }
 }
