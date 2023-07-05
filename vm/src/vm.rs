@@ -256,11 +256,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn car_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(&mut self.heap[Self::to_cons(cons)?.index()])
+        Ok(self.car_mut(Self::to_cons(cons)?))
     }
 
     fn cdr_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(&mut self.heap[Self::to_cons(cons)?.index() + 1])
+        Ok(self.cdr_mut(Self::to_cons(cons)?))
     }
 
     fn boolean(&self, value: bool) -> Value {
