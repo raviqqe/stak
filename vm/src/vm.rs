@@ -73,8 +73,6 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             let argument_count = Self::to_u64(self.pop()?)?;
                             let parameter_count = Self::to_u64(self.car(code))?;
 
-                            *self.car_mut(self.program_counter) = code.into();
-
                             // TODO Support variadic arguments.
                             if argument_count != parameter_count {
                                 return Err(Error::ArgumentCount);
