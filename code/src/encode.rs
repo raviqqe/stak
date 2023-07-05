@@ -5,7 +5,13 @@ use alloc::vec::Vec;
 pub fn encode(program: &Program) -> Vec<u8> {
     let mut codes = vec![];
 
-    for instruction in program.instructions() {
+    encode_instructions(&mut codes, program.instructions());
+
+    codes
+}
+
+fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
+    for instruction in instructions {
         match instruction {
             Instruction::Apply(operand, bool) => todo!(),
             Instruction::Set(operand) => todo!(),
@@ -15,6 +21,4 @@ pub fn encode(program: &Program) -> Vec<u8> {
             Instruction::Halt => codes.push(Instruction::HALT),
         }
     }
-
-    codes
 }
