@@ -101,6 +101,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 *self.cdr_mut(last_argument) = stack.into();
                             }
 
+                            // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
                                 self.cdr_value(procedure)?;
                             self.program_counter = Self::to_cons(self.cdr(code))?;
