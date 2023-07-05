@@ -2,7 +2,7 @@ use crate::{Instruction, Operand, Program};
 use alloc::vec;
 use alloc::vec::Vec;
 
-const BASE: u64 = i8::MAX as u64 + 1;
+pub(crate) const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
 
 pub fn encode(program: &Program) -> Vec<u8> {
     let mut codes = vec![];
@@ -26,7 +26,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 codes.push(Instruction::CONSTANT)
             }
             Instruction::Constant(number) => {
-                encode_u64(codes, *number);
+                encode_integer(codes, *number);
                 codes.push(Instruction::CONSTANT)
             }
             Instruction::If(r#then, r#else) => todo!(),
@@ -36,21 +36,21 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 
 fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
     match operand {
-        Operand::Global(number) => encode_u64(codes, number),
-        Operand::Local(number) => encode_u64(codes, (number as i64 * -1) as u64),
+        Operand::Global(number) => encode_integer(codes, number),
+        Operand::Local(number) => encode_integer(codes, (number as i64 * -1) as u64),
     }
 }
 
 // Base 128 encoding
-fn encode_u64(codes: &mut Vec<u8>, mut number: u64) {
-    let rest = false;
+fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
+    let mut rest = false;
 
     while {
-        let part = number % BASE;
+        let part = number % INTEGER_BASE;
 
         codes.push((if rest { -1 } else { 1 } * part as i64) as u8);
 
-        number /= BASE;
+        number /= INTEGER_BASE;
         rest = true;
 
         number != 0

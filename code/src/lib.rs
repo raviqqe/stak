@@ -9,7 +9,7 @@ mod encode;
 mod error;
 mod ir;
 
-pub use decode::*;
-pub use encode::*;
+pub use decode::decode;
+pub use encode::encode;
 pub use error::Error;
 pub use ir::*;
