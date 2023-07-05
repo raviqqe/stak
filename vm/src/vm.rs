@@ -65,12 +65,12 @@ impl<T: Device, const N: usize> Vm<N, T> {
                 Instruction::APPLY => {
                     let jump = instruction.index() == 0;
                     // (code . environment)
-                    let procedure = self.operand()?;
+                    let procedure = self.car(self.operand()?);
                     let stack = self.stack;
                     let argument_count = Self::to_u64(self.pop()?)?;
 
-                    match self.car(procedure) {
-                        // (parameter-count . actual-code)
+                    match procedure {
+                        // (parameter-count . instruction-list)
                         Value::Cons(code) => {
                             let parameter_count = Self::to_u64(self.car(code))?;
 
@@ -84,27 +84,35 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             if jump {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                                 // Handle the case where a parameter count is zero.
+                                // i.e. last_argument == stack
                                 self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(stack) = self.cdr(self.program_counter);
-                                *self.cdr_mut(stack) = Self::to_cons(self.cdr(last_argument))?
-                                    .set_tag(FRAME_TAG)
+                                *self.car_mut(stack) = self
+                                    .allocate(
+                                        self.cdr(self.program_counter),
+                                        self.cdr(last_argument),
+                                    )?
                                     .into();
                                 *self.cdr_mut(last_argument) = stack.into();
                             }
 
+                            // Set an environment.
+                            *self.cdr_value_mut(self.cdr(last_argument))? =
+                                Self::to_cons(self.cdr_value(procedure)?)?
+                                    .set_tag(FRAME_TAG)
+                                    .into();
                             self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if jump {
-                                let frame = self.frame()?;
+                                let return_info = self.car(self.frame()?);
 
-                                self.program_counter = Self::to_cons(self.car(frame))?;
-                                // Keep a value at the top of stack.
-                                *self.cdr_mut(self.stack) = self.cdr(frame);
+                                self.program_counter = Self::to_cons(self.car_value(return_info)?)?;
+                                // Keep a value at the top of a stack.
+                                *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
                             } else {
                                 self.advance_program_counter()?;
                             }
@@ -150,7 +158,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
         })
     }
 
-    // (return-address . (tag 1 stack))
+    // ((program-counter . stack) . tagged-environment)
     fn frame(&self) -> Result<Cons, Error> {
         let mut stack = self.stack;
 
@@ -256,11 +264,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn car_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(&mut self.heap[Self::to_cons(cons)?.index()])
+        Ok(self.car_mut(Self::to_cons(cons)?))
     }
 
     fn cdr_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(&mut self.heap[Self::to_cons(cons)?.index() + 1])
+        Ok(self.cdr_mut(Self::to_cons(cons)?))
     }
 
     fn boolean(&self, value: bool) -> Value {
