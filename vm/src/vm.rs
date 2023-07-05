@@ -83,6 +83,9 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             if jump {
                                 let frame = self.frame()?;
 
+                                // TODO Do we need a new cons for a frame or is this destructive
+                                // update of a frame cons safe?
+                                //
                                 // This logic should work even when below_frame == frame.
                                 *self.car_mut(bottom) = self.car(frame);
                                 // A frame tag must have already been set.
