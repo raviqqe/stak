@@ -10,6 +10,7 @@ use core::{
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
+const FRAME_TAG: u8 = 1;
 
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
@@ -58,9 +59,60 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         loop {
-            match Self::to_cons(self.cdr(self.program_counter))?.tag() {
+            let instruction = Self::to_cons(self.cdr(self.program_counter))?;
+
+            match instruction.tag() {
                 Instruction::APPLY => {
-                    todo!()
+                    let jump = instruction.index() == 0;
+                    // (code . environment)
+                    let procedure = self.operand()?;
+
+                    match self.car(procedure) {
+                        // (parameter-count . actual-code)
+                        Value::Cons(code) => {
+                            let argument_count = Self::to_u64(self.pop()?)?;
+                            let parameter_count = Self::to_u64(self.car(code))?;
+
+                            *self.car_mut(self.program_counter) = code.into();
+
+                            // TODO Support variadic arguments.
+                            if argument_count != parameter_count {
+                                return Err(Error::ArgumentCount);
+                            }
+
+                            let stack = self.append(procedure.into(), self.nil)?;
+                            let top = self.tail(stack, Number::new(parameter_count))?;
+
+                            if jump {
+                                let frame = self.frame()?;
+
+                                *self.car_mut(top) = self.car(frame);
+                                *self.cdr_mut(top) =
+                                    Self::to_cons(self.cdr(frame))?.set_tag(FRAME_TAG).into();
+                            } else {
+                                *self.car_mut(top) = self.cdr(self.program_counter);
+                                *self.cdr_mut(top) = self.stack.set_tag(FRAME_TAG).into();
+                            }
+
+                            self.stack = stack;
+
+                            *self.car_mut(self.program_counter) = instruction.into();
+                            self.program_counter = Self::to_cons(self.cdr(code))?;
+                        }
+                        Value::Number(primitive) => {
+                            self.operate_primitive(primitive.to_u64() as u8)?;
+
+                            if jump {
+                                let frame = self.frame()?;
+
+                                self.program_counter = Self::to_cons(self.car(frame))?;
+                                // Keep a value at the top of stack.
+                                *self.cdr_mut(self.stack) = self.cdr(frame);
+                            } else {
+                                self.advance_program_counter()?;
+                            }
+                        }
+                    }
                 }
                 Instruction::SET => {
                     let x = self.pop()?;
@@ -101,6 +153,17 @@ impl<T: Device, const N: usize> Vm<N, T> {
         })
     }
 
+    // (return-address . (tag 1 stack))
+    fn frame(&self) -> Result<Cons, Error> {
+        let mut stack = self.stack;
+
+        while Self::to_cons(self.cdr(stack))?.tag() != FRAME_TAG {
+            stack = Self::to_cons(self.cdr(stack))?;
+        }
+
+        Ok(stack)
+    }
+
     fn tail(&self, mut list: Cons, mut index: Number) -> Result<Cons, Error> {
         while index != ZERO {
             list = Self::to_cons(self.cdr(list))?;
@@ -137,6 +200,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
         if self.allocation_index == Self::SPACE_SIZE {
             self.collect_garbages()?;
+
+            debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
             if self.allocation_index == Self::SPACE_SIZE {
                 return Err(Error::OutOfMemory);
