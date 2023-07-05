@@ -83,11 +83,14 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
                             if jump {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
+                                // Handle the case where a parameter count is zero.
                                 self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(stack) = self.cdr(self.program_counter);
-                                *self.cdr_mut(stack) = self.stack.set_tag(FRAME_TAG).into();
+                                *self.cdr_mut(stack) = Self::to_cons(self.cdr(last_argument))?
+                                    .set_tag(FRAME_TAG)
+                                    .into();
                                 *self.cdr_mut(last_argument) = stack.into();
                             }
 
