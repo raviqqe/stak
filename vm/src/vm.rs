@@ -66,37 +66,34 @@ impl<T: Device, const N: usize> Vm<N, T> {
                     let jump = instruction.index() == 0;
                     // (code . environment)
                     let procedure = self.operand()?;
+                    let stack = self.stack;
+                    let argument_count = Self::to_u64(self.pop()?)?;
 
                     match self.car(procedure) {
                         // (parameter-count . actual-code)
                         Value::Cons(code) => {
-                            let argument_count = Self::to_u64(self.pop()?)?;
                             let parameter_count = Self::to_u64(self.car(code))?;
-
-                            *self.car_mut(self.program_counter) = code.into();
 
                             // TODO Support variadic arguments.
                             if argument_count != parameter_count {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let stack = self.append(procedure.into(), self.nil)?;
-                            let top = self.tail(stack, Number::new(parameter_count))?;
+                            let last_argument = self.tail(stack, Number::new(parameter_count))?;
 
                             if jump {
-                                let frame = self.frame()?;
-
-                                *self.car_mut(top) = self.car(frame);
-                                *self.cdr_mut(top) =
-                                    Self::to_cons(self.cdr(frame))?.set_tag(FRAME_TAG).into();
+                                *self.cdr_mut(last_argument) = self.frame()?.into();
+                                // Handle the case where a parameter count is zero.
+                                self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
-                                *self.car_mut(top) = self.cdr(self.program_counter);
-                                *self.cdr_mut(top) = self.stack.set_tag(FRAME_TAG).into();
+                                // Reuse an argument count cons as a new frame.
+                                *self.car_mut(stack) = self.cdr(self.program_counter);
+                                *self.cdr_mut(stack) = Self::to_cons(self.cdr(last_argument))?
+                                    .set_tag(FRAME_TAG)
+                                    .into();
+                                *self.cdr_mut(last_argument) = stack.into();
                             }
 
-                            self.stack = stack;
-
-                            *self.car_mut(self.program_counter) = instruction.into();
                             self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
@@ -292,10 +289,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                 let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
             }
-            Primitive::ID => {
-                let x = self.pop()?;
-                self.push(x)?;
-            }
+            Primitive::ID => {}
             Primitive::POP => {
                 self.pop()?;
             }
