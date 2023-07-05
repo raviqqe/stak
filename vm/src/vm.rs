@@ -109,11 +109,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if jump {
-                                let frame = self.car(self.frame()?);
+                                let return_info = self.car(self.frame()?);
 
-                                self.program_counter = Self::to_cons(self.car_value(frame)?)?;
+                                self.program_counter = Self::to_cons(self.car_value(return_info)?)?;
                                 // Keep a value at the top of a stack.
-                                *self.cdr_mut(self.stack) = self.cdr_value(frame)?;
+                                *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
                             } else {
                                 self.advance_program_counter()?;
                             }
