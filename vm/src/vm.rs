@@ -65,11 +65,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
                 Instruction::APPLY => {
                     let jump = instruction.index() == 0;
                     // (code . environment)
-                    let procedure = self.operand()?;
+                    let procedure = self.car(self.operand()?);
                     let stack = self.stack;
                     let argument_count = Self::to_u64(self.pop()?)?;
 
-                    match self.car(procedure) {
+                    match procedure {
                         // (parameter-count . instruction-list)
                         Value::Cons(code) => {
                             let parameter_count = Self::to_u64(self.car(code))?;
@@ -94,6 +94,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 *self.cdr_mut(last_argument) = stack.into();
                             }
 
+                            *self.cdr_value_mut(self.cdr(last_argument))? =
+                                self.cdr_value(procedure)?;
                             self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
