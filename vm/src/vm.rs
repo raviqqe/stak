@@ -78,21 +78,19 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let stack = self.append(procedure.into(), self.nil)?;
-                            let top = self.tail(stack, Number::new(parameter_count))?;
+                            let bottom = self.tail(self.stack, Number::new(parameter_count))?;
 
                             if jump {
                                 let frame = self.frame()?;
 
-                                *self.car_mut(top) = self.car(frame);
-                                *self.cdr_mut(top) =
-                                    Self::to_cons(self.cdr(frame))?.set_tag(FRAME_TAG).into();
+                                // This logic should work even when below_frame == frame.
+                                *self.car_mut(bottom) = self.car(frame);
+                                // A frame tag must have already been set.
+                                *self.cdr_mut(bottom) = self.cdr(frame);
                             } else {
-                                *self.car_mut(top) = self.cdr(self.program_counter);
-                                *self.cdr_mut(top) = self.stack.set_tag(FRAME_TAG).into();
+                                *self.car_mut(bottom) = self.cdr(self.program_counter);
+                                *self.cdr_mut(bottom) = self.stack.set_tag(FRAME_TAG).into();
                             }
-
-                            self.stack = stack;
 
                             *self.car_mut(self.program_counter) = instruction.into();
                             self.program_counter = Self::to_cons(self.cdr(code))?;
