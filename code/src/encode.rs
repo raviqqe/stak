@@ -3,7 +3,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 
 pub fn encode(program: &Program) -> Vec<u8> {
-    let codes = vec![];
+    let mut codes = vec![];
 
     for instruction in program.instructions() {
         match instruction {
@@ -12,7 +12,7 @@ pub fn encode(program: &Program) -> Vec<u8> {
             Instruction::Get(operand) => todo!(),
             Instruction::Constant(number) => todo!(),
             Instruction::If(r#then, r#else) => todo!(),
-            Instruction::Halt => todo!(),
+            Instruction::Halt => codes.push(Instruction::HALT),
         }
     }
 
