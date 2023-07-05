@@ -82,12 +82,12 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             if jump {
                                 *self.cdr_mut(self.tail(stack, Number::new(parameter_count))?) =
                                     self.frame()?.into();
+                                self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
                                 *self.car_mut(last_argument) = self.cdr(self.program_counter);
                                 *self.cdr_mut(last_argument) = self.stack.set_tag(FRAME_TAG).into();
                             }
 
-                            self.stack = Self::to_cons(self.cdr(stack))?;
                             self.program_counter = Self::to_cons(self.cdr(code))?;
                         }
                         Value::Number(primitive) => {
