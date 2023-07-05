@@ -73,7 +73,6 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             let argument_count = Self::to_u64(self.pop()?)?;
                             let parameter_count = Self::to_u64(self.car(code))?;
 
-                            let stack = self.append(procedure.into(), self.nil)?;
                             *self.car_mut(self.program_counter) = code.into();
 
                             // TODO Support variadic arguments.
@@ -81,6 +80,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
+                            let stack = self.append(procedure.into(), self.nil)?;
                             let top = self.tail(stack, Number::new(parameter_count))?;
 
                             if jump {
