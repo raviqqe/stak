@@ -87,7 +87,14 @@ impl<T: Device, const N: usize> Vm<N, T> {
                                 self.stack = Self::to_cons(self.cdr(stack))?;
                             } else {
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(stack) = self.cdr(self.program_counter);
+                                *self.car_mut(stack) = self
+                                    .allocate(
+                                        self.cdr(self.program_counter),
+                                        Self::to_cons(self.cdr(last_argument))?
+                                            .set_tag(FRAME_TAG)
+                                            .into(),
+                                    )?
+                                    .into();
                                 *self.cdr_mut(stack) = Self::to_cons(self.cdr(last_argument))?
                                     .set_tag(FRAME_TAG)
                                     .into();
