@@ -150,7 +150,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
         })
     }
 
-    // (return-address . (tag 1 stack))
+    // ((program-counter . stack) . tagged-environment)
     fn frame(&self) -> Result<Cons, Error> {
         let mut stack = self.stack;
 
