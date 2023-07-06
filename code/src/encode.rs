@@ -224,6 +224,19 @@ mod tests {
     }
 
     #[test]
+    fn encode_sequence() {
+        let program = Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Global(0)),
+                Instruction::Apply(Operand::Global(0), true),
+            ],
+        );
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
     fn encode_large_global_index() {
         let program = Program::new(
             default_symbols(),

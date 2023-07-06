@@ -47,6 +47,7 @@ impl<'a> Decoder<'a> {
         while let Some(instruction) = self.decode_byte() {
             match instruction {
                 Instruction::TAIL_APPLY => {
+                    instructions.reverse();
                     instruction_lists.push(take(&mut instructions));
                     instructions.push(Instruction::Apply(self.decode_operand()?, true))
                 }
@@ -59,6 +60,7 @@ impl<'a> Decoder<'a> {
                     self.decode_integer().ok_or(Error::MissingOperand)?,
                 )),
                 Instruction::IF => {
+                    instructions.reverse();
                     let then = take(&mut instructions);
 
                     instructions.push(Instruction::If(
@@ -69,6 +71,8 @@ impl<'a> Decoder<'a> {
                 _ => return Err(Error::IllegalInstruction),
             }
         }
+
+        instructions.reverse();
 
         Ok(instructions)
     }
