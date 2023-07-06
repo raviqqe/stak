@@ -71,7 +71,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    let r#return = instruction.index() == 0;
+                    let r#return = instruction == self.nil;
                     // (code . environment)
                     let procedure = self.car(self.operand()?);
                     let stack = self.stack;
