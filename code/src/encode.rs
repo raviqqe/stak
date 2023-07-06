@@ -148,6 +148,19 @@ mod tests {
     }
 
     #[test]
+    fn encode_if() {
+        let program = Program::new(
+            vec![],
+            vec![Instruction::If(
+                vec![Instruction::Apply(Operand::Global(0), true)],
+                vec![Instruction::Apply(Operand::Global(1), true)],
+            )],
+        );
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
     fn encode_large_global_index() {
         let program = Program::new(vec![], vec![Instruction::Set(Operand::Global(42))]);
 
