@@ -666,4 +666,42 @@ mod tests {
             insta::assert_display_snapshot!(vm);
         }
     }
+
+    mod instruction {
+        use super::*;
+        use code::{encode, Program};
+
+        fn run_program(program: &Program) {
+            let mut vm = create_vm();
+
+            vm.decode(encode(program)).unwrap();
+
+            vm.run().unwrap()
+        }
+
+        #[test]
+        fn run_nothing() {
+            create_vm().run().unwrap();
+        }
+
+        #[test]
+        fn push_and_pop() {
+            let mut vm = create_vm();
+
+            vm.decode();
+
+            vm.run().unwrap();
+        }
+
+        #[test]
+        fn push_and_pop_twice() {
+            let mut vm = create_vm();
+
+            vm.push(Number::new(1).into()).unwrap();
+            vm.push(Number::new(2).into()).unwrap();
+
+            assert_eq!(vm.pop(), Ok(Number::new(2).into()));
+            assert_eq!(vm.pop(), Ok(Number::new(1).into()));
+        }
+    }
 }
