@@ -5,18 +5,7 @@ const HEAP_SIZE: usize = 1 << 8;
 
 fn main() {
     if let Err(error) = run() {
-        match error {
-            Error::ArgumentCount => eprintln!("invalid argument count"),
-            Error::ConsExpected => eprintln!("cons expected"),
-            Error::EndOfInput => eprintln!("unexpected end of input"),
-            Error::IllegalInstruction => eprintln!("illegal instruction"),
-            Error::IllegalPrimitive => eprintln!("illegal primitive"),
-            Error::MissingOperand => eprintln!("missing operand"),
-            Error::NumberExpected => eprintln!("number expected"),
-            Error::OutOfMemory => eprintln!("out of memory"),
-            Error::StackUnderflow => eprintln!("stack underflow"),
-        }
-
+        eprintln!("{}", error);
         exit(1);
     }
 }
