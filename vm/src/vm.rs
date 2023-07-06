@@ -437,6 +437,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut input = DecodeInput {
             codes,
             index: 0,
+            // TODO Put symbols and rib under some root to support GC during decoding.
             symbols: self.nil,
             rib: self.allocate(
                 Number::new(0).into(),
