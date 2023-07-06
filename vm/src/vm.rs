@@ -137,7 +137,6 @@ impl<T: Device, const N: usize> Vm<N, T> {
                     })
                     .try_into()?;
                 }
-                Instruction::HALT => return Ok(()),
                 _ => return Err(Error::IllegalInstruction),
             }
         }
