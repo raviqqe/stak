@@ -207,7 +207,7 @@ mod tests {
     #[test]
     fn encode_if_with_sequences() {
         let program = Program::new(
-            vec![],
+            default_symbols(),
             vec![Instruction::If(
                 vec![
                     Instruction::Get(Operand::Global(0)),
