@@ -59,7 +59,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         loop {
-            let instruction = Self::to_cons(self.cdr(self.program_counter))?;
+            let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
             match instruction.tag() {
                 Instruction::APPLY => {
@@ -67,25 +67,25 @@ impl<T: Device, const N: usize> Vm<N, T> {
                     // (code . environment)
                     let procedure = self.car(self.operand()?);
                     let stack = self.stack;
-                    let argument_count = Self::to_u64(self.pop()?)?;
+                    let argument_count = Number::try_from(self.pop()?)?;
 
                     match procedure {
                         // (parameter-count . instruction-list)
                         Value::Cons(code) => {
-                            let parameter_count = Self::to_u64(self.car(code))?;
+                            let parameter_count = self.car(code).try_into()?;
 
                             // TODO Support variadic arguments.
                             if argument_count != parameter_count {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let last_argument = self.tail(stack, Number::new(parameter_count))?;
+                            let last_argument = self.tail(stack, parameter_count)?;
 
                             if jump {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                                 // Handle the case where a parameter count is zero.
                                 // i.e. last_argument == stack
-                                self.stack = Self::to_cons(self.cdr(stack))?;
+                                self.stack = self.cdr(stack).try_into()?;
                             } else {
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(stack) = self
@@ -99,10 +99,10 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Self::to_cons(self.cdr_value(procedure)?)?
+                                Cons::try_from(self.cdr_value(procedure)?)?
                                     .set_tag(FRAME_TAG)
                                     .into();
-                            self.program_counter = Self::to_cons(self.cdr(code))?;
+                            self.program_counter = self.cdr(code).try_into()?;
                         }
                         Value::Number(primitive) => {
                             self.operate_primitive(primitive.to_u64() as u8)?;
@@ -110,7 +110,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                             if jump {
                                 let return_info = self.car(self.frame()?);
 
-                                self.program_counter = Self::to_cons(self.car_value(return_info)?)?;
+                                self.program_counter = self.car_value(return_info)?.try_into()?;
                                 // Keep a value at the top of a stack.
                                 *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
                             } else {
@@ -133,11 +133,12 @@ impl<T: Device, const N: usize> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = Self::to_cons(if self.pop()? == self.boolean(true) {
+                    self.program_counter = (if self.pop()? == self.boolean(true) {
                         self.car(self.program_counter)
                     } else {
                         self.cdr(self.program_counter)
-                    })?;
+                    })
+                    .try_into()?;
                 }
                 Instruction::HALT => return Ok(()),
                 _ => return Err(Error::IllegalInstruction),
@@ -146,7 +147,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn advance_program_counter(&mut self) -> Result<(), Error> {
-        self.program_counter = Self::to_cons(self.cdr(self.program_counter))?;
+        self.program_counter = self.cdr(self.program_counter).try_into()?;
 
         Ok(())
     }
@@ -162,8 +163,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
     fn frame(&self) -> Result<Cons, Error> {
         let mut stack = self.stack;
 
-        while Self::to_cons(self.cdr(stack))?.tag() != FRAME_TAG {
-            stack = Self::to_cons(self.cdr(stack))?;
+        while Cons::try_from(self.cdr(stack))?.tag() != FRAME_TAG {
+            stack = self.cdr(stack).try_into()?;
         }
 
         Ok(stack)
@@ -171,7 +172,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
     fn tail(&self, mut list: Cons, mut index: Number) -> Result<Cons, Error> {
         while index != ZERO {
-            list = Self::to_cons(self.cdr(list))?;
+            list = self.cdr(list).try_into()?;
             index = Number::new(index.to_u64() - 1);
         }
 
@@ -194,7 +195,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
         }
 
         let value = self.car(self.stack);
-        self.stack = Self::to_cons(self.cdr(self.stack))?;
+        self.stack = self.cdr(self.stack).try_into()?;
         Ok(value)
     }
 
@@ -248,11 +249,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn car_value(&self, cons: Value) -> Result<Value, Error> {
-        Ok(self.car(Self::to_cons(cons)?))
+        Ok(self.car(cons.try_into()?))
     }
 
     fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
-        Ok(self.cdr(Self::to_cons(cons)?))
+        Ok(self.cdr(cons.try_into()?))
     }
 
     fn car_mut(&mut self, cons: Cons) -> &mut Value {
@@ -264,11 +265,11 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn car_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(self.car_mut(Self::to_cons(cons)?))
+        Ok(self.car_mut(cons.try_into()?))
     }
 
     fn cdr_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(self.cdr_mut(Self::to_cons(cons)?))
+        Ok(self.cdr_mut(cons.try_into()?))
     }
 
     fn boolean(&self, value: bool) -> Value {
@@ -277,14 +278,6 @@ impl<T: Device, const N: usize> Vm<N, T> {
         } else {
             self.car(self.nil)
         }
-    }
-
-    fn to_cons(value: Value) -> Result<Cons, Error> {
-        value.to_cons().ok_or(Error::ConsExpected)
-    }
-
-    fn to_u64(value: Value) -> Result<u64, Error> {
-        Ok(value.to_number().ok_or(Error::NumberExpected)?.to_u64())
     }
 
     // Primitive operations
@@ -348,7 +341,9 @@ impl<T: Device, const N: usize> Vm<N, T> {
             }
             Primitive::WRITE => {
                 let byte = self.pop()?;
-                self.device.write(Self::to_u64(byte)? as u8).unwrap();
+                self.device
+                    .write(Number::try_from(byte)?.to_u64() as u8)
+                    .unwrap();
             }
             _ => return Err(Error::IllegalPrimitive),
         }
@@ -357,8 +352,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) -> Result<(), Error> {
-        let x = Self::to_u64(self.pop()?)?;
-        let y = Self::to_u64(self.pop()?)?;
+        let x = Number::try_from(self.pop()?)?.to_u64();
+        let y = Number::try_from(self.pop()?)?.to_u64();
 
         self.push(Number::new(operate(x, y)).into())?;
 
@@ -366,8 +361,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
     }
 
     fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) -> Result<(), Error> {
-        let x = Self::to_u64(self.pop()?)?;
-        let y = Self::to_u64(self.pop()?)?;
+        let x = Number::try_from(self.pop()?)?.to_u64();
+        let y = Number::try_from(self.pop()?)?.to_u64();
 
         self.push(self.boolean(operate(x, y)))?;
 
@@ -380,9 +375,9 @@ impl<T: Device, const N: usize> Vm<N, T> {
         self.allocation_index = 0;
         self.space = !self.space;
 
-        self.program_counter = Self::to_cons(self.copy_value(self.program_counter.into())?)?;
-        self.stack = Self::to_cons(self.copy_value(self.stack.into())?)?;
-        self.nil = Self::to_cons(self.copy_value(self.nil.into())?)?;
+        self.program_counter = self.copy_value(self.program_counter.into())?.try_into()?;
+        self.stack = self.copy_value(self.stack.into())?.try_into()?;
+        self.nil = self.copy_value(self.nil.into())?.try_into()?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
@@ -395,7 +390,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
         Ok(if let Some(cons) = value.to_cons() {
             if self.car(cons) == GC_COPIED_CAR.into() {
                 // Get a forward pointer.
-                Self::to_cons(self.cdr(cons))?
+                self.cdr(cons).try_into()?
             } else {
                 let copy = self.allocate_raw(self.car(cons), self.cdr(cons));
 

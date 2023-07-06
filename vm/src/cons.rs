@@ -1,3 +1,4 @@
+use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
 const TAG_MASK: u64 = 0b1111;
@@ -21,6 +22,14 @@ impl Cons {
 
     pub const fn set_tag(self, tag: u8) -> Self {
         Self(self.0 | tag as u64 & TAG_MASK)
+    }
+}
+
+impl TryFrom<Value> for Cons {
+    type Error = Error;
+
+    fn try_from(value: Value) -> Result<Self, Self::Error> {
+        value.to_cons().ok_or(Error::ConsExpected)
     }
 }
 
