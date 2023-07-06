@@ -88,8 +88,8 @@ mod tests {
     use crate::decode;
     use alloc::borrow::ToOwned;
 
-    fn encode_and_decode(program: &Program) -> Program {
-        decode(&encode(program)).unwrap()
+    fn encode_and_decode(program: &Program) {
+        assert_eq!(&decode(&encode(program)).unwrap(), program);
     }
 
     fn default_symbols() -> Vec<String> {
@@ -100,21 +100,21 @@ mod tests {
     fn encode_nothing() {
         let program = Program::new(default_symbols(), vec![]);
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
     fn encode_symbol() {
         let program = Program::new(vec!["foo".into()], vec![]);
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
     fn encode_symbols() {
         let program = Program::new(vec!["foo".into(), "bar".into()], vec![]);
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -124,7 +124,7 @@ mod tests {
             vec![Instruction::Apply(Operand::Global(0), true)],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -134,7 +134,7 @@ mod tests {
             vec![Instruction::Apply(Operand::Local(0), true)],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -144,7 +144,7 @@ mod tests {
             vec![Instruction::Apply(Operand::Global(0), false)],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -154,7 +154,7 @@ mod tests {
             vec![Instruction::Apply(Operand::Local(0), false)],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -164,14 +164,14 @@ mod tests {
             vec![Instruction::Set(Operand::Global(0))],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
     fn encode_set_local() {
         let program = Program::new(default_symbols(), vec![Instruction::Set(Operand::Local(0))]);
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -181,14 +181,14 @@ mod tests {
             vec![Instruction::Get(Operand::Global(0))],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
     fn encode_get_local() {
         let program = Program::new(default_symbols(), vec![Instruction::Get(Operand::Local(0))]);
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -201,7 +201,7 @@ mod tests {
             )],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -220,7 +220,7 @@ mod tests {
             )],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -233,7 +233,7 @@ mod tests {
             ],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -243,7 +243,7 @@ mod tests {
             vec![Instruction::Set(Operand::Global(42))],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 
     #[test]
@@ -253,6 +253,6 @@ mod tests {
             vec![Instruction::Set(Operand::Local(42))],
         );
 
-        assert_eq!(encode_and_decode(&program), program);
+        encode_and_decode(&program);
     }
 }
