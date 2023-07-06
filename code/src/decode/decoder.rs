@@ -27,13 +27,13 @@ impl<'a> Decoder<'a> {
             let character = self.decode_byte().ok_or(Error::EndOfInput)?;
 
             match character {
-                b';' => {
-                    symbols.push(String::from_utf8(take(&mut symbol))?);
-                    return Ok(symbols);
-                }
-                b',' => {
+                b',' | b';' => {
                     symbol.reverse();
                     symbols.push(String::from_utf8(take(&mut symbol))?);
+
+                    if character == b';' {
+                        return Ok(symbols);
+                    }
                 }
                 character => symbol.push(character),
             }

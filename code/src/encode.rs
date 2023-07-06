@@ -16,7 +16,7 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
     codes.push(b';');
 
     for (index, symbol) in symbols.iter().enumerate().rev() {
-        for &character in symbol.as_bytes().iter().rev() {
+        for &character in symbol.as_bytes() {
             codes.push(character);
         }
 
