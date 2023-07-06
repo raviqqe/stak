@@ -1,6 +1,5 @@
 use crate::{Instruction, Operand, Program};
-use alloc::vec;
-use alloc::vec::Vec;
+use alloc::{vec, vec::Vec};
 
 pub(crate) const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
 
@@ -48,7 +47,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
     match operand {
         Operand::Global(number) => encode_integer(codes, number),
-        Operand::Local(number) => encode_integer(codes, (number as i64 * -1) as u64),
+        Operand::Local(number) => encode_integer(codes, -(number as i64) as u64),
     }
 }
 
