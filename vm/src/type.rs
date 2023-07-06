@@ -1,5 +1,6 @@
 #[derive(Clone, Copy, Debug)]
 pub enum Type {
-    Cons,
-    Closure,
+    Pair,
+    Procedure,
+    // TODO
 }
