@@ -63,7 +63,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::APPLY => {
-                    let jump = instruction.index() == 0;
+                    let tail = instruction.index() == 0;
                     // (code . environment)
                     let procedure = self.car(self.operand()?);
                     let stack = self.stack;
@@ -81,7 +81,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
 
                             let last_argument = self.tail(stack, parameter_count)?;
 
-                            if jump {
+                            if tail {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                                 // Handle the case where a parameter count is zero.
                                 // i.e. last_argument == stack
@@ -107,7 +107,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
                         Value::Number(primitive) => {
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
-                            if jump {
+                            if tail {
                                 let return_info = self.car(self.frame()?);
 
                                 self.program_counter = self.car_value(return_info)?.try_into()?;
