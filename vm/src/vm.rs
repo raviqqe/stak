@@ -669,19 +669,20 @@ mod tests {
 
     mod instruction {
         use super::*;
+        use alloc::vec;
         use code::{encode, Program};
 
         fn run_program(program: &Program) {
             let mut vm = create_vm();
 
-            vm.decode(encode(program)).unwrap();
+            vm.decode(&encode(program)).unwrap();
 
             vm.run().unwrap()
         }
 
         #[test]
         fn run_nothing() {
-            create_vm().run().unwrap();
+            run_program(&Program::new(vec![], vec![]));
         }
 
         #[test]
