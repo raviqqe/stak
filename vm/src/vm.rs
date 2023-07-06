@@ -670,7 +670,7 @@ mod tests {
     mod instruction {
         use super::*;
         use alloc::vec;
-        use code::{encode, Instruction, Program};
+        use code::{encode, Instruction, Operand, Program};
 
         fn run_program(program: &Program) {
             let mut vm = create_vm();
@@ -688,6 +688,48 @@ mod tests {
         #[test]
         fn constant() {
             run_program(&Program::new(vec![], vec![Instruction::Constant(42)]));
+        }
+
+        #[test]
+        fn set_global() {
+            run_program(&Program::new(
+                vec!["x".into()],
+                vec![
+                    Instruction::Constant(42),
+                    Instruction::Set(Operand::Global(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn set_local() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(0),
+                    Instruction::Constant(42),
+                    Instruction::Set(Operand::Local(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn get_global() {
+            run_program(&Program::new(
+                vec!["x".into()],
+                vec![Instruction::Get(Operand::Global(0))],
+            ));
+        }
+
+        #[test]
+        fn get_local() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(42),
+                    Instruction::Get(Operand::Local(0)),
+                ],
+            ));
         }
     }
 }
