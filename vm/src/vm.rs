@@ -466,15 +466,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?).into(),
                     Instruction::CONSTANT,
                 ),
-                // code::Instruction::IF => {
-                //     instructions.reverse();
-                //     let then = take(&mut instructions);
+                code::Instruction::IF => {
+                    let then = self.program_counter;
+                    self.program_counter = self.pop()?.try_into()?;
 
-                //     instructions.push(Instruction::If(
-                //         then,
-                //         instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
-                //     ));
-                // }
+                    (then.into(), Instruction::IF)
+                }
                 _ => return Err(Error::IllegalInstruction),
             };
 
