@@ -1,6 +1,7 @@
 #[repr(u8)]
 #[derive(Clone, Copy)]
 pub enum Primitive {
+    Rib,
     Cons,
     Id,
     Pop,
@@ -22,6 +23,7 @@ pub enum Primitive {
 }
 
 impl Primitive {
+    pub const RIB: u8 = Self::Rib as _;
     pub const CONS: u8 = Self::Cons as _;
     pub const ID: u8 = Self::Id as _;
     pub const POP: u8 = Self::Pop as _;

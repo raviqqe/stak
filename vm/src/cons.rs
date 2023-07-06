@@ -4,7 +4,7 @@ use core::fmt::{self, Display, Formatter};
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[derive(Clone, Copy, Debug)]
 pub struct Cons(u64);
 
 impl Cons {
@@ -24,6 +24,14 @@ impl Cons {
         Self(self.0 | tag as u64 & TAG_MASK)
     }
 }
+
+impl PartialEq for Cons {
+    fn eq(&self, other: &Self) -> bool {
+        self.index() == other.index()
+    }
+}
+
+impl Eq for Cons {}
 
 impl TryFrom<Value> for Cons {
     type Error = Error;

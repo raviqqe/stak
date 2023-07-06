@@ -1,6 +1,6 @@
 use crate::{
     cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    value::Value, Error,
+    value::Value, Error, Type,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -12,15 +12,21 @@ const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
 
+const NIL_INDEX: u64 = 0;
+const FALSE_INDEX: u64 = 1;
+const TRUE_INDEX: u64 = 2;
+const RIB_INDEX: u64 = 3;
+
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
+    symbols: Cons,
+    rib: Cons,
 }
 
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
-    symbols: Cons,
     program_counter: Cons,
     stack: Cons,
     nil: Cons,
@@ -35,7 +41,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
-            symbols: Cons::new(0),
             program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
@@ -288,6 +293,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
+            Primitive::RIB => {
+                let car = self.pop()?;
+                let cdr = self.pop()?;
+                let tag = self.pop()?;
+                let rib = self.allocate(
+                    car,
+                    Cons::try_from(cdr)?
+                        .set_tag(Number::try_from(tag)?.to_u64() as u8)
+                        .into(),
+                )?;
+                self.push(rib.into())?;
+            }
             Primitive::CONS => {
                 let car = self.pop()?;
                 let cdr = self.pop()?;
@@ -414,11 +431,19 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // Input decoding
 
     pub fn decode(&mut self, codes: &[u8]) -> Result<(), Error> {
-        self.symbols = self.nil;
         self.program_counter = self.nil;
         self.stack = self.nil;
 
-        let mut input = DecodeInput { codes, index: 0 };
+        let mut input = DecodeInput {
+            codes,
+            index: 0,
+            // TODO Put symbols and rib under some root to support GC during decoding.
+            symbols: self.nil,
+            rib: self.allocate(
+                Number::new(0).into(),
+                Cons::new(0).set_tag(Type::Procedure as u8).into(),
+            )?,
+        };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -444,7 +469,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        self.symbols = self.stack;
+        input.symbols = self.stack;
         self.stack = self.nil;
 
         Ok(())
@@ -488,7 +513,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let index = Number::new(integer >> 1);
 
         Ok(if integer & 1 == 0 {
-            self.car(self.tail(self.symbols, index)?)
+            match index.to_u64() {
+                NIL_INDEX => self.nil.into(),
+                FALSE_INDEX => self.boolean(false),
+                TRUE_INDEX => self.boolean(true),
+                RIB_INDEX => input.rib.into(),
+                _ => self.car(self.tail(input.symbols, index)?),
+            }
         } else {
             index.into()
         })
@@ -538,7 +569,7 @@ mod tests {
     use crate::FixedBufferDevice;
     use std::format;
 
-    const HEAP_SIZE: usize = CONS_FIELD_COUNT * 16;
+    const HEAP_SIZE: usize = CONS_FIELD_COUNT * 256;
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
@@ -664,6 +695,90 @@ mod tests {
             vm.collect_garbages().unwrap();
 
             insta::assert_display_snapshot!(vm);
+        }
+    }
+
+    mod instruction {
+        use super::*;
+        use alloc::vec;
+        use code::{encode, Instruction, Operand, Program};
+
+        fn run_program(program: &Program) {
+            let mut vm = create_vm();
+
+            vm.decode(&encode(program)).unwrap();
+
+            vm.run().unwrap()
+        }
+
+        #[test]
+        fn run_nothing() {
+            run_program(&Program::new(vec![], vec![]));
+        }
+
+        #[test]
+        fn constant() {
+            run_program(&Program::new(vec![], vec![Instruction::Constant(42)]));
+        }
+
+        #[test]
+        fn set_global() {
+            run_program(&Program::new(
+                vec!["x".into()],
+                vec![
+                    Instruction::Constant(42),
+                    Instruction::Set(Operand::Global(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn set_local() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(0),
+                    Instruction::Constant(42),
+                    Instruction::Set(Operand::Local(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn get_global() {
+            run_program(&Program::new(
+                vec!["x".into()],
+                vec![Instruction::Get(Operand::Global(0))],
+            ));
+        }
+
+        #[test]
+        fn get_local() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(42),
+                    Instruction::Get(Operand::Local(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn r#if() {
+            run_program(&Program::new(
+                vec!["f".into()],
+                vec![
+                    Instruction::Constant(0),
+                    Instruction::Get(Operand::Global(NIL_INDEX)),
+                    Instruction::Constant(0),
+                    Instruction::Constant(3),
+                    Instruction::Get(Operand::Global(FALSE_INDEX)),
+                    Instruction::If(
+                        vec![Instruction::Call(Operand::Global(RIB_INDEX), true)],
+                        vec![Instruction::Call(Operand::Global(RIB_INDEX), true)],
+                    ),
+                ],
+            ));
         }
     }
 }
