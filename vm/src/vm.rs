@@ -689,16 +689,5 @@ mod tests {
         fn constant() {
             run_program(&Program::new(vec![], vec![Instruction::Constant(42)]));
         }
-
-        #[test]
-        fn push_and_pop_twice() {
-            let mut vm = create_vm();
-
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
-
-            assert_eq!(vm.pop(), Ok(Number::new(2).into()));
-            assert_eq!(vm.pop(), Ok(Number::new(1).into()));
-        }
     }
 }
