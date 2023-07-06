@@ -49,16 +49,13 @@ impl<T: Device, const N: usize> Vm<N, T> {
         self.nil = self.allocate(r#false.into(), r#true.into())?;
         self.stack = self.nil;
 
-        self.program_counter = self.allocate(
-            ZERO.into(),
-            self.nil.set_tag(Instruction::Halt as u8).into(),
-        )?;
+        self.program_counter = self.nil;
 
         Ok(())
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
-        loop {
+        while self.program_counter != self.nil {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
             match instruction.tag() {
@@ -144,6 +141,8 @@ impl<T: Device, const N: usize> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
         }
+
+        Ok(())
     }
 
     fn advance_program_counter(&mut self) -> Result<(), Error> {
