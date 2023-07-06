@@ -458,10 +458,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut symbol = self.nil;
 
         loop {
-            let character = Self::decode_byte(input).ok_or(Error::EndOfInput)?;
-
-            match character {
-                b',' | b';' => {
+            match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
+                character @ (b',' | b';') => {
                     self.push(symbol.into())?;
 
                     if character == b';' {
