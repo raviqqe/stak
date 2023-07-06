@@ -8,8 +8,10 @@ fn main() {
         match error {
             Error::ArgumentCount => eprintln!("invalid argument count"),
             Error::ConsExpected => eprintln!("cons expected"),
+            Error::EndOfInput => eprintln!("unexpected end of input"),
             Error::IllegalInstruction => eprintln!("illegal instruction"),
             Error::IllegalPrimitive => eprintln!("illegal primitive"),
+            Error::MissingOperand => eprintln!("missing operand"),
             Error::NumberExpected => eprintln!("number expected"),
             Error::OutOfMemory => eprintln!("out of memory"),
             Error::StackUnderflow => eprintln!("stack underflow"),

@@ -12,9 +12,15 @@ const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
 
+struct DecodeInput<'a> {
+    codes: &'a [u8],
+    index: usize,
+}
+
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
+    symbols: Cons,
     program_counter: Cons,
     stack: Cons,
     nil: Cons,
@@ -23,12 +29,13 @@ pub struct Vm<const N: usize, T: Device> {
     heap: [Value; N],
 }
 
-impl<T: Device, const N: usize> Vm<N, T> {
+impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
     pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
+            symbols: Cons::new(0),
             program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
@@ -45,10 +52,9 @@ impl<T: Device, const N: usize> Vm<N, T> {
     fn initialize(&mut self) -> Result<(), Error> {
         let r#false = self.allocate(ZERO.into(), ZERO.into())?;
         let r#true = self.allocate(ZERO.into(), ZERO.into())?;
-
         self.nil = self.allocate(r#false.into(), r#true.into())?;
-        self.stack = self.nil;
 
+        self.stack = self.nil;
         self.program_counter = self.nil;
 
         Ok(())
@@ -403,6 +409,114 @@ impl<T: Device, const N: usize> Vm<N, T> {
         } else {
             value
         })
+    }
+
+    // Input decoding
+
+    pub fn decode(&mut self, codes: &[u8]) -> Result<(), Error> {
+        self.symbols = self.nil;
+        self.program_counter = self.nil;
+        self.stack = self.nil;
+
+        let mut input = DecodeInput { codes, index: 0 };
+
+        self.decode_symbols(&mut input)?;
+        self.decode_instructions(&mut input)?;
+
+        Ok(())
+    }
+
+    fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
+        let mut symbol = self.nil;
+
+        loop {
+            let character = Self::decode_byte(input).ok_or(Error::EndOfInput)?;
+
+            match character {
+                b',' | b';' => {
+                    self.push(symbol.into())?;
+
+                    if character == b';' {
+                        break;
+                    }
+                }
+                character => symbol = self.append(Number::new(character as u64).into(), symbol)?,
+            }
+        }
+
+        self.symbols = self.stack;
+        self.stack = self.nil;
+
+        Ok(())
+    }
+
+    fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
+        while let Some(instruction) = Self::decode_byte(input) {
+            let (car, tag) = match instruction {
+                code::Instruction::RETURN_CALL => {
+                    self.push(self.program_counter.into())?;
+                    self.program_counter = self.nil;
+
+                    (self.decode_operand(input)?, Instruction::CALL)
+                }
+                code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
+                code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
+                code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
+                code::Instruction::CONSTANT => (
+                    Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?).into(),
+                    Instruction::CONSTANT,
+                ),
+                code::Instruction::IF => {
+                    let then = self.program_counter;
+                    self.program_counter = self.pop()?.try_into()?;
+
+                    (then.into(), Instruction::IF)
+                }
+                _ => return Err(Error::IllegalInstruction),
+            };
+
+            self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
+        }
+
+        self.stack = self.nil;
+
+        Ok(())
+    }
+
+    fn decode_operand(&self, input: &mut DecodeInput) -> Result<Value, Error> {
+        let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
+        let index = Number::new(integer >> 1);
+
+        Ok(if integer & 1 == 0 {
+            self.car(self.tail(self.symbols, index)?)
+        } else {
+            index.into()
+        })
+    }
+
+    fn decode_integer(input: &mut DecodeInput) -> Option<u64> {
+        let mut y = 0;
+
+        while {
+            y *= code::INTEGER_BASE;
+            let x = Self::decode_byte(input)? as i8;
+
+            y += (if x < 0 { -1 } else { 1 } * x) as u64;
+
+            x < 0
+        } {}
+
+        Some(y)
+    }
+
+    fn decode_byte(input: &mut DecodeInput) -> Option<u8> {
+        if input.index >= input.codes.len() {
+            return None;
+        }
+
+        let byte = input.codes[input.codes.len() - 1 - input.index];
+        input.index += 1;
+        Some(byte)
     }
 }
 
