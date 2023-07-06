@@ -98,115 +98,97 @@ mod tests {
 
     #[test]
     fn encode_nothing() {
-        let program = Program::new(default_symbols(), vec![]);
-
-        encode_and_decode(&program);
+        encode_and_decode(&Program::new(default_symbols(), vec![]));
     }
 
     #[test]
     fn encode_symbol() {
-        let program = Program::new(vec!["foo".into()], vec![]);
-
-        encode_and_decode(&program);
+        encode_and_decode(&Program::new(vec!["foo".into()], vec![]));
     }
 
     #[test]
     fn encode_symbols() {
-        let program = Program::new(vec!["foo".into(), "bar".into()], vec![]);
-
-        encode_and_decode(&program);
+        encode_and_decode(&Program::new(vec!["foo".into(), "bar".into()], vec![]));
     }
 
     #[test]
     fn encode_tail_apply_global() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Apply(Operand::Global(0), true)],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_tail_apply_local() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Apply(Operand::Local(0), true)],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_apply_global() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Apply(Operand::Global(0), false)],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_apply_local() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Apply(Operand::Local(0), false)],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_set_global() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Set(Operand::Global(0))],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_set_local() {
-        let program = Program::new(default_symbols(), vec![Instruction::Set(Operand::Local(0))]);
-
-        encode_and_decode(&program);
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Set(Operand::Local(0))],
+        ));
     }
 
     #[test]
     fn encode_get_global() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Get(Operand::Global(0))],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_get_local() {
-        let program = Program::new(default_symbols(), vec![Instruction::Get(Operand::Local(0))]);
-
-        encode_and_decode(&program);
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Get(Operand::Local(0))],
+        ));
     }
 
     #[test]
     fn encode_if() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::If(
                 vec![Instruction::Apply(Operand::Global(0), true)],
                 vec![Instruction::Apply(Operand::Global(1), true)],
             )],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_if_with_sequences() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::If(
                 vec![
@@ -218,41 +200,33 @@ mod tests {
                     Instruction::Apply(Operand::Global(1), true),
                 ],
             )],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_sequence() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![
                 Instruction::Get(Operand::Global(0)),
                 Instruction::Apply(Operand::Global(0), true),
             ],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_large_global_index() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Set(Operand::Global(42))],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 
     #[test]
     fn encode_large_local_index() {
-        let program = Program::new(
+        encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Set(Operand::Local(42))],
-        );
-
-        encode_and_decode(&program);
+        ));
     }
 }
