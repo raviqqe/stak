@@ -1,6 +1,6 @@
 use crate::{
     cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    value::Value, Error,
+    value::Value, Error, Type,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -20,12 +20,13 @@ const RIB_INDEX: u64 = 3;
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
+    symbols: Cons,
+    rib: Cons,
 }
 
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
-    symbols: Cons,
     program_counter: Cons,
     stack: Cons,
     nil: Cons,
@@ -40,7 +41,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
-            symbols: Cons::new(0),
             program_counter: Cons::new(0),
             stack: Cons::new(0),
             nil: Cons::new(0),
@@ -431,11 +431,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // Input decoding
 
     pub fn decode(&mut self, codes: &[u8]) -> Result<(), Error> {
-        self.symbols = self.nil;
         self.program_counter = self.nil;
         self.stack = self.nil;
 
-        let mut input = DecodeInput { codes, index: 0 };
+        let mut input = DecodeInput {
+            codes,
+            index: 0,
+            symbols: self.nil,
+            rib: self.allocate(
+                Number::new(0).into(),
+                Cons::new(0).set_tag(Type::Procedure as u8).into(),
+            )?,
+        };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -461,7 +468,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        self.symbols = self.stack;
+        input.symbols = self.stack;
         self.stack = self.nil;
 
         Ok(())
@@ -509,8 +516,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 NIL_INDEX => self.nil.into(),
                 FALSE_INDEX => self.boolean(false),
                 TRUE_INDEX => self.boolean(true),
-                RIB_INDEX => todo!("rib"),
-                _ => self.car(self.tail(self.symbols, index)?),
+                RIB_INDEX => input.rib.into(),
+                _ => self.car(self.tail(input.symbols, index)?),
             }
         } else {
             index.into()
@@ -561,7 +568,7 @@ mod tests {
     use crate::FixedBufferDevice;
     use std::format;
 
-    const HEAP_SIZE: usize = CONS_FIELD_COUNT * 16;
+    const HEAP_SIZE: usize = CONS_FIELD_COUNT * 256;
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
@@ -760,18 +767,14 @@ mod tests {
             run_program(&Program::new(
                 vec!["f".into()],
                 vec![
+                    Instruction::Constant(0),
+                    Instruction::Constant(0),
+                    Instruction::Constant(0),
+                    Instruction::Constant(3),
                     Instruction::Get(Operand::Global(FALSE_INDEX)),
                     Instruction::If(
-                        vec![
-                            Instruction::Constant(0),
-                            Instruction::Constant(0),
-                            Instruction::Constant(0),
-                            Instruction::Call(Operand::Global(RIB_INDEX), true),
-                        ],
-                        vec![
-                            Instruction::Constant(0),
-                            Instruction::Call(Operand::Global(RIB_INDEX), true),
-                        ],
+                        vec![Instruction::Call(Operand::Global(RIB_INDEX), true)],
+                        vec![Instruction::Call(Operand::Global(RIB_INDEX), true)],
                     ),
                 ],
             ));
