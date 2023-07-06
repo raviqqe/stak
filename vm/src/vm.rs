@@ -192,13 +192,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.allocate(car, cdr.into())
     }
 
-    pub fn push(&mut self, value: Value) -> Result<(), Error> {
+    fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.append(value, self.stack)?;
 
         Ok(())
     }
 
-    pub fn pop(&mut self) -> Result<Value, Error> {
+    fn pop(&mut self) -> Result<Value, Error> {
         if self.stack == self.nil {
             return Err(Error::StackUnderflow);
         }
@@ -208,7 +208,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(value)
     }
 
-    pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+    fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let cons = self.allocate_raw(car, cdr);
 
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
@@ -291,7 +291,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // Primitive operations
 
-    pub fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
+    fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
                 let car = self.pop()?;

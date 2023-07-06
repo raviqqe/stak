@@ -17,4 +17,5 @@ mod vm;
 
 pub use device::{Device, FixedBufferDevice};
 pub use error::Error;
+pub use value::Value;
 pub use vm::Vm;
