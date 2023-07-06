@@ -56,7 +56,6 @@ fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
         Operand::Global(number) => encode_integer(codes, number << 1),
 
         Operand::Local(number) => encode_integer(codes, (number << 1) + 1),
-
     }
 }
 
