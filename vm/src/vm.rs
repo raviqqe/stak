@@ -52,10 +52,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn initialize(&mut self) -> Result<(), Error> {
         let r#false = self.allocate(ZERO.into(), ZERO.into())?;
         let r#true = self.allocate(ZERO.into(), ZERO.into())?;
-
         self.nil = self.allocate(r#false.into(), r#true.into())?;
-        self.stack = self.nil;
 
+        self.stack = self.nil;
         self.program_counter = self.nil;
 
         Ok(())
@@ -417,8 +416,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn decode(&mut self, codes: &[u8]) -> Result<(), Error> {
         self.symbols = self.nil;
         self.program_counter = self.nil;
+        self.stack = self.nil;
 
-        let input = DecodeInput { codes, index: 0 };
+        let mut input = DecodeInput { codes, index: 0 };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -434,7 +434,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match character {
                 b',' | b';' => {
-                    self.push(symbol.into());
+                    self.push(symbol.into())?;
 
                     if character == b';' {
                         break;
@@ -451,19 +451,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
-        let mut instruction_lists = self.nil;
-        let mut instructions = self.nil;
-
         while let Some(instruction) = Self::decode_byte(input) {
             let (car, tag) = match instruction {
-                // code::Instruction::RETURN_CALL => {
-                //     instructions.reverse();
-                //     instruction_lists.push(take(&mut instructions));
-                //     instructions.push(Instruction::Call(self.decode_operand()?, true))
-                // }
-                // Instruction::CALL => {
-                //     instructions.push(Instruction::Call(self.decode_operand()?, false))
-                // }
+                code::Instruction::RETURN_CALL => {
+                    self.push(self.program_counter.into())?;
+                    self.program_counter = self.nil;
+
+                    (self.decode_operand(input)?, Instruction::CALL)
+                }
+                code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
                 code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
                 code::Instruction::CONSTANT => (
@@ -482,21 +478,22 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            instructions = self.append(car, instructions.set_tag(tag))?;
+            self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
+
+        self.stack = self.nil;
 
         Ok(())
     }
 
     fn decode_operand(&self, input: &mut DecodeInput) -> Result<Value, Error> {
         let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
-        let global = integer & 1 == 0;
-        let index = integer >> 1;
+        let index = Number::new(integer >> 1);
 
-        Ok(if global {
-            self.car(self.tail(self.symbols, Number::new(index))?)
+        Ok(if integer & 1 == 0 {
+            self.car(self.tail(self.symbols, index)?)
         } else {
-            Number::new(index).into()
+            index.into()
         })
     }
 
