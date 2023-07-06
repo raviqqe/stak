@@ -18,7 +18,7 @@ fn encode_symbols(_codes: &mut Vec<u8>, _symbols: &[String]) {
 
 // TODO Use short encodings for instruction operands.
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
-    for instruction in instructions.iter().rev() {
+    for instruction in instructions {
         match instruction {
             Instruction::Apply(operand, tail) => {
                 encode_operand(codes, *operand);
@@ -41,9 +41,9 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 codes.push(Instruction::CONSTANT);
             }
             Instruction::If(then, r#else) => {
-                encode_instructions(codes, r#else);
-                encode_instructions(codes, then);
                 codes.push(Instruction::IF);
+                encode_instructions(codes, then);
+                encode_instructions(codes, r#else);
             }
         }
     }
