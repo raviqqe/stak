@@ -396,9 +396,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.allocation_index = 0;
         self.space = !self.space;
 
-        self.program_counter = self.copy_value(self.program_counter.into())?.try_into()?;
-        self.stack = self.copy_value(self.stack.into())?.try_into()?;
-        self.nil = self.copy_value(self.nil.into())?.try_into()?;
+        self.program_counter = self.copy_cons(self.program_counter.into())?;
+        self.stack = self.copy_cons(self.stack.into())?;
+        self.nil = self.copy_cons(self.nil.into())?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
@@ -409,23 +409,26 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn copy_value(&mut self, value: Value) -> Result<Value, Error> {
         Ok(if let Some(cons) = value.to_cons() {
-            if self.car(cons) == GC_COPIED_CAR.into() {
-                // Get a forward pointer.
-                self.cdr(cons).try_into()?
-            } else {
-                let copy = self.allocate_raw(self.car(cons), self.cdr(cons));
-
-                *self.car_mut(cons) = GC_COPIED_CAR.into();
-                // Set a forward pointer.
-                *self.cdr_mut(cons) = copy.into();
-
-                copy
-            }
-            .set_tag(cons.tag())
-            .into()
+            self.copy_cons(cons)?.into()
         } else {
             value
         })
+    }
+
+    fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
+        Ok(if self.car(cons) == GC_COPIED_CAR.into() {
+            // Get a forward pointer.
+            self.cdr(cons).try_into()?
+        } else {
+            let copy = self.allocate_raw(self.car(cons), self.cdr(cons));
+
+            *self.car_mut(cons) = GC_COPIED_CAR.into();
+            // Set a forward pointer.
+            *self.cdr_mut(cons) = copy.into();
+
+            copy
+        }
+        .set_tag(cons.tag()))
     }
 
     // Input decoding
