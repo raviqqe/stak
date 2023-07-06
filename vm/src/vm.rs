@@ -59,7 +59,7 @@ impl<T: Device, const N: usize> Vm<N, T> {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
             match instruction.tag() {
-                Instruction::APPLY => {
+                Instruction::CALL => {
                     let tail = instruction.index() == 0;
                     // (code . environment)
                     let procedure = self.car(self.operand()?);

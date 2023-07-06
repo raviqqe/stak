@@ -30,12 +30,12 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
-            Instruction::Apply(operand, tail) => {
+            Instruction::Call(operand, tail) => {
                 encode_operand(codes, *operand);
                 codes.push(if *tail {
-                    Instruction::TAIL_APPLY
+                    Instruction::TAIL_CALL
                 } else {
-                    Instruction::APPLY
+                    Instruction::CALL
                 });
             }
             Instruction::Set(operand) => {
@@ -112,34 +112,34 @@ mod tests {
     }
 
     #[test]
-    fn encode_tail_apply_global() {
+    fn encode_tail_call_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Apply(Operand::Global(0), true)],
+            vec![Instruction::Call(Operand::Global(0), true)],
         ));
     }
 
     #[test]
-    fn encode_tail_apply_local() {
+    fn encode_tail_call_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Apply(Operand::Local(0), true)],
+            vec![Instruction::Call(Operand::Local(0), true)],
         ));
     }
 
     #[test]
-    fn encode_apply_global() {
+    fn encode_call_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Apply(Operand::Global(0), false)],
+            vec![Instruction::Call(Operand::Global(0), false)],
         ));
     }
 
     #[test]
-    fn encode_apply_local() {
+    fn encode_call_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Apply(Operand::Local(0), false)],
+            vec![Instruction::Call(Operand::Local(0), false)],
         ));
     }
 
@@ -180,8 +180,8 @@ mod tests {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::If(
-                vec![Instruction::Apply(Operand::Global(0), true)],
-                vec![Instruction::Apply(Operand::Global(1), true)],
+                vec![Instruction::Call(Operand::Global(0), true)],
+                vec![Instruction::Call(Operand::Global(1), true)],
             )],
         ));
     }
@@ -193,11 +193,11 @@ mod tests {
             vec![Instruction::If(
                 vec![
                     Instruction::Get(Operand::Global(0)),
-                    Instruction::Apply(Operand::Global(0), true),
+                    Instruction::Call(Operand::Global(0), true),
                 ],
                 vec![
                     Instruction::Get(Operand::Global(1)),
-                    Instruction::Apply(Operand::Global(1), true),
+                    Instruction::Call(Operand::Global(1), true),
                 ],
             )],
         ));
@@ -209,7 +209,7 @@ mod tests {
             default_symbols(),
             vec![
                 Instruction::Get(Operand::Global(0)),
-                Instruction::Apply(Operand::Global(0), true),
+                Instruction::Call(Operand::Global(0), true),
             ],
         ));
     }

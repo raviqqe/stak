@@ -46,13 +46,13 @@ impl<'a> Decoder<'a> {
 
         while let Some(instruction) = self.decode_byte() {
             match instruction {
-                Instruction::TAIL_APPLY => {
+                Instruction::TAIL_CALL => {
                     instructions.reverse();
                     instruction_lists.push(take(&mut instructions));
-                    instructions.push(Instruction::Apply(self.decode_operand()?, true))
+                    instructions.push(Instruction::Call(self.decode_operand()?, true))
                 }
-                Instruction::APPLY => {
-                    instructions.push(Instruction::Apply(self.decode_operand()?, false))
+                Instruction::CALL => {
+                    instructions.push(Instruction::Call(self.decode_operand()?, false))
                 }
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
                 Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),

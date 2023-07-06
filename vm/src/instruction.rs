@@ -1,6 +1,6 @@
 #[derive(Clone, Copy, Debug)]
 pub enum Instruction {
-    Apply,
+    Call,
     Set,
     Get,
     Constant,
@@ -9,7 +9,7 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const APPLY: u8 = Self::Apply as _;
+    pub const CALL: u8 = Self::Call as _;
     pub const SET: u8 = Self::Set as _;
     pub const GET: u8 = Self::Get as _;
     pub const CONSTANT: u8 = Self::Constant as _;
