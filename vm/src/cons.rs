@@ -1,6 +1,5 @@
-use core::fmt::{self, Display, Formatter};
-
 use crate::{value::Value, Error};
+use core::fmt::{self, Display, Formatter};
 
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
