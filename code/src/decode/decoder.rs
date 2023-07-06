@@ -28,7 +28,7 @@ impl<'a> Decoder<'a> {
 
         while let Some(instruction) = self.decode_byte() {
             match instruction {
-                Instruction::APPLY_TAIL => todo!(),
+                Instruction::TAIL_APPLY => todo!(),
                 Instruction::APPLY => todo!(),
                 Instruction::SET => {
                     let operand = self.decode_operand()?;
@@ -45,12 +45,14 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_operand(&mut self) -> Result<Operand, Error> {
-        let integer = self.decode_integer().ok_or(Error::MissingOperand)? as i64;
+        let integer = self.decode_integer().ok_or(Error::MissingOperand)?;
+        let global = integer & 1 == 0;
+        let index = integer >> 1;
 
-        Ok(if integer < 0 {
-            Operand::Global(-integer as u64)
+        Ok(if global {
+            Operand::Global(index)
         } else {
-            Operand::Local(integer as u64)
+            Operand::Local(index)
         })
     }
 

@@ -7,6 +7,8 @@ pub fn encode(program: &Program) -> Vec<u8> {
     let mut codes = vec![];
 
     encode_instructions(&mut codes, program.instructions());
+    codes.reverse();
+
     encode_symbols(&mut codes, program.symbols());
 
     codes
@@ -23,7 +25,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
             Instruction::Apply(operand, tail) => {
                 encode_operand(codes, *operand);
                 codes.push(if *tail {
-                    Instruction::APPLY_TAIL
+                    Instruction::TAIL_APPLY
                 } else {
                     Instruction::APPLY
                 });
@@ -51,8 +53,10 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 
 fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
     match operand {
-        Operand::Global(number) => encode_integer(codes, number),
-        Operand::Local(number) => encode_integer(codes, -(number as i64) as u64),
+        Operand::Global(number) => encode_integer(codes, number << 1),
+
+        Operand::Local(number) => encode_integer(codes, (number << 1) + 1),
+
     }
 }
 
@@ -69,4 +73,43 @@ fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
 
         number != 0
     } {}
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::decode;
+
+    use super::*;
+
+    fn encode_and_decode(program: &Program) -> Program {
+        decode(&encode(program)).unwrap()
+    }
+
+    #[test]
+    fn encode_nothing() {
+        let program = Program::new(vec![], vec![]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
+    fn encode_apply() {
+        let program = Program::new(vec![], vec![Instruction::Apply(Operand::Global(0), false)]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
+    fn encode_set_global() {
+        let program = Program::new(vec![], vec![Instruction::Set(Operand::Global(0))]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
+    fn encode_set_local() {
+        let program = Program::new(vec![], vec![Instruction::Set(Operand::Local(0))]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
 }

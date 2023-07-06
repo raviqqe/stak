@@ -1,7 +1,7 @@
 use super::instruction::Instruction;
 use alloc::{string::String, vec::Vec};
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub struct Program {
     symbols: Vec<String>,
     instructions: Vec<Instruction>,

@@ -1,7 +1,7 @@
 use crate::Operand;
 use alloc::vec::Vec;
 
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
     Apply(Operand, bool),
     Set(Operand),
@@ -11,7 +11,7 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const APPLY_TAIL: u8 = 0;
+    pub const TAIL_APPLY: u8 = 0;
     pub const APPLY: u8 = 1;
     pub const SET: u8 = 2;
     pub const GET: u8 = 3;
