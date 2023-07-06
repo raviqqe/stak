@@ -28,14 +28,17 @@ impl<'a> Decoder<'a> {
 
         while let Some(instruction) = self.decode_byte() {
             match instruction {
-                Instruction::TAIL_APPLY => todo!(),
-                Instruction::APPLY => todo!(),
-                Instruction::SET => {
-                    let operand = self.decode_operand()?;
-                    instructions.push(Instruction::Set(operand));
+                Instruction::TAIL_APPLY => {
+                    instructions.push(Instruction::Apply(self.decode_operand()?, true))
                 }
-                Instruction::GET => todo!(),
-                Instruction::CONSTANT => todo!(),
+                Instruction::APPLY => {
+                    instructions.push(Instruction::Apply(self.decode_operand()?, false))
+                }
+                Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
+                Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
+                Instruction::CONSTANT => instructions.push(Instruction::Constant(
+                    self.decode_integer().ok_or(Error::MissingOperand)?,
+                )),
                 Instruction::IF => todo!(),
                 _ => return Err(Error::IllegalInstruction),
             }

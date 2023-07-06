@@ -92,6 +92,20 @@ mod tests {
     }
 
     #[test]
+    fn encode_tail_apply_global() {
+        let program = Program::new(vec![], vec![Instruction::Apply(Operand::Global(0), true)]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
+    fn encode_tail_apply_local() {
+        let program = Program::new(vec![], vec![Instruction::Apply(Operand::Local(0), true)]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
     fn encode_apply_global() {
         let program = Program::new(vec![], vec![Instruction::Apply(Operand::Global(0), false)]);
 
@@ -115,6 +129,20 @@ mod tests {
     #[test]
     fn encode_set_local() {
         let program = Program::new(vec![], vec![Instruction::Set(Operand::Local(0))]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
+    fn encode_get_global() {
+        let program = Program::new(vec![], vec![Instruction::Get(Operand::Global(0))]);
+
+        assert_eq!(encode_and_decode(&program), program);
+    }
+
+    #[test]
+    fn encode_get_local() {
+        let program = Program::new(vec![], vec![Instruction::Get(Operand::Local(0))]);
 
         assert_eq!(encode_and_decode(&program), program);
     }
