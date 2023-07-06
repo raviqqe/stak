@@ -670,7 +670,7 @@ mod tests {
     mod instruction {
         use super::*;
         use alloc::vec;
-        use code::{encode, Program};
+        use code::{encode, Instruction, Program};
 
         fn run_program(program: &Program) {
             let mut vm = create_vm();
@@ -686,12 +686,8 @@ mod tests {
         }
 
         #[test]
-        fn push_and_pop() {
-            let mut vm = create_vm();
-
-            vm.decode();
-
-            vm.run().unwrap();
+        fn constant() {
+            run_program(&Program::new(vec![], vec![Instruction::Constant(42)]));
         }
 
         #[test]
