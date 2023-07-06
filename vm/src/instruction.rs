@@ -5,7 +5,6 @@ pub enum Instruction {
     Get,
     Constant,
     If,
-    Halt,
 }
 
 impl Instruction {
@@ -14,5 +13,4 @@ impl Instruction {
     pub const GET: u8 = Self::Get as _;
     pub const CONSTANT: u8 = Self::Constant as _;
     pub const IF: u8 = Self::If as _;
-    pub const HALT: u8 = Self::Halt as _;
 }
