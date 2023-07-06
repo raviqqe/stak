@@ -396,9 +396,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.allocation_index = 0;
         self.space = !self.space;
 
-        self.program_counter = self.copy_cons(self.program_counter.into())?;
-        self.stack = self.copy_cons(self.stack.into())?;
-        self.nil = self.copy_cons(self.nil.into())?;
+        self.program_counter = self.copy_cons(self.program_counter)?;
+        self.stack = self.copy_cons(self.stack)?;
+        self.nil = self.copy_cons(self.nil)?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
