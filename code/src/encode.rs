@@ -1,7 +1,7 @@
 use crate::{Instruction, Operand, Program};
 use alloc::{string::String, vec, vec::Vec};
 
-pub(crate) const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
+pub const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
 
 pub fn encode(program: &Program) -> Vec<u8> {
     let mut codes = vec![];

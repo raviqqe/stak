@@ -10,6 +10,6 @@ mod error;
 mod ir;
 
 pub use decode::decode;
-pub use encode::encode;
+pub use encode::{encode, INTEGER_BASE};
 pub use error::Error;
 pub use ir::*;

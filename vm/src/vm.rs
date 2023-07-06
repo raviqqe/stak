@@ -12,6 +12,11 @@ const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
 
+struct DecodeInput<'a> {
+    codes: &'a [u8],
+    index: usize,
+}
+
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
@@ -413,88 +418,95 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.symbols = self.nil;
         self.program_counter = self.nil;
 
-        self.decode_symbols()?;
-        self.decode_instructions()?;
+        let input = DecodeInput { codes, index: 0 };
+
+        self.decode_symbols(&mut input)?;
+        self.decode_instructions(&mut input)?;
 
         Ok(())
     }
 
-    fn decode_symbols(&mut self) -> Result<(), Error> {
-        let mut symbols = vec![];
-        let mut symbol = vec![];
+    fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
+        let mut symbol = self.nil;
 
         loop {
-            let character = self.decode_byte().ok_or(Error::EndOfInput)?;
+            let character = Self::decode_byte(input).ok_or(Error::EndOfInput)?;
 
             match character {
                 b',' | b';' => {
-                    symbol.reverse();
-                    symbols.push(String::from_utf8(take(&mut symbol))?);
+                    self.push(symbol.into());
 
                     if character == b';' {
-                        return Ok(symbols);
+                        break;
                     }
                 }
-                character => symbol.push(character),
+                character => symbol = self.append(Number::new(character as u64).into(), symbol)?,
             }
         }
+
+        self.symbols = self.stack;
+        self.stack = self.nil;
 
         Ok(())
     }
 
-    fn decode_instructions(&mut self) -> Result<(), Error> {
-        let mut instruction_lists = vec![];
-        let mut instructions = vec![];
+    fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
+        let mut instruction_lists = self.nil;
+        let mut instructions = self.nil;
 
-        while let Some(instruction) = self.decode_byte() {
+        while let Some(instruction) = Self::decode_byte(input) {
+            let car = self.nil;
             match instruction {
-                Instruction::RETURN_CALL => {
-                    instructions.reverse();
-                    instruction_lists.push(take(&mut instructions));
-                    instructions.push(Instruction::Call(self.decode_operand()?, true))
+                // code::Instruction::RETURN_CALL => {
+                //     instructions.reverse();
+                //     instruction_lists.push(take(&mut instructions));
+                //     instructions.push(Instruction::Call(self.decode_operand()?, true))
+                // }
+                // Instruction::CALL => {
+                //     instructions.push(Instruction::Call(self.decode_operand()?, false))
+                // }
+                code::Instruction::SET | code::Instruction::GET => {
+                    car = Self::decode_operand(input)?;
                 }
-                Instruction::CALL => {
-                    instructions.push(Instruction::Call(self.decode_operand()?, false))
+                code::Instruction::CONSTANT => {
+                    car = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
                 }
-                Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
-                Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
-                Instruction::CONSTANT => instructions.push(Instruction::Constant(
-                    self.decode_integer().ok_or(Error::MissingOperand)?,
-                )),
-                Instruction::IF => {
-                    instructions.reverse();
-                    let then = take(&mut instructions);
+                // code::Instruction::IF => {
+                //     instructions.reverse();
+                //     let then = take(&mut instructions);
 
-                    instructions.push(Instruction::If(
-                        then,
-                        instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
-                    ));
-                }
+                //     instructions.push(Instruction::If(
+                //         then,
+                //         instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
+                //     ));
+                // }
                 _ => return Err(Error::IllegalInstruction),
             }
+
+            instructions = self.append(foo, instructions)?;
         }
 
         Ok(())
     }
 
-    fn decode_operand(&mut self) -> Result<Operand, Error> {
-        let integer = self.decode_integer().ok_or(Error::MissingOperand)?;
+    fn decode_operand(input: &mut DecodeInput) -> Result<code::Operand, Error> {
+        let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
         let global = integer & 1 == 0;
         let index = integer >> 1;
 
         Ok(if global {
-            Operand::Global(index)
+            code::Operand::Global(index)
         } else {
-            Operand::Local(index)
+            code::Operand::Local(index)
         })
     }
 
-    fn decode_integer(&mut self) -> Option<u64> {
+    fn decode_integer(input: &mut DecodeInput) -> Option<u64> {
         let mut y = 0;
 
         while {
-            y *= INTEGER_BASE;
-            let x = self.decode_byte()? as i8;
+            y *= code::INTEGER_BASE;
+            let x = Self::decode_byte(input)? as i8;
 
             y += (if x < 0 { -1 } else { 1 } * x) as u64;
 
@@ -504,13 +516,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Some(y)
     }
 
-    fn decode_byte(&mut self) -> Option<u8> {
-        if self.index >= self.codes.len() {
+    fn decode_byte(input: &mut DecodeInput) -> Option<u8> {
+        if input.index >= input.codes.len() {
             return None;
         }
 
-        let byte = self.codes[self.codes.len() - 1 - self.index];
-        self.index += 1;
+        let byte = input.codes[input.codes.len() - 1 - input.index];
+        input.index += 1;
         Some(byte)
     }
 }
