@@ -1,6 +1,5 @@
-use core::fmt::{self, Display, Formatter};
-
 use crate::{value::Value, Error};
+use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Number(u64);
