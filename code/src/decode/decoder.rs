@@ -20,8 +20,24 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_symbols(&mut self) -> Result<Vec<String>, Error> {
-        // TODO
-        Ok(vec![])
+        let mut symbols = vec![];
+        let mut symbol = vec![];
+
+        loop {
+            let character = self.decode_byte().ok_or(Error::EndOfInput)?;
+
+            match character {
+                b';' => {
+                    symbols.push(String::from_utf8(take(&mut symbol))?);
+                    return Ok(symbols);
+                }
+                b',' => {
+                    symbol.reverse();
+                    symbols.push(String::from_utf8(take(&mut symbol))?);
+                }
+                character => symbol.push(character),
+            }
+        }
     }
 
     fn decode_instructions(&mut self) -> Result<Vec<Instruction>, Error> {
