@@ -31,6 +31,7 @@ impl<'a> Decoder<'a> {
         while let Some(instruction) = self.decode_byte() {
             match instruction {
                 Instruction::TAIL_APPLY => {
+                    instruction_lists.push(take(&mut instructions));
                     instructions.push(Instruction::Apply(self.decode_operand()?, true))
                 }
                 Instruction::APPLY => {
