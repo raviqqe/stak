@@ -7,8 +7,6 @@ pub fn encode(program: &Program) -> Vec<u8> {
     let mut codes = vec![];
 
     encode_instructions(&mut codes, program.instructions());
-    codes.reverse();
-
     encode_symbols(&mut codes, program.symbols());
 
     codes
@@ -20,7 +18,7 @@ fn encode_symbols(_codes: &mut Vec<u8>, _symbols: &[String]) {
 
 // TODO Use short encodings for instruction operands.
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
-    for instruction in instructions {
+    for instruction in instructions.iter().rev() {
         match instruction {
             Instruction::Apply(operand, tail) => {
                 encode_operand(codes, *operand);

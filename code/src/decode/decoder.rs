@@ -85,7 +85,11 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_byte(&mut self) -> Option<u8> {
-        let &byte = self.codes.get(self.index)?;
+        if self.index >= self.codes.len() {
+            return None;
+        }
+
+        let &byte = self.codes.get(self.codes.len() - 1 - self.index)?;
         self.index += 1;
         Some(byte)
     }
