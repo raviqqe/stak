@@ -11,7 +11,7 @@ pub fn encode(program: &Program) -> Vec<u8> {
     codes
 }
 
-// TODO Use short encoding for instruction operands.
+// TODO Use short encodings for instruction operands.
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
