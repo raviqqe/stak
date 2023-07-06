@@ -41,7 +41,6 @@ fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
     }
 }
 
-// Base 128 encoding
 fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
     let mut rest = false;
 
