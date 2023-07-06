@@ -24,7 +24,7 @@ pub struct Vm<const N: usize, T: Device> {
     heap: [Value; N],
 }
 
-impl<T: Device, const N: usize> Vm<N, T> {
+impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
     pub fn new(device: T) -> Result<Self, Error> {
