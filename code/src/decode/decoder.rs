@@ -89,7 +89,7 @@ impl<'a> Decoder<'a> {
             return None;
         }
 
-        let &byte = self.codes.get(self.codes.len() - 1 - self.index)?;
+        let byte = self.codes[self.codes.len() - 1 - self.index];
         self.index += 1;
         Some(byte)
     }
