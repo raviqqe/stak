@@ -194,7 +194,7 @@ mod tests {
     #[test]
     fn encode_if() {
         let program = Program::new(
-            vec![],
+            default_symbols(),
             vec![Instruction::If(
                 vec![Instruction::Apply(Operand::Global(0), true)],
                 vec![Instruction::Apply(Operand::Global(1), true)],
