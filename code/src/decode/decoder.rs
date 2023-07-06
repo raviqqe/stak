@@ -1,5 +1,6 @@
 use crate::{encode::INTEGER_BASE, Error, Instruction, Operand, Program};
 use alloc::{string::String, vec, vec::Vec};
+use core::mem::take;
 
 pub struct Decoder<'a> {
     codes: &'a [u8],
@@ -24,6 +25,7 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_instructions(&mut self) -> Result<Vec<Instruction>, Error> {
+        let mut instruction_lists = vec![];
         let mut instructions = vec![];
 
         while let Some(instruction) = self.decode_byte() {
@@ -39,7 +41,14 @@ impl<'a> Decoder<'a> {
                 Instruction::CONSTANT => instructions.push(Instruction::Constant(
                     self.decode_integer().ok_or(Error::MissingOperand)?,
                 )),
-                Instruction::IF => todo!(),
+                Instruction::IF => {
+                    let then = take(&mut instructions);
+
+                    instructions.push(Instruction::If(
+                        then,
+                        instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
+                    ));
+                }
                 _ => return Err(Error::IllegalInstruction),
             }
         }

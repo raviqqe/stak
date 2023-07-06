@@ -2,4 +2,5 @@
 pub enum Error {
     IllegalInstruction,
     MissingOperand,
+    MissingElseBranch,
 }
