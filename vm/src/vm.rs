@@ -768,7 +768,7 @@ mod tests {
                 vec!["f".into()],
                 vec![
                     Instruction::Constant(0),
-                    Instruction::Constant(0),
+                    Instruction::Get(Operand::Global(NIL_INDEX)),
                     Instruction::Constant(0),
                     Instruction::Constant(3),
                     Instruction::Get(Operand::Global(FALSE_INDEX)),
