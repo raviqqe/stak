@@ -30,10 +30,10 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
-            Instruction::Call(operand, tail) => {
+            Instruction::Call(operand, r#return) => {
                 encode_operand(codes, *operand);
-                codes.push(if *tail {
-                    Instruction::TAIL_CALL
+                codes.push(if *r#return {
+                    Instruction::RETURN_CALL
                 } else {
                     Instruction::CALL
                 });
@@ -112,7 +112,7 @@ mod tests {
     }
 
     #[test]
-    fn encode_tail_call_global() {
+    fn encode_return_call_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Call(Operand::Global(0), true)],
@@ -120,7 +120,7 @@ mod tests {
     }
 
     #[test]
-    fn encode_tail_call_local() {
+    fn encode_return_call_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Call(Operand::Local(0), true)],

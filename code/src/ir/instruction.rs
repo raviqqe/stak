@@ -11,7 +11,7 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const TAIL_CALL: u8 = 0;
+    pub const RETURN_CALL: u8 = 0;
     pub const CALL: u8 = 1;
     pub const SET: u8 = 2;
     pub const GET: u8 = 3;
