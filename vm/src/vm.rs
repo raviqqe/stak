@@ -455,8 +455,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut instructions = self.nil;
 
         while let Some(instruction) = Self::decode_byte(input) {
-            let car = self.nil;
-            match instruction {
+            let (car, tag) = match instruction {
                 // code::Instruction::RETURN_CALL => {
                 //     instructions.reverse();
                 //     instruction_lists.push(take(&mut instructions));
@@ -465,12 +464,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 // Instruction::CALL => {
                 //     instructions.push(Instruction::Call(self.decode_operand()?, false))
                 // }
-                code::Instruction::SET | code::Instruction::GET => {
-                    car = Self::decode_operand(input)?;
-                }
-                code::Instruction::CONSTANT => {
-                    car = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
-                }
+                code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
+                code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
+                code::Instruction::CONSTANT => (
+                    Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?).into(),
+                    Instruction::CONSTANT,
+                ),
                 // code::Instruction::IF => {
                 //     instructions.reverse();
                 //     let then = take(&mut instructions);
@@ -481,23 +480,23 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 //     ));
                 // }
                 _ => return Err(Error::IllegalInstruction),
-            }
+            };
 
-            instructions = self.append(foo, instructions)?;
+            instructions = self.append(car, instructions.set_tag(tag))?;
         }
 
         Ok(())
     }
 
-    fn decode_operand(input: &mut DecodeInput) -> Result<code::Operand, Error> {
+    fn decode_operand(&self, input: &mut DecodeInput) -> Result<Value, Error> {
         let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
         let global = integer & 1 == 0;
         let index = integer >> 1;
 
         Ok(if global {
-            code::Operand::Global(index)
+            self.car(self.tail(self.symbols, Number::new(index))?)
         } else {
-            code::Operand::Local(index)
+            Number::new(index).into()
         })
     }
 
