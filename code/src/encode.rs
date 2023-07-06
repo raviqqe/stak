@@ -16,20 +16,28 @@ pub fn encode(program: &Program) -> Vec<u8> {
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
-            Instruction::Apply(operand, bool) => todo!(),
+            Instruction::Apply(operand, _jump) => {
+                encode_operand(codes, *operand);
+                codes.push(Instruction::APPLY);
+                todo!();
+            }
             Instruction::Set(operand) => {
                 encode_operand(codes, *operand);
-                codes.push(Instruction::CONSTANT)
+                codes.push(Instruction::SET);
             }
             Instruction::Get(operand) => {
                 encode_operand(codes, *operand);
-                codes.push(Instruction::CONSTANT)
+                codes.push(Instruction::GET);
             }
             Instruction::Constant(number) => {
                 encode_integer(codes, *number);
-                codes.push(Instruction::CONSTANT)
+                codes.push(Instruction::CONSTANT);
             }
-            Instruction::If(r#then, r#else) => todo!(),
+            Instruction::If(then, r#else) => {
+                encode_instructions(codes, r#else);
+                encode_instructions(codes, then);
+                codes.push(Instruction::IF);
+            }
         }
     }
 }
