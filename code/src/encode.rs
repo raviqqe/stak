@@ -16,10 +16,13 @@ pub fn encode(program: &Program) -> Vec<u8> {
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
-            Instruction::Apply(operand, _jump) => {
+            Instruction::Apply(operand, jump) => {
                 encode_operand(codes, *operand);
-                codes.push(Instruction::APPLY);
-                todo!();
+                codes.push(if *jump {
+                    Instruction::APPLY_JUMP
+                } else {
+                    Instruction::APPLY
+                });
             }
             Instruction::Set(operand) => {
                 encode_operand(codes, *operand);

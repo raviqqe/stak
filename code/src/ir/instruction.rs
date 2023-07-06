@@ -11,9 +11,10 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const APPLY: u8 = 0;
-    pub const SET: u8 = 1;
-    pub const GET: u8 = 2;
-    pub const CONSTANT: u8 = 3;
-    pub const IF: u8 = 4;
+    pub const APPLY_JUMP: u8 = 0;
+    pub const APPLY: u8 = 1;
+    pub const SET: u8 = 2;
+    pub const GET: u8 = 3;
+    pub const CONSTANT: u8 = 4;
+    pub const IF: u8 = 5;
 }
