@@ -12,6 +12,11 @@ const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
 
+const NIL_INDEX: u64 = 0;
+const FALSE_INDEX: u64 = 1;
+const TRUE_INDEX: u64 = 2;
+const RIB_INDEX: u64 = 3;
+
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
@@ -288,6 +293,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     pub fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
+            Primitive::RIB => {
+                let car = self.pop()?;
+                let cdr = self.pop()?;
+                let tag = self.pop()?;
+                let rib = self.allocate(
+                    car,
+                    Cons::try_from(cdr)?
+                        .set_tag(Number::try_from(tag)?.to_u64() as u8)
+                        .into(),
+                )?;
+                self.push(rib.into())?;
+            }
             Primitive::CONS => {
                 let car = self.pop()?;
                 let cdr = self.pop()?;
@@ -488,7 +505,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let index = Number::new(integer >> 1);
 
         Ok(if integer & 1 == 0 {
-            self.car(self.tail(self.symbols, index)?)
+            match index.to_u64() {
+                NIL_INDEX => self.nil.into(),
+                FALSE_INDEX => self.boolean(false),
+                TRUE_INDEX => self.boolean(true),
+                RIB_INDEX => todo!("rib"),
+                _ => self.car(self.tail(self.symbols, index)?),
+            }
         } else {
             index.into()
         })
@@ -728,6 +751,28 @@ mod tests {
                 vec![
                     Instruction::Constant(42),
                     Instruction::Get(Operand::Local(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn r#if() {
+            run_program(&Program::new(
+                vec!["f".into()],
+                vec![
+                    Instruction::Get(Operand::Global(FALSE_INDEX)),
+                    Instruction::If(
+                        vec![
+                            Instruction::Constant(0),
+                            Instruction::Constant(0),
+                            Instruction::Constant(0),
+                            Instruction::Call(Operand::Global(RIB_INDEX), true),
+                        ],
+                        vec![
+                            Instruction::Constant(0),
+                            Instruction::Call(Operand::Global(RIB_INDEX), true),
+                        ],
+                    ),
                 ],
             ));
         }
