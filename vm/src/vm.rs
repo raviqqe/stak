@@ -288,9 +288,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
-                let car = self.pop()?;
-                let cdr = self.pop()?;
-                let tag = self.pop()?;
+                let [car, cdr, tag] = self.pop_arguments::<3>()?;
                 let rib = self.allocate(
                     car,
                     Cons::try_from(cdr)?
@@ -300,8 +298,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(rib.into())?;
             }
             Primitive::CONS => {
-                let car = self.pop()?;
-                let cdr = self.pop()?;
+                let [car, cdr] = self.pop_arguments::<2>()?;
                 let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
             }
@@ -310,8 +307,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.pop()?;
             }
             Primitive::SKIP => {
-                let x = self.pop()?;
-                self.pop()?;
+                let [x, _] = self.pop_arguments::<2>()?;
                 self.push(x)?;
             }
             Primitive::CLOSE => {
@@ -333,14 +329,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(self.cdr_value(x)?)?;
             }
             Primitive::SET_CAR => {
-                let x = self.pop()?;
-                let y = self.pop()?;
+                let [x, y] = self.pop_arguments::<2>()?;
                 *self.car_value_mut(x)? = y;
                 self.push(y)?;
             }
             Primitive::SET_CDR => {
-                let x = self.pop()?;
-                let y = self.pop()?;
+                let [x, y] = self.pop_arguments::<2>()?;
                 *self.cdr_value_mut(x)? = y;
                 self.push(y)?;
             }
