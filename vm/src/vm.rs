@@ -656,7 +656,7 @@ mod tests {
     }
 
     #[test]
-    fn create_with_minmum_heap() {
+    fn create_with_minimum_heap() {
         Vm::<MINIMUM_HEAP_SIZE, FixedBufferDevice<0, 0>>::new(Default::default())
             .unwrap()
             .run()
