@@ -9,7 +9,7 @@ use core::{
 };
 
 const CONS_FIELD_COUNT: usize = 2;
-const MINIMUM_HEAP_SIZE: usize = 6;
+const MINIMUM_HEAP_SIZE: usize = 2 * 6;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
@@ -65,7 +65,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let r#true = vm.allocate_raw(ZERO.into(), ZERO.into());
         vm.nil = vm.allocate_raw(r#false.into(), r#true.into());
 
-        debug_assert!(vm.allocation_index == MINIMUM_HEAP_SIZE);
+        debug_assert!(vm.allocation_index == MINIMUM_HEAP_SIZE / 2);
 
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
@@ -641,7 +641,7 @@ mod tests {
     use crate::FixedBufferDevice;
     use std::format;
 
-    const HEAP_SIZE: usize = 2 * 16;
+    const HEAP_SIZE: usize = 1 << 9;
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
@@ -654,6 +654,14 @@ mod tests {
         let vm = create_vm();
 
         insta::assert_display_snapshot!(vm);
+    }
+
+    #[test]
+    fn create_with_minmum_heap() {
+        Vm::<MINIMUM_HEAP_SIZE, FixedBufferDevice<0, 0>>::new(Default::default())
+            .unwrap()
+            .run()
+            .unwrap();
     }
 
     #[test]
