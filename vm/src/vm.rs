@@ -115,7 +115,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr(code))?.set_tag(FRAME_TAG).into();
+                                Cons::try_from(self.cdr_value(procedure)?)?
+                                    .set_tag(FRAME_TAG)
+                                    .into();
                             self.program_counter = self.cdr(code).try_into()?;
                         }
                         Value::Number(primitive) => {
