@@ -427,7 +427,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // Input decoding
 
-    pub fn decode(&mut self, codes: &[u8]) -> Result<(), Error> {
+    pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
         self.program_counter = self.nil;
         self.stack = self.nil;
 
@@ -701,7 +701,7 @@ mod tests {
         fn run_program(program: &Program) {
             let mut vm = create_vm();
 
-            vm.decode(&encode(program)).unwrap();
+            vm.initialize(&encode(program)).unwrap();
 
             vm.run().unwrap()
         }
