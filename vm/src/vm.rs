@@ -20,8 +20,6 @@ const RIB_INDEX: u64 = 3;
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
-    symbols: Cons,
-    rib: Cons,
 }
 
 #[derive(Debug)]
@@ -203,30 +201,34 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
-        let cons = self.allocate_raw(car, cdr);
-
-        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
-
-        if self.allocation_index == Self::SPACE_SIZE {
+        if self.is_out_of_memory() {
             self.collect_garbages()?;
 
-            debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
-
-            if self.allocation_index == Self::SPACE_SIZE {
+            if self.is_out_of_memory() {
                 return Err(Error::OutOfMemory);
             }
         }
 
-        Ok(cons)
+        Ok(self.allocate_raw(car, cdr))
+    }
+
+    fn is_out_of_memory(&self) -> bool {
+        self.allocation_index + CONS_FIELD_COUNT >= Self::SPACE_SIZE
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
 
+        debug_assert!(
+            self.allocation_start() <= cons.index() && cons.index() < self.allocation_end()
+        );
+
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
 
         self.allocation_index += CONS_FIELD_COUNT;
+
+        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
         cons
     }
@@ -443,15 +445,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.nil;
         self.stack = self.nil;
 
-        let mut input = DecodeInput {
-            codes,
-            index: 0,
-            symbols: self.nil,
-            rib: self.allocate(
+        let mut input = DecodeInput { codes, index: 0 };
+
+        // Initialize symbols and a rib primitive under a root.
+        *self.symbols_mut()? = self.nil.into();
+        *self.rib_mut()? = self
+            .allocate(
                 ZERO.into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
-            )?,
-        };
+            )?
+            .into();
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -460,7 +463,27 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
+        // Remove references to symbols and a rib primitive.
+        *self.symbols_mut()? = ZERO.into();
+        *self.rib_mut()? = ZERO.into();
+
         Ok(())
+    }
+
+    fn symbols(&self) -> Result<Cons, Error> {
+        self.car_value(self.boolean(false))?.try_into()
+    }
+
+    fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
+        self.car_value_mut(self.boolean(false))
+    }
+
+    fn rib(&self) -> Result<Cons, Error> {
+        self.cdr_value(self.boolean(false))?.try_into()
+    }
+
+    fn rib_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cdr_value_mut(self.boolean(false))
     }
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
@@ -479,7 +502,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        input.symbols = self.stack;
+        *self.symbols_mut()? = self.stack.into();
         self.stack = self.nil;
 
         Ok(())
@@ -527,8 +550,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 NIL_INDEX => self.nil.into(),
                 FALSE_INDEX => self.boolean(false),
                 TRUE_INDEX => self.boolean(true),
-                RIB_INDEX => input.rib.into(),
-                _ => self.car(self.tail(input.symbols, index)?),
+                RIB_INDEX => self.rib()?.into(),
+                _ => self.car(self.tail(self.symbols()?, index)?),
             }
         } else {
             index.into()
