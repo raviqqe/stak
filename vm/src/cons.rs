@@ -63,4 +63,12 @@ mod tests {
         assert_eq!(cons.index(), 42);
         assert_eq!(cons.tag(), 3);
     }
+
+    #[test]
+    fn set_too_large_tag() {
+        let cons = Cons::new(0).set_tag(u8::MAX);
+
+        assert_eq!(cons.index(), 0);
+        assert_eq!(cons.tag(), TAG_MASK as u8);
+    }
 }
