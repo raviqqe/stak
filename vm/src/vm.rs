@@ -580,7 +580,7 @@ mod tests {
     use crate::FixedBufferDevice;
     use std::format;
 
-    const HEAP_SIZE: usize = 1 << 9;
+    const HEAP_SIZE: usize = 2 * 16;
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
