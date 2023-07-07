@@ -445,6 +445,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
 
+        // Implicit top-level frame
         let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
