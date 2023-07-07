@@ -345,14 +345,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
             Primitive::READ => {
-                let byte = self.device.read().unwrap();
+                let byte = self.device.read().map_err(|_| Error::ReadInput)?;
                 self.push(Number::new(byte as u64).into())?;
             }
             Primitive::WRITE => {
                 let byte = self.pop()?;
                 self.device
                     .write(Number::try_from(byte)?.to_u64() as u8)
-                    .unwrap();
+                    .map_err(|_| Error::ReadInput)?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
