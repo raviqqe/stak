@@ -485,7 +485,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         // Initialize a rib primitive under a root.
         *self.rib_mut()? = {
             let procedure = self.allocate(
-                ZERO.into(),
+                Number::new(Primitive::Rib as u64).into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
             )?;
 
