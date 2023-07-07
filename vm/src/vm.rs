@@ -49,20 +49,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        vm.initialize()?;
+        let r#false = vm.allocate(ZERO.into(), ZERO.into())?;
+        let r#true = vm.allocate(ZERO.into(), ZERO.into())?;
+        vm.nil = vm.allocate(r#false.into(), r#true.into())?;
+
+        vm.stack = vm.nil;
+        vm.program_counter = vm.nil;
 
         Ok(vm)
-    }
-
-    fn initialize(&mut self) -> Result<(), Error> {
-        let r#false = self.allocate(ZERO.into(), ZERO.into())?;
-        let r#true = self.allocate(ZERO.into(), ZERO.into())?;
-        self.nil = self.allocate(r#false.into(), r#true.into())?;
-
-        self.stack = self.nil;
-        self.program_counter = self.nil;
-
-        Ok(())
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
