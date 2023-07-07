@@ -367,21 +367,29 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) -> Result<(), Error> {
-        let x = Number::try_from(self.pop()?)?.to_u64();
-        let y = Number::try_from(self.pop()?)?.to_u64();
+        let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(Number::new(operate(x, y)).into())?;
+        self.push(Number::new(operate(x.to_u64(), y.to_u64())).into())?;
 
         Ok(())
     }
 
     fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) -> Result<(), Error> {
-        let x = Number::try_from(self.pop()?)?.to_u64();
-        let y = Number::try_from(self.pop()?)?.to_u64();
+        let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(self.boolean(operate(x, y)))?;
+        self.push(self.boolean(operate(x.to_u64(), y.to_u64())))?;
 
         Ok(())
+    }
+
+    fn pop_number_arguments<const M: usize>(&mut self) -> Result<[Number; M], Error> {
+        let mut numbers = [ZERO; M];
+
+        for (index, value) in self.pop_arguments::<M>()?.into_iter().enumerate() {
+            numbers[index] = Number::try_from(value)?;
+        }
+
+        Ok(numbers)
     }
 
     fn pop_arguments<const M: usize>(&mut self) -> Result<[Value; M], Error> {
