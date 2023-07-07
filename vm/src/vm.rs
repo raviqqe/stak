@@ -437,13 +437,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
             // TODO Put symbols and rib under some root to support GC during decoding.
             symbols: self.nil,
             rib: self.allocate(
-                Number::new(0).into(),
+                ZERO.into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
             )?,
         };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
+
+        let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
+        self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
         Ok(())
     }
