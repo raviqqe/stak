@@ -465,8 +465,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         let mut input = DecodeInput { codes, index: 0 };
 
-        // Initialize symbols and a rib primitive under a root.
-        *self.symbols_mut()? = self.nil.into();
+        // Initialize a rib primitive under a root.
         *self.rib_mut()? = self
             .allocate(
                 ZERO.into(),
