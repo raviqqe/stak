@@ -4,10 +4,12 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
+    mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
 
 const CONS_FIELD_COUNT: usize = 2;
+const MINIMUM_HEAP_SIZE: usize = 6;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
@@ -45,6 +47,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
     pub fn new(device: T) -> Result<Self, Error> {
+        if N < MINIMUM_HEAP_SIZE {
+            return Err(Error::HeapSize);
+        }
+
         let mut vm = Self {
             device,
             program_counter: Cons::new(0),
@@ -55,9 +61,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate(ZERO.into(), ZERO.into())?;
-        let r#true = vm.allocate(ZERO.into(), ZERO.into())?;
-        vm.nil = vm.allocate(r#false.into(), r#true.into())?;
+        let r#false = vm.allocate_raw(ZERO.into(), ZERO.into());
+        let r#true = vm.allocate_raw(ZERO.into(), ZERO.into());
+        vm.nil = vm.allocate_raw(r#false.into(), r#true.into());
+
+        debug_assert!(vm.allocation_index == MINIMUM_HEAP_SIZE);
 
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
@@ -141,7 +149,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = (if self.pop()? == self.boolean(true) {
+                    self.program_counter = (if self.pop()? == self.r#true() {
                         self.car(self.program_counter)
                     } else {
                         self.cdr(self.program_counter)
@@ -213,6 +221,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         assert_index_range!(self, cons);
 
+        *self.allocation_cell_mut()? = cons.into();
+
         if let Some(cons) = car.to_cons() {
             assert_index_range!(self, cons);
         }
@@ -229,7 +239,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        Ok(cons)
+        replace(self.allocation_cell_mut()?, ZERO.into()).try_into()
     }
 
     fn is_out_of_memory(&self) -> bool {
@@ -301,6 +311,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
         } else {
             self.car(self.nil)
         }
+    }
+
+    fn r#false(&self) -> Value {
+        self.boolean(false)
+    }
+
+    fn r#true(&self) -> Value {
+        self.boolean(true)
     }
 
     // Primitive operations
@@ -488,19 +506,23 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn symbols(&self) -> Result<Cons, Error> {
-        self.car_value(self.boolean(false))?.try_into()
+        self.car_value(self.r#false())?.try_into()
     }
 
     fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
-        self.car_value_mut(self.boolean(false))
+        self.car_value_mut(self.r#false())
     }
 
     fn rib(&self) -> Result<Cons, Error> {
-        self.cdr_value(self.boolean(false))?.try_into()
+        self.cdr_value(self.r#false())?.try_into()
     }
 
     fn rib_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.boolean(false))
+        self.cdr_value_mut(self.r#false())
+    }
+
+    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cdr_value_mut(self.r#true())
     }
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
@@ -565,8 +587,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(if integer & 1 == 0 {
             match index.to_u64() {
                 NIL_INDEX => self.nil.into(),
-                FALSE_INDEX => self.boolean(false),
-                TRUE_INDEX => self.boolean(true),
+                FALSE_INDEX => self.r#false(),
+                TRUE_INDEX => self.r#true(),
                 RIB_INDEX => self.rib()?.into(),
                 _ => self.car(self.tail(self.symbols()?, index)?),
             }
