@@ -17,6 +17,14 @@ const FALSE_INDEX: u64 = 1;
 const TRUE_INDEX: u64 = 2;
 const RIB_INDEX: u64 = 3;
 
+macro_rules! assert_index_range {
+    ($self:expr, $cons:expr) => {
+        debug_assert!(
+            $self.allocation_start() <= $cons.index() && $cons.index() < $self.allocation_end()
+        );
+    };
+}
+
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
@@ -201,6 +209,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+        let cons = self.allocate_raw(car, cdr);
+
+        assert_index_range!(self, cons);
+
+        if let Some(cons) = car.to_cons() {
+            assert_index_range!(self, cons);
+        }
+
+        if let Some(cons) = cdr.to_cons() {
+            assert_index_range!(self, cons);
+        }
+
         if self.is_out_of_memory() {
             self.collect_garbages()?;
 
@@ -209,19 +229,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        Ok(self.allocate_raw(car, cdr))
+        Ok(cons)
     }
 
     fn is_out_of_memory(&self) -> bool {
-        self.allocation_index + CONS_FIELD_COUNT > Self::SPACE_SIZE
+        self.allocation_index >= Self::SPACE_SIZE
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
 
-        debug_assert!(
-            self.allocation_start() <= cons.index() && cons.index() < self.allocation_end()
-        );
+        assert_index_range!(self, cons);
 
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
