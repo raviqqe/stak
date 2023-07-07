@@ -10,7 +10,9 @@ pub enum Error {
     MissingOperand,
     NumberExpected,
     OutOfMemory,
+    ReadInput,
     StackUnderflow,
+    WriteOutput,
 }
 
 impl Display for Error {
@@ -24,7 +26,9 @@ impl Display for Error {
             Self::MissingOperand => write!(formatter, "missing operand"),
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
+            Self::ReadInput => write!(formatter, "failed to read input"),
             Self::StackUnderflow => write!(formatter, "stack underflow"),
+            Self::WriteOutput => write!(formatter, "failed to write output"),
         }
     }
 }

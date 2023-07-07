@@ -288,9 +288,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
-                let car = self.pop()?;
-                let cdr = self.pop()?;
-                let tag = self.pop()?;
+                let [car, cdr, tag] = self.pop_arguments::<3>()?;
                 let rib = self.allocate(
                     car,
                     Cons::try_from(cdr)?
@@ -300,8 +298,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(rib.into())?;
             }
             Primitive::CONS => {
-                let car = self.pop()?;
-                let cdr = self.pop()?;
+                let [car, cdr] = self.pop_arguments::<2>()?;
                 let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
             }
@@ -310,8 +307,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.pop()?;
             }
             Primitive::SKIP => {
-                let x = self.pop()?;
-                self.pop()?;
+                let [x, _] = self.pop_arguments::<2>()?;
                 self.push(x)?;
             }
             Primitive::CLOSE => {
@@ -333,14 +329,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(self.cdr_value(x)?)?;
             }
             Primitive::SET_CAR => {
-                let x = self.pop()?;
-                let y = self.pop()?;
+                let [x, y] = self.pop_arguments::<2>()?;
                 *self.car_value_mut(x)? = y;
                 self.push(y)?;
             }
             Primitive::SET_CDR => {
-                let x = self.pop()?;
-                let y = self.pop()?;
+                let [x, y] = self.pop_arguments::<2>()?;
                 *self.cdr_value_mut(x)? = y;
                 self.push(y)?;
             }
@@ -351,14 +345,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
             Primitive::READ => {
-                let byte = self.device.read().unwrap();
+                let byte = self.device.read().map_err(|_| Error::ReadInput)?;
                 self.push(Number::new(byte as u64).into())?;
             }
             Primitive::WRITE => {
                 let byte = self.pop()?;
                 self.device
                     .write(Number::try_from(byte)?.to_u64() as u8)
-                    .unwrap();
+                    .map_err(|_| Error::ReadInput)?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
@@ -367,21 +361,39 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) -> Result<(), Error> {
-        let x = Number::try_from(self.pop()?)?.to_u64();
-        let y = Number::try_from(self.pop()?)?.to_u64();
+        let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(Number::new(operate(x, y)).into())?;
+        self.push(Number::new(operate(x.to_u64(), y.to_u64())).into())?;
 
         Ok(())
     }
 
     fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) -> Result<(), Error> {
-        let x = Number::try_from(self.pop()?)?.to_u64();
-        let y = Number::try_from(self.pop()?)?.to_u64();
+        let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(self.boolean(operate(x, y)))?;
+        self.push(self.boolean(operate(x.to_u64(), y.to_u64())))?;
 
         Ok(())
+    }
+
+    fn pop_number_arguments<const M: usize>(&mut self) -> Result<[Number; M], Error> {
+        let mut numbers = [ZERO; M];
+
+        for (index, value) in self.pop_arguments::<M>()?.into_iter().enumerate() {
+            numbers[index] = Number::try_from(value)?;
+        }
+
+        Ok(numbers)
+    }
+
+    fn pop_arguments<const M: usize>(&mut self) -> Result<[Value; M], Error> {
+        let mut values = [ZERO.into(); M];
+
+        for index in 0..M {
+            values[M - 1 - index] = self.pop()?;
+        }
+
+        Ok(values)
     }
 
     // Garbage collection
