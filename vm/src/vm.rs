@@ -498,7 +498,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
-        // Remove references to symbols and a rib primitive.
+        // Allow GC of symbols and a rib primitive.
         *self.symbols_mut()? = ZERO.into();
         *self.rib_mut()? = ZERO.into();
 
