@@ -49,20 +49,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        vm.initialize()?;
+        let r#false = vm.allocate(ZERO.into(), ZERO.into())?;
+        let r#true = vm.allocate(ZERO.into(), ZERO.into())?;
+        vm.nil = vm.allocate(r#false.into(), r#true.into())?;
+
+        vm.stack = vm.nil;
+        vm.program_counter = vm.nil;
 
         Ok(vm)
-    }
-
-    fn initialize(&mut self) -> Result<(), Error> {
-        let r#false = self.allocate(ZERO.into(), ZERO.into())?;
-        let r#true = self.allocate(ZERO.into(), ZERO.into())?;
-        self.nil = self.allocate(r#false.into(), r#true.into())?;
-
-        self.stack = self.nil;
-        self.program_counter = self.nil;
-
-        Ok(())
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
@@ -71,7 +65,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    let r#return = instruction.index() == 0;
+                    let r#return = instruction == self.nil;
                     // (code . environment)
                     let procedure = self.car(self.operand()?);
                     let stack = self.stack;
@@ -433,7 +427,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // Input decoding
 
-    pub fn decode(&mut self, codes: &[u8]) -> Result<(), Error> {
+    pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
         self.program_counter = self.nil;
         self.stack = self.nil;
 
@@ -443,13 +437,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
             // TODO Put symbols and rib under some root to support GC during decoding.
             symbols: self.nil,
             rib: self.allocate(
-                Number::new(0).into(),
+                ZERO.into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
             )?,
         };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
+
+        let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
+        self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
         Ok(())
     }
@@ -458,10 +455,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut symbol = self.nil;
 
         loop {
-            let character = Self::decode_byte(input).ok_or(Error::EndOfInput)?;
-
-            match character {
-                b',' | b';' => {
+            match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
+                character @ (b',' | b';') => {
                     self.push(symbol.into())?;
 
                     if character == b';' {
@@ -572,7 +567,7 @@ mod tests {
     use crate::FixedBufferDevice;
     use std::format;
 
-    const HEAP_SIZE: usize = CONS_FIELD_COUNT * 256;
+    const HEAP_SIZE: usize = 1 << 9;
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
@@ -709,7 +704,7 @@ mod tests {
         fn run_program(program: &Program) {
             let mut vm = create_vm();
 
-            vm.decode(&encode(program)).unwrap();
+            vm.initialize(&encode(program)).unwrap();
 
             vm.run().unwrap()
         }
