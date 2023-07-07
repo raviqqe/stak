@@ -536,6 +536,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         loop {
             match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
                 character @ (b',' | b';') => {
+                    // TODO Fix a symbol data structure.
                     self.push(symbol.into())?;
 
                     if character == b';' {
