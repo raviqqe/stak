@@ -388,7 +388,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut values = [ZERO.into(); M];
 
         for index in 0..M {
-            values[N - 1 - index] = self.pop()?;
+            values[M - 1 - index] = self.pop()?;
         }
 
         Ok(values)
