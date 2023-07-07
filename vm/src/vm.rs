@@ -82,8 +82,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     let r#return = instruction == self.nil;
                     // (code . environment)
                     let procedure = self.car(self.operand()?);
-                    let stack = self.stack;
-                    let argument_count = Number::try_from(self.pop()?)?;
+                    let argument_count = Number::try_from(self.car(self.stack))?;
 
                     match self.car_value(procedure)? {
                         // (parameter-count . instruction-list)
@@ -95,22 +94,22 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let last_argument = self.tail(stack, parameter_count)?;
+                            let last_argument = self.tail(self.stack, parameter_count)?;
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                                 // Handle the case where a parameter count is zero.
                                 // i.e. last_argument == stack
-                                self.stack = self.cdr(stack).try_into()?;
+                                self.stack = self.cdr(self.stack).try_into()?;
                             } else {
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(stack) = self
+                                *self.car_mut(self.stack) = self
                                     .allocate(
                                         self.cdr(self.program_counter),
                                         self.cdr(last_argument),
                                     )?
                                     .into();
-                                *self.cdr_mut(last_argument) = stack.into();
+                                *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
                             // Set an environment.
