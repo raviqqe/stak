@@ -384,6 +384,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
+    fn pop_arguments<const M: usize>(&mut self) -> Result<[Value; M], Error> {
+        let mut values = [ZERO.into(); M];
+
+        for index in 0..M {
+            values[N - 1 - index] = self.pop()?;
+        }
+
+        Ok(values)
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self) -> Result<(), Error> {
