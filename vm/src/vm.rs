@@ -85,7 +85,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     let stack = self.stack;
                     let argument_count = Number::try_from(self.pop()?)?;
 
-                    match procedure {
+                    match self.car_value(procedure)? {
                         // (parameter-count . instruction-list)
                         Value::Cons(code) => {
                             let parameter_count = self.car(code).try_into()?;
@@ -481,12 +481,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.nil;
         self.stack = self.nil;
         // Initialize a rib primitive under a root.
-        *self.rib_mut()? = self
-            .allocate(
+        *self.rib_mut()? = {
+            let procedure = self.allocate(
                 ZERO.into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
+            )?;
+
+            self.allocate(
+                procedure.into(),
+                Cons::new(0).set_tag(Type::Symbol as u8).into(),
             )?
-            .into();
+            .into()
+        };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
