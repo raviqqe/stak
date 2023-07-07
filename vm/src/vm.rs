@@ -478,11 +478,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // Input decoding
 
     pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
-        self.program_counter = self.nil;
-        self.stack = self.nil;
-
         let mut input = DecodeInput { codes, index: 0 };
 
+        self.program_counter = self.nil;
+        self.stack = self.nil;
         // Initialize a rib primitive under a root.
         *self.rib_mut()? = self
             .allocate(
