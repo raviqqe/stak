@@ -4,10 +4,12 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
+    mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
 
 const CONS_FIELD_COUNT: usize = 2;
+const MINIMUM_HEAP_SIZE: usize = 2 * 6;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
@@ -17,11 +19,17 @@ const FALSE_INDEX: u64 = 1;
 const TRUE_INDEX: u64 = 2;
 const RIB_INDEX: u64 = 3;
 
+macro_rules! assert_index_range {
+    ($self:expr, $cons:expr) => {
+        debug_assert!(
+            $self.allocation_start() <= $cons.index() && $cons.index() < $self.allocation_end()
+        );
+    };
+}
+
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
-    symbols: Cons,
-    rib: Cons,
 }
 
 #[derive(Debug)]
@@ -39,6 +47,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
     pub fn new(device: T) -> Result<Self, Error> {
+        if N < MINIMUM_HEAP_SIZE {
+            return Err(Error::HeapSize);
+        }
+
         let mut vm = Self {
             device,
             program_counter: Cons::new(0),
@@ -49,9 +61,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate(ZERO.into(), ZERO.into())?;
-        let r#true = vm.allocate(ZERO.into(), ZERO.into())?;
-        vm.nil = vm.allocate(r#false.into(), r#true.into())?;
+        let r#false = vm.allocate_raw(ZERO.into(), ZERO.into());
+        let r#true = vm.allocate_raw(ZERO.into(), ZERO.into());
+        vm.nil = vm.allocate_raw(r#false.into(), r#true.into());
+
+        debug_assert!(vm.allocation_index == MINIMUM_HEAP_SIZE / 2);
 
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
@@ -135,7 +149,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = (if self.pop()? == self.boolean(true) {
+                    self.program_counter = (if self.pop()? == self.r#true() {
                         self.car(self.program_counter)
                     } else {
                         self.cdr(self.program_counter)
@@ -205,28 +219,44 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let cons = self.allocate_raw(car, cdr);
 
-        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
+        assert_index_range!(self, cons);
 
-        if self.allocation_index == Self::SPACE_SIZE {
+        *self.allocation_cell_mut()? = cons.into();
+
+        if let Some(cons) = car.to_cons() {
+            assert_index_range!(self, cons);
+        }
+
+        if let Some(cons) = cdr.to_cons() {
+            assert_index_range!(self, cons);
+        }
+
+        if self.is_out_of_memory() {
             self.collect_garbages()?;
 
-            debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
-
-            if self.allocation_index == Self::SPACE_SIZE {
+            if self.is_out_of_memory() {
                 return Err(Error::OutOfMemory);
             }
         }
 
-        Ok(cons)
+        replace(self.allocation_cell_mut()?, ZERO.into()).try_into()
+    }
+
+    fn is_out_of_memory(&self) -> bool {
+        self.allocation_index >= Self::SPACE_SIZE
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
 
+        assert_index_range!(self, cons);
+
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
 
         self.allocation_index += CONS_FIELD_COUNT;
+
+        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
         cons
     }
@@ -281,6 +311,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
         } else {
             self.car(self.nil)
         }
+    }
+
+    fn r#false(&self) -> Value {
+        self.boolean(false)
+    }
+
+    fn r#true(&self) -> Value {
+        self.boolean(true)
     }
 
     // Primitive operations
@@ -440,19 +478,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // Input decoding
 
     pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
+        let mut input = DecodeInput { codes, index: 0 };
+
         self.program_counter = self.nil;
         self.stack = self.nil;
-
-        let mut input = DecodeInput {
-            codes,
-            index: 0,
-            // TODO Put symbols and rib under some root to support GC during decoding.
-            symbols: self.nil,
-            rib: self.allocate(
+        // Initialize a rib primitive under a root.
+        *self.rib_mut()? = self
+            .allocate(
                 ZERO.into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
-            )?,
-        };
+            )?
+            .into();
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -461,7 +497,31 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
+        // Allow GC of symbols and a rib primitive.
+        *self.symbols_mut()? = ZERO.into();
+        *self.rib_mut()? = ZERO.into();
+
         Ok(())
+    }
+
+    fn symbols(&self) -> Result<Cons, Error> {
+        self.car_value(self.r#false())?.try_into()
+    }
+
+    fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
+        self.car_value_mut(self.r#false())
+    }
+
+    fn rib(&self) -> Result<Cons, Error> {
+        self.cdr_value(self.r#false())?.try_into()
+    }
+
+    fn rib_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cdr_value_mut(self.r#false())
+    }
+
+    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cdr_value_mut(self.r#true())
     }
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
@@ -480,7 +540,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        input.symbols = self.stack;
+        *self.symbols_mut()? = self.stack.into();
         self.stack = self.nil;
 
         Ok(())
@@ -526,10 +586,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(if integer & 1 == 0 {
             match index.to_u64() {
                 NIL_INDEX => self.nil.into(),
-                FALSE_INDEX => self.boolean(false),
-                TRUE_INDEX => self.boolean(true),
-                RIB_INDEX => input.rib.into(),
-                _ => self.car(self.tail(input.symbols, index)?),
+                FALSE_INDEX => self.r#false(),
+                TRUE_INDEX => self.r#true(),
+                RIB_INDEX => self.rib()?.into(),
+                _ => self.car(self.tail(self.symbols()?, index)?),
             }
         } else {
             index.into()
@@ -593,6 +653,14 @@ mod tests {
         let vm = create_vm();
 
         insta::assert_display_snapshot!(vm);
+    }
+
+    #[test]
+    fn create_with_minimum_heap() {
+        Vm::<MINIMUM_HEAP_SIZE, FixedBufferDevice<0, 0>>::new(Default::default())
+            .unwrap()
+            .run()
+            .unwrap();
     }
 
     #[test]
