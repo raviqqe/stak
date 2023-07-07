@@ -213,7 +213,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn is_out_of_memory(&self) -> bool {
-        self.allocation_index + CONS_FIELD_COUNT >= Self::SPACE_SIZE
+        self.allocation_index + CONS_FIELD_COUNT > Self::SPACE_SIZE
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Cons {
