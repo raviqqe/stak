@@ -103,6 +103,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // i.e. last_argument == stack
                                 self.stack = self.cdr(stack).try_into()?;
                             } else {
+                                // TODO
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(stack) = self
                                     .allocate(
