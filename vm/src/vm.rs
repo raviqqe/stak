@@ -118,6 +118,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             self.program_counter = self.cdr(code).try_into()?;
                         }
                         Value::Number(primitive) => {
+                            // Drop an argument count.
+                            self.pop()?;
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if r#return {
