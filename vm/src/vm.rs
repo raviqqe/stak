@@ -96,8 +96,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
-                                // Handle the case where a parameter count is zero.
-                                // i.e. last_argument == stack
                                 self.stack = self.cdr(self.stack).try_into()?;
                             } else {
                                 // Reuse an argument count cons as a new frame.
