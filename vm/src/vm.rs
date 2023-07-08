@@ -91,12 +91,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let last_argument = self.tail(self.stack, parameter_count)?;
+                            let mut last_argument = self.tail(self.stack, parameter_count)?;
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                                 self.stack = self.cdr(self.stack).try_into()?;
                             } else {
+                                *self.cell0_mut()? = last_argument.into();
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
                                     .allocate(
@@ -104,6 +105,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                         self.cdr(last_argument),
                                     )?
                                     .into();
+                                last_argument = self.cell0()?.try_into()?;
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
