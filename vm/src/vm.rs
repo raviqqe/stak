@@ -80,14 +80,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
-                    // (code . environment)
-                    let procedure = self.car(self.operand()?);
-                    let stack = self.stack;
-                    let argument_count = Number::try_from(self.pop()?)?;
 
-                    match self.car_value(procedure)? {
-                        // (parameter-count . instruction-list)
+                    match self.code()? {
                         Value::Cons(code) => {
+                            let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
 
                             // TODO Support variadic arguments.
@@ -95,32 +91,34 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let last_argument = self.tail(stack, parameter_count)?;
+                            let mut last_argument = self.tail(self.stack, parameter_count)?;
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
-                                // Handle the case where a parameter count is zero.
-                                // i.e. last_argument == stack
-                                self.stack = self.cdr(stack).try_into()?;
+                                self.stack = self.cdr(self.stack).try_into()?;
                             } else {
+                                *self.cell0_mut()? = last_argument.into();
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(stack) = self
+                                *self.car_mut(self.stack) = self
                                     .allocate(
                                         self.cdr(self.program_counter),
                                         self.cdr(last_argument),
                                     )?
                                     .into();
-                                *self.cdr_mut(last_argument) = stack.into();
+                                last_argument = self.cell0()?.try_into()?;
+                                *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr_value(procedure)?)?
+                                Cons::try_from(self.cdr(self.procedure()?))?
                                     .set_tag(FRAME_TAG)
                                     .into();
-                            self.program_counter = self.cdr(code).try_into()?;
+                            self.program_counter = self.cdr(self.code()?.try_into()?).try_into()?;
                         }
                         Value::Number(primitive) => {
+                            // Drop an argument count.
+                            self.pop()?;
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if r#return {
@@ -174,6 +172,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Value::Cons(cons) => cons, // Direct reference to a symbol
             Value::Number(index) => self.tail(self.stack, index)?,
         })
+    }
+
+    // (code . environment)
+    fn procedure(&self) -> Result<Cons, Error> {
+        self.car(self.operand()?).try_into()
+    }
+
+    // (parameter-count . instruction-list) | primitive
+    fn code(&self) -> Result<Value, Error> {
+        Ok(self.car(self.procedure()?))
     }
 
     // ((program-counter . stack) . tagged-environment)
@@ -511,18 +519,34 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn symbols(&self) -> Result<Cons, Error> {
-        self.car_value(self.r#false())?.try_into()
+        self.cell0()?.try_into()
     }
 
     fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
-        self.car_value_mut(self.r#false())
+        self.cell0_mut()
     }
 
     fn rib(&self) -> Result<Cons, Error> {
-        self.cdr_value(self.r#false())?.try_into()
+        self.cell1()?.try_into()
     }
 
     fn rib_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cell1_mut()
+    }
+
+    fn cell0(&self) -> Result<Value, Error> {
+        self.car_value(self.r#false())
+    }
+
+    fn cell0_mut(&mut self) -> Result<&mut Value, Error> {
+        self.car_value_mut(self.r#false())
+    }
+
+    fn cell1(&self) -> Result<Value, Error> {
+        self.cdr_value(self.r#false())
+    }
+
+    fn cell1_mut(&mut self) -> Result<&mut Value, Error> {
         self.cdr_value_mut(self.r#false())
     }
 
