@@ -80,11 +80,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
-                    let argument_count = Number::try_from(self.car(self.stack))?;
 
                     match self.car(self.procedure()?) {
                         // (parameter-count . instruction-list)
                         Value::Cons(code) => {
+                            let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
 
                             // TODO Support variadic arguments.
