@@ -80,11 +80,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
-                    // (code . environment)
-                    let procedure = self.car(self.operand()?);
                     let argument_count = Number::try_from(self.car(self.stack))?;
 
-                    match self.car_value(procedure)? {
+                    match self.car(self.procedure()?) {
                         // (parameter-count . instruction-list)
                         Value::Cons(code) => {
                             let parameter_count = self.car(code).try_into()?;
@@ -114,7 +112,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr_value(procedure)?)?
+                                Cons::try_from(self.cdr(self.procedure()?))?
                                     .set_tag(FRAME_TAG)
                                     .into();
                             self.program_counter = self.cdr(code).try_into()?;
@@ -173,6 +171,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Value::Cons(cons) => cons, // Direct reference to a symbol
             Value::Number(index) => self.tail(self.stack, index)?,
         })
+    }
+
+    // (code . environment)
+    fn procedure(&self) -> Result<Cons, Error> {
+        self.car(self.operand()?).try_into()
     }
 
     // ((program-counter . stack) . tagged-environment)
