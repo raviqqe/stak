@@ -517,18 +517,34 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn symbols(&self) -> Result<Cons, Error> {
-        self.car_value(self.r#false())?.try_into()
+        self.cell0()?.try_into()
     }
 
     fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
-        self.car_value_mut(self.r#false())
+        self.cell0_mut()
     }
 
     fn rib(&self) -> Result<Cons, Error> {
-        self.cdr_value(self.r#false())?.try_into()
+        self.cell1()?.try_into()
     }
 
     fn rib_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cell1_mut()
+    }
+
+    fn cell0(&self) -> Result<Value, Error> {
+        self.car_value(self.r#false())
+    }
+
+    fn cell0_mut(&mut self) -> Result<&mut Value, Error> {
+        self.car_value_mut(self.r#false())
+    }
+
+    fn cell1(&self) -> Result<Value, Error> {
+        self.cdr_value(self.r#false())
+    }
+
+    fn cell1_mut(&mut self) -> Result<&mut Value, Error> {
         self.cdr_value_mut(self.r#false())
     }
 
