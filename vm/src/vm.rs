@@ -81,8 +81,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
 
-                    match self.car(self.procedure()?) {
-                        // (parameter-count . instruction-list)
+                    match self.code()? {
                         Value::Cons(code) => {
                             let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
@@ -113,7 +112,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 Cons::try_from(self.cdr(self.procedure()?))?
                                     .set_tag(FRAME_TAG)
                                     .into();
-                            self.program_counter = self.cdr(code).try_into()?;
+                            self.program_counter = self.cdr(self.code()?.try_into()?).try_into()?;
                         }
                         Value::Number(primitive) => {
                             // Drop an argument count.
@@ -176,6 +175,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // (code . environment)
     fn procedure(&self) -> Result<Cons, Error> {
         self.car(self.operand()?).try_into()
+    }
+
+    // (parameter-count . instruction-list) | primitive
+    fn code(&self) -> Result<Value, Error> {
+        Ok(self.car(self.procedure()?))
     }
 
     // ((program-counter . stack) . tagged-environment)
