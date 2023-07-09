@@ -595,8 +595,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         )?;
 
         self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.r#false())?;
         self.initialize_symbol(self.r#true())?;
+        self.initialize_symbol(self.r#false())?;
         self.initialize_symbol(self.nil.into())?;
 
         *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
