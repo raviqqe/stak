@@ -80,8 +80,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
+                    let mut procedure = self.procedure()?;
 
-                    if Cons::try_from(self.cdr(self.procedure()?))?.tag() != Type::Procedure as u8 {
+                    if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
                     }
 
@@ -102,6 +103,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.stack = self.cdr(self.stack).try_into()?;
                             } else {
                                 *self.cell0_mut()? = last_argument.into();
+                                *self.cell1_mut()? = procedure.into();
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
                                     .allocate(
@@ -110,15 +112,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                     )?
                                     .into();
                                 last_argument = self.cell0()?.try_into()?;
+                                procedure = self.cell1()?.try_into()?;
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr(self.procedure()?))?
+                                Cons::try_from(self.cdr(procedure))?
                                     .set_tag(FRAME_TAG)
                                     .into();
-                            self.program_counter = self.cdr(self.code()?.try_into()?).try_into()?;
+                            self.program_counter =
+                                self.cdr(self.car(procedure).try_into()?).try_into()?;
                         }
                         Value::Number(primitive) => {
                             // Drop an argument count.
