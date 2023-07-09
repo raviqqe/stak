@@ -845,6 +845,11 @@ mod tests {
         }
 
         #[test]
+        fn close() {
+            run_program(&Program::new(vec![], vec![Instruction::Close(42)]));
+        }
+
+        #[test]
         fn set_global() {
             run_program(&Program::new(
                 vec!["x".into()],
