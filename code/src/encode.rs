@@ -148,6 +148,14 @@ mod tests {
     }
 
     #[test]
+    fn encode_close() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Close(42)],
+        ));
+    }
+
+    #[test]
     fn encode_set_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
