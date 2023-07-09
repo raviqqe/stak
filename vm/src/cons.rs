@@ -12,6 +12,10 @@ impl Cons {
         Self(index << TAG_SIZE)
     }
 
+    pub const fn dummy() -> Self {
+        Self::new(-1i64 as u64)
+    }
+
     pub const fn index(self) -> usize {
         (self.0 >> TAG_SIZE) as usize
     }

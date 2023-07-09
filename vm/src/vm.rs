@@ -10,7 +10,8 @@ use core::{
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
+const MOVED_CAR: Cons = Cons::dummy();
+const SINGLETON_CDR: Cons = Cons::dummy().set_tag(Type::Singleton as u8);
 const FRAME_TAG: u8 = 1;
 
 macro_rules! assert_index_range {
@@ -51,9 +52,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate_raw(ZERO.into(), ZERO.into())?;
-        let r#true = vm.allocate_raw(ZERO.into(), ZERO.into())?;
-        vm.nil = vm.allocate_raw(r#false.into(), r#true.into())?;
+        let r#false = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
+        let r#true = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
+        vm.nil = vm.allocate_raw(r#false.into(), r#true.set_tag(Type::Singleton as u8).into())?;
+
+        for singleton in [vm.nil, r#false, r#true] {
+            *vm.car_mut(singleton) = singleton.into();
+        }
 
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
@@ -243,7 +248,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.collect_garbages()?;
         }
 
-        replace(self.allocation_cell_mut()?, ZERO.into()).try_into()
+        replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()).try_into()
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
@@ -468,13 +473,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if self.car(cons) == GC_COPIED_CAR.into() {
+        Ok(if self.car(cons) == MOVED_CAR.into() {
             // Get a forward pointer.
             self.cdr(cons).try_into()?
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            *self.car_mut(cons) = GC_COPIED_CAR.into();
+            *self.car_mut(cons) = MOVED_CAR.into();
             // Set a forward pointer.
             *self.cdr_mut(cons) = copy.into();
 
