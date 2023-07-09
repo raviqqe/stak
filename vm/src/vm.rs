@@ -10,7 +10,8 @@ use core::{
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const SINGLETON_CDR: Cons = Cons::dummy(0).set_tag(Type::Singleton as u8);
+const DUMMY_CONS: Cons = Cons::dummy(0);
+const BOOLEAN_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
@@ -19,7 +20,9 @@ const SYMBOL_CELL_INDEX: usize = 0;
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            $self.allocation_start() <= $cons.index() && $cons.index() < $self.allocation_end()
+            $cons == DUMMY_CONS
+                || $self.allocation_start() <= $cons.index()
+                    && $cons.index() < $self.allocation_end()
         );
     };
 }
@@ -52,16 +55,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
-            program_counter: Cons::new(0),
-            stack: Cons::new(0),
-            nil: Cons::new(0),
+            program_counter: DUMMY_CONS,
+            stack: DUMMY_CONS,
+            nil: DUMMY_CONS,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
-        let r#true = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
+        let r#false = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
+        let r#true = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
         vm.nil = vm.allocate_raw(r#false.into(), r#true.set_tag(Type::Singleton as u8).into())?;
 
         vm.stack = vm.nil;
@@ -477,7 +480,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == SINGLETON_CDR {
+        Ok(if cons == BOOLEAN_CDR {
             cons
         } else if self.car(cons) == MOVED_CAR.into() {
             // Get a forward pointer.
@@ -530,7 +533,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         let initial = match index {
             0 => self.r#false(),
-            1 => SINGLETON_CDR.into(),
+            1 => BOOLEAN_CDR.into(),
             _ => return Err(Error::CellIndexOutOfRange),
         };
 
@@ -548,7 +551,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()))
+        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
@@ -586,7 +589,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         let rib = self.allocate(
             Number::new(Primitive::Rib as u64).into(),
-            Cons::new(0).set_tag(Type::Procedure as u8).into(),
+            DUMMY_CONS.set_tag(Type::Procedure as u8).into(),
         )?;
 
         self.initialize_symbol(rib.into())?;
@@ -601,7 +604,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
-        let symbol = self.allocate(value, Cons::new(0).set_tag(Type::Symbol as u8).into())?;
+        let symbol = self.allocate(value, DUMMY_CONS.set_tag(Type::Symbol as u8).into())?;
 
         self.push(symbol.into())
     }
