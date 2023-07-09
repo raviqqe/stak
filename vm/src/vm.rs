@@ -595,7 +595,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             self.program_counter.into(),
                         )?
                         .into();
-                    let foo =
+                    let procedure =
                         self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?;
 
                     self.program_counter = self.nil;
