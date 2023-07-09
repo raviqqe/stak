@@ -227,7 +227,7 @@ mod tests {
     }
 
     #[test]
-    fn encode_large_global_index() {
+    fn encode_non_zero_global_index() {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Set(Operand::Global(42))],
@@ -235,10 +235,26 @@ mod tests {
     }
 
     #[test]
-    fn encode_large_local_index() {
+    fn encode_none_zero_local_index() {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Set(Operand::Local(42))],
+        ));
+    }
+
+    #[test]
+    fn encode_large_global_index() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Set(Operand::Global(2045))],
+        ));
+    }
+
+    #[test]
+    fn encode_large_local_index() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Set(Operand::Local(2045))],
         ));
     }
 }

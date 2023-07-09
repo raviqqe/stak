@@ -9,7 +9,6 @@ use core::{
 };
 
 const CONS_FIELD_COUNT: usize = 2;
-const MINIMUM_HEAP_SIZE: usize = 2 * 6;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
@@ -47,10 +46,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
     pub fn new(device: T) -> Result<Self, Error> {
-        if N < MINIMUM_HEAP_SIZE {
-            return Err(Error::HeapSize);
-        }
-
         let mut vm = Self {
             device,
             program_counter: Cons::new(0),
@@ -64,8 +59,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let r#false = vm.allocate_raw(ZERO.into(), ZERO.into())?;
         let r#true = vm.allocate_raw(ZERO.into(), ZERO.into())?;
         vm.nil = vm.allocate_raw(r#false.into(), r#true.into())?;
-
-        debug_assert!(vm.allocation_index == MINIMUM_HEAP_SIZE / 2);
 
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
@@ -103,20 +96,21 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Drop an argument count.
                                 self.pop()?;
                             } else {
-                                *self.cell0_mut()? = last_argument.into();
-                                *self.cell1_mut()? = procedure.into();
+                                self.push(last_argument.into())?;
+                                self.push(procedure.into())?;
 
-                                // Reuse an argument count cons as a new frame.
-                                *self.car_mut(self.stack) = self
+                                let return_info = self
                                     .allocate(
                                         self.cdr(self.program_counter),
                                         self.cdr(last_argument),
                                     )?
                                     .into();
 
-                                last_argument = self.cell0()?.try_into()?;
-                                procedure = self.cell1()?.try_into()?;
+                                procedure = self.pop()?.try_into()?;
+                                last_argument = self.pop()?.try_into()?;
 
+                                // Reuse an argument count cons as a new frame.
+                                *self.car_mut(self.stack) = return_info;
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
@@ -719,11 +713,11 @@ mod tests {
     }
 
     #[test]
-    fn create_with_minimum_heap() {
-        Vm::<MINIMUM_HEAP_SIZE, FixedBufferDevice<0, 0>>::new(Default::default())
-            .unwrap()
-            .run()
-            .unwrap();
+    fn create_with_too_small_heap() {
+        assert_eq!(
+            Vm::<0, FixedBufferDevice<0, 0>>::new(Default::default()).unwrap_err(),
+            Error::OutOfMemory
+        );
     }
 
     #[test]
