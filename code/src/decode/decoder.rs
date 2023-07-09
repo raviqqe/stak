@@ -24,10 +24,8 @@ impl<'a> Decoder<'a> {
         let mut symbol = vec![];
 
         loop {
-            let character = self.decode_byte().ok_or(Error::EndOfInput)?;
-
-            match character {
-                b',' | b';' => {
+            match self.decode_byte().ok_or(Error::EndOfInput)? {
+                character @ (b',' | b';') => {
                     symbol.reverse();
                     symbols.push(String::from_utf8(take(&mut symbol))?);
 
@@ -54,6 +52,9 @@ impl<'a> Decoder<'a> {
                 Instruction::CALL => {
                     instructions.push(Instruction::Call(self.decode_operand()?, false))
                 }
+                Instruction::CLOSE => instructions.push(Instruction::Close(
+                    self.decode_integer().ok_or(Error::MissingOperand)?,
+                )),
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
                 Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
                 Instruction::CONSTANT => instructions.push(Instruction::Constant(

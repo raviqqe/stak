@@ -38,6 +38,10 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                     Instruction::CALL
                 });
             }
+            Instruction::Close(arity) => {
+                encode_integer(codes, *arity);
+                codes.push(Instruction::CLOSE);
+            }
             Instruction::Set(operand) => {
                 encode_operand(codes, *operand);
                 codes.push(Instruction::SET);
@@ -140,6 +144,14 @@ mod tests {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Call(Operand::Local(0), false)],
+        ));
+    }
+
+    #[test]
+    fn encode_close() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Close(42)],
         ));
     }
 
