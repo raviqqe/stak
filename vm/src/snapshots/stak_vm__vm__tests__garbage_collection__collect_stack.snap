@@ -4,6 +4,6 @@ expression: vm
 ---
 00: c104:0 c106:2
 02: n42 c100:0
-04: c104:0 cffffffffffffffe:2
-06: c106:0 cffffffffffffffe:2
+04: c104:0 cfffffffffffffff:2
+06: c106:0 cfffffffffffffff:2
 

@@ -3,6 +3,6 @@ source: vm/src/vm.rs
 expression: vm
 ---
 00: c102:0 c104:2
-02: c102:0 cffffffffffffffe:2
-04: c104:0 cffffffffffffffe:2
+02: c102:0 cfffffffffffffff:2
+04: c104:0 cfffffffffffffff:2
 

@@ -10,8 +10,8 @@ use core::{
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const MOVED_CAR: Cons = Cons::dummy(0);
-const SINGLETON_CDR: Cons = Cons::dummy(1).set_tag(Type::Singleton as u8);
+const SINGLETON_CDR: Cons = Cons::dummy(0).set_tag(Type::Singleton as u8);
+const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
 const SYMBOL_CELL_INDEX: usize = 0;
