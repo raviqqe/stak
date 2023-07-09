@@ -10,6 +10,7 @@ use core::{
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
+// TODO Should we just use Cons::new(0)?
 const DUMMY_CONS: Cons = Cons::dummy(0);
 const BOOLEAN_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 const MOVED_CAR: Cons = Cons::dummy(1);
