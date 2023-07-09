@@ -665,7 +665,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 symbol_index::NIL => self.nil.into(),
                 symbol_index::FALSE => self.r#false(),
                 symbol_index::TRUE => self.r#true(),
-                symbol_index::RIB => self.cell(RIB_CELL_INDEX)?.into(),
+                symbol_index::RIB => self.cell(RIB_CELL_INDEX)?,
                 index => self.car(self.tail(
                     self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
                     Number::new(index - symbol_index::OTHER),
