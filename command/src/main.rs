@@ -15,7 +15,7 @@ fn run() -> Result<(), Box<dyn Error>> {
 
     vm.initialize(
         read_to_string(&args().nth(1).ok_or("bytecode file argument missing")?)?.as_bytes(),
-    );
+    )?;
 
     Ok(vm.run()?)
 }
