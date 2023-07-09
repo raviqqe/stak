@@ -248,7 +248,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.collect_garbages()?;
         }
 
-        replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()).try_into()
+        self.allocation_cell()?.try_into()
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
