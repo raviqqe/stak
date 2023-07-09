@@ -100,7 +100,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
-                                self.stack = self.cdr(self.stack).try_into()?;
+                                // Drop an argument count.
+                                self.pop()?;
                             } else {
                                 *self.cell0_mut()? = last_argument.into();
                                 *self.cell1_mut()? = procedure.into();
