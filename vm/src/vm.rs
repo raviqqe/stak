@@ -10,8 +10,8 @@ use core::{
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const MOVED_CAR: Cons = Cons::dummy();
-const SINGLETON_CDR: Cons = Cons::dummy().set_tag(Type::Singleton as u8);
+const MOVED_CAR: Cons = Cons::dummy(0);
+const SINGLETON_CDR: Cons = Cons::dummy(1).set_tag(Type::Singleton as u8);
 const FRAME_TAG: u8 = 1;
 
 const SYMBOL_CELL_INDEX: usize = 0;
@@ -545,14 +545,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
         assert_cell_index!(index);
 
-        Ok(replace(
-            self.cell_mut(index)?,
-            match index {
-                0 => self.r#false(),
-                1 => SINGLETON_CDR.into(),
-                _ => return Err(Error::CellIndexOutOfRange),
-            },
-        ))
+        let initial = match index {
+            0 => self.r#false(),
+            1 => SINGLETON_CDR.into(),
+            _ => return Err(Error::CellIndexOutOfRange),
+        };
+
+        Ok(replace(self.cell_mut(index)?, initial))
     }
 
     fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
