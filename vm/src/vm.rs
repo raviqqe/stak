@@ -73,8 +73,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
+                    let mut procedure = self.procedure()?;
 
-                    match self.code()? {
+                    if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
+                        return Err(Error::ProcedureExpected);
+                    }
+
+                    match self.code(procedure) {
                         Value::Cons(code) => {
                             let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
@@ -88,9 +93,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
-                                self.stack = self.cdr(self.stack).try_into()?;
+                                // Drop an argument count.
+                                self.pop()?;
                             } else {
                                 *self.cell0_mut()? = last_argument.into();
+                                *self.cell1_mut()? = procedure.into();
+
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
                                     .allocate(
@@ -98,16 +106,20 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                         self.cdr(last_argument),
                                     )?
                                     .into();
+
                                 last_argument = self.cell0()?.try_into()?;
+                                procedure = self.cell1()?.try_into()?;
+
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr(self.procedure()?))?
+                                Cons::try_from(self.cdr(procedure))?
                                     .set_tag(FRAME_TAG)
                                     .into();
-                            self.program_counter = self.cdr(self.code()?.try_into()?).try_into()?;
+                            self.program_counter =
+                                self.cdr(self.code(procedure).try_into()?).try_into()?;
                         }
                         Value::Number(primitive) => {
                             // Drop an argument count.
@@ -173,8 +185,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // (parameter-count . instruction-list) | primitive
-    fn code(&self) -> Result<Value, Error> {
-        Ok(self.car(self.procedure()?))
+    fn code(&self, procedure: Cons) -> Value {
+        self.car(procedure)
     }
 
     // ((program-counter . stack) . tagged-environment)
@@ -580,6 +592,20 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
+                code::Instruction::CLOSE => {
+                    let instructions = self.pop()?;
+                    let code = self.allocate(
+                        Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
+                            .into(),
+                        instructions,
+                    )?;
+
+                    (
+                        self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?
+                            .into(),
+                        Instruction::CONSTANT,
+                    )
+                }
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
                 code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
                 code::Instruction::CONSTANT => (
@@ -828,6 +854,18 @@ mod tests {
         #[test]
         fn constant() {
             run_program(&Program::new(vec![], vec![Instruction::Constant(42)]));
+        }
+
+        #[test]
+        fn close() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Close(0),
+                    Instruction::Constant(0),
+                    Instruction::Call(Operand::Local(1), true),
+                ],
+            ));
         }
 
         #[test]
