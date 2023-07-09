@@ -105,6 +105,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             } else {
                                 *self.cell0_mut()? = last_argument.into();
                                 *self.cell1_mut()? = procedure.into();
+
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
                                     .allocate(
@@ -112,8 +113,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                         self.cdr(last_argument),
                                     )?
                                     .into();
+
                                 last_argument = self.cell0()?.try_into()?;
                                 procedure = self.cell1()?.try_into()?;
+
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
