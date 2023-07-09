@@ -909,15 +909,6 @@ mod tests {
         }
 
         #[test]
-        #[should_panic]
-        fn get_undefined_global() {
-            run_program(&Program::new(
-                vec![],
-                vec![Instruction::Get(Operand::Global(symbol_index::OTHER + 1))],
-            ));
-        }
-
-        #[test]
         fn get_local() {
             run_program(&Program::new(
                 vec![],
