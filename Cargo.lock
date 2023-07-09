@@ -52,17 +52,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 
 [[package]]
-name = "nil"
-version = "0.1.0"
-dependencies = [
- "stak-vm",
-]
-
-[[package]]
 name = "similar"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
+
+[[package]]
+name = "stak"
+version = "0.1.0"
+dependencies = [
+ "stak-vm",
+]
 
 [[package]]
 name = "stak-code"

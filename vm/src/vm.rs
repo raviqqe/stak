@@ -533,13 +533,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
         assert_cell_index!(index);
 
-        let initial = match index {
-            0 => ZERO.into(),
-            1 => BOOLEAN_CDR.into(),
-            _ => return Err(Error::CellIndexOutOfRange),
-        };
-
-        Ok(replace(self.cell_mut(index)?, initial))
+        Ok(replace(
+            self.cell_mut(index)?,
+            match index {
+                0 => ZERO.into(),
+                1 => BOOLEAN_CDR.into(),
+                _ => return Err(Error::CellIndexOutOfRange),
+            },
+        ))
     }
 
     fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
