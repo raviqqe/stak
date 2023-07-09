@@ -555,19 +555,31 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
-        let mut symbol = self.nil;
+        let mut length = 0;
+        let mut name = self.nil;
 
         loop {
             match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
                 character @ (b',' | b';') => {
-                    // TODO Fix a symbol data structure.
+                    let string = self.allocate(
+                        Number::new(length).into(),
+                        name.set_tag(Type::String as u8).into(),
+                    )?;
+                    let symbol =
+                        self.allocate(self.r#false(), string.set_tag(Type::Symbol as u8).into())?;
                     self.push(symbol.into())?;
+
+                    length = 0;
+                    name = self.nil;
 
                     if character == b';' {
                         break;
                     }
                 }
-                character => symbol = self.append(Number::new(character as u64).into(), symbol)?,
+                character => {
+                    length += 1;
+                    name = self.append(Number::new(character as u64).into(), name)?;
+                }
             }
         }
 
@@ -901,7 +913,7 @@ mod tests {
         fn get_undefined_global() {
             run_program(&Program::new(
                 vec![],
-                vec![Instruction::Get(Operand::Global(symbol_index::OTHER))],
+                vec![Instruction::Get(Operand::Global(symbol_index::OTHER + 1))],
             ));
         }
 
