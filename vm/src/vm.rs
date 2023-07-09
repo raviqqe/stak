@@ -588,19 +588,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
                 code::Instruction::CLOSE => {
-                    let code = self
-                        .allocate(
-                            Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
-                                .into(),
-                            self.program_counter.into(),
-                        )?
-                        .into();
+                    let code = self.allocate(
+                        Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
+                            .into(),
+                        self.program_counter.into(),
+                    )?;
                     let procedure =
                         self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?;
 
                     self.program_counter = self.nil;
 
-                    (self.decode_operand(input)?, Instruction::CONSTANT)
+                    (procedure.into(), Instruction::CONSTANT)
                 }
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
                 code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
