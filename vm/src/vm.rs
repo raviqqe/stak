@@ -1,6 +1,6 @@
 use crate::{
     cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    r#type::Type, symbol_index, value::Value, Error,
+    r#type::Type, value::Value, Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -15,7 +15,6 @@ const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
 const SYMBOL_CELL_INDEX: usize = 0;
-const RIB_CELL_INDEX: usize = 1;
 
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
@@ -506,19 +505,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         self.program_counter = self.nil;
         self.stack = self.nil;
-        // Initialize a rib primitive under a root.
-        *self.cell_mut(RIB_CELL_INDEX)? = {
-            let procedure = self.allocate(
-                Number::new(Primitive::Rib as u64).into(),
-                Cons::new(0).set_tag(Type::Procedure as u8).into(),
-            )?;
-
-            self.allocate(
-                procedure.into(),
-                Cons::new(0).set_tag(Type::Symbol as u8).into(),
-            )?
-            .into()
-        };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -527,9 +513,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
-        // Allow GC of symbols and a rib primitive.
+        // Allow GC of symbols.
         self.take_cell(SYMBOL_CELL_INDEX)?;
-        self.take_cell(RIB_CELL_INDEX)?;
 
         Ok(())
     }
@@ -603,10 +588,26 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
+        let rib = self.allocate(
+            Number::new(Primitive::Rib as u64).into(),
+            Cons::new(0).set_tag(Type::Procedure as u8).into(),
+        )?;
+
+        self.initialize_symbol(rib.into())?;
+        self.initialize_symbol(self.r#false())?;
+        self.initialize_symbol(self.r#true())?;
+        self.initialize_symbol(self.nil.into())?;
+
         *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
         self.stack = self.nil;
 
         Ok(())
+    }
+
+    fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
+        let symbol = self.allocate(value, Cons::new(0).set_tag(Type::Symbol as u8).into())?;
+
+        self.push(symbol.into())
     }
 
     fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
@@ -661,16 +662,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let index = Number::new(integer >> 1);
 
         Ok(if integer & 1 == 0 {
-            match index.to_u64() {
-                symbol_index::NIL => self.nil.into(),
-                symbol_index::FALSE => self.r#false(),
-                symbol_index::TRUE => self.r#true(),
-                symbol_index::RIB => self.cell(RIB_CELL_INDEX)?,
-                index => self.car(self.tail(
-                    self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
-                    Number::new(index - symbol_index::OTHER),
-                )?),
-            }
+            self.car(self.tail(
+                self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
+                Number::new(index.to_u64()),
+            )?)
         } else {
             index.into()
         })
@@ -723,7 +718,10 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::FixedBufferDevice;
+
+    use crate::{symbol_index, FixedBufferDevice};
+    use alloc::vec;
+    use code::{encode, Instruction, Operand, Program};
     use std::format;
 
     const HEAP_SIZE: usize = 1 << 9;
@@ -865,8 +863,6 @@ mod tests {
 
     mod instruction {
         use super::*;
-        use alloc::vec;
-        use code::{encode, Instruction, Operand, Program};
 
         fn run_program(program: &Program) {
             let mut vm = create_vm();
