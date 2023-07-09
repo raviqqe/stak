@@ -1,6 +1,6 @@
 use crate::{
     cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    symbol_index, value::Value, Error, Type,
+    r#type::Type, value::Value, Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -10,14 +10,28 @@ use core::{
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
+// TODO Should we use Cons::new(0)?
+const DUMMY_CONS: Cons = Cons::dummy(0);
+const BOOLEAN_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
+// TODO Should we use Cons::new(0).set_tag(u8::MAX)?
+const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
+
+const SYMBOL_CELL_INDEX: usize = 0;
 
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            $self.allocation_start() <= $cons.index() && $cons.index() < $self.allocation_end()
+            $cons == DUMMY_CONS
+                || $self.allocation_start() <= $cons.index()
+                    && $cons.index() < $self.allocation_end()
         );
+    };
+}
+
+macro_rules! assert_cell_index {
+    ($index:expr) => {
+        debug_assert!($index < 2);
     };
 }
 
@@ -43,17 +57,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
-            program_counter: Cons::new(0),
-            stack: Cons::new(0),
-            nil: Cons::new(0),
+            program_counter: DUMMY_CONS,
+            stack: DUMMY_CONS,
+            nil: DUMMY_CONS,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate_raw(ZERO.into(), ZERO.into())?;
-        let r#true = vm.allocate_raw(ZERO.into(), ZERO.into())?;
-        vm.nil = vm.allocate_raw(r#false.into(), r#true.into())?;
+        let r#false = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
+        let r#true = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
+        vm.nil = vm.allocate_raw(r#false.into(), r#true.set_tag(Type::Singleton as u8).into())?;
 
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
@@ -91,8 +105,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Drop an argument count.
                                 self.pop()?;
                             } else {
-                                *self.cell0_mut()? = last_argument.into();
-                                *self.cell1_mut()? = procedure.into();
+                                *self.cell_mut(0)? = last_argument.into();
+                                *self.cell_mut(1)? = procedure.into();
 
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
@@ -102,8 +116,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                     )?
                                     .into();
 
-                                last_argument = self.cell0()?.try_into()?;
-                                procedure = self.cell1()?.try_into()?;
+                                last_argument = self.take_cell(0)?.try_into()?;
+                                procedure = self.take_cell(1)?.try_into()?;
 
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
@@ -243,7 +257,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.collect_garbages()?;
         }
 
-        replace(self.allocation_cell_mut()?, ZERO.into()).try_into()
+        self.take_allocation_cell()?.try_into()
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
@@ -468,13 +482,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if self.car(cons) == GC_COPIED_CAR.into() {
+        Ok(if cons == DUMMY_CONS {
+            cons
+        } else if self.car(cons) == MOVED_CAR.into() {
             // Get a forward pointer.
             self.cdr(cons).try_into()?
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            *self.car_mut(cons) = GC_COPIED_CAR.into();
+            *self.car_mut(cons) = MOVED_CAR.into();
             // Set a forward pointer.
             *self.cdr_mut(cons) = copy.into();
 
@@ -490,19 +506,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         self.program_counter = self.nil;
         self.stack = self.nil;
-        // Initialize a rib primitive under a root.
-        *self.rib_mut()? = {
-            let procedure = self.allocate(
-                Number::new(Primitive::Rib as u64).into(),
-                Cons::new(0).set_tag(Type::Procedure as u8).into(),
-            )?;
-
-            self.allocate(
-                procedure.into(),
-                Cons::new(0).set_tag(Type::Symbol as u8).into(),
-            )?
-            .into()
-        };
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
@@ -511,43 +514,46 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
-        // Allow GC of symbols and a rib primitive.
-        *self.symbols_mut()? = ZERO.into();
-        *self.rib_mut()? = ZERO.into();
+        // Allow GC of symbols.
+        self.take_cell(SYMBOL_CELL_INDEX)?;
 
         Ok(())
     }
 
-    fn symbols(&self) -> Result<Cons, Error> {
-        self.cell0()?.try_into()
+    fn cell(&self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value,
+            1 => Self::cdr_value,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
     }
 
-    fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cell0_mut()
+    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        let initial = match index {
+            0 => ZERO.into(),
+            1 => BOOLEAN_CDR.into(),
+            _ => return Err(Error::CellIndexOutOfRange),
+        };
+
+        Ok(replace(self.cell_mut(index)?, initial))
     }
 
-    fn rib(&self) -> Result<Cons, Error> {
-        self.cell1()?.try_into()
+    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value_mut,
+            1 => Self::cdr_value_mut,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
     }
 
-    fn rib_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cell1_mut()
-    }
-
-    fn cell0(&self) -> Result<Value, Error> {
-        self.car_value(self.r#false())
-    }
-
-    fn cell0_mut(&mut self) -> Result<&mut Value, Error> {
-        self.car_value_mut(self.r#false())
-    }
-
-    fn cell1(&self) -> Result<Value, Error> {
-        self.cdr_value(self.r#false())
-    }
-
-    fn cell1_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.r#false())
+    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
+        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
@@ -583,10 +589,26 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        *self.symbols_mut()? = self.stack.into();
+        let rib = self.allocate(
+            Number::new(Primitive::Rib as u64).into(),
+            DUMMY_CONS.set_tag(Type::Procedure as u8).into(),
+        )?;
+
+        self.initialize_symbol(rib.into())?;
+        self.initialize_symbol(self.r#true())?;
+        self.initialize_symbol(self.r#false())?;
+        self.initialize_symbol(self.nil.into())?;
+
+        *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
         self.stack = self.nil;
 
         Ok(())
+    }
+
+    fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
+        let symbol = self.allocate(value, DUMMY_CONS.set_tag(Type::Symbol as u8).into())?;
+
+        self.push(symbol.into())
     }
 
     fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
@@ -641,15 +663,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let index = Number::new(integer >> 1);
 
         Ok(if integer & 1 == 0 {
-            match index.to_u64() {
-                symbol_index::NIL => self.nil.into(),
-                symbol_index::FALSE => self.r#false(),
-                symbol_index::TRUE => self.r#true(),
-                symbol_index::RIB => self.rib()?.into(),
-                index => {
-                    self.car(self.tail(self.symbols()?, Number::new(index - symbol_index::OTHER))?)
-                }
-            }
+            self.car(self.tail(
+                self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
+                Number::new(index.to_u64()),
+            )?)
         } else {
             index.into()
         })
@@ -702,7 +719,9 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::FixedBufferDevice;
+    use crate::{symbol_index, FixedBufferDevice};
+    use alloc::vec;
+    use code::{encode, Instruction, Operand, Program};
     use std::format;
 
     const HEAP_SIZE: usize = 1 << 9;
@@ -844,8 +863,6 @@ mod tests {
 
     mod instruction {
         use super::*;
-        use alloc::vec;
-        use code::{encode, Instruction, Operand, Program};
 
         fn run_program(program: &Program) {
             let mut vm = create_vm();

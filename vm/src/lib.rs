@@ -11,6 +11,7 @@ mod error;
 mod instruction;
 mod number;
 mod primitive;
+#[cfg(test)]
 mod symbol_index;
 mod r#type;
 mod value;
@@ -18,6 +19,5 @@ mod vm;
 
 pub use device::{Device, FixedBufferDevice};
 pub use error::Error;
-pub use r#type::Type;
 pub use value::Value;
 pub use vm::Vm;

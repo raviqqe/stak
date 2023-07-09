@@ -3,6 +3,7 @@ use core::fmt::{self, Display, Formatter};
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     ArgumentCount,
+    CellIndexOutOfRange,
     ConsExpected,
     EndOfInput,
     HeapSize,
@@ -21,6 +22,7 @@ impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
+            Self::CellIndexOutOfRange => write!(formatter, "cell index out of range"),
             Self::ConsExpected => write!(formatter, "cons expected"),
             Self::EndOfInput => write!(formatter, "unexpected end of input"),
             Self::HeapSize => write!(formatter, "too small heap size"),
