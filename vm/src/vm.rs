@@ -526,8 +526,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
         // Allow GC of symbols and a rib primitive.
-        self.reset_cell(SYMBOL_CELL_INDEX)?;
-        self.reset_cell(RIB_CELL_INDEX)?;
+        self.take_cell(SYMBOL_CELL_INDEX)?;
+        self.take_cell(RIB_CELL_INDEX)?;
 
         Ok(())
     }
@@ -545,9 +545,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
         assert_cell_index!(index);
 
-        let value = self.cell(index)?;
-        self.reset_cell(index)?;
-        Ok(value)
+        Ok(replace(
+            self.cell_mut(index)?,
+            match index {
+                0 => self.r#false(),
+                1 => SINGLETON_CDR.into(),
+                _ => return Err(Error::CellIndexOutOfRange),
+            },
+        ))
     }
 
     fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
@@ -558,18 +563,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
             1 => Self::cdr_value_mut,
             _ => return Err(Error::CellIndexOutOfRange),
         })(self, self.r#false())
-    }
-
-    fn reset_cell(&mut self, index: usize) -> Result<(), Error> {
-        assert_cell_index!(index);
-
-        *self.cell_mut(index)? = match index {
-            0 => self.r#false(),
-            1 => SINGLETON_CDR.into(),
-            _ => return Err(Error::CellIndexOutOfRange),
-        };
-
-        Ok(())
     }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
