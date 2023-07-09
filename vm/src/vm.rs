@@ -686,6 +686,14 @@ mod tests {
     }
 
     #[test]
+    fn create_with_too_small_heap() {
+        assert_eq!(
+            Vm::<0, FixedBufferDevice<0, 0>>::new(Default::default()).unwrap_err(),
+            Error::OutOfMemory
+        );
+    }
+
+    #[test]
     fn run_nothing() {
         let mut vm = create_vm();
 
