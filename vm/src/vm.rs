@@ -845,6 +845,22 @@ mod tests {
         }
 
         #[test]
+        fn call() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Close(0),
+                    Instruction::Call(Operand::Local(0), true),
+                    Instruction::Constant(0),
+                    Instruction::Get(Operand::Global(NIL_INDEX)),
+                    Instruction::Constant(0),
+                    Instruction::Constant(3),
+                    Instruction::Call(Operand::Global(RIB_INDEX), true),
+                ],
+            ));
+        }
+
+        #[test]
         fn close() {
             run_program(&Program::new(vec![], vec![Instruction::Close(42)]));
         }
