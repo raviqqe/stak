@@ -2,6 +2,7 @@
 pub enum Type {
     Pair,
     Procedure,
+    Singleton,
     String,
     Symbol,
 }
