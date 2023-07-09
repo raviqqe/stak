@@ -587,6 +587,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
+                code::Instruction::CLOSE => {
+                    foo;
+                    (self.decode_operand(input)?, Instruction::CONSTANT)
+                }
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
                 code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
                 code::Instruction::CONSTANT => (
