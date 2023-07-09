@@ -11,6 +11,7 @@ mod error;
 mod instruction;
 mod number;
 mod primitive;
+mod symbol_index;
 mod r#type;
 mod value;
 mod vm;

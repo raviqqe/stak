@@ -1,6 +1,6 @@
 use crate::{
     cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    value::Value, Error, Type,
+    symbol_index, value::Value, Error, Type,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -12,12 +12,6 @@ const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 const GC_COPIED_CAR: Cons = Cons::new(i64::MAX as u64);
 const FRAME_TAG: u8 = 1;
-
-const NIL_INDEX: u64 = 0;
-const FALSE_INDEX: u64 = 1;
-const TRUE_INDEX: u64 = 2;
-const RIB_INDEX: u64 = 3;
-const FIRST_USER_GLOBAL_INDEX: u64 = 4;
 
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
@@ -636,14 +630,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         Ok(if integer & 1 == 0 {
             match index.to_u64() {
-                NIL_INDEX => self.nil.into(),
-                FALSE_INDEX => self.r#false(),
-                TRUE_INDEX => self.r#true(),
-                RIB_INDEX => self.rib()?.into(),
-                index => self.car(self.tail(
-                    self.symbols()?,
-                    Number::new(index - FIRST_USER_GLOBAL_INDEX),
-                )?),
+                symbol_index::NIL => self.nil.into(),
+                symbol_index::FALSE => self.r#false(),
+                symbol_index::TRUE => self.r#true(),
+                symbol_index::RIB => self.rib()?.into(),
+                index => {
+                    self.car(self.tail(self.symbols()?, Number::new(index - symbol_index::OTHER))?)
+                }
             }
         } else {
             index.into()
@@ -878,7 +871,7 @@ mod tests {
                 vec!["x".into()],
                 vec![
                     Instruction::Constant(42),
-                    Instruction::Set(Operand::Global(FIRST_USER_GLOBAL_INDEX)),
+                    Instruction::Set(Operand::Global(symbol_index::OTHER)),
                 ],
             ));
         }
@@ -899,7 +892,7 @@ mod tests {
         fn get_global() {
             run_program(&Program::new(
                 vec!["x".into()],
-                vec![Instruction::Get(Operand::Global(FIRST_USER_GLOBAL_INDEX))],
+                vec![Instruction::Get(Operand::Global(symbol_index::OTHER))],
             ));
         }
 
@@ -908,7 +901,7 @@ mod tests {
         fn get_undefined_global() {
             run_program(&Program::new(
                 vec![],
-                vec![Instruction::Get(Operand::Global(FIRST_USER_GLOBAL_INDEX))],
+                vec![Instruction::Get(Operand::Global(symbol_index::OTHER))],
             ));
         }
 
@@ -929,13 +922,13 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(0),
-                    Instruction::Get(Operand::Global(NIL_INDEX)),
+                    Instruction::Get(Operand::Global(symbol_index::NIL)),
                     Instruction::Constant(0),
                     Instruction::Constant(3),
-                    Instruction::Get(Operand::Global(FALSE_INDEX)),
+                    Instruction::Get(Operand::Global(symbol_index::FALSE)),
                     Instruction::If(
-                        vec![Instruction::Call(Operand::Global(RIB_INDEX), true)],
-                        vec![Instruction::Call(Operand::Global(RIB_INDEX), true)],
+                        vec![Instruction::Call(Operand::Global(symbol_index::RIB), true)],
+                        vec![Instruction::Call(Operand::Global(symbol_index::RIB), true)],
                     ),
                 ],
             ));
