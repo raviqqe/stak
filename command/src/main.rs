@@ -16,7 +16,7 @@ fn run() -> Result<(), Box<dyn Error>> {
     vm.initialize(
         read_to_string(args().nth(1).ok_or(format!(
             "Usage: {} <bytecode_file>",
-            args().nth(0).expect("command name")
+            args().next().expect("command name")
         ))?)?
         .as_bytes(),
     )?;
