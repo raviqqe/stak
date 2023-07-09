@@ -719,7 +719,6 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
     use crate::{symbol_index, FixedBufferDevice};
     use alloc::vec;
     use code::{encode, Instruction, Operand, Program};
