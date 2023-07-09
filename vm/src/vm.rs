@@ -161,10 +161,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = (if self.pop()? == self.r#true() {
-                        self.car(self.program_counter)
-                    } else {
+                    self.program_counter = (if self.pop()? == self.r#false() {
                         self.cdr(self.program_counter)
+                    } else {
+                        self.car(self.program_counter)
                     })
                     .try_into()?;
                 }
