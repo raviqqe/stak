@@ -480,7 +480,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == BOOLEAN_CDR {
+        Ok(if cons == DUMMY_CONS {
             cons
         } else if self.car(cons) == MOVED_CAR.into() {
             // Get a forward pointer.
