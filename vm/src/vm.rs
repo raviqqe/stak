@@ -658,7 +658,13 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
         for index in 0..self.allocation_index / 2 {
             let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
 
-            writeln!(formatter, "{} {}", self.car(cons), self.cdr(cons))?;
+            writeln!(
+                formatter,
+                "{}: {} {}",
+                index,
+                self.car(cons),
+                self.cdr(cons)
+            )?;
         }
 
         Ok(())
