@@ -96,20 +96,21 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Drop an argument count.
                                 self.pop()?;
                             } else {
-                                *self.cell0_mut()? = last_argument.into();
-                                *self.cell1_mut()? = procedure.into();
+                                self.push(last_argument.into())?;
+                                self.push(procedure.into())?;
 
-                                // Reuse an argument count cons as a new frame.
-                                *self.car_mut(self.stack) = self
+                                let return_info = self
                                     .allocate(
                                         self.cdr(self.program_counter),
                                         self.cdr(last_argument),
                                     )?
                                     .into();
 
-                                last_argument = self.cell0()?.try_into()?;
-                                procedure = self.cell1()?.try_into()?;
+                                procedure = self.pop()?.try_into()?;
+                                last_argument = self.pop()?.try_into()?;
 
+                                // Reuse an argument count cons as a new frame.
+                                *self.car_mut(self.stack) = return_info;
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
 
