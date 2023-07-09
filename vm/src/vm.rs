@@ -64,10 +64,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let r#true = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
         vm.nil = vm.allocate_raw(r#false.into(), r#true.set_tag(Type::Singleton as u8).into())?;
 
-        for singleton in [r#false, r#true] {
-            *vm.car_mut(singleton) = singleton.into();
-        }
-
         vm.stack = vm.nil;
         vm.program_counter = vm.nil;
 
