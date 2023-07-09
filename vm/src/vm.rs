@@ -14,11 +14,20 @@ const MOVED_CAR: Cons = Cons::dummy();
 const SINGLETON_CDR: Cons = Cons::dummy().set_tag(Type::Singleton as u8);
 const FRAME_TAG: u8 = 1;
 
+const SYMBOL_CELL_INDEX: usize = 0;
+const RIB_CELL_INDEX: usize = 1;
+
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
             $self.allocation_start() <= $cons.index() && $cons.index() < $self.allocation_end()
         );
+    };
+}
+
+macro_rules! assert_cell_index {
+    ($index:expr) => {
+        debug_assert!($index < 2);
     };
 }
 
@@ -56,7 +65,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let r#true = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
         vm.nil = vm.allocate_raw(r#false.into(), r#true.set_tag(Type::Singleton as u8).into())?;
 
-        for singleton in [vm.nil, r#false, r#true] {
+        for singleton in [r#false, r#true] {
             *vm.car_mut(singleton) = singleton.into();
         }
 
@@ -96,8 +105,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Drop an argument count.
                                 self.pop()?;
                             } else {
-                                *self.cell0_mut()? = last_argument.into();
-                                *self.cell1_mut()? = procedure.into();
+                                *self.cell_mut(0)? = last_argument.into();
+                                *self.cell_mut(1)? = procedure.into();
 
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
@@ -107,8 +116,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                     )?
                                     .into();
 
-                                last_argument = self.cell0()?.try_into()?;
-                                procedure = self.cell1()?.try_into()?;
+                                last_argument = self.take_cell(0)?.try_into()?;
+                                procedure = self.take_cell(1)?.try_into()?;
 
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
@@ -248,7 +257,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.collect_garbages()?;
         }
 
-        self.allocation_cell()?.try_into()
+        self.take_allocation_cell()?.try_into()
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
@@ -496,7 +505,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.nil;
         self.stack = self.nil;
         // Initialize a rib primitive under a root.
-        *self.rib_mut()? = {
+        *self.cell_mut(RIB_CELL_INDEX)? = {
             let procedure = self.allocate(
                 Number::new(Primitive::Rib as u64).into(),
                 Cons::new(0).set_tag(Type::Procedure as u8).into(),
@@ -517,45 +526,53 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
 
         // Allow GC of symbols and a rib primitive.
-        *self.symbols_mut()? = ZERO.into();
-        *self.rib_mut()? = ZERO.into();
+        self.reset_cell(SYMBOL_CELL_INDEX)?;
+        self.reset_cell(RIB_CELL_INDEX)?;
 
         Ok(())
     }
 
-    fn symbols(&self) -> Result<Cons, Error> {
-        self.cell0()?.try_into()
+    fn cell(&self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value,
+            1 => Self::cdr_value,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
     }
 
-    fn symbols_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cell0_mut()
+    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        let value = self.cell(index)?;
+        self.reset_cell(index)?;
+        Ok(value)
     }
 
-    fn rib(&self) -> Result<Cons, Error> {
-        self.cell1()?.try_into()
+    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value_mut,
+            1 => Self::cdr_value_mut,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
     }
 
-    fn rib_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cell1_mut()
+    fn reset_cell(&mut self, index: usize) -> Result<(), Error> {
+        assert_cell_index!(index);
+
+        *self.cell_mut(index)? = match index {
+            0 => self.r#false(),
+            1 => SINGLETON_CDR.into(),
+            _ => return Err(Error::CellIndexOutOfRange),
+        };
+
+        Ok(())
     }
 
-    fn cell0(&self) -> Result<Value, Error> {
-        self.car_value(self.r#false())
-    }
-
-    fn cell0_mut(&mut self) -> Result<&mut Value, Error> {
-        self.car_value_mut(self.r#false())
-    }
-
-    fn cell1(&self) -> Result<Value, Error> {
-        self.cdr_value(self.r#false())
-    }
-
-    fn cell1_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.r#false())
-    }
-
-    fn allocation_cell(&mut self) -> Result<Value, Error> {
+    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
         Ok(replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()))
     }
 
@@ -592,7 +609,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
         }
 
-        *self.symbols_mut()? = self.stack.into();
+        *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
         self.stack = self.nil;
 
         Ok(())
@@ -654,10 +671,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 symbol_index::NIL => self.nil.into(),
                 symbol_index::FALSE => self.r#false(),
                 symbol_index::TRUE => self.r#true(),
-                symbol_index::RIB => self.rib()?.into(),
-                index => {
-                    self.car(self.tail(self.symbols()?, Number::new(index - symbol_index::OTHER))?)
-                }
+                symbol_index::RIB => self.cell(RIB_CELL_INDEX)?.into(),
+                index => self.car(self.tail(
+                    self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
+                    Number::new(index - symbol_index::OTHER),
+                )?),
             }
         } else {
             index.into()
