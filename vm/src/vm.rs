@@ -660,8 +660,8 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
 
             writeln!(
                 formatter,
-                "{}: {} {}",
-                index,
+                "{:02x}: {} {}",
+                2 * index,
                 self.car(cons),
                 self.cdr(cons)
             )?;
