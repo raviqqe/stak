@@ -555,6 +555,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.cdr_value_mut(self.r#false())
     }
 
+    fn allocation_cell(&mut self) -> Result<Value, Error> {
+        Ok(replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()))
+    }
+
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
         self.cdr_value_mut(self.r#true())
     }
