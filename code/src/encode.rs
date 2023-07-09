@@ -38,6 +38,10 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                     Instruction::CALL
                 });
             }
+            Instruction::Close(arity) => {
+                encode_integer(codes, *arity);
+                codes.push(Instruction::CLOSE);
+            }
             Instruction::Set(operand) => {
                 encode_operand(codes, *operand);
                 codes.push(Instruction::SET);
