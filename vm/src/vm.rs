@@ -588,10 +588,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
                 code::Instruction::CLOSE => {
+                    let instructions = self.pop()?;
                     let code = self.allocate(
                         Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
                             .into(),
-                        self.program_counter.into(),
+                        instructions,
                     )?;
                     let procedure =
                         self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?;
@@ -850,6 +851,7 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Close(0),
+                    Instruction::Constant(0),
                     Instruction::Call(Operand::Local(0), true),
                     Instruction::Constant(0),
                     Instruction::Get(Operand::Global(NIL_INDEX)),
@@ -862,7 +864,14 @@ mod tests {
 
         #[test]
         fn close() {
-            run_program(&Program::new(vec![], vec![Instruction::Close(42)]));
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Close(0),
+                    Instruction::Constant(0),
+                    Instruction::Call(Operand::Local(1), true),
+                ],
+            ));
         }
 
         #[test]
