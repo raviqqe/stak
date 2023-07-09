@@ -61,9 +61,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate_raw(ZERO.into(), ZERO.into());
-        let r#true = vm.allocate_raw(ZERO.into(), ZERO.into());
-        vm.nil = vm.allocate_raw(r#false.into(), r#true.into());
+        let r#false = vm.allocate_raw(ZERO.into(), ZERO.into())?;
+        let r#true = vm.allocate_raw(ZERO.into(), ZERO.into())?;
+        vm.nil = vm.allocate_raw(r#false.into(), r#true.into())?;
 
         debug_assert!(vm.allocation_index == MINIMUM_HEAP_SIZE / 2);
 
@@ -229,7 +229,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
-        let cons = self.allocate_raw(car, cdr);
+        let cons = self.allocate_raw(car, cdr)?;
 
         assert_index_range!(self, cons);
 
@@ -245,20 +245,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         if self.is_out_of_memory() {
             self.collect_garbages()?;
-
-            if self.is_out_of_memory() {
-                return Err(Error::OutOfMemory);
-            }
         }
 
         replace(self.allocation_cell_mut()?, ZERO.into()).try_into()
     }
 
-    fn is_out_of_memory(&self) -> bool {
-        self.allocation_index >= Self::SPACE_SIZE
-    }
+    fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+        if self.is_out_of_memory() {
+            return Err(Error::OutOfMemory);
+        }
 
-    fn allocate_raw(&mut self, car: Value, cdr: Value) -> Cons {
         let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
 
         assert_index_range!(self, cons);
@@ -270,7 +266,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
-        cons
+        Ok(cons)
+    }
+
+    fn is_out_of_memory(&self) -> bool {
+        self.allocation_index >= Self::SPACE_SIZE
     }
 
     fn allocation_start(&self) -> usize {
@@ -476,7 +476,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             // Get a forward pointer.
             self.cdr(cons).try_into()?
         } else {
-            let copy = self.allocate_raw(self.car(cons), self.cdr(cons));
+            let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
             *self.car_mut(cons) = GC_COPIED_CAR.into();
             // Set a forward pointer.
