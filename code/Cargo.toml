@@ -3,6 +3,9 @@ name = "stak-code"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+alloc = []
+
 [dependencies]
 
 [dev-dependencies]

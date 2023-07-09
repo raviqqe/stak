@@ -1,8 +1,8 @@
 #![no_std]
 
-#[cfg(test)]
+#[cfg(any(test))]
 extern crate alloc;
-#[cfg(test)]
+#[cfg(any(feature = "std", test))]
 extern crate std;
 
 mod cons;

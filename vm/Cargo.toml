@@ -4,10 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
+std = []
 trace = []
 
 [dependencies]
 code = { package = "stak-code", path = "../code" }
 
 [dev-dependencies]
+code = { package = "stak-code", path = "../code", features = ["alloc"] }
 insta = "1.30.0"

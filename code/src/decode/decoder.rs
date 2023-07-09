@@ -1,4 +1,4 @@
-use crate::{encode::INTEGER_BASE, Error, Instruction, Operand, Program};
+use crate::{Error, Instruction, Operand, Program, INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
 use core::mem::take;
 
