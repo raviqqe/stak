@@ -594,12 +594,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             .into(),
                         instructions,
                     )?;
-                    let procedure =
-                        self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?;
 
-                    self.program_counter = self.nil;
-
-                    (procedure.into(), Instruction::CONSTANT)
+                    (
+                        self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?
+                            .into(),
+                        Instruction::CONSTANT,
+                    )
                 }
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
                 code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
