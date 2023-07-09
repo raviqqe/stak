@@ -1,6 +1,6 @@
 use crate::{
     cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    symbol_index, value::Value, Error, Type,
+    r#type::Type, symbol_index, value::Value, Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
