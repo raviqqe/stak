@@ -81,6 +81,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == self.nil;
 
+                    if Cons::try_from(self.cdr(self.procedure()?))?.tag() != Type::Procedure as u8 {
+                        return Err(Error::ProcedureExpected);
+                    }
+
                     match self.code()? {
                         Value::Cons(code) => {
                             let argument_count = Number::try_from(self.car(self.stack))?;
