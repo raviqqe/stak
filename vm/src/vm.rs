@@ -17,6 +17,7 @@ const NIL_INDEX: u64 = 0;
 const FALSE_INDEX: u64 = 1;
 const TRUE_INDEX: u64 = 2;
 const RIB_INDEX: u64 = 3;
+const FIRST_GLOBAL_INDEX: u64 = 4;
 
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
@@ -874,7 +875,7 @@ mod tests {
                 vec!["x".into()],
                 vec![
                     Instruction::Constant(42),
-                    Instruction::Set(Operand::Global(0)),
+                    Instruction::Set(Operand::Global(FIRST_GLOBAL_INDEX)),
                 ],
             ));
         }
@@ -895,7 +896,7 @@ mod tests {
         fn get_global() {
             run_program(&Program::new(
                 vec!["x".into()],
-                vec![Instruction::Get(Operand::Global(0))],
+                vec![Instruction::Get(Operand::Global(FIRST_GLOBAL_INDEX))],
             ));
         }
 
@@ -913,7 +914,7 @@ mod tests {
         #[test]
         fn r#if() {
             run_program(&Program::new(
-                vec!["f".into()],
+                vec![],
                 vec![
                     Instruction::Constant(0),
                     Instruction::Get(Operand::Global(NIL_INDEX)),
