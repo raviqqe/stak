@@ -588,7 +588,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
                 code::Instruction::CLOSE => {
-                    foo;
+                    let arity = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
+                    self.push(self.program_counter.into())?;
+                    self.program_counter = self.nil;
+                    let foo = self.allocate(
+                        self.allocate(Number::new(arity).into(), self.program_counter.into())?
+                            .into(),
+                        self.nil.set_tag(Type::Procedure as u8).into(),
+                    )?;
                     (self.decode_operand(input)?, Instruction::CONSTANT)
                 }
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
