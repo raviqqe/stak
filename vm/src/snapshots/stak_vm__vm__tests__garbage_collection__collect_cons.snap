@@ -2,7 +2,7 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-00: c102:0 c104:0
-02: n0 n0
-04: n0 n0
+00: c102:0 c104:2
+02: c102:0 cffffffffffffffe:2
+04: c104:0 cffffffffffffffe:2
 

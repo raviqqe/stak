@@ -482,7 +482,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if self.car(cons) == MOVED_CAR.into() {
+        Ok(if cons == SINGLETON_CDR {
+            cons
+        } else if self.car(cons) == MOVED_CAR.into() {
             // Get a forward pointer.
             self.cdr(cons).try_into()?
         } else {
