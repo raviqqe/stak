@@ -640,7 +640,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 FALSE_INDEX => self.r#false(),
                 TRUE_INDEX => self.r#true(),
                 RIB_INDEX => self.rib()?.into(),
-                _ => self.car(self.tail(self.symbols()?, index)?),
+                _ => self.car(self.tail(
+                    self.symbols()?,
+                    Number::new(index.to_u64() - FIRST_USER_GLOBAL_INDEX),
+                )?),
             }
         } else {
             index.into()
