@@ -534,7 +534,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         assert_cell_index!(index);
 
         let initial = match index {
-            0 => self.r#false(),
+            0 => ZERO.into(),
             1 => BOOLEAN_CDR.into(),
             _ => return Err(Error::CellIndexOutOfRange),
         };
