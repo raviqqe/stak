@@ -456,6 +456,49 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(values)
     }
 
+    // GC escape cells
+
+    fn cell(&self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value,
+            1 => Self::cdr_value,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
+    }
+
+    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        Ok(replace(
+            self.cell_mut(index)?,
+            match index {
+                0 => ZERO.into(),
+                1 => BOOLEAN_CDR.into(),
+                _ => return Err(Error::CellIndexOutOfRange),
+            },
+        ))
+    }
+
+    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value_mut,
+            1 => Self::cdr_value_mut,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
+    }
+
+    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
+        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
+    }
+
+    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cdr_value_mut(self.r#true())
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self) -> Result<(), Error> {
@@ -518,47 +561,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.take_cell(SYMBOL_CELL_INDEX)?;
 
         Ok(())
-    }
-
-    fn cell(&self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value,
-            1 => Self::cdr_value,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#false())
-    }
-
-    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        Ok(replace(
-            self.cell_mut(index)?,
-            match index {
-                0 => ZERO.into(),
-                1 => BOOLEAN_CDR.into(),
-                _ => return Err(Error::CellIndexOutOfRange),
-            },
-        ))
-    }
-
-    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value_mut,
-            1 => Self::cdr_value_mut,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#false())
-    }
-
-    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
-    }
-
-    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.r#true())
     }
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
@@ -638,10 +640,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
                 code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
-                code::Instruction::CONSTANT => (
-                    Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?).into(),
-                    Instruction::CONSTANT,
-                ),
+                code::Instruction::CONSTANT => (self.decode_operand(input)?, Instruction::CONSTANT),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     self.program_counter = self.pop()?.try_into()?;
@@ -880,7 +879,10 @@ mod tests {
 
         #[test]
         fn constant() {
-            run_program(&Program::new(vec![], vec![Instruction::Constant(42)]));
+            run_program(&Program::new(
+                vec![],
+                vec![Instruction::Constant(Operand::Integer(42))],
+            ));
         }
 
         #[test]
@@ -889,8 +891,8 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Close(0),
-                    Instruction::Constant(0),
-                    Instruction::Call(Operand::Local(1), true),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Call(Operand::Integer(1), true),
                 ],
             ));
         }
@@ -900,8 +902,8 @@ mod tests {
             run_program(&Program::new(
                 vec!["x".into()],
                 vec![
-                    Instruction::Constant(42),
-                    Instruction::Set(Operand::Global(symbol_index::OTHER)),
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
                 ],
             ));
         }
@@ -911,9 +913,9 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(0),
-                    Instruction::Constant(42),
-                    Instruction::Set(Operand::Local(0)),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Integer(0)),
                 ],
             ));
         }
@@ -922,7 +924,7 @@ mod tests {
         fn get_global() {
             run_program(&Program::new(
                 vec!["x".into()],
-                vec![Instruction::Get(Operand::Global(symbol_index::OTHER))],
+                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
             ));
         }
 
@@ -931,8 +933,8 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(42),
-                    Instruction::Get(Operand::Local(0)),
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Get(Operand::Integer(0)),
                 ],
             ));
         }
@@ -942,14 +944,14 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(0),
-                    Instruction::Get(Operand::Global(symbol_index::NIL)),
-                    Instruction::Constant(0),
-                    Instruction::Constant(3),
-                    Instruction::Get(Operand::Global(symbol_index::FALSE)),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Get(Operand::Symbol(symbol_index::NIL)),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::If(
-                        vec![Instruction::Call(Operand::Global(symbol_index::RIB), true)],
-                        vec![Instruction::Call(Operand::Global(symbol_index::RIB), true)],
+                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],
+                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],
                     ),
                 ],
             ));

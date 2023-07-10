@@ -7,7 +7,7 @@ pub enum Instruction {
     Close(u64),
     Set(Operand),
     Get(Operand),
-    Constant(u64),
+    Constant(Operand),
     If(Vec<Instruction>, Vec<Instruction>),
 }
 
