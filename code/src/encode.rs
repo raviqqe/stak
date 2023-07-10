@@ -48,8 +48,8 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 encode_operand(codes, *operand);
                 codes.push(Instruction::GET);
             }
-            Instruction::Constant(constant) => {
-                encode_operand(codes, *constant);
+            Instruction::Constant(operand) => {
+                encode_operand(codes, *operand);
                 codes.push(Instruction::CONSTANT);
             }
             Instruction::If(then, r#else) => {
