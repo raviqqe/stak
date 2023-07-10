@@ -721,6 +721,7 @@ mod tests {
     use super::*;
     use crate::{symbol_index, FixedBufferDevice};
     use alloc::vec;
+    use code::Constant;
     use code::{encode, Instruction, Operand, Program};
     use std::format;
 
@@ -881,7 +882,7 @@ mod tests {
         fn constant() {
             run_program(&Program::new(
                 vec![],
-                vec![Instruction::Constant(Operand::Integer(42))],
+                vec![Instruction::Constant(Constant::Integer(42))],
             ));
         }
 
@@ -891,7 +892,7 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Close(0),
-                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Constant::Integer(0)),
                     Instruction::Call(Operand::Integer(1), true),
                 ],
             ));
@@ -902,7 +903,7 @@ mod tests {
             run_program(&Program::new(
                 vec!["x".into()],
                 vec![
-                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Constant(Constant::Integer(42)),
                     Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
                 ],
             ));
@@ -913,8 +914,8 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Constant(Constant::Integer(0)),
+                    Instruction::Constant(Constant::Integer(42)),
                     Instruction::Set(Operand::Integer(0)),
                 ],
             ));
@@ -933,7 +934,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Constant(Constant::Integer(42)),
                     Instruction::Get(Operand::Integer(0)),
                 ],
             ));
@@ -944,10 +945,10 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Constant::Integer(0)),
                     Instruction::Get(Operand::Symbol(symbol_index::NIL)),
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::Constant(Constant::Integer(0)),
+                    Instruction::Constant(Constant::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::If(
                         vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],

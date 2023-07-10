@@ -1,4 +1,4 @@
-use crate::{Constant, Instruction, Operand, Program, INTEGER_BASE};
+use crate::{Instruction, Operand, Program, INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
 
 pub fn encode(program: &Program) -> Vec<u8> {
@@ -49,7 +49,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 codes.push(Instruction::GET);
             }
             Instruction::Constant(constant) => {
-                encode_constant(codes, *constant);
+                encode_operand(codes, *constant);
                 codes.push(Instruction::CONSTANT);
             }
             Instruction::If(then, r#else) => {
@@ -63,15 +63,8 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 
 fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
     match operand {
-        Operand::Global(number) => encode_integer(codes, number << 1),
-        Operand::Local(number) => encode_integer(codes, (number << 1) + 1),
-    }
-}
-
-fn encode_constant(codes: &mut Vec<u8>, constant: Constant) {
-    match constant {
-        Constant::Symbol(number) => encode_integer(codes, number << 1),
-        Constant::Integer(number) => encode_integer(codes, (number << 1) + 1),
+        Operand::Symbol(number) => encode_integer(codes, number << 1),
+        Operand::Integer(number) => encode_integer(codes, (number << 1) + 1),
     }
 }
 
@@ -123,7 +116,7 @@ mod tests {
     fn encode_return_call_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Call(Operand::Global(0), true)],
+            vec![Instruction::Call(Operand::Symbol(0), true)],
         ));
     }
 
@@ -131,7 +124,7 @@ mod tests {
     fn encode_return_call_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Call(Operand::Local(0), true)],
+            vec![Instruction::Call(Operand::Integer(0), true)],
         ));
     }
 
@@ -139,7 +132,7 @@ mod tests {
     fn encode_call_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Call(Operand::Global(0), false)],
+            vec![Instruction::Call(Operand::Symbol(0), false)],
         ));
     }
 
@@ -147,7 +140,7 @@ mod tests {
     fn encode_call_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Call(Operand::Local(0), false)],
+            vec![Instruction::Call(Operand::Integer(0), false)],
         ));
     }
 
@@ -163,7 +156,7 @@ mod tests {
     fn encode_set_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Set(Operand::Global(0))],
+            vec![Instruction::Set(Operand::Symbol(0))],
         ));
     }
 
@@ -171,7 +164,7 @@ mod tests {
     fn encode_set_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Set(Operand::Local(0))],
+            vec![Instruction::Set(Operand::Integer(0))],
         ));
     }
 
@@ -179,7 +172,7 @@ mod tests {
     fn encode_get_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Get(Operand::Global(0))],
+            vec![Instruction::Get(Operand::Symbol(0))],
         ));
     }
 
@@ -187,7 +180,7 @@ mod tests {
     fn encode_get_local() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Get(Operand::Local(0))],
+            vec![Instruction::Get(Operand::Integer(0))],
         ));
     }
 
@@ -196,8 +189,8 @@ mod tests {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::If(
-                vec![Instruction::Call(Operand::Global(0), true)],
-                vec![Instruction::Call(Operand::Global(1), true)],
+                vec![Instruction::Call(Operand::Symbol(0), true)],
+                vec![Instruction::Call(Operand::Symbol(1), true)],
             )],
         ));
     }
@@ -208,12 +201,12 @@ mod tests {
             default_symbols(),
             vec![Instruction::If(
                 vec![
-                    Instruction::Get(Operand::Global(0)),
-                    Instruction::Call(Operand::Global(0), true),
+                    Instruction::Get(Operand::Symbol(0)),
+                    Instruction::Call(Operand::Symbol(0), true),
                 ],
                 vec![
-                    Instruction::Get(Operand::Global(1)),
-                    Instruction::Call(Operand::Global(1), true),
+                    Instruction::Get(Operand::Symbol(1)),
+                    Instruction::Call(Operand::Symbol(1), true),
                 ],
             )],
         ));
@@ -224,8 +217,8 @@ mod tests {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![
-                Instruction::Get(Operand::Global(0)),
-                Instruction::Call(Operand::Global(0), true),
+                Instruction::Get(Operand::Symbol(0)),
+                Instruction::Call(Operand::Symbol(0), true),
             ],
         ));
     }
@@ -234,7 +227,7 @@ mod tests {
     fn encode_non_zero_global_index() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Set(Operand::Global(42))],
+            vec![Instruction::Set(Operand::Symbol(42))],
         ));
     }
 
@@ -242,7 +235,7 @@ mod tests {
     fn encode_none_zero_local_index() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Set(Operand::Local(42))],
+            vec![Instruction::Set(Operand::Integer(42))],
         ));
     }
 
@@ -250,7 +243,7 @@ mod tests {
     fn encode_large_global_index() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Set(Operand::Global(2045))],
+            vec![Instruction::Set(Operand::Symbol(2045))],
         ));
     }
 
@@ -258,7 +251,7 @@ mod tests {
     fn encode_large_local_index() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Set(Operand::Local(2045))],
+            vec![Instruction::Set(Operand::Integer(2045))],
         ));
     }
 }

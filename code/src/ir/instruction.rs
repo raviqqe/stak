@@ -1,4 +1,4 @@
-use crate::{Constant, Operand};
+use crate::Operand;
 use alloc::vec::Vec;
 
 #[derive(Debug, Eq, PartialEq)]
@@ -7,7 +7,7 @@ pub enum Instruction {
     Close(u64),
     Set(Operand),
     Get(Operand),
-    Constant(Constant),
+    Constant(Operand),
     If(Vec<Instruction>, Vec<Instruction>),
 }
 

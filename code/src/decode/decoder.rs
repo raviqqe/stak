@@ -1,4 +1,4 @@
-use crate::{Constant, Error, Instruction, Operand, Program, INTEGER_BASE};
+use crate::{Error, Instruction, Operand, Program, INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
 use core::mem::take;
 
@@ -58,7 +58,7 @@ impl<'a> Decoder<'a> {
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
                 Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
                 Instruction::CONSTANT => {
-                    instructions.push(Instruction::Constant(self.decode_constant()?))
+                    instructions.push(Instruction::Constant(self.decode_operand()?))
                 }
                 Instruction::IF => {
                     instructions.reverse();
@@ -84,21 +84,9 @@ impl<'a> Decoder<'a> {
         let index = integer >> 1;
 
         Ok(if global {
-            Operand::Global(index)
+            Operand::Symbol(index)
         } else {
-            Operand::Local(index)
-        })
-    }
-
-    fn decode_constant(&mut self) -> Result<Constant, Error> {
-        let integer = self.decode_integer().ok_or(Error::MissingOperand)?;
-        let symbol = integer & 1 == 0;
-        let index = integer >> 1;
-
-        Ok(if symbol {
-            Constant::Symbol(index)
-        } else {
-            Constant::Integer(index)
+            Operand::Integer(index)
         })
     }
 
