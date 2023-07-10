@@ -1,4 +1,4 @@
-use crate::{Instruction, Operand, Program, INTEGER_BASE};
+use crate::{Constant, Instruction, Operand, Program, INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
 
 pub fn encode(program: &Program) -> Vec<u8> {
@@ -48,8 +48,8 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 encode_operand(codes, *operand);
                 codes.push(Instruction::GET);
             }
-            Instruction::Constant(number) => {
-                encode_integer(codes, *number);
+            Instruction::Constant(constant) => {
+                encode_constant(codes, *constant);
                 codes.push(Instruction::CONSTANT);
             }
             Instruction::If(then, r#else) => {
@@ -64,8 +64,14 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
     match operand {
         Operand::Global(number) => encode_integer(codes, number << 1),
-
         Operand::Local(number) => encode_integer(codes, (number << 1) + 1),
+    }
+}
+
+fn encode_constant(codes: &mut Vec<u8>, constant: Constant) {
+    match constant {
+        Constant::Symbol(number) => encode_integer(codes, number << 1),
+        Constant::Integer(number) => encode_integer(codes, (number << 1) + 1),
     }
 }
 
