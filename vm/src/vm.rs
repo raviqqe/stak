@@ -456,6 +456,49 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(values)
     }
 
+    // GC escape cells
+
+    fn cell(&self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value,
+            1 => Self::cdr_value,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
+    }
+
+    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
+        assert_cell_index!(index);
+
+        Ok(replace(
+            self.cell_mut(index)?,
+            match index {
+                0 => ZERO.into(),
+                1 => BOOLEAN_CDR.into(),
+                _ => return Err(Error::CellIndexOutOfRange),
+            },
+        ))
+    }
+
+    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
+        assert_cell_index!(index);
+
+        (match index {
+            0 => Self::car_value_mut,
+            1 => Self::cdr_value_mut,
+            _ => return Err(Error::CellIndexOutOfRange),
+        })(self, self.r#false())
+    }
+
+    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
+        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
+    }
+
+    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
+        self.cdr_value_mut(self.r#true())
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self) -> Result<(), Error> {
@@ -518,47 +561,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.take_cell(SYMBOL_CELL_INDEX)?;
 
         Ok(())
-    }
-
-    fn cell(&self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value,
-            1 => Self::cdr_value,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#false())
-    }
-
-    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        Ok(replace(
-            self.cell_mut(index)?,
-            match index {
-                0 => ZERO.into(),
-                1 => BOOLEAN_CDR.into(),
-                _ => return Err(Error::CellIndexOutOfRange),
-            },
-        ))
-    }
-
-    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value_mut,
-            1 => Self::cdr_value_mut,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#false())
-    }
-
-    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
-    }
-
-    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.r#true())
     }
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
