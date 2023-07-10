@@ -57,9 +57,9 @@ impl<'a> Decoder<'a> {
                 )),
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
                 Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
-                Instruction::CONSTANT => instructions.push(Instruction::Constant(
-                    self.decode_integer().ok_or(Error::MissingOperand)?,
-                )),
+                Instruction::CONSTANT => {
+                    instructions.push(Instruction::Constant(self.decode_operand()?))
+                }
                 Instruction::IF => {
                     instructions.reverse();
                     let then = take(&mut instructions);
@@ -84,9 +84,9 @@ impl<'a> Decoder<'a> {
         let index = integer >> 1;
 
         Ok(if global {
-            Operand::Global(index)
+            Operand::Symbol(index)
         } else {
-            Operand::Local(index)
+            Operand::Integer(index)
         })
     }
 
