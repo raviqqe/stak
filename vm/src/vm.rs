@@ -45,7 +45,7 @@ pub struct Vm<const N: usize, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
-    nil: Cons,
+    r#false: Cons,
     allocation_index: usize,
     space: bool,
     heap: [Value; N],
@@ -59,29 +59,29 @@ impl<const N: usize, T: Device> Vm<N, T> {
             device,
             program_counter: DUMMY_CONS,
             stack: DUMMY_CONS,
-            nil: DUMMY_CONS,
+            r#false: DUMMY_CONS,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
         };
 
-        let r#false = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
         let r#true = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
-        vm.nil = vm.allocate_raw(r#false.into(), r#true.set_tag(Type::Singleton as u8).into())?;
+        let null = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
+        vm.r#false = vm.allocate_raw(r#true.into(), null.set_tag(Type::Singleton as u8).into())?;
 
-        vm.stack = vm.nil;
-        vm.program_counter = vm.nil;
+        vm.stack = null;
+        vm.program_counter = null;
 
         Ok(vm)
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
-        while self.program_counter != self.nil {
+        while self.null() != self.program_counter.into() {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    let r#return = instruction == self.nil;
+                    let r#return = instruction == self.r#false;
                     let mut procedure = self.procedure()?;
 
                     if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
@@ -229,7 +229,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
-        if self.stack == self.nil {
+        if self.stack == self.r#false {
             return Err(Error::StackUnderflow);
         }
 
@@ -329,18 +329,22 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn boolean(&self, value: bool) -> Value {
         if value {
-            self.cdr(self.nil)
+            self.r#true()
         } else {
-            self.car(self.nil)
+            self.r#false.into()
         }
     }
 
     fn r#false(&self) -> Value {
-        self.boolean(false)
+        self.r#false.into()
     }
 
     fn r#true(&self) -> Value {
-        self.boolean(true)
+        self.car(self.r#false)
+    }
+
+    fn null(&self) -> Value {
+        self.cdr(self.r#false)
     }
 
     // Primitive operations
@@ -507,7 +511,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
-        self.nil = self.copy_cons(self.nil)?;
+        self.r#false = self.copy_cons(self.r#false)?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
@@ -547,15 +551,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
         let mut input = DecodeInput { codes, index: 0 };
 
-        self.program_counter = self.nil;
-        self.stack = self.nil;
+        self.program_counter = self.r#false;
+        self.stack = self.r#false;
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
 
         // Implicit top-level frame
-        let return_info = self.allocate(self.nil.into(), self.nil.into())?.into();
-        self.stack = self.allocate(return_info, self.nil.set_tag(FRAME_TAG).into())?;
+        let return_info = self
+            .allocate(self.r#false.into(), self.r#false.into())?
+            .into();
+        self.stack = self.allocate(return_info, self.r#false.set_tag(FRAME_TAG).into())?;
 
         // Allow GC of symbols.
         self.take_cell(SYMBOL_CELL_INDEX)?;
@@ -565,7 +571,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
         let mut length = 0;
-        let mut name = self.nil;
+        let mut name = self.r#false;
 
         loop {
             match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
@@ -579,7 +585,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.push(symbol.into())?;
 
                     length = 0;
-                    name = self.nil;
+                    name = self.r#false;
 
                     if character == b';' {
                         break;
@@ -598,12 +604,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         )?;
 
         self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.nil.into())?;
+        self.initialize_symbol(self.r#false.into())?;
         self.initialize_symbol(self.r#true())?;
         self.initialize_symbol(self.r#false())?;
 
         *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
-        self.stack = self.nil;
+        self.stack = self.r#false;
 
         Ok(())
     }
@@ -619,7 +625,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
                     self.push(self.program_counter.into())?;
-                    self.program_counter = self.nil;
+                    self.program_counter = self.r#false;
 
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
@@ -633,8 +639,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     )?;
 
                     (
-                        self.allocate(code.into(), self.nil.set_tag(Type::Procedure as u8).into())?
-                            .into(),
+                        self.allocate(
+                            code.into(),
+                            self.r#false.set_tag(Type::Procedure as u8).into(),
+                        )?
+                        .into(),
                         Instruction::CONSTANT,
                     )
                 }
@@ -653,7 +662,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
-        self.stack = self.nil;
+        self.stack = self.r#false;
 
         Ok(())
     }
@@ -770,7 +779,7 @@ mod tests {
     fn create_list() {
         let mut vm = create_vm();
 
-        let list = vm.append(Number::new(1).into(), vm.nil).unwrap();
+        let list = vm.append(Number::new(1).into(), vm.r#false).unwrap();
 
         insta::assert_display_snapshot!(vm);
 
