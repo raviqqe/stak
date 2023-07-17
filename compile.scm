@@ -6,12 +6,16 @@
       '()
       (cons x (read-all)))))
 
+(define (compile-program block source)
+  (let ((continue (lambda () (compile-program block (cdr source)))))
+    (cond
+      ((null? source)
+        '())
+      ((list? (car source))
+        (cons "tomato" (continue)))
+      (else (continue)))))
+
 (define (compile source)
-  (cond
-    ((null? source) (display "compile end"))
-    ((list? (car source)) (display #f))
-    (else (compile (cdr source)))))
+  (compile-program '() source))
 
-(compile (read-all))
-
-(write-u8 65)
+(write (compile (read-all)))
