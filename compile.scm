@@ -17,12 +17,22 @@
       '()
       (cons x (read-all)))))
 
+; (block . symbols)
 (define (make-context)
   (cons '() '()))
 
+(define (set-tail! values tail)
+  (let ((next (cdr values)))
+    (if (null? next)
+      (set-cdr! values tail)
+      (set-tail! next tail))))
+
+(define (add-symbol! context symbol)
+  (set-tail! context (list symbol)))
+
 (define (compile-expression context expression)
   (display expression)
-  #f)
+  expression)
 
 (define (compile-program context source)
   (let ((continue (lambda (context) (compile-program context (cdr source)))))
@@ -32,7 +42,8 @@
       ((pair? (car source))
         (let ((expression (car source)))
           (case (car expression)
-            ((define) (cons
+            ((define)
+              (cons
                 (compile-expression context (caddr expression))
                 (continue context)))
             (else (todo)))))
