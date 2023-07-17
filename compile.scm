@@ -1,5 +1,7 @@
 #!/usr/bin/env gsi
 
+(define (todo) (error "not implemented"))
+
 (define (read-all)
   (let ((x (read)))
     (if (eof-object? x)
@@ -13,7 +15,11 @@
         '())
       ((pair? (car source))
         (let ((expression (car source)))
-          (cons "tomato" (continue))))
+          (cons
+            (case (car expression)
+              ((define) (todo))
+              (else "tomato"))
+            (continue))))
       (else (continue)))))
 
 (define (compile source)
