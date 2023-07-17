@@ -9,4 +9,4 @@ alloc = []
 [dependencies]
 
 [dev-dependencies]
-insta = "1.30.0"
+insta = "1.31.0"
