@@ -12,7 +12,7 @@ const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 // TODO Should we use Cons::new(0)?
 const DUMMY_CONS: Cons = Cons::dummy(0);
-const BOOLEAN_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
+const SINGLETON_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 // TODO Should we use Cons::new(0).set_tag(u8::MAX)?
 const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
@@ -65,8 +65,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let r#true = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
-        let null = vm.allocate_raw(ZERO.into(), BOOLEAN_CDR.into())?;
+        let r#true = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
+        let null = vm.allocate_raw(ZERO.into(), SINGLETON_CDR.into())?;
         vm.r#false = vm.allocate_raw(r#true.into(), null.set_tag(Type::Singleton as u8).into())?;
 
         vm.stack = null;
@@ -81,7 +81,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    let r#return = instruction == self.r#false;
+                    let r#return = self.null() == instruction.into();
                     let mut procedure = self.procedure()?;
 
                     if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
@@ -161,7 +161,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = (if self.pop()? == self.r#false() {
+                    self.program_counter = (if self.pop()? == self.r#false.into() {
                         self.cdr(self.program_counter)
                     } else {
                         self.car(self.program_counter)
@@ -229,7 +229,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
-        if self.stack == self.r#false {
+        if self.null() == self.stack.into() {
             return Err(Error::StackUnderflow);
         }
 
@@ -333,10 +333,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         } else {
             self.r#false.into()
         }
-    }
-
-    fn r#false(&self) -> Value {
-        self.r#false.into()
     }
 
     fn r#true(&self) -> Value {
@@ -469,7 +465,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             0 => Self::car_value,
             1 => Self::cdr_value,
             _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#false())
+        })(self, self.r#true())
     }
 
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
@@ -479,7 +475,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.cell_mut(index)?,
             match index {
                 0 => ZERO.into(),
-                1 => BOOLEAN_CDR.into(),
+                1 => SINGLETON_CDR.into(),
                 _ => return Err(Error::CellIndexOutOfRange),
             },
         ))
@@ -492,15 +488,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
             0 => Self::car_value_mut,
             1 => Self::cdr_value_mut,
             _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#false())
+        })(self, self.r#true())
     }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, BOOLEAN_CDR.into()))
+        Ok(replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()))
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.r#true())
+        self.cdr_value_mut(self.null())
     }
 
     // Garbage collection
@@ -551,17 +547,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
         let mut input = DecodeInput { codes, index: 0 };
 
-        self.program_counter = self.r#false;
-        self.stack = self.r#false;
+        self.program_counter = Cons::try_from(self.null())?;
+        self.stack = Cons::try_from(self.null())?;
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
 
         // Implicit top-level frame
-        let return_info = self
-            .allocate(self.r#false.into(), self.r#false.into())?
-            .into();
-        self.stack = self.allocate(return_info, self.r#false.set_tag(FRAME_TAG).into())?;
+        let return_info = self.allocate(self.null(), self.null())?.into();
+        self.stack = self.allocate(
+            return_info,
+            Cons::try_from(self.null())?.set_tag(FRAME_TAG).into(),
+        )?;
 
         // Allow GC of symbols.
         self.take_cell(SYMBOL_CELL_INDEX)?;
@@ -571,7 +568,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
         let mut length = 0;
-        let mut name = self.r#false;
+        let mut name = Cons::try_from(self.null())?;
 
         loop {
             match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
@@ -580,12 +577,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         Number::new(length).into(),
                         name.set_tag(Type::String as u8).into(),
                     )?;
-                    let symbol =
-                        self.allocate(self.r#false(), string.set_tag(Type::Symbol as u8).into())?;
+                    let symbol = self.allocate(
+                        self.r#false.into(),
+                        string.set_tag(Type::Symbol as u8).into(),
+                    )?;
                     self.push(symbol.into())?;
 
                     length = 0;
-                    name = self.r#false;
+                    name = Cons::try_from(self.null())?;
 
                     if character == b';' {
                         break;
@@ -604,12 +603,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         )?;
 
         self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.r#false.into())?;
+        self.initialize_symbol(self.null())?;
         self.initialize_symbol(self.r#true())?;
-        self.initialize_symbol(self.r#false())?;
+        self.initialize_symbol(self.r#false.into())?;
 
         *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
-        self.stack = self.r#false;
+        self.stack = Cons::try_from(self.null())?;
 
         Ok(())
     }
@@ -625,7 +624,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
                     self.push(self.program_counter.into())?;
-                    self.program_counter = self.r#false;
+                    self.program_counter = Cons::try_from(self.null())?;
 
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
@@ -641,7 +640,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     (
                         self.allocate(
                             code.into(),
-                            self.r#false.set_tag(Type::Procedure as u8).into(),
+                            Cons::try_from(self.null())?
+                                .set_tag(Type::Procedure as u8)
+                                .into(),
                         )?
                         .into(),
                         Instruction::CONSTANT,
@@ -662,7 +663,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
-        self.stack = self.r#false;
+        self.stack = Cons::try_from(self.null())?;
 
         Ok(())
     }
