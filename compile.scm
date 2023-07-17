@@ -18,7 +18,7 @@
           (cons
             (case (car expression)
               ((define) (todo))
-              (else "tomato"))
+              (else (error "unknown top-level")))
             (continue))))
       (else (continue)))))
 
