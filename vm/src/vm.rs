@@ -777,7 +777,9 @@ mod tests {
     fn create_list() {
         let mut vm = create_vm();
 
-        let list = vm.append(Number::new(1).into(), vm.r#false).unwrap();
+        let list = vm
+            .append(Number::new(1).into(), vm.null().unwrap().into())
+            .unwrap();
 
         insta::assert_display_snapshot!(vm);
 
