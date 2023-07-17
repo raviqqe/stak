@@ -11,8 +11,9 @@
     (cond
       ((null? source)
         '())
-      ((list? (car source))
-        (cons "tomato" (continue)))
+      ((pair? (car source))
+        (let ((expression (car source)))
+          (cons "tomato" (continue))))
       (else (continue)))))
 
 (define (compile source)
