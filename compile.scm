@@ -1,5 +1,10 @@
 #!/usr/bin/env gsi
 
+(define false-index 0)
+(define true-index 1)
+(define null-index 2)
+(define rib-index 3)
+
 (define (todo) (error "not implemented"))
 
 (define (read-all)
