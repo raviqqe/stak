@@ -2,9 +2,9 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-00: c104:0 c106:2
-02: n2 c108:0
-04: n0 cfffffffffffffff:2
-06: n0 cfffffffffffffff:2
-08: n1 c100:0
+00: n0 cfffffffffffffff:2
+02: n2 c106:0
+04: c108:0 c100:2
+06: n1 c100:0
+08: n0 cfffffffffffffff:2
 
