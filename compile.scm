@@ -5,6 +5,12 @@
 (define null-index 2)
 (define rib-index 3)
 
+(define call-instruction 0)
+(define set-instruction 1)
+(define get-instruction 2)
+(define constant-instruction 3)
+(define if-instruction 4)
+
 (define (todo) (error "not implemented"))
 
 (define (read-all)
@@ -13,12 +19,15 @@
       '()
       (cons x (read-all)))))
 
-(define (compile-expression block expression)
+(define (make-context)
+  (cons '() '()))
+
+(define (compile-expression context expression)
   (display expression)
   #f)
 
-(define (compile-program block source)
-  (let ((continue (lambda (block) (compile-program block (cdr source)))))
+(define (compile-program context source)
+  (let ((continue (lambda (context) (compile-program context (cdr source)))))
     (cond
       ((null? source)
         '())
@@ -26,12 +35,12 @@
         (let ((expression (car source)))
           (case (car expression)
             ((define) (cons
-                (compile-expression block (caddr expression))
-                (continue block)))
+                (compile-expression context (caddr expression))
+                (continue context)))
             (else (todo)))))
-      (else (continue block)))))
+      (else (continue context)))))
 
 (define (compile source)
-  (compile-program '() source))
+  (compile-program (make-context) source))
 
 (write (compile (read-all)))
