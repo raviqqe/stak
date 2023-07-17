@@ -19,7 +19,7 @@
             ((define) (cons
                 (todo)
                 (continue block)))
-            (else (error "unknown top-level")))))
+            (else (todo)))))
       (else (continue block)))))
 
 (define (compile source)
