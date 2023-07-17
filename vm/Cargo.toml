@@ -12,4 +12,4 @@ code = { package = "stak-code", path = "../code" }
 
 [dev-dependencies]
 code = { package = "stak-code", path = "../code", features = ["alloc"] }
-insta = "1.30.0"
+insta = "1.31.0"
