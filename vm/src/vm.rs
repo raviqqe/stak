@@ -76,12 +76,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
-        while self.null() != self.program_counter.into() {
+        while self.program_counter != self.null()? {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    let r#return = self.null() == instruction.into();
+                    let r#return = instruction == self.null()?;
                     let mut procedure = self.procedure()?;
 
                     if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
@@ -229,7 +229,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
-        if self.null() == self.stack.into() {
+        if self.stack == self.null()? {
             return Err(Error::StackUnderflow);
         }
 
@@ -339,8 +339,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.car(self.r#false)
     }
 
-    fn null(&self) -> Value {
-        self.cdr(self.r#false)
+    fn null(&self) -> Result<Cons, Error> {
+        Cons::try_from(self.cdr(self.r#false))
     }
 
     // Primitive operations
@@ -496,7 +496,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        self.cdr_value_mut(self.null())
+        Ok(self.cdr_mut(self.null()?))
     }
 
     // Garbage collection
@@ -547,18 +547,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
         let mut input = DecodeInput { codes, index: 0 };
 
-        self.program_counter = Cons::try_from(self.null())?;
-        self.stack = Cons::try_from(self.null())?;
+        self.program_counter = self.null()?;
+        self.stack = self.null()?;
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
 
         // Implicit top-level frame
-        let return_info = self.allocate(self.null(), self.null())?.into();
-        self.stack = self.allocate(
-            return_info,
-            Cons::try_from(self.null())?.set_tag(FRAME_TAG).into(),
-        )?;
+        let return_info = self
+            .allocate(self.null()?.into(), self.null()?.into())?
+            .into();
+        self.stack = self.allocate(return_info, self.null()?.set_tag(FRAME_TAG).into())?;
 
         // Allow GC of symbols.
         self.take_cell(SYMBOL_CELL_INDEX)?;
@@ -568,7 +567,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
         let mut length = 0;
-        let mut name = Cons::try_from(self.null())?;
+        let mut name = self.null()?;
 
         loop {
             match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
@@ -584,7 +583,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.push(symbol.into())?;
 
                     length = 0;
-                    name = Cons::try_from(self.null())?;
+                    name = self.null()?;
 
                     if character == b';' {
                         break;
@@ -603,12 +602,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         )?;
 
         self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.null())?;
+        self.initialize_symbol(self.null()?.into())?;
         self.initialize_symbol(self.r#true())?;
         self.initialize_symbol(self.r#false.into())?;
 
         *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
-        self.stack = Cons::try_from(self.null())?;
+        self.stack = self.null()?;
 
         Ok(())
     }
@@ -624,7 +623,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
                     self.push(self.program_counter.into())?;
-                    self.program_counter = Cons::try_from(self.null())?;
+                    self.program_counter = self.null()?;
 
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
@@ -640,9 +639,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     (
                         self.allocate(
                             code.into(),
-                            Cons::try_from(self.null())?
-                                .set_tag(Type::Procedure as u8)
-                                .into(),
+                            self.null()?.set_tag(Type::Procedure as u8).into(),
                         )?
                         .into(),
                         Instruction::CONSTANT,
@@ -663,7 +660,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
-        self.stack = Cons::try_from(self.null())?;
+        self.stack = self.null()?;
 
         Ok(())
     }
