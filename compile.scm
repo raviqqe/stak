@@ -9,18 +9,18 @@
       (cons x (read-all)))))
 
 (define (compile-program block source)
-  (let ((continue (lambda () (compile-program block (cdr source)))))
+  (let ((continue (lambda (block) (compile-program block (cdr source)))))
     (cond
       ((null? source)
         '())
       ((pair? (car source))
         (let ((expression (car source)))
-          (cons
-            (case (car expression)
-              ((define) (todo))
-              (else (error "unknown top-level")))
-            (continue))))
-      (else (continue)))))
+          (case (car expression)
+            ((define) (cons
+                (todo)
+                (continue block)))
+            (else (error "unknown top-level")))))
+      (else (continue block)))))
 
 (define (compile source)
   (compile-program '() source))
