@@ -954,7 +954,7 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Get(Operand::Symbol(symbol_index::NIL)),
+                    Instruction::Get(Operand::Symbol(symbol_index::NULL)),
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
