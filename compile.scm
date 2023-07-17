@@ -1,5 +1,3 @@
-#!/usr/bin/env gsi
-
 (define false-index 0)
 (define true-index 1)
 (define null-index 2)
