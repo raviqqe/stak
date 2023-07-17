@@ -8,6 +8,10 @@
       '()
       (cons x (read-all)))))
 
+(define (compile-expression block expression)
+  (display expression)
+  #f)
+
 (define (compile-program block source)
   (let ((continue (lambda (block) (compile-program block (cdr source)))))
     (cond
@@ -17,7 +21,7 @@
         (let ((expression (car source)))
           (case (car expression)
             ((define) (cons
-                (todo)
+                (compile-expression block (caddr expression))
                 (continue block)))
             (else (todo)))))
       (else (continue block)))))
