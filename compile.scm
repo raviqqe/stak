@@ -1,5 +1,7 @@
 #!/usr/bin/env gsi
 
-(define x 42)
+(define (compile source)
+  (let ((x read ()))
+    foo))
 
 (write-u8 65)
