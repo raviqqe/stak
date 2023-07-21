@@ -46,13 +46,12 @@
               (if (eqv? v var) ; global?
                 (let ((g (live? var (ctx-live ctx))))
                   (if g
-                    (if (and (constant? g) (not (assoc var (ctx-exports ctx))))
+                    (if (and (constant? g) (not (assoc var (ctx-exports context))))
                       (begin
-                        (gen-noop ctx cont))
-                      (comp ctx val (gen-assign ctx v cont)))
-                    (begin
-                      (gen-noop ctx cont))))
-                (comp ctx val (gen-assign ctx v cont)))))
+                        (gen-noop context continuation))
+                      (comp ctx val (gen-assign context v continuation)))
+                    (gen-noop context continuatiokn)))
+                (compile ctx val (gen-assign ctx v cont)))))
 
           (else
             (todo)))))
