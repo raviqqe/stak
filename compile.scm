@@ -21,11 +21,11 @@
 (define (make-context)
   (cons '() '()))
 
-(define (lookup variable symbols index)
-  (if (pair? symbols)
-    (if (eqv? (car symbols) variable)
+(define (lookup variable variables index)
+  (if (pair? variables)
+    (if (eqv? (car variables) variable)
       index
-      (lookup var (cdr cte) (+ index 1)))
+      (lookup variable (cdr variables) (+ index 1)))
     variable))
 
 (define (set-tail! values tail)
