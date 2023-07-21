@@ -1,2 +1,4 @@
 *.info
+*.out
 target
+tmp
