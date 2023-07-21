@@ -13,6 +13,15 @@
 (define constant-instruction 3)
 (define if-instruction 4)
 
+;; Codes
+
+(define return-call-code 0)
+(define call-code 0)
+(define set-code 1)
+(define get-code 2)
+(define constant-code 3)
+(define if-code 4)
+
 ; Utility
 
 (define (todo value) (error "not implemented" value))
@@ -23,13 +32,13 @@
       (cons (cons tag car) cdr))
 
     (define (rib-tag rib)
-      (cons (cons tag car) cdr))
+      (caar rib))
 
     (define (rib-car rib)
-      (cons (cons tag car) cdr))
+      (cdar rib))
 
     (define (rib-cdr rib)
-      (cons (cons tag car) cdr))))
+      (cdr rib))))
 
 ; Source code reading
 
@@ -135,21 +144,55 @@
 
 ; Encoding
 
+(define (encode-operand operand)
+  (cond
+    ((symbol? operand)
+      (todo operand))
+    ((number? operand)
+      (todo operand))
+    (else (error "foo"))))
+
 (define (encode-instruction instruction)
-  (case (rib-tag instruction)
-    ((call-instruction) (todo instruction))
-    ((set-instruction) (todo instruction))
-    ((get-instruction) (todo instruction))
-    ((constant-instruction) (todo instruction))
-    ((if-instruction) (todo instruction))
-    (else (error "invalid instruction")))
+  (let ((tag (rib-tag instruction)))
+    (cond
+      ((eqv? tag call-instruction)
+        (cons
+          (if (null? (rib-cdr instruction))
+            return-call-code
+            call-code)
+          (encode-operand (rib-car instruction))))
+
+      ((eqv? tag set-instruction)
+        (cons
+          set-code
+          (encode-operand (rib-car instruction))))
+
+      ((eqv? tag get-instruction)
+        (cons
+          get-code
+          (encode-operand (rib-car instruction))))
+
+      ((eqv? tag constant-instruction)
+        (cons
+          constant-code
+          (encode-operand (rib-car instruction))))
+
+      ((eqv? tag if-instruction)
+        (todo instruction))
+
+      (else (error "invalid instruction")))))
+
+(define (encode-codes codes continuation)
+  (if (null? codes)
+    continuation
+    (encode-codes
+      (rib-cdr codes)
+      (append
+        (encode-instruction codes)
+        continuation))))
 
 (define (encode codes)
-  (if (null? codes)
-    '()
-    (append
-      (encode-instruction instruction)
-      (encode (rib-cdr codes)))))
+  (encode-codes codes '()))
 
 ; Main
 
