@@ -9,7 +9,7 @@
 (define constant-instruction 3)
 (define if-instruction 4)
 
-(define (todo) (error "not implemented"))
+(define (todo value) (error "not implemented" value))
 
 (define (read-all)
   (let ((x (read)))
@@ -40,7 +40,7 @@
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
-      (todo))
+      (todo variable))
 
     ((pair? expression)
       (let ((first (car expression)))
@@ -52,11 +52,14 @@
                 (resolve-variable (cadr expression) (context-variables context) 1)
                 continuation)))
 
+          ((eqv? first 'begin)
+            (todo first))
+
           (else
-            (todo)))))
+            (todo first)))))
 
     (else
-      (todo))))
+      (todo expression))))
 
 (define (compile expression)
   (compile-expression (make-context) expression '()))
@@ -84,4 +87,4 @@
     (else
       expression)))
 
-(write (compile (expand (read-all))))
+(write (compile (expand (cons 'begin (read-all)))))
