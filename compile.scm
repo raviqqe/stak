@@ -17,6 +17,9 @@
 
 (define (todo value) (error "not implemented" value))
 
+(define (rib tag car cdr)
+  (cons (cons tag car) cdr))
+
 ; Source code reading
 
 (define (read-all)
@@ -62,14 +65,24 @@
 (define (make-context)
   (cons '() '()))
 
-(define (resolve-variable variable variables index)
-  (if (pair? variables)
-    (if (eqv? (car variables) variable)
-      index
-      (resolve-variable variable (cdr variables) (+ index 1)))
-    variable))
+(define (resolve-variable* variables variable index)
+  (cond
+    ((null? variables)
+      variable)
+
+    ((eqv? (car variables) variable)
+      index)
+
+    (else
+      (resolve-variable (cdr variables) variable (+ index 1)))))
+
+(define (resolve-variable context variable index)
+  (resolve-variable* (car context) variable index))
 
 ; Compilation
+
+(define (compile-set variable continuation)
+  (rib set-instruction variable continuation))
 
 (define (compile-begin context expressions continuation)
   (compile-expression context
@@ -88,9 +101,8 @@
         (cond
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
-              (gen-assign
-                context
-                (resolve-variable (cadr expression) (context-variables context) 1)
+              (compile-set
+                (resolve-variable context (cadr expression) 1)
                 continuation)))
 
           ((eqv? first 'begin)
@@ -100,7 +112,7 @@
             (todo first)))))
 
     (else
-      (todo expression))))
+      (rib constant-instruction expression continuation))))
 
 (define (compile expression)
   (compile-expression (make-context) expression '()))
