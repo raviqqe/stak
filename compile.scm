@@ -49,16 +49,11 @@
                   (if (eqv? v var) ;; global?
                     (let ((g (live? var (ctx-live ctx))))
                       (if g
-                        (if (and (constant? g)
-                            (not (assoc var (ctx-exports ctx))))
+                        (if (and (constant? g) (not (assoc var (ctx-exports ctx))))
                           (begin
-                            ;;                                        (pp `(*** constant propagation of ,var = ,(cadr g))
-                            ;;                                             (current-error-port))
                             (gen-noop ctx cont))
                           (comp ctx val (gen-assign ctx v cont)))
                         (begin
-                          ;;                                    (pp `(*** removed dead assignment to ,var)
-                          ;;                                         (current-error-port))
                           (gen-noop ctx cont))))
                     (comp ctx val (gen-assign ctx v cont)))))))
 
