@@ -1,7 +1,11 @@
+; Constants
+
 (define false-index 0)
 (define true-index 1)
 (define null-index 2)
 (define rib-index 3)
+
+; Instructions
 
 (define call-instruction 0)
 (define set-instruction 1)
@@ -9,7 +13,11 @@
 (define constant-instruction 3)
 (define if-instruction 4)
 
+; Todo
+
 (define (todo value) (error "not implemented" value))
+
+; Source code reading
 
 (define (read-all)
   (let ((x (read)))
@@ -19,6 +27,8 @@
 
 (define (read-source)
   (cons 'begin (read-all)))
+
+; Context
 
 ; (block . symbols)
 (define (make-context)
@@ -39,6 +49,15 @@
 
 (define (add-symbol! context symbol)
   (set-tail! context (list symbol)))
+
+(define (compile-begin context expressions continuation)
+  (compile-expression context
+    (car expressions)
+    (if (pair? (cdr expressions))
+      (rib jump/call-op
+        (use-symbol ctx 'arg1)
+        (compile-begin ctx (cdr exprs) continuation))
+      continuation)))
 
 (define (compile-expression context expression continuation)
   (cond
@@ -66,6 +85,8 @@
 
 (define (compile expression)
   (compile-expression (make-context) expression '()))
+
+; Non-primitive expansion
 
 (define (expand expression)
   (cond
