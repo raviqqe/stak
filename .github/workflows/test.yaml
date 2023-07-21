@@ -40,5 +40,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
       - run: tools/integration_test.sh

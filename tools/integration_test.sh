@@ -4,6 +4,7 @@ set -e
 
 cd $(dirname $0)/..
 
+brew install gambit-scheme
 bundler install
 cargo build --release
 
