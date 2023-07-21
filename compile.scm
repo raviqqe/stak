@@ -49,13 +49,13 @@
             (let* (
                 (variable (cadr expression))
                 (value (caddr expression))
-                (v (lookup variable (context-variables context) 1)))
-              (if (eqv? v var) ; global?
+                (resolved (lookup variable (context-variables context) 1)))
+              (if (eqv? resolved variable) ; global?
                 (let ((g (live? var (ctx-live ctx))))
                   (if g
                     (if (and (constant? g) (not (assoc var (ctx-exports context))))
                       (gen-noop context continuation)
-                      (compile-expression context value (gen-assign context v continuation)))
+                      (compile-expression context value (gen-assign context resolved continuation)))
                     (gen-noop context continuatiokn)))
                 (compile ctx val (gen-assign ctx v cont)))))
 
