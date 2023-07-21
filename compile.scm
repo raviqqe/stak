@@ -81,9 +81,7 @@
   (compile-expression context
     (car expressions)
     (if (pair? (cdr expressions))
-      (rib jump/call-op
-        (use-symbol ctx 'arg1)
-        (compile-begin ctx (cdr exprs) continuation))
+      (compile-begin ctx (cdr exprs) continuation)
       continuation)))
 
 (define (compile-expression context expression continuation)
@@ -102,7 +100,7 @@
                 continuation)))
 
           ((eqv? first 'begin)
-            (todo first))
+            (compile-begin (cdr expression)))
 
           (else
             (todo first)))))
