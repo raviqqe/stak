@@ -43,7 +43,7 @@
       (todo))
 
     ((pair? expression)
-      (let ((first (car expr)))
+      (let ((first (car expression)))
         (cond
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
