@@ -17,8 +17,19 @@
 
 (define (todo value) (error "not implemented" value))
 
-(define (rib tag car cdr)
-  (cons (cons tag car) cdr))
+(cond-expand
+  (gambit
+    (define (rib tag car cdr)
+      (cons (cons tag car) cdr))
+
+    (define (rib-tag rib)
+      (cons (cons tag car) cdr))
+
+    (define (rib-car rib)
+      (cons (cons tag car) cdr))
+
+    (define (rib-cdr rib)
+      (cons (cons tag car) cdr))))
 
 ; Source code reading
 
@@ -30,6 +41,11 @@
 
 (define (read-source)
   (cons 'begin (read-all)))
+
+; Target code writing
+
+(define (write-target codes)
+  (map write-u8 codes))
 
 ; Non-primitive expansion
 
@@ -117,6 +133,24 @@
 (define (compile expression)
   (compile-expression (make-context) expression '()))
 
+; Encoding
+
+(define (encode-instruction instruction)
+  (case (rib-tag instruction)
+    ((call-instruction) (todo instruction))
+    ((set-instruction) (todo instruction))
+    ((get-instruction) (todo instruction))
+    ((constant-instruction) (todo instruction))
+    ((if-instruction) (todo instruction))
+    (else (error "invalid instruction")))
+
+(define (encode codes)
+  (if (null? codes)
+    '()
+    (append
+      (encode-instruction instruction)
+      (encode (rib-cdr codes)))))
+
 ; Main
 
-(write (compile (expand (read-source))))
+(write-target (encode (compile (expand (read-source)))))
