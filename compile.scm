@@ -56,6 +56,7 @@
   (cond
     ((symbol? expression)
       expression)
+
     ((pair? expression)
       (let ((first (car expression)))
         (cond
@@ -77,8 +78,10 @@
                       (expand (cadddr expression))
                       #f)
                     '())))))
+
           (else
             (expand-list expression)))))
+
     (else
       (expand-constant expression))))
 
