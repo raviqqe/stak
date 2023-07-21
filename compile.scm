@@ -17,6 +17,9 @@
       '()
       (cons x (read-all)))))
 
+(define (read-source)
+  (cons 'begin (read-all)))
+
 ; (block . symbols)
 (define (make-context)
   (cons '() '()))
@@ -87,4 +90,4 @@
     (else
       expression)))
 
-(write (compile (expand (cons 'begin (read-all)))))
+(write (compile (expand (read-source))))
