@@ -66,7 +66,7 @@
                 (list 'set!
                   (car pattern)
                   (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
-                (list 'set! pattern (expand-expr (caddr expression))))))
+                (list 'set! pattern (expand-expression (caddr expression))))))
 
           (else
             expression))))
