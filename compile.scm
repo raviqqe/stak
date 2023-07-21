@@ -61,12 +61,12 @@
       (let ((first (car expression)))
         (cond
           ((eqv? first 'define)
-            (let ((pattern (cadr expr)))
+            (let ((pattern (cadr expression)))
               (if (pair? pattern)
                 (list 'set!
                   (car pattern)
-                  (expand (cons 'lambda (cons (cdr pattern) (cddr expr)))))
-                (list 'set! pattern (expand-expr (caddr expr))))))
+                  (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
+                (list 'set! pattern (expand-expr (caddr expression))))))
 
           (else
             expression))))
