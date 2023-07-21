@@ -50,16 +50,8 @@
                 (variable (cadr expression))
                 (value (caddr expression))
                 (resolved (lookup variable (context-variables context) 1)))
-              (if (eqv? resolved variable) ; global?
-                (let ((g (live? variable (context-live context))))
-                  (cond
-                    ((and g (constant? g) (not (assoc var (ctx-exports context))))
-                      continuation)
-                    (g
-                      (compile-expression context value (gen-assign context resolved continuation)))
-                    (else
-                      continuation)))
-                (compile-expression context value (gen-assign ctx v cont)))))
+              (compile-expression context value
+                (gen-assign context (lookup variable (context-variables context) 1) continuation))))
 
           (else
             (todo)))))
