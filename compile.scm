@@ -58,28 +58,10 @@
                     (comp ctx val (gen-assign ctx v cont)))))))
 
           (else
-            (let ((args (cdr expr)))
-              (if (symbol? first)
-                (comp-call ctx
-                  args
-                  (lambda (ctx)
-                    (let ((v (lookup first (ctx-cte ctx) 0)))
-                      (add-nb-args ctx
-                        (length args)
-                        (gen-call
-                          (if (and (number? v)
-                              (memq 'arity-check (ctx-live-features ctx)))
-                            (+ v 1)
-                            v)
-                          cont)))))
-                (comp-bind ctx
-                  '(_)
-                  (cons first '())
-                  (cons (cons '_ args) '())
-                  cont)))))))
+            (todo)))))
 
     (else
-      (c-rib const-op expr cont))))
+      (todo))))
 
 (define (compile source)
   (compile-program (make-context) source))
