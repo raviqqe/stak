@@ -146,13 +146,13 @@
 
 ; Encoding
 
-(define (encode-integer-rest integer first continuation)
-  (append
-    (encode-integer-rest (quotient integer integer-base) #f continuation)
-    (cons (* (if first 1 -1) (modulo integer integer-base)) continuation)))
+(define (encode-integer integer target)
+  (encode-integer-rest integer #t target))
 
-(define (encode-integer integer continuation)
-  (encode-integer-rest integer #t continuation))
+(define (encode-integer-rest integer first target)
+  (append
+    (encode-integer-rest (quotient integer integer-base) #f target)
+    (cons (* (if first 1 -1) (modulo integer integer-base)) target)))
 
 (define (encode-operand operand)
   (cond
@@ -194,14 +194,14 @@
 
       (else (error "invalid instruction")))))
 
-(define (encode-codes codes continuation)
+(define (encode-codes codes target)
   (if (null? codes)
-    continuation
+    target
     (encode-codes
       (rib-cdr codes)
       (append
         (encode-instruction codes)
-        continuation))))
+        target))))
 
 (define (encode codes)
   (encode-codes codes '()))
