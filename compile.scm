@@ -60,24 +60,20 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
-          ((eqv? first 'quote)
-            (expand-constant (cadr expression)))
-
-          ((eqv? first 'set!)
-            (let ((var (cadr expression)))
-              (cons 'set!
-                (cons var
-                  (cons (expand (caddr expression))
-                    '())))))
-
-          ((eqv? first 'if)
-            (cons 'if
-              (cons (expand (cadr expression))
-                (cons (expand (caddr expression))
-                  (cons (if (pair? (cdddr expression))
-                      (expand (cadddr expression))
-                      #f)
-                    '())))))
+          ((eqv? first 'define)
+            (let ((pattern (cadr expr)))
+              (if (pair? pattern)
+                (cons 'set!
+                  (cons (car pattern)
+                    (cons (expand-expr
+                        (cons 'lambda
+                          (cons (cdr pattern)
+                            (cddr expr))))
+                      '())))
+                (cons 'set!
+                  (cons pattern
+                    (cons (expand-expr (caddr expr))
+                      '()))))))
 
           (else
             (expand-list expression)))))
