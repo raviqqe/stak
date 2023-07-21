@@ -31,3 +31,14 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           files: lcov.info
+  integration_test:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+      - run: tools/integration_test.sh
