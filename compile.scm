@@ -65,8 +65,7 @@
               (if (pair? pattern)
                 (list 'set!
                   (car pattern)
-                  (expand
-                    (cons 'lambda (cons (cdr pattern) (cddr expr)))))
+                  (expand (cons 'lambda (cons (cdr pattern) (cddr expr)))))
                 (list 'set! pattern (expand-expr (caddr expr))))))
 
           (else
