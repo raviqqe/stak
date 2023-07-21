@@ -41,8 +41,8 @@
           ((eqv? first 'set!)
             (let (
                 (variable (cadr expression))
-                (val (caddr expr))
-                (v (lookup var (ctx-cte ctx) 1)))
+                (value (caddr expression))
+                (v (lookup variable (ctx-cte context) 1)))
               (if (eqv? v var)
                 (let ((g (live? var (ctx-live ctx))))
                   (if g
