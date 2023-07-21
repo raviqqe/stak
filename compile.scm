@@ -36,21 +36,12 @@
 
 (define (compile-program context expression continuation)
   (cond
-    ((symbol? expr)
-      (let ((v (lookup expr (ctx-cte ctx) 0)))
-        (if (eqv? v expr) ;; global?
-          (let ((g (live? expr (ctx-live ctx))))
-            (if (and g (constant? g)) ;; constant propagated?
-              (c-rib const-op (cadr (cadr g)) cont)
-              (c-rib get-op v cont)))
-          (c-rib get-op v cont))))
+    ((symbol? expression)
+      (todo))
 
-    ((pair? expr)
+    ((pair? expression)
       (let ((first (car expr)))
-
-        (cond ((eqv? first 'quote)
-            (c-rib const-op (cadr expr) cont))
-
+        (cond
           ((eqv? first 'set!)
             (let ((var (cadr expr)))
               (let ((val (caddr expr)))
@@ -70,56 +61,6 @@
                           ;;                                         (current-error-port))
                           (gen-noop ctx cont))))
                     (comp ctx val (gen-assign ctx v cont)))))))
-
-          ((eqv? first 'if)
-            (let ((cont-false (comp ctx (cadddr expr) cont)))
-              (let ((cont-true (comp ctx (caddr expr) cont)))
-                (let ((cont-test (c-rib if-op cont-true cont-false)))
-                  (comp ctx (cadr expr) cont-test)))))
-
-          ((eqv? first 'lambda)
-            (let* ((params (cadr expr))
-                (variadic (or (symbol? params) (not (eq? (last-item params) '()))))
-                (nb-params
-                  (if variadic
-                    (improper-length params)
-                    (length params)))
-                (params
-                  (if variadic
-                    (improper-list->list params '())
-                    params)))
-              (c-rib const-op
-                (make-procedure
-                  (c-rib (+ (* 2 nb-params) (if variadic 1 0))
-                    0
-                    (comp-begin (ctx-cte-set
-                        ctx
-                        (extend params
-                          (cons #f
-                            (cons #f
-                              (ctx-cte ctx)))))
-                      (cddr expr)
-                      tail))
-                  '())
-                (if (null? (ctx-cte ctx))
-                  cont
-                  (add-nb-args
-                    ctx
-                    1
-                    (gen-call (use-symbol ctx 'close)
-                      cont))))))
-
-          ((eqv? first 'begin)
-            (comp-begin ctx (cdr expr) cont))
-
-          ((eqv? first 'let)
-            (let ((bindings (cadr expr)))
-              (let ((body (cddr expr)))
-                (comp-bind ctx
-                  (map car bindings)
-                  (map cadr bindings)
-                  body
-                  cont))))
 
           (else
             (let ((args (cdr expr)))
