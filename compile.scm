@@ -39,7 +39,7 @@
       (let ((first (car expr)))
         (cond
           ((eqv? first 'set!)
-            (let (
+            (let* (
                 (variable (cadr expression))
                 (value (caddr expression))
                 (v (lookup variable (ctx-cte context) 1)))
