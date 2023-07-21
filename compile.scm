@@ -207,9 +207,9 @@
 
 (define (encode-symbols symbols target)
   (if (null? symbols)
-    target
+    (cons (char->integer #\;) target)
     ; TODO
-    (cons (char->integer #\;) target)))
+    (encode-symbols (cdr symbols) target)))
 
 (define (encode codes)
   (encode-symbols

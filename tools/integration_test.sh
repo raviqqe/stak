@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+cd $(dirname $0)/..
+
+bundler install
+cargo build --release
+
+export PATH=$PWD/target/release:$PATH
+export ROOT=$PWD
+
+cucumber --publish-quiet --strict-undefined "$@"
