@@ -46,14 +46,11 @@
       (let ((first (car expr)))
         (cond
           ((eqv? first 'set!)
-            (let* (
-                (variable (cadr expression))
-                (value (caddr expression)))
-              (compile-expression context value
-                (gen-assign
-                  context
-                  (resolve-variable (cadr expression) (context-variables context) 1)
-                  continuation))))
+            (compile-expression context (caddr expression)
+              (gen-assign
+                context
+                (resolve-variable (cadr expression) (context-variables context) 1)
+                continuation)))
 
           (else
             (todo)))))
