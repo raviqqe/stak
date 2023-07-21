@@ -21,6 +21,13 @@
 (define (make-context)
   (cons '() '()))
 
+(define (lookup variable symbols index)
+  (if (pair? symbols)
+    (if (eqv? (car symbols) variable)
+      index
+      (lookup var (cdr cte) (+ index 1)))
+    variable))
+
 (define (set-tail! values tail)
   (let ((next (cdr values)))
     (if (null? next)
