@@ -50,6 +50,8 @@
 (define (add-symbol! context symbol)
   (set-tail! context (list symbol)))
 
+; Compilation
+
 (define (compile-begin context expressions continuation)
   (compile-expression context
     (car expressions)
