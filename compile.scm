@@ -161,6 +161,7 @@
 (define (encode-operand operand target)
   (cond
     ((symbol? operand)
+      ; TODO Resolve a symbol index.
       (encode-integer 84 target))
 
     ((number? operand)
