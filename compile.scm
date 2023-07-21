@@ -19,10 +19,11 @@
 
 (define return-call-code 0)
 (define call-code 1)
-(define set-code 2)
-(define get-code 3)
-(define constant-code 4)
-(define if-code 5)
+(define close-code 2)
+(define set-code 3)
+(define get-code 4)
+(define constant-code 5)
+(define if-code 6)
 
 ; Utility
 
