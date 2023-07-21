@@ -43,7 +43,7 @@
                 (variable (cadr expression))
                 (value (caddr expression))
                 (v (lookup variable (ctx-cte context) 1)))
-              (if (eqv? v var)
+              (if (eqv? v var) ; global?
                 (let ((g (live? var (ctx-live ctx))))
                   (if g
                     (if (and (constant? g) (not (assoc var (ctx-exports ctx))))
