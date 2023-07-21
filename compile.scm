@@ -53,6 +53,33 @@
   (compile-program (make-context) source))
 
 (define (expand source)
-  source)
+  (cond
+    ((symbol? expr)
+      expr)
+    ((pair? expr)
+      (let ((first (car expr)))
+
+        (cond ((eqv? first 'quote)
+            (expand-constant (cadr expr)))
+
+          ((eqv? first 'set!)
+            (let ((var (cadr expr)))
+              (cons 'set!
+                (cons var
+                  (cons (expand (caddr expr))
+                    '())))))
+
+          ((eqv? first 'if)
+            (cons 'if
+              (cons (expand (cadr expr))
+                (cons (expand (caddr expr))
+                  (cons (if (pair? (cdddr expr))
+                      (expand (cadddr expr))
+                      #f)
+                    '())))))
+          (else
+            (expand-list expr)))))
+    (else
+      (expand-constant expr))))
 
 (write (compile (expand (read-all))))
