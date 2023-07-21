@@ -148,9 +148,11 @@
   (cond
     ((symbol? operand)
       (todo operand))
+
     ((number? operand)
       (todo operand))
-    (else (error "foo"))))
+
+    (else (error "invalid operand"))))
 
 (define (encode-instruction instruction)
   (let ((tag (rib-tag instruction)))
