@@ -205,8 +205,16 @@
 
           (else (error "invalid instruction")))))))
 
+(define (encode-symbols symbols target)
+  (if (null? symbols)
+    target
+    ; TODO
+    (cons (char->integer #\;) target)))
+
 (define (encode codes)
-  (encode-codes codes '()))
+  (encode-symbols
+    '()
+    (encode-codes codes '())))
 
 ; Main
 
