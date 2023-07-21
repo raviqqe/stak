@@ -50,7 +50,10 @@
                 (variable (cadr expression))
                 (value (caddr expression)))
               (compile-expression context value
-                (gen-assign context (resolve-variable (cadr expression) (context-variables context) 1) continuation))))
+                (gen-assign
+                  context
+                  (resolve-variable (cadr expression) (context-variables context) 1)
+                  continuation))))
 
           (else
             (todo)))))
