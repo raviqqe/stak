@@ -69,9 +69,9 @@
                 (list 'set! pattern (expand-expr (caddr expr))))))
 
           (else
-            (expand-list expression)))))
+            expression))))
 
     (else
-      (expand-constant expression))))
+      expression)))
 
 (write (compile (expand (read-all))))
