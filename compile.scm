@@ -146,21 +146,24 @@
 
 ; Encoding
 
+(define (encode-integer-rest integer first target)
+  (let ((part (modulo integer integer-base)))
+    (if (eqv? part 0)
+      target
+      (append
+        (encode-integer-rest (quotient integer integer-base) #f target)
+        (cons (* (if first 1 -1) part) target)))))
+
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
 
-(define (encode-integer-rest integer first target)
-  (append
-    (encode-integer-rest (quotient integer integer-base) #f target)
-    (cons (* (if first 1 -1) (modulo integer integer-base)) target)))
-
-(define (encode-operand operand)
+(define (encode-operand operand target)
   (cond
     ((symbol? operand)
-      (encode-integer (* operand 2)))
+      (encode-integer (* operand 2) target))
 
     ((number? operand)
-      (encode-integer (+ (* operand 2) 1)))
+      (encode-integer (+ (* operand 2) 1) target))
 
     (else (error "invalid operand"))))
 
