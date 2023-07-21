@@ -13,7 +13,7 @@
 (define constant-instruction 3)
 (define if-instruction 4)
 
-; Todo
+; Utility
 
 (define (todo value) (error "not implemented" value))
 
