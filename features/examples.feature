@@ -7,7 +7,7 @@ Feature: Examples
     """
 
   Scenario Outline: Run examples
-		When I run the following script:
+    When I run the following script:
     """sh
     gsi compile.scm < examples/<example>.scm > main.out
     """
