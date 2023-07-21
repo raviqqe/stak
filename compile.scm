@@ -58,8 +58,8 @@
       expr)
     ((pair? expr)
       (let ((first (car expr)))
-
-        (cond ((eqv? first 'quote)
+        (cond
+          ((eqv? first 'quote)
             (expand-constant (cadr expr)))
 
           ((eqv? first 'set!)
