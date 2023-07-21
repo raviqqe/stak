@@ -18,11 +18,11 @@
 ;; Codes
 
 (define return-call-code 0)
-(define call-code 0)
-(define set-code 1)
-(define get-code 2)
-(define constant-code 3)
-(define if-code 4)
+(define call-code 1)
+(define set-code 2)
+(define get-code 3)
+(define constant-code 4)
+(define if-code 5)
 
 ; Utility
 
@@ -149,9 +149,10 @@
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
     (if (eqv? part 0)
-      target
-      (append
-        (encode-integer-rest (quotient integer integer-base) #f target)
+      (if first (cons 0 target) target)
+      (encode-integer-rest
+        (quotient integer integer-base)
+        #f
         (cons (* (if first 1 -1) part) target)))))
 
 (define (encode-integer integer target)
@@ -160,51 +161,48 @@
 (define (encode-operand operand target)
   (cond
     ((symbol? operand)
-      (encode-integer (* operand 2) target))
+      (encode-integer 84 target))
 
     ((number? operand)
       (encode-integer (+ (* operand 2) 1) target))
 
     (else (error "invalid operand"))))
 
-(define (encode-instruction instruction)
-  (let ((tag (rib-tag instruction)))
-    (cond
-      ((eqv? tag call-instruction)
-        (cons
-          (if (null? (rib-cdr instruction))
-            return-call-code
-            call-code)
-          (encode-operand (rib-car instruction))))
-
-      ((eqv? tag set-instruction)
-        (cons
-          set-code
-          (encode-operand (rib-car instruction))))
-
-      ((eqv? tag get-instruction)
-        (cons
-          get-code
-          (encode-operand (rib-car instruction))))
-
-      ((eqv? tag constant-instruction)
-        (cons
-          constant-code
-          (encode-operand (rib-car instruction))))
-
-      ((eqv? tag if-instruction)
-        (todo instruction))
-
-      (else (error "invalid instruction")))))
-
 (define (encode-codes codes target)
   (if (null? codes)
     target
-    (encode-codes
-      (rib-cdr codes)
-      (append
-        (encode-instruction codes)
-        target))))
+    (let (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes)))
+      (encode-codes
+        (rib-cdr codes)
+        (cond
+          ((eqv? instruction call-instruction)
+            (cons
+              (if (null? (rib-cdr codes))
+                return-call-code
+                call-code)
+              (encode-operand operand target)))
+
+          ((eqv? instruction set-instruction)
+            (cons
+              set-code
+              (encode-operand operand target)))
+
+          ((eqv? instruction get-instruction)
+            (cons
+              get-code
+              (encode-operand operand target)))
+
+          ((eqv? instruction constant-instruction)
+            (cons
+              constant-code
+              (encode-operand operand target)))
+
+          ((eqv? instruction if-instruction)
+            (todo codes))
+
+          (else (error "invalid instruction")))))))
 
 (define (encode codes)
   (encode-codes codes '()))
