@@ -34,20 +34,116 @@
   (display expression)
   expression)
 
-(define (compile-program context source)
-  (let ((continue (lambda (context) (compile-program context (cdr source)))))
-    (cond
-      ((null? source)
-        '())
-      ((pair? (car source))
-        (let ((expression (car source)))
-          (case (car expression)
-            ((define)
-              (cons
-                (compile-expression context (caddr expression))
-                (continue context)))
-            (else (todo)))))
-      (else (continue context)))))
+(define (compile-program context expression continuation)
+  (cond
+    ((symbol? expr)
+      (let ((v (lookup expr (ctx-cte ctx) 0)))
+        (if (eqv? v expr) ;; global?
+          (let ((g (live? expr (ctx-live ctx))))
+            (if (and g (constant? g)) ;; constant propagated?
+              (c-rib const-op (cadr (cadr g)) cont)
+              (c-rib get-op v cont)))
+          (c-rib get-op v cont))))
+
+    ((pair? expr)
+      (let ((first (car expr)))
+
+        (cond ((eqv? first 'quote)
+            (c-rib const-op (cadr expr) cont))
+
+          ((eqv? first 'set!)
+            (let ((var (cadr expr)))
+              (let ((val (caddr expr)))
+                (let ((v (lookup var (ctx-cte ctx) 1)))
+                  (if (eqv? v var) ;; global?
+                    (let ((g (live? var (ctx-live ctx))))
+                      (if g
+                        (if (and (constant? g)
+                            (not (assoc var (ctx-exports ctx))))
+                          (begin
+                            ;;                                        (pp `(*** constant propagation of ,var = ,(cadr g))
+                            ;;                                             (current-error-port))
+                            (gen-noop ctx cont))
+                          (comp ctx val (gen-assign ctx v cont)))
+                        (begin
+                          ;;                                    (pp `(*** removed dead assignment to ,var)
+                          ;;                                         (current-error-port))
+                          (gen-noop ctx cont))))
+                    (comp ctx val (gen-assign ctx v cont)))))))
+
+          ((eqv? first 'if)
+            (let ((cont-false (comp ctx (cadddr expr) cont)))
+              (let ((cont-true (comp ctx (caddr expr) cont)))
+                (let ((cont-test (c-rib if-op cont-true cont-false)))
+                  (comp ctx (cadr expr) cont-test)))))
+
+          ((eqv? first 'lambda)
+            (let* ((params (cadr expr))
+                (variadic (or (symbol? params) (not (eq? (last-item params) '()))))
+                (nb-params
+                  (if variadic
+                    (improper-length params)
+                    (length params)))
+                (params
+                  (if variadic
+                    (improper-list->list params '())
+                    params)))
+              (c-rib const-op
+                (make-procedure
+                  (c-rib (+ (* 2 nb-params) (if variadic 1 0))
+                    0
+                    (comp-begin (ctx-cte-set
+                        ctx
+                        (extend params
+                          (cons #f
+                            (cons #f
+                              (ctx-cte ctx)))))
+                      (cddr expr)
+                      tail))
+                  '())
+                (if (null? (ctx-cte ctx))
+                  cont
+                  (add-nb-args
+                    ctx
+                    1
+                    (gen-call (use-symbol ctx 'close)
+                      cont))))))
+
+          ((eqv? first 'begin)
+            (comp-begin ctx (cdr expr) cont))
+
+          ((eqv? first 'let)
+            (let ((bindings (cadr expr)))
+              (let ((body (cddr expr)))
+                (comp-bind ctx
+                  (map car bindings)
+                  (map cadr bindings)
+                  body
+                  cont))))
+
+          (else
+            (let ((args (cdr expr)))
+              (if (symbol? first)
+                (comp-call ctx
+                  args
+                  (lambda (ctx)
+                    (let ((v (lookup first (ctx-cte ctx) 0)))
+                      (add-nb-args ctx
+                        (length args)
+                        (gen-call
+                          (if (and (number? v)
+                              (memq 'arity-check (ctx-live-features ctx)))
+                            (+ v 1)
+                            v)
+                          cont)))))
+                (comp-bind ctx
+                  '(_)
+                  (cons first '())
+                  (cons (cons '_ args) '())
+                  cont)))))))
+
+    (else
+      (c-rib const-op expr cont))))
 
 (define (compile source)
   (compile-program (make-context) source))
