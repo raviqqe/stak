@@ -49,7 +49,7 @@
             (let* (
                 (variable (cadr expression))
                 (value (caddr expression))
-                (v (lookup variable (ctx-cte context) 1)))
+                (v (lookup variable (context-variables context) 1)))
               (if (eqv? v var) ; global?
                 (let ((g (live? var (ctx-live ctx))))
                   (if g
