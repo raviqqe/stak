@@ -30,11 +30,7 @@
 (define (add-symbol! context symbol)
   (set-tail! context (list symbol)))
 
-(define (compile-expression context expression)
-  (display expression)
-  expression)
-
-(define (compile-program context expression continuation)
+(define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
       (todo))
@@ -64,8 +60,8 @@
     (else
       (todo))))
 
-(define (compile source)
-  (compile-program (make-context) source))
+(define (compile expression)
+  (compile-expression (make-context) expression '()))
 
 (define (expand expression)
   (cond
