@@ -43,4 +43,5 @@ jobs:
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
       - run: brew uninstall ghostscript
+        if: matrix.os == 'macos-latest'
       - run: tools/integration_test.sh
