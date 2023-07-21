@@ -28,6 +28,31 @@
 (define (read-source)
   (cons 'begin (read-all)))
 
+; Non-primitive expansion
+
+(define (expand expression)
+  (cond
+    ((symbol? expression)
+      expression)
+
+    ((pair? expression)
+      (let ((first (car expression)))
+        (cond
+          ((eqv? first 'define)
+            (let ((pattern (cadr expression)))
+              (cons 'set!
+                (if (pair? pattern)
+                  (list
+                    (car pattern)
+                    (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
+                  (list pattern (expand (caddr expression)))))))
+
+          (else
+            expression))))
+
+    (else
+      expression)))
+
 ; Context
 
 ; (block . symbols)
@@ -87,30 +112,5 @@
 
 (define (compile expression)
   (compile-expression (make-context) expression '()))
-
-; Non-primitive expansion
-
-(define (expand expression)
-  (cond
-    ((symbol? expression)
-      expression)
-
-    ((pair? expression)
-      (let ((first (car expression)))
-        (cond
-          ((eqv? first 'define)
-            (let ((pattern (cadr expression)))
-              (cons 'set!
-                (if (pair? pattern)
-                  (list
-                    (car pattern)
-                    (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
-                  (list pattern (expand (caddr expression)))))))
-
-          (else
-            expression))))
-
-    (else
-      expression)))
 
 (write (compile (expand (read-source))))
