@@ -21,11 +21,11 @@
 (define (make-context)
   (cons '() '()))
 
-(define (lookup variable variables index)
+(define (resolve-variable variable variables index)
   (if (pair? variables)
     (if (eqv? (car variables) variable)
       index
-      (lookup variable (cdr variables) (+ index 1)))
+      (resolve-variable variable (cdr variables) (+ index 1)))
     variable))
 
 (define (set-tail! values tail)
@@ -48,10 +48,9 @@
           ((eqv? first 'set!)
             (let* (
                 (variable (cadr expression))
-                (value (caddr expression))
-                (resolved (lookup variable (context-variables context) 1)))
+                (value (caddr expression)))
               (compile-expression context value
-                (gen-assign context (lookup variable (context-variables context) 1) continuation))))
+                (gen-assign context (resolve-variable (cadr expression) (context-variables context) 1) continuation))))
 
           (else
             (todo)))))
