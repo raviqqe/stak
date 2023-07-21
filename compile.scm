@@ -52,4 +52,7 @@
 (define (compile source)
   (compile-program (make-context) source))
 
-(write (compile (read-all)))
+(define (expand source)
+  source)
+
+(write (compile (expand (read-all))))
