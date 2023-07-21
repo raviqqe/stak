@@ -1,3 +1,5 @@
+(define integer-base 128)
+
 ; Constants
 
 (define false-index 0)
@@ -144,13 +146,21 @@
 
 ; Encoding
 
+(define (encode-integer-rest integer first continuation)
+  (append
+    (encode-integer-rest (quotient integer integer-base) #f continuation)
+    (cons (* (if first 1 -1) (modulo integer integer-base)) continuation)))
+
+(define (encode-integer integer continuation)
+  (encode-integer-rest integer #t continuation))
+
 (define (encode-operand operand)
   (cond
     ((symbol? operand)
-      (todo operand))
+      (encode-integer (* operand 2)))
 
     ((number? operand)
-      (todo operand))
+      (encode-integer (+ (* operand 2) 1)))
 
     (else (error "invalid operand"))))
 
