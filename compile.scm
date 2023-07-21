@@ -44,18 +44,19 @@
         (cond
           ((eqv? first 'set!)
             (let ((var (cadr expr)))
-              (let ((val (caddr expr)))
-                (let ((v (lookup var (ctx-cte ctx) 1)))
-                  (if (eqv? v var) ;; global?
-                    (let ((g (live? var (ctx-live ctx))))
-                      (if g
-                        (if (and (constant? g) (not (assoc var (ctx-exports ctx))))
-                          (begin
-                            (gen-noop ctx cont))
-                          (comp ctx val (gen-assign ctx v cont)))
+              (let (
+                  (val (caddr expr))
+                  (v (lookup var (ctx-cte ctx) 1)))
+                (if (eqv? v var) ;; global?
+                  (let ((g (live? var (ctx-live ctx))))
+                    (if g
+                      (if (and (constant? g) (not (assoc var (ctx-exports ctx))))
                         (begin
-                          (gen-noop ctx cont))))
-                    (comp ctx val (gen-assign ctx v cont)))))))
+                          (gen-noop ctx cont))
+                        (comp ctx val (gen-assign ctx v cont)))
+                      (begin
+                        (gen-noop ctx cont))))
+                  (comp ctx val (gen-assign ctx v cont))))))
 
           (else
             (todo)))))
