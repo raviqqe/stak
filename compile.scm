@@ -47,6 +47,9 @@
                     (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
                   (list pattern (expand (caddr expression)))))))
 
+          ((eqv? first 'begin)
+            (cons 'begin (map expand (cdr expression))))
+
           (else
             expression))))
 
@@ -66,22 +69,13 @@
       (resolve-variable variable (cdr variables) (+ index 1)))
     variable))
 
-(define (set-tail! values tail)
-  (let ((next (cdr values)))
-    (if (null? next)
-      (set-cdr! values tail)
-      (set-tail! next tail))))
-
-(define (add-symbol! context symbol)
-  (set-tail! context (list symbol)))
-
 ; Compilation
 
 (define (compile-begin context expressions continuation)
   (compile-expression context
     (car expressions)
     (if (pair? (cdr expressions))
-      (compile-begin ctx (cdr exprs) continuation)
+      (compile-begin context (cdr expressions) continuation)
       continuation)))
 
 (define (compile-expression context expression continuation)
@@ -100,7 +94,7 @@
                 continuation)))
 
           ((eqv? first 'begin)
-            (compile-begin (cdr expression)))
+            (compile-begin context (cdr expression) continuation))
 
           (else
             (todo first)))))
@@ -110,5 +104,7 @@
 
 (define (compile expression)
   (compile-expression (make-context) expression '()))
+
+; Main
 
 (write (compile (expand (read-source))))
