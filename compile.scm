@@ -47,9 +47,8 @@
                 (let ((g (live? var (ctx-live ctx))))
                   (if g
                     (if (and (constant? g) (not (assoc var (ctx-exports context))))
-                      (begin
-                        (gen-noop context continuation))
-                      (comp ctx val (gen-assign context v continuation)))
+                      (gen-noop context continuation)
+                      (compile-expression context value (gen-assign context v continuation)))
                     (gen-noop context continuatiokn)))
                 (compile ctx val (gen-assign ctx v cont)))))
 
