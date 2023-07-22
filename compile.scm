@@ -148,7 +148,7 @@
 ; Encoding
 
 (define symbol-instructions
-  (list set-instruction get-instruction get-instruction))
+  (list call-instruction set-instruction get-instruction))
 
 (define (find-symbols codes)
   (if (null? codes)
