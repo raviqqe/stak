@@ -79,6 +79,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
         while self.program_counter != self.null()? {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
+            #[cfg(feature = "trace")]
+            std::eprintln!("instruction: {}", instruction);
+
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.null()?;
@@ -620,6 +623,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
         while let Some(instruction) = Self::decode_byte(input) {
+            #[cfg(feature = "trace")]
+            std::eprintln!("decoded-insruction: {}", instruction);
+
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
                     self.push(self.program_counter.into())?;
@@ -699,7 +705,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             return None;
         }
 
-        let byte = input.codes[input.codes.len() - 1 - input.index];
+        let byte = input.codes[input.index];
         input.index += 1;
         Some(byte)
     }
