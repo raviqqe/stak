@@ -3,5 +3,8 @@ name = "stak"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+trace = ["vm/trace"]
+
 [dependencies]
 vm = { package = "stak-vm", path = "../vm", features = ["std"] }

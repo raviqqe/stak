@@ -7,6 +7,8 @@ pub fn encode(program: &Program) -> Vec<u8> {
     encode_instructions(&mut codes, program.instructions());
     encode_symbols(&mut codes, program.symbols());
 
+    codes.reverse();
+
     codes
 }
 
