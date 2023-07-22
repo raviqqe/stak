@@ -150,33 +150,19 @@
 (define (find-symbols codes)
   (if (null? codes)
     '()
-    (cond
-      ((eqv? instruction call-instruction)
-        (cons
-          (if (null? (rib-cdr codes))
-            return-call-code
-            call-code)
-          (encode-operand operand target)))
+    (let (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes)))
+      (cond
+        ((eqv? instruction set-instruction)
+          (cons (rib-car set-instruction) (find-symbols)))
 
-      ((eqv? instruction set-instruction)
-        (cons
-          set-code
-          (encode-operand operand target)))
+        ((eqv? instruction constant-instruction)
+          (cons
+            constant-code
+            (encode-operand operand target)))
 
-      ((eqv? instruction get-instruction)
-        (cons
-          get-code
-          (encode-operand operand target)))
-
-      ((eqv? instruction constant-instruction)
-        (cons
-          constant-code
-          (encode-operand operand target)))
-
-      ((eqv? instruction if-instruction)
-        (todo codes))
-
-      (else (error "invalid instruction")))))
+        (else (error "invalid instruction"))))))
 
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
