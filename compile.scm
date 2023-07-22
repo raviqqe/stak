@@ -147,22 +147,31 @@
 
 ; Encoding
 
+(define symbol-instructions
+  (list set-instruction get-instruction get-instruction))
+
 (define (find-symbols codes)
   (if (null? codes)
     '()
     (let (
         (instruction (rib-tag codes))
-        (operand (rib-car codes)))
-      (cond
-        ((eqv? instruction set-instruction)
-          (cons (rib-car set-instruction) (find-symbols)))
+        (operand (rib-car codes))
+        (rest (find-symbols (cdr codes))))
+      (if (and
+          (rib? operand)
+          (eqv? instruction set-instruction)
+          (eqv? instruction set-instruction))
+        (cond
+          (
+            (cons operand rest))
 
-        ((eqv? instruction constant-instruction)
-          (cons
-            constant-code
-            (encode-operand operand target)))
+          ((eqv? instruction constant-instruction)
+            (cons
+              constant-code
+              (encode-operand operand target)))
 
-        (else (error "invalid instruction"))))))
+          (else (error "invalid instruction")))
+        rest))))
 
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
