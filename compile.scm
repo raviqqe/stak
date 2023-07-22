@@ -147,6 +147,37 @@
 
 ; Encoding
 
+(define (find-symbols codes)
+  (if (null? codes)
+    '()
+    (cond
+      ((eqv? instruction call-instruction)
+        (cons
+          (if (null? (rib-cdr codes))
+            return-call-code
+            call-code)
+          (encode-operand operand target)))
+
+      ((eqv? instruction set-instruction)
+        (cons
+          set-code
+          (encode-operand operand target)))
+
+      ((eqv? instruction get-instruction)
+        (cons
+          get-code
+          (encode-operand operand target)))
+
+      ((eqv? instruction constant-instruction)
+        (cons
+          constant-code
+          (encode-operand operand target)))
+
+      ((eqv? instruction if-instruction)
+        (todo codes))
+
+      (else (error "invalid instruction")))))
+
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
     (if (eqv? part 0)
@@ -214,7 +245,7 @@
 
 (define (encode codes)
   (encode-symbols
-    '()
+    (find-symbols codes)
     (encode-codes codes '())))
 
 ; Main
