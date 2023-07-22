@@ -171,7 +171,7 @@
 (define (encode-string string target)
   (if (null? string)
     target
-    (encode-string (cdr string) (cons (car string) target))))
+    (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
   (encode-string (string->list (rib-cdr symbol)) target))
