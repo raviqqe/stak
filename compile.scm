@@ -147,7 +147,7 @@
 
 ; Encoding
 
-(define symbol-instructions
+(define symbol-operand-instructions
   (list call-instruction set-instruction get-instruction))
 
 (define (find-symbols codes)
@@ -159,18 +159,8 @@
         (rest (find-symbols (cdr codes))))
       (if (and
           (rib? operand)
-          (eqv? instruction set-instruction)
-          (eqv? instruction set-instruction))
-        (cond
-          (
-            (cons operand rest))
-
-          ((eqv? instruction constant-instruction)
-            (cons
-              constant-code
-              (encode-operand operand target)))
-
-          (else (error "invalid instruction")))
+          (memq instruction symbol-operand-instructions))
+        (cons operand rest)
         rest))))
 
 (define (encode-integer-rest integer first target)
