@@ -41,7 +41,10 @@
       (cdar rib))
 
     (define (rib-cdr rib)
-      (cdr rib))))
+      (cdr rib))
+
+    (define (rib? value)
+      (not (number? value)))))
 
 ; Source code reading
 
