@@ -168,6 +168,23 @@
         (cons operand rest)
         rest))))
 
+(define (encode-string string target)
+  (if (null? string)
+    target
+    (encode-string (cdr string) (cons (car string) target))))
+
+(define (encode-symbol symbol target)
+  (encode-string (string->list (rib-cdr symbol)) target))
+
+(define (encode-symbols symbols target)
+  (if (null? symbols)
+    target
+    (let ((rest (cdr symbols)))
+      (encode-symbol
+        (car symbols)
+        (cons (char->integer (if (null? rest) #\; #\,))
+          (encode-symbols rest target))))))
+
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
     (if (eqv? part 0)
@@ -226,12 +243,6 @@
             (todo codes))
 
           (else (error "invalid instruction")))))))
-
-(define (encode-symbols symbols target)
-  (if (null? symbols)
-    (cons (char->integer #\;) target)
-    ; TODO
-    (encode-symbols (cdr symbols) target)))
 
 (define (encode codes)
   (encode-symbols
