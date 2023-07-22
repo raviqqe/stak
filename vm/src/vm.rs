@@ -624,7 +624,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
         while let Some(instruction) = Self::decode_byte(input) {
             #[cfg(feature = "trace")]
-            std::eprintln!("decoded-insruction: {}", instruction);
+            std::eprintln!("decoded-instruction: {}", instruction);
 
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
