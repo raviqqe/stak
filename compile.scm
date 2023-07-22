@@ -44,7 +44,9 @@
       (cdr rib))
 
     (define (rib? value)
-      (not (number? value)))))
+      (not (number? value))))
+
+  (else (begin)))
 
 ; Source code reading
 
