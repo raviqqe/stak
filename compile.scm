@@ -109,7 +109,7 @@
 (define (make-compile-context)
   (cons '() '()))
 
-(define (compile-context-resolve-variable* variables variable index)
+(define (compile-context-resolve* variables variable index)
   (cond
     ((null? variables)
       variable)
@@ -118,10 +118,10 @@
       index)
 
     (else
-      (compile-context-resolve-variable (cdr variables) variable (+ index 1)))))
+      (compile-context-resolve (cdr variables) variable (+ index 1)))))
 
-(define (compile-context-resolve-variable context variable index)
-  (compile-context-resolve-variable* (car context) variable index))
+(define (compile-context-resolve context variable index)
+  (compile-context-resolve* (car context) variable index))
 
 ; Compilation
 
@@ -140,7 +140,7 @@
     ((symbol? expression)
       (rib
         get-instruction
-        (compile-context-resolve-variable context expression 0)
+        (compile-context-resolve context expression 0)
         continuation))
 
     ((pair? expression)
@@ -149,7 +149,7 @@
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
               (compile-set
-                (compile-context-resolve-variable context (cadr expression) 1)
+                (compile-context-resolve context (cadr expression) 1)
                 continuation)))
 
           ((eqv? first 'begin)
