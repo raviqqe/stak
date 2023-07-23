@@ -166,7 +166,7 @@
         (operand (rib-car codes))
         (rest (find-symbols (cdr codes))))
       (if (and
-          (rib? operand)
+          (symbol? operand)
           (memq instruction symbol-operand-instructions))
         (cons operand rest)
         rest))))
