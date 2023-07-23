@@ -137,6 +137,9 @@
     ((number? constant)
       (rib constant-instruction constant continuation))
 
+    ((string? constant)
+      (todo constant))
+
     ((symbol? constant)
       (todo constant))
 
