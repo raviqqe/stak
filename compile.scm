@@ -132,7 +132,7 @@
       (compile-begin context (cdr expressions) continuation)
       continuation)))
 
-(define (compile-constant constant)
+(define (compile-constant constant continuation)
   (cond
     ((number? constant)
       (rib constant-instruction constant continuation))
@@ -170,7 +170,7 @@
             (todo first)))))
 
     (else
-      (compile-constant expression))))
+      (compile-constant expression continuation))))
 
 (define (compile expression)
   (compile-expression (make-compile-context) expression '()))
