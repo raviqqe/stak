@@ -45,7 +45,7 @@
     (define (rib? value)
       (not (number? value))))
 
-  (else (begin)))
+  (else))
 
 (define (todo value) (error "not implemented" value))
 
