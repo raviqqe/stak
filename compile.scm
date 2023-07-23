@@ -234,7 +234,7 @@
   (cond
     ((symbol? operand)
       (encode-integer
-        (2 * (member-index (encode-context-symbols context)))
+        (* 2 (+ other-index (member-index operand (encode-context-symbols context))))
         target))
 
     ((number? operand)
