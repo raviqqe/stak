@@ -105,11 +105,11 @@
 
 ; Context
 
-; (block . symbols)
-(define (make-context)
+; (stack . symbols)
+(define (make-compile-context)
   (cons '() '()))
 
-(define (resolve-variable* variables variable index)
+(define (compile-context-resolve* variables variable index)
   (cond
     ((null? variables)
       variable)
@@ -118,10 +118,10 @@
       index)
 
     (else
-      (resolve-variable (cdr variables) variable (+ index 1)))))
+      (compile-context-resolve (cdr variables) variable (+ index 1)))))
 
-(define (resolve-variable context variable index)
-  (resolve-variable* (car context) variable index))
+(define (compile-context-resolve context variable index)
+  (compile-context-resolve* (car context) variable index))
 
 ; Compilation
 
@@ -138,7 +138,10 @@
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
-      (todo variable))
+      (rib
+        get-instruction
+        (compile-context-resolve context expression 0)
+        continuation))
 
     ((pair? expression)
       (let ((first (car expression)))
@@ -146,7 +149,7 @@
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
               (compile-set
-                (resolve-variable context (cadr expression) 1)
+                (compile-context-resolve context (cadr expression) 1)
                 continuation)))
 
           ((eqv? first 'begin)
@@ -159,7 +162,7 @@
       (rib constant-instruction expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-context) expression '()))
+  (compile-expression (make-compile-context) expression '()))
 
 ; Encoding
 
@@ -171,9 +174,6 @@
 (define (encode-context-symbols context)
   context)
 
-(define symbol-operand-instructions
-  (list call-instruction set-instruction get-instruction))
-
 (define (find-symbols codes)
   (if (null? codes)
     '()
@@ -182,7 +182,7 @@
         (operand (rib-car codes))
         (rest (find-symbols (cdr codes))))
       (if (and
-          (memq instruction symbol-operand-instructions)
+          (not (eqv? instruction if-instruction))
           (symbol? operand)
           (not (memq operand rest)))
         (cons operand rest)
