@@ -15,6 +15,7 @@ Feature: Examples
     Then I successfully run `stak main.out`
 
     Examples:
-      | example          |
-      | define-variable  |
-      | define-variables |
+      | example              |
+      | set-glboal-variable  |
+      | set-glboal-variables |
+      | get-glboal-variable  |
