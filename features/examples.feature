@@ -19,3 +19,4 @@ Feature: Examples
       | set-global-variable  |
       | set-global-variables |
       | get-global-variable  |
+      | literals             |
