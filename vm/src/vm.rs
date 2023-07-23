@@ -17,8 +17,6 @@ const SINGLETON_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
-const SYMBOL_CELL_INDEX: usize = 0;
-
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
@@ -565,9 +563,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
             .into();
         self.stack = self.allocate(return_info, self.null()?.set_tag(FRAME_TAG).into())?;
 
-        // Allow GC of symbols.
-        self.take_cell(SYMBOL_CELL_INDEX)?;
-
         Ok(())
     }
 
@@ -612,7 +607,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.initialize_symbol(self.r#true())?;
         self.initialize_symbol(self.r#false.into())?;
 
-        *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
+        self.symbols = self.stack.into();
         self.stack = self.null()?;
 
         Ok(())
