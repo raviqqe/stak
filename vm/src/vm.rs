@@ -462,16 +462,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // GC escape cells
 
-    fn cell(&self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value,
-            1 => Self::cdr_value,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#true())
-    }
-
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
         assert_cell_index!(index);
 
