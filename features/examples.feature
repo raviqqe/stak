@@ -15,5 +15,6 @@ Feature: Examples
     Then I successfully run `stak main.out`
 
     Examples:
-      | example         |
-      | define-variable |
+      | example          |
+      | define-variable  |
+      | define-variables |
