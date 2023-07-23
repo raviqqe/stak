@@ -95,7 +95,7 @@
             (cons 'begin (map expand (cdr expression))))
 
           (else
-            expression))))
+            (map expand expression)))))
 
     (else
       expression)))
