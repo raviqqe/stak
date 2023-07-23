@@ -245,16 +245,25 @@
   (encode-integer-rest integer #t target))
 
 (define (encode-operand context operand target)
-  (cond
-    ((symbol? operand)
-      (encode-integer
-        (* 2 (+ other-index (member-index operand (encode-context-symbols context))))
-        target))
+  (encode-integer
+    (cond
+      ((boolean? operand)
+        (if operand true-index false-index))
 
-    ((number? operand)
-      (encode-integer (+ (* operand 2) 1) target))
+      ((null? operand)
+        null-index)
 
-    (else (error "invalid operand"))))
+      ((eqv? operand 'rib)
+        rib-index)
+
+      ((symbol? operand)
+        (* 2 (+ other-index (member-index operand (encode-context-symbols context)))))
+
+      ((number? operand)
+        (+ (* operand 2) 1))
+
+      (else (error "invalid operand")))
+    target))
 
 (define (encode-codes context codes target)
   (if (null? codes)
