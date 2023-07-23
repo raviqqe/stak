@@ -106,7 +106,7 @@
 ; Context
 
 ; (block . symbols)
-(define (make-context)
+(define (make-compile-context)
   (cons '() '()))
 
 (define (resolve-variable* variables variable index)
@@ -159,7 +159,7 @@
       (rib constant-instruction expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-context) expression '()))
+  (compile-expression (make-compile-context) expression '()))
 
 ; Encoding
 
