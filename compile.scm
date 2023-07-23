@@ -166,8 +166,11 @@
           ((eqv? first 'begin)
             (compile-begin context (cdr expression) continuation))
 
+          ((eqv? first 'quote)
+            (compile-constant (cadr expression) continuation))
+
           (else
-            (todo first)))))
+            (todo expression)))))
 
     (else
       (compile-constant expression continuation))))
