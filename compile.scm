@@ -133,9 +133,15 @@
       continuation)))
 
 (define (compile-constant constant)
-  (if (number? constant)
-    (rib constant-instruction constant continuation)
-    (todo constant)))
+  (cond
+    ((number? constant)
+      (rib constant-instruction constant continuation))
+
+    ((symbol? constant)
+      (todo constant))
+
+    (else
+      (todo constant))))
 
 (define (compile-expression context expression continuation)
   (cond
