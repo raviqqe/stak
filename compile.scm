@@ -28,8 +28,6 @@
 
 ; Utility
 
-(define (todo value) (error "not implemented" value))
-
 (cond-expand
   (gambit
     (define (rib tag car cdr)
@@ -48,6 +46,8 @@
       (not (number? value))))
 
   (else (begin)))
+
+(define (todo value) (error "not implemented" value))
 
 (define (member-index value list)
   (if (null? list)
