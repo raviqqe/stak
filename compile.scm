@@ -138,7 +138,10 @@
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
-      (todo variable))
+      (rib
+        get-instruction
+        (resolve-variable context (cadr expression) 0)
+        continuation))
 
     ((pair? expression)
       (let ((first (car expression)))
