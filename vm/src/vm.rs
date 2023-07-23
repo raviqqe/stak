@@ -17,8 +17,6 @@ const SINGLETON_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
-const SYMBOL_CELL_INDEX: usize = 0;
-
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
@@ -45,6 +43,8 @@ pub struct Vm<const N: usize, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
+    symbols: Cons,
+    // TODO Remove this? Does it degrade performance significantly?
     r#false: Cons,
     allocation_index: usize,
     space: bool,
@@ -59,6 +59,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             device,
             program_counter: DUMMY_CONS,
             stack: DUMMY_CONS,
+            symbols: DUMMY_CONS,
             r#false: DUMMY_CONS,
             allocation_index: 0,
             space: false,
@@ -461,16 +462,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // GC escape cells
 
-    fn cell(&self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value,
-            1 => Self::cdr_value,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#true())
-    }
-
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
         assert_cell_index!(index);
 
@@ -510,6 +501,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
+        self.symbols = self.copy_cons(self.symbols)?;
         self.r#false = self.copy_cons(self.r#false)?;
 
         for index in self.allocation_start()..self.allocation_end() {
@@ -562,9 +554,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
             .into();
         self.stack = self.allocate(return_info, self.null()?.set_tag(FRAME_TAG).into())?;
 
-        // Allow GC of symbols.
-        self.take_cell(SYMBOL_CELL_INDEX)?;
-
         Ok(())
     }
 
@@ -609,7 +598,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.initialize_symbol(self.r#true())?;
         self.initialize_symbol(self.r#false.into())?;
 
-        *self.cell_mut(SYMBOL_CELL_INDEX)? = self.stack.into();
+        self.symbols = self.stack;
         self.stack = self.null()?;
 
         Ok(())
@@ -676,10 +665,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let index = Number::new(integer >> 1);
 
         Ok(if integer & 1 == 0 {
-            self.car(self.tail(
-                self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
-                Number::new(index.to_u64()),
-            )?)
+            self.car(self.tail(self.symbols, Number::new(index.to_u64()))?)
         } else {
             index.into()
         })
