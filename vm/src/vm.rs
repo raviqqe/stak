@@ -674,10 +674,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let index = Number::new(integer >> 1);
 
         Ok(if integer & 1 == 0 {
-            self.car(self.tail(
-                self.cell(SYMBOL_CELL_INDEX)?.try_into()?,
-                Number::new(index.to_u64()),
-            )?)
+            self.car(self.tail(self.symbols, Number::new(index.to_u64()))?)
         } else {
             index.into()
         })
