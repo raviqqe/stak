@@ -171,9 +171,6 @@
 (define (encode-context-symbols context)
   context)
 
-(define symbol-operand-instructions
-  (list call-instruction set-instruction get-instruction))
-
 (define (find-symbols codes)
   (if (null? codes)
     '()
@@ -182,7 +179,7 @@
         (operand (rib-car codes))
         (rest (find-symbols (cdr codes))))
       (if (and
-          (memq instruction symbol-operand-instructions)
+          (not (eqv? instruction if-instruction))
           (symbol? operand)
           (not (memq operand rest)))
         (cons operand rest)
