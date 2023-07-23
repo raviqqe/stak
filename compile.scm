@@ -105,7 +105,7 @@
 
 ; Context
 
-; (block . symbols)
+; (stack . symbols)
 (define (make-compile-context)
   (cons '() '()))
 
