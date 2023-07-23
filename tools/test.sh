@@ -4,4 +4,4 @@ set -e
 
 directory=$(dirname $0)/..
 
-gsi $directory/compile.scm $directory/main.scm
+gsi $directory/compile.scm $directory/test.scm

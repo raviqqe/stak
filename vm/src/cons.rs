@@ -25,7 +25,7 @@ impl Cons {
     }
 
     pub const fn set_tag(self, tag: u8) -> Self {
-        Self(self.0 | tag as u64 & TAG_MASK)
+        Self(self.0 & !TAG_MASK | tag as u64 & TAG_MASK)
     }
 }
 
@@ -62,10 +62,20 @@ mod tests {
         assert_eq!(cons.index(), 42);
         assert_eq!(cons.tag(), 0);
 
+        let cons = cons.set_tag(1);
+
+        assert_eq!(cons.index(), 42);
+        assert_eq!(cons.tag(), 1);
+
         let cons = cons.set_tag(3);
 
         assert_eq!(cons.index(), 42);
         assert_eq!(cons.tag(), 3);
+    }
+
+    #[test]
+    fn reset_tag() {
+        assert_eq!(Cons::new(42).set_tag(2).set_tag(1).tag(), 1);
     }
 
     #[test]

@@ -6,6 +6,7 @@
 (define true-index 1)
 (define null-index 2)
 (define rib-index 3)
+(define other-index 4)
 
 ; Instructions
 
@@ -41,7 +42,22 @@
       (cdar rib))
 
     (define (rib-cdr rib)
-      (cdr rib))))
+      (cdr rib))
+
+    (define (rib? value)
+      (not (number? value))))
+
+  (else (begin)))
+
+(define (member-index* value list)
+  foo)
+
+(define (member-index value list)
+  (if (null? list)
+    (error "value not found" value)
+    (if (eqv? value (car list))
+      0
+      (+ 1 (member-index value (cdr list))))))
 
 ; Source code reading
 
@@ -147,6 +163,61 @@
 
 ; Encoding
 
+;; Context
+
+(define (make-encode-context symbols)
+  symbols)
+
+(define (encode-context-symbols context)
+  context)
+
+(define symbol-operand-instructions
+  (list call-instruction set-instruction get-instruction))
+
+(define (find-symbols codes)
+  (if (null? codes)
+    '()
+    (let (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (rest (find-symbols (cdr codes))))
+      (if (and
+          (memq instruction symbol-operand-instructions)
+          (symbol? operand)
+          (not (memq operand rest)))
+        (cons operand rest)
+        rest))))
+
+;; Symbols
+
+(define (encode-string string target)
+  (if (null? string)
+    target
+    (encode-string (cdr string) (cons (char->integer (car string)) target))))
+
+(define (encode-symbol symbol target)
+  (encode-string (string->list (symbol->string symbol)) target))
+
+(define (encode-symbols* symbols target)
+  (let (
+      (target (encode-symbol (car symbols) target))
+      (rest (cdr symbols)))
+    (if (null? rest)
+      target
+      (encode-symbols*
+        rest
+        (cons
+          (char->integer #\,)
+          target)))))
+
+(define (encode-symbols symbols target)
+  (let ((target (cons (char->integer #\;) target)))
+    (if (null? symbols)
+      target
+      (encode-symbols* symbols target))))
+
+;; Codes
+
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
     (if (eqv? part 0)
@@ -159,24 +230,26 @@
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
 
-(define (encode-operand operand target)
+(define (encode-operand context operand target)
   (cond
     ((symbol? operand)
-      ; TODO Resolve a symbol index.
-      (encode-integer 84 target))
+      (encode-integer
+        (* 2 (+ other-index (member-index operand (encode-context-symbols context))))
+        target))
 
     ((number? operand)
       (encode-integer (+ (* operand 2) 1) target))
 
     (else (error "invalid operand"))))
 
-(define (encode-codes codes target)
+(define (encode-codes context codes target)
   (if (null? codes)
     target
     (let (
         (instruction (rib-tag codes))
         (operand (rib-car codes)))
       (encode-codes
+        context
         (rib-cdr codes)
         (cond
           ((eqv? instruction call-instruction)
@@ -184,39 +257,30 @@
               (if (null? (rib-cdr codes))
                 return-call-code
                 call-code)
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction set-instruction)
             (cons
               set-code
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction get-instruction)
             (cons
               get-code
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction constant-instruction)
             (cons
               constant-code
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction if-instruction)
             (todo codes))
 
           (else (error "invalid instruction")))))))
 
-(define (encode-symbols symbols target)
-  (if (null? symbols)
-    (cons (char->integer #\;) target)
-    ; TODO
-    (encode-symbols (cdr symbols) target)))
-
 (define (encode codes)
-  (encode-symbols
-    '()
-    (encode-codes codes '())))
-
-; Main
-
-(write-target (encode (compile (expand (read-source)))))
+  (let ((context (make-encode-context (find-symbols codes))))
+    (encode-symbols
+      (encode-context-symbols context)
+      (encode-codes context codes '()))))
