@@ -1,1 +1,1 @@
-(error "no test defined")
+(display "no test defined")
