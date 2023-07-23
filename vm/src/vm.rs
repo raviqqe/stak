@@ -501,6 +501,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
+        self.symbols = self.copy_cons(self.symbols)?;
         self.r#false = self.copy_cons(self.r#false)?;
 
         for index in self.allocation_start()..self.allocation_end() {
