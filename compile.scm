@@ -49,9 +49,6 @@
 
   (else (begin)))
 
-(define (member-index* value list)
-  foo)
-
 (define (member-index value list)
   (if (null? list)
     (error "value not found" value)
