@@ -607,7 +607,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.initialize_symbol(self.r#true())?;
         self.initialize_symbol(self.r#false.into())?;
 
-        self.symbols = self.stack.into();
+        self.symbols = self.stack;
         self.stack = self.null()?;
 
         Ok(())
