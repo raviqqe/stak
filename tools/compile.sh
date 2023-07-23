@@ -2,4 +2,6 @@
 
 set -e
 
-gsi $(dirname $0)/../compile.scm
+directory=$(dirname $0)/..
+
+gsi $directory/compile.scm $directory/main.scm
