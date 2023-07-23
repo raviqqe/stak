@@ -252,7 +252,3 @@
   (encode-symbols
     (find-symbols codes)
     (encode-codes codes '())))
-
-; Main
-
-(write-target (encode (compile (expand (read-source)))))
