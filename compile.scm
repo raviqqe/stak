@@ -45,7 +45,7 @@
     (define (rib? value)
       (not (number? value))))
 
-  (else (begin)))
+  (else))
 
 (define (todo value) (error "not implemented" value))
 
@@ -95,7 +95,7 @@
             (cons 'begin (map expand (cdr expression))))
 
           (else
-            expression))))
+            (map expand expression)))))
 
     (else
       expression)))
@@ -134,7 +134,7 @@
 
 (define (compile-constant constant continuation)
   (cond
-    ((number? constant)
+    ((or (boolean? constant) (null? constant) (number? constant))
       (rib constant-instruction constant continuation))
 
     ((string? constant)
@@ -166,8 +166,11 @@
           ((eqv? first 'begin)
             (compile-begin context (cdr expression) continuation))
 
+          ((eqv? first 'quote)
+            (compile-constant (cadr expression) continuation))
+
           (else
-            (todo first)))))
+            (todo expression)))))
 
     (else
       (compile-constant expression continuation))))
@@ -242,16 +245,25 @@
   (encode-integer-rest integer #t target))
 
 (define (encode-operand context operand target)
-  (cond
-    ((symbol? operand)
-      (encode-integer
-        (* 2 (+ other-index (member-index operand (encode-context-symbols context))))
-        target))
+  (encode-integer
+    (cond
+      ((boolean? operand)
+        (if operand true-index false-index))
 
-    ((number? operand)
-      (encode-integer (+ (* operand 2) 1) target))
+      ((null? operand)
+        null-index)
 
-    (else (error "invalid operand"))))
+      ((eqv? operand 'rib)
+        rib-index)
+
+      ((symbol? operand)
+        (* 2 (+ other-index (member-index operand (encode-context-symbols context)))))
+
+      ((number? operand)
+        (+ (* operand 2) 1))
+
+      (else (error "invalid operand")))
+    target))
 
 (define (encode-codes context codes target)
   (if (null? codes)
