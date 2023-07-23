@@ -49,6 +49,16 @@
 
   (else (begin)))
 
+(define (member-index* value list)
+  foo)
+
+(define (member-index value list)
+  (if (null? list)
+    (error "value not found" value)
+    (if (eqv? value (car list))
+      0
+      (+ 1 (member-index value (cdr list))))))
+
 ; Source code reading
 
 (define (read-all)
@@ -153,7 +163,13 @@
 
 ; Encoding
 
-;; Symbols
+;; Context
+
+(define (make-encode-context symbols)
+  symbols)
+
+(define (encode-context-symbols context)
+  context)
 
 (define symbol-operand-instructions
   (list call-instruction set-instruction get-instruction))
@@ -171,6 +187,8 @@
           (not (memq operand rest)))
         (cons operand rest)
         rest))))
+
+;; Symbols
 
 (define (encode-string string target)
   (if (null? string)
@@ -212,24 +230,26 @@
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
 
-(define (encode-operand operand target)
+(define (encode-operand context operand target)
   (cond
     ((symbol? operand)
-      ; TODO Resolve a symbol index.
-      (encode-integer 84 target))
+      (encode-integer
+        (2 * (member-index (encode-context-symbols context)))
+        target))
 
     ((number? operand)
       (encode-integer (+ (* operand 2) 1) target))
 
     (else (error "invalid operand"))))
 
-(define (encode-codes codes target)
+(define (encode-codes context codes target)
   (if (null? codes)
     target
     (let (
         (instruction (rib-tag codes))
         (operand (rib-car codes)))
       (encode-codes
+        context
         (rib-cdr codes)
         (cond
           ((eqv? instruction call-instruction)
@@ -237,22 +257,22 @@
               (if (null? (rib-cdr codes))
                 return-call-code
                 call-code)
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction set-instruction)
             (cons
               set-code
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction get-instruction)
             (cons
               get-code
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction constant-instruction)
             (cons
               constant-code
-              (encode-operand operand target)))
+              (encode-operand context operand target)))
 
           ((eqv? instruction if-instruction)
             (todo codes))
@@ -260,6 +280,7 @@
           (else (error "invalid instruction")))))))
 
 (define (encode codes)
-  (encode-symbols
-    (find-symbols codes)
-    (encode-codes codes '())))
+  (let ((context (make-encode-context (find-symbols codes))))
+    (encode-symbols
+      (encode-context-symbols context)
+      (encode-codes context codes '()))))
