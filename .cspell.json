@@ -2,6 +2,7 @@
   "words": [
     "alloc",
     "arity",
+    "codecov",
     "insta",
     "lcov",
     "repr",
