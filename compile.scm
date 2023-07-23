@@ -152,6 +152,8 @@
 
 ; Encoding
 
+;; Symbols
+
 (define symbol-operand-instructions
   (list call-instruction set-instruction get-instruction))
 
@@ -184,6 +186,8 @@
         (car symbols)
         (cons (char->integer (if (null? rest) #\; #\,))
           (encode-symbols rest target))))))
+
+;; Codes
 
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
