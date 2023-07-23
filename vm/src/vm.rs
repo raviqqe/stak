@@ -46,6 +46,7 @@ pub struct Vm<const N: usize, T: Device> {
     program_counter: Cons,
     stack: Cons,
     symbols: Cons,
+    // TODO Remove this?
     r#false: Cons,
     allocation_index: usize,
     space: bool,
