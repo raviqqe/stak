@@ -16,6 +16,6 @@ Feature: Examples
 
     Examples:
       | example              |
-      | set-glboal-variable  |
-      | set-glboal-variables |
-      | get-glboal-variable  |
+      | set-global-variable  |
+      | set-global-variables |
+      | get-global-variable  |
