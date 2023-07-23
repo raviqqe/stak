@@ -3,13 +3,14 @@ Feature: Examples
     Given I run the following script:
     """sh
     cp -r $ROOT/examples .
-    cp $ROOT/compile.scm .
+    cp -r $ROOT/tools .
+    cp $ROOT/*.scm .
     """
 
   Scenario Outline: Run examples
     When I run the following script:
     """sh
-    gsi compile.scm < examples/<example>.scm > main.out
+    tools/compile.sh < examples/<example>.scm > main.out
     """
     Then I successfully run `stak main.out`
 
