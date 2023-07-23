@@ -114,14 +114,6 @@
 
 ; Compilation
 
-(define (compile-symbol symbol)
-	symbol)
-
-(define (compile-operand context operand)
-  (if (number? operand)
-		operand
-		foo)
-
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
@@ -143,7 +135,7 @@
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
               (compile-set
-                (compile-operand (resolve-variable context (cadr expression) 1))
+                (resolve-variable context (cadr expression) 1)
                 continuation)))
 
           ((eqv? first 'begin)
@@ -184,15 +176,17 @@
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
-  (encode-string (string->list (rib-cdr symbol)) target))
+  (encode-string (string->list (symbol->string symbol)) target))
 
 (define (encode-symbols* symbols target)
   (let (
       (target (encode-symbol (car symbols) target))
       (rest (cdr symbols)))
-    (if (null? symbols)
+    (if (null? rest)
       target
-      (encode-symbols rest (cons
+      (encode-symbols*
+        rest
+        (cons
           (char->integer #\,)
           target)))))
 
