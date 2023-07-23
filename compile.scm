@@ -6,6 +6,7 @@
 (define true-index 1)
 (define null-index 2)
 (define rib-index 3)
+(define other-index 4)
 
 ; Instructions
 
