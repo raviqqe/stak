@@ -134,7 +134,7 @@
 
 (define (compile-constant constant continuation)
   (cond
-    ((number? constant)
+    ((or (boolean constant) (nullconstant) (number? constant))
       (rib constant-instruction constant continuation))
 
     ((string? constant)
