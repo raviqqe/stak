@@ -34,12 +34,6 @@ macro_rules! assert_cell_index {
     };
 }
 
-// TODO Use Bytes?
-struct DecodeInput<'a> {
-    codes: &'a [u8],
-    index: usize,
-}
-
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
@@ -544,8 +538,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // Input decoding
 
-    pub fn initialize(&mut self, codes: &[u8]) -> Result<(), Error> {
-        let mut input = DecodeInput { codes, index: 0 };
+    pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
+        let mut input = input.into_iter();
 
         self.program_counter = self.null()?;
         self.stack = self.null()?;
@@ -562,7 +556,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
-    fn decode_symbols(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
+    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         let mut length = 0;
         let mut name = self.null()?;
 
@@ -615,7 +609,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.push(symbol.into())
     }
 
-    fn decode_instructions(&mut self, input: &mut DecodeInput) -> Result<(), Error> {
+    fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some(instruction) = Self::decode_byte(input) {
             #[cfg(feature = "trace")]
             std::eprintln!("decoded-instruction: {}", instruction);
@@ -665,7 +659,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
-    fn decode_operand(&self, input: &mut DecodeInput) -> Result<Value, Error> {
+    fn decode_operand(&self, input: &mut impl Iterator<Item = u8>) -> Result<Value, Error> {
         let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
         let index = Number::new(integer >> 1);
 
@@ -676,7 +670,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         })
     }
 
-    fn decode_integer(input: &mut DecodeInput) -> Option<u64> {
+    fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
         let mut y = 0;
 
         while {
@@ -691,7 +685,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Some(y)
     }
 
-    fn decode_byte(input: &mut DecodeInput) -> Option<u8> {
+    fn decode_byte(input: &mut impl Iterator<Item = u8>) -> Option<u8> {
         if input.index >= input.codes.len() {
             return None;
         }
