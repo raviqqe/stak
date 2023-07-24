@@ -14,7 +14,7 @@ fn main() {
 fn run() -> Result<(), Box<dyn Error>> {
     let mut vm = Vm::<HEAP_SIZE, StdioDevice>::new(Default::default())?;
 
-    vm.initialize(&read(args().nth(1).ok_or(format!(
+    vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",
         args().next().expect("command name")
     ))?)?)?;
