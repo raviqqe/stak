@@ -51,6 +51,11 @@
 
 (define (todo value) (error "not implemented" value))
 
+(define (i8->u8 value)
+  (if (< value 0)
+    (+ 256 value)
+    value))
+
 (define (member-index value list)
   (if (null? list)
     (error "value not found" value)
@@ -263,7 +268,7 @@
       (encode-integer-rest
         (quotient integer integer-base)
         #f
-        (cons (* (if first 1 -1) part) target)))))
+        (cons (i8->u8 (* (if first 1 -1) part)) target)))))
 
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
