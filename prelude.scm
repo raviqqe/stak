@@ -18,3 +18,5 @@
 (define - (rib 14 '() procedure-tag))
 (define * (rib 15 '() procedure-tag))
 (define / (rib 16 '() procedure-tag))
+(define read-u8 (rib 17 '() procedure-tag))
+(define write-u8 (rib 18 '() procedure-tag))
