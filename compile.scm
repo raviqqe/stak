@@ -277,11 +277,11 @@
       ((null? operand)
         null-index)
 
-      ((eqv? operand 'rib)
-        rib-index)
-
       ((symbol? operand)
-        (* 2 (+ other-index (member-index operand (encode-context-symbols context)))))
+        (* 2
+          (if (eqv? operand 'rib)
+            rib-index
+            (+ other-index (member-index operand (encode-context-symbols context))))))
 
       ((number? operand)
         (+ (* operand 2) 1))
