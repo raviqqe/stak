@@ -33,6 +33,7 @@ macro_rules! assert_cell_index {
     };
 }
 
+// TODO Use Bytes?
 struct DecodeInput<'a> {
     codes: &'a [u8],
     index: usize,
