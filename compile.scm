@@ -104,10 +104,10 @@
           ((eqv? first 'if)
             (list
               'if
-              (expand-expression (cadr expression))
-              (expand-expression (caddr expression))
+              (expand (cadr expression))
+              (expand (caddr expression))
               (if (pair? (cdddr expression))
-                (expand-expression (cadddr expression))
+                (expand (cadddr expression))
                 #f)))
 
           (else
