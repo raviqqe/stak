@@ -1,7 +1,7 @@
 use std::{env::args, error::Error, fs::read_to_string, process::exit};
 use vm::{FixedBufferDevice, Vm};
 
-const HEAP_SIZE: usize = 1 << 8;
+const HEAP_SIZE: usize = 1 << 9;
 
 fn main() {
     if let Err(error) = run() {

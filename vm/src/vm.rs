@@ -174,6 +174,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 _ => return Err(Error::IllegalInstruction),
             }
+
+            #[cfg(feature = "trace")]
+            std::eprintln!("vm:\n{}", self);
         }
 
         Ok(())

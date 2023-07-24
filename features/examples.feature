@@ -10,7 +10,7 @@ Feature: Examples
   Scenario Outline: Run examples
     When I run the following script:
     """sh
-    tools/compile.sh < examples/<example>.scm > main.out
+    cat prelude.scm examples/<example>.scm | tools/compile.sh > main.out
     """
     Then I successfully run `stak main.out`
 
@@ -20,3 +20,4 @@ Feature: Examples
       | set-global-variables |
       | get-global-variable  |
       | literals             |
+      | rib-primitive        |

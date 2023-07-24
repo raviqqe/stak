@@ -47,6 +47,8 @@
 
   (else))
 
+(define reserved-symbols '(rib))
+
 (define (todo value) (error "not implemented" value))
 
 (define (member-index value list)
@@ -146,6 +148,27 @@
     (else
       (todo constant))))
 
+(define (compile-call* context function arguments argument-count continuation)
+  (if (null? arguments)
+    (compile-constant argument-count
+      (rib
+        call-instruction
+        (if (symbol? function) function (+ argument-count 1))
+        continuation))
+    (compile-expression context
+      (car arguments)
+      (compile-call* context function (cdr arguments) argument-count continuation))))
+
+(define (compile-call context expression continuation)
+  (let* (
+      (function (car expression))
+      (arguments (cdr expression))
+      (argument-count (length arguments))
+      (continuation (compile-call* context function arguments argument-count continuation)))
+    (if (symbol? function)
+      continuation
+      (compile-expression context function argument-count continuation))))
+
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
@@ -170,7 +193,7 @@
             (compile-constant (cadr expression) continuation))
 
           (else
-            (todo expression)))))
+            (compile-call context expression continuation)))))
 
     (else
       (compile-constant expression continuation))))
@@ -198,6 +221,7 @@
       (if (and
           (not (eqv? instruction if-instruction))
           (symbol? operand)
+          (not (memq operand reserved-symbols))
           (not (memq operand rest)))
         (cons operand rest)
         rest))))
@@ -246,23 +270,23 @@
 
 (define (encode-operand context operand target)
   (encode-integer
-    (cond
-      ((boolean? operand)
-        (if operand true-index false-index))
+    (if (number? operand)
+      (+ (* operand 2) 1)
+      (* 2
+        (cond
+          ((boolean? operand)
+            (if operand true-index false-index))
 
-      ((null? operand)
-        null-index)
+          ((null? operand)
+            null-index)
 
-      ((eqv? operand 'rib)
-        rib-index)
+          ((eqv? operand 'rib)
+            rib-index)
 
-      ((symbol? operand)
-        (* 2 (+ other-index (member-index operand (encode-context-symbols context)))))
+          ((symbol? operand)
+            (+ other-index (member-index operand (encode-context-symbols context))))
 
-      ((number? operand)
-        (+ (* operand 2) 1))
-
-      (else (error "invalid operand")))
+          (else (error "invalid operand")))))
     target))
 
 (define (encode-codes context codes target)
