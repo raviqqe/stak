@@ -185,6 +185,14 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'if)
+            (compile-expression
+              context
+              (cadr expression)
+              (rib if-instruction
+                (compile-expression context (caddr expression) continuation)
+                (compile-expression context (cadddr expression) continuation))))
+
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
               (compile-set
