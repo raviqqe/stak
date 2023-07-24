@@ -89,6 +89,9 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'begin)
+            (cons 'begin (map expand (cdr expression))))
+
           ((eqv? first 'define)
             (let ((pattern (cadr expression)))
               (cons 'set!
@@ -98,8 +101,14 @@
                     (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
                   (list pattern (expand (caddr expression)))))))
 
-          ((eqv? first 'begin)
-            (cons 'begin (map expand (cdr expression))))
+          ((eqv? first 'if)
+            (list
+              'if
+              (expand-expression (cadr expression))
+              (expand-expression (caddr expression))
+              (if (pair? (cdddr expression))
+                (expand-expression (cadddr expression))
+                #f)))
 
           (else
             (map expand expression)))))
