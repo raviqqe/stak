@@ -561,7 +561,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut name = self.null()?;
 
         loop {
-            match Self::decode_byte(input).ok_or(Error::EndOfInput)? {
+            match input.next().ok_or(Error::EndOfInput)? {
                 character @ (b',' | b';') => {
                     let string = self.allocate(
                         Number::new(length).into(),
@@ -610,7 +610,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
-        while let Some(instruction) = Self::decode_byte(input) {
+        while let Some(instruction) = input.next() {
             #[cfg(feature = "trace")]
             std::eprintln!("decoded-instruction: {}", instruction);
 
@@ -675,7 +675,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         while {
             y *= code::INTEGER_BASE;
-            let x = Self::decode_byte(input)? as i8;
+            let x = input.next()? as i8;
 
             y += (if x < 0 { -1 } else { 1 } * x) as u64;
 
@@ -683,16 +683,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         } {}
 
         Some(y)
-    }
-
-    fn decode_byte(input: &mut impl Iterator<Item = u8>) -> Option<u8> {
-        if input.index >= input.codes.len() {
-            return None;
-        }
-
-        let byte = input.codes[input.index];
-        input.index += 1;
-        Some(byte)
     }
 }
 
