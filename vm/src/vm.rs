@@ -419,7 +419,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 let byte = self.pop()?;
                 self.device
                     .write(Number::try_from(byte)?.to_u64() as u8)
-                    .map_err(|_| Error::ReadInput)?;
+                    .map_err(|_| Error::WriteOutput)?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
