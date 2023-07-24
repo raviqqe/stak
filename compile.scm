@@ -148,8 +148,8 @@
 
 (define (compile-call* context function arguments argument-count continuation)
   (compile-expression context
-    (car expressions)
-    (compile-call* context expression argument-count continuation)))
+    (car arguments)
+    (compile-call* context function (cdr arguments) argument-count continuation)))
 
 (define (compile-call context expression continuation)
   (let (
