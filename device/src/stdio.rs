@@ -1,18 +1,12 @@
 use crate::Device;
 use std::io::{stdin, stdout, Error, Read, Write};
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct StdioDevice {}
 
 impl StdioDevice {
     pub fn new() -> Self {
         Self {}
-    }
-}
-
-impl Default for StdioDevice {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
