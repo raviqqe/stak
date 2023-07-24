@@ -6,7 +6,6 @@ extern crate alloc;
 extern crate std;
 
 mod cons;
-mod device;
 mod error;
 mod instruction;
 mod number;

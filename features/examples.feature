@@ -20,4 +20,5 @@ Feature: Examples
       | set-global-variables |
       | get-global-variable  |
       | literals             |
-      | rib-primitive        |
+      | rib                  |
+      | write-u8             |

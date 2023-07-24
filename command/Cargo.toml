@@ -7,4 +7,5 @@ edition = "2021"
 trace = ["vm/trace"]
 
 [dependencies]
+device = { package = "stak-device", path = "../device", features = ["std"] }
 vm = { package = "stak-vm", path = "../vm", features = ["std"] }

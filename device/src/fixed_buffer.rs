@@ -1,4 +1,4 @@
-use super::Device;
+use crate::Device;
 
 #[derive(Debug)]
 pub struct FixedBufferDevice<const I: usize, const O: usize> {
