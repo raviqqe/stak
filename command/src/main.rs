@@ -1,5 +1,6 @@
+use device::StdioDevice;
 use std::{env::args, error::Error, fs::read, process::exit};
-use vm::{FixedBufferDevice, Vm};
+use vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 17;
 
@@ -11,7 +12,7 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let mut vm = Vm::<HEAP_SIZE, FixedBufferDevice<0, 0>>::new(Default::default())?;
+    let mut vm = Vm::<HEAP_SIZE, StdioDevice>::new(Default::default())?;
 
     vm.initialize(&read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",

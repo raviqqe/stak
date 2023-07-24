@@ -1,12 +1,13 @@
 use crate::{
-    cons::Cons, device::Device, instruction::Instruction, number::Number, primitive::Primitive,
-    r#type::Type, value::Value, Error,
+    cons::Cons, instruction::Instruction, number::Number, primitive::Primitive, r#type::Type,
+    value::Value, Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
+use device::Device;
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);

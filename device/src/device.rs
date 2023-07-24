@@ -1,8 +1,3 @@
-mod fixed_buffer;
-
-use core::fmt::Debug;
-pub use fixed_buffer::FixedBufferDevice;
-
 pub trait Device {
     type Error: Debug;
 

@@ -61,6 +61,7 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 name = "stak"
 version = "0.1.0"
 dependencies = [
+ "stak-device",
  "stak-vm",
 ]
 
@@ -81,6 +82,7 @@ version = "0.1.0"
 dependencies = [
  "insta",
  "stak-code",
+ "stak-device",
 ]
 
 [[package]]
