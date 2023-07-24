@@ -22,3 +22,4 @@ Feature: Examples
       | literals             |
       | rib                  |
       | write-u8             |
+      | if                   |
