@@ -147,12 +147,17 @@
       (todo constant))))
 
 (define (compile-call* context function arguments argument-count continuation)
-  (compile-expression context
-    (car arguments)
-    (compile-call* context function (cdr arguments) argument-count continuation)))
+  (if (null? arguments)
+    (rib
+      call-instruction
+      (if (symbol? function) function (+ argument-count 1))
+      (compile-constant argument-count continuation))
+    (compile-expression context
+      (car arguments)
+      (compile-call* context function (cdr arguments) argument-count continuation))))
 
 (define (compile-call context expression continuation)
-  (let (
+  (let* (
       (function (car expression))
       (arguments (cdr expression))
       (argument-count (length arguments))
