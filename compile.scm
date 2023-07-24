@@ -194,6 +194,9 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'begin)
+            (compile-begin context (cdr expression) continuation))
+
           ((eqv? first 'if)
             (compile-expression
               context
@@ -202,17 +205,14 @@
                 (compile-expression context (caddr expression) continuation)
                 (compile-expression context (cadddr expression) continuation))))
 
+          ((eqv? first 'quote)
+            (compile-constant (cadr expression) continuation))
+
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
               (compile-set
                 (compile-context-resolve context (cadr expression) 1)
                 continuation)))
-
-          ((eqv? first 'begin)
-            (compile-begin context (cdr expression) continuation))
-
-          ((eqv? first 'quote)
-            (compile-constant (cadr expression) continuation))
 
           (else
             (compile-call context expression continuation)))))
