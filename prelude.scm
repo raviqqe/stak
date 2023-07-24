@@ -12,3 +12,6 @@
 (define rib-cdr (rib 8 '() procedure-tag))
 (define rib-set-car! (rib 9 '() procedure-tag))
 (define rib-set-cdr! (rib 10 '() procedure-tag))
+(define eq? (rib 11 '() procedure-tag))
+(define rib-set-cdr! (rib 10 '() procedure-tag))
+(define rib-set-cdr! (rib 10 '() procedure-tag))
