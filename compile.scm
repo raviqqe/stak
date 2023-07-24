@@ -47,6 +47,8 @@
 
   (else))
 
+(define reserved-symbols '(rib))
+
 (define (todo value) (error "not implemented" value))
 
 (define (member-index value list)
@@ -219,6 +221,7 @@
       (if (and
           (not (eqv? instruction if-instruction))
           (symbol? operand)
+          (not (memq operand reserved-symbols))
           (not (memq operand rest)))
         (cons operand rest)
         rest))))
