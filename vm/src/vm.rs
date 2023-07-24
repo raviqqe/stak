@@ -857,7 +857,7 @@ mod tests {
         fn run_program(program: &Program) {
             let mut vm = create_vm();
 
-            vm.initialize(&encode(program)).unwrap();
+            vm.initialize(encode(program)).unwrap();
 
             vm.run().unwrap()
         }
