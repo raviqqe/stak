@@ -228,7 +228,7 @@
                 (rib
                   0
                   parameter-count
-                  (compile-begin
+                  (compile-body
                     ; TODO compile-context-environment-append
                     (compile-context-environment-set
                       context
