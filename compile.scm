@@ -233,8 +233,7 @@
                     (compile-context-environment-set
                       context
                       (append parameters (cons #f (compile-context-environment context))))
-                    (cddr expression)
-                    (todo "return")))
+                    (cddr expression)))
                 (compile-constant
                   context
                   1
