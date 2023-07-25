@@ -110,6 +110,9 @@
                 (expand (cadddr expression))
                 #f)))
 
+          ((eqv? first 'lambda)
+            (list 'lambda parameters (expand-body (cddr expression))))
+
           (else
             (map expand expression)))))
 
