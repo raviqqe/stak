@@ -5,5 +5,5 @@ expression: vm
 00: n0 cfffffffffffffff:2
 02: n0 cfffffffffffffff:2
 04: c0:0 c2:2
-06: n1 c2:2
+06: n1 c2:0
 
