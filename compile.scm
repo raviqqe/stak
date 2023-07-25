@@ -227,8 +227,10 @@
   (compile-expression
     (make-compile-context)
     expression
-    ; We assume the `id` primitive is always defined.
-    (rib call-instruction 'id '())))
+    (compile-constant #f ; return value
+      (compile-constant 0 ; argument count
+        ; We assume the `id` primitive is always defined.
+        (rib call-instruction 'id '())))))
 
 ; Encoding
 
