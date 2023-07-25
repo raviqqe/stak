@@ -582,7 +582,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 character => {
                     length += 1;
-                    name = self.append(Number::new(character as u64).into(), name)?;
+                    name = self.append(
+                        Number::new(character as u64).into(),
+                        name.set_tag(Type::Pair as u8),
+                    )?;
                 }
             }
         }
