@@ -111,7 +111,7 @@
                 #f)))
 
           ((eqv? first 'lambda)
-            (list 'lambda parameters (expand-body (cddr expression))))
+            (list 'lambda (cadr expression) (map expand (cddr expression))))
 
           (else
             (map expand expression)))))
