@@ -228,7 +228,7 @@
     (make-compile-context)
     expression
     (compile-constant #f ; return value
-      (compile-constant 0 ; argument count
+      (compile-constant 1 ; argument count
         ; We assume the `id` primitive is always defined.
         (rib call-instruction 'id '())))))
 
