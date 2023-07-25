@@ -205,6 +205,7 @@
               context
               (cadr expression)
               (rib if-instruction
+                ; TODO Join continuation with a closure.
                 (compile-expression context (caddr expression) continuation)
                 (compile-expression context (cadddr expression) continuation))))
 
