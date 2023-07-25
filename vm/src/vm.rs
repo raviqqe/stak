@@ -592,10 +592,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             DUMMY_CONS.set_tag(Type::Procedure as u8).into(),
         )?;
 
-        self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.null()?.into())?;
-        self.initialize_symbol(self.r#true())?;
-        self.initialize_symbol(self.r#false.into())?;
+        for value in [
+            rib.into(),
+            self.null()?.into(),
+            self.r#true(),
+            self.r#false.into(),
+        ] {
+            self.initialize_symbol(value)?;
+        }
 
         self.symbols = self.stack;
         self.stack = self.null()?;
