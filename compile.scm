@@ -220,14 +220,12 @@
                 (compile-expression context (cadddr expression) continuation))))
 
           ((eqv? first 'lambda)
-            (let* (
-                (parameters (cadr expression))
-                (parameter-count (length parameters)))
+            (let ((parameters (cadr expression)))
               (rib
                 constant-instruction
                 (rib
                   0
-                  parameter-count
+                  (length parameters)
                   (compile-body
                     ; TODO compile-context-environment-append
                     (compile-context-environment-set
