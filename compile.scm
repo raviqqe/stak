@@ -221,7 +221,11 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-compile-context) expression '()))
+  (compile-expression
+    (make-compile-context)
+    expression
+    ; We assume the `id` primitive is always defined.
+    (rib call-instruction 'id '())))
 
 ; Encoding
 
@@ -344,7 +348,9 @@
               (encode-operand context operand target)))
 
           ((eqv? instruction if-instruction)
-            (todo codes))
+            (cons
+              if-code
+              (encode-operand context operand target)))
 
           (else (error "invalid instruction")))))))
 
