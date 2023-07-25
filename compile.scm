@@ -121,9 +121,15 @@
 
 ; Context
 
-; (stack . symbols)
+; (environment . symbols)
 (define (make-compile-context)
   (cons '() '()))
+
+(define (compile-context-environment context)
+  (car context))
+
+(define (compile-context-environment-set context environment)
+  (cons environment (cdr context)))
 
 (define (compile-context-resolve* variables variable index)
   (cond
@@ -211,6 +217,25 @@
                 ; TODO Join continuation with a closure.
                 (compile-expression context (caddr expression) continuation)
                 (compile-expression context (cadddr expression) continuation))))
+
+          ((eqv? first 'lambda)
+            (let* (
+                (parameters (cadr expression))
+                (parameter-count (length parameters)))
+              (rib constant-instruction
+                (rib
+                  0
+                  parameter-count
+                  (compile-begin
+                    (compile-context-environment-set
+                      context
+                      (append parameters (cons #f (compile-context-environment context))))
+                    (cddr expression)
+                    (todo "return")))
+                (compile-constant
+                  context
+                  1
+                  (rib call-instruction 'close continuation)))))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
