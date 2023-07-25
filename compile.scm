@@ -222,7 +222,8 @@
             (let* (
                 (parameters (cadr expression))
                 (parameter-count (length parameters)))
-              (rib constant-instruction
+              (rib
+                constant-instruction
                 (rib
                   0
                   parameter-count
