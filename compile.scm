@@ -348,9 +348,10 @@
               (encode-operand context operand target)))
 
           ((eqv? instruction if-instruction)
-            (cons
-              if-code
-              (encode-operand context operand target)))
+            (encode-codes
+              context
+              operand
+              (cons if-code target)))
 
           (else (error "invalid instruction")))))))
 
