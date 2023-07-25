@@ -154,6 +154,7 @@
   (compile-expression context
     (car expressions)
     (if (pair? (cdr expressions))
+      ; TODO Drop intermediate values.
       (compile-begin context (cdr expressions) continuation)
       continuation)))
 
