@@ -343,7 +343,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn null(&self) -> Result<Cons, Error> {
-        Cons::try_from(self.cdr(self.r#false))
+        Ok(Cons::try_from(self.cdr(self.r#false))?.set_tag(Type::Pair as u8))
     }
 
     // Primitive operations
@@ -582,10 +582,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 character => {
                     length += 1;
-                    name = self.append(
-                        Number::new(character as u64).into(),
-                        name.set_tag(Type::Pair as u8),
-                    )?;
+                    name = self.append(Number::new(character as u64).into(), name)?;
                 }
             }
         }
