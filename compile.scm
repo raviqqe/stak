@@ -89,6 +89,9 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'begin)
+            (cons 'begin (map expand (cdr expression))))
+
           ((eqv? first 'define)
             (let ((pattern (cadr expression)))
               (cons 'set!
@@ -98,8 +101,14 @@
                     (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
                   (list pattern (expand (caddr expression)))))))
 
-          ((eqv? first 'begin)
-            (cons 'begin (map expand (cdr expression))))
+          ((eqv? first 'if)
+            (list
+              'if
+              (expand (cadr expression))
+              (expand (caddr expression))
+              (if (pair? (cdddr expression))
+                (expand (cadddr expression))
+                #f)))
 
           (else
             (map expand expression)))))
@@ -188,17 +197,26 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'begin)
+            (compile-begin context (cdr expression) continuation))
+
+          ((eqv? first 'if)
+            (compile-expression
+              context
+              (cadr expression)
+              (rib if-instruction
+                ; TODO Join continuation with a closure.
+                (compile-expression context (caddr expression) continuation)
+                (compile-expression context (cadddr expression) continuation))))
+
+          ((eqv? first 'quote)
+            (compile-constant (cadr expression) continuation))
+
           ((eqv? first 'set!)
             (compile-expression context (caddr expression)
               (compile-set
                 (compile-context-resolve context (cadr expression) 1)
                 continuation)))
-
-          ((eqv? first 'begin)
-            (compile-begin context (cdr expression) continuation))
-
-          ((eqv? first 'quote)
-            (compile-constant (cadr expression) continuation))
 
           (else
             (compile-call context expression continuation)))))
@@ -207,7 +225,13 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-compile-context) expression '()))
+  (compile-expression
+    (make-compile-context)
+    expression
+    (compile-constant #f ; return value
+      (compile-constant 1 ; argument count
+        ; We assume the `id` primitive is always defined.
+        (rib call-instruction 'id '())))))
 
 ; Encoding
 
@@ -330,7 +354,10 @@
               (encode-operand context operand target)))
 
           ((eqv? instruction if-instruction)
-            (todo codes))
+            (encode-codes
+              context
+              operand
+              (cons if-code target)))
 
           (else (error "invalid instruction")))))))
 

@@ -343,7 +343,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn null(&self) -> Result<Cons, Error> {
-        Cons::try_from(self.cdr(self.r#false))
+        Ok(Cons::try_from(self.cdr(self.r#false))?.set_tag(Type::Pair as u8))
     }
 
     // Primitive operations
