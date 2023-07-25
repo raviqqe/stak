@@ -150,7 +150,10 @@
 
 (define (compile-constant constant continuation)
   (cond
-    ((or (boolean? constant) (null? constant) (number? constant))
+    ((or (boolean? constant) (null? constant))
+      (rib get-instruction constant continuation))
+
+    ((number? constant)
       (rib constant-instruction constant continuation))
 
     ((string? constant)
