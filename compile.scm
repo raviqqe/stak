@@ -298,7 +298,7 @@
       "_"
       (number->string (length (encode-context-constants context))))))
 
-(define (encode-context-constants-add! context constant symbol)
+(define (encode-context-add-constant! context constant symbol)
   (set-cdr!
     context
     (cons (cons constant symbol) (encode-context-constants context))))
@@ -327,29 +327,25 @@
     (symbol? constant)
     (and (number? constant) (>= constant 0))))
 
-(define (build-constant-codes context constant continuation)
+(define (encode-constant-codes context constant continuation)
   (let ((symbol (encode-context-constant context constant)))
     (if symbol
       (rib get-instruction symbol continuation)
       (cond
-        ((or
-            (boolean? constant)
-            (null? constant)
-            (symbol? constant))
+        ((constant-normal? constant)
           (rib constant-instruction constant continuation))
 
+        ; Negative number
         ((number? constant)
-          (if (< constant 0)
+          (rib constant-instruction
+            0
             (rib constant-instruction
-              0
-              (rib constant-instruction
-                (abs constant)
-                (compile-primitive-call '- continuation)))
-            (rib constant-instruction constant continuation)))
+              (abs constant)
+              (compile-primitive-call '- continuation))))
 
         ((pair? constant)
-          (build-constant-codes (car constant)
-            (build-constant-codes (cdr constant)
+          (encode-constant-codes (car constant)
+            (encode-constant-codes (cdr constant)
               (rib constant-instruction
                 pair-type
                 (compile-primitive-call 'rib continuation)))))
@@ -360,12 +356,18 @@
 (define (encode-constant context constant continuation)
   (if (constant-normal? constant)
     continuation
-    (build-constant-codes
-      context
-      constant
-      (rib
-        set-instruction
-        (encode-context-constant-id context)
+    (let (
+        (id (encode-context-constant-id context))
+        (continuation
+          (encode-constant-codes
+            context
+            constant
+            (rib
+              set-instruction
+              id
+              continuation))))
+      (begin
+        (encode-context-add-constant! constant id)
         continuation))))
 
 (define (encode-constants* context codes continuation)
