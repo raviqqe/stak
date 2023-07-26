@@ -203,7 +203,8 @@
 
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
-    (compile-constant argument-count
+    (compile-constant
+      argument-count
       (rib
         call-instruction
         (if (symbol? function) function (+ argument-count 1))
@@ -261,9 +262,7 @@
                       (cddr expression)
                       '()))
                   '())
-                (compile-constant
-                  1
-                  (rib call-instruction 'close continuation)))))
+                (compile-primitive-call 'close 1 continuation))))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
