@@ -317,9 +317,7 @@
                 (rib constant-instruction
                   2
                   (rib call-instruction '- continuation))))
-            (rib constant-instruction
-              constant
-              continuation)))
+            (rib constant-instruction constant continuation)))
 
         ((pair? constant)
           (build-constant (car constant)
