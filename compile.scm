@@ -160,6 +160,11 @@
 
 ; Compilation
 
+(define (compile-primitive-call name argument-count continuation)
+  (rib constant-instruction
+    argument-count
+    (rib call-instruction name continuation)))
+
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
@@ -268,10 +273,8 @@
   (compile-expression
     (make-compile-context)
     expression
-    (compile-constant #f ; return value
-      (compile-constant 1 ; argument count
-        ; We assume the `id` primitive is always defined.
-        (rib call-instruction 'id '())))))
+    (compile-constant #f
+      (compile-primitive-call 'id 1 '()))))
 
 ; Encoding
 
@@ -314,9 +317,7 @@
               0
               (rib constant-instruction
                 (abs constant)
-                (rib constant-instruction
-                  2
-                  (rib call-instruction '- continuation))))
+                (compile-primitive-call '- 2 continuation)))
             (rib constant-instruction constant continuation)))
 
         ((pair? constant)
@@ -324,11 +325,7 @@
             (build-constant (cdr constant)
               (rib constant-instruction
                 pair-type
-                (add-nb-args
-                  3
-                  (rib call-instruction
-                    (scan-opnd 'rib 0)
-                    continuation))))))
+                (compile-primitive-call 'rib 3 continuation)))))
 
         (else
           (error "invalid constant" constant))))))
