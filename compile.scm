@@ -238,7 +238,7 @@
                 constant-instruction
                 (make-procedure
                   (rib
-                    0
+                    pair-type
                     (length parameters)
                     (compile-begin
                       (compile-context-environment-append
