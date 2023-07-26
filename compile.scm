@@ -292,6 +292,12 @@
   (let ((pair (assq constant (encode-context-constants context))))
     (if pair (cdr pair) #f)))
 
+(define (encode-context-constant-id context)
+  (string->symbol
+    (string-append
+      "_"
+      (number->string (length (encode-context-constants context))))))
+
 (define (encode-context-constants-add! context constant symbol)
   (set-cdr!
     context
@@ -314,48 +320,62 @@
 
 ;; Constants
 
+(define (build-constant-codes context constant continuation)
+  (let ((symbol (encode-context-constant context constant)))
+    (if symbol
+      (rib get-instruction symbol continuation)
+      (cond
+        ((or
+            (boolean? constant)
+            (null? constant)
+            (symbol? constant))
+          (rib constant-instruction constant continuation))
+
+        ((number? constant)
+          (if (< constant 0)
+            (rib constant-instruction
+              0
+              (rib constant-instruction
+                (abs constant)
+                (compile-primitive-call '- continuation)))
+            (rib constant-instruction constant continuation)))
+
+        ((pair? constant)
+          (build-constant-codes (car constant)
+            (build-constant-codes (cdr constant)
+              (rib constant-instruction
+                pair-type
+                (compile-primitive-call 'rib continuation)))))
+
+        (else
+          (error "invalid constant" constant))))))
+
 (define (encode-constant context constant continuation)
-  (cond
-    ((or
-        (boolean? constant)
-        (null? constant)
-        (symbol? constant)
-        (encode-context-constant context constant))
-      continuation)
+  (build-constant-codes
+    context
+    constant
+    (rib
+      set-instruction
+      (encode-context-constant-id context)
+      continuation)))
 
-    ((number? constant)
-      (if (< constant 0)
-        (rib constant-instruction
-          0
-          (rib constant-instruction
-            (abs constant)
-            (compile-primitive-call '- continuation)))
-        continuation))
-
-    ((pair? constant)
-      (build-constant (car constant)
-        (build-constant (cdr constant)
-          (rib constant-instruction
-            pair-type
-            (compile-primitive-call 'rib continuation)))))
-
-    (else
-      (error "invalid constant" constant))))
-
-(define (encode-constants context codes continuation)
+(define (encode-constants* context codes continuation)
   (let (
       (instruction (rib-tag codes))
       (operand (rib-car codes))
-      (continuation (encode-constants context (rib-cdr codes) continuation)))
+      (continuation (encode-constants* context (rib-cdr codes) continuation)))
     (cond
       ((eqv? instruction constant-instruction)
         (encode-constant context operand continuation))
 
       ((eqv? instruction if-instruction)
-        (encode-constants context operand continuation))
+        (encode-constants* context operand continuation))
 
       (else
         continuation))))
+
+(define (encode-constants context codes)
+  (encode-constants* context codes '()))
 
 ;; Symbols
 
@@ -465,4 +485,10 @@
   (let ((context (make-encode-context (find-symbols codes))))
     (encode-symbols
       (encode-context-symbols context)
-      (encode-codes context codes '()))))
+      (encode-codes
+        context
+        codes
+        (encode-codes
+          context
+          (encode-constants context codes)
+          '())))))
