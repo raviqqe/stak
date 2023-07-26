@@ -344,8 +344,10 @@
               (compile-primitive-call '- continuation))))
 
         ((pair? constant)
-          (encode-constant-codes (car constant)
-            (encode-constant-codes (cdr constant)
+          (encode-constant-codes*
+            (car constant)
+            (encode-constant-codes*
+              (cdr constant)
               (rib constant-instruction
                 pair-type
                 (compile-primitive-call 'rib continuation)))))
@@ -353,8 +355,17 @@
         (else
           (error "invalid constant" constant))))))
 
+(define (encode-constant-codes* context constant continuation)
+  (encode-constant
+    context
+    constant
+    (encode-constant-codes
+      context
+      constant
+      continuation)))
+
 (define (encode-constant context constant continuation)
-  (if (constant-normal? constant)
+  (if (or (constant-normal? constant) (encode-context-constant context constant))
     continuation
     (let (
         (id (encode-context-constant-id context))
@@ -362,10 +373,7 @@
           (encode-constant-codes
             context
             constant
-            (rib
-              set-instruction
-              id
-              continuation))))
+            (rib set-instruction id continuation))))
       (begin
         (encode-context-add-constant! constant id)
         continuation))))
