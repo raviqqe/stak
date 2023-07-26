@@ -58,7 +58,7 @@
       (cdr rib))
 
     (define (rib? value)
-      (not (number? value))))
+      (and (pair? value) (pair? (car value)))))
 
   (else))
 
@@ -343,7 +343,8 @@
 (define (constant-normal? constant)
   (or
     (symbol? constant)
-    (and (number? constant) (>= constant 0))))
+    (and (number? constant) (>= constant 0))
+    (and (rib? constant) (eqv? (rib-tag constant) procedure-type))))
 
 (define (build-constant-codes context constant continuation)
   (let ((symbol (encode-context-constant context constant)))
@@ -509,6 +510,7 @@
 
           ((and
               (eqv? instruction constant-instruction)
+              (rib? operand)
               (eqv? (rib-tag operand) procedure-type))
             (encode-procedure context operand target))
 
