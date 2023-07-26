@@ -4,9 +4,9 @@
 
 (define default-constants
   '(
-    (#f false)
-    (#t true)
-    (() null)))
+    (#f _false)
+    (#t _true)
+    (() _null)))
 
 (define rib-symbol 'rib)
 
