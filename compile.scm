@@ -305,7 +305,7 @@
     (if resolved
       (rib get-instruction resolved continuation)
       (cond
-        ((or (memv constant '(#f #t ())) (symbol? constant))
+        ((or (boolean? constant) (null? constant) (symbol? constant))
           (rib constant-instruction constant continuation))
 
         ((number? constant)
