@@ -320,6 +320,13 @@
 
 ;; Constants
 
+(define (constant-normal? constant)
+  (or
+    (boolean? constant)
+    (null? constant)
+    (symbol? constant)
+    (and (number? constant) (>= constant 0))))
+
 (define (build-constant-codes context constant continuation)
   (let ((symbol (encode-context-constant context constant)))
     (if symbol
@@ -351,30 +358,32 @@
           (error "invalid constant" constant))))))
 
 (define (encode-constant context constant continuation)
-  (if (contant-encodable? foo)
+  (if (constant-normal? constant)
+    continuation
     (build-constant-codes
       context
       constant
       (rib
         set-instruction
         (encode-context-constant-id context)
-        continuation))
-    continuation))
+        continuation))))
 
 (define (encode-constants* context codes continuation)
-  (let (
-      (instruction (rib-tag codes))
-      (operand (rib-car codes))
-      (continuation (encode-constants* context (rib-cdr codes) continuation)))
-    (cond
-      ((eqv? instruction constant-instruction)
-        (encode-constant context operand continuation))
+  (if (null? codes)
+    continuation
+    (let (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (continuation (encode-constants* context (rib-cdr codes) continuation)))
+      (cond
+        ((eqv? instruction constant-instruction)
+          (encode-constant context operand continuation))
 
-      ((eqv? instruction if-instruction)
-        (encode-constants* context operand continuation))
+        ((eqv? instruction if-instruction)
+          (encode-constants* context operand continuation))
 
-      (else
-        continuation))))
+        (else
+          continuation)))))
 
 (define (encode-constants context codes)
   (encode-constants* context codes '()))
