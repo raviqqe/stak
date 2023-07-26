@@ -625,7 +625,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
-                code::Instruction::CLOSE => {
+                code::Instruction::CLOSURE => {
                     let code = self.allocate(
                         Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
                             .into(),
@@ -883,7 +883,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Close(0),
+                    Instruction::Closure(0),
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Call(Operand::Integer(1), true),
                 ],

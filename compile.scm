@@ -22,7 +22,7 @@
 
 (define return-call-code 0)
 (define call-code 1)
-(define close-code 2)
+(define closure-code 2)
 (define set-code 3)
 (define get-code 4)
 (define constant-code 5)
