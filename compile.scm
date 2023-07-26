@@ -237,7 +237,8 @@
                       context
                       ; #f is for a frame.
                       (reverse (cons #f parameters)))
-                    (cddr expression)))
+                    (cddr expression)
+                    '()))
                 (compile-constant
                   context
                   1
