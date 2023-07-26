@@ -460,6 +460,14 @@
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
 
+(define (encode-procedure context procedure target)
+  (let ((code (rib-cdr procedure)))
+    (encode-codes
+      context
+      (rib-cdr code)
+      (cons constant-code
+        (encode-integer (rib-car code) target)))))
+
 (define (encode-operand context operand target)
   (encode-integer
     (cond
@@ -502,7 +510,7 @@
           ((and
               (eqv? instruction constant-instruction)
               (eqv? (rib-tag operand) procedure-type))
-            (todo "constant close"))
+            (encode-procedure context operand target))
 
           ((eqv? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))
