@@ -288,7 +288,7 @@
 (define (encode-context-constants context)
   (cdr context))
 
-(define (encode-context-constants-add context constant symbol)
+(define (encode-context-constants-add! context constant symbol)
   (cons
     (car context)
     (cons
