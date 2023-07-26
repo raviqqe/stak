@@ -499,6 +499,11 @@
               get-code
               (encode-operand context operand target)))
 
+          ((and
+              (eqv? instruction constant-instruction)
+              (eqv? (rib-tag operand) procedure-type))
+            (todo "constant close"))
+
           ((eqv? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))
               (if symbol

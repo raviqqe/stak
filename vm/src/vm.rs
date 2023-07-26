@@ -626,12 +626,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
                 code::Instruction::CLOSE => {
-                    let instructions = self.pop()?;
                     let code = self.allocate(
                         Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
                             .into(),
-                        instructions,
+                        self.program_counter.into(),
                     )?;
+                    self.program_counter = self.pop()?.try_into()?;
 
                     (
                         self.allocate(
