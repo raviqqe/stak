@@ -27,14 +27,14 @@ Feature: Examples
       # TODO | lambda               |
 
   Scenario Outline: Run examples
-    Given a file named "main.scm" with:
+    Given a file named "source.scm" with:
     """scheme
     (define x -1)
     (write-u8 (+ 66 x))
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | tools/compile.sh > main.out
+    cat prelude.scm source.scm | tools/compile.sh > main.out
     """
     And I successfully run `stak main.out`
-    Then the output should exactly be "A"
+    Then the stdout should contain exactly "A"
