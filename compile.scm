@@ -119,7 +119,7 @@
                 #f)))
 
           ((eqv? first 'lambda)
-            (list 'lambda (cadr expression) (map expand (cddr expression))))
+            (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
 
           (else
             (map expand expression)))))
