@@ -1,3 +1,5 @@
+(define stak #t)
+
 (define procedure-tag 1)
 
 ; Primitives

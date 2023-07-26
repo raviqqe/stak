@@ -22,7 +22,7 @@
 
 (define return-call-code 0)
 (define call-code 1)
-(define close-code 2)
+(define closure-code 2)
 (define set-code 3)
 (define get-code 4)
 (define constant-code 5)
@@ -46,10 +46,10 @@
 (cond-expand
   (gambit
     (define (rib tag car cdr)
-      (cons (cons tag car) cdr))
+      (cons (cons (cons '_rib tag) car) cdr))
 
     (define (rib-tag rib)
-      (caar rib))
+      (cdaar rib))
 
     (define (rib-car rib)
       (cdar rib))
@@ -58,7 +58,11 @@
       (cdr rib))
 
     (define (rib? value)
-      (not (number? value))))
+      (and
+        (pair? value)
+        (pair? (car value))
+        (pair? (caar value))
+        (eq? (caaar value) '_rib))))
 
   (else))
 
@@ -78,6 +82,9 @@
 
 (define (make-procedure code environment)
   (rib procedure-type code environment))
+
+(define (procedure? value)
+  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
 ; Source code reading
 
@@ -343,7 +350,8 @@
 (define (constant-normal? constant)
   (or
     (symbol? constant)
-    (and (number? constant) (>= constant 0))))
+    (and (number? constant) (>= constant 0))
+    (procedure? constant)))
 
 (define (build-constant-codes context constant continuation)
   (let ((symbol (encode-context-constant context constant)))
@@ -460,6 +468,14 @@
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
 
+(define (encode-procedure context procedure target)
+  (let ((code (rib-car procedure)))
+    (encode-codes
+      context
+      (rib-cdr code)
+      (cons closure-code
+        (encode-integer (rib-car code) target)))))
+
 (define (encode-operand context operand target)
   (encode-integer
     (cond
@@ -498,6 +514,11 @@
             (cons
               get-code
               (encode-operand context operand target)))
+
+          ((and
+              (eqv? instruction constant-instruction)
+              (procedure? operand))
+            (encode-procedure context operand target))
 
           ((eqv? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))

@@ -52,7 +52,7 @@ impl<'a> Decoder<'a> {
                 Instruction::CALL => {
                     instructions.push(Instruction::Call(self.decode_operand()?, false))
                 }
-                Instruction::CLOSE => instructions.push(Instruction::Close(
+                Instruction::CLOSURE => instructions.push(Instruction::Closure(
                     self.decode_integer().ok_or(Error::MissingOperand)?,
                 )),
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
