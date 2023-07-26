@@ -25,3 +25,16 @@ Feature: Examples
       | write-u8             |
       | if                   |
       # TODO | lambda               |
+
+  Scenario Outline: Run examples
+		Given a file named "main.scm" with:
+		"""scheme
+		(define x -1)
+		(write-u8 (+ 66 x))
+		"""
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+		Then the output should exactly be "A"
