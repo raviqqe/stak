@@ -166,7 +166,7 @@
 (define (compile-primitive-call name continuation)
   (compile-constant
     (cond
-      ((memq name '(id))
+      ((memq name '(close id))
         1)
 
       ((memq name '(-))
