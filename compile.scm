@@ -345,7 +345,7 @@
     (symbol? constant)
     (and (number? constant) (>= constant 0))))
 
-(define (encode-constant-codes context constant continuation)
+(define (build-constant-codes context constant continuation)
   (let ((symbol (encode-context-constant context constant)))
     (if symbol
       (rib get-instruction symbol continuation)
@@ -362,10 +362,10 @@
               (compile-primitive-call '- continuation))))
 
         ((pair? constant)
-          (encode-constant-codes*
+          (build-constant-codes*
             context
             (car constant)
-            (encode-constant-codes*
+            (build-constant-codes*
               context
               (cdr constant)
               (rib constant-instruction
@@ -375,22 +375,22 @@
         (else
           (error "invalid constant" constant))))))
 
-(define (encode-constant-codes* context constant continuation)
-  (encode-constant
+(define (build-constant-codes* context constant continuation)
+  (build-constant
     context
     constant
-    (encode-constant-codes
+    (build-constant-codes
       context
       constant
       continuation)))
 
-(define (encode-constant context constant continuation)
+(define (build-constant context constant continuation)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
     continuation
     (let* (
         (id (encode-context-constant-id context))
         (continuation
-          (encode-constant-codes
+          (build-constant-codes
             context
             constant
             (rib set-instruction id continuation))))
@@ -398,25 +398,25 @@
         (encode-context-add-constant! context constant id)
         continuation))))
 
-(define (encode-constants* context codes continuation)
+(define (build-constants* context codes continuation)
   (if (null? codes)
     continuation
     (let (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
-        (continuation (encode-constants* context (rib-cdr codes) continuation)))
+        (continuation (build-constants* context (rib-cdr codes) continuation)))
       (cond
         ((eqv? instruction constant-instruction)
-          (encode-constant context operand continuation))
+          (build-constant context operand continuation))
 
         ((eqv? instruction if-instruction)
-          (encode-constants* context operand continuation))
+          (build-constants* context operand continuation))
 
         (else
           continuation)))))
 
-(define (encode-constants context codes)
-  (encode-constants* context codes '()))
+(define (build-constants context codes)
+  (build-constants* context codes '()))
 
 ;; Symbols
 
@@ -513,7 +513,9 @@
 
           (else (error "invalid instruction")))))))
 
-(define (encode-primitive primitive continuation)
+;; Primitives
+
+(define (build-primitive primitive continuation)
   (rib constant-instruction
     (cadr primitive)
     (rib constant-instruction
@@ -524,15 +526,17 @@
           'rib
           (rib set-instruction (car primitive) continuation))))))
 
-(define (encode-primitives* primitives continuation)
+(define (build-primitives* primitives continuation)
   (if (null? primitives)
     continuation
-    (encode-primitive
+    (build-primitive
       (car primitives)
-      (encode-primitives* (cdr primitives) continuation))))
+      (build-primitives* (cdr primitives) continuation))))
 
-(define (encode-primitives primitives)
-  (encode-primitives* primitives '()))
+(define (build-primitives primitives)
+  (build-primitives* primitives '()))
+
+;; Main
 
 (define (encode codes)
   (let* (
@@ -541,7 +545,7 @@
           (append
             (map car primitives)
             (find-symbols codes))))
-      (constant-codes (encode-constants context codes)))
+      (constant-codes (build-constants context codes)))
     (encode-symbols
       (encode-context-symbols context)
       (encode-codes
@@ -552,5 +556,5 @@
           constant-codes
           (encode-codes
             context
-            (encode-primitives primitives)
+            (build-primitives primitives)
             '()))))))
