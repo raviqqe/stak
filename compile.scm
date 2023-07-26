@@ -292,10 +292,20 @@
 ;; Context
 
 (define (make-encode-context symbols)
-  symbols)
+  (cons symbols '()))
 
 (define (encode-context-symbols context)
-  context)
+  (car context))
+
+(define (encode-context-constants context)
+  (cdr context))
+
+(define (encode-context-constants-add context constant symbol)
+  (cons
+    (car context)
+    (cons
+      (constant symbol)
+      (encode-context-constants context))))
 
 (define (find-symbols codes)
   (if (null? codes)
@@ -340,6 +350,21 @@
 
         (else
           (error "invalid constant" constant))))))
+
+(define (encode-constants context codes)
+  (let (
+      (instruction (rib-tag codes))
+      (operand (rib-car codes))
+      (continuation (encode-constants context (cdr codes))))
+    (cond
+      ((eqv? instruction constant-instruction)
+        (encode-constant context operand continuation))
+
+      ((eqv? instruction if-instruction)
+        (rib if-instruction (encode-constants context operand) continuation))
+
+      (else
+        (rib instruction operand continuation)))))
 
 ;; Symbols
 
