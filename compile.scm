@@ -250,7 +250,7 @@
                       (cddr expression)
                       '()))
                   '())
-                (compile-primitive-call 'close 1 continuation))))
+                (compile-primitive-call 'close continuation))))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
@@ -356,26 +356,6 @@
       (else
         continuation))))
 
-(define (encode-constant-instruction context constant continuation)
-  (let ((symbol (encode-context-constant context constant)))
-    (if symbol
-      (rib get-instruction symbol continuation)
-      (cond
-        ((or (boolean? constant) (null? constant) (symbol? constant))
-          (rib constant-instruction constant continuation))
-
-        ((number? constant)
-          (if (< constant 0)
-            (rib constant-instruction
-              0
-              (rib constant-instruction
-                (abs constant)
-                (compile-primitive-call '- continuation)))
-            (rib constant-instruction constant continuation)))
-
-        (else
-          (error "constant not encoded" constant))))))
-
 ;; Symbols
 
 (define (encode-string string target)
@@ -467,9 +447,10 @@
               (encode-operand context operand target)))
 
           ((eqv? instruction constant-instruction)
-            (cons
-              constant-code
-              (encode-operand context operand target)))
+            (let ((symbol (encode-context-constant context operand)))
+              (if symbol
+                (cons get-code (encode-operand context symbol target))
+                (cons constant-code (encode-operand context operand target)))))
 
           ((eqv? instruction if-instruction)
             (encode-codes
