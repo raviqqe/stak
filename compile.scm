@@ -299,9 +299,13 @@
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
-  (set-cdr!
-    context
-    (cons (cons constant symbol) (encode-context-constants context))))
+  (begin
+    (set-car!
+      context
+      (cons symbol (encode-context-symbols context)))
+    (set-cdr!
+      context
+      (cons (cons constant symbol) (encode-context-constants context)))))
 
 (define (find-symbols codes)
   (if (null? codes)
@@ -367,7 +371,7 @@
 (define (encode-constant context constant continuation)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
     continuation
-    (let (
+    (let* (
         (id (encode-context-constant-id context))
         (continuation
           (encode-constant-codes
@@ -375,7 +379,7 @@
             constant
             (rib set-instruction id continuation))))
       (begin
-        (encode-context-add-constant! constant id)
+        (encode-context-add-constant! context constant id)
         continuation))))
 
 (define (encode-constants* context codes continuation)
@@ -503,7 +507,9 @@
           (else (error "invalid instruction")))))))
 
 (define (encode codes)
-  (let ((context (make-encode-context (find-symbols codes))))
+  (let* (
+      (context (make-encode-context (find-symbols codes)))
+      (constant-codes (encode-constants context codes)))
     (encode-symbols
       (encode-context-symbols context)
       (encode-codes
@@ -511,5 +517,5 @@
         codes
         (encode-codes
           context
-          (encode-constants context codes)
+          constant-codes
           '())))))
