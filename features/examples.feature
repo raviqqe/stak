@@ -23,3 +23,4 @@ Feature: Examples
       | rib                  |
       | write-u8             |
       | if                   |
+      | lambda               |

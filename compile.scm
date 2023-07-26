@@ -207,7 +207,7 @@
       (continuation (compile-call* context function arguments argument-count continuation)))
     (if (symbol? function)
       continuation
-      (compile-expression context function argument-count continuation))))
+      (compile-expression context function continuation))))
 
 (define (compile-expression context expression continuation)
   (cond
@@ -249,7 +249,6 @@
                       '()))
                   '())
                 (compile-constant
-                  context
                   1
                   (rib call-instruction 'close continuation)))))
 
