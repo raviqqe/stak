@@ -26,6 +26,11 @@
 (define constant-code 5)
 (define if-code 6)
 
+; Types
+
+(define pair-type 0)
+(define procedure-type 1)
+
 ; Utility
 
 (cond-expand
@@ -62,6 +67,9 @@
     (if (eqv? value (car list))
       0
       (+ 1 (member-index value (cdr list))))))
+
+(define (make-procedure code environment)
+  (rib procedure-type code environment))
 
 ; Source code reading
 
@@ -110,6 +118,9 @@
                 (expand (cadddr expression))
                 #f)))
 
+          ((eqv? first 'lambda)
+            (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
+
           (else
             (map expand expression)))))
 
@@ -118,9 +129,20 @@
 
 ; Context
 
-; (stack . symbols)
+; (environment . symbols)
 (define (make-compile-context)
   (cons '() '()))
+
+(define (compile-context-environment context)
+  (car context))
+
+(define (compile-context-environment-set context environment)
+  (cons environment (cdr context)))
+
+(define (compile-context-environment-append context variables)
+  (compile-context-environment-set
+    context
+    (append variables (compile-context-environment context))))
 
 (define (compile-context-resolve* variables variable index)
   (cond
@@ -145,6 +167,7 @@
   (compile-expression context
     (car expressions)
     (if (pair? (cdr expressions))
+      ; TODO Drop intermediate values.
       (compile-begin context (cdr expressions) continuation)
       continuation)))
 
@@ -184,7 +207,7 @@
       (continuation (compile-call* context function arguments argument-count continuation)))
     (if (symbol? function)
       continuation
-      (compile-expression context function argument-count continuation))))
+      (compile-expression context function continuation))))
 
 (define (compile-expression context expression continuation)
   (cond
@@ -208,6 +231,26 @@
                 ; TODO Join continuation with a closure.
                 (compile-expression context (caddr expression) continuation)
                 (compile-expression context (cadddr expression) continuation))))
+
+          ((eqv? first 'lambda)
+            (let ((parameters (cadr expression)))
+              (rib
+                constant-instruction
+                (make-procedure
+                  (rib
+                    pair-type
+                    (length parameters)
+                    (compile-begin
+                      (compile-context-environment-append
+                        context
+                        ; #f is for a frame.
+                        (reverse (cons #f parameters)))
+                      (cddr expression)
+                      '()))
+                  '())
+                (compile-constant
+                  1
+                  (rib call-instruction 'close continuation)))))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
@@ -318,7 +361,7 @@
           ((symbol? operand)
             (+ other-index (member-index operand (encode-context-symbols context))))
 
-          (else (error "invalid operand")))))
+          (else (error "invalid operand" operand)))))
     target))
 
 (define (encode-codes context codes target)
