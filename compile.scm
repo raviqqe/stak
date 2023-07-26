@@ -173,10 +173,7 @@
 
 (define (compile-constant constant continuation)
   (cond
-    ((or (boolean? constant) (null? constant))
-      (rib get-instruction constant continuation))
-
-    ((number? constant)
+    ((or (boolean? constant) (null? constant) (number? constant))
       (rib constant-instruction constant continuation))
 
     ((string? constant)
@@ -303,68 +300,40 @@
 
 ;; Constants
 
-(define (compile-constant context constant continuation)
-  (cond
-    ((or (memv constant '(#f #t ())) (assq constant (encode-context-constants context)))
-      (let ((v (constant-global-var o)))
-        (c-rib get-op
-          (scan-opnd v 1)
-          tail)))
+(define (encode-constant context constant continuation)
+  (let ((resolved (encode-context-constant context constant)))
+    (if resolved
+      (rib get-instruction resolved continuation)
+      (cond
+        ((or (memv constant '(#f #t ())) (symbol? constant))
+          (rib constant-instruction constant continuation))
 
-    ((symbol? constant)
-      (rib constant-instruction
-        (scan-opnd o 2)
-        continuation))
+        ((number? constant)
+          (if (< constant 0)
+            (rib constant-instruction
+              0
+              (rib constant-instruction
+                (abs constant)
+                (rib constant-instruction
+                  2
+                  (rib call-instruction '- continuation))))
+            (rib constant-instruction
+              constant
+              continuation)))
 
-    ((number? o)
-      (if (< o 0)
-        (c-rib const-op
-          0
-          (c-rib const-op
-            (- 0 o)
-            (add-nb-args
-              2
-              (c-rib jump/call-op
-                (scan-opnd '- 0)
-                tail))))
-        (c-rib const-op
-          o
-          tail)))
-    ((pair? o)
-      (build-constant (car o)
-        (build-constant (cdr o)
-          (c-rib const-op
-            pair-type
-            (add-nb-args
-              3
-              (c-rib jump/call-op
-                (scan-opnd 'rib 0)
-                tail))))))
-    ((string? o)
-      (let ((chars (map char->integer (string->list o))))
-        (build-constant chars
-          (build-constant (length chars)
-            (c-rib const-op
-              string-type
-              (add-nb-args
-                3
-                (c-rib jump/call-op
-                  (scan-opnd 'rib 0)
-                  tail)))))))
-    ((vector? o)
-      (let ((elems (vector->list o)))
-        (build-constant elems
-          (build-constant (length elems)
-            (c-rib const-op
-              vector-type
-              (add-nb-args
-                3
-                (c-rib jump/call-op
-                  (scan-opnd 'rib 0)
-                  tail)))))))
+        ((pair? constant)
+          (build-constant (car constant)
+            (build-constant (cdr constant)
+              (rib constant-instruction
+                pair-type
+                (add-nb-args
+                  3
+                  (rib call-instruction
+                    (scan-opnd 'rib 0)
+                    continuation))))))
 
-    (else
-      (error "invalid constant" constant))))
+        (else
+          (error "invalid constant" constant))))))
 
 ;; Symbols
 
