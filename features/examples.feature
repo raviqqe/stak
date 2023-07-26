@@ -24,4 +24,4 @@ Feature: Examples
       | rib                  |
       | write-u8             |
       | if                   |
-      # TODO | lambda               |
+      | lambda               |
