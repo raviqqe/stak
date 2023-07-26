@@ -160,9 +160,20 @@
 
 ; Compilation
 
-(define (compile-primitive-call name argument-count continuation)
+(define (compile-primitive-call name continuation)
   (rib constant-instruction
-    argument-count
+    (cond
+      ((memq name '(id))
+        1)
+
+      ((memq name '(+ -))
+        2)
+
+      ((memq name '(rib))
+        3)
+
+      (else
+        (error "unknown primitive" name)))
     (rib call-instruction name continuation)))
 
 (define (compile-set variable continuation)
@@ -274,7 +285,7 @@
     (make-compile-context)
     expression
     (compile-constant #f
-      (compile-primitive-call 'id 1 '()))))
+      (compile-primitive-call 'id '()))))
 
 ; Encoding
 
@@ -317,7 +328,7 @@
               0
               (rib constant-instruction
                 (abs constant)
-                (compile-primitive-call '- 2 continuation)))
+                (compile-primitive-call '- continuation)))
             (rib constant-instruction constant continuation)))
 
         ((pair? constant)
@@ -325,7 +336,7 @@
             (build-constant (cdr constant)
               (rib constant-instruction
                 pair-type
-                (compile-primitive-call 'rib 3 continuation)))))
+                (compile-primitive-call 'rib continuation)))))
 
         (else
           (error "invalid constant" constant))))))
