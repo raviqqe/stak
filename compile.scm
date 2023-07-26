@@ -46,10 +46,10 @@
 (cond-expand
   (gambit
     (define (rib tag car cdr)
-      (cons (cons tag car) cdr))
+      (cons (cons (cons '_rib tag) car) cdr))
 
     (define (rib-tag rib)
-      (caar rib))
+      (cdaar rib))
 
     (define (rib-car rib)
       (cdar rib))
@@ -58,7 +58,11 @@
       (cdr rib))
 
     (define (rib? value)
-      (and (pair? value) (pair? (car value)))))
+      (and
+        (pair? value)
+        (pair? (car value))
+        (pair? (caar value))
+        (eq? (caaar value) '_rib))))
 
   (else))
 
