@@ -227,13 +227,18 @@
       continuation
       (compile-expression context function continuation))))
 
+(define (compile-tail continuation)
+  (if (null? continuation)
+    (compile-primitive-call 'id '())
+    continuation))
+
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
       (rib
         get-instruction
         (compile-context-resolve context expression 0)
-        continuation))
+        (compile-tail continuation)))
 
     ((pair? expression)
       (let ((first (car expression)))
@@ -280,7 +285,7 @@
             (compile-call context expression continuation)))))
 
     (else
-      (compile-constant expression continuation))))
+      (compile-constant expression (compile-tail continuation)))))
 
 (define (compile expression)
   (compile-expression
