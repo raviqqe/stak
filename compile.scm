@@ -351,13 +351,15 @@
           (error "invalid constant" constant))))))
 
 (define (encode-constant context constant continuation)
-  (build-constant-codes
-    context
-    constant
-    (rib
-      set-instruction
-      (encode-context-constant-id context)
-      continuation)))
+  (if (contant-encodable? foo)
+    (build-constant-codes
+      context
+      constant
+      (rib
+        set-instruction
+        (encode-context-constant-id context)
+        continuation))
+    continuation))
 
 (define (encode-constants* context codes continuation)
   (let (
