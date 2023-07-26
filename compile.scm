@@ -361,7 +361,7 @@
           ((symbol? operand)
             (+ other-index (member-index operand (encode-context-symbols context))))
 
-          (else (error "invalid operand")))))
+          (else (error "invalid operand" operand)))))
     target))
 
 (define (encode-codes context codes target)
