@@ -227,7 +227,7 @@
       continuation
       (compile-expression context function continuation))))
 
-; TODO Consider return-flavoured instructions for all `call`, `constant`, and `get`.
+; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
 (define (compile-tail continuation)
   (if (null? continuation)
     (compile-primitive-call 'id '())
