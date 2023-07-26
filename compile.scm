@@ -2,11 +2,13 @@
 
 ; Constants
 
-(define false-index 0)
-(define true-index 1)
-(define null-index 2)
-(define rib-index 3)
-(define other-index 4)
+(define default-constants
+  '(
+    (#f false)
+    (#t true)
+    (() null)))
+
+(define rib-symbol 'rib)
 
 ; Instructions
 
@@ -59,8 +61,6 @@
       (not (number? value))))
 
   (else))
-
-(define reserved-symbols '(rib))
 
 (define (todo value) (error "not implemented" value))
 
@@ -285,6 +285,23 @@
 
 ; Encoding
 
+;; Utility
+
+(define (find-symbols codes)
+  (if (null? codes)
+    '()
+    (let (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (rest (find-symbols (cdr codes))))
+      (if (and
+          (not (eqv? instruction if-instruction))
+          (symbol? operand)
+          (not (eq? operand rib-symbol))
+          (not (memq operand rest)))
+        (cons operand rest)
+        rest))))
+
 ;; Context
 
 (define (make-encode-context symbols)
@@ -293,12 +310,18 @@
 (define (encode-context-symbols context)
   (car context))
 
+(define (encode-context-all-symbols context)
+  (append
+    (map cadr default-constants)
+    (list rib-symbol)
+    (encode-context-symbols context)))
+
 (define (encode-context-constants context)
   (cdr context))
 
 (define (encode-context-constant context constant)
-  (let ((pair (assq constant (encode-context-constants context))))
-    (if pair (cdr pair) #f)))
+  (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
+    (if pair (cadr pair) #f)))
 
 (define (encode-context-constant-id context)
   (string->symbol
@@ -313,29 +336,12 @@
       (cons symbol (encode-context-symbols context)))
     (set-cdr!
       context
-      (cons (cons constant symbol) (encode-context-constants context)))))
-
-(define (find-symbols codes)
-  (if (null? codes)
-    '()
-    (let (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (rest (find-symbols (cdr codes))))
-      (if (and
-          (not (eqv? instruction if-instruction))
-          (symbol? operand)
-          (not (memq operand reserved-symbols))
-          (not (memq operand rest)))
-        (cons operand rest)
-        rest))))
+      (cons (list constant symbol) (encode-context-constants context)))))
 
 ;; Constants
 
 (define (constant-normal? constant)
   (or
-    (boolean? constant)
-    (null? constant)
     (symbol? constant)
     (and (number? constant) (>= constant 0))))
 
@@ -456,23 +462,14 @@
 
 (define (encode-operand context operand target)
   (encode-integer
-    (if (number? operand)
-      (+ (* operand 2) 1)
-      (* 2
-        (cond
-          ((boolean? operand)
-            (if operand true-index false-index))
+    (cond
+      ((number? operand)
+        (+ (* operand 2) 1))
 
-          ((null? operand)
-            null-index)
+      ((symbol? operand)
+        (* 2 (member-index operand (encode-context-all-symbols context))))
 
-          ((eqv? operand 'rib)
-            rib-index)
-
-          ((symbol? operand)
-            (+ other-index (member-index operand (encode-context-symbols context))))
-
-          (else (error "invalid operand" operand)))))
+      (else (error "invalid operand" operand)))
     target))
 
 (define (encode-codes context codes target)
