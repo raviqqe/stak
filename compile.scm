@@ -79,6 +79,9 @@
 (define (make-procedure code environment)
   (rib procedure-type code environment))
 
+(define (procedure? value)
+  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
+
 ; Source code reading
 
 (define (read-all)
@@ -344,7 +347,7 @@
   (or
     (symbol? constant)
     (and (number? constant) (>= constant 0))
-    (and (rib? constant) (eqv? (rib-tag constant) procedure-type))))
+    (procedure? constant)))
 
 (define (build-constant-codes context constant continuation)
   (let ((symbol (encode-context-constant context constant)))
@@ -510,8 +513,7 @@
 
           ((and
               (eqv? instruction constant-instruction)
-              (rib? operand)
-              (eqv? (rib-tag operand) procedure-type))
+              (procedure? operand))
             (encode-procedure context operand target))
 
           ((eqv? instruction constant-instruction)
