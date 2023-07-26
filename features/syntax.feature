@@ -7,7 +7,7 @@ Feature: Syntax
     cp $ROOT/*.scm .
     """
 
-  Scenario Outline: Use a negative integer
+  Scenario: Use a negative integer
     Given a file named "source.scm" with:
     """scheme
     (define x -1)
@@ -20,7 +20,7 @@ Feature: Syntax
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario Outline: Use an if expression with false condition
+  Scenario: Use an if expression with false condition
     Given a file named "source.scm" with:
     """scheme
     (if #f
@@ -34,7 +34,7 @@ Feature: Syntax
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
 
-  Scenario Outline: Use an if expression with true condition
+  Scenario: Use an if expression with true condition
     Given a file named "source.scm" with:
     """scheme
     (if #t
