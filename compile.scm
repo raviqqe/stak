@@ -289,7 +289,8 @@
   (cdr context))
 
 (define (encode-context-constant context constant)
-  (cdr (assq constant (encode-context-constants context))))
+  (let ((pair (assq constant (encode-context-constants context))))
+    (if pair (cdr pair) #f)))
 
 (define (encode-context-constants-add! context constant symbol)
   (set-cdr!
