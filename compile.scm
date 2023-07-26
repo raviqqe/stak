@@ -462,7 +462,9 @@
   (encode-integer-rest integer #t target))
 
 (define (encode-procedure context procedure target)
-  (let ((code (rib-cdr procedure)))
+  (let ((code (rib-car procedure)))
+    (display procedure)
+    (newline)
     (encode-codes
       context
       (rib-cdr code)
