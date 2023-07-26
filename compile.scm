@@ -357,8 +357,10 @@
 
         ((pair? constant)
           (encode-constant-codes*
+            context
             (car constant)
             (encode-constant-codes*
+              context
               (cdr constant)
               (rib constant-instruction
                 pair-type
