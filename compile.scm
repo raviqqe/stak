@@ -301,48 +301,21 @@
         (cons operand rest)
         rest))))
 
-;; Symbols
+;; Constants
 
-(define (encode-string string target)
-  (if (null? string)
-    target
-    (encode-string (cdr string) (cons (char->integer (car string)) target))))
-
-(define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
-
-(define (encode-symbols* symbols target)
-  (let (
-      (target (encode-symbol (car symbols) target))
-      (rest (cdr symbols)))
-    (if (null? rest)
-      target
-      (encode-symbols*
-        rest
-        (cons
-          (char->integer #\,)
-          target)))))
-
-(define (encode-symbols symbols target)
-  (let ((target (cons (char->integer #\;) target)))
-    (if (null? symbols)
-      target
-      (encode-symbols* symbols target))))
-
-;; Codes
-
-(define (build-constant o tail)
+(define (compile-constant context constant continuation)
   (cond
-    ((or (memv o '(#f #t ())) (assq o built-constants))
+    ((or (memv constant '(#f #t ())) (assq constant (encode-context-constants context)))
       (let ((v (constant-global-var o)))
         (c-rib get-op
           (scan-opnd v 1)
           tail)))
 
-    ((symbol? o)
-      (c-rib const-op
+    ((symbol? constant)
+      (rib constant-instruction
         (scan-opnd o 2)
-        tail))
+        continuation))
+
     ((number? o)
       (if (< o 0)
         (c-rib const-op
@@ -392,6 +365,36 @@
 
     (else
       (error "invalid constant" constant))))
+
+;; Symbols
+
+(define (encode-string string target)
+  (if (null? string)
+    target
+    (encode-string (cdr string) (cons (char->integer (car string)) target))))
+
+(define (encode-symbol symbol target)
+  (encode-string (string->list (symbol->string symbol)) target))
+
+(define (encode-symbols* symbols target)
+  (let (
+      (target (encode-symbol (car symbols) target))
+      (rest (cdr symbols)))
+    (if (null? rest)
+      target
+      (encode-symbols*
+        rest
+        (cons
+          (char->integer #\,)
+          target)))))
+
+(define (encode-symbols symbols target)
+  (let ((target (cons (char->integer #\;) target)))
+    (if (null? symbols)
+      target
+      (encode-symbols* symbols target))))
+
+;; Codes
 
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
