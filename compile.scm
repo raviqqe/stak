@@ -131,6 +131,11 @@
 (define (compile-context-environment-set context environment)
   (cons environment (cdr context)))
 
+(define (compile-context-environment-append context variables)
+  (compile-context-environment-set
+    context
+    (append variables (compile-context-environment context))))
+
 (define (compile-context-resolve* variables variable index)
   (cond
     ((null? variables)
@@ -227,11 +232,11 @@
                 (rib
                   0
                   (length parameters)
-                  (compile-body
-                    ; TODO compile-context-environment-append
-                    (compile-context-environment-set
+                  (compile-begin
+                    (compile-context-environment-append
                       context
-                      (append parameters (cons #f (compile-context-environment context))))
+                      ; #f is for a frame.
+                      (reverse (cons #f parameters)))
                     (cddr expression)))
                 (compile-constant
                   context
