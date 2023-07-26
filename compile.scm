@@ -294,7 +294,7 @@
 (define (encode-context-constants-add! context constant symbol)
   (set-cdr!
     context
-    (cons (constant symbol) (cdr context))))
+    (cons (constant symbol) (encode-context-constants context))))
 
 (define (find-symbols codes)
   (if (null? codes)
