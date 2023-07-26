@@ -237,8 +237,7 @@
 
           ((eqv? first 'lambda)
             (let ((parameters (cadr expression)))
-              (rib
-                constant-instruction
+              (compile-constant
                 (make-procedure
                   (rib
                     pair-type
