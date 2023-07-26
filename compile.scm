@@ -160,8 +160,11 @@
 
 ; Compilation
 
+(define (compile-constant constant continuation)
+  (rib constant-instruction constant continuation))
+
 (define (compile-primitive-call name continuation)
-  (rib constant-instruction
+  (compile-constant
     (cond
       ((memq name '(id))
         1)
@@ -186,20 +189,6 @@
       ; TODO Drop intermediate values.
       (compile-begin context (cdr expressions) continuation)
       continuation)))
-
-(define (compile-constant constant continuation)
-  (cond
-    ((or (boolean? constant) (null? constant) (number? constant))
-      (rib constant-instruction constant continuation))
-
-    ((string? constant)
-      (todo constant))
-
-    ((symbol? constant)
-      (todo constant))
-
-    (else
-      (todo constant))))
 
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
@@ -283,7 +272,8 @@
   (compile-expression
     (make-compile-context)
     expression
-    (compile-constant #f
+    (compile-constant
+      #f
       (compile-primitive-call 'id '()))))
 
 ; Encoding
