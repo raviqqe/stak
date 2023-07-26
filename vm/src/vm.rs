@@ -374,8 +374,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(x)?;
             }
             Primitive::CLOSE => {
-                let code = self.pop()?;
-                let cons = self.allocate(code, self.stack.set_tag(Type::Procedure as u8).into())?;
+                let procedure = self.pop()?;
+                let cons = self.allocate(
+                    self.car_value(procedure)?,
+                    self.stack.set_tag(Type::Procedure as u8).into(),
+                )?;
 
                 self.push(cons.into())?;
             }
