@@ -26,6 +26,11 @@
 (define constant-code 5)
 (define if-code 6)
 
+; Types
+
+(define pair-type 0)
+(define procedure-type 1)
+
 ; Utility
 
 (cond-expand
@@ -62,6 +67,9 @@
     (if (eqv? value (car list))
       0
       (+ 1 (member-index value (cdr list))))))
+
+(define (make-procedure code environment)
+  (rib procedure-type code environment))
 
 ; Source code reading
 
@@ -226,19 +234,20 @@
 
           ((eqv? first 'lambda)
             (let ((parameters (cadr expression)))
-              ; TODO Should we make this a procedure?
               (rib
                 constant-instruction
-                (rib
-                  0
-                  (length parameters)
-                  (compile-begin
-                    (compile-context-environment-append
-                      context
-                      ; #f is for a frame.
-                      (reverse (cons #f parameters)))
-                    (cddr expression)
-                    '()))
+                (make-procedure
+                  (rib
+                    0
+                    (length parameters)
+                    (compile-begin
+                      (compile-context-environment-append
+                        context
+                        ; #f is for a frame.
+                        (reverse (cons #f parameters)))
+                      (cddr expression)
+                      '()))
+                  '())
                 (compile-constant
                   context
                   1
