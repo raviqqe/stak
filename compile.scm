@@ -315,37 +315,38 @@
 ;; Constants
 
 (define (encode-constant context constant continuation)
-  (let ((resolved (encode-context-constant context constant)))
-    (if resolved
-      (rib get-instruction resolved continuation)
-      (cond
-        ((or (boolean? constant) (null? constant) (symbol? constant))
-          (rib constant-instruction constant continuation))
+  (cond
+    ((or
+        (boolean? constant)
+        (null? constant)
+        (symbol? constant)
+        (encode-context-constant context constant))
+      continuation)
 
-        ((number? constant)
-          (if (< constant 0)
-            (rib constant-instruction
-              0
-              (rib constant-instruction
-                (abs constant)
-                (compile-primitive-call '- continuation)))
-            (rib constant-instruction constant continuation)))
+    ((number? constant)
+      (if (< constant 0)
+        (rib constant-instruction
+          0
+          (rib constant-instruction
+            (abs constant)
+            (compile-primitive-call '- continuation)))
+        continuation))
 
-        ((pair? constant)
-          (build-constant (car constant)
-            (build-constant (cdr constant)
-              (rib constant-instruction
-                pair-type
-                (compile-primitive-call 'rib continuation)))))
+    ((pair? constant)
+      (build-constant (car constant)
+        (build-constant (cdr constant)
+          (rib constant-instruction
+            pair-type
+            (compile-primitive-call 'rib continuation)))))
 
-        (else
-          (error "invalid constant" constant))))))
+    (else
+      (error "invalid constant" constant))))
 
 (define (encode-constants context codes continuation)
   (let (
       (instruction (rib-tag codes))
       (operand (rib-car codes))
-      (continuation (encode-constants context (cdr codes) continuation)))
+      (continuation (encode-constants context (rib-cdr codes) continuation)))
     (cond
       ((eqv? instruction constant-instruction)
         (encode-constant context operand continuation))
