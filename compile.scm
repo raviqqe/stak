@@ -221,6 +221,7 @@
 
           ((eqv? first 'lambda)
             (let ((parameters (cadr expression)))
+              ; TODO Should we make this a procedure?
               (rib
                 constant-instruction
                 (rib
