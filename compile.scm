@@ -26,6 +26,14 @@
 (define constant-code 5)
 (define if-code 6)
 
+; Primitives
+
+(define primitives
+  '(
+    (id 2)
+    (close 5)
+    (- 14)))
+
 ; Types
 
 (define pair-type 0)
@@ -506,9 +514,34 @@
 
           (else (error "invalid instruction")))))))
 
+(define (encode-primitive primitive continuation)
+  (rib constant-instruction
+    (cadr primitive)
+    (rib constant-instruction
+      '()
+      (rib constant-instruction
+        procedure-type
+        (compile-primitive-call
+          'rib
+          (rib set-instruction (car primitive) continuation))))))
+
+(define (encode-primitives* primitives continuation)
+  (if (null? primitives)
+    continuation
+    (encode-primitive
+      (car primitives)
+      (encode-primitives* (cdr primitives) continuation))))
+
+(define (encode-primitives primitives)
+  (encode-primitives* primitives '()))
+
 (define (encode codes)
   (let* (
-      (context (make-encode-context (find-symbols codes)))
+      (context
+        (make-encode-context
+          (append
+            (map car primitives)
+            (find-symbols codes))))
       (constant-codes (encode-constants context codes)))
     (encode-symbols
       (encode-context-symbols context)
@@ -518,4 +551,7 @@
         (encode-codes
           context
           constant-codes
-          '())))))
+          (encode-codes
+            context
+            (encode-primitives primitives)
+            '()))))))
