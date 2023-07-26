@@ -341,20 +341,40 @@
         (else
           (error "invalid constant" constant))))))
 
-(define (encode-constants context codes)
+(define (encode-constants context codes continuation)
   (let (
       (instruction (rib-tag codes))
       (operand (rib-car codes))
-      (continuation (encode-constants context (cdr codes))))
+      (continuation (encode-constants context (cdr codes) continuation)))
     (cond
       ((eqv? instruction constant-instruction)
         (encode-constant context operand continuation))
 
       ((eqv? instruction if-instruction)
-        (rib if-instruction (encode-constants context operand) continuation))
+        (encode-constants context operand continuation))
 
       (else
-        (rib instruction operand continuation)))))
+        continuation))))
+
+(define (encode-constant-instruction context constant continuation)
+  (let ((symbol (encode-context-constant context constant)))
+    (if symbol
+      (rib get-instruction symbol continuation)
+      (cond
+        ((or (boolean? constant) (null? constant) (symbol? constant))
+          (rib constant-instruction constant continuation))
+
+        ((number? constant)
+          (if (< constant 0)
+            (rib constant-instruction
+              0
+              (rib constant-instruction
+                (abs constant)
+                (compile-primitive-call '- continuation)))
+            (rib constant-instruction constant continuation)))
+
+        (else
+          (error "constant not encoded" constant))))))
 
 ;; Symbols
 
