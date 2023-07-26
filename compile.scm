@@ -331,6 +331,68 @@
 
 ;; Codes
 
+(define (build-constant o tail)
+  (cond
+    ((or (memv o '(#f #t ())) (assq o built-constants))
+      (let ((v (constant-global-var o)))
+        (c-rib get-op
+          (scan-opnd v 1)
+          tail)))
+
+    ((symbol? o)
+      (c-rib const-op
+        (scan-opnd o 2)
+        tail))
+    ((number? o)
+      (if (< o 0)
+        (c-rib const-op
+          0
+          (c-rib const-op
+            (- 0 o)
+            (add-nb-args
+              2
+              (c-rib jump/call-op
+                (scan-opnd '- 0)
+                tail))))
+        (c-rib const-op
+          o
+          tail)))
+    ((pair? o)
+      (build-constant (car o)
+        (build-constant (cdr o)
+          (c-rib const-op
+            pair-type
+            (add-nb-args
+              3
+              (c-rib jump/call-op
+                (scan-opnd 'rib 0)
+                tail))))))
+    ((string? o)
+      (let ((chars (map char->integer (string->list o))))
+        (build-constant chars
+          (build-constant (length chars)
+            (c-rib const-op
+              string-type
+              (add-nb-args
+                3
+                (c-rib jump/call-op
+                  (scan-opnd 'rib 0)
+                  tail)))))))
+    ((vector? o)
+      (let ((elems (vector->list o)))
+        (build-constant elems
+          (build-constant (length elems)
+            (c-rib const-op
+              vector-type
+              (add-nb-args
+                3
+                (c-rib jump/call-op
+                  (scan-opnd 'rib 0)
+                  tail)))))))
+
+    (else
+      (error "invalid constant" constant))))
+
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
     (if (eqv? part 0)
