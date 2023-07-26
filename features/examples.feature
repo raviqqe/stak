@@ -20,6 +20,7 @@ Feature: Examples
       | set-global-variables |
       | get-global-variable  |
       | literals             |
+      | extra-literals       |
       | rib                  |
       | write-u8             |
       | if                   |
