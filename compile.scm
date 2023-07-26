@@ -166,7 +166,7 @@
       ((memq name '(id))
         1)
 
-      ((memq name '(+ -))
+      ((memq name '(-))
         2)
 
       ((memq name '(rib))
