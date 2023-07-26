@@ -465,7 +465,7 @@
     (encode-codes
       context
       (rib-cdr code)
-      (cons constant-code
+      (cons closure-code
         (encode-integer (rib-car code) target)))))
 
 (define (encode-operand context operand target)
