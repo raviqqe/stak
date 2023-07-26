@@ -463,8 +463,6 @@
 
 (define (encode-procedure context procedure target)
   (let ((code (rib-car procedure)))
-    (display procedure)
-    (newline)
     (encode-codes
       context
       (rib-cdr code)
