@@ -32,6 +32,7 @@ Feature: Syntax
     cat prelude.scm source.scm | tools/compile.sh > main.out
     """
     And I successfully run `stak main.out`
+    Then the stdout should contain exactly "B"
 
   Scenario Outline: Use an if expression with true condition
     Given a file named "source.scm" with:
