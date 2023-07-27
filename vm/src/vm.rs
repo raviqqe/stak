@@ -202,7 +202,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            // TODO Trace heap.
+            // TODO Add a trace_heap flag.
             trace!("vm", self);
         }
 
