@@ -22,7 +22,7 @@ macro_rules! trace {
     ($prefix:literal, $data:expr) => {
         #[cfg(feature = "trace")]
         {
-            std::eprint!(prefix);
+            std::eprint!($prefix);
             std::eprintln!(": {}", $data);
         }
     };
