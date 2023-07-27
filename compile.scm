@@ -493,7 +493,10 @@
         (+ (* operand 2) 1))
 
       ((symbol? operand)
-        (* 2 (member-index operand (encode-context-all-symbols context))))
+        (* 2
+          (or
+            (member-index operand (encode-context-all-symbols context))
+            (error "symbol not found" value))))
 
       (else (error "invalid operand" operand)))
     target))
