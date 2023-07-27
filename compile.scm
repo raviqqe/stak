@@ -80,10 +80,6 @@
       0
       (+ 1 (member-index value (cdr list))))))
 
-(define (try-member-index value list)
-  (or
-    (member-index value list)))
-
 (define (make-procedure code environment)
   (rib procedure-type code environment))
 
