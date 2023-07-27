@@ -485,7 +485,7 @@
   (let (
       (target (cons (i8->u8 (* sign (modulo integer integer-base))) target))
       (integer (quotient integer integer-base)))
-    (if (eqv? (modulo integer integer-base) 0)
+    (if (eqv? integer 0)
       target
       (encode-integer-with-sign integer -1 target))))
 
