@@ -18,6 +18,16 @@ const SINGLETON_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
+macro_rules! trace {
+    ($prefix:literal, $data:expr) => {
+        #[cfg(feature = "trace")]
+        {
+            std::eprint!($prefix);
+            std::eprintln!(": {}", $data);
+        }
+    };
+}
+
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
@@ -76,13 +86,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
         while self.program_counter != self.null()? {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
-            #[cfg(feature = "trace")]
-            std::eprintln!("instruction: {}", instruction);
+            trace!("instruction", instruction);
 
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == self.null()?;
                     let mut procedure = self.procedure()?;
+
+                    trace!("procedure", procedure);
+                    trace!("return", r#return);
 
                     if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
@@ -93,6 +105,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
 
+                            trace!("argument count", argument_count);
+                            trace!("parameter count", parameter_count);
+
                             // TODO Support variadic arguments.
                             if argument_count != parameter_count {
                                 return Err(Error::ArgumentCount);
@@ -102,8 +117,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
-                                // Drop an argument count.
-                                self.pop()?;
                             } else {
                                 *self.cell_mut(0)? = last_argument.into();
                                 *self.cell_mut(1)? = procedure.into();
@@ -111,7 +124,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
                                     .allocate(
+                                        // return address
                                         self.cdr(self.program_counter),
+                                        // old stack
                                         self.cdr(last_argument),
                                     )?
                                     .into();
@@ -119,8 +134,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 last_argument = self.take_cell(0)?.try_into()?;
                                 procedure = self.take_cell(1)?.try_into()?;
 
+                                // Set a frame.
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
+
+                            // Drop an argument count.
+                            self.pop()?;
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
@@ -153,11 +172,23 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::GET => {
-                    self.push(self.car(self.operand()?))?;
+                    let operand = self.operand()?;
+
+                    trace!("operand", operand);
+
+                    let value = self.car(operand);
+
+                    trace!("value", value);
+
+                    self.push(value)?;
                     self.advance_program_counter()?;
                 }
                 Instruction::CONSTANT => {
-                    self.push(self.car(self.program_counter))?;
+                    let constant = self.car(self.program_counter);
+
+                    trace!("constant", constant);
+
+                    self.push(constant)?;
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
@@ -171,8 +202,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            #[cfg(feature = "trace")]
-            std::eprintln!("vm:\n{}", self);
+            // TODO Add a trace_heap flag.
+            trace!("vm", self);
         }
 
         Ok(())
@@ -349,6 +380,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // Primitive operations
 
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
+        trace!("primitive", primitive);
+
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = self.pop_arguments::<3>()?;
@@ -614,8 +647,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some(instruction) = input.next() {
-            #[cfg(feature = "trace")]
-            std::eprintln!("decoded-instruction: {}", instruction);
+            trace!("decoded instruction", instruction);
 
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
@@ -691,6 +723,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
 impl<T: Device, const N: usize> Display for Vm<N, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        writeln!(formatter, "program counter: {}", self.program_counter)?;
+        writeln!(formatter, "stack: {}", self.stack)?;
+        writeln!(formatter, "symbols: {}", self.symbols)?;
+        writeln!(formatter, "false: {}", self.r#false)?;
+
         for index in 0..self.allocation_index / 2 {
             let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
 

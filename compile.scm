@@ -74,11 +74,16 @@
     value))
 
 (define (member-index value list)
-  (if (null? list)
-    (error "value not found" value)
-    (if (eqv? value (car list))
-      0
-      (+ 1 (member-index value (cdr list))))))
+  (cond
+    ((null? list)
+      #f)
+
+    ((eqv? value (car list))
+      0)
+
+    (else
+      (let ((index (member-index value (cdr list))))
+        (and index (+ 1 index))))))
 
 (define (make-procedure code environment)
   (rib procedure-type code environment))
@@ -159,6 +164,9 @@
     context
     (append variables (compile-context-environment context))))
 
+(define (compile-context-environment-add-temporary context)
+  (compile-context-environment-append context (list #f)))
+
 (define (compile-context-resolve* variables variable index)
   (cond
     ((null? variables)
@@ -170,8 +178,11 @@
     (else
       (compile-context-resolve (cdr variables) variable (+ index 1)))))
 
-(define (compile-context-resolve context variable index)
-  (compile-context-resolve* (car context) variable index))
+(define (compile-context-resolve context variable base)
+  (let ((index (member-index variable (compile-context-environment context))))
+    (if index
+      (+ index base)
+      variable)))
 
 ; Compilation
 
@@ -215,17 +226,25 @@
         continuation))
     (compile-expression context
       (car arguments)
-      (compile-call* context function (cdr arguments) argument-count continuation))))
+      (compile-call*
+        (compile-context-environment-add-temporary context)
+        function
+        (cdr arguments)
+        argument-count
+        continuation))))
 
 (define (compile-call context expression continuation)
   (let* (
       (function (car expression))
       (arguments (cdr expression))
       (argument-count (length arguments))
-      (continuation (compile-call* context function arguments argument-count continuation)))
+      (continuation (lambda (context) (compile-call* context function arguments argument-count continuation))))
     (if (symbol? function)
-      continuation
-      (compile-expression context function continuation))))
+      (continuation context)
+      (compile-expression
+        context
+        function
+        (continuation (compile-context-environment-add-temporary context))))))
 
 ; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
 (define (compile-tail continuation)
@@ -489,7 +508,10 @@
         (+ (* operand 2) 1))
 
       ((symbol? operand)
-        (* 2 (member-index operand (encode-context-all-symbols context))))
+        (* 2
+          (or
+            (member-index operand (encode-context-all-symbols context))
+            (error "symbol not found" value))))
 
       (else (error "invalid operand" operand)))
     target))
