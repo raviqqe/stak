@@ -162,7 +162,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::GET => {
-                    let value = self.car(self.operand()?);
+                    let operand = self.operand()?;
+
+                    trace!("operand", operand);
+
+                    let value = self.car(operand);
 
                     trace!("value", value);
 
