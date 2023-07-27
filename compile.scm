@@ -74,10 +74,14 @@
     value))
 
 (define (member-index value list)
-  (if (null? list)
-    #f
-    (if (eqv? value (car list))
-      0
+  (cond
+    ((null? list)
+      #f)
+
+    ((eqv? value (car list))
+      0)
+
+    (else
       (let ((index (member-index value (cdr list))))
         (and index (+ 1 index))))))
 
