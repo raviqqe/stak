@@ -86,8 +86,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         while self.program_counter != self.null()? {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
-            #[cfg(feature = "trace")]
-            std::eprintln!("instruction: {}", instruction);
+            trace!("instruction", instruction);
 
             match instruction.tag() {
                 Instruction::CALL => {
@@ -181,8 +180,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            #[cfg(feature = "trace")]
-            std::eprintln!("vm:\n{}", self);
+            trace!("vm", self);
         }
 
         Ok(())
@@ -624,8 +622,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some(instruction) = input.next() {
-            #[cfg(feature = "trace")]
-            std::eprintln!("decoded-instruction: {}", instruction);
+            trace!("decoded-instruction", instruction);
 
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
