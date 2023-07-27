@@ -18,6 +18,16 @@ const SINGLETON_CDR: Cons = DUMMY_CONS.set_tag(Type::Singleton as u8);
 const MOVED_CAR: Cons = Cons::dummy(1);
 const FRAME_TAG: u8 = 1;
 
+macro_rules! trace {
+    ($prefix:literal, $data:expr) => {
+        #[cfg(feature = "trace")]
+        {
+            std::eprint!(prefix);
+            std::eprintln!(": {}", $data);
+        }
+    };
+}
+
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
