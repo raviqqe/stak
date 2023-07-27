@@ -481,23 +481,18 @@
 
 ;; Codes
 
-(define (encode-integer-rest integer first target)
+(define (encode-integer-rest integer target)
   (let ((part (modulo integer integer-base)))
-    (cond
-      ((not (eqv? part 0))
-        (encode-integer-rest
-          (quotient integer integer-base)
-          #f
-          (cons (i8->u8 (* (if first 1 -1) part)) target)))
-
-      (first
-        (cons 0 target))
-
-      (else
-        target))))
+    (if (eqv? part 0)
+      target
+      (encode-integer-rest
+        (quotient integer integer-base)
+        (cons (i8->u8 (* -1 part)) target)))))
 
 (define (encode-integer integer target)
-  (encode-integer-rest integer #t target))
+  (encode-integer-rest
+    (quotient integer integer-base)
+    (cons (modulo integer integer-base) target)))
 
 (define (encode-procedure context procedure target)
   (let ((code (rib-car procedure)))
