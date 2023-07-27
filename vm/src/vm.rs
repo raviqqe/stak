@@ -647,7 +647,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some(instruction) = input.next() {
-            trace!("decoded-instruction", instruction);
+            trace!("decoded instruction", instruction);
 
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
