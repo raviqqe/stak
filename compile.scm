@@ -75,10 +75,14 @@
 
 (define (member-index value list)
   (if (null? list)
-    (error "value not found" value)
+    #f
     (if (eqv? value (car list))
       0
       (+ 1 (member-index value (cdr list))))))
+
+(define (try-member-index value list)
+  (or
+    (member-index value list)))
 
 (define (make-procedure code environment)
   (rib procedure-type code environment))
@@ -171,7 +175,7 @@
       (compile-context-resolve (cdr variables) variable (+ index 1)))))
 
 (define (compile-context-resolve context variable index)
-  (compile-context-resolve* (car context) variable index))
+  (or (member-index variable (compile-context-environment context)) variable))
 
 ; Compilation
 
