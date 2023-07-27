@@ -86,3 +86,16 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Add arguments
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x y) (+ x y))
+    (write-u8 (f 60 5))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
