@@ -170,8 +170,11 @@
     (else
       (compile-context-resolve (cdr variables) variable (+ index 1)))))
 
-(define (compile-context-resolve context variable index)
-  (or (member-index variable (compile-context-environment context)) variable))
+(define (compile-context-resolve context variable base)
+  (let ((index (member-index variable (compile-context-environment context))))
+    (if index
+      (+ index base)
+      variable)))
 
 ; Compilation
 
