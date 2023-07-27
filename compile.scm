@@ -78,7 +78,8 @@
     #f
     (if (eqv? value (car list))
       0
-      (+ 1 (member-index value (cdr list))))))
+      (let ((index (member-index value (cdr list))))
+        (and index (+ 1 index))))))
 
 (define (make-procedure code environment)
   (rib procedure-type code environment))
@@ -159,6 +160,9 @@
     context
     (append variables (compile-context-environment context))))
 
+(define (compile-context-environment-add-temporary context)
+  (compile-context-environment-append context (list #f)))
+
 (define (compile-context-resolve* variables variable index)
   (cond
     ((null? variables)
@@ -218,17 +222,25 @@
         continuation))
     (compile-expression context
       (car arguments)
-      (compile-call* context function (cdr arguments) argument-count continuation))))
+      (compile-call*
+        (compile-context-environment-add-temporary context)
+        function
+        (cdr arguments)
+        argument-count
+        continuation))))
 
 (define (compile-call context expression continuation)
   (let* (
       (function (car expression))
       (arguments (cdr expression))
       (argument-count (length arguments))
-      (continuation (compile-call* context function arguments argument-count continuation)))
+      (continuation (lambda (context) (compile-call* context function arguments argument-count continuation))))
     (if (symbol? function)
-      continuation
-      (compile-expression context function continuation))))
+      (continuation context)
+      (compile-expression
+        context
+        function
+        (continuation (compile-context-environment-add-temporary context))))))
 
 ; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
 (define (compile-tail continuation)
