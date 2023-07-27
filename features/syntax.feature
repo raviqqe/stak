@@ -103,7 +103,7 @@ Feature: Syntax
   Scenario: Use large (but not big) integers
     Given a file named "source.scm" with:
     """scheme
-		(write-u8 (- 1065 1000))
+    (write-u8 (- 1065 1000))
     """
     When I run the following script:
     """sh
