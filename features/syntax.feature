@@ -111,3 +111,17 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Use integers around the encoding base
+    Given a file named "source.scm" with:
+    """scheme
+    (write-u8 (- 127 60))
+    (write-u8 (- 128 60))
+    (write-u8 (- 129 60))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "CDE"
