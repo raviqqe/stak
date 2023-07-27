@@ -93,6 +93,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     let r#return = instruction == self.null()?;
                     let mut procedure = self.procedure()?;
 
+                    trace!("procedure", procedure);
+                    trace!("return", r#return);
+
                     if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
                     }
@@ -101,6 +104,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         Value::Cons(code) => {
                             let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
+
+                            trace!("argument count", argument_count);
+                            trace!("parameter count", parameter_count);
 
                             // TODO Support variadic arguments.
                             if argument_count != parameter_count {
@@ -111,8 +117,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
-                                // Drop an argument count.
-                                self.pop()?;
                             } else {
                                 *self.cell_mut(0)? = last_argument.into();
                                 *self.cell_mut(1)? = procedure.into();
@@ -120,7 +124,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.stack) = self
                                     .allocate(
+                                        // return address
                                         self.cdr(self.program_counter),
+                                        // old stack
                                         self.cdr(last_argument),
                                     )?
                                     .into();
@@ -128,8 +134,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 last_argument = self.take_cell(0)?.try_into()?;
                                 procedure = self.take_cell(1)?.try_into()?;
 
+                                // Set a frame.
                                 *self.cdr_mut(last_argument) = self.stack.into();
                             }
+
+                            // Drop an argument count.
+                            self.pop()?;
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
@@ -193,7 +203,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
 
             // TODO Trace heap.
-            // trace!("vm", self);
+            trace!("vm", self);
         }
 
         Ok(())
