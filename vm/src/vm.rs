@@ -162,11 +162,19 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::GET => {
-                    self.push(self.car(self.operand()?))?;
+                    let value = self.car(self.operand()?);
+
+                    trace!("value", value);
+
+                    self.push(value)?;
                     self.advance_program_counter()?;
                 }
                 Instruction::CONSTANT => {
-                    self.push(self.car(self.program_counter))?;
+                    let constant = self.car(self.program_counter);
+
+                    trace!("constant", constant);
+
+                    self.push(constant)?;
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
@@ -180,7 +188,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            trace!("vm", self);
+            // TODO Trace heap.
+            // trace!("vm", self);
         }
 
         Ok(())
@@ -357,6 +366,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // Primitive operations
 
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
+        trace!("primitive", primitive);
+
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = self.pop_arguments::<3>()?;
