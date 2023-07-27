@@ -483,12 +483,18 @@
 
 (define (encode-integer-rest integer first target)
   (let ((part (modulo integer integer-base)))
-    (if (eqv? part 0)
-      (if first (cons 0 target) target)
-      (encode-integer-rest
-        (quotient integer integer-base)
-        #f
-        (cons (i8->u8 (* (if first 1 -1) part)) target)))))
+    (cond
+      ((not (eqv? part 0))
+        (encode-integer-rest
+          (quotient integer integer-base)
+          #f
+          (cons (i8->u8 (* (if first 1 -1) part)) target)))
+
+      (first
+        (cons 0 target))
+
+      (else
+        target))))
 
 (define (encode-integer integer target)
   (encode-integer-rest integer #t target))
