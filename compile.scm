@@ -273,7 +273,7 @@
     (let (
         (variable (car variables))
         (expression (car expressions)))
-      (compile
+      (compile-expression
         context
         expression
         (compile-bind*
