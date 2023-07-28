@@ -109,9 +109,6 @@
 
 ; Non-primitive expansion
 
-(define (expand-body expressions)
-  (cons 'begin (map expand expressions)))
-
 (define (expand expression)
   (cond
     ((symbol? expression)
@@ -147,7 +144,7 @@
           ((eqv? first 'let)
             (let (
                 (bindings (cadr expression))
-                (body (expand-body (cddr expression))))
+                (body (map expand (cddr expression))))
               (if (pair? bindings)
                 (list 'let
                   (map
