@@ -109,6 +109,9 @@
 
 ; Non-primitive expansion
 
+(define (expand-body expressions)
+  (list 'begin (map expand expressions)))
+
 (define (expand expression)
   (cond
     ((symbol? expression)
@@ -142,19 +145,17 @@
             (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
 
           ((eqv? first 'let)
-            (let ((bindings (cadr expression)))
-              (let ((bindings x))
-                (if (pair? bindings)
-                  (cons 'let
-                    (cons (map (lambda (binding)
-                          (cons (car binding)
-                            (cons (expand-expr
-                                (cadr binding))
-                              '())))
-                        bindings)
-                      (cons (expand-body (cddr expr))
-                        '())))
-                  (expand-body (cddr expr))))))
+            (let (
+                (bindings (cadr expression))
+                (body (expand-body (cddr expression))))
+              (if (pair? bindings)
+                (list 'let
+                  (map
+                    (lambda (binding)
+                      (list (car binding) (expand (cadr binding))))
+                    bindings)
+                  body)
+                body)))
 
           (else
             (map expand expression)))))
@@ -261,6 +262,31 @@
         function
         (continuation (compile-context-environment-add-temporary context))))))
 
+(define (compile-unbind context continuation)
+  (if (eqv? continuation tail)
+    continuation
+    (compile-primitive-call 'skip continuation))))
+
+(define (compile-bind* context variables expressions body-context body continuation)
+  (if (pair? variables)
+    (let (
+        (variable (car variables))
+        (expression (car expressions)))
+      (compile
+        context
+        expression
+        (compile-bind*
+          (compile-context-environment-add-temporary context)
+          (cdr variables)
+          (cdr expressions)
+          (compile-context-environment-append body-context (list vairiable))
+          body
+          (compile-unbind context continuation))))
+    (compile-begin body-context body continuation)))
+
+(define (compile-bind context variables expressions body continuation)
+  (compile-bind* context variables expressions context body continuation))
+
 ; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
 (define (compile-tail continuation)
   (if (null? continuation)
@@ -306,6 +332,15 @@
                       '()))
                   '())
                 (compile-primitive-call 'close continuation))))
+
+          ((eqv? first 'let)
+            (let ((bindings (cadr expression)))
+              (compile-bind
+                context
+                (map car bindings)
+                (map cadr bindings)
+                (cddr expression)
+                continuation)))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
