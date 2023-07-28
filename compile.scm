@@ -266,25 +266,22 @@
     continuation
     (compile-primitive-call 'skip continuation)))
 
-(define (compile-bind* context variables expressions body-context body continuation)
-  (if (pair? variables)
-    (let (
-        (variable (car variables))
-        (expression (car expressions)))
+(define (compile-let* context bindings body-context body continuation)
+  (if (pair? bindings)
+    (let ((binding (car bindings)))
       (compile-expression
         context
-        expression
-        (compile-bind*
+        (cadr binding)
+        (compile-let*
           (compile-context-environment-add-temporary context)
-          (cdr variables)
-          (cdr expressions)
-          (compile-context-environment-append body-context (list variable))
+          (cdr bindings)
+          (compile-context-environment-append body-context (list (car binding)))
           body
           (compile-unbind context continuation))))
     (compile-begin body-context body continuation)))
 
-(define (compile-bind context variables expressions body continuation)
-  (compile-bind* context variables expressions context body continuation))
+(define (compile-let context bindings body continuation)
+  (compile-let* context bindings context body continuation))
 
 (define tail (compile-primitive-call 'id '()))
 
@@ -335,13 +332,11 @@
                 (compile-primitive-call 'close continuation))))
 
           ((eqv? first 'let)
-            (let ((bindings (cadr expression)))
-              (compile-bind
-                context
-                (map car bindings)
-                (map cadr bindings)
-                (cddr expression)
-                continuation)))
+            (compile-let
+              context
+              (cadr expression)
+              (cddr expression)
+              continuation))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
