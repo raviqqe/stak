@@ -145,9 +145,9 @@
 
           ((eqv? first 'let)
             (let ((bindings (cadr expression)))
-              (append
-                (list
-                  'let
+              (cons
+                'let
+                (cons
                   (map
                     (lambda (binding)
                       (list (car binding) (expand (cadr binding))))
