@@ -403,7 +403,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.pop()?;
             }
             Primitive::SKIP => {
-                let [x, _] = self.pop_arguments::<2>()?;
+                let [_, x] = self.pop_arguments::<2>()?;
                 self.push(x)?;
             }
             Primitive::CLOSE => {
