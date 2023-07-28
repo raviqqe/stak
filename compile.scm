@@ -224,7 +224,8 @@
   (rib set-instruction variable continuation))
 
 (define (compile-begin context expressions continuation)
-  (compile-expression context
+  (compile-expression
+    context
     (car expressions)
     (if (pair? (cdr expressions))
       ; TODO Drop intermediate values.
