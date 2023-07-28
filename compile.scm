@@ -263,9 +263,10 @@
         (continuation (compile-context-environment-add-temporary context))))))
 
 (define (compile-unbind context continuation)
+  ; TODO Check null? instead when we introduce null-terminated returns.
   (if (eqv? continuation tail)
     continuation
-    (compile-primitive-call 'skip continuation))))
+    (compile-primitive-call 'skip continuation)))
 
 (define (compile-bind* context variables expressions body-context body continuation)
   (if (pair? variables)
@@ -287,10 +288,12 @@
 (define (compile-bind context variables expressions body continuation)
   (compile-bind* context variables expressions context body continuation))
 
+(define tail (compile-primitive-call 'id '()))
+
 ; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
 (define (compile-tail continuation)
   (if (null? continuation)
-    (compile-primitive-call 'id '())
+    tail
     continuation))
 
 (define (compile-expression context expression continuation)
