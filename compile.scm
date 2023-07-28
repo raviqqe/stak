@@ -33,6 +33,8 @@
 (define primitives
   '(
     (id 2)
+    (pop 3)
+    (skip 4)
     (close 5)
     (- 14)))
 
@@ -141,6 +143,17 @@
           ((eqv? first 'lambda)
             (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
 
+          ((eqv? first 'let)
+            (let ((bindings (cadr expression)))
+              (cons
+                'let
+                (cons
+                  (map
+                    (lambda (binding)
+                      (list (car binding) (expand (cadr binding))))
+                    bindings)
+                  (map expand (cddr expression))))))
+
           (else
             (map expand expression)))))
 
@@ -192,10 +205,10 @@
 (define (compile-primitive-call name continuation)
   (compile-constant
     (cond
-      ((memq name '(close id))
+      ((memq name '(close id pop))
         1)
 
-      ((memq name '(-))
+      ((memq name '(skip -))
         2)
 
       ((memq name '(rib))
@@ -209,7 +222,8 @@
   (rib set-instruction variable continuation))
 
 (define (compile-begin context expressions continuation)
-  (compile-expression context
+  (compile-expression
+    context
     (car expressions)
     (if (pair? (cdr expressions))
       ; TODO Drop intermediate values.
@@ -246,10 +260,35 @@
         function
         (continuation (compile-context-environment-add-temporary context))))))
 
+(define (compile-unbind context continuation)
+  ; TODO Check null? instead when we introduce null-terminated returns.
+  (if (eqv? continuation tail)
+    continuation
+    (compile-primitive-call 'skip continuation)))
+
+(define (compile-let* context bindings body-context body continuation)
+  (if (pair? bindings)
+    (let ((binding (car bindings)))
+      (compile-expression
+        context
+        (cadr binding)
+        (compile-let*
+          (compile-context-environment-add-temporary context)
+          (cdr bindings)
+          (compile-context-environment-append body-context (list (car binding)))
+          body
+          (compile-unbind context continuation))))
+    (compile-begin body-context body continuation)))
+
+(define (compile-let context bindings body continuation)
+  (compile-let* context bindings context body continuation))
+
+(define tail (compile-primitive-call 'id '()))
+
 ; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
 (define (compile-tail continuation)
   (if (null? continuation)
-    (compile-primitive-call 'id '())
+    tail
     continuation))
 
 (define (compile-expression context expression continuation)
@@ -291,6 +330,13 @@
                       '()))
                   '())
                 (compile-primitive-call 'close continuation))))
+
+          ((eqv? first 'let)
+            (compile-let
+              context
+              (cadr expression)
+              (cddr expression)
+              continuation))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
