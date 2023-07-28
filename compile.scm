@@ -110,7 +110,7 @@
 ; Non-primitive expansion
 
 (define (expand-body expressions)
-  (list 'begin (map expand expressions)))
+  (cons 'begin (map expand expressions)))
 
 (define (expand expression)
   (cond
