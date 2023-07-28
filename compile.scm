@@ -33,6 +33,8 @@
 (define primitives
   '(
     (id 2)
+    (pop 3)
+    (skip 4)
     (close 5)
     (- 14)))
 
@@ -205,10 +207,10 @@
 (define (compile-primitive-call name continuation)
   (compile-constant
     (cond
-      ((memq name '(close id))
+      ((memq name '(close id pop))
         1)
 
-      ((memq name '(-))
+      ((memq name '(skip -))
         2)
 
       ((memq name '(rib))
@@ -277,7 +279,7 @@
           (compile-context-environment-add-temporary context)
           (cdr variables)
           (cdr expressions)
-          (compile-context-environment-append body-context (list vairiable))
+          (compile-context-environment-append body-context (list variable))
           body
           (compile-unbind context continuation))))
     (compile-begin body-context body continuation)))
