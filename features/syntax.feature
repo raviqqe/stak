@@ -125,3 +125,27 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "CDE"
+
+  Scenario: Use a let expression
+    Given a file named "source.scm" with:
+    """scheme
+    (write-u8 (let ((x 65)) x))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use a let expression with two bindings
+    Given a file named "source.scm" with:
+    """scheme
+    (write-u8 (let ((x 60) (y 5)) (+ x y)))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
