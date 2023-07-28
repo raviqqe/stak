@@ -141,6 +141,21 @@
           ((eqv? first 'lambda)
             (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
 
+          ((eqv? first 'let)
+            (let ((bindings (cadr expression)))
+              (let ((bindings x))
+                (if (pair? bindings)
+                  (cons 'let
+                    (cons (map (lambda (binding)
+                          (cons (car binding)
+                            (cons (expand-expr
+                                (cadr binding))
+                              '())))
+                        bindings)
+                      (cons (expand-body (cddr expr))
+                        '())))
+                  (expand-body (cddr expr))))))
+
           (else
             (map expand expression)))))
 
