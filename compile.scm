@@ -144,17 +144,15 @@
             (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
 
           ((eqv? first 'let)
-            (let (
-                (bindings (cadr expression))
-                (body (map expand (cddr expression))))
-              (if (pair? bindings)
-                (list 'let
+            (let ((bindings (cadr expression)))
+              (append
+                (list
+                  'let
                   (map
                     (lambda (binding)
                       (list (car binding) (expand (cadr binding))))
-                    bindings)
-                  body)
-                body)))
+                    bindings))
+                (map expand (cddr expression)))))
 
           (else
             (map expand expression)))))
