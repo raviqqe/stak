@@ -40,12 +40,6 @@ macro_rules! assert_index_range {
     };
 }
 
-macro_rules! assert_cell_index {
-    ($index:expr) => {
-        debug_assert!($index < 2);
-    };
-}
-
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
@@ -73,8 +67,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let cells = vm.allocate_raw(FALSE.into(), FALSE.into())?;
-        vm.cells = vm.allocate_raw(FALSE.into(), cells.into())?;
+        vm.cells = vm.allocate_raw(FALSE.into(), FALSE.into())?;
 
         vm.stack = NULL;
         vm.program_counter = NULL;
@@ -495,22 +488,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // GC escape cells
-
-    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        Ok(replace(self.cell_mut(index)?, FALSE.into()))
-    }
-
-    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value_mut,
-            1 => Self::cdr_value_mut,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.cdr(self.cells))
-    }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
         Ok(replace(self.allocation_cell_mut()?, FALSE.into()))

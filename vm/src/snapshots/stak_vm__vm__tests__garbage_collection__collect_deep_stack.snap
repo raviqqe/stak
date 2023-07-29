@@ -6,7 +6,6 @@ program counter: ():0
 stack: c100:0
 symbols: ():0
 00: n2 c104:0
-02: #f:0 c106:0
+02: #f:0 #f:0
 04: n1 ():0
-06: #f:0 #f:0
 
