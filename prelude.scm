@@ -1,6 +1,10 @@
 (define stak #t)
 
+(define pair-tag 0)
 (define procedure-tag 1)
+(define symbol-tag 2)
+(define string-tag 3)
+(define character-tag 4)
 
 ; Primitives
 
@@ -32,6 +36,9 @@
 
 (define (integer? x)
   (not (rib? x)))
+
+(define (integer->char x)
+  (rib x))
 
 (define (char->integer x)
   (rib-car x))
