@@ -57,8 +57,8 @@
 (define complex? real?)
 (define number? complex?)
 
-(define (exact? obj) #t)
-(define (inexact? obj) #f)
+(define (exact? x) #t)
+(define (inexact? x) #f)
 
 ; Equality
 
