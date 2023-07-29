@@ -702,15 +702,26 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
         writeln!(formatter, "symbols: {}", self.symbols)?;
 
         for index in 0..self.allocation_index / 2 {
-            let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
+            let index = 2 * index;
+            let cons = Cons::new((self.allocation_start() + index) as u64);
 
-            writeln!(
+            write!(
                 formatter,
                 "{:02x}: {} {}",
-                2 * index,
+                index,
                 self.car(cons),
                 self.cdr(cons)
             )?;
+
+            if index == self.program_counter.index() {
+                write!(formatter, " <- program counter")?;
+            } else if index == self.stack.index() {
+                write!(formatter, " <- stack")?;
+            } else if index == self.symbols.index() {
+                write!(formatter, " <- symbols")?;
+            }
+
+            writeln!(formatter, "")?;
         }
 
         Ok(())
