@@ -116,8 +116,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Reuse an argument count cons as a new frame.
                                 let stack = self.cdr(last_argument);
                                 *self.cdr_mut(last_argument) = self.stack.into();
-                                *self.car_mut(self.stack) =
-                                    self.allocate(self.cdr(self.program_counter), stack)?.into();
+                                *self.car_mut(self.stack) = self
+                                    .allocate_cell(self.cdr(self.program_counter), stack)?
+                                    .into();
 
                                 self.stack
                             };
@@ -133,6 +134,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 .into();
                             self.program_counter =
                                 self.cdr(self.code(procedure).try_into()?).try_into()?;
+
+                            if !r#return {
+                                self.cells = self.initialize_cell()?;
+                            }
                         }
                         Value::Number(primitive) => {
                             // Drop an argument count.
