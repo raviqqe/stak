@@ -66,7 +66,7 @@
     ((string? o)
       (write-chars (string->list o) #f))
     ((vector? o)
-      (write-u8 35) ; #\#
+      (write-u8 35) ; #
       (write (vector->list o)))
     ((procedure? o)
       (write-u8-2 35 112)) ; #p
