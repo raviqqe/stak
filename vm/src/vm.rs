@@ -11,14 +11,14 @@ use device::Device;
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-// TODO Should we use Cons::new(0)?
-const DUMMY_CONS: Cons = Cons::dummy(0);
-const FALSE: Cons = DUMMY_CONS.set_tag(Type::False as u8);
-const TRUE: Cons = DUMMY_CONS.set_tag(Type::True as u8);
-const NULL: Cons = DUMMY_CONS.set_tag(Type::Null as u8);
+const FALSE: Cons = Cons::dummy(0);
+const TRUE: Cons = Cons::dummy(1);
+const NULL: Cons = Cons::dummy(2);
 // TODO Should we use Cons::new(0).set_tag(u8::MAX)?
-const MOVED_CAR: Cons = Cons::dummy(1);
+const MOVED_CAR: Cons = Cons::dummy(3);
 const FRAME_TAG: u8 = 1;
+
+const SINGLETONS: &[Cons] = &[FALSE, TRUE, NULL];
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -33,7 +33,7 @@ macro_rules! trace {
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            $cons == DUMMY_CONS
+            $cons.index() >= NULL.index()
                 || $self.allocation_start() <= $cons.index()
                     && $cons.index() < $self.allocation_end()
         );
@@ -63,9 +63,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn new(device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
-            program_counter: DUMMY_CONS,
-            stack: DUMMY_CONS,
-            symbols: DUMMY_CONS,
+            program_counter: NULL,
+            stack: NULL,
+            symbols: NULL,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
@@ -488,7 +488,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match index {
                 0 => ZERO.into(),
                 // TODO
-                1 => DUMMY_CONS.into(),
+                1 => NULL.into(),
                 _ => return Err(Error::CellIndexOutOfRange),
             },
         ))
@@ -505,7 +505,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, DUMMY_CONS.into()))
+        Ok(replace(self.allocation_cell_mut()?, NULL.into()))
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
@@ -538,7 +538,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == DUMMY_CONS {
+        Ok(if SINGLETONS.contains(&cons) {
             cons
         } else if self.car(cons) == MOVED_CAR.into() {
             // Get a forward pointer.
@@ -604,7 +604,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         let rib = self.allocate(
             Number::new(Primitive::Rib as u64).into(),
-            DUMMY_CONS.set_tag(Type::Procedure as u8).into(),
+            NULL.set_tag(Type::Procedure as u8).into(),
         )?;
 
         self.initialize_symbol(rib.into())?;
@@ -619,7 +619,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
-        let symbol = self.allocate(value, DUMMY_CONS.set_tag(Type::Symbol as u8).into())?;
+        let symbol = self.allocate(value, NULL.set_tag(Type::Symbol as u8).into())?;
 
         self.push(symbol.into())
     }

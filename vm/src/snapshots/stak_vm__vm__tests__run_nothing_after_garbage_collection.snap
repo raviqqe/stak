@@ -2,11 +2,7 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-program counter: c100:0
-stack: c100:0
-symbols: cfffffffffffffff:0
-false: c102:0
-00: n0 cfffffffffffffff:2
-02: c104:0 c100:2
-04: n0 cfffffffffffffff:2
+program counter: cffffffffffffffd:0
+stack: cffffffffffffffd:0
+symbols: cffffffffffffffd:0
 
