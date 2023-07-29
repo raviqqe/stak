@@ -522,6 +522,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.cells = self.copy_cons(self.cells)?;
 
         for index in self.allocation_start()..self.allocation_end() {
+            if index >= self.allocation_start() + self.allocation_index {
+                break;
+            }
+
             self.heap[index] = self.copy_value(self.heap[index])?;
         }
 
