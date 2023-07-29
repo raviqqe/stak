@@ -6,7 +6,7 @@ cd $(dirname $0)/..
 
 brew install gambit-scheme
 bundler install
-cargo build --release ${GC_ALWAYS:+--features gc_always}
+cargo build --release "$FEATURES"
 
 export PATH=$PWD/target/release:$PATH
 export ROOT=$PWD
