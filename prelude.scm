@@ -18,18 +18,18 @@
 (define rib? (rib 6 '() procedure-type))
 (define rib-car (rib 7 '() procedure-type))
 (define rib-cdr (rib 8 '() procedure-type))
-(define rib-tag (rib 8 '() procedure-type)) ; TODO
-(define rib-set-car! (rib 9 '() procedure-type))
-(define rib-set-cdr! (rib 10 '() procedure-type))
-(define rib-set-tag! (rib 10 '() procedure-type)) ; TODO
-(define eq? (rib 11 '() procedure-type))
-(define lt? (rib 12 '() procedure-type))
-(define + (rib 13 '() procedure-type))
-(define - (rib 14 '() procedure-type))
-(define * (rib 15 '() procedure-type))
-(define / (rib 16 '() procedure-type))
-(define read-u8 (rib 17 '() procedure-type))
-(define write-u8 (rib 18 '() procedure-type))
+(define rib-tag (rib 9 '() procedure-type))
+(define rib-set-car! (rib 10 '() procedure-type))
+(define rib-set-cdr! (rib 11 '() procedure-type))
+(define rib-set-tag! (rib 12 '() procedure-type))
+(define eq? (rib 13 '() procedure-type))
+(define lt? (rib 14 '() procedure-type))
+(define + (rib 15 '() procedure-type))
+(define - (rib 16 '() procedure-type))
+(define * (rib 17 '() procedure-type))
+(define / (rib 18 '() procedure-type))
+(define read-u8 (rib 19 '() procedure-type))
+(define write-u8 (rib 20 '() procedure-type))
 
 ; Error
 
