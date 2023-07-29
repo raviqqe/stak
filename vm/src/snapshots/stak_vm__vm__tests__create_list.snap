@@ -6,6 +6,6 @@ program counter: ():0
 stack: ():0
 symbols: ():0
 00: #f:0 #f:0
-02: #f:0 c0:0
+02: #f:0 c0:0 <- cells
 04: n1 ():0
 

@@ -204,6 +204,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             // TODO Add a trace_heap flag.
             trace!("vm", self);
+            #[cfg(feature = "gc_always")]
+            self.collect_garbages()?;
         }
 
         Ok(())
@@ -299,14 +301,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
+        let cons = Cons::new(self.allocation_end() as u64);
+        self.allocation_index += CONS_FIELD_COUNT;
 
         assert_index_range!(self, cons);
 
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
-
-        self.allocation_index += CONS_FIELD_COUNT;
 
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
@@ -326,7 +327,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocation_end(&self) -> usize {
-        self.allocation_start() + Self::SPACE_SIZE
+        self.allocation_start() + self.allocation_index
     }
 
     fn car(&self, cons: Cons) -> Value {
@@ -520,8 +521,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.symbols = self.copy_cons(self.symbols)?;
         self.cells = self.copy_cons(self.cells)?;
 
-        for index in self.allocation_start()..self.allocation_end() {
+        let mut index = self.allocation_start();
+
+        while index < self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
+            index += 1;
         }
 
         Ok(())
@@ -719,6 +723,8 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
                 write!(formatter, " <- stack")?;
             } else if index == self.symbols.index() {
                 write!(formatter, " <- symbols")?;
+            } else if index == self.cells.index() {
+                write!(formatter, " <- cells")?;
             }
 
             writeln!(formatter)?;
