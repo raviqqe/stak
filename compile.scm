@@ -221,13 +221,13 @@
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
-(define (compile-begin context expressions continuation)
+(define (compile-sequence context expressions continuation)
   (compile-expression
     context
     (car expressions)
     (if (pair? (cdr expressions))
       ; TODO Drop intermediate values.
-      (compile-begin context (cdr expressions) continuation)
+      (compile-sequence context (cdr expressions) continuation)
       continuation)))
 
 (define (compile-call* context function arguments argument-count continuation)
@@ -278,7 +278,7 @@
           (compile-context-environment-append body-context (list (car binding)))
           body
           (compile-unbind context continuation))))
-    (compile-begin body-context body continuation)))
+    (compile-sequence body-context body continuation)))
 
 (define (compile-let context bindings body continuation)
   (compile-let* context bindings context body continuation))
@@ -303,7 +303,7 @@
       (let ((first (car expression)))
         (cond
           ((eqv? first 'begin)
-            (compile-begin context (cdr expression) continuation))
+            (compile-sequence context (cdr expression) continuation))
 
           ((eqv? first 'if)
             (compile-expression
@@ -321,7 +321,7 @@
                   (rib
                     pair-type
                     (length parameters)
-                    (compile-begin
+                    (compile-sequence
                       (compile-context-environment-append
                         context
                         ; #f is for a frame.
