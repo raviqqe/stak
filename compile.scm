@@ -172,7 +172,7 @@
                 #f)))
 
           ((eqv? first 'lambda)
-            (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
+            (append (list 'lambda (cadr expression)) (expand-body (cddr expression))))
 
           ((eqv? first 'let)
             (let ((bindings (cadr expression)))
