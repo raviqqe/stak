@@ -721,7 +721,7 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
                 write!(formatter, " <- symbols")?;
             }
 
-            writeln!(formatter, "")?;
+            writeln!(formatter)?;
         }
 
         Ok(())
