@@ -252,8 +252,15 @@
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
-(define (compile-unspecified context continuation)
-  (if (call? context 'pop continuation)
+(define (pop-call? codes)
+  (and
+    (rib? codes)
+    (rib? (rib-cdr codes))
+    (eqv? (rib-tag (rib-cdr codes)) call-instruction)
+    (eqv? (rib-car (rib-cdr codes)) 'pop)))
+
+(define (compile-unspecified continuation)
+  (if (pop-call? continuation)
     ; Skip argument count constant and call instructions.
     (rib-cdr (rib-cdr continuation))
     (compile-constant #f continuation)))
@@ -388,7 +395,7 @@
             (compile-expression context (caddr expression)
               (compile-set
                 (compile-context-resolve context (cadr expression) 1)
-                continuation)))
+                (compile-unspecified continuation))))
 
           (else
             (compile-call context expression continuation)))))
