@@ -1,6 +1,6 @@
 use crate::{Error, Instruction, Operand, Program, INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
-use core::mem::take;
+use core::mem::{replace, take};
 
 pub struct Decoder<'a> {
     codes: &'a [u8],
@@ -52,10 +52,17 @@ impl<'a> Decoder<'a> {
                 Instruction::CALL => {
                     instructions.push(Instruction::Call(self.decode_operand()?, false))
                 }
-                Instruction::CLOSURE => instructions.push(Instruction::Closure(
-                    self.decode_integer().ok_or(Error::MissingOperand)?,
-                    instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
-                )),
+                Instruction::CLOSURE => {
+                    let body = replace(
+                        &mut instructions,
+                        instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
+                    );
+
+                    instructions.push(Instruction::Closure(
+                        self.decode_integer().ok_or(Error::MissingOperand)?,
+                        body,
+                    ));
+                }
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
                 Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
                 Instruction::CONSTANT => {

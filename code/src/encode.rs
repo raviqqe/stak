@@ -151,7 +151,10 @@ mod tests {
     fn encode_close() {
         encode_and_decode(&Program::new(
             default_symbols(),
-            vec![Instruction::Closure(42)],
+            vec![Instruction::Closure(
+                42,
+                vec![Instruction::Call(Operand::Integer(0), true)],
+            )],
         ));
     }
 

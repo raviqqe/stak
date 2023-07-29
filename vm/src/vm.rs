@@ -914,9 +914,8 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Closure(0),
+                    Instruction::Closure(0, vec![Instruction::Call(Operand::Integer(1), true)]),
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Call(Operand::Integer(1), true),
                 ],
             ));
         }
