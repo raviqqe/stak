@@ -74,12 +74,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let r#true = vm.allocate_raw(ZERO.into(), DUMMY_CONS.set_tag(Type::True as u8).into())?;
-        let null = vm.allocate_raw(ZERO.into(), DUMMY_CONS.set_tag(Type::Null as u8).into())?;
-        vm.r#false = vm.allocate_raw(r#true.into(), null.set_tag(Type::False as u8).into())?;
-
-        vm.stack = null;
-        vm.program_counter = null;
+        vm.stack = NULL;
+        vm.program_counter = NULL;
 
         Ok(vm)
     }
@@ -364,15 +360,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn boolean(&self, value: bool) -> Value {
-        if value {
-            self.r#true()
-        } else {
-            self.r#false.into()
-        }
-    }
-
-    fn r#true(&self) -> Value {
-        self.car(self.r#false)
+        if value { TRUE } else { FALSE }.into()
     }
 
     fn null(&self) -> Result<Cons, Error> {
@@ -506,7 +494,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.cell_mut(index)?,
             match index {
                 0 => ZERO.into(),
-                1 => SINGLETON_CDR.into(),
+                // TODO
+                1 => DUMMY_CONS.into(),
                 _ => return Err(Error::CellIndexOutOfRange),
             },
         ))
@@ -519,11 +508,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             0 => Self::car_value_mut,
             1 => Self::cdr_value_mut,
             _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.r#true())
+        })(self, TRUE.into())
     }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, SINGLETON_CDR.into()))
+        Ok(replace(self.allocation_cell_mut()?, DUMMY_CONS.into()))
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
