@@ -52,8 +52,6 @@ pub struct Vm<const N: usize, T: Device> {
     program_counter: Cons,
     stack: Cons,
     symbols: Cons,
-    // TODO Remove this? Does it degrade performance significantly?
-    r#false: Cons,
     allocation_index: usize,
     space: bool,
     heap: [Value; N],
@@ -68,7 +66,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
             program_counter: DUMMY_CONS,
             stack: DUMMY_CONS,
             symbols: DUMMY_CONS,
-            r#false: DUMMY_CONS,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
@@ -81,14 +78,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
-        while self.program_counter != self.null()? {
+        while self.program_counter != NULL {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
             trace!("instruction", instruction);
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    let r#return = instruction == self.null()?;
+                    let r#return = instruction == NULL;
                     let mut procedure = self.procedure()?;
 
                     trace!("procedure", procedure);
@@ -190,7 +187,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter()?;
                 }
                 Instruction::IF => {
-                    self.program_counter = (if self.pop()? == self.r#false.into() {
+                    self.program_counter = (if self.pop()? == FALSE.into() {
                         self.cdr(self.program_counter)
                     } else {
                         self.car(self.program_counter)
@@ -261,7 +258,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
-        if self.stack == self.null()? {
+        if self.stack == NULL {
             return Err(Error::StackUnderflow);
         }
 
@@ -361,10 +358,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn boolean(&self, value: bool) -> Value {
         if value { TRUE } else { FALSE }.into()
-    }
-
-    fn null(&self) -> Result<Cons, Error> {
-        Ok(Cons::try_from(self.cdr(self.r#false))?.set_tag(Type::Pair as u8))
     }
 
     // Primitive operations
@@ -516,7 +509,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        Ok(self.cdr_mut(self.null()?))
+        Ok(self.cdr_mut(NULL))
     }
 
     // Garbage collection
@@ -528,7 +521,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
         self.symbols = self.copy_cons(self.symbols)?;
-        self.r#false = self.copy_cons(self.r#false)?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
@@ -568,24 +560,22 @@ impl<const N: usize, T: Device> Vm<N, T> {
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
 
-        self.program_counter = self.null()?;
-        self.stack = self.null()?;
+        self.program_counter = NULL;
+        self.stack = NULL;
 
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
 
         // Implicit top-level frame
-        let return_info = self
-            .allocate(self.null()?.into(), self.null()?.into())?
-            .into();
-        self.stack = self.allocate(return_info, self.null()?.set_tag(FRAME_TAG).into())?;
+        let return_info = self.allocate(NULL.into(), NULL.into())?.into();
+        self.stack = self.allocate(return_info, NULL.set_tag(FRAME_TAG).into())?;
 
         Ok(())
     }
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         let mut length = 0;
-        let mut name = self.null()?;
+        let mut name = NULL;
 
         loop {
             match input.next().ok_or(Error::EndOfInput)? {
@@ -594,14 +584,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         Number::new(length).into(),
                         name.set_tag(Type::String as u8).into(),
                     )?;
-                    let symbol = self.allocate(
-                        self.r#false.into(),
-                        string.set_tag(Type::Symbol as u8).into(),
-                    )?;
+                    let symbol =
+                        self.allocate(FALSE.into(), string.set_tag(Type::Symbol as u8).into())?;
                     self.push(symbol.into())?;
 
                     length = 0;
-                    name = self.null()?;
+                    name = NULL;
 
                     if character == b';' {
                         break;
@@ -625,7 +613,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.initialize_symbol(FALSE.into())?;
 
         self.symbols = self.stack;
-        self.stack = self.null()?;
+        self.stack = NULL;
 
         Ok(())
     }
@@ -643,7 +631,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
                     self.push(self.program_counter.into())?;
-                    self.program_counter = self.null()?;
+                    self.program_counter = NULL;
 
                     (self.decode_operand(input)?, Instruction::CALL)
                 }
@@ -657,11 +645,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.program_counter = self.pop()?.try_into()?;
 
                     (
-                        self.allocate(
-                            code.into(),
-                            self.null()?.set_tag(Type::Procedure as u8).into(),
-                        )?
-                        .into(),
+                        self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?
+                            .into(),
                         Instruction::CONSTANT,
                     )
                 }
@@ -680,7 +665,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
-        self.stack = self.null()?;
+        self.stack = NULL;
 
         Ok(())
     }
@@ -717,7 +702,6 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
         writeln!(formatter, "program counter: {}", self.program_counter)?;
         writeln!(formatter, "stack: {}", self.stack)?;
         writeln!(formatter, "symbols: {}", self.symbols)?;
-        writeln!(formatter, "false: {}", self.r#false)?;
 
         for index in 0..self.allocation_index / 2 {
             let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
@@ -789,9 +773,7 @@ mod tests {
     fn create_list() {
         let mut vm = create_vm();
 
-        let list = vm
-            .append(Number::new(1).into(), vm.null().unwrap())
-            .unwrap();
+        let list = vm.append(Number::new(1).into(), NULL).unwrap();
 
         insta::assert_display_snapshot!(vm);
 
