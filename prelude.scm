@@ -1,5 +1,3 @@
-(define stak #t)
-
 (define pair-type 0)
 (define procedure-type 1)
 (define symbol-type 2)
