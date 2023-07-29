@@ -33,8 +33,8 @@
 
 ; Error
 
-; TODO
 (define (todo)
+  ; TODO
   (#f))
 
 ; Types
