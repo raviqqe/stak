@@ -301,7 +301,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
+        let cons = Cons::new(self.allocation_end() as u64);
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_index_range!(self, cons);
@@ -327,7 +327,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocation_end(&self) -> usize {
-        self.allocation_start() + Self::SPACE_SIZE
+        self.allocation_start() + self.allocation_index
     }
 
     fn car(&self, cons: Cons) -> Value {
@@ -523,7 +523,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         let mut index = self.allocation_start();
 
-        while index < self.allocation_start() + self.allocation_index {
+        while index < self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
             index += 1;
         }
