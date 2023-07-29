@@ -117,9 +117,9 @@
       (error "empty sequence in body")
       (let ((expression (car expressions)))
         (if (and (pair? expression) (eqv? 'define (car expression)))
-          (let ((pattern (cadr expression)))
-            (loop
-              (cdr expressions)
+          (loop
+            (cdr expressions)
+            (let ((pattern (cadr expression)))
               (if (pair? pattern)
                 (cons
                   (cons
