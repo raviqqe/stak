@@ -27,6 +27,9 @@
 
 ;; Utility
 
+(define (not? x)
+  (if (eq? x #f) #t #f))
+
 (define (integer? x)
   (not (rib? x)))
 
