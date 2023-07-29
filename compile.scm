@@ -262,10 +262,10 @@
 (define (compile-primitive-call name continuation)
   (compile-constant
     (cond
-      ((memq name '(close id pop))
+      ((memq name '(close id))
         1)
 
-      ((memq name '(skip -))
+      ((memq name '(pop skip -))
         2)
 
       ((memq name '(rib))
