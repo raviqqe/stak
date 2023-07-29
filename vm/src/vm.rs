@@ -75,12 +75,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(vm)
     }
 
-    fn initialize_cells(&mut self) -> Result<(), Error> {
-        self.cells = self.allocate(FALSE.into(), FALSE.into())?;
-
-        Ok(())
-    }
-
     pub fn run(&mut self) -> Result<(), Error> {
         while self.program_counter != NULL {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
@@ -494,13 +488,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // GC escape cells
+    //
+    fn initialize_cells(&mut self) -> Result<(), Error> {
+        self.cells = self.allocate(FALSE.into(), FALSE.into())?;
 
-    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, FALSE.into()))
-    }
-
-    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        Ok(self.car_mut(self.cells))
+        Ok(())
     }
 
     // Garbage collection
