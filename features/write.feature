@@ -7,7 +7,7 @@ Feature: Write
     cp $ROOT/*.scm .
     """
 
-  Scenario: Write a character
+  Scenario: Write a character integer
     Given a file named "source.scm" with:
     """scheme
     (write-u8 65)
