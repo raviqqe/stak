@@ -59,12 +59,12 @@ impl Display for Cons {
         } else if self == &TRUE {
             write!(formatter, "#t")?;
         } else if self == &NULL {
-            write!(formatter, "null")?;
+            write!(formatter, "()")?;
         } else {
             write!(formatter, "{:x}", self.index())?;
         }
 
-        write!(formatter, "{}", self.tag())
+        write!(formatter, ":{}", self.tag())
     }
 }
 

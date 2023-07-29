@@ -2,10 +2,10 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-program counter: cffffffffffffffd:0
+program counter: c():0
 stack: c100:0
-symbols: cffffffffffffffd:0
-00: n42 cffffffffffffffd:0
-02: cfffffffffffffff:0 c104:0
-04: cfffffffffffffff:0 cfffffffffffffff:0
+symbols: c():0
+00: n42 c():0
+02: c#f:0 c104:0
+04: c#f:0 c#f:0
 
