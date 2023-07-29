@@ -68,7 +68,8 @@
 
   (else))
 
-(define (todo value) (error "not implemented:" value))
+(define (todo value)
+  (error "not implemented:" value))
 
 (define (i8->u8 value)
   (if (< value 0)
