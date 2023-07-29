@@ -117,11 +117,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.stack
                             }
                             .into();
+                            *self.cdr_mut(last_argument) = frame;
 
                             // Drop an argument count.
                             self.pop()?;
 
-                            *self.cdr_mut(last_argument) = frame;
                             // Set an environment.
                             *self.cdr_value_mut(frame)? = Cons::try_from(self.cdr(procedure))?
                                 .set_tag(FRAME_TAG)
