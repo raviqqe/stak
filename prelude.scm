@@ -39,33 +39,33 @@
 (define (write x)
   (cond
     ((string? x)
-      (putchar 34)
+      (write-u8 34)
       (write-chars (string->list x) #t)
-      (putchar 34))
+      (write-u8 34))
     (else
       (display o))))
 
 (define (display o)
   (cond ((not o)
-      (putchar2 35 102)) ;; #f
+      (write-u8-2 35 102)) ;; #f
     ((eqv? o #t)
-      (putchar2 35 116)) ;; #t
+      (write-u8-2 35 116)) ;; #t
     ((null? o)
-      (putchar2 40 41)) ;; ()
+      (write-u8-2 40 41)) ;; ()
     ((pair? o)
-      (putchar 40) ;; #\(
+      (write-u8 40) ;; #\(
       (write (car o))
       (write-list (cdr o))
-      (putchar 41)) ;; #\)
+      (write-u8 41)) ;; #\)
     ((symbol? o)
       (display (symbol->string o)))
     ((string? o)
       (write-chars (string->list o) #f))
     ((vector? o)
-      (putchar 35) ;; #\#
+      (write-u8 35) ;; #\#
       (write (vector->list o)))
     ((procedure? o)
-      (putchar2 35 112)) ;; #p
+      (write-u8-2 35 112)) ;; #p
     (else
       ;; must be a number
       (display (number->string o)))))
@@ -73,7 +73,7 @@
 (define (write-list lst)
   (if (pair? lst)
     (begin
-      (putchar 32) ;; #\space
+      (write-u8 32) ;; #\space
       (if (pair? lst)
         (begin
           (write (car lst))
@@ -84,24 +84,24 @@
 (define (write-characters characters escape?)
   (if (pair? characters)
     (let ((characters (car lst)))
-      (putchar
+      (write-u8
         (cond ((not escape?)
             c)
           ;#; ;; support for \n in strings
           ((eqv? c 10) ;; #\newline
-            (putchar 92)
+            (write-u8 92)
             110) ;; #\n
           ;#; ;; support for \r in strings
           ((eqv? c 13) ;; #\return
-            (putchar 92)
+            (write-u8 92)
             114) ;; #\r
           ;#; ;; support for \t in strings
           ((eqv? c 9) ;; #\tab
-            (putchar 92)
+            (write-u8 92)
             116) ;; #\t
           ((or (eqv? c 34) ;; #\"
               (eqv? c 92)) ;; #\\
-            (putchar 92)
+            (write-u8 92)
             c)
           (else
             c)))
@@ -114,8 +114,8 @@
     (type-error)))
 
 (define (newline)
-  (putchar 10))
+  (write-u8 10))
 
-(define (putchar2 c1 c2)
-  (putchar c1)
-  (putchar c2))
+(define (write-u8-2 c1 c2)
+  (write-u8 c1)
+  (write-u8 c2))
