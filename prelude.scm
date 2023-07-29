@@ -41,16 +41,44 @@
       (rib? x)
       (eqv? (rib-tag x) type))))
 
-(define pair? (instance? pair-type))
 (define procedure? (instance? procedure-type))
-(define string? (instance? string-type))
-(define string? (instance? string-type))
-(define char? (instance? char-type))
+
+; Equality
+
+(define eqv? eq?)
 
 ; Boolean
 
 (define (not x)
-  (if (eq? x #f) #t #f))
+  (eq? x #f))
+
+; Character
+
+(define char? (instance? char-type))
+
+(define (integer->char x)
+  (rib x '() char-type))
+
+(define (char->integer x)
+  (rib-car x))
+
+; List
+
+(define pair? (instance? pair-type))
+
+(define (null? x)
+  (eq? x '()))
+
+(define car rib-car)
+(define cdr rib-cdr)
+
+(define (length* xs y)
+  (if (null? xs)
+    y
+    (length* (cdr xs) (+ y 1))))
+
+(define (length xs)
+  (length* xs 0))
 
 ; Number
 
@@ -65,19 +93,15 @@
 (define (exact? x) #t)
 (define (inexact? x) #f)
 
-; Equality
+; String
 
-(define eqv? eq?)
+(define string? (instance? string-type))
 
-; Character
+(define (list->string x)
+  (rib (length x) x string-type))
 
-(define (integer->char x)
-  (rib x '() char-type))
-
-(define (char->integer x)
-  (if (char? x)
-    (rib-car x)
-    (error "not character" x)))
+(define (string->list x)
+  (rib-cdr x))
 
 ; Write
 
