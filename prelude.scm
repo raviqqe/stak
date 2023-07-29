@@ -33,6 +33,9 @@
 (define (integer? x)
   (not (rib? x)))
 
+(define (char->integer x)
+  (rib-car x))
+
 ;; Equality
 
 (define eqv? eq?)
