@@ -113,12 +113,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 *self.cdr_mut(last_argument) = frame.into();
                                 frame
                             } else {
-                                let stack = self.cdr(last_argument);
-
                                 // Reuse an argument count cons as a new frame.
+                                let stack = self.cdr(last_argument);
                                 *self.cdr_mut(last_argument) = self.stack.into();
                                 *self.car_mut(self.stack) =
                                     self.allocate(self.cdr(self.program_counter), stack)?.into();
+
                                 self.stack
                             };
 
