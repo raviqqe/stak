@@ -156,7 +156,7 @@
             (expand
               (cond
                 ((null? (cdr expression))
-                  #f)
+                  #t)
 
                 ((null? (cddr expression))
                   (cadr expression))
@@ -195,21 +195,21 @@
                     bindings)
                   (expand-body (cddr expression))))))
 
-          ((eqv? first 'and)
+          ((eqv? first 'or)
             (expand
               (cond
                 ((null? (cdr expression))
-                  #t)
+                  #f)
 
                 ((null? (cddr expression))
                   (cadr expression))
 
                 (else
                   (list 'let
-                    (list (list '$x expression))
-                    (list 'if $x
-                      $x
-                      (cons 'and (cddr expression))))))))
+                    (list (list '$x (cadr expression)))
+                    (list 'if '$x
+                      '$x
+                      (cons 'or (cddr expression))))))))
 
           (else
             (map expand expression)))))
