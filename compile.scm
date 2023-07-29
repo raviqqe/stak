@@ -120,7 +120,9 @@
       (let ((first (car expression)))
         (cond
           ((eqv? first 'begin)
-            (cons 'begin (map expand (cdr expression))))
+            (if (null? (cdr expression))
+              (error "ill-formed begin expression")
+              (cons 'begin (map expand (cdr expression)))))
 
           ((eqv? first 'define)
             (let ((pattern (cadr expression)))
