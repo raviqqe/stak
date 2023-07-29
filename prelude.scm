@@ -40,7 +40,7 @@
 ;; Write
 
 (define (write-char x)
-  (write-u8 (character->integer x)))
+  (write-u8 (char->integer x)))
 
 (define (write-char2 c1 c2)
   (write-char c1)
