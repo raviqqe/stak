@@ -5,4 +5,6 @@ expression: vm
 program counter: cffffffffffffffd:0
 stack: cffffffffffffffd:0
 symbols: cffffffffffffffd:0
+00: cfffffffffffffff:0 c102:0
+02: cfffffffffffffff:0 cfffffffffffffff:0
 

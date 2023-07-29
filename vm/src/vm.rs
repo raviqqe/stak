@@ -52,6 +52,7 @@ pub struct Vm<const N: usize, T: Device> {
     program_counter: Cons,
     stack: Cons,
     symbols: Cons,
+    cells: Cons,
     allocation_index: usize,
     space: bool,
     heap: [Value; N],
@@ -66,10 +67,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             program_counter: NULL,
             stack: NULL,
             symbols: NULL,
+            cells: NULL,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
         };
+
+        let cells = vm.allocate_raw(FALSE.into(), FALSE.into())?;
+        vm.cells = vm.allocate_raw(FALSE.into(), cells.into())?;
 
         vm.stack = NULL;
         vm.program_counter = NULL;
@@ -483,15 +488,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
         assert_cell_index!(index);
 
-        Ok(replace(
-            self.cell_mut(index)?,
-            match index {
-                0 => ZERO.into(),
-                // TODO
-                1 => NULL.into(),
-                _ => return Err(Error::CellIndexOutOfRange),
-            },
-        ))
+        Ok(replace(self.cell_mut(index)?, FALSE.into()))
     }
 
     fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
@@ -501,15 +498,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
             0 => Self::car_value_mut,
             1 => Self::cdr_value_mut,
             _ => return Err(Error::CellIndexOutOfRange),
-        })(self, TRUE.into())
+        })(self, self.cdr(self.cells))
     }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, NULL.into()))
+        Ok(replace(self.allocation_cell_mut()?, FALSE.into()))
     }
 
     fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        Ok(self.cdr_mut(NULL))
+        Ok(self.car_mut(self.cells))
     }
 
     // Garbage collection
@@ -521,6 +518,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
         self.symbols = self.copy_cons(self.symbols)?;
+        self.cells = self.copy_cons(self.cells)?;
 
         for index in self.allocation_start()..self.allocation_end() {
             self.heap[index] = self.copy_value(self.heap[index])?;
