@@ -327,7 +327,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocation_end(&self) -> usize {
-        self.allocation_start() + self.allocation_index
+        self.allocation_start() + Self::SPACE_SIZE
     }
 
     fn car(&self, cons: Cons) -> Value {
