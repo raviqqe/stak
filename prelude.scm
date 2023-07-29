@@ -25,4 +25,96 @@
 
 ; Library
 
+;; Utility
+
+(define (integer? x)
+  (not (rib? x)))
+
+;; Equality
+
 (define eqv? eq?)
+
+;; Write
+
+(define (write o)
+  (cond ((string? o)
+      (putchar 34)
+      (write-chars (string->list o) #t)
+      (putchar 34))
+    (else
+      (display o))))
+
+(define (display o)
+  (cond ((not o)
+      (putchar2 35 102)) ;; #f
+    ((eqv? o #t)
+      (putchar2 35 116)) ;; #t
+    ((null? o)
+      (putchar2 40 41)) ;; ()
+    ((pair? o)
+      (putchar 40) ;; #\(
+      (write (car o))
+      (write-list (cdr o))
+      (putchar 41)) ;; #\)
+    ((symbol? o)
+      (display (symbol->string o)))
+    ((string? o)
+      (write-chars (string->list o) #f))
+    ((vector? o)
+      (putchar 35) ;; #\#
+      (write (vector->list o)))
+    ((procedure? o)
+      (putchar2 35 112)) ;; #p
+    (else
+      ;; must be a number
+      (display (number->string o)))))
+
+(define (write-list lst)
+  (if (pair? lst)
+    (begin
+      (putchar 32) ;; #\space
+      (if (pair? lst)
+        (begin
+          (write (car lst))
+          (write-list (cdr lst)))
+        #f))
+    #f))
+
+(define (write-characters characters escape?)
+  (if (pair? characters)
+    (let ((characters (car lst)))
+      (putchar
+        (cond ((not escape?)
+            c)
+          ;#; ;; support for \n in strings
+          ((eqv? c 10) ;; #\newline
+            (putchar 92)
+            110) ;; #\n
+          ;#; ;; support for \r in strings
+          ((eqv? c 13) ;; #\return
+            (putchar 92)
+            114) ;; #\r
+          ;#; ;; support for \t in strings
+          ((eqv? c 9) ;; #\tab
+            (putchar 92)
+            116) ;; #\t
+          ((or (eqv? c 34) ;; #\"
+              (eqv? c 92)) ;; #\\
+            (putchar 92)
+            c)
+          (else
+            c)))
+      (write-chars (cdr lst) escape?))
+    #f))
+
+(define (write-character character)
+  (if (integer? character)
+    (write-u8 character)
+    (type-error)))
+
+(define (newline)
+  (putchar 10))
+
+(define (putchar2 c1 c2)
+  (putchar c1)
+  (putchar c2))
