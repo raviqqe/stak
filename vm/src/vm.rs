@@ -33,7 +33,7 @@ macro_rules! trace {
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            $cons.index() >= NULL.index()
+            SINGLETONS.contains(&$cons)
                 || $self.allocation_start() <= $cons.index()
                     && $cons.index() < $self.allocation_end()
         );
