@@ -302,13 +302,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         let cons = Cons::new((self.allocation_start() + self.allocation_index) as u64);
+        self.allocation_index += CONS_FIELD_COUNT;
 
         assert_index_range!(self, cons);
 
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
-
-        self.allocation_index += CONS_FIELD_COUNT;
 
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
@@ -328,7 +327,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocation_end(&self) -> usize {
-        self.allocation_start() + Self::SPACE_SIZE
+        self.allocation_start() + self.allocation_index
     }
 
     fn car(&self, cons: Cons) -> Value {
