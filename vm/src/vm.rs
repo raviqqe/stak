@@ -521,12 +521,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.symbols = self.copy_cons(self.symbols)?;
         self.cells = self.copy_cons(self.cells)?;
 
-        for index in self.allocation_start()..self.allocation_end() {
-            if index >= self.allocation_start() + self.allocation_index {
-                break;
-            }
+        let mut index = self.allocation_start();
 
+        while index < self.allocation_start() + self.allocation_index {
             self.heap[index] = self.copy_value(self.heap[index])?;
+            index += 1;
         }
 
         Ok(())
