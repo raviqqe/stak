@@ -36,7 +36,10 @@
 ; Types
 
 (define (instance? type)
-  (lambda (x) (and (rib? x) (eqv? (rib-tag x) type))))
+  (lambda (x)
+    (and
+      (rib? x)
+      (eqv? (rib-tag x) type))))
 
 (define pair? (instance? pair-type))
 (define procedure? (instance? procedure-type))
