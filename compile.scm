@@ -252,6 +252,12 @@
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
+(define (compile-unspecified context continuation)
+  (if (call? context 'pop continuation)
+    ; Skip argument count constant and call instructions.
+    (rib-cdr (rib-cdr continuation))
+    (compile-constant #f continuation)))
+
 (define (compile-drop continuation)
   ; TODO Check null? instead when we introduce null-terminated returns.
   (if (eqv? continuation tail)
