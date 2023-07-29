@@ -44,7 +44,7 @@
   (if (string? x)
     (begin
       (write-u8 34)
-      (write-chars (string->list x) #t)
+      (write-characters (string->list x) #t)
       (write-u8 34))
     (display x)))
 
