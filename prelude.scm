@@ -1,35 +1,35 @@
 (define stak #t)
 
-(define pair-tag 0)
-(define procedure-tag 1)
-(define symbol-tag 2)
-(define string-tag 3)
-(define character-tag 4)
-(define vector-tag 5)
-(define byte-vector-tag 6)
-(define eof-tag 7)
-(define port-tag 8)
+(define pair-type 0)
+(define procedure-type 1)
+(define symbol-type 2)
+(define string-type 3)
+(define character-type 4)
+(define vector-type 5)
+(define byte-vector-type 6)
+(define eof-type 7)
+(define port-type 8)
 
 ; Primitives
 
-(define cons (rib 1 '() procedure-tag))
-(define id (rib 2 '() procedure-tag))
-(define pop (rib 3 '() procedure-tag))
-(define skip (rib 4 '() procedure-tag))
-(define close (rib 5 '() procedure-tag))
-(define rib? (rib 6 '() procedure-tag))
-(define rib-car (rib 7 '() procedure-tag))
-(define rib-cdr (rib 8 '() procedure-tag))
-(define rib-set-car! (rib 9 '() procedure-tag))
-(define rib-set-cdr! (rib 10 '() procedure-tag))
-(define eq? (rib 11 '() procedure-tag))
-(define lt? (rib 12 '() procedure-tag))
-(define + (rib 13 '() procedure-tag))
-(define - (rib 14 '() procedure-tag))
-(define * (rib 15 '() procedure-tag))
-(define / (rib 16 '() procedure-tag))
-(define read-u8 (rib 17 '() procedure-tag))
-(define write-u8 (rib 18 '() procedure-tag))
+(define cons (rib 1 '() procedure-type))
+(define id (rib 2 '() procedure-type))
+(define pop (rib 3 '() procedure-type))
+(define skip (rib 4 '() procedure-type))
+(define close (rib 5 '() procedure-type))
+(define rib? (rib 6 '() procedure-type))
+(define rib-car (rib 7 '() procedure-type))
+(define rib-cdr (rib 8 '() procedure-type))
+(define rib-set-car! (rib 9 '() procedure-type))
+(define rib-set-cdr! (rib 10 '() procedure-type))
+(define eq? (rib 11 '() procedure-type))
+(define lt? (rib 12 '() procedure-type))
+(define + (rib 13 '() procedure-type))
+(define - (rib 14 '() procedure-type))
+(define * (rib 15 '() procedure-type))
+(define / (rib 16 '() procedure-type))
+(define read-u8 (rib 17 '() procedure-type))
+(define write-u8 (rib 18 '() procedure-type))
 
 ; Library
 
@@ -46,11 +46,13 @@
 
 ;; Types
 
-(define (instance? x type)
-  (and (rib? x) (eqv? (rib-tag x) type)))
+(define (instance? type)
+  (lambda (x) (and (rib? x) (eqv? (rib-tag x) type))))
 
-(define string?
-  (instance? string-type))
+(define pair? (instance? pair-type))
+(define procedure? (instance? procedure-type))
+(define char? (instance? char-type))
+(define string? (instance? string-type))
 
 ;;; Number
 
