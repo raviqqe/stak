@@ -39,10 +39,12 @@
   (if (eq? x #f) #t #f))
 
 (define (integer->char x)
-  (rib x '() character-tag))
+  (rib x '() character-type))
 
 (define (char->integer x)
-  (rib-car x))
+  (if (char? x)
+    (rib-car x)
+    (error "not character" x)))
 
 ;; Types
 
