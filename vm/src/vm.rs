@@ -112,15 +112,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 *self.cdr_mut(self.cells) = self.cdr(last_argument);
                                 *self.car_mut(self.stack) = self.cells.into();
                                 self.stack
-                            }
-                            .into();
-                            *self.cdr_mut(last_argument) = frame;
+                            };
+                            *self.cdr_mut(last_argument) = frame.into();
 
                             // Drop an argument count.
                             self.pop()?;
 
                             // Set an environment.
-                            *self.cdr_value_mut(frame)? = Cons::try_from(self.cdr(procedure))?
+                            *self.cdr_mut(frame) = Cons::try_from(self.cdr(procedure))?
                                 .set_tag(FRAME_TAG)
                                 .into();
                             self.program_counter = self.cdr(code).try_into()?;
