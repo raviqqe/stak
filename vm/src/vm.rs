@@ -107,7 +107,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             let last_argument = self.tail(self.stack, parameter_count)?;
 
-                            *self.cdr_mut(last_argument) = if r#return {
+                            let frame = if r#return {
                                 self.frame()?
                             } else {
                                 // Reuse an argument count cons as a new frame.
@@ -121,11 +121,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
 
+                            *self.cdr_mut(last_argument) = frame;
                             // Set an environment.
-                            *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr(procedure))?
-                                    .set_tag(FRAME_TAG)
-                                    .into();
+                            *self.cdr_value_mut(frame)? = Cons::try_from(self.cdr(procedure))?
+                                .set_tag(FRAME_TAG)
+                                .into();
                             self.program_counter = self.cdr(code).try_into()?;
 
                             if !r#return {
