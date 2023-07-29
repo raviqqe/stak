@@ -111,6 +111,37 @@
 
 ; Non-primitive expansion
 
+(define (expand-body expressions)
+  (let loop ((expressions expressions) (definitions '()))
+    (if (null? expressions)
+      (error "empty sequence in body")
+      (let ((expression (car expressions)))
+        (cond
+          ((and (pair? expression) (eqv? 'define (car expression)))
+            (loop
+              (cdr expressions)
+              (cons
+                (let (
+                    (pattern (cadr expression))
+                    (body (cddr expression)))
+                  (if (pair? pattern)
+                    (cons
+                      (car pattern)
+                      (cons 'lambda (cons (cdr pattern) body)))
+                    (cons pattern body)))
+                definitions)))
+
+          ((pair? definitions)
+            (expand (cons 'letrec (cons (reverse definitions) expressions))))
+
+          (else
+            (expand-sequence expressions)))))))
+
+(define (expand-sequence expressions)
+  (if (null? expressions)
+    (error "empty sequence")
+    (map expand expressions)))
+
 (define (expand expression)
   (cond
     ((symbol? expression)
@@ -120,7 +151,7 @@
       (let ((first (car expression)))
         (cond
           ((eqv? first 'begin)
-            (cons 'begin (map expand (cdr expression))))
+            (cons 'begin (expand-sequence (cdr expression))))
 
           ((eqv? first 'define)
             (let ((pattern (cadr expression)))
@@ -141,7 +172,7 @@
                 #f)))
 
           ((eqv? first 'lambda)
-            (append (list 'lambda (cadr expression)) (map expand (cddr expression))))
+            (cons 'lambda (cons (cadr expression) (expand-body (cddr expression)))))
 
           ((eqv? first 'let)
             (let ((bindings (cadr expression)))
@@ -152,7 +183,7 @@
                     (lambda (binding)
                       (list (car binding) (expand (cadr binding))))
                     bindings)
-                  (map expand (cddr expression))))))
+                  (expand-body (cddr expression))))))
 
           (else
             (map expand expression)))))
@@ -221,14 +252,33 @@
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
-(define (compile-begin context expressions continuation)
+(define (drop? codes)
+  (and
+    (rib? codes)
+    (rib? (rib-cdr codes))
+    (eqv? (rib-tag (rib-cdr codes)) call-instruction)
+    (eqv? (rib-car (rib-cdr codes)) 'pop)))
+
+(define (compile-unspecified continuation)
+  (if (drop? continuation)
+    ; Skip argument count constant and call instructions.
+    (rib-cdr (rib-cdr continuation))
+    (compile-constant #f continuation)))
+
+(define (compile-drop continuation)
+  ; TODO Check null? instead when we introduce null-terminated returns.
+  (if (eq? continuation tail)
+    continuation
+    (compile-primitive-call 'pop continuation)))
+
+(define (compile-sequence context expressions continuation)
   (compile-expression
     context
     (car expressions)
-    (if (pair? (cdr expressions))
+    (if (null? (cdr expressions))
+      continuation
       ; TODO Drop intermediate values.
-      (compile-begin context (cdr expressions) continuation)
-      continuation)))
+      (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
@@ -260,7 +310,7 @@
         function
         (continuation (compile-context-environment-add-temporary context))))))
 
-(define (compile-unbind context continuation)
+(define (compile-unbind continuation)
   ; TODO Check null? instead when we introduce null-terminated returns.
   (if (eqv? continuation tail)
     continuation
@@ -277,8 +327,8 @@
           (cdr bindings)
           (compile-context-environment-append body-context (list (car binding)))
           body
-          (compile-unbind context continuation))))
-    (compile-begin body-context body continuation)))
+          (compile-unbind continuation))))
+    (compile-sequence body-context body continuation)))
 
 (define (compile-let context bindings body continuation)
   (compile-let* context bindings context body continuation))
@@ -303,7 +353,7 @@
       (let ((first (car expression)))
         (cond
           ((eqv? first 'begin)
-            (compile-begin context (cdr expression) continuation))
+            (compile-sequence context (cdr expression) continuation))
 
           ((eqv? first 'if)
             (compile-expression
@@ -321,7 +371,7 @@
                   (rib
                     pair-type
                     (length parameters)
-                    (compile-begin
+                    (compile-sequence
                       (compile-context-environment-append
                         context
                         ; #f is for a frame.
@@ -345,7 +395,7 @@
             (compile-expression context (caddr expression)
               (compile-set
                 (compile-context-resolve context (cadr expression) 1)
-                continuation)))
+                (compile-unspecified continuation))))
 
           (else
             (compile-call context expression continuation)))))

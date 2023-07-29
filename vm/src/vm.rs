@@ -389,6 +389,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
             Primitive::ID => {}
             Primitive::POP => {
+                // TODO This shouldn't be a primitive as it's not a function...
+                // Can we always use a skip?
+                // Should this be an instruction?
                 self.pop()?;
             }
             Primitive::SKIP => {
@@ -441,6 +444,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.device
                     .write(Number::try_from(byte)?.to_u64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
+
+                // TODO Should we return an error?
+                self.push(byte)?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
