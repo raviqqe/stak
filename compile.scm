@@ -111,6 +111,40 @@
 
 ; Non-primitive expansion
 
+(define (expand-body exprs)
+  (let loop ((exprs exprs) (defs '()))
+    (if (pair? exprs)
+      (let ((expr (car exprs)))
+        (if (and (pair? expr) (eqv? 'define (car expr)) (pair? (cdr expr)))
+          (let ((pattern (cadr expr)))
+            (if (pair? pattern)
+              (loop (cdr exprs)
+                (cons (cons (car pattern)
+                    (cons (cons 'lambda
+                        (cons (cdr pattern)
+                          (cddr expr)))
+                      '()))
+                  defs))
+              (loop (cdr exprs)
+                (cons (cons pattern
+                    (cddr expr))
+                  defs))))
+          (expand-body-done defs exprs)))
+      (expand-body-done defs '(0)))))
+
+(define (expand-body-done defs exprs)
+  (if (pair? defs)
+    (expand-expr
+      (cons 'letrec
+        (cons (reverse defs)
+          exprs)))
+    (expand-begin exprs)))
+
+(define (expand-sequence expressions)
+  (if (null? expressions)
+    (error "empty expression sequence")
+    (map expand expressions)))
+
 (define (expand expression)
   (cond
     ((symbol? expression)
@@ -120,9 +154,7 @@
       (let ((first (car expression)))
         (cond
           ((eqv? first 'begin)
-            (if (null? (cdr expression))
-              (error "ill-formed begin expression")
-              (cons 'begin (map expand (cdr expression)))))
+            (cons 'begin (expand-sequence (cdr expression))))
 
           ((eqv? first 'define)
             (let ((pattern (cadr expression)))
