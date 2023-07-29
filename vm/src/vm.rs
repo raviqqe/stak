@@ -389,6 +389,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
             Primitive::ID => {}
             Primitive::POP => {
+                // TODO This shouldn't be a primitive as it's not a function...
+                // Can we always use a skip?
+                // Should this be an instruction?
                 self.pop()?;
             }
             Primitive::SKIP => {
