@@ -48,35 +48,36 @@
       (write-u8 34))
     (display x)))
 
-(define (display o)
-  (cond ((not o)
-      (write-u8-2 35 102)) ;; #f
-    ((eqv? o #t)
-      (write-u8-2 35 116)) ;; #t
-    ((null? o)
-      (write-u8-2 40 41)) ;; ()
-    ((pair? o)
-      (write-u8 40) ;; #\(
-      (write (car o))
-      (write-list (cdr o))
-      (write-u8 41)) ;; #\)
+(define (display x)
+  (cond
+    ((not x)
+      (write-u8-2 35 102)) ; #f
+    ((eqv? x #t)
+      (write-u8-2 35 116)) ; #t
+    ((null? x)
+      (write-u8-2 40 41)) ; ()
+    ((pair? x)
+      (write-u8 40) ; (
+      (write (car x))
+      (write-list (cdr x))
+      (write-u8 41)) ; )
     ((symbol? o)
       (display (symbol->string o)))
     ((string? o)
       (write-chars (string->list o) #f))
     ((vector? o)
-      (write-u8 35) ;; #\#
+      (write-u8 35) ; #\#
       (write (vector->list o)))
     ((procedure? o)
-      (write-u8-2 35 112)) ;; #p
+      (write-u8-2 35 112)) ; #p
     (else
-      ;; must be a number
+      ; must be a number
       (display (number->string o)))))
 
 (define (write-list lst)
   (if (pair? lst)
     (begin
-      (write-u8 32) ;; #\space
+      (write-u8 32) ; #\space
       (if (pair? lst)
         (begin
           (write (car lst))
@@ -90,20 +91,20 @@
       (write-u8
         (cond ((not escape?)
             c)
-          ;#; ;; support for \n in strings
-          ((eqv? c 10) ;; #\newline
+          ;#;; support for \n in strings
+          ((eqv? c 10) ; #\newline
             (write-u8 92)
-            110) ;; #\n
-          ;#; ;; support for \r in strings
-          ((eqv? c 13) ;; #\return
+            110) ; #\n
+          ;#;; support for \r in strings
+          ((eqv? c 13) ; #\return
             (write-u8 92)
-            114) ;; #\r
-          ;#; ;; support for \t in strings
-          ((eqv? c 9) ;; #\tab
+            114) ; #\r
+          ;#;; support for \t in strings
+          ((eqv? c 9) ; #\tab
             (write-u8 92)
-            116) ;; #\t
-          ((or (eqv? c 34) ;; #\"
-              (eqv? c 92)) ;; #\\
+            116) ; #\t
+          ((or (eqv? c 34) ; #\"
+              (eqv? c 92)) ; #\\
             (write-u8 92)
             c)
           (else
