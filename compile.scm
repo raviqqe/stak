@@ -116,28 +116,26 @@
     (if (null? expressions)
       (error "empty sequence in body")
       (let ((expression (car expressions)))
-        (if (and (pair? expression) (eqv? 'define (car expression)))
-          (loop
-            (cdr expressions)
-            (let ((pattern (cadr expression)))
-              (if (pair? pattern)
-                (cons
-                  (cons
-                    (car pattern)
-                    (cons (cons 'lambda
-                        (cons (cdr pattern)
-                          (cddr expr)))
-                      '())
-                    (cons (cons pattern
-                        (cddr expression))
-                      definitions))
-                  definitions)))
-            (expand-body-done definitions expressions)))))))
+        (cond
+          ((and (pair? expression) (eqv? 'define (car expression)))
+            (loop
+              (cdr expressions)
+              (cons
+                (let (
+                    (pattern (cadr expression))
+                    (body (cddr expression)))
+                  (if (pair? pattern)
+                    (cons
+                      (car pattern)
+                      (cons 'lambda (cons (cdr pattern) body)))
+                    (cons pattern body)))
+                definitions)))
 
-(define (expand-body-done definitions expressions)
-  (if (pair? definitions)
-    (expand (cons 'letrec (cons (reverse definitions) expressions)))
-    (expand-sequence expressions)))
+          ((pair? definitions)
+            (expand (cons 'letrec (cons (reverse definitions) expressions))))
+
+          (else
+            (expand-sequence expressions)))))))
 
 (define (expand-sequence expressions)
   (if (null? expressions)
