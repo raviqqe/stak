@@ -154,7 +154,7 @@ Feature: Syntax
     Given a file named "source.scm" with:
     """scheme
     (define (sum x)
-      (if (eqv? x 0) 0 (+ x (sum (- x 1)))))
+      (if (eq? x 0) 0 (+ x (sum (- x 1)))))
 
     (write-u8 (sum 11))
     """
