@@ -68,9 +68,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         vm.initialize_cells()?;
 
-        vm.stack = NULL;
-        vm.program_counter = NULL;
-
         Ok(vm)
     }
 
