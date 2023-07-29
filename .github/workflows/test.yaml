@@ -37,7 +37,12 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
+        gc:
+          - ""
+          - "1"
     runs-on: ${{ matrix.os }}
+    env:
+      GC_ALWAYS: ${{ matrix.gc }}
     steps:
       - uses: actions/checkout@v3
       - uses: Homebrew/actions/setup-homebrew@master
