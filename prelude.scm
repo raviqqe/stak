@@ -36,10 +36,11 @@
 
 ;; Write
 
-(define (write o)
-  (cond ((string? o)
+(define (write x)
+  (cond
+    ((string? x)
       (putchar 34)
-      (write-chars (string->list o) #t)
+      (write-chars (string->list x) #t)
       (putchar 34))
     (else
       (display o))))
