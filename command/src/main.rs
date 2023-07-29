@@ -2,7 +2,7 @@ use device::StdioDevice;
 use std::{env::args, error::Error, fs::read, process::exit};
 use vm::Vm;
 
-const HEAP_SIZE: usize = 1 << 17;
+const HEAP_SIZE: usize = 1 << 15;
 
 fn main() {
     if let Err(error) = run() {
