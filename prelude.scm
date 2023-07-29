@@ -55,7 +55,7 @@
     ((eqv? x #t)
       (write-u8-2 #\# #\t))
     ((null? x)
-      (write-u8-2 40 41)) ; ()
+      (write-u8-2 #\( #\)))
     ((pair? x)
       (write-u8 40) ; (
       (write (car x))
