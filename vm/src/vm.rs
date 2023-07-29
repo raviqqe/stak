@@ -488,7 +488,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // GC escape cells
-    //
+
     fn initialize_cells(&mut self) -> Result<(), Error> {
         self.cells = self.allocate(FALSE.into(), FALSE.into())?;
 
