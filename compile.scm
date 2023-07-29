@@ -556,7 +556,7 @@
         (* 2
           (or
             (member-index operand (encode-context-all-symbols context))
-            (error "symbol not found" value))))
+            (error "symbol not found" operand))))
 
       (else (error "invalid operand" operand)))
     target))
