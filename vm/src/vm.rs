@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, FALSE, MOVED_CAR, NULL, TRUE},
+    cons::{Cons, FALSE, MOVED, NULL, TRUE},
     instruction::Instruction,
     number::Number,
     primitive::Primitive,
@@ -538,13 +538,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if SINGLETONS.contains(&cons) {
             cons
-        } else if self.car(cons) == MOVED_CAR.into() {
+        } else if self.car(cons) == MOVED.into() {
             // Get a forward pointer.
             self.cdr(cons).try_into()?
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            *self.car_mut(cons) = MOVED_CAR.into();
+            *self.car_mut(cons) = MOVED.into();
             // Set a forward pointer.
             *self.cdr_mut(cons) = copy.into();
 
