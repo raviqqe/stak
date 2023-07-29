@@ -720,6 +720,8 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
                 write!(formatter, " <- stack")?;
             } else if index == self.symbols.index() {
                 write!(formatter, " <- symbols")?;
+            } else if index == self.cells.index() {
+                write!(formatter, " <- cells")?;
             }
 
             writeln!(formatter)?;
