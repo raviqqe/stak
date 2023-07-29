@@ -22,3 +22,7 @@
 (define / (rib 16 '() procedure-tag))
 (define read-u8 (rib 17 '() procedure-tag))
 (define write-u8 (rib 18 '() procedure-tag))
+
+; Library
+
+(define eqv? eq?)
