@@ -47,7 +47,7 @@
 ;; Types
 
 (define (instance? x type)
-  (and (rib? x) (eqv? (field2 o) type)))
+  (and (rib? x) (eqv? (rib-tag x) type)))
 
 (define string?
   (instance? string-type))
