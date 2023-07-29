@@ -204,7 +204,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             // TODO Add a trace_heap flag.
             trace!("vm", self);
-            #[cfg(feature = "trace")]
+            #[cfg(feature = "gc_always")]
             self.collect_garbages()?;
         }
 
