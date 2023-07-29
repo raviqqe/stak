@@ -5,6 +5,10 @@
 (define symbol-tag 2)
 (define string-tag 3)
 (define character-tag 4)
+(define vector-tag 5)
+(define byte-vector-tag 6)
+(define eof-tag 7)
+(define port-tag 8)
 
 ; Primitives
 
