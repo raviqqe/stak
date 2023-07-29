@@ -61,14 +61,14 @@
       (write (car x))
       (write-list (cdr x))
       (write-u8 41)) ; )
-    ((symbol? o)
-      (display (symbol->string o)))
-    ((string? o)
-      (write-chars (string->list o) #f))
-    ((vector? o)
+    ((symbol? x)
+      (display (symbol->string x)))
+    ((string? x)
+      (write-characters (string->list x) #f))
+    ((vector? x)
       (write-u8 35) ; #
-      (write (vector->list o)))
-    ((procedure? o)
+      (write (vector->list x)))
+    ((procedure? x)
       (write-u8-2 35 112)) ; #p
     (else
       ; must be a number
