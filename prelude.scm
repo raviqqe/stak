@@ -38,14 +38,32 @@
 (define (not x)
   (if (eq? x #f) #t #f))
 
-(define (integer? x)
-  (not (rib? x)))
-
 (define (integer->char x)
   (rib x '() character-tag))
 
 (define (char->integer x)
   (rib-car x))
+
+;; Types
+
+(define (instance? x type)
+  (and (rib? x) (eqv? (field2 o) type)))
+
+(define string?
+  (instance? string-type))
+
+;;; Number
+
+(define (integer? x)
+  (not (rib? x)))
+
+(define rational? integer?)
+(define real? rational?)
+(define complex? real?)
+(define number? complex?)
+
+(define (exact? obj) #t)
+(define (inexact? obj) #f)
 
 ;; Equality
 
