@@ -1,8 +1,13 @@
+#[allow(dead_code)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Type {
-    #[allow(dead_code)]
     Pair,
     Procedure,
-    String,
     Symbol,
+    String,
+    Character,
+    Vector,
+    ByteVector,
+    Eof,
+    Port,
 }

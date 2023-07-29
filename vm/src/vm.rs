@@ -419,6 +419,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 let x = self.pop()?;
                 self.push(self.cdr_value(x)?)?;
             }
+            Primitive::TAG => {
+                let x = self.pop()?;
+                self.push(Number::new(Cons::try_from(self.cdr_value(x)?)?.tag() as u64).into())?;
+            }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 *self.car_value_mut(x)? = y;
@@ -429,7 +433,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 *self.cdr_value_mut(x)? = y;
                 self.push(y)?;
             }
-            Primitive::EQUAL => self.operate_comparison(|x, y| x == y)?,
+            Primitive::SET_TAG => {
+                let [x, y] = self.pop_arguments::<2>()?;
+                *self.cdr_value_mut(x)? = Cons::try_from(self.cdr_value(x)?)?
+                    .set_tag(Number::try_from(y)?.to_u64() as u8)
+                    .into();
+                self.push(y)?;
+            }
+            Primitive::EQUAL => {
+                let [x, y] = self.pop_arguments::<2>()?;
+                self.push(self.boolean(x == y))?;
+            }
             Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
             Primitive::ADD => self.operate_binary(Add::add)?,
             Primitive::SUBTRACT => self.operate_binary(Sub::sub)?,

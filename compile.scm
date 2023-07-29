@@ -36,7 +36,7 @@
     (pop 3)
     (skip 4)
     (close 5)
-    (- 14)))
+    (- 16)))
 
 ; Types
 
@@ -68,7 +68,8 @@
 
   (else))
 
-(define (todo value) (error "not implemented" value))
+(define (todo value)
+  (error "not implemented:" value))
 
 (define (i8->u8 value)
   (if (< value 0)
@@ -151,6 +152,20 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'and)
+            (expand
+              (cond
+                ((null? (cdr expression))
+                  #t)
+
+                ((null? (cddr expression))
+                  (cadr expression))
+
+                (else
+                  (list 'if (cadr expression)
+                    (cons 'and (cddr expression))
+                    #f)))))
+
           ((eqv? first 'begin)
             (cons 'begin (expand-sequence (cdr expression))))
 
@@ -179,6 +194,22 @@
                       (list (car binding) (expand (cadr binding))))
                     bindings)
                   (expand-body (cddr expression))))))
+
+          ((eqv? first 'or)
+            (expand
+              (cond
+                ((null? (cdr expression))
+                  #f)
+
+                ((null? (cddr expression))
+                  (cadr expression))
+
+                (else
+                  (list 'let
+                    (list (list '$x (cadr expression)))
+                    (list 'if '$x
+                      '$x
+                      (cons 'or (cddr expression))))))))
 
           (else
             (map expand expression)))))
@@ -241,7 +272,7 @@
         3)
 
       (else
-        (error "unknown primitive" name)))
+        (error "unknown primitive:" name)))
     (rib call-instruction name continuation)))
 
 (define (compile-set variable continuation)
@@ -497,7 +528,7 @@
                 (compile-primitive-call 'rib continuation)))))
 
         (else
-          (error "invalid constant" constant))))))
+          (error "invalid constant:" constant))))))
 
 (define (build-constant-codes* context constant continuation)
   (build-constant
@@ -601,9 +632,9 @@
         (* 2
           (or
             (member-index operand (encode-context-all-symbols context))
-            (error "symbol not found" operand))))
+            (error "symbol not found:" operand))))
 
-      (else (error "invalid operand" operand)))
+      (else (error "invalid operand:" operand)))
     target))
 
 (define (encode-codes context codes target)
