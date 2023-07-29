@@ -68,7 +68,7 @@
 
   (else))
 
-(define (todo value) (error "not implemented" value))
+(define (todo value) (error "not implemented:" value))
 
 (define (i8->u8 value)
   (if (< value 0)
@@ -241,7 +241,7 @@
         3)
 
       (else
-        (error "unknown primitive" name)))
+        (error "unknown primitive:" name)))
     (rib call-instruction name continuation)))
 
 (define (compile-set variable continuation)
@@ -497,7 +497,7 @@
                 (compile-primitive-call 'rib continuation)))))
 
         (else
-          (error "invalid constant" constant))))))
+          (error "invalid constant:" constant))))))
 
 (define (build-constant-codes* context constant continuation)
   (build-constant
@@ -601,9 +601,9 @@
         (* 2
           (or
             (member-index operand (encode-context-all-symbols context))
-            (error "symbol not found" operand))))
+            (error "symbol not found:" operand))))
 
-      (else (error "invalid operand" operand)))
+      (else (error "invalid operand:" operand)))
     target))
 
 (define (encode-codes context codes target)
