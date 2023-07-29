@@ -12,7 +12,7 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let mut vm = Vm::<HEAP_SIZE, StdioDevice>::new(Default::default())?;
+    let mut vm = Box::new(Vm::<HEAP_SIZE, StdioDevice>::new(Default::default())?);
 
     vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",
