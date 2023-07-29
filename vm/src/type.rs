@@ -3,7 +3,6 @@ pub enum Type {
     #[allow(dead_code)]
     Pair,
     Procedure,
-    Singleton,
     String,
     Symbol,
 }
