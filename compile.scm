@@ -252,7 +252,7 @@
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
-(define (pop-call? codes)
+(define (drop? codes)
   (and
     (rib? codes)
     (rib? (rib-cdr codes))
@@ -260,7 +260,7 @@
     (eqv? (rib-car (rib-cdr codes)) 'pop)))
 
 (define (compile-unspecified continuation)
-  (if (pop-call? continuation)
+  (if (drop? continuation)
     ; Skip argument count constant and call instructions.
     (rib-cdr (rib-cdr continuation))
     (compile-constant #f continuation)))
