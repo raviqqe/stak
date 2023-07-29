@@ -52,7 +52,19 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "c{:x}:{}", self.index(), self.tag())
+        write!(formatter, "c")?;
+
+        if self == &FALSE {
+            write!(formatter, "#f")?;
+        } else if self == &TRUE {
+            write!(formatter, "#t")?;
+        } else if self == &NULL {
+            write!(formatter, "null")?;
+        } else {
+            write!(formatter, "{:x}", self.index())?;
+        }
+
+        write!(formatter, "{}", self.tag())
     }
 }
 
