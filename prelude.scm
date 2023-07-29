@@ -31,22 +31,7 @@
 (define read-u8 (rib 17 '() procedure-type))
 (define write-u8 (rib 18 '() procedure-type))
 
-; Library
-
-;; Utility
-
-(define (not x)
-  (if (eq? x #f) #t #f))
-
-(define (integer->char x)
-  (rib x '() character-type))
-
-(define (char->integer x)
-  (if (char? x)
-    (rib-car x)
-    (error "not character" x)))
-
-;; Types
+; Types
 
 (define (instance? type)
   (lambda (x) (and (rib? x) (eqv? (rib-tag x) type))))
@@ -57,7 +42,12 @@
 (define string? (instance? string-type))
 (define char? (instance? char-type))
 
-;;; Number
+; Boolean
+
+(define (not x)
+  (if (eq? x #f) #t #f))
+
+; Number
 
 (define (integer? x)
   (not (rib? x)))
@@ -70,11 +60,21 @@
 (define (exact? obj) #t)
 (define (inexact? obj) #f)
 
-;; Equality
+; Equality
 
 (define eqv? eq?)
 
-;; Write
+; Character
+
+(define (integer->char x)
+  (rib x '() character-type))
+
+(define (char->integer x)
+  (if (char? x)
+    (rib-car x)
+    (error "not character" x)))
+
+; Write
 
 (define (write-char x)
   (write-u8 (char->integer x)))
