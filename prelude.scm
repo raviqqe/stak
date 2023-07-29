@@ -36,6 +36,10 @@
 
 ;; Write
 
+(define (write-u8-2 c1 c2)
+  (write-u8 c1)
+  (write-u8 c2))
+
 (define (write x)
   (cond
     ((string? x)
@@ -115,7 +119,3 @@
 
 (define (newline)
   (write-u8 10))
-
-(define (write-u8-2 c1 c2)
-  (write-u8 c1)
-  (write-u8 c2))
