@@ -33,6 +33,12 @@
 (define read-u8 (rib 17 '() procedure-type))
 (define write-u8 (rib 18 '() procedure-type))
 
+; Error
+
+; TODO
+(define (todo)
+  (#f))
+
 ; Types
 
 (define (instance? type)
@@ -114,80 +120,7 @@
 
 (define (write x)
   (if (string? x)
-    (begin
-      (write-u8 34)
-      (write-characters (string->list x) #t)
-      (write-u8 34))
+    (todo)
     (display x)))
 
-(define (display x)
-  (cond
-    ((not x)
-      (write-char2 #\# #\f))
-    ((eqv? x #t)
-      (write-char2 #\# #\t))
-    ((null? x)
-      (write-char2 #\( #\)))
-    ((pair? x)
-      (write-u8 #\()
-      (write (car x))
-      (write-list (cdr x))
-      (write-u8 #\()) ; )
-    ((symbol? x)
-      (display (symbol->string x)))
-    ((string? x)
-      (write-characters (string->list x) #f))
-    ((vector? x)
-      (write-u8 35) ; #
-      (write (vector->list x)))
-    ((procedure? x)
-      (write-char2 35 112)) ; #p
-    (else
-      ; must be a number
-      (display (number->string o)))))
-
-(define (write-list lst)
-  (if (pair? lst)
-    (begin
-      (write-u8 32) ; #\space
-      (if (pair? lst)
-        (begin
-          (write (car lst))
-          (write-list (cdr lst)))
-        #f))
-    #f))
-
-(define (write-characters characters escape?)
-  (if (pair? characters)
-    (let ((characters (car lst)))
-      (write-u8
-        (cond ((not escape?)
-            c)
-          ;#;; support for \n in strings
-          ((eqv? c 10) ; #\newline
-            (write-u8 92)
-            110) ; #\n
-          ;#;; support for \r in strings
-          ((eqv? c 13) ; #\return
-            (write-u8 92)
-            114) ; #\r
-          ;#;; support for \t in strings
-          ((eqv? c 9) ; #\tab
-            (write-u8 92)
-            116) ; #\t
-          ((or (eqv? c 34) ; #\"
-              (eqv? c 92)) ; #\\
-            (write-u8 92)
-            c)
-          (else
-            c)))
-      (write-chars (cdr lst) escape?))
-    #f))
-
-(define (write-character character)
-  (if (integer? character)
-    (write-u8 character)
-    (type-error)))
-
-(define (newline)
-  (write-u8 10))
+(define (display x) (todo))
