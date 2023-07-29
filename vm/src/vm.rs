@@ -126,8 +126,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 Cons::try_from(self.cdr(procedure))?
                                     .set_tag(FRAME_TAG)
                                     .into();
-                            self.program_counter =
-                                self.cdr(self.code(procedure).try_into()?).try_into()?;
+                            self.program_counter = self.cdr(code).try_into()?;
 
                             if !r#return {
                                 self.initialize_cells()?;
