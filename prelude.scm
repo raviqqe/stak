@@ -51,9 +51,9 @@
 (define (display x)
   (cond
     ((not x)
-      (write-u8-2 35 102)) ; #f
+      (write-u8-2 #\# #\f))
     ((eqv? x #t)
-      (write-u8-2 35 116)) ; #t
+      (write-u8-2 #\# #\t))
     ((null? x)
       (write-u8-2 40 41)) ; ()
     ((pair? x)
