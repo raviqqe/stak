@@ -164,3 +164,20 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
+
+  Scenario: Use a local variable in a definition
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x)
+      (let ((y x))
+        (define z y)
+        z))
+
+    (write-u8 (sum 11))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "B"
