@@ -4,6 +4,7 @@ use alloc::string::FromUtf8Error;
 pub enum Error {
     EndOfInput,
     IllegalInstruction,
+    MissingClosureBody,
     MissingOperand,
     MissingElseBranch,
     Utf8(FromUtf8Error),
