@@ -173,11 +173,11 @@ Feature: Syntax
         (define z y)
         z))
 
-    (write-u8 (sum 11))
+    (write-u8 (f 65))
     """
     When I run the following script:
     """sh
     cat prelude.scm source.scm | tools/compile.sh > main.out
     """
     And I successfully run `stak main.out`
-    Then the stdout should contain exactly "B"
+    Then the stdout should contain exactly "A"
