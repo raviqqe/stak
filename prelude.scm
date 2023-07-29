@@ -42,7 +42,7 @@
   (not (rib? x)))
 
 (define (integer->char x)
-  (rib x))
+  (rib x '() character-tag))
 
 (define (char->integer x)
   (rib-car x))
