@@ -41,13 +41,12 @@
   (write-u8 c2))
 
 (define (write x)
-  (cond
-    ((string? x)
+  (if (string? x)
+    (begin
       (write-u8 34)
       (write-chars (string->list x) #t)
       (write-u8 34))
-    (else
-      (display o))))
+    (display x)))
 
 (define (display o)
   (cond ((not o)
