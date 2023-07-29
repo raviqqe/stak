@@ -1,6 +1,12 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
+pub const FALSE: Cons = Cons::dummy(0);
+pub const TRUE: Cons = Cons::dummy(1);
+pub const NULL: Cons = Cons::dummy(2);
+// TODO Should we use Cons::new(0).set_tag(u8::MAX)?
+pub const MOVED_CAR: Cons = Cons::dummy(3);
+
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
 

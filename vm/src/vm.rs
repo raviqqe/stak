@@ -1,6 +1,11 @@
 use crate::{
-    cons::Cons, instruction::Instruction, number::Number, primitive::Primitive, r#type::Type,
-    value::Value, Error,
+    cons::{Cons, FALSE, MOVED_CAR, NULL, TRUE},
+    instruction::Instruction,
+    number::Number,
+    primitive::Primitive,
+    r#type::Type,
+    value::Value,
+    Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -11,11 +16,6 @@ use device::Device;
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const FALSE: Cons = Cons::dummy(0);
-const TRUE: Cons = Cons::dummy(1);
-const NULL: Cons = Cons::dummy(2);
-// TODO Should we use Cons::new(0).set_tag(u8::MAX)?
-const MOVED_CAR: Cons = Cons::dummy(3);
 const FRAME_TAG: u8 = 1;
 
 const SINGLETONS: &[Cons] = &[FALSE, TRUE, NULL];
