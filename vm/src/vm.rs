@@ -522,15 +522,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.cells = self.copy_cons(self.cells)?;
 
         for index in self.allocation_start()..self.allocation_end() {
-            let value = self.heap[index];
-
-            trace!("gc before", value);
-
-            let value = self.copy_value(value)?;
-
-            trace!("gc after", value);
-
-            self.heap[index] = value;
+            self.heap[index] = self.copy_value(self.heap[index])?;
         }
 
         Ok(())
