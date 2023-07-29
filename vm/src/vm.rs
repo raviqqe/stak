@@ -40,12 +40,6 @@ macro_rules! assert_index_range {
     };
 }
 
-macro_rules! assert_cell_index {
-    ($index:expr) => {
-        debug_assert!($index < 2);
-    };
-}
-
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
@@ -73,8 +67,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             heap: [ZERO.into(); N],
         };
 
-        let cells = vm.allocate_raw(FALSE.into(), FALSE.into())?;
-        vm.cells = vm.allocate_raw(FALSE.into(), cells.into())?;
+        vm.cells = vm.allocate_raw(FALSE.into(), FALSE.into())?;
 
         vm.stack = NULL;
         vm.program_counter = NULL;
@@ -91,7 +84,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
-                    let mut procedure = self.procedure()?;
+                    let procedure = self.procedure()?;
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -113,33 +106,23 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let mut last_argument = self.tail(self.stack, parameter_count)?;
+                            let last_argument = self.tail(self.stack, parameter_count)?;
 
                             if r#return {
                                 *self.cdr_mut(last_argument) = self.frame()?.into();
                             } else {
-                                *self.cell_mut(0)? = last_argument.into();
-                                *self.cell_mut(1)? = procedure.into();
+                                let stack = self.cdr(last_argument);
 
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(self.stack) = self
-                                    .allocate(
-                                        // return address
-                                        self.cdr(self.program_counter),
-                                        // old stack
-                                        self.cdr(last_argument),
-                                    )?
-                                    .into();
-
-                                last_argument = self.take_cell(0)?.try_into()?;
-                                procedure = self.take_cell(1)?.try_into()?;
-
-                                // Set a frame.
                                 *self.cdr_mut(last_argument) = self.stack.into();
+                                *self.car_mut(self.stack) =
+                                    self.allocate(self.cdr(self.program_counter), stack)?.into();
                             }
 
                             // Drop an argument count.
                             self.pop()?;
+
+                            let procedure = self.procedure()?;
 
                             // Set an environment.
                             *self.cdr_value_mut(self.cdr(last_argument))? =
@@ -505,22 +488,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // GC escape cells
-
-    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        Ok(replace(self.cell_mut(index)?, FALSE.into()))
-    }
-
-    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value_mut,
-            1 => Self::cdr_value_mut,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.cdr(self.cells))
-    }
 
     fn take_allocation_cell(&mut self) -> Result<Value, Error> {
         Ok(replace(self.allocation_cell_mut()?, FALSE.into()))
