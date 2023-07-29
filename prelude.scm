@@ -72,7 +72,7 @@
 ; Character
 
 (define (integer->char x)
-  (rib x '() character-type))
+  (rib x '() char-type))
 
 (define (char->integer x)
   (if (char? x)

@@ -152,6 +152,20 @@
     ((pair? expression)
       (let ((first (car expression)))
         (cond
+          ((eqv? first 'and)
+            (expand
+              (cond
+                ((null? (cdr expression))
+                  #f)
+
+                ((null? (cddr expression))
+                  (cadr expression))
+
+                (else
+                  (list 'if (cadr expression)
+                    (cons 'and (cddr expression))
+                    #f)))))
+
           ((eqv? first 'begin)
             (cons 'begin (expand-sequence (cdr expression))))
 
@@ -180,6 +194,22 @@
                       (list (car binding) (expand (cadr binding))))
                     bindings)
                   (expand-body (cddr expression))))))
+
+          ((eqv? first 'and)
+            (expand
+              (cond
+                ((null? (cdr expression))
+                  #t)
+
+                ((null? (cddr expression))
+                  (cadr expression))
+
+                (else
+                  (list 'let
+                    (list (list '$x expression))
+                    (list 'if $x
+                      $x
+                      (cons 'and (cddr expression))))))))
 
           (else
             (map expand expression)))))
