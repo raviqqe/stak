@@ -183,7 +183,7 @@
                     (lambda (binding)
                       (list (car binding) (expand (cadr binding))))
                     bindings)
-                  (map expand (cddr expression))))))
+                  (expand-body (cddr expression))))))
 
           (else
             (map expand expression)))))
