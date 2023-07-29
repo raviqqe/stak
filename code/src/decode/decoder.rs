@@ -54,6 +54,7 @@ impl<'a> Decoder<'a> {
                 }
                 Instruction::CLOSURE => instructions.push(Instruction::Closure(
                     self.decode_integer().ok_or(Error::MissingOperand)?,
+                    instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
                 )),
                 Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
                 Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),

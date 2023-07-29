@@ -4,7 +4,7 @@ use alloc::vec::Vec;
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
     Call(Operand, bool),
-    Closure(u64),
+    Closure(u64, Vec<Instruction>),
     Set(Operand),
     Get(Operand),
     Constant(Operand),
