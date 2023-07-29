@@ -58,6 +58,8 @@ impl Display for Cons {
             write!(formatter, "#t")?;
         } else if self == &NULL {
             write!(formatter, "()")?;
+        } else if self == &MOVED {
+            write!(formatter, "moved")?;
         } else {
             write!(formatter, "c{:x}", self.index())?;
         }
