@@ -20,8 +20,10 @@
 (define rib? (rib 6 '() procedure-type))
 (define rib-car (rib 7 '() procedure-type))
 (define rib-cdr (rib 8 '() procedure-type))
+(define rib-tag (rib 8 '() procedure-type)) ; TODO
 (define rib-set-car! (rib 9 '() procedure-type))
 (define rib-set-cdr! (rib 10 '() procedure-type))
+(define rib-set-tag (rib 10 '() procedure-type)) ; TODO
 (define eq? (rib 11 '() procedure-type))
 (define lt? (rib 12 '() procedure-type))
 (define + (rib 13 '() procedure-type))
