@@ -111,6 +111,16 @@
 
 ; Non-primitive expansion
 
+(define (expand-definition definition)
+  (let (
+      (pattern (cadr definition))
+      (body (cddr definition)))
+    (if (symbol? pattern)
+      (cons pattern body)
+      (list
+        (car pattern)
+        (cons 'lambda (cons (cdr pattern) body))))))
+
 (define (expand-body expressions)
   (let loop ((expressions expressions) (definitions '()))
     (if (null? expressions)
@@ -120,16 +130,7 @@
           ((and (pair? expression) (eqv? 'define (car expression)))
             (loop
               (cdr expressions)
-              (cons
-                (let (
-                    (pattern (cadr expression))
-                    (body (cddr expression)))
-                  (if (pair? pattern)
-                    (cons
-                      (car pattern)
-                      (cons 'lambda (cons (cdr pattern) body)))
-                    (cons pattern body)))
-                definitions)))
+              (cons (expand-definition expression) definitions)))
 
           ((pair? definitions)
             (expand (cons 'letrec (cons (reverse definitions) expressions))))
@@ -154,13 +155,7 @@
             (cons 'begin (expand-sequence (cdr expression))))
 
           ((eqv? first 'define)
-            (let ((pattern (cadr expression)))
-              (cons 'set!
-                (if (pair? pattern)
-                  (list
-                    (car pattern)
-                    (expand (cons 'lambda (cons (cdr pattern) (cddr expression)))))
-                  (list pattern (expand (caddr expression)))))))
+            (expand (cons 'set! (expand-definition expression))))
 
           ((eqv? first 'if)
             (list
