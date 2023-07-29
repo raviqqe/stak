@@ -18,4 +18,4 @@ Feature: Boolean
     cat prelude.scm source.scm | tools/compile.sh > main.out
     """
     And I successfully run `stak main.out`
-    Then the stdout should contain exactly "BA"
+    Then the stdout should contain exactly "AB"
