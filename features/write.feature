@@ -10,7 +10,7 @@ Feature: Write
   Scenario: Write a character
     Given a file named "source.scm" with:
     """scheme
-    (write-char #\A)
+    (write-u8 65)
     """
     When I run the following script:
     """sh
