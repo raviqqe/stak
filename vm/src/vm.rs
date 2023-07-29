@@ -1,6 +1,11 @@
 use crate::{
-    cons::Cons, instruction::Instruction, number::Number, primitive::Primitive, r#type::Type,
-    value::Value, Error,
+    cons::{Cons, FALSE, MOVED, NULL, TRUE},
+    instruction::Instruction,
+    number::Number,
+    primitive::Primitive,
+    r#type::Type,
+    value::Value,
+    Error,
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -11,11 +16,6 @@ use device::Device;
 
 const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
-const FALSE: Cons = Cons::dummy(0);
-const TRUE: Cons = Cons::dummy(1);
-const NULL: Cons = Cons::dummy(2);
-// TODO Should we use Cons::new(0).set_tag(u8::MAX)?
-const MOVED_CAR: Cons = Cons::dummy(3);
 const FRAME_TAG: u8 = 1;
 
 const SINGLETONS: &[Cons] = &[FALSE, TRUE, NULL];
@@ -538,13 +538,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if SINGLETONS.contains(&cons) {
             cons
-        } else if self.car(cons) == MOVED_CAR.into() {
+        } else if self.car(cons) == MOVED.into() {
             // Get a forward pointer.
             self.cdr(cons).try_into()?
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            *self.car_mut(cons) = MOVED_CAR.into();
+            *self.car_mut(cons) = MOVED.into();
             // Set a forward pointer.
             *self.cdr_mut(cons) = copy.into();
 
@@ -702,15 +702,26 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
         writeln!(formatter, "symbols: {}", self.symbols)?;
 
         for index in 0..self.allocation_index / 2 {
-            let cons = Cons::new((self.allocation_start() + 2 * index) as u64);
+            let index = 2 * index;
+            let cons = Cons::new((self.allocation_start() + index) as u64);
 
-            writeln!(
+            write!(
                 formatter,
                 "{:02x}: {} {}",
-                2 * index,
+                index,
                 self.car(cons),
                 self.cdr(cons)
             )?;
+
+            if index == self.program_counter.index() {
+                write!(formatter, " <- program counter")?;
+            } else if index == self.stack.index() {
+                write!(formatter, " <- stack")?;
+            } else if index == self.symbols.index() {
+                write!(formatter, " <- symbols")?;
+            }
+
+            writeln!(formatter)?;
         }
 
         Ok(())
