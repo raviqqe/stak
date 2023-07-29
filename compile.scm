@@ -221,13 +221,19 @@
 (define (compile-set variable continuation)
   (rib set-instruction variable continuation))
 
+(define (compile-drop continuation)
+  ; TODO Check null? instead when we introduce null-terminated returns.
+  (if (eqv? continuation tail)
+    continuation
+    (compile-primitive-call 'pop continuation)))
+
 (define (compile-sequence context expressions continuation)
   (compile-expression
     context
     (car expressions)
     (if (pair? (cdr expressions))
       ; TODO Drop intermediate values.
-      (compile-sequence context (cdr expressions) continuation)
+      (compile-sequence context (cdr expressions) (compile-drop continuation))
       continuation)))
 
 (define (compile-call* context function arguments argument-count continuation)
@@ -260,7 +266,7 @@
         function
         (continuation (compile-context-environment-add-temporary context))))))
 
-(define (compile-unbind context continuation)
+(define (compile-unbind continuation)
   ; TODO Check null? instead when we introduce null-terminated returns.
   (if (eqv? continuation tail)
     continuation
@@ -277,7 +283,7 @@
           (cdr bindings)
           (compile-context-environment-append body-context (list (car binding)))
           body
-          (compile-unbind context continuation))))
+          (compile-unbind continuation))))
     (compile-sequence body-context body continuation)))
 
 (define (compile-let context bindings body continuation)
