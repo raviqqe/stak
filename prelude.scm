@@ -45,8 +45,6 @@
       (rib? x)
       (eqv? (rib-tag x) type))))
 
-(define procedure? (instance? procedure-type))
-
 ; Equality
 
 (define eqv? eq?)
@@ -96,6 +94,10 @@
 
 (define (exact? x) #t)
 (define (inexact? x) #f)
+
+; Procedure
+
+(define procedure? (instance? procedure-type))
 
 ; String
 
