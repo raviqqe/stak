@@ -445,7 +445,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     .write(Number::try_from(byte)?.to_u64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
 
-                // TODO Sould we return an error?
+                // TODO Should we return an error?
                 self.push(byte)?;
             }
             _ => return Err(Error::IllegalPrimitive),
