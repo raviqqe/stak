@@ -9,7 +9,6 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
-    mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
 use device::Device;
