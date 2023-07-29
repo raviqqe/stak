@@ -4,10 +4,10 @@
 (define procedure-type 1)
 (define symbol-type 2)
 (define string-type 3)
-(define character-type 4)
+(define char-type 4)
 (define vector-type 5)
-(define byte-vector-type 6)
-(define eof-type 7)
+(define bytevector-type 6)
+(define eof-object-type 7)
 (define port-type 8)
 
 ; Primitives
@@ -51,8 +51,9 @@
 
 (define pair? (instance? pair-type))
 (define procedure? (instance? procedure-type))
-(define char? (instance? char-type))
 (define string? (instance? string-type))
+(define string? (instance? string-type))
+(define char? (instance? char-type))
 
 ;;; Number
 
