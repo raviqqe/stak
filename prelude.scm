@@ -45,16 +45,14 @@
       (rib? x)
       (eqv? (rib-tag x) type))))
 
-; Equality
-
 (define eqv? eq?)
 
-; Boolean
+;; Boolean
 
 (define (not x)
   (eq? x #f))
 
-; Character
+;; Character
 
 (define char? (instance? char-type))
 
@@ -64,7 +62,7 @@
 (define (char->integer x)
   (rib-car x))
 
-; List
+;; List
 
 (define pair? (instance? pair-type))
 
@@ -82,7 +80,7 @@
 (define (length xs)
   (length* xs 0))
 
-; Number
+;; Number
 
 (define (integer? x)
   (not (rib? x)))
@@ -95,11 +93,11 @@
 (define (exact? x) #t)
 (define (inexact? x) #f)
 
-; Procedure
+;; Procedure
 
 (define procedure? (instance? procedure-type))
 
-; String
+;; String
 
 (define string? (instance? string-type))
 
@@ -113,14 +111,3 @@
 
 (define (write-char x)
   (write-u8 (char->integer x)))
-
-(define (write-char2 c1 c2)
-  (write-char c1)
-  (write-char c2))
-
-(define (write x)
-  (if (string? x)
-    (todo)
-    (display x)))
-
-(define (display x) (todo))

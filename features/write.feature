@@ -18,3 +18,15 @@ Feature: Write
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Write a character
+    Given a file named "source.scm" with:
+    """scheme
+    (write-char (integer->char 65))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
