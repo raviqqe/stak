@@ -36,9 +36,12 @@
 
 ;; Write
 
-(define (write-u8-2 c1 c2)
-  (write-u8 c1)
-  (write-u8 c2))
+(define (write-char x)
+  (write-u8 (character->integer x)))
+
+(define (write-char2 c1 c2)
+  (write-char c1)
+  (write-char c2))
 
 (define (write x)
   (if (string? x)
@@ -51,16 +54,16 @@
 (define (display x)
   (cond
     ((not x)
-      (write-u8-2 #\# #\f))
+      (write-char2 #\# #\f))
     ((eqv? x #t)
-      (write-u8-2 #\# #\t))
+      (write-char2 #\# #\t))
     ((null? x)
-      (write-u8-2 #\( #\)))
+      (write-char2 #\( #\)))
     ((pair? x)
-      (write-u8 40) ; (
+      (write-u8 #\()
       (write (car x))
       (write-list (cdr x))
-      (write-u8 41)) ; )
+      (write-u8 #\()) ; )
     ((symbol? x)
       (display (symbol->string x)))
     ((string? x)
@@ -69,7 +72,7 @@
       (write-u8 35) ; #
       (write (vector->list x)))
     ((procedure? x)
-      (write-u8-2 35 112)) ; #p
+      (write-char2 35 112)) ; #p
     (else
       ; must be a number
       (display (number->string o)))))
