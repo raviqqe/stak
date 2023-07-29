@@ -111,38 +111,37 @@
 
 ; Non-primitive expansion
 
-(define (expand-body exprs)
-  (let loop ((exprs exprs) (defs '()))
-    (if (pair? exprs)
-      (let ((expr (car exprs)))
-        (if (and (pair? expr) (eqv? 'define (car expr)) (pair? (cdr expr)))
-          (let ((pattern (cadr expr)))
-            (if (pair? pattern)
-              (loop (cdr exprs)
-                (cons (cons (car pattern)
+(define (expand-body expressions)
+  (let loop ((expressions expressions) (definitions '()))
+    (if (null? expressions)
+      (error "empty sequence in body")
+      (let ((expression (car expressions)))
+        (if (and (pair? expression) (eqv? 'define (car expression)))
+          (let ((pattern (cadr expression)))
+            (loop
+              (cdr expressions)
+              (if (pair? pattern)
+                (cons
+                  (cons
+                    (car pattern)
                     (cons (cons 'lambda
                         (cons (cdr pattern)
                           (cddr expr)))
-                      '()))
-                  defs))
-              (loop (cdr exprs)
-                (cons (cons pattern
-                    (cddr expr))
-                  defs))))
-          (expand-body-done defs exprs)))
-      (expand-body-done defs '(0)))))
+                      '())
+                    (cons (cons pattern
+                        (cddr expression))
+                      definitions))
+                  definitions)))
+            (expand-body-done definitions expressions)))))))
 
-(define (expand-body-done defs exprs)
-  (if (pair? defs)
-    (expand-expr
-      (cons 'letrec
-        (cons (reverse defs)
-          exprs)))
-    (expand-begin exprs)))
+(define (expand-body-done definitions expressions)
+  (if (pair? definitions)
+    (expand (cons 'letrec (cons (reverse definitions) expressions)))
+    (expand-sequence expressions)))
 
 (define (expand-sequence expressions)
   (if (null? expressions)
-    (error "empty expression sequence")
+    (error "empty sequence")
     (map expand expressions)))
 
 (define (expand expression)
