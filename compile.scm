@@ -267,7 +267,7 @@
 
 (define (compile-drop continuation)
   ; TODO Check null? instead when we introduce null-terminated returns.
-  (if (eqv? continuation tail)
+  (if (eq? continuation tail)
     continuation
     (compile-primitive-call 'pop continuation)))
 
@@ -275,10 +275,10 @@
   (compile-expression
     context
     (car expressions)
-    (if (pair? (cdr expressions))
+    (if (null? (cdr expressions))
+      continuation
       ; TODO Drop intermediate values.
-      (compile-sequence context (cdr expressions) (compile-drop continuation))
-      continuation)))
+      (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
