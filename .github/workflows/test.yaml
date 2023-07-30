@@ -22,10 +22,12 @@ jobs:
           - [boost]
           - [gc_always]
     runs-on: ${{ matrix.os }}
+    env:
+      FEATURES: ${{ join(matrix.features, ',') }}
     steps:
       - uses: actions/checkout@v3
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --features ${{ join(matrix.features, ',') }}
+      - run: tools/unit_test.sh
   coverage:
     runs-on: ubuntu-latest
     steps:
