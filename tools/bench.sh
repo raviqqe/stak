@@ -4,6 +4,6 @@ set -e
 
 cargo install hyperfine
 
-for file in $(ls bench); do
-  hyperfine stak
+for file in $(find -t f bench); do
+  hyperfine stak ${file}
 done
