@@ -3,8 +3,8 @@
 set -ex
 
 build_feature() {
-  cargo build --release --features $feature
-  cp target/release/stak target/release/stak-$feature
+  cargo build --release --features $1
+  cp target/release/stak target/release/stak-$1
 }
 
 brew install gambit-scheme
