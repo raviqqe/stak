@@ -50,7 +50,7 @@ jobs:
       - run: brew unlink ghostscript
         if: matrix.os == 'macos-latest'
       - run: tools/integration_test.sh
-  all:
+  test:
     needs:
       - build
       - unit_test
