@@ -11,7 +11,6 @@ brew install gambit-scheme
 cargo install hyperfine
 
 build_feature boost
-build_feature gc_always
 
 cargo build --release
 
@@ -27,7 +26,6 @@ cargo build --release
       --sort command \
       "target/release/stak $base.out" \
       "target/release/stak-boost $base.out" \
-      "target/release/stak-gc_always $base.out" \
       "gsi $file" \
       "python3 $base.py"
   done
