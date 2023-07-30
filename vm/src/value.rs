@@ -78,6 +78,17 @@ mod tests {
     }
 
     #[test]
+    fn convert_tagged_cons() {
+        const TAG: u8 = 0b111;
+
+        let cons = Cons::new(42).set_tag(TAG);
+        let converted = Value::from(cons).to_cons().unwrap();
+
+        assert_eq!(converted, cons);
+        assert_eq!(converted.tag(), TAG);
+    }
+
+    #[test]
     fn convert_number() {
         let number = Number::new(42);
 
