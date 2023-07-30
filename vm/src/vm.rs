@@ -29,6 +29,13 @@ macro_rules! trace {
     };
 }
 
+macro_rules! trace_heap {
+    () => {
+        #[cfg(feature = "trace_heap")]
+        std::eprintln!("{}", $data);
+    };
+}
+
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
@@ -180,7 +187,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
 
             // TODO Add a trace_heap flag.
-            trace!("vm", self);
+            trace_heap!();
             #[cfg(feature = "gc_always")]
             self.collect_garbages(None)?;
         }

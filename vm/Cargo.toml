@@ -7,6 +7,7 @@ edition = "2021"
 gc_always = []
 std = []
 trace = []
+trace_heap = []
 
 [dependencies]
 code = { package = "stak-code", path = "../code" }
