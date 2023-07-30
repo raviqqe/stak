@@ -119,7 +119,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
 
-                            // Set an environment.
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
                             self.program_counter = self.cdr(code).try_into()?;
 
