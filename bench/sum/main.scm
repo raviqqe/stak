@@ -1,6 +1,9 @@
-(define (sum x y)
+(define (sum* x y)
   (if (eqv? x 0)
     y
-    (sum (- x 1) (+ x y))))
+    (sum* (- x 1) (+ x y))))
 
-(sum 100000000 0)
+(define (sum x)
+  (sum* x 0))
+
+(sum 100000000)
