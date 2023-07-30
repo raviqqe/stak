@@ -81,11 +81,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let procedure = self.procedure()?;
+                    let environment = Cons::try_from(self.cdr(procedure))?;
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
 
-                    if Cons::try_from(self.cdr(procedure))?.tag() != Type::Procedure as u8 {
+                    if environment.tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
                     }
 
@@ -118,10 +119,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
 
-                            // Set an environment.
-                            *self.cdr_mut(frame) = Cons::try_from(self.cdr(procedure))?
-                                .set_tag(FRAME_TAG)
-                                .into();
+                            *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
                             self.program_counter = self.cdr(code).try_into()?;
 
                             if !r#return {
