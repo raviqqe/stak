@@ -4,7 +4,7 @@ use crate::{
     number::Number,
     primitive::Primitive,
     r#type::Type,
-    value::Value,
+    value::{TypedValue, Value},
     Error,
 };
 use core::{
@@ -195,9 +195,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn operand(&self) -> Result<Cons, Error> {
-        Ok(match self.car(self.program_counter) {
-            Value::Cons(cons) => cons, // Direct reference to a symbol
-            Value::Number(index) => self.tail(self.stack, index)?,
+        Ok(match self.car(self.program_counter).to_typed() {
+            TypedValue::Cons(cons) => cons, // Direct reference to a symbol
+            TypedValue::Number(index) => self.tail(self.stack, index)?,
         })
     }
 
