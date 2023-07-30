@@ -29,6 +29,13 @@ macro_rules! trace {
     };
 }
 
+macro_rules! trace_heap {
+    ($self:expr) => {
+        #[cfg(feature = "trace_heap")]
+        std::eprintln!("{}", $self);
+    };
+}
+
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
@@ -75,7 +82,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         while self.program_counter != NULL {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
-            trace!("instruction", instruction);
+            trace!("instruction", instruction.tag());
 
             match instruction.tag() {
                 Instruction::CALL => {
@@ -179,8 +186,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            // TODO Add a trace_heap flag.
-            trace!("vm", self);
+            trace_heap!(self);
+
             #[cfg(feature = "gc_always")]
             self.collect_garbages(None)?;
         }
