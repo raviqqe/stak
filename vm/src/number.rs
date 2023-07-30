@@ -9,7 +9,12 @@ impl Number {
         Self(number)
     }
 
+    // TODO Use i64 by default?
     pub const fn to_u64(self) -> u64 {
+        self.0
+    }
+
+    pub const fn to_raw(self) -> u64 {
         self.0
     }
 }

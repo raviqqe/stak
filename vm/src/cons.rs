@@ -18,7 +18,7 @@ impl Cons {
     }
 
     pub const fn dummy(index: u64) -> Self {
-        Self::new((-1i64 - index as i64) as u64)
+        Self::new(u64::MAX - index)
     }
 
     pub const fn index(self) -> usize {
@@ -31,6 +31,14 @@ impl Cons {
 
     pub const fn set_tag(self, tag: u8) -> Self {
         Self(self.0 & !TAG_MASK | tag as u64 & TAG_MASK)
+    }
+
+    pub const fn from_raw(raw: u64) -> Self {
+        Self(raw)
+    }
+
+    pub const fn to_raw(self) -> u64 {
+        self.0
     }
 }
 

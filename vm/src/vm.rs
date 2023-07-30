@@ -4,7 +4,7 @@ use crate::{
     number::Number,
     primitive::Primitive,
     r#type::Type,
-    value::Value,
+    value::{TypedValue, Value},
     Error,
 };
 use core::{
@@ -90,8 +90,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         return Err(Error::ProcedureExpected);
                     }
 
-                    match self.code(procedure) {
-                        Value::Cons(code) => {
+                    match self.code(procedure).to_typed() {
+                        TypedValue::Cons(code) => {
                             let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
 
@@ -126,7 +126,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.initialize_cons()?;
                             }
                         }
-                        Value::Number(primitive) => {
+                        TypedValue::Number(primitive) => {
                             // Drop an argument count.
                             self.pop()?;
                             self.operate_primitive(primitive.to_u64() as u8)?;
@@ -195,9 +195,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn operand(&self) -> Result<Cons, Error> {
-        Ok(match self.car(self.program_counter) {
-            Value::Cons(cons) => cons, // Direct reference to a symbol
-            Value::Number(index) => self.tail(self.stack, index)?,
+        Ok(match self.car(self.program_counter).to_typed() {
+            TypedValue::Cons(cons) => cons, // Direct reference to a symbol
+            TypedValue::Number(index) => self.tail(self.stack, index)?,
         })
     }
 
