@@ -134,7 +134,7 @@
               (cons (expand-definition expression) definitions)))
 
           ((pair? definitions)
-            (expand (cons 'letrec (cons (reverse definitions) expressions))))
+            (list (expand (cons 'letrec (cons (reverse definitions) expressions)))))
 
           (else
             (expand-sequence expressions)))))))
