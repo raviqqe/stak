@@ -51,7 +51,7 @@ jobs:
         if: matrix.os == 'macos-latest'
       - run: tools/integration_test.sh
   all:
-    requires:
+    needs:
       - build
       - unit_test
       - coverage
