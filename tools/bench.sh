@@ -1,12 +1,12 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 cargo install hyperfine
 
-for file in $(find -t f bench); do
+for file in $(find bench -type f); do
   target_file=${file%.scm}.out
 
   tools/compile.sh <$file >$target_file
-  hyperfine "stak $target_file"
+  hyperfine "target/release/stak $target_file"
 done
