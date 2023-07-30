@@ -12,6 +12,10 @@ impl Number {
     pub const fn to_u64(self) -> u64 {
         self.0
     }
+
+    pub const fn to_raw(self) -> u64 {
+        self.0
+    }
 }
 
 impl TryFrom<Value> for Number {

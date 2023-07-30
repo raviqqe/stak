@@ -32,6 +32,10 @@ impl Cons {
     pub const fn set_tag(self, tag: u8) -> Self {
         Self(self.0 & !TAG_MASK | tag as u64 & TAG_MASK)
     }
+
+    pub const fn to_raw(self) -> u64 {
+        self.0
+    }
 }
 
 impl PartialEq for Cons {
