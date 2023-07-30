@@ -33,6 +33,10 @@ impl Cons {
         Self(self.0 & !TAG_MASK | tag as u64 & TAG_MASK)
     }
 
+    pub const fn from_raw(raw: u64) -> Self {
+        Self(raw)
+    }
+
     pub const fn to_raw(self) -> u64 {
         self.0
     }
