@@ -23,7 +23,7 @@
 (define rib-set-cdr! (rib 11 '() procedure-type))
 (define rib-set-tag! (rib 12 '() procedure-type))
 (define eq? (rib 13 '() procedure-type))
-(define lt? (rib 14 '() procedure-type))
+(define < (rib 14 '() procedure-type))
 (define + (rib 15 '() procedure-type))
 (define - (rib 16 '() procedure-type))
 (define * (rib 17 '() procedure-type))
