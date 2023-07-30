@@ -29,10 +29,18 @@ impl Value {
 
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
-            TypedValue::Cons(Cons::from_raw(((self.0 as i64) >> 1) as u64))
+            TypedValue::Cons(self.as_cons())
         } else {
-            TypedValue::Number(Number::new((self.0 as i64) >> 1))
+            TypedValue::Number(self.as_number())
         }
+    }
+
+    pub const fn as_cons(self) -> Cons {
+        Cons::from_raw(self.to_payload())
+    }
+
+    pub const fn as_number(self) -> Number {
+        Number::new(self.to_payload() as i64)
     }
 
     pub const fn is_cons(&self) -> bool {
@@ -41,6 +49,10 @@ impl Value {
 
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
+    }
+
+    const fn to_payload(self) -> u64 {
+        ((self.0 as i64) >> 1) as u64
     }
 }
 

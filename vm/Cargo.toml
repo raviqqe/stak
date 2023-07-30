@@ -4,12 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
+boost = []
 gc_always = []
 std = []
 trace = []
 trace_heap = []
 
 [dependencies]
+cfg-if = "1.0.0"
 code = { package = "stak-code", path = "../code" }
 device = { package = "stak-device", path = "../device" }
 

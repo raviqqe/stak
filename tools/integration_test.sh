@@ -1,14 +1,19 @@
 #!/bin/sh
 
-set -e
+set -ex
 
-cd $(dirname $0)/..
+. $(dirname $0)/utility.sh
 
 brew install gambit-scheme
 bundler install
-cargo build --release --features "$FEATURES"
+
+cargo build --release $(feature_flags)
 
 export PATH=$PWD/target/release:$PATH
 export ROOT=$PWD
 
-cucumber --publish-quiet --strict-undefined "$@"
+(
+  cd $(dirname $0)/..
+
+  cucumber --publish-quiet --strict-undefined "$@"
+)

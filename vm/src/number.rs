@@ -1,4 +1,5 @@
 use crate::{value::Value, Error};
+use cfg_if::cfg_if;
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -22,7 +23,13 @@ impl TryFrom<Value> for Number {
     type Error = Error;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
-        value.to_number().ok_or(Error::NumberExpected)
+        cfg_if! {
+            if #[cfg(feature = "boost")] {
+                Ok(value.as_number())
+            } else {
+                value.to_number().ok_or(Error::NumberExpected)
+            }
+        }
     }
 }
 

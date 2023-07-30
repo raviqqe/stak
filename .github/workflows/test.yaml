@@ -17,11 +17,16 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
+        features:
+          - []
+          - [boost]
     runs-on: ${{ matrix.os }}
+    env:
+      FEATURES: ${{ join(matrix.features, ',') }}
     steps:
       - uses: actions/checkout@v3
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test --all-features
+      - run: tools/unit_test.sh
   coverage:
     runs-on: ubuntu-latest
     steps:
@@ -38,11 +43,13 @@ jobs:
           - ubuntu-latest
           - macos-latest
         features:
-          - ""
-          - gc_always
+          - []
+          - [boost]
+          - [gc_always]
+          - [boost, gc_always]
     runs-on: ${{ matrix.os }}
     env:
-      FEATURES: ${{ matrix.features }}
+      FEATURES: ${{ join(matrix.features, ',') }}
     steps:
       - uses: actions/checkout@v3
       - uses: Homebrew/actions/setup-homebrew@master

@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
+boost = ["vm/boost"]
 gc_always = ["vm/gc_always"]
 trace = ["vm/trace"]
 trace_heap = ["vm/trace_heap"]
