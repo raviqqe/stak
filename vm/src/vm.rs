@@ -82,7 +82,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         while self.program_counter != NULL {
             let instruction = Cons::try_from(self.cdr(self.program_counter))?;
 
-            trace!("instruction", instruction);
+            trace!("instruction", instruction.tag());
 
             match instruction.tag() {
                 Instruction::CALL => {
