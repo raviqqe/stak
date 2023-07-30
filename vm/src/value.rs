@@ -29,19 +29,17 @@ impl Value {
 
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
-            TypedValue::Cons(Cons::from_raw(self.to_payload()))
+            TypedValue::Cons(self.as_cons())
         } else {
-            TypedValue::Number(Number::new(self.to_payload() as i64))
+            TypedValue::Number(self.as_number())
         }
     }
 
-    #[cfg(feature = "boost")]
-    pub fn as_cons(self) -> Cons {
+    pub const fn as_cons(self) -> Cons {
         Cons::from_raw(self.to_payload())
     }
 
-    #[cfg(feature = "boost")]
-    pub fn as_number(self) -> Number {
+    pub const fn as_number(self) -> Number {
         Number::new(self.to_payload() as i64)
     }
 

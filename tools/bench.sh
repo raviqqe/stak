@@ -10,7 +10,7 @@ cargo install hyperfine
 cargo build --release $(feature_flags)
 
 (
-  cd $(dirname $0)
+  cd $(dirname $0)/..
 
   for file in $(find bench -type f -name '*.scm'); do
     base=${file%.scm}

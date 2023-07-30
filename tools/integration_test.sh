@@ -14,5 +14,6 @@ export ROOT=$PWD
 
 (
   cd $(dirname $0)/..
+
   cucumber --publish-quiet --strict-undefined "$@"
 )
