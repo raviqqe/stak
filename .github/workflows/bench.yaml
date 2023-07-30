@@ -6,15 +6,7 @@ on:
   pull_request:
 jobs:
   bench:
-    strategy:
-      matrix:
-        features:
-          - []
-          - [boost]
-          - [gc_always]
     runs-on: ubuntu-latest
-    env:
-      FEATURES: ${{ join(matrix.features, ',') }}
     steps:
       - uses: actions/checkout@v3
       - uses: Swatinem/rust-cache@v2
