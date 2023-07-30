@@ -313,9 +313,7 @@
       (rib
         call-instruction
         (if (symbol? function)
-          (compile-context-resolve
-            (compile-context-environment-add-temporary context)
-            function)
+          (compile-context-resolve context function)
           (+ argument-count 1))
         continuation))
     (compile-expression

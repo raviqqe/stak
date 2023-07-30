@@ -80,6 +80,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
+                    let stack = self.stack;
+                    let argument_count = Number::try_from(self.pop()?)?;
                     let procedure = self.procedure()?;
 
                     trace!("procedure", procedure);
@@ -91,7 +93,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     match self.code(procedure) {
                         Value::Cons(code) => {
-                            let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
 
                             trace!("argument count", argument_count);
@@ -102,7 +103,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let last_argument = self.tail(self.stack, parameter_count)?;
+                            let last_argument = self.tail(stack, parameter_count)?;
 
                             let frame = if r#return {
                                 self.frame()?
@@ -110,13 +111,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.cons) = self.cdr(self.program_counter);
                                 *self.cdr_mut(self.cons) = self.cdr(last_argument);
-                                *self.car_mut(self.stack) = self.cons.into();
-                                self.stack
+                                *self.car_mut(stack) = self.cons.into();
+                                stack
                             };
                             *self.cdr_mut(last_argument) = frame.into();
-
-                            // Drop an argument count.
-                            self.pop()?;
 
                             // Set an environment.
                             *self.cdr_mut(frame) = Cons::try_from(self.cdr(procedure))?
@@ -129,8 +127,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             }
                         }
                         Value::Number(primitive) => {
-                            // Drop an argument count.
-                            self.pop()?;
                             self.operate_primitive(primitive.to_u64() as u8)?;
 
                             if r#return {
