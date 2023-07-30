@@ -37,7 +37,7 @@ impl Value {
 
     #[cfg(feature = "boost")]
     pub fn as_cons(self) -> Cons {
-        Cons::new(self.to_payload())
+        Cons::from_raw(self.to_payload())
     }
 
     #[cfg(feature = "boost")]
