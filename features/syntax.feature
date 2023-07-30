@@ -181,3 +181,21 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Use a letrec expresion
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x)
+			(letrec (
+					(f (lambda (x) (if (eqv? x 65) x (g (+ x 1)))))
+					(g (lambda (x) (f x))))
+				(f x)))
+
+    (write-u8 (f 0))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
