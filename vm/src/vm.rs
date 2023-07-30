@@ -687,8 +687,8 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
         writeln!(formatter, "symbols: {}", self.symbols)?;
 
         for index in 0..self.allocation_index / 2 {
-            let index = 2 * index + self.allocation_start();
-            let cons = Cons::new((self.allocation_start() + index) as u64);
+            let index = self.allocation_start() + 2 * index;
+            let cons = Cons::new(index as u64);
 
             write!(
                 formatter,
