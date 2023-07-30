@@ -2,20 +2,19 @@ use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Number(u64);
+pub struct Number(i64);
 
 impl Number {
-    pub const fn new(number: u64) -> Self {
+    pub const fn new(number: i64) -> Self {
         Self(number)
     }
 
-    // TODO Use i64 by default?
-    pub const fn to_u64(self) -> u64 {
+    pub const fn to_i64(self) -> i64 {
         self.0
     }
 
     pub const fn to_raw(self) -> u64 {
-        self.0
+        self.0 as u64
     }
 }
 
