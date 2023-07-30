@@ -312,9 +312,12 @@
       argument-count
       (rib
         call-instruction
-        (if (symbol? function) function (+ argument-count 1))
+        (if (symbol? function)
+          (compile-context-resolve context function)
+          (+ argument-count 1))
         continuation))
-    (compile-expression context
+    (compile-expression
+      context
       (car arguments)
       (compile-call*
         (compile-context-environment-add-temporary context)
@@ -328,7 +331,14 @@
       (function (car expression))
       (arguments (cdr expression))
       (argument-count (length arguments))
-      (continuation (lambda (context) (compile-call* context function arguments argument-count continuation))))
+      (continuation
+        (lambda (context)
+          (compile-call*
+            context
+            (if (symbol? function) function #f)
+            arguments
+            argument-count
+            continuation))))
     (if (symbol? function)
       (continuation context)
       (compile-expression
