@@ -129,7 +129,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         TypedValue::Number(primitive) => {
                             // Drop an argument count.
                             self.pop()?;
-                            self.operate_primitive(primitive.to_u64() as u8)?;
+                            self.operate_primitive(primitive.to_i64() as u8)?;
 
                             if r#return {
                                 let return_info = self.car(self.frame()?);
@@ -225,7 +225,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn tail(&self, mut list: Cons, mut index: Number) -> Result<Cons, Error> {
         while index != ZERO {
             list = self.cdr(list).try_into()?;
-            index = Number::new(index.to_u64() - 1);
+            index = Number::new(index.to_i64() - 1);
         }
 
         Ok(list)
@@ -358,7 +358,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 let rib = self.allocate(
                     car,
                     Cons::try_from(cdr)?
-                        .set_tag(Number::try_from(tag)?.to_u64() as u8)
+                        .set_tag(Number::try_from(tag)?.to_i64() as u8)
                         .into(),
                 )?;
                 self.push(rib.into())?;
@@ -402,7 +402,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
             Primitive::TAG => {
                 let x = self.pop()?;
-                self.push(Number::new(Cons::try_from(self.cdr_value(x)?)?.tag() as u64).into())?;
+                self.push(Number::new(Cons::try_from(self.cdr_value(x)?)?.tag() as i64).into())?;
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
@@ -417,7 +417,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::SET_TAG => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 *self.cdr_value_mut(x)? = Cons::try_from(self.cdr_value(x)?)?
-                    .set_tag(Number::try_from(y)?.to_u64() as u8)
+                    .set_tag(Number::try_from(y)?.to_i64() as u8)
                     .into();
                 self.push(y)?;
             }
@@ -432,12 +432,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| Error::ReadInput)?;
-                self.push(Number::new(byte as u64).into())?;
+                self.push(Number::new(byte as i64).into())?;
             }
             Primitive::WRITE => {
                 let byte = self.pop()?;
                 self.device
-                    .write(Number::try_from(byte)?.to_u64() as u8)
+                    .write(Number::try_from(byte)?.to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
 
                 // TODO Should we return an error?
@@ -449,18 +449,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
-    fn operate_binary(&mut self, operate: fn(u64, u64) -> u64) -> Result<(), Error> {
+    fn operate_binary(&mut self, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(Number::new(operate(x.to_u64(), y.to_u64())).into())?;
+        self.push(Number::new(operate(x.to_i64(), y.to_i64())).into())?;
 
         Ok(())
     }
 
-    fn operate_comparison(&mut self, operate: fn(u64, u64) -> bool) -> Result<(), Error> {
+    fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(self.boolean(operate(x.to_u64(), y.to_u64())))?;
+        self.push(self.boolean(operate(x.to_i64(), y.to_i64())))?;
 
         Ok(())
     }
@@ -578,13 +578,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 character => {
                     length += 1;
-                    name = self.append(Number::new(character as u64).into(), name)?;
+                    name = self.append(Number::new(character as i64).into(), name)?;
                 }
             }
         }
 
         let rib = self.allocate(
-            Number::new(Primitive::Rib as u64).into(),
+            Number::new(Primitive::Rib as i64).into(),
             NULL.set_tag(Type::Procedure as u8).into(),
         )?;
 
@@ -619,8 +619,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
-                        Number::new(Self::decode_integer(input).ok_or(Error::MissingOperand)?)
-                            .into(),
+                        Number::new(
+                            Self::decode_integer(input).ok_or(Error::MissingOperand)? as i64
+                        )
+                        .into(),
                         self.program_counter.into(),
                     )?;
                     self.program_counter = self.pop()?.try_into()?;
@@ -653,10 +655,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_operand(&self, input: &mut impl Iterator<Item = u8>) -> Result<Value, Error> {
         let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
-        let index = Number::new(integer >> 1);
+        let index = Number::new((integer >> 1) as i64);
 
         Ok(if integer & 1 == 0 {
-            self.car(self.tail(self.symbols, Number::new(index.to_u64()))?)
+            self.car(self.tail(self.symbols, index)?)
         } else {
             index.into()
         })
