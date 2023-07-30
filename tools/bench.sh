@@ -4,7 +4,7 @@ set -ex
 
 brew install gambit-scheme
 cargo install hyperfine
-cargo build --release
+cargo build --release --features "$FEATURES"
 
 for file in $(find bench -type f -name '*.scm'); do
   base=${file%.scm}
