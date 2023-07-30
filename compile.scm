@@ -303,7 +303,6 @@
     (car expressions)
     (if (null? (cdr expressions))
       continuation
-      ; TODO Drop intermediate values.
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
 (define (compile-call* context function arguments argument-count continuation)
