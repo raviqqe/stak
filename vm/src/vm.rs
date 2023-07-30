@@ -291,6 +291,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(cons)
     }
 
+    fn initialize_cons(&mut self) -> Result<(), Error> {
+        self.cons = self.allocate(FALSE.into(), FALSE.into())?;
+
+        Ok(())
+    }
+
     fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= Self::SPACE_SIZE
     }
@@ -479,14 +485,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         Ok(values)
-    }
-
-    // GC escape cells
-
-    fn initialize_cons(&mut self) -> Result<(), Error> {
-        self.cons = self.allocate(FALSE.into(), FALSE.into())?;
-
-        Ok(())
     }
 
     // Garbage collection
