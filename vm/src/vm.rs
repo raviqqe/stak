@@ -90,8 +90,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         return Err(Error::ProcedureExpected);
                     }
 
-                    match self.code(procedure) {
-                        Value::Cons(code) => {
+                    match self.code(procedure).to_typed() {
+                        TypedValue::Cons(code) => {
                             let argument_count = Number::try_from(self.car(self.stack))?;
                             let parameter_count = self.car(code).try_into()?;
 
@@ -126,7 +126,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.initialize_cons()?;
                             }
                         }
-                        Value::Number(primitive) => {
+                        TypedValue::Number(primitive) => {
                             // Drop an argument count.
                             self.pop()?;
                             self.operate_primitive(primitive.to_u64() as u8)?;
