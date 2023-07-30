@@ -251,22 +251,8 @@
 (define (compile-context-environment-add-temporary context)
   (compile-context-environment-append context (list #f)))
 
-(define (compile-context-resolve* variables variable index)
-  (cond
-    ((null? variables)
-      variable)
-
-    ((eqv? (car variables) variable)
-      index)
-
-    (else
-      (compile-context-resolve (cdr variables) variable (+ index 1)))))
-
-(define (compile-context-resolve context variable base)
-  (let ((index (member-index variable (compile-context-environment context))))
-    (if index
-      (+ index base)
-      variable)))
+(define (compile-context-resolve context variable)
+  (or (member-index variable (compile-context-environment context)) variable))
 
 ; Compilation
 
@@ -386,7 +372,7 @@
     ((symbol? expression)
       (rib
         get-instruction
-        (compile-context-resolve context expression 0)
+        (compile-context-resolve context expression)
         (compile-tail continuation)))
 
     ((pair? expression)
@@ -432,9 +418,11 @@
             (compile-constant (cadr expression) continuation))
 
           ((eqv? first 'set!)
-            (compile-expression context (caddr expression)
+            (compile-expression
+              context
+              (caddr expression)
               (compile-set
-                (compile-context-resolve context (cadr expression) 1)
+                (compile-context-resolve context (cadr expression))
                 (compile-unspecified continuation))))
 
           (else
