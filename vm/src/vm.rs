@@ -30,9 +30,9 @@ macro_rules! trace {
 }
 
 macro_rules! trace_heap {
-    () => {
+    ($self:expr) => {
         #[cfg(feature = "trace_heap")]
-        std::eprintln!("{}", $data);
+        std::eprintln!("{}", $self);
     };
 }
 
@@ -186,7 +186,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            trace_heap!();
+            trace_heap!(self);
 
             #[cfg(feature = "gc_always")]
             self.collect_garbages(None)?;
