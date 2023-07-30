@@ -164,3 +164,77 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
+
+  Scenario: Use a local variable in a definition
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x)
+      (let ((y x))
+        (define z y)
+        z))
+
+    (write-u8 (f 65))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use a letrec expresion
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x)
+      (letrec (
+          (f
+            (lambda (x)
+              (if (eqv? x 65)
+                x
+                (f (+ x 1))))))
+        (f x)))
+
+    (write-u8 (f 0))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use a letrec expresion with two bindings
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x)
+      (letrec (
+          (f (lambda (x) (if (eqv? x 65) x (g (+ x 1)))))
+          (g (lambda (x) (f x))))
+        (f x)))
+
+    (write-u8 (f 0))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Call a local function
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f) 65)
+
+    (define (g)
+      (let ((h f))
+        (h)))
+
+    (write-u8 (g))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"

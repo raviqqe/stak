@@ -134,7 +134,7 @@
               (cons (expand-definition expression) definitions)))
 
           ((pair? definitions)
-            (expand (cons 'letrec (cons (reverse definitions) expressions))))
+            (list (expand (cons 'letrec (cons (reverse definitions) expressions)))))
 
           (else
             (expand-sequence expressions)))))))
@@ -195,6 +195,20 @@
                     bindings)
                   (expand-body (cddr expression))))))
 
+          ((eqv? first 'letrec)
+            (let ((bindings (cadr expression)))
+              (expand
+                (cons 'let
+                  (cons
+                    (map
+                      (lambda (binding) (list (car binding) #f))
+                      bindings)
+                    (append
+                      (map
+                        (lambda (binding) (list 'set! (car binding) (cadr binding)))
+                        bindings)
+                      (cddr expression)))))))
+
           ((eqv? first 'or)
             (expand
               (cond
@@ -237,22 +251,8 @@
 (define (compile-context-environment-add-temporary context)
   (compile-context-environment-append context (list #f)))
 
-(define (compile-context-resolve* variables variable index)
-  (cond
-    ((null? variables)
-      variable)
-
-    ((eqv? (car variables) variable)
-      index)
-
-    (else
-      (compile-context-resolve (cdr variables) variable (+ index 1)))))
-
-(define (compile-context-resolve context variable base)
-  (let ((index (member-index variable (compile-context-environment context))))
-    (if index
-      (+ index base)
-      variable)))
+(define (compile-context-resolve context variable)
+  (or (member-index variable (compile-context-environment context)) variable))
 
 ; Compilation
 
@@ -312,9 +312,14 @@
       argument-count
       (rib
         call-instruction
-        (if (symbol? function) function (+ argument-count 1))
+        (if (symbol? function)
+          (compile-context-resolve
+            (compile-context-environment-add-temporary context)
+            function)
+          (+ argument-count 1))
         continuation))
-    (compile-expression context
+    (compile-expression
+      context
       (car arguments)
       (compile-call*
         (compile-context-environment-add-temporary context)
@@ -328,7 +333,14 @@
       (function (car expression))
       (arguments (cdr expression))
       (argument-count (length arguments))
-      (continuation (lambda (context) (compile-call* context function arguments argument-count continuation))))
+      (continuation
+        (lambda (context)
+          (compile-call*
+            context
+            (if (symbol? function) function #f)
+            arguments
+            argument-count
+            continuation))))
     (if (symbol? function)
       (continuation context)
       (compile-expression
@@ -372,7 +384,7 @@
     ((symbol? expression)
       (rib
         get-instruction
-        (compile-context-resolve context expression 0)
+        (compile-context-resolve context expression)
         (compile-tail continuation)))
 
     ((pair? expression)
@@ -418,9 +430,11 @@
             (compile-constant (cadr expression) continuation))
 
           ((eqv? first 'set!)
-            (compile-expression context (caddr expression)
+            (compile-expression
+              context
+              (caddr expression)
               (compile-set
-                (compile-context-resolve context (cadr expression) 1)
+                (compile-context-resolve context (cadr expression))
                 (compile-unspecified continuation))))
 
           (else
