@@ -54,6 +54,8 @@ jobs:
     requires:
       - build
       - unit_test
+      - coverage
       - integration_test
     runs-on: ubuntu-latest
-    steps: []
+    steps:
+      - uses: actions/checkout@v3
