@@ -220,3 +220,21 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Call a local function
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f) 65)
+
+    (define (g)
+      (let ((h f))
+        (h)))
+
+    (write-u8 (g))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | tools/compile.sh > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
