@@ -12,6 +12,7 @@ for file in $(find bench -type f -name '*.scm'); do
   cat prelude.scm $file | tools/compile.sh >$base.out
 
   hyperfine \
+    --sort command \
     "target/release/stak $base.out" \
     "gsi $file" \
     "python3 $base.py"
