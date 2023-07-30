@@ -18,7 +18,7 @@ impl Cons {
     }
 
     pub const fn dummy(index: u64) -> Self {
-        Self::new((-1i64 - index as i64) as u64)
+        Self::new(u64::MAX - index)
     }
 
     pub const fn index(self) -> usize {
