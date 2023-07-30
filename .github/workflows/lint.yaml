@@ -37,3 +37,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: raviqqe/markdown-link-check@main
+  all:
+    needs:
+      - lint
+      - format
+      - spell_check
+      - readme
+    runs-on: ubuntu-latest
+    steps:
+      - run: ":"
