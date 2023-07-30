@@ -29,7 +29,7 @@ impl Value {
 
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
-            TypedValue::Cons(Cons::from_raw(self.0 >> 1))
+            TypedValue::Cons(Cons::from_raw(((self.0 as i64) >> 1) as u64))
         } else {
             TypedValue::Number(Number::new(self.0 >> 1))
         }
