@@ -5,4 +5,4 @@
       (fibonacci (- x 1))
       (fibonacci (- x 2)))))
 
-(fibonacci 42)
+(fibonacci 40)
