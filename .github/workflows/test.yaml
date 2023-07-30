@@ -50,9 +50,9 @@ jobs:
       - run: brew unlink ghostscript
         if: matrix.os == 'macos-latest'
       - run: tools/integration_test.sh
-  scheme:
+  all:
+    needs:
+      - unit_test
+      - integration_test
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/scheme_test.sh
+    steps: []
