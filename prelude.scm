@@ -34,7 +34,7 @@
 ; Error
 
 (define (todo)
-  ; TODO
+  ; TODO Throw an error.
   (#f))
 
 ; Types
