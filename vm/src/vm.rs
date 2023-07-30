@@ -186,8 +186,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             }
 
-            // TODO Add a trace_heap flag.
             trace_heap!();
+
             #[cfg(feature = "gc_always")]
             self.collect_garbages(None)?;
         }
