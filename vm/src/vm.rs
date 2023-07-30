@@ -9,7 +9,6 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
-    mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
 use device::Device;
@@ -40,19 +39,13 @@ macro_rules! assert_index_range {
     };
 }
 
-macro_rules! assert_cell_index {
-    ($index:expr) => {
-        debug_assert!($index < 2);
-    };
-}
-
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
     symbols: Cons,
-    cells: Cons,
+    cons: Cons,
     allocation_index: usize,
     space: bool,
     heap: [Value; N],
@@ -67,17 +60,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
             program_counter: NULL,
             stack: NULL,
             symbols: NULL,
-            cells: NULL,
+            cons: NULL,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
         };
 
-        let cells = vm.allocate_raw(FALSE.into(), FALSE.into())?;
-        vm.cells = vm.allocate_raw(FALSE.into(), cells.into())?;
-
-        vm.stack = NULL;
-        vm.program_counter = NULL;
+        vm.initialize_cons()?;
 
         Ok(vm)
     }
@@ -91,7 +80,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
-                    let mut procedure = self.procedure()?;
+                    let procedure = self.procedure()?;
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -113,41 +102,31 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let mut last_argument = self.tail(self.stack, parameter_count)?;
+                            let last_argument = self.tail(self.stack, parameter_count)?;
 
-                            if r#return {
-                                *self.cdr_mut(last_argument) = self.frame()?.into();
+                            let frame = if r#return {
+                                self.frame()?
                             } else {
-                                *self.cell_mut(0)? = last_argument.into();
-                                *self.cell_mut(1)? = procedure.into();
-
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(self.stack) = self
-                                    .allocate(
-                                        // return address
-                                        self.cdr(self.program_counter),
-                                        // old stack
-                                        self.cdr(last_argument),
-                                    )?
-                                    .into();
-
-                                last_argument = self.take_cell(0)?.try_into()?;
-                                procedure = self.take_cell(1)?.try_into()?;
-
-                                // Set a frame.
-                                *self.cdr_mut(last_argument) = self.stack.into();
-                            }
+                                *self.car_mut(self.cons) = self.cdr(self.program_counter);
+                                *self.cdr_mut(self.cons) = self.cdr(last_argument);
+                                *self.car_mut(self.stack) = self.cons.into();
+                                self.stack
+                            };
+                            *self.cdr_mut(last_argument) = frame.into();
 
                             // Drop an argument count.
                             self.pop()?;
 
                             // Set an environment.
-                            *self.cdr_value_mut(self.cdr(last_argument))? =
-                                Cons::try_from(self.cdr(procedure))?
-                                    .set_tag(FRAME_TAG)
-                                    .into();
-                            self.program_counter =
-                                self.cdr(self.code(procedure).try_into()?).try_into()?;
+                            *self.cdr_mut(frame) = Cons::try_from(self.cdr(procedure))?
+                                .set_tag(FRAME_TAG)
+                                .into();
+                            self.program_counter = self.cdr(code).try_into()?;
+
+                            if !r#return {
+                                self.initialize_cons()?;
+                            }
                         }
                         Value::Number(primitive) => {
                             // Drop an argument count.
@@ -205,7 +184,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             // TODO Add a trace_heap flag.
             trace!("vm", self);
             #[cfg(feature = "gc_always")]
-            self.collect_garbages()?;
+            self.collect_garbages(None)?;
         }
 
         Ok(())
@@ -275,11 +254,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
-        let cons = self.allocate_raw(car, cdr)?;
+        let mut cons = self.allocate_raw(car, cdr)?;
 
         assert_index_range!(self, cons);
-
-        *self.allocation_cell_mut()? = cons.into();
 
         if let Some(cons) = car.to_cons() {
             assert_index_range!(self, cons);
@@ -290,10 +267,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         if self.is_out_of_memory() {
-            self.collect_garbages()?;
+            self.collect_garbages(Some(&mut cons))?;
         }
 
-        self.take_allocation_cell()?.try_into()
+        Ok(cons)
     }
 
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
@@ -312,6 +289,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
 
         Ok(cons)
+    }
+
+    fn initialize_cons(&mut self) -> Result<(), Error> {
+        self.cons = self.allocate(FALSE.into(), FALSE.into())?;
+
+        Ok(())
     }
 
     fn is_out_of_memory(&self) -> bool {
@@ -504,42 +487,20 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(values)
     }
 
-    // GC escape cells
-
-    fn take_cell(&mut self, index: usize) -> Result<Value, Error> {
-        assert_cell_index!(index);
-
-        Ok(replace(self.cell_mut(index)?, FALSE.into()))
-    }
-
-    fn cell_mut(&mut self, index: usize) -> Result<&mut Value, Error> {
-        assert_cell_index!(index);
-
-        (match index {
-            0 => Self::car_value_mut,
-            1 => Self::cdr_value_mut,
-            _ => return Err(Error::CellIndexOutOfRange),
-        })(self, self.cdr(self.cells))
-    }
-
-    fn take_allocation_cell(&mut self) -> Result<Value, Error> {
-        Ok(replace(self.allocation_cell_mut()?, FALSE.into()))
-    }
-
-    fn allocation_cell_mut(&mut self) -> Result<&mut Value, Error> {
-        Ok(self.car_mut(self.cells))
-    }
-
     // Garbage collection
 
-    fn collect_garbages(&mut self) -> Result<(), Error> {
+    fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {
         self.allocation_index = 0;
         self.space = !self.space;
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
         self.symbols = self.copy_cons(self.symbols)?;
-        self.cells = self.copy_cons(self.cells)?;
+        self.cons = self.copy_cons(self.cons)?;
+
+        if let Some(cons) = cons {
+            *cons = self.copy_cons(*cons)?;
+        }
 
         let mut index = self.allocation_start();
 
@@ -743,7 +704,7 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
                 write!(formatter, " <- stack")?;
             } else if index == self.symbols.index() {
                 write!(formatter, " <- symbols")?;
-            } else if index == self.cells.index() {
+            } else if index == self.cons.index() {
                 write!(formatter, " <- cells")?;
             }
 
@@ -798,7 +759,7 @@ mod tests {
     fn run_nothing_after_garbage_collection() {
         let mut vm = create_vm();
 
-        vm.collect_garbages().unwrap();
+        vm.collect_garbages(None).unwrap();
         vm.run().unwrap();
 
         insta::assert_display_snapshot!(vm);
@@ -860,7 +821,7 @@ mod tests {
             let mut vm = create_vm();
 
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
-            vm.collect_garbages().unwrap();
+            vm.collect_garbages(None).unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
@@ -870,7 +831,7 @@ mod tests {
             let mut vm = create_vm();
 
             vm.push(Number::new(42).into()).unwrap();
-            vm.collect_garbages().unwrap();
+            vm.collect_garbages(None).unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
@@ -881,7 +842,7 @@ mod tests {
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
-            vm.collect_garbages().unwrap();
+            vm.collect_garbages(None).unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
@@ -893,7 +854,7 @@ mod tests {
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
 
-            vm.collect_garbages().unwrap();
+            vm.collect_garbages(None).unwrap();
 
             insta::assert_display_snapshot!(vm);
         }
