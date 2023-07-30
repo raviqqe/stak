@@ -303,7 +303,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn allocation_start(&self) -> usize {
         if self.space {
-            N / 2
+            Self::SPACE_SIZE
         } else {
             0
         }
@@ -687,7 +687,7 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
         writeln!(formatter, "symbols: {}", self.symbols)?;
 
         for index in 0..self.allocation_index / 2 {
-            let index = 2 * index;
+            let index = 2 * index + self.allocation_start();
             let cons = Cons::new((self.allocation_start() + index) as u64);
 
             write!(
