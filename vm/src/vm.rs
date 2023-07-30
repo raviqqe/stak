@@ -45,7 +45,7 @@ pub struct Vm<const N: usize, T: Device> {
     program_counter: Cons,
     stack: Cons,
     symbols: Cons,
-    cells: Cons,
+    cons: Cons,
     allocation_index: usize,
     space: bool,
     heap: [Value; N],
@@ -60,13 +60,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
             program_counter: NULL,
             stack: NULL,
             symbols: NULL,
-            cells: NULL,
+            cons: NULL,
             allocation_index: 0,
             space: false,
             heap: [ZERO.into(); N],
         };
 
-        vm.initialize_cells()?;
+        vm.initialize_cons()?;
 
         Ok(vm)
     }
@@ -108,9 +108,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.frame()?
                             } else {
                                 // Reuse an argument count cons as a new frame.
-                                *self.car_mut(self.cells) = self.cdr(self.program_counter);
-                                *self.cdr_mut(self.cells) = self.cdr(last_argument);
-                                *self.car_mut(self.stack) = self.cells.into();
+                                *self.car_mut(self.cons) = self.cdr(self.program_counter);
+                                *self.cdr_mut(self.cons) = self.cdr(last_argument);
+                                *self.car_mut(self.stack) = self.cons.into();
                                 self.stack
                             };
                             *self.cdr_mut(last_argument) = frame.into();
@@ -125,7 +125,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             self.program_counter = self.cdr(code).try_into()?;
 
                             if !r#return {
-                                self.initialize_cells()?;
+                                self.initialize_cons()?;
                             }
                         }
                         Value::Number(primitive) => {
@@ -483,8 +483,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // GC escape cells
 
-    fn initialize_cells(&mut self) -> Result<(), Error> {
-        self.cells = self.allocate(FALSE.into(), FALSE.into())?;
+    fn initialize_cons(&mut self) -> Result<(), Error> {
+        self.cons = self.allocate(FALSE.into(), FALSE.into())?;
 
         Ok(())
     }
@@ -498,7 +498,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
         self.symbols = self.copy_cons(self.symbols)?;
-        self.cells = self.copy_cons(self.cells)?;
+        self.cons = self.copy_cons(self.cons)?;
 
         if let Some(cons) = cons {
             *cons = self.copy_cons(*cons)?;
@@ -706,7 +706,7 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
                 write!(formatter, " <- stack")?;
             } else if index == self.symbols.index() {
                 write!(formatter, " <- symbols")?;
-            } else if index == self.cells.index() {
+            } else if index == self.cons.index() {
                 write!(formatter, " <- cells")?;
             }
 
