@@ -1,5 +1,6 @@
 use crate::{
     Error, Instruction, Operand, Program, INSTRUCTION_BITS, INSTRUCTION_MASK, INTEGER_BASE,
+    SHORT_INTEGER_BASE,
 };
 use alloc::{string::String, vec, vec::Vec};
 use core::mem::{replace, take};
@@ -44,18 +45,18 @@ impl<'a> Decoder<'a> {
         let mut instruction_lists = vec![];
         let mut instructions = vec![];
 
-        while let Some(instruction) = self.decode_byte() {
-            let integer = instruction >> INSTRUCTION_BITS;
-            let instruction = instruction & INSTRUCTION_MASK;
+        while let Some(byte) = self.decode_byte() {
+            let integer = byte >> INSTRUCTION_BITS;
+            let instruction = byte & INSTRUCTION_MASK;
 
             match instruction {
                 Instruction::RETURN_CALL => {
                     instructions.reverse();
                     instruction_lists.push(take(&mut instructions));
-                    instructions.push(Instruction::Call(self.decode_operand()?, true))
+                    instructions.push(Instruction::Call(self.decode_operand(integer)?, true))
                 }
                 Instruction::CALL => {
-                    instructions.push(Instruction::Call(self.decode_operand()?, false))
+                    instructions.push(Instruction::Call(self.decode_operand(integer)?, false))
                 }
                 Instruction::CLOSURE => {
                     let body = replace(
@@ -68,10 +69,14 @@ impl<'a> Decoder<'a> {
                         body,
                     ));
                 }
-                Instruction::SET => instructions.push(Instruction::Set(self.decode_operand()?)),
-                Instruction::GET => instructions.push(Instruction::Get(self.decode_operand()?)),
+                Instruction::SET => {
+                    instructions.push(Instruction::Set(self.decode_operand(integer)?))
+                }
+                Instruction::GET => {
+                    instructions.push(Instruction::Get(self.decode_operand(integer)?))
+                }
                 Instruction::CONSTANT => {
-                    instructions.push(Instruction::Constant(self.decode_operand()?))
+                    instructions.push(Instruction::Constant(self.decode_operand(integer)?))
                 }
                 Instruction::IF => {
                     instructions.reverse();
@@ -91,8 +96,8 @@ impl<'a> Decoder<'a> {
         Ok(instructions)
     }
 
-    fn decode_operand(&mut self) -> Result<Operand, Error> {
-        let integer = self.decode_integer().ok_or(Error::MissingOperand)?;
+    fn decode_operand(&mut self, integer: u8) -> Result<Operand, Error> {
+        let integer = self.decode_integer(integer).ok_or(Error::MissingOperand)?;
         let global = integer & 1 == 0;
         let index = integer >> 1;
 
@@ -103,7 +108,7 @@ impl<'a> Decoder<'a> {
         })
     }
 
-    fn decode_integer(&mut self) -> Option<u64> {
+    fn decode_integer(&mut self, rest: u8) -> Option<u64> {
         let mut y = 0;
 
         while {
@@ -115,7 +120,7 @@ impl<'a> Decoder<'a> {
             x < 0
         } {}
 
-        Some(y)
+        Some(y * SHORT_INTEGER_BASE + rest)
     }
 
     fn decode_byte(&mut self) -> Option<u8> {

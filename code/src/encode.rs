@@ -37,24 +37,24 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                     } else {
                         Instruction::CALL
                     },
-                    Some(encode_operand(*operand)),
+                    encode_operand(*operand),
                 );
             }
             Instruction::Closure(arity, body) => {
-                encode_instruction(codes, Instruction::CLOSURE, Some(*arity));
+                encode_instruction(codes, Instruction::CLOSURE, *arity);
                 encode_instructions(codes, body);
             }
             Instruction::Set(operand) => {
-                encode_instruction(codes, Instruction::SET, Some(encode_operand(*operand)));
+                encode_instruction(codes, Instruction::SET, encode_operand(*operand));
             }
             Instruction::Get(operand) => {
-                encode_instruction(codes, Instruction::GET, Some(encode_operand(*operand)));
+                encode_instruction(codes, Instruction::GET, encode_operand(*operand));
             }
             Instruction::Constant(operand) => {
-                encode_instruction(codes, Instruction::CONSTANT, Some(encode_operand(*operand)));
+                encode_instruction(codes, Instruction::CONSTANT, encode_operand(*operand));
             }
             Instruction::If(then, r#else) => {
-                encode_instruction(codes, Instruction::IF, None);
+                encode_instruction(codes, Instruction::IF, Default::default());
 
                 encode_instructions(codes, then);
                 encode_instructions(codes, r#else);
@@ -63,20 +63,18 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     }
 }
 
-fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: Option<u64>) {
-    let integer = if let Some(integer) = integer {
-        let upper = integer / SHORT_INTEGER_BASE;
+fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64) {
+    let upper = integer / SHORT_INTEGER_BASE;
 
-        if upper > 0 {
-            encode_integer(codes, upper);
-        }
+    if upper > 0 {
+        encode_integer(codes, upper);
+    }
 
-        ((integer % SHORT_INTEGER_BASE) as u8) << 1 + if upper > 0 { 1 } else { 0 }
-    } else {
-        0
-    };
-
-    codes.push((integer << INSTRUCTION_BITS) | instruction)
+    codes.push(
+        ((((integer % SHORT_INTEGER_BASE) as u8) << 1) + if upper > 0 { 1 } else { 0 }
+            << INSTRUCTION_BITS)
+            | instruction,
+    )
 }
 
 fn encode_operand(operand: Operand) -> u64 {
