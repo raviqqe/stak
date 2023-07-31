@@ -116,7 +116,7 @@ impl<'a> Decoder<'a> {
             y += x.abs() as u64;
         }
 
-        Some(y * SHORT_INTEGER_BASE + rest.unsigned_abs() as u64)
+        Some(y * SHORT_INTEGER_BASE + rest.abs() as u64)
     }
 
     fn decode_byte(&mut self) -> Option<u8> {
