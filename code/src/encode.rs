@@ -1,4 +1,7 @@
-use crate::{Instruction, Operand, Program, INTEGER_BASE};
+use crate::{
+    Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE,
+    SHORT_INTEGER_BITS,
+};
 use alloc::{string::String, vec, vec::Vec};
 
 pub fn encode(program: &Program) -> Vec<u8> {
@@ -64,7 +67,19 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 }
 
 fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: Option<u64>) {
-    operand % foo
+    let integer = if let Some(integer) = integer {
+        let upper = integer / SHORT_INTEGER_BASE;
+
+        if upper > 0 {
+            encode_integer(codes, upper);
+        }
+
+        ((integer % SHORT_INTEGER_BASE) as u8) << 1 + if upper > 0 { 1 } else { 0 }
+    } else {
+        0
+    };
+
+    codes.push((integer << INSTRUCTION_BITS) | instruction)
 }
 
 fn encode_operand(operand: Operand) -> u64 {
