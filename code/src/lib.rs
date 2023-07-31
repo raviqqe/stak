@@ -24,3 +24,4 @@ pub use error::Error;
 pub use ir::*;
 
 pub const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
+pub const SHORT_INTEGER_BASE: u8 = 1 << 4;

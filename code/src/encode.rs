@@ -30,32 +30,32 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
             Instruction::Call(operand, r#return) => {
-                encode_operand(codes, *operand);
-                codes.push(if *r#return {
-                    Instruction::RETURN_CALL
-                } else {
-                    Instruction::CALL
-                });
+                encode_instruction(
+                    codes,
+                    if *r#return {
+                        Instruction::RETURN_CALL
+                    } else {
+                        Instruction::CALL
+                    },
+                    Some(encode_operand(*operand)),
+                );
             }
             Instruction::Closure(arity, body) => {
-                encode_integer(codes, *arity);
-                codes.push(Instruction::CLOSURE);
+                encode_instruction(codes, Instruction::CLOSURE, Some(*arity));
                 encode_instructions(codes, body);
             }
             Instruction::Set(operand) => {
-                encode_operand(codes, *operand);
-                codes.push(Instruction::SET);
+                encode_instruction(codes, Instruction::SET, Some(encode_operand(*operand)));
             }
             Instruction::Get(operand) => {
-                encode_operand(codes, *operand);
-                codes.push(Instruction::GET);
+                encode_instruction(codes, Instruction::GET, Some(encode_operand(*operand)));
             }
             Instruction::Constant(operand) => {
-                encode_operand(codes, *operand);
-                codes.push(Instruction::CONSTANT);
+                encode_instruction(codes, Instruction::CONSTANT, Some(encode_operand(*operand)));
             }
             Instruction::If(then, r#else) => {
-                codes.push(Instruction::IF);
+                encode_instruction(codes, Instruction::IF, None);
+
                 encode_instructions(codes, then);
                 encode_instructions(codes, r#else);
             }
@@ -63,10 +63,14 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     }
 }
 
-fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
+fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: Option<u64>) {
+    operand % foo
+}
+
+fn encode_operand(operand: Operand) -> u64 {
     match operand {
-        Operand::Symbol(number) => encode_integer(codes, number << 1),
-        Operand::Integer(number) => encode_integer(codes, (number << 1) + 1),
+        Operand::Symbol(number) => number << 1,
+        Operand::Integer(number) => (number << 1) + 1,
     }
 }
 
