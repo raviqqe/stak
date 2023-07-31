@@ -46,7 +46,7 @@ impl<'a> Decoder<'a> {
         let mut instructions = vec![];
 
         while let Some(byte) = self.decode_byte() {
-            let integer = byte >> INSTRUCTION_BITS;
+            let integer = byte as i8 >> INSTRUCTION_BITS;
             let instruction = byte & INSTRUCTION_MASK;
 
             match instruction {
@@ -96,7 +96,7 @@ impl<'a> Decoder<'a> {
         Ok(instructions)
     }
 
-    fn decode_operand(&mut self, integer: u8) -> Result<Operand, Error> {
+    fn decode_operand(&mut self, integer: i8) -> Result<Operand, Error> {
         let integer = self.decode_integer(integer).ok_or(Error::MissingOperand)?;
         let global = integer & 1 == 0;
         let index = integer >> 1;
@@ -108,10 +108,10 @@ impl<'a> Decoder<'a> {
         })
     }
 
-    fn decode_integer(&mut self, rest: u8) -> Option<u64> {
-        let small = (rest >> 1) as u64;
+    fn decode_integer(&mut self, rest: i8) -> Option<u64> {
+        let small = rest.abs() as u64;
 
-        if rest & 1 == 0 {
+        if rest >= 0 {
             return Some(small);
         }
 
