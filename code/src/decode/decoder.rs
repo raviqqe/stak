@@ -109,24 +109,17 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_integer(&mut self, rest: i8) -> Option<u64> {
-        let small = rest.abs() as u64;
-
-        if rest >= 0 {
-            return Some(small);
-        }
-
+        let mut x = rest;
         let mut y = 0;
 
-        while {
+        while x < 0 {
             y *= INTEGER_BASE;
-            let x = self.decode_byte()? as i8;
+            x = self.decode_byte()? as i8;
 
             y += x.abs() as u64;
+        }
 
-            x < 0
-        } {}
-
-        Some(y * SHORT_INTEGER_BASE + small)
+        Some(y * SHORT_INTEGER_BASE + rest.abs() as u64)
     }
 
     fn decode_byte(&mut self) -> Option<u8> {
