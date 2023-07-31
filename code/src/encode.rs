@@ -85,15 +85,15 @@ fn encode_operand(operand: Operand) -> u64 {
 }
 
 fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
-    let mut rest = false;
+    let mut sign = 1;
 
     while {
         let part = number % INTEGER_BASE;
 
-        codes.push((if rest { -1 } else { 1 } * part as i64) as u8);
+        codes.push((sign * part as i64) as u8);
 
         number /= INTEGER_BASE;
-        rest = true;
+        sign = -1;
 
         number != 0
     } {}
