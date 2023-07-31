@@ -1,5 +1,3 @@
-(define integer-base 128)
-
 ; Constants
 
 (define default-constants
@@ -70,11 +68,6 @@
 
 (define (todo value)
   (error "not implemented:" value))
-
-(define (i8->u8 value)
-  (if (< value 0)
-    (+ 256 value)
-    value))
 
 (define (member-index value list)
   (cond
@@ -616,66 +609,80 @@
 
 ;; Codes
 
-(define (encode-integer-with-sign integer sign target)
-  (let (
-      (target (cons (i8->u8 (* sign (modulo integer integer-base))) target))
-      (integer (quotient integer integer-base)))
-    (if (eqv? integer 0)
-      target
-      (encode-integer-with-sign integer -1 target))))
+(define integer-base 128)
+(define short-integer-base 4)
+
+(define (encode-integer-part integer base bit)
+  (+ bit (* 2 (modulo integer base))))
 
 (define (encode-integer integer target)
-  (encode-integer-with-sign integer 1 target))
+  (let loop (
+      (x (quotient integer short-integer-base))
+      (bit 0)
+      (target target))
+    (if (eqv? x 0)
+      (values (encode-integer-part integer short-integer-base bit) target)
+      (loop
+        (quotient x integer-base)
+        1
+        (cons (encode-integer-part x integer-base bit) target)))))
 
 (define (encode-procedure context procedure target)
-  (let ((code (rib-car procedure)))
+  (let*-values (
+      ((code) (rib-car procedure))
+      ((integer target) (encode-integer (rib-car code) target)))
     (encode-codes
       context
       (rib-cdr code)
-      (cons closure-code
-        (encode-integer (rib-car code) target)))))
+      (encode-instruction
+        closure-code
+        integer
+        target))))
 
-(define (encode-operand context operand target)
-  (encode-integer
-    (cond
-      ((number? operand)
-        (+ (* operand 2) 1))
+(define (encode-operand context operand)
+  (cond
+    ((number? operand)
+      (+ (* operand 2) 1))
 
-      ((symbol? operand)
-        (* 2
-          (or
-            (member-index operand (encode-context-all-symbols context))
-            (error "symbol not found:" operand))))
+    ((symbol? operand)
+      (* 2
+        (or
+          (member-index operand (encode-context-all-symbols context))
+          (error "symbol not found:" operand))))
 
-      (else (error "invalid operand:" operand)))
-    target))
+    (else (error "invalid operand:" operand))))
+
+(define (encode-instruction instruction integer target)
+  (let-values (((integer target) (encode-integer integer target)))
+    (cons (+ instruction (* 16 integer)) target)))
 
 (define (encode-codes context codes target)
   (if (null? codes)
     target
-    (let (
+    (let* (
         (instruction (rib-tag codes))
-        (operand (rib-car codes)))
+        (operand (rib-car codes))
+        (encode-simple
+          (lambda (instruction)
+            (encode-instruction
+              instruction
+              (encode-operand context operand)
+              target))))
       (encode-codes
         context
         (rib-cdr codes)
         (cond
           ((eqv? instruction call-instruction)
-            (cons
+            (encode-simple
               (if (null? (rib-cdr codes))
                 return-call-code
-                call-code)
-              (encode-operand context operand target)))
+                call-code)))
 
           ((eqv? instruction set-instruction)
-            (cons
-              set-code
-              (encode-operand context operand target)))
+            (encode-simple set-code))
 
           ((eqv? instruction get-instruction)
-            (cons
-              get-code
-              (encode-operand context operand target)))
+            (encode-simple get-code))
 
           ((and
               (eqv? instruction constant-instruction)
@@ -685,14 +692,17 @@
           ((eqv? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))
               (if symbol
-                (cons get-code (encode-operand context symbol target))
-                (cons constant-code (encode-operand context operand target)))))
+                (encode-instruction
+                  get-code
+                  (encode-operand context symbol)
+                  target)
+                (encode-simple constant-code))))
 
           ((eqv? instruction if-instruction)
             (encode-codes
               context
               operand
-              (cons if-code target)))
+              (encode-instruction if-code 0 target)))
 
           (else (error "invalid instruction")))))))
 
