@@ -610,7 +610,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
-        while let Some(instruction) = input.next() {
+        while let Some((instruction, integer)) = self.decode_instruction(input)? {
             trace!("decoded instruction", instruction);
 
             let (car, tag) = match instruction {
@@ -618,15 +618,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.push(self.program_counter.into())?;
                     self.program_counter = NULL;
 
-                    (self.decode_operand(input)?, Instruction::CALL)
+                    (self.decode_operand(integer)?, Instruction::CALL)
                 }
-                code::Instruction::CALL => (self.decode_operand(input)?, Instruction::CALL),
+                code::Instruction::CALL => (self.decode_operand(integer)?, Instruction::CALL),
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
-                        Number::new(
-                            Self::decode_integer(input).ok_or(Error::MissingOperand)? as i64
-                        )
-                        .into(),
+                        Number::new(integer as i64).into(),
                         self.program_counter.into(),
                     )?;
                     self.program_counter = self.pop()?.try_into()?;
@@ -637,9 +634,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         Instruction::CONSTANT,
                     )
                 }
-                code::Instruction::SET => (self.decode_operand(input)?, Instruction::SET),
-                code::Instruction::GET => (self.decode_operand(input)?, Instruction::GET),
-                code::Instruction::CONSTANT => (self.decode_operand(input)?, Instruction::CONSTANT),
+                code::Instruction::SET => (self.decode_operand(integer)?, Instruction::SET),
+                code::Instruction::GET => (self.decode_operand(integer)?, Instruction::GET),
+                code::Instruction::CONSTANT => {
+                    (self.decode_operand(integer)?, Instruction::CONSTANT)
+                }
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     self.program_counter = self.pop()?.try_into()?;
@@ -657,8 +656,22 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
-    fn decode_operand(&self, input: &mut impl Iterator<Item = u8>) -> Result<Value, Error> {
-        let integer = Self::decode_integer(input).ok_or(Error::MissingOperand)?;
+    fn decode_instruction(
+        &mut self,
+        input: &mut impl Iterator<Item = u8>,
+    ) -> Result<Option<(u8, u64)>, Error> {
+        let Some(byte) = input.next() else {
+            return Ok(None);
+        };
+
+        Ok(Some((
+            byte & code::INSTRUCTION_MASK,
+            Self::decode_integer(input, byte as i8 >> code::INSTRUCTION_BITS)
+                .ok_or(Error::MissingOperand)?,
+        )))
+    }
+
+    fn decode_operand(&self, integer: u64) -> Result<Value, Error> {
         let index = Number::new((integer >> 1) as i64);
 
         Ok(if integer & 1 == 0 {
@@ -668,19 +681,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
         })
     }
 
-    fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
+    fn decode_integer(input: &mut impl Iterator<Item = u8>, rest: i8) -> Option<u64> {
+        let mut x = rest;
         let mut y = 0;
 
-        while {
+        while x < 0 {
             y *= code::INTEGER_BASE;
-            let x = input.next()? as i8;
+            x = input.next()? as i8;
+            y += x.abs() as u64;
+        }
 
-            y += (if x < 0 { -1 } else { 1 } * x) as u64;
-
-            x < 0
-        } {}
-
-        Some(y)
+        Some(y * code::SHORT_INTEGER_BASE + rest.abs() as u64)
     }
 }
 

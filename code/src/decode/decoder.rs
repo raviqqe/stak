@@ -92,7 +92,7 @@ impl<'a> Decoder<'a> {
         Ok(Some((
             byte & INSTRUCTION_MASK,
             self.decode_integer(byte as i8 >> INSTRUCTION_BITS)
-                .ok_or(Error::MissingElseBranch)?,
+                .ok_or(Error::MissingOperand)?,
         )))
     }
 
