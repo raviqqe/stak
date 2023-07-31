@@ -113,7 +113,7 @@ impl<'a> Decoder<'a> {
         while x < 0 {
             y *= INTEGER_BASE;
             x = self.decode_byte()? as i8;
-            y += x.unsigned_abs() as u64;
+            y += x.abs() as u64;
         }
 
         Some(y * SHORT_INTEGER_BASE + rest.unsigned_abs() as u64)
