@@ -88,9 +88,7 @@ fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
     let mut sign = 1;
 
     while {
-        let part = number % INTEGER_BASE;
-
-        codes.push((sign * part as i64) as u8);
+        codes.push((sign * (number % INTEGER_BASE) as i64) as u8);
 
         number /= INTEGER_BASE;
         sign = -1;
