@@ -627,6 +627,10 @@
         1
         (cons (encode-integer-part x integer-base bit) target)))))
 
+(define (encode-instruction instruction integer target)
+  (let-values (((integer target) (encode-integer integer target)))
+    (cons (+ instruction (* 16 integer)) target)))
+
 (define (encode-procedure context procedure target)
   (let*-values (
       ((code) (rib-car procedure))
@@ -651,10 +655,6 @@
           (error "symbol not found:" operand))))
 
     (else (error "invalid operand:" operand))))
-
-(define (encode-instruction instruction integer target)
-  (let-values (((integer target) (encode-integer integer target)))
-    (cons (+ instruction (* 16 integer)) target)))
 
 (define (encode-codes context codes target)
   (if (null? codes)
