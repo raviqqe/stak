@@ -71,7 +71,7 @@ fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64) {
     }
 
     codes.push(
-        ((((integer % SHORT_INTEGER_BASE) as u8) << 1) + if upper > 0 { 1 } else { 0 }
+        (((((integer % SHORT_INTEGER_BASE) as u8) << 1) + if upper > 0 { 1 } else { 0 })
             << INSTRUCTION_BITS)
             | instruction,
     )
