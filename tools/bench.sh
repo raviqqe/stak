@@ -27,6 +27,7 @@ cargo build --release
       "target/release/stak $base.out" \
       "target/release/stak-boost $base.out" \
       "gsi $file" \
+      "csi $file" \
       "python3 $base.py"
   done
 )
