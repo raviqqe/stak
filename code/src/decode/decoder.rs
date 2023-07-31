@@ -65,7 +65,7 @@ impl<'a> Decoder<'a> {
                     );
 
                     instructions.push(Instruction::Closure(
-                        self.decode_integer().ok_or(Error::MissingOperand)?,
+                        self.decode_integer(integer).ok_or(Error::MissingOperand)?,
                         body,
                     ));
                 }
@@ -109,6 +109,12 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_integer(&mut self, rest: u8) -> Option<u64> {
+        let small = (rest >> 1) as u64;
+
+        if rest & 1 == 0 {
+            return Some(small);
+        }
+
         let mut y = 0;
 
         while {
@@ -120,7 +126,7 @@ impl<'a> Decoder<'a> {
             x < 0
         } {}
 
-        Some(y * SHORT_INTEGER_BASE + rest)
+        Some(y * SHORT_INTEGER_BASE + small)
     }
 
     fn decode_byte(&mut self) -> Option<u8> {
