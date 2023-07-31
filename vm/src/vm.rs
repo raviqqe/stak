@@ -673,8 +673,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_operand(&self, integer: u64) -> Result<Value, Error> {
         let index = Number::new((integer >> 1) as i64);
+        let is_symbol = integer & 1 == 0;
 
-        Ok(if integer & 1 == 0 {
+        trace!("operand", index);
+        trace!("symbol", is_symbol);
+
+        Ok(if is_symbol {
             self.car(self.tail(self.symbols, index)?)
         } else {
             index.into()
