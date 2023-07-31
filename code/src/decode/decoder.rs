@@ -1,4 +1,6 @@
-use crate::{Error, Instruction, Operand, Program, INTEGER_BASE};
+use crate::{
+    Error, Instruction, Operand, Program, INSTRUCTION_BITS, INSTRUCTION_MASK, INTEGER_BASE,
+};
 use alloc::{string::String, vec, vec::Vec};
 use core::mem::{replace, take};
 
@@ -43,6 +45,9 @@ impl<'a> Decoder<'a> {
         let mut instructions = vec![];
 
         while let Some(instruction) = self.decode_byte() {
+            let integer = instruction >> INSTRUCTION_BITS;
+            let instruction = instruction & INSTRUCTION_MASK;
+
             match instruction {
                 Instruction::RETURN_CALL => {
                     instructions.reverse();
