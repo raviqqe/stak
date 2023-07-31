@@ -7,7 +7,7 @@ build_feature() {
   cp target/release/stak target/release/stak-$1
 }
 
-brew install gambit-scheme
+brew install chicken-scheme gambit-scheme
 cargo install hyperfine
 
 build_feature boost
