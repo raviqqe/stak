@@ -121,7 +121,7 @@ impl<'a> Decoder<'a> {
             y *= INTEGER_BASE;
             let x = self.decode_byte()? as i8;
 
-            y += (if x < 0 { -1 } else { 1 } * x) as u64;
+            y += x.abs() as u64;
 
             x < 0
         } {}
