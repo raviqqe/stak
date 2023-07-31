@@ -26,7 +26,6 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
     }
 }
 
-// TODO Use short encodings for instruction operands.
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
