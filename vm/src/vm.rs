@@ -666,7 +666,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         Ok(Some((
             byte & code::INSTRUCTION_MASK,
-            Self::decode_integer(input, byte as i8 >> code::INSTRUCTION_BITS)
+            Self::decode_integer(input, byte >> code::INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
     }
@@ -681,17 +681,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
         })
     }
 
-    fn decode_integer(input: &mut impl Iterator<Item = u8>, rest: i8) -> Option<u64> {
+    fn decode_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
         let mut x = rest;
         let mut y = 0;
 
-        while x < 0 {
+        while x & 1 != 0 {
             y *= code::INTEGER_BASE;
-            x = input.next()? as i8;
-            y += x.abs() as u64;
+            x = input.next()?;
+            y += (x >> 1) as u64;
         }
 
-        Some(y * code::SHORT_INTEGER_BASE + rest.abs() as u64)
+        Some(y * code::SHORT_INTEGER_BASE + (rest >> 1) as u64)
     }
 }
 
