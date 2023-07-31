@@ -4,6 +4,8 @@
 [![Codecov](https://img.shields.io/codecov/c/github/raviqqe/stak.svg?style=flat-square)](https://codecov.io/gh/raviqqe/stak)
 [![License](https://img.shields.io/github/license/raviqqe/stak.svg?style=flat-square)](LICENSE)
 
+Scheme written in Rust
+
 ## References
 
 - [R7RS small](https://small.r7rs.org/)

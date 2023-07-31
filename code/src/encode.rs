@@ -1,4 +1,4 @@
-use crate::{Instruction, Operand, Program, INTEGER_BASE};
+use crate::{Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
 
 pub fn encode(program: &Program) -> Vec<u8> {
@@ -26,37 +26,36 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
     }
 }
 
-// TODO Use short encodings for instruction operands.
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
             Instruction::Call(operand, r#return) => {
-                encode_operand(codes, *operand);
-                codes.push(if *r#return {
-                    Instruction::RETURN_CALL
-                } else {
-                    Instruction::CALL
-                });
+                encode_instruction(
+                    codes,
+                    if *r#return {
+                        Instruction::RETURN_CALL
+                    } else {
+                        Instruction::CALL
+                    },
+                    encode_operand(*operand),
+                );
             }
             Instruction::Closure(arity, body) => {
-                encode_integer(codes, *arity);
-                codes.push(Instruction::CLOSURE);
+                encode_instruction(codes, Instruction::CLOSURE, *arity);
                 encode_instructions(codes, body);
             }
             Instruction::Set(operand) => {
-                encode_operand(codes, *operand);
-                codes.push(Instruction::SET);
+                encode_instruction(codes, Instruction::SET, encode_operand(*operand));
             }
             Instruction::Get(operand) => {
-                encode_operand(codes, *operand);
-                codes.push(Instruction::GET);
+                encode_instruction(codes, Instruction::GET, encode_operand(*operand));
             }
             Instruction::Constant(operand) => {
-                encode_operand(codes, *operand);
-                codes.push(Instruction::CONSTANT);
+                encode_instruction(codes, Instruction::CONSTANT, encode_operand(*operand));
             }
             Instruction::If(then, r#else) => {
-                codes.push(Instruction::IF);
+                encode_instruction(codes, Instruction::IF, Default::default());
+
                 encode_instructions(codes, then);
                 encode_instructions(codes, r#else);
             }
@@ -64,26 +63,34 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     }
 }
 
-fn encode_operand(codes: &mut Vec<u8>, operand: Operand) {
+fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64) {
+    let integer = encode_integer(codes, integer);
+
+    codes.push((integer << INSTRUCTION_BITS) | instruction)
+}
+
+fn encode_operand(operand: Operand) -> u64 {
     match operand {
-        Operand::Symbol(number) => encode_integer(codes, number << 1),
-        Operand::Integer(number) => encode_integer(codes, (number << 1) + 1),
+        Operand::Symbol(number) => number << 1,
+        Operand::Integer(number) => (number << 1) + 1,
     }
 }
 
-fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
-    let mut rest = false;
+fn encode_integer(codes: &mut Vec<u8>, integer: u64) -> u8 {
+    let mut x = integer / SHORT_INTEGER_BASE;
+    let mut bit = 0;
 
-    while {
-        let part = number % INTEGER_BASE;
+    while x != 0 {
+        codes.push(encode_integer_part(x, INTEGER_BASE, bit));
+        bit = 1;
+        x /= INTEGER_BASE;
+    }
 
-        codes.push((if rest { -1 } else { 1 } * part as i64) as u8);
+    encode_integer_part(integer, SHORT_INTEGER_BASE, bit)
+}
 
-        number /= INTEGER_BASE;
-        rest = true;
-
-        number != 0
-    } {}
+fn encode_integer_part(integer: u64, base: u64, bit: u64) -> u8 {
+    (((integer % base) << 1) | bit) as u8
 }
 
 #[cfg(test)]
@@ -179,6 +186,22 @@ mod tests {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Get(Operand::Symbol(0))],
+        ));
+    }
+
+    #[test]
+    fn encode_get_global_with_large_index() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Get(Operand::Symbol(4))],
+        ));
+    }
+
+    #[test]
+    fn encode_get_global_with_very_large_index() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Get(Operand::Symbol(1000))],
         ));
     }
 

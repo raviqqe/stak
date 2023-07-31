@@ -20,6 +20,7 @@ jobs:
         features:
           - []
           - [boost]
+          - [alloc, std]
     runs-on: ${{ matrix.os }}
     env:
       FEATURES: ${{ join(matrix.features, ',') }}
