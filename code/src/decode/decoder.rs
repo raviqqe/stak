@@ -115,7 +115,6 @@ impl<'a> Decoder<'a> {
         while x < 0 {
             y *= INTEGER_BASE;
             x = self.decode_byte()? as i8;
-
             y += x.abs() as u64;
         }
 
