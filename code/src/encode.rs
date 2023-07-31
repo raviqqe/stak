@@ -66,9 +66,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64) {
     let upper = integer / SHORT_INTEGER_BASE;
 
-    if upper > 0 {
-        encode_integer(codes, upper);
-    }
+    encode_integer(codes, upper);
 
     codes.push(
         (((((integer % SHORT_INTEGER_BASE) as i8) * if upper > 0 { -1 } else { 1 }) as u8)
@@ -87,13 +85,11 @@ fn encode_operand(operand: Operand) -> u64 {
 fn encode_integer(codes: &mut Vec<u8>, mut number: u64) {
     let mut sign = 1;
 
-    while {
+    while number != 0 {
         codes.push((sign * (number % INTEGER_BASE) as i64) as u8);
-
         sign = -1;
         number /= INTEGER_BASE;
-        number != 0
-    } {}
+    }
 }
 
 #[cfg(test)]
