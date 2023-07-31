@@ -610,7 +610,7 @@
 ;; Codes
 
 (define integer-base 128)
-(define short-integer-base 4)
+(define short-integer-base 8)
 
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
