@@ -91,7 +91,7 @@ impl<'a> Decoder<'a> {
 
         Ok(Some((
             byte & INSTRUCTION_MASK,
-            self.decode_integer(byte as i8 >> INSTRUCTION_BITS)
+            self.decode_integer(byte >> INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
     }
@@ -106,17 +106,17 @@ impl<'a> Decoder<'a> {
         }
     }
 
-    fn decode_integer(&mut self, rest: i8) -> Option<u64> {
+    fn decode_integer(&mut self, rest: u8) -> Option<u64> {
         let mut x = rest;
         let mut y = 0;
 
-        while x < 0 {
+        while x & 1 != 0 {
             y *= INTEGER_BASE;
-            x = self.decode_byte()? as i8;
-            y += x.abs() as u64;
+            x = self.decode_byte()?;
+            y += (x >> 1) as u64;
         }
 
-        Some(y * SHORT_INTEGER_BASE + rest.abs() as u64)
+        Some(y * SHORT_INTEGER_BASE + (rest >> 1) as u64)
     }
 
     fn decode_byte(&mut self) -> Option<u8> {

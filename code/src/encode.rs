@@ -78,15 +78,19 @@ fn encode_operand(operand: Operand) -> u64 {
 
 fn encode_integer(codes: &mut Vec<u8>, integer: u64) -> u8 {
     let mut x = integer / SHORT_INTEGER_BASE;
-    let mut sign = 1;
+    let mut bit = 0;
 
     while x != 0 {
-        codes.push((sign * (x % INTEGER_BASE) as i8) as u8);
-        sign = -1;
+        codes.push(encode_integer_part(x, INTEGER_BASE, bit));
+        bit = 1;
         x /= INTEGER_BASE;
     }
 
-    (((integer % SHORT_INTEGER_BASE) as i8) * sign) as u8
+    encode_integer_part(integer, SHORT_INTEGER_BASE, bit)
+}
+
+fn encode_integer_part(integer: u64, base: u64, bit: u64) -> u8 {
+    (((integer % base) << 1) | bit) as u8
 }
 
 #[cfg(test)]
@@ -182,6 +186,22 @@ mod tests {
         encode_and_decode(&Program::new(
             default_symbols(),
             vec![Instruction::Get(Operand::Symbol(0))],
+        ));
+    }
+
+    #[test]
+    fn encode_get_global_with_large_index() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Get(Operand::Symbol(4))],
+        ));
+    }
+
+    #[test]
+    fn encode_get_global_with_very_large_index() {
+        encode_and_decode(&Program::new(
+            default_symbols(),
+            vec![Instruction::Get(Operand::Symbol(1000))],
         ));
     }
 
