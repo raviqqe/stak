@@ -632,15 +632,13 @@
     (cons (+ instruction (* 16 integer)) target)))
 
 (define (encode-procedure context procedure target)
-  (let*-values (
-      ((code) (rib-car procedure))
-      ((integer target) (encode-integer (rib-car code) target)))
+  (let ((code (rib-car procedure)))
     (encode-codes
       context
       (rib-cdr code)
       (encode-instruction
         closure-code
-        integer
+        (rib-car code)
         target))))
 
 (define (encode-operand context operand)
