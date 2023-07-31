@@ -372,7 +372,7 @@
 
 (define tail (compile-primitive-call 'id '()))
 
-; TODO Introduce return-flavoured instructions for all `call`, `constant`, and `get`.
+; TODO Introduce return-flavoured instructions.
 (define (compile-tail continuation)
   (if (null? continuation)
     tail
