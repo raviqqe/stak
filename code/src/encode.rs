@@ -123,6 +123,21 @@ mod tests {
     }
 
     #[test]
+    fn encode_empty_symbol() {
+        encode_and_decode(&Program::new(vec!["".into()], vec![]));
+    }
+
+    #[test]
+    fn encode_empty_symbols() {
+        encode_and_decode(&Program::new(vec!["".into(), "".into()], vec![]));
+    }
+
+    #[test]
+    fn encode_empty_symbols_and_symbol() {
+        encode_and_decode(&Program::new(vec!["".into(), "".into()], vec![]));
+    }
+
+    #[test]
     fn encode_return_call_global() {
         encode_and_decode(&Program::new(
             default_symbols(),
