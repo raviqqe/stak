@@ -33,6 +33,7 @@ impl<'a> Decoder<'a> {
                     symbols.push(String::from_utf8(take(&mut symbol))?);
 
                     if character == b';' {
+                        symbols.reverse();
                         return Ok(symbols);
                     }
                 }

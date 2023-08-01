@@ -15,12 +15,12 @@ pub fn encode(program: &Program) -> Vec<u8> {
 fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
     codes.push(b';');
 
-    for (index, symbol) in symbols.iter().enumerate().rev() {
+    for (index, symbol) in symbols.iter().enumerate() {
         for &character in symbol.as_bytes() {
             codes.push(character);
         }
 
-        if index != 0 {
+        if index != symbols.len() - 1 {
             codes.push(b',');
         }
     }
@@ -98,6 +98,7 @@ mod tests {
     use super::*;
     use crate::decode;
     use alloc::borrow::ToOwned;
+    use pretty_assertions::assert_eq;
 
     fn encode_and_decode(program: &Program) {
         assert_eq!(&decode(&encode(program)).unwrap(), program);
@@ -120,6 +121,17 @@ mod tests {
     #[test]
     fn encode_symbols() {
         encode_and_decode(&Program::new(vec!["foo".into(), "bar".into()], vec![]));
+    }
+
+    #[test]
+    fn encode_symbols_in_correct_order() {
+        assert_eq!(
+            encode(&Program::new(
+                vec!["foo".into(), "bar".into(), "baz".into()],
+                vec![]
+            )),
+            b"zab,rab,oof;"
+        );
     }
 
     #[test]
