@@ -17,7 +17,7 @@ cargo build --release
 (
   cd $(dirname $0)/..
 
-  for file in $(find bench -type f -name '*.scm'); do
+  for file in $(find bench -type f -name '*.scm' | sort); do
     base=${file%.scm}
 
     cat prelude.scm $file | tools/compile.sh >$base.out
