@@ -23,16 +23,18 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_symbols(&mut self) -> Result<Vec<String>, Error> {
-        let mut symbols = vec![];
+        let mut symbols = (0..self.decode_sole_integer().ok_or(Error::MissingInteger)?)
+            .map(|_| Default::default())
+            .collect();
+        let mut symbol = vec![];
+        let mut byte = self.decode_byte().ok_or(Error::EndOfInput)?;
 
-        for _ in 0..self.decode_sole_integer().ok_or(Error::MissingInteger)? {
-            symbols.push("".into());
+        if byte == b';' {
+            return Ok(symbols);
         }
 
-        let mut symbol = vec![];
-
         loop {
-            match self.decode_byte().ok_or(Error::EndOfInput)? {
+            match byte {
                 character @ (b',' | b';') => {
                     symbol.reverse();
                     symbols.push(String::from_utf8(take(&mut symbol))?);
@@ -44,6 +46,8 @@ impl<'a> Decoder<'a> {
                 }
                 character => symbol.push(character),
             }
+
+            byte = self.decode_byte().ok_or(Error::EndOfInput)?;
         }
     }
 

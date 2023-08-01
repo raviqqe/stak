@@ -121,7 +121,6 @@ fn encode_integer_part(integer: u64, base: u64, bit: u64) -> u8 {
 mod tests {
     use super::*;
     use crate::decode;
-    use alloc::borrow::ToOwned;
     use pretty_assertions::assert_eq;
 
     fn encode_and_decode(program: &Program) {
@@ -129,7 +128,7 @@ mod tests {
     }
 
     fn default_symbols() -> Vec<String> {
-        vec!["".to_owned()]
+        vec![]
     }
 
     #[test]
