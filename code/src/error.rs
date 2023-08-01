@@ -5,6 +5,7 @@ pub enum Error {
     EndOfInput,
     IllegalInstruction,
     MissingClosureBody,
+    MissingInteger,
     MissingOperand,
     MissingElseBranch,
     Utf8(FromUtf8Error),

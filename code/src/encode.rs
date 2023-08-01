@@ -31,7 +31,7 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
             codes.push(character);
         }
 
-        if index < symbols.len() - empty_count {
+        if index + 1 >= symbols.len() - empty_count {
             break;
         }
 
