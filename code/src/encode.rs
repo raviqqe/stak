@@ -134,7 +134,10 @@ mod tests {
 
     #[test]
     fn encode_empty_symbols_and_symbol() {
-        encode_and_decode(&Program::new(vec!["".into(), "".into()], vec![]));
+        encode_and_decode(&Program::new(
+            vec!["".into(), "".into(), "foo".into()],
+            vec![],
+        ));
     }
 
     #[test]
