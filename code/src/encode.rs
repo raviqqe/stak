@@ -13,6 +13,17 @@ pub fn encode(program: &Program) -> Vec<u8> {
 }
 
 fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
+    let empty_count = symbols.iter().fold(
+        0,
+        |count, symbol| {
+            if symbol.is_empty() {
+                count + 1
+            } else {
+                0
+            }
+        },
+    );
+
     codes.push(b';');
 
     for (index, symbol) in symbols.iter().enumerate() {
@@ -20,10 +31,14 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
             codes.push(character);
         }
 
-        if index != symbols.len() - 1 {
-            codes.push(b',');
+        if index < symbols.len() - empty_count {
+            break;
         }
+
+        codes.push(b',');
     }
+
+    encode_sole_integer(codes, empty_count as u64);
 }
 
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
@@ -76,8 +91,17 @@ fn encode_operand(operand: Operand) -> u64 {
     }
 }
 
+fn encode_sole_integer(codes: &mut Vec<u8>, integer: u64) {
+    let byte = encode_integer_rest(codes, integer as u64, INTEGER_BASE);
+    codes.push(byte);
+}
+
 fn encode_integer(codes: &mut Vec<u8>, integer: u64) -> u8 {
-    let mut x = integer / SHORT_INTEGER_BASE;
+    encode_integer_rest(codes, integer, SHORT_INTEGER_BASE)
+}
+
+fn encode_integer_rest(codes: &mut Vec<u8>, integer: u64, base: u64) -> u8 {
+    let mut x = integer / base;
     let mut bit = 0;
 
     while x != 0 {
@@ -86,7 +110,7 @@ fn encode_integer(codes: &mut Vec<u8>, integer: u64) -> u8 {
         x /= INTEGER_BASE;
     }
 
-    encode_integer_part(integer, SHORT_INTEGER_BASE, bit)
+    encode_integer_part(integer, base, bit)
 }
 
 fn encode_integer_part(integer: u64, base: u64, bit: u64) -> u8 {

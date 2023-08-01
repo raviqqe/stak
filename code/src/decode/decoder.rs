@@ -24,6 +24,12 @@ impl<'a> Decoder<'a> {
 
     fn decode_symbols(&mut self) -> Result<Vec<String>, Error> {
         let mut symbols = vec![];
+
+        for _ in 0..(self.decode_integer(1).ok_or(Error::MissingOperand)? % SHORT_INTEGER_BASE - 1)
+        {
+            symbols.push("".into());
+        }
+
         let mut symbol = vec![];
 
         loop {
