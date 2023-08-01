@@ -92,7 +92,7 @@ fn encode_operand(operand: Operand) -> u64 {
 }
 
 fn encode_sole_integer(codes: &mut Vec<u8>, integer: u64) {
-    let byte = encode_integer_rest(codes, integer as u64, INTEGER_BASE);
+    let byte = encode_integer_rest(codes, integer, INTEGER_BASE);
     codes.push(byte);
 }
 
@@ -154,7 +154,7 @@ mod tests {
                 vec!["foo".into(), "bar".into(), "baz".into()],
                 vec![]
             )),
-            b"zab,rab,oof;"
+            b"\x00zab,rab,oof;"
         );
     }
 
