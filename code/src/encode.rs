@@ -245,7 +245,7 @@ mod tests {
     }
 
     #[test]
-    fn encode_if_instruction_in_closure() {
+    fn encode_tail_if_instruction_in_closure() {
         encode_and_decode(&Program::new(
             vec![],
             vec![
