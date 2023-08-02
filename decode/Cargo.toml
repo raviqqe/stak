@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-code = { package = "stak-code", path = "../code", features = ["alloc"] }
+code = { package = "stak-code", path = "../code", features = ["alloc", "std"] }

@@ -1,9 +1,5 @@
-use device::StdioDevice;
+use code::decode;
 use std::{env::args, error::Error, fs::read, process::exit};
-use vm::Vm;
-
-// TODO Make this 1 << 9 by default.
-const HEAP_SIZE: usize = 1 << 17;
 
 fn main() {
     if let Err(error) = run() {
@@ -13,12 +9,13 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let mut vm = Vm::<HEAP_SIZE, StdioDevice>::new(Default::default())?;
+    eprintln!(
+        "{:?}",
+        decode(&read(args().nth(1).ok_or(format!(
+            "Usage: {} <bytecode_file>",
+            args().next().expect("command name")
+        ))?)?)?
+    );
 
-    vm.initialize(read(args().nth(1).ok_or(format!(
-        "Usage: {} <bytecode_file>",
-        args().next().expect("command name")
-    ))?)?)?;
-
-    Ok(vm.run()?)
+    Ok(())
 }
