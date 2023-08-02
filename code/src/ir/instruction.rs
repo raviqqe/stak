@@ -3,7 +3,7 @@ use alloc::vec::Vec;
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
-    Call(Operand, bool),
+    Call(Operand),
     Closure(u64, Vec<Instruction>),
     Set(Operand),
     Get(Operand),

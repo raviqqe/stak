@@ -44,16 +44,8 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     for instruction in instructions {
         match instruction {
-            Instruction::Call(operand, r#return) => {
-                encode_instruction(
-                    codes,
-                    if *r#return {
-                        Instruction::RETURN_CALL
-                    } else {
-                        Instruction::CALL
-                    },
-                    encode_operand(*operand),
-                );
+            Instruction::Call(operand) => {
+                encode_instruction(codes, Instruction::CALL, encode_operand(*operand));
             }
             Instruction::Closure(arity, body) => {
                 encode_instruction(codes, Instruction::CLOSURE, *arity);
