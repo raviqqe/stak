@@ -92,6 +92,13 @@ impl<'a> Decoder<'a> {
 
         instructions.reverse();
 
+        if instruction_lists.len() > 1
+            || !instruction_lists.is_empty()
+                && !instruction_lists.iter().all(|list| list.is_empty())
+        {
+            return Err(Error::EndOfInput);
+        }
+
         Ok(instructions)
     }
 
