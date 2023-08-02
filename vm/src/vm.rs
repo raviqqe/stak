@@ -548,8 +548,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = NULL;
         self.stack = NULL;
 
+        trace!("decode", "start");
+
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
+
+        trace!("decode", "end");
 
         // Implicit top-level frame
         let return_info = self.allocate(NULL.into(), NULL.into())?.into();
@@ -611,7 +615,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some((instruction, integer)) = self.decode_instruction(input)? {
-            trace!("decoded instruction", instruction);
+            trace!("instruction", instruction);
 
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
