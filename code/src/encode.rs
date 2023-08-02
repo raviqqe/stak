@@ -203,13 +203,24 @@ mod tests {
     }
 
     #[test]
-    fn encode_close() {
+    fn encode_closure() {
         encode_and_decode(&Program::new(
             vec![],
             vec![Instruction::Closure(
                 42,
                 vec![Instruction::Call(Operand::Integer(0))],
             )],
+        ));
+    }
+
+    #[test]
+    fn encode_instructions_after_closure() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::Closure(42, vec![Instruction::Call(Operand::Integer(1), true)]),
+                Instruction::Constant(Operand::Integer(2)),
+            ],
         ));
     }
 
