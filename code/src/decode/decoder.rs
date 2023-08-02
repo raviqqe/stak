@@ -73,10 +73,11 @@ impl<'a> Decoder<'a> {
                 Instruction::CONSTANT => Instruction::Constant(operand),
                 Instruction::IF => {
                     instructions.reverse();
-                    let then = take(&mut instructions);
-                    let r#else = instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
 
-                    Instruction::If(then, r#else)
+                    Instruction::If(
+                        take(&mut instructions),
+                        instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
+                    )
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
