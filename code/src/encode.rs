@@ -225,6 +225,26 @@ mod tests {
     }
 
     #[test]
+    fn encode_instructions_in_closure() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(1)),
+                Instruction::Closure(
+                    42,
+                    vec![
+                        Instruction::Constant(Operand::Integer(2)),
+                        Instruction::Constant(Operand::Integer(3)),
+                    ],
+                ),
+                Instruction::Constant(Operand::Integer(4)),
+                Instruction::Constant(Operand::Integer(5)),
+            ],
+        ));
+    }
+
+    #[test]
     fn encode_set_global() {
         encode_and_decode(&Program::new(
             vec![],
@@ -308,6 +328,21 @@ mod tests {
                 vec![Instruction::Get(Operand::Symbol(0))],
                 vec![Instruction::Constant(Operand::Integer(1))],
             )],
+        ));
+    }
+
+    #[test]
+    fn encode_non_tail_if_instruction() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::If(
+                    vec![Instruction::Constant(Operand::Integer(0))],
+                    vec![Instruction::Constant(Operand::Integer(1))],
+                ),
+                Instruction::Constant(Operand::Integer(2)),
+                Instruction::Constant(Operand::Integer(3)),
+            ],
         ));
     }
 

@@ -64,16 +64,29 @@ impl<'a> Decoder<'a> {
                 Instruction::GET => Instruction::Get(operand),
                 Instruction::CONSTANT => Instruction::Constant(operand),
                 Instruction::IF => {
-                    instructions.reverse();
+                    let instruction = Instruction::If(
+                        {
+                            instructions.reverse();
+                            take(&mut instructions)
+                        },
+                        {
+                            let mut r#else: Vec<_> =
+                                instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
+                            r#else.reverse();
+                            r#else
+                        },
+                    );
 
-                    Instruction::If(
-                        take(&mut instructions),
-                        instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
-                    )
+                    instructions = instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
+
+                    instruction
                 }
                 Instruction::CLOSURE => {
                     let body = replace(
-                        &mut instructions,
+                        {
+                            instructions.reverse();
+                            &mut instructions
+                        },
                         instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
                     );
 
@@ -83,7 +96,6 @@ impl<'a> Decoder<'a> {
             };
 
             if r#return {
-                instructions.reverse();
                 instruction_lists.push(take(&mut instructions));
             }
 
