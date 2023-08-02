@@ -618,7 +618,7 @@
   (let (
       (count (count-empty-symbols symbols))
       (target (cons (char->integer #\;) target)))
-    (encode-mere-integer
+    (encode-integer
       count
       (if (null? symbols)
         target
@@ -644,15 +644,15 @@
         1
         (cons (encode-integer-part x integer-base bit) target)))))
 
-(define (encode-integer integer target)
+(define (encode-short-integer integer target)
   (encode-integer-with-base integer short-integer-base target))
 
-(define (encode-mere-integer integer target)
+(define (encode-integer integer target)
   (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
     (cons byte target)))
 
 (define (encode-instruction instruction integer target)
-  (let-values (((integer target) (encode-integer integer target)))
+  (let-values (((integer target) (encode-short-integer integer target)))
     (cons (+ instruction (* 16 integer)) target)))
 
 (define (encode-procedure context procedure target)

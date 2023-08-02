@@ -563,7 +563,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
-        for _ in 0..Self::decode_mere_integer(input).ok_or(Error::MissingInteger)? {
+        for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             let symbol = self.create_symbol(NULL, 0)?;
             self.push(symbol.into())?;
         }
@@ -684,7 +684,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         Ok(Some((
             byte & code::INSTRUCTION_MASK,
-            Self::decode_integer(input, byte >> code::INSTRUCTION_BITS)
+            Self::decode_short_integer(input, byte >> code::INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
     }
@@ -703,12 +703,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         })
     }
 
-    fn decode_mere_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
+    fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
         let byte = input.next()?;
         Self::decode_integer_rest(input, byte, code::INTEGER_BASE)
     }
 
-    fn decode_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
+    fn decode_short_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
         Self::decode_integer_rest(input, rest, code::SHORT_INTEGER_BASE)
     }
 
