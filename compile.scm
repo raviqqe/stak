@@ -18,13 +18,12 @@
 
 ;; Codes
 
-(define return-call-code 0)
-(define call-code 1)
-(define closure-code 2)
-(define set-code 3)
-(define get-code 4)
-(define constant-code 5)
-(define if-code 6)
+(define call-code 0)
+(define set-code 1)
+(define get-code 2)
+(define constant-code 3)
+(define if-code 4)
+(define closure-code 5)
 
 ; Primitives
 
