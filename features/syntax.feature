@@ -242,8 +242,8 @@ Feature: Syntax
   Scenario: Update a captured variable in a closure
     Given a file named "source.scm" with:
     """scheme
-    (define (f x) (lambda () (set! x (+ x 1) x)))
-		(define (g) (f 64))
+    (define (f x) (lambda () (set! x (+ x 1)) x))
+    (define g (f 64))
 
     (write-u8 (g))
     (write-u8 (g))
