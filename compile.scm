@@ -618,6 +618,7 @@
           (- count 1)
           (cons (char->integer #\,) target))))))
 
+; TODO Should we put all empty symbols at the end?
 (define (encode-symbols symbols target)
   (let (
       (count (count-empty-symbols symbols))
