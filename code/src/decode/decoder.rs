@@ -62,7 +62,7 @@ impl<'a> Decoder<'a> {
                 Instruction::RETURN_CALL => {
                     instructions.reverse();
                     instruction_lists.push(take(&mut instructions));
-                    instructions.push(Instruction::Call(operand, true))
+                    instructions.push(Instruction::Call(operand))
                 }
                 Instruction::CALL => instructions.push(Instruction::Call(operand, false)),
                 Instruction::CLOSURE => {
