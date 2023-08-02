@@ -1,5 +1,5 @@
 [workspace]
-members = ["code", "command", "device", "vm"]
+members = ["code", "command", "decode", "device", "vm"]
 
 [profile.release]
 lto = true
