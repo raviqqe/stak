@@ -941,7 +941,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Closure(0, vec![Instruction::Call(Operand::Integer(1), true)]),
+                    Instruction::Closure(0, vec![Instruction::Call(Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(0)),
                 ],
             ));
@@ -1038,8 +1038,8 @@ mod tests {
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::If(
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],
+                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
+                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
                     ),
                 ],
             ));
