@@ -60,14 +60,6 @@ impl<'a> Decoder<'a> {
 
             let instruction = match instruction {
                 Instruction::CALL => Instruction::Call(operand),
-                Instruction::CLOSURE => {
-                    let body = replace(
-                        &mut instructions,
-                        instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
-                    );
-
-                    Instruction::Closure(integer, body)
-                }
                 Instruction::SET => Instruction::Set(operand),
                 Instruction::GET => Instruction::Get(operand),
                 Instruction::CONSTANT => Instruction::Constant(operand),
@@ -78,6 +70,14 @@ impl<'a> Decoder<'a> {
                         take(&mut instructions),
                         instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
                     )
+                }
+                Instruction::CLOSURE => {
+                    let body = replace(
+                        &mut instructions,
+                        instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
+                    );
+
+                    Instruction::Closure(integer, body)
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
