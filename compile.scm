@@ -749,3 +749,9 @@
             context
             (build-primitives primitives)
             '()))))))
+
+(export
+  compile
+  encode
+  read-source
+  write-target)
