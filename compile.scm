@@ -602,25 +602,27 @@
 (define (count-empty-symbols symbols)
   (count-empty-symbols* symbols count))
 
-(define (encode-symbols* symbols target)
-  (let (
-      (target (encode-symbol (car symbols) target))
-      (rest (cdr symbols)))
-    (if (null? rest)
-      target
-      (encode-symbols*
-        rest
-        (cons
-          (char->integer #\,)
-          target)))))
+(define (encode-symbols* symbols count target)
+  ; We may encounter this only at the first call.
+  (if (eqv? count 0)
+    target
+    (let ((target (encode-symbol (car symbols) target)))
+      (if (eqv? count 1)
+        target
+        (encode-symbols*
+          (cdr symbols)
+          (- count 1)
+          (cons (char->integer #\,) target))))))
 
 (define (encode-symbols symbols target)
-  (encode-mere-integer
-    (count-empty-symbols symbols)
-    (let ((target (cons (char->integer #\;) target)))
+  (let (
+      (count (count-empty-symbols symbols))
+      (target (cons (char->integer #\;) target)))
+    (encode-mere-integer
+      count
       (if (null? symbols)
         target
-        (encode-symbols* symbols target)))))
+        (encode-symbols* symbols (- (length symbols) count) target)))))
 
 ;; Codes
 
