@@ -668,6 +668,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
+        // TODO Remove this check?
         // If the last instruction is a tail call, we have an null element in a stack.
         if self.stack == NULL
             || self.car(self.stack) == NULL.into() && self.cdr(self.stack) == NULL.into()
