@@ -589,18 +589,6 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
-(define (encode-symbols* symbols target)
-  (let (
-      (target (encode-symbol (car symbols) target))
-      (rest (cdr symbols)))
-    (if (null? rest)
-      target
-      (encode-symbols*
-        rest
-        (cons
-          (char->integer #\,)
-          target)))))
-
 (define (count-empty-symbols* symbols count)
   (if (null? symbols)
     count
@@ -613,6 +601,18 @@
 
 (define (count-empty-symbols symbols)
   (count-empty-symbols* symbols count))
+
+(define (encode-symbols* symbols target)
+  (let (
+      (target (encode-symbol (car symbols) target))
+      (rest (cdr symbols)))
+    (if (null? rest)
+      target
+      (encode-symbols*
+        rest
+        (cons
+          (char->integer #\,)
+          target)))))
 
 (define (encode-symbols symbols target)
   (encode-mere-integer
