@@ -290,6 +290,17 @@ mod tests {
     }
 
     #[test]
+    fn encode_if_terminated_with_non_tail_call() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![Instruction::If(
+                vec![Instruction::Get(Operand::Symbol(0))],
+                vec![Instruction::Constant(Operand::Integer(1))],
+            )],
+        ));
+    }
+
+    #[test]
     fn encode_sequence() {
         encode_and_decode(&Program::new(
             vec![],
