@@ -55,8 +55,13 @@ impl<'a> Decoder<'a> {
         let mut instruction_lists = vec![];
         let mut instructions = vec![];
 
-        while let Some((instruction, integer)) = self.decode_instruction()? {
+        while let Some((instruction, r#return, integer)) = self.decode_instruction()? {
             let operand = Self::decode_operand(integer);
+
+            if r#return {
+                instructions.reverse();
+                instruction_lists.push(take(&mut instructions));
+            }
 
             match instruction {
                 Instruction::CALL => instructions.push(Instruction::Call(operand)),
@@ -89,13 +94,16 @@ impl<'a> Decoder<'a> {
         Ok(instructions)
     }
 
-    fn decode_instruction(&mut self) -> Result<Option<(u8, u64)>, Error> {
+    fn decode_instruction(&mut self) -> Result<Option<(u8, bool, u64)>, Error> {
         let Some(byte) = self.decode_byte() else {
             return Ok(None);
         };
 
+        let instruction = byte & INSTRUCTION_MASK;
+
         Ok(Some((
-            byte & INSTRUCTION_MASK,
+            instruction >> 1,
+            instruction & 1 != 0,
             self.decode_short_integer(byte >> INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
