@@ -3,12 +3,5 @@ name = "stak-decode"
 version = "0.1.0"
 edition = "2021"
 
-[features]
-boost = ["vm/boost"]
-gc_always = ["vm/gc_always"]
-trace = ["vm/trace"]
-trace_heap = ["vm/trace_heap"]
-
 [dependencies]
-device = { package = "stak-device", path = "../device", features = ["std"] }
-vm = { package = "stak-vm", path = "../vm", features = ["std"] }
+code = { package = "stak-code", path = "../code", features = ["alloc"] }
