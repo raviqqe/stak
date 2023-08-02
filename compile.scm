@@ -589,23 +589,45 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
-(define (encode-symbols* symbols target)
-  (let (
-      (target (encode-symbol (car symbols) target))
-      (rest (cdr symbols)))
-    (if (null? rest)
-      target
-      (encode-symbols*
-        rest
-        (cons
-          (char->integer #\,)
-          target)))))
+; TODO Check if a symbol can be empty.
+; Currently, we encode the last 3 symbols as empty symbols just to test this logic.
+(define (empty-symbol? symbols)
+  (< (length symbols) 4))
 
+(define (count-empty-symbols* symbols count)
+  (if (null? symbols)
+    count
+    (count-empty-symbols*
+      (cdr symbols)
+      (if (empty-symbol? symbols)
+        (+ count 1)
+        0))))
+
+(define (count-empty-symbols symbols)
+  (count-empty-symbols* symbols 0))
+
+(define (encode-symbols* symbols count target)
+  ; We may encounter this only at the first call.
+  (if (eqv? count 0)
+    target
+    (let ((target (encode-symbol (car symbols) target)))
+      (if (eqv? count 1)
+        target
+        (encode-symbols*
+          (cdr symbols)
+          (- count 1)
+          (cons (char->integer #\,) target))))))
+
+; TODO Should we put all empty symbols at the end?
 (define (encode-symbols symbols target)
-  (let ((target (cons (char->integer #\;) target)))
-    (if (null? symbols)
-      target
-      (encode-symbols* symbols target))))
+  (let (
+      (count (count-empty-symbols symbols))
+      (target (cons (char->integer #\;) target)))
+    (encode-integer
+      count
+      (if (null? symbols)
+        target
+        (encode-symbols* symbols (- (length symbols) count) target)))))
 
 ;; Codes
 
@@ -615,20 +637,27 @@
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
-(define (encode-integer integer target)
+(define (encode-integer-with-base integer base target)
   (let loop (
-      (x (quotient integer short-integer-base))
+      (x (quotient integer base))
       (bit 0)
       (target target))
     (if (eqv? x 0)
-      (values (encode-integer-part integer short-integer-base bit) target)
+      (values (encode-integer-part integer base bit) target)
       (loop
         (quotient x integer-base)
         1
         (cons (encode-integer-part x integer-base bit) target)))))
 
+(define (encode-short-integer integer target)
+  (encode-integer-with-base integer short-integer-base target))
+
+(define (encode-integer integer target)
+  (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
+    (cons byte target)))
+
 (define (encode-instruction instruction integer target)
-  (let-values (((integer target) (encode-integer integer target)))
+  (let-values (((integer target) (encode-short-integer integer target)))
     (cons (+ instruction (* 16 integer)) target)))
 
 (define (encode-procedure context procedure target)

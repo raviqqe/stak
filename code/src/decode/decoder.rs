@@ -23,21 +23,31 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_symbols(&mut self) -> Result<Vec<String>, Error> {
-        let mut symbols = vec![];
+        let mut symbols = (0..self.decode_integer().ok_or(Error::MissingInteger)?)
+            .map(|_| Default::default())
+            .collect();
         let mut symbol = vec![];
+        let mut byte = self.decode_byte().ok_or(Error::EndOfInput)?;
+
+        if byte == b';' {
+            return Ok(symbols);
+        }
 
         loop {
-            match self.decode_byte().ok_or(Error::EndOfInput)? {
+            match byte {
                 character @ (b',' | b';') => {
                     symbol.reverse();
                     symbols.push(String::from_utf8(take(&mut symbol))?);
 
                     if character == b';' {
+                        symbols.reverse();
                         return Ok(symbols);
                     }
                 }
                 character => symbol.push(character),
             }
+
+            byte = self.decode_byte().ok_or(Error::EndOfInput)?;
         }
     }
 
@@ -91,7 +101,7 @@ impl<'a> Decoder<'a> {
 
         Ok(Some((
             byte & INSTRUCTION_MASK,
-            self.decode_integer(byte >> INSTRUCTION_BITS)
+            self.decode_short_integer(byte >> INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
     }
@@ -106,7 +116,16 @@ impl<'a> Decoder<'a> {
         }
     }
 
-    fn decode_integer(&mut self, rest: u8) -> Option<u64> {
+    fn decode_integer(&mut self) -> Option<u64> {
+        let byte = self.decode_byte()?;
+        self.decode_integer_rest(byte, INTEGER_BASE)
+    }
+
+    fn decode_short_integer(&mut self, rest: u8) -> Option<u64> {
+        self.decode_integer_rest(rest, SHORT_INTEGER_BASE)
+    }
+
+    fn decode_integer_rest(&mut self, rest: u8, base: u64) -> Option<u64> {
         let mut x = rest;
         let mut y = 0;
 
@@ -116,7 +135,7 @@ impl<'a> Decoder<'a> {
             y += (x >> 1) as u64;
         }
 
-        Some(y * SHORT_INTEGER_BASE + (rest >> 1) as u64)
+        Some(y * base + (rest >> 1) as u64)
     }
 
     fn decode_byte(&mut self) -> Option<u8> {

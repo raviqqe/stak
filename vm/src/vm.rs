@@ -548,8 +548,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = NULL;
         self.stack = NULL;
 
+        trace!("decode", "start");
+
         self.decode_symbols(&mut input)?;
         self.decode_instructions(&mut input)?;
+
+        trace!("decode", "end");
 
         // Implicit top-level frame
         let return_info = self.allocate(NULL.into(), NULL.into())?.into();
@@ -559,31 +563,36 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
+        for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
+            let symbol = self.create_symbol(NULL, 0)?;
+            self.push(symbol.into())?;
+        }
+
         let mut length = 0;
         let mut name = NULL;
+        let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
-        loop {
-            match input.next().ok_or(Error::EndOfInput)? {
-                character @ (b',' | b';') => {
-                    let string = self.allocate(
-                        Number::new(length).into(),
-                        name.set_tag(Type::String as u8).into(),
-                    )?;
-                    let symbol =
-                        self.allocate(FALSE.into(), string.set_tag(Type::Symbol as u8).into())?;
-                    self.push(symbol.into())?;
+        if byte != b';' {
+            loop {
+                match byte {
+                    character @ (b',' | b';') => {
+                        let symbol = self.create_symbol(name, length)?;
+                        self.push(symbol.into())?;
 
-                    length = 0;
-                    name = NULL;
+                        length = 0;
+                        name = NULL;
 
-                    if character == b';' {
-                        break;
+                        if character == b';' {
+                            break;
+                        }
+                    }
+                    character => {
+                        length += 1;
+                        name = self.append(Number::new(character as i64).into(), name)?;
                     }
                 }
-                character => {
-                    length += 1;
-                    name = self.append(Number::new(character as i64).into(), name)?;
-                }
+
+                byte = input.next().ok_or(Error::EndOfInput)?;
             }
         }
 
@@ -603,6 +612,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
+    fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
+        let string = self.allocate(
+            Number::new(length).into(),
+            name.set_tag(Type::String as u8).into(),
+        )?;
+
+        self.allocate(FALSE.into(), string.set_tag(Type::Symbol as u8).into())
+    }
+
     fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
         let symbol = self.allocate(value, NULL.set_tag(Type::Symbol as u8).into())?;
 
@@ -611,7 +629,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some((instruction, integer)) = self.decode_instruction(input)? {
-            trace!("decoded instruction", instruction);
+            trace!("instruction", instruction);
 
             let (car, tag) = match instruction {
                 code::Instruction::RETURN_CALL => {
@@ -666,7 +684,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         Ok(Some((
             byte & code::INSTRUCTION_MASK,
-            Self::decode_integer(input, byte >> code::INSTRUCTION_BITS)
+            Self::decode_short_integer(input, byte >> code::INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
     }
@@ -685,7 +703,20 @@ impl<const N: usize, T: Device> Vm<N, T> {
         })
     }
 
-    fn decode_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
+    fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
+        let byte = input.next()?;
+        Self::decode_integer_rest(input, byte, code::INTEGER_BASE)
+    }
+
+    fn decode_short_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
+        Self::decode_integer_rest(input, rest, code::SHORT_INTEGER_BASE)
+    }
+
+    fn decode_integer_rest(
+        input: &mut impl Iterator<Item = u8>,
+        rest: u8,
+        base: u64,
+    ) -> Option<u64> {
         let mut x = rest;
         let mut y = 0;
 
@@ -695,7 +726,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             y += (x >> 1) as u64;
         }
 
-        Some(y * code::SHORT_INTEGER_BASE + (rest >> 1) as u64)
+        Some(y * base + (rest >> 1) as u64)
     }
 }
 
@@ -926,6 +957,28 @@ mod tests {
         }
 
         #[test]
+        fn set_empty_global() {
+            run_program(&Program::new(
+                vec!["".into()],
+                vec![
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn set_second_empty_global() {
+            run_program(&Program::new(
+                vec!["".into(), "".into()],
+                vec![
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
+                ],
+            ));
+        }
+
+        #[test]
         fn set_local() {
             run_program(&Program::new(
                 vec![],
@@ -942,6 +995,22 @@ mod tests {
             run_program(&Program::new(
                 vec!["x".into()],
                 vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
+            ));
+        }
+
+        #[test]
+        fn get_empty_global() {
+            run_program(&Program::new(
+                vec!["".into()],
+                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
+            ));
+        }
+
+        #[test]
+        fn get_second_empty_global() {
+            run_program(&Program::new(
+                vec!["".into(), "".into()],
+                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
             ));
         }
 

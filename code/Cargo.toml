@@ -10,3 +10,4 @@ alloc = []
 
 [dev-dependencies]
 insta = "1.31.0"
+pretty_assertions = "1.4.0"
