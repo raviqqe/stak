@@ -65,10 +65,10 @@ impl<'a> Decoder<'a> {
                 Instruction::CONSTANT => Instruction::Constant(operand),
                 Instruction::IF => {
                     let instruction = Instruction::If(
-                        {
+                        take({
                             instructions.reverse();
-                            take(&mut instructions)
-                        },
+                            &mut instructions
+                        }),
                         {
                             let mut r#else: Vec<_> =
                                 instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
