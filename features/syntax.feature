@@ -238,3 +238,20 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Update a captured variable in a closure
+    Given a file named "source.scm" with:
+    """scheme
+    (define (f x) (lambda () (set! x (+ x 1)) x))
+    (define g (f 64))
+
+    (write-u8 (g))
+    (write-u8 (g))
+    (write-u8 (g))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | ./main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "ABC"
