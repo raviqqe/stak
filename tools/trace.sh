@@ -8,5 +8,5 @@ fi
 
 cd $(dirname $0)/..
 
-tools/compile.sh <$1 >main.out
+./main.scm <$1 >main.out
 cargo run --features trace -- main.out

@@ -15,7 +15,7 @@ Feature: Boolean
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | tools/compile.sh > main.out
+    cat prelude.scm source.scm | ./main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
@@ -31,7 +31,7 @@ Feature: Boolean
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | tools/compile.sh > main.out
+    cat prelude.scm source.scm | ./main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AABAB"
@@ -49,7 +49,7 @@ Feature: Boolean
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | tools/compile.sh > main.out
+    cat prelude.scm source.scm | ./main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "BABBAAA"
