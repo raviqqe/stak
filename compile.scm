@@ -29,7 +29,6 @@
 
 (define primitives
   '(
-    (id 2)
     (pop 3)
     (skip 4)
     (close 5)
@@ -254,7 +253,7 @@
 (define (compile-primitive-call name continuation)
   (compile-constant
     (cond
-      ((memq name '(close id))
+      ((memq name '(close))
         1)
 
       ((memq name '(pop skip -))
@@ -428,9 +427,7 @@
   (compile-expression
     (make-compile-context)
     expression
-    (compile-constant
-      #f
-      (compile-primitive-call 'id '()))))
+    '()))
 
 ; Encoding
 
