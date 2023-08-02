@@ -600,7 +600,7 @@
         (+ count 1)))))
 
 (define (count-empty-symbols symbols)
-  (count-empty-symbols* symbols count))
+  (count-empty-symbols* symbols 0))
 
 (define (encode-symbols* symbols count target)
   ; We may encounter this only at the first call.
