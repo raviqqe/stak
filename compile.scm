@@ -589,15 +589,19 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
+; TODO Check if a symbol can be empty.
+; Currently, we encode the last 3 symbols as empty symbols just to test this logic.
+(define (empty-symbol? symbols)
+  (< (length symbols) 4))
+
 (define (count-empty-symbols* symbols count)
   (if (null? symbols)
     count
     (count-empty-symbols*
       (cdr symbols)
-      ; TODO Check if a symbol can be empty.
-      (if #t
-        0
-        (+ count 1)))))
+      (if (empty-symbol? symbols)
+        (+ count 1)
+        0))))
 
 (define (count-empty-symbols symbols)
   (count-empty-symbols* symbols 0))
