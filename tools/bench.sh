@@ -20,7 +20,7 @@ cargo build --release
   for file in $(find bench -type f -name '*.scm' | sort); do
     base=${file%.scm}
 
-    cat prelude.scm $file | tools/compile.sh >$base.out
+    cat prelude.scm $file | ./main.scm >$base.out
 
     hyperfine \
       --sort command \
