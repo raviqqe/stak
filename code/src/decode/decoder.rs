@@ -58,35 +58,35 @@ impl<'a> Decoder<'a> {
         while let Some((instruction, r#return, integer)) = self.decode_instruction()? {
             let operand = Self::decode_operand(integer);
 
-            if r#return {
-                instructions.reverse();
-                instruction_lists.push(take(&mut instructions));
-            }
-
-            match instruction {
-                Instruction::CALL => instructions.push(Instruction::Call(operand)),
+            let instruction = match instruction {
+                Instruction::CALL => Instruction::Call(operand),
                 Instruction::CLOSURE => {
                     let body = replace(
                         &mut instructions,
                         instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
                     );
 
-                    instructions.push(Instruction::Closure(integer, body));
+                    Instruction::Closure(integer, body)
                 }
-                Instruction::SET => instructions.push(Instruction::Set(operand)),
-                Instruction::GET => instructions.push(Instruction::Get(operand)),
-                Instruction::CONSTANT => instructions.push(Instruction::Constant(operand)),
+                Instruction::SET => Instruction::Set(operand),
+                Instruction::GET => Instruction::Get(operand),
+                Instruction::CONSTANT => Instruction::Constant(operand),
                 Instruction::IF => {
                     instructions.reverse();
                     let then = take(&mut instructions);
+                    let r#else = instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
 
-                    instructions.push(Instruction::If(
-                        then,
-                        instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
-                    ));
+                    Instruction::If(then, r#else)
                 }
                 _ => return Err(Error::IllegalInstruction),
+            };
+
+            if r#return {
+                instructions.reverse();
+                instruction_lists.push(take(&mut instructions));
             }
+
+            instructions.push(instruction);
         }
 
         instructions.reverse();
