@@ -167,7 +167,7 @@ mod tests {
     fn encode_return_call_global() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Symbol(0), true)],
+            vec![Instruction::Call(Operand::Symbol(0))],
         ));
     }
 
@@ -175,7 +175,7 @@ mod tests {
     fn encode_return_call_local() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Integer(0), true)],
+            vec![Instruction::Call(Operand::Integer(0))],
         ));
     }
 
@@ -183,7 +183,7 @@ mod tests {
     fn encode_call_global() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Symbol(0), false)],
+            vec![Instruction::Call(Operand::Symbol(0))],
         ));
     }
 
@@ -191,7 +191,7 @@ mod tests {
     fn encode_call_local() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Integer(0), false)],
+            vec![Instruction::Call(Operand::Integer(0))],
         ));
     }
 
@@ -201,7 +201,7 @@ mod tests {
             vec![],
             vec![Instruction::Closure(
                 42,
-                vec![Instruction::Call(Operand::Integer(0), true)],
+                vec![Instruction::Call(Operand::Integer(0))],
             )],
         ));
     }
@@ -259,8 +259,8 @@ mod tests {
         encode_and_decode(&Program::new(
             vec![],
             vec![Instruction::If(
-                vec![Instruction::Call(Operand::Symbol(0), true)],
-                vec![Instruction::Call(Operand::Symbol(1), true)],
+                vec![Instruction::Call(Operand::Symbol(0))],
+                vec![Instruction::Call(Operand::Symbol(1))],
             )],
         ));
     }
@@ -272,11 +272,11 @@ mod tests {
             vec![Instruction::If(
                 vec![
                     Instruction::Get(Operand::Symbol(0)),
-                    Instruction::Call(Operand::Symbol(0), true),
+                    Instruction::Call(Operand::Symbol(0)),
                 ],
                 vec![
                     Instruction::Get(Operand::Symbol(1)),
-                    Instruction::Call(Operand::Symbol(1), true),
+                    Instruction::Call(Operand::Symbol(1)),
                 ],
             )],
         ));
@@ -288,7 +288,7 @@ mod tests {
             vec![],
             vec![
                 Instruction::Get(Operand::Symbol(0)),
-                Instruction::Call(Operand::Symbol(0), true),
+                Instruction::Call(Operand::Symbol(0)),
             ],
         ));
     }

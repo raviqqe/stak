@@ -59,12 +59,7 @@ impl<'a> Decoder<'a> {
             let operand = Self::decode_operand(integer);
 
             match instruction {
-                Instruction::RETURN_CALL => {
-                    instructions.reverse();
-                    instruction_lists.push(take(&mut instructions));
-                    instructions.push(Instruction::Call(operand))
-                }
-                Instruction::CALL => instructions.push(Instruction::Call(operand, false)),
+                Instruction::CALL => instructions.push(Instruction::Call(operand)),
                 Instruction::CLOSURE => {
                     let body = replace(
                         &mut instructions,
