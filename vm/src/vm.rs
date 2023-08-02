@@ -669,9 +669,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
-        self.stack = NULL;
-
-        Ok(())
+        if self.stack == NULL {
+            Ok(())
+        } else {
+            Err(Error::EndOfInput)
+        }
     }
 
     fn decode_instruction(
