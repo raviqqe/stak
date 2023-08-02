@@ -716,7 +716,8 @@
             (encode-codes
               context
               operand
-              (encode-instruction if-code 0 return target)))
+              ; TODO Allow non-tail if instructions.
+              (encode-instruction if-code 0 #t target)))
 
           (else (error "invalid instruction")))))))
 
