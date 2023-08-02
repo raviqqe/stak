@@ -753,5 +753,6 @@
 (export
   compile
   encode
+  expand
   read-source
   write-target)
