@@ -563,31 +563,36 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
+        for _ in 0..Self::decode_mere_integer(input).ok_or(Error::MissingInteger)? {
+            let symbol = self.create_symbol(NULL, 0)?;
+            self.push(symbol.into())?;
+        }
+
         let mut length = 0;
         let mut name = NULL;
+        let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
-        loop {
-            match input.next().ok_or(Error::EndOfInput)? {
-                character @ (b',' | b';') => {
-                    let string = self.allocate(
-                        Number::new(length).into(),
-                        name.set_tag(Type::String as u8).into(),
-                    )?;
-                    let symbol =
-                        self.allocate(FALSE.into(), string.set_tag(Type::Symbol as u8).into())?;
-                    self.push(symbol.into())?;
+        if byte != b';' {
+            loop {
+                match byte {
+                    character @ (b',' | b';') => {
+                        let symbol = self.create_symbol(name, length)?;
+                        self.push(symbol.into())?;
 
-                    length = 0;
-                    name = NULL;
+                        length = 0;
+                        name = NULL;
 
-                    if character == b';' {
-                        break;
+                        if character == b';' {
+                            break;
+                        }
+                    }
+                    character => {
+                        length += 1;
+                        name = self.append(Number::new(character as i64).into(), name)?;
                     }
                 }
-                character => {
-                    length += 1;
-                    name = self.append(Number::new(character as i64).into(), name)?;
-                }
+
+                byte = input.next().ok_or(Error::EndOfInput)?;
             }
         }
 
@@ -605,6 +610,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.stack = NULL;
 
         Ok(())
+    }
+
+    fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
+        let string = self.allocate(
+            Number::new(length).into(),
+            name.set_tag(Type::String as u8).into(),
+        )?;
+
+        self.allocate(FALSE.into(), string.set_tag(Type::Symbol as u8).into())
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
@@ -689,7 +703,20 @@ impl<const N: usize, T: Device> Vm<N, T> {
         })
     }
 
+    fn decode_mere_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
+        let byte = input.next()?;
+        Self::decode_integer_rest(input, byte, code::INTEGER_BASE)
+    }
+
     fn decode_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
+        Self::decode_integer_rest(input, rest, code::SHORT_INTEGER_BASE)
+    }
+
+    fn decode_integer_rest(
+        input: &mut impl Iterator<Item = u8>,
+        rest: u8,
+        base: u64,
+    ) -> Option<u64> {
         let mut x = rest;
         let mut y = 0;
 
@@ -699,7 +726,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             y += (x >> 1) as u64;
         }
 
-        Some(y * code::SHORT_INTEGER_BASE + (rest >> 1) as u64)
+        Some(y * base + (rest >> 1) as u64)
     }
 }
 
