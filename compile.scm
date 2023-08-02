@@ -692,10 +692,7 @@
         (rib-cdr codes)
         (cond
           ((eqv? instruction call-instruction)
-            (encode-simple
-              (if (null? (rib-cdr codes))
-                return-call-code
-                call-code)))
+            (encode-simple call-code))
 
           ((eqv? instruction set-instruction)
             (encode-simple set-code))
