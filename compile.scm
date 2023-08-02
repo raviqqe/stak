@@ -285,8 +285,7 @@
     (compile-constant #f continuation)))
 
 (define (compile-drop continuation)
-  ; TODO Check null? instead when we introduce null-terminated returns.
-  (if (eq? continuation tail)
+  (if (null? continuation)
     continuation
     (compile-primitive-call 'pop continuation)))
 
@@ -341,8 +340,7 @@
         (continuation (compile-context-environment-add-temporary context))))))
 
 (define (compile-unbind continuation)
-  ; TODO Check null? instead when we introduce null-terminated returns.
-  (if (eqv? continuation tail)
+  (if (null? continuation)
     continuation
     (compile-primitive-call 'skip continuation)))
 
@@ -363,21 +361,13 @@
 (define (compile-let context bindings body continuation)
   (compile-let* context bindings context body continuation))
 
-(define tail (compile-primitive-call 'id '()))
-
-; TODO Introduce return-flavoured instructions.
-(define (compile-tail continuation)
-  (if (null? continuation)
-    tail
-    continuation))
-
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
       (rib
         get-instruction
         (compile-context-resolve context expression)
-        (compile-tail continuation)))
+        continuation))
 
     ((pair? expression)
       (let ((first (car expression)))
@@ -433,7 +423,7 @@
             (compile-call context expression continuation)))))
 
     (else
-      (compile-constant expression (compile-tail continuation)))))
+      (compile-constant expression continuation))))
 
 (define (compile expression)
   (compile-expression
@@ -656,11 +646,11 @@
   (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
     (cons byte target)))
 
-(define (encode-instruction instruction integer target)
+(define (encode-instruction instruction integer return target)
   (let-values (((integer target) (encode-short-integer integer target)))
-    (cons (+ instruction (* 16 integer)) target)))
+    (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
 
-(define (encode-procedure context procedure target)
+(define (encode-procedure context procedure return target)
   (let ((code (rib-car procedure)))
     (encode-codes
       context
@@ -668,6 +658,7 @@
       (encode-instruction
         closure-code
         (rib-car code)
+        return
         target))))
 
 (define (encode-operand context operand)
@@ -689,11 +680,13 @@
     (let* (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
+        (return (null? (rib-cdr codes)))
         (encode-simple
           (lambda (instruction)
             (encode-instruction
               instruction
               (encode-operand context operand)
+              return
               target))))
       (encode-codes
         context
@@ -714,7 +707,7 @@
           ((and
               (eqv? instruction constant-instruction)
               (procedure? operand))
-            (encode-procedure context operand target))
+            (encode-procedure context operand return target))
 
           ((eqv? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))
@@ -722,6 +715,7 @@
                 (encode-instruction
                   get-code
                   (encode-operand context symbol)
+                  return
                   target)
                 (encode-simple constant-code))))
 
@@ -729,7 +723,7 @@
             (encode-codes
               context
               operand
-              (encode-instruction if-code 0 target)))
+              (encode-instruction if-code 0 return target)))
 
           (else (error "invalid instruction")))))))
 
