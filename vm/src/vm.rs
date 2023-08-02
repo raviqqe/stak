@@ -137,16 +137,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
                             self.operate_primitive(primitive.to_i64() as u8)?;
-
-                            if r#return {
-                                let return_info = self.car(self.frame()?);
-
-                                self.program_counter = self.car_value(return_info)?.try_into()?;
-                                // Keep a value at the top of a stack.
-                                *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
-                            } else {
-                                self.advance_program_counter()?;
-                            }
+                            self.advance_program_counter()?;
                         }
                     }
                 }
@@ -197,6 +188,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn advance_program_counter(&mut self) -> Result<(), Error> {
         self.program_counter = self.cdr(self.program_counter).try_into()?;
+
+        if self.program_counter == NULL {
+            let return_info = self.car(self.frame()?);
+
+            self.program_counter = self.car_value(return_info)?.try_into()?;
+            // Keep a value at the top of a stack.
+            *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
+        }
 
         Ok(())
     }
