@@ -38,7 +38,7 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
         codes.push(b',');
     }
 
-    encode_sole_integer(codes, empty_count as u64);
+    encode_mere_integer(codes, empty_count as u64);
 }
 
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
@@ -91,16 +91,16 @@ fn encode_operand(operand: Operand) -> u64 {
     }
 }
 
-fn encode_sole_integer(codes: &mut Vec<u8>, integer: u64) {
-    let byte = encode_integer_rest(codes, integer, INTEGER_BASE);
+fn encode_mere_integer(codes: &mut Vec<u8>, integer: u64) {
+    let byte = encode_integer_with_base(codes, integer, INTEGER_BASE);
     codes.push(byte);
 }
 
 fn encode_integer(codes: &mut Vec<u8>, integer: u64) -> u8 {
-    encode_integer_rest(codes, integer, SHORT_INTEGER_BASE)
+    encode_integer_with_base(codes, integer, SHORT_INTEGER_BASE)
 }
 
-fn encode_integer_rest(codes: &mut Vec<u8>, integer: u64, base: u64) -> u8 {
+fn encode_integer_with_base(codes: &mut Vec<u8>, integer: u64, base: u64) -> u8 {
     let mut x = integer / base;
     let mut bit = 0;
 

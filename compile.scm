@@ -601,11 +601,26 @@
           (char->integer #\,)
           target)))))
 
+(define (count-empty-symbols* symbols count)
+  (if (null? symbols)
+    count
+    (count-empty-symbols*
+      (cdr symbols)
+      ; TODO Check if a symbol can be empty.
+      (if #t
+        0
+        (+ count 1)))))
+
+(define (count-empty-symbols symbols)
+  (count-empty-symbols* symbols count))
+
 (define (encode-symbols symbols target)
-  (let ((target (cons (char->integer #\;) target)))
-    (if (null? symbols)
-      target
-      (encode-symbols* symbols target))))
+  (encode-mere-integer
+    (count-empty-symbols symbols)
+    (let ((target (cons (char->integer #\;) target)))
+      (if (null? symbols)
+        target
+        (encode-symbols* symbols target)))))
 
 ;; Codes
 
@@ -615,17 +630,24 @@
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
-(define (encode-integer integer target)
+(define (encode-integer-with-base integer base target)
   (let loop (
-      (x (quotient integer short-integer-base))
+      (x (quotient integer base))
       (bit 0)
       (target target))
     (if (eqv? x 0)
-      (values (encode-integer-part integer short-integer-base bit) target)
+      (values (encode-integer-part integer base bit) target)
       (loop
         (quotient x integer-base)
         1
         (cons (encode-integer-part x integer-base bit) target)))))
+
+(define (encode-integer integer target)
+  (encode-integer-with-base integer short-integer-base target))
+
+(define (encode-mere-integer integer target)
+  (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
+    (cons byte target)))
 
 (define (encode-instruction instruction integer target)
   (let-values (((integer target) (encode-integer integer target)))

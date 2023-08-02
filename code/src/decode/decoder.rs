@@ -23,7 +23,7 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_symbols(&mut self) -> Result<Vec<String>, Error> {
-        let mut symbols = (0..self.decode_sole_integer().ok_or(Error::MissingInteger)?)
+        let mut symbols = (0..self.decode_mere_integer().ok_or(Error::MissingInteger)?)
             .map(|_| Default::default())
             .collect();
         let mut symbol = vec![];
@@ -116,7 +116,7 @@ impl<'a> Decoder<'a> {
         }
     }
 
-    fn decode_sole_integer(&mut self) -> Option<u64> {
+    fn decode_mere_integer(&mut self) -> Option<u64> {
         let byte = self.decode_byte()?;
         self.decode_integer_rest(byte, INTEGER_BASE)
     }
