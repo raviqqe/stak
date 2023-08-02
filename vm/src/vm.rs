@@ -957,6 +957,28 @@ mod tests {
         }
 
         #[test]
+        fn set_empty_global() {
+            run_program(&Program::new(
+                vec!["".into()],
+                vec![
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn set_second_empty_global() {
+            run_program(&Program::new(
+                vec!["".into(), "".into()],
+                vec![
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
+                ],
+            ));
+        }
+
+        #[test]
         fn set_local() {
             run_program(&Program::new(
                 vec![],
@@ -973,6 +995,22 @@ mod tests {
             run_program(&Program::new(
                 vec!["x".into()],
                 vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
+            ));
+        }
+
+        #[test]
+        fn get_empty_global() {
+            run_program(&Program::new(
+                vec!["".into()],
+                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
+            ));
+        }
+
+        #[test]
+        fn get_second_empty_global() {
+            run_program(&Program::new(
+                vec!["".into(), "".into()],
+                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
             ));
         }
 
