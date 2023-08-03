@@ -37,6 +37,12 @@
   ; TODO Throw an error.
   (#f))
 
+(define (error message)
+  (#f))
+
+(define (type-error)
+  (error "types not matched"))
+
 ; Types
 
 (define (instance? type)
@@ -111,3 +117,15 @@
 
 (define (write-char x)
   (write-u8 (char->integer x)))
+
+; Continuation
+
+(define (call/cc receiver)
+  (if (procedure? receiver)
+    (let ((c (field1 (field1 (close #f))))) ;; get call/cc continuation rib
+      (receiver (lambda (r)
+          (let ((c2 (field1 (field1 (close #f)))))
+            (field0-set! c2 (field0 c)) ;; set "stack" field
+            (field2-set! c2 (field2 c))
+            r)))) ;; return to continuation
+    (type-error)))
