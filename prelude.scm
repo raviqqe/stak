@@ -126,5 +126,5 @@
   (let ((continuation (rib-car (rib-cdr (lambda () #f)))))
     (receiver (lambda (argument)
         (let ((frame (rib-cdr (lambda () #f))))
-          (rib-car-set! frame continuation)
+          (rib-set-car! frame continuation)
           argument)))))
