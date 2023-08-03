@@ -1,0 +1,7 @@
+[package]
+name = "stak-decode"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+code = { package = "stak-code", path = "../code", features = ["alloc", "std"] }
