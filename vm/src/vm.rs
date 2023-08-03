@@ -179,9 +179,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
 
             trace_heap!(self);
-
-            #[cfg(feature = "gc_always")]
-            self.collect_garbages(None)?;
         }
 
         Ok(())
@@ -269,7 +266,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             assert_index_range!(self, cons);
         }
 
-        if self.is_out_of_memory() {
+        if self.is_out_of_memory() || cfg!(feature = "gc_always") {
             self.collect_garbages(Some(&mut cons))?;
         }
 
@@ -781,7 +778,6 @@ mod tests {
     use crate::{symbol_index, FixedBufferDevice};
     use alloc::vec;
     use code::{encode, Instruction, Operand, Program};
-    use std::format;
 
     const HEAP_SIZE: usize = 1 << 9;
 
@@ -791,11 +787,23 @@ mod tests {
         Vm::<HEAP_SIZE, _>::new(FakeDevice::new()).unwrap()
     }
 
+    macro_rules! assert_snapshot {
+        ($vm:expr) => {
+            #[cfg(not(feature = "gc_always"))]
+            {
+                use std::format;
+                insta::assert_display_snapshot!($vm);
+            }
+
+            let _ = $vm;
+        };
+    }
+
     #[test]
     fn create() {
         let vm = create_vm();
 
-        insta::assert_display_snapshot!(vm);
+        assert_snapshot!(vm);
     }
 
     #[test]
@@ -812,7 +820,7 @@ mod tests {
 
         vm.run().unwrap();
 
-        insta::assert_display_snapshot!(vm);
+        assert_snapshot!(vm);
     }
 
     #[test]
@@ -822,7 +830,7 @@ mod tests {
         vm.collect_garbages(None).unwrap();
         vm.run().unwrap();
 
-        insta::assert_display_snapshot!(vm);
+        assert_snapshot!(vm);
     }
 
     #[test]
@@ -831,15 +839,15 @@ mod tests {
 
         let list = vm.append(Number::new(1).into(), NULL).unwrap();
 
-        insta::assert_display_snapshot!(vm);
+        assert_snapshot!(vm);
 
         let list = vm.append(Number::new(2).into(), list).unwrap();
 
-        insta::assert_display_snapshot!(vm);
+        assert_snapshot!(vm);
 
         vm.append(Number::new(3).into(), list).unwrap();
 
-        insta::assert_display_snapshot!(vm);
+        assert_snapshot!(vm);
     }
 
     mod stack {
@@ -883,7 +891,7 @@ mod tests {
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
-            insta::assert_display_snapshot!(vm);
+            assert_snapshot!(vm);
         }
 
         #[test]
@@ -893,7 +901,7 @@ mod tests {
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
-            insta::assert_display_snapshot!(vm);
+            assert_snapshot!(vm);
         }
 
         #[test]
@@ -904,7 +912,7 @@ mod tests {
             vm.push(Number::new(2).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
-            insta::assert_display_snapshot!(vm);
+            assert_snapshot!(vm);
         }
 
         #[test]
@@ -916,7 +924,7 @@ mod tests {
 
             vm.collect_garbages(None).unwrap();
 
-            insta::assert_display_snapshot!(vm);
+            assert_snapshot!(vm);
         }
     }
 
