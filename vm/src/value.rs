@@ -37,11 +37,13 @@ impl Value {
 
     pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
+
         Cons::from_raw(self.to_payload())
     }
 
     pub const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
+
         Number::new(self.to_payload() as i64)
     }
 
