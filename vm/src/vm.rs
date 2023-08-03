@@ -635,14 +635,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 instruction @ (code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT) => (self.decode_operand(operand)?, instruction),
+                | code::Instruction::CONSTANT) => (self.decode_operand(integer)?, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
 
                     self.program_counter = self.pop()?.try_into()?;
 
-                    (then.into(), r#else.set_tag(Instruction::IF))
+                    (then.into(), Instruction::IF)
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -664,8 +664,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.program_counter = NULL;
             }
 
-            self.program_counter =
-                self.append(operand, self.program_counter.set_tag(instruction))?;
+            self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
         Ok(())
