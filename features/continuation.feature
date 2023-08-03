@@ -9,7 +9,7 @@ Feature: Continuation
   Scenario: Call a continuation
     Given a file named "source.scm" with:
     """scheme
-		(write-u8 (call/cc (lambda (k) (k 65))))
+    (write-u8 (call/cc (lambda (k) (k 65))))
     """
     When I run the following script:
     """sh
@@ -21,7 +21,7 @@ Feature: Continuation
   Scenario: Return a value from a receiver
     Given a file named "source.scm" with:
     """scheme
-		(write-u8 (call/cc (lambda (k) 65)))
+    (write-u8 (call/cc (lambda (k) 65)))
     """
     When I run the following script:
     """sh
