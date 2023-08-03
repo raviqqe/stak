@@ -125,7 +125,7 @@
     (let ((continuation (rib-cdr (rib-cdr (lambda () #f)))))
       (receiver (lambda (argument)
           (let ((c2 (rib-car (rib-car (lambda () #f)))))
-            (rib-car-set! c2 (field0 stack))
-            (rib-cdr-set! c2 (field2 stack))
+            (rib-car-set! c2 (rib-car stack))
+            (rib-cdr-set! c2 (rib-cdr stack))
             argument)))) ;; return to continuation
     (type-error)))
