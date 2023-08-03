@@ -5,5 +5,5 @@ expression: vm
 program counter: ():0
 stack: ():0
 symbols: ():0
-00: #f:0 #f:0 <- cells
+00: #f:0 #f:0 <- cons
 

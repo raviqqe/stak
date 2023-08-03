@@ -29,17 +29,21 @@ impl Value {
 
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
-            TypedValue::Cons(self.as_cons())
+            TypedValue::Cons(self.assume_cons())
         } else {
-            TypedValue::Number(self.as_number())
+            TypedValue::Number(self.assume_number())
         }
     }
 
-    pub const fn as_cons(self) -> Cons {
+    pub const fn assume_cons(self) -> Cons {
+        debug_assert!(self.is_cons());
+
         Cons::from_raw(self.to_payload())
     }
 
-    pub const fn as_number(self) -> Number {
+    pub const fn assume_number(self) -> Number {
+        debug_assert!(self.is_number());
+
         Number::new(self.to_payload() as i64)
     }
 

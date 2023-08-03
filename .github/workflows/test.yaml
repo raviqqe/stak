@@ -17,13 +17,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-        features:
-          - []
-          - [boost]
-          - [alloc, std]
     runs-on: ${{ matrix.os }}
-    env:
-      FEATURES: ${{ join(matrix.features, ',') }}
     steps:
       - uses: actions/checkout@v3
       - uses: Swatinem/rust-cache@v2
@@ -45,9 +39,7 @@ jobs:
           - macos-latest
         features:
           - []
-          - [boost]
           - [gc_always]
-          - [boost, gc_always]
     runs-on: ${{ matrix.os }}
     env:
       FEATURES: ${{ join(matrix.features, ',') }}

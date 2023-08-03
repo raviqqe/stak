@@ -7,9 +7,9 @@ set -ex
 brew install gambit-scheme
 bundler install
 
-cargo build --release $(feature_flags)
+cargo build $(feature_flags)
 
-export PATH=$PWD/target/release:$PATH
+export PATH=$PWD/target/debug:$PATH
 export ROOT=$PWD
 
 (

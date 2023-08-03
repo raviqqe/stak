@@ -6,5 +6,5 @@ program counter: ():0
 stack: c100:0
 symbols: ():0
 100: n42 ():0 <- stack
-102: #f:0 #f:0 <- cells
+102: #f:0 #f:0 <- cons
 
