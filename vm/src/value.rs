@@ -44,7 +44,7 @@ impl Value {
     pub const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
-        Number::new(self.0)
+        Number::from_raw(self.0)
     }
 
     pub const fn is_cons(&self) -> bool {
