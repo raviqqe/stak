@@ -2,7 +2,7 @@
 
 set -ex
 
-brew install chicken gambit-scheme
+brew install chezscheme chicken gambit-scheme
 cargo install hyperfine
 
 cargo build --release
@@ -20,6 +20,7 @@ cargo build --release
       "target/release/stak $base.out" \
       "gsi $file" \
       "python3 $base.py" \
+      "petite -s $file" \
       "csi -s $file"
   done
 )
