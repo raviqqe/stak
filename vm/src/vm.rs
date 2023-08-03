@@ -539,7 +539,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         .set_tag(cons.tag()))
     }
 
-    // Input decoding
+    // Initialization
 
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
