@@ -37,6 +37,14 @@
   ; TODO Throw an error.
   (#f))
 
+(define (error message)
+  ; TODO Throw an error.
+  (#f))
+
+(define (type-error)
+  ; TODO Set an error message.
+  (error #f))
+
 ; Types
 
 (define (instance? type)
@@ -111,3 +119,12 @@
 
 (define (write-char x)
   (write-u8 (char->integer x)))
+
+; Continuation
+
+(define (call/cc receiver)
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (lambda () #f))))))
+    (receiver (lambda (argument)
+        (let ((frame (rib-cdr (rib-cdr (lambda () #f)))))
+          (rib-set-car! frame continuation)
+          argument)))))
