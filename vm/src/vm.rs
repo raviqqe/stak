@@ -670,6 +670,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 cdr = self.cdr(self.cons).try_into()?;
             }
 
+            // TODO Append self.program_counter to tails for if instructions.
             self.program_counter = self.append(
                 car,
                 if instruction == code::Instruction::IF {
