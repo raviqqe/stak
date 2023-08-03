@@ -9,6 +9,7 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
+    mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
 use device::Device;
@@ -631,7 +632,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            let (mut car, mut cdr, tag) = match instruction {
+            let (car, cdr, tag) = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
@@ -659,26 +660,22 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            if r#return {
-                *self.car_mut(self.cons) = car;
-                *self.cdr_mut(self.cons) = cdr.into();
-
-                self.push(self.program_counter.into())?;
-                self.program_counter = NULL;
-
-                car = self.car(self.cons);
-                cdr = self.cdr(self.cons).try_into()?;
-            }
+            let continuation = if r#return { NULL } else { self.program_counter };
 
             // TODO Append self.program_counter to tails for if instructions.
-            self.program_counter = self.append(
+            let program_counter = self.append(
                 car,
                 if instruction == code::Instruction::IF {
                     cdr.set_tag(tag)
                 } else {
-                    self.program_counter.set_tag(tag)
+                    continuation.set_tag(tag)
                 },
             )?;
+            let program_counter = replace(&mut self.program_counter, program_counter);
+
+            if r#return {
+                self.push(program_counter.into())?;
+            }
         }
 
         Ok(())
