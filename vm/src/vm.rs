@@ -640,13 +640,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
 
-                    if !r#return {
-                        // TODO Set tails of then and else bodies if `r#return == false`.
-                        self.pop()?;
-                    }
+                    self.program_counter = self.pop()?.try_into()?;
 
-                    self.program_counter =
-                        self.append(then.into(), r#else.set_tag(Instruction::IF))?;
+                    (then.into(), r#else.set_tag(Instruction::IF))
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -658,11 +654,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     self.program_counter = self.pop()?.try_into()?;
 
-                    self.create_instruction_with_operand(
-                        Instruction::CONSTANT,
-                        procedure.into(),
-                        r#return,
-                    )?;
+                    (procedure.into(), Instruction::CONSTANT)
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
