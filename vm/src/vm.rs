@@ -631,7 +631,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            let (car, cdr, tag) = match instruction {
+            let (mut car, mut cdr, tag) = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
@@ -660,11 +660,24 @@ impl<const N: usize, T: Device> Vm<N, T> {
             };
 
             if r#return {
+                *self.car_mut(self.cons) = car;
+                *self.cdr_mut(self.cons) = cdr.into();
+
                 self.push(self.program_counter.into())?;
                 self.program_counter = NULL;
+
+                car = self.car(self.cons);
+                cdr = self.cdr(self.cons).try_into()?;
             }
 
-            self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
+            self.program_counter = self.append(
+                car,
+                if instruction == code::Instruction::IF {
+                    cdr.set_tag(tag)
+                } else {
+                    self.program_counter.set_tag(tag)
+                },
+            )?;
         }
 
         Ok(())
