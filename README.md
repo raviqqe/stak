@@ -9,7 +9,7 @@ Scheme written in Rust
 ## References
 
 - [R7RS small](https://small.r7rs.org/)
-- [Ribbit](https://github.com/udem-dlteam/ribbit/tree/main)
+- [Ribbit](https://github.com/udem-dlteam/ribbit)
 
 ## License
 
