@@ -632,10 +632,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("return", r#return);
 
             let (car, tag) = match instruction {
-                instruction @ code::Instruction::CALL
+                instruction @ (code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT => (self.decode_operand(operand)?, instruction),
+                | code::Instruction::CONSTANT) => (self.decode_operand(operand)?, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
@@ -677,15 +677,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         Ok(())
-    }
-
-    fn create_instruction(
-        &mut self,
-        instruction: u8,
-        operand: u64,
-        r#return: bool,
-    ) -> Result<(), Error> {
-        self.create_instruction_with_operand(instruction, self.decode_operand(operand)?, r#return)
     }
 
     fn decode_instruction(
