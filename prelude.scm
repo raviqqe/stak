@@ -122,7 +122,7 @@
 
 (define (call/cc receiver)
   (if (procedure? receiver)
-    (let ((stack (rib-cdr (rib-cdr (lambda () #f)))))
+    (let ((continuation (rib-cdr (rib-cdr (lambda () #f)))))
       (receiver (lambda (r)
           (let ((c2 (rib-car (rib-car (lambda () #f)))))
             (rib-car-set! c2 (field0 stack))
