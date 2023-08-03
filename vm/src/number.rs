@@ -2,19 +2,23 @@ use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Number(i64);
+pub struct Number(u64);
 
 impl Number {
     pub const fn new(number: i64) -> Self {
-        Self(number)
+        Self(((number << 1) | 1) as u64)
     }
 
     pub const fn to_i64(self) -> i64 {
-        self.0
+        self.0 as i64 >> 1
     }
 
-    pub const fn to_raw(self) -> u64 {
-        self.0 as u64
+    pub(crate) const fn from_raw(raw: u64) -> Self {
+        Self(raw)
+    }
+
+    pub(crate) const fn to_raw(self) -> u64 {
+        self.0
     }
 }
 
@@ -28,6 +32,25 @@ impl TryFrom<Value> for Number {
 
 impl Display for Number {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "n{}", self.0)
+        write!(formatter, "n{}", self.to_i64())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::format;
+
+    #[test]
+    fn to_i64() {
+        assert_eq!(Number::new(0).to_i64(), 0);
+        assert_eq!(Number::new(42).to_i64(), 42);
+        assert_eq!(Number::new(-1).to_i64(), -1);
+    }
+
+    #[test]
+    fn format() {
+        assert_eq!(format!("{}", Number::new(42)), "n42");
+        assert_eq!(format!("{}", Number::new(-1)), "n-1");
     }
 }

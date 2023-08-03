@@ -35,40 +35,36 @@ impl Value {
         }
     }
 
-    pub const fn assume_cons(self) -> Cons {
+    pub(crate) const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
-        Cons::from_raw(self.to_payload())
+        Cons::from_raw(self.0)
     }
 
-    pub const fn assume_number(self) -> Number {
+    pub(crate) const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
-        Number::new(self.to_payload() as i64)
+        Number::from_raw(self.0)
     }
 
     pub const fn is_cons(&self) -> bool {
-        self.0 & 0b1 == 0
+        self.0 & 1 == 0
     }
 
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
-
-    const fn to_payload(self) -> u64 {
-        ((self.0 as i64) >> 1) as u64
-    }
 }
 
 impl From<Cons> for Value {
     fn from(cons: Cons) -> Self {
-        Self(cons.to_raw() << 1)
+        Self(cons.to_raw())
     }
 }
 
 impl From<Number> for Value {
     fn from(number: Number) -> Self {
-        Self((number.to_raw() << 1) | 0b1)
+        Self(number.to_raw())
     }
 }
 

@@ -14,30 +14,30 @@ pub struct Cons(u64);
 
 impl Cons {
     pub const fn new(index: u64) -> Self {
-        Self(index << TAG_SIZE)
+        Self(index << (TAG_SIZE + 1))
     }
 
-    pub const fn dummy(index: u64) -> Self {
+    pub(crate) const fn dummy(index: u64) -> Self {
         Self::new(u64::MAX - index)
     }
 
     pub const fn index(self) -> usize {
-        (self.0 >> TAG_SIZE) as usize
+        (self.0 >> (TAG_SIZE + 1)) as usize
     }
 
     pub const fn tag(self) -> u8 {
-        (self.0 & TAG_MASK) as u8
+        ((self.0 >> 1) & TAG_MASK) as u8
     }
 
     pub const fn set_tag(self, tag: u8) -> Self {
-        Self(self.0 & !TAG_MASK | tag as u64 & TAG_MASK)
+        Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
     }
 
-    pub const fn from_raw(raw: u64) -> Self {
+    pub(crate) const fn from_raw(raw: u64) -> Self {
         Self(raw)
     }
 
-    pub const fn to_raw(self) -> u64 {
+    pub(crate) const fn to_raw(self) -> u64 {
         self.0
     }
 }
