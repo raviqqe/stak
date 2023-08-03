@@ -81,17 +81,16 @@ impl<'a> Decoder<'a> {
 
                     instruction
                 }
-                Instruction::CLOSURE => {
-                    let body = replace(
+                Instruction::CLOSURE => Instruction::Closure(
+                    integer,
+                    replace(
                         {
                             instructions.reverse();
                             &mut instructions
                         },
                         instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
-                    );
-
-                    Instruction::Closure(integer, body)
-                }
+                    ),
+                ),
                 _ => return Err(Error::IllegalInstruction),
             };
 
