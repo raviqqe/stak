@@ -124,7 +124,7 @@
   (if (procedure? receiver)
     (let ((stack (rib-cdr (rib-cdr (lambda () #f)))))
       (receiver (lambda (r)
-          (let ((c2 (field1 (field1 (close #f)))))
+          (let ((c2 (rib-car (rib-car (lambda () #f)))))
             (rib-car-set! c2 (field0 stack))
             (rib-cdr-set! c2 (field2 stack))
             r)))) ;; return to continuation
