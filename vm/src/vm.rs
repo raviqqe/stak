@@ -179,9 +179,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
 
             trace_heap!(self);
-
-            #[cfg(feature = "gc_always")]
-            self.collect_garbages(None)?;
         }
 
         Ok(())
@@ -269,7 +266,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             assert_index_range!(self, cons);
         }
 
-        if self.is_out_of_memory() {
+        if self.is_out_of_memory() || cfg!(feature = "gc_always") {
             self.collect_garbages(Some(&mut cons))?;
         }
 
