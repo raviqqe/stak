@@ -1,5 +1,4 @@
 use crate::{value::Value, Error};
-use cfg_if::cfg_if;
 use core::fmt::{self, Display, Formatter};
 
 pub const FALSE: Cons = Cons::dummy(0);
@@ -55,13 +54,7 @@ impl TryFrom<Value> for Cons {
     type Error = Error;
 
     fn try_from(value: Value) -> Result<Self, Self::Error> {
-        cfg_if! {
-            if #[cfg(feature = "boost")] {
-                Ok(value.as_cons())
-            } else {
-                value.to_cons().ok_or(Error::ConsExpected)
-            }
-        }
+        value.to_cons().ok_or(Error::ConsExpected)
     }
 }
 
