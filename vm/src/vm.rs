@@ -632,10 +632,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("return", r#return);
 
             let (car, tag) = match instruction {
-                instruction @ (code::Instruction::CALL
+                code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT) => (self.decode_operand(integer)?, instruction),
+                | code::Instruction::CONSTANT => (self.decode_operand(integer)?, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
