@@ -25,3 +25,22 @@ Feature: Examples
       | write-u8             |
       | if                   |
       | lambda               |
+
+  Scenario: Call a fibonacci function
+    Given a file named "source.scm" with:
+    """scheme
+    (define (fibonacci x)
+      (if (< x 2)
+        x
+        (+
+          (fibonacci (- x 1))
+          (fibonacci (- x 2)))))
+
+    (write-u8 (+ 33 (fibonacci 10)))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | ./main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "X"
