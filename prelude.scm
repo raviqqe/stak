@@ -123,8 +123,8 @@
 ; Continuation
 
 (define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (lambda () #f)))))
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (lambda () #f))))))
     (receiver (lambda (argument)
-        (let ((frame (rib-cdr (lambda () #f))))
+        (let ((frame (rib-cdr (rib-cdr (lambda () #f)))))
           (rib-set-car! frame continuation)
           argument)))))
