@@ -17,7 +17,7 @@ impl Cons {
         Self(index << (TAG_SIZE + 1))
     }
 
-    pub const fn dummy(index: u64) -> Self {
+    pub(crate) const fn dummy(index: u64) -> Self {
         Self::new(u64::MAX - index)
     }
 
@@ -33,11 +33,11 @@ impl Cons {
         Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
     }
 
-    pub const fn from_raw(raw: u64) -> Self {
+    pub(crate) const fn from_raw(raw: u64) -> Self {
         Self(raw)
     }
 
-    pub const fn to_raw(self) -> u64 {
+    pub(crate) const fn to_raw(self) -> u64 {
         self.0
     }
 }

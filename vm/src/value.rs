@@ -35,13 +35,13 @@ impl Value {
         }
     }
 
-    pub const fn assume_cons(self) -> Cons {
+    pub(crate) const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
         Cons::from_raw(self.0)
     }
 
-    pub const fn assume_number(self) -> Number {
+    pub(crate) const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
         Number::from_raw(self.0)

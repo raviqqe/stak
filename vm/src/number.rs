@@ -13,11 +13,11 @@ impl Number {
         self.0 as i64 >> 1
     }
 
-    pub const fn from_raw(raw: u64) -> Self {
+    pub(crate) const fn from_raw(raw: u64) -> Self {
         Self(raw)
     }
 
-    pub const fn to_raw(self) -> u64 {
+    pub(crate) const fn to_raw(self) -> u64 {
         self.0
     }
 }
