@@ -122,7 +122,7 @@
 
 (define (call/cc receiver)
   (if (procedure? receiver)
-    (let ((c (field1 (field1 (close #f))))) ;; get call/cc continuation rib
+    (let ((c (field1 (rib-cdr (close #f)))))
       (receiver (lambda (r)
           (let ((c2 (field1 (field1 (close #f)))))
             (field0-set! c2 (field0 c)) ;; set "stack" field
