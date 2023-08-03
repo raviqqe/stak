@@ -2,15 +2,8 @@
 
 set -ex
 
-build_feature() {
-  cargo build --release --features $1
-  cp target/release/stak target/release/stak-$1
-}
-
 brew install chicken gambit-scheme
 cargo install hyperfine
-
-build_feature boost
 
 cargo build --release
 
@@ -25,9 +18,8 @@ cargo build --release
     hyperfine \
       --sort command \
       "target/release/stak $base.out" \
-      "target/release/stak-boost $base.out" \
       "gsi $file" \
-      "csi -s $file" \
-      "python3 $base.py"
+      "python3 $base.py" \
+      "csi -s $file"
   done
 )
