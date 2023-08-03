@@ -55,6 +55,12 @@
     (define (rib-cdr rib)
       (cdr rib))
 
+    (define (rib-set-car! rib car)
+      (set-cdr! (car rib) car))
+
+    (define (rib-set-cdr! rib cdr)
+      (set-cdr! rib cdr))
+
     (define (rib? value)
       (and
         (pair? value)
@@ -744,6 +750,15 @@
 (define (build-primitives primitives)
   (build-primitives* primitives '()))
 
+(define (join-codes! ones others)
+  (if (null? ones)
+    others
+    (begin
+      (if (eqv? (rib-tag ones) if-instruction)
+        (rib-set-car! ones (join-codes! (rib-car ones) others)))
+      (rib-set-cdr! ones (join-codes! (rib-cdr ones) others))
+      ones)))
+
 ;; Main
 
 (define (encode codes)
@@ -753,16 +768,12 @@
           (append
             (map car primitives)
             (find-symbols codes))))
-      (constant-codes (build-constants context codes)))
+      (constant-codes (build-constants context codes))
+      (primitive-codes (build-primitives primitives))
+      (codes (join-codes! primitive-codes (join-codes! constant-codes codes))))
     (encode-symbols
       (encode-context-symbols context)
       (encode-codes
         context
         codes
-        (encode-codes
-          context
-          constant-codes
-          (encode-codes
-            context
-            (build-primitives primitives)
-            '()))))))
+        '()))))
