@@ -6,7 +6,7 @@ pub struct Number(u64);
 
 impl Number {
     pub const fn new(number: i64) -> Self {
-        Self(number as u64)
+        Self(((number << 1) | 1) as u64)
     }
 
     pub const fn to_i64(self) -> i64 {
