@@ -81,15 +81,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     pub fn run(&mut self) -> Result<(), Error> {
         while self.program_counter != NULL {
-            let instruction = Cons::try_from(self.cdr(self.program_counter))?;
+            let instruction = self.cdr(self.program_counter).assume_cons();
 
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
-                    let procedure = self.procedure()?;
-                    let environment = Cons::try_from(self.cdr(procedure))?;
+                    let procedure = self.procedure();
+                    let environment = self.cdr(procedure).assume_cons();
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -100,8 +100,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(code) => {
-                            let argument_count = Number::try_from(self.car(self.stack))?;
-                            let parameter_count = self.car(code).try_into()?;
+                            let argument_count = self.car(self.stack).assume_number();
+                            let parameter_count = self.car(code).assume_number();
 
                             trace!("argument count", argument_count);
                             trace!("parameter count", parameter_count);
@@ -111,10 +111,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 return Err(Error::ArgumentCount);
                             }
 
-                            let last_argument = self.tail(self.stack, parameter_count)?;
+                            let last_argument = self.tail(self.stack, parameter_count);
 
                             let frame = if r#return {
-                                self.frame()?
+                                self.frame()
                             } else {
                                 // Reuse an argument count cons as a new frame.
                                 *self.car_mut(self.cons) = self.cdr(self.program_counter);
@@ -128,7 +128,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             self.pop()?;
 
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
-                            self.program_counter = self.cdr(code).try_into()?;
+                            self.program_counter = self.cdr(code).assume_cons();
 
                             if !r#return {
                                 self.initialize_cons()?;
@@ -138,17 +138,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
                             self.operate_primitive(primitive.to_i64() as u8)?;
-                            self.advance_program_counter()?;
+                            self.advance_program_counter();
                         }
                     }
                 }
                 Instruction::SET => {
                     let x = self.pop()?;
-                    *self.car_mut(self.operand()?) = x;
-                    self.advance_program_counter()?;
+                    *self.car_mut(self.operand()) = x;
+                    self.advance_program_counter();
                 }
                 Instruction::GET => {
-                    let operand = self.operand()?;
+                    let operand = self.operand();
 
                     trace!("operand", operand);
 
@@ -157,7 +157,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     trace!("value", value);
 
                     self.push(value)?;
-                    self.advance_program_counter()?;
+                    self.advance_program_counter();
                 }
                 Instruction::CONSTANT => {
                     let constant = self.car(self.program_counter);
@@ -165,7 +165,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     trace!("constant", constant);
 
                     self.push(constant)?;
-                    self.advance_program_counter()?;
+                    self.advance_program_counter();
                 }
                 Instruction::IF => {
                     self.program_counter = (if self.pop()? == FALSE.into() {
@@ -173,7 +173,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     } else {
                         self.car(self.program_counter)
                     })
-                    .try_into()?;
+                    .assume_cons();
                 }
                 _ => return Err(Error::IllegalInstruction),
             }
@@ -187,30 +187,28 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
-    fn advance_program_counter(&mut self) -> Result<(), Error> {
-        self.program_counter = self.cdr(self.program_counter).try_into()?;
+    fn advance_program_counter(&mut self) {
+        self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == NULL {
-            let return_info = self.car(self.frame()?);
+            let return_info = self.car(self.frame());
 
-            self.program_counter = self.car_value(return_info)?.try_into()?;
+            self.program_counter = self.car_value(return_info).assume_cons();
             // Keep a value at the top of a stack.
-            *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
+            *self.cdr_mut(self.stack) = self.cdr_value(return_info);
         }
-
-        Ok(())
     }
 
-    fn operand(&self) -> Result<Cons, Error> {
-        Ok(match self.car(self.program_counter).to_typed() {
+    fn operand(&self) -> Cons {
+        match self.car(self.program_counter).to_typed() {
             TypedValue::Cons(cons) => cons, // Direct reference to a symbol
-            TypedValue::Number(index) => self.tail(self.stack, index)?,
-        })
+            TypedValue::Number(index) => self.tail(self.stack, index),
+        }
     }
 
     // (code . environment)
-    fn procedure(&self) -> Result<Cons, Error> {
-        self.car(self.operand()?).try_into()
+    fn procedure(&self) -> Cons {
+        self.car(self.operand()).assume_cons()
     }
 
     // (parameter-count . instruction-list) | primitive
@@ -219,23 +217,23 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // ((program-counter . stack) . tagged-environment)
-    fn frame(&self) -> Result<Cons, Error> {
+    fn frame(&self) -> Cons {
         let mut stack = self.stack;
 
-        while Cons::try_from(self.cdr(stack))?.tag() != FRAME_TAG {
-            stack = self.cdr(stack).try_into()?;
+        while self.cdr(stack).assume_cons().tag() != FRAME_TAG {
+            stack = self.cdr(stack).assume_cons();
         }
 
-        Ok(stack)
+        stack
     }
 
-    fn tail(&self, mut list: Cons, mut index: Number) -> Result<Cons, Error> {
+    fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
         while index != ZERO {
-            list = self.cdr(list).try_into()?;
+            list = self.cdr(list).assume_cons();
             index = Number::new(index.to_i64() - 1);
         }
 
-        Ok(list)
+        list
     }
 
     fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
@@ -254,7 +252,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         let value = self.car(self.stack);
-        self.stack = self.cdr(self.stack).try_into()?;
+        self.stack = self.cdr(self.stack).assume_cons();
         Ok(value)
     }
 
@@ -326,12 +324,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.heap[cons.index() + 1]
     }
 
-    fn car_value(&self, cons: Value) -> Result<Value, Error> {
-        Ok(self.car(cons.try_into()?))
+    fn car_value(&self, cons: Value) -> Value {
+        self.car(cons.assume_cons())
     }
 
-    fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
-        Ok(self.cdr(cons.try_into()?))
+    fn cdr_value(&self, cons: Value) -> Value {
+        self.cdr(cons.assume_cons())
     }
 
     fn car_mut(&mut self, cons: Cons) -> &mut Value {
@@ -342,12 +340,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         &mut self.heap[cons.index() + 1]
     }
 
-    fn car_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(self.car_mut(cons.try_into()?))
+    fn car_value_mut(&mut self, cons: Value) -> &mut Value {
+        self.car_mut(cons.assume_cons())
     }
 
-    fn cdr_value_mut(&mut self, cons: Value) -> Result<&mut Value, Error> {
-        Ok(self.cdr_mut(cons.try_into()?))
+    fn cdr_value_mut(&mut self, cons: Value) -> &mut Value {
+        self.cdr_mut(cons.assume_cons())
     }
 
     fn boolean(&self, value: bool) -> Value {
@@ -364,8 +362,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 let [car, cdr, tag] = self.pop_arguments::<3>()?;
                 let rib = self.allocate(
                     car,
-                    Cons::try_from(cdr)?
-                        .set_tag(Number::try_from(tag)?.to_i64() as u8)
+                    cdr.assume_cons()
+                        .set_tag(tag.assume_number().to_i64() as u8)
                         .into(),
                 )?;
                 self.push(rib.into())?;
@@ -388,7 +386,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::CLOSE => {
                 let procedure = self.pop()?;
                 let cons = self.allocate(
-                    self.car_value(procedure)?,
+                    self.car_value(procedure),
                     self.stack.set_tag(Type::Procedure as u8).into(),
                 )?;
 
@@ -400,30 +398,32 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
             Primitive::CAR => {
                 let x = self.pop()?;
-                self.push(self.car_value(x)?)?;
+                self.push(self.car_value(x))?;
             }
             Primitive::CDR => {
                 let x = self.pop()?;
-                self.push(self.cdr_value(x)?)?;
+                self.push(self.cdr_value(x))?;
             }
             Primitive::TAG => {
                 let x = self.pop()?;
-                self.push(Number::new(Cons::try_from(self.cdr_value(x)?)?.tag() as i64).into())?;
+                self.push(Number::new(self.cdr_value(x).assume_cons().tag() as i64).into())?;
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.car_value_mut(x)? = y;
+                *self.car_value_mut(x) = y;
                 self.push(y)?;
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.cdr_value_mut(x)? = y;
+                *self.cdr_value_mut(x) = y;
                 self.push(y)?;
             }
             Primitive::SET_TAG => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.cdr_value_mut(x)? = Cons::try_from(self.cdr_value(x)?)?
-                    .set_tag(Number::try_from(y)?.to_i64() as u8)
+                *self.cdr_value_mut(x) = self
+                    .cdr_value(x)
+                    .assume_cons()
+                    .set_tag(y.assume_number().to_i64() as u8)
                     .into();
                 self.push(y)?;
             }
@@ -443,7 +443,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::WRITE => {
                 let byte = self.pop()?;
                 self.device
-                    .write(Number::try_from(byte)?.to_i64() as u8)
+                    .write(byte.assume_number().to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
                 self.push(byte)?;
             }
@@ -473,7 +473,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let mut numbers = [ZERO; M];
 
         for (index, value) in self.pop_arguments::<M>()?.into_iter().enumerate() {
-            numbers[index] = Number::try_from(value)?;
+            numbers[index] = value.assume_number();
         }
 
         Ok(numbers)
@@ -527,7 +527,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             cons
         } else if self.car(cons) == MOVED.into() {
             // Get a forward pointer.
-            self.cdr(cons).try_into()?
+            self.cdr(cons).assume_cons()
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
@@ -636,12 +636,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT => (self.decode_operand(integer)?, NULL, instruction),
+                | code::Instruction::CONSTANT => (self.decode_operand(integer), NULL, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
-                    let r#else = Cons::try_from(self.pop()?)?;
+                    let r#else = self.pop()?.assume_cons();
 
-                    self.program_counter = self.pop()?.try_into()?;
+                    self.program_counter = self.pop()?.assume_cons();
 
                     (then.into(), r#else, Instruction::IF)
                 }
@@ -653,7 +653,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     let procedure =
                         self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?;
 
-                    self.program_counter = self.pop()?.try_into()?;
+                    self.program_counter = self.pop()?.assume_cons();
 
                     (procedure.into(), NULL, Instruction::CONSTANT)
                 }
@@ -699,18 +699,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
         )))
     }
 
-    fn decode_operand(&self, integer: u64) -> Result<Value, Error> {
+    fn decode_operand(&self, integer: u64) -> Value {
         let index = Number::new((integer >> 1) as i64);
         let is_symbol = integer & 1 == 0;
 
         trace!("operand", index);
         trace!("symbol", is_symbol);
 
-        Ok(if is_symbol {
-            self.car(self.tail(self.symbols, index)?)
+        if is_symbol {
+            self.car(self.tail(self.symbols, index))
         } else {
             index.into()
-        })
+        }
     }
 
     fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
