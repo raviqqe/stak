@@ -35,3 +35,15 @@ impl Display for Number {
         write!(formatter, "n{}", self.0)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn to_i64() {
+        assert_eq!(Number::new(0).to_i64(), 0);
+        assert_eq!(Number::new(42).to_i64(), 42);
+        assert_eq!(Number::new(-1).to_i64(), -1);
+    }
+}
