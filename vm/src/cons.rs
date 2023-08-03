@@ -14,7 +14,7 @@ pub struct Cons(u64);
 
 impl Cons {
     pub const fn new(index: u64) -> Self {
-        Self(index << TAG_SIZE)
+        Self(index << (TAG_SIZE + 1))
     }
 
     pub const fn dummy(index: u64) -> Self {
@@ -22,7 +22,7 @@ impl Cons {
     }
 
     pub const fn index(self) -> usize {
-        (self.0 >> TAG_SIZE) as usize
+        (self.0 >> (TAG_SIZE + 1)) as usize
     }
 
     pub const fn tag(self) -> u8 {
