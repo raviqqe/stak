@@ -631,19 +631,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            match instruction {
-                code::Instruction::CALL => {
-                    self.create_instruction(Instruction::CALL, integer, r#return)?
-                }
-                code::Instruction::SET => {
-                    self.create_instruction(Instruction::SET, integer, r#return)?
-                }
-                code::Instruction::GET => {
-                    self.create_instruction(Instruction::GET, integer, r#return)?
-                }
-                code::Instruction::CONSTANT => {
-                    self.create_instruction(Instruction::CONSTANT, integer, r#return)?
-                }
+            let (car, tag) = match instruction {
+                instruction @ code::Instruction::CALL
+                | code::Instruction::SET
+                | code::Instruction::GET
+                | code::Instruction::CONSTANT => (self.decode_operand(operand)?, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
@@ -673,7 +665,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     )?;
                 }
                 _ => return Err(Error::IllegalInstruction),
+            };
+
+            if r#return {
+                self.push(self.program_counter.into())?;
+                self.program_counter = NULL;
             }
+
+            self.program_counter =
+                self.append(operand, self.program_counter.set_tag(instruction))?;
         }
 
         Ok(())
@@ -686,22 +686,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         r#return: bool,
     ) -> Result<(), Error> {
         self.create_instruction_with_operand(instruction, self.decode_operand(operand)?, r#return)
-    }
-
-    fn create_instruction_with_operand(
-        &mut self,
-        instruction: u8,
-        operand: Value,
-        r#return: bool,
-    ) -> Result<(), Error> {
-        if r#return {
-            self.push(self.program_counter.into())?;
-            self.program_counter = NULL;
-        }
-
-        self.program_counter = self.append(operand, self.program_counter.set_tag(instruction))?;
-
-        Ok(())
     }
 
     fn decode_instruction(
