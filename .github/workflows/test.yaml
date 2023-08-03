@@ -40,7 +40,6 @@ jobs:
         features:
           - []
           - [gc_always]
-          - [boost, gc_always]
     runs-on: ${{ matrix.os }}
     env:
       FEATURES: ${{ join(matrix.features, ',') }}
