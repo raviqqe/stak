@@ -662,7 +662,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             let continuation = if r#return { NULL } else { self.program_counter };
 
-            // TODO Append self.program_counter to tails for if instructions.
+            // TODO Append a continuation to tails of if instructions.
             let program_counter = self.append(
                 car,
                 if instruction == code::Instruction::IF {
