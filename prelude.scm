@@ -38,10 +38,12 @@
   (#f))
 
 (define (error message)
+  ; TODO Throw an error.
   (#f))
 
 (define (type-error)
-  (error "types not matched"))
+  ; TODO Set an error message.
+  (error #f))
 
 ; Types
 
