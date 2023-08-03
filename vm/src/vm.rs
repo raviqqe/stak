@@ -765,7 +765,7 @@ impl<T: Device, const N: usize> Display for Vm<N, T> {
             } else if index == self.symbols.index() {
                 write!(formatter, " <- symbols")?;
             } else if index == self.cons.index() {
-                write!(formatter, " <- cells")?;
+                write!(formatter, " <- cons")?;
             }
 
             writeln!(formatter)?;
