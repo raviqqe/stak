@@ -32,7 +32,7 @@ impl TryFrom<Value> for Number {
 
 impl Display for Number {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "n{}", self.0)
+        write!(formatter, "n{}", self.0 >> 1)
     }
 }
 

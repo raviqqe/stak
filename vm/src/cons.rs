@@ -30,7 +30,7 @@ impl Cons {
     }
 
     pub const fn set_tag(self, tag: u8) -> Self {
-        Self(self.0 & !TAG_MASK | tag as u64 & TAG_MASK)
+        Self(self.0 & !(TAG_MASK << 1) | ((tag as u64 & TAG_MASK) << 1))
     }
 
     pub const fn from_raw(raw: u64) -> Self {

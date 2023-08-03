@@ -48,7 +48,7 @@ impl Value {
     }
 
     pub const fn is_cons(&self) -> bool {
-        self.0 & 0b1 == 0
+        self.0 & 1 == 0
     }
 
     pub const fn is_number(&self) -> bool {
@@ -58,13 +58,13 @@ impl Value {
 
 impl From<Cons> for Value {
     fn from(cons: Cons) -> Self {
-        Self(cons.to_raw() << 1)
+        Self(cons.to_raw())
     }
 }
 
 impl From<Number> for Value {
     fn from(number: Number) -> Self {
-        Self((number.to_raw() << 1) | 0b1)
+        Self(number.to_raw())
     }
 }
 
