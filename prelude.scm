@@ -122,7 +122,7 @@
 
 (define (call/cc receiver)
   (if (procedure? receiver)
-    (let ((c (rib-cdr (rib-cdr (close #f)))))
+    (let ((c (rib-cdr (rib-cdr (lambda () #f)))))
       (receiver (lambda (r)
           (let ((c2 (field1 (field1 (close #f)))))
             (rib-car-set! c2 (field0 c))
