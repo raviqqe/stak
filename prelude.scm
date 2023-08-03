@@ -125,7 +125,7 @@
     (let ((c (rib-cdr (rib-cdr (close #f)))))
       (receiver (lambda (r)
           (let ((c2 (field1 (field1 (close #f)))))
-            (field0-set! c2 (field0 c))
-            (field2-set! c2 (field2 c))
+            (rib-car-set! c2 (field0 c))
+            (rib-cdr-set! c2 (field2 c))
             r)))) ;; return to continuation
     (type-error)))
