@@ -5,6 +5,7 @@ set -ex
 brew install chicken gambit-scheme
 
 if [ $(uname -m) = x86_64 ]; then
+  # spell-checker: disable-next-line
   brew install chezscheme
 fi
 
