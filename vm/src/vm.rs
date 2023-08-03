@@ -631,53 +631,77 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            let (car, tag) = match instruction {
-                code::Instruction::CALL => (self.decode_operand(integer)?, Instruction::CALL),
-                code::Instruction::SET => (self.decode_operand(integer)?, Instruction::SET),
-                code::Instruction::GET => (self.decode_operand(integer)?, Instruction::GET),
+            match instruction {
+                code::Instruction::CALL => {
+                    self.create_instruction(Instruction::CALL, integer, r#return)?
+                }
+                code::Instruction::SET => {
+                    self.create_instruction(Instruction::SET, integer, r#return)?
+                }
+                code::Instruction::GET => {
+                    self.create_instruction(Instruction::GET, integer, r#return)?
+                }
                 code::Instruction::CONSTANT => {
-                    (self.decode_operand(integer)?, Instruction::CONSTANT)
+                    self.create_instruction(Instruction::CONSTANT, integer, r#return)?
                 }
                 code::Instruction::IF => {
                     let then = self.program_counter;
-                    self.program_counter = self.pop()?.try_into()?;
+                    let r#else = Cons::try_from(self.pop()?)?;
 
-                    (then.into(), Instruction::IF)
+                    if !r#return {
+                        // TODO Set tails of then and else bodies if `r#return == false`.
+                        self.pop()?;
+                    }
+
+                    self.program_counter =
+                        self.append(then.into(), r#else.set_tag(Instruction::IF))?;
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
                     )?;
+                    let procedure =
+                        self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?;
+
                     self.program_counter = self.pop()?.try_into()?;
 
-                    (
-                        self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?
-                            .into(),
+                    self.create_instruction_with_operand(
                         Instruction::CONSTANT,
-                    )
+                        procedure.into(),
+                        r#return,
+                    )?;
                 }
                 _ => return Err(Error::IllegalInstruction),
-            };
-
-            if r#return {
-                self.push(self.program_counter.into())?;
-                self.program_counter = NULL;
             }
-
-            self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
         }
 
-        // TODO Remove this check?
-        // If the last instruction is a tail call, we have an null element in a stack.
-        if self.stack == NULL
-            || self.car(self.stack) == NULL.into() && self.cdr(self.stack) == NULL.into()
-        {
-            Ok(())
-        } else {
-            trace!("vm", self);
-            Err(Error::EndOfInput)
+        Ok(())
+    }
+
+    fn create_instruction(
+        &mut self,
+        instruction: u8,
+        operand: u64,
+        r#return: bool,
+    ) -> Result<(), Error> {
+        self.create_instruction_with_operand(instruction, self.decode_operand(operand)?, r#return)
+    }
+
+    fn create_instruction_with_operand(
+        &mut self,
+        instruction: u8,
+        operand: Value,
+        r#return: bool,
+    ) -> Result<(), Error> {
+        if r#return {
+            self.push(self.program_counter.into())?;
+            self.program_counter = NULL;
         }
+
+        self.program_counter = self.append(operand, self.program_counter.set_tag(instruction))?;
+
+        Ok(())
     }
 
     fn decode_instruction(
