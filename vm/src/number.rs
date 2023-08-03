@@ -32,18 +32,25 @@ impl TryFrom<Value> for Number {
 
 impl Display for Number {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "n{}", self.0 >> 1)
+        write!(formatter, "n{}", self.to_i64())
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::format;
 
     #[test]
     fn to_i64() {
         assert_eq!(Number::new(0).to_i64(), 0);
         assert_eq!(Number::new(42).to_i64(), 42);
         assert_eq!(Number::new(-1).to_i64(), -1);
+    }
+
+    #[test]
+    fn format() {
+        assert_eq!(format!("{}", Number::new(42)), "n42");
+        assert_eq!(format!("{}", Number::new(-1)), "n-1");
     }
 }
