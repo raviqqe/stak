@@ -9,6 +9,7 @@ use crate::{
 };
 use core::{
     fmt::{self, Display, Formatter},
+    mem::replace,
     ops::{Add, Div, Mul, Sub},
 };
 use device::Device;
@@ -539,7 +540,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         .set_tag(cons.tag()))
     }
 
-    // Input decoding
+    // Initialization
 
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
@@ -631,30 +632,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            match instruction {
-                code::Instruction::CALL => {
-                    self.create_instruction(Instruction::CALL, integer, r#return)?
-                }
-                code::Instruction::SET => {
-                    self.create_instruction(Instruction::SET, integer, r#return)?
-                }
-                code::Instruction::GET => {
-                    self.create_instruction(Instruction::GET, integer, r#return)?
-                }
-                code::Instruction::CONSTANT => {
-                    self.create_instruction(Instruction::CONSTANT, integer, r#return)?
-                }
+            let (car, cdr, tag) = match instruction {
+                code::Instruction::CALL
+                | code::Instruction::SET
+                | code::Instruction::GET
+                | code::Instruction::CONSTANT => (self.decode_operand(integer)?, NULL, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
 
-                    if !r#return {
-                        // TODO Set tails of then and else bodies if `r#return == false`.
-                        self.pop()?;
-                    }
+                    self.program_counter = self.pop()?.try_into()?;
 
-                    self.program_counter =
-                        self.append(then.into(), r#else.set_tag(Instruction::IF))?;
+                    (then.into(), r#else, Instruction::IF)
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -666,40 +655,28 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     self.program_counter = self.pop()?.try_into()?;
 
-                    self.create_instruction_with_operand(
-                        Instruction::CONSTANT,
-                        procedure.into(),
-                        r#return,
-                    )?;
+                    (procedure.into(), NULL, Instruction::CONSTANT)
                 }
                 _ => return Err(Error::IllegalInstruction),
+            };
+
+            let continuation = if r#return { NULL } else { self.program_counter };
+
+            // TODO Append a continuation to tails of if instructions.
+            let program_counter = self.append(
+                car,
+                if instruction == code::Instruction::IF {
+                    cdr.set_tag(tag)
+                } else {
+                    continuation.set_tag(tag)
+                },
+            )?;
+            let program_counter = replace(&mut self.program_counter, program_counter);
+
+            if r#return {
+                self.push(program_counter.into())?;
             }
         }
-
-        Ok(())
-    }
-
-    fn create_instruction(
-        &mut self,
-        instruction: u8,
-        operand: u64,
-        r#return: bool,
-    ) -> Result<(), Error> {
-        self.create_instruction_with_operand(instruction, self.decode_operand(operand)?, r#return)
-    }
-
-    fn create_instruction_with_operand(
-        &mut self,
-        instruction: u8,
-        operand: Value,
-        r#return: bool,
-    ) -> Result<(), Error> {
-        if r#return {
-            self.push(self.program_counter.into())?;
-            self.program_counter = NULL;
-        }
-
-        self.program_counter = self.append(operand, self.program_counter.set_tag(instruction))?;
 
         Ok(())
     }
