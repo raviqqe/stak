@@ -631,18 +631,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            let (car, tag) = match instruction {
+            let (car, cdr, tag) = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT => (self.decode_operand(integer)?, instruction),
+                | code::Instruction::CONSTANT => (self.decode_operand(integer)?, NULL, instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
                     let r#else = Cons::try_from(self.pop()?)?;
 
                     self.program_counter = self.pop()?.try_into()?;
 
-                    (then.into(), Instruction::IF)
+                    (then.into(), r#else, Instruction::IF)
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -654,7 +654,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     self.program_counter = self.pop()?.try_into()?;
 
-                    (procedure.into(), Instruction::CONSTANT)
+                    (procedure.into(), NULL, Instruction::CONSTANT)
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
