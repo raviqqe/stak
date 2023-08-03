@@ -21,7 +21,7 @@ Feature: Continuation
   Scenario: Call a continuation with a global variable
     Given a file named "source.scm" with:
     """scheme
-		(define x 5)
+    (define x 5)
 
     (write-u8 (+ 60 (call/cc (lambda (k) (k x)))))
     """
@@ -35,7 +35,9 @@ Feature: Continuation
   Scenario: Call a continuation with a local variable
     Given a file named "source.scm" with:
     """scheme
-    (write-u8 (+ 60 ((lambda (x) (call/cc (lambda (k) (k x)))) 5)))
+    (define (f x) (call/cc (lambda (k) (k x))))
+
+    (write-u8 (+ 60 (f 5)))
     """
     When I run the following script:
     """sh
