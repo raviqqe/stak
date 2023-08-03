@@ -20,7 +20,7 @@ cargo build --release
       "target/release/stak $base.out" \
       "gsi $file" \
       "python3 $base.py" \
-      "petite -s $file" \
+      "petite --script $file" \
       "csi -s $file"
   done
 )
