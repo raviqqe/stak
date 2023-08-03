@@ -26,7 +26,7 @@ impl Cons {
     }
 
     pub const fn tag(self) -> u8 {
-        (self.0 & TAG_MASK) as u8
+        ((self.0 >> 1) & TAG_MASK) as u8
     }
 
     pub const fn set_tag(self, tag: u8) -> Self {
