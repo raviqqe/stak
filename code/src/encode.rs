@@ -42,34 +42,33 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
 }
 
 fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
-    for instruction in instructions {
+    for (index, instruction) in instructions.iter().enumerate() {
+        let r#return = index == instructions.len() - 1;
+
         match instruction {
-            Instruction::Call(operand, r#return) => {
-                encode_instruction(
-                    codes,
-                    if *r#return {
-                        Instruction::RETURN_CALL
-                    } else {
-                        Instruction::CALL
-                    },
-                    encode_operand(*operand),
-                );
+            Instruction::Call(operand) => {
+                encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return);
             }
             Instruction::Closure(arity, body) => {
-                encode_instruction(codes, Instruction::CLOSURE, *arity);
+                encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
                 encode_instructions(codes, body);
             }
             Instruction::Set(operand) => {
-                encode_instruction(codes, Instruction::SET, encode_operand(*operand));
+                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return);
             }
             Instruction::Get(operand) => {
-                encode_instruction(codes, Instruction::GET, encode_operand(*operand));
+                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return);
             }
             Instruction::Constant(operand) => {
-                encode_instruction(codes, Instruction::CONSTANT, encode_operand(*operand));
+                encode_instruction(
+                    codes,
+                    Instruction::CONSTANT,
+                    encode_operand(*operand),
+                    r#return,
+                );
             }
             Instruction::If(then, r#else) => {
-                encode_instruction(codes, Instruction::IF, Default::default());
+                encode_instruction(codes, Instruction::IF, Default::default(), r#return);
 
                 encode_instructions(codes, then);
                 encode_instructions(codes, r#else);
@@ -78,10 +77,10 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     }
 }
 
-fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64) {
+fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64, r#return: bool) {
     let integer = encode_short_integer(codes, integer);
 
-    codes.push((integer << INSTRUCTION_BITS) | instruction)
+    codes.push((integer << INSTRUCTION_BITS) | (instruction << 1) | if r#return { 1 } else { 0 })
 }
 
 fn encode_operand(operand: Operand) -> u64 {
@@ -175,7 +174,7 @@ mod tests {
     fn encode_return_call_global() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Symbol(0), true)],
+            vec![Instruction::Call(Operand::Symbol(0))],
         ));
     }
 
@@ -183,7 +182,7 @@ mod tests {
     fn encode_return_call_local() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Integer(0), true)],
+            vec![Instruction::Call(Operand::Integer(0))],
         ));
     }
 
@@ -191,7 +190,7 @@ mod tests {
     fn encode_call_global() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Symbol(0), false)],
+            vec![Instruction::Call(Operand::Symbol(0))],
         ));
     }
 
@@ -199,18 +198,108 @@ mod tests {
     fn encode_call_local() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Integer(0), false)],
+            vec![Instruction::Call(Operand::Integer(0))],
         ));
     }
 
     #[test]
-    fn encode_close() {
+    fn encode_closure() {
         encode_and_decode(&Program::new(
             vec![],
             vec![Instruction::Closure(
                 42,
-                vec![Instruction::Call(Operand::Integer(0), true)],
+                vec![Instruction::Call(Operand::Integer(0))],
             )],
+        ));
+    }
+
+    #[test]
+    fn encode_instructions_after_closure() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::Closure(42, vec![Instruction::Call(Operand::Integer(1))]),
+                Instruction::Constant(Operand::Integer(2)),
+            ],
+        ));
+    }
+
+    #[test]
+    fn encode_instructions_in_closure() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(1)),
+                Instruction::Closure(
+                    42,
+                    vec![
+                        Instruction::Constant(Operand::Integer(2)),
+                        Instruction::Constant(Operand::Integer(3)),
+                    ],
+                ),
+                Instruction::Constant(Operand::Integer(4)),
+                Instruction::Constant(Operand::Integer(5)),
+            ],
+        ));
+    }
+
+    #[test]
+    fn encode_tail_if_instruction_in_closure() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(1)),
+                Instruction::Closure(
+                    42,
+                    vec![
+                        Instruction::Constant(Operand::Integer(2)),
+                        Instruction::If(
+                            vec![
+                                Instruction::Constant(Operand::Integer(3)),
+                                Instruction::Constant(Operand::Integer(4)),
+                            ],
+                            vec![
+                                Instruction::Constant(Operand::Integer(5)),
+                                Instruction::Constant(Operand::Integer(6)),
+                            ],
+                        ),
+                    ],
+                ),
+                Instruction::Constant(Operand::Integer(7)),
+                Instruction::Constant(Operand::Integer(8)),
+            ],
+        ));
+    }
+
+    #[test]
+    fn encode_non_tail_if_instruction_in_closure() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(1)),
+                Instruction::Closure(
+                    42,
+                    vec![
+                        Instruction::Constant(Operand::Integer(2)),
+                        Instruction::If(
+                            vec![
+                                Instruction::Constant(Operand::Integer(3)),
+                                Instruction::Constant(Operand::Integer(4)),
+                            ],
+                            vec![
+                                Instruction::Constant(Operand::Integer(5)),
+                                Instruction::Constant(Operand::Integer(6)),
+                            ],
+                        ),
+                        Instruction::Constant(Operand::Integer(7)),
+                    ],
+                ),
+                Instruction::Constant(Operand::Integer(8)),
+                Instruction::Constant(Operand::Integer(9)),
+            ],
         ));
     }
 
@@ -267,8 +356,8 @@ mod tests {
         encode_and_decode(&Program::new(
             vec![],
             vec![Instruction::If(
-                vec![Instruction::Call(Operand::Symbol(0), true)],
-                vec![Instruction::Call(Operand::Symbol(1), true)],
+                vec![Instruction::Call(Operand::Symbol(0))],
+                vec![Instruction::Call(Operand::Symbol(1))],
             )],
         ));
     }
@@ -280,13 +369,39 @@ mod tests {
             vec![Instruction::If(
                 vec![
                     Instruction::Get(Operand::Symbol(0)),
-                    Instruction::Call(Operand::Symbol(0), true),
+                    Instruction::Call(Operand::Symbol(0)),
                 ],
                 vec![
                     Instruction::Get(Operand::Symbol(1)),
-                    Instruction::Call(Operand::Symbol(1), true),
+                    Instruction::Call(Operand::Symbol(1)),
                 ],
             )],
+        ));
+    }
+
+    #[test]
+    fn encode_if_terminated_with_non_tail_call() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![Instruction::If(
+                vec![Instruction::Get(Operand::Symbol(0))],
+                vec![Instruction::Constant(Operand::Integer(1))],
+            )],
+        ));
+    }
+
+    #[test]
+    fn encode_non_tail_if_instruction() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::If(
+                    vec![Instruction::Constant(Operand::Integer(0))],
+                    vec![Instruction::Constant(Operand::Integer(1))],
+                ),
+                Instruction::Constant(Operand::Integer(2)),
+                Instruction::Constant(Operand::Integer(3)),
+            ],
         ));
     }
 
@@ -296,7 +411,7 @@ mod tests {
             vec![],
             vec![
                 Instruction::Get(Operand::Symbol(0)),
-                Instruction::Call(Operand::Symbol(0), true),
+                Instruction::Call(Operand::Symbol(0)),
             ],
         ));
     }

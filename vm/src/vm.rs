@@ -137,16 +137,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
                             self.operate_primitive(primitive.to_i64() as u8)?;
-
-                            if r#return {
-                                let return_info = self.car(self.frame()?);
-
-                                self.program_counter = self.car_value(return_info)?.try_into()?;
-                                // Keep a value at the top of a stack.
-                                *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
-                            } else {
-                                self.advance_program_counter()?;
-                            }
+                            self.advance_program_counter()?;
                         }
                     }
                 }
@@ -197,6 +188,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     fn advance_program_counter(&mut self) -> Result<(), Error> {
         self.program_counter = self.cdr(self.program_counter).try_into()?;
+
+        if self.program_counter == NULL {
+            let return_info = self.car(self.frame()?);
+
+            self.program_counter = self.car_value(return_info)?.try_into()?;
+            // Keep a value at the top of a stack.
+            *self.cdr_mut(self.stack) = self.cdr_value(return_info)?;
+        }
 
         Ok(())
     }
@@ -628,68 +627,96 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
-        while let Some((instruction, integer)) = self.decode_instruction(input)? {
+        while let Some((instruction, r#return, integer)) = self.decode_instruction(input)? {
             trace!("instruction", instruction);
+            trace!("return", r#return);
 
-            let (car, tag) = match instruction {
-                code::Instruction::RETURN_CALL => {
-                    self.push(self.program_counter.into())?;
-                    self.program_counter = NULL;
-
-                    (self.decode_operand(integer)?, Instruction::CALL)
+            match instruction {
+                code::Instruction::CALL => {
+                    self.create_instruction(Instruction::CALL, integer, r#return)?
                 }
-                code::Instruction::CALL => (self.decode_operand(integer)?, Instruction::CALL),
+                code::Instruction::SET => {
+                    self.create_instruction(Instruction::SET, integer, r#return)?
+                }
+                code::Instruction::GET => {
+                    self.create_instruction(Instruction::GET, integer, r#return)?
+                }
+                code::Instruction::CONSTANT => {
+                    self.create_instruction(Instruction::CONSTANT, integer, r#return)?
+                }
+                code::Instruction::IF => {
+                    let then = self.program_counter;
+                    let r#else = Cons::try_from(self.pop()?)?;
+
+                    if !r#return {
+                        // TODO Set tails of then and else bodies if `r#return == false`.
+                        self.pop()?;
+                    }
+
+                    self.program_counter =
+                        self.append(then.into(), r#else.set_tag(Instruction::IF))?;
+                }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
                     )?;
+                    let procedure =
+                        self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?;
+
                     self.program_counter = self.pop()?.try_into()?;
 
-                    (
-                        self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?
-                            .into(),
+                    self.create_instruction_with_operand(
                         Instruction::CONSTANT,
-                    )
-                }
-                code::Instruction::SET => (self.decode_operand(integer)?, Instruction::SET),
-                code::Instruction::GET => (self.decode_operand(integer)?, Instruction::GET),
-                code::Instruction::CONSTANT => {
-                    (self.decode_operand(integer)?, Instruction::CONSTANT)
-                }
-                code::Instruction::IF => {
-                    let then = self.program_counter;
-                    self.program_counter = self.pop()?.try_into()?;
-
-                    (then.into(), Instruction::IF)
+                        procedure.into(),
+                        r#return,
+                    )?;
                 }
                 _ => return Err(Error::IllegalInstruction),
-            };
-
-            self.program_counter = self.append(car, self.program_counter.set_tag(tag))?;
+            }
         }
 
-        // If the last instruction is a tail call, we have an null element in a stack.
-        if self.stack == NULL
-            || self.car(self.stack) == NULL.into() && self.cdr(self.stack) == NULL.into()
-        {
-            Ok(())
-        } else {
-            trace!("vm", self);
-            Err(Error::EndOfInput)
+        Ok(())
+    }
+
+    fn create_instruction(
+        &mut self,
+        instruction: u8,
+        operand: u64,
+        r#return: bool,
+    ) -> Result<(), Error> {
+        self.create_instruction_with_operand(instruction, self.decode_operand(operand)?, r#return)
+    }
+
+    fn create_instruction_with_operand(
+        &mut self,
+        instruction: u8,
+        operand: Value,
+        r#return: bool,
+    ) -> Result<(), Error> {
+        if r#return {
+            self.push(self.program_counter.into())?;
+            self.program_counter = NULL;
         }
+
+        self.program_counter = self.append(operand, self.program_counter.set_tag(instruction))?;
+
+        Ok(())
     }
 
     fn decode_instruction(
         &mut self,
         input: &mut impl Iterator<Item = u8>,
-    ) -> Result<Option<(u8, u64)>, Error> {
+    ) -> Result<Option<(u8, bool, u64)>, Error> {
         let Some(byte) = input.next() else {
             return Ok(None);
         };
 
+        let instruction = byte & code::INSTRUCTION_MASK;
+
         Ok(Some((
-            byte & code::INSTRUCTION_MASK,
+            instruction >> 1,
+            instruction & 1 != 0,
             Self::decode_short_integer(input, byte >> code::INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
@@ -945,7 +972,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Closure(0, vec![Instruction::Call(Operand::Integer(1), true)]),
+                    Instruction::Closure(0, vec![Instruction::Call(Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(0)),
                 ],
             ));
@@ -1042,8 +1069,8 @@ mod tests {
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::If(
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB), true)],
+                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
+                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
                     ),
                 ],
             ));

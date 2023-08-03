@@ -55,38 +55,50 @@ impl<'a> Decoder<'a> {
         let mut instruction_lists = vec![];
         let mut instructions = vec![];
 
-        while let Some((instruction, integer)) = self.decode_instruction()? {
+        while let Some((instruction, r#return, integer)) = self.decode_instruction()? {
             let operand = Self::decode_operand(integer);
 
-            match instruction {
-                Instruction::RETURN_CALL => {
-                    instructions.reverse();
-                    instruction_lists.push(take(&mut instructions));
-                    instructions.push(Instruction::Call(operand, true))
-                }
-                Instruction::CALL => instructions.push(Instruction::Call(operand, false)),
-                Instruction::CLOSURE => {
-                    let body = replace(
-                        &mut instructions,
-                        instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
+            let instruction = match instruction {
+                Instruction::CALL => Instruction::Call(operand),
+                Instruction::SET => Instruction::Set(operand),
+                Instruction::GET => Instruction::Get(operand),
+                Instruction::CONSTANT => Instruction::Constant(operand),
+                Instruction::IF => {
+                    let instruction = Instruction::If(
+                        take({
+                            instructions.reverse();
+                            &mut instructions
+                        }),
+                        {
+                            let mut r#else: Vec<_> =
+                                instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
+                            r#else.reverse();
+                            r#else
+                        },
                     );
 
-                    instructions.push(Instruction::Closure(integer, body));
-                }
-                Instruction::SET => instructions.push(Instruction::Set(operand)),
-                Instruction::GET => instructions.push(Instruction::Get(operand)),
-                Instruction::CONSTANT => instructions.push(Instruction::Constant(operand)),
-                Instruction::IF => {
-                    instructions.reverse();
-                    let then = take(&mut instructions);
+                    instructions = instruction_lists.pop().ok_or(Error::MissingElseBranch)?;
 
-                    instructions.push(Instruction::If(
-                        then,
-                        instruction_lists.pop().ok_or(Error::MissingElseBranch)?,
-                    ));
+                    instruction
                 }
+                Instruction::CLOSURE => Instruction::Closure(
+                    integer,
+                    replace(
+                        {
+                            instructions.reverse();
+                            &mut instructions
+                        },
+                        instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
+                    ),
+                ),
                 _ => return Err(Error::IllegalInstruction),
+            };
+
+            if r#return {
+                instruction_lists.push(take(&mut instructions));
             }
+
+            instructions.push(instruction);
         }
 
         instructions.reverse();
@@ -94,13 +106,16 @@ impl<'a> Decoder<'a> {
         Ok(instructions)
     }
 
-    fn decode_instruction(&mut self) -> Result<Option<(u8, u64)>, Error> {
+    fn decode_instruction(&mut self) -> Result<Option<(u8, bool, u64)>, Error> {
         let Some(byte) = self.decode_byte() else {
             return Ok(None);
         };
 
+        let instruction = byte & INSTRUCTION_MASK;
+
         Ok(Some((
-            byte & INSTRUCTION_MASK,
+            instruction >> 1,
+            instruction & 1 != 0,
             self.decode_short_integer(byte >> INSTRUCTION_BITS)
                 .ok_or(Error::MissingOperand)?,
         )))
