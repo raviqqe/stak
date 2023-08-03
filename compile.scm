@@ -18,6 +18,7 @@
 
 ;; Codes
 
+; TODO Consider merging these constants with instructions above.
 (define call-code 0)
 (define set-code 1)
 (define get-code 2)
