@@ -1,14 +1,16 @@
 use crate::Operand;
+#[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 
-#[cfg(feature = "alloc")]
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
     Call(Operand),
     Set(Operand),
     Get(Operand),
     Constant(Operand),
+    #[cfg(feature = "alloc")]
     If(Vec<Instruction>, Vec<Instruction>),
+    #[cfg(feature = "alloc")]
     Closure(u64, Vec<Instruction>),
 }
 
