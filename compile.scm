@@ -1,3 +1,7 @@
+; Stak compiler based on Ribbit's
+;
+; All compiler-generated variables are prefixed with `$`.
+
 ; Constants
 
 (define default-constants
@@ -223,6 +227,12 @@
                       '$x
                       (cons 'or (cddr expression))))))))
 
+          ((pair? first)
+            (expand
+              (list 'let
+                (list (list '$x first))
+                (cons '$x (cdr expression)))))
+
           (else
             (map expand expression)))))
 
@@ -337,12 +347,9 @@
             arguments
             argument-count
             continuation))))
-    (if (symbol? function)
-      (continuation context)
-      (compile-expression
-        context
-        function
-        (continuation (compile-context-environment-add-temporary context))))))
+    (if (pair? function)
+      (error "unnormal function" function)
+      (continuation context))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
