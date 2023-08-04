@@ -11,7 +11,7 @@
 ; Primitives
 
 (define cons (rib 1 '() procedure-type))
-(define id (rib 2 '() procedure-type))
+; TODO Define a primitive of the number 2.
 (define pop (rib 3 '() procedure-type))
 (define skip (rib 4 '() procedure-type))
 (define close (rib 5 '() procedure-type))
