@@ -147,100 +147,94 @@
     (map expand expressions)))
 
 (define (expand expression)
-  (cond
-    ((symbol? expression)
-      expression)
+  (if (pair? expression)
+    (let ((first (car expression)))
+      (cond
+        ((eqv? first 'and)
+          (expand
+            (cond
+              ((null? (cdr expression))
+                #t)
 
-    ((pair? expression)
-      (let ((first (car expression)))
-        (cond
-          ((eqv? first 'and)
-            (expand
-              (cond
-                ((null? (cdr expression))
-                  #t)
+              ((null? (cddr expression))
+                (cadr expression))
 
-                ((null? (cddr expression))
-                  (cadr expression))
+              (else
+                (list 'if (cadr expression)
+                  (cons 'and (cddr expression))
+                  #f)))))
 
-                (else
-                  (list 'if (cadr expression)
-                    (cons 'and (cddr expression))
-                    #f)))))
+        ((eqv? first 'begin)
+          (cons 'begin (expand-sequence (cdr expression))))
 
-          ((eqv? first 'begin)
-            (cons 'begin (expand-sequence (cdr expression))))
+        ((eqv? first 'define)
+          (expand (cons 'set! (expand-definition expression))))
 
-          ((eqv? first 'define)
-            (expand (cons 'set! (expand-definition expression))))
+        ((eqv? first 'if)
+          (list
+            'if
+            (expand (cadr expression))
+            (expand (caddr expression))
+            (if (pair? (cdddr expression))
+              (expand (cadddr expression))
+              #f)))
 
-          ((eqv? first 'if)
-            (list
-              'if
-              (expand (cadr expression))
-              (expand (caddr expression))
-              (if (pair? (cdddr expression))
-                (expand (cadddr expression))
-                #f)))
+        ((eqv? first 'lambda)
+          (cons 'lambda (cons (cadr expression) (expand-body (cddr expression)))))
 
-          ((eqv? first 'lambda)
-            (cons 'lambda (cons (cadr expression) (expand-body (cddr expression)))))
-
-          ((eqv? first 'let)
-            (let ((bindings (cadr expression)))
+        ((eqv? first 'let)
+          (let ((bindings (cadr expression)))
+            (cons
+              'let
               (cons
-                'let
+                (map
+                  (lambda (binding)
+                    (list (car binding) (expand (cadr binding))))
+                  bindings)
+                (expand-body (cddr expression))))))
+
+        ((eqv? first 'letrec)
+          (let ((bindings (cadr expression)))
+            (expand
+              (cons 'let
                 (cons
                   (map
-                    (lambda (binding)
-                      (list (car binding) (expand (cadr binding))))
+                    (lambda (binding) (list (car binding) #f))
                     bindings)
-                  (expand-body (cddr expression))))))
-
-          ((eqv? first 'letrec)
-            (let ((bindings (cadr expression)))
-              (expand
-                (cons 'let
-                  (cons
+                  (append
                     (map
-                      (lambda (binding) (list (car binding) #f))
+                      (lambda (binding) (list 'set! (car binding) (cadr binding)))
                       bindings)
-                    (append
-                      (map
-                        (lambda (binding) (list 'set! (car binding) (cadr binding)))
-                        bindings)
-                      (cddr expression)))))))
+                    (cddr expression)))))))
 
-          ((eqv? first 'or)
-            (expand
-              (cond
-                ((null? (cdr expression))
-                  #f)
+        ((eqv? first 'or)
+          (expand
+            (cond
+              ((null? (cdr expression))
+                #f)
 
-                ((null? (cddr expression))
-                  (cadr expression))
+              ((null? (cddr expression))
+                (cadr expression))
 
-                (else
-                  (list 'let
-                    (list (list '$x (cadr expression)))
-                    (list 'if '$x
-                      '$x
-                      (cons 'or (cddr expression))))))))
+              (else
+                (list 'let
+                  (list (list '$x (cadr expression)))
+                  (list 'if '$x
+                    '$x
+                    (cons 'or (cddr expression))))))))
 
-          ((eqv? first 'quote)
-            expression)
+        ((eqv? first 'quote)
+          expression)
 
-          ((pair? first)
-            (expand
-              (list 'let
-                (list (list '$x first))
-                (cons '$x (cdr expression)))))
+        ((pair? first)
+          (expand
+            (list 'let
+              (list (list '$x first))
+              (cons '$x (cdr expression)))))
 
-          (else
-            (map expand expression)))))
-
-    (else
-      expression)))
+        (else
+          (map expand expression))))
+    expression))
 
 ; Context
 
