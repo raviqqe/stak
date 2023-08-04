@@ -3,7 +3,6 @@
 pub enum Primitive {
     Rib,
     Cons,
-    Id,
     Pop,
     Skip,
     Close,
@@ -27,7 +26,6 @@ pub enum Primitive {
 impl Primitive {
     pub const RIB: u8 = Self::Rib as _;
     pub const CONS: u8 = Self::Cons as _;
-    pub const ID: u8 = Self::Id as _;
     pub const POP: u8 = Self::Pop as _;
     pub const SKIP: u8 = Self::Skip as _;
     pub const CLOSE: u8 = Self::Close as _;

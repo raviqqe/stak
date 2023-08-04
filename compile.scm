@@ -34,10 +34,10 @@
 
 (define primitives
   '(
-    (pop 3)
-    (skip 4)
-    (close 5)
-    (- 16)))
+    (pop 2)
+    (skip 3)
+    (close 4)
+    (- 15)))
 
 ; Types
 

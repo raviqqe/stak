@@ -370,7 +370,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
             }
-            Primitive::ID => {}
             Primitive::POP => {
                 // TODO This shouldn't be a primitive as it cannot be a function in a Stak VM at
                 // least... Can we always use a skip primitive? Should this be an instruction?
