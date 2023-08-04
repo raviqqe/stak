@@ -3,6 +3,7 @@ members = ["code", "command", "decode", "device", "vm"]
 
 [workspace.package]
 authors = ["Yota Toyama"]
+license-file = "LICENSE"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
