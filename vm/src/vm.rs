@@ -47,6 +47,7 @@ macro_rules! assert_index_range {
     };
 }
 
+// TODO Rather accept `&mut [Value]` as heap?
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
