@@ -31,17 +31,26 @@
 (define read-u8 (rib 19 '() procedure-type))
 (define write-u8 (rib 20 '() procedure-type))
 
-; Error
+; Continuation
 
-(define (todo)
-  ; TODO Throw an error.
-  (#f))
+(define (call/cc receiver)
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (lambda () #f))))))
+    (receiver (lambda (argument)
+        (let ((frame (rib-cdr (rib-cdr (lambda () #f)))))
+          (rib-set-car! frame continuation)
+          argument)))))
+
+; Error
 
 (define (error message)
   ; TODO Throw an error.
   (#f))
 
 (define (type-error)
+  ; TODO Set an error message.
+  (error #f))
+
+(define (todo)
   ; TODO Set an error message.
   (error #f))
 
@@ -123,12 +132,3 @@
 (define (newline)
   ; TODO Use a character.
   (write-u8 10))
-
-; Continuation
-
-(define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (lambda () #f))))))
-    (receiver (lambda (argument)
-        (let ((frame (rib-cdr (rib-cdr (lambda () #f)))))
-          (rib-set-car! frame continuation)
-          argument)))))
