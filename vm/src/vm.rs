@@ -47,7 +47,8 @@ macro_rules! assert_index_range {
     };
 }
 
-// TODO Rather accept `&mut [Value]` as heap?
+// TODO Should we rather accept `&mut [Value]` as heap? This copies VM codes for
+// every N.
 #[derive(Debug)]
 pub struct Vm<const N: usize, T: Device> {
     device: T,
