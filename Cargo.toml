@@ -4,6 +4,7 @@ members = ["code", "command", "decode", "device", "vm"]
 [workspace.package]
 authors = ["Yota Toyama"]
 repository = "https://github.com/raviqqe/stak"
+readme = "README.md"
 
 [profile.release]
 lto = true
