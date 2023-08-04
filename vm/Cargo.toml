@@ -1,7 +1,12 @@
 [package]
 name = "stak-vm"
+description = "VM for Stak Scheme"
 version = "0.1.0"
-edition = "2021"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
 
 [features]
 gc_always = []
@@ -10,8 +15,8 @@ trace = []
 trace_heap = []
 
 [dependencies]
-code = { package = "stak-code", path = "../code" }
-device = { package = "stak-device", path = "../device" }
+code = { package = "stak-code", version = "0.1", path = "../code" }
+device = { package = "stak-device", version = "0.1", path = "../device" }
 
 [dev-dependencies]
 code = { package = "stak-code", path = "../code", features = ["alloc"] }

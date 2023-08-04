@@ -1,6 +1,13 @@
 [workspace]
 members = ["code", "command", "decode", "device", "vm"]
 
+[workspace.package]
+edition = "2021"
+keywords = ["interpreter", "language", "scheme"]
+license-file = "LICENSE"
+readme = "README.md"
+repository = "https://github.com/raviqqe/stak"
+
 [profile.release]
 lto = true
 panic = "abort"
