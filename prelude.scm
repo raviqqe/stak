@@ -54,8 +54,8 @@
   (unwind
     (lambda ()
       (let ((frame (rib-cdr (lambda () #f))))
-        ; TODO Print an error message.
         (rib-set-car! frame (cons '() '()))
+        ; TODO Print an error message.
         #f))))
 
 (define (todo)
