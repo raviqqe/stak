@@ -120,6 +120,10 @@
 (define (write-char x)
   (write-u8 (char->integer x)))
 
+(define (newline)
+  ; TODO Use a character.
+  (write-u8 10))
+
 ; Continuation
 
 (define (call/cc receiver)
