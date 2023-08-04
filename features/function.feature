@@ -20,6 +20,19 @@ Feature: Function
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
+  Scenario: Call a local function
+    Given a file named "source.scm" with:
+    """scheme
+		(let ((f (lambda (x) (+ x 5))))
+			(write-u8 (f 60)))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | ./main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Call an immediate function
     Given a file named "source.scm" with:
     """scheme
