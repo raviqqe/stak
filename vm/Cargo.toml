@@ -1,6 +1,6 @@
 [package]
 name = "stak-vm"
-description = "Stak Scheme VM"
+description = "VM for Stak Scheme"
 version = "0.1.0"
 edition.workspace = true
 keywords.workspace = true
