@@ -331,13 +331,12 @@
         argument-count
         continuation))))
 
+; Functions are normalized into non-pair expressions already.
 (define (compile-call context expression continuation)
-  (let (
-      (function (car expression))
-      (arguments (cdr expression)))
+  (let ((arguments (cdr expression)))
     (compile-call*
       context
-      (if (symbol? function) function #f)
+      (car expression)
       arguments
       (length arguments)
       continuation)))
