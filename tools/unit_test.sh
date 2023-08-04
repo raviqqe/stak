@@ -2,4 +2,6 @@
 
 set -ex
 
-cargo test --all-features
+. $(dirname $0)/utility.sh
+
+cargo test $(feature_flags)
