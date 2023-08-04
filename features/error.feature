@@ -1,4 +1,4 @@
-Feature: Character
+Feature: Error
   Background:
     Given I run the following script:
     """sh
@@ -6,10 +6,14 @@ Feature: Character
     cp $ROOT/*.scm .
     """
 
-  Scenario: Check if a value is a character
+  Scenario: Raise an error
     Given a file named "source.scm" with:
     """scheme
-    (write-u8 (if (char? (integer->char 65)) 65 66))
+    (write-u8 65)
+
+    (error #f)
+
+    (write-u8 65)
     """
     When I run the following script:
     """sh

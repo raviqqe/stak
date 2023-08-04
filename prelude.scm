@@ -41,11 +41,22 @@
           (rib-set-car! frame continuation)
           argument)))))
 
+(define unwind #f)
+
+((call/cc
+    (lambda (k)
+      (set! unwind k)
+      (lambda () #f))))
+
 ; Error
 
 (define (error message)
-  ; TODO Throw an error.
-  (#f))
+  (unwind
+    (lambda ()
+      (let ((frame (rib-cdr (lambda () #f))))
+        ; TODO Print an error message.
+        (rib-set-car! frame (cons '() '()))
+        #f))))
 
 (define (todo)
   ; TODO Set an error message.

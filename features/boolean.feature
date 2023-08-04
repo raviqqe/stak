@@ -3,7 +3,6 @@ Feature: Boolean
     Given I run the following script:
     """sh
     cp -r $ROOT/examples .
-    cp -r $ROOT/tools .
     cp $ROOT/*.scm .
     """
 
