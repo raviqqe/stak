@@ -1,3 +1,3 @@
 feature_flags() {
-  echo --features $FEATURES,
+  echo --features $STAK_FEATURES,
 }
