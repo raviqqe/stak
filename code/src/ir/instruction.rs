@@ -1,6 +1,7 @@
 use crate::Operand;
 use alloc::vec::Vec;
 
+#[cfg(feature = "alloc")]
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
     Call(Operand),
