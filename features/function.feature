@@ -20,7 +20,7 @@ Feature: Function
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call a continuation with a local variable
+  Scenario: Call an immediate function
     Given a file named "source.scm" with:
     """scheme
     (write-u8 (+ 60 ((lambda (x) x) 5)))
