@@ -332,21 +332,15 @@
         continuation))))
 
 (define (compile-call context expression continuation)
-  (let* (
+  (let (
       (function (car expression))
-      (arguments (cdr expression))
-      (argument-count (length arguments))
-      (continuation
-        (lambda (context)
-          (compile-call*
-            context
-            (if (symbol? function) function #f)
-            arguments
-            argument-count
-            continuation))))
-    (if (pair? function)
-      (error "unnormal function" function)
-      (continuation context))))
+      (arguments (cdr expression)))
+    (compile-call*
+      context
+      (if (symbol? function) function #f)
+      arguments
+      (length arguments)
+      continuation)))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
