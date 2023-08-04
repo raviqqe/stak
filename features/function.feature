@@ -9,7 +9,7 @@ Feature: Function
   Scenario: Call a global function
     Given a file named "source.scm" with:
     """scheme
-		(define (f x) (+ x 5))
+    (define (f x) (+ x 5))
 
     (write-u8 (f 60))
     """
@@ -23,8 +23,8 @@ Feature: Function
   Scenario: Call a local function
     Given a file named "source.scm" with:
     """scheme
-		(let ((f (lambda (x) (+ x 5))))
-			(write-u8 (f 60)))
+    (let ((f (lambda (x) (+ x 5))))
+      (write-u8 (f 60)))
     """
     When I run the following script:
     """sh
