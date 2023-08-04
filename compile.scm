@@ -315,11 +315,9 @@
       argument-count
       (rib
         call-instruction
-        (if (symbol? function)
-          (compile-context-resolve
-            (compile-context-environment-add-temporary context)
-            function)
-          (+ argument-count 1))
+        (compile-context-resolve
+          (compile-context-environment-add-temporary context)
+          function)
         continuation))
     (compile-expression
       context
