@@ -46,10 +46,6 @@
   ; TODO Throw an error.
   (#f))
 
-(define (type-error)
-  ; TODO Set an error message.
-  (error #f))
-
 (define (todo)
   ; TODO Set an error message.
   (error #f))
