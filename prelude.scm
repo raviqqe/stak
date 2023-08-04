@@ -34,11 +34,13 @@
 
 ; Continuation
 
+(define dummy-function (lambda () #f))
+
 (define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (lambda () #f))))))
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (close dummy-function))))))
     (receiver
       (lambda (argument)
-        (let ((frame (rib-cdr (rib-cdr (lambda () #f)))))
+        (let ((frame (rib-cdr (rib-cdr (close dummy-function)))))
           (rib-set-car! frame continuation)
           argument)))))
 
@@ -47,14 +49,14 @@
 ((call/cc
     (lambda (k)
       (set! unwind k)
-      (lambda () #f))))
+      dummy-function)))
 
 ; Error
 
 (define (error message)
   (unwind
     (lambda ()
-      (let ((frame (rib-cdr (lambda () #f))))
+      (let ((frame (rib-cdr (close dummy-function))))
         (rib-set-car! frame (cons '() '()))
         ; TODO Print an error message.
         #f))))
