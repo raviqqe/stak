@@ -32,17 +32,36 @@
 (define read-u8 (primitive 18))
 (define write-u8 (primitive 19))
 
+; Continuation
+
+(define dummy-function (lambda () #f))
+
+(define (call/cc receiver)
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (close dummy-function))))))
+    (receiver
+      (lambda (argument)
+        (let ((frame (rib-cdr (rib-cdr (close dummy-function)))))
+          (rib-set-car! frame continuation)
+          argument)))))
+
+(define unwind #f)
+
+((call/cc
+    (lambda (k)
+      (set! unwind k)
+      dummy-function)))
+
 ; Error
 
-(define (todo)
-  ; TODO Throw an error.
-  (#f))
-
 (define (error message)
-  ; TODO Throw an error.
-  (#f))
+  (unwind
+    (lambda ()
+      (let ((frame (rib-cdr (close dummy-function))))
+        (rib-set-car! frame (cons '() '()))
+        ; TODO Print an error message.
+        #f))))
 
-(define (type-error)
+(define (todo)
   ; TODO Set an error message.
   (error #f))
 
@@ -121,11 +140,6 @@
 (define (write-char x)
   (write-u8 (char->integer x)))
 
-; Continuation
-
-(define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (lambda () #f))))))
-    (receiver (lambda (argument)
-        (let ((frame (rib-cdr (rib-cdr (lambda () #f)))))
-          (rib-set-car! frame continuation)
-          argument)))))
+(define (newline)
+  ; TODO Use a character.
+  (write-u8 10))
