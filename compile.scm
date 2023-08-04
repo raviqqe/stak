@@ -329,7 +329,7 @@
         argument-count
         continuation))))
 
-; Functions are normalized into non-pair expressions already.
+; Functions are normalized into atoms already.
 (define (compile-call context expression continuation)
   (let ((arguments (cdr expression)))
     (compile-call*
