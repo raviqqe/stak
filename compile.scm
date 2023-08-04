@@ -227,6 +227,9 @@
                       '$x
                       (cons 'or (cddr expression))))))))
 
+          ((eqv? first 'quote)
+            expression)
+
           ((pair? first)
             (expand
               (list 'let
