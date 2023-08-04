@@ -1,7 +1,12 @@
 [package]
 name = "stak-code"
+description = "Bytecode encoding/decoding for Stak Scheme"
 version = "0.1.0"
-edition = "2021"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
 
 [features]
 alloc = []
