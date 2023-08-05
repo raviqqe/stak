@@ -58,10 +58,8 @@ impl Value {
 
 impl PartialEq for Value {
     fn eq(&self, other: &Self) -> bool {
-        self.is_cons() && other.is_cons() && self.assume_cons() == other.assume_cons()
-            || self.is_number()
-                && other.is_number()
-                && self.assume_number() == other.assume_number()
+        self.is_cons() && self.to_cons() == other.to_cons()
+            || self.is_number() && self.to_number() == other.to_number()
     }
 }
 
