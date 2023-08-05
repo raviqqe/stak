@@ -49,10 +49,6 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
             Instruction::Call(operand) => {
                 encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return);
             }
-            Instruction::Closure(arity, body) => {
-                encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
-                encode_instructions(codes, body);
-            }
             Instruction::Set(operand) => {
                 encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return);
             }
@@ -72,6 +68,13 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 
                 encode_instructions(codes, then);
                 encode_instructions(codes, r#else);
+            }
+            Instruction::Closure(arity, body) => {
+                encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
+                encode_instructions(codes, body);
+            }
+            Instruction::Skip(_count) => {
+                todo!();
             }
         }
     }
