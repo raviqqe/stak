@@ -1093,7 +1093,7 @@ mod tests {
         }
 
         #[test]
-        fn muiltiple_if() {
+        fn multiple_if() {
             run_program(&Program::new(
                 vec![],
                 vec![
