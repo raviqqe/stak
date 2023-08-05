@@ -1092,5 +1092,25 @@ mod tests {
                 ],
             ));
         }
+
+        #[test]
+        fn muiltiple_if() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::If(
+                        vec![Instruction::Constant(Operand::Integer(1))],
+                        vec![Instruction::Constant(Operand::Integer(2))],
+                    ),
+                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::If(
+                        vec![Instruction::Constant(Operand::Integer(1))],
+                        vec![Instruction::Constant(Operand::Integer(2))],
+                    ),
+                    Instruction::Constant(Operand::Integer(6)),
+                ],
+            ));
+        }
     }
 }
