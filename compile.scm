@@ -447,7 +447,6 @@
           foo)
 
         ((and
-            (not)
             (symbol? operand)
             (not (eqv? operand rib-symbol))
             (not (memq operand rest)))
