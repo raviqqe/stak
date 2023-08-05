@@ -235,12 +235,24 @@ impl<const N: usize, T: Device> Vm<N, T> {
         list
     }
 
-    fn append(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
+    fn set_tail(&self, cons: Cons, mut tail: Cons) -> Cons {
+        if cons == NULL {
+            return tail;
+        }
+
+        while self.cdr(tail) != NULL.into() {
+            tail = self.cdr(tail).assume_cons();
+        }
+
+        cons
+    }
+
+    fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.into())
     }
 
     fn push(&mut self, value: Value) -> Result<(), Error> {
-        self.stack = self.append(value, self.stack)?;
+        self.stack = self.cons(value, self.stack)?;
 
         Ok(())
     }
@@ -586,7 +598,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     }
                     character => {
                         length += 1;
-                        name = self.append(Number::new(character as i64).into(), name)?;
+                        name = self.cons(Number::new(character as i64).into(), name)?;
                     }
                 }
 
@@ -661,14 +673,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
             let continuation = if r#return { NULL } else { self.program_counter };
 
             // TODO Append a continuation to tails of if instructions.
-            let program_counter = self.append(
-                car,
-                if instruction == code::Instruction::IF {
-                    cdr.set_tag(tag)
-                } else {
-                    continuation.set_tag(tag)
-                },
-            )?;
+            let program_counter = if instruction == code::Instruction::IF {
+                self.cons(
+                    self.set_tail(car.assume_cons(), continuation).into(),
+                    self.set_tail(cdr, continuation).set_tag(tag),
+                )
+            } else {
+                self.cons(car, continuation.set_tag(tag))
+            }?;
             let program_counter = replace(&mut self.program_counter, program_counter);
 
             if r#return {
@@ -838,15 +850,15 @@ mod tests {
     fn create_list() {
         let mut vm = create_vm();
 
-        let list = vm.append(Number::new(1).into(), NULL).unwrap();
+        let list = vm.cons(Number::new(1).into(), NULL).unwrap();
 
         assert_snapshot!(vm);
 
-        let list = vm.append(Number::new(2).into(), list).unwrap();
+        let list = vm.cons(Number::new(2).into(), list).unwrap();
 
         assert_snapshot!(vm);
 
-        vm.append(Number::new(3).into(), list).unwrap();
+        vm.cons(Number::new(3).into(), list).unwrap();
 
         assert_snapshot!(vm);
     }
