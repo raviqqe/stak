@@ -51,14 +51,9 @@
     (define (rib tag car cdr)
       (cons (cons (cons '_rib tag) car) cdr))
 
-    (define (rib-tag rib)
-      (cdaar rib))
-
-    (define (rib-car rib)
-      (cdar rib))
-
-    (define (rib-cdr rib)
-      (cdr rib))
+    (define rib-tag cdaar)
+    (define rib-car cdar)
+    (define rib-cdr cdr)
 
     (define (rib-set-car! rib car)
       (set-cdr! (car rib) car))
@@ -435,20 +430,27 @@
 
 ;; Utility
 
-(define (find-symbols codes)
+(define (find-symbols* codes symbols)
   (if (null? codes)
-    '()
-    (let (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (rest (find-symbols (cdr codes))))
-      (if (and
-          (not (eqv? instruction if-instruction))
-          (symbol? operand)
-          (not (eqv? operand rib-symbol))
-          (not (memq operand rest)))
-        (cons operand rest)
-        rest))))
+    symbols
+    (let ((operand (rib-car codes)))
+      (find-symbols*
+        (rib-cdr codes)
+        (cond
+          ((eqv? (rib-tag codes) if-instruction)
+            (find-symbols* operand symbols))
+
+          ((and
+              (symbol? operand)
+              (not (eqv? operand rib-symbol))
+              (not (memq operand symbols)))
+            (cons operand symbols))
+
+          (else
+            symbols))))))
+
+(define (find-symbols codes)
+  (find-symbols* codes '()))
 
 ;; Context
 
