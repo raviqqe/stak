@@ -1105,8 +1105,8 @@ mod tests {
                     ),
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(1))],
-                        vec![Instruction::Constant(Operand::Integer(2))],
+                        vec![Instruction::Constant(Operand::Integer(4))],
+                        vec![Instruction::Constant(Operand::Integer(5))],
                     ),
                     Instruction::Constant(Operand::Integer(6)),
                 ],
