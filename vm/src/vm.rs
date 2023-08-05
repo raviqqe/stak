@@ -235,21 +235,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         list
     }
 
-    // TODO Support if instruction directly.
-    fn set_tail(&mut self, mut cons: Cons, tail: Cons) -> Cons {
-        if cons == NULL {
-            return tail;
-        }
-
-        while self.cdr(cons) != NULL.into() {
-            cons = self.cdr(cons).assume_cons();
-        }
-
-        *self.cdr_mut(cons) = tail.into();
-
-        cons
-    }
-
     fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.into())
     }
@@ -677,8 +662,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             // TODO Append a continuation to tails of if instructions.
             let program_counter = if instruction == code::Instruction::IF {
-                let car = self.set_tail(car.assume_cons(), continuation).into();
-                let cdr = self.set_tail(cdr, continuation);
+                let car = self.join_codes(car.assume_cons(), continuation).into();
+                let cdr = self.join_codes(cdr, continuation);
 
                 self.cons(car, cdr.set_tag(tag))
             } else {
@@ -750,6 +735,21 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         Some(y * base + (rest >> 1) as u64)
+    }
+
+    // TODO Support if instruction directly.
+    fn join_codes(&mut self, mut cons: Cons, tail: Cons) -> Cons {
+        if cons == NULL {
+            return tail;
+        }
+
+        while self.cdr(cons) != NULL.into() {
+            cons = self.cdr(cons).assume_cons();
+        }
+
+        *self.cdr_mut(cons) = tail.into();
+
+        cons
     }
 }
 
