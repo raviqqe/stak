@@ -655,6 +655,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     (procedure.into(), NULL, Instruction::CONSTANT)
                 }
+                code::Instruction::SKIP => todo!(),
                 _ => return Err(Error::IllegalInstruction),
             };
 
