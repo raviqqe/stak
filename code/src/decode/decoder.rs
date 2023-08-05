@@ -91,7 +91,7 @@ impl<'a> Decoder<'a> {
                         instruction_lists.pop().ok_or(Error::MissingClosureBody)?,
                     ),
                 ),
-                Instruction::SKIP => Instruction::Skip(integer),
+                Instruction::SKIP => todo!(),
                 _ => return Err(Error::IllegalInstruction),
             };
 

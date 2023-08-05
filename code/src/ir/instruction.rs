@@ -12,7 +12,6 @@ pub enum Instruction {
     If(Vec<Instruction>, Vec<Instruction>),
     #[cfg(feature = "alloc")]
     Closure(u64, Vec<Instruction>),
-    Skip(u64),
 }
 
 impl Instruction {
