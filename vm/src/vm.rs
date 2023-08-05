@@ -235,6 +235,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         list
     }
 
+    // TODO Support if instruction directly.
     fn set_tail(&mut self, mut cons: Cons, tail: Cons) -> Cons {
         if cons == NULL {
             return tail;
