@@ -1,7 +1,7 @@
 use crate::{cons::Cons, number::Number};
 use core::fmt::{self, Display, Formatter};
 
-#[derive(Copy, Clone, Eq, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug)]
 pub struct Value(u64);
 
 #[derive(Copy, Clone, Eq, Debug, PartialEq)]
@@ -55,6 +55,18 @@ impl Value {
         !self.is_cons()
     }
 }
+
+impl PartialEq for Value {
+    fn eq(&self, other: &Self) -> bool {
+        if self.is_cons() {
+            self.assume_cons() == other.assume_cons()
+        } else {
+            self.assume_number() == other.assume_number()
+        }
+    }
+}
+
+impl Eq for Value {}
 
 impl From<Cons> for Value {
     fn from(cons: Cons) -> Self {
