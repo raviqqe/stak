@@ -679,6 +679,21 @@ impl<const N: usize, T: Device> Vm<N, T> {
         Ok(())
     }
 
+    // TODO Support if instruction directly.
+    fn join_codes(&mut self, mut cons: Cons, tail: Cons) -> Cons {
+        if cons == NULL {
+            return tail;
+        }
+
+        while self.cdr(cons) != NULL.into() {
+            cons = self.cdr(cons).assume_cons();
+        }
+
+        *self.cdr_mut(cons) = tail.into();
+
+        cons
+    }
+
     fn decode_instruction(
         &mut self,
         input: &mut impl Iterator<Item = u8>,
@@ -735,21 +750,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         Some(y * base + (rest >> 1) as u64)
-    }
-
-    // TODO Support if instruction directly.
-    fn join_codes(&mut self, mut cons: Cons, tail: Cons) -> Cons {
-        if cons == NULL {
-            return tail;
-        }
-
-        while self.cdr(cons) != NULL.into() {
-            cons = self.cdr(cons).assume_cons();
-        }
-
-        *self.cdr_mut(cons) = tail.into();
-
-        cons
     }
 }
 
