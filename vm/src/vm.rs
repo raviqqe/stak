@@ -1061,5 +1061,20 @@ mod tests {
                 ],
             ));
         }
+
+        #[test]
+        fn if_with_continuation() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::If(
+                        vec![Instruction::Constant(Operand::Integer(1))],
+                        vec![Instruction::Constant(Operand::Integer(2))],
+                    ),
+                    Instruction::Constant(Operand::Integer(3)),
+                ],
+            ));
+        }
     }
 }
