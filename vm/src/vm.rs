@@ -235,14 +235,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
         list
     }
 
-    fn set_tail(&self, cons: Cons, mut tail: Cons) -> Cons {
+    fn set_tail(&mut self, mut cons: Cons, tail: Cons) -> Cons {
         if cons == NULL {
             return tail;
         }
 
-        while self.cdr(tail) != NULL.into() {
-            tail = self.cdr(tail).assume_cons();
+        while self.cdr(cons) != NULL.into() {
+            cons = self.cdr(cons).assume_cons();
         }
+
+        *self.cdr_mut(cons) = tail.into();
 
         cons
     }
@@ -674,10 +676,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             // TODO Append a continuation to tails of if instructions.
             let program_counter = if instruction == code::Instruction::IF {
-                self.cons(
-                    self.set_tail(car.assume_cons(), continuation).into(),
-                    self.set_tail(cdr, continuation).set_tag(tag),
-                )
+                let car = self.set_tail(car.assume_cons(), continuation).into();
+                let cdr = self.set_tail(cdr, continuation);
+
+                self.cons(car, cdr.set_tag(tag))
             } else {
                 self.cons(car, continuation.set_tag(tag))
             }?;
