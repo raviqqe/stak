@@ -681,7 +681,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // TODO Support if instruction directly.
     fn join_codes(&mut self, mut cons: Cons, tail: Cons) -> Cons {
-        if cons == NULL {
+        if tail == NULL {
+            return cons;
+        } else if cons == NULL {
             return tail.set_tag(cons.tag());
         }
 
