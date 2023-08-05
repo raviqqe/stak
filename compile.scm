@@ -71,7 +71,7 @@
         (pair? value)
         (pair? (car value))
         (pair? (caar value))
-        (eq? (caaar value) '_rib))))
+        (eqv? (caaar value) '_rib))))
 
   (else))
 
@@ -445,7 +445,7 @@
       (if (and
           (not (eqv? instruction if-instruction))
           (symbol? operand)
-          (not (eq? operand rib-symbol))
+          (not (eqv? operand rib-symbol))
           (not (memq operand rest)))
         (cons operand rest)
         rest))))
