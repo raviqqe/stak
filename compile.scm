@@ -436,24 +436,25 @@
 ;; Utility
 
 (define (find-symbols codes)
-  (if (null? codes)
-    '()
-    (let (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (rest (find-symbols (cdr codes))))
-      (cond
-        ((eqv? instruction if-instruction)
-          foo)
+  (let loop ((codes codes) (symbols '()))
+    (if (null? codes)
+      '()
+      (let (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (rest (find-symbols (cdr codes))))
+        (cond
+          ((eqv? instruction if-instruction)
+            foo)
 
-        ((and
-            (symbol? operand)
-            (not (eqv? operand rib-symbol))
-            (not (memq operand rest)))
-          (cons operand rest))
+          ((and
+              (symbol? operand)
+              (not (eqv? operand rib-symbol))
+              (not (memq operand rest)))
+            (cons operand rest))
 
-        (else
-          rest)))))
+          (else
+            rest))))))
 
 ;; Context
 
