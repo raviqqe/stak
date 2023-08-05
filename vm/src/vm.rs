@@ -691,7 +691,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
         *self.cdr_mut(cons) = tail.set_tag(self.cdr(cons).assume_cons().tag()).into();
 
-
         cons
     }
 
