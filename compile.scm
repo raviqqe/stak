@@ -438,7 +438,7 @@
 (define (find-symbols codes)
   (let loop ((codes codes) (symbols '()))
     (if (null? codes)
-      '()
+      symbols
       (let (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
