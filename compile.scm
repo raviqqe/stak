@@ -35,8 +35,8 @@
 
 (define primitives
   '(
-    (close 3)
-    (- 14)))
+    (close 2)
+    (- 13)))
 
 ; Types
 
