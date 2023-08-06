@@ -661,11 +661,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             let program_counter = self.cons(
                 car,
-                if instruction == code::Instruction::IF {
-                    self.program_counter.set_tag(tag)
-                } else {
-                    (if r#return { NULL } else { self.program_counter }).set_tag(tag)
-                },
+                (if r#return { NULL } else { self.program_counter }).set_tag(tag),
             )?;
             let program_counter = replace(&mut self.program_counter, program_counter);
 
