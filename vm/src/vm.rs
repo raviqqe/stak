@@ -1077,6 +1077,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
+                    Instruction::Constant(Operand::Integer(0)),
                     Instruction::If(vec![
                         Instruction::Constant(Operand::Integer(1)),
                         Instruction::Skip(1),
