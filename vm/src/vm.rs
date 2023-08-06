@@ -147,8 +147,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     }
                 }
                 Instruction::SET => {
-                    let x = self.pop()?;
-                    *self.car_mut(self.operand()) = x;
+                    let operand = self.operand();
+                    let value = self.pop()?;
+                    *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
                 Instruction::GET => {
@@ -373,11 +374,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 let [car, cdr] = self.pop_arguments::<2>()?;
                 let cons = self.allocate(car, cdr)?;
                 self.push(cons.into())?;
-            }
-            Primitive::POP => {
-                // TODO This shouldn't be a primitive as it cannot be a function in a Stak VM at
-                // least... Can we always use a skip primitive? Should this be an instruction?
-                self.pop()?;
             }
             Primitive::CLOSE => {
                 let procedure = self.pop()?;

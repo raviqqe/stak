@@ -35,9 +35,8 @@
 
 (define primitives
   '(
-    (pop 2)
-    (close 3)
-    (- 14)))
+    (close 2)
+    (- 13)))
 
 ; Types
 
@@ -265,7 +264,7 @@
       ((memq name '(close))
         1)
 
-      ((memq name '(pop -))
+      ((memq name '(-))
         2)
 
       ((memq name '(rib))
@@ -278,20 +277,19 @@
 (define (drop? codes)
   (and
     (rib? codes)
-    (rib? (rib-cdr codes))
-    (eqv? (rib-tag (rib-cdr codes)) call-instruction)
-    (eqv? (rib-car (rib-cdr codes)) 'pop)))
+    (eqv? (rib-tag codes) set-instruction)
+    (eqv? (rib-car codes) 0)))
 
 (define (compile-unspecified continuation)
   (if (drop? continuation)
-    ; Skip argument count constant and call instructions.
-    (rib-cdr (rib-cdr continuation))
+    ; Skip a "drop" instruction.
+    (rib-cdr continuation)
     (compile-constant #f continuation)))
 
 (define (compile-drop continuation)
   (if (null? continuation)
     continuation
-    (compile-primitive-call 'pop continuation)))
+    (rib set-instruction 0 continuation)))
 
 (define (compile-sequence context expressions continuation)
   (compile-expression
@@ -334,7 +332,7 @@
 (define (compile-unbind continuation)
   (if (null? continuation)
     continuation
-    (rib set-instruction 0 continuation)))
+    (rib set-instruction 1 continuation)))
 
 (define (compile-let* context bindings body-context body continuation)
   (if (pair? bindings)
@@ -409,7 +407,9 @@
               (caddr expression)
               (rib
                 set-instruction
-                (compile-context-resolve context (cadr expression))
+                (compile-context-resolve
+                  (compile-context-environment-add-temporary context)
+                  (cadr expression))
                 (compile-unspecified continuation))))
 
           (else
