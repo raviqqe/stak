@@ -61,6 +61,7 @@ jobs:
       - unit_test
       - coverage
       - integration_test
+    if: always()
     runs-on: ubuntu-latest
     steps:
-      - run: ":"
+      - run: "!${{ failure() }}"
