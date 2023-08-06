@@ -460,6 +460,19 @@
 (define (reverse-codes codes)
   (reverse-codes* codes '()))
 
+(define (sublist left right result)
+  (if (and
+      (pair? left)
+      (pair? right)
+      (eqv?
+        (c-rib-oper (car left))
+        (c-rib-oper (car right)))
+      (eqv?
+        (c-rib-opnd (car left))
+        (c-rib-opnd (car right))))
+    (sublist-eq? (cdr left) (cdr right) (cons (car left) result))
+    (reverse result)))
+
 ;; Context
 
 (define (make-encode-context symbols)
