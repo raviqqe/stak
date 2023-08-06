@@ -745,16 +745,17 @@
                 (encode-simple constant-code))))
 
           ((eqv? instruction if-instruction)
-            (let (
+            (let* (
                 (continuation (find-continuation operand rest))
-                (target (encode-instruction if-code 0 #f target)))
+                (target
+                  (encode-codes
+                    context
+                    operand
+                    continuation
+                    (encode-instruction if-code 0 #f target))))
               (if (null? continuation)
-                (encode-codes context operand '() target)
-                (encode-instruction
-                  skip-code
-                  (count-skips rest continuation)
-                  #t
-                  (encode-codes context operand continuation target)))))
+                target
+                (encode-instruction skip-code (count-skips rest continuation) #t target))))
 
           (else (error "invalid instruction")))))))
 
