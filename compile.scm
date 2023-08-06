@@ -706,7 +706,8 @@
     (let* (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
-        (return (null? (rib-cdr codes)))
+        (rest (rib-cdr codes))
+        (return (null? rest))
         (encode-simple
           (lambda (instruction)
             (encode-instruction
@@ -716,7 +717,7 @@
               target))))
       (encode-codes
         context
-        (rib-cdr codes)
+        rest
         terminal
         (cond
           ((eqv? instruction call-instruction)
@@ -745,13 +746,13 @@
 
           ((eqv? instruction if-instruction)
             (let (
-                (continuation (find-continuation operand (rib-cdr codes)))
+                (continuation (find-continuation operand rest))
                 (target (encode-instruction if-code 0 #f target)))
               (if (null? continuation)
                 (encode-codes context operand '() target)
                 (encode-instruction
                   skip-code
-                  (count-skips (rib-cdr codes) continuation)
+                  (count-skips rest continuation)
                   #t
                   (encode-codes context operand continuation target)))))
 
