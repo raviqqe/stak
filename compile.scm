@@ -460,7 +460,7 @@
 (define (reverse-codes codes)
   (reverse-codes* codes '()))
 
-(define (sublist left right result)
+(define (find-sublist* left right result)
   (if (and
       (pair? left)
       (pair? right)
@@ -470,8 +470,11 @@
       (eqv?
         (c-rib-opnd (car left))
         (c-rib-opnd (car right))))
-    (sublist-eq? (cdr left) (cdr right) (cons (car left) result))
+    (find-sublist* (cdr left) (cdr right) (cons (car left) result))
     (reverse result)))
+
+(define (find-sublist xs ys)
+  (fidn-sublist* xs ys '()))
 
 ;; Context
 
