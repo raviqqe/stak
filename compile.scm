@@ -460,21 +460,19 @@
 (define (reverse-codes codes)
   (reverse-codes* codes '()))
 
-(define (find-sublist* xs ys result)
+(define (find-continuation* left right result)
   (if (and
-      (pair? xs)
-      (pair? ys)
-      (eqv?
-        (rib-car (car xs))
-        (rib-car (car ys)))
-      (eqv?
-        (rib-cdr (car xs))
-        (rib-cdr (car ys))))
-    (find-sublist* (cdr xs) (cdr ys) (cons (car xs) result))
-    (reverse result)))
+      (pair? left)
+      (pair? right)
+      (eq? (car left) (car right)))
+    (find-continuation* (cdr left) (cdr right) (car result))
+    result))
 
-(define (find-sublist xs ys)
-  (fidn-sublist* xs ys '()))
+(define (find-continuation left right)
+  (find-continuation*
+    (reverse-codes left)
+    (reverse-codes right)
+    '()))
 
 ;; Context
 
@@ -741,11 +739,12 @@
                 (encode-simple constant-code))))
 
           ((eqv? instruction if-instruction)
-            (encode-codes
-              context
-              operand
-              ; TODO Allow non-tail if instructions.
-              (encode-instruction if-code 0 #t target)))
+            (let ((continuation (find-continuation operand (rib-cdr codes))))
+              (encode-codes
+                context
+                operand
+                ; TODO Allow non-tail if instructions.
+                (encode-instruction if-code 0 #t target))))
 
           (else (error "invalid instruction")))))))
 
