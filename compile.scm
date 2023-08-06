@@ -465,7 +465,7 @@
       (pair? left)
       (pair? right)
       (eq? (car left) (car right)))
-    (find-continuation* (cdr left) (cdr right) (car result))
+    (find-continuation* (cdr left) (cdr right) (car left))
     result))
 
 (define (find-continuation left right)
