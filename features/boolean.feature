@@ -52,3 +52,29 @@ Feature: Boolean
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "BABBAAA"
+
+  Scenario: Use if expressions
+    Given a file named "source.scm" with:
+    """scheme
+    (write-u8 (if #f 65 66))
+    (write-u8 (if #t 65 66))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | ./main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "BA"
+
+  Scenario: Use nested if expressions
+    Given a file named "source.scm" with:
+    """scheme
+    (write-u8 (if #t (if #t 65 66) 66))
+    (write-u8 (if #f 66 (if #f 66 65)))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | ./main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "AA"
