@@ -278,11 +278,11 @@ mod tests {
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),
+                        Instruction::Constant(Operand::Integer(3)),
                         Instruction::If(vec![
-                            Instruction::Constant(Operand::Integer(3)),
                             Instruction::Constant(Operand::Integer(4)),
+                            Instruction::Constant(Operand::Integer(5)),
                         ]),
-                        Instruction::Constant(Operand::Integer(5)),
                         Instruction::Constant(Operand::Integer(6)),
                         Instruction::Constant(Operand::Integer(7)),
                     ],
