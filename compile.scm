@@ -677,6 +677,7 @@
     (encode-codes
       context
       (rib-cdr code)
+      '()
       (encode-instruction
         closure-code
         (rib-car code)
@@ -696,8 +697,8 @@
 
     (else (error "invalid operand:" operand))))
 
-(define (encode-codes context codes target)
-  (if (null? codes)
+(define (encode-codes context codes terminal target)
+  (if (eq? codes terminal)
     target
     (let* (
         (instruction (rib-tag codes))
@@ -713,6 +714,7 @@
       (encode-codes
         context
         (rib-cdr codes)
+        '()
         (cond
           ((eqv? instruction call-instruction)
             (encode-simple call-code))
@@ -743,7 +745,8 @@
               (encode-codes
                 context
                 operand
-                ; TODO Allow non-tail if instructions.
+                ; TODO Encode a skip instruction.
+                '()
                 (encode-instruction if-code 0 #t target))))
 
           (else (error "invalid instruction")))))))
@@ -794,7 +797,4 @@
       (codes (join-codes! primitive-codes (join-codes! constant-codes codes))))
     (encode-symbols
       (encode-context-symbols context)
-      (encode-codes
-        context
-        codes
-        '()))))
+      (encode-codes context codes '() '()))))
