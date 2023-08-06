@@ -29,6 +29,7 @@
 (define constant-code 3)
 (define if-code 4)
 (define closure-code 5)
+(define skip-code 6)
 
 ; Primitives
 
@@ -474,6 +475,11 @@
     (reverse-codes right)
     '()))
 
+(define (count-skips codes continuation)
+  (if (eq? codes continuation)
+    0
+    (+ 1 (count-skips (rib-cdr codes) continuation))))
+
 ;; Context
 
 (define (make-encode-context symbols)
@@ -741,13 +747,16 @@
                 (encode-simple constant-code))))
 
           ((eqv? instruction if-instruction)
-            (let ((continuation (find-continuation operand (rib-cdr codes))))
-              (encode-codes
-                context
-                operand
-                ; TODO Encode a skip instruction.
-                terminal
-                (encode-instruction if-code 0 #f target))))
+            (let (
+                (continuation (find-continuation operand (rib-cdr codes)))
+                (target (encode-instruction if-code 0 #f target)))
+              (if (null? continuation)
+                (encode-codes context operand terminal target)
+                (encode-instruction
+                  skip-code
+                  (count-skips operand continuation)
+                  #t
+                  (encode-codes context operand continuation target)))))
 
           (else (error "invalid instruction")))))))
 
