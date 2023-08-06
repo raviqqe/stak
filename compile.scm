@@ -452,10 +452,10 @@
 (define (find-symbols codes)
   (find-symbols* codes '()))
 
-(define (reverse-codes* codes reversed)
+(define (reverse-codes* codes result)
   (if (null? codes)
-    reversed
-    (reverse-codes* (rib-cdr codes) (cons codes reversed))))
+    result
+    (reverse-codes* (rib-cdr codes) (cons codes result))))
 
 (define (reverse-codes codes)
   (reverse-codes* codes '()))
