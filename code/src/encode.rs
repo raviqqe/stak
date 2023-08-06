@@ -64,7 +64,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 );
             }
             Instruction::If(then) => {
-                encode_instruction(codes, Instruction::IF, Default::default(), r#return);
+                encode_instruction(codes, Instruction::IF, Default::default(), false);
                 encode_instructions(codes, then);
             }
             Instruction::Closure(arity, body) => {

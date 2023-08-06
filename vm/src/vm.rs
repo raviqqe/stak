@@ -630,6 +630,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
+            debug_assert!(instruction != code::Instruction::IF || !r#return);
+
             let (car, cdr, tag) = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
@@ -1054,10 +1056,7 @@ mod tests {
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::If(
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
-                    ),
+                    Instruction::If(vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))]),
                 ],
             ));
         }
@@ -1068,11 +1067,8 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(1))],
-                        vec![Instruction::Constant(Operand::Integer(2))],
-                    ),
-                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
+                    Instruction::Constant(Operand::Integer(2)),
                 ],
             ));
         }
@@ -1083,16 +1079,10 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(1))],
-                        vec![Instruction::Constant(Operand::Integer(2))],
-                    ),
-                    Instruction::Constant(Operand::Integer(3)),
-                    Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(4))],
-                        vec![Instruction::Constant(Operand::Integer(5))],
-                    ),
-                    Instruction::Constant(Operand::Integer(6)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
+                    Instruction::Constant(Operand::Integer(2)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(3))]),
+                    Instruction::Constant(Operand::Integer(4)),
                 ],
             ));
         }
