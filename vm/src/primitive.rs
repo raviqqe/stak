@@ -4,7 +4,6 @@ pub enum Primitive {
     Rib,
     Cons,
     Pop,
-    Skip,
     Close,
     IsCons,
     Car,

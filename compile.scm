@@ -36,8 +36,8 @@
 (define primitives
   '(
     (pop 2)
-    (close 4)
-    (- 15)))
+    (close 3)
+    (- 14)))
 
 ; Types
 
