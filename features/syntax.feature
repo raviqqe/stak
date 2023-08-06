@@ -118,3 +118,18 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Cause a side effect in a body in a let expression
+    Given a file named "source.scm" with:
+    """scheme
+    (write-u8
+      (let ((x 66))
+        (write-u8 65)
+        x))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm source.scm | ./main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "AB"
