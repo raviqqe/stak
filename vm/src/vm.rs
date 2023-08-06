@@ -658,13 +658,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     (procedure.into(), Instruction::CONSTANT)
                 }
+                code::Instruction::SKIP => (NULL.into(), Default::default()),
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            let program_counter = self.cons(
-                car,
-                (if r#return { NULL } else { self.program_counter }).set_tag(tag),
-            )?;
+            let program_counter = if instruction == code::Instruction::SKIP {
+                self.tail(self.program_counter, Number::new(integer as i64))
+            } else {
+                self.cons(
+                    car,
+                    (if r#return { NULL } else { self.program_counter }).set_tag(tag),
+                )?
+            };
             let program_counter = replace(&mut self.program_counter, program_counter);
 
             if r#return {
@@ -1063,6 +1068,21 @@ mod tests {
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(2)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn if_with_skip_instruction() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::If(vec![
+                        Instruction::Constant(Operand::Integer(1)),
+                        Instruction::Skip(1),
+                    ]),
+                    Instruction::Constant(Operand::Integer(2)),
+                    Instruction::Constant(Operand::Integer(3)),
                 ],
             ));
         }
