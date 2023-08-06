@@ -714,7 +714,7 @@
       (encode-codes
         context
         (rib-cdr codes)
-        '()
+        terminal
         (cond
           ((eqv? instruction call-instruction)
             (encode-simple call-code))
@@ -746,7 +746,7 @@
                 context
                 operand
                 ; TODO Encode a skip instruction.
-                '()
+                terminal
                 (encode-instruction if-code 0 #f target))))
 
           (else (error "invalid instruction")))))))
