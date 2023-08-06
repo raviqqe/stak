@@ -476,9 +476,10 @@
     '()))
 
 (define (count-skips codes continuation)
-  (if (eq? codes continuation)
-    0
-    (+ 1 (count-skips (rib-cdr codes) continuation))))
+  (let loop ((codes codes) (count 0))
+    (if (eq? codes continuation)
+      count
+      (loop (rib-cdr codes) (+ 1 count)))))
 
 ;; Context
 
