@@ -9,7 +9,7 @@ pub enum Instruction {
     Get(Operand),
     Constant(Operand),
     #[cfg(feature = "alloc")]
-    If(Vec<Instruction>, Vec<Instruction>),
+    If(Vec<Instruction>),
     #[cfg(feature = "alloc")]
     Closure(u64, Vec<Instruction>),
 }
