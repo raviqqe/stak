@@ -748,10 +748,10 @@
                 (continuation (find-continuation operand (rib-cdr codes)))
                 (target (encode-instruction if-code 0 #f target)))
               (if (null? continuation)
-                (encode-codes context operand continuation target)
+                (encode-codes context operand '() target)
                 (encode-instruction
                   skip-code
-                  (count-skips operand continuation)
+                  (count-skips (rib-cdr codes) continuation)
                   #t
                   (encode-codes context operand continuation target)))))
 
