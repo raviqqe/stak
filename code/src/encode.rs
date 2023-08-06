@@ -71,7 +71,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
                 encode_instructions(codes, body);
             }
-            Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, false),
+            Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, true),
         }
     }
 }
