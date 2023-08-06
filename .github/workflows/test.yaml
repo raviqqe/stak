@@ -36,6 +36,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           files: lcov.info
+      - run: "false"
   integration_test:
     strategy:
       matrix:
@@ -61,6 +62,10 @@ jobs:
       - unit_test
       - coverage
       - integration_test
+    if: always()
     runs-on: ubuntu-latest
     steps:
+      - run: "!:"
+        if: failure()
       - run: ":"
+        if: success()
