@@ -36,6 +36,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           files: lcov.info
+      - run: "false"
   integration_test:
     strategy:
       matrix:
