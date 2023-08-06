@@ -634,17 +634,19 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             debug_assert!(instruction != code::Instruction::IF || !r#return);
 
-            let (car, tag) = match instruction {
+            let program_counter = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT => (self.decode_operand(integer), instruction),
+                | code::Instruction::CONSTANT => {
+                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
+                }
                 code::Instruction::IF => {
                     let then = self.program_counter;
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    (then.into(), Instruction::IF)
+                    self.append_instruction(Instruction::IF, then.into(), false)?
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -656,15 +658,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    (procedure.into(), Instruction::CONSTANT)
+                    self.append_instruction(Instruction::CONSTANT, procedure.into(), r#return)?
+                }
+                code::Instruction::SKIP => {
+                    self.tail(self.program_counter, Number::new(integer as i64))
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            let program_counter = self.cons(
-                car,
-                (if r#return { NULL } else { self.program_counter }).set_tag(tag),
-            )?;
             let program_counter = replace(&mut self.program_counter, program_counter);
 
             if r#return {
@@ -673,6 +674,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         Ok(())
+    }
+
+    fn append_instruction(
+        &mut self,
+        instruction: u8,
+        operand: Value,
+        r#return: bool,
+    ) -> Result<Cons, Error> {
+        self.cons(
+            operand,
+            (if r#return { NULL } else { self.program_counter }).set_tag(instruction),
+        )
     }
 
     fn decode_instruction(
@@ -1063,6 +1076,22 @@ mod tests {
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(2)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn if_with_skip_instruction() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::If(vec![
+                        Instruction::Constant(Operand::Integer(1)),
+                        Instruction::Skip(1),
+                    ]),
+                    Instruction::Constant(Operand::Integer(2)),
+                    Instruction::Constant(Operand::Integer(3)),
                 ],
             ));
         }
