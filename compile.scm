@@ -334,7 +334,7 @@
 (define (compile-unbind continuation)
   (if (null? continuation)
     continuation
-    (rib set-instruction 0 continuation)))
+    (rib set-instruction 1 continuation)))
 
 (define (compile-let* context bindings body-context body continuation)
   (if (pair? bindings)
@@ -409,7 +409,9 @@
               (caddr expression)
               (rib
                 set-instruction
-                (compile-context-resolve context (cadr expression))
+                (compile-context-resolve
+                  (compile-context-environment-add-temporary context)
+                  (cadr expression))
                 (compile-unspecified continuation))))
 
           (else
