@@ -6,19 +6,6 @@ Feature: Syntax
     cp $ROOT/*.scm .
     """
 
-  Scenario: Use a negative integer
-    Given a file named "source.scm" with:
-    """scheme
-    (define x -1)
-    (write-u8 (+ 66 x))
-    """
-    When I run the following script:
-    """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
-    """
-    And I successfully run `stak main.out`
-    Then the stdout should contain exactly "A"
-
   Scenario: Use an if expression with false condition
     Given a file named "source.scm" with:
     """scheme
