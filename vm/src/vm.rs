@@ -61,6 +61,8 @@ pub struct Vm<const N: usize, T: Device> {
     heap: [Value; N],
 }
 
+// Note that some routines look unnecessarily complicated as we need to mark all
+// volatile variables live across garbage collections.
 impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
@@ -630,18 +632,21 @@ impl<const N: usize, T: Device> Vm<N, T> {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
-            let (car, cdr, tag) = match instruction {
+            debug_assert!(instruction != code::Instruction::IF || !r#return);
+
+            let program_counter = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT => (self.decode_operand(integer), NULL, instruction),
+                | code::Instruction::CONSTANT => {
+                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
+                }
                 code::Instruction::IF => {
                     let then = self.program_counter;
-                    let r#else = self.pop()?.assume_cons();
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    (then.into(), r#else, Instruction::IF)
+                    self.append_instruction(Instruction::IF, then.into(), false)?
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -653,22 +658,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    (procedure.into(), NULL, Instruction::CONSTANT)
+                    self.append_instruction(Instruction::CONSTANT, procedure.into(), r#return)?
+                }
+                code::Instruction::SKIP => {
+                    self.tail(self.program_counter, Number::new(integer as i64))
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            let continuation = if r#return { NULL } else { self.program_counter };
-
-            // TODO Append a continuation to tails of if instructions.
-            let program_counter = self.cons(
-                car,
-                if instruction == code::Instruction::IF {
-                    cdr.set_tag(tag)
-                } else {
-                    continuation.set_tag(tag)
-                },
-            )?;
             let program_counter = replace(&mut self.program_counter, program_counter);
 
             if r#return {
@@ -677,6 +674,18 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
 
         Ok(())
+    }
+
+    fn append_instruction(
+        &mut self,
+        instruction: u8,
+        operand: Value,
+        r#return: bool,
+    ) -> Result<Cons, Error> {
+        self.cons(
+            operand,
+            (if r#return { NULL } else { self.program_counter }).set_tag(instruction),
+        )
     }
 
     fn decode_instruction(
@@ -1054,10 +1063,7 @@ mod tests {
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::If(
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
-                        vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))],
-                    ),
+                    Instruction::If(vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))]),
                 ],
             ));
         }
@@ -1068,10 +1074,23 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(1))],
-                        vec![Instruction::Constant(Operand::Integer(2))],
-                    ),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
+                    Instruction::Constant(Operand::Integer(2)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn if_with_skip_instruction() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::If(vec![
+                        Instruction::Constant(Operand::Integer(1)),
+                        Instruction::Skip(1),
+                    ]),
+                    Instruction::Constant(Operand::Integer(2)),
                     Instruction::Constant(Operand::Integer(3)),
                 ],
             ));
@@ -1083,16 +1102,10 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(1))],
-                        vec![Instruction::Constant(Operand::Integer(2))],
-                    ),
-                    Instruction::Constant(Operand::Integer(3)),
-                    Instruction::If(
-                        vec![Instruction::Constant(Operand::Integer(4))],
-                        vec![Instruction::Constant(Operand::Integer(5))],
-                    ),
-                    Instruction::Constant(Operand::Integer(6)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
+                    Instruction::Constant(Operand::Integer(2)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(3))]),
+                    Instruction::Constant(Operand::Integer(4)),
                 ],
             ));
         }

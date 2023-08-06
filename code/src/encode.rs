@@ -47,13 +47,13 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 
         match instruction {
             Instruction::Call(operand) => {
-                encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return);
+                encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return)
             }
             Instruction::Set(operand) => {
-                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return);
+                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return)
             }
             Instruction::Get(operand) => {
-                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return);
+                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return)
             }
             Instruction::Constant(operand) => {
                 encode_instruction(
@@ -63,16 +63,15 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                     r#return,
                 );
             }
-            Instruction::If(then, r#else) => {
-                encode_instruction(codes, Instruction::IF, Default::default(), r#return);
-
+            Instruction::If(then) => {
+                encode_instruction(codes, Instruction::IF, Default::default(), false);
                 encode_instructions(codes, then);
-                encode_instructions(codes, r#else);
             }
             Instruction::Closure(arity, body) => {
                 encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
                 encode_instructions(codes, body);
             }
+            Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, true),
         }
     }
 }
@@ -255,16 +254,12 @@ mod tests {
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),
-                        Instruction::If(
-                            vec![
-                                Instruction::Constant(Operand::Integer(3)),
-                                Instruction::Constant(Operand::Integer(4)),
-                            ],
-                            vec![
-                                Instruction::Constant(Operand::Integer(5)),
-                                Instruction::Constant(Operand::Integer(6)),
-                            ],
-                        ),
+                        Instruction::If(vec![
+                            Instruction::Constant(Operand::Integer(3)),
+                            Instruction::Constant(Operand::Integer(4)),
+                        ]),
+                        Instruction::Constant(Operand::Integer(5)),
+                        Instruction::Constant(Operand::Integer(6)),
                     ],
                 ),
                 Instruction::Constant(Operand::Integer(7)),
@@ -284,16 +279,12 @@ mod tests {
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),
-                        Instruction::If(
-                            vec![
-                                Instruction::Constant(Operand::Integer(3)),
-                                Instruction::Constant(Operand::Integer(4)),
-                            ],
-                            vec![
-                                Instruction::Constant(Operand::Integer(5)),
-                                Instruction::Constant(Operand::Integer(6)),
-                            ],
-                        ),
+                        Instruction::Constant(Operand::Integer(3)),
+                        Instruction::If(vec![
+                            Instruction::Constant(Operand::Integer(4)),
+                            Instruction::Constant(Operand::Integer(5)),
+                        ]),
+                        Instruction::Constant(Operand::Integer(6)),
                         Instruction::Constant(Operand::Integer(7)),
                     ],
                 ),
@@ -355,10 +346,10 @@ mod tests {
     fn encode_if() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::If(
-                vec![Instruction::Call(Operand::Symbol(0))],
-                vec![Instruction::Call(Operand::Symbol(1))],
-            )],
+            vec![
+                Instruction::If(vec![Instruction::Call(Operand::Symbol(0))]),
+                Instruction::Call(Operand::Symbol(1)),
+            ],
         ));
     }
 
@@ -366,16 +357,14 @@ mod tests {
     fn encode_if_with_sequences() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::If(
-                vec![
+            vec![
+                Instruction::If(vec![
                     Instruction::Get(Operand::Symbol(0)),
                     Instruction::Call(Operand::Symbol(0)),
-                ],
-                vec![
-                    Instruction::Get(Operand::Symbol(1)),
-                    Instruction::Call(Operand::Symbol(1)),
-                ],
-            )],
+                ]),
+                Instruction::Get(Operand::Symbol(1)),
+                Instruction::Call(Operand::Symbol(1)),
+            ],
         ));
     }
 
@@ -383,10 +372,25 @@ mod tests {
     fn encode_if_terminated_with_non_tail_call() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::If(
-                vec![Instruction::Get(Operand::Symbol(0))],
-                vec![Instruction::Constant(Operand::Integer(1))],
-            )],
+            vec![
+                Instruction::If(vec![Instruction::Get(Operand::Symbol(0))]),
+                Instruction::Constant(Operand::Integer(1)),
+            ],
+        ));
+    }
+
+    #[test]
+    fn encode_if_with_skip_instruction() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::If(vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Skip(1),
+                ]),
+                Instruction::Constant(Operand::Integer(1)),
+                Instruction::Call(Operand::Symbol(0)),
+            ],
         ));
     }
 
@@ -395,10 +399,10 @@ mod tests {
         encode_and_decode(&Program::new(
             vec![],
             vec![
-                Instruction::If(
-                    vec![Instruction::Constant(Operand::Integer(0))],
-                    vec![Instruction::Constant(Operand::Integer(1))],
-                ),
+                Instruction::If(vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Operand::Integer(1)),
+                ]),
                 Instruction::Constant(Operand::Integer(2)),
                 Instruction::Constant(Operand::Integer(3)),
             ],

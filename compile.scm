@@ -747,7 +747,7 @@
                 operand
                 ; TODO Encode a skip instruction.
                 '()
-                (encode-instruction if-code 0 #t target))))
+                (encode-instruction if-code 0 #f target))))
 
           (else (error "invalid instruction")))))))
 
