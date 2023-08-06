@@ -465,11 +465,11 @@
       (pair? left)
       (pair? right)
       (eqv?
-        (c-rib-oper (car left))
-        (c-rib-oper (car right)))
+        (rib-car (car left))
+        (rib-car (car right)))
       (eqv?
-        (c-rib-opnd (car left))
-        (c-rib-opnd (car right))))
+        (rib-cdr (car left))
+        (rib-cdr (car right))))
     (find-sublist* (cdr left) (cdr right) (cons (car left) result))
     (reverse result)))
 
