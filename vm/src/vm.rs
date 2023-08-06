@@ -632,18 +632,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             debug_assert!(instruction != code::Instruction::IF || !r#return);
 
-            let (car, cdr, tag) = match instruction {
+            let (car, tag) = match instruction {
                 code::Instruction::CALL
                 | code::Instruction::SET
                 | code::Instruction::GET
-                | code::Instruction::CONSTANT => (self.decode_operand(integer), NULL, instruction),
+                | code::Instruction::CONSTANT => (self.decode_operand(integer), instruction),
                 code::Instruction::IF => {
                     let then = self.program_counter;
-                    let r#else = self.pop()?.assume_cons();
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    (then.into(), r#else, Instruction::IF)
+                    (then.into(), Instruction::IF)
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -655,20 +654,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    (procedure.into(), NULL, Instruction::CONSTANT)
+                    (procedure.into(), Instruction::CONSTANT)
                 }
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            let continuation = if r#return { NULL } else { self.program_counter };
-
-            // TODO Append a continuation to tails of if instructions.
             let program_counter = self.cons(
                 car,
                 if instruction == code::Instruction::IF {
-                    cdr.set_tag(tag)
+                    self.program_counter.set_tag(tag)
                 } else {
-                    continuation.set_tag(tag)
+                    (if r#return { NULL } else { self.program_counter }).set_tag(tag)
                 },
             )?;
             let program_counter = replace(&mut self.program_counter, program_counter);
