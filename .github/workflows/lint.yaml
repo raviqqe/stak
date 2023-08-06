@@ -43,6 +43,7 @@ jobs:
       - format
       - spell_check
       - readme
+    if: always()
     runs-on: ubuntu-latest
     steps:
-      - run: ":"
+      - run: "!${{ failure() }}"
