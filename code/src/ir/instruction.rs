@@ -12,6 +12,7 @@ pub enum Instruction {
     If(Vec<Instruction>),
     #[cfg(feature = "alloc")]
     Closure(u64, Vec<Instruction>),
+    Skip(u64),
 }
 
 impl Instruction {
@@ -21,4 +22,5 @@ impl Instruction {
     pub const CONSTANT: u8 = 3;
     pub const IF: u8 = 4;
     pub const CLOSURE: u8 = 5;
+    pub const SKIP: u8 = 6;
 }

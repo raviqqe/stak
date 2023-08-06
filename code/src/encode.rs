@@ -379,6 +379,21 @@ mod tests {
     }
 
     #[test]
+    fn encode_if_with_skip_instruction() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![
+                Instruction::If(vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Skip(1),
+                ]),
+                Instruction::Constant(Operand::Integer(1)),
+                Instruction::Call(Operand::Symbol(0)),
+            ],
+        ));
+    }
+
+    #[test]
     fn encode_non_tail_if_instruction() {
         encode_and_decode(&Program::new(
             vec![],
