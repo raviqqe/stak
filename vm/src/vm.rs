@@ -61,6 +61,7 @@ pub struct Vm<const N: usize, T: Device> {
     heap: [Value; N],
 }
 
+// Note that some routines look unnecessarily complicated as we need to mark all volatile variables live across garbage collections.
 impl<const N: usize, T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
