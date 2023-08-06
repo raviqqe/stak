@@ -379,10 +379,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 // least... Can we always use a skip primitive? Should this be an instruction?
                 self.pop()?;
             }
-            Primitive::SKIP => {
-                let [_, x] = self.pop_arguments::<2>()?;
-                self.push(x)?;
-            }
             Primitive::CLOSE => {
                 let procedure = self.pop()?;
                 let cons = self.allocate(
