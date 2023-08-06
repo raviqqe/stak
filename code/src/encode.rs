@@ -47,13 +47,13 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
 
         match instruction {
             Instruction::Call(operand) => {
-                encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return);
+                encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return)
             }
             Instruction::Set(operand) => {
-                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return);
+                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return)
             }
             Instruction::Get(operand) => {
-                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return);
+                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return)
             }
             Instruction::Constant(operand) => {
                 encode_instruction(
@@ -71,6 +71,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
                 encode_instructions(codes, body);
             }
+            Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, false),
         }
     }
 }
