@@ -101,7 +101,7 @@ Feature: Syntax
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call a local function
+  Scenario: Call a function bound by a let expression
     Given a file named "source.scm" with:
     """scheme
     (define (f) 65)
