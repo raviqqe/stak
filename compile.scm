@@ -29,6 +29,7 @@
 (define constant-code 3)
 (define if-code 4)
 (define closure-code 5)
+(define skip-code 6)
 
 ; Primitives
 
@@ -452,6 +453,30 @@
 (define (find-symbols codes)
   (find-symbols* codes '()))
 
+(define (reverse-codes codes)
+  (let loop ((codes codes) (result '()))
+    (if (null? codes)
+      result
+      (loop (rib-cdr codes) (cons codes result)))))
+
+(define (find-continuation left right)
+  (let loop (
+      (left (reverse-codes left))
+      (right (reverse-codes right))
+      (result '()))
+    (if (and
+        (pair? left)
+        (pair? right)
+        (eq? (car left) (car right)))
+      (loop (cdr left) (cdr right) (car left))
+      result)))
+
+(define (count-skips codes continuation)
+  (let loop ((codes codes) (count 0))
+    (if (eq? codes continuation)
+      count
+      (loop (rib-cdr codes) (+ 1 count)))))
+
 ;; Context
 
 (define (make-encode-context symbols)
@@ -655,6 +680,7 @@
     (encode-codes
       context
       (rib-cdr code)
+      '()
       (encode-instruction
         closure-code
         (rib-car code)
@@ -674,13 +700,14 @@
 
     (else (error "invalid operand:" operand))))
 
-(define (encode-codes context codes target)
-  (if (null? codes)
+(define (encode-codes context codes terminal target)
+  (if (eq? codes terminal)
     target
     (let* (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
-        (return (null? (rib-cdr codes)))
+        (rest (rib-cdr codes))
+        (return (null? rest))
         (encode-simple
           (lambda (instruction)
             (encode-instruction
@@ -690,7 +717,8 @@
               target))))
       (encode-codes
         context
-        (rib-cdr codes)
+        rest
+        terminal
         (cond
           ((eqv? instruction call-instruction)
             (encode-simple call-code))
@@ -717,11 +745,17 @@
                 (encode-simple constant-code))))
 
           ((eqv? instruction if-instruction)
-            (encode-codes
-              context
-              operand
-              ; TODO Allow non-tail if instructions.
-              (encode-instruction if-code 0 #f target)))
+            (let* (
+                (continuation (find-continuation operand rest))
+                (target
+                  (encode-codes
+                    context
+                    operand
+                    continuation
+                    (encode-instruction if-code 0 #f target))))
+              (if (null? continuation)
+                target
+                (encode-instruction skip-code (count-skips rest continuation) #t target))))
 
           (else (error "invalid instruction")))))))
 
@@ -771,7 +805,4 @@
       (codes (join-codes! primitive-codes (join-codes! constant-codes codes))))
     (encode-symbols
       (encode-context-symbols context)
-      (encode-codes
-        context
-        codes
-        '()))))
+      (encode-codes context codes '() '()))))
