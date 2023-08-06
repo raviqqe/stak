@@ -148,8 +148,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 }
                 Instruction::SET => {
                     let operand = self.operand();
-                    let x = self.pop()?;
-                    *self.car_mut(operand) = x;
+                    let value = self.pop()?;
+                    *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
                 Instruction::GET => {
