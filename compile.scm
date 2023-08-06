@@ -277,14 +277,13 @@
 (define (drop? codes)
   (and
     (rib? codes)
-    (rib? (rib-cdr codes))
-    (eqv? (rib-tag (rib-cdr codes)) set-instruction)
-    (eqv? (rib-car (rib-cdr codes)) 0)))
+    (eqv? (rib-tag codes) set-instruction)
+    (eqv? (rib-car codes) 0)))
 
 (define (compile-unspecified continuation)
   (if (drop? continuation)
-    ; Skip argument count constant and call instructions.
-    (rib-cdr (rib-cdr continuation))
+    ; Skip a "drop" instruction.
+    (rib-cdr continuation)
     (compile-constant #f continuation)))
 
 (define (compile-drop continuation)
