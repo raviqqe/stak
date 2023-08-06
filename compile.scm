@@ -452,6 +452,14 @@
 (define (find-symbols codes)
   (find-symbols* codes '()))
 
+(define (reverse-codes* codes tail)
+  (if (null? codes)
+		tail
+			(reverse-codes* (rib-cdr code) (cons code tail))))
+
+(define (reverse-codes codes)
+  (reverse-codes* codes '())
+
 ;; Context
 
 (define (make-encode-context symbols)
