@@ -453,27 +453,23 @@
 (define (find-symbols codes)
   (find-symbols* codes '()))
 
-(define (reverse-codes* codes result)
-  (if (null? codes)
-    result
-    (reverse-codes* (rib-cdr codes) (cons codes result))))
-
 (define (reverse-codes codes)
-  (reverse-codes* codes '()))
-
-(define (find-continuation* left right result)
-  (if (and
-      (pair? left)
-      (pair? right)
-      (eq? (car left) (car right)))
-    (find-continuation* (cdr left) (cdr right) (car left))
-    result))
+  (let loop ((codes codes) (result '()))
+    (if (null? codes)
+      result
+      (loop (rib-cdr codes) (cons codes result)))))
 
 (define (find-continuation left right)
-  (find-continuation*
-    (reverse-codes left)
-    (reverse-codes right)
-    '()))
+  (let loop (
+      (left (reverse-codes left))
+      (right (reverse-codes right))
+      (result '()))
+    (if (and
+        (pair? left)
+        (pair? right)
+        (eq? (car left) (car right)))
+      (loop (cdr left) (cdr right) (car left))
+      result)))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
