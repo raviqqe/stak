@@ -36,7 +36,6 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           files: lcov.info
-      - run: "false"
   integration_test:
     strategy:
       matrix:
@@ -65,7 +64,4 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - run: "!:"
-        if: failure()
-      - run: ":"
-        if: success()
+      - run: for result in ${{ join(needs.*.result, ' ') }}; do [ $result = success ]; done
