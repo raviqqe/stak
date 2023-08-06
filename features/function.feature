@@ -84,7 +84,7 @@ Feature: Function
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Add arguments
+  Scenario: Compute a value with arguments
     Given a file named "source.scm" with:
     """scheme
     (define (f x y) (+ x y))
