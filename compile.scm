@@ -748,7 +748,7 @@
                 (continuation (find-continuation operand (rib-cdr codes)))
                 (target (encode-instruction if-code 0 #f target)))
               (if (null? continuation)
-                (encode-codes context operand terminal target)
+                (encode-codes context operand continuation target)
                 (encode-instruction
                   skip-code
                   (count-skips operand continuation)
