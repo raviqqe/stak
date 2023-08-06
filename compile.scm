@@ -35,7 +35,6 @@
 
 (define primitives
   '(
-    (pop 2)
     (close 3)
     (- 14)))
 
@@ -265,7 +264,7 @@
       ((memq name '(close))
         1)
 
-      ((memq name '(pop -))
+      ((memq name '(-))
         2)
 
       ((memq name '(rib))
@@ -279,8 +278,8 @@
   (and
     (rib? codes)
     (rib? (rib-cdr codes))
-    (eqv? (rib-tag (rib-cdr codes)) call-instruction)
-    (eqv? (rib-car (rib-cdr codes)) 'pop)))
+    (eqv? (rib-tag (rib-cdr codes)) set-instruction)
+    (eqv? (rib-car (rib-cdr codes)) 0)))
 
 (define (compile-unspecified continuation)
   (if (drop? continuation)
@@ -291,7 +290,7 @@
 (define (compile-drop continuation)
   (if (null? continuation)
     continuation
-    (compile-primitive-call 'pop continuation)))
+    (rib set-instruction 0 continuation)))
 
 (define (compile-sequence context expressions continuation)
   (compile-expression
