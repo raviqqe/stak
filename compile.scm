@@ -454,11 +454,11 @@
 
 (define (reverse-codes* codes tail)
   (if (null? codes)
-		tail
-			(reverse-codes* (rib-cdr code) (cons code tail))))
+    tail
+    (reverse-codes* (rib-cdr code) (cons code tail))))
 
 (define (reverse-codes codes)
-  (reverse-codes* codes '())
+  (reverse-codes* codes '()))
 
 ;; Context
 
