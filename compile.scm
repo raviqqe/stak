@@ -460,17 +460,17 @@
 (define (reverse-codes codes)
   (reverse-codes* codes '()))
 
-(define (find-sublist* left right result)
+(define (find-sublist* xs ys result)
   (if (and
-      (pair? left)
-      (pair? right)
+      (pair? xs)
+      (pair? ys)
       (eqv?
-        (rib-car (car left))
-        (rib-car (car right)))
+        (rib-car (car xs))
+        (rib-car (car ys)))
       (eqv?
-        (rib-cdr (car left))
-        (rib-cdr (car right))))
-    (find-sublist* (cdr left) (cdr right) (cons (car left) result))
+        (rib-cdr (car xs))
+        (rib-cdr (car ys))))
+    (find-sublist* (cdr xs) (cdr ys) (cons (car xs) result))
     (reverse result)))
 
 (define (find-sublist xs ys)
