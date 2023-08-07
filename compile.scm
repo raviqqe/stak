@@ -86,6 +86,9 @@
 (define (procedure? value)
   (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
+(define (procedure-code procedure)
+  (rib-cdr (rib-car procedure)))
+
 ; Source code reading
 
 (define (read-all)
@@ -594,7 +597,7 @@
         ((eqv? instruction constant-instruction)
           (let ((continuation (build-constant context operand continuation)))
             (if (procedure? operand)
-              (build-constants* context (rib-cdr (rib-car operand)) continuation)
+              (build-constants* context (procedure-code operand) continuation)
               continuation)))
 
         ((eqv? instruction if-instruction)
