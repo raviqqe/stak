@@ -592,7 +592,10 @@
         (continuation (build-constants* context (rib-cdr codes) continuation)))
       (cond
         ((eqv? instruction constant-instruction)
-          (build-constant context operand continuation))
+          (let ((continuation (build-constant context operand continuation)))
+            (if (procedure? constant)
+              (build-constants* context operand continuation)
+              continuation)))
 
         ((eqv? instruction if-instruction)
           (build-constants* context operand continuation))
