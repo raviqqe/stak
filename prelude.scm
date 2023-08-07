@@ -59,9 +59,6 @@
         (write-string message)
         #f))))
 
-(define (todo)
-  (error "not implemented"))
-
 ; Types
 
 (define (instance? type)
