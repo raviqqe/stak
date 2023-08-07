@@ -37,6 +37,7 @@
 
 (define pair-type 0)
 (define procedure-type 1)
+(define char-type 4)
 
 ; Utility
 
@@ -520,6 +521,15 @@
       (cond
         ((constant-normal? constant)
           (rib constant-instruction constant continuation))
+
+        ((char? constant)
+          (rib constant-instruction
+            (char->integer constant)
+            (rib constant-instruction
+              '()
+              (rib constant-instruction
+                char-type
+                (compile-primitive-call 'rib continuation)))))
 
         ; Negative number
         ((number? constant)
