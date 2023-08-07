@@ -157,8 +157,7 @@
 (define (list->vector x)
   (rib (length x) x vector-type))
 
-(define (vector->list x)
-  (rib-cdr x))
+(define vector->list rib-cdr)
 
 ; Write
 
