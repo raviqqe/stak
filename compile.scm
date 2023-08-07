@@ -563,12 +563,14 @@
 
         ((string? constant)
           (let ((list (map char->integer (string->list constant))))
-            (build-child-constant
-              context
-              (cdr constant)
-              (rib constant-instruction
-                pair-type
-                (compile-primitive-call 'rib continuation)))))
+            (rib constant-instruction
+              (length list)
+              (build-child-constant
+                context
+                list
+                (rib constant-instruction
+                  string-type
+                  (compile-primitive-call 'rib continuation))))))
 
         (else
           (error "invalid constant:" constant))))))
