@@ -140,7 +140,7 @@ Feature: Syntax
     (define (f x)
       (lambda () x))
 
-    (write-u8 ((f)))
+    (write-u8 ((f 65)))
     """
     When I run the following script:
     """sh
