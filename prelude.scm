@@ -74,6 +74,15 @@
 (define (not x)
   (eq? x #f))
 
+;; Bytevector
+
+(define bytevector? (instance? bytevector-type))
+
+(define bytevector-length rib-car)
+
+(define (bytevector-u8-ref vector index)
+  (list-ref (rib-cdr vector) index))
+
 ;; Character
 
 (define char? (instance? char-type))
@@ -109,6 +118,11 @@
       (function (car list))
       (map function (cdr list)))))
 
+(define (list-ref list index)
+  (if (eqv? index 0)
+    (car list)
+    (list-ref (cdr list) (- index 1))))
+
 ;; Number
 
 (define (integer? x)
@@ -136,6 +150,15 @@
 (define (string->list x)
   (map integer->char (rib-cdr x)))
 
+;; Vector
+
+(define vector? (instance? vector-type))
+
+(define (list->vector x)
+  (rib (length x) x vector-type))
+
+(define vector->list rib-cdr)
+
 ; Write
 
 (define (write-char x)
@@ -143,6 +166,16 @@
 
 (define (write-string string)
   (map write-char (string->list string)))
+
+(define (write-bytevector* vector index)
+  (if (< index (bytevector-length vector))
+    (begin
+      (write-u8 (bytevector-u8-ref vector index))
+      (write-bytevector* vector (+ index 1)))
+    #f))
+
+(define (write-bytevector vector)
+  (write-bytevector* vector 0))
 
 (define (newline)
   (write-char #\newline))
