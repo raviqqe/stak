@@ -39,6 +39,8 @@
 (define procedure-type 1)
 (define string-type 3)
 (define char-type 4)
+(define vector-type 5)
+(define bytevector-type 6)
 
 ; Utility
 
@@ -89,6 +91,14 @@
 
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
+
+(define (bytevector->list vector)
+  (let loop ((index 0) (result '()))
+    (if (< index (bytevector-length vector))
+      (cons
+        (bytevector-u8-ref vector index)
+        (loop (+ 1 index) result))
+      result)))
 
 ; Source code reading
 
@@ -536,6 +546,16 @@
         ((constant-normal? constant)
           (rib constant-instruction constant continuation))
 
+        ((bytevector? constant)
+          (rib constant-instruction
+            (bytevector-length constant)
+            (build-child-constant
+              context
+              (bytevector->list constant)
+              (rib constant-instruction
+                bytevector-type
+                (compile-primitive-call 'rib continuation)))))
+
         ((char? constant)
           (rib constant-instruction
             (char->integer constant)
@@ -572,6 +592,16 @@
                 (rib constant-instruction
                   string-type
                   (compile-primitive-call 'rib continuation))))))
+
+        ((vector? constant)
+          (rib constant-instruction
+            (vector-length constant)
+            (build-child-constant
+              context
+              (vector->list constant)
+              (rib constant-instruction
+                vector-type
+                (compile-primitive-call 'rib continuation)))))
 
         (else
           (error "invalid constant:" constant))))))
