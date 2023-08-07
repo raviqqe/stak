@@ -1,3 +1,5 @@
+#!/usr/bin/env gsi
+
 ; Stak compiler based on Ribbit's
 ;
 ; All compiler-generated variables are prefixed with `$`.
