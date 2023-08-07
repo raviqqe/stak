@@ -39,6 +39,8 @@
 (define procedure-type 1)
 (define string-type 3)
 (define char-type 4)
+(define vector-type 5)
+(define bytevector-type 6)
 
 ; Utility
 
