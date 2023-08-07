@@ -4,6 +4,9 @@ on:
     branches:
       - main
   pull_request:
+env:
+  HOMEBREW_NO_INSTALL_UPGRADE: 1
+  HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -193,11 +193,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == NULL {
-            let return_info = self.car(self.frame());
+            let continuation = self.car(self.frame());
 
-            self.program_counter = self.car_value(return_info).assume_cons();
+            self.program_counter = self.car_value(continuation).assume_cons();
             // Keep a value at the top of a stack.
-            *self.cdr_mut(self.stack) = self.cdr_value(return_info);
+            *self.cdr_mut(self.stack) = self.cdr_value(continuation);
         }
     }
 
@@ -549,8 +549,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
         trace!("decode", "end");
 
         // Implicit top-level frame
-        let return_info = self.allocate(NULL.into(), NULL.into())?.into();
-        self.stack = self.allocate(return_info, NULL.set_tag(FRAME_TAG).into())?;
+        let continuation = self.allocate(NULL.into(), NULL.into())?.into();
+        self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
 
         Ok(())
     }
