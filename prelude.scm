@@ -146,4 +146,4 @@
   (write-u8 (char->integer x)))
 
 (define (newline)
-  (write-u8 #\newline))
+  (write-char #\newline))
