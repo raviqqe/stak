@@ -518,7 +518,17 @@
     (procedure? constant)))
 
 (define (build-constant-codes context constant continuation)
-  (let ((symbol (encode-context-constant context constant)))
+  (let (
+      (symbol (encode-context-constant context constant))
+      (build-child-constant
+        (lambda (context constant continuation)
+          (build-constant
+            context
+            constant
+            (build-constant-codes
+              context
+              constant
+              continuation)))))
     (if symbol
       (rib get-instruction symbol continuation)
       (cond
@@ -543,17 +553,17 @@
               (compile-primitive-call '- continuation))))
 
         ((pair? constant)
-          (build-constant-codes*
+          (build-child-constant
             context
             (car constant)
-            (build-constant-codes*
+            (build-child-constant
               context
               (cdr constant)
               (compile-primitive-call 'cons continuation))))
 
         ((string? constant)
           (let ((list (map char->integer (string->list constant))))
-            (build-constant-codes*
+            (build-child-constant
               context
               (cdr constant)
               (rib constant-instruction
@@ -562,15 +572,6 @@
 
         (else
           (error "invalid constant:" constant))))))
-
-(define (build-constant-codes* context constant continuation)
-  (build-constant
-    context
-    constant
-    (build-constant-codes
-      context
-      constant
-      continuation)))
 
 (define (build-constant context constant continuation)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
