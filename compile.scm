@@ -540,7 +540,12 @@
                 (compile-primitive-call 'rib continuation)))))
 
         ((string? constant)
-          foo)
+          (build-constant-codes*
+            context
+            (cdr constant)
+            (rib constant-instruction
+              pair-type
+              (compile-primitive-call 'rib continuation))))
 
         (else
           (error "invalid constant:" constant))))))
