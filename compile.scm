@@ -529,11 +529,10 @@
     (and (number? constant) (>= constant 0))
     (procedure? constant)))
 
-(define (build-constant-codes context constant continuation)
+(define (build-constant-rib context car cdr tag continuation)
   (let (
-      (symbol (encode-context-constant context constant))
-      (build-child-constant
-        (lambda (context constant continuation)
+      (build-child
+        (lambda (constant continuation)
           (build-constant
             context
             constant
@@ -541,6 +540,20 @@
               context
               constant
               continuation)))))
+    (build-child
+      car
+      (build-child
+        cdr
+        (rib constant-instruction
+          tag
+          (compile-primitive-call 'rib continuation))))))
+
+(define (build-constant-codes context constant continuation)
+  (let (
+      (symbol (encode-context-constant context constant))
+      (build-constant-rib
+        (lambda (car cdr tag)
+          (build-constant-rib context car cdr tag continuation))))
     (if symbol
       (rib get-instruction symbol continuation)
       (cond
@@ -548,23 +561,13 @@
           (rib constant-instruction constant continuation))
 
         ((bytevector? constant)
-          (rib constant-instruction
+          (build-constant-rib
             (bytevector-length constant)
-            (build-child-constant
-              context
-              (bytevector->list constant)
-              (rib constant-instruction
-                bytevector-type
-                (compile-primitive-call 'rib continuation)))))
+            (bytevector->list constant)
+            bytevector-type))
 
         ((char? constant)
-          (rib constant-instruction
-            (char->integer constant)
-            (rib constant-instruction
-              '()
-              (rib constant-instruction
-                char-type
-                (compile-primitive-call 'rib continuation)))))
+          (build-constant-rib (char->integer constant) '() char-type))
 
         ; Negative number
         ((number? constant)
@@ -575,34 +578,19 @@
               (compile-primitive-call '- continuation))))
 
         ((pair? constant)
-          (build-child-constant
-            context
-            (car constant)
-            (build-child-constant
-              context
-              (cdr constant)
-              (compile-primitive-call 'cons continuation))))
+          (build-constant-rib (car constant) (cdr constant) pair-type))
 
         ((string? constant)
-          (let ((list (map char->integer (string->list constant))))
-            (rib constant-instruction
-              (length list)
-              (build-child-constant
-                context
-                list
-                (rib constant-instruction
-                  string-type
-                  (compile-primitive-call 'rib continuation))))))
+          (build-constant-rib
+            (string-length constant)
+            (map char->integer (string->list constant))
+            string-type))
 
         ((vector? constant)
-          (rib constant-instruction
+          (build-constant-rib
             (vector-length constant)
-            (build-child-constant
-              context
-              (vector->list constant)
-              (rib constant-instruction
-                vector-type
-                (compile-primitive-call 'rib continuation)))))
+            (vector->list constant)
+            vector-type))
 
         (else
           (error "invalid constant:" constant))))))
