@@ -121,7 +121,7 @@
 (define (list-ref list index)
   (if (eqv? index 0)
     (car list)
-    (list-ref (cdr list) (- index 1)))
+    (list-ref (cdr list) (- index 1))))
 
 ;; Number
 
