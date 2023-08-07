@@ -1,3 +1,5 @@
+#!/usr/bin/env gsi
+
 ; Stak compiler based on Ribbit's
 ;
 ; All compiler-generated variables are prefixed with `$`.
@@ -789,3 +791,7 @@
     (encode-symbols
       (encode-context-symbols context)
       (encode-codes context codes '() '()))))
+
+; Main
+
+(write-target (encode (compile (expand (read-source)))))

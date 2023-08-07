@@ -9,7 +9,7 @@ Feature: Examples
   Scenario Outline: Run examples
     When I run the following script:
     """sh
-    cat prelude.scm examples/<example>.scm | ./main.scm > main.out
+    cat prelude.scm examples/<example>.scm | ./compile.scm > main.out
     """
     Then I successfully run `stak main.out`
 
@@ -26,7 +26,7 @@ Feature: Examples
       | lambda               |
 
   Scenario: Call a fibonacci function
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (fibonacci x)
       (if (< x 2)
@@ -39,7 +39,7 @@ Feature: Examples
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "X"
