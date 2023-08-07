@@ -7,7 +7,7 @@ Feature: Error
     """
 
   Scenario: Raise an error
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 65)
 
@@ -17,7 +17,7 @@ Feature: Error
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"

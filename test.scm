@@ -1,1 +1,0 @@
-(display "no test defined")

@@ -7,19 +7,19 @@ Feature: Continuation
     """
 
   Scenario: Call a continuation
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (call/cc (lambda (k) (k 65))))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a continuation with a global variable
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define x 5)
 
@@ -27,13 +27,13 @@ Feature: Continuation
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a continuation with a local variable
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (f x) (call/cc (lambda (k) (k x))))
 
@@ -41,19 +41,19 @@ Feature: Continuation
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Return a value from a receiver
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (call/cc (lambda (k) 65)))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./main.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
