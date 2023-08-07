@@ -538,7 +538,7 @@
               (compile-primitive-call 'cons continuation))))
 
         ((string? constant)
-          (let ((list (map char->integer (string->list))))
+          (let ((list (map char->integer (string->list constant))))
             (build-constant-codes*
               context
               (cdr constant)
