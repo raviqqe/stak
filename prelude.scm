@@ -56,12 +56,8 @@
     (lambda ()
       (let ((frame (rib-cdr (close dummy-function))))
         (rib-set-car! frame (cons '() '()))
-        ; TODO Print an error message.
+        (write-string message)
         #f))))
-
-(define (todo)
-  ; TODO Set an error message.
-  (error #f))
 
 ; Types
 
