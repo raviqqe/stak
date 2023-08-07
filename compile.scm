@@ -575,6 +575,17 @@
                   string-type
                   (compile-primitive-call 'rib continuation))))))
 
+        ((vector? constant)
+          (let ((list (vector->list constant)))
+            (rib constant-instruction
+              (length list)
+              (build-child-constant
+                context
+                list
+                (rib constant-instruction
+                  vector-type
+                  (compile-primitive-call 'rib continuation))))))
+
         (else
           (error "invalid constant:" constant))))))
 
