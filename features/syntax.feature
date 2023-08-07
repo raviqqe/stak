@@ -133,3 +133,18 @@ Feature: Syntax
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Do not corrupt a function environment
+    Given a file named "main.scm" with:
+    """scheme
+    (define (f x)
+      (lambda () x))
+
+    (write-u8 ((f)))
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | ./compile.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
