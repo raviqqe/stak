@@ -138,7 +138,7 @@
   (rib (length x) x string-type))
 
 (define (string->list x)
-  (rib-cdr x))
+  (map integer->char (rib-cdr x)))
 
 ; Write
 
