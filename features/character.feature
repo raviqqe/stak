@@ -29,3 +29,21 @@ Feature: Character
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Write a newline character
+    Given a file named "main.scm" with:
+    """scheme
+    (write-char #\A)
+    (newline)
+    (write-char #\B)
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | ./compile.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly:
+    """
+    A
+    B
+    """
