@@ -106,6 +106,13 @@
 (define (length xs)
   (length* xs 0))
 
+(define (map function list)
+  (if (null? list)
+    list
+    (cons
+      (function (car list))
+      (map function (cdr list)))))
+
 ;; Number
 
 (define (integer? x)
