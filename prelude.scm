@@ -146,5 +146,4 @@
   (write-u8 (char->integer x)))
 
 (define (newline)
-  ; TODO Use a character.
-  (write-u8 10))
+  (write-u8 #\newline))
