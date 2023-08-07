@@ -538,6 +538,16 @@
         ((constant-normal? constant)
           (rib constant-instruction constant continuation))
 
+        ((bytevector? constant)
+          (rib constant-instruction
+            (bytevector-length constant)
+            (build-child-constant
+              context
+              (bytevector->list constant)
+              (rib constant-instruction
+                bytevector-type
+                (compile-primitive-call 'rib continuation)))))
+
         ((char? constant)
           (rib constant-instruction
             (char->integer constant)
@@ -576,15 +586,14 @@
                   (compile-primitive-call 'rib continuation))))))
 
         ((vector? constant)
-          (let ((list (vector->list constant)))
-            (rib constant-instruction
-              (length list)
-              (build-child-constant
-                context
-                list
-                (rib constant-instruction
-                  vector-type
-                  (compile-primitive-call 'rib continuation))))))
+          (rib constant-instruction
+            (vector-length constant)
+            (build-child-constant
+              context
+              (vector->list constant)
+              (rib constant-instruction
+                vector-type
+                (compile-primitive-call 'rib continuation)))))
 
         (else
           (error "invalid constant:" constant))))))
