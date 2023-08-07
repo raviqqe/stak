@@ -13,7 +13,7 @@ Feature: List
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
