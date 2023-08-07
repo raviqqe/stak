@@ -60,8 +60,7 @@
         #f))))
 
 (define (todo)
-  ; TODO Set an error message.
-  (error #f))
+  (error "not implemented"))
 
 ; Types
 
