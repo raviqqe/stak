@@ -1,4 +1,4 @@
-Feature: List
+Feature: Vector
   Background:
     Given I run the following script:
     """sh
