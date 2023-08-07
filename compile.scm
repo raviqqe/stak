@@ -803,3 +803,7 @@
     (encode-symbols
       (encode-context-symbols context)
       (encode-codes context codes '() '()))))
+
+; Main
+
+(write-target (encode (compile (expand (read-source)))))
