@@ -582,9 +582,8 @@
             context
             constant
             (rib set-instruction id continuation))))
-      (begin
-        (encode-context-add-constant! context constant id)
-        continuation))))
+      (encode-context-add-constant! context constant id)
+      continuation)))
 
 (define (build-constants* context codes continuation)
   (if (null? codes)
