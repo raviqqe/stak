@@ -7,31 +7,31 @@ Feature: Syntax
     """
 
   Scenario: Use a let expression
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (let ((x 65)) x))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a let expression with two bindings
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (let ((x 60) (y 5)) (+ x y)))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Define a recursive function
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (sum x)
       (if (eq? x 0) 0 (+ x (sum (- x 1)))))
@@ -40,13 +40,13 @@ Feature: Syntax
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
 
   Scenario: Use a local variable in a definition
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (f x)
       (let ((y x))
@@ -57,13 +57,13 @@ Feature: Syntax
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a letrec expresion
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (f x)
       (letrec (
@@ -78,13 +78,13 @@ Feature: Syntax
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a letrec expresion with two bindings
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (f x)
       (letrec (
@@ -96,13 +96,13 @@ Feature: Syntax
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a function bound by a let expression
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (f) 65)
 
@@ -114,13 +114,13 @@ Feature: Syntax
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
   Scenario: Cause a side effect in a body in a let expression
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8
       (let ((x 66))
@@ -129,7 +129,7 @@ Feature: Syntax
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"

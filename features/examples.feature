@@ -26,7 +26,7 @@ Feature: Examples
       | lambda               |
 
   Scenario: Call a fibonacci function
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (define (fibonacci x)
       (if (< x 2)
@@ -39,7 +39,7 @@ Feature: Examples
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "X"

@@ -7,20 +7,20 @@ Feature: Boolean
     """
 
   Scenario: Use a not operator
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if (not #f) 65 66))
     (write-u8 (if (not #t) 65 66))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
 
   Scenario: Use an and operator
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if (and) 65 66))
     (write-u8 (if (and #t) 65 66))
@@ -30,13 +30,13 @@ Feature: Boolean
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AABAB"
 
   Scenario: Use an or operator
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if (or) 65 66))
     (write-u8 (if (or #t) 65 66))
@@ -48,46 +48,46 @@ Feature: Boolean
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "BABBAAA"
 
   Scenario: Use if expressions
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if #f 65 66))
     (write-u8 (if #t 65 66))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "BA"
 
   Scenario: Use nested if expressions
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if #t (if #t 65 67) 67))
     (write-u8 (if #f 67 (if #f 67 66)))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
 
   Scenario: Use deeply nested if expressions
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if #t (if #t (if #t 65 67) 67) 67))
     (write-u8 (if #f 67 (if #f 67 (if #f 67 66))))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"

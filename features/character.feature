@@ -7,13 +7,13 @@ Feature: Character
     """
 
   Scenario: Check if a value is a character
-    Given a file named "source.scm" with:
+    Given a file named "main.scm" with:
     """scheme
     (write-u8 (if (char? (integer->char 65)) 65 66))
     """
     When I run the following script:
     """sh
-    cat prelude.scm source.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | ./compile.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
