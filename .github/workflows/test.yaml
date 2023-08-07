@@ -4,6 +4,8 @@ on:
     branches:
       - main
   pull_request:
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
 jobs:
   build:
     runs-on: ubuntu-latest
