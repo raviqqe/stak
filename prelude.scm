@@ -145,5 +145,8 @@
 (define (write-char x)
   (write-u8 (char->integer x)))
 
+(define (write-string string)
+  (map write-char (string->list string)))
+
 (define (newline)
   (write-char #\newline))

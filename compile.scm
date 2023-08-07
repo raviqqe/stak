@@ -37,6 +37,7 @@
 
 (define pair-type 0)
 (define procedure-type 1)
+(define string-type 3)
 (define char-type 4)
 
 ; Utility
