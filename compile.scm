@@ -29,6 +29,7 @@
 
 (define primitives
   '(
+    (cons 1)
     (close 2)
     (- 13)))
 
@@ -36,6 +37,8 @@
 
 (define pair-type 0)
 (define procedure-type 1)
+(define string-type 3)
+(define char-type 4)
 
 ; Utility
 
@@ -83,6 +86,9 @@
 
 (define (procedure? value)
   (and (rib? value) (eqv? (rib-tag value) procedure-type)))
+
+(define (procedure-code procedure)
+  (rib-cdr (rib-car procedure)))
 
 ; Source code reading
 
@@ -258,7 +264,7 @@
       ((memq name '(close))
         1)
 
-      ((memq name '(-))
+      ((memq name '(cons -))
         2)
 
       ((memq name '(rib))
@@ -513,12 +519,31 @@
     (procedure? constant)))
 
 (define (build-constant-codes context constant continuation)
-  (let ((symbol (encode-context-constant context constant)))
+  (let (
+      (symbol (encode-context-constant context constant))
+      (build-child-constant
+        (lambda (context constant continuation)
+          (build-constant
+            context
+            constant
+            (build-constant-codes
+              context
+              constant
+              continuation)))))
     (if symbol
       (rib get-instruction symbol continuation)
       (cond
         ((constant-normal? constant)
           (rib constant-instruction constant continuation))
+
+        ((char? constant)
+          (rib constant-instruction
+            (char->integer constant)
+            (rib constant-instruction
+              '()
+              (rib constant-instruction
+                char-type
+                (compile-primitive-call 'rib continuation)))))
 
         ; Negative number
         ((number? constant)
@@ -529,27 +554,27 @@
               (compile-primitive-call '- continuation))))
 
         ((pair? constant)
-          (build-constant-codes*
+          (build-child-constant
             context
             (car constant)
-            (build-constant-codes*
+            (build-child-constant
               context
               (cdr constant)
-              (rib constant-instruction
-                pair-type
-                (compile-primitive-call 'rib continuation)))))
+              (compile-primitive-call 'cons continuation))))
+
+        ((string? constant)
+          (let ((list (map char->integer (string->list constant))))
+            (rib constant-instruction
+              (length list)
+              (build-child-constant
+                context
+                list
+                (rib constant-instruction
+                  string-type
+                  (compile-primitive-call 'rib continuation))))))
 
         (else
           (error "invalid constant:" constant))))))
-
-(define (build-constant-codes* context constant continuation)
-  (build-constant
-    context
-    constant
-    (build-constant-codes
-      context
-      constant
-      continuation)))
 
 (define (build-constant context constant continuation)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
@@ -561,26 +586,30 @@
             context
             constant
             (rib set-instruction id continuation))))
-      (begin
-        (encode-context-add-constant! context constant id)
-        continuation))))
+      (encode-context-add-constant! context constant id)
+      continuation)))
 
 (define (build-constants* context codes continuation)
   (if (null? codes)
     continuation
     (let (
         (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (continuation (build-constants* context (rib-cdr codes) continuation)))
-      (cond
-        ((eqv? instruction constant-instruction)
-          (build-constant context operand continuation))
+        (operand (rib-car codes)))
+      (build-constants*
+        context
+        (rib-cdr codes)
+        (cond
+          ((eqv? instruction constant-instruction)
+            (let ((continuation (build-constant context operand continuation)))
+              (if (procedure? operand)
+                (build-constants* context (procedure-code operand) continuation)
+                continuation)))
 
-        ((eqv? instruction if-instruction)
-          (build-constants* context operand continuation))
+          ((eqv? instruction if-instruction)
+            (build-constants* context operand continuation))
 
-        (else
-          continuation)))))
+          (else
+            continuation))))))
 
 (define (build-constants context codes)
   (build-constants* context codes '()))

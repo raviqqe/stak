@@ -138,13 +138,15 @@
   (rib (length x) x string-type))
 
 (define (string->list x)
-  (rib-cdr x))
+  (map integer->char (rib-cdr x)))
 
 ; Write
 
 (define (write-char x)
   (write-u8 (char->integer x)))
 
+(define (write-string string)
+  (map write-char (string->list string)))
+
 (define (newline)
-  ; TODO Use a character.
-  (write-u8 10))
+  (write-char #\newline))
