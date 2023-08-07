@@ -137,10 +137,14 @@ Feature: Syntax
   Scenario: Do not corrupt a function environment
     Given a file named "main.scm" with:
     """scheme
-    (define (f x)
-      (lambda () x))
+    (define (f)
+      (let (
+          (g
+            (let ((x 65))
+              (lambda () x))))
+        g))
 
-    (write-u8 ((f 65)))
+    (write-u8 ((f)))
     """
     When I run the following script:
     """sh
