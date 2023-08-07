@@ -78,6 +78,10 @@
 (define (not x)
   (eq? x #f))
 
+;; Bytevector
+
+(define bytevector? (instance? bytevector-type))
+
 ;; Character
 
 (define char? (instance? char-type))
@@ -139,6 +143,16 @@
 
 (define (string->list x)
   (map integer->char (rib-cdr x)))
+
+;; Vector
+
+(define vector? (instance? vector-type))
+
+(define (list->vector x)
+  (rib (length x) x vector-type))
+
+(define (vector->list x)
+  (rib-cdr x))
 
 ; Write
 
