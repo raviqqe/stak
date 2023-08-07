@@ -30,8 +30,9 @@
 (define primitives
   '(
     (cons 1)
-    (close 2)
-    (- 13)))
+    (skip 2)
+    (close 3)
+    (- 14)))
 
 ; Types
 
@@ -274,7 +275,7 @@
       ((memq name '(close))
         1)
 
-      ((memq name '(cons -))
+      ((memq name '(cons skip -))
         2)
 
       ((memq name '(rib))
@@ -283,6 +284,9 @@
       (else
         (error "unknown primitive:" name)))
     (rib call-instruction name continuation)))
+
+(define (compile-set variable continuation)
+  (rib set-instruction variable continuation))
 
 (define (drop? codes)
   (and
@@ -342,7 +346,7 @@
 (define (compile-unbind continuation)
   (if (null? continuation)
     continuation
-    (rib set-instruction 1 continuation)))
+    (compile-primitive-call 'skip continuation)))
 
 (define (compile-let* context bindings body-context body continuation)
   (if (pair? bindings)

@@ -376,6 +376,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.allocate(car, cdr.assume_cons().set_tag(Type::Pair as u8).into())?;
                 self.push(cons.into())?;
             }
+            Primitive::SKIP => {
+                let [_, x] = self.pop_arguments::<2>()?;
+                self.push(x)?;
+            }
             Primitive::CLOSE => {
                 let procedure = self.pop()?;
                 let cons = self.allocate(
