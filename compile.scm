@@ -539,6 +539,9 @@
                 pair-type
                 (compile-primitive-call 'rib continuation)))))
 
+        ((string? constant)
+          foo)
+
         (else
           (error "invalid constant:" constant))))))
 
