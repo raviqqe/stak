@@ -593,8 +593,8 @@
       (cond
         ((eqv? instruction constant-instruction)
           (let ((continuation (build-constant context operand continuation)))
-            (if (procedure? constant)
-              (build-constants* context operand continuation)
+            (if (procedure? operand)
+              (build-constants* context (rib-cdr (rib-car operand)) continuation)
               continuation)))
 
         ((eqv? instruction if-instruction)
