@@ -19,17 +19,9 @@
 (define get-instruction 2)
 (define constant-instruction 3)
 (define if-instruction 4)
-
-;; Codes
-
-; TODO Consider merging these constants with instructions above.
-(define call-code 0)
-(define set-code 1)
-(define get-code 2)
-(define constant-code 3)
-(define if-code 4)
-(define closure-code 5)
-(define skip-code 6)
+; Only for encoding
+(define closure-instruction 5)
+(define skip-instruction 6)
 
 ; Primitives
 
@@ -679,7 +671,7 @@
       (rib-cdr code)
       '()
       (encode-instruction
-        closure-code
+        closure-instruction
         (rib-car code)
         return
         target))))
@@ -717,14 +709,8 @@
         rest
         terminal
         (cond
-          ((eqv? instruction call-instruction)
-            (encode-simple call-code))
-
-          ((eqv? instruction set-instruction)
-            (encode-simple set-code))
-
-          ((eqv? instruction get-instruction)
-            (encode-simple get-code))
+          ((memv instruction (list call-instruction set-instruction get-instruction))
+            (encode-simple instruction))
 
           ((and
               (eqv? instruction constant-instruction)
@@ -735,11 +721,11 @@
             (let ((symbol (encode-context-constant context operand)))
               (if symbol
                 (encode-instruction
-                  get-code
+                  get-instruction
                   (encode-operand context symbol)
                   return
                   target)
-                (encode-simple constant-code))))
+                (encode-simple constant-instruction))))
 
           ((eqv? instruction if-instruction)
             (let* (
@@ -749,10 +735,10 @@
                     context
                     operand
                     continuation
-                    (encode-instruction if-code 0 #f target))))
+                    (encode-instruction if-instruction 0 #f target))))
               (if (null? continuation)
                 target
-                (encode-instruction skip-code (count-skips rest continuation) #t target))))
+                (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
 
           (else (error "invalid instruction")))))))
 
