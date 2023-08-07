@@ -92,7 +92,7 @@
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
 
-(define (bytevector->list vector index)
+(define (bytevector->list vector)
   (let loop ((index 0) (result '()))
     (if (< index (bytevector-length vector))
       (cons
