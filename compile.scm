@@ -591,20 +591,22 @@
     continuation
     (let (
         (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (continuation (build-constants* context (rib-cdr codes) continuation)))
-      (cond
-        ((eqv? instruction constant-instruction)
-          (let ((continuation (build-constant context operand continuation)))
-            (if (procedure? operand)
-              (build-constants* context (procedure-code operand) continuation)
-              continuation)))
+        (operand (rib-car codes)))
+      (build-constants*
+        context
+        (rib-cdr codes)
+        (cond
+          ((eqv? instruction constant-instruction)
+            (let ((continuation (build-constant context operand continuation)))
+              (if (procedure? operand)
+                (build-constants* context (procedure-code operand) continuation)
+                continuation)))
 
-        ((eqv? instruction if-instruction)
-          (build-constants* context operand continuation))
+          ((eqv? instruction if-instruction)
+            (build-constants* context operand continuation))
 
-        (else
-          continuation)))))
+          (else
+            continuation))))))
 
 (define (build-constants context codes)
   (build-constants* context codes '()))
