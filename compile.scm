@@ -535,17 +535,16 @@
             (build-constant-codes*
               context
               (cdr constant)
+              (compile-primitive-call 'cons continuation))))
+
+        ((string? constant)
+          (let ((list (map char->integer (string->list))))
+            (build-constant-codes*
+              context
+              (cdr constant)
               (rib constant-instruction
                 pair-type
                 (compile-primitive-call 'rib continuation)))))
-
-        ((string? constant)
-          (build-constant-codes*
-            context
-            (cdr constant)
-            (rib constant-instruction
-              pair-type
-              (compile-primitive-call 'rib continuation))))
 
         (else
           (error "invalid constant:" constant))))))
