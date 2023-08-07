@@ -29,6 +29,7 @@
 
 (define primitives
   '(
+    (cons 1)
     (close 2)
     (- 13)))
 
@@ -258,7 +259,7 @@
       ((memq name '(close))
         1)
 
-      ((memq name '(-))
+      ((memq name '(cons -))
         2)
 
       ((memq name '(rib))
