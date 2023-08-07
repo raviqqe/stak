@@ -11,7 +11,7 @@ Feature: Error
     """scheme
     (write-u8 65)
 
-    (error #f)
+    (error "")
 
     (write-u8 65)
     """
@@ -21,3 +21,15 @@ Feature: Error
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Print an error message
+    Given a file named "main.scm" with:
+    """scheme
+    (error "Oh, no!")
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | ./compile.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "Oh, no!"
