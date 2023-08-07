@@ -285,9 +285,6 @@
         (error "unknown primitive:" name)))
     (rib call-instruction name continuation)))
 
-(define (compile-set variable continuation)
-  (rib set-instruction variable continuation))
-
 (define (drop? codes)
   (and
     (rib? codes)
