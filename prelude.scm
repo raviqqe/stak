@@ -171,7 +171,7 @@
   (if (< index (bytevector-length vector))
     (begin
       (write-u8 (bytevector-u8-ref vector index))
-      (write-bytevector* vector (- index 1)))
+      (write-bytevector* vector (+ index 1)))
     #f))
 
 (define (write-bytevector vector)
