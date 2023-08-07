@@ -78,6 +78,11 @@
 
 (define bytevector? (instance? bytevector-type))
 
+(define bytevector-length rib-car)
+
+(define (bytevector-u8-ref vector index)
+  (list-ref (rib-cdr vector) index))
+
 ;; Character
 
 (define char? (instance? char-type))
@@ -112,6 +117,11 @@
     (cons
       (function (car list))
       (map function (cdr list)))))
+
+(define (list-ref list index)
+  (if (eqv? index 0)
+    (car list)
+    (list-ref (cdr list) (- index 1)))
 
 ;; Number
 

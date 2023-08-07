@@ -92,6 +92,14 @@
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
 
+(define (bytevector->list vector index)
+  (let loop ((index 0) (result '()))
+    (if (< index (bytevector-length vector))
+      (cons
+        (bytevector-u8-ref vector index)
+        (loop (+ 1 index) result))
+      result)))
+
 ; Source code reading
 
 (define (read-all)
