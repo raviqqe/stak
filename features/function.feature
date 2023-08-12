@@ -113,3 +113,16 @@ Feature: Function
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Use variadic arguments
+    Given a file named "main.scm" with:
+    """scheme
+    (define (f . x) (map write-u8 x))
+		(f 65 66 67)
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | ./compile.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "ABC"
