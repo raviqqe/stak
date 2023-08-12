@@ -93,7 +93,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
-                    let environment = self.cdr(procedure).assume_cons();
+                    let mut environment = self.cdr(procedure).assume_cons();
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -103,12 +103,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     }
 
                     match self.code(procedure).to_typed() {
-                        TypedValue::Cons(code) => {
+                        TypedValue::Cons(mut code) => {
                             let argument_count = self.car(self.stack).assume_number();
                             let parameter_count = self.car(code).assume_number();
+                            let variadic = parameter_count.to_i64() & 1 == 1;
                             // A parameter count does not include a variadic parameter.
                             let parameter_count = Number::new(parameter_count.to_i64() / 2);
-                            let variadic = parameter_count.to_i64() & 1 == 1;
 
                             trace!("argument count", argument_count);
                             trace!("parameter count", parameter_count);
@@ -118,6 +118,21 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 || argument_count != parameter_count
                             {
                                 return Err(Error::ArgumentCount);
+                            } else if variadic {
+                                *self.car_mut(self.cons) = code.into();
+                                *self.cdr_mut(self.cons) = environment.into();
+
+                                let mut list = NULL;
+
+                                for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
+                                    let value = self.pop()?;
+                                    list = self.cons(value, list)?;
+                                }
+
+                                self.push(list.into())?;
+
+                                code = self.car(self.cons).assume_cons();
+                                environment = self.car(self.cons).assume_cons();
                             }
 
                             let last_argument = self.tail(self.stack, parameter_count);
