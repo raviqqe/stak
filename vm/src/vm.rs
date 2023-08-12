@@ -111,6 +111,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                             trace!("argument count", argument_count);
                             trace!("parameter count", parameter_count);
+                            trace!("variadic", variadic);
 
                             // TODO Support variadic arguments.
                             if argument_count != parameter_count {
