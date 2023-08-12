@@ -118,7 +118,7 @@ Feature: Function
     Given a file named "main.scm" with:
     """scheme
     (define (f . x) (map write-u8 x))
-		(f 65 66 67)
+    (f 65 66 67)
     """
     When I run the following script:
     """sh
