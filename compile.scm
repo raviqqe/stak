@@ -116,8 +116,11 @@
     ((symbol? parameters)
       (list parameters))
 
+    ((null? parameters)
+      '())
+
     (else
-      '())))
+      (error "invalid variadic argument:" constant))))
 
 ; Source code reading
 
