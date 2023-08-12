@@ -120,7 +120,7 @@
       '())
 
     (else
-      (error "invalid variadic argument:" constant))))
+      (error "invalid variadic argument:" parameters))))
 
 ; Source code reading
 
