@@ -130,6 +130,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 }
 
                                 self.push(list.into())?;
+                                self.swap();
 
                                 code = self.car(self.cons).assume_cons();
                                 environment = self.car(self.cons).assume_cons();
@@ -280,6 +281,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let value = self.car(self.stack);
         self.stack = self.cdr(self.stack).assume_cons();
         Ok(value)
+    }
+
+    fn swap(&mut self) {
+        let first = self.car(self.stack);
+        let cons = self.cdr(self.stack).assume_cons();
+        let second = self.car(cons);
+
+        *self.car_mut(self.stack) = second;
+        *self.car_mut(cons) = first;
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
