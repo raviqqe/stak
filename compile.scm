@@ -389,7 +389,7 @@
           ((eqv? first 'lambda)
             (let (
                 (parameters (cadr expression))
-                (variadic (or (symbol? params) (not (eq? (last-item params) '())))))
+                (variadic (or (symbol? params) (not (null? (last parameters))))))
               (compile-constant
                 (make-procedure
                   (rib
