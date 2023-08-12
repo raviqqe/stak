@@ -98,6 +98,11 @@
         (loop (+ 1 index) result))
       result)))
 
+(define (last list)
+  (if (pair? list)
+    (last (cdr list))
+    list))
+
 ; Source code reading
 
 (define (read-all)
