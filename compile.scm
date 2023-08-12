@@ -382,7 +382,9 @@
                 (compile-expression context (cadddr expression) continuation))))
 
           ((eqv? first 'lambda)
-            (let ((parameters (cadr expression)))
+            (let (
+                (parameters (cadr expression))
+                (variadic (or (symbol? params) (not (eq? (last-item params) '())))))
               (compile-constant
                 (make-procedure
                   (rib
