@@ -106,6 +106,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         TypedValue::Cons(code) => {
                             let argument_count = self.car(self.stack).assume_number();
                             let parameter_count = self.car(code).assume_number();
+                            // A parameter count does not include a variadic parameter.
                             let parameter_count = Number::new(parameter_count.to_i64() / 2);
                             let variadic = parameter_count.to_i64() & 1 == 1;
 
