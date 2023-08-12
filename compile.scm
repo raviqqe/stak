@@ -98,9 +98,9 @@
         (loop (+ 1 index) result))
       result)))
 
-(define (last list)
+(define (last-cdr list)
   (if (pair? list)
-    (last (cdr list))
+    (last-cdr (cdr list))
     list))
 
 (define (count-parameters parameters)
@@ -410,7 +410,7 @@
                     pair-type
                     (+
                       (* 2 (count-parameters parameters))
-                      (if (symbol? (last parameters)) 1 0))
+                      (if (symbol? (last-cdr parameters)) 1 0))
                     (compile-sequence
                       (compile-context-environment-append
                         context
