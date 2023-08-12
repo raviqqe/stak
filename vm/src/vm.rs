@@ -93,16 +93,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
-                    let environment = self.cdr(procedure).assume_cons();
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
 
-                    if environment.tag() != Type::Procedure as u8 {
+                    if self.environment().tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
                     }
 
-                    match self.code(procedure).to_typed() {
+                    match self.code().to_typed() {
                         TypedValue::Cons(code) => {
                             let argument_count = self.car(self.stack).assume_number();
                             let parameter_count = self.car(code).assume_number();
@@ -131,8 +130,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // Drop an argument count.
                             self.pop()?;
 
-                            *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
-                            self.program_counter = self.cdr(code).assume_cons();
+                            *self.cdr_mut(frame) = self.environment().set_tag(FRAME_TAG).into();
+                            self.program_counter =
+                                self.cdr(self.code().assume_cons()).assume_cons();
 
                             if !r#return {
                                 self.initialize_cons()?;
@@ -214,8 +214,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // (parameter-count . instruction-list) | primitive
-    fn code(&self, procedure: Cons) -> Value {
-        self.car(procedure)
+    fn code(&self) -> Value {
+        self.car(self.procedure())
+    }
+
+    fn environment(&self) -> Cons {
+        self.cdr(self.procedure()).assume_cons()
     }
 
     // ((program-counter . stack) . tagged-environment)
