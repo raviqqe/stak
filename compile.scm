@@ -103,6 +103,11 @@
     (last (cdr list))
     list))
 
+(define (count-parameters parameters)
+  (if (pair? parameters)
+    (+ 1 (count-parameters (cdr parameters)))
+    0))
+
 ; Source code reading
 
 (define (read-all)
@@ -387,14 +392,14 @@
                 (compile-expression context (cadddr expression) continuation))))
 
           ((eqv? first 'lambda)
-            (let (
+            (let* (
                 (parameters (cadr expression))
                 (variadic (not (null? (last parameters)))))
               (compile-constant
                 (make-procedure
                   (rib
                     pair-type
-                    (length parameters)
+                    (count-parameters parameters)
                     (compile-sequence
                       (compile-context-environment-append
                         context
