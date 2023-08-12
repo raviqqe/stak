@@ -115,13 +115,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             trace!("variadic", variadic);
 
                             if variadic && argument_count < parameter_count
-                                || argument_count != parameter_count
+                                || !variadic && argument_count != parameter_count
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
                                 *self.car_mut(self.cons) = code.into();
                                 *self.cdr_mut(self.cons) = environment.into();
 
+                                // Drop an argument count.
+                                self.pop()?;
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
@@ -130,10 +132,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 }
 
                                 self.push(list.into())?;
-                                self.swap();
+                                self.push(argument_count.into())?;
 
                                 code = self.car(self.cons).assume_cons();
-                                environment = self.car(self.cons).assume_cons();
+                                environment = self.cdr(self.cons).assume_cons();
                             }
 
                             let last_argument = self.tail(self.stack, parameter_count);
@@ -281,15 +283,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let value = self.car(self.stack);
         self.stack = self.cdr(self.stack).assume_cons();
         Ok(value)
-    }
-
-    fn swap(&mut self) {
-        let first = self.car(self.stack);
-        let cons = self.cdr(self.stack).assume_cons();
-        let second = self.car(cons);
-
-        *self.car_mut(self.stack) = second;
-        *self.car_mut(cons) = first;
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {

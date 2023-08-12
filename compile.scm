@@ -108,6 +108,17 @@
     (+ 1 (count-parameters (cdr parameters)))
     0))
 
+(define (make-parameter-variables parameters)
+  (cond
+    ((pair? parameters)
+      (cons (car parameters) (make-parameter-variables (cdr parameters))))
+
+    ((symbol? parameters)
+      (list parameters))
+
+    (else
+      '())))
+
 ; Source code reading
 
 (define (read-all)
@@ -392,25 +403,19 @@
                 (compile-expression context (cadddr expression) continuation))))
 
           ((eqv? first 'lambda)
-            (let* (
-                (parameters (cadr expression))
-                (variadic-parameter (last parameters))
-                (variadic (symbol? variadic-parameter)))
+            (let ((parameters (cadr expression)))
               (compile-constant
                 (make-procedure
                   (rib
                     pair-type
                     (+
                       (* 2 (count-parameters parameters))
-                      (if variadic 1 0))
+                      (if (symbol? (last parameters)) 1 0))
                     (compile-sequence
                       (compile-context-environment-append
                         context
                         ; #f is for a frame.
-                        (let ((variables (reverse (cons #f parameters))))
-                          (if variadic
-                            (cons variadic-parameter variables)
-                            variables)))
+                        (reverse (cons #f (make-parameter-variables parameters))))
                       (cddr expression)
                       '()))
                   '())
