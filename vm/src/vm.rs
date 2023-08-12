@@ -93,7 +93,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
-                    let mut environment = self.cdr(procedure).assume_cons();
+                    let mut environment = self.environment(procedure);
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -236,6 +236,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // (parameter-count . instruction-list) | primitive
     fn code(&self, procedure: Cons) -> Value {
         self.car(procedure)
+    }
+
+    fn environment(&self, procedure: Cons) -> Cons {
+        self.cdr(procedure).assume_cons()
     }
 
     // ((program-counter . stack) . tagged-environment)
