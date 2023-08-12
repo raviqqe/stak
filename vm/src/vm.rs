@@ -113,7 +113,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             trace!("parameter count", parameter_count);
                             trace!("variadic", variadic);
 
-                            if argument_count != parameter_count && !variadic {
+                            if variadic && argument_count < parameter_count
+                                || argument_count != parameter_count
+                            {
                                 return Err(Error::ArgumentCount);
                             }
 

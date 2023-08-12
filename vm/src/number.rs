@@ -1,24 +1,24 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub struct Number(u64);
+#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
+pub struct Number(i64);
 
 impl Number {
     pub const fn new(number: i64) -> Self {
-        Self(((number << 1) | 1) as u64)
+        Self((number << 1) | 1)
     }
 
     pub const fn to_i64(self) -> i64 {
-        self.0 as i64 >> 1
+        self.0 >> 1
     }
 
     pub(crate) const fn from_raw(raw: u64) -> Self {
-        Self(raw)
+        Self(raw as i64)
     }
 
     pub(crate) const fn to_raw(self) -> u64 {
-        self.0
+        self.0 as u64
     }
 }
 
