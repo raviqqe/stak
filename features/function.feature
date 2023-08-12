@@ -113,3 +113,29 @@ Feature: Function
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Use variadic arguments
+    Given a file named "main.scm" with:
+    """scheme
+    (define (f . xs) (map write-u8 xs))
+    (f 65 66 67)
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | ./compile.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario: Use variadic arguments with a fixed argument
+    Given a file named "main.scm" with:
+    """scheme
+    (define (f x . ys) (map (lambda (z) (write-u8 (+ x z))) ys))
+    (f 65 0 1 2)
+    """
+    When I run the following script:
+    """sh
+    cat prelude.scm main.scm | ./compile.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "ABC"

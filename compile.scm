@@ -98,6 +98,30 @@
         (loop (+ 1 index) result))
       result)))
 
+(define (last-cdr list)
+  (if (pair? list)
+    (last-cdr (cdr list))
+    list))
+
+(define (count-parameters parameters)
+  (if (pair? parameters)
+    (+ 1 (count-parameters (cdr parameters)))
+    0))
+
+(define (get-parameter-variables parameters)
+  (cond
+    ((pair? parameters)
+      (cons (car parameters) (get-parameter-variables (cdr parameters))))
+
+    ((symbol? parameters)
+      (list parameters))
+
+    ((null? parameters)
+      '())
+
+    (else
+      (error "invalid variadic argument:" parameters))))
+
 ; Source code reading
 
 (define (read-all)
@@ -387,12 +411,14 @@
                 (make-procedure
                   (rib
                     pair-type
-                    (length parameters)
+                    (+
+                      (* 2 (count-parameters parameters))
+                      (if (symbol? (last-cdr parameters)) 1 0))
                     (compile-sequence
                       (compile-context-environment-append
                         context
                         ; #f is for a frame.
-                        (reverse (cons #f parameters)))
+                        (reverse (cons #f (get-parameter-variables parameters))))
                       (cddr expression)
                       '()))
                   '())

@@ -93,7 +93,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
-                    let environment = self.cdr(procedure).assume_cons();
+                    let mut environment = self.environment(procedure);
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -103,19 +103,47 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     }
 
                     match self.code(procedure).to_typed() {
-                        TypedValue::Cons(code) => {
+                        TypedValue::Cons(mut code) => {
                             let argument_count = self.car(self.stack).assume_number();
                             let parameter_count = self.car(code).assume_number();
+                            let variadic = parameter_count.to_i64() & 1 == 1;
+                            // A parameter count does not include a variadic parameter.
+                            let parameter_count = Number::new(parameter_count.to_i64() / 2);
 
                             trace!("argument count", argument_count);
                             trace!("parameter count", parameter_count);
+                            trace!("variadic", variadic);
 
-                            // TODO Support variadic arguments.
-                            if argument_count != parameter_count {
+                            if variadic && argument_count < parameter_count
+                                || !variadic && argument_count != parameter_count
+                            {
                                 return Err(Error::ArgumentCount);
+                            } else if variadic {
+                                *self.car_mut(self.cons) = code.into();
+                                *self.cdr_mut(self.cons) = environment.into();
+
+                                // Drop an argument count.
+                                self.pop()?;
+                                let mut list = NULL;
+
+                                for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
+                                    let value = self.pop()?;
+                                    list = self.cons(value, list)?;
+                                }
+
+                                self.push(list.into())?;
+                                self.push(argument_count.into())?;
+
+                                code = self.car(self.cons).assume_cons();
+                                environment = self.cdr(self.cons).assume_cons();
                             }
 
-                            let last_argument = self.tail(self.stack, parameter_count);
+                            let last_argument = self.tail(
+                                self.stack,
+                                Number::new(
+                                    parameter_count.to_i64() + if variadic { 1 } else { 0 },
+                                ),
+                            );
 
                             let frame = if r#return {
                                 self.frame()
@@ -216,6 +244,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
     // (parameter-count . instruction-list) | primitive
     fn code(&self, procedure: Cons) -> Value {
         self.car(procedure)
+    }
+
+    fn environment(&self, procedure: Cons) -> Cons {
+        self.cdr(procedure).assume_cons()
     }
 
     // ((program-counter . stack) . tagged-environment)
