@@ -97,11 +97,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     trace!("procedure", procedure);
                     trace!("return", r#return);
 
-                    if self.environment().tag() != Type::Procedure as u8 {
+                    if self.environment(procedure).tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
                     }
 
-                    match self.code().to_typed() {
+                    match self.code(procedure).to_typed() {
                         TypedValue::Cons(code) => {
                             let argument_count = self.car(self.stack).assume_number();
                             let parameter_count = self.car(code).assume_number();
@@ -125,14 +125,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 *self.car_mut(self.stack) = self.cons.into();
                                 self.stack
                             };
+                            let procedure = self.procedure();
                             *self.cdr_mut(last_argument) = frame.into();
 
                             // Drop an argument count.
                             self.pop()?;
 
-                            *self.cdr_mut(frame) = self.environment().set_tag(FRAME_TAG).into();
+                            *self.cdr_mut(frame) =
+                                self.environment(procedure).set_tag(FRAME_TAG).into();
                             self.program_counter =
-                                self.cdr(self.code().assume_cons()).assume_cons();
+                                self.cdr_value(self.code(procedure)).assume_cons();
 
                             if !r#return {
                                 self.initialize_cons()?;
@@ -214,12 +216,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     // (parameter-count . instruction-list) | primitive
-    fn code(&self) -> Value {
-        self.car(self.procedure())
+    fn code(&self, procedure: Cons) -> Value {
+        self.car(procedure)
     }
 
-    fn environment(&self) -> Cons {
-        self.cdr(self.procedure()).assume_cons()
+    fn environment(&self, procedure: Cons) -> Cons {
+        self.cdr(procedure).assume_cons()
     }
 
     // ((program-counter . stack) . tagged-environment)
