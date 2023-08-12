@@ -399,7 +399,9 @@
                 (make-procedure
                   (rib
                     pair-type
-                    (count-parameters parameters)
+                    (+
+                      (* 2 (count-parameters parameters))
+                      (if variadic 1 0))
                     (compile-sequence
                       (compile-context-environment-append
                         context
