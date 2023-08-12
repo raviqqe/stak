@@ -394,7 +394,8 @@
           ((eqv? first 'lambda)
             (let* (
                 (parameters (cadr expression))
-                (variadic (not (null? (last parameters)))))
+                (variadic-parameter (last parameters))
+                (variadic (symbol? variadic-parameter)))
               (compile-constant
                 (make-procedure
                   (rib
@@ -406,7 +407,10 @@
                       (compile-context-environment-append
                         context
                         ; #f is for a frame.
-                        (reverse (cons #f parameters)))
+                        (let ((variables (reverse (cons #f parameters))))
+                          (if variadic
+                            (cons variadic-parameter variables)
+                            variables)))
                       (cddr expression)
                       '()))
                   '())
