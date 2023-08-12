@@ -138,7 +138,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 environment = self.cdr(self.cons).assume_cons();
                             }
 
-                            let last_argument = self.tail(self.stack, parameter_count);
+                            let last_argument = self.tail(
+                                self.stack,
+                                Number::new(
+                                    parameter_count.to_i64() + if variadic { 1 } else { 0 },
+                                ),
+                            );
 
                             let frame = if r#return {
                                 self.frame()
