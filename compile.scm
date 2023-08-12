@@ -108,10 +108,10 @@
     (+ 1 (count-parameters (cdr parameters)))
     0))
 
-(define (make-parameter-variables parameters)
+(define (get-parameter-variables parameters)
   (cond
     ((pair? parameters)
-      (cons (car parameters) (make-parameter-variables (cdr parameters))))
+      (cons (car parameters) (get-parameter-variables (cdr parameters))))
 
     ((symbol? parameters)
       (list parameters))
@@ -418,7 +418,7 @@
                       (compile-context-environment-append
                         context
                         ; #f is for a frame.
-                        (reverse (cons #f (make-parameter-variables parameters))))
+                        (reverse (cons #f (get-parameter-variables parameters))))
                       (cddr expression)
                       '()))
                   '())
