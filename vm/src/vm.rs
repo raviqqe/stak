@@ -145,11 +145,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             let frame = if r#return {
                                 self.frame()
                             } else {
-                                // Reuse an argument count cons as a new frame.
+                                // TODO
                                 *self.car_mut(self.cons) = self.cdr(self.program_counter);
                                 *self.cdr_mut(self.cons) = self.cdr(last_argument);
-                                *self.car_mut(self.stack) = self.cons.into();
-                                self.stack
+                                self.cons(self.cons.into(), NULL)?
                             };
                             *self.cdr_mut(last_argument) = frame.into();
 
