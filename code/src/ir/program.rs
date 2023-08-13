@@ -27,7 +27,18 @@ impl Program {
 
 impl Display for Program {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        writeln!(formatter, "symbols: {:?}", self.symbols)?;
+        write!(formatter, "symbols: ")?;
+
+        for (index, symbol) in self.symbols.iter().enumerate() {
+            if index != 0 {
+                write!(formatter, ", ")?;
+            }
+
+            write!(formatter, "{}", symbol)?;
+        }
+
+        writeln!(formatter)?;
+
         writeln!(formatter, "instructions:")?;
         write!(
             formatter,

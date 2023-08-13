@@ -2,6 +2,6 @@
 source: code/src/ir/program.rs
 expression: "Program::new(vec![\"foo\".into(), \"bar\".into()], vec![])"
 ---
-symbols: ["foo", "bar"]
+symbols: foo, bar
 instructions:
 
