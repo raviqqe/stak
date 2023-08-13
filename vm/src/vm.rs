@@ -125,7 +125,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
-                                    // TODO Reuse argument cons's.
+                                    // TODO Reuse argument cons's. `pop_cons`?
                                     let value = self.pop()?;
                                     list = self.cons(value, list)?;
                                 }
@@ -136,6 +136,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 environment = self.cdr(self.cons).assume_cons();
                             }
 
+                            // TODO Fix GC boundary.
+                            self.push(ZERO.into())?;
                             let last_argument = self.tail(
                                 self.stack,
                                 Number::new(
