@@ -1,6 +1,7 @@
 use crate::Operand;
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
+use core::fmt::{self, Display, Formatter};
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
@@ -23,4 +24,16 @@ impl Instruction {
     pub const IF: u8 = 4;
     pub const CLOSURE: u8 = 5;
     pub const SKIP: u8 = 6;
+}
+
+impl Display for Instruction {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        writeln!(formatter, "symbols: {:?}", self.symbols)?;
+
+        for instruction in &self.instructions {
+            writeln!(formatter, "{}", instruction)?;
+        }
+
+        Ok(())
+    }
 }
