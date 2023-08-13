@@ -147,7 +147,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             } else {
                                 *self.car_mut(self.cons) = self.cdr(self.program_counter);
                                 *self.cdr_mut(self.cons) = self.cdr(last_argument);
-                                // TODO
+                                // TODO Fix GC boundary.
                                 self.cons(self.cons.into(), NULL)?
                             };
                             *self.cdr_mut(last_argument) = frame.into();
