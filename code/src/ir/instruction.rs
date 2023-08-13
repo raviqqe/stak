@@ -26,7 +26,7 @@ impl Instruction {
     pub const SKIP: u8 = 6;
 }
 
-pub struct DisplayInstruction<'a> {
+pub(crate) struct DisplayInstruction<'a> {
     instruction: &'a Instruction,
     indent: usize,
 }
@@ -72,7 +72,7 @@ impl<'a> Display for DisplayInstruction<'a> {
     }
 }
 
-pub struct DisplayInstructionList<'a> {
+pub(crate) struct DisplayInstructionList<'a> {
     instructions: &'a [Instruction],
     indent: usize,
 }
@@ -89,7 +89,11 @@ impl<'a> DisplayInstructionList<'a> {
 impl<'a> Display for DisplayInstructionList<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for (index, instruction) in self.instructions.iter().enumerate() {
-            writeln!(
+            for _ in 0..self.indent {
+                write!(formatter, "  ")?
+            }
+
+            write!(
                 formatter,
                 "{}",
                 DisplayInstruction::new(instruction, self.indent)
@@ -97,10 +101,6 @@ impl<'a> Display for DisplayInstructionList<'a> {
 
             if index < self.instructions.len() - 1 {
                 writeln!(formatter)?;
-
-                for _ in 0..self.indent {
-                    write!(formatter, "  ")?
-                }
             }
         }
 

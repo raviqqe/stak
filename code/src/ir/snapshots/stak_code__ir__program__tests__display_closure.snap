@@ -1,0 +1,8 @@
+---
+source: code/src/ir/program.rs
+expression: "Program::new(vec![],\n    vec![Instruction ::\n        Closure(42, vec! [Instruction :: Call(Operand :: Integer(0))],)])"
+---
+symbols: []
+instructions:
+closure 42
+  call i0
