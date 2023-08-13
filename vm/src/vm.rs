@@ -664,10 +664,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
             debug_assert!(instruction != code::Instruction::IF || !r#return);
 
             let program_counter = match instruction {
-                code::Instruction::CALL
-                | code::Instruction::SET
-                | code::Instruction::GET
-                | code::Instruction::CONSTANT => {
+                code::Instruction::CALL => {
+                    let operand = self.allocate(
+                        Number::new(integer as i64).into(),
+                        self.decode_operand(
+                            Self::decode_integer(input).ok_or(Error::MissingOperand)?,
+                        ),
+                    )?;
+                    self.append_instruction(instruction, operand.into(), r#return)?
+                }
+                code::Instruction::SET | code::Instruction::GET | code::Instruction::CONSTANT => {
                     self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {
