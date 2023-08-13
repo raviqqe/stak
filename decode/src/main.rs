@@ -9,8 +9,8 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    eprintln!(
-        "{:#?}",
+    println!(
+        "{}",
         decode(&read(args().nth(1).ok_or(format!(
             "Usage: {} <bytecode_file>",
             args().next().expect("command name")
