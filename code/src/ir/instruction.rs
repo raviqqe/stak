@@ -39,8 +39,11 @@ impl Display for Instruction {
                 format_instructions(&instructions, formatter)
             }
             #[cfg(feature = "alloc")]
-            Self::Closure(index, instructions) => todo!(),
-            Self::Skip(index) => todo!(),
+            Self::Closure(arity, instructions) => {
+                writeln!(formatter, "closure {}", arity)?;
+                format_instructions(&instructions, formatter)
+            }
+            Self::Skip(count) => write!(formatter, "skip {}", count),
         }
     }
 }
