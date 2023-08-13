@@ -154,6 +154,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.stack
                             };
                             *self.cdr_mut(last_argument) = frame.into();
+                            self.pop()?;
 
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
                             self.program_counter = self.cdr(code).assume_cons();
