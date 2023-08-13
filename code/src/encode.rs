@@ -203,6 +203,14 @@ mod tests {
     }
 
     #[test]
+    fn encode_call_argument_count() {
+        encode_and_decode(&Program::new(
+            vec![],
+            vec![Instruction::Call(42, Operand::Integer(0))],
+        ));
+    }
+
+    #[test]
     fn encode_closure() {
         encode_and_decode(&Program::new(
             vec![],
