@@ -39,7 +39,7 @@ impl Display for Program {
 
         writeln!(formatter)?;
 
-        writeln!(formatter, "instructions:")?;
+        write!(formatter, "instructions:")?;
         write!(
             formatter,
             "{}",

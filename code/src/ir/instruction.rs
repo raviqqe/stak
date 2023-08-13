@@ -51,7 +51,7 @@ impl<'a> Display for DisplayInstruction<'a> {
             Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
             #[cfg(feature = "alloc")]
             Instruction::If(instructions) => {
-                writeln!(formatter, "if")?;
+                write!(formatter, "if")?;
                 write!(
                     formatter,
                     "{}",
@@ -60,7 +60,7 @@ impl<'a> Display for DisplayInstruction<'a> {
             }
             #[cfg(feature = "alloc")]
             Instruction::Closure(arity, instructions) => {
-                writeln!(formatter, "closure {}", arity)?;
+                write!(formatter, "closure {}", arity)?;
                 write!(
                     formatter,
                     "{}",
@@ -88,7 +88,9 @@ impl<'a> DisplayInstructionList<'a> {
 
 impl<'a> Display for DisplayInstructionList<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        for (index, instruction) in self.instructions.iter().enumerate() {
+        for instruction in self.instructions {
+            writeln!(formatter)?;
+
             for _ in 0..self.indent {
                 write!(formatter, "  ")?
             }
@@ -98,10 +100,6 @@ impl<'a> Display for DisplayInstructionList<'a> {
                 "{}",
                 DisplayInstruction::new(instruction, self.indent)
             )?;
-
-            if index < self.instructions.len() - 1 {
-                writeln!(formatter)?;
-            }
         }
 
         Ok(())
