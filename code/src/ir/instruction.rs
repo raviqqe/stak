@@ -46,7 +46,7 @@ impl Display for Instruction {
 }
 
 pub fn format_instructions(instructions: &[Instruction], formatter: &mut Formatter) -> fmt::Result {
-    for instruction in &self.instructions {
+    for instruction in instructions {
         writeln!(formatter, "{}", instruction)?;
     }
 
