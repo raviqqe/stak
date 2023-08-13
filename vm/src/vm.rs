@@ -104,7 +104,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(mut code) => {
-                            let argument_count = self.car(self.stack).assume_number();
+                            let argument_count = self.argument_count();
                             let parameter_count = self.car(code).assume_number();
                             let variadic = parameter_count.to_i64() & 1 == 1;
                             // A parameter count does not include a variadic parameter.
@@ -122,8 +122,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 *self.car_mut(self.cons) = code.into();
                                 *self.cdr_mut(self.cons) = environment.into();
 
-                                // Drop an argument count.
-                                self.pop()?;
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
@@ -132,7 +130,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 }
 
                                 self.push(list.into())?;
-                                self.push(argument_count.into())?;
 
                                 code = self.car(self.cons).assume_cons();
                                 environment = self.cdr(self.cons).assume_cons();
@@ -156,9 +153,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             };
                             *self.cdr_mut(last_argument) = frame.into();
 
-                            // Drop an argument count.
-                            self.pop()?;
-
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
                             self.program_counter = self.cdr(code).assume_cons();
 
@@ -167,8 +161,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             }
                         }
                         TypedValue::Number(primitive) => {
-                            // Drop an argument count.
-                            self.pop()?;
                             self.operate_primitive(primitive.to_i64() as u8)?;
                             self.advance_program_counter();
                         }
@@ -238,7 +230,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // (code . environment)
     fn procedure(&self) -> Cons {
-        self.car(self.operand()).assume_cons()
+        self.cdr_value(self.car(self.operand())).assume_cons()
+    }
+
+    fn argument_count(&self) -> Number {
+        self.car_value(self.car(self.operand())).assume_number()
     }
 
     // (parameter-count . instruction-list) | primitive
