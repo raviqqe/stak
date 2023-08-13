@@ -45,6 +45,11 @@ mod tests {
     use std::{format, vec};
 
     #[test]
+    fn display_symbols() {
+        assert_display_snapshot!(Program::new(vec!["foo".into(), "bar".into()], vec![],));
+    }
+
+    #[test]
     fn display_if() {
         assert_display_snapshot!(Program::new(
             vec![],
