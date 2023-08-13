@@ -29,17 +29,17 @@ impl Instruction {
 impl Display for Instruction {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Call(Operand) => write!(formatter, "{}", instruction),
-            Set(Operand) => todo!(),
-            Get(Operand) => todo!(),
-            Constant(Operand) => todo!(),
+            Self::Call(Operand) => write!(formatter, "{}", instruction),
+            Self::Set(Operand) => todo!(),
+            Self::Get(Operand) => todo!(),
+            Self::Constant(Operand) => todo!(),
             #[cfg(feature = "alloc")]
-            If(_instructions) => {
+            Self::If(_instructions) => {
                 writeln!();
             }
             #[cfg(feature = "alloc")]
-            Closure(u64, instructions) => todo!(),
-            Skip(u64) => todo!(),
+            Self::Closure(index, instructions) => todo!(),
+            Self::Skip(index) => todo!(),
         }
     }
 }
