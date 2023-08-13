@@ -1,4 +1,4 @@
-use super::instruction::Instruction;
+use super::instruction::{format_instructions, Instruction};
 use alloc::{string::String, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
@@ -28,11 +28,6 @@ impl Program {
 impl Display for Program {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "symbols: {:?}", self.symbols)?;
-
-        for instruction in &self.instructions {
-            writeln!(formatter, "{}", instruction)?;
-        }
-
-        Ok(())
+        format_instructions(&self.instructions, formatter)
     }
 }

@@ -28,12 +28,26 @@ impl Instruction {
 
 impl Display for Instruction {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        writeln!(formatter, "symbols: {:?}", self.symbols)?;
-
-        for instruction in &self.instructions {
-            writeln!(formatter, "{}", instruction)?;
+        match self {
+            Call(Operand) => write!(formatter, "{}", instruction),
+            Set(Operand) => todo!(),
+            Get(Operand) => todo!(),
+            Constant(Operand) => todo!(),
+            #[cfg(feature = "alloc")]
+            If(_instructions) => {
+                writeln!();
+            }
+            #[cfg(feature = "alloc")]
+            Closure(u64, instructions) => todo!(),
+            Skip(u64) => todo!(),
         }
-
-        Ok(())
     }
+}
+
+pub fn format_instructions(instructions: &[Instruction], formatter: &mut Formatter) -> fmt::Result {
+    for instruction in &self.instructions {
+        writeln!(formatter, "{}", instruction)?;
+    }
+
+    Ok(())
 }
