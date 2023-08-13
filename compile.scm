@@ -8,9 +8,9 @@
 
 (define default-constants
   '(
-    (#f _false)
-    (#t _true)
-    (() _null)))
+    (#f $false)
+    (#t $true)
+    (() $null)))
 
 (define rib-symbol 'rib)
 
@@ -48,7 +48,7 @@
 (cond-expand
   (gambit
     (define (rib tag car cdr)
-      (cons (cons (cons '_rib tag) car) cdr))
+      (cons (cons (cons '$rib tag) car) cdr))
 
     (define rib-tag cdaar)
     (define rib-car cdar)
@@ -65,7 +65,7 @@
         (pair? value)
         (pair? (car value))
         (pair? (caar value))
-        (eqv? (caaar value) '_rib))))
+        (eqv? (caaar value) '$rib))))
 
   (else))
 
@@ -531,7 +531,7 @@
 (define (encode-context-constant-id context)
   (string->symbol
     (string-append
-      "_"
+      "$c"
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
