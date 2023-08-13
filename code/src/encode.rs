@@ -46,9 +46,9 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
         let r#return = index == instructions.len() - 1;
 
         match instruction {
-            Instruction::Call(operand, count) => {
-                encode_integer(codes, *count);
-                encode_instruction(codes, Instruction::CALL, encode_operand(*operand), r#return)
+            Instruction::Call(count, operand) => {
+                encode_integer(codes, encode_operand(*operand));
+                encode_instruction(codes, Instruction::CALL, *count, r#return)
             }
             Instruction::Set(operand) => {
                 encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return)
@@ -174,7 +174,7 @@ mod tests {
     fn encode_return_call_global() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Symbol(0))],
+            vec![Instruction::Call(0, Operand::Symbol(0))],
         ));
     }
 
@@ -182,7 +182,7 @@ mod tests {
     fn encode_return_call_local() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Integer(0))],
+            vec![Instruction::Call(0, Operand::Integer(0))],
         ));
     }
 
@@ -190,7 +190,7 @@ mod tests {
     fn encode_call_global() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Symbol(0))],
+            vec![Instruction::Call(0, Operand::Symbol(0))],
         ));
     }
 
@@ -198,7 +198,7 @@ mod tests {
     fn encode_call_local() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Call(Operand::Integer(0))],
+            vec![Instruction::Call(0, Operand::Integer(0))],
         ));
     }
 
@@ -208,7 +208,7 @@ mod tests {
             vec![],
             vec![Instruction::Closure(
                 42,
-                vec![Instruction::Call(Operand::Integer(0))],
+                vec![Instruction::Call(0, Operand::Integer(0))],
             )],
         ));
     }
@@ -218,7 +218,7 @@ mod tests {
         encode_and_decode(&Program::new(
             vec![],
             vec![
-                Instruction::Closure(42, vec![Instruction::Call(Operand::Integer(1))]),
+                Instruction::Closure(42, vec![Instruction::Call(0, Operand::Integer(1))]),
                 Instruction::Constant(Operand::Integer(2)),
             ],
         ));
@@ -348,8 +348,8 @@ mod tests {
         encode_and_decode(&Program::new(
             vec![],
             vec![
-                Instruction::If(vec![Instruction::Call(Operand::Symbol(0))]),
-                Instruction::Call(Operand::Symbol(1)),
+                Instruction::If(vec![Instruction::Call(0, Operand::Symbol(0))]),
+                Instruction::Call(0, Operand::Symbol(1)),
             ],
         ));
     }
@@ -361,10 +361,10 @@ mod tests {
             vec![
                 Instruction::If(vec![
                     Instruction::Get(Operand::Symbol(0)),
-                    Instruction::Call(Operand::Symbol(0)),
+                    Instruction::Call(0, Operand::Symbol(0)),
                 ]),
                 Instruction::Get(Operand::Symbol(1)),
-                Instruction::Call(Operand::Symbol(1)),
+                Instruction::Call(0, Operand::Symbol(1)),
             ],
         ));
     }
@@ -390,7 +390,7 @@ mod tests {
                     Instruction::Skip(1),
                 ]),
                 Instruction::Constant(Operand::Integer(1)),
-                Instruction::Call(Operand::Symbol(0)),
+                Instruction::Call(0, Operand::Symbol(0)),
             ],
         ));
     }
@@ -416,7 +416,7 @@ mod tests {
             vec![],
             vec![
                 Instruction::Get(Operand::Symbol(0)),
-                Instruction::Call(Operand::Symbol(0)),
+                Instruction::Call(0, Operand::Symbol(0)),
             ],
         ));
     }
