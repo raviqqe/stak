@@ -28,6 +28,7 @@ impl Program {
 impl Display for Program {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "symbols: {:?}", self.symbols)?;
+        writeln!(formatter, "instructions:")?;
         format_instructions(&self.instructions, formatter)
     }
 }
