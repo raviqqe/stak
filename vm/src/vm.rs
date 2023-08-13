@@ -125,6 +125,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
+                                    // TODO Reuse argument cons's.
                                     let value = self.pop()?;
                                     list = self.cons(value, list)?;
                                 }
