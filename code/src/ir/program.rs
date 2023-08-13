@@ -45,12 +45,22 @@ mod tests {
     use std::{format, vec};
 
     #[test]
+    fn display_if() {
+        assert_display_snapshot!(Program::new(
+            vec![],
+            vec![Instruction::If(vec![Instruction::Constant(
+                Operand::Integer(42)
+            )])],
+        ));
+    }
+
+    #[test]
     fn display_closure() {
         assert_display_snapshot!(Program::new(
             vec![],
             vec![Instruction::Closure(
                 42,
-                vec![Instruction::Call(Operand::Integer(0))],
+                vec![Instruction::Constant(Operand::Integer(2045))],
             )],
         ));
     }
