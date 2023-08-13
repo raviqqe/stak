@@ -1,6 +1,6 @@
 use super::instruction::Instruction;
 use alloc::{string::String, vec::Vec};
-use core::fmt::{self, Formatter};
+use core::fmt::{self, Display, Formatter};
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Program {
@@ -27,8 +27,8 @@ impl Program {
 
 impl Display for Program {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!()?;
+        writeln!(formatter, "symbols: {:?}", self.symbols)?;
 
-        for symbol in self.symbols {}
+        writeln!(formatter, "symbols: {}", self.symbols)?;
     }
 }
