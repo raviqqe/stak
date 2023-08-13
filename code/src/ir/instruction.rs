@@ -34,7 +34,7 @@ impl Display for Instruction {
             Self::Get(Operand) => todo!(),
             Self::Constant(Operand) => todo!(),
             #[cfg(feature = "alloc")]
-            Self::If(_instructions) => {
+            Self::If(instructions) => {
                 writeln!();
             }
             #[cfg(feature = "alloc")]
