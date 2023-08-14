@@ -91,6 +91,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::CALL => {
+                    // The call instruction may update any cons's of arguments on a stack
+                    // destructively.
+
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
                     let mut environment = self.environment(procedure);
@@ -126,9 +129,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
-                                    // TODO Reuse argument cons's. `pop_cons`?
-                                    let value = self.pop()?;
-                                    list = self.cons(value, list)?;
+                                    let cons = self.pop_cons()?;
+                                    *self.cdr_mut(cons) = list.into();
+                                    list = cons;
                                 }
 
                                 self.push(list.into())?;
@@ -157,7 +160,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.stack
                             };
                             *self.cdr_mut(stack_cons) = frame.into();
-                            self.pop()?;
+                            self.pop_cons()?;
 
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
                             self.program_counter = self.cdr(code).assume_cons();
@@ -292,13 +295,19 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
+        let cons = self.pop_cons()?;
+
+        Ok(self.car(cons))
+    }
+
+    fn pop_cons(&mut self) -> Result<Cons, Error> {
         if self.stack == NULL {
             return Err(Error::StackUnderflow);
         }
 
-        let value = self.car(self.stack);
+        let stack = self.stack;
         self.stack = self.cdr(self.stack).assume_cons();
-        Ok(value)
+        Ok(stack)
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
