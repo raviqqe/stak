@@ -170,13 +170,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     }
                 }
                 Instruction::SET => {
-                    let operand = self.operand();
+                    let operand = self.operand_cons();
                     let value = self.pop()?;
                     *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
                 Instruction::GET => {
-                    let operand = self.operand();
+                    let operand = self.operand_cons();
 
                     trace!("operand", operand);
 
@@ -188,7 +188,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter();
                 }
                 Instruction::CONSTANT => {
-                    let constant = self.car(self.program_counter);
+                    let constant = self.operand();
 
                     trace!("constant", constant);
 
@@ -199,7 +199,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.program_counter = (if self.pop()? == FALSE.into() {
                         self.cdr(self.program_counter)
                     } else {
-                        self.car(self.program_counter)
+                        self.operand()
                     })
                     .assume_cons();
                 }
@@ -224,8 +224,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
     }
 
-    fn operand(&self) -> Cons {
-        self.resolve_operand(self.car(self.program_counter))
+    fn operand(&self) -> Value {
+        self.car(self.program_counter)
+    }
+
+    fn operand_cons(&self) -> Cons {
+        self.resolve_operand(self.operand())
     }
 
     fn resolve_operand(&self, operand: Value) -> Cons {
@@ -237,13 +241,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // (code . environment)
     fn procedure(&self) -> Cons {
-        self.car(self.resolve_operand(self.cdr_value(self.car(self.program_counter))))
+        self.car(self.resolve_operand(self.cdr_value(self.operand())))
             .assume_cons()
     }
 
     fn argument_count(&self) -> Number {
-        self.car_value(self.car(self.program_counter))
-            .assume_number()
+        self.car_value(self.operand()).assume_number()
     }
 
     // (parameter-count . instruction-list) | primitive
