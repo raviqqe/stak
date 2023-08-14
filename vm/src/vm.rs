@@ -119,6 +119,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
+                                // TODO
                                 *self.car_mut(self.cons) = code.into();
                                 *self.cdr_mut(self.cons) = environment.into();
 
@@ -136,8 +137,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 environment = self.cdr(self.cons).assume_cons();
                             }
 
-                            // TODO Fix GC boundary.
-                            self.push(ZERO.into())?;
+                            *self.cdr_mut(self.cons) = self.stack.into();
+                            self.stack = self.cons;
+
                             let last_argument = self.tail(
                                 self.stack,
                                 Number::new(
@@ -148,9 +150,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             let frame = if r#return {
                                 self.frame()
                             } else {
-                                *self.car_mut(self.cons) = self.cdr(self.program_counter);
-                                *self.cdr_mut(self.cons) = self.cdr(last_argument);
-                                *self.car_mut(self.stack) = self.cons.into();
+                                let continuation = self.car(self.cons);
+                                *self.car_value_mut(continuation) = self.cdr(self.program_counter);
+                                *self.cdr_value_mut(continuation) = self.cdr(last_argument);
                                 self.stack
                             };
                             *self.cdr_mut(last_argument) = frame.into();
@@ -337,7 +339,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn initialize_cons(&mut self) -> Result<(), Error> {
-        self.cons = self.allocate(FALSE.into(), FALSE.into())?;
+        let cons = self.allocate(FALSE.into(), FALSE.into())?;
+        self.cons = self.allocate(cons.into(), FALSE.into())?;
 
         Ok(())
     }
