@@ -409,7 +409,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         trace!("primitive", primitive);
 
-        // TODO Update the top of a stack destructively.
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = self.pop_arguments::<3>()?;
