@@ -470,11 +470,17 @@
 (define (find-symbols* codes symbols)
   (if (null? codes)
     symbols
-    (let ((operand (rib-car codes)))
+    (let* (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (operand
+          (if (eqv? instruction call-instruction)
+            (rib-cdr operand)
+            operand)))
       (find-symbols*
         (rib-cdr codes)
         (cond
-          ((eqv? (rib-tag codes) if-instruction)
+          ((eqv? instruction if-instruction)
             (find-symbols* operand symbols))
 
           ((and
