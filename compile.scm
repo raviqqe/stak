@@ -786,8 +786,15 @@
         rest
         terminal
         (cond
-          ((memv instruction (list call-instruction set-instruction get-instruction))
+          ((memv instruction (list set-instruction get-instruction))
             (encode-simple instruction))
+
+          ((eqv? instruction call-instruction)
+            (encode-instruction
+              instruction
+              (encode-operand context operand)
+              return
+              target))
 
           ((and
               (eqv? instruction constant-instruction)
