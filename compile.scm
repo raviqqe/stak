@@ -792,9 +792,9 @@
           ((eqv? instruction call-instruction)
             (encode-instruction
               instruction
-              (encode-operand context operand)
+              (rib-car operand)
               return
-              target))
+              (encode-integer (encode-operand context operand) target)))
 
           ((and
               (eqv? instruction constant-instruction)
