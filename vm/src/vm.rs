@@ -126,9 +126,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
-                                    // TODO Reuse argument cons's. `pop_cons`?
-                                    let value = self.pop()?;
-                                    list = self.cons(value, list)?;
+                                    let cons = self.pop_cons()?;
+                                    *self.cdr_mut(cons) = list.into();
+                                    list = cons;
                                 }
 
                                 self.push(list.into())?;
@@ -157,7 +157,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                                 self.stack
                             };
                             *self.cdr_mut(stack_cons) = frame.into();
-                            self.pop()?;
+                            self.pop_cons()?;
 
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
                             self.program_counter = self.cdr(code).assume_cons();
