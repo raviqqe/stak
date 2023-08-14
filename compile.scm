@@ -291,20 +291,24 @@
   (rib constant-instruction constant continuation))
 
 (define (compile-primitive-call name continuation)
-  (compile-constant
-    (cond
-      ((memq name '(close))
-        1)
+  (rib
+    call-instruction
+    (rib
+      0
+      (cond
+        ((memq name '(close))
+          1)
 
-      ((memq name '(cons skip -))
-        2)
+        ((memq name '(cons skip -))
+          2)
 
-      ((memq name '(rib))
-        3)
+        ((memq name '(rib))
+          3)
 
-      (else
-        (error "unknown primitive:" name)))
-    (rib call-instruction name continuation)))
+        (else
+          (error "unknown primitive:" name)))
+      name)
+    continuation))
 
 (define (drop? codes)
   (and
@@ -333,14 +337,15 @@
 
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
-    (compile-constant
-      argument-count
+    (rib
+      call-instruction
       (rib
-        call-instruction
+        0
+        argument-count
         (compile-context-resolve
           (compile-context-environment-add-temporary context)
-          function)
-        continuation))
+          function))
+      continuation)
     (compile-expression
       context
       (car arguments)
