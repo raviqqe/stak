@@ -292,13 +292,19 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
+        let cons = self.pop_cons()?;
+
+        Ok(self.car(cons))
+    }
+
+    fn pop_cons(&mut self) -> Result<Cons, Error> {
         if self.stack == NULL {
             return Err(Error::StackUnderflow);
         }
 
-        let value = self.car(self.stack);
+        let stack = self.stack;
         self.stack = self.cdr(self.stack).assume_cons();
-        Ok(value)
+        Ok(stack)
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
