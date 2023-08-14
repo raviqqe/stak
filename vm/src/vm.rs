@@ -141,7 +141,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             *self.cdr_mut(self.cons) = self.stack.into();
                             self.stack = self.cons;
 
-                            let last_argument = self.tail(
+                            let stack_cons = self.tail(
                                 self.stack,
                                 Number::new(
                                     parameter_count.to_i64() + if variadic { 1 } else { 0 },
@@ -153,10 +153,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             } else {
                                 let continuation = self.car(self.cons);
                                 *self.car_value_mut(continuation) = self.cdr(self.program_counter);
-                                *self.cdr_value_mut(continuation) = self.cdr(last_argument);
+                                *self.cdr_value_mut(continuation) = self.cdr(stack_cons);
                                 self.stack
                             };
-                            *self.cdr_mut(last_argument) = frame.into();
+                            *self.cdr_mut(stack_cons) = frame.into();
                             self.pop()?;
 
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
