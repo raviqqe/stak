@@ -237,7 +237,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // (code . environment)
     fn procedure(&self) -> Cons {
-        self.resolve_operand(self.cdr_value(self.car(self.program_counter)))
+        self.car(self.resolve_operand(self.cdr_value(self.car(self.program_counter))))
+            .assume_cons()
     }
 
     fn argument_count(&self) -> Number {
