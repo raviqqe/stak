@@ -88,9 +88,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::CALL => {
-                    // The call instruction may update any cons's of arguments on a stack
-                    // destructively.
-
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
                     let mut environment = self.environment(procedure);
@@ -104,6 +101,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(mut code) => {
+                            // Non-primitive procedures may update any cons's of arguments on a stack destructively.
+
                             let argument_count = self.argument_count();
                             let parameter_count = self.car(code).assume_number();
                             let variadic = parameter_count.to_i64() & 1 == 1;
@@ -427,6 +426,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(cons.into())?;
             }
             Primitive::SKIP => {
+                // TODO Make this an instruction to update the top of a stack destructively in
+                // primitives.
                 let [_, x] = self.pop_arguments::<2>()?;
                 self.push(x)?;
             }
