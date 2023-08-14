@@ -343,9 +343,7 @@
       call-instruction
       (rib-cons
         argument-count
-        (compile-context-resolve
-          (compile-context-environment-add-temporary context)
-          function))
+        (compile-context-resolve context function))
       continuation)
     (compile-expression
       context
