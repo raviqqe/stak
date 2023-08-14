@@ -50,6 +50,9 @@
     (define (rib tag car cdr)
       (cons (cons (cons '$rib tag) car) cdr))
 
+    (define (rib-cons car cdr)
+      (cons (cons (cons '$rib 0) car) cdr))
+
     (define rib-tag cdaar)
     (define rib-car cdar)
     (define rib-cdr cdr)
@@ -293,8 +296,7 @@
 (define (compile-primitive-call name continuation)
   (rib
     call-instruction
-    (rib
-      0
+    (rib-cons
       (cond
         ((memq name '(close))
           1)
@@ -339,8 +341,7 @@
   (if (null? arguments)
     (rib
       call-instruction
-      (rib
-        0
+      (rib-cons
         argument-count
         (compile-context-resolve
           (compile-context-environment-add-temporary context)
