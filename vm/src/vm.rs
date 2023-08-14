@@ -170,13 +170,13 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     }
                 }
                 Instruction::SET => {
-                    let operand = self.operand_cons();
+                    let operand = self.operand_variable();
                     let value = self.pop()?;
                     *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
                 Instruction::GET => {
-                    let operand = self.operand_cons();
+                    let operand = self.operand_variable();
 
                     trace!("operand", operand);
 
@@ -228,7 +228,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.car(self.program_counter)
     }
 
-    fn operand_cons(&self) -> Cons {
+    fn operand_variable(&self) -> Cons {
         self.resolve_operand(self.operand())
     }
 
