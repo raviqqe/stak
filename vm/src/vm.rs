@@ -229,10 +229,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn operand_variable(&self) -> Cons {
-        self.resolve_operand(self.operand())
+        self.resolve_variable(self.operand())
     }
 
-    fn resolve_operand(&self, operand: Value) -> Cons {
+    fn resolve_variable(&self, operand: Value) -> Cons {
         match operand.to_typed() {
             TypedValue::Cons(cons) => cons, // Direct reference to a symbol
             TypedValue::Number(index) => self.tail(self.stack, index),
@@ -241,7 +241,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // (code . environment)
     fn procedure(&self) -> Cons {
-        self.car(self.resolve_operand(self.cdr_value(self.operand())))
+        self.car(self.resolve_variable(self.cdr_value(self.operand())))
             .assume_cons()
     }
 
