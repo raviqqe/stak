@@ -225,7 +225,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn operand(&self) -> Cons {
-        match self.car(self.program_counter).to_typed() {
+        self.resolve_operand(self.car(self.program_counter))
+    }
+
+    fn resolve_operand(&self, operand: Value) -> Cons {
+        match operand.to_typed() {
             TypedValue::Cons(cons) => cons, // Direct reference to a symbol
             TypedValue::Number(index) => self.tail(self.stack, index),
         }
@@ -233,11 +237,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // (code . environment)
     fn procedure(&self) -> Cons {
-        self.cdr_value(self.car(self.operand())).assume_cons()
+        self.resolve_operand(self.cdr_value(self.car(self.program_counter)))
     }
 
     fn argument_count(&self) -> Number {
-        self.car_value(self.car(self.operand())).assume_number()
+        self.car_value(self.car(self.program_counter))
+            .assume_number()
     }
 
     // (parameter-count . instruction-list) | primitive
