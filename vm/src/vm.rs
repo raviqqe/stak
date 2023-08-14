@@ -23,10 +23,7 @@ const SINGLETONS: &[Cons] = &[FALSE, TRUE, NULL];
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
         #[cfg(feature = "trace")]
-        {
-            std::eprint!($prefix);
-            std::eprintln!(": {}", $data);
-        }
+        std::eprintln!("{}: {}", $prefix, $data);
     };
 }
 
