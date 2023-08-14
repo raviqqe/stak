@@ -5,7 +5,7 @@ use core::fmt::{self, Display, Formatter};
 
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
-    Call(Operand),
+    Call(u64, Operand),
     Set(Operand),
     Get(Operand),
     Constant(Operand),
@@ -45,7 +45,7 @@ impl<'a> Display for DisplayInstruction<'a> {
         let indent = self.indent + 1;
 
         match self.instruction {
-            Instruction::Call(operand) => write!(formatter, "call {}", operand),
+            Instruction::Call(count, operand) => write!(formatter, "call {} {}", count, operand),
             Instruction::Set(operand) => write!(formatter, "set {}", operand),
             Instruction::Get(operand) => write!(formatter, "get {}", operand),
             Instruction::Constant(operand) => write!(formatter, "constant {}", operand),

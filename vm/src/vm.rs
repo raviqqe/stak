@@ -104,7 +104,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(mut code) => {
-                            let argument_count = self.car(self.stack).assume_number();
+                            let argument_count = self.argument_count();
                             let parameter_count = self.car(code).assume_number();
                             let variadic = parameter_count.to_i64() & 1 == 1;
                             // A parameter count does not include a variadic parameter.
@@ -119,24 +119,27 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
-                                *self.car_mut(self.cons) = code.into();
-                                *self.cdr_mut(self.cons) = environment.into();
+                                let cons = self.car(self.cons).assume_cons();
+                                *self.car_mut(cons) = code.into();
+                                *self.cdr_mut(cons) = environment.into();
 
-                                // Drop an argument count.
-                                self.pop()?;
                                 let mut list = NULL;
 
                                 for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
+                                    // TODO Reuse argument cons's. `pop_cons`?
                                     let value = self.pop()?;
                                     list = self.cons(value, list)?;
                                 }
 
                                 self.push(list.into())?;
-                                self.push(argument_count.into())?;
 
-                                code = self.car(self.cons).assume_cons();
-                                environment = self.cdr(self.cons).assume_cons();
+                                let cons = self.car(self.cons).assume_cons();
+                                code = self.car(cons).assume_cons();
+                                environment = self.cdr(cons).assume_cons();
                             }
+
+                            *self.cdr_mut(self.cons) = self.stack.into();
+                            self.stack = self.cons;
 
                             let last_argument = self.tail(
                                 self.stack,
@@ -148,15 +151,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             let frame = if r#return {
                                 self.frame()
                             } else {
-                                // Reuse an argument count cons as a new frame.
-                                *self.car_mut(self.cons) = self.cdr(self.program_counter);
-                                *self.cdr_mut(self.cons) = self.cdr(last_argument);
-                                *self.car_mut(self.stack) = self.cons.into();
+                                let continuation = self.car(self.cons);
+                                *self.car_value_mut(continuation) = self.cdr(self.program_counter);
+                                *self.cdr_value_mut(continuation) = self.cdr(last_argument);
                                 self.stack
                             };
                             *self.cdr_mut(last_argument) = frame.into();
-
-                            // Drop an argument count.
                             self.pop()?;
 
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
@@ -167,21 +167,19 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             }
                         }
                         TypedValue::Number(primitive) => {
-                            // Drop an argument count.
-                            self.pop()?;
                             self.operate_primitive(primitive.to_i64() as u8)?;
                             self.advance_program_counter();
                         }
                     }
                 }
                 Instruction::SET => {
-                    let operand = self.operand();
+                    let operand = self.operand_variable();
                     let value = self.pop()?;
                     *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
                 Instruction::GET => {
-                    let operand = self.operand();
+                    let operand = self.operand_variable();
 
                     trace!("operand", operand);
 
@@ -193,7 +191,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.advance_program_counter();
                 }
                 Instruction::CONSTANT => {
-                    let constant = self.car(self.program_counter);
+                    let constant = self.operand();
 
                     trace!("constant", constant);
 
@@ -204,7 +202,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     self.program_counter = (if self.pop()? == FALSE.into() {
                         self.cdr(self.program_counter)
                     } else {
-                        self.car(self.program_counter)
+                        self.operand()
                     })
                     .assume_cons();
                 }
@@ -229,8 +227,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
         }
     }
 
-    fn operand(&self) -> Cons {
-        match self.car(self.program_counter).to_typed() {
+    fn operand(&self) -> Value {
+        self.car(self.program_counter)
+    }
+
+    fn operand_variable(&self) -> Cons {
+        self.resolve_variable(self.operand())
+    }
+
+    fn resolve_variable(&self, operand: Value) -> Cons {
+        match operand.to_typed() {
             TypedValue::Cons(cons) => cons, // Direct reference to a symbol
             TypedValue::Number(index) => self.tail(self.stack, index),
         }
@@ -238,7 +244,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
     // (code . environment)
     fn procedure(&self) -> Cons {
-        self.car(self.operand()).assume_cons()
+        self.car(self.resolve_variable(self.cdr_value(self.operand())))
+            .assume_cons()
+    }
+
+    fn argument_count(&self) -> Number {
+        self.car_value(self.operand()).assume_number()
     }
 
     // (parameter-count . instruction-list) | primitive
@@ -329,7 +340,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn initialize_cons(&mut self) -> Result<(), Error> {
-        self.cons = self.allocate(FALSE.into(), FALSE.into())?;
+        let cons = self.allocate(FALSE.into(), FALSE.into())?;
+        self.cons = self.allocate(cons.into(), FALSE.into())?;
 
         Ok(())
     }
@@ -664,10 +676,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
             debug_assert!(instruction != code::Instruction::IF || !r#return);
 
             let program_counter = match instruction {
-                code::Instruction::CALL
-                | code::Instruction::SET
-                | code::Instruction::GET
-                | code::Instruction::CONSTANT => {
+                code::Instruction::CALL => {
+                    let operand = self.allocate(
+                        Number::new(integer as i64).into(),
+                        self.decode_operand(
+                            Self::decode_integer(input).ok_or(Error::MissingOperand)?,
+                        ),
+                    )?;
+                    self.append_instruction(instruction, operand.into(), r#return)?
+                }
+                code::Instruction::SET | code::Instruction::GET | code::Instruction::CONSTANT => {
                     self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {
@@ -996,7 +1014,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Closure(0, vec![Instruction::Call(Operand::Integer(1))]),
+                    Instruction::Closure(0, vec![Instruction::Call(0, Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(0)),
                 ],
             ));
@@ -1092,7 +1110,10 @@ mod tests {
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::If(vec![Instruction::Call(Operand::Symbol(symbol_index::RIB))]),
+                    Instruction::If(vec![Instruction::Call(
+                        0,
+                        Operand::Symbol(symbol_index::RIB),
+                    )]),
                 ],
             ));
         }

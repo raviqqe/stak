@@ -59,7 +59,10 @@ impl<'a> Decoder<'a> {
             let operand = Self::decode_operand(integer);
 
             let instruction = match instruction {
-                Instruction::CALL => Instruction::Call(operand),
+                Instruction::CALL => Instruction::Call(
+                    integer,
+                    Self::decode_operand(self.decode_integer().ok_or(Error::MissingOperand)?),
+                ),
                 Instruction::SET => Instruction::Set(operand),
                 Instruction::GET => Instruction::Get(operand),
                 Instruction::CONSTANT => Instruction::Constant(operand),

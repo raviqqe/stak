@@ -50,6 +50,9 @@
     (define (rib tag car cdr)
       (cons (cons (cons '$rib tag) car) cdr))
 
+    (define (rib-cons car cdr)
+      (cons (cons (cons '$rib 0) car) cdr))
+
     (define rib-tag cdaar)
     (define rib-car cdar)
     (define rib-cdr cdr)
@@ -291,20 +294,23 @@
   (rib constant-instruction constant continuation))
 
 (define (compile-primitive-call name continuation)
-  (compile-constant
-    (cond
-      ((memq name '(close))
-        1)
+  (rib
+    call-instruction
+    (rib-cons
+      (cond
+        ((memq name '(close))
+          1)
 
-      ((memq name '(cons skip -))
-        2)
+        ((memq name '(cons skip -))
+          2)
 
-      ((memq name '(rib))
-        3)
+        ((memq name '(rib))
+          3)
 
-      (else
-        (error "unknown primitive:" name)))
-    (rib call-instruction name continuation)))
+        (else
+          (error "unknown primitive:" name)))
+      name)
+    continuation))
 
 (define (drop? codes)
   (and
@@ -333,14 +339,12 @@
 
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
-    (compile-constant
-      argument-count
-      (rib
-        call-instruction
-        (compile-context-resolve
-          (compile-context-environment-add-temporary context)
-          function)
-        continuation))
+    (rib
+      call-instruction
+      (rib-cons
+        argument-count
+        (compile-context-resolve context function))
+      continuation)
     (compile-expression
       context
       (car arguments)
@@ -464,11 +468,17 @@
 (define (find-symbols* codes symbols)
   (if (null? codes)
     symbols
-    (let ((operand (rib-car codes)))
+    (let* (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (operand
+          (if (eqv? instruction call-instruction)
+            (rib-cdr operand)
+            operand)))
       (find-symbols*
         (rib-cdr codes)
         (cond
-          ((eqv? (rib-tag codes) if-instruction)
+          ((eqv? instruction if-instruction)
             (find-symbols* operand symbols))
 
           ((and
@@ -781,8 +791,15 @@
         rest
         terminal
         (cond
-          ((memv instruction (list call-instruction set-instruction get-instruction))
+          ((memv instruction (list set-instruction get-instruction))
             (encode-simple instruction))
+
+          ((eqv? instruction call-instruction)
+            (encode-instruction
+              instruction
+              (rib-car operand)
+              return
+              (encode-integer (encode-operand context (rib-cdr operand)) target)))
 
           ((and
               (eqv? instruction constant-instruction)
