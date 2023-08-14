@@ -91,6 +91,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
             match instruction.tag() {
                 Instruction::CALL => {
+                    // The call instruction may update any cons's of arguments on a stack.
+
                     let r#return = instruction == NULL;
                     let procedure = self.procedure();
                     let mut environment = self.environment(procedure);
