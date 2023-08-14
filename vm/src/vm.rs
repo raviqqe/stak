@@ -119,7 +119,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
-                                // TODO
+                                // TODO Fix GC boundary.
                                 *self.car_mut(self.cons) = code.into();
                                 *self.cdr_mut(self.cons) = environment.into();
 
