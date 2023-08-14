@@ -119,9 +119,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
-                                // TODO Fix GC boundary.
-                                *self.car_mut(self.cons) = code.into();
-                                *self.cdr_mut(self.cons) = environment.into();
+                                let cons = self.car(self.cons).assume_cons();
+                                *self.car_mut(cons) = code.into();
+                                *self.cdr_mut(cons) = environment.into();
 
                                 let mut list = NULL;
 
@@ -133,8 +133,9 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                                 self.push(list.into())?;
 
-                                code = self.car(self.cons).assume_cons();
-                                environment = self.cdr(self.cons).assume_cons();
+                                let cons = self.car(self.cons).assume_cons();
+                                code = self.car(cons).assume_cons();
+                                environment = self.cdr(cons).assume_cons();
                             }
 
                             *self.cdr_mut(self.cons) = self.stack.into();
