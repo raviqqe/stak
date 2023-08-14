@@ -794,7 +794,7 @@
               instruction
               (rib-car operand)
               return
-              (encode-integer (encode-operand context operand) target)))
+              (encode-integer (encode-operand context (rib-cdr operand)) target)))
 
           ((and
               (eqv? instruction constant-instruction)
