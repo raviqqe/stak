@@ -5,4 +5,4 @@ set -e
 scheme=${SCHEME_INTERPRETER:-gsi}
 directory=$(dirname $0)/..
 
-$scheme $directory/compile.scm "$@"
+cat $directory/prelude.scm "$@" | $scheme $directory/compile.scm

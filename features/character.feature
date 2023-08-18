@@ -1,11 +1,4 @@
 Feature: Character
-  Background:
-    Given I run the following script:
-    """sh
-    cp -r $ROOT/examples .
-    cp $ROOT/*.scm .
-    """
-
   Scenario: Check if a value is a character
     Given a file named "main.scm" with:
     """scheme
@@ -13,7 +6,7 @@ Feature: Character
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | compile.sh > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -25,7 +18,7 @@ Feature: Character
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | compile.sh > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -39,7 +32,7 @@ Feature: Character
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | compile.sh > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly:
