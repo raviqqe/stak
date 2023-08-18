@@ -8,7 +8,7 @@ Feature: Examples
   Scenario Outline: Run examples
     When I run the following script:
     """sh
-    cat prelude.scm examples/<example>.scm | compile.sh > main.out
+    compile.sh examples/<example>.scm > main.out
     """
     Then I successfully run `stak main.out`
 
