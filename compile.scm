@@ -141,7 +141,7 @@
 (define (write-target codes)
   (map write-u8 codes))
 
-; Non-primitive expansion
+; Expansion
 
 (define (expand-definition definition)
   (let (
