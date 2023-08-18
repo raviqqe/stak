@@ -9,7 +9,7 @@ bundler install
 
 cargo build $(feature_flags)
 
-export PATH=$PWD/target/debug:$PATH
+export PATH=$PWD/target/debug:$PWD/tools:$PATH
 export ROOT=$PWD
 
 (
