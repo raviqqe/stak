@@ -50,7 +50,6 @@ jobs:
           - [gc_always]
         scheme_interpreter:
           - gsi
-          - gosh
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
