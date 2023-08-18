@@ -9,7 +9,7 @@ Feature: Examples
   Scenario Outline: Run examples
     When I run the following script:
     """sh
-    cat prelude.scm examples/<example>.scm | ./compile.scm > main.out
+    cat prelude.scm examples/<example>.scm | compile.sh > main.out
     """
     Then I successfully run `stak main.out`
 
@@ -39,7 +39,7 @@ Feature: Examples
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | compile.sh > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "X"

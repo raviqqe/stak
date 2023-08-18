@@ -13,7 +13,7 @@ Feature: Character
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | compile.sh > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -25,7 +25,7 @@ Feature: Character
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | compile.sh > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -39,7 +39,7 @@ Feature: Character
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    cat prelude.scm main.scm | compile.sh > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly:
