@@ -1,11 +1,4 @@
 Feature: Write
-  Background:
-    Given I run the following script:
-    """sh
-    cp -r $ROOT/examples .
-    cp $ROOT/*.scm .
-    """
-
   Scenario: Write a character integer
     Given a file named "main.scm" with:
     """scheme
@@ -13,7 +6,7 @@ Feature: Write
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -25,7 +18,7 @@ Feature: Write
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"

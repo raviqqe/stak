@@ -46,7 +46,7 @@
 ; Utility
 
 (cond-expand
-  (gambit
+  ((or gambit gauche)
     (define (rib tag car cdr)
       (cons (cons (cons '$rib tag) car) cdr))
 

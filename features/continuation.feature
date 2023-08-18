@@ -1,11 +1,4 @@
 Feature: Continuation
-  Background:
-    Given I run the following script:
-    """sh
-    cp -r $ROOT/examples .
-    cp $ROOT/*.scm .
-    """
-
   Scenario: Call a continuation
     Given a file named "main.scm" with:
     """scheme
@@ -13,7 +6,7 @@ Feature: Continuation
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -27,7 +20,7 @@ Feature: Continuation
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -41,7 +34,7 @@ Feature: Continuation
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
@@ -53,7 +46,7 @@ Feature: Continuation
     """
     When I run the following script:
     """sh
-    cat prelude.scm main.scm | ./compile.scm > main.out
+    compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
