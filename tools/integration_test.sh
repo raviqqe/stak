@@ -4,7 +4,7 @@ set -ex
 
 . $(dirname $0)/utility.sh
 
-brew install gambit-scheme
+brew install gambit-scheme gauche
 bundler install
 
 cargo build $(feature_flags)

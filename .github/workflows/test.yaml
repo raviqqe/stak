@@ -48,9 +48,13 @@ jobs:
         features:
           - []
           - [gc_always]
+        scheme_interpreter:
+          - gsi
+          - gosh
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
+      SCHEME_INTERPRETER: ${{ matrix.scheme_interpreter }}
     steps:
       - uses: actions/checkout@v3
       - uses: Homebrew/actions/setup-homebrew@master
