@@ -9,7 +9,7 @@ No `std` and no `alloc` Scheme implementation in Rust
 ## References
 
 - [R7RS small](https://small.r7rs.org/)
-- [Ribbit](https://github.com/udem-dlteam/ribbit)
+- [Ribbit Scheme](https://github.com/udem-dlteam/ribbit)
 
 ## License
 
