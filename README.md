@@ -6,6 +6,8 @@
 
 No `std` and no `alloc` Scheme implementation in Rust
 
+For working examples, see [the `features` directory](/features).
+
 ## References
 
 - [R7RS small](https://small.r7rs.org/)
