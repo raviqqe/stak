@@ -145,10 +145,14 @@
 
 ;; Context
 
+; TODO Rename expanders meta-environment?
+; '(expanders environment)
 (define (make-expansion-context)
-  '(()))
+  '(() ()))
 
 (define expansion-context-expanders car)
+
+(define expansion-context-environment cadr)
 
 (define (expansion-context-add-expander context name procedure)
   (cons
