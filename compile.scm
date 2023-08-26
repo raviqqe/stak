@@ -169,6 +169,10 @@
 
 ;; Procedures
 
+(define (expand-transformer context name transformer)
+  ; TODO
+  (lambda (x) x))
+
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
     expression
@@ -257,6 +261,14 @@
 
           ((eqv? first 'define)
             (expand (cons 'set! (expand-definition expression))))
+
+          ((eqv? first 'define-syntax)
+            (let ((name (cadr expression)))
+              (expansion-context-add-expander
+                context
+                name
+                (expand-transformer context name expression))
+              #f))
 
           ((eqv? first 'if)
             (list
