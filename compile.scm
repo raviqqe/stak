@@ -141,7 +141,7 @@
 (define (write-target codes)
   (map write-u8 codes))
 
-; Non-primitive expansion
+; Expansion
 
 (define (expand-definition definition)
   (let (
@@ -265,7 +265,9 @@
           (map expand expression))))
     expression))
 
-; Context
+; Compilation
+
+;; Context
 
 ; (environment . symbols)
 (define (make-compile-context)
@@ -288,7 +290,7 @@
 (define (compile-context-resolve context variable)
   (or (member-index variable (compile-context-environment context)) variable))
 
-; Compilation
+;; Codes
 
 (define (compile-constant constant continuation)
   (rib constant-instruction constant continuation))
