@@ -146,26 +146,36 @@
 ;; Context
 
 ; TODO Rename expanders meta-environment?
-; '(expanders environment)
+; '(local-expanders global-expanders environment)
 (define (make-expansion-context)
-  '(() ()))
+  '(() () ()))
 
-(define expansion-context-expanders car)
+(define (expansion-context-expanders context)
+  (append (car context) (cadr context)))
 
-(define expansion-context-environment cadr)
+(define expansion-context-environment caddr)
 
-(define (expansion-context-add-expander context name procedure)
+(define (expansion-context-add-local-expander context name procedure)
   (cons
-    (cons (cons name procedure)
-      (expansion-context-expanders context))
+    (cons
+      (cons name procedure)
+      (car context))
     (cdr context)))
+
+(define (expansion-context-add-global-expander! context name procedure)
+  (set-car!
+    (cdr context)
+    (cons
+      (cons name procedure)
+      (cadr context))))
 
 (define (expansion-context-add-variables context variables)
   (list
-    (expansion-context-expanders context)
+    (car context)
+    (cadr context)
     (append
       variables
-      (expansion-context-environment context))))
+      (caddr context))))
 
 ;; Procedures
 
@@ -264,7 +274,7 @@
 
           ((eqv? first 'define-syntax)
             (let ((name (cadr expression)))
-              (expansion-context-add-expander
+              (expansion-context-add-expander!
                 context
                 name
                 (expand-transformer context name expression))
