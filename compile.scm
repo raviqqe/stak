@@ -146,28 +146,45 @@
 ;; Context
 
 ; TODO Rename expanders meta-environment?
-; '(expanders environment)
+; '(local-expanders global-expanders environment)
 (define (make-expansion-context)
-  '(() ()))
+  '(() () ()))
 
-(define expansion-context-expanders car)
+(define (expansion-context-expanders context)
+  (append (car context) (cadr context)))
 
-(define expansion-context-environment cadr)
+(define expansion-context-environment caddr)
 
-(define (expansion-context-add-expander context name procedure)
+(define (expansion-context-add-local-expander context name procedure)
   (cons
-    (cons (cons name procedure)
-      (expansion-context-expanders context))
+    (cons
+      (cons name procedure)
+      (car context))
     (cdr context)))
+
+(define (expansion-context-add-global-expander! context name procedure)
+  (set-car!
+    (cdr context)
+    (cons
+      (cons name procedure)
+      (cadr context))))
 
 (define (expansion-context-add-variables context variables)
   (list
-    (expansion-context-expanders context)
+    (car context)
+    (cadr context)
     (append
       variables
-      (expansion-context-environment context))))
+      (caddr context))))
 
 ;; Procedures
+
+(define (expand-transformer context name transformer)
+  ; TODO
+  (lambda (expression)
+    (if (and (pair? expression) (eqv? (car expression) 'id))
+      (cadr expression)
+      expression)))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
@@ -258,6 +275,14 @@
           ((eqv? first 'define)
             (expand (cons 'set! (expand-definition expression))))
 
+          ((eqv? first 'define-syntax)
+            (let ((name (cadr expression)))
+              (expansion-context-add-global-expander!
+                context
+                name
+                (expand-transformer context name expression))
+              #f))
+
           ((eqv? first 'if)
             (list
               'if
@@ -302,6 +327,9 @@
                         (lambda (binding) (list 'set! (car binding) (cadr binding)))
                         bindings)
                       (cddr expression)))))))
+
+          ((eqv? first 'let-syntax)
+            (error "not implemented"))
 
           ((eqv? first 'or)
             (expand
