@@ -150,7 +150,7 @@
 
 (define expansion-context-expanders car)
 
-(define (expansion-context-add-expanders context)
+(define (expansion-context-add-expander context name procedure)
   (cons
     (cons (cons name procedure)
       (expansion-context-expanders context))
