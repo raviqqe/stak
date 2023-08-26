@@ -325,6 +325,9 @@
                         bindings)
                       (cddr expression)))))))
 
+          ((eqv? first 'let-syntax)
+            (error "not implemented"))
+
           ((eqv? first 'or)
             (expand
               (cond
