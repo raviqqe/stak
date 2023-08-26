@@ -274,7 +274,7 @@
 
           ((eqv? first 'define-syntax)
             (let ((name (cadr expression)))
-              (expansion-context-add-expander!
+              (expansion-context-add-global-expander!
                 context
                 name
                 (expand-transformer context name expression))
