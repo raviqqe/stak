@@ -123,7 +123,7 @@
       '())
 
     (else
-      (error "invalid variadic argument:" parameters))))
+      (error "invalid variadic parameter" parameters))))
 
 ; Source code reading
 
@@ -254,7 +254,15 @@
               #f)))
 
         ((eqv? first 'lambda)
-          (cons 'lambda (cons (cadr expression) (expand-body context (cddr expression)))))
+          (cons
+            'lambda
+            (cons
+              (cadr expression)
+              (expand-body
+                (expansion-context-add-variables
+                  context
+                  (get-parameter-variables (cadr expression)))
+                (cddr expression)))))
 
         ((eqv? first 'let)
           (let ((bindings (cadr expression)))
