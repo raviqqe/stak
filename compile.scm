@@ -201,9 +201,22 @@
       (error "empty sequence in body")
       (let ((expression (car expressions)))
         (cond
-          ((and (pair? expression) (eqv? 'define (car expression)))
+          ((and
+              (pair? expression)
+              (eqv? 'define (car expression)))
             (loop
               (cdr expressions)
+              (cons (expand-definition expression) definitions)))
+
+          ((and
+              (pair? expression)
+              (eqv? 'define-syntax (car expression)))
+            (loop
+              (list
+                (cons
+                  'let-syntax
+                  (list (cdr expression))
+                  (cons 'begin (cdr expressions))))
               (cons (expand-definition expression) definitions)))
 
           ((pair? definitions)
