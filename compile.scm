@@ -145,7 +145,7 @@
 
 ;; Context
 
-;; Codes
+;; Procedures
 
 (define (expand-syntax context) foo)
 
