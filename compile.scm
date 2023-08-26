@@ -218,105 +218,105 @@
     (map (lambda (expression) (expand-expression context expression)) expressions)))
 
 (define (expand-expression context expression)
-  (define (expand expression)
-    (expand-expression context expression))
-
-  (if (pair? expression)
-    (let ((first (car expression)))
-      (cond
-        ((eqv? first 'and)
-          (expand
-            (cond
-              ((null? (cdr expression))
-                #t)
-
-              ((null? (cddr expression))
-                (cadr expression))
-
-              (else
-                (list 'if (cadr expression)
-                  (cons 'and (cddr expression))
-                  #f)))))
-
-        ((eqv? first 'begin)
-          (cons 'begin (expand-sequence context (cdr expression))))
-
-        ((eqv? first 'define)
-          (expand (cons 'set! (expand-definition expression))))
-
-        ((eqv? first 'if)
-          (list
-            'if
-            (expand (cadr expression))
-            (expand (caddr expression))
-            (if (pair? (cdddr expression))
-              (expand (cadddr expression))
-              #f)))
-
-        ((eqv? first 'lambda)
-          (cons
-            'lambda
-            (cons
-              (cadr expression)
-              (expand-body
-                (expansion-context-add-variables
-                  context
-                  (get-parameter-variables (cadr expression)))
-                (cddr expression)))))
-
-        ((eqv? first 'let)
-          (let ((bindings (cadr expression)))
-            (cons
-              'let
-              (cons
-                (map
-                  (lambda (binding)
-                    (list (car binding) (expand (cadr binding))))
-                  bindings)
-                (expand-body context (cddr expression))))))
-
-        ((eqv? first 'letrec)
-          (let ((bindings (cadr expression)))
+  (let (
+      (expand (lambda (expression) (expand-expression context expression)))
+      (expression (expand-syntax context expression)))
+    (if (pair? expression)
+      (let ((first (car expression)))
+        (cond
+          ((eqv? first 'and)
             (expand
-              (cons 'let
+              (cond
+                ((null? (cdr expression))
+                  #t)
+
+                ((null? (cddr expression))
+                  (cadr expression))
+
+                (else
+                  (list 'if (cadr expression)
+                    (cons 'and (cddr expression))
+                    #f)))))
+
+          ((eqv? first 'begin)
+            (cons 'begin (expand-sequence context (cdr expression))))
+
+          ((eqv? first 'define)
+            (expand (cons 'set! (expand-definition expression))))
+
+          ((eqv? first 'if)
+            (list
+              'if
+              (expand (cadr expression))
+              (expand (caddr expression))
+              (if (pair? (cdddr expression))
+                (expand (cadddr expression))
+                #f)))
+
+          ((eqv? first 'lambda)
+            (cons
+              'lambda
+              (cons
+                (cadr expression)
+                (expand-body
+                  (expansion-context-add-variables
+                    context
+                    (get-parameter-variables (cadr expression)))
+                  (cddr expression)))))
+
+          ((eqv? first 'let)
+            (let ((bindings (cadr expression)))
+              (cons
+                'let
                 (cons
                   (map
-                    (lambda (binding) (list (car binding) #f))
+                    (lambda (binding)
+                      (list (car binding) (expand (cadr binding))))
                     bindings)
-                  (append
+                  (expand-body context (cddr expression))))))
+
+          ((eqv? first 'letrec)
+            (let ((bindings (cadr expression)))
+              (expand
+                (cons 'let
+                  (cons
                     (map
-                      (lambda (binding) (list 'set! (car binding) (cadr binding)))
+                      (lambda (binding) (list (car binding) #f))
                       bindings)
-                    (cddr expression)))))))
+                    (append
+                      (map
+                        (lambda (binding) (list 'set! (car binding) (cadr binding)))
+                        bindings)
+                      (cddr expression)))))))
 
-        ((eqv? first 'or)
-          (expand
-            (cond
-              ((null? (cdr expression))
-                #f)
+          ((eqv? first 'or)
+            (expand
+              (cond
+                ((null? (cdr expression))
+                  #f)
 
-              ((null? (cddr expression))
-                (cadr expression))
+                ((null? (cddr expression))
+                  (cadr expression))
 
-              (else
-                (list 'let
-                  (list (list '$x (cadr expression)))
-                  (list 'if '$x
-                    '$x
-                    (cons 'or (cddr expression))))))))
+                (else
+                  (list 'let
+                    (list (list '$x (cadr expression)))
+                    (list 'if '$x
+                      '$x
+                      (cons 'or (cddr expression))))))))
 
-        ((eqv? first 'quote)
-          expression)
+          ((eqv? first 'quote)
+            expression)
 
-        ((pair? first)
-          (expand
-            (list 'let
-              (list (list '$x first))
-              (cons '$x (cdr expression)))))
+          ((pair? first)
+            (expand
+              (list 'let
+                (list (list '$x first))
+                (cons '$x (cdr expression)))))
 
-        (else
-          (map expand expression))))
-    expression))
+          (else
+            (map expand expression))))
+      expression)))
 
 (define (expand expression)
   (expand-expression (make-expansion-context) expression))
