@@ -1,4 +1,4 @@
-Feature: Syntax
+Feature: Macro
   Scenario: Define identity syntax
     Given a file named "main.scm" with:
     """scheme
