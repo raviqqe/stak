@@ -163,7 +163,8 @@
 (define (expansion-context-add-variable context name)
   (list
     (expansion-context-expanders context)
-    (cons (cons name procedure)
+    (cons
+      name
       (expansion-context-environment context))))
 
 ;; Procedures
