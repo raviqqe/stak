@@ -101,7 +101,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(mut code) => {
-                            // Non-primitive procedures may update any cons's of arguments on a stack destructively.
+                            // Non-primitive procedures may update any cons's of arguments on a
+                            // stack destructively.
 
                             let argument_count = self.argument_count();
                             let parameter_count = self.car(code).assume_number();

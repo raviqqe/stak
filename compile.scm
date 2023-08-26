@@ -143,6 +143,41 @@
 
 ; Expansion
 
+;; Context
+
+; TODO Rename expanders meta-environment?
+; '(expanders environment)
+(define (make-expansion-context)
+  '(() ()))
+
+(define expansion-context-expanders car)
+
+(define expansion-context-environment cadr)
+
+(define (expansion-context-add-expander context name procedure)
+  (cons
+    (cons (cons name procedure)
+      (expansion-context-expanders context))
+    (cdr context)))
+
+;; Procedures
+
+(define (expand-syntax* expanders names expression)
+  (if (null? expanders)
+    expression
+    (let* (
+        (pair (car expanders))
+        (name (car pair)))
+      (expand-syntax*
+        (cdr expanders)
+        (cons name names)
+        (if (assoc name names)
+          expression
+          ((cdr pair) expression))))))
+
+(define (expand-syntax context expression)
+  (expand-syntax* (expansion-context-expanders context) '() expression))
+
 (define (expand-definition definition)
   (let (
       (pattern (cadr definition))
@@ -153,7 +188,7 @@
         (car pattern)
         (cons 'lambda (cons (cdr pattern) body))))))
 
-(define (expand-body expressions)
+(define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
     (if (null? expressions)
       (error "empty sequence in body")
@@ -165,17 +200,20 @@
               (cons (expand-definition expression) definitions)))
 
           ((pair? definitions)
-            (list (expand (cons 'letrec (cons (reverse definitions) expressions)))))
+            (list (expand-expression context (cons 'letrec (cons (reverse definitions) expressions)))))
 
           (else
-            (expand-sequence expressions)))))))
+            (expand-sequence context expressions)))))))
 
-(define (expand-sequence expressions)
+(define (expand-sequence context expressions)
   (if (null? expressions)
     (error "empty sequence")
-    (map expand expressions)))
+    (map (lambda (expression) (expand-expression context expression)) expressions)))
 
-(define (expand expression)
+(define (expand-expression context expression)
+  (define (expand expression)
+    (expand-expression context expression))
+
   (if (pair? expression)
     (let ((first (car expression)))
       (cond
@@ -194,7 +232,7 @@
                   #f)))))
 
         ((eqv? first 'begin)
-          (cons 'begin (expand-sequence (cdr expression))))
+          (cons 'begin (expand-sequence context (cdr expression))))
 
         ((eqv? first 'define)
           (expand (cons 'set! (expand-definition expression))))
@@ -209,7 +247,7 @@
               #f)))
 
         ((eqv? first 'lambda)
-          (cons 'lambda (cons (cadr expression) (expand-body (cddr expression)))))
+          (cons 'lambda (cons (cadr expression) (expand-body context (cddr expression)))))
 
         ((eqv? first 'let)
           (let ((bindings (cadr expression)))
@@ -220,7 +258,7 @@
                   (lambda (binding)
                     (list (car binding) (expand (cadr binding))))
                   bindings)
-                (expand-body (cddr expression))))))
+                (expand-body context (cddr expression))))))
 
         ((eqv? first 'letrec)
           (let ((bindings (cadr expression)))
@@ -264,6 +302,9 @@
         (else
           (map expand expression))))
     expression))
+
+(define (expand expression)
+  (expand-expression (make-expansion-context) expression))
 
 ; Compilation
 
