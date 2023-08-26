@@ -123,7 +123,7 @@
       '())
 
     (else
-      (error "invalid variadic parameter" parameters))))
+      (error "invalid variadic parameter:" parameters))))
 
 ; Source code reading
 
