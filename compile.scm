@@ -150,6 +150,12 @@
 
 (define expansion-context-expanders car)
 
+(define (expansion-context-add-expanders context)
+  (cons
+    (cons (cons name procedure)
+      (expansion-context-expanders context))
+    (cdr context)))
+
 ;; Procedures
 
 (define (expand-syntax context) foo)
