@@ -296,6 +296,9 @@
           (map expand expression))))
     expression))
 
+(define (expand expression)
+  (expand-expression (make-expansion-context) expression))
+
 ; Compilation
 
 ;; Context
