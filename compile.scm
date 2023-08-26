@@ -199,18 +199,16 @@
   (let loop ((expressions expressions) (definitions '()))
     (if (null? expressions)
       (error "empty sequence in body")
-      (let ((expression (car expressions)))
+      (let* (
+          (expression (car expressions))
+          (predicate (and (pair? expression) (car expression))))
         (cond
-          ((and
-              (pair? expression)
-              (eqv? 'define (car expression)))
+          ((eqv? predicate 'define)
             (loop
               (cdr expressions)
               (cons (expand-definition expression) definitions)))
 
-          ((and
-              (pair? expression)
-              (eqv? 'define-syntax (car expression)))
+          ((eqv? predicate 'define-syntax)
             (list
               (expand-expression
                 context
