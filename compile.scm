@@ -290,7 +290,7 @@
 (define (compile-context-resolve context variable)
   (or (member-index variable (compile-context-environment context)) variable))
 
-;; Code compilation
+;; Codes
 
 (define (compile-constant constant continuation)
   (rib constant-instruction constant continuation))
