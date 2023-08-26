@@ -181,7 +181,10 @@
 
 (define (expand-transformer context name transformer)
   ; TODO
-  (lambda (x) x))
+  (lambda (expression)
+    (if (pair? expression)
+      (cadr expression)
+      expression)))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
