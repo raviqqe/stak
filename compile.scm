@@ -160,11 +160,11 @@
       (expansion-context-expanders context))
     (cdr context)))
 
-(define (expansion-context-add-variable context name)
+(define (expansion-context-add-variables context variables)
   (list
     (expansion-context-expanders context)
-    (cons
-      name
+    (append
+      variables
       (expansion-context-environment context))))
 
 ;; Procedures
