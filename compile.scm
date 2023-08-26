@@ -159,7 +159,8 @@
 ;; Procedures
 
 (define (expand-syntax* expanders names expression)
-  (if (null? expanders) expression
+  (if (null? expanders)
+    expression
     (let* (
         (pair (car expanders))
         (name (car pair)))
