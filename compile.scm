@@ -158,7 +158,20 @@
 
 ;; Procedures
 
-(define (expand-syntax context) foo)
+(define (expand-syntax* expanders names expression)
+  (if (null? expanders) expression
+    (let* (
+        (pair (car expanders))
+        (name (car pair)))
+      (expand-syntax*
+        (cdr expanders)
+        (cons name names)
+        (if (assoc name (car pair))
+          expression
+          ((cdr pair) expression))))))
+
+(define (expand-syntax context expression)
+  (expand-syntax* (expansion-context-expanders context) '() expression))
 
 (define (expand-definition definition)
   (let (
