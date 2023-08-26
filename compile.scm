@@ -182,7 +182,7 @@
 (define (expand-transformer context name transformer)
   ; TODO
   (lambda (expression)
-    (if (pair? expression)
+    (if (and (pair? expression) (eqv? (car expression) 'id))
       (cadr expression)
       expression)))
 
