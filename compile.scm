@@ -145,6 +145,11 @@
 
 ;; Context
 
+(define (make-expansion-context)
+  '(()))
+
+(define expansion-context-expanders car)
+
 ;; Procedures
 
 (define (expand-syntax context) foo)
