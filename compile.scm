@@ -143,6 +143,12 @@
 
 ; Expansion
 
+;; Context
+
+;; Codes
+
+(define (expand-syntax context) foo)
+
 (define (expand-definition definition)
   (let (
       (pattern (cadr definition))
