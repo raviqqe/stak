@@ -167,7 +167,7 @@
       (expand-syntax*
         (cdr expanders)
         (cons name names)
-        (if (assoc name (car pair))
+        (if (assoc name names)
           expression
           ((cdr pair) expression))))))
 
