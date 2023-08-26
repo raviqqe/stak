@@ -211,16 +211,19 @@
           ((and
               (pair? expression)
               (eqv? 'define-syntax (car expression)))
-            (loop
-              (list
+            (list
+              (expand-expression
+                context
                 (cons
                   'let-syntax
                   (list (cdr expression))
-                  (cons 'begin (cdr expressions))))
-              (cons (expand-definition expression) definitions)))
+                  (cons 'begin (cdr expressions))))))
 
           ((pair? definitions)
-            (list (expand-expression context (cons 'letrec (cons (reverse definitions) expressions)))))
+            (list
+              (expand-expression
+                context
+                (cons 'letrec (cons (reverse definitions) expressions)))))
 
           (else
             (expand-sequence context expressions)))))))
