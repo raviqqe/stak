@@ -196,7 +196,7 @@
 (define (compile-rule context name rule)
   (lambda (expression)
     (let ((alist (match-pattern context name (car rule) expression)))
-      65)))
+      #f)))
 
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
