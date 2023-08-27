@@ -218,7 +218,7 @@
 (define (expand-syntax-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
     (when (null? expressions)
-      (error "empty sequence in body"))
+      (error "empty expression sequence"))
     (let ((expression (car expressions)))
       (if (eqv? (predicate expression) 'define-syntax)
         (loop
@@ -232,7 +232,7 @@
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
     (when (null? expressions)
-      (error "empty sequence in body"))
+      (error "empty expression sequence"))
     (let* (
         (expression (car expressions))
         (predicate (predicate expression)))
