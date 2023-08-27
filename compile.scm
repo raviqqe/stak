@@ -225,6 +225,7 @@
               (cdr expressions)
               (cons (expand-definition expression) definitions)))
 
+          ; TODO Accumulate syntax definitions
           ((eqv? predicate 'define-syntax)
             (list
               (expand-expression
