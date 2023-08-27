@@ -299,7 +299,7 @@
               (expansion-context-add-global-expander!
                 context
                 name
-                (expand-transformer context name expression))
+                (expand-transformer context name (caddr expression)))
               #f))
 
           ((eqv? first 'if)
