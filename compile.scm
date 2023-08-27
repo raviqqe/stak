@@ -190,11 +190,13 @@
 
 ;; Procedures
 
-(define (match-pattern context name pattern expression result)
-  (result))
+(define (match-pattern context name pattern expression)
+  '())
 
-(define (compile-rule context name pattern)
-  (match-pattern context name transformer))
+(define (compile-rule context name pattern template)
+  (lambda (expression)
+    (let ((alist (match-pattern context name pattern expression)))
+      #f)))
 
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
@@ -207,6 +209,7 @@
     (lambda (expression)
       (fold
         (lambda (expression transformer) (transformer expression))
+        expression
         transformers))))
 
 (define (expand-syntax* expanders names expression)
