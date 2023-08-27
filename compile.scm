@@ -106,6 +106,14 @@
     (last-cdr (cdr list))
     list))
 
+(define (fold f y xs)
+  (if (null? xs)
+    y
+    (fold
+      f
+      (f y (car xs))
+      (cdr xs))))
+
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
@@ -182,16 +190,24 @@
 
 ;; Procedures
 
-(define (match pattern foo result)
+(define (match-pattern context name pattern expression result)
   (result))
 
-(define (expand-transformer context name transformer)
+(define (compile-rule context name pattern)
+  (match-pattern context name transformer))
+
+(define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported transformer"))
-  (lambda (expression)
-    (if (and (pair? expression) (eqv? (car expression) 'id))
-      (cadr expression)
-      expression)))
+  (let (
+      (transformers
+        (map
+          (lambda (rule) (compile-rule context name rule))
+          (cddr transformer))))
+    (lambda (expression)
+      (fold
+        (lambda (expression transformer) (transformer expression))
+        transfomers))))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
@@ -299,7 +315,7 @@
               (expansion-context-add-global-expander!
                 context
                 name
-                (expand-transformer context name (caddr expression)))
+                (compile-transformer context name (caddr expression)))
               #f))
 
           ((eqv? first 'if)
