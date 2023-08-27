@@ -182,8 +182,12 @@
 
 ;; Procedures
 
+(define (match pattern foo result)
+  (result))
+
 (define (expand-transformer context name transformer)
-  ; TODO
+  (unless (eqv? (predicate transformer) 'syntax-rules)
+    (error "unsupported transformer"))
   (lambda (expression)
     (if (and (pair? expression) (eqv? (car expression) 'id))
       (cadr expression)
