@@ -106,6 +106,9 @@
     (last-cdr (cdr list))
     list))
 
+(define (predicate expression)
+  (and (pair? expression) (car expression)))
+
 (define (count-parameters parameters)
   (if (pair? parameters)
     (+ 1 (count-parameters (cdr parameters)))
@@ -212,41 +215,53 @@
         (car pattern)
         (cons 'lambda (cons (cdr pattern) body))))))
 
+(define (expand-syntax-body context expressions)
+  (let loop ((expressions expressions) (definitions '()))
+    (when (null? expressions)
+      (error "empty expression sequence"))
+    (let ((expression (car expressions)))
+      (if (eqv? (predicate expression) 'define-syntax)
+        (loop
+          (cdr expressions)
+          (cons (cdr expression) definitions))
+        (list
+          (expand-expression
+            context
+            (cons 'letrec-syntax (cons definitions expressions))))))))
+
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
-    (if (null? expressions)
-      (error "empty sequence in body")
-      (let* (
-          (expression (car expressions))
-          (predicate (and (pair? expression) (car expression))))
-        (cond
-          ((eqv? predicate 'define)
-            (loop
-              (cdr expressions)
-              (cons (expand-definition expression) definitions)))
+    (when (null? expressions)
+      (error "empty expression sequence"))
+    (let* (
+        (expression (car expressions))
+        (predicate (predicate expression)))
+      (cond
+        ((eqv? predicate 'define)
+          (loop
+            (cdr expressions)
+            (cons (expand-definition expression) definitions)))
 
-          ((eqv? predicate 'define-syntax)
-            (list
-              (expand-expression
-                context
-                (cons
-                  'let-syntax
-                  (list (cdr expression))
-                  (cons 'begin (cdr expressions))))))
+        ((eqv? predicate 'define-syntax)
+          (loop
+            (list (expand-syntax-body context expressions))
+            definitions))
 
-          ((pair? definitions)
-            (list
-              (expand-expression
-                context
-                (cons 'letrec (cons (reverse definitions) expressions)))))
+        ((pair? definitions)
+          (list
+            (expand-expression
+              context
+              (cons 'letrec (cons (reverse definitions) expressions)))))
 
-          (else
-            (expand-sequence context expressions)))))))
+        (else
+          (expand-sequence context expressions))))))
 
 (define (expand-sequence context expressions)
-  (if (null? expressions)
-    (error "empty sequence")
-    (map (lambda (expression) (expand-expression context expression)) expressions)))
+  (when (null? expressions)
+    (error "empty expression sequence"))
+  (map
+    (lambda (expression) (expand-expression context expression))
+    expressions))
 
 (define (expand-expression context expression)
   (let (
@@ -329,6 +344,9 @@
                       (cddr expression)))))))
 
           ((eqv? first 'let-syntax)
+            (error "not implemented"))
+
+          ((eqv? first 'letrec-syntax)
             (error "not implemented"))
 
           ((eqv? first 'or)
