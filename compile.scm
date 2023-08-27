@@ -193,10 +193,10 @@
 (define (match-pattern context name pattern expression)
   '())
 
-(define (compile-rule context name pattern template)
+(define (compile-rule context name rule)
   (lambda (expression)
-    (let ((alist (match-pattern context name pattern expression)))
-      #f)))
+    (let ((alist (match-pattern context name (car rule) expression)))
+      65)))
 
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
