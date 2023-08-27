@@ -106,6 +106,9 @@
     (last-cdr (cdr list))
     list))
 
+(define (predicate expression)
+  (and (pair? expression) (car expression)))
+
 (define (count-parameters parameters)
   (if (pair? parameters)
     (+ 1 (count-parameters (cdr parameters)))
@@ -212,13 +215,13 @@
         (car pattern)
         (cons 'lambda (cons (cdr pattern) body))))))
 
-(define (expand-body-syntax context expressions)
+(define (expand-syntax-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
     (if (null? expressions)
       (error "empty sequence in body")
       (let* (
           (expression (car expressions))
-          (predicate (and (pair? expression) (car expression))))
+          (predicate (predicate expression)))
         (cond
           ((eqv? predicate 'define-syntax)
             (loop
@@ -232,7 +235,7 @@
                 (cons 'letrec-syntax (cons (reverse definitions) expressions)))))
 
           (else
-            (expand-sequence context expressions)))))))
+            (expand-body context expressions)))))))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
@@ -240,7 +243,7 @@
       (error "empty sequence in body")
       (let* (
           (expression (car expressions))
-          (predicate (and (pair? expression) (car expression))))
+          (predicate (predicate expression)))
         (cond
           ((eqv? predicate 'define)
             (loop
@@ -248,7 +251,9 @@
               (cons (expand-definition expression) definitions)))
 
           ((eqv? predicate 'define-syntax)
-            (expand-syntax-body context expressions))
+            (loop
+              (list (expand-syntax-body context expressions))
+              definitions))
 
           ((pair? definitions)
             (list
