@@ -217,49 +217,49 @@
 
 (define (expand-syntax-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
-    (if (null? expressions)
-      (error "empty sequence in body")
-      (let ((expression (car expressions)))
-        (if (eqv? (predicate expression) 'define-syntax)
-          (loop
-            (cdr expressions)
-            (cons (cdr expression) definitions))
-          (list
-            (expand-expression
-              context
-              (cons 'letrec-syntax (cons (reverse definitions) expressions)))))))))
+    (when (null? expressions)
+      (error "empty sequence in body"))
+    (let ((expression (car expressions)))
+      (if (eqv? (predicate expression) 'define-syntax)
+        (loop
+          (cdr expressions)
+          (cons (cdr expression) definitions))
+        (list
+          (expand-expression
+            context
+            (cons 'letrec-syntax (cons (reverse definitions) expressions))))))))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
-    (if (null? expressions)
-      (error "empty sequence in body")
-      (let* (
-          (expression (car expressions))
-          (predicate (predicate expression)))
-        (cond
-          ((eqv? predicate 'define)
-            (loop
-              (cdr expressions)
-              (cons (expand-definition expression) definitions)))
+    (when (null? expressions)
+      (error "empty sequence in body"))
+    (let* (
+        (expression (car expressions))
+        (predicate (predicate expression)))
+      (cond
+        ((eqv? predicate 'define)
+          (loop
+            (cdr expressions)
+            (cons (expand-definition expression) definitions)))
 
-          ((eqv? predicate 'define-syntax)
-            (loop
-              (list (expand-syntax-body context expressions))
-              definitions))
+        ((eqv? predicate 'define-syntax)
+          (loop
+            (list (expand-syntax-body context expressions))
+            definitions))
 
-          ((pair? definitions)
-            (list
-              (expand-expression
-                context
-                (cons 'letrec (cons (reverse definitions) expressions)))))
+        ((pair? definitions)
+          (list
+            (expand-expression
+              context
+              (cons 'letrec (cons (reverse definitions) expressions)))))
 
-          (else
-            (expand-sequence context expressions)))))))
+        (else
+          (expand-sequence context expressions))))))
 
 (define (expand-sequence context expressions)
-  (if (null? expressions)
-    (error "empty sequence")
-    (map (lambda (expression) (expand-expression context expression)) expressions)))
+  (when (null? expressions)
+    (error "empty sequence"))
+  (map (lambda (expression) (expand-expression context expression)) expressions))
 
 (define (expand-expression context expression)
   (let (
