@@ -222,20 +222,14 @@
       (let* (
           (expression (car expressions))
           (predicate (predicate expression)))
-        (cond
-          ((eqv? predicate 'define-syntax)
-            (loop
-              (cdr expressions)
-              (cons (cdr expression) definitions)))
-
-          ((pair? definitions)
-            (list
-              (expand-expression
-                context
-                (cons 'letrec-syntax (cons (reverse definitions) expressions)))))
-
-          (else
-            (expand-body context expressions)))))))
+        (if (eqv? predicate 'define-syntax)
+          (loop
+            (cdr expressions)
+            (cons (cdr expression) definitions))
+          (list
+            (expand-expression
+              context
+              (cons 'letrec-syntax (cons (reverse definitions) expressions)))))))))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
