@@ -347,6 +347,9 @@
           ((eqv? first 'let-syntax)
             (error "not implemented"))
 
+          ((eqv? first 'letrec-syntax)
+            (error "not implemented"))
+
           ((eqv? first 'or)
             (expand
               (cond
