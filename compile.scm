@@ -191,11 +191,13 @@
 ;; Procedures
 
 (define (match-pattern context name pattern expression)
+  ; TODO
   '())
 
 (define (compile-rule context name rule)
   (lambda (expression)
     (let ((alist (match-pattern context name (car rule) expression)))
+      ; TODO Fill a template.
       #f)))
 
 (define (compile-transformer context name transformer)
