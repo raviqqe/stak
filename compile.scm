@@ -212,6 +212,28 @@
         (car pattern)
         (cons 'lambda (cons (cdr pattern) body))))))
 
+(define (expand-body-syntax context expressions)
+  (let loop ((expressions expressions) (definitions '()))
+    (if (null? expressions)
+      (error "empty sequence in body")
+      (let* (
+          (expression (car expressions))
+          (predicate (and (pair? expression) (car expression))))
+        (cond
+          ((eqv? predicate 'define-syntax)
+            (loop
+              (cdr expressions)
+              (cons (cdr expression) definitions)))
+
+          ((pair? definitions)
+            (list
+              (expand-expression
+                context
+                (cons 'letrec-syntax (cons (reverse definitions) expressions)))))
+
+          (else
+            (expand-sequence context expressions)))))))
+
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
     (if (null? expressions)
@@ -225,15 +247,8 @@
               (cdr expressions)
               (cons (expand-definition expression) definitions)))
 
-          ; TODO Accumulate syntax definitions
           ((eqv? predicate 'define-syntax)
-            (list
-              (expand-expression
-                context
-                (cons
-                  'let-syntax
-                  (list (cdr expression))
-                  (cons 'begin (cdr expressions))))))
+            (expand-syntax-body context expressions))
 
           ((pair? definitions)
             (list
