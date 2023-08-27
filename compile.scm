@@ -259,7 +259,9 @@
 (define (expand-sequence context expressions)
   (when (null? expressions)
     (error "empty expression sequence"))
-  (map (lambda (expression) (expand-expression context expression)) expressions))
+  (map
+    (lambda (expression) (expand-expression context expression))
+    expressions))
 
 (define (expand-expression context expression)
   (let (
