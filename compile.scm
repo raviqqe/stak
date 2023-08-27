@@ -227,7 +227,7 @@
         (list
           (expand-expression
             context
-            (cons 'letrec-syntax (cons (reverse definitions) expressions))))))))
+            (cons 'letrec-syntax (cons definitions expressions))))))))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
