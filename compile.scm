@@ -207,7 +207,7 @@
     (lambda (expression)
       (fold
         (lambda (expression transformer) (transformer expression))
-        transfomers))))
+        transformers))))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
