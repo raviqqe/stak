@@ -148,7 +148,9 @@
       (pairs
         (map
           (lambda (pair)
-            (let ((value (cdr pair)))
+            (let (
+                (key (car pair))
+                (value (cdr pair)))
               (if (pair? value)
                 (cons
                   (cons key (car value))
