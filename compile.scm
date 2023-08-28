@@ -209,6 +209,7 @@
 
 ;; Procedures
 
+; TODO Ignore identifiers.
 (define (find-identifiers name pattern)
   (cond
     ((or
