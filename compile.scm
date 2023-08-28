@@ -260,12 +260,9 @@
 (define (compile-rule context name rule)
   (lambda (expression)
     (let ((matches (match-pattern context name (car rule) expression)))
-      (display "match:")
-      (display matches)
-      (newline)
-      ; TODO Fill a template.
       (if matches
-        #f
+        ; TODO Fill a template.
+        (cadr rule)
         expression))))
 
 (define (compile-transformer context name transformer)
