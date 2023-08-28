@@ -95,3 +95,20 @@ Feature: Macro
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Match a literal identifier
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax my-if
+      (syntax-rules (then else)
+        ((_ x then y else z)
+          (if x y z))))
+
+    (write-u8 (my-if #f then 65 else 66))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "B"
