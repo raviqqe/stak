@@ -223,7 +223,6 @@
     #f
     (append ones others)))
 
-; TODO
 (define (match-ellipsis context name pattern expression)
   (merge-ellipsis-matches
     (map
