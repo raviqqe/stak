@@ -662,7 +662,7 @@
         (compile-let*
           (compile-context-environment-add-temporary context)
           (cdr bindings)
-          (compile-context-environment-append body-context (list (car binding)))
+          (compile-context-environment-push body-context (car binding))
           body
           (compile-unbind continuation))))
     (compile-sequence body-context body continuation)))
