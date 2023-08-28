@@ -202,19 +202,23 @@
 
 ;; Procedures
 
-(define (merge-ellipsis-matches ones)
-  (let loop ((ones ones) (result '()))
-    (if (null? ones)
-      result
-      (let* (
-          (pair (car ones))
-          (name (car pair))
-          (value (cdr pair)))
-        (loop
-          (cdr
-            (assv name others))
+(define (merge-ellipsis-matches alists)
+  (let loop ((alists alists) (result '()))
+    (cond
+      ((null? alists)
+        result)
 
-          foo)))))
+      ((null? result)
+        (loop (cdr alists) (car alists)))
+
+      (else
+        (let* (
+            (pair (car alists))
+            (name (car pair))
+            (value (cdr pair)))
+          (loop
+            (cdr (assv name others))
+            foo))))))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (merge-matches ones others)
