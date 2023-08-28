@@ -226,7 +226,7 @@
     '()
     '()))
 
-(define (match-pattern* context name pattern expression)
+(define (match-pattern context name pattern expression)
   (cond
     ((and (eqv? pattern '_) (eqv? expression name))
       '())
@@ -242,20 +242,16 @@
           (let ((length (- (length expression) (- (length pattern) 2))))
             (merge-matches
               (match-ellipsis context name first (take length expression))
-              (match-pattern* context name (cddr pattern) (skip length expression))))
+              (match-pattern context name (cddr pattern) (skip length expression))))
           (merge-matches
-            (match-pattern* context name (car pattern) (car expression))
-            (match-pattern* context name (cdr pattern) (cdr expression))))))
+            (match-pattern context name (car pattern) (car expression))
+            (match-pattern context name (cdr pattern) (cdr expression))))))
 
     ((equal? pattern expression)
       '())
 
     (else
       #f)))
-
-; TODO Remove this.
-(define (match-pattern context name pattern expression)
-  (match-pattern* context name pattern expression))
 
 (define (compile-rule context name rule)
   (lambda (expression)
