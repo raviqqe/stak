@@ -106,6 +106,26 @@
     (last-cdr (cdr list))
     list))
 
+(define (fold f y xs)
+  (if (null? xs)
+    y
+    (fold
+      f
+      (f y (car xs))
+      (cdr xs))))
+
+(define (take n list)
+  (if (eqv? n 0)
+    '()
+    (cons
+      (car list)
+      (take (- n 1) (cdr list)))))
+
+(define (skip n list)
+  (if (eqv? n 0)
+    list
+    (skip (- n 1) (cdr list))))
+
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
@@ -182,12 +202,96 @@
 
 ;; Procedures
 
-(define (expand-transformer context name transformer)
-  ; TODO
+; TODO
+(define (merge-ellipsis-matches ones others)
+  (let loop ((ones ones) (result '()))
+    (if (null? ones)
+      result
+      (let* (
+          (pair (car ones))
+          (name (car pair))
+          (value (cdr pair)))
+        (loop
+          (cdr
+            (assv name others))
+
+          foo)))))
+
+; Note that the original `append` function works in this way natively on some Scheme implementations.
+(define (merge-matches ones others)
+  (if (or (not ones) (not others))
+    #f
+    (append ones others)))
+
+; TODO
+(define (match-ellipsis context name pattern expression)
+  (if (null? expression)
+    '()
+    '()))
+
+(define (match-pattern context name pattern expression)
+  (cond
+    ((eqv? pattern '_)
+      (if (eqv? expression name) '() #f))
+
+    ((symbol? pattern)
+      (list (cons pattern expression)))
+
+    ((and (pair? pattern) (pair? expression))
+      (let (
+          (first (car pattern))
+          (second (and (pair? (cdr pattern)) (cadr pattern))))
+        (if (eqv? second '...)
+          (let ((length (- (length expression) (- (length pattern) 2))))
+            (merge-matches
+              (match-ellipsis context name first (take length expression))
+              (match-pattern context name (cddr pattern) (skip length expression))))
+          (merge-matches
+            (match-pattern context name (car pattern) (car expression))
+            (match-pattern context name (cdr pattern) (cdr expression))))))
+
+    ((equal? pattern expression)
+      '())
+
+    (else
+      #f)))
+
+(define (fill-template matches template)
+  (cond
+    ((symbol? template)
+      (let ((pair (assv template matches)))
+        (if pair
+          (cdr pair)
+          template)))
+
+    ((pair? template)
+      (cons
+        (fill-template matches (car template))
+        (fill-template matches (cdr template))))
+
+    (else
+      template)))
+
+(define (compile-rule context name rule)
   (lambda (expression)
-    (if (and (pair? expression) (eqv? (car expression) 'id))
-      (cadr expression)
-      expression)))
+    (let ((matches (match-pattern context name (car rule) expression)))
+      (if matches
+        (fill-template matches (cadr rule))
+        expression))))
+
+(define (compile-transformer context name transformer)
+  (unless (eqv? (predicate transformer) 'syntax-rules)
+    (error "unsupported transformer"))
+  (let (
+      (transformers
+        (map
+          (lambda (rule) (compile-rule context name rule))
+          (cddr transformer))))
+    (lambda (expression)
+      (fold
+        (lambda (expression transformer) (transformer expression))
+        expression
+        transformers))))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
@@ -295,7 +399,7 @@
               (expansion-context-add-global-expander!
                 context
                 name
-                (expand-transformer context name expression))
+                (compile-transformer context name (caddr expression)))
               #f))
 
           ((eqv? first 'if)
