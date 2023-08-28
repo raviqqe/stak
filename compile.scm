@@ -527,12 +527,6 @@
           ((eqv? first 'quote)
             expression)
 
-          ((pair? first)
-            (expand
-              (list 'let
-                (list (list '$x first))
-                (cons '$x (cdr expression)))))
-
           (else
             (map expand expression))))
       expression)))
