@@ -210,7 +210,7 @@
 ;; Procedures
 
 ; TODO Ignore literal identifiers.
-(define (find-identifiers name pattern)
+(define (find-pattern-variables name pattern)
   (cond
     ((or
         (memv pattern '(_ ...))
@@ -225,7 +225,7 @@
         append
         '()
         (map
-          (lambda (pattern) (find-identifiers name pattern))
+          (lambda (pattern) (find-pattern-variables name pattern))
           pattern)))))
 
 (define (match-ellipsis context name pattern expression)
@@ -242,7 +242,9 @@
                   (cdr pair)
                   (cdr (assv name all))))))
           ones)))
-    (map (lambda (name) (cons name '())) (find-identifiers name pattern))
+    (map
+      (lambda (name) (cons name '()))
+      (find-pattern-variables name pattern))
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
@@ -307,7 +309,7 @@
 (define (fill-ellipsis-template matches template)
   (map
     (lambda (matches) (fill-template matches template))
-    (zip-matches (find-identifiers #f template) matches)))
+    (zip-matches (find-pattern-variables #f template) matches)))
 
 (define (fill-template matches template)
   (cond
