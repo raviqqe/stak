@@ -241,9 +241,7 @@
 
 (define (find-pattern-variables literals pattern)
   (cond
-    ((or
-        (memv pattern '(_ ...))
-        (memv pattern literals))
+    ((memv pattern (append '(_ ...) literals))
       '())
 
     ((symbol? pattern)
@@ -254,7 +252,7 @@
         append
         '()
         (map
-          (lambda (pattern) (find-pattern-variables name pattern))
+          (lambda (pattern) (find-pattern-variables literals pattern))
           pattern)))))
 
 (define (match-ellipsis context name pattern expression)
@@ -273,7 +271,7 @@
           ones)))
     (map
       (lambda (name) (cons name '()))
-      (find-pattern-variables name pattern))
+      (find-pattern-variables (list name) pattern))
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
@@ -315,7 +313,7 @@
 (define (fill-ellipsis-template matches template)
   (map
     (lambda (matches) (fill-template matches template))
-    (let ((variables (find-pattern-variables #f template)))
+    (let ((variables (find-pattern-variables '() template)))
       (zip-alist
         (filter
           (lambda (pair) (memv (car pair) variables))
