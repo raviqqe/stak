@@ -23,7 +23,7 @@ Feature: let
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call a function bound by a let expression
+  Scenario: Call a bound function
     Given a file named "main.scm" with:
     """scheme
     (define (f) 65)
@@ -41,7 +41,7 @@ Feature: let
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Cause a side effect in a body in a let expression
+  Scenario: Cause a side effect in a body
     Given a file named "main.scm" with:
     """scheme
     (write-u8
