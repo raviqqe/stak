@@ -224,9 +224,11 @@
 (define (merge-ellipsis-match all ones)
   (map
     (lambda (pair)
-      (cons
-        (cdr pair)
-        (cdr (assv (car pair) all))))
+      (let ((name (car pair)))
+        (cons name
+          (cons
+            (cdr pair)
+            (cdr (assv name all))))))
     ones))
 
 (define (match-ellipsis context name pattern expression)
