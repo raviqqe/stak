@@ -1,7 +1,10 @@
 {
   "words": [
+    "alist",
     "alloc",
     "arity",
+    "assq",
+    "assv",
     "bytevector",
     "codecov",
     "cond",
@@ -14,5 +17,12 @@
     "ribbit",
     "rustup",
     "stak"
-  ]
+  ],
+  "patterns": [
+    {
+      "name": "cxr",
+      "pattern": "/c[ad]+r/"
+    }
+  ],
+  "ignoreRegExpList": ["cxr"]
 }
