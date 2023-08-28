@@ -216,6 +216,7 @@
 
           foo)))))
 
+; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (merge-matches ones others)
   (if (or (not ones) (not others))
     #f
