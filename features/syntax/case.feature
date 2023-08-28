@@ -39,10 +39,10 @@ Feature: case
     Given a file named "main.scm" with:
     """scheme
     (write-u8
-      (cond
-        (()
+      (case 7
+        ((1 2 3)
           65)
-        (#f
+        ((4 5 6)
           66)
         (else
           67)))
