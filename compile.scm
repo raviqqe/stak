@@ -240,7 +240,7 @@
             (match-pattern* context name (cdr pattern) (cdr expression))))))
 
     ((equal? pattern expression)
-      #t)
+      '())
 
     (else
       #f)))
