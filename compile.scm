@@ -206,7 +206,7 @@
 (define (initialize-ellipsis-matches name pattern)
   (cond
     ((or
-        (assv pattern '(_ ...))
+        (memv pattern '(_ ...))
         (eqv? pattern name))
       '())
 
