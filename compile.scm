@@ -106,6 +106,16 @@
     (last-cdr (cdr list))
     list))
 
+(define (filter f xs)
+  (if (null? xs)
+    '()
+    (let (
+        (x (car xs))
+        (rest (filter f (cdr xs))))
+      (if (f x)
+        (cons x rest)
+        rest))))
+
 (define (fold-left f y xs)
   (if (null? xs)
     y
