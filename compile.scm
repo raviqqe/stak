@@ -271,7 +271,7 @@
           ones)))
     (map
       (lambda (name) (cons name '()))
-      (find-pattern-variables (list name) pattern))
+      (find-pattern-variables literals pattern))
     (map
       (lambda (expression) (match-pattern context name literals pattern expression))
       expression)))
@@ -358,7 +358,7 @@
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported transformer"))
   (let* (
-      (literals (cadr transformer))
+      (literals (cons name (cadr transformer)))
       (transformers
         (map
           (lambda (rule) (compile-rule context name literals rule))
