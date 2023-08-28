@@ -628,15 +628,21 @@
 
 ; Functions are normalized into atoms already.
 (define (compile-call context expression continuation)
-  (let (
+  (let* (
       (function (car expression))
-      (arguments (cdr expression)))
-    (compile-call*
+      (arguments (cdr expression))
+      (continuation
+        (compile-call*
+          (if (symbol? function)
+            context
+            (compile-context-add-variable context '$function))
+          (car expression)
+          arguments
+          (length arguments)
+          continuation)))
+    (if (symbol? function)
       context
-      (car expression)
-      arguments
-      (length arguments)
-      continuation)))
+      (compile-context-add-variable context '$function))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
