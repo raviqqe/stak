@@ -232,7 +232,7 @@
 (define (match-ellipsis context name pattern expression)
   (fold
     merge-ellipsis-match
-    (initialize-ellipsis-matches pattern)
+    (initialize-ellipsis-matches name pattern)
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
