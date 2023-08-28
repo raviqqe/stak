@@ -238,8 +238,8 @@
               (match-ellipsis context name first (take ellipsis-length expression))
               (match-pattern* context name (cddr pattern) (skip ellipsis-length expression))))
           (append
-            (match-pattern* context name (cddr pattern) (cddr expression))
-            (match-pattern* context name (cddr pattern) (cddr expression))))))
+            (match-pattern* context name (car pattern) (car expression))
+            (match-pattern* context name (cdr pattern) (cdr expression))))))
 
     ((equal? pattern expression)
       #t)
@@ -247,12 +247,9 @@
     (else
       #f)))
 
+; TODO Remove this.
 (define (match-pattern context name pattern expression)
-  (match-pattern*
-    context
-    name
-    pattern
-    expression))
+  (match-pattern* context name pattern expression))
 
 (define (compile-rule context name rule)
   (lambda (expression)
