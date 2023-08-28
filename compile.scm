@@ -209,8 +209,7 @@
 
 ;; Procedures
 
-; TODO Check literal identifiers.
-(define (initialize-ellipsis-matches name pattern)
+(define (find-identifiers name pattern)
   (cond
     ((or
         (memv pattern '(_ ...))
@@ -218,14 +217,14 @@
       '())
 
     ((symbol? pattern)
-      (list (cons pattern '())))
+      (list pattern))
 
     (else
       (fold-left
         append
         '()
         (map
-          (lambda (pattern) (initialize-ellipsis-matches name pattern))
+          (lambda (pattern) (find-identifiers name pattern))
           pattern)))))
 
 (define (match-ellipsis context name pattern expression)
@@ -242,7 +241,7 @@
                   (cdr pair)
                   (cdr (assv name all))))))
           ones)))
-    (initialize-ellipsis-matches name pattern)
+    (map (lambda (name) (cons name '())) (find-identifiers name pattern))
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
@@ -253,6 +252,7 @@
     #f
     (append ones others)))
 
+; TODO Check literal identifiers.
 (define (match-pattern context name pattern expression)
   (cond
     ((eqv? pattern '_)
