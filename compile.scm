@@ -111,10 +111,10 @@
     '()
     (let (
         (x (car xs))
-        (rest (filter f (cdr xs))))
+        (xs (filter f (cdr xs))))
       (if (f x)
-        (cons x rest)
-        rest))))
+        (cons x xs)
+        xs))))
 
 (define (fold-left f y xs)
   (if (null? xs)
