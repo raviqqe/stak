@@ -293,8 +293,8 @@
           (pair? (cdr template))
           (eqv? (cadr template) '...))
         (append
-          (fill-template matches (car template))
-          (fill-template matches (cdr template)))
+          (fill-ellipsis-template matches (car template))
+          (fill-template matches (cddr template)))
         (cons
           (fill-template matches (car template))
           (fill-template matches (cdr template)))))
