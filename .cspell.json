@@ -6,6 +6,8 @@
     "cond",
     "insta",
     "lcov",
+    "memq",
+    "memv",
     "repr",
     "ribbit",
     "rustup",
