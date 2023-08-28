@@ -116,6 +116,23 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an ellipsis with an empty list
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ...)
+          (write-u8 65 x ...))))
+
+    (foo)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Expand an ellipsis
     Given a file named "main.scm" with:
     """scheme
