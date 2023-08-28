@@ -38,5 +38,5 @@ Feature: Macro
     compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
-		# TODO Fix this to "AB".
+    # TODO Fix this to "AB".
     Then the stdout should contain exactly "BB"
