@@ -194,13 +194,13 @@
   (display pattern)
   (cond
     ((symbol? pattern)
-      (list (cons name expression)))
+      (list (cons pattern expression)))
 
     ((null? pattern)
       '())
 
     ((pair? pattern)
-      (let (first (car pattern))
+      (let ((first (car pattern)))
         (if (eqv?)
           '())))
 
