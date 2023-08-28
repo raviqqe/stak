@@ -1,4 +1,4 @@
-Feature: Conditional
+Feature: cond
   Scenario: Evaluate the first clause
     Given a file named "main.scm" with:
     """scheme
