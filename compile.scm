@@ -201,7 +201,7 @@
         '()))
 
     (else
-      (error "unknown pattern")))
+      (error "unknown pattern"))))
 
 (define (match-pattern context name pattern expression)
   (match-pattern*
