@@ -15,4 +15,5 @@ Feature: or
     compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
+    # spell-checker: disable-next-line
     Then the stdout should contain exactly "BABBAAA"
