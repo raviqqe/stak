@@ -222,17 +222,17 @@
         (cdr (assv name others))
         foo))))
 
-; Note that the original `append` function works in this way natively on some Scheme implementations.
-(define (merge-matches ones others)
-  (if (or (not ones) (not others))
-    #f
-    (append ones others)))
-
 (define (match-ellipsis context name pattern expression)
   (merge-ellipsis-matches
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
+
+; Note that the original `append` function works in this way natively on some Scheme implementations.
+(define (merge-matches ones others)
+  (if (or (not ones) (not others))
+    #f
+    (append ones others)))
 
 (define (match-pattern context name pattern expression)
   (cond
