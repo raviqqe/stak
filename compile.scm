@@ -209,8 +209,8 @@
 
 ;; Procedures
 
-; TODO Check literal identifiers.
-(define (initialize-ellipsis-matches name pattern)
+; TODO Ignore literal identifiers.
+(define (find-pattern-variables name pattern)
   (cond
     ((or
         (memv pattern '(_ ...))
@@ -218,14 +218,14 @@
       '())
 
     ((symbol? pattern)
-      (list (cons pattern '())))
+      (list pattern))
 
     (else
       (fold-left
         append
         '()
         (map
-          (lambda (pattern) (initialize-ellipsis-matches name pattern))
+          (lambda (pattern) (find-pattern-variables name pattern))
           pattern)))))
 
 (define (match-ellipsis context name pattern expression)
@@ -242,7 +242,9 @@
                   (cdr pair)
                   (cdr (assv name all))))))
           ones)))
-    (initialize-ellipsis-matches name pattern)
+    (map
+      (lambda (name) (cons name '()))
+      (find-pattern-variables name pattern))
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
@@ -253,6 +255,7 @@
     #f
     (append ones others)))
 
+; TODO Check literal identifiers.
 (define (match-pattern context name pattern expression)
   (cond
     ((eqv? pattern '_)
@@ -280,6 +283,34 @@
     (else
       #f)))
 
+; TODO Split into `filter` and `zip-alist`.
+(define (zip-matches identifiers matches)
+  (let (
+      (pairs
+        (map
+          (lambda (key)
+            (let* (
+                (pair (assv key matches))
+                (value (cdr pair)))
+              (if (pair? value)
+                (cons
+                  (cons key (car value))
+                  (cons key (cdr value)))
+                #f)))
+          identifiers)))
+    (if (memv #f pairs)
+      '()
+      (cons
+        (map car pairs)
+        (zip-matches
+          identifiers
+          (map cdr pairs))))))
+
+(define (fill-ellipsis-template matches template)
+  (map
+    (lambda (matches) (fill-template matches template))
+    (zip-matches (find-pattern-variables #f template) matches)))
+
 (define (fill-template matches template)
   (cond
     ((symbol? template)
@@ -289,9 +320,15 @@
           template)))
 
     ((pair? template)
-      (cons
-        (fill-template matches (car template))
-        (fill-template matches (cdr template))))
+      (if (and
+          (pair? (cdr template))
+          (eqv? (cadr template) '...))
+        (append
+          (fill-ellipsis-template matches (car template))
+          (fill-template matches (cddr template)))
+        (cons
+          (fill-template matches (car template))
+          (fill-template matches (cdr template)))))
 
     (else
       template)))

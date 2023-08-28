@@ -76,3 +76,22 @@ Feature: Macro
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Expand an ellipsis
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x y) ...)
+          (begin (x y) ...))))
+
+    (foo
+      (write-u8 65)
+      (write-char #\B))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "AB"
