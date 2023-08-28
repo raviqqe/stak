@@ -1,4 +1,4 @@
-Feature: Syntax
+Feature: define
   Scenario: Define a recursive function
     Given a file named "main.scm" with:
     """scheme
