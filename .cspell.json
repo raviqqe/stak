@@ -3,6 +3,7 @@
     "alloc",
     "arity",
     "codecov",
+    "cond",
     "insta",
     "lcov",
     "repr",
