@@ -256,15 +256,24 @@
     (else
       #f)))
 
-(define (fill-template template matches)
-  foo)
+(define (fill-template matches template)
+  (cond
+    ((symbol? template)
+      (if (assv template matches)
+        foo
+        foo))
+
+    ((pair? template)
+      (fill-template (car template) matches))
+
+    (else
+      template)))
 
 (define (compile-rule context name rule)
   (lambda (expression)
     (let ((matches (match-pattern context name (car rule) expression)))
       (if matches
-        ; TODO Fill a template.
-        (cadr rule)
+        (fill-template matches (cadr rule))
         expression))))
 
 (define (compile-transformer context name transformer)
