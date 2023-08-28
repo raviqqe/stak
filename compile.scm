@@ -106,13 +106,20 @@
     (last-cdr (cdr list))
     list))
 
-(define (fold f y xs)
+(define (fold-left f y xs)
   (if (null? xs)
     y
-    (fold
+    (fold-left
       f
       (f y (car xs))
       (cdr xs))))
+
+(define (fold-right f y xs)
+  (if (null? xs)
+    y
+    (f
+      (fold-right f y (cdr xs))
+      (car xs))))
 
 (define (take n list)
   (if (eqv? n 0)
@@ -202,32 +209,49 @@
 
 ;; Procedures
 
-; TODO
-(define (merge-ellipsis-matches ones others)
-  (let loop ((ones ones) (result '()))
-    (if (null? ones)
-      result
-      (let* (
-          (pair (car ones))
-          (name (car pair))
-          (value (cdr pair)))
-        (loop
-          (cdr
-            (assv name others))
+; TODO Check literal identifiers.
+(define (initialize-ellipsis-matches name pattern)
+  (cond
+    ((or
+        (memv pattern '(_ ...))
+        (eqv? pattern name))
+      '())
 
-          foo)))))
+    ((symbol? pattern)
+      (list (cons pattern '())))
+
+    (else
+      (fold-left
+        append
+        '()
+        (map
+          (lambda (pattern) (initialize-ellipsis-matches name pattern))
+          pattern)))))
+
+(define (match-ellipsis context name pattern expression)
+  (fold-right
+    (lambda (all ones)
+      (and
+        all
+        ones
+        (map
+          (lambda (pair)
+            (let ((name (car pair)))
+              (cons name
+                (cons
+                  (cdr pair)
+                  (cdr (assv name all))))))
+          ones)))
+    (initialize-ellipsis-matches name pattern)
+    (map
+      (lambda (expression) (match-pattern context name pattern expression))
+      expression)))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (merge-matches ones others)
   (if (or (not ones) (not others))
     #f
     (append ones others)))
-
-; TODO
-(define (match-ellipsis context name pattern expression)
-  (if (null? expression)
-    '()
-    '()))
 
 (define (match-pattern context name pattern expression)
   (cond
@@ -288,7 +312,7 @@
           (lambda (rule) (compile-rule context name rule))
           (cddr transformer))))
     (lambda (expression)
-      (fold
+      (fold-left
         (lambda (expression transformer) (transformer expression))
         expression
         transformers))))
