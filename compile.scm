@@ -203,10 +203,10 @@
 ;; Procedures
 
 ; TODO Check literal identifiers.
-(define (initialize-ellipsis-accumulator pattern)
+(define (initialize-ellipsis-matches pattern)
   (if (symbol? pattern)
     (list (cons pattern '()))
-    (fold append '() (map initialize-ellipsis-accumulator pattern))))
+    (fold append '() (map initialize-ellipsis-matches pattern))))
 
 (define (merge-ellipsis-match all ones)
   (map
@@ -219,7 +219,7 @@
 (define (match-ellipsis context name pattern expression)
   (fold
     merge-ellipsis-match
-    (initialize-ellipsis-accumulator pattern)
+    (initialize-ellipsis-matches pattern)
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
