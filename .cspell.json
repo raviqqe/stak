@@ -3,11 +3,9 @@
     "alist",
     "alloc",
     "arity",
+    "assq",
+    "assv",
     "bytevector",
-    "caddr",
-    "cadr",
-    "car",
-    "cdr",
     "codecov",
     "cond",
     "insta",
@@ -19,5 +17,12 @@
     "ribbit",
     "rustup",
     "stak"
-  ]
+  ],
+  "patterns": [
+    {
+      "name": "cxr",
+      "pattern": "/c[ad]+r/"
+    }
+  ],
+  "ignoreRegExpList": ["cxr"]
 }
