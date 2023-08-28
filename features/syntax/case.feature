@@ -24,9 +24,9 @@ Feature: case
         ((1 2 3)
           65)
         ((4 5 6)
-          65)
+          66)
         (else
-          66)))
+          67)))
     """
     When I run the following script:
     """sh
@@ -40,7 +40,7 @@ Feature: case
     """scheme
     (write-u8
       (cond
-        (#f
+        (()
           65)
         (#f
           66)
