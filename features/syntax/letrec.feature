@@ -1,5 +1,5 @@
 Feature: letrec
-  Scenario: Bind a function
+  Scenario: Bind a variable
     Given a file named "main.scm" with:
     """scheme
     (define (f x)
