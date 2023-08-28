@@ -228,19 +228,17 @@
           (lambda (pattern) (initialize-ellipsis-matches name pattern))
           pattern)))))
 
-(define (merge-ellipsis-match all ones)
-  (map
-    (lambda (pair)
-      (let ((name (car pair)))
-        (cons name
-          (cons
-            (cdr pair)
-            (cdr (assv name all))))))
-    ones))
-
 (define (match-ellipsis context name pattern expression)
   (fold-right
-    merge-ellipsis-match
+    (lambda (all ones)
+      (map
+        (lambda (pair)
+          (let ((name (car pair)))
+            (cons name
+              (cons
+                (cdr pair)
+                (cdr (assv name all))))))
+        ones))
     (initialize-ellipsis-matches name pattern)
     (map
       (lambda (expression) (match-pattern context name pattern expression))
