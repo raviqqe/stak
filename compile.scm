@@ -195,9 +195,6 @@
     ((symbol? pattern)
       (list (cons pattern expression)))
 
-    ((null? pattern)
-      '())
-
     ((pair? pattern)
       (let (
           (first (car pattern))
