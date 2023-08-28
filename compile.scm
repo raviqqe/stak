@@ -239,7 +239,6 @@
 
 ;; Procedures
 
-; TODO Ignore literal identifiers.
 (define (find-pattern-variables literals pattern)
   (cond
     ((or
