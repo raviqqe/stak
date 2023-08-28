@@ -631,23 +631,21 @@
         argument-count
         continuation))))
 
-; Functions are normalized into atoms already.
 (define (compile-call context expression continuation)
   (let* (
       (function (car expression))
       (arguments (cdr expression))
-      (continuation
-        (compile-call*
-          (if (symbol? function)
-            context
-            (compile-context-environment-add-variable context '$function))
-          (car expression)
-          arguments
-          (length arguments)
-          continuation)))
+      (continue
+        (lambda (context function)
+          (compile-call* context function arguments (length arguments) continuation))))
     (if (symbol? function)
-      context
-      (compile-context-environmen-add context '$function))))
+      (continue context function)
+      (compile-expression
+        context
+        function
+        (continue
+          (compile-context-environment-push context '$function)
+          '$function)))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
