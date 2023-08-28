@@ -2,10 +2,12 @@
   "words": [
     "alloc",
     "arity",
+    "bytevector",
     "codecov",
     "cond",
     "insta",
     "lcov",
+    "letrec",
     "memq",
     "memv",
     "repr",
