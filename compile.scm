@@ -228,6 +228,9 @@
 
 (define (match-pattern* context name pattern expression)
   (cond
+    ((and (eqv? pattern '_) (eqv? expression name))
+      '())
+
     ((symbol? pattern)
       (list (cons pattern expression)))
 
