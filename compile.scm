@@ -203,7 +203,7 @@
 ;; Procedures
 
 ; TODO
-(define (merge-ellipsis-matches . matches)
+(define (merge-ellipsis-matches matches)
   (let loop ((ones ones) (result '()))
     (if (null? ones)
       result
