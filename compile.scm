@@ -285,15 +285,15 @@
   (let (
       (pairs
         (map
-          (lambda (identifier)
+          (lambda (key)
             (let* (
-                (pair (assv identifier matches))
+                (pair (assv key matches))
                 (value (cdr pair)))
               (if (pair? value)
                 #f
                 (cons
-                  (cons identifier (car value))
-                  (cons identifier (cdr value))))))
+                  (cons key (car value))
+                  (cons key (cdr value))))))
           identifiers)))
     (if (memv #f pairs)
       '()
