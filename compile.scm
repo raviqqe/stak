@@ -455,20 +455,6 @@
     (if (pair? expression)
       (let ((first (car expression)))
         (cond
-          ((eqv? first 'and)
-            (expand
-              (cond
-                ((null? (cdr expression))
-                  #t)
-
-                ((null? (cddr expression))
-                  (cadr expression))
-
-                (else
-                  (list 'if (cadr expression)
-                    (cons 'and (cddr expression))
-                    #f)))))
-
           ((eqv? first 'begin)
             (cons 'begin (expand-sequence context (cdr expression))))
 
@@ -533,22 +519,6 @@
 
           ((eqv? first 'letrec-syntax)
             (error "not implemented"))
-
-          ((eqv? first 'or)
-            (expand
-              (cond
-                ((null? (cdr expression))
-                  #f)
-
-                ((null? (cddr expression))
-                  (cadr expression))
-
-                (else
-                  (list 'let
-                    (list (list '$x (cadr expression)))
-                    (list 'if '$x
-                      '$x
-                      (cons 'or (cddr expression))))))))
 
           ((eqv? first 'quote)
             expression)
