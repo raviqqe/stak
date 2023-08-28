@@ -628,7 +628,9 @@
 
 ; Functions are normalized into atoms already.
 (define (compile-call context expression continuation)
-  (let ((arguments (cdr expression)))
+  (let (
+      (function (car expression))
+      (arguments (cdr expression)))
     (compile-call*
       context
       (car expression)
