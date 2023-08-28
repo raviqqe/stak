@@ -232,6 +232,7 @@
   (fold-right
     (lambda (all ones)
       (and
+        all
         ones
         (map
           (lambda (pair)
