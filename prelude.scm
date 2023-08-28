@@ -2,7 +2,7 @@
 ;
 ; Those syntax definitions are copied from https://small.r7rs.org/attachment/r7rs.pdf.
 
-;; Conditionals
+;; Conditional
 
 (define-syntax cond
   (syntax-rules (else =>)
