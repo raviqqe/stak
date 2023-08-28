@@ -200,7 +200,9 @@
       '())
 
     ((pair? pattern)
-      (let ((first (car pattern)))
+      (let (
+          (first (car pattern))
+          (second (and (cdr pattern) (cadr pattern))))
         (if (eqv?)
           '())))
 
