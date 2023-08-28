@@ -280,6 +280,14 @@
     (else
       #f)))
 
+(define (zip-matches matches)
+  (map foo matches))
+
+(define (fill-ellipsis-template matches template)
+  (map
+    (lambda (tempalte) (fill-template matches template))
+    (zip-matches matches)))
+
 (define (fill-template matches template)
   (cond
     ((symbol? template)
