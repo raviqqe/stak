@@ -243,7 +243,7 @@
   (cond
     ((or
         (memv pattern '(_ ...))
-        (memv pattern name))
+        (memv pattern literals))
       '())
 
     ((symbol? pattern)
