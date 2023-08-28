@@ -227,7 +227,7 @@
 (define (match-ellipsis context name pattern expression)
   (merge-ellipsis-matches
     (map
-      (lambda (expression) foo)
+      (lambda (expression) (match-pattern context name pattern expression))
       expression)))
 
 (define (match-pattern context name pattern expression)
