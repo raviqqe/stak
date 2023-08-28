@@ -636,16 +636,17 @@
       (function (car expression))
       (arguments (cdr expression))
       (continue
-        (lambda (context function)
+        (lambda (context function continuation)
           (compile-call* context function arguments (length arguments) continuation))))
     (if (symbol? function)
-      (continue context function)
+      (continue context function continuation)
       (compile-expression
         context
         function
         (continue
           (compile-context-environment-push context '$function)
-          '$function)))))
+          '$function
+          (compile-unbind continuation))))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
