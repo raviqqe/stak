@@ -202,6 +202,7 @@
 
 ;; Procedures
 
+; TODO
 (define (merge-ellipsis-matches ones others)
   (let loop ((ones ones) (result '()))
     (if (null? ones)
@@ -222,6 +223,7 @@
     #f
     (append ones others)))
 
+; TODO
 (define (match-ellipsis context name pattern expression)
   (if (null? expression)
     '()
@@ -253,6 +255,9 @@
 
     (else
       #f)))
+
+(define (fill-template template matches)
+  foo)
 
 (define (compile-rule context name rule)
   (lambda (expression)
