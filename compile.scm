@@ -114,6 +114,11 @@
       (f y (car xs))
       (cdr xs))))
 
+(define (take n list)
+  (if (eqv? n 0)
+    list
+    (take (- n 1) (cdr list))))
+
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
@@ -189,6 +194,21 @@
       (caddr context))))
 
 ;; Procedures
+
+(define (merge-matches ones others)
+  (let loop (
+      (ones ones)
+      (result '()))
+    (if (null? ones)
+      result
+      (let* (
+          (pair (car ones))
+          (name (car pair))
+          (value (cdr pair)))
+        (loop
+          (assv foo others)
+
+          foo)))))
 
 (define (match-pattern* context name pattern expression)
   (cond
