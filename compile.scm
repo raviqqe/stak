@@ -116,8 +116,15 @@
 
 (define (take n list)
   (if (eqv? n 0)
+    '()
+    (cons
+      (car list)
+      (take (- n 1) (cdr list)))))
+
+(define (skip n list)
+  (if (eqv? n 0)
     list
-    (take (- n 1) (cdr list))))
+    (skip (- n 1) (cdr list))))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -196,9 +203,7 @@
 ;; Procedures
 
 (define (merge-matches ones others)
-  (let loop (
-      (ones ones)
-      (result '()))
+  (let loop ((ones ones) (result '()))
     (if (null? ones)
       result
       (let* (
@@ -206,9 +211,15 @@
           (name (car pair))
           (value (cdr pair)))
         (loop
-          (assv foo others)
+          (cdr
+            (assv name others))
 
           foo)))))
+
+(define (match-ellipsis context name pattern expression)
+  (if (null? expression)
+    '()
+    fo))
 
 (define (match-pattern* context name pattern expression)
   (cond
@@ -223,10 +234,10 @@
           (let (
               (rest-length (- (length pattern) 2))
               (expression-length (length expression)))
-            (merge-matches
-              (match-pattern* context name (list first second) (cddr expression))
+            (append
+              (match-ellipsis context name first (cddr expression))
               (match-pattern* context name (cddr pattern) (cddr expression))))
-          (merge-matches
+          (append
             (match-pattern* context name (cddr pattern) (cddr expression))
             (match-pattern* context name (cddr pattern) (cddr expression))))))
 
