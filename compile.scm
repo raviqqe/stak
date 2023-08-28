@@ -143,6 +143,24 @@
     list
     (skip (- n 1) (cdr list))))
 
+(define (zip-alist alist)
+  (let (
+      (pairs
+        (map
+          (lambda (pair)
+            (let ((value (cdr pair)))
+              (if (pair? value)
+                (cons
+                  (cons key (car value))
+                  (cons key (cdr value)))
+                #f)))
+          alist)))
+    (if (memv #f pairs)
+      '()
+      (cons
+        (map car pairs)
+        (zip-alist (map cdr pairs))))))
+
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
