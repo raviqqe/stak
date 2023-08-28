@@ -231,12 +231,10 @@
           (first (car pattern))
           (second (and (cdr pattern) (cadr pattern))))
         (if (eqv? second '...)
-          (let (
-              (rest-length (- (length pattern) 2))
-              (ellipsis-length (- (length expression) rest-length)))
+          (let ((length (- (length expression) (- (length pattern) 2))))
             (append
-              (match-ellipsis context name first (take ellipsis-length expression))
-              (match-pattern* context name (cddr pattern) (skip ellipsis-length expression))))
+              (match-ellipsis context name first (take length expression))
+              (match-pattern* context name (cddr pattern) (skip length expression))))
           (append
             (match-pattern* context name (car pattern) (car expression))
             (match-pattern* context name (cdr pattern) (cdr expression))))))
