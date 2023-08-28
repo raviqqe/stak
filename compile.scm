@@ -203,10 +203,21 @@
 ;; Procedures
 
 ; TODO Check literal identifiers.
-(define (initialize-ellipsis-matches pattern)
-  (if (symbol? pattern)
-    (list (cons pattern '()))
-    (fold append '() (map initialize-ellipsis-matches pattern))))
+(define (initialize-ellipsis-matches name pattern)
+  (cond
+    ((or (assv pattern '(_ ...)) (eqv? pattern name))
+      foo)
+
+    ((symbol? pattern)
+      (list (cons pattern '())))
+
+    (else
+      (fold
+        append
+        '()
+        (map
+          (lambda (pattern) (initialize-ellipsis-matches name pattern))
+          pattern)))))
 
 (define (merge-ellipsis-match all ones)
   (map
