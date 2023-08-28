@@ -35,6 +35,28 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
 
+  Scenario: Match a nested pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax my-cond
+      (syntax-rules (else)
+        ((_ (condition then-result) (else else-result))
+          (if condition then-result else-result))))
+
+    (write-u8
+      (my-cond
+        (#t
+          65)
+        (else
+          66)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Capture a free variable
     Given a file named "main.scm" with:
     """scheme
