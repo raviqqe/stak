@@ -280,13 +280,32 @@
     (else
       #f)))
 
-(define (zip-matches matches)
-  (map foo matches))
+(define (zip-matches identifiers matches)
+  (let (
+      (pairs
+        (map
+          (lambda (identifier)
+            (let* (
+                (pair (assv identifier matches))
+                (value (cdr pair)))
+              (if (pair? value)
+                #f
+                (cons
+                  (cons identifier (car value))
+                  (cons identifier (cdr value))))))
+          identifiers)))
+    (if (memv #f pairs)
+      '()
+      (cons
+        (map car pairs)
+        (zip-matches
+          identifiers
+          (map cdr pairs))))))
 
 (define (fill-ellipsis-template matches template)
   (map
     (lambda (tempalte) (fill-template matches template))
-    (zip-matches matches)))
+    (zip-matches (find-identifiers #f template) matches)))
 
 (define (fill-template matches template)
   (cond
