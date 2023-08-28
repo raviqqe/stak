@@ -35,6 +35,28 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
 
+  Scenario: Match a nested pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax my-cond
+      (syntax-rules (else)
+        ((_ (condition then-result) (else else-result))
+          (if condition then-result else-result))))
+
+    (write-u8
+      (my-cond
+        (#t
+          65)
+        (else
+          66)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Capture a free variable
     Given a file named "main.scm" with:
     """scheme
@@ -94,6 +116,23 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an ellipsis with an empty list
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ...)
+          (write-u8 65 x ...))))
+
+    (foo)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Expand an ellipsis
     Given a file named "main.scm" with:
     """scheme
@@ -112,6 +151,27 @@ Feature: Macro
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Match two ellipses at different levels
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax plus
+      (syntax-rules ()
+        ((_ (x y ...) v w ...)
+          (+ x v))))
+
+    (write-u8
+      (plus
+        (60 "foo")
+        5
+        "bar"))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
 
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
