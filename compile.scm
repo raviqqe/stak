@@ -106,13 +106,20 @@
     (last-cdr (cdr list))
     list))
 
-(define (fold f y xs)
+(define (fold-left f y xs)
   (if (null? xs)
     y
-    (fold
+    (fold-left
       f
       (f y (car xs))
       (cdr xs))))
+
+(define (fold-right f y xs)
+  (if (null? xs)
+    y
+    (f
+      (fold-right f y (cdr xs))
+      (car xs))))
 
 (define (take n list)
   (if (eqv? n 0)
@@ -214,7 +221,7 @@
       (list (cons pattern '())))
 
     (else
-      (fold
+      (fold-left
         append
         '()
         (map
@@ -232,7 +239,7 @@
     ones))
 
 (define (match-ellipsis context name pattern expression)
-  (fold
+  (fold-right
     merge-ellipsis-match
     (initialize-ellipsis-matches name pattern)
     (map
@@ -304,7 +311,7 @@
           (lambda (rule) (compile-rule context name rule))
           (cddr transformer))))
     (lambda (expression)
-      (fold
+      (fold-left
         (lambda (expression transformer) (transformer expression))
         expression
         transformers))))
