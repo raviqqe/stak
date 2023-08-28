@@ -202,7 +202,7 @@
 
 ;; Procedures
 
-(define (merge-matches ones others)
+(define (merge-ellipsis-matches ones others)
   (let loop ((ones ones) (result '()))
     (if (null? ones)
       result
@@ -216,10 +216,15 @@
 
           foo)))))
 
+(define (merge-matches ones others)
+  (if (or (not ones) (not others))
+    #f
+    (append ones others)))
+
 (define (match-ellipsis context name pattern expression)
   (if (null? expression)
     '()
-    fo))
+    '()))
 
 (define (match-pattern* context name pattern expression)
   (cond
@@ -232,10 +237,10 @@
           (second (and (pair? (cdr pattern)) (cadr pattern))))
         (if (eqv? second '...)
           (let ((length (- (length expression) (- (length pattern) 2))))
-            (append
+            (merge-matches
               (match-ellipsis context name first (take length expression))
               (match-pattern* context name (cddr pattern) (skip length expression))))
-          (append
+          (merge-matches
             (match-pattern* context name (car pattern) (car expression))
             (match-pattern* context name (cdr pattern) (cdr expression))))))
 
