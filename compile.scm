@@ -233,10 +233,10 @@
         (if (eqv? second '...)
           (let (
               (rest-length (- (length pattern) 2))
-              (expression-length (length expression)))
+              (ellipsis-length (- (length expression) rest-length)))
             (append
-              (match-ellipsis context name first (cddr expression))
-              (match-pattern* context name (cddr pattern) (cddr expression))))
+              (match-ellipsis context name first (take ellipsis-length expression))
+              (match-pattern* context name (cddr pattern) (skip ellipsis-length expression))))
           (append
             (match-pattern* context name (cddr pattern) (cddr expression))
             (match-pattern* context name (cddr pattern) (cddr expression))))))
