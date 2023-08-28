@@ -4,6 +4,37 @@
 ;
 ; All compiler-generated variables are prefixed with `$`.
 
+; Compatibility
+
+(cond-expand
+  ((or gambit gauche)
+    (import (scheme base) (scheme cxr))
+
+    (define (rib tag car cdr)
+      (cons (cons (cons '$rib tag) car) cdr))
+
+    (define (rib-cons car cdr)
+      (cons (cons (cons '$rib 0) car) cdr))
+
+    (define rib-tag cdaar)
+    (define rib-car cdar)
+    (define rib-cdr cdr)
+
+    (define (rib-set-car! rib car)
+      (set-cdr! (car rib) car))
+
+    (define (rib-set-cdr! rib cdr)
+      (set-cdr! rib cdr))
+
+    (define (rib? value)
+      (and
+        (pair? value)
+        (pair? (car value))
+        (pair? (caar value))
+        (eqv? (caaar value) '$rib))))
+
+  (else))
+
 ; Constants
 
 (define default-constants
@@ -44,33 +75,6 @@
 (define bytevector-type 6)
 
 ; Utility
-
-(cond-expand
-  ((or gambit gauche)
-    (define (rib tag car cdr)
-      (cons (cons (cons '$rib tag) car) cdr))
-
-    (define (rib-cons car cdr)
-      (cons (cons (cons '$rib 0) car) cdr))
-
-    (define rib-tag cdaar)
-    (define rib-car cdar)
-    (define rib-cdr cdr)
-
-    (define (rib-set-car! rib car)
-      (set-cdr! (car rib) car))
-
-    (define (rib-set-cdr! rib cdr)
-      (set-cdr! rib cdr))
-
-    (define (rib? value)
-      (and
-        (pair? value)
-        (pair? (car value))
-        (pair? (caar value))
-        (eqv? (caaar value) '$rib))))
-
-  (else))
 
 (define (member-index value list)
   (cond
