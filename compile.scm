@@ -290,10 +290,10 @@
                 (pair (assv key matches))
                 (value (cdr pair)))
               (if (pair? value)
-                #f
                 (cons
                   (cons key (car value))
-                  (cons key (cdr value))))))
+                  (cons key (cdr value)))
+                #f)))
           identifiers)))
     (if (memv #f pairs)
       '()
