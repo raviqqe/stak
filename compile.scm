@@ -252,7 +252,7 @@
 (define (compile-rule context name rule)
   (lambda (expression)
     (let ((alist (match-pattern context name (car rule) expression)))
-      (display alist)
+      (error "match:" alist)
       ; TODO Fill a template.
       #f)))
 
