@@ -1,8 +1,13 @@
 {
   "words": [
+    "alist",
     "alloc",
     "arity",
     "bytevector",
+    "caddr",
+    "cadr",
+    "car",
+    "cdr",
     "codecov",
     "cond",
     "insta",
