@@ -305,7 +305,7 @@
 
 (define (fill-ellipsis-template matches template)
   (map
-    (lambda (tempalte) (fill-template matches template))
+    (lambda (matches) (fill-template matches template))
     (zip-matches (find-identifiers #f template) matches)))
 
 (define (fill-template matches template)
