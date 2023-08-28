@@ -191,8 +191,12 @@
 ;; Procedures
 
 (define (match-pattern context name pattern expression)
-  ; TODO
-  '())
+  (cond
+    ((symbol? pattern)
+      foo)
+
+    (if (eqv? (car pattern) (car expression))
+      '())))
 
 (define (compile-rule context name rule)
   (lambda (expression)
