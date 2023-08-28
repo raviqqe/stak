@@ -190,17 +190,32 @@
 
 ;; Procedures
 
-(define (match-pattern context name pattern expression)
+(define (match-pattern* context name pattern expression continue)
+  (display pattern)
   (cond
     ((symbol? pattern)
-      foo)
+      (continue name expression))
 
-    (if (eqv? (car pattern) (car expression))
-      '())))
+    ((pair? pattern)
+      ((eqv? (car pattern) (car expression))
+        '()))
+
+    (else
+      (error "unknown pattern")))
+
+(define (match-pattern context name pattern expression)
+  (match-pattern*
+    context
+    name
+    pattern
+    expression
+    (lambda (expression) expression)
+    '()))
 
 (define (compile-rule context name rule)
   (lambda (expression)
     (let ((alist (match-pattern context name (car rule) expression)))
+      (display alist)
       ; TODO Fill a template.
       #f)))
 
