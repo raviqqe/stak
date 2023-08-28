@@ -55,7 +55,7 @@ Feature: Syntax
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use a letrec expresion
+  Scenario: Use a letrec expression
     Given a file named "main.scm" with:
     """scheme
     (define (f x)
@@ -76,7 +76,7 @@ Feature: Syntax
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use a letrec expresion with two bindings
+  Scenario: Use a letrec expression with two bindings
     Given a file named "main.scm" with:
     """scheme
     (define (f x)
