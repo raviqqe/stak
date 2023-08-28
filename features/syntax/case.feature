@@ -20,13 +20,13 @@ Feature: case
     Given a file named "main.scm" with:
     """scheme
     (write-u8
-      (cond
-        (#f
+      (case 5
+        ((1 2 3)
           65)
-        (#t
-          66)
+        ((4 5 6)
+          65)
         (else
-          67)))
+          66)))
     """
     When I run the following script:
     """sh
