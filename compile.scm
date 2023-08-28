@@ -209,8 +209,7 @@
     name
     pattern
     expression
-    (lambda (expression) expression)
-    '()))
+    (lambda (name expression) (list (cons name expression)))))
 
 (define (compile-rule context name rule)
   (lambda (expression)
