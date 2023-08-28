@@ -205,8 +205,10 @@
 ; TODO Check literal identifiers.
 (define (initialize-ellipsis-matches name pattern)
   (cond
-    ((or (assv pattern '(_ ...)) (eqv? pattern name))
-      foo)
+    ((or
+        (assv pattern '(_ ...))
+        (eqv? pattern name))
+      '())
 
     ((symbol? pattern)
       (list (cons pattern '())))
