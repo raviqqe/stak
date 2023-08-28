@@ -66,9 +66,26 @@ Feature: Macro
     (define-syntax foo
       (syntax-rules ()
         ((_ x ...)
-          x)))
+          (x ...))))
 
     (foo write-u8 65)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a succeeding ellipsis
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ... y)
+          (y x ...))))
+
+    (foo 65 write-u8)
     """
     When I run the following script:
     """sh
