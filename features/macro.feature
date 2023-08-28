@@ -66,9 +66,26 @@ Feature: Macro
     (define-syntax foo
       (syntax-rules ()
         ((_ x ...)
-          x)))
+          (x ...))))
 
     (foo write-u8 65)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a succeeding ellipsis
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ... y)
+          (y x ...))))
+
+    (foo 65 write-u8)
     """
     When I run the following script:
     """sh
@@ -95,3 +112,20 @@ Feature: Macro
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Match a literal identifier
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax my-if
+      (syntax-rules (then else)
+        ((_ x then y else z)
+          (if x y z))))
+
+    (write-u8 (my-if #f then 65 else 66))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "B"
