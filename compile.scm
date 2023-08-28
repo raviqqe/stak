@@ -289,9 +289,13 @@
           template)))
 
     ((pair? template)
-      (cons
-        (fill-template matches (car template))
-        (fill-template matches (cdr template))))
+      (if (pair? (cdr template))
+        (append
+          (fill-template matches (car template))
+          (fill-template matches (cdr template)))
+        (cons
+          (fill-template matches (car template))
+          (fill-template matches (cdr template)))))
 
     (else
       template)))
