@@ -225,6 +225,21 @@
     (car list)
     (list-ref (cdr list) (- index 1))))
 
+(define (memx eq?)
+  (lambda (x xs)
+    (cond
+      ((null? xs)
+        #f)
+
+      ((eq? x (car xs))
+        xs)
+
+      (else
+        (memv x (cdr xs))))))
+
+(define memq (memx eq?))
+(define memv (memx eqv?))
+
 ;; Number
 
 (define (integer? x)
