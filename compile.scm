@@ -231,7 +231,7 @@
     ((symbol? pattern)
       (list (cons pattern expression)))
 
-    ((pair? pattern)
+    ((and (pair? pattern) (pair? expression))
       (let (
           (first (car pattern))
           (second (and (pair? (cdr pattern)) (cadr pattern))))
@@ -256,10 +256,14 @@
 
 (define (compile-rule context name rule)
   (lambda (expression)
-    (let ((alist (match-pattern context name (car rule) expression)))
-      (error "match:" alist)
+    (let ((matches (match-pattern context name (car rule) expression)))
+      (display "match:")
+      (display matches)
+      (newline)
       ; TODO Fill a template.
-      #f)))
+      (if matches
+        #f
+        expression))))
 
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
