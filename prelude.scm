@@ -1,4 +1,6 @@
 ; Syntax
+;
+; Those syntax definitions are copied from https://small.r7rs.org/attachment/r7rs.pdf.
 
 (define-syntax cond
   (syntax-rules (else =>)
