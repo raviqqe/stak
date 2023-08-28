@@ -255,7 +255,7 @@
           (lambda (pattern) (find-pattern-variables literals pattern))
           pattern)))))
 
-(define (match-ellipsis context name pattern expression)
+(define (match-ellipsis context name literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -273,7 +273,7 @@
       (lambda (name) (cons name '()))
       (find-pattern-variables (list name) pattern))
     (map
-      (lambda (expression) (match-pattern context name pattern expression))
+      (lambda (expression) (match-pattern context name literals pattern expression))
       expression)))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
@@ -283,32 +283,39 @@
     (append ones others)))
 
 ; TODO Check literal identifiers.
-(define (match-pattern context name pattern expression)
-  (cond
-    ((eqv? pattern '_)
-      (if (eqv? expression name) '() #f))
+(define (match-pattern context name literals pattern expression)
+  (let (
+      (match-pattern
+        (lambda (pattern expression)
+          (match-pattern context name literals pattern expression))))
+    (cond
+      ((eqv? pattern '_)
+        (if (eqv? expression name) '() #f))
 
-    ((symbol? pattern)
-      (list (cons pattern expression)))
+      ((memv pattern literals)
+        (if (eqv? expression pattern) '() #f))
 
-    ((and (pair? pattern) (pair? expression))
-      (let (
-          (first (car pattern))
-          (second (and (pair? (cdr pattern)) (cadr pattern))))
-        (if (eqv? second '...)
-          (let ((length (- (length expression) (- (length pattern) 2))))
+      ((symbol? pattern)
+        (list (cons pattern expression)))
+
+      ((and (pair? pattern) (pair? expression))
+        (let (
+            (first (car pattern))
+            (second (and (pair? (cdr pattern)) (cadr pattern))))
+          (if (eqv? second '...)
+            (let ((length (- (length expression) (- (length pattern) 2))))
+              (merge-matches
+                (match-ellipsis context name literals first (take length expression))
+                (match-pattern (cddr pattern) (skip length expression))))
             (merge-matches
-              (match-ellipsis context name first (take length expression))
-              (match-pattern context name (cddr pattern) (skip length expression))))
-          (merge-matches
-            (match-pattern context name (car pattern) (car expression))
-            (match-pattern context name (cdr pattern) (cdr expression))))))
+              (match-pattern (car pattern) (car expression))
+              (match-pattern (cdr pattern) (cdr expression))))))
 
-    ((equal? pattern expression)
-      '())
+      ((equal? pattern expression)
+        '())
 
-    (else
-      #f)))
+      (else
+        #f))))
 
 (define (fill-ellipsis-template matches template)
   (map
@@ -341,9 +348,9 @@
     (else
       template)))
 
-(define (compile-rule context name rule)
+(define (compile-rule context name literals rule)
   (lambda (expression)
-    (let ((matches (match-pattern context name (car rule) expression)))
+    (let ((matches (match-pattern context name literals (car rule) expression)))
       (if matches
         (fill-template matches (cadr rule))
         expression))))
@@ -351,10 +358,11 @@
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported transformer"))
-  (let (
+  (let* (
+      (literals (cadr transformer))
       (transformers
         (map
-          (lambda (rule) (compile-rule context name rule))
+          (lambda (rule) (compile-rule context name literals rule))
           (cddr transformer))))
     (lambda (expression)
       (fold-left
