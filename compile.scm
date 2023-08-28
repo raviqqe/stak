@@ -297,7 +297,7 @@
       ((symbol? pattern)
         (list (cons pattern expression)))
 
-      ((and (pair? pattern) (pair? expression))
+      ((pair? pattern)
         (let (
             (first (car pattern))
             (second (and (pair? (cdr pattern)) (cadr pattern))))
