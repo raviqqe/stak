@@ -282,7 +282,6 @@
     #f
     (append ones others)))
 
-; TODO Check literal identifiers.
 (define (match-pattern context name literals pattern expression)
   (let (
       (match-pattern
