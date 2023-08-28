@@ -313,33 +313,14 @@
     (else
       #f)))
 
-; TODO Split into `filter` and `zip-alist`.
-(define (zip-matches identifiers matches)
-  (let (
-      (pairs
-        (map
-          (lambda (key)
-            (let* (
-                (pair (assv key matches))
-                (value (cdr pair)))
-              (if (pair? value)
-                (cons
-                  (cons key (car value))
-                  (cons key (cdr value)))
-                #f)))
-          identifiers)))
-    (if (memv #f pairs)
-      '()
-      (cons
-        (map car pairs)
-        (zip-matches
-          identifiers
-          (map cdr pairs))))))
-
 (define (fill-ellipsis-template matches template)
   (map
     (lambda (matches) (fill-template matches template))
-    (zip-matches (find-pattern-variables #f template) matches)))
+    (let ((variables (find-pattern-variables #f template)))
+      (zip-alist
+        (filter
+          (lambda (pair) (memv (car pair) variables))
+          matches)))))
 
 (define (fill-template matches template)
   (cond
