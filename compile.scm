@@ -229,7 +229,7 @@
     ((pair? pattern)
       (let (
           (first (car pattern))
-          (second (and (cdr pattern) (cadr pattern))))
+          (second (and (pair? (cdr pattern)) (cadr pattern))))
         (if (eqv? second '...)
           (let ((length (- (length expression) (- (length pattern) 2))))
             (append
