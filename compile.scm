@@ -298,17 +298,21 @@
         (list (cons pattern expression)))
 
       ((and (pair? pattern) (list? expression))
-        (if (and
-            (pair? (cdr pattern))
-            (eqv? (cadr pattern) '...))
-          (let ((length (- (length expression) (- (length pattern) 2))))
-            (merge-matches
-              (match-ellipsis context name literals (car pattern) (take length expression))
-              (match-pattern (cddr pattern) (skip length expression))))
-          (if (pair? expression)
+        (cond
+          ((and
+              (pair? (cdr pattern))
+              (eqv? (cadr pattern) '...))
+            (let ((length (- (length expression) (- (length pattern) 2))))
+              (merge-matches
+                (match-ellipsis context name literals (car pattern) (take length expression))
+                (match-pattern (cddr pattern) (skip length expression)))))
+
+          ((pair? expression)
             (merge-matches
               (match-pattern (car pattern) (car expression))
-              (match-pattern (cdr pattern) (cdr expression)))
+              (match-pattern (cdr pattern) (cdr expression))))
+
+          (else
             #f)))
 
       ((equal? pattern expression)
