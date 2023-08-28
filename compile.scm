@@ -106,6 +106,16 @@
     (last-cdr (cdr list))
     list))
 
+(define (filter f xs)
+  (if (null? xs)
+    '()
+    (let (
+        (x (car xs))
+        (xs (filter f (cdr xs))))
+      (if (f x)
+        (cons x xs)
+        xs))))
+
 (define (fold-left f y xs)
   (if (null? xs)
     y
@@ -132,6 +142,26 @@
   (if (eqv? n 0)
     list
     (skip (- n 1) (cdr list))))
+
+(define (zip-alist alist)
+  (let (
+      (pairs
+        (map
+          (lambda (pair)
+            (let (
+                (key (car pair))
+                (value (cdr pair)))
+              (if (pair? value)
+                (cons
+                  (cons key (car value))
+                  (cons key (cdr value)))
+                #f)))
+          alist)))
+    (if (memv #f pairs)
+      '()
+      (cons
+        (map car pairs)
+        (zip-alist (map cdr pairs))))))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -283,33 +313,14 @@
     (else
       #f)))
 
-; TODO Split into `filter` and `zip-alist`.
-(define (zip-matches identifiers matches)
-  (let (
-      (pairs
-        (map
-          (lambda (key)
-            (let* (
-                (pair (assv key matches))
-                (value (cdr pair)))
-              (if (pair? value)
-                (cons
-                  (cons key (car value))
-                  (cons key (cdr value)))
-                #f)))
-          identifiers)))
-    (if (memv #f pairs)
-      '()
-      (cons
-        (map car pairs)
-        (zip-matches
-          identifiers
-          (map cdr pairs))))))
-
 (define (fill-ellipsis-template matches template)
   (map
     (lambda (matches) (fill-template matches template))
-    (zip-matches (find-pattern-variables #f template) matches)))
+    (let ((variables (find-pattern-variables #f template)))
+      (zip-alist
+        (filter
+          (lambda (pair) (memv (car pair) variables))
+          matches)))))
 
 (define (fill-template matches template)
   (cond
