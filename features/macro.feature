@@ -59,3 +59,20 @@ Feature: Macro
     And I successfully run `stak main.out`
     # TODO Fix this to "AB".
     Then the stdout should contain exactly "BB"
+
+  Scenario: Match an ellipsis
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ...)
+          x)))
+
+    (foo write-u8 65)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
