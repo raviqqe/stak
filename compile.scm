@@ -527,12 +527,6 @@
           ((eqv? first 'quote)
             expression)
 
-          ((pair? first)
-            (expand
-              (list 'let
-                (list (list '$x first))
-                (cons '$x (cdr expression)))))
-
           (else
             (map expand expression))))
       expression)))
@@ -559,8 +553,13 @@
     context
     (append variables (compile-context-environment context))))
 
-(define (compile-context-environment-add-temporary context)
-  (compile-context-environment-append context (list #f)))
+(define (compile-context-environment-push context variable)
+  (compile-context-environment-append
+    context
+    (list variable)))
+
+(define (compile-context-environment-push-temporary context)
+  (compile-context-environment-push context #f))
 
 (define (compile-context-resolve context variable)
   (or (member-index variable (compile-context-environment context)) variable))
@@ -626,21 +625,28 @@
       context
       (car arguments)
       (compile-call*
-        (compile-context-environment-add-temporary context)
+        (compile-context-environment-push-temporary context)
         function
         (cdr arguments)
         argument-count
         continuation))))
 
-; Functions are normalized into atoms already.
 (define (compile-call context expression continuation)
-  (let ((arguments (cdr expression)))
-    (compile-call*
-      context
-      (car expression)
-      arguments
-      (length arguments)
-      continuation)))
+  (let* (
+      (function (car expression))
+      (arguments (cdr expression))
+      (continue
+        (lambda (context function continuation)
+          (compile-call* context function arguments (length arguments) continuation))))
+    (if (symbol? function)
+      (continue context function continuation)
+      (compile-expression
+        context
+        function
+        (continue
+          (compile-context-environment-push context '$function)
+          '$function
+          (compile-unbind continuation))))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
@@ -654,9 +660,9 @@
         context
         (cadr binding)
         (compile-let*
-          (compile-context-environment-add-temporary context)
+          (compile-context-environment-push-temporary context)
           (cdr bindings)
-          (compile-context-environment-append body-context (list (car binding)))
+          (compile-context-environment-push body-context (car binding))
           body
           (compile-unbind continuation))))
     (compile-sequence body-context body continuation)))
@@ -722,7 +728,7 @@
               (rib
                 set-instruction
                 (compile-context-resolve
-                  (compile-context-environment-add-temporary context)
+                  (compile-context-environment-push-temporary context)
                   (cadr expression))
                 (compile-unspecified continuation))))
 
