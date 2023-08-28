@@ -190,26 +190,32 @@
 
 ;; Procedures
 
-(define (match-pattern* context name pattern expression continue)
+(define (match-pattern* context name pattern expression)
   (display pattern)
   (cond
     ((symbol? pattern)
-      (continue name expression))
+      (list (cons name expression)))
+
+    ((null? pattern)
+      '())
 
     ((pair? pattern)
-      ((eqv? (car pattern) (car expression))
-        '()))
+      (let (first (car pattern))
+        (if (eqv?)
+          '())))
+
+    ((equal? pattern expression)
+      #t)
 
     (else
-      (error "unknown pattern"))))
+      #f)))
 
 (define (match-pattern context name pattern expression)
   (match-pattern*
     context
     name
     pattern
-    expression
-    (lambda (name expression) (list (cons name expression)))))
+    expression))
 
 (define (compile-rule context name rule)
   (lambda (expression)
