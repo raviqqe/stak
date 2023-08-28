@@ -191,7 +191,6 @@
 ;; Procedures
 
 (define (match-pattern* context name pattern expression)
-  (display pattern)
   (cond
     ((symbol? pattern)
       (list (cons pattern expression)))
