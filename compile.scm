@@ -199,8 +199,16 @@
       (let (
           (first (car pattern))
           (second (and (cdr pattern) (cadr pattern))))
-        (if (eqv?)
-          '())))
+        (if (eqv? second '...)
+          (let (
+              (rest-length (- (length pattern) 2))
+              (expression-length (length expression)))
+            (merge-matches
+              (match-pattern* context name (list first second) (cddr expression))
+              (match-pattern* context name (cddr pattern) (cddr expression))))
+          (merge-matches
+            (match-pattern* context name (cddr pattern) (cddr expression))
+            (match-pattern* context name (cddr pattern) (cddr expression))))))
 
     ((equal? pattern expression)
       #t)
