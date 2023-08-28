@@ -206,7 +206,7 @@
 (define (initialize-ellipsis-accumulator pattern)
   (if (symbol? pattern)
     (list (cons pattern '()))
-    (fold append (map initialize-ellipsis-accumulator pattern))))
+    (fold append '() (map initialize-ellipsis-accumulator pattern))))
 
 (define (merge-ellipsis-match all ones)
   (map
