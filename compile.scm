@@ -231,8 +231,8 @@
 
 (define (match-pattern context name pattern expression)
   (cond
-    ((and (eqv? pattern '_) (eqv? expression name))
-      '())
+    ((eqv? pattern '_)
+      (if (eqv? expression name) '() #f))
 
     ((symbol? pattern)
       (list (cons pattern expression)))
@@ -259,12 +259,15 @@
 (define (fill-template matches template)
   (cond
     ((symbol? template)
-      (if (assv template matches)
-        foo
-        foo))
+      (let ((pair (assv template matches)))
+        (if pair
+          (cdr pair)
+          template)))
 
     ((pair? template)
-      (fill-template (car template) matches))
+      (cons
+        (fill-template matches (car template))
+        (fill-template matches (cdr template))))
 
     (else
       template)))
