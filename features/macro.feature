@@ -135,6 +135,27 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "AB"
 
+  Scenario: Match two ellipses at different levels
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax plus
+      (syntax-rules ()
+        ((_ (x y ...) v w ...)
+          (+ x v))))
+
+    (write-u8
+      (plus
+        (60 "foo")
+        5
+        "bar"))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
