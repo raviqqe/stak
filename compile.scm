@@ -205,8 +205,7 @@
 (define (merge-ellipsis-match all ones)
   (map
     (lambda (pair)
-      (let ((name (car pair)))
-        (cons (cdr pair) (cdr (assv name all)))))
+      (cons (cdr pair) (cdr (assv (car pair) all))))
     ones))
 
 (define (merge-ellipsis-matches alists)
