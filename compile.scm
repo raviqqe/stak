@@ -553,6 +553,11 @@
     context
     (append variables (compile-context-environment context))))
 
+(define (compile-context-environment-push context variable)
+  (compile-context-environment-append
+    context
+    (list variable)))
+
 (define (compile-context-environment-add-temporary context)
   (compile-context-environment-append context (list #f)))
 
@@ -635,14 +640,14 @@
         (compile-call*
           (if (symbol? function)
             context
-            (compile-context-add-variable context '$function))
+            (compile-context-environment-add-variable context '$function))
           (car expression)
           arguments
           (length arguments)
           continuation)))
     (if (symbol? function)
       context
-      (compile-context-add-variable context '$function))))
+      (compile-context-environmen-add context '$function))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
