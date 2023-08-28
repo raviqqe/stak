@@ -216,20 +216,10 @@
         (cdr (assv (car pair) all))))
     ones))
 
-(define (merge-ellipsis-matches alists)
-  (if (null? alists)
-    '()
-    (let* (
-        (alist (car alists))
-        (pair (car alist))
-        (name (car pair))
-        (value (cdr pair)))
-      (loop
-        (cdr (assv name others))
-        foo))))
-
 (define (match-ellipsis context name pattern expression)
-  (merge-ellipsis-matches
+  (fold
+    merge-ellipsis-match
+    (initialize-ellipsis-accumulator pattern)
     (map
       (lambda (expression) (match-pattern context name pattern expression))
       expression)))
