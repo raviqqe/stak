@@ -240,11 +240,11 @@
 ;; Procedures
 
 ; TODO Ignore literal identifiers.
-(define (find-pattern-variables name pattern)
+(define (find-pattern-variables literals pattern)
   (cond
     ((or
         (memv pattern '(_ ...))
-        (eqv? pattern name))
+        (memv pattern name))
       '())
 
     ((symbol? pattern)
