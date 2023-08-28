@@ -378,7 +378,7 @@
       (expand-syntax*
         (cdr expanders)
         (cons name names)
-        (if (assoc name names)
+        (if (memv name names)
           expression
           ((cdr pair) expression))))))
 
