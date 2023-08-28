@@ -558,8 +558,8 @@
     context
     (list variable)))
 
-(define (compile-context-environment-add-temporary context)
-  (compile-context-environment-append context (list #f)))
+(define (compile-context-environment-push-temporary context)
+  (compile-context-environment-push context #f))
 
 (define (compile-context-resolve context variable)
   (or (member-index variable (compile-context-environment context)) variable))
@@ -625,7 +625,7 @@
       context
       (car arguments)
       (compile-call*
-        (compile-context-environment-add-temporary context)
+        (compile-context-environment-push-temporary context)
         function
         (cdr arguments)
         argument-count
@@ -660,7 +660,7 @@
         context
         (cadr binding)
         (compile-let*
-          (compile-context-environment-add-temporary context)
+          (compile-context-environment-push-temporary context)
           (cdr bindings)
           (compile-context-environment-push body-context (car binding))
           body
@@ -728,7 +728,7 @@
               (rib
                 set-instruction
                 (compile-context-resolve
-                  (compile-context-environment-add-temporary context)
+                  (compile-context-environment-push-temporary context)
                   (cadr expression))
                 (compile-unspecified continuation))))
 
