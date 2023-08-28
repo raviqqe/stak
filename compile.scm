@@ -289,7 +289,7 @@
           template)))
 
     ((pair? template)
-      (if (pair? (cdr template))
+      (if (and (pair? (cdr template)) (eqv? (cadr template) '...))
         (append
           (fill-template matches (car template))
           (fill-template matches (cdr template)))
