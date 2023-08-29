@@ -379,7 +379,7 @@
             (error "no syntax rule matched" expression))
           (let ((transformer ((car matchers) expression)))
             (if transformer
-              (transformer expression)
+              (expand-expression context (transformer expression))
               (loop (cdr matchers)))))
         expression))))
 
