@@ -42,7 +42,7 @@ Feature: Function
     Given a file named "main.scm" with:
     """scheme
     (define (f x)
-      ((lambda () ((lambda (h) x) x))))
+      ((lambda () ((lambda () x)))))
 
     (write-u8 (f 65))
     """
