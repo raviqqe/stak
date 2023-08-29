@@ -162,6 +162,7 @@
 (define / (primitive 16))
 (define read-u8 (primitive 17))
 (define write-u8 (primitive 18))
+(define dump (primitive 19))
 
 ; Continuation
 
