@@ -38,6 +38,18 @@ Feature: Function
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
+  Scenario: Call nested immediate functions
+    Given a file named "main.scm" with:
+    """scheme
+    (write-u8 (+ 60 ((lambda (x) x) 5)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Return a constant
     Given a file named "main.scm" with:
     """scheme
