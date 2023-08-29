@@ -385,7 +385,7 @@
                 transformers
                 (lambda (expression matcher) (matcher expression)))))
           (unless pair
-            (error "no rule matched"))
+            (error "no syntax rule matched" expression))
           ((cdr pair) expression))
         expression))))
 
