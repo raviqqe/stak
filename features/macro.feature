@@ -205,7 +205,8 @@ Feature: Macro
     """sh
     compile.sh main.scm > main.out
     """
-    Then the exit status should not be 0
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
 
   Scenario: Throw an error if no rule matches
     Given a file named "main.scm" with:
