@@ -370,13 +370,24 @@
       (literals (cons name (cadr transformer)))
       (transformers
         (map
-          (lambda (rule) (compile-rule context name literals rule))
+          (lambda (rule)
+            (cons
+              (lambda (expression)
+                (match-pattern context name literals (car rule) expression))
+              (compile-rule context name literals rule)))
           (cddr transformer))))
     (lambda (expression)
-      (fold-left
-        (lambda (expression transformer) (transformer expression))
-        expression
-        transformers))))
+      (if (eqv? (predicate expression) name)
+        (let (
+            (pair
+              (assoc
+                expression
+                transformers
+                (lambda (expression matcher) (matcher expression)))))
+          (unless pair
+            (error "no rule matched"))
+          ((cdr pair) expression))
+        expression))))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
