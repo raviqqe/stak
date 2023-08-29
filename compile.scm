@@ -493,17 +493,6 @@
                     (get-parameter-variables (cadr expression)))
                   (cddr expression)))))
 
-          ((eqv? first 'let)
-            (let ((bindings (cadr expression)))
-              (cons
-                'let
-                (cons
-                  (map
-                    (lambda (binding)
-                      (list (car binding) (expand (cadr binding))))
-                    bindings)
-                  (expand-body context (cddr expression))))))
-
           ((eqv? first 'letrec)
             (let ((bindings (cadr expression)))
               (expand
