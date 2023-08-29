@@ -196,8 +196,8 @@ Feature: Macro
     (define-syntax foo
       (syntax-rules ()
         ((_) (foo 65))
-        ((_ x) x))
-        ((_ x y) (foo)))
+        ((_ x) x)
+        ((_ x y) (foo))))
 
     (write-u8 (foo))
     """
