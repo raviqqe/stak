@@ -251,13 +251,16 @@
     ((symbol? pattern)
       (list pattern))
 
-    (else
+    ((list? pattern)
       (fold-left
         append
         '()
         (map
           (lambda (pattern) (find-pattern-variables literals pattern))
-          pattern)))))
+          pattern)))
+
+    (else
+      '())))
 
 (define (match-ellipsis context name literals pattern expression)
   (fold-right
