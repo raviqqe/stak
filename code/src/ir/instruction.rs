@@ -28,6 +28,7 @@ impl Instruction {
 
 pub(crate) struct DisplayInstruction<'a> {
     instruction: &'a Instruction,
+    #[allow(unused)]
     indent: usize,
 }
 
@@ -42,6 +43,7 @@ impl<'a> DisplayInstruction<'a> {
 
 impl<'a> Display for DisplayInstruction<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        #[cfg(feature = "alloc")]
         let indent = self.indent + 1;
 
         match self.instruction {
@@ -78,6 +80,7 @@ pub(crate) struct DisplayInstructionList<'a> {
 }
 
 impl<'a> DisplayInstructionList<'a> {
+    #[cfg(feature = "alloc")]
     pub fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
