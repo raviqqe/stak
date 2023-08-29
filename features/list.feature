@@ -1,4 +1,37 @@
 Feature: List
+  Scenario: Create a pair
+    Given a file named "main.scm" with:
+    """scheme
+    (cons 42 '())
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    Then I successfully run `stak main.out`
+
+  Scenario: Create a pair with a non-cons cdr
+    Given a file named "main.scm" with:
+    """scheme
+    (cons 1 2)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    Then I successfully run `stak main.out`
+
+  Scenario: Get a tag of a pair with a non-cons cdr
+    Given a file named "main.scm" with:
+    """scheme
+    (rib-tag (cons 1 2))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    Then I successfully run `stak main.out`
+
   Scenario: Use a map function
     Given a file named "main.scm" with:
     """scheme
