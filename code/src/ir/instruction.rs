@@ -42,6 +42,7 @@ impl<'a> DisplayInstruction<'a> {
 
 impl<'a> Display for DisplayInstruction<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        #[cfg(feature = "alloc")]
         let indent = self.indent + 1;
 
         match self.instruction {
