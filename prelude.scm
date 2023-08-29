@@ -48,7 +48,7 @@
         ((var1 init1) ...)
         body
         ...)
-      (let ((var1 <undefined>) ...)
+      (let ((var1 #f) ...)
         (let ((temp1 init1) ...)
           (set! var1 temp1)
           ...
