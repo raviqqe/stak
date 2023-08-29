@@ -28,6 +28,7 @@ impl Instruction {
 
 pub(crate) struct DisplayInstruction<'a> {
     instruction: &'a Instruction,
+    #[allow(unused)]
     indent: usize,
 }
 
@@ -79,6 +80,7 @@ pub(crate) struct DisplayInstructionList<'a> {
 }
 
 impl<'a> DisplayInstructionList<'a> {
+    #[cfg(feature = "alloc")]
     pub fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
