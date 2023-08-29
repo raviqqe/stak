@@ -208,6 +208,24 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
+  Scenario: Expand a spread variable with a constant
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ...)
+          (let ((x #f) ...)
+            65))))
+
+    (write-u8 (foo x y z))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
   Scenario: Throw an error if no rule matches
     Given a file named "main.scm" with:
     """scheme
