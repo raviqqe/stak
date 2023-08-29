@@ -197,7 +197,7 @@ Feature: Macro
       (syntax-rules ()
         ((_) #f)))
 
-    (foo 65)
+    (foo 42)
     """
     When I run the following script:
     """sh
