@@ -359,24 +359,29 @@
 (define (compile-rule context name literals rule)
   (lambda (expression)
     (let ((matches (match-pattern context name literals (car rule) expression)))
-      (if matches
-        (fill-template matches (cadr rule))
-        expression))))
+      (and
+        matches
+        (lambda (expression) (fill-template matches (cadr rule)))))))
 
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported transformer"))
   (let* (
       (literals (cons name (cadr transformer)))
-      (transformers
+      (matchers
         (map
           (lambda (rule) (compile-rule context name literals rule))
           (cddr transformer))))
     (lambda (expression)
-      (fold-left
-        (lambda (expression transformer) (transformer expression))
-        expression
-        transformers))))
+      (if (eqv? (predicate expression) name)
+        (let loop ((matchers matchers))
+          (unless (pair? matchers)
+            (error "no syntax rule matched" expression))
+          (let ((transformer ((car matchers) expression)))
+            (if transformer
+              (transformer expression)
+              (loop (cdr matchers)))))
+        expression))))
 
 (define (expand-syntax* expanders names expression)
   (if (null? expanders)
