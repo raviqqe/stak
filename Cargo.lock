@@ -75,7 +75,7 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
 name = "stak"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -83,7 +83,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -91,18 +91,18 @@ dependencies = [
 
 [[package]]
 name = "stak-decode"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "stak-code",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.1.1"
+version = "0.1.2"
 
 [[package]]
 name = "stak-vm"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "insta",
  "stak-code",
