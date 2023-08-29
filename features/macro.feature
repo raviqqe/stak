@@ -212,7 +212,7 @@ Feature: Macro
     Given a file named "main.scm" with:
     """scheme
     (define-syntax foo
-      (syntax-rule ()
+      (syntax-rules ()
         ((_ x ...)
           (let ((x #f) ...)
             65))))
