@@ -422,9 +422,12 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
             Primitive::CONS => {
                 let [car, cdr] = self.pop_arguments::<2>()?;
-                // TODO Fix a non-cons cdr.
-                let cons =
-                    self.allocate(car, cdr.assume_cons().set_tag(Type::Pair as u8).into())?;
+                let cons = self.allocate(
+                    car,
+                    cdr.to_cons()
+                        .map(|cons| cons.set_tag(Type::Pair as u8).into())
+                        .unwrap_or(cdr),
+                )?;
                 self.push(cons.into())?;
             }
             Primitive::SKIP => {
