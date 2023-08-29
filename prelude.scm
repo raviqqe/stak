@@ -189,10 +189,11 @@
 (define (error message)
   (unwind
     (lambda ()
-      (let ((frame (rib-cdr (close dummy-function))))
-        (rib-set-car! frame (cons '() '()))
-        (write-string message)
-        #f))))
+      (rib-set-car!
+        (rib-cdr (close dummy-function)) ; frame
+        (cons '() '()))
+      (write-string message)
+      #f)))
 
 ; Types
 
