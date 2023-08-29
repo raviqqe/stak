@@ -41,7 +41,10 @@ Feature: Function
   Scenario: Call nested immediate functions
     Given a file named "main.scm" with:
     """scheme
-    (write-u8 (+ 60 ((lambda (x) x) 5)))
+    (define (f x)
+      ((lambda () ((lambda (h) x) x))))
+
+    (write-u8 (f 65))
     """
     When I run the following script:
     """sh
