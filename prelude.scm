@@ -169,12 +169,13 @@
 (define dummy-function (lambda () #f))
 
 (define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (close dummy-function))))))
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function)))))))
     (receiver
       (lambda (argument)
-        (let ((frame (rib-cdr (rib-cdr (close dummy-function)))))
-          (rib-set-car! frame continuation)
-          argument)))))
+        (rib-set-car!
+          (rib-cdr (rib-cdr (close dummy-function))) ; frame
+          continuation)
+        argument))))
 
 (define unwind #f)
 
