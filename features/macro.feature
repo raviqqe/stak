@@ -189,3 +189,18 @@ Feature: Macro
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
+
+  Scenario: Throw an error if no rule matches
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_) #f)))
+
+    (foo 65)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    Then the exit status should not be 0
