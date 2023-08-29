@@ -199,7 +199,7 @@ Feature: Macro
         ((_ x) x))
         ((_ x y) (foo)))
 
-    (foo 42)
+    (write-u8 (foo))
     """
     When I run the following script:
     """sh
