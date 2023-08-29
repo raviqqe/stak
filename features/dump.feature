@@ -14,7 +14,7 @@ Feature: Dump
   Scenario: Pass through a value
     Given a file named "main.scm" with:
     """scheme
-		(write-u8 (dump 65))
+    (write-u8 (dump 65))
     """
     When I run the following script:
     """sh
