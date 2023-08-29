@@ -459,7 +459,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
             }
             Primitive::TAG => {
                 let x = self.pop()?;
-                self.push(Number::new(self.cdr_value(x).assume_cons().tag() as i64).into())?;
+                self.push(
+                    Number::new(
+                        self.cdr_value(x)
+                            .to_cons()
+                            .map(|cons| cons.tag() as i64)
+                            .unwrap_or(Type::Pair as _),
+                    )
+                    .into(),
+                )?;
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
