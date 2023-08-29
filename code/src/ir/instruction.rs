@@ -80,7 +80,7 @@ pub(crate) struct DisplayInstructionList<'a> {
 }
 
 impl<'a> DisplayInstructionList<'a> {
-    #[allow(unused)]
+    #[cfg(feature = "alloc")]
     pub fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
