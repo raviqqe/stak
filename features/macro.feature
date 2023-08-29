@@ -190,6 +190,23 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
 
+  Scenario: Expand a macro recursively
+    Given a file named "main.scm" with:
+    """scheme
+    (define-syntax foo
+      (syntax-rules ()
+        ((_) (foo 65))
+        ((_ x) x))
+        ((_ x y) (foo)))
+
+    (foo 42)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    Then the exit status should not be 0
+
   Scenario: Throw an error if no rule matches
     Given a file named "main.scm" with:
     """scheme
