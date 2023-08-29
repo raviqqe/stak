@@ -1,6 +1,37 @@
 ; Syntax
 ;
-; Those syntax definitions are copied from https://small.r7rs.org/attachment/r7rs.pdf.
+; Those syntax definitions are mostly copied from https://small.r7rs.org/attachment/r7rs.pdf.
+
+;; Binding
+
+(define-syntax let
+  (syntax-rules ()
+    ((let ((name val) ...) body1 body2 ...)
+      ((lambda (name ...) body1 body2 ...)
+        val
+        ...))
+    ((let tag ((name val) ...) body1 body2 ...)
+      ((letrec ((tag (lambda (name ...)
+                body1
+                body2
+                ...)))
+          tag)
+        val
+        ...))))
+
+(define-syntax let*
+  (syntax-rules ()
+    ((let* () body1 body2 ...)
+      (let () body1 body2 ...))
+    ((let* ((name1 val1) (name2 val2) ...)
+        body1
+        body2
+        ...)
+      (let ((name1 val1))
+        (let* ((name2 val2) ...)
+          body1
+          body2
+          ...)))))
 
 ;; Conditional
 
@@ -138,12 +169,13 @@
 (define dummy-function (lambda () #f))
 
 (define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (close dummy-function))))))
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function)))))))
     (receiver
       (lambda (argument)
-        (let ((frame (rib-cdr (rib-cdr (close dummy-function)))))
-          (rib-set-car! frame continuation)
-          argument)))))
+        (rib-set-car!
+          (rib-cdr (rib-cdr (close dummy-function))) ; frame
+          continuation)
+        argument))))
 
 (define unwind #f)
 
@@ -157,10 +189,11 @@
 (define (error message)
   (unwind
     (lambda ()
-      (let ((frame (rib-cdr (close dummy-function))))
-        (rib-set-car! frame (cons '() '()))
-        (write-string message)
-        #f))))
+      (rib-set-car!
+        (rib-cdr (close dummy-function)) ; frame
+        (cons '() '()))
+      (write-string message)
+      #f)))
 
 ; Types
 
