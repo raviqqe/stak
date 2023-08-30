@@ -436,17 +436,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.set_top(cons.into());
             }
             Primitive::CLOSE => {
-                let procedure = self.top();
                 let cons = self.allocate(
-                    self.car_value(procedure),
+                    self.car_value(self.top()),
                     self.stack.set_tag(Type::Procedure as u8).into(),
                 )?;
 
                 self.set_top(cons.into());
             }
             Primitive::IS_CONS => {
-                let x = self.pop()?;
-                self.push(self.boolean(x.is_cons()))?;
+                self.set_top(self.boolean(self.top().is_cons()));
             }
             Primitive::CAR => {
                 let x = self.pop()?;
