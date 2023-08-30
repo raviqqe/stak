@@ -761,7 +761,7 @@
 
 (define (encode-context-all-symbols context)
   (append
-    (map cadr default-constants)
+    (map cdr default-constants)
     (list rib-symbol)
     (encode-context-symbols context)))
 
