@@ -370,7 +370,7 @@
         (let loop ((rules rules))
           (unless (pair? rules)
             (error "no syntax rule matched" expression))
-          (let (
+          (let* (
               (rule (car rules))
               (matches (match-pattern context name literals (car rule) expression)))
             (if matches
