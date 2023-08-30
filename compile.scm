@@ -517,6 +517,12 @@
 (define (make-compilation-context)
   (cons '() '()))
 
+(define-record-type compilation-context
+  (make-compilation-context environment symbols)
+  compilation-context?
+  (environment environment set-environment!)
+  (environment kdr))
+
 (define (compilation-context-environment context)
   (car context))
 
