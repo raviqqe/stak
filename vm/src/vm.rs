@@ -145,7 +145,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             );
 
                             if r#return {
-                                *self.car_mut(self.stack) = self.car(self.frame());
+                                *self.car_mut(self.stack) = self.continuation();
                             } else {
                                 let continuation = self.top();
                                 *self.car_value_mut(continuation) = self.cdr(self.program_counter);
@@ -216,7 +216,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == NULL {
-            let continuation = self.car(self.frame());
+            let continuation = self.continuation();
 
             self.program_counter = self.car_value(continuation).assume_cons();
             // Keep a value at the top of a stack.
@@ -258,15 +258,15 @@ impl<const N: usize, T: Device> Vm<N, T> {
         self.cdr(procedure).assume_cons()
     }
 
-    // ((program-counter . stack) . tagged-environment)
-    fn frame(&self) -> Cons {
+    // (program-counter . stack)
+    fn continuation(&self) -> Value {
         let mut stack = self.stack;
 
         while self.cdr(stack).assume_cons().tag() != FRAME_TAG {
             stack = self.cdr(stack).assume_cons();
         }
 
-        stack
+        self.car(stack)
     }
 
     fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
