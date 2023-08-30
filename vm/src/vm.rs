@@ -89,18 +89,17 @@ impl<const N: usize, T: Device> Vm<N, T> {
             match instruction.tag() {
                 Instruction::CALL => {
                     let r#return = instruction == NULL;
-                    let procedure = self.procedure();
-                    let mut environment = self.environment(procedure);
+                    let mut procedure = self.procedure();
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
 
-                    if environment.tag() != Type::Procedure as u8 {
+                    if self.environment(procedure).tag() != Type::Procedure as u8 {
                         return Err(Error::ProcedureExpected);
                     }
 
                     match self.code(procedure).to_typed() {
-                        TypedValue::Cons(mut code) => {
+                        TypedValue::Cons(code) => {
                             // Non-primitive procedures may update any cons's of arguments on a
                             // stack destructively.
 
@@ -120,9 +119,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
-                                let cons = self.car(self.cons).assume_cons();
-                                *self.car_mut(cons) = code.into();
-                                *self.cdr_mut(cons) = environment.into();
+                                *self.cdr_mut(self.cons) = procedure.into();
 
                                 let mut list = NULL;
 
@@ -134,9 +131,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
 
                                 self.push(list.into())?;
 
-                                let cons = self.car(self.cons).assume_cons();
-                                code = self.car(cons).assume_cons();
-                                environment = self.cdr(cons).assume_cons();
+                                procedure = self.cdr(self.cons).assume_cons();
                             }
 
                             *self.cdr_mut(self.cons) = self.stack.into();
@@ -160,9 +155,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             let frame = self.stack;
                             *self.cdr_mut(last_argument_cons) = frame.into();
                             self.pop_cons()?;
-                            *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
+                            *self.cdr_mut(frame) =
+                                self.environment(procedure).set_tag(FRAME_TAG).into();
 
-                            self.program_counter = self.cdr(code).assume_cons();
+                            self.program_counter =
+                                self.cdr(self.code(procedure).assume_cons()).assume_cons();
 
                             self.initialize_cons()?;
                         }
