@@ -107,8 +107,8 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             let argument_count = self.argument_count();
                             // A parameter count does not include a variadic parameter.
                             let (parameter_count, variadic) = {
-                                let info = self.car(code).assume_number();
-                                (Number::new(info.to_i64() / 2), info.to_i64() & 1 == 1)
+                                let number = self.car(code).assume_number();
+                                (Number::new(number.to_i64() / 2), number.to_i64() & 1 == 1)
                             };
 
                             trace!("argument count", argument_count);
