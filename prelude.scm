@@ -17,12 +17,12 @@
   (syntax-rules ()
     ((let* () body1 body2 ...)
       (let () body1 body2 ...))
-    ((let* ((name1 val1) (name2 val2) ...)
+    ((let* ((name1 value1) (name2 value2) ...)
         body1
         body2
         ...)
-      (let ((name1 val1))
-        (let* ((name2 val2) ...)
+      (let ((name1 value1))
+        (let* ((name2 value2) ...)
           body1
           body2
           ...)))))
