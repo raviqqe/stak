@@ -480,11 +480,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     .assume_cons()
                     .set_tag(y.assume_number().to_i64() as u8)
                     .into();
-                self.push(y)?;
+                self.set_top(y);
             }
             Primitive::EQUAL => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                self.push(self.boolean(x == y))?;
+                self.set_top(self.boolean(x == y));
             }
             Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
             Primitive::ADD => self.operate_binary(Add::add)?,
@@ -500,7 +500,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.device
                     .write(byte.assume_number().to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
-                self.push(byte)?;
+                self.set_top(byte);
             }
             Primitive::DUMP => {
                 let value = self.pop()?;
