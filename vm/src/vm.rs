@@ -543,7 +543,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             values[M - 1 - index] = self.pop()?;
         }
 
-        values[M - 1] = self.top();
+        values[0] = self.top();
 
         Ok(values)
     }
