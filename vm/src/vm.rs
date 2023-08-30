@@ -447,12 +447,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.set_top(self.boolean(self.top().is_cons()));
             }
             Primitive::CAR => {
-                let x = self.pop()?;
-                self.push(self.car_value(x))?;
+                self.set_top(self.car_value(self.top()));
             }
             Primitive::CDR => {
-                let x = self.pop()?;
-                self.push(self.cdr_value(x))?;
+                self.set_top(self.cdr_value(self.top()));
             }
             Primitive::TAG => {
                 let x = self.pop()?;
