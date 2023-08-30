@@ -209,37 +209,41 @@
 
 ;; Context
 
-; TODO Rename expanders meta-environment?
-; '(local-expanders global-expanders environment)
-(define (make-expansion-context)
-  '(() () ()))
+; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
+(define-record-type expansion-context
+  (make-expansion-context local-expanders global-expanders environment)
+  expansion-context?
+  (local-expanders expansion-context-local-expanders)
+  (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
+  (environment expansion-context-environment))
 
 (define (expansion-context-expanders context)
-  (append (car context) (cadr context)))
-
-(define expansion-context-environment caddr)
+  (append
+    (expansion-context-local-expanders context)
+    (expansion-context-global-expanders context)))
 
 (define (expansion-context-add-local-expander context name procedure)
-  (cons
+  (make-expansion-context
     (cons
       (cons name procedure)
-      (car context))
-    (cdr context)))
+      (expansion-context-local-expanders context))
+    (expansion-context-global-expanders context)
+    (expansion-context-environment context)))
 
 (define (expansion-context-add-global-expander! context name procedure)
-  (set-car!
-    (cdr context)
+  (expansion-context-set-global-expanders!
+    context
     (cons
       (cons name procedure)
-      (cadr context))))
+      (expansion-context-global-expanders context))))
 
 (define (expansion-context-add-variables context variables)
-  (list
-    (car context)
-    (cadr context)
+  (make-expansion-context
+    (expansion-context-local-expanders context)
+    (expansion-context-global-expanders context)
     (append
       variables
-      (caddr context))))
+      (expansion-context-environment context))))
 
 ;; Procedures
 
@@ -507,21 +511,20 @@
       expression)))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context) expression))
+  (expand-expression (make-expansion-context '() '() '()) expression))
 
 ; Compilation
 
 ;; Context
 
-; (environment . symbols)
-(define (make-compilation-context)
-  (cons '() '()))
-
-(define (compilation-context-environment context)
-  (car context))
+(define-record-type compilation-context
+  (make-compilation-context environment symbols)
+  compilation-context?
+  (environment compilation-context-environment)
+  (symbols compilation-context-symbols))
 
 (define (compilation-context-environment-set context environment)
-  (cons environment (cdr context)))
+  (make-compilation-context environment (compilation-context-symbols context)))
 
 (define (compilation-context-environment-append context variables)
   (compilation-context-environment-set
@@ -690,7 +693,7 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-compilation-context) expression '()))
+  (compile-expression (make-compilation-context '() '()) expression '()))
 
 ; Encoding
 
@@ -750,20 +753,17 @@
 
 ;; Context
 
-(define (make-encode-context symbols)
-  (cons symbols '()))
-
-(define (encode-context-symbols context)
-  (car context))
+(define-record-type encode-context
+  (make-encode-context symbols constants)
+  encode-context?
+  (symbols encode-context-symbols encode-context-set-symbols!)
+  (constants encode-context-constants encode-context-set-constants!))
 
 (define (encode-context-all-symbols context)
   (append
     (map cadr default-constants)
     (list rib-symbol)
     (encode-context-symbols context)))
-
-(define (encode-context-constants context)
-  (cdr context))
 
 (define (encode-context-constant context constant)
   (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
@@ -776,13 +776,12 @@
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
-  (begin
-    (set-car!
-      context
-      (cons symbol (encode-context-symbols context)))
-    (set-cdr!
-      context
-      (cons (list constant symbol) (encode-context-constants context)))))
+  (encode-context-set-symbols!
+    context
+    (cons symbol (encode-context-symbols context)))
+  (encode-context-set-constants!
+    context
+    (cons (list constant symbol) (encode-context-constants context))))
 
 ;; Constants
 
@@ -1087,7 +1086,8 @@
         (make-encode-context
           (append
             (map car primitives)
-            (find-symbols codes))))
+            (find-symbols codes))
+          '()))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
       (encode-context-symbols context)
