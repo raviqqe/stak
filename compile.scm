@@ -898,30 +898,27 @@
       (encode-context-add-constant! context constant id)
       continuation)))
 
-(define (build-constants* context codes continuation)
+(define (build-constants context codes continuation)
   (if (null? codes)
     continuation
     (let (
         (instruction (rib-tag codes))
         (operand (rib-car codes)))
-      (build-constants*
+      (build-constants
         context
         (rib-cdr codes)
         (cond
           ((eqv? instruction constant-instruction)
             (let ((continuation (build-constant context operand continuation)))
               (if (procedure? operand)
-                (build-constants* context (procedure-code operand) continuation)
+                (build-constants context (procedure-code operand) continuation)
                 continuation)))
 
           ((eqv? instruction if-instruction)
-            (build-constants* context operand continuation))
+            (build-constants context operand continuation))
 
           (else
             continuation))))))
-
-(define (build-constants context codes)
-  (build-constants* context codes '()))
 
 ;; Symbols
 
@@ -1102,15 +1099,12 @@
           'rib
           (rib set-instruction (car primitive) continuation))))))
 
-(define (build-primitives* primitives continuation)
+(define (build-primitives primitives continuation)
   (if (null? primitives)
     continuation
     (build-primitive
       (car primitives)
-      (build-primitives* (cdr primitives) continuation))))
-
-(define (build-primitives primitives)
-  (build-primitives* primitives '()))
+      (build-primitives (cdr primitives) continuation))))
 
 (define (join-codes! ones others)
   (if (null? ones)
@@ -1130,9 +1124,7 @@
           (append
             (map car primitives)
             (find-symbols codes))))
-      (constant-codes (build-constants context codes))
-      (primitive-codes (build-primitives primitives))
-      (codes (join-codes! primitive-codes (join-codes! constant-codes codes))))
+      (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
       (encode-context-symbols context)
       (encode-codes context codes '() '()))))
