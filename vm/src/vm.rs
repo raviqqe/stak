@@ -427,12 +427,6 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 )?;
                 self.push(cons.into())?;
             }
-            Primitive::SKIP => {
-                // TODO Make this an instruction to update the top of a stack destructively in
-                // primitives.
-                let [_, x] = self.pop_arguments::<2>()?;
-                self.push(x)?;
-            }
             Primitive::CLOSE => {
                 let procedure = self.pop()?;
                 let cons = self.allocate(
