@@ -214,7 +214,7 @@
   (make-expansion-context local-expanders global-expanders environment)
   expansion-context?
   (local-expanders expansion-context-local-expanders)
-  (global-expanders expansion-context-global-expanders)
+  (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
   (environment expansion-context-environment))
 
 (define (expansion-context-expanders context)
@@ -222,29 +222,28 @@
     (expansion-context-local-expanders context)
     (expansion-context-global-expanders context)))
 
-(define expansion-context-environment caddr)
-
 (define (expansion-context-add-local-expander context name procedure)
-  (cons
+  (make-expansion-context
     (cons
       (cons name procedure)
-      (car context))
-    (cdr context)))
+      (expansion-context-local-expanders context))
+    (expansion-context-global-expanders context)
+    (expansion-context-environment context)))
 
 (define (expansion-context-add-global-expander! context name procedure)
-  (set-car!
-    (cdr context)
+  (expansion-context-set-global-expanders!
+    context
     (cons
       (cons name procedure)
-      (cadr context))))
+      (expansion-context-global-expanders context))))
 
 (define (expansion-context-add-variables context variables)
-  (list
-    (car context)
-    (cadr context)
+  (make-expansion-context
+    (expansion-context-local-expanders context)
+    (expansion-context-global-expanders context)
     (append
       variables
-      (caddr context))))
+      (expansion-context-environment context))))
 
 ;; Procedures
 
@@ -512,7 +511,7 @@
       expression)))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context) expression))
+  (expand-expression (make-expansion-context '() '() '()) expression))
 
 ; Compilation
 
