@@ -516,14 +516,11 @@
 (define-record-type compilation-context
   (make-compilation-context environment symbols)
   compilation-context?
-  (environment compilation-context-environment set-environment!)
+  (environment compilation-context-environment)
   (symbols compilation-context-symbols))
 
-(define (compilation-context-environment context)
-  (car context))
-
 (define (compilation-context-environment-set context environment)
-  (cons environment (cdr context)))
+  (make-compilation-context environment (compilation-context-symbols context)))
 
 (define (compilation-context-environment-append context variables)
   (compilation-context-environment-set
