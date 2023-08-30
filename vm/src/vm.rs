@@ -453,26 +453,25 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.set_top(self.cdr_value(self.top()));
             }
             Primitive::TAG => {
-                let x = self.pop()?;
-                self.push(
+                self.set_top(
                     Number::new(
-                        self.cdr_value(x)
+                        self.cdr_value(self.top())
                             .to_cons()
                             .map(|cons| cons.tag() as i64)
                             .unwrap_or(Type::Pair as _),
                     )
                     .into(),
-                )?;
+                );
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 *self.car_value_mut(x) = y;
-                self.push(y)?;
+                self.set_top(y);
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 *self.cdr_value_mut(x) = y;
-                self.push(y)?;
+                self.set_top(y);
             }
             Primitive::SET_TAG => {
                 let [x, y] = self.pop_arguments::<2>()?;
