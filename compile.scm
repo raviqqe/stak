@@ -370,7 +370,9 @@
         (let loop ((rules rules))
           (unless (pair? rules)
             (error "no syntax rule matched" expression))
-          (let ((matches (match-pattern context name literals (car (car rules)) expression)))
+          (let (
+              (rule (car rules))
+              (matches (match-pattern context name literals (car rule) expression)))
             (if matches
               (expand-expression context (fill-template matches (cadr rule)))
               (loop (cdr rules)))))
