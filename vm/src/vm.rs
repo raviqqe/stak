@@ -438,7 +438,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
             Primitive::CLOSE => {
                 let cons = self.allocate(
                     self.car_value(self.top()),
-                    self.stack.set_tag(Type::Procedure as u8).into(),
+                    self.cdr(self.stack)
+                        .assume_cons()
+                        .set_tag(Type::Procedure as u8)
+                        .into(),
                 )?;
 
                 self.set_top(cons.into());
