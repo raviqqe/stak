@@ -369,12 +369,9 @@
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer"))
-  (let* (
+  (let (
       (literals (cons name (cadr transformer)))
-      (matchers
-        (map
-          (lambda (rule) (compile-rule context name literals rule))
-          (cddr transformer))))
+      (rules (cddr transformer)))
     (lambda (expression)
       (if (eqv? (predicate expression) name)
         (let loop ((matchers matchers))
