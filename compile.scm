@@ -368,7 +368,7 @@
 
 (define (compile-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
-    (error "unsupported transformer"))
+    (error "unsupported macro transformer"))
   (let* (
       (literals (cons name (cadr transformer)))
       (matchers
