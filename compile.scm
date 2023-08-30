@@ -629,7 +629,7 @@
 (define (compile-unbind continuation)
   (if (null? continuation)
     continuation
-    (compile-primitive-call 'skip continuation)))
+    (rib set-instruction 1 continuation)))
 
 (define (compile-expression context expression continuation)
   (cond
