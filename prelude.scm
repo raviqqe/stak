@@ -35,7 +35,7 @@
 
 (define-syntax letrec
   (syntax-rules ()
-    ((letrec ((x y) ...) body ...)
+    ((_ ((x y) ...) body ...)
       (let ((x #f) ...)
         (set! x y)
         ...
