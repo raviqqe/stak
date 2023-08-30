@@ -209,13 +209,18 @@
 
 ;; Context
 
-; TODO Rename expanders meta-environment?
-; '(local-expanders global-expanders environment)
-(define (make-expansion-context)
-  '(() () ()))
+; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
+(define-record-type expansion-context
+  (make-expansion-context local-expanders global-expanders environment)
+  expansion-context?
+  (local-expanders expansion-context-local-expanders)
+  (global-expanders expansion-context-global-expanders)
+  (environment expansion-context-environment))
 
 (define (expansion-context-expanders context)
-  (append (car context) (cadr context)))
+  (append
+    (expansion-context-local-expanders context)
+    (expansion-context-global-expanders context)))
 
 (define expansion-context-environment caddr)
 
