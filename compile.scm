@@ -501,20 +501,6 @@
                     (get-parameter-variables (cadr expression)))
                   (cddr expression)))))
 
-          ((eqv? first 'letrec)
-            (let ((bindings (cadr expression)))
-              (expand
-                (cons 'let
-                  (cons
-                    (map
-                      (lambda (binding) (list (car binding) #f))
-                      bindings)
-                    (append
-                      (map
-                        (lambda (binding) (list 'set! (car binding) (cadr binding)))
-                        bindings)
-                      (cddr expression)))))))
-
           ((eqv? first 'let-syntax)
             (error "not implemented"))
 

@@ -33,6 +33,15 @@
           body2
           ...)))))
 
+(define-syntax letrec
+  (syntax-rules ()
+    ((_ ((x y) ...) body ...)
+      (let ((x #f) ...)
+        (set! x y)
+        ...
+        body
+        ...))))
+
 ;; Conditional
 
 (define-syntax cond
