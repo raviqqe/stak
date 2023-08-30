@@ -29,9 +29,9 @@
 
 (define-syntax letrec
   (syntax-rules ()
-    ((_ ((x y) ...) body ...)
-      (let ((x #f) ...)
-        (set! x y)
+    ((_ ((name value) ...) body ...)
+      (let ((name #f) ...)
+        (set! name value)
         ...
         body
         ...))))
@@ -121,14 +121,14 @@
 
 (define-syntax when
   (syntax-rules ()
-    ((when test body1 body2 ...)
+    ((when test result1 result2 ...)
       (if test
-        (begin body1 body2 ...)))))
+        (begin result1 result2 ...)))))
 
 (define-syntax unless
   (syntax-rules ()
-    ((unless test body1 body2 ...)
-      (when (not test) body1 body2 ...))))
+    ((unless test result1 result2 ...)
+      (when (not test) result1 result2 ...))))
 
 ; Type IDs
 
