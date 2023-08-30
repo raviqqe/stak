@@ -89,20 +89,20 @@
         (result key)))
     ((case key
         ((atoms ...) => result)
-        clause
-        clauses
+        clause1
+        clause2
         ...)
       (if (memv key '(atoms ...))
         (result key)
-        (case key clause clauses ...)))
+        (case key clause1 clause2 ...)))
     ((case key
         ((atoms ...) result1 result2 ...)
-        clause
-        clauses
+        clause1
+        clause2
         ...)
       (if (memv key '(atoms ...))
         (begin result1 result2 ...)
-        (case key clause clauses ...)))))
+        (case key clause1 clause2 ...)))))
 
 (define-syntax and
   (syntax-rules ()
