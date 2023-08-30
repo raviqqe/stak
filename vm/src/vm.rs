@@ -513,7 +513,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn operate_binary(&mut self, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(Number::new(operate(x.to_i64(), y.to_i64())).into())?;
+        self.set_top(Number::new(operate(x.to_i64(), y.to_i64())).into());
 
         Ok(())
     }
@@ -521,7 +521,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(self.boolean(operate(x.to_i64(), y.to_i64())))?;
+        self.set_top(self.boolean(operate(x.to_i64(), y.to_i64())));
 
         Ok(())
     }
