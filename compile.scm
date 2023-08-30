@@ -374,13 +374,13 @@
       (rules (cddr transformer)))
     (lambda (expression)
       (if (eqv? (predicate expression) name)
-        (let loop ((matchers matchers))
-          (unless (pair? matchers)
+        (let loop ((rules rules))
+          (unless (pair? rules)
             (error "no syntax rule matched" expression))
-          (let ((transformer ((car matchers) expression)))
+          (let ((transformer ((car rules) expression)))
             (if transformer
               (expand-expression context (transformer expression))
-              (loop (cdr matchers)))))
+              (loop (cdr rules)))))
         expression))))
 
 (define (expand-syntax* expanders names expression)
