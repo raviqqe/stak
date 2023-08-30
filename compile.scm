@@ -39,9 +39,9 @@
 
 (define default-constants
   '(
-    (#f $false)
-    (#t $true)
-    (() $null)))
+    (#f . $false)
+    (#t . $true)
+    (() . $null)))
 
 (define rib-symbol 'rib)
 
@@ -761,13 +761,13 @@
 
 (define (encode-context-all-symbols context)
   (append
-    (map cadr default-constants)
+    (map cdr default-constants)
     (list rib-symbol)
     (encode-context-symbols context)))
 
 (define (encode-context-constant context constant)
   (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
-    (if pair (cadr pair) #f)))
+    (if pair (cdr pair) #f)))
 
 (define (encode-context-constant-id context)
   (string->symbol
@@ -781,7 +781,7 @@
     (cons symbol (encode-context-symbols context)))
   (encode-context-set-constants!
     context
-    (cons (list constant symbol) (encode-context-constants context))))
+    (cons (cons constant symbol) (encode-context-constants context))))
 
 ;; Constants
 
