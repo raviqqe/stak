@@ -423,7 +423,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         .set_tag(tag.assume_number().to_i64() as u8)
                         .into(),
                 )?;
-                self.push(rib.into())?;
+                self.set_top(rib.into());
             }
             Primitive::CONS => {
                 let [car, cdr] = self.pop_arguments::<2>()?;
@@ -433,16 +433,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
                         .map(|cons| cons.set_tag(Type::Pair as u8).into())
                         .unwrap_or(cdr),
                 )?;
-                self.push(cons.into())?;
+                self.set_top(cons.into());
             }
             Primitive::CLOSE => {
-                let procedure = self.pop()?;
+                let procedure = self.top();
                 let cons = self.allocate(
                     self.car_value(procedure),
                     self.stack.set_tag(Type::Procedure as u8).into(),
                 )?;
 
-                self.push(cons.into())?;
+                self.set_top(cons.into());
             }
             Primitive::IS_CONS => {
                 let x = self.pop()?;
