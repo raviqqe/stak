@@ -502,9 +502,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                     .map_err(|_| Error::WriteOutput)?;
             }
             Primitive::DUMP => {
-                let value = self.pop()?;
-                trace!("dump", value);
-                self.push(value)?;
+                trace!("dump", self.top());
             }
             _ => return Err(Error::IllegalPrimitive),
         }
