@@ -69,10 +69,10 @@
 (define-syntax case
   (syntax-rules (else =>)
     ((case (key ...)
-        clauses
+        clause
         ...)
       (let ((atom-key (key ...)))
-        (case atom-key clauses ...)))
+        (case atom-key clause ...)))
     ((case key
         (else => result))
       (result key))
