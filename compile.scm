@@ -61,9 +61,8 @@
 (define primitives
   '(
     (cons 1)
-    (skip 2)
-    (close 3)
-    (- 14)))
+    (close 2)
+    (- 13)))
 
 ; Types
 
@@ -555,7 +554,7 @@
         ((memq name '(close))
           1)
 
-        ((memq name '(cons skip -))
+        ((memq name '(cons -))
           2)
 
         ((memq name '(rib))
