@@ -698,10 +698,7 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression
-    (make-compilation-context)
-    expression
-    '()))
+  (compile-expression (make-compilation-context) expression '()))
 
 ; Encoding
 
