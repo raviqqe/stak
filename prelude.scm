@@ -1,22 +1,16 @@
 ; Syntax
 ;
-; Those syntax definitions are mostly copied from https://small.r7rs.org/attachment/r7rs.pdf.
+; Those syntax definitions are mostly ported from https://small.r7rs.org/attachment/r7rs.pdf.
 
 ;; Binding
 
 (define-syntax let
   (syntax-rules ()
-    ((let ((name val) ...) body1 body2 ...)
-      ((lambda (name ...) body1 body2 ...)
-        val
-        ...))
-    ((let tag ((name val) ...) body1 body2 ...)
-      ((letrec ((tag (lambda (name ...)
-                body1
-                body2
-                ...)))
-          tag)
-        val
+    ((let ((name value) ...) body1 body2 ...)
+      ((lambda (name ...) body1 body2 ...) value ...))
+    ((let tag ((name value) ...) body1 body2 ...)
+      ((letrec ((tag (lambda (name ...) body1 body2 ...))) tag)
+        value
         ...))))
 
 (define-syntax let*
@@ -127,15 +121,14 @@
 
 (define-syntax when
   (syntax-rules ()
-    ((when test result1 result2 ...)
+    ((when test body1 body2 ...)
       (if test
-        (begin result1 result2 ...)))))
+        (begin body1 body2 ...)))))
 
 (define-syntax unless
   (syntax-rules ()
-    ((unless test result1 result2 ...)
-      (if (not test)
-        (begin result1 result2 ...)))))
+    ((unless test body1 body2 ...)
+      (when (not test) body1 body2 ...))))
 
 ; Type IDs
 
