@@ -513,15 +513,11 @@
 
 ;; Context
 
-; (environment . symbols)
-(define (make-compilation-context)
-  (cons '() '()))
-
 (define-record-type compilation-context
   (make-compilation-context environment symbols)
   compilation-context?
-  (environment environment set-environment!)
-  (environment kdr))
+  (environment compilation-context-environment set-environment!)
+  (symbols compilation-context-symbols))
 
 (define (compilation-context-environment context)
   (car context))
@@ -696,7 +692,7 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-compilation-context) expression '()))
+  (compile-expression (make-compilation-context '() '()) expression '()))
 
 ; Encoding
 
