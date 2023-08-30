@@ -636,23 +636,6 @@
     continuation
     (compile-primitive-call 'skip continuation)))
 
-(define (compile-let* context bindings body-context body continuation)
-  (if (pair? bindings)
-    (let ((binding (car bindings)))
-      (compile-expression
-        context
-        (cadr binding)
-        (compile-let*
-          (compilation-context-environment-push-temporary context)
-          (cdr bindings)
-          (compilation-context-environment-push body-context (car binding))
-          body
-          (compile-unbind continuation))))
-    (compile-sequence body-context body continuation)))
-
-(define (compile-let context bindings body continuation)
-  (compile-let* context bindings context body continuation))
-
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
@@ -693,13 +676,6 @@
                       '()))
                   '())
                 (compile-primitive-call 'close continuation))))
-
-          ((eqv? first 'let)
-            (compile-let
-              context
-              (cadr expression)
-              (cddr expression)
-              continuation))
 
           ((eqv? first 'quote)
             (compile-constant (cadr expression) continuation))
