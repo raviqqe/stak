@@ -1106,15 +1106,6 @@
       (car primitives)
       (build-primitives (cdr primitives) continuation))))
 
-(define (join-codes! ones others)
-  (if (null? ones)
-    others
-    (begin
-      (if (eqv? (rib-tag ones) if-instruction)
-        (rib-set-car! ones (join-codes! (rib-car ones) others)))
-      (rib-set-cdr! ones (join-codes! (rib-cdr ones) others))
-      ones)))
-
 ;; Main
 
 (define (encode codes)
