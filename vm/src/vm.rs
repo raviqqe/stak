@@ -496,11 +496,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                 self.push(Number::new(byte as i64).into())?;
             }
             Primitive::WRITE => {
-                let byte = self.pop()?;
+                let byte = self.top();
                 self.device
                     .write(byte.assume_number().to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
-                self.set_top(byte);
             }
             Primitive::DUMP => {
                 let value = self.pop()?;
