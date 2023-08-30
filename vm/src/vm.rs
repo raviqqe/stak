@@ -142,30 +142,29 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             *self.cdr_mut(self.cons) = self.stack.into();
                             self.stack = self.cons;
 
-                            let stack_cons = self.tail(
+                            let last_argument_cons = self.tail(
                                 self.stack,
                                 Number::new(
                                     parameter_count.to_i64() + if variadic { 1 } else { 0 },
                                 ),
                             );
 
-                            let frame = if r#return {
-                                self.frame()
+                            if r#return {
+                                *self.car_mut(self.stack) = self.car(self.frame());
                             } else {
-                                let continuation = self.car(self.cons);
+                                let continuation = self.car(self.stack);
                                 *self.car_value_mut(continuation) = self.cdr(self.program_counter);
-                                *self.cdr_value_mut(continuation) = self.cdr(stack_cons);
-                                self.stack
-                            };
-                            *self.cdr_mut(stack_cons) = frame.into();
-                            self.pop_cons()?;
+                                *self.cdr_value_mut(continuation) = self.cdr(last_argument_cons);
+                            }
 
+                            let frame = self.stack;
+                            *self.cdr_mut(last_argument_cons) = frame.into();
+                            self.pop_cons()?;
                             *self.cdr_mut(frame) = environment.set_tag(FRAME_TAG).into();
+
                             self.program_counter = self.cdr(code).assume_cons();
 
-                            if !r#return {
-                                self.initialize_cons()?;
-                            }
+                            self.initialize_cons()?;
                         }
                         TypedValue::Number(primitive) => {
                             self.operate_primitive(primitive.to_i64() as u8)?;
