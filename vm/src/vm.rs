@@ -105,10 +105,10 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             // stack destructively.
 
                             let argument_count = self.argument_count();
-                            let parameter_count = self.car(code).assume_number();
-                            let variadic = parameter_count.to_i64() & 1 == 1;
+                            let parameter_info = self.car(code).assume_number();
+                            let variadic = parameter_info.to_i64() & 1 == 1;
                             // A parameter count does not include a variadic parameter.
-                            let parameter_count = Number::new(parameter_count.to_i64() / 2);
+                            let parameter_count = Number::new(parameter_info.to_i64() / 2);
 
                             trace!("argument count", argument_count);
                             trace!("parameter count", parameter_count);
