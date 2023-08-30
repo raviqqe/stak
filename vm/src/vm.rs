@@ -147,7 +147,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
                             if r#return {
                                 *self.car_mut(self.stack) = self.car(self.frame());
                             } else {
-                                let continuation = self.car(self.stack);
+                                let continuation = self.top();
                                 *self.car_value_mut(continuation) = self.cdr(self.program_counter);
                                 *self.cdr_value_mut(continuation) = self.cdr(last_argument_cons);
                             }
@@ -302,6 +302,14 @@ impl<const N: usize, T: Device> Vm<N, T> {
         let stack = self.stack;
         self.stack = self.cdr(self.stack).assume_cons();
         Ok(stack)
+    }
+
+    fn top(&self) -> Value {
+        self.car(self.stack)
+    }
+
+    fn set_top(&mut self, value: Value) {
+        *self.car_mut(self.stack) = value;
     }
 
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
@@ -539,9 +547,11 @@ impl<const N: usize, T: Device> Vm<N, T> {
     fn pop_arguments<const M: usize>(&mut self) -> Result<[Value; M], Error> {
         let mut values = [ZERO.into(); M];
 
-        for index in 0..M {
+        for index in 0..M - 1 {
             values[M - 1 - index] = self.pop()?;
         }
+
+        values[M - 1] = self.top();
 
         Ok(values)
     }
