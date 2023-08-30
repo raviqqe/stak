@@ -522,30 +522,30 @@
 ;; Context
 
 ; (environment . symbols)
-(define (make-compile-context)
+(define (make-compilation-context)
   (cons '() '()))
 
-(define (compile-context-environment context)
+(define (compilation-context-environment context)
   (car context))
 
-(define (compile-context-environment-set context environment)
+(define (compilation-context-environment-set context environment)
   (cons environment (cdr context)))
 
-(define (compile-context-environment-append context variables)
-  (compile-context-environment-set
+(define (compilation-context-environment-append context variables)
+  (compilation-context-environment-set
     context
-    (append variables (compile-context-environment context))))
+    (append variables (compilation-context-environment context))))
 
-(define (compile-context-environment-push context variable)
-  (compile-context-environment-append
+(define (compilation-context-environment-push context variable)
+  (compilation-context-environment-append
     context
     (list variable)))
 
-(define (compile-context-environment-push-temporary context)
-  (compile-context-environment-push context #f))
+(define (compilation-context-environment-push-temporary context)
+  (compilation-context-environment-push context #f))
 
-(define (compile-context-resolve context variable)
-  (or (member-index variable (compile-context-environment context)) variable))
+(define (compilation-context-resolve context variable)
+  (or (member-index variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -602,13 +602,13 @@
       call-instruction
       (rib-cons
         argument-count
-        (compile-context-resolve context function))
+        (compilation-context-resolve context function))
       continuation)
     (compile-expression
       context
       (car arguments)
       (compile-call*
-        (compile-context-environment-push-temporary context)
+        (compilation-context-environment-push-temporary context)
         function
         (cdr arguments)
         argument-count
@@ -627,7 +627,7 @@
         context
         function
         (continue
-          (compile-context-environment-push context '$function)
+          (compilation-context-environment-push context '$function)
           '$function
           (compile-unbind continuation))))))
 
@@ -643,9 +643,9 @@
         context
         (cadr binding)
         (compile-let*
-          (compile-context-environment-push-temporary context)
+          (compilation-context-environment-push-temporary context)
           (cdr bindings)
-          (compile-context-environment-push body-context (car binding))
+          (compilation-context-environment-push body-context (car binding))
           body
           (compile-unbind continuation))))
     (compile-sequence body-context body continuation)))
@@ -658,7 +658,7 @@
     ((symbol? expression)
       (rib
         get-instruction
-        (compile-context-resolve context expression)
+        (compilation-context-resolve context expression)
         continuation))
 
     ((pair? expression)
@@ -685,7 +685,7 @@
                       (* 2 (count-parameters parameters))
                       (if (symbol? (last-cdr parameters)) 1 0))
                     (compile-sequence
-                      (compile-context-environment-append
+                      (compilation-context-environment-append
                         context
                         ; #f is for a frame.
                         (reverse (cons #f (get-parameter-variables parameters))))
@@ -710,8 +710,8 @@
               (caddr expression)
               (rib
                 set-instruction
-                (compile-context-resolve
-                  (compile-context-environment-push-temporary context)
+                (compilation-context-resolve
+                  (compilation-context-environment-push-temporary context)
                   (cadr expression))
                 (compile-unspecified continuation))))
 
@@ -723,7 +723,7 @@
 
 (define (compile expression)
   (compile-expression
-    (make-compile-context)
+    (make-compilation-context)
     expression
     '()))
 
