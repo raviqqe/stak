@@ -749,20 +749,17 @@
 
 ;; Context
 
-(define (make-encode-context symbols)
-  (cons symbols '()))
-
-(define (encode-context-symbols context)
-  (car context))
+(define-record-type encode-context
+  (make-encode-context symbols constants)
+  encode-context?
+  (symbols encode-context-symbols encode-context-set-symbols!)
+  (constants encode-context-constants encode-context-set-constants!))
 
 (define (encode-context-all-symbols context)
   (append
     (map cadr default-constants)
     (list rib-symbol)
     (encode-context-symbols context)))
-
-(define (encode-context-constants context)
-  (cdr context))
 
 (define (encode-context-constant context constant)
   (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
@@ -775,13 +772,12 @@
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
-  (begin
-    (set-car!
-      context
-      (cons symbol (encode-context-symbols context)))
-    (set-cdr!
-      context
-      (cons (list constant symbol) (encode-context-constants context)))))
+  (encode-context-set-symbols!
+    context
+    (cons symbol (encode-context-symbols context)))
+  (encode-context-set-constants!
+    context
+    (cons (list constant symbol) (encode-context-constants context))))
 
 ;; Constants
 
@@ -1086,7 +1082,8 @@
         (make-encode-context
           (append
             (map car primitives)
-            (find-symbols codes))))
+            (find-symbols codes))
+          '()))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
       (encode-context-symbols context)
