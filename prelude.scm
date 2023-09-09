@@ -29,12 +29,21 @@
 
 (define-syntax letrec
   (syntax-rules ()
-    ((_ ((name value) ...) body ...)
+    ((_ ((name value) ...) body1 body2 ...)
       (let ((name #f) ...)
         (set! name value)
         ...
-        body
+        body1
+        body2
         ...))))
+
+(define-syntax letrec*
+  (syntax-rules ()
+    ((_ ((name value) ...) body1 body2 ...)
+      (let ((name #f) ...)
+        (set! name value)
+        ...
+        (let () body1 body2 ...)))))
 
 ;; Conditional
 
