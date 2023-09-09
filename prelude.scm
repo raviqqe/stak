@@ -43,7 +43,9 @@
       (let ((name #f) ...)
         (set! name value)
         ...
-        (let () body1 body2 ...)))))
+        body1
+        body2
+        ...))))
 
 ;; Conditional
 
