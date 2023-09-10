@@ -497,7 +497,15 @@
                   (cddr expression)))))
 
           ((eqv? first 'let-syntax)
-            (error "not implemented"))
+            (expand-expression
+              (fold-left
+                context
+                (cadr expression)
+                (lambda (context pair) (expansion-context-add-global-expander!
+                    context
+                    name
+                    (compile-transformer context name (caddr expression)))))
+              expression))
 
           ((eqv? first 'letrec-syntax)
             (error "not implemented"))
