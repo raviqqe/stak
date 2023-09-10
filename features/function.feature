@@ -147,3 +147,22 @@ Feature: Function
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Call a fibonacci function
+    Given a file named "main.scm" with:
+    """scheme
+    (define (fibonacci x)
+      (if (< x 2)
+        x
+        (+
+          (fibonacci (- x 1))
+          (fibonacci (- x 2)))))
+
+    (write-u8 (+ 33 (fibonacci 10)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "X"

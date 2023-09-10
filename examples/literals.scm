@@ -1,6 +1,0 @@
-(define x 0)
-(define x 1)
-(define x 42)
-(define x #f)
-(define x #t)
-(define x '())

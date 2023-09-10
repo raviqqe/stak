@@ -50,3 +50,55 @@ Feature: Continuation
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
+
+  Scenario: Modify environment
+    Given a file named "main.scm" with:
+    """scheme
+    (define backtrack #f)
+
+    (let ((i 65))
+      (call/cc
+        (lambda (target)
+          (set! backtrack target)
+          #f))
+      (write-u8 i)
+      (newline)
+      (set! i (+ i 1))
+      (unless (< i 91) (error "!"))
+      (backtrack #f))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly:
+    """
+    A
+    B
+    C
+    D
+    E
+    F
+    G
+    H
+    I
+    J
+    K
+    L
+    M
+    N
+    O
+    P
+    Q
+    R
+    S
+    T
+    U
+    V
+    W
+    X
+    Y
+    Z
+    !
+    """

@@ -1,4 +1,19 @@
 Feature: Number
+  Scenario: Use literals
+    Given a file named "main.scm" with:
+    """scheme
+    (define x 0)
+    (define y 1)
+    (define z 42)
+    (define v -1)
+    (define w -42)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    Then I successfully run `stak main.out`
+
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
     """scheme
