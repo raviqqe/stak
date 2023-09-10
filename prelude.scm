@@ -295,7 +295,7 @@
 (define (inexact? x) #f)
 
 (define (comparison-operator f)
-  (lambdas xs
+  (lambda xs
     (if (null? xs)
       #t
       (let loop (
