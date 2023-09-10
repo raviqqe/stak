@@ -499,13 +499,14 @@
           ((eqv? first 'let-syntax)
             (expand-expression
               (fold-left
-                context
-                (cadr expression)
-                (lambda (context pair) (expansion-context-add-global-expander!
+                (lambda (context pair)
+                  (expansion-context-add-local-expander
                     context
                     name
-                    (compile-transformer context name (caddr expression)))))
-              expression))
+                    (compile-transformer context (car pair) (cadr pair))))
+                context
+                (cadr expression))
+              (caddr expression)))
 
           ((eqv? first 'letrec-syntax)
             (error "not implemented"))
