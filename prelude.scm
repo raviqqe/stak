@@ -303,10 +303,10 @@
 
 (define (inverse-arithmetic-operator f)
   (lambda (x . xs)
-    (let loop ((x x) (xs xs))
+    (let loop ((xs xs) (y x))
       (if (null? xs)
-        x
-        (loop (cdr xs) (f x (car xs)))))))
+        y
+        (loop (cdr xs) (f y (car xs)))))))
 
 (define + (arithmetic-operator $+ 0))
 (define - (inverse-arithmetic-operator $-))
