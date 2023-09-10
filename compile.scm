@@ -212,7 +212,7 @@
 (define-record-type expansion-context
   (make-expansion-context local-expanders global-expanders environment)
   expansion-context?
-  (local-expanders expansion-context-local-expanders)
+  (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
   (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
   (environment expansion-context-environment))
 
@@ -228,6 +228,11 @@
       (expansion-context-local-expanders context))
     (expansion-context-global-expanders context)
     (expansion-context-environment context)))
+
+(define (expansion-context-set-local-expander! context name procedure)
+  (set-cdr!
+    (assv name (expansion-context-local-expanders context))
+    procedure))
 
 (define (expansion-context-add-global-expander! context name procedure)
   (expansion-context-set-global-expanders!
@@ -497,10 +502,36 @@
                   (cddr expression)))))
 
           ((eqv? first 'let-syntax)
-            (error "not implemented"))
+            (expand-expression
+              (fold-left
+                (lambda (context pair)
+                  (let ((name (car pair)))
+                    (expansion-context-add-local-expander
+                      context
+                      name
+                      (compile-transformer context name (cadr pair)))))
+                context
+                (cadr expression))
+              (caddr expression)))
 
           ((eqv? first 'letrec-syntax)
-            (error "not implemented"))
+            (let* (
+                (bindings (cadr expression))
+                (context
+                  (fold-left
+                    (lambda (context pair)
+                      (expansion-context-add-local-expander context (car pair) #f))
+                    context
+                    bindings)))
+              (map
+                (lambda (pair)
+                  (let ((name (car pair)))
+                    (expansion-context-set-local-expander!
+                      context
+                      name
+                      (compile-transformer context name (cadr pair)))))
+                bindings)
+              (expand-expression context (caddr expression))))
 
           ((eqv? first 'quote)
             expression)
