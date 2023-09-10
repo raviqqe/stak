@@ -17,8 +17,7 @@ Feature: Number
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
     """scheme
-    (define x -1)
-    (write-u8 (+ 66 x))
+    (write-u8 (+ 66 -1))
     """
     When I run the following script:
     """sh
