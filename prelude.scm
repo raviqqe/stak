@@ -162,7 +162,7 @@
 (define rib-set-cdr! (primitive 8))
 (define rib-set-tag! (primitive 9))
 (define eq? (primitive 10))
-(define < (primitive 11))
+(define $< (primitive 11))
 (define + (primitive 12))
 (define - (primitive 13))
 (define * (primitive 14))
@@ -293,6 +293,12 @@
 
 (define (exact? x) #t)
 (define (inexact? x) #f)
+
+(define (> . xs)
+  (let loop ((xs xs) (result #t))
+    (if (null? xs)
+      result
+      foo)))
 
 ;; Procedure
 
