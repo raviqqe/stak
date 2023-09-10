@@ -52,3 +52,23 @@ Feature: Number
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "CDE"
+
+  Scenario: Use comparison operators
+    Given a file named "main.scm" with:
+    """scheme
+    (write-u8 (if (<) 65 66))
+    (write-u8 (if (< 0) 65 66))
+    (write-u8 (if (< 0 1) 65 66))
+    (write-u8 (if (< 0 1 2) 65 66))
+    (write-u8 (if (> 1 0) 65 66))
+    (write-u8 (if (<= 0 1) 65 66))
+    (write-u8 (if (<= 0 0) 65 66))
+    (write-u8 (if (>= 1 0) 65 66))
+    (write-u8 (if (>= 0 0) 65 66))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "AAAAAAAAA"

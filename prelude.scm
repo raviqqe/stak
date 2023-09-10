@@ -162,7 +162,7 @@
 (define rib-set-cdr! (primitive 8))
 (define rib-set-tag! (primitive 9))
 (define eq? (primitive 10))
-(define < (primitive 11))
+(define $< (primitive 11))
 (define + (primitive 12))
 (define - (primitive 13))
 (define * (primitive 14))
@@ -293,6 +293,23 @@
 
 (define (exact? x) #t)
 (define (inexact? x) #f)
+
+(define (comparison-operator f)
+  (lambda xs
+    (if (null? xs)
+      #t
+      (let loop (
+          (x (car xs))
+          (xs (cdr xs)))
+        (if (null? xs)
+          #t
+          (let ((y (car xs)))
+            (and (f x y) (loop y (cdr xs)))))))))
+
+(define < (comparison-operator $<))
+(define > (comparison-operator (lambda (x y) ($< y x))))
+(define <= (comparison-operator (lambda (x y) (not ($< y x)))))
+(define >= (comparison-operator (lambda (x y) (not ($< x y)))))
 
 ;; Procedure
 
