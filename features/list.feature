@@ -2,8 +2,9 @@ Feature: List
   Scenario: Use literals
     Given a file named "main.scm" with:
     """scheme
-    (define x '(1 2 3))
-    (define x '((1) (2 2) (3 3 3)))
+    (define x '())
+    (define y '(1 2 3))
+    (define z '((1) (2 2) (3 3 3)))
     """
     When I run the following script:
     """sh
