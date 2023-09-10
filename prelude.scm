@@ -294,6 +294,25 @@
 (define (exact? x) #t)
 (define (inexact? x) #f)
 
+(define (arithmetic-operator f y)
+  (lambda xs
+    (let loop ((xs xs) (y y))
+      (if (null? xs)
+        y
+        (loop (cdr xs) (f y (car xs)))))))
+
+(define (inverse-arithmetic-operator f)
+  (lambda (x . xs)
+    (let loop ((x x) (xs xs))
+      (if (null? xs)
+        x
+        (loop (cdr xs) (f x (car xs)))))))
+
+(define + (arithmetic-operator $+ 0))
+(define - (inverse-arithmetic-operator $-))
+(define * (arithmetic-operator $* 1))
+(define / (inverse-arithmetic-operator $/))
+
 (define (comparison-operator f)
   (lambda xs
     (if (null? xs)
