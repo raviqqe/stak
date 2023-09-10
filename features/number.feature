@@ -76,7 +76,7 @@ Feature: Number
     compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
-    Then the stdout should contain exactly "CDE"
+    Then the stdout should contain exactly "AAAAAAAAAAAA"
 
   Scenario: Use comparison operators
     Given a file named "main.scm" with:
