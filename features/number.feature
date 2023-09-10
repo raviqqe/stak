@@ -52,7 +52,7 @@ Feature: Number
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "CDE"
 
-  Scenario: Use arithmetirc operators
+  Scenario: Use arithmetic operators
     Given a file named "main.scm" with:
     """scheme
     (define (test x y)
