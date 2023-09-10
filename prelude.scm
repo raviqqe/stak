@@ -294,11 +294,22 @@
 (define (exact? x) #t)
 (define (inexact? x) #f)
 
-(define (> . xs)
-  (let loop ((xs xs) (result #t))
+(define (comparison-operator f)
+  (lambdas xs
     (if (null? xs)
-      result
-      foo)))
+      #t
+      (let loop (
+          (x (car xs))
+          (xs (cdr xs)))
+        (if (null? xs)
+          #t
+          (let ((y (car xs)))
+            (and (f x y) (loop y (cdr xs)))))))))
+
+(define < (comparison-operator $<))
+(define > (comparison-operator (lambda (x y) ($< y x))))
+(define <= (comparison-operator (lambda (x y) (not ($< y x)))))
+(define >= (comparison-operator (lambda (x y) (not ($< x y)))))
 
 ;; Procedure
 
