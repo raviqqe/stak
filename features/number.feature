@@ -17,8 +17,7 @@ Feature: Number
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
     """scheme
-    (define x -1)
-    (write-u8 (+ 66 x))
+    (write-u8 (+ 66 -1))
     """
     When I run the following script:
     """sh
@@ -52,6 +51,32 @@ Feature: Number
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "CDE"
+
+  Scenario: Use arithmetic operators
+    Given a file named "main.scm" with:
+    """scheme
+    (define (test x y)
+      (write-u8 (if (= x y) 65 66)))
+
+    (test (+) 0)
+    (test (+ 1) 1)
+    (test (+ 1 2) 3)
+    (test (- 0) 0)
+    (test (- 0 1) -1)
+    (test (- 0 1 2) -3)
+    (test (*) 1)
+    (test (* 2) 2)
+    (test (* 2 3) 6)
+    (test (/ 6) 6)
+    (test (/ 6 2) 3)
+    (test (/ 6 2 3) 1)
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "AAAAAAAAAAAA"
 
   Scenario: Use comparison operators
     Given a file named "main.scm" with:

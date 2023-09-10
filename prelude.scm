@@ -163,10 +163,10 @@
 (define rib-set-tag! (primitive 9))
 (define eq? (primitive 10))
 (define $< (primitive 11))
-(define + (primitive 12))
-(define - (primitive 13))
-(define * (primitive 14))
-(define / (primitive 15))
+(define $+ (primitive 12))
+(define $- (primitive 13))
+(define $* (primitive 14))
+(define $/ (primitive 15))
 (define read-u8 (primitive 16))
 (define write-u8 (primitive 17))
 (define dump (primitive 18))
@@ -294,6 +294,25 @@
 (define (exact? x) #t)
 (define (inexact? x) #f)
 
+(define (arithmetic-operator f y)
+  (lambda xs
+    (let loop ((xs xs) (y y))
+      (if (null? xs)
+        y
+        (loop (cdr xs) (f y (car xs)))))))
+
+(define (inverse-arithmetic-operator f)
+  (lambda (x . xs)
+    (let loop ((xs xs) (y x))
+      (if (null? xs)
+        y
+        (loop (cdr xs) (f y (car xs)))))))
+
+(define + (arithmetic-operator $+ 0))
+(define - (inverse-arithmetic-operator $-))
+(define * (arithmetic-operator $* 1))
+(define / (inverse-arithmetic-operator $/))
+
 (define (comparison-operator f)
   (lambda xs
     (if (null? xs)
@@ -306,6 +325,7 @@
           (let ((y (car xs)))
             (and (f x y) (loop y (cdr xs)))))))))
 
+(define = (comparison-operator eq?))
 (define < (comparison-operator $<))
 (define > (comparison-operator (lambda (x y) ($< y x))))
 (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
