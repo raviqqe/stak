@@ -510,17 +510,22 @@
               (caddr expression)))
 
           ((eqv? first 'letrec-syntax)
-            (expand-expression
-              (fold-left
-                (lambda (context pair)
+            (let (
+                (context
+                  (fold-left
+                    (lambda (context pair)
+                      (expansion-context-add-local-expander context (car pair) #f))
+                    context
+                    (cadr expression))))
+              (map
+                (lambda (pair)
                   (let ((name (car pair)))
-                    (expansion-context-add-local-expander
+                    (expansion-context-set-local-expander!
                       context
                       name
                       (compile-transformer context name (cadr pair)))))
-                context
                 (cadr expression))
-              (caddr expression)))
+              (expand-expression context (caddr expression))))
 
           ((eqv? first 'quote)
             expression)
