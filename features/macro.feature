@@ -258,7 +258,7 @@ Feature: Macro
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Define a local macro recursively
+  Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
     (letrec-syntax
@@ -276,3 +276,28 @@ Feature: Macro
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "B"
+
+  Scenario: Define a mutually recursive local macro
+    Given a file named "main.scm" with:
+    """scheme
+    (letrec-syntax (
+      (foo
+        (syntax-rules ()
+          ((_ x)
+            x)
+          ((_ x ... y)
+            (bar x ...))))
+      (bar
+        (syntax-rules ()
+          ((_ x)
+            x)
+          ((_ x ... y)
+            (foo x ...)))))
+      (write-u8 (foo 65 66 67)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
