@@ -67,7 +67,7 @@ Feature: Number
     (test (*) 1)
     (test (* 2) 2)
     (test (* 2 3) 6)
-    (test (/ 6) 0)
+    (test (/ 6) 6)
     (test (/ 6 2) 3)
     (test (/ 6 2 3) 1)
     """
