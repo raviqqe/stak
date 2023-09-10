@@ -1,5 +1,5 @@
 Feature: List
-  Scenario: Use list literals
+  Scenario: Use literals
     Given a file named "main.scm" with:
     """scheme
     (define x '(1 2 3))
