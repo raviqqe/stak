@@ -500,16 +500,27 @@
             (expand-expression
               (fold-left
                 (lambda (context pair)
-                  (expansion-context-add-local-expander
-                    context
-                    name
-                    (compile-transformer context (car pair) (cadr pair))))
+                  (let ((name (car pair)))
+                    (expansion-context-add-local-expander
+                      context
+                      name
+                      (compile-transformer context name (cadr pair)))))
                 context
                 (cadr expression))
               (caddr expression)))
 
           ((eqv? first 'letrec-syntax)
-            (error "not implemented"))
+            (expand-expression
+              (fold-left
+                (lambda (context pair)
+                  (let ((name (car pair)))
+                    (expansion-context-add-local-expander
+                      context
+                      name
+                      (compile-transformer context name (cadr pair)))))
+                context
+                (cadr expression))
+              (caddr expression)))
 
           ((eqv? first 'quote)
             expression)

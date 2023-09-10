@@ -240,3 +240,39 @@ Feature: Macro
     compile.sh main.scm > main.out
     """
     Then the exit status should not be 0
+
+  Scenario: Define a local macro
+    Given a file named "main.scm" with:
+    """scheme
+    (let-syntax
+      ((foo
+        (syntax-rules ()
+          ((_ x)
+            x))))
+      (write-u8 (foo 65)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Define a local macro recursively
+    Given a file named "main.scm" with:
+    """scheme
+    (letrec-syntax
+      ((foo
+        (syntax-rules ()
+          ((_ x)
+            x)
+          ((_ x y)
+            (foo y)))))
+      (write-u8 (foo 65 66)))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "B"
