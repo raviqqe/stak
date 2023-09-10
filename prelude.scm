@@ -306,6 +306,7 @@
           (let ((y (car xs)))
             (and (f x y) (loop y (cdr xs)))))))))
 
+(define = (comparison-operator eq?))
 (define < (comparison-operator $<))
 (define > (comparison-operator (lambda (x y) ($< y x))))
 (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
