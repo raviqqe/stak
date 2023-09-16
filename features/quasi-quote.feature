@@ -55,7 +55,7 @@ Feature: Quasi-quote
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Unquote and unsplice a list
+  Scenario: Unquote and splice a list
     Given a file named "main.scm" with:
     """scheme
     (define x '(65))
@@ -69,7 +69,7 @@ Feature: Quasi-quote
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Unquote and unsplice multiple lists
+  Scenario: Unquote and splice multiple lists
     Given a file named "main.scm" with:
     """scheme
     (define x '(65))
