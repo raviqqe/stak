@@ -48,12 +48,13 @@ jobs:
         features:
           - []
           - [gc_always]
-        scheme_interpreter:
-          - gsi
+        interpreter:
+          - stak
+          - gambit
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
-      SCHEME_INTERPRETER: ${{ matrix.scheme_interpreter }}
+      SCHEME_INTERPRETER: ${{ matrix.interpreter }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
