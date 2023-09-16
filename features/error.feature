@@ -14,6 +14,7 @@ Feature: Error
     Then the stdout should contain "A"
     # TODO Test an exit code.
 
+  @stak
   Scenario: Print an error message
     Given a file named "main.scm" with:
     """scheme
@@ -23,4 +24,5 @@ Feature: Error
     """
     When I run `scheme main.scm`
     Then the stdout should contain "Oh, no!"
+    # TODO Write an error messasge to stderr.
     # TODO Test an exit code.

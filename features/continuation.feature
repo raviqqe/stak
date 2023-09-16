@@ -43,6 +43,7 @@ Feature: Continuation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak
   Scenario: Modify environment
     Given a file named "main.scm" with:
     """scheme
@@ -92,4 +93,5 @@ Feature: Continuation
     Z
     """
     And the stdout should contain "Oh, no!"
+    # TODO Write an error messasge to stderr.
     # TODO Test an exit code.
