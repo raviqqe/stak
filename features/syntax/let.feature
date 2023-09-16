@@ -4,11 +4,7 @@ Feature: let
     """scheme
     (write-u8 (let ((x 65)) x))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind two variables
@@ -16,11 +12,7 @@ Feature: let
     """scheme
     (write-u8 (let ((x 60) (y 5)) (+ x y)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a bound function
@@ -34,11 +26,7 @@ Feature: let
 
     (write-u8 (g))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Cause a side effect in a body
@@ -49,11 +37,7 @@ Feature: let
         (write-u8 65)
         x))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Do not corrupt a function environment
@@ -68,9 +52,5 @@ Feature: let
 
     (write-u8 ((f)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"

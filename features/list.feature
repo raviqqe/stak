@@ -6,55 +6,31 @@ Feature: List
     (define y '(1 2 3))
     (define z '((1) (2 2) (3 3 3)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    Then I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
 
   Scenario: Create a pair
     Given a file named "main.scm" with:
     """scheme
     (cons 42 '())
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    Then I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
 
   Scenario: Create a pair with a non-cons cdr
     Given a file named "main.scm" with:
     """scheme
     (cons 1 2)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    Then I successfully run `stak main.out`
-
-  Scenario: Get a tag of a pair with a non-cons cdr
-    Given a file named "main.scm" with:
-    """scheme
-    (rib-tag (cons 1 2))
-    """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    Then I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
 
   Scenario: Use a map function
     Given a file named "main.scm" with:
     """scheme
     (map write-u8 '(65 66 67))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use a memq function
@@ -62,11 +38,7 @@ Feature: List
     """scheme
     (write-u8 (if (memq 2 '(1 2 3)) 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a memv function
@@ -74,11 +46,7 @@ Feature: List
     """scheme
     (write-u8 (if (memv 2 '(1 2 3)) 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use an append function
@@ -86,11 +54,7 @@ Feature: List
     """scheme
     (map write-u8 (append '(65) '(66)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Use an append function with three lists
@@ -98,9 +62,14 @@ Feature: List
     """scheme
     (map write-u8 (append '(65) '(66) '(67)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
+
+  @stak
+  Scenario: Get a tag of a pair with a non-cons cdr
+    Given a file named "main.scm" with:
+    """scheme
+    (rib-tag (cons 1 2))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0

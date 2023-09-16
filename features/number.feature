@@ -8,22 +8,15 @@ Feature: Number
     (define v -1)
     (define w -42)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    Then I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
 
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
     """scheme
     (write-u8 (+ 66 -1))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use large (but not big) integers
@@ -31,11 +24,7 @@ Feature: Number
     """scheme
     (write-u8 (- 1065 1000))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use integers around the encoding base
@@ -45,11 +34,7 @@ Feature: Number
     (write-u8 (- 128 60))
     (write-u8 (- 129 60))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "CDE"
 
   Scenario: Use arithmetic operators
@@ -61,22 +46,29 @@ Feature: Number
     (test (+) 0)
     (test (+ 1) 1)
     (test (+ 1 2) 3)
-    (test (- 0) 0)
+    (test (- 1) -1)
     (test (- 0 1) -1)
     (test (- 0 1 2) -3)
     (test (*) 1)
     (test (* 2) 2)
     (test (* 2 3) 6)
-    (test (/ 6) 6)
     (test (/ 6 2) 3)
     (test (/ 6 2 3) 1)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AAAAAAAAAAA"
+
+  @stak
+  Scenario: Calculate a multiplicative inverse
+    Given a file named "main.scm" with:
+    """scheme
+    (define (test x y)
+      (write-u8 (if (= x y) 65 66)))
+
+    (test (/ 2) 0)
     """
-    And I successfully run `stak main.out`
-    Then the stdout should contain exactly "AAAAAAAAAAAA"
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
 
   Scenario: Use comparison operators
     Given a file named "main.scm" with:
@@ -91,9 +83,5 @@ Feature: Number
     (write-u8 (if (>= 1 0) 65 66))
     (write-u8 (if (>= 0 0) 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAAAAAAAA"

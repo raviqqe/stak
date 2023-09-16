@@ -13,11 +13,7 @@ Feature: letrec*
 
     (write-u8 (f 0))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind two variables
@@ -31,9 +27,5 @@ Feature: letrec*
 
     (write-u8 (f 0))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"

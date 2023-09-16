@@ -41,19 +41,24 @@ jobs:
           files: lcov.info
   integration_test:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
           - macos-latest
+        interpreter:
+          - stak
+          - gambit
         features:
           - []
           - [gc_always]
-        scheme_interpreter:
-          - gsi
+        exclude:
+          - interpreter: gambit
+            features: [gc_always]
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
-      SCHEME_INTERPRETER: ${{ matrix.scheme_interpreter }}
+      SCHEME_INTERPRETER: ${{ matrix.interpreter }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master

@@ -4,11 +4,7 @@ Feature: Quasi-quote
     """scheme
     (write-u8 `65)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Quote a list
@@ -16,11 +12,7 @@ Feature: Quasi-quote
     """scheme
     (map write-u8 `(65 66 67))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote a number
@@ -32,11 +24,7 @@ Feature: Quasi-quote
 
     (map write-u8 `(,x ,y ,z))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote a list
@@ -48,11 +36,7 @@ Feature: Quasi-quote
 
     (map write-u8 `(,x ,y . ,z))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote and splice a list
@@ -62,11 +46,7 @@ Feature: Quasi-quote
 
     (map write-u8 `(,@x))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Unquote and splice multiple lists
@@ -77,9 +57,5 @@ Feature: Quasi-quote
 
     (map write-u8 `(,@x ,@y))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"

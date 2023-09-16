@@ -4,11 +4,7 @@ Feature: Character
     """scheme
     (write-u8 (if (char? (integer->char 65)) 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Write a character
@@ -16,11 +12,7 @@ Feature: Character
     """scheme
     (write-char #\A)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Write a newline character
@@ -30,11 +22,7 @@ Feature: Character
     (newline)
     (write-char #\B)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly:
     """
     A

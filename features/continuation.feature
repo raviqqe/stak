@@ -4,11 +4,7 @@ Feature: Continuation
     """scheme
     (write-u8 (call/cc (lambda (k) (k 65))))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a continuation with a global variable
@@ -18,11 +14,7 @@ Feature: Continuation
 
     (write-u8 (+ 60 (call/cc (lambda (k) (k x)))))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a continuation with a local variable
@@ -32,11 +24,7 @@ Feature: Continuation
 
     (write-u8 (+ 60 (f 5)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return a value from a receiver
@@ -44,11 +32,7 @@ Feature: Continuation
     """scheme
     (write-u8 (call/cc (lambda (k) 65)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Modify environment
@@ -64,15 +48,11 @@ Feature: Continuation
       (write-u8 i)
       (newline)
       (set! i (+ i 1))
-      (unless (< i 91) (error "!"))
+      (unless (< i 91) (error "Oh, no!"))
       (backtrack #f))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
-    Then the stdout should contain exactly:
+    When I run `scheme main.scm`
+    Then the stdout should contain:
     """
     A
     B
@@ -100,5 +80,6 @@ Feature: Continuation
     X
     Y
     Z
-    !
     """
+    And the stdout should contain "Oh, no!"
+    # TODO Test an exit code.

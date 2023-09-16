@@ -9,11 +9,7 @@ Feature: Macro
 
     (write-u8 (foo 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match rules
@@ -28,11 +24,7 @@ Feature: Macro
 
     (write-u8 (foo 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Match a nested pattern
@@ -50,11 +42,7 @@ Feature: Macro
         (else
           66)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Capture a free variable
@@ -74,11 +62,7 @@ Feature: Macro
     (modify)
     (write-u8 x)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     # TODO Fix this to "AB".
     Then the stdout should contain exactly "BB"
 
@@ -92,13 +76,10 @@ Feature: Macro
 
     (foo write-u8 65)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak
   Scenario: Match a succeeding ellipsis
     Given a file named "main.scm" with:
     """scheme
@@ -109,11 +90,7 @@ Feature: Macro
 
     (foo 65 write-u8)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match an ellipsis with an empty list
@@ -126,11 +103,7 @@ Feature: Macro
 
     (foo)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Expand an ellipsis
@@ -145,11 +118,7 @@ Feature: Macro
       (write-u8 65)
       (write-char #\B))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Match two ellipses at different levels
@@ -166,11 +135,7 @@ Feature: Macro
         5
         "bar"))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match a literal identifier
@@ -183,11 +148,7 @@ Feature: Macro
 
     (write-u8 (my-if #f then 65 else 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Expand a macro recursively
@@ -201,11 +162,7 @@ Feature: Macro
 
     (write-u8 (foo))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Expand a spread variable with a constant
@@ -219,11 +176,7 @@ Feature: Macro
 
     (write-u8 (foo x y z))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Throw an error if no rule matches
@@ -241,6 +194,7 @@ Feature: Macro
     """
     Then the exit status should not be 0
 
+  @stak
   Scenario: Define a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -251,13 +205,10 @@ Feature: Macro
             x))))
       (write-u8 (foo 65)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -270,13 +221,10 @@ Feature: Macro
             (foo y)))))
       (write-u8 (foo 65 66)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
+  @stak
   Scenario: Define a mutually recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -295,9 +243,5 @@ Feature: Macro
             (foo x ...)))))
       (write-u8 (foo 65 66 67)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
