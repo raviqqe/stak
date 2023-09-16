@@ -1,6 +1,6 @@
 use device::StdioDevice;
 use std::{env::args, error::Error, fs::read, process::exit};
-use vm::Vm;
+use vm::{Number, Vm};
 
 const HEAP_SIZE: usize = 1 << 17;
 
@@ -12,7 +12,8 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let mut vm = Vm::<HEAP_SIZE, StdioDevice>::new(Default::default())?;
+    let mut heap = [Number::new(0).into(); HEAP_SIZE];
+    let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default())?;
 
     vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",

@@ -44,10 +44,8 @@ macro_rules! assert_index_range {
     };
 }
 
-// TODO Should we rather accept `&mut [Value]` as heap? This copies VM codes for
-// every N.
 #[derive(Debug)]
-pub struct Vm<const N: usize, T: Device> {
+pub struct Vm<'a, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
@@ -55,15 +53,13 @@ pub struct Vm<const N: usize, T: Device> {
     cons: Cons,
     allocation_index: usize,
     space: bool,
-    heap: [Value; N],
+    heap: &'a mut [Value],
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<const N: usize, T: Device> Vm<N, T> {
-    const SPACE_SIZE: usize = N / 2;
-
-    pub fn new(device: T) -> Result<Self, Error> {
+impl<'a, T: Device> Vm<'a, T> {
+    pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
             program_counter: NULL,
@@ -72,7 +68,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
             cons: NULL,
             allocation_index: 0,
             space: false,
-            heap: [ZERO.into(); N],
+            heap,
         };
 
         vm.initialize_cons()?;
@@ -345,7 +341,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
 
-        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
+        debug_assert!(self.allocation_index <= self.space_size());
 
         Ok(cons)
     }
@@ -358,12 +354,16 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 
     fn is_out_of_memory(&self) -> bool {
-        self.allocation_index >= Self::SPACE_SIZE
+        self.allocation_index >= self.space_size()
+    }
+
+    fn space_size(&self) -> usize {
+        self.heap.len() / 2
     }
 
     fn allocation_start(&self) -> usize {
         if self.space {
-            Self::SPACE_SIZE
+            self.space_size()
         } else {
             0
         }
@@ -814,7 +814,7 @@ impl<const N: usize, T: Device> Vm<N, T> {
     }
 }
 
-impl<T: Device, const N: usize> Display for Vm<N, T> {
+impl<'a, T: Device> Display for Vm<'a, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "program counter: {}", self.program_counter)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -860,8 +860,12 @@ mod tests {
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
-    fn create_vm() -> Vm<HEAP_SIZE, FakeDevice> {
-        Vm::<HEAP_SIZE, _>::new(FakeDevice::new()).unwrap()
+    fn create_heap() -> [Value; HEAP_SIZE] {
+        [ZERO.into(); HEAP_SIZE]
+    }
+
+    fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
+        Vm::<_>::new(heap, FakeDevice::new()).unwrap()
     }
 
     macro_rules! assert_snapshot {
@@ -878,7 +882,8 @@ mod tests {
 
     #[test]
     fn create() {
-        let vm = create_vm();
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
 
         assert_snapshot!(vm);
     }
@@ -886,14 +891,15 @@ mod tests {
     #[test]
     fn create_with_too_small_heap() {
         assert_eq!(
-            Vm::<0, FixedBufferDevice<0, 0>>::new(Default::default()).unwrap_err(),
+            Vm::<FixedBufferDevice<0, 0>>::new(&mut [], Default::default()).unwrap_err(),
             Error::OutOfMemory
         );
     }
 
     #[test]
     fn run_nothing() {
-        let mut vm = create_vm();
+        let mut heap = create_heap();
+        let mut vm = create_vm(&mut heap);
 
         vm.run().unwrap();
 
@@ -902,7 +908,8 @@ mod tests {
 
     #[test]
     fn run_nothing_after_garbage_collection() {
-        let mut vm = create_vm();
+        let mut heap = create_heap();
+        let mut vm = create_vm(&mut heap);
 
         vm.collect_garbages(None).unwrap();
         vm.run().unwrap();
@@ -912,7 +919,8 @@ mod tests {
 
     #[test]
     fn create_list() {
-        let mut vm = create_vm();
+        let mut heap = create_heap();
+        let mut vm = create_vm(&mut heap);
 
         let list = vm.cons(Number::new(1).into(), NULL).unwrap();
 
@@ -932,14 +940,16 @@ mod tests {
 
         #[test]
         fn pop_nothing() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             assert_eq!(vm.pop(), Err(Error::StackUnderflow));
         }
 
         #[test]
         fn push_and_pop() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(42).into()).unwrap();
 
@@ -948,7 +958,8 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -963,7 +974,8 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             vm.collect_garbages(None).unwrap();
@@ -973,7 +985,8 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages(None).unwrap();
@@ -983,7 +996,8 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -994,7 +1008,8 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
@@ -1009,7 +1024,8 @@ mod tests {
         use super::*;
 
         fn run_program(program: &Program) {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.initialize(encode(program)).unwrap();
 
