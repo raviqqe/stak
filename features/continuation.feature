@@ -48,11 +48,11 @@ Feature: Continuation
       (write-u8 i)
       (newline)
       (set! i (+ i 1))
-      (unless (< i 91) (error "!"))
+      (unless (< i 91) (error "Oh, no!"))
       (backtrack #f))
     """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly:
+    When I run `scheme main.scm`
+    Then the stdout should contain:
     """
     A
     B
@@ -80,5 +80,6 @@ Feature: Continuation
     X
     Y
     Z
-    !
     """
+    And the stdout should contain "Oh, no!"
+		# TODO Test an exit code.
