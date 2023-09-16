@@ -429,13 +429,15 @@
 (define (expand-quasiquote context expression)
   (cond
     ((not (pair? expression))
-      (cons (expand-quasiquote context expression)))
+      expression)
 
     ((eqv? (car expression) 'unquote)
       (cadr expression))
 
     (else
-      expression)))
+      (cons
+        (expand-quasiquote context (car expression))
+        (expand-quasiquote context (cdr expression))))))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
