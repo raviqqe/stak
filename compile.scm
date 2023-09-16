@@ -387,7 +387,10 @@
         expression))))
 
 (define (expand-syntax context expression)
-  (let loop ((expanders (expansion-context-expanders context)) (names '()) (expression expression))
+  (let loop (
+      (expanders (expansion-context-expanders context))
+      (names '())
+      (expression expression))
     (if (null? expanders)
       expression
       (let* (
