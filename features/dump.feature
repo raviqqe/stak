@@ -1,4 +1,5 @@
 Feature: Dump
+  @stak
   Scenario: Dump a value
     Given a file named "main.scm" with:
     """scheme
@@ -7,6 +8,7 @@ Feature: Dump
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly ""
 
+  @stak
   Scenario: Pass through a value
     Given a file named "main.scm" with:
     """scheme
