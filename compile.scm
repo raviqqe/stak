@@ -432,7 +432,7 @@
       (cons (expand-quasiquote context expression)))
 
     ((eqv? (car expression) 'unquote)
-      (cons (expand-quasiquote context expression)))
+      (cadr expression))
 
     (else
       expression)))
