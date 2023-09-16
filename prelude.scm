@@ -280,7 +280,6 @@
 (define memq (mem eq?))
 (define memv (mem eqv?))
 
-; TODO Use `apply`.
 (define (append . lists)
   (reduce-right append-lists '() lists))
 
