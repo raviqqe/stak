@@ -8,11 +8,8 @@ Feature: Number
     (define v -1)
     (define w -42)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    Then I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
 
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
