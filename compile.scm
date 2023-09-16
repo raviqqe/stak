@@ -434,7 +434,7 @@
     ((eqv? (car expression) 'unquote)
       (cadr expression))
 
-    ((eqv? (car expression) 'unquote)
+    ((eqv? (car expression) 'unquote-splicing)
       (cadr expression))
 
     (else
