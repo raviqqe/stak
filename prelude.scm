@@ -345,6 +345,11 @@
 (define (string->list x)
   (map integer->char (rib-cdr x)))
 
+;; Symbol
+
+(define (symbol->string x)
+  (rib-cdr x))
+
 ;; Vector
 
 (define vector? (instance? vector-type))
