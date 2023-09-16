@@ -280,6 +280,27 @@
 (define memq (mem eq?))
 (define memv (mem eqv?))
 
+(define (append . lists)
+  (reduce-right append-lists '() lists))
+
+(define (append-lists ys xs)
+  (if (null? xs)
+    ys
+    (cons (car xs) (append-lists (cdr xs) ys))))
+
+(define (reduce-right f y xs)
+  (cond
+    ((null? xs)
+      y)
+
+    ((null? (cdr xs))
+      (car xs))
+
+    (else
+      (f
+        (reduce-right f y (cdr xs))
+        (car xs)))))
+
 ;; Number
 
 (define (integer? x)
