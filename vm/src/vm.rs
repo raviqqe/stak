@@ -860,8 +860,12 @@ mod tests {
 
     type FakeDevice = FixedBufferDevice<16, 16>;
 
-    fn create_vm() -> Vm<HEAP_SIZE, FakeDevice> {
-        Vm::<HEAP_SIZE, _>::new(FakeDevice::new()).unwrap()
+    fn create_heap() -> [Value; HEAP_SIZE] {
+        [ZERO.into; HEAP_SIZE]
+    }
+
+    fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
+        Vm::<_>::new(heap, FakeDevice::new()).unwrap()
     }
 
     macro_rules! assert_snapshot {
@@ -878,7 +882,8 @@ mod tests {
 
     #[test]
     fn create() {
-        let vm = create_vm();
+        let heap = create_heap();
+        let vm = create_vm(&mut heap);
 
         assert_snapshot!(vm);
     }
@@ -886,7 +891,7 @@ mod tests {
     #[test]
     fn create_with_too_small_heap() {
         assert_eq!(
-            Vm::<0, FixedBufferDevice<0, 0>>::new(Default::default()).unwrap_err(),
+            Vm::<FixedBufferDevice<0, 0>>::new(&mut [], Default::default()).unwrap_err(),
             Error::OutOfMemory
         );
     }
