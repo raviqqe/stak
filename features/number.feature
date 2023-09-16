@@ -2,6 +2,8 @@ Feature: Number
   Scenario: Use literals
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x 0)
     (define y 1)
     (define z 42)
@@ -14,6 +16,8 @@ Feature: Number
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (+ 66 -1))
     """
     When I successfully run `scheme main.scm`
@@ -22,6 +26,8 @@ Feature: Number
   Scenario: Use large (but not big) integers
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (- 1065 1000))
     """
     When I successfully run `scheme main.scm`
@@ -30,6 +36,8 @@ Feature: Number
   Scenario: Use integers around the encoding base
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (- 127 60))
     (write-u8 (- 128 60))
     (write-u8 (- 129 60))
@@ -40,6 +48,8 @@ Feature: Number
   Scenario: Use arithmetic operators
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (test x y)
       (write-u8 (if (= x y) 65 66)))
 
@@ -62,6 +72,8 @@ Feature: Number
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (test x y)
       (write-u8 (if (= x y) 65 66)))
 
@@ -73,6 +85,8 @@ Feature: Number
   Scenario: Use comparison operators
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (if (<) 65 66))
     (write-u8 (if (< 0) 65 66))
     (write-u8 (if (< 0 1) 65 66))

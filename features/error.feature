@@ -2,6 +2,8 @@ Feature: Error
   Scenario: Raise an error
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 65)
 
     (error "")
@@ -15,6 +17,8 @@ Feature: Error
   Scenario: Print an error message
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (error "Oh, no!")
     """
     When I run `scheme main.scm`

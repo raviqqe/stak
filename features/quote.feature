@@ -2,6 +2,8 @@ Feature: Quote
   Scenario: Quote a number
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 '65)
     """
     When I successfully run `scheme main.scm`
@@ -10,6 +12,8 @@ Feature: Quote
   Scenario: Quote a list
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (map write-u8 '(65 66 67))
     """
     When I successfully run `scheme main.scm`

@@ -2,6 +2,8 @@ Feature: cond
   Scenario: Evaluate the first clause
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8
       (cond
         (#t
@@ -15,6 +17,8 @@ Feature: cond
   Scenario: Evaluate the second clause
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8
       (cond
         (#f
@@ -30,6 +34,8 @@ Feature: cond
   Scenario: Evaluate an else clause
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8
       (cond
         (#f

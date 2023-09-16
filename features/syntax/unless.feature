@@ -2,6 +2,8 @@ Feature: unless
   Scenario: Evaluate a clause
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (unless #f (write-u8 65))
     """
     When I successfully run `scheme main.scm`
@@ -10,6 +12,8 @@ Feature: unless
   Scenario: Do not evaluate a clause
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (unless #t (write-u8 65))
     """
     When I successfully run `scheme main.scm`

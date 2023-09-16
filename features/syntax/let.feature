@@ -2,6 +2,8 @@ Feature: let
   Scenario: Bind a variable
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (let ((x 65)) x))
     """
     When I successfully run `scheme main.scm`
@@ -10,6 +12,8 @@ Feature: let
   Scenario: Bind two variables
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (let ((x 60) (y 5)) (+ x y)))
     """
     When I successfully run `scheme main.scm`
@@ -18,6 +22,8 @@ Feature: let
   Scenario: Call a bound function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f) 65)
 
     (define (g)
@@ -32,6 +38,8 @@ Feature: let
   Scenario: Cause a side effect in a body
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8
       (let ((x 66))
         (write-u8 65)
@@ -43,6 +51,8 @@ Feature: let
   Scenario: Do not corrupt a function environment
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f)
       (let (
           (g

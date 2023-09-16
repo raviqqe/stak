@@ -2,6 +2,8 @@ Feature: Quasi-quote
   Scenario: Quote a number
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 `65)
     """
     When I successfully run `scheme main.scm`
@@ -10,6 +12,8 @@ Feature: Quasi-quote
   Scenario: Quote a list
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (map write-u8 `(65 66 67))
     """
     When I successfully run `scheme main.scm`
@@ -18,6 +22,8 @@ Feature: Quasi-quote
   Scenario: Unquote a number
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x 65)
     (define y 66)
     (define z 67)
@@ -30,6 +36,8 @@ Feature: Quasi-quote
   Scenario: Unquote a list
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x 65)
     (define y 66)
     (define z '(67))
@@ -42,6 +50,8 @@ Feature: Quasi-quote
   Scenario: Unquote and splice a list
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x '(65))
 
     (map write-u8 `(,@x))
@@ -52,6 +62,8 @@ Feature: Quasi-quote
   Scenario: Unquote and splice multiple lists
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x '(65))
     (define y '(66))
 

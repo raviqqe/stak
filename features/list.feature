@@ -2,6 +2,8 @@ Feature: List
   Scenario: Use literals
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x '())
     (define y '(1 2 3))
     (define z '((1) (2 2) (3 3 3)))
@@ -12,6 +14,8 @@ Feature: List
   Scenario: Create a pair
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (cons 42 '())
     """
     When I successfully run `scheme main.scm`
@@ -20,6 +24,8 @@ Feature: List
   Scenario: Create a pair with a non-cons cdr
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (cons 1 2)
     """
     When I successfully run `scheme main.scm`
@@ -28,6 +34,8 @@ Feature: List
   Scenario: Use a map function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (map write-u8 '(65 66 67))
     """
     When I successfully run `scheme main.scm`
@@ -36,6 +44,8 @@ Feature: List
   Scenario: Use a memq function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (if (memq 2 '(1 2 3)) 65 66))
     """
     When I successfully run `scheme main.scm`
@@ -44,6 +54,8 @@ Feature: List
   Scenario: Use a memv function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (if (memv 2 '(1 2 3)) 65 66))
     """
     When I successfully run `scheme main.scm`
@@ -52,6 +64,8 @@ Feature: List
   Scenario: Use an append function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (map write-u8 (append '(65) '(66)))
     """
     When I successfully run `scheme main.scm`
@@ -60,6 +74,8 @@ Feature: List
   Scenario: Use an append function with three lists
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (map write-u8 (append '(65) '(66) '(67)))
     """
     When I successfully run `scheme main.scm`
@@ -69,6 +85,8 @@ Feature: List
   Scenario: Get a tag of a pair with a non-cons cdr
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (rib-tag (cons 1 2))
     """
     When I successfully run `scheme main.scm`

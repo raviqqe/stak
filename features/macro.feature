@@ -2,6 +2,8 @@ Feature: Macro
   Scenario: Match a rule
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ x)
@@ -15,6 +17,8 @@ Feature: Macro
   Scenario: Match rules
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ x)
@@ -30,6 +34,8 @@ Feature: Macro
   Scenario: Match a nested pattern
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax my-cond
       (syntax-rules (else)
         ((_ (condition then-result) (else else-result))
@@ -45,9 +51,12 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak
   Scenario: Capture a free variable
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x 65)
 
     (define-syntax modify
@@ -69,6 +78,8 @@ Feature: Macro
   Scenario: Match an ellipsis
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ x ...)
@@ -83,6 +94,8 @@ Feature: Macro
   Scenario: Match a succeeding ellipsis
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ x ... y)
@@ -96,6 +109,8 @@ Feature: Macro
   Scenario: Match an ellipsis with an empty list
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ x ...)
@@ -109,6 +124,8 @@ Feature: Macro
   Scenario: Expand an ellipsis
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ (x y) ...)
@@ -124,6 +141,8 @@ Feature: Macro
   Scenario: Match two ellipses at different levels
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax plus
       (syntax-rules ()
         ((_ (x y ...) v w ...)
@@ -141,6 +160,8 @@ Feature: Macro
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax my-if
       (syntax-rules (then else)
         ((_ x then y else z)
@@ -154,6 +175,8 @@ Feature: Macro
   Scenario: Expand a macro recursively
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_) (foo 65))
@@ -168,6 +191,8 @@ Feature: Macro
   Scenario: Expand a spread variable with a constant
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_ x ...)
@@ -182,6 +207,8 @@ Feature: Macro
   Scenario: Throw an error if no rule matches
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define-syntax foo
       (syntax-rules ()
         ((_) #f)))
@@ -198,6 +225,8 @@ Feature: Macro
   Scenario: Define a local macro
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (let-syntax
       ((foo
         (syntax-rules ()
@@ -212,6 +241,8 @@ Feature: Macro
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (letrec-syntax
       ((foo
         (syntax-rules ()
@@ -228,6 +259,8 @@ Feature: Macro
   Scenario: Define a mutually recursive local macro
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (letrec-syntax (
       (foo
         (syntax-rules ()
