@@ -547,7 +547,7 @@
               (expand-expression context (caddr expression))))
 
           ((eqv? first 'quasiquote)
-            (expand-quasiquote context (cadr expression)))
+            (cons 'quote (expand-quasiquote context (cadr expression))))
 
           ((eqv? first 'quote)
             expression)
