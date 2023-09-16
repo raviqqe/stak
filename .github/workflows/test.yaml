@@ -41,6 +41,7 @@ jobs:
           files: lcov.info
   integration_test:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
