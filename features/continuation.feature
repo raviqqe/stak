@@ -82,4 +82,4 @@ Feature: Continuation
     Z
     """
     And the stdout should contain "Oh, no!"
-		# TODO Test an exit code.
+    # TODO Test an exit code.
