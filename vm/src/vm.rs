@@ -898,7 +898,8 @@ mod tests {
 
     #[test]
     fn run_nothing() {
-        let mut vm = create_vm();
+        let mut heap = create_heap();
+        let mut vm = create_vm(&mut heap);
 
         vm.run().unwrap();
 
@@ -907,7 +908,8 @@ mod tests {
 
     #[test]
     fn run_nothing_after_garbage_collection() {
-        let mut vm = create_vm();
+        let mut heap = create_heap();
+        let mut vm = create_vm(&mut heap);
 
         vm.collect_garbages(None).unwrap();
         vm.run().unwrap();
@@ -917,7 +919,8 @@ mod tests {
 
     #[test]
     fn create_list() {
-        let mut vm = create_vm();
+        let mut heap = create_heap();
+        let mut vm = create_vm(&mut heap);
 
         let list = vm.cons(Number::new(1).into(), NULL).unwrap();
 
@@ -937,14 +940,16 @@ mod tests {
 
         #[test]
         fn pop_nothing() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             assert_eq!(vm.pop(), Err(Error::StackUnderflow));
         }
 
         #[test]
         fn push_and_pop() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(42).into()).unwrap();
 
@@ -953,7 +958,8 @@ mod tests {
 
         #[test]
         fn push_and_pop_twice() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -968,7 +974,8 @@ mod tests {
 
         #[test]
         fn collect_cons() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             vm.collect_garbages(None).unwrap();
@@ -978,7 +985,8 @@ mod tests {
 
         #[test]
         fn collect_stack() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages(None).unwrap();
@@ -988,7 +996,8 @@ mod tests {
 
         #[test]
         fn collect_deep_stack() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
@@ -999,7 +1008,8 @@ mod tests {
 
         #[test]
         fn collect_cycle() {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
             *vm.cdr_mut(cons) = cons.into();
@@ -1014,7 +1024,8 @@ mod tests {
         use super::*;
 
         fn run_program(program: &Program) {
-            let mut vm = create_vm();
+            let mut heap = create_heap();
+            let mut vm = create_vm(&mut heap);
 
             vm.initialize(encode(program)).unwrap();
 
