@@ -52,13 +52,9 @@ jobs:
         features:
           - []
           - [gc_always]
-        include:
-          - interpreter: stak
-            features: []
-          - interpreter: stak
-            features: [gc_always]
+        exclude:
           - interpreter: gambit
-            features: []
+            features: [gc_always]
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
