@@ -6,11 +6,7 @@ Feature: Function
 
     (write-u8 (f 60))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a local function
@@ -19,11 +15,7 @@ Feature: Function
     (let ((f (lambda (x) (+ x 5))))
       (write-u8 (f 60)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call an immediate function
@@ -31,11 +23,7 @@ Feature: Function
     """scheme
     (write-u8 (+ 60 ((lambda (x) x) 5)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call nested immediate functions
@@ -46,11 +34,7 @@ Feature: Function
 
     (write-u8 (f 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return a constant
@@ -59,11 +43,7 @@ Feature: Function
     (define (f) 65)
     (write-u8 (f))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return the first argument
@@ -72,11 +52,7 @@ Feature: Function
     (define (f x) x)
     (write-u8 (f 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return the second argument
@@ -85,11 +61,7 @@ Feature: Function
     (define (f x y) y)
     (write-u8 (f 66 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Compute a value with arguments
@@ -98,11 +70,7 @@ Feature: Function
     (define (f x y) (+ x y))
     (write-u8 (f 60 5))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Update a captured variable in a closure
@@ -115,11 +83,7 @@ Feature: Function
     (write-u8 (g))
     (write-u8 (g))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use variadic arguments
@@ -128,11 +92,7 @@ Feature: Function
     (define (f . xs) (map write-u8 xs))
     (f 65 66 67)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use variadic arguments with a fixed argument
@@ -141,11 +101,7 @@ Feature: Function
     (define (f x . ys) (map (lambda (z) (write-u8 (+ x z))) ys))
     (f 65 0 1 2)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Call a fibonacci function
@@ -160,9 +116,5 @@ Feature: Function
 
     (write-u8 (+ 33 (fibonacci 10)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "X"

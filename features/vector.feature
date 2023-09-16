@@ -4,9 +4,5 @@ Feature: Vector
     """scheme
     (map write-u8 (vector->list #(65 66 67)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"

@@ -4,11 +4,7 @@ Feature: Write
     """scheme
     (write-u8 65)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Write a character
@@ -16,9 +12,5 @@ Feature: Write
     """scheme
     (write-char (integer->char 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"

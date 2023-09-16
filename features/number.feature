@@ -19,11 +19,7 @@ Feature: Number
     """scheme
     (write-u8 (+ 66 -1))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use large (but not big) integers
@@ -31,11 +27,7 @@ Feature: Number
     """scheme
     (write-u8 (- 1065 1000))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use integers around the encoding base
@@ -45,11 +37,7 @@ Feature: Number
     (write-u8 (- 128 60))
     (write-u8 (- 129 60))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "CDE"
 
   Scenario: Use arithmetic operators
@@ -71,11 +59,7 @@ Feature: Number
     (test (/ 6 2) 3)
     (test (/ 6 2 3) 1)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAAAAAAAAAAA"
 
   Scenario: Use comparison operators
@@ -91,9 +75,5 @@ Feature: Number
     (write-u8 (if (>= 1 0) 65 66))
     (write-u8 (if (>= 0 0) 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAAAAAAAA"

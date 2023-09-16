@@ -4,11 +4,7 @@ Feature: Dump
     """scheme
     (dump 42)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly ""
 
   Scenario: Pass through a value
@@ -16,9 +12,5 @@ Feature: Dump
     """scheme
     (write-u8 (dump 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"

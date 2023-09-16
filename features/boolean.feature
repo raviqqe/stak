@@ -5,11 +5,7 @@ Feature: Boolean
     (write-u8 (if #f 65 66))
     (write-u8 (if #t 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "BA"
 
   Scenario: Use nested if expressions
@@ -18,11 +14,7 @@ Feature: Boolean
     (write-u8 (if #t (if #t 65 67) 67))
     (write-u8 (if #f 67 (if #f 67 66)))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Use deeply nested if expressions
@@ -31,11 +23,7 @@ Feature: Boolean
     (write-u8 (if #t (if #t (if #t 65 67) 67) 67))
     (write-u8 (if #f 67 (if #f 67 (if #f 67 66))))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Use a not operator
@@ -44,9 +32,5 @@ Feature: Boolean
     (write-u8 (if (not #f) 65 66))
     (write-u8 (if (not #t) 65 66))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"

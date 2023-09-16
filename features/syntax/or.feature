@@ -10,10 +10,6 @@ Feature: or
     (write-u8 (or 65 #f))
     (write-u8 (or #f 65))
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
-    And I successfully run `stak main.out`
+    When I successfully run `scheme main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "BABBAAA"
