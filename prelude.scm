@@ -298,9 +298,10 @@
     ((null? (cdr xs))
       (car xs))
 
-    (f
-      (reduce-right f y (cdr xs))
-      (car xs))))
+    (else
+      (f
+        (reduce-right f y (cdr xs))
+        (car xs)))))
 
 ;; Number
 
