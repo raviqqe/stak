@@ -233,8 +233,7 @@
 (define (integer->char x)
   (rib x '() char-type))
 
-(define (char->integer x)
-  (rib-car x))
+(define char->integer rib-car)
 
 ;; List
 
