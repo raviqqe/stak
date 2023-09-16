@@ -386,21 +386,19 @@
               (loop (cdr rules)))))
         expression))))
 
-(define (expand-syntax* expanders names expression)
-  (if (null? expanders)
-    expression
-    (let* (
-        (pair (car expanders))
-        (name (car pair)))
-      (expand-syntax*
-        (cdr expanders)
-        (cons name names)
-        (if (memv name names)
-          expression
-          ((cdr pair) expression))))))
-
 (define (expand-syntax context expression)
-  (expand-syntax* (expansion-context-expanders context) '() expression))
+  (let loop ((expanders (expansion-context-expanders context)) (names '()) (expression expression))
+    (if (null? expanders)
+      expression
+      (let* (
+          (pair (car expanders))
+          (name (car pair)))
+        (loop
+          (cdr expanders)
+          (cons name names)
+          (if (memv name names)
+            expression
+            ((cdr pair) expression)))))))
 
 (define (expand-definition definition)
   (let (
