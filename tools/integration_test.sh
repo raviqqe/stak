@@ -18,5 +18,5 @@ export PATH=$PWD/tools/scheme/$interpreter:$PATH
 cucumber \
   --publish-quiet \
   --strict-undefined \
-  --tags "not $([ $interpreter = stak ] && echo @any || echo @nonstandard)" \
+  --tags "not $([ $interpreter = stak ] && echo @any || echo @stak)" \
   "$@"

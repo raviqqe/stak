@@ -79,7 +79,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @nonstandard
+  @stak
   Scenario: Match a succeeding ellipsis
     Given a file named "main.scm" with:
     """scheme
@@ -194,7 +194,7 @@ Feature: Macro
     """
     Then the exit status should not be 0
 
-  @nonstandard
+  @stak
   Scenario: Define a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -208,7 +208,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @nonstandard
+  @stak
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -224,7 +224,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  @nonstandard
+  @stak
   Scenario: Define a mutually recursive local macro
     Given a file named "main.scm" with:
     """scheme

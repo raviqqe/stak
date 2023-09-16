@@ -65,7 +65,7 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  @nonstandard
+  @stak
   Scenario: Get a tag of a pair with a non-cons cdr
     Given a file named "main.scm" with:
     """scheme

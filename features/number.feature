@@ -58,7 +58,7 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAAAAAAAAAA"
 
-  @nonstandard
+  @stak
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
     """scheme
