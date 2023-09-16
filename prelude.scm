@@ -321,17 +321,19 @@
         y
         (loop (cdr xs) (f y (car xs)))))))
 
-(define (inverse-arithmetic-operator f)
+(define (inverse-arithmetic-operator f y)
   (lambda (x . xs)
-    (let loop ((xs xs) (y x))
-      (if (null? xs)
-        y
-        (loop (cdr xs) (f y (car xs)))))))
+    (if (null? xs)
+      (f y x)
+      (let loop ((xs xs) (y x))
+        (if (null? xs)
+          y
+          (loop (cdr xs) (f y (car xs))))))))
 
 (define + (arithmetic-operator $+ 0))
-(define - (inverse-arithmetic-operator $-))
+(define - (inverse-arithmetic-operator $- 0))
 (define * (arithmetic-operator $* 1))
-(define / (inverse-arithmetic-operator $/))
+(define / (inverse-arithmetic-operator $/ 1))
 
 (define (comparison-operator f)
   (lambda xs

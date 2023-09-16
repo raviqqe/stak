@@ -25,14 +25,6 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Get a tag of a pair with a non-cons cdr
-    Given a file named "main.scm" with:
-    """scheme
-    (rib-tag (cons 1 2))
-    """
-    When I successfully run `scheme main.scm`
-    Then the exit status should be 0
-
   Scenario: Use a map function
     Given a file named "main.scm" with:
     """scheme
@@ -72,3 +64,12 @@ Feature: List
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
+
+  @stak
+  Scenario: Get a tag of a pair with a non-cons cdr
+    Given a file named "main.scm" with:
+    """scheme
+    (rib-tag (cons 1 2))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
