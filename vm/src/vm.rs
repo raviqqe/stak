@@ -45,7 +45,7 @@ macro_rules! assert_index_range {
 }
 
 #[derive(Debug)]
-pub struct Vm<T: Device> {
+pub struct Vm<'a, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
@@ -53,13 +53,13 @@ pub struct Vm<T: Device> {
     cons: Cons,
     allocation_index: usize,
     space: bool,
-    heap: &mut [Value],
+    heap: &'a mut [Value],
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<T: Device> Vm<T> {
-    pub fn new(heap: &mut [Value], device: T) -> Result<Self, Error> {
+impl<'a, T: Device> Vm<'a, T> {
+    pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
             program_counter: NULL,
@@ -341,7 +341,7 @@ impl<T: Device> Vm<T> {
         *self.car_mut(cons) = car;
         *self.cdr_mut(cons) = cdr;
 
-        debug_assert!(self.allocation_index <= Self::SPACE_SIZE);
+        debug_assert!(self.allocation_index <= self.space_size());
 
         Ok(cons)
     }
@@ -363,7 +363,7 @@ impl<T: Device> Vm<T> {
 
     fn allocation_start(&self) -> usize {
         if self.space {
-            Self::SPACE_SIZE
+            self.space_size()
         } else {
             0
         }
@@ -814,7 +814,7 @@ impl<T: Device> Vm<T> {
     }
 }
 
-impl<T: Device, const N: usize> Display for Vm<N, T> {
+impl<'a, T: Device> Display for Vm<'a, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "program counter: {}", self.program_counter)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -861,7 +861,7 @@ mod tests {
     type FakeDevice = FixedBufferDevice<16, 16>;
 
     fn create_heap() -> [Value; HEAP_SIZE] {
-        [ZERO.into; HEAP_SIZE]
+        [ZERO.into(); HEAP_SIZE]
     }
 
     fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
@@ -882,7 +882,7 @@ mod tests {
 
     #[test]
     fn create() {
-        let heap = create_heap();
+        let mut heap = create_heap();
         let vm = create_vm(&mut heap);
 
         assert_snapshot!(vm);
