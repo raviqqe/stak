@@ -14,8 +14,4 @@ cargo build $(feature_flags)
 export PATH=$PWD/target/debug:$PWD/tools:$PATH
 export STAK_ROOT=$PWD
 
-(
-  cd $(dirname $0)/..
-
-  cucumber --publish-quiet --strict-undefined "$@"
-)
+cucumber --publish-quiet --strict-undefined "$@"
