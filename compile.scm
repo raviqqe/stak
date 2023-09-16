@@ -435,7 +435,7 @@
       (cons (expand-quasiquote context expression)))
 
     (else
-      42)))
+      expression)))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
