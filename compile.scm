@@ -533,6 +533,9 @@
                 bindings)
               (expand-expression context (caddr expression))))
 
+          ((eqv? first 'quasiquote)
+            expression)
+
           ((eqv? first 'quote)
             expression)
 
