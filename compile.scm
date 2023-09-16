@@ -434,6 +434,9 @@
     ((eqv? (car expression) 'unquote)
       (cadr expression))
 
+    ((eqv? (car expression) 'unquote)
+      (cadr expression))
+
     (else
       (list
         'cons
