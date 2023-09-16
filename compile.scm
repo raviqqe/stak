@@ -534,7 +534,7 @@
               (expand-expression context (caddr expression))))
 
           ((eqv? first 'quasiquote)
-            expression)
+            (error "not implemented"))
 
           ((eqv? first 'quote)
             expression)
