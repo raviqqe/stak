@@ -347,8 +347,7 @@
 
 ;; Symbol
 
-(define (symbol->string x)
-  (rib-cdr x))
+(define symbol->string rib-cdr)
 
 ;; Vector
 
