@@ -48,10 +48,12 @@ jobs:
           - macos-latest
         features:
           - []
-          - [gc_always]
         interpreter:
           - stak
           - gambit
+        include:
+          - interpreter: stak
+            features: [gc_always]
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
