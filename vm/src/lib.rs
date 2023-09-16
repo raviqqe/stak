@@ -16,7 +16,9 @@ mod r#type;
 mod value;
 mod vm;
 
+pub use cons::Cons;
 pub use device::{Device, FixedBufferDevice};
 pub use error::Error;
+pub use number::Number;
 pub use value::Value;
 pub use vm::Vm;
