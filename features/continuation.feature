@@ -93,5 +93,5 @@ Feature: Continuation
     Z
     """
     And the stdout should contain "Oh, no!"
-    # TODO Write an error messasge to stderr.
+    # TODO Write an error message to stderr.
     # TODO Test an exit code.
