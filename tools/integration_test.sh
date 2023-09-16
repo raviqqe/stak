@@ -11,6 +11,6 @@ bundler install
 
 cargo build $(feature_flags)
 
-export PATH=$PWD/target/debug:$PWD/tools:$PATH
+export PATH=$PWD/tools/scheme/stak:$PATH
 
 cucumber --publish-quiet --strict-undefined "$@"
