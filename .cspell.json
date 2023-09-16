@@ -13,6 +13,7 @@
     "letrec",
     "memq",
     "memv",
+    "quasiquote",
     "repr",
     "ribbit",
     "rustup",
