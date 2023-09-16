@@ -2,6 +2,8 @@ Feature: Function
   Scenario: Call a global function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x) (+ x 5))
 
     (write-u8 (f 60))
@@ -12,6 +14,8 @@ Feature: Function
   Scenario: Call a local function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (let ((f (lambda (x) (+ x 5))))
       (write-u8 (f 60)))
     """
@@ -21,6 +25,8 @@ Feature: Function
   Scenario: Call an immediate function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (+ 60 ((lambda (x) x) 5)))
     """
     When I successfully run `scheme main.scm`
@@ -29,6 +35,8 @@ Feature: Function
   Scenario: Call nested immediate functions
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x)
       ((lambda () ((lambda () x)))))
 
@@ -40,6 +48,8 @@ Feature: Function
   Scenario: Return a constant
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f) 65)
     (write-u8 (f))
     """
@@ -49,6 +59,8 @@ Feature: Function
   Scenario: Return the first argument
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x) x)
     (write-u8 (f 65))
     """
@@ -58,6 +70,8 @@ Feature: Function
   Scenario: Return the second argument
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x y) y)
     (write-u8 (f 66 65))
     """
@@ -67,6 +81,8 @@ Feature: Function
   Scenario: Compute a value with arguments
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x y) (+ x y))
     (write-u8 (f 60 5))
     """
@@ -76,6 +92,8 @@ Feature: Function
   Scenario: Update a captured variable in a closure
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x) (lambda () (set! x (+ x 1)) x))
     (define g (f 64))
 
@@ -89,6 +107,8 @@ Feature: Function
   Scenario: Use variadic arguments
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f . xs) (map write-u8 xs))
     (f 65 66 67)
     """
@@ -98,6 +118,8 @@ Feature: Function
   Scenario: Use variadic arguments with a fixed argument
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x . ys) (map (lambda (z) (write-u8 (+ x z))) ys))
     (f 65 0 1 2)
     """
@@ -107,6 +129,8 @@ Feature: Function
   Scenario: Call a fibonacci function
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (fibonacci x)
       (if (< x 2)
         x

@@ -2,6 +2,8 @@ Feature: letrec*
   Scenario: Bind a variable
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x)
       (letrec* (
           (f
@@ -19,6 +21,8 @@ Feature: letrec*
   Scenario: Bind two variables
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x)
       (letrec* (
           (f (lambda (x) (if (eqv? x 65) x (g (+ x 1)))))

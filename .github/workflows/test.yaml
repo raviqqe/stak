@@ -49,11 +49,14 @@ jobs:
         interpreter:
           - stak
           - gambit
+          - chibi
         features:
           - []
           - [gc_always]
         exclude:
           - interpreter: gambit
+            features: [gc_always]
+          - interpreter: chibi
             features: [gc_always]
     runs-on: ${{ matrix.os }}
     env:
@@ -63,6 +66,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
+      - run: brew install chibi-scheme
       - run: brew unlink ghostscript
         if: matrix.os == 'macos-latest'
       - run: tools/integration_test.sh

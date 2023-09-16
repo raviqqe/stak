@@ -512,6 +512,10 @@
                 (expand (cadddr expression))
                 #f)))
 
+          ; TODO Implement an import statement.
+          ((eqv? first 'import)
+            #f)
+
           ((eqv? first 'lambda)
             (cons
               'lambda

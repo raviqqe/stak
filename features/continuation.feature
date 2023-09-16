@@ -2,6 +2,8 @@ Feature: Continuation
   Scenario: Call a continuation
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (call/cc (lambda (k) (k 65))))
     """
     When I successfully run `scheme main.scm`
@@ -10,6 +12,8 @@ Feature: Continuation
   Scenario: Call a continuation with a global variable
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define x 5)
 
     (write-u8 (+ 60 (call/cc (lambda (k) (k x)))))
@@ -20,6 +24,8 @@ Feature: Continuation
   Scenario: Call a continuation with a local variable
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define (f x) (call/cc (lambda (k) (k x))))
 
     (write-u8 (+ 60 (f 5)))
@@ -30,14 +36,19 @@ Feature: Continuation
   Scenario: Return a value from a receiver
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (write-u8 (call/cc (lambda (k) 65)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak
   Scenario: Modify environment
     Given a file named "main.scm" with:
     """scheme
+    (import (scheme base))
+
     (define backtrack #f)
 
     (let ((i 65))
@@ -82,4 +93,5 @@ Feature: Continuation
     Z
     """
     And the stdout should contain "Oh, no!"
+    # TODO Write an error message to stderr.
     # TODO Test an exit code.
