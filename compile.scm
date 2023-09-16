@@ -426,7 +426,7 @@
             context
             (cons 'letrec-syntax (cons definitions expressions))))))))
 
-(define (expand-quasiquote context expression)
+(define (expand-quasiquote expression)
   (cond
     ((not (pair? expression))
       expression)
@@ -436,8 +436,8 @@
 
     (else
       (cons
-        (expand-quasiquote context (car expression))
-        (expand-quasiquote context (cdr expression))))))
+        (expand-quasiquote (car expression))
+        (expand-quasiquote (cdr expression))))))
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
@@ -547,7 +547,7 @@
               (expand-expression context (caddr expression))))
 
           ((eqv? first 'quasiquote)
-            (list 'quote (expand-quasiquote context (cadr expression))))
+            (list 'quote (expand-quasiquote (cadr expression))))
 
           ((eqv? first 'quote)
             expression)
