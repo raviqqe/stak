@@ -233,8 +233,7 @@
 (define (integer->char x)
   (rib x '() char-type))
 
-(define (char->integer x)
-  (rib-car x))
+(define char->integer rib-car)
 
 ;; List
 
@@ -325,7 +324,7 @@
           (let ((y (car xs)))
             (and (f x y) (loop y (cdr xs)))))))))
 
-(define = (comparison-operator eq?))
+(define = (comparison-operator eqv?))
 (define < (comparison-operator $<))
 (define > (comparison-operator (lambda (x y) ($< y x))))
 (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
@@ -344,6 +343,10 @@
 
 (define (string->list x)
   (map integer->char (rib-cdr x)))
+
+;; Symbol
+
+(define symbol->string rib-cdr)
 
 ;; Vector
 
