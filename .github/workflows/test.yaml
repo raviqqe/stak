@@ -50,8 +50,8 @@ jobs:
           - stak
           - gambit
         include:
+          - features: gc_always
           - interpreter: stak
-            features: gc_always
           - interpreter: gambit
     runs-on: ${{ matrix.os }}
     env:
