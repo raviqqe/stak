@@ -51,9 +51,9 @@ jobs:
           - gambit
         include:
           - interpreter: stak
-            features: []
-          - interpreter: stak
-            features: [gc_always]
+            features:
+              - []
+              - [gc_always]
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
