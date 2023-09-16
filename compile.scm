@@ -439,7 +439,11 @@
 
     (else
       (list
-        'cons
+        (if (and
+            (pair? (car expression))
+            (eqv? (caar expression) 'unquote-splicing))
+          'append
+          'cons)
         (expand-quasiquote (car expression))
         (expand-quasiquote (cdr expression))))))
 

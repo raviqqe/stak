@@ -54,3 +54,31 @@ Feature: Quasi-quote
     """
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Unquote and unsplice a list in a car
+    Given a file named "main.scm" with:
+    """scheme
+    (define x '(65))
+
+    (map write-u8 `(,@x))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Unquote and unsplice a list in a cdr
+    Given a file named "main.scm" with:
+    """scheme
+    (define x '(65))
+
+    (map write-u8 `(,@x))
+    """
+    When I run the following script:
+    """sh
+    compile.sh main.scm > main.out
+    """
+    And I successfully run `stak main.out`
+    Then the stdout should contain exactly "A"
