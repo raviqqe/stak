@@ -429,13 +429,14 @@
 (define (expand-quasiquote expression)
   (cond
     ((not (pair? expression))
-      expression)
+      (list 'quote expression))
 
     ((eqv? (car expression) 'unquote)
       (cadr expression))
 
     (else
-      (cons
+      (list
+        'cons
         (expand-quasiquote (car expression))
         (expand-quasiquote (cdr expression))))))
 
@@ -547,7 +548,7 @@
               (expand-expression context (caddr expression))))
 
           ((eqv? first 'quasiquote)
-            (list 'quote (expand-quasiquote (cadr expression))))
+            (expand-quasiquote (cadr expression)))
 
           ((eqv? first 'quote)
             expression)
