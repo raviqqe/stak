@@ -58,10 +58,8 @@ pub struct Vm<T: Device> {
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<T: Device> Vm<N, T> {
-    const SPACE_SIZE: usize = N / 2;
-
-    pub fn new(device: T) -> Result<Self, Error> {
+impl<T: Device> Vm<T> {
+    pub fn new(heap: &mut [Value], device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
             program_counter: NULL,
@@ -70,7 +68,7 @@ impl<T: Device> Vm<N, T> {
             cons: NULL,
             allocation_index: 0,
             space: false,
-            heap: [ZERO.into(); N],
+            heap,
         };
 
         vm.initialize_cons()?;
@@ -356,7 +354,11 @@ impl<T: Device> Vm<N, T> {
     }
 
     fn is_out_of_memory(&self) -> bool {
-        self.allocation_index >= Self::SPACE_SIZE
+        self.allocation_index >= self.space_size()
+    }
+
+    fn space_size(&self) -> usize {
+        self.heap.len() / 2
     }
 
     fn allocation_start(&self) -> usize {
