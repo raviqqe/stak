@@ -2,7 +2,7 @@ Feature: Symbol
   Scenario: Write a symbol
     Given a file named "main.scm" with:
     """scheme
-		(write-string (symbol->string 'foo))
+    (write-string (symbol->string 'foo))
     """
     When I run the following script:
     """sh
