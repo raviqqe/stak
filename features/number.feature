@@ -87,8 +87,6 @@ Feature: Number
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (<) 65 66))
-    (write-u8 (if (< 0) 65 66))
     (write-u8 (if (< 0 1) 65 66))
     (write-u8 (if (< 0 1 2) 65 66))
     (write-u8 (if (> 1 0) 65 66))
@@ -98,4 +96,16 @@ Feature: Number
     (write-u8 (if (>= 0 0) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AAAAAAAAA"
+    Then the stdout should contain exactly "AAAAAAA"
+
+  @stak
+  Scenario: Use comparison operators with an insufficient number of arguments
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (<) 65 66))
+    (write-u8 (if (< 0) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AA"
