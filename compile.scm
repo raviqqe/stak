@@ -434,16 +434,17 @@
     ((eqv? (car expression) 'unquote)
       (cadr expression))
 
-    ((eqv? (car expression) 'unquote-splicing)
-      (cadr expression))
+    ((and
+        (pair? (car expression))
+        (eqv? (caar expression) 'unquote-splicing))
+      (list
+        'append
+        (cadar expression)
+        (expand-quasiquote (cdr expression))))
 
     (else
       (list
-        (if (and
-            (pair? (car expression))
-            (eqv? (caar expression) 'unquote-splicing))
-          'append
-          'cons)
+        'cons
         (expand-quasiquote (car expression))
         (expand-quasiquote (cdr expression))))))
 

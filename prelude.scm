@@ -281,6 +281,15 @@
 (define memq (mem eq?))
 (define memv (mem eqv?))
 
+; TODO Use `apply`.
+(define (append . lists)
+  (reduce-right append-lists '() lists))
+
+(define (append-lists xs ys)
+  (if (null? xs)
+    ys
+    (cons (car xs) (append-lists (cdr xs) ys))))
+
 ;; Number
 
 (define (integer? x)

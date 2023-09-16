@@ -74,11 +74,11 @@ Feature: Quasi-quote
     """scheme
     (define x '(65))
 
-    (map write-u8 `(,@x))
+    (map write-u8 `(65 . ,@x))
     """
     When I run the following script:
     """sh
     compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "AA"
