@@ -44,10 +44,8 @@ macro_rules! assert_index_range {
     };
 }
 
-// TODO Should we rather accept `&mut [Value]` as heap? This copies VM codes for
-// every N.
 #[derive(Debug)]
-pub struct Vm<const N: usize, T: Device> {
+pub struct Vm<T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
@@ -55,12 +53,12 @@ pub struct Vm<const N: usize, T: Device> {
     cons: Cons,
     allocation_index: usize,
     space: bool,
-    heap: [Value; N],
+    heap: &mut [Value],
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<const N: usize, T: Device> Vm<N, T> {
+impl<T: Device> Vm<N, T> {
     const SPACE_SIZE: usize = N / 2;
 
     pub fn new(device: T) -> Result<Self, Error> {
