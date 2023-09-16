@@ -55,7 +55,7 @@ Feature: Quasi-quote
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Unquote and unsplice a list in a car
+  Scenario: Unquote and unsplice a list
     Given a file named "main.scm" with:
     """scheme
     (define x '(65))
@@ -69,16 +69,17 @@ Feature: Quasi-quote
     And I successfully run `stak main.out`
     Then the stdout should contain exactly "A"
 
-  Scenario: Unquote and unsplice a list in a cdr
+  Scenario: Unquote and unsplice multiple lists
     Given a file named "main.scm" with:
     """scheme
     (define x '(65))
+    (define y '(66))
 
-    (map write-u8 `(65 . ,@x))
+    (map write-u8 `(,@x ,@y))
     """
     When I run the following script:
     """sh
     compile.sh main.scm > main.out
     """
     And I successfully run `stak main.out`
-    Then the stdout should contain exactly "AA"
+    Then the stdout should contain exactly "AB"
