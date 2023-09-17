@@ -302,12 +302,12 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-		(let-syntax
-			((foo
-				(syntax-rules ()
-					((_ x)
-						x))))
-			(let ((foo 65))
+    (let-syntax
+      ((foo
+        (syntax-rules ()
+          ((_ x)
+            x))))
+      (let ((foo 65))
         (write-u8 foo)))
     """
     When I successfully run `scheme main.scm`
