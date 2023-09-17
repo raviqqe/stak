@@ -297,6 +297,23 @@ Feature: Macro
     Then the stdout should contain exactly "A"
 
   @stak
+  Scenario: Use a local macro as a shadowed value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ((foo 65))
+      (let-syntax
+        ((foo
+          (syntax-rules ()
+            ((_ x)
+              x))))
+        (write-u8 foo)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should not be 0
+
+  @stak
   Scenario: Shadow a local macro by a local value
     Given a file named "main.scm" with:
     """scheme
