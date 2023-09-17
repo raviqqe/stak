@@ -49,21 +49,16 @@ jobs:
         interpreter:
           - name: stak
             tags: not @any
+          - name: stak
+            tags: not @any
+            features: [gc_always]
           - name: gambit
             tags: not @stak and not @advanced
           - name: chibi
             tags: not @stak
-        features:
-          - []
-          - [gc_always]
-        exclude:
-          - interpreter: gambit
-            features: [gc_always]
-          - interpreter: chibi
-            features: [gc_always]
     runs-on: ${{ matrix.os }}
     env:
-      STAK_FEATURES: ${{ join(matrix.features, ',') }}
+      STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
       SCHEME_INTERPRETER: ${{ matrix.interpreter.name }}
     steps:
       - uses: actions/checkout@v4
