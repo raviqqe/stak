@@ -11,12 +11,6 @@ bundler install
 
 cargo build $(feature_flags)
 
-interpreter=${SCHEME_INTERPRETER:-stak}
+export PATH=$PWD/tools/scheme/${SCHEME_INTERPRETER:-stak}:$PATH
 
-export PATH=$PWD/tools/scheme/$interpreter:$PATH
-
-cucumber \
-  --publish-quiet \
-  --strict-undefined \
-  --tags "not $([ $interpreter = stak ] && echo @any || echo @stak)" \
-  "$@"
+cucumber --publish-quiet --strict-undefined "$@"
