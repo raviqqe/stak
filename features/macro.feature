@@ -90,7 +90,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Match a succeeding ellipsis
     Given a file named "main.scm" with:
     """scheme
