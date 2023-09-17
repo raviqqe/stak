@@ -67,7 +67,7 @@ jobs:
       - run: brew install chibi-scheme
       - run: brew unlink ghostscript
         if: matrix.os == 'macos-latest'
-      - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags }}'
+      - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @any' }}'
   test:
     needs:
       - build
