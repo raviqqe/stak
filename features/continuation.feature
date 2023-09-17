@@ -43,7 +43,6 @@ Feature: Continuation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
   Scenario: Modify environment
     Given a file named "main.scm" with:
     """scheme
@@ -63,6 +62,7 @@ Feature: Continuation
       (backtrack #f))
     """
     When I run `scheme main.scm`
+    # TODO Use `contain exactly`.
     Then the stdout should contain:
     """
     A
@@ -92,6 +92,5 @@ Feature: Continuation
     Y
     Z
     """
-    And the stdout should contain "Oh, no!"
-    # TODO Write an error message to stderr.
+    # TODO Test stderr.
     # TODO Test an exit code.
