@@ -214,6 +214,7 @@
   expansion-context?
   (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
   (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
+  ; TODO Do we need this?
   (environment expansion-context-environment))
 
 (define (expansion-context-expanders context)
