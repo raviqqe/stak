@@ -48,9 +48,7 @@ jobs:
           - macos-latest
         interpreter:
           - name: stak
-            tags: not @any
           - name: stak
-            tags: not @any
             features: [gc_always]
           - name: gambit
             tags: not @stak and not @advanced
