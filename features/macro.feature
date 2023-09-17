@@ -278,3 +278,20 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario: Shadow a local variable by a local macro
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ((x 42))
+      (let-syntax
+        ((foo
+          (syntax-rules ()
+            ((_ x)
+              x))))
+        (write-u8 (foo 65))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
