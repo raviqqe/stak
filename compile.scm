@@ -374,6 +374,7 @@
       (literals (cons name (cadr transformer)))
       (rules (cddr transformer)))
     (lambda (expression)
+      (when (eqv? expression name) (error "macro used as a value:" expression))
       (if (eqv? (predicate expression) name)
         (let loop ((rules rules))
           (unless (pair? rules)

@@ -310,7 +310,7 @@ Feature: Macro
               x))))
         (write-u8 foo)))
     """
-    When I successfully run `scheme main.scm`
+    When I run `scheme main.scm`
     Then the exit status should not be 0
 
   @stak
