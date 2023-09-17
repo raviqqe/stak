@@ -499,7 +499,9 @@
             (cons 'begin (expand-sequence context (cdr expression))))
 
           ((eqv? first 'define)
-            (expand (cons 'set! (expand-definition expression))))
+            (let ((pair (expand-definition expression)))
+              (expansion-context-add-global-expander! context (car pair) #f)
+              (expand (cons 'set! pair))))
 
           ((eqv? first 'define-syntax)
             (let ((name (cadr expression)))
