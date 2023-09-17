@@ -285,13 +285,14 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let ((foo 42))
-      (let-syntax
-        ((foo
-          (syntax-rules ()
-            ((_ x)
-              x))))
-        (write-u8 (foo 65))))
+    (define foo 42)
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x)
+          x)))
+
+    (write-u8 (foo 65))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
@@ -302,13 +303,14 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let ((foo 65))
-      (let-syntax
-        ((foo
-          (syntax-rules ()
-            ((_ x)
-              x))))
-        (write-u8 foo)))
+    (define foo 65)
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x)
+          x)))
+
+    (write-u8 foo)
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
@@ -319,13 +321,14 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let-syntax
-      ((foo
-        (syntax-rules ()
-          ((_ x)
-            x))))
-      (let ((foo 65))
-        (write-u8 foo)))
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x)
+          x)))
+
+    (define foo 65)
+
+    (write-u8 foo)
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
