@@ -278,3 +278,54 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario: Shadow a local value by a local macro
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ((foo 42))
+      (let-syntax
+        ((foo
+          (syntax-rules ()
+            ((_ x)
+              x))))
+        (write-u8 (foo 65))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario: Use a local macro as a shadowed value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ((foo 65))
+      (let-syntax
+        ((foo
+          (syntax-rules ()
+            ((_ x)
+              x))))
+        (write-u8 foo)))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
+  @stak
+  Scenario: Shadow a local macro by a local value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let-syntax
+      ((foo
+        (syntax-rules ()
+          ((_ x)
+            x))))
+      (let ((foo 65))
+        (write-u8 foo)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"

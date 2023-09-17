@@ -214,6 +214,7 @@
   expansion-context?
   (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
   (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
+  ; TODO Do we need this?
   (environment expansion-context-environment))
 
 (define (expansion-context-expanders context)
@@ -241,12 +242,14 @@
       (cons name procedure)
       (expansion-context-global-expanders context))))
 
-(define (expansion-context-add-variables context variables)
+(define (expansion-context-add-variables context names)
   (make-expansion-context
-    (expansion-context-local-expanders context)
+    (append
+      (map (lambda (name) (cons name #f)) names)
+      (expansion-context-local-expanders context))
     (expansion-context-global-expanders context)
     (append
-      variables
+      names
       (expansion-context-environment context))))
 
 ;; Procedures
@@ -374,6 +377,7 @@
       (literals (cons name (cadr transformer)))
       (rules (cddr transformer)))
     (lambda (expression)
+      (when (eqv? expression name) (error "macro used as a value:" expression))
       (if (eqv? (predicate expression) name)
         (let loop ((rules rules))
           (unless (pair? rules)
@@ -395,13 +399,14 @@
       expression
       (let* (
           (pair (car expanders))
-          (name (car pair)))
+          (name (car pair))
+          (expander (cdr pair)))
         (loop
           (cdr expanders)
           (cons name names)
-          (if (memv name names)
+          (if (or (memv name names) (not expander))
             expression
-            ((cdr pair) expression)))))))
+            (expander expression)))))))
 
 (define (expand-definition definition)
   (let (
