@@ -47,9 +47,12 @@ jobs:
           - ubuntu-latest
           - macos-latest
         interpreter:
-          - stak
-          - gambit
-          - chibi
+          - name: stak
+            tags: not @any
+          - name: gambit
+            tags: not @stak
+          - name: chibi
+            tags: not @stak
         features:
           - []
           - [gc_always]
@@ -61,7 +64,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.features, ',') }}
-      SCHEME_INTERPRETER: ${{ matrix.interpreter }}
+      SCHEME_INTERPRETER: ${{ matrix.interpreter.name }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
@@ -69,7 +72,7 @@ jobs:
       - run: brew install chibi-scheme
       - run: brew unlink ghostscript
         if: matrix.os == 'macos-latest'
-      - run: tools/integration_test.sh
+      - run: tools/integration_test.sh --tags ${{ matrix.interpreter.tags }}
   test:
     needs:
       - build
