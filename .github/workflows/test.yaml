@@ -50,7 +50,7 @@ jobs:
           - name: stak
             tags: not @any
           - name: gambit
-            tags: not @stak
+            tags: not @stak and not @advanced
           - name: chibi
             tags: not @stak
         features:

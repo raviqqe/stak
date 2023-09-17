@@ -221,7 +221,7 @@ Feature: Macro
     """
     Then the exit status should not be 0
 
-  @stak
+  @advanced
   Scenario: Define a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -237,7 +237,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -255,7 +255,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  @stak
+  @advanced
   Scenario: Define a mutually recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -279,7 +279,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Shadow a global value by a global macro
     Given a file named "main.scm" with:
     """scheme
@@ -297,7 +297,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Use a global macro as a shadowed value
     Given a file named "main.scm" with:
     """scheme
@@ -315,7 +315,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  @stak
+  @advanced
   Scenario: Shadow a global macro by a global value
     Given a file named "main.scm" with:
     """scheme
@@ -333,7 +333,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Shadow a local value by a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -350,7 +350,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Use a local macro as a shadowed value
     Given a file named "main.scm" with:
     """scheme
@@ -367,7 +367,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  @stak
+  @advanced
   Scenario: Shadow a local macro by a local value
     Given a file named "main.scm" with:
     """scheme
