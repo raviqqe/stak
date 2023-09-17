@@ -241,12 +241,14 @@
       (cons name procedure)
       (expansion-context-global-expanders context))))
 
-(define (expansion-context-add-variables context variables)
+(define (expansion-context-add-variables context names)
   (make-expansion-context
-    (expansion-context-local-expanders context)
+    (append
+      (map (lambda (name) (cons name #f)) names)
+      (expansion-context-local-expanders context))
     (expansion-context-global-expanders context)
     (append
-      variables
+      names
       (expansion-context-environment context))))
 
 ;; Procedures
@@ -396,13 +398,14 @@
       expression
       (let* (
           (pair (car expanders))
-          (name (car pair)))
+          (name (car pair))
+          (expander (cdr pair)))
         (loop
           (cdr expanders)
           (cons name names)
-          (if (memv name names)
+          (if (or (memv name names) (not expander))
             expression
-            ((cdr pair) expression)))))))
+            (expander expression)))))))
 
 (define (expand-definition definition)
   (let (
