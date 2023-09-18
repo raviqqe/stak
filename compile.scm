@@ -226,9 +226,7 @@
     (expansion-context-symbols context)))
 
 (define (expansion-context-push-local context name procedure)
-  (expansion-context-append-locals
-    context
-    (list (cons name procedure))))
+  (expansion-context-append-locals context (list (cons name procedure))))
 
 (define (expansion-context-set-local! context name procedure)
   (set-cdr!
