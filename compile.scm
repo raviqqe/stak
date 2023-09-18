@@ -134,7 +134,7 @@
     list
     (skip (- n 1) (cdr list))))
 
-(define (list-index f xs)
+(define (list-position f xs)
   (cond
     ((null? xs)
       #f)
@@ -143,11 +143,11 @@
       0)
 
     (else
-      (let ((index (list-index f (cdr xs))))
+      (let ((index (list-position f (cdr xs))))
         (and index (+ 1 index))))))
 
-(define (memv-index one xs)
-  (list-index (lambda (other) (eqv? one other)) xs))
+(define (memv-position one xs)
+  (list-position (lambda (other) (eqv? one other)) xs))
 
 (define (zip-alist alist)
   (let (
@@ -607,7 +607,7 @@
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
-  (or (memv-index variable (compilation-context-environment context)) variable))
+  (or (memv-position variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -1060,7 +1060,7 @@
     ((symbol? operand)
       (* 2
         (or
-          (memv-index operand (encode-context-all-symbols context))
+          (memv-position operand (encode-context-all-symbols context))
           (error "symbol not found:" operand))))
 
     (else (error "invalid operand:" operand))))
