@@ -220,19 +220,19 @@
     (expansion-context-environment context)
     (expansion-context-symbols context)))
 
-(define (expansion-context-add-local-expander context name procedure)
+(define (expansion-context-push-local context name procedure)
   (make-expansion-context
     (cons
       (cons name procedure)
       (expansion-context-environment context))
     (expansion-context-symbols context)))
 
-(define (expansion-context-set-local-expander! context name procedure)
+(define (expansion-context-set-local! context name procedure)
   (set-cdr!
     (assv name (expansion-context-environment context))
     procedure))
 
-(define (expansion-context-add-global-expander! context name procedure)
+(define (expansion-context-set-symbol! context name procedure)
   (expansion-context-set-symbols!
     context
     (cons
@@ -494,12 +494,12 @@
 
           ((eqv? first 'define)
             (let ((pair (expand-definition expression)))
-              (expansion-context-add-global-expander! context (car pair) #f)
+              (expansion-context-set-symbol! context (car pair) #f)
               (expand (cons 'set! pair))))
 
           ((eqv? first 'define-syntax)
             (let ((name (cadr expression)))
-              (expansion-context-add-global-expander!
+              (expansion-context-set-symbol!
                 context
                 name
                 (compile-transformer context name (caddr expression)))
@@ -534,7 +534,7 @@
               (fold-left
                 (lambda (context pair)
                   (let ((name (car pair)))
-                    (expansion-context-add-local-expander
+                    (expansion-context-push-local
                       context
                       name
                       (compile-transformer context name (cadr pair)))))
@@ -548,13 +548,13 @@
                 (context
                   (fold-left
                     (lambda (context pair)
-                      (expansion-context-add-local-expander context (car pair) #f))
+                      (expansion-context-push-local context (car pair) #f))
                     context
                     bindings)))
               (map
                 (lambda (pair)
                   (let ((name (car pair)))
-                    (expansion-context-set-local-expander!
+                    (expansion-context-set-local!
                       context
                       name
                       (compile-transformer context name (cadr pair)))))
