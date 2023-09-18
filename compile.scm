@@ -149,6 +149,12 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
+(define (list-count f xs)
+  (let loop ((xs xs) (count 0))
+    (if (null? xs)
+      count
+      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -624,8 +630,12 @@
                       context
                       (map
                         (lambda (name) (cons name #f))
-                        (parameter-names (cadr expression))))
-                    (cddr expression)))))
+                        (lambda-parameters (cadr expression))))))
+                (cons
+                  'lambda
+                  (cons
+                    (rename-parameters context (cadr expression))
+                    (expand-body context (cddr expression))))))
 
             ((eqv? first 'let-syntax)
               (expand-expression
