@@ -260,6 +260,12 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
+(define (rename-name context name)
+  name)
+
+(define (rename-parameters context parameters)
+  parameters)
+
 (define (find-pattern-variables literals pattern)
   (cond
     ((memv pattern (append '(_ ...) literals))
@@ -532,17 +538,20 @@
               #f)
 
             ((eqv? first 'lambda)
-              (cons
-                'lambda
-                (cons
-                  (cadr expression)
-                  (expand-body
+              (let (
+                  (context
                     (expansion-context-append-locals
                       context
                       (map
                         (lambda (name) (cons name #f))
-                        (get-parameter-variables (cadr expression))))
-                    (cddr expression)))))
+                        (get-parameter-variables (cadr expression))))))
+                (cons
+                  'lambda
+                  (cons
+                    (rename-parameters context (cadr expression))
+                    (expand-body
+                      context
+                      (cddr expression))))))
 
             ((eqv? first 'let-syntax)
               (expand-expression
