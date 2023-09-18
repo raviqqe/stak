@@ -393,7 +393,7 @@
               (rule (car rules))
               (matches (match-pattern context name literals (car rule) expression)))
             (if matches
-              (expand-expression context (fill-template matches (cadr rule)))
+              (fill-template matches (cadr rule))
               (loop (cdr rules)))))
         expression))))
 
