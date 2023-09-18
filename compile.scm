@@ -659,7 +659,7 @@
                         (expansion-context-push-local context (car pair) #f))
                       context
                       bindings)))
-                (map
+                (for-each
                   (lambda (pair)
                     (let ((name (car pair)))
                       (expansion-context-set-local!
