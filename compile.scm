@@ -583,11 +583,11 @@
   compilation-context?
   (environment compilation-context-environment))
 
-(define (compilation-context-environment-append context variables)
+(define (compilation-context-append-locals context variables)
   (make-compilation-context (append variables (compilation-context-environment context))))
 
 (define (compilation-context-push-local context variable)
-  (compilation-context-environment-append context (list variable)))
+  (compilation-context-append-locals context (list variable)))
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
@@ -714,7 +714,7 @@
                       (* 2 (count-parameters parameters))
                       (if (symbol? (last-cdr parameters)) 1 0))
                     (compile-sequence
-                      (compilation-context-environment-append
+                      (compilation-context-append-locals
                         context
                         ; #f is for a frame.
                         (reverse (cons #f (get-parameter-variables parameters))))
