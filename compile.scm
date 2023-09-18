@@ -579,27 +579,17 @@
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment symbols)
+  (make-compilation-context environment)
   compilation-context?
-  (environment compilation-context-environment)
-  (symbols compilation-context-symbols))
-
-(define (compilation-context-environment-set context environment)
-  (make-compilation-context environment (compilation-context-symbols context)))
+  (environment compilation-context-environment))
 
 (define (compilation-context-environment-append context variables)
-  (compilation-context-environment-set
-    context
-    (append variables (compilation-context-environment context))))
+  (make-compilation-context (append variables (compilation-context-environment context))))
 
-(define (compilation-context-environment-push context variable)
-  (compilation-context-environment-append
-    context
-    (list variable)))
+(define (compilation-context-push-local context variable)
+  (compilation-context-environment-append context (list variable)))
 
-(define (compilation-context-environment-push-temporary context)
-  (compilation-context-environment-push context #f))
-
+; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
   (or (member-index variable (compilation-context-environment context)) variable))
 
@@ -664,7 +654,7 @@
       context
       (car arguments)
       (compile-call*
-        (compilation-context-environment-push-temporary context)
+        (compilation-context-push-local context #f)
         function
         (cdr arguments)
         argument-count
@@ -683,7 +673,7 @@
         context
         function
         (continue
-          (compilation-context-environment-push context '$function)
+          (compilation-context-push-local context '$function)
           '$function
           (compile-unbind continuation))))))
 
@@ -743,7 +733,7 @@
               (rib
                 set-instruction
                 (compilation-context-resolve
-                  (compilation-context-environment-push-temporary context)
+                  (compilation-context-push-local context #f)
                   (cadr expression))
                 (compile-unspecified continuation))))
 
@@ -754,7 +744,7 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-compilation-context '() '()) expression '()))
+  (compile-expression (make-compilation-context '()) expression '()))
 
 ; Encoding
 
