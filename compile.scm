@@ -134,7 +134,7 @@
     list
     (skip (- n 1) (cdr list))))
 
-(define (position f xs)
+(define (list-index f xs)
   (cond
     ((null? xs)
       #f)
@@ -143,11 +143,11 @@
       0)
 
     (else
-      (let ((index (position f (cdr xs))))
+      (let ((index (list-index f (cdr xs))))
         (and index (+ 1 index))))))
 
 (define (memv-index one xs)
-  (position (lambda (other) (eqv? one other)) xs))
+  (list-index (lambda (other) (eqv? one other)) xs))
 
 (define (list-count f xs)
   (let loop ((xs xs) (count 0))
