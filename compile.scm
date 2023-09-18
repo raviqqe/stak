@@ -75,17 +75,20 @@
 
 ; Utility
 
-(define (member-index value list)
+(define (position f xs)
   (cond
-    ((null? list)
+    ((null? xs)
       #f)
 
-    ((eqv? value (car list))
+    ((f (car xs))
       0)
 
     (else
-      (let ((index (member-index value (cdr list))))
+      (let ((index (position f (cdr xs))))
         (and index (+ 1 index))))))
+
+(define (memv-index one xs)
+  (position (lambda (other) (eqv? one other)) xs))
 
 (define (make-procedure code environment)
   (rib procedure-type code environment))
@@ -621,7 +624,7 @@
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
-  (or (member-index variable (compilation-context-environment context)) variable))
+  (or (memv-index variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -1074,7 +1077,7 @@
     ((symbol? operand)
       (* 2
         (or
-          (member-index operand (encode-context-all-symbols context))
+          (memv-index operand (encode-context-all-symbols context))
           (error "symbol not found:" operand))))
 
     (else (error "invalid operand:" operand))))
