@@ -183,10 +183,10 @@
     (+ 1 (count-parameters (cdr parameters)))
     0))
 
-(define (get-parameter-variables parameters)
+(define (lambda-parameters parameters)
   (cond
     ((pair? parameters)
-      (cons (car parameters) (get-parameter-variables (cdr parameters))))
+      (cons (car parameters) (lambda-parameters (cdr parameters))))
 
     ((symbol? parameters)
       (list parameters))
@@ -317,14 +317,12 @@
                   context
                   (map
                     (lambda (name) (cons name #f))
-                    (get-parameter-variables (cadr expression))))))
+                    (lambda-parameters (cadr expression))))))
             (cons
               'lambda
               (cons
                 (rename-parameters context (cadr expression))
-                (expand-body
-                  context
-                  (cddr expression))))))
+                (expand-body context (cddr expression))))))
 
         ((eqv? first 'let-syntax)
           (error "not implemented"))
@@ -632,7 +630,7 @@
                       context
                       (map
                         (lambda (name) (cons name #f))
-                        (get-parameter-variables (cadr expression))))))
+                        (lambda-parameters (cadr expression))))))
                 (cons
                   'lambda
                   (cons
@@ -829,7 +827,7 @@
                       (compilation-context-append-locals
                         context
                         ; #f is for a frame.
-                        (reverse (cons #f (get-parameter-variables parameters))))
+                        (reverse (cons #f (lambda-parameters parameters))))
                       (cddr expression)
                       '()))
                   '())
