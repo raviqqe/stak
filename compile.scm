@@ -210,41 +210,41 @@
 
 ; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
 (define-record-type expansion-context
-  (make-expansion-context local-expanders global-expanders)
+  (make-expansion-context environment symbols)
   expansion-context?
-  (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
-  (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (symbols expansion-context-symbols expansion-context-set-symbols!))
 
 (define (expansion-context-expanders context)
   (append
-    (expansion-context-local-expanders context)
-    (expansion-context-global-expanders context)))
+    (expansion-context-environment context)
+    (expansion-context-symbols context)))
 
 (define (expansion-context-add-local-expander context name procedure)
   (make-expansion-context
     (cons
       (cons name procedure)
-      (expansion-context-local-expanders context))
-    (expansion-context-global-expanders context)))
+      (expansion-context-environment context))
+    (expansion-context-symbols context)))
 
 (define (expansion-context-set-local-expander! context name procedure)
   (set-cdr!
-    (assv name (expansion-context-local-expanders context))
+    (assv name (expansion-context-environment context))
     procedure))
 
 (define (expansion-context-add-global-expander! context name procedure)
-  (expansion-context-set-global-expanders!
+  (expansion-context-set-symbols!
     context
     (cons
       (cons name procedure)
-      (expansion-context-global-expanders context))))
+      (expansion-context-symbols context))))
 
 (define (expansion-context-add-variables context names)
   (make-expansion-context
     (append
       (map (lambda (name) (cons name #f)) names)
-      (expansion-context-local-expanders context))
-    (expansion-context-global-expanders context)))
+      (expansion-context-environment context))
+    (expansion-context-symbols context)))
 
 ;; Procedures
 
