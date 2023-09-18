@@ -220,12 +220,15 @@
     (expansion-context-environment context)
     (expansion-context-symbols context)))
 
-(define (expansion-context-push-local context name procedure)
+(define (expansion-context-append-locals context pairs)
   (make-expansion-context
-    (cons
-      (cons name procedure)
-      (expansion-context-environment context))
+    (append pairs (expansion-context-environment context))
     (expansion-context-symbols context)))
+
+(define (expansion-context-push-local context name procedure)
+  (expansion-context-append-locals
+    context
+    (list (cons name procedure))))
 
 (define (expansion-context-set-local! context name procedure)
   (set-cdr!
@@ -238,13 +241,6 @@
     (cons
       (cons name procedure)
       (expansion-context-symbols context))))
-
-(define (expansion-context-add-variables context names)
-  (make-expansion-context
-    (append
-      (map (lambda (name) (cons name #f)) names)
-      (expansion-context-environment context))
-    (expansion-context-symbols context)))
 
 ;; Procedures
 
@@ -524,9 +520,11 @@
               (cons
                 (cadr expression)
                 (expand-body
-                  (expansion-context-add-variables
+                  (expansion-context-append-locals
                     context
-                    (get-parameter-variables (cadr expression)))
+                    (map
+                      (lambda (name) (cons name #f))
+                      (get-parameter-variables (cadr expression))))
                   (cddr expression)))))
 
           ((eqv? first 'let-syntax)
