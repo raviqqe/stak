@@ -210,7 +210,7 @@
 
 ; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
 (define-record-type expansion-context
-  (make-expansion-context local-expanders global-expanders environment)
+  (make-expansion-context local-expanders global-expanders)
   expansion-context?
   (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
   (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!))
