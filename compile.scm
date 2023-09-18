@@ -62,7 +62,7 @@
   '(
     (cons 1)
     (close 2)
-    (- 13)))
+    ($- 13)))
 
 ; Types
 
@@ -247,6 +247,19 @@
     (expansion-context-symbols context)))
 
 ;; Procedures
+
+; TODO Check if those primitive functions are from the `scheme base` library
+; before applying optimization.
+(define (optimize expression)
+  (case (predicate expression)
+    ((+))
+
+    ((+) foo)
+
+    ((+) foo)
+
+    (else
+      expression)))
 
 (define (find-pattern-variables literals pattern)
   (cond
