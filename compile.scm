@@ -213,9 +213,7 @@
   (make-expansion-context local-expanders global-expanders environment)
   expansion-context?
   (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
-  (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
-  ; TODO Do we need this?
-  (environment expansion-context-environment))
+  (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!))
 
 (define (expansion-context-expanders context)
   (append
@@ -227,8 +225,7 @@
     (cons
       (cons name procedure)
       (expansion-context-local-expanders context))
-    (expansion-context-global-expanders context)
-    (expansion-context-environment context)))
+    (expansion-context-global-expanders context)))
 
 (define (expansion-context-set-local-expander! context name procedure)
   (set-cdr!
@@ -247,10 +244,7 @@
     (append
       (map (lambda (name) (cons name #f)) names)
       (expansion-context-local-expanders context))
-    (expansion-context-global-expanders context)
-    (append
-      names
-      (expansion-context-environment context))))
+    (expansion-context-global-expanders context)))
 
 ;; Procedures
 
@@ -578,7 +572,7 @@
       expression)))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '() '() '()) expression))
+  (expand-expression (make-expansion-context '() '()) expression))
 
 ; Compilation
 
