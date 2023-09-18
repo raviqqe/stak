@@ -388,15 +388,16 @@ Feature: Macro
   Scenario: Capture a local value in a local macro
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+		(import (scheme base))
 
-    (let-syntax
-      ((foo
-        (syntax-rules ()
-          ((_ x)
-            x))))
-      (let ((foo 65))
-        (write-u8 foo)))
+		(let ((x 65))
+			(let-syntax (
+					(foo
+						(syntax-rules ()
+							((_)
+								x))))
+				(let ((x 66))
+					(write-u8 (foo)))))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
