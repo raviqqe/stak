@@ -232,7 +232,7 @@
     (assv name (expansion-context-environment context))
     procedure))
 
-(define (expansion-context-set-symbol! context name procedure)
+(define (expansion-context-set-global! context name procedure)
   (expansion-context-set-symbols!
     context
     (cons
@@ -494,12 +494,12 @@
 
           ((eqv? first 'define)
             (let ((pair (expand-definition expression)))
-              (expansion-context-set-symbol! context (car pair) #f)
+              (expansion-context-set-global! context (car pair) #f)
               (expand (cons 'set! pair))))
 
           ((eqv? first 'define-syntax)
             (let ((name (cadr expression)))
-              (expansion-context-set-symbol!
+              (expansion-context-set-global!
                 context
                 name
                 (compile-transformer context name (caddr expression)))
