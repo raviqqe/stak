@@ -635,9 +635,7 @@
                   'lambda
                   (cons
                     (rename-parameters context (cadr expression))
-                    (expand-body
-                      context
-                      (cddr expression))))))
+                    (expand-body context (cddr expression))))))
 
             ((eqv? first 'let-syntax)
               (expand-expression
