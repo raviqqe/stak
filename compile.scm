@@ -135,16 +135,16 @@
     (skip (- n 1) (cdr list))))
 
 (define (list-position f xs)
-  (cond
-    ((null? xs)
-      #f)
+  (let loop ((xs xs) (index 0))
+    (cond
+      ((null? xs)
+        #f)
 
-    ((f (car xs))
-      0)
+      ((f (car xs))
+        index)
 
-    (else
-      (let ((index (list-position f (cdr xs))))
-        (and index (+ 1 index))))))
+      (else
+        (loop (cdr xs) (+ index 1))))))
 
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
