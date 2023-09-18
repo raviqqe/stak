@@ -270,7 +270,8 @@
       expression)))
 
 (define (rename-name context name)
-  (let (
+  ; TODO
+  #;(let (
       (count
         (list-count
           (lambda (pair) (eqv? (car pair) name))
@@ -280,7 +281,8 @@
       (string->symbol
         (string-append
           (symbol->string name)
-          (number->string (- count 2)))))))
+          (number->string (- count 2))))))
+  name)
 
 (define (rename-expression context expression)
   (define (rename expression)
