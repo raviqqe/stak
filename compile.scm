@@ -358,7 +358,7 @@
     (else
       template)))
 
-(define (compile-transformer context name transformer)
+(define (make-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer"))
   (let (
@@ -496,7 +496,7 @@
               (expansion-context-set-global!
                 context
                 name
-                (compile-transformer context name (caddr expression)))
+                (make-transformer context name (caddr expression)))
               #f))
 
           ((eqv? first 'if)
@@ -533,7 +533,7 @@
                     (expansion-context-push-local
                       context
                       name
-                      (compile-transformer context name (cadr pair)))))
+                      (make-transformer context name (cadr pair)))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -553,7 +553,7 @@
                     (expansion-context-set-local!
                       context
                       name
-                      (compile-transformer context name (cadr pair)))))
+                      (make-transformer context name (cadr pair)))))
                 bindings)
               (expand-expression context (caddr expression))))
 
