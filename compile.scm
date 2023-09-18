@@ -210,47 +210,41 @@
 
 ; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
 (define-record-type expansion-context
-  (make-expansion-context local-expanders global-expanders environment)
+  (make-expansion-context environment symbols)
   expansion-context?
-  (local-expanders expansion-context-local-expanders expansion-context-set-local-expanders!)
-  (global-expanders expansion-context-global-expanders expansion-context-set-global-expanders!)
-  ; TODO Do we need this?
-  (environment expansion-context-environment))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (symbols expansion-context-symbols expansion-context-set-symbols!))
 
 (define (expansion-context-expanders context)
   (append
-    (expansion-context-local-expanders context)
-    (expansion-context-global-expanders context)))
+    (expansion-context-environment context)
+    (expansion-context-symbols context)))
 
-(define (expansion-context-add-local-expander context name procedure)
+(define (expansion-context-push-local context name procedure)
   (make-expansion-context
     (cons
       (cons name procedure)
-      (expansion-context-local-expanders context))
-    (expansion-context-global-expanders context)
-    (expansion-context-environment context)))
+      (expansion-context-environment context))
+    (expansion-context-symbols context)))
 
-(define (expansion-context-set-local-expander! context name procedure)
+(define (expansion-context-set-local! context name procedure)
   (set-cdr!
-    (assv name (expansion-context-local-expanders context))
+    (assv name (expansion-context-environment context))
     procedure))
 
-(define (expansion-context-add-global-expander! context name procedure)
-  (expansion-context-set-global-expanders!
+(define (expansion-context-set-global! context name procedure)
+  (expansion-context-set-symbols!
     context
     (cons
       (cons name procedure)
-      (expansion-context-global-expanders context))))
+      (expansion-context-symbols context))))
 
 (define (expansion-context-add-variables context names)
   (make-expansion-context
     (append
       (map (lambda (name) (cons name #f)) names)
-      (expansion-context-local-expanders context))
-    (expansion-context-global-expanders context)
-    (append
-      names
-      (expansion-context-environment context))))
+      (expansion-context-environment context))
+    (expansion-context-symbols context)))
 
 ;; Procedures
 
@@ -500,12 +494,12 @@
 
           ((eqv? first 'define)
             (let ((pair (expand-definition expression)))
-              (expansion-context-add-global-expander! context (car pair) #f)
+              (expansion-context-set-global! context (car pair) #f)
               (expand (cons 'set! pair))))
 
           ((eqv? first 'define-syntax)
             (let ((name (cadr expression)))
-              (expansion-context-add-global-expander!
+              (expansion-context-set-global!
                 context
                 name
                 (compile-transformer context name (caddr expression)))
@@ -540,7 +534,7 @@
               (fold-left
                 (lambda (context pair)
                   (let ((name (car pair)))
-                    (expansion-context-add-local-expander
+                    (expansion-context-push-local
                       context
                       name
                       (compile-transformer context name (cadr pair)))))
@@ -554,13 +548,13 @@
                 (context
                   (fold-left
                     (lambda (context pair)
-                      (expansion-context-add-local-expander context (car pair) #f))
+                      (expansion-context-push-local context (car pair) #f))
                     context
                     bindings)))
               (map
                 (lambda (pair)
                   (let ((name (car pair)))
-                    (expansion-context-set-local-expander!
+                    (expansion-context-set-local!
                       context
                       name
                       (compile-transformer context name (cadr pair)))))
@@ -578,34 +572,24 @@
       expression)))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '() '() '()) expression))
+  (expand-expression (make-expansion-context '() '()) expression))
 
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment symbols)
+  (make-compilation-context environment)
   compilation-context?
-  (environment compilation-context-environment)
-  (symbols compilation-context-symbols))
+  (environment compilation-context-environment))
 
-(define (compilation-context-environment-set context environment)
-  (make-compilation-context environment (compilation-context-symbols context)))
+(define (compilation-context-append-locals context variables)
+  (make-compilation-context (append variables (compilation-context-environment context))))
 
-(define (compilation-context-environment-append context variables)
-  (compilation-context-environment-set
-    context
-    (append variables (compilation-context-environment context))))
+(define (compilation-context-push-local context variable)
+  (compilation-context-append-locals context (list variable)))
 
-(define (compilation-context-environment-push context variable)
-  (compilation-context-environment-append
-    context
-    (list variable)))
-
-(define (compilation-context-environment-push-temporary context)
-  (compilation-context-environment-push context #f))
-
+; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
   (or (member-index variable (compilation-context-environment context)) variable))
 
@@ -670,7 +654,7 @@
       context
       (car arguments)
       (compile-call*
-        (compilation-context-environment-push-temporary context)
+        (compilation-context-push-local context #f)
         function
         (cdr arguments)
         argument-count
@@ -689,7 +673,7 @@
         context
         function
         (continue
-          (compilation-context-environment-push context '$function)
+          (compilation-context-push-local context '$function)
           '$function
           (compile-unbind continuation))))))
 
@@ -730,7 +714,7 @@
                       (* 2 (count-parameters parameters))
                       (if (symbol? (last-cdr parameters)) 1 0))
                     (compile-sequence
-                      (compilation-context-environment-append
+                      (compilation-context-append-locals
                         context
                         ; #f is for a frame.
                         (reverse (cons #f (get-parameter-variables parameters))))
@@ -749,7 +733,7 @@
               (rib
                 set-instruction
                 (compilation-context-resolve
-                  (compilation-context-environment-push-temporary context)
+                  (compilation-context-push-local context #f)
                   (cadr expression))
                 (compile-unspecified continuation))))
 
@@ -760,7 +744,7 @@
       (compile-constant expression continuation))))
 
 (define (compile expression)
-  (compile-expression (make-compilation-context '() '()) expression '()))
+  (compile-expression (make-compilation-context '()) expression '()))
 
 ; Encoding
 
