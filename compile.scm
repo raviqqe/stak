@@ -62,7 +62,7 @@
   '(
     (cons 1)
     (close 2)
-    (- 13)))
+    ($- 13)))
 
 ; Types
 
@@ -220,12 +220,13 @@
     (expansion-context-environment context)
     (expansion-context-symbols context)))
 
-(define (expansion-context-push-local context name procedure)
+(define (expansion-context-append-locals context pairs)
   (make-expansion-context
-    (cons
-      (cons name procedure)
-      (expansion-context-environment context))
+    (append pairs (expansion-context-environment context))
     (expansion-context-symbols context)))
+
+(define (expansion-context-push-local context name procedure)
+  (expansion-context-append-locals context (list (cons name procedure))))
 
 (define (expansion-context-set-local! context name procedure)
   (set-cdr!
@@ -238,13 +239,6 @@
     (cons
       (cons name procedure)
       (expansion-context-symbols context))))
-
-(define (expansion-context-add-variables context names)
-  (make-expansion-context
-    (append
-      (map (lambda (name) (cons name #f)) names)
-      (expansion-context-environment context))
-    (expansion-context-symbols context)))
 
 ;; Procedures
 
@@ -364,7 +358,7 @@
     (else
       template)))
 
-(define (compile-transformer context name transformer)
+(define (make-transformer context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer"))
   (let (
@@ -502,7 +496,7 @@
               (expansion-context-set-global!
                 context
                 name
-                (compile-transformer context name (caddr expression)))
+                (make-transformer context name (caddr expression)))
               #f))
 
           ((eqv? first 'if)
@@ -524,9 +518,11 @@
               (cons
                 (cadr expression)
                 (expand-body
-                  (expansion-context-add-variables
+                  (expansion-context-append-locals
                     context
-                    (get-parameter-variables (cadr expression)))
+                    (map
+                      (lambda (name) (cons name #f))
+                      (get-parameter-variables (cadr expression))))
                   (cddr expression)))))
 
           ((eqv? first 'let-syntax)
@@ -537,7 +533,7 @@
                     (expansion-context-push-local
                       context
                       name
-                      (compile-transformer context name (cadr pair)))))
+                      (make-transformer context name (cadr pair)))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -557,7 +553,7 @@
                     (expansion-context-set-local!
                       context
                       name
-                      (compile-transformer context name (cadr pair)))))
+                      (make-transformer context name (cadr pair)))))
                 bindings)
               (expand-expression context (caddr expression))))
 
@@ -606,7 +602,7 @@
         ((memq name '(close))
           1)
 
-        ((memq name '(cons -))
+        ((memq name '(cons $-))
           2)
 
         ((memq name '(rib))
@@ -888,7 +884,7 @@
             0
             (rib constant-instruction
               (abs constant)
-              (compile-primitive-call '- continuation))))
+              (compile-primitive-call '$- continuation))))
 
         ((pair? constant)
           (build-constant-rib (car constant) (cdr constant) pair-type))
