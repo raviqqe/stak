@@ -507,7 +507,7 @@
     (optimize
       (cond
         ((symbol? expression)
-          (rename context expression))
+          (rename-name context expression))
 
         ((pair? expression)
           (let ((first (car expression)))
