@@ -134,26 +134,20 @@
     list
     (skip (- n 1) (cdr list))))
 
-(define (list-index f xs)
-  (cond
-    ((null? xs)
-      #f)
+(define (list-position f xs)
+  (let loop ((xs xs) (index 0))
+    (cond
+      ((null? xs)
+        #f)
 
-    ((f (car xs))
-      0)
+      ((f (car xs))
+        index)
 
-    (else
-      (let ((index (list-index f (cdr xs))))
-        (and index (+ 1 index))))))
+      (else
+        (loop (cdr xs) (+ index 1))))))
 
-(define (memv-index one xs)
-  (list-index (lambda (other) (eqv? one other)) xs))
-
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
+(define (memv-position one xs)
+  (list-position (lambda (other) (eqv? one other)) xs))
 
 (define (zip-alist alist)
   (let (
@@ -183,10 +177,10 @@
     (+ 1 (count-parameters (cdr parameters)))
     0))
 
-(define (lambda-parameters parameters)
+(define (parameter-names parameters)
   (cond
     ((pair? parameters)
-      (cons (car parameters) (lambda-parameters (cdr parameters))))
+      (cons (car parameters) (parameter-names (cdr parameters))))
 
     ((symbol? parameters)
       (list parameters))
@@ -474,8 +468,8 @@
   (let (
       (literals (cons name (cadr transformer)))
       (rules (cddr transformer)))
-    (lambda (expression)
-      (when (eqv? expression name) (error "macro used as a value:" expression))
+    (lambda (use-context expression)
+      (when (eqv? expression name) (error "macro used as value:" expression))
       (if (eqv? (predicate expression) name)
         (let loop ((rules rules))
           (unless (pair? rules)
@@ -484,7 +478,7 @@
               (rule (car rules))
               (matches (match-pattern context name literals (car rule) expression)))
             (if matches
-              (expand-expression context (fill-template matches (cadr rule)))
+              (expand-expression use-context (fill-template matches (cadr rule)))
               (loop (cdr rules)))))
         expression))))
 
@@ -504,7 +498,7 @@
           (cons name names)
           (if (or (memv name names) (not expander))
             expression
-            (expander expression)))))))
+            (expander context expression)))))))
 
 (define (expand-definition definition)
   (let (
@@ -630,12 +624,8 @@
                       context
                       (map
                         (lambda (name) (cons name #f))
-                        (lambda-parameters (cadr expression))))))
-                (cons
-                  'lambda
-                  (cons
-                    (rename-parameters context (cadr expression))
-                    (expand-body context (cddr expression))))))
+                        (parameter-names (cadr expression))))
+                    (cddr expression)))))
 
             ((eqv? first 'let-syntax)
               (expand-expression
@@ -699,7 +689,7 @@
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
-  (or (memv-index variable (compilation-context-environment context)) variable))
+  (or (memv-position variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -825,7 +815,7 @@
                       (compilation-context-append-locals
                         context
                         ; #f is for a frame.
-                        (reverse (cons #f (lambda-parameters parameters))))
+                        (reverse (cons #f (parameter-names parameters))))
                       (cddr expression)
                       '()))
                   '())
@@ -1152,7 +1142,7 @@
     ((symbol? operand)
       (* 2
         (or
-          (memv-index operand (encode-context-all-symbols context))
+          (memv-position operand (encode-context-all-symbols context))
           (error "symbol not found:" operand))))
 
     (else (error "invalid operand:" operand))))
