@@ -210,10 +210,11 @@
 
 ; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
 (define-record-type expansion-context
-  (make-expansion-context environment symbols)
+  (make-expansion-context environment symbols names)
   expansion-context?
   (environment expansion-context-environment expansion-context-set-environment!)
-  (symbols expansion-context-symbols expansion-context-set-symbols!))
+  (symbols expansion-context-symbols expansion-context-set-symbols!)
+  (names expansion-context-names expansion-context-set-names!))
 
 (define (expansion-context-expanders context)
   (append
@@ -223,7 +224,8 @@
 (define (expansion-context-append-locals context pairs)
   (make-expansion-context
     (append pairs (expansion-context-environment context))
-    (expansion-context-symbols context)))
+    (expansion-context-symbols context)
+    (expansion-context-names context)))
 
 (define (expansion-context-push-local context name procedure)
   (expansion-context-append-locals context (list (cons name procedure))))
@@ -585,7 +587,7 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '() '()) expression))
+  (expand-expression (make-expansion-context '() '() '()) expression))
 
 ; Compilation
 
