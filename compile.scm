@@ -62,7 +62,7 @@
   '(
     (cons 1)
     (close 2)
-    (- 13)))
+    ($- 13)))
 
 ; Types
 
@@ -602,7 +602,7 @@
         ((memq name '(close))
           1)
 
-        ((memq name '(cons -))
+        ((memq name '(cons $-))
           2)
 
         ((memq name '(rib))
@@ -884,7 +884,7 @@
             0
             (rib constant-instruction
               (abs constant)
-              (compile-primitive-call '- continuation))))
+              (compile-primitive-call '$- continuation))))
 
         ((pair? constant)
           (build-constant-rib (car constant) (cdr constant) pair-type))
