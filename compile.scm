@@ -630,7 +630,7 @@
                       context
                       (map
                         (lambda (name) (cons name #f))
-                        (lambda-parameters (cadr expression))))))
+                        (parameter-names (cadr expression))))))
                 (cons
                   'lambda
                   (cons
