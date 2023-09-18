@@ -75,18 +75,6 @@
 
 ; Utility
 
-(define (member-index value list)
-  (cond
-    ((null? list)
-      #f)
-
-    ((eqv? value (car list))
-      0)
-
-    (else
-      (let ((index (member-index value (cdr list))))
-        (and index (+ 1 index))))))
-
 (define (make-procedure code environment)
   (rib procedure-type code environment))
 
@@ -146,6 +134,21 @@
     list
     (skip (- n 1) (cdr list))))
 
+(define (list-position f xs)
+  (let loop ((xs xs) (index 0))
+    (cond
+      ((null? xs)
+        #f)
+
+      ((f (car xs))
+        index)
+
+      (else
+        (loop (cdr xs) (+ index 1))))))
+
+(define (memv-position one xs)
+  (list-position (lambda (other) (eqv? one other)) xs))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -174,10 +177,10 @@
     (+ 1 (count-parameters (cdr parameters)))
     0))
 
-(define (get-parameter-variables parameters)
+(define (parameter-names parameters)
   (cond
     ((pair? parameters)
-      (cons (car parameters) (get-parameter-variables (cdr parameters))))
+      (cons (car parameters) (parameter-names (cdr parameters))))
 
     ((symbol? parameters)
       (list parameters))
@@ -539,7 +542,7 @@
                       context
                       (map
                         (lambda (name) (cons name #f))
-                        (get-parameter-variables (cadr expression))))
+                        (parameter-names (cadr expression))))
                     (cddr expression)))))
 
             ((eqv? first 'let-syntax)
@@ -604,7 +607,7 @@
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
-  (or (member-index variable (compilation-context-environment context)) variable))
+  (or (memv-position variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -730,7 +733,7 @@
                       (compilation-context-append-locals
                         context
                         ; #f is for a frame.
-                        (reverse (cons #f (get-parameter-variables parameters))))
+                        (reverse (cons #f (parameter-names parameters))))
                       (cddr expression)
                       '()))
                   '())
@@ -1057,7 +1060,7 @@
     ((symbol? operand)
       (* 2
         (or
-          (member-index operand (encode-context-all-symbols context))
+          (memv-position operand (encode-context-all-symbols context))
           (error "symbol not found:" operand))))
 
     (else (error "invalid operand:" operand))))
