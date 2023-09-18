@@ -75,21 +75,6 @@
 
 ; Utility
 
-(define (position f xs)
-  (cond
-    ((null? xs)
-      #f)
-
-    ((f (car xs))
-      0)
-
-    (else
-      (let ((index (position f (cdr xs))))
-        (and index (+ 1 index))))))
-
-(define (memv-index one xs)
-  (position (lambda (other) (eqv? one other)) xs))
-
 (define (make-procedure code environment)
   (rib procedure-type code environment))
 
@@ -148,6 +133,27 @@
   (if (eqv? n 0)
     list
     (skip (- n 1) (cdr list))))
+
+(define (position f xs)
+  (cond
+    ((null? xs)
+      #f)
+
+    ((f (car xs))
+      0)
+
+    (else
+      (let ((index (position f (cdr xs))))
+        (and index (+ 1 index))))))
+
+(define (memv-index one xs)
+  (position (lambda (other) (eqv? one other)) xs))
+
+(define (list-count f xs)
+  (let loop ((xs xs) (count 0))
+    (if (null? xs)
+      count
+      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
 (define (zip-alist alist)
   (let (
@@ -264,10 +270,33 @@
       expression)))
 
 (define (rename-name context name)
-  name)
+  (let (
+      (count
+        (list-count
+          (lambda (pair) (eqv? (car pair) name))
+          (expansion-context-expanders context))))
+    (if (< count 2)
+      name
+      (string->symbol
+        (string-append
+          (symbol->string name)
+          (number->string (- count 2)))))))
 
 (define (rename-parameters context parameters)
-  parameters)
+  (define (rename name)
+    (rename-name context name))
+
+  (cond
+    ((symbol? parameters)
+      (rename parameters))
+
+    ((null? parameters)
+      '())
+
+    (else
+      (cons
+        (rename (car parameters))
+        (rename-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
   (cond
