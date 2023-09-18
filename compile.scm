@@ -383,8 +383,8 @@
   (let (
       (literals (cons name (cadr transformer)))
       (rules (cddr transformer)))
-    (lambda (expression)
-      (when (eqv? expression name) (error "macro used as a value:" expression))
+    (lambda (use-context expression)
+      (when (eqv? expression name) (error "macro used as value:" expression))
       (if (eqv? (predicate expression) name)
         (let loop ((rules rules))
           (unless (pair? rules)
@@ -393,7 +393,7 @@
               (rule (car rules))
               (matches (match-pattern context name literals (car rule) expression)))
             (if matches
-              (expand-expression context (fill-template matches (cadr rule)))
+              (expand-expression use-context (fill-template matches (cadr rule)))
               (loop (cdr rules)))))
         expression))))
 
@@ -413,7 +413,7 @@
           (cons name names)
           (if (or (memv name names) (not expander))
             expression
-            (expander expression)))))))
+            (expander context expression)))))))
 
 (define (expand-definition definition)
   (let (

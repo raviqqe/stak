@@ -316,6 +316,27 @@ Feature: Macro
     Then the exit status should not be 0
 
   @advanced
+  Scenario: Use a higher-order macro
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x y)
+          (x y))))
+
+    (let-syntax (
+        (bar
+          (syntax-rules ()
+            ((_ x)
+              x))))
+      (write-u8 (foo bar 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
   Scenario: Shadow a global macro by a global value
     Given a file named "main.scm" with:
     """scheme
