@@ -280,6 +280,51 @@ Feature: Macro
     Then the stdout should contain exactly "A"
 
   @advanced
+  Scenario: Define a recursive local macro in a body
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ()
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ x)
+            x)
+          ((_ x y)
+            (foo y))))
+
+      (write-u8 (foo 65 66)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  @advanced
+  Scenario: Define a mutually recursive local macro in a body
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ()
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ x)
+            x)
+          ((_ x ... y)
+            (bar x ...))))
+
+      (define-syntax bar
+        (syntax-rules ()
+          ((_ x)
+            x)
+          ((_ x ... y)
+            (foo x ...))))
+
+      (write-u8 (foo 65 66 67)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
   Scenario: Shadow a global value by a global macro
     Given a file named "main.scm" with:
     """scheme
