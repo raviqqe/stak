@@ -20,7 +20,7 @@ cargo build --release
 
     cat prelude.scm $file | ./compile.scm >$base.out
 
-    scripts="target/release/stak $base.out,gsi $file,python3 $base.py,csi -s $file"
+    scripts="target/release/stak $base.out,gsi $file,python3 $base.py,csi -s $file,gosh $file"
 
     if which petite; then
       scripts="$scripts,petite --script $file"
