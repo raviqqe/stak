@@ -447,10 +447,13 @@
         (expand-quasiquote (car expression))
         (expand-quasiquote (cdr expression))))))
 
+(define (assert-sequence-not-empty expressions)
+  (when (null? expressions)
+    (error "empty expression sequence")))
+
 (define (expand-syntax-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
-    (when (null? expressions)
-      (error "empty expression sequence"))
+    (assert-sequence-not-empty expressions)
     (let* (
         (expression (car expressions))
         (predicate (predicate expression)))
@@ -475,8 +478,7 @@
 
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
-    (when (null? expressions)
-      (error "empty expression sequence"))
+    (assert-sequence-not-empty expressions)
     (let* (
         (expression (car expressions))
         (predicate (predicate expression)))
@@ -500,8 +502,7 @@
           (expand-sequence context expressions))))))
 
 (define (expand-sequence context expressions)
-  (when (null? expressions)
-    (error "empty expression sequence"))
+  (assert-sequence-not-empty expressions)
   (cons
     'begin
     (map
