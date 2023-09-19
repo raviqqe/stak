@@ -2,7 +2,7 @@
 
 set -ex
 
-brew install chicken gambit-scheme gauche
+brew install gambit-scheme gauche
 
 if [ $(uname -m) = x86_64 ]; then
   # spell-checker: disable-next-line
@@ -20,7 +20,7 @@ cargo build --release
 
     cat prelude.scm $file | ./compile.scm >$base.out
 
-    scripts="target/release/stak $base.out,gsi $file,python3 $base.py,csi -s $file,gosh $file"
+    scripts="target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file"
 
     if which petite; then
       scripts="$scripts,petite --script $file"
