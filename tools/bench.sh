@@ -4,11 +4,6 @@ set -ex
 
 brew install gambit-scheme gauche
 
-if [ $(uname -m) = x86_64 ]; then
-  # spell-checker: disable-next-line
-  brew install chezscheme
-fi
-
 cargo install hyperfine
 cargo build --release
 
@@ -22,10 +17,9 @@ cargo build --release
 
     scripts="target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file"
 
-    if which petite; then
-      scripts="$scripts,petite --script $file"
-    fi
-
-    hyperfine --sort command -L script "$scripts" "{script}"
+    hyperfine \
+      --sort command \
+      -L script "target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file" \
+      "{script}"
   done
 )
