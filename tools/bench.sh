@@ -2,7 +2,7 @@
 
 set -ex
 
-brew install chicken gambit-scheme
+brew install chicken gambit-scheme gauche
 
 if [ $(uname -m) = x86_64 ]; then
   # spell-checker: disable-next-line
