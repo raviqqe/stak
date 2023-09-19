@@ -1,3 +1,5 @@
+(import (scheme base))
+
 (define (sum* x y)
   (if (eqv? x 0)
     y
