@@ -425,20 +425,6 @@
         (car pattern)
         (cons 'lambda (cons (cdr pattern) body))))))
 
-(define (expand-syntax-body context expressions)
-  (let loop ((expressions expressions) (definitions '()))
-    (when (null? expressions)
-      (error "empty expression sequence"))
-    (let ((expression (car expressions)))
-      (if (eqv? (predicate expression) 'define-syntax)
-        (loop
-          (cdr expressions)
-          (cons (cdr expression) definitions))
-        (list
-          (expand-expression
-            context
-            (cons 'letrec-syntax (cons definitions expressions))))))))
-
 (define (expand-quasiquote expression)
   (cond
     ((not (pair? expression))
@@ -461,6 +447,32 @@
         (expand-quasiquote (car expression))
         (expand-quasiquote (cdr expression))))))
 
+(define (expand-syntax-body context expressions)
+  (let loop ((expressions expressions) (definitions '()))
+    (when (null? expressions)
+      (error "empty expression sequence"))
+    (let* (
+        (expression (car expressions))
+        (predicate (predicate expression)))
+      (cond
+        ((eqv? predicate 'define)
+          (loop
+            (list (expand-body context expressions))
+            definitions))
+
+        ((eqv? predicate 'define-syntax)
+          (loop
+            (cdr expressions)
+            (cons (expand-definition expression) definitions)))
+
+        ((pair? definitions)
+          (expand-expression
+            context
+            (list 'letrec-syntax definitions (cons 'begin expressions))))
+
+        (else
+          (expand-sequence context expressions))))))
+
 (define (expand-body context expressions)
   (let loop ((expressions expressions) (definitions '()))
     (when (null? expressions)
@@ -480,10 +492,9 @@
             definitions))
 
         ((pair? definitions)
-          (list
-            (expand-expression
-              context
-              (cons 'letrec (cons (reverse definitions) expressions)))))
+          (expand-expression
+            context
+            (cons 'letrec (cons (reverse definitions) expressions))))
 
         (else
           (expand-sequence context expressions))))))
@@ -491,9 +502,11 @@
 (define (expand-sequence context expressions)
   (when (null? expressions)
     (error "empty expression sequence"))
-  (map
-    (lambda (expression) (expand-expression context expression))
-    expressions))
+  (cons
+    'begin
+    (map
+      (lambda (expression) (expand-expression context expression))
+      expressions)))
 
 (define (expand-expression context expression)
   (let (
@@ -504,7 +517,7 @@
         (let ((first (car expression)))
           (cond
             ((eqv? first 'begin)
-              (cons 'begin (expand-sequence context (cdr expression))))
+              (expand-sequence context (cdr expression)))
 
             ((eqv? first 'define)
               (let ((pair (expand-definition expression)))
@@ -533,17 +546,16 @@
               #f)
 
             ((eqv? first 'lambda)
-              (cons
+              (list
                 'lambda
-                (cons
-                  (cadr expression)
-                  (expand-body
-                    (expansion-context-append-locals
-                      context
-                      (map
-                        (lambda (name) (cons name #f))
-                        (parameter-names (cadr expression))))
-                    (cddr expression)))))
+                (cadr expression)
+                (expand-body
+                  (expansion-context-append-locals
+                    context
+                    (map
+                      (lambda (name) (cons name #f))
+                      (parameter-names (cadr expression))))
+                  (cddr expression))))
 
             ((eqv? first 'let-syntax)
               (expand-expression
