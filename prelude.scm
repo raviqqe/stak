@@ -301,6 +301,14 @@
         (reduce-right f y (cdr xs))
         (car xs)))))
 
+(define (fold-left f y xs)
+  (if (null? xs)
+    y
+    (fold-left
+      f
+      (f y (car xs))
+      (cdr xs))))
+
 ;; Number
 
 (define (integer? x)
@@ -315,20 +323,13 @@
 (define (inexact? x) #f)
 
 (define (arithmetic-operator f y)
-  (lambda xs
-    (let loop ((xs xs) (y y))
-      (if (null? xs)
-        y
-        (loop (cdr xs) (f y (car xs)))))))
+  (lambda xs (fold-left f y xs)))
 
 (define (inverse-arithmetic-operator f y)
   (lambda (x . xs)
     (if (null? xs)
       (f y x)
-      (let loop ((xs xs) (y x))
-        (if (null? xs)
-          y
-          (loop (cdr xs) (f y (car xs))))))))
+      (fold-left f x xs))))
 
 (define + (arithmetic-operator $+ 0))
 (define - (inverse-arithmetic-operator $- 0))
