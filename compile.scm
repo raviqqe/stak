@@ -261,13 +261,12 @@
       (count
         (list-count
           (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context))))
+          (expansion-context-environment context)))
+      (name (string-append "$" (symbol->string name))))
     (string->symbol
-      (string-append
-        "$"
-        (symbol->string name)
-        "$"
-        (number->string count)))))
+      (if (eqv? count 0)
+        name
+        (string-append name "$" (number->string count))))))
 
 ; TODO Throw an error if a denotation is not a symbol?
 (define (resolve-denotation context expression)
