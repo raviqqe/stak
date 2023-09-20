@@ -374,33 +374,33 @@
       (else
         #f))))
 
-(define (fill-ellipsis-template matches template)
+(define (fill-ellipsis-template context matches template)
   (map
-    (lambda (matches) (fill-template matches template))
+    (lambda (matches) (fill-template context matches template))
     (let ((variables (find-pattern-variables '() template)))
       (zip-alist
         (filter
           (lambda (pair) (memv (car pair) variables))
           matches)))))
 
-(define (fill-template matches template)
+(define (fill-template context matches template)
   (cond
     ((symbol? template)
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          template)))
+          (resolve-denotation context template))))
 
     ((pair? template)
       (if (and
           (pair? (cdr template))
           (eqv? (cadr template) '...))
         (append
-          (fill-ellipsis-template matches (car template))
-          (fill-template matches (cddr template)))
+          (fill-ellipsis-template context matches (car template))
+          (fill-template context matches (cddr template)))
         (cons
-          (fill-template matches (car template))
-          (fill-template matches (cdr template)))))
+          (fill-template context matches (car template))
+          (fill-template context matches (cdr template)))))
 
     (else
       template)))
@@ -421,7 +421,7 @@
               (rule (car rules))
               (matches (match-pattern context name literals (car rule) expression)))
             (if matches
-              (expand-expression use-context (fill-template matches (cadr rule)))
+              (expand-expression use-context (fill-template context matches (cadr rule)))
               (loop (cdr rules)))))
         expression))))
 
