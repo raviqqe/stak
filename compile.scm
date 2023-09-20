@@ -539,9 +539,7 @@
       expressions)))
 
 (define (expand-expression context expression)
-  (let (
-      (expand (lambda (expression) (expand-expression context expression)))
-      (expression (expand-syntax context expression)))
+  (let ((expand (lambda (expression) (expand-expression context expression))))
     (optimize
       (cond
         ((symbol? expression)
@@ -633,7 +631,10 @@
                 expression)
 
               (else
-                (map expand expression)))))
+                (let ((expander (expansion-context-resolve context first)))
+                  (if (procedure? expander)
+                    (expand (expander context expression))
+                    (map expand expression)))))))
 
         (else
           expression)))))
