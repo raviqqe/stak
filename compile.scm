@@ -1215,4 +1215,4 @@
 
 ; Main
 
-(write (expand (read-source)))
+(write-target (encode (compile (expand (read-source)))))
