@@ -78,7 +78,7 @@
 (define (make-procedure code environment)
   (rib procedure-type code environment))
 
-(define (procedure? value)
+(define (stak-procedure? value)
   (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
@@ -904,7 +904,7 @@
   (or
     (symbol? constant)
     (and (number? constant) (>= constant 0))
-    (procedure? constant)))
+    (stak-procedure? constant)))
 
 (define (build-constant-rib context car cdr tag continuation)
   (let (
@@ -997,7 +997,7 @@
         (cond
           ((eqv? instruction constant-instruction)
             (let ((continuation (build-constant context operand continuation)))
-              (if (procedure? operand)
+              (if (stak-procedure? operand)
                 (build-constants context (procedure-code operand) continuation)
                 continuation)))
 
@@ -1145,7 +1145,7 @@
 
           ((and
               (eqv? instruction constant-instruction)
-              (procedure? operand))
+              (stak-procedure? operand))
             (encode-procedure context operand return target))
 
           ((eqv? instruction constant-instruction)
