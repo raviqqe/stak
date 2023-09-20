@@ -626,7 +626,7 @@
             expression)
 
           (else
-            (let ((expander (expansion-context-resolve context first)))
+            (let ((expander (expansion-context-resolve context (car expression))))
               (if (procedure? expander)
                 (expand (expander context expression))
                 (map expand expression))))))
