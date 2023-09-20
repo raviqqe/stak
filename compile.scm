@@ -440,9 +440,9 @@
         (loop
           (cdr environment)
           (cons name names)
-          (if (or (memv name names) (not expander))
-            expression
-            (expander context expression)))))))
+          (if (and (not (memv name names)) (procedure? expander))
+            (expander context expression)
+            expression))))))
 
 (define (expand-definition definition)
   (let (
