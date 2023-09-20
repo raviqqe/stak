@@ -54,6 +54,8 @@ jobs:
             tags: not @stak and not @advanced
           - name: chibi
             tags: not @stak
+          - name: gauche
+            tags: not @stak
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
@@ -62,7 +64,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
-      - run: brew install chibi-scheme
+      - run: brew install chibi-scheme gauche
       - run: brew unlink ghostscript
         if: matrix.os == 'macos-latest'
       - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @any' }}'
