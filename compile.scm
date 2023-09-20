@@ -240,6 +240,13 @@
         context
         (cons (cons name procedure) environment)))))
 
+; TODO Throw an error if a denotation is not a symbol?
+(define (expansion-context-resolve context expression)
+  (let ((pair (assv expression (expansion-context-environment context))))
+    (if (and pair (symbol? (cdr pair)))
+      (cdr pair)
+      expression)))
+
 ;; Procedures
 
 (define primitive-functions
@@ -270,24 +277,17 @@
         name
         (string-append name "$" (number->string count))))))
 
-; TODO Throw an error if a denotation is not a symbol?
-(define (resolve-denotation context expression)
-  (let ((pair (assv expression (expansion-context-environment context))))
-    (if (and pair (symbol? (cdr pair)))
-      (cdr pair)
-      expression)))
-
 (define (resolve-parameters context parameters)
   (cond
     ((symbol? parameters)
-      (resolve-denotation context parameters))
+      (expansion-context-resolve context parameters))
 
     ((null? parameters)
       '())
 
     (else
       (cons
-        (resolve-denotation context (car parameters))
+        (expansion-context-resolve context (car parameters))
         (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
@@ -390,7 +390,7 @@
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          (resolve-denotation context template))))
+          (expansion-context-resolve context template))))
 
     ((pair? template)
       (if (and
@@ -545,7 +545,7 @@
     (optimize
       (cond
         ((symbol? expression)
-          (resolve-denotation context expression))
+          (expansion-context-resolve context expression))
 
         ((pair? expression)
           (let ((first (car expression)))
