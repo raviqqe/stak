@@ -554,8 +554,10 @@
                 (expand-sequence context (cdr expression)))
 
               ((eqv? first 'define)
-                (let ((pair (expand-definition expression)))
-                  (expansion-context-set! context (car pair) #f)
+                (let* (
+                    (pair (expand-definition expression))
+                    (name (car pair)))
+                  (expansion-context-set! context name name)
                   (expand (cons 'set! pair))))
 
               ((eqv? first 'define-syntax)
