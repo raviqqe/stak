@@ -343,7 +343,8 @@
           (match-pattern context name literals pattern expression))))
     (cond
       ((eqv? pattern '_)
-        (if (eqv? expression name) '() #f))
+        ; TODO Compare denotations.
+        (if (or (procedure? expression) (eqv? expression name)) '() #f))
 
       ((memv pattern literals)
         (if (eqv? expression pattern) '() #f))
