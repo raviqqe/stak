@@ -425,35 +425,15 @@
       (rules (cddr transformer)))
     (lambda (use-context expression)
       (when (eqv? expression name) (error "macro used as value:" expression))
-      (if (denotation-equal? use-context (predicate expression) name)
-        (let loop ((rules rules))
-          (unless (pair? rules)
-            (error "no syntax rule matched" expression))
-          (let* (
-              (rule (car rules))
-              (matches (match-pattern definition-context use-context name literals (car rule) expression)))
-            (if matches
-              (expand-expression use-context (fill-template definition-context matches (cadr rule)))
-              (loop (cdr rules)))))
-        expression))))
-
-(define (expand-syntax context expression)
-  (let loop (
-      (environment (expansion-context-environment context))
-      (names '())
-      (expression expression))
-    (if (null? environment)
-      expression
-      (let* (
-          (pair (car environment))
-          (name (car pair))
-          (expander (cdr pair)))
-        (loop
-          (cdr environment)
-          (cons name names)
-          (if (and (not (memv name names)) (procedure? expander))
-            (expander context expression)
-            expression))))))
+      (let loop ((rules rules))
+        (unless (pair? rules)
+          (error "no syntax rule matched" expression))
+        (let* (
+            (rule (car rules))
+            (matches (match-pattern definition-context use-context name literals (car rule) expression)))
+          (if matches
+            (expand-expression use-context (fill-template definition-context matches (cadr rule)))
+            (loop (cdr rules))))))))
 
 (define (expand-definition definition)
   (let (
@@ -550,9 +530,7 @@
       expressions)))
 
 (define (expand-expression context expression)
-  (let (
-      (expand (lambda (expression) (expand-expression context expression)))
-      (expression (expand-syntax context expression)))
+  (let ((expand (lambda (expression) (expand-expression context expression))))
     (optimize
       (cond
         ((symbol? expression)
@@ -647,7 +625,10 @@
                 (expand (first context expression)))
 
               (else
-                (map expand expression)))))
+                (let ((expander (expansion-context-resolve context first)))
+                  (if (procedure? expander)
+                    (expand (expander context expression))
+                    (map expand expression)))))))
 
         (else
           expression)))))
