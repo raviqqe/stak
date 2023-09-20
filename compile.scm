@@ -213,35 +213,27 @@
 
 ; TODO Rename the first two fields `meta-environment` and `meta-symbols`?
 (define-record-type expansion-context
-  (make-expansion-context environment symbols)
+  (make-expansion-context environment)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!)
-  (symbols expansion-context-symbols expansion-context-set-symbols!))
+  (environment expansion-context-environment expansion-context-set-environment!))
 
-(define (expansion-context-expanders context)
-  (append
-    (expansion-context-environment context)
-    (expansion-context-symbols context)))
-
-(define (expansion-context-append-locals context pairs)
+(define (expansion-context-append context pairs)
   (make-expansion-context
     (append pairs (expansion-context-environment context))
     (expansion-context-symbols context)))
 
-(define (expansion-context-push-local context name procedure)
-  (expansion-context-append-locals context (list (cons name procedure))))
+(define (expansion-context-push context name procedure)
+  (expansion-context-append context (list (cons name procedure))))
 
-(define (expansion-context-set-local! context name procedure)
-  (set-cdr!
-    (assv name (expansion-context-environment context))
-    procedure))
-
-(define (expansion-context-set-global! context name procedure)
-  (expansion-context-set-symbols!
-    context
-    (cons
-      (cons name procedure)
-      (expansion-context-symbols context))))
+(define (expansion-context-set! context name procedure)
+  (let* (
+      (environment (expansion-context-environment context))
+      (pair (assv name environment)))
+    (if pair
+      (set-cdr! pair procedure)
+      (expansion-context-set-environment!
+        context
+        (cons (cons name procedure) environment)))))
 
 ;; Procedures
 
@@ -522,12 +514,12 @@
 
             ((eqv? first 'define)
               (let ((pair (expand-definition expression)))
-                (expansion-context-set-global! context (car pair) #f)
+                (expansion-context-set! context (car pair) #f)
                 (expand (cons 'set! pair))))
 
             ((eqv? first 'define-syntax)
               (let ((name (cadr expression)))
-                (expansion-context-set-global!
+                (expansion-context-set!
                   context
                   name
                   (make-transformer context name (caddr expression)))
@@ -551,7 +543,7 @@
                 'lambda
                 (cadr expression)
                 (expand-body
-                  (expansion-context-append-locals
+                  (expansion-context-append
                     context
                     (map
                       (lambda (name) (cons name #f))
@@ -563,7 +555,7 @@
                 (fold-left
                   (lambda (context pair)
                     (let ((name (car pair)))
-                      (expansion-context-push-local
+                      (expansion-context-push
                         context
                         name
                         (make-transformer context name (cadr pair)))))
@@ -577,13 +569,13 @@
                   (context
                     (fold-left
                       (lambda (context pair)
-                        (expansion-context-push-local context (car pair) #f))
+                        (expansion-context-push context (car pair) #f))
                       context
                       bindings)))
                 (for-each
                   (lambda (pair)
                     (let ((name (car pair)))
-                      (expansion-context-set-local!
+                      (expansion-context-set!
                         context
                         name
                         (make-transformer context name (cadr pair)))))
@@ -601,7 +593,7 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '() '()) expression))
+  (expand-expression (make-expansion-context '()) expression))
 
 ; Compilation
 
