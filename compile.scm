@@ -247,6 +247,16 @@
       (cdr pair)
       expression)))
 
+(define (expansion-context-unresolve context name)
+  (let (
+      (cons (member
+          name
+          (expansion-context-environment context)
+          (lambda (x pair) (eqv? x (cdr pair))))))
+    (if cons
+      (car (car cons))
+      name)))
+
 ;; Procedures
 
 (define primitive-functions
@@ -266,7 +276,8 @@
       expression)))
 
 (define (denote-parameter context name)
-  (let (
+  (let* (
+      (name (expansion-context-unresolve context name))
       (count
         (list-count
           (lambda (pair) (eqv? (car pair) name))
