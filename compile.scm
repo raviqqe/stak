@@ -503,91 +503,98 @@
       (expand (lambda (expression) (expand-expression context expression)))
       (expression (expand-syntax context expression)))
     (optimize
-      (if (pair? expression)
-        (let ((first (car expression)))
-          (cond
-            ((eqv? first 'begin)
-              (expand-sequence context (cdr expression)))
+      (cond
+        ((symbol? expression)
+          ; TODO Resolve a name to a denotation.
+          expression)
 
-            ((eqv? first 'define)
-              (let ((pair (expand-definition expression)))
-                (expansion-context-set! context (car pair) #f)
-                (expand (cons 'set! pair))))
+        ((pair? expression)
+          (let ((first (car expression)))
+            (cond
+              ((eqv? first 'begin)
+                (expand-sequence context (cdr expression)))
 
-            ((eqv? first 'define-syntax)
-              (let ((name (cadr expression)))
-                (expansion-context-set!
-                  context
-                  name
-                  (make-transformer context name (caddr expression)))
-                #f))
+              ((eqv? first 'define)
+                (let ((pair (expand-definition expression)))
+                  (expansion-context-set! context (car pair) #f)
+                  (expand (cons 'set! pair))))
 
-            ((eqv? first 'if)
-              (list
-                'if
-                (expand (cadr expression))
-                (expand (caddr expression))
-                (if (pair? (cdddr expression))
-                  (expand (cadddr expression))
-                  #f)))
-
-            ; TODO Implement an import statement.
-            ((eqv? first 'import)
-              #f)
-
-            ((eqv? first 'lambda)
-              (list
-                'lambda
-                (cadr expression)
-                (expand-body
-                  (expansion-context-append
+              ((eqv? first 'define-syntax)
+                (let ((name (cadr expression)))
+                  (expansion-context-set!
                     context
-                    (map
-                      (lambda (name) (cons name #f))
-                      (parameter-names (cadr expression))))
-                  (cddr expression))))
+                    name
+                    (make-transformer context name (caddr expression)))
+                  #f))
 
-            ((eqv? first 'let-syntax)
-              (expand-expression
-                (fold-left
-                  (lambda (context pair)
-                    (let ((name (car pair)))
-                      (expansion-context-push
-                        context
-                        name
-                        (make-transformer context name (cadr pair)))))
-                  context
-                  (cadr expression))
-                (caddr expression)))
+              ((eqv? first 'if)
+                (list
+                  'if
+                  (expand (cadr expression))
+                  (expand (caddr expression))
+                  (if (pair? (cdddr expression))
+                    (expand (cadddr expression))
+                    #f)))
 
-            ((eqv? first 'letrec-syntax)
-              (let* (
-                  (bindings (cadr expression))
-                  (context
-                    (fold-left
-                      (lambda (context pair)
-                        (expansion-context-push context (car pair) #f))
+              ; TODO Implement an import statement.
+              ((eqv? first 'import)
+                #f)
+
+              ((eqv? first 'lambda)
+                (list
+                  'lambda
+                  (cadr expression)
+                  (expand-body
+                    (expansion-context-append
                       context
-                      bindings)))
-                (for-each
-                  (lambda (pair)
-                    (let ((name (car pair)))
-                      (expansion-context-set!
+                      (map
+                        (lambda (name) (cons name #f))
+                        (parameter-names (cadr expression))))
+                    (cddr expression))))
+
+              ((eqv? first 'let-syntax)
+                (expand-expression
+                  (fold-left
+                    (lambda (context pair)
+                      (let ((name (car pair)))
+                        (expansion-context-push
+                          context
+                          name
+                          (make-transformer context name (cadr pair)))))
+                    context
+                    (cadr expression))
+                  (caddr expression)))
+
+              ((eqv? first 'letrec-syntax)
+                (let* (
+                    (bindings (cadr expression))
+                    (context
+                      (fold-left
+                        (lambda (context pair)
+                          (expansion-context-push context (car pair) #f))
                         context
-                        name
-                        (make-transformer context name (cadr pair)))))
-                  bindings)
-                (expand-expression context (caddr expression))))
+                        bindings)))
+                  (for-each
+                    (lambda (pair)
+                      (let ((name (car pair)))
+                        (expansion-context-set!
+                          context
+                          name
+                          (make-transformer context name (cadr pair)))))
+                    bindings)
+                  (expand-expression context (caddr expression))))
 
-            ((eqv? first 'quasiquote)
-              (expand-quasiquote (cadr expression)))
+              ((eqv? first 'quasiquote)
+                (expand-quasiquote (cadr expression)))
 
-            ((eqv? first 'quote)
-              expression)
+              ((eqv? first 'quote)
+                expression)
 
-            (else
-              (map expand expression))))
-        expression))))
+              (else
+                (map expand expression)))))
+
+        (else
+          expression)))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
