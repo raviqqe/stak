@@ -149,6 +149,12 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
+(define (list-count f xs)
+  (let loop ((xs xs) (count 0))
+    (if (null? xs)
+      count
+      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -249,6 +255,39 @@
     (if (and pair (eqv? (length expression) 3))
       (cons (cdr pair) (cdr expression))
       expression)))
+
+(define (denote-parameter context name)
+  (let (
+      (count
+        (list-count
+          (lambda (pair) (eqv? (car pair) name))
+          (expansion-context-environment context))))
+    (string->symbol
+      (string-append
+        "$"
+        (symbol->string name)
+        "$"
+        (number->string count)))))
+
+(define (resolve-denotation context expression)
+  (let ((pair (assv expression (expansion-context-environment context))))
+    (if (and pair (symbol? (cdr pair)))
+      (begin
+        (cdr pair))
+      expression)))
+
+(define (resolve-parameters context parameters)
+  (cond
+    ((symbol? parameters)
+      (resolve-denotation context parameters))
+
+    ((null? parameters)
+      '())
+
+    (else
+      (cons
+        (resolve-denotation context (car parameters))
+        (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -505,8 +544,7 @@
     (optimize
       (cond
         ((symbol? expression)
-          ; TODO Resolve a name to a denotation.
-          expression)
+          (resolve-denotation context expression))
 
         ((pair? expression)
           (let ((first (car expression)))
