@@ -155,6 +155,12 @@
       count
       (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
+; Note that the original `append` function works in this way natively on some Scheme implementations.
+(define (maybe-append ones others)
+  (if (or (not ones) (not others))
+    #f
+    (append ones others)))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -338,12 +344,6 @@
         (match-pattern definition-context use-context name literals pattern expression))
       expression)))
 
-; Note that the original `append` function works in this way natively on some Scheme implementations.
-(define (merge-matches ones others)
-  (if (or (not ones) (not others))
-    #f
-    (append ones others)))
-
 (define (match-pattern definition-context use-context name literals pattern expression)
   (let (
       (match-pattern
@@ -365,7 +365,7 @@
               (pair? (cdr pattern))
               (eqv? (cadr pattern) '...))
             (let ((length (- (length expression) (- (length pattern) 2))))
-              (merge-matches
+              (maybe-append
                 (match-ellipsis
                   definition-context
                   use-context
@@ -376,7 +376,7 @@
                 (match-pattern (cddr pattern) (skip length expression)))))
 
           ((pair? expression)
-            (merge-matches
+            (maybe-append
               (match-pattern (car pattern) (car expression))
               (match-pattern (cdr pattern) (cdr expression))))
 
