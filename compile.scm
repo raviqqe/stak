@@ -405,7 +405,7 @@
     (else
       template)))
 
-(define (make-transformer context name transformer)
+(define (make-transformer definition-context name transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer"))
   (let (
@@ -419,9 +419,9 @@
             (error "no syntax rule matched" expression))
           (let* (
               (rule (car rules))
-              (matches (match-pattern context name literals (car rule) expression)))
+              (matches (match-pattern definition-context name literals (car rule) expression)))
             (if matches
-              (expand-expression use-context (fill-template context matches (cadr rule)))
+              (expand-expression use-context (fill-template definition-context matches (cadr rule)))
               (loop (cdr rules)))))
         expression))))
 
