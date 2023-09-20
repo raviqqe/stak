@@ -582,16 +582,17 @@
                 #f)
 
               ((eqv? first 'lambda)
-                (list
-                  'lambda
-                  (cadr expression)
-                  (expand-body
-                    (expansion-context-append
-                      context
-                      (map
-                        (lambda (name) (cons name #f))
-                        (parameter-names (cadr expression))))
-                    (cddr expression))))
+                (let (
+                    (context
+                      (expansion-context-append
+                        context
+                        (map
+                          (lambda (name) (cons name (denote-parameter context name)))
+                          (parameter-names (cadr expression))))))
+                  (list
+                    'lambda
+                    (resolve-parameters context (cadr expression))
+                    (expand-body context (cddr expression)))))
 
               ((eqv? first 'let-syntax)
                 (expand-expression
