@@ -665,14 +665,14 @@
   (rib
     call-instruction
     (rib-cons
-      (cond
-        ((memq name '(close))
+      (case name
+        ((close)
           1)
 
-        ((memq name '(cons $-))
+        ((cons $-)
           2)
 
-        ((memq name '(rib))
+        ((rib)
           3)
 
         (else
