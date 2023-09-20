@@ -272,8 +272,7 @@
 (define (resolve-denotation context expression)
   (let ((pair (assv expression (expansion-context-environment context))))
     (if (and pair (symbol? (cdr pair)))
-      (begin
-        (cdr pair))
+      (cdr pair)
       expression)))
 
 (define (resolve-parameters context parameters)
