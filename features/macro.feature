@@ -238,7 +238,7 @@ Feature: Macro
     Then the stdout should contain exactly "A"
 
   @advanced
-  Scenario: Define a local macro capturing a variable of the same name
+  Scenario: Define a local macro capturing a global value of the same name
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
