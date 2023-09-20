@@ -227,8 +227,8 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let-syntax
-      ((foo
+    (let-syntax (
+      (foo
         (syntax-rules ()
           ((_ x)
             x))))
@@ -406,8 +406,8 @@ Feature: Macro
     (import (scheme base))
 
     (let ((foo 42))
-      (let-syntax
-        ((foo
+      (let-syntax (
+        (foo
           (syntax-rules ()
             ((_ x)
               x))))
@@ -423,8 +423,8 @@ Feature: Macro
     (import (scheme base))
 
     (let ((foo 65))
-      (let-syntax
-        ((foo
+      (let-syntax (
+        (foo
           (syntax-rules ()
             ((_ x)
               x))))
@@ -439,8 +439,8 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let-syntax
-      ((foo
+    (let-syntax (
+      (foo
         (syntax-rules ()
           ((_ x)
             x))))
