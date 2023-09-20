@@ -234,6 +234,9 @@
       (pair (assv name environment)))
     (if pair
       (set-cdr! pair procedure)
+      ; TODO foo
+      ; This works only because we pass a reference to an environment in a
+      ; context to macro transformers.
       (expansion-context-set-environment!
         context
         (cons (cons name procedure) environment)))))
