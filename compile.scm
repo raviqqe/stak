@@ -243,7 +243,7 @@
 ; TODO Throw an error if a denotation is not a symbol?
 (define (expansion-context-resolve context expression)
   (let ((pair (assv expression (expansion-context-environment context))))
-    (if (and pair (symbol? (cdr pair)))
+    (if pair
       (cdr pair)
       expression)))
 
@@ -413,18 +413,15 @@
       (literals (cons name (cadr transformer)))
       (rules (cddr transformer)))
     (lambda (use-context expression)
-      (when (eqv? expression name) (error "macro used as value:" expression))
-      (if (eqv? (predicate expression) name)
-        (let loop ((rules rules))
-          (unless (pair? rules)
-            (error "no syntax rule matched" expression))
-          (let* (
-              (rule (car rules))
-              (matches (match-pattern definition-context name literals (car rule) expression)))
-            (if matches
-              (expand-expression use-context (fill-template definition-context matches (cadr rule)))
-              (loop (cdr rules)))))
-        expression))))
+      (let loop ((rules rules))
+        (unless (pair? rules)
+          (error "no syntax rule matched" expression))
+        (let* (
+            (rule (car rules))
+            (matches (match-pattern definition-context name literals (car rule) expression)))
+          (if matches
+            (expand-expression use-context (fill-template definition-context matches (cadr rule)))
+            (loop (cdr rules))))))))
 
 (define (expand-syntax context expression)
   (let loop (
