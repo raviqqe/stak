@@ -539,8 +539,6 @@
       expressions)))
 
 (define (expand-expression context expression)
-  (display expression)
-  (newline)
   (let (
       (expand (lambda (expression) (expand-expression context expression)))
       (expression (expand-syntax context expression)))
