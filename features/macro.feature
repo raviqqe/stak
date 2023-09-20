@@ -227,12 +227,30 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let-syntax
-      ((foo
+    (let-syntax (
+      (foo
         (syntax-rules ()
           ((_ x)
             x))))
       (write-u8 (foo 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Define a local macro capturing a variable of the same name
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define foo 65)
+
+    (let-syntax
+      ((foo
+        (syntax-rules ()
+          ((_)
+            foo))))
+      (write-u8 (foo)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
