@@ -1,3 +1,5 @@
+(import (scheme base))
+
 (define (tak x y z)
   (if (< y x)
     (tak
