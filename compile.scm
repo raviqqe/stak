@@ -391,17 +391,17 @@
 
 (define (expand-syntax context expression)
   (let loop (
-      (expanders (expansion-context-expanders context))
+      (environment (expansion-context-environment context))
       (names '())
       (expression expression))
-    (if (null? expanders)
+    (if (null? environment)
       expression
       (let* (
-          (pair (car expanders))
+          (pair (car environment))
           (name (car pair))
           (expander (cdr pair)))
         (loop
-          (cdr expanders)
+          (cdr environment)
           (cons name names)
           (if (or (memv name names) (not expander))
             expression
