@@ -506,7 +506,7 @@ Feature: Macro
             (syntax-rules ()
               ((_)
                 (foo)))))
-        (write-u8 (bar))))
+        (write-u8 (foo))))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
