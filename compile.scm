@@ -149,12 +149,6 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
-
 (define (zip-alist alist)
   (let (
       (pairs
@@ -255,40 +249,6 @@
     (if (and pair (eqv? (length expression) 3))
       (cons (cdr pair) (cdr expression))
       expression)))
-
-(define (resolve-denotation context expression)
-  (cond
-    ((assv expression (expansion-context-environment context)) =>
-      cdr)
-
-    (else
-      expression)))
-
-(define (denote-parameter context name)
-  (let (
-      (count
-        (list-count
-          (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context))))
-    (string->symbol
-      (string-append
-        "$"
-        (symbol->string name)
-        "$"
-        (number->string count)))))
-
-(define (resolve-parameters context parameters)
-  (cond
-    ((symbol? parameters)
-      (resolve-denotation context parameters))
-
-    ((null? parameters)
-      '())
-
-    (else
-      (cons
-        (resolve-denotation context (car parameters))
-        (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -440,9 +400,9 @@
         (loop
           (cdr environment)
           (cons name names)
-          (if (and (not (memv name names)) (procedure? expander))
-            (expander context expression)
-            expression))))))
+          (if (or (memv name names) (not expander))
+            expression
+            (expander context expression)))))))
 
 (define (expand-definition definition)
   (let (
@@ -543,98 +503,91 @@
       (expand (lambda (expression) (expand-expression context expression)))
       (expression (expand-syntax context expression)))
     (optimize
-      (cond
-        ((symbol? expression)
-          (resolve-denotation context expression))
+      (if (pair? expression)
+        (let ((first (car expression)))
+          (cond
+            ((eqv? first 'begin)
+              (expand-sequence context (cdr expression)))
 
-        ((pair? expression)
-          (let ((first (car expression)))
-            (cond
-              ((eqv? first 'begin)
-                (expand-sequence context (cdr expression)))
+            ((eqv? first 'define)
+              (let ((pair (expand-definition expression)))
+                (expansion-context-set! context (car pair) #f)
+                (expand (cons 'set! pair))))
 
-              ((eqv? first 'define)
-                (let ((pair (expand-definition expression)))
-                  (expansion-context-set! context (car pair) #f)
-                  (expand (cons 'set! pair))))
+            ((eqv? first 'define-syntax)
+              (let ((name (cadr expression)))
+                (expansion-context-set!
+                  context
+                  name
+                  (make-transformer context name (caddr expression)))
+                #f))
 
-              ((eqv? first 'define-syntax)
-                (let ((name (cadr expression)))
-                  (expansion-context-set!
+            ((eqv? first 'if)
+              (list
+                'if
+                (expand (cadr expression))
+                (expand (caddr expression))
+                (if (pair? (cdddr expression))
+                  (expand (cadddr expression))
+                  #f)))
+
+            ; TODO Implement an import statement.
+            ((eqv? first 'import)
+              #f)
+
+            ((eqv? first 'lambda)
+              (list
+                'lambda
+                (cadr expression)
+                (expand-body
+                  (expansion-context-append
                     context
-                    name
-                    (make-transformer context name (caddr expression)))
-                  #f))
+                    (map
+                      (lambda (name) (cons name #f))
+                      (parameter-names (cadr expression))))
+                  (cddr expression))))
 
-              ((eqv? first 'if)
-                (list
-                  'if
-                  (expand (cadr expression))
-                  (expand (caddr expression))
-                  (if (pair? (cdddr expression))
-                    (expand (cadddr expression))
-                    #f)))
-
-              ; TODO Implement an import statement.
-              ((eqv? first 'import)
-                #f)
-
-              ((eqv? first 'lambda)
-                (let (
-                    (context
-                      (expansion-context-append
+            ((eqv? first 'let-syntax)
+              (expand-expression
+                (fold-left
+                  (lambda (context pair)
+                    (let ((name (car pair)))
+                      (expansion-context-push
                         context
-                        (map
-                          (lambda (name) (cons name (denote-parameter context name)))
-                          (parameter-names (cadr expression))))))
-                  (list
-                    'lambda
-                    (resolve-parameters context (cadr expression))
-                    (expand-body context (cddr expression)))))
+                        name
+                        (make-transformer context name (cadr pair)))))
+                  context
+                  (cadr expression))
+                (caddr expression)))
 
-              ((eqv? first 'let-syntax)
-                (expand-expression
-                  (fold-left
-                    (lambda (context pair)
-                      (let ((name (car pair)))
-                        (expansion-context-push
-                          context
-                          name
-                          (make-transformer context name (cadr pair)))))
-                    context
-                    (cadr expression))
-                  (caddr expression)))
-
-              ((eqv? first 'letrec-syntax)
-                (let* (
-                    (bindings (cadr expression))
-                    (context
-                      (fold-left
-                        (lambda (context pair)
-                          (expansion-context-push context (car pair) #f))
+            ((eqv? first 'letrec-syntax)
+              (let* (
+                  (bindings (cadr expression))
+                  (context
+                    (fold-left
+                      (lambda (context pair)
+                        (expansion-context-push context (car pair) #f))
+                      context
+                      bindings)))
+                (for-each
+                  (lambda (pair)
+                    (let ((name (car pair)))
+                      (expansion-context-set!
                         context
-                        bindings)))
-                  (for-each
-                    (lambda (pair)
-                      (let ((name (car pair)))
-                        (expansion-context-set!
-                          context
-                          name
-                          (make-transformer context name (cadr pair)))))
-                    bindings)
-                  (expand-expression context (caddr expression))))
+                        name
+                        (make-transformer context name (cadr pair)))))
+                  bindings)
+                (expand-expression context (caddr expression))))
 
-              ((eqv? first 'quasiquote)
-                (expand-quasiquote (cadr expression)))
+            ((eqv? first 'quasiquote)
+              (expand-quasiquote (cadr expression)))
 
-              ((eqv? first 'quote)
-                expression)
+            ((eqv? first 'quote)
+              expression)
 
-              (else
-                (map expand expression)))))
-
-        (else
-          expression)))))
+            (else
+              (map expand expression))))
+        expression))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
