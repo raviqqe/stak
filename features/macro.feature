@@ -424,8 +424,8 @@ Feature: Macro
     (import (scheme base))
 
     (let ((foo 42))
-      (let-syntax
-        ((foo
+      (let-syntax (
+        (foo
           (syntax-rules ()
             ((_ x)
               x))))
@@ -441,8 +441,8 @@ Feature: Macro
     (import (scheme base))
 
     (let ((foo 65))
-      (let-syntax
-        ((foo
+      (let-syntax (
+        (foo
           (syntax-rules ()
             ((_ x)
               x))))
@@ -457,8 +457,8 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
-    (let-syntax
-      ((foo
+    (let-syntax (
+      (foo
         (syntax-rules ()
           ((_ x)
             x))))
@@ -504,6 +504,27 @@ Feature: Macro
                 (foo)))))
         (let ((foo #f))
           (write-u8 (bar)))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Capture a local macro in a local macro of the same name
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let-syntax (
+        (foo
+          (syntax-rules ()
+            ((_)
+              65))))
+      (let-syntax (
+          (foo
+            (syntax-rules ()
+              ((_)
+                (foo)))))
+        (write-u8 (foo))))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
