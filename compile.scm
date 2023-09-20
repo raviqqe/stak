@@ -241,9 +241,12 @@
         (cons (cons name procedure) environment)))))
 
 (define (expansion-context-resolve context expression)
-  (let ((pair (assv expression (expansion-context-environment context))))
-    (if pair
-      (cdr pair)
+  (cond
+    ((assv expression (expansion-context-environment context))
+      =>
+      cdr)
+
+    (else
       expression)))
 
 ;; Procedures
