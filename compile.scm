@@ -234,8 +234,7 @@
       (pair (assv name environment)))
     (if pair
       (set-cdr! pair procedure)
-      ; TODO Consider attaching a new cons to the last cdr.
-      ; This works only because we pass a reference to an environment in a context
+      ; This works because we pass a reference to an environment in a context
       ; to macro transformers.
       (expansion-context-set-environment!
         context
