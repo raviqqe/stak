@@ -435,7 +435,7 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context name literals (car rule) expression)))
           (if matches
-            (expand-expression use-context (fill-template definition-context matches (cadr rule)))
+            (fill-template definition-context matches (cadr rule))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
