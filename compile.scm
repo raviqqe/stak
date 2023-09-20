@@ -249,7 +249,8 @@
 
 (define (expansion-context-unresolve context name)
   (let (
-      (cons (member
+      (cons
+        (member
           name
           (expansion-context-environment context)
           (lambda (x pair) (eqv? x (cdr pair))))))
