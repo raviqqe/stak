@@ -240,10 +240,9 @@
         context
         (cons (cons name procedure) environment)))))
 
-; TODO Throw an error if a denotation is not a symbol?
 (define (expansion-context-resolve context expression)
   (let ((pair (assv expression (expansion-context-environment context))))
-    (if (and pair (symbol? (cdr pair)))
+    (if pair
       (cdr pair)
       expression)))
 
@@ -264,6 +263,11 @@
     (if (and pair (eqv? (length expression) 3))
       (cons (cdr pair) (cdr expression))
       expression)))
+
+(define (denotation-equal? context one other)
+  (eqv?
+    (expansion-context-resolve context one)
+    (expansion-context-resolve context other)))
 
 (define (denote-parameter context name)
   (let (
@@ -309,7 +313,7 @@
     (else
       '())))
 
-(define (match-ellipsis context name literals pattern expression)
+(define (match-ellipsis definition-context use-context name literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -327,7 +331,8 @@
       (lambda (name) (cons name '()))
       (find-pattern-variables literals pattern))
     (map
-      (lambda (expression) (match-pattern context name literals pattern expression))
+      (lambda (expression)
+        (match-pattern definition-context use-context name literals pattern expression))
       expression)))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
@@ -336,14 +341,14 @@
     #f
     (append ones others)))
 
-(define (match-pattern context name literals pattern expression)
+(define (match-pattern definition-context use-context name literals pattern expression)
   (let (
       (match-pattern
         (lambda (pattern expression)
-          (match-pattern context name literals pattern expression))))
+          (match-pattern definition-context use-context name literals pattern expression))))
     (cond
       ((eqv? pattern '_)
-        (if (eqv? expression name) '() #f))
+        (if (denotation-equal? use-context expression name) '() #f))
 
       ((memv pattern literals)
         (if (eqv? expression pattern) '() #f))
@@ -358,7 +363,13 @@
               (eqv? (cadr pattern) '...))
             (let ((length (- (length expression) (- (length pattern) 2))))
               (merge-matches
-                (match-ellipsis context name literals (car pattern) (take length expression))
+                (match-ellipsis
+                  definition-context
+                  use-context
+                  name
+                  literals
+                  (car pattern)
+                  (take length expression))
                 (match-pattern (cddr pattern) (skip length expression)))))
 
           ((pair? expression)
@@ -414,13 +425,13 @@
       (rules (cddr transformer)))
     (lambda (use-context expression)
       (when (eqv? expression name) (error "macro used as value:" expression))
-      (if (eqv? (predicate expression) name)
+      (if (denotation-equal? use-context (predicate expression) name)
         (let loop ((rules rules))
           (unless (pair? rules)
             (error "no syntax rule matched" expression))
           (let* (
               (rule (car rules))
-              (matches (match-pattern definition-context name literals (car rule) expression)))
+              (matches (match-pattern definition-context use-context name literals (car rule) expression)))
             (if matches
               (expand-expression use-context (fill-template definition-context matches (cadr rule)))
               (loop (cdr rules)))))
@@ -631,6 +642,9 @@
 
               ((eqv? first 'quote)
                 expression)
+
+              ((procedure? first)
+                (expand (first context expression)))
 
               (else
                 (map expand expression)))))
