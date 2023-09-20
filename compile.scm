@@ -542,95 +542,94 @@
         (expansion-context-resolve context expression))
 
       ((pair? expression)
-        (let ((first (car expression)))
-          (cond
-            ((eqv? first 'begin)
-              (expand-sequence context (cdr expression)))
+        (case (car expression)
+          ((begin)
+            (expand-sequence context (cdr expression)))
 
-            ((eqv? first 'define)
-              (let* (
-                  (pair (expand-definition expression))
-                  (name (car pair)))
-                (expansion-context-set! context name name)
-                (expand (cons 'set! pair))))
+          ((define)
+            (let* (
+                (pair (expand-definition expression))
+                (name (car pair)))
+              (expansion-context-set! context name name)
+              (expand (cons 'set! pair))))
 
-            ((eqv? first 'define-syntax)
-              (let ((name (cadr expression)))
-                (expansion-context-set!
-                  context
-                  name
-                  (make-transformer context name (caddr expression)))
-                #f))
+          ((define-syntax)
+            (let ((name (cadr expression)))
+              (expansion-context-set!
+                context
+                name
+                (make-transformer context name (caddr expression)))
+              #f))
 
-            ((eqv? first 'if)
+          ((if)
+            (list
+              'if
+              (expand (cadr expression))
+              (expand (caddr expression))
+              (if (pair? (cdddr expression))
+                (expand (cadddr expression))
+                #f)))
+
+          ; TODO Implement an import statement.
+          ((import)
+            #f)
+
+          ((lambda)
+            (let (
+                (context
+                  (expansion-context-append
+                    context
+                    (map
+                      (lambda (name) (cons name (denote-parameter context name)))
+                      (parameter-names (cadr expression))))))
               (list
-                'if
-                (expand (cadr expression))
-                (expand (caddr expression))
-                (if (pair? (cdddr expression))
-                  (expand (cadddr expression))
-                  #f)))
+                'lambda
+                (resolve-parameters context (cadr expression))
+                (expand-body context (cddr expression)))))
 
-            ; TODO Implement an import statement.
-            ((eqv? first 'import)
-              #f)
-
-            ((eqv? first 'lambda)
-              (let (
-                  (context
-                    (expansion-context-append
+          ((let-syntax)
+            (expand-expression
+              (fold-left
+                (lambda (context pair)
+                  (let ((name (car pair)))
+                    (expansion-context-push
                       context
-                      (map
-                        (lambda (name) (cons name (denote-parameter context name)))
-                        (parameter-names (cadr expression))))))
-                (list
-                  'lambda
-                  (resolve-parameters context (cadr expression))
-                  (expand-body context (cddr expression)))))
+                      name
+                      (make-transformer context name (cadr pair)))))
+                context
+                (cadr expression))
+              (caddr expression)))
 
-            ((eqv? first 'let-syntax)
-              (expand-expression
-                (fold-left
-                  (lambda (context pair)
-                    (let ((name (car pair)))
-                      (expansion-context-push
-                        context
-                        name
-                        (make-transformer context name (cadr pair)))))
-                  context
-                  (cadr expression))
-                (caddr expression)))
-
-            ((eqv? first 'letrec-syntax)
-              (let* (
-                  (bindings (cadr expression))
-                  (context
-                    (fold-left
-                      (lambda (context pair)
-                        (expansion-context-push context (car pair) #f))
+          ((letrec-syntax)
+            (let* (
+                (bindings (cadr expression))
+                (context
+                  (fold-left
+                    (lambda (context pair)
+                      (expansion-context-push context (car pair) #f))
+                    context
+                    bindings)))
+              (for-each
+                (lambda (pair)
+                  (let ((name (car pair)))
+                    (expansion-context-set!
                       context
-                      bindings)))
-                (for-each
-                  (lambda (pair)
-                    (let ((name (car pair)))
-                      (expansion-context-set!
-                        context
-                        name
-                        (make-transformer context name (cadr pair)))))
-                  bindings)
-                (expand-expression context (caddr expression))))
+                      name
+                      (make-transformer context name (cadr pair)))))
+                bindings)
+              (expand-expression context (caddr expression))))
 
-            ((eqv? first 'quasiquote)
-              (expand-quasiquote (cadr expression)))
+          ((quasiquote)
+            (expand-quasiquote (cadr expression)))
 
-            ((eqv? first 'quote)
-              expression)
+          ((quote)
+            expression)
 
-            (else
-              (let ((expander (expansion-context-resolve context first)))
-                (if (procedure? expander)
-                  (expand (expander context expression))
-                  (map expand expression)))))))
+          (else
+            (let ((expander (expansion-context-resolve context (car expression))))
+              (if (procedure? expander)
+                (expand (expander context expression))
+                (map expand expression))))))
 
       (else
         expression))))
@@ -666,14 +665,14 @@
   (rib
     call-instruction
     (rib-cons
-      (cond
-        ((memq name '(close))
+      (case name
+        ((close)
           1)
 
-        ((memq name '(cons $-))
+        ((cons $-)
           2)
 
-        ((memq name '(rib))
+        ((rib)
           3)
 
         (else
@@ -755,54 +754,53 @@
         continuation))
 
     ((pair? expression)
-      (let ((first (car expression)))
-        (cond
-          ((eqv? first 'begin)
-            (compile-sequence context (cdr expression) continuation))
+      (case (car expression)
+        ((begin)
+          (compile-sequence context (cdr expression) continuation))
 
-          ((eqv? first 'if)
-            (compile-expression
-              context
-              (cadr expression)
-              (rib if-instruction
-                (compile-expression context (caddr expression) continuation)
-                (compile-expression context (cadddr expression) continuation))))
+        ((if)
+          (compile-expression
+            context
+            (cadr expression)
+            (rib if-instruction
+              (compile-expression context (caddr expression) continuation)
+              (compile-expression context (cadddr expression) continuation))))
 
-          ((eqv? first 'lambda)
-            (let ((parameters (cadr expression)))
-              (compile-constant
-                (make-procedure
-                  (rib
-                    pair-type
-                    (+
-                      (* 2 (count-parameters parameters))
-                      (if (symbol? (last-cdr parameters)) 1 0))
-                    (compile-sequence
-                      (compilation-context-append-locals
-                        context
-                        ; #f is for a frame.
-                        (reverse (cons #f (parameter-names parameters))))
-                      (cddr expression)
-                      '()))
-                  '())
-                (compile-primitive-call 'close continuation))))
+        ((lambda)
+          (let ((parameters (cadr expression)))
+            (compile-constant
+              (make-procedure
+                (rib
+                  pair-type
+                  (+
+                    (* 2 (count-parameters parameters))
+                    (if (symbol? (last-cdr parameters)) 1 0))
+                  (compile-sequence
+                    (compilation-context-append-locals
+                      context
+                      ; #f is for a frame.
+                      (reverse (cons #f (parameter-names parameters))))
+                    (cddr expression)
+                    '()))
+                '())
+              (compile-primitive-call 'close continuation))))
 
-          ((eqv? first 'quote)
-            (compile-constant (cadr expression) continuation))
+        ((quote)
+          (compile-constant (cadr expression) continuation))
 
-          ((eqv? first 'set!)
-            (compile-expression
-              context
-              (caddr expression)
-              (rib
-                set-instruction
-                (compilation-context-resolve
-                  (compilation-context-push-local context #f)
-                  (cadr expression))
-                (compile-unspecified continuation))))
+        ((set!)
+          (compile-expression
+            context
+            (caddr expression)
+            (rib
+              set-instruction
+              (compilation-context-resolve
+                (compilation-context-push-local context #f)
+                (cadr expression))
+              (compile-unspecified continuation))))
 
-          (else
-            (compile-call context expression continuation)))))
+        (else
+          (compile-call context expression continuation))))
 
     (else
       (compile-constant expression continuation))))
