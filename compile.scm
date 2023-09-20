@@ -269,6 +269,7 @@
         "$"
         (number->string count)))))
 
+; TODO Throw an error if a denotation is not a symbol?
 (define (resolve-denotation context expression)
   (let ((pair (assv expression (expansion-context-environment context))))
     (if (and pair (symbol? (cdr pair)))
