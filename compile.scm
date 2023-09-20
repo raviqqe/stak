@@ -271,60 +271,6 @@
           (number->string (- count 2))))))
   name)
 
-(define (rename-expression context expression)
-  (define (rename expression)
-    (rename-expression context expression))
-
-  (cond
-    ((symbol? expression)
-      (rename-name context expression))
-
-    ((pair? expression)
-      (case (first (car expression))
-        ((define)
-          (cons
-            'define
-            (cadr expression)
-            (rename (caddr expression))))
-
-        ((define-syntax)
-          (let ((name (cadr expression)))
-            (expansion-context-set-global!
-              context
-              name
-              (make-transformer context name (caddr expression)))
-            #f))
-
-        ; TODO Implement an import statement.
-        ((import)
-          #f)
-
-        ((lambda)
-          (let (
-              (context
-                (expansion-context-append-locals
-                  context
-                  (map
-                    (lambda (name) (cons name #f))
-                    (lambda-parameters (cadr expression))))))
-            (cons
-              'lambda
-              (cons
-                (rename-parameters context (cadr expression))
-                (expand-body context (cddr expression))))))
-
-        ((eqv? first 'let-syntax)
-          (error "not implemented"))
-
-        ((eqv? first 'letrec-syntax)
-          (error "not implemented"))
-
-        (else
-          (map rename expression))))
-
-    (else
-      expression)))
-
 (define (rename-parameters context parameters)
   (define (rename name)
     (rename-name context name))
