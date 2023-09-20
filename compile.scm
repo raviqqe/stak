@@ -351,10 +351,7 @@
           (match-pattern definition-context use-context name literals pattern expression))))
     (cond
       ((eqv? pattern '_)
-        ; TODO Compare denotations properly.
-        (if (or (procedure? expression) (denotation-equal? use-context expression name))
-          '()
-          #f))
+        '())
 
       ((memv pattern literals)
         (if (eqv? expression pattern) '() #f))
