@@ -754,54 +754,53 @@
         continuation))
 
     ((pair? expression)
-      (let ((first (car expression)))
-        (cond
-          ((eqv? first 'begin)
-            (compile-sequence context (cdr expression) continuation))
+      (case (car expression)
+        ((begin)
+          (compile-sequence context (cdr expression) continuation))
 
-          ((eqv? first 'if)
-            (compile-expression
-              context
-              (cadr expression)
-              (rib if-instruction
-                (compile-expression context (caddr expression) continuation)
-                (compile-expression context (cadddr expression) continuation))))
+        ((if)
+          (compile-expression
+            context
+            (cadr expression)
+            (rib if-instruction
+              (compile-expression context (caddr expression) continuation)
+              (compile-expression context (cadddr expression) continuation))))
 
-          ((eqv? first 'lambda)
-            (let ((parameters (cadr expression)))
-              (compile-constant
-                (make-procedure
-                  (rib
-                    pair-type
-                    (+
-                      (* 2 (count-parameters parameters))
-                      (if (symbol? (last-cdr parameters)) 1 0))
-                    (compile-sequence
-                      (compilation-context-append-locals
-                        context
-                        ; #f is for a frame.
-                        (reverse (cons #f (parameter-names parameters))))
-                      (cddr expression)
-                      '()))
-                  '())
-                (compile-primitive-call 'close continuation))))
+        ((lambda)
+          (let ((parameters (cadr expression)))
+            (compile-constant
+              (make-procedure
+                (rib
+                  pair-type
+                  (+
+                    (* 2 (count-parameters parameters))
+                    (if (symbol? (last-cdr parameters)) 1 0))
+                  (compile-sequence
+                    (compilation-context-append-locals
+                      context
+                      ; #f is for a frame.
+                      (reverse (cons #f (parameter-names parameters))))
+                    (cddr expression)
+                    '()))
+                '())
+              (compile-primitive-call 'close continuation))))
 
-          ((eqv? first 'quote)
-            (compile-constant (cadr expression) continuation))
+        ((quote)
+          (compile-constant (cadr expression) continuation))
 
-          ((eqv? first 'set!)
-            (compile-expression
-              context
-              (caddr expression)
-              (rib
-                set-instruction
-                (compilation-context-resolve
-                  (compilation-context-push-local context #f)
-                  (cadr expression))
-                (compile-unspecified continuation))))
+        ((set!)
+          (compile-expression
+            context
+            (caddr expression)
+            (rib
+              set-instruction
+              (compilation-context-resolve
+                (compilation-context-push-local context #f)
+                (cadr expression))
+              (compile-unspecified continuation))))
 
-          (else
-            (compile-call context expression continuation)))))
+        (else
+          (compile-call context expression continuation))))
 
     (else
       (compile-constant expression continuation))))
