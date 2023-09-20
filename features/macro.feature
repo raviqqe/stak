@@ -485,3 +485,25 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Capture a local macro in a local macro
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let-syntax (
+        (foo
+          (syntax-rules ()
+            ((_)
+              65))))
+      (let-syntax (
+          (bar
+            (syntax-rules ()
+              ((_)
+                (foo)))))
+        (let ((foo #f))
+          (write-u8 (bar)))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"

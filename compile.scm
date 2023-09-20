@@ -240,11 +240,13 @@
         context
         (cons (cons name procedure) environment)))))
 
-; TODO Throw an error if a denotation is not a symbol?
 (define (expansion-context-resolve context expression)
-  (let ((pair (assv expression (expansion-context-environment context))))
-    (if (and pair (symbol? (cdr pair)))
-      (cdr pair)
+  (cond
+    ((assv expression (expansion-context-environment context))
+      =>
+      cdr)
+
+    (else
       expression)))
 
 ;; Procedures
@@ -264,6 +266,11 @@
     (if (and pair (eqv? (length expression) 3))
       (cons (cdr pair) (cdr expression))
       expression)))
+
+(define (denotation-equal? context one other)
+  (eqv?
+    (expansion-context-resolve context one)
+    (expansion-context-resolve context other)))
 
 (define (denote-parameter context name)
   (let (
@@ -309,7 +316,7 @@
     (else
       '())))
 
-(define (match-ellipsis context name literals pattern expression)
+(define (match-ellipsis definition-context use-context name literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -327,7 +334,8 @@
       (lambda (name) (cons name '()))
       (find-pattern-variables literals pattern))
     (map
-      (lambda (expression) (match-pattern context name literals pattern expression))
+      (lambda (expression)
+        (match-pattern definition-context use-context name literals pattern expression))
       expression)))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
@@ -336,14 +344,14 @@
     #f
     (append ones others)))
 
-(define (match-pattern context name literals pattern expression)
+(define (match-pattern definition-context use-context name literals pattern expression)
   (let (
       (match-pattern
         (lambda (pattern expression)
-          (match-pattern context name literals pattern expression))))
+          (match-pattern definition-context use-context name literals pattern expression))))
     (cond
       ((eqv? pattern '_)
-        (if (eqv? expression name) '() #f))
+        '())
 
       ((memv pattern literals)
         (if (eqv? expression pattern) '() #f))
@@ -358,7 +366,13 @@
               (eqv? (cadr pattern) '...))
             (let ((length (- (length expression) (- (length pattern) 2))))
               (merge-matches
-                (match-ellipsis context name literals (car pattern) (take length expression))
+                (match-ellipsis
+                  definition-context
+                  use-context
+                  name
+                  literals
+                  (car pattern)
+                  (take length expression))
                 (match-pattern (cddr pattern) (skip length expression)))))
 
           ((pair? expression)
@@ -414,35 +428,15 @@
       (rules (cddr transformer)))
     (lambda (use-context expression)
       (when (eqv? expression name) (error "macro used as value:" expression))
-      (if (eqv? (predicate expression) name)
-        (let loop ((rules rules))
-          (unless (pair? rules)
-            (error "no syntax rule matched" expression))
-          (let* (
-              (rule (car rules))
-              (matches (match-pattern definition-context name literals (car rule) expression)))
-            (if matches
-              (expand-expression use-context (fill-template definition-context matches (cadr rule)))
-              (loop (cdr rules)))))
-        expression))))
-
-(define (expand-syntax context expression)
-  (let loop (
-      (environment (expansion-context-environment context))
-      (names '())
-      (expression expression))
-    (if (null? environment)
-      expression
-      (let* (
-          (pair (car environment))
-          (name (car pair))
-          (expander (cdr pair)))
-        (loop
-          (cdr environment)
-          (cons name names)
-          (if (and (not (memv name names)) (procedure? expander))
-            (expander context expression)
-            expression))))))
+      (let loop ((rules rules))
+        (unless (pair? rules)
+          (error "no syntax rule matched" expression))
+        (let* (
+            (rule (car rules))
+            (matches (match-pattern definition-context use-context name literals (car rule) expression)))
+          (if matches
+            (expand-expression use-context (fill-template definition-context matches (cadr rule)))
+            (loop (cdr rules))))))))
 
 (define (expand-definition definition)
   (let (
@@ -539,104 +533,107 @@
       expressions)))
 
 (define (expand-expression context expression)
-  (let (
-      (expand (lambda (expression) (expand-expression context expression)))
-      (expression (expand-syntax context expression)))
-    (optimize
-      (cond
-        ((symbol? expression)
-          (expansion-context-resolve context expression))
+  (define (expand expression)
+    (expand-expression context expression))
 
-        ((pair? expression)
-          (let ((first (car expression)))
-            (cond
-              ((eqv? first 'begin)
-                (expand-sequence context (cdr expression)))
+  (optimize
+    (cond
+      ((symbol? expression)
+        (expansion-context-resolve context expression))
 
-              ((eqv? first 'define)
-                (let* (
-                    (pair (expand-definition expression))
-                    (name (car pair)))
-                  (expansion-context-set! context name name)
-                  (expand (cons 'set! pair))))
+      ((pair? expression)
+        (let ((first (car expression)))
+          (cond
+            ((eqv? first 'begin)
+              (expand-sequence context (cdr expression)))
 
-              ((eqv? first 'define-syntax)
-                (let ((name (cadr expression)))
-                  (expansion-context-set!
-                    context
-                    name
-                    (make-transformer context name (caddr expression)))
-                  #f))
+            ((eqv? first 'define)
+              (let* (
+                  (pair (expand-definition expression))
+                  (name (car pair)))
+                (expansion-context-set! context name name)
+                (expand (cons 'set! pair))))
 
-              ((eqv? first 'if)
+            ((eqv? first 'define-syntax)
+              (let ((name (cadr expression)))
+                (expansion-context-set!
+                  context
+                  name
+                  (make-transformer context name (caddr expression)))
+                #f))
+
+            ((eqv? first 'if)
+              (list
+                'if
+                (expand (cadr expression))
+                (expand (caddr expression))
+                (if (pair? (cdddr expression))
+                  (expand (cadddr expression))
+                  #f)))
+
+            ; TODO Implement an import statement.
+            ((eqv? first 'import)
+              #f)
+
+            ((eqv? first 'lambda)
+              (let (
+                  (context
+                    (expansion-context-append
+                      context
+                      (map
+                        (lambda (name) (cons name (denote-parameter context name)))
+                        (parameter-names (cadr expression))))))
                 (list
-                  'if
-                  (expand (cadr expression))
-                  (expand (caddr expression))
-                  (if (pair? (cdddr expression))
-                    (expand (cadddr expression))
-                    #f)))
+                  'lambda
+                  (resolve-parameters context (cadr expression))
+                  (expand-body context (cddr expression)))))
 
-              ; TODO Implement an import statement.
-              ((eqv? first 'import)
-                #f)
-
-              ((eqv? first 'lambda)
-                (let (
-                    (context
-                      (expansion-context-append
+            ((eqv? first 'let-syntax)
+              (expand-expression
+                (fold-left
+                  (lambda (context pair)
+                    (let ((name (car pair)))
+                      (expansion-context-push
                         context
-                        (map
-                          (lambda (name) (cons name (denote-parameter context name)))
-                          (parameter-names (cadr expression))))))
-                  (list
-                    'lambda
-                    (resolve-parameters context (cadr expression))
-                    (expand-body context (cddr expression)))))
+                        name
+                        (make-transformer context name (cadr pair)))))
+                  context
+                  (cadr expression))
+                (caddr expression)))
 
-              ((eqv? first 'let-syntax)
-                (expand-expression
-                  (fold-left
-                    (lambda (context pair)
-                      (let ((name (car pair)))
-                        (expansion-context-push
-                          context
-                          name
-                          (make-transformer context name (cadr pair)))))
-                    context
-                    (cadr expression))
-                  (caddr expression)))
-
-              ((eqv? first 'letrec-syntax)
-                (let* (
-                    (bindings (cadr expression))
-                    (context
-                      (fold-left
-                        (lambda (context pair)
-                          (expansion-context-push context (car pair) #f))
+            ((eqv? first 'letrec-syntax)
+              (let* (
+                  (bindings (cadr expression))
+                  (context
+                    (fold-left
+                      (lambda (context pair)
+                        (expansion-context-push context (car pair) #f))
+                      context
+                      bindings)))
+                (for-each
+                  (lambda (pair)
+                    (let ((name (car pair)))
+                      (expansion-context-set!
                         context
-                        bindings)))
-                  (for-each
-                    (lambda (pair)
-                      (let ((name (car pair)))
-                        (expansion-context-set!
-                          context
-                          name
-                          (make-transformer context name (cadr pair)))))
-                    bindings)
-                  (expand-expression context (caddr expression))))
+                        name
+                        (make-transformer context name (cadr pair)))))
+                  bindings)
+                (expand-expression context (caddr expression))))
 
-              ((eqv? first 'quasiquote)
-                (expand-quasiquote (cadr expression)))
+            ((eqv? first 'quasiquote)
+              (expand-quasiquote (cadr expression)))
 
-              ((eqv? first 'quote)
-                expression)
+            ((eqv? first 'quote)
+              expression)
 
-              (else
-                (map expand expression)))))
+            (else
+              (let ((expander (expansion-context-resolve context first)))
+                (if (procedure? expander)
+                  (expand (expander context expression))
+                  (map expand expression)))))))
 
-        (else
-          expression)))))
+      (else
+        expression))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
