@@ -162,11 +162,11 @@
 (define rib-set-cdr! (primitive 8))
 (define rib-set-tag! (primitive 9))
 (define eq? (primitive 10))
-(define $< (primitive 11))
-(define $+ (primitive 12))
-(define $- (primitive 13))
-(define $* (primitive 14))
-(define $/ (primitive 15))
+(define $$< (primitive 11))
+(define $$+ (primitive 12))
+(define $$- (primitive 13))
+(define $$* (primitive 14))
+(define $$/ (primitive 15))
 (define read-u8 (primitive 16))
 (define write-u8 (primitive 17))
 (define dump (primitive 18))
@@ -331,10 +331,10 @@
       (f y x)
       (fold-left f x xs))))
 
-(define + (arithmetic-operator $+ 0))
-(define - (inverse-arithmetic-operator $- 0))
-(define * (arithmetic-operator $* 1))
-(define / (inverse-arithmetic-operator $/ 1))
+(define + (arithmetic-operator $$+ 0))
+(define - (inverse-arithmetic-operator $$- 0))
+(define * (arithmetic-operator $$* 1))
+(define / (inverse-arithmetic-operator $$/ 1))
 
 (define (comparison-operator f)
   (lambda xs
@@ -349,10 +349,10 @@
             (and (f x y) (loop y (cdr xs)))))))))
 
 (define = (comparison-operator eqv?))
-(define < (comparison-operator $<))
-(define > (comparison-operator (lambda (x y) ($< y x))))
-(define <= (comparison-operator (lambda (x y) (not ($< y x)))))
-(define >= (comparison-operator (lambda (x y) (not ($< x y)))))
+(define < (comparison-operator $$<))
+(define > (comparison-operator (lambda (x y) ($$< y x))))
+(define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
+(define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
 ;; Procedure
 
