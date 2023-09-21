@@ -275,11 +275,6 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
-(define (denotation-equal? context one other)
-  (eqv?
-    (expansion-context-resolve context one)
-    (expansion-context-resolve context other)))
-
 (define (denote-parameter context name)
   (let (
       (count
@@ -356,7 +351,11 @@
         '())
 
       ((memv pattern literals)
-        (if (eqv? expression pattern) '() #f))
+        (if (eqv?
+            (expansion-context-resolve use-context expression)
+            (expansion-context-resolve definition-context pattern))
+          '()
+          #f))
 
       ((symbol? pattern)
         (list (cons pattern expression)))
