@@ -452,7 +452,7 @@
 (define (expand-quasiquote expression)
   (cond
     ((not (pair? expression))
-      (list '$$quote expression))
+      `($$quote ,expression))
 
     ((eqv? (car expression) 'unquote)
       (cadr expression))
@@ -460,16 +460,14 @@
     ((and
         (pair? (car expression))
         (eqv? (caar expression) 'unquote-splicing))
-      (list
-        'append
-        (cadar expression)
-        (expand-quasiquote (cdr expression))))
+      `(append
+        ,(cadar expression)
+        ,(expand-quasiquote (cdr expression))))
 
     (else
-      (list
-        'cons
-        (expand-quasiquote (car expression))
-        (expand-quasiquote (cdr expression))))))
+      `(cons
+        ,(expand-quasiquote (car expression))
+        ,(expand-quasiquote (cdr expression))))))
 
 (define (validate-sequence expressions)
   (when (null? expressions)
