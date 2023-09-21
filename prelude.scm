@@ -58,7 +58,7 @@
       (lambda arguments (letrec-syntax ((name value) ...) body1 body2 ...)))
 
     ((_ arguments body1 body2 ...)
-      ($$lambda arguments body1 body2 ...))))
+      ($$lambda arguments (begin body1 body2 ...)))))
 
 (define-syntax begin
   (syntax-rules ()
