@@ -68,7 +68,7 @@
 
     ((_ "syntax" arguments ((name value) ...) body1 body2 ...)
       (lambda arguments
-        (letrec-syntax ((name value) ...) body1 body2 ...)))
+        (letrec-syntax ((name value) ...) (let () body1 body2 ...))))
 
     ((_ arguments body1 body2 ...)
       ($$lambda arguments body1 body2 ...))))
