@@ -156,10 +156,8 @@
       (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
-(define (maybe-append ones others)
-  (if (or (not ones) (not others))
-    #f
-    (append ones others)))
+(define (maybe-append xs ys)
+  (and xs ys (append xs ys)))
 
 (define (zip-alist alist)
   (let (
@@ -879,8 +877,13 @@
     (encode-context-symbols context)))
 
 (define (encode-context-constant context constant)
-  (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
-    (if pair (cdr pair) #f)))
+  (cond
+    ((assv constant (append default-constants (encode-context-constants context)))
+      =>
+      cdr)
+
+    (else
+      #f)))
 
 (define (encode-context-constant-id context)
   (string->symbol
@@ -1015,22 +1018,18 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
-; TODO Check if a symbol can be empty.
-; Currently, we encode the last 3 symbols as empty symbols just to test this logic.
-(define (empty-symbol? symbols)
-  (< (length symbols) 4))
-
-(define (count-empty-symbols* symbols count)
-  (if (null? symbols)
-    count
-    (count-empty-symbols*
-      (cdr symbols)
-      (if (empty-symbol? symbols)
-        (+ count 1)
-        0))))
+(define (empty-symbol? symbol)
+  (eqv? (string-ref (symbol->string symbol) 0) #\$))
 
 (define (count-empty-symbols symbols)
-  (count-empty-symbols* symbols 0))
+  (let loop ((symbols symbols) (count 0))
+    (if (null? symbols)
+      count
+      (loop
+        (cdr symbols)
+        (if (empty-symbol? (car symbols))
+          (+ count 1)
+          0)))))
 
 (define (encode-symbols* symbols count target)
   ; We may encounter this only at the first call.
