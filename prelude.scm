@@ -80,6 +80,18 @@
         body2
         ...))
 
+    ((_ "syntax" arguments
+        ((name value) ...)
+        (define-syntax new-name new-value)
+        body1
+        body2
+        ...)
+      (lambda "syntax" arguments
+        ((name value) ... (new-name new-value))
+        body1
+        body2
+        ...))
+
     ((_ arguments body1 body2 ...)
       ($$lambda arguments body1 body2 ...))))
 
