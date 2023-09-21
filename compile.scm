@@ -11,10 +11,10 @@
     (import (scheme base) (scheme cxr))
 
     (define (rib tag car cdr)
-      (cons (cons (cons '$rib tag) car) cdr))
+      (cons (cons (cons '$$rib tag) car) cdr))
 
     (define (rib-cons car cdr)
-      (cons (cons (cons '$rib 0) car) cdr))
+      (cons (cons (cons '$$rib 0) car) cdr))
 
     (define rib-tag cdaar)
     (define rib-car cdar)
@@ -31,7 +31,7 @@
         (pair? value)
         (pair? (car value))
         (pair? (caar value))
-        (eqv? (caaar value) '$rib))))
+        (eqv? (caaar value) '$$rib))))
 
   (else))
 
@@ -39,9 +39,9 @@
 
 (define default-constants
   '(
-    (#f . $false)
-    (#t . $true)
-    (() . $null)))
+    (#f . $$false)
+    (#t . $$true)
+    (() . $$null)))
 
 (define rib-symbol 'rib)
 
@@ -62,7 +62,7 @@
   '(
     (cons 1)
     (close 2)
-    ($- 13)))
+    ($$- 13)))
 
 ; Types
 
@@ -156,10 +156,8 @@
       (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
-(define (maybe-append ones others)
-  (if (or (not ones) (not others))
-    #f
-    (append ones others)))
+(define (maybe-append xs ys)
+  (and xs ys (append xs ys)))
 
 (define (zip-alist alist)
   (let (
@@ -259,11 +257,11 @@
 
 (define primitive-functions
   '(
-    (+ . $+)
-    (- . $-)
-    (* . $*)
-    (/ . $/)
-    (< . $<)))
+    (+ . $$+)
+    (- . $$-)
+    (* . $$*)
+    (/ . $$/)
+    (< . $$<)))
 
 ; TODO Check if those primitive functions are from the `scheme base` library
 ; before applying optimization.
@@ -669,7 +667,7 @@
         ((close)
           1)
 
-        ((cons $-)
+        ((cons $$-)
           2)
 
         ((rib)
@@ -867,20 +865,31 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context symbols constants)
+  (make-encode-context symbols constants all-symbols)
   encode-context?
   (symbols encode-context-symbols encode-context-set-symbols!)
-  (constants encode-context-constants encode-context-set-constants!))
+  (constants encode-context-constants encode-context-set-constants!)
+  (all-symbols encode-context-all-symbols* encode-context-set-all-symbols!))
 
 (define (encode-context-all-symbols context)
-  (append
-    (map cdr default-constants)
-    (list rib-symbol)
-    (encode-context-symbols context)))
+  (when (not (encode-context-all-symbols* context))
+    (encode-context-set-all-symbols!
+      context
+      (append
+        (map cdr default-constants)
+        (list rib-symbol)
+        (encode-context-symbols context)
+        (map cdr (encode-context-constants context)))))
+  (encode-context-all-symbols* context))
 
 (define (encode-context-constant context constant)
-  (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
-    (if pair (cdr pair) #f)))
+  (cond
+    ((assv constant (append default-constants (encode-context-constants context)))
+      =>
+      cdr)
+
+    (else
+      #f)))
 
 (define (encode-context-constant-id context)
   (string->symbol
@@ -889,9 +898,6 @@
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
-  (encode-context-set-symbols!
-    context
-    (cons symbol (encode-context-symbols context)))
   (encode-context-set-constants!
     context
     (cons (cons constant symbol) (encode-context-constants context))))
@@ -950,7 +956,7 @@
             0
             (rib constant-instruction
               (abs constant)
-              (compile-primitive-call '$- continuation))))
+              (compile-primitive-call '$$- continuation))))
 
         ((pair? constant)
           (build-constant-rib (car constant) (cdr constant) pair-type))
@@ -1015,22 +1021,18 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
-; TODO Check if a symbol can be empty.
-; Currently, we encode the last 3 symbols as empty symbols just to test this logic.
-(define (empty-symbol? symbols)
-  (< (length symbols) 4))
-
-(define (count-empty-symbols* symbols count)
-  (if (null? symbols)
-    count
-    (count-empty-symbols*
-      (cdr symbols)
-      (if (empty-symbol? symbols)
-        (+ count 1)
-        0))))
+(define (empty-symbol? symbol)
+  (eqv? (string-ref (symbol->string symbol) 0) #\$))
 
 (define (count-empty-symbols symbols)
-  (count-empty-symbols* symbols 0))
+  (let loop ((symbols symbols) (count 0))
+    (if (null? symbols)
+      count
+      (loop
+        (cdr symbols)
+        (if (empty-symbol? (car symbols))
+          (+ count 1)
+          0)))))
 
 (define (encode-symbols* symbols count target)
   ; We may encounter this only at the first call.
@@ -1200,10 +1202,13 @@
           (append
             (map car primitives)
             (find-symbols codes))
-          '()))
+          '()
+          #f))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
-      (encode-context-symbols context)
+      (append
+        (encode-context-symbols context)
+        (map cdr (encode-context-constants context)))
       (encode-codes context codes '() '()))))
 
 ; Main

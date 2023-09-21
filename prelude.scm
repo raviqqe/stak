@@ -162,11 +162,11 @@
 (define rib-set-cdr! (primitive 8))
 (define rib-set-tag! (primitive 9))
 (define eq? (primitive 10))
-(define $< (primitive 11))
-(define $+ (primitive 12))
-(define $- (primitive 13))
-(define $* (primitive 14))
-(define $/ (primitive 15))
+(define $$< (primitive 11))
+(define $$+ (primitive 12))
+(define $$- (primitive 13))
+(define $$* (primitive 14))
+(define $$/ (primitive 15))
 (define read-u8 (primitive 16))
 (define write-u8 (primitive 17))
 (define dump (primitive 18))
@@ -245,13 +245,11 @@
 (define car rib-car)
 (define cdr rib-cdr)
 
-(define (length* xs y)
-  (if (null? xs)
-    y
-    (length* (cdr xs) (+ y 1))))
-
 (define (length xs)
-  (length* xs 0))
+  (let loop ((xs xs) (y 0))
+    (if (null? xs)
+      y
+      (loop (cdr xs) (+ y 1)))))
 
 (define (map function list)
   (if (null? list)
@@ -331,10 +329,10 @@
       (f y x)
       (fold-left f x xs))))
 
-(define + (arithmetic-operator $+ 0))
-(define - (inverse-arithmetic-operator $- 0))
-(define * (arithmetic-operator $* 1))
-(define / (inverse-arithmetic-operator $/ 1))
+(define + (arithmetic-operator $$+ 0))
+(define - (inverse-arithmetic-operator $$- 0))
+(define * (arithmetic-operator $$* 1))
+(define / (inverse-arithmetic-operator $$/ 1))
 
 (define (comparison-operator f)
   (lambda xs
@@ -349,10 +347,10 @@
             (and (f x y) (loop y (cdr xs)))))))))
 
 (define = (comparison-operator eqv?))
-(define < (comparison-operator $<))
-(define > (comparison-operator (lambda (x y) ($< y x))))
-(define <= (comparison-operator (lambda (x y) (not ($< y x)))))
-(define >= (comparison-operator (lambda (x y) (not ($< x y)))))
+(define < (comparison-operator $$<))
+(define > (comparison-operator (lambda (x y) ($$< y x))))
+(define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
+(define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
 ;; Procedure
 
@@ -389,15 +387,13 @@
 (define (write-string string)
   (map write-char (string->list string)))
 
-(define (write-bytevector* vector index)
-  (if (< index (bytevector-length vector))
-    (begin
-      (write-u8 (bytevector-u8-ref vector index))
-      (write-bytevector* vector (+ index 1)))
-    #f))
-
-(define (write-bytevector vector)
-  (write-bytevector* vector 0))
+(define (write-bytevector xs)
+  (let loop ((xs xs) (index 0))
+    (if (< index (bytevector-length xs))
+      (begin
+        (write-u8 (bytevector-u8-ref xs index))
+        (loop xs (+ index 1)))
+      #f)))
 
 (define (newline)
   (write-char #\newline))
