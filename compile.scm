@@ -163,6 +163,9 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
+(define (list-like? xs)
+  (or (null? xs) (pair? xs)))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -359,7 +362,7 @@
     ((symbol? pattern)
       (list (cons pattern expression)))
 
-    ((and (pair? pattern) (list? expression))
+    ((and (pair? pattern) (list-like? expression))
       (cond
         ((and
             (pair? (cdr pattern))
