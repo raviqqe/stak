@@ -49,7 +49,7 @@
 (define-syntax if
   (syntax-rules ()
     ((_ test clause1 clause2)
-      ($$if clause1 clause2))
+      ($$if test clause1 clause2))
 
     ((_ test clause)
       (if test clause #f))))
