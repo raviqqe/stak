@@ -544,9 +544,6 @@
 
       ((pair? expression)
         (case (car expression)
-          (($$begin)
-            (expand-sequence context (cdr expression)))
-
           ((define)
             (let* (
                 (pair (expand-definition expression))
