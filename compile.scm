@@ -209,7 +209,7 @@
       '())
 
     (else
-      (error "invalid variadic parameter:" parameters))))
+      (error "invalid variadic parameter" parameters))))
 
 ; Source code reading
 
@@ -427,14 +427,14 @@
 
 (define (make-transformer definition-context transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
-    (error "unsupported macro transformer"))
+    (error "unsupported macro transformer" transformer))
   (let (
       (literals (cadr transformer))
       (rules (cddr transformer)))
     (lambda (use-context expression)
       (let loop ((rules rules))
         (unless (pair? rules)
-          (error "no syntax rule matched" expression))
+          (error "invalid syntax" expression))
         (let* (
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
@@ -661,7 +661,7 @@
           3)
 
         (else
-          (error "unknown primitive:" name)))
+          (error "unknown primitive" name)))
       name)
     continuation))
 
@@ -961,7 +961,7 @@
             vector-type))
 
         (else
-          (error "invalid constant:" constant))))))
+          (error "invalid constant" constant))))))
 
 (define (build-constant context constant continuation)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
@@ -1096,9 +1096,10 @@
       (* 2
         (or
           (memv-position operand (encode-context-all-symbols context))
-          (error "symbol not found:" operand))))
+          (error "symbol not found" operand))))
 
-    (else (error "invalid operand:" operand))))
+    (else
+      (error "invalid operand" operand))))
 
 (define (encode-codes context codes terminal target)
   (if (eq? codes terminal)
@@ -1158,7 +1159,8 @@
                 target
                 (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
 
-          (else (error "invalid instruction")))))))
+          (else
+            (error "invalid instruction" instruction)))))))
 
 ;; Primitives
 
