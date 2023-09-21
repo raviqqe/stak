@@ -548,7 +548,7 @@
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
-              (expand `($$set! ,name ,(caddr expression)))))
+              (expand `($$set! ,@(cdr expression)))))
 
           ((define-syntax)
             (expansion-context-set!
