@@ -1013,10 +1013,8 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
-; TODO Check if a symbol can be empty.
-; Currently, we encode the last 3 symbols as empty symbols just to test this logic.
-(define (empty-symbol? symbols)
-  (< (length symbols) 4))
+(define (empty-symbol? symbol)
+  (= (string-length (symbol->string symbol)) 0))
 
 (define (count-empty-symbols symbols)
   (let loop ((symbols symbols) (count 0))
@@ -1024,7 +1022,7 @@
       count
       (loop
         (cdr symbols)
-        (if (empty-symbol? symbols)
+        (if (empty-symbol? (car symbols))
           (+ count 1)
           0)))))
 
