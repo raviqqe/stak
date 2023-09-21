@@ -245,13 +245,11 @@
 (define car rib-car)
 (define cdr rib-cdr)
 
-(define (length* xs y)
-  (if (null? xs)
-    y
-    (length* (cdr xs) (+ y 1))))
-
 (define (length xs)
-  (length* xs 0))
+  (let loop ((xs xs) (y 0))
+    (if (null? xs)
+      y
+      (loop (cdr xs) (+ y 1)))))
 
 (define (map function list)
   (if (null? list)
