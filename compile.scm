@@ -156,10 +156,8 @@
       (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
-(define (maybe-append ones others)
-  (if (or (not ones) (not others))
-    #f
-    (append ones others)))
+(define (maybe-append xs ys)
+  (and xs ys (append xs ys)))
 
 (define (zip-alist alist)
   (let (
