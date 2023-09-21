@@ -1203,7 +1203,7 @@
             (map car primitives)
             (find-symbols codes))
           '()
-          '()))
+          #f))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
       (append
