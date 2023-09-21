@@ -868,14 +868,19 @@
   (make-encode-context symbols constants)
   encode-context?
   (symbols encode-context-symbols encode-context-set-symbols!)
-  (constants encode-context-constants encode-context-set-constants!))
+  (constants encode-context-constants encode-context-set-constants!)
+  (all-symbols encode-context-all-symbols* encode-context-set-all-symbols!))
 
 (define (encode-context-all-symbols context)
-  (append
-    (map cdr default-constants)
-    (list rib-symbol)
-    (encode-context-symbols context)
-    (map cdr (encode-context-constants context))))
+  (when (not (encode-context-all-symbols* context))
+    (encode-context-set-all-symbols!
+      context
+      (append
+        (map cdr default-constants)
+        (list rib-symbol)
+        (encode-context-symbols context)
+        (map cdr (encode-context-constants context)))))
+  (encode-context-all-symbols* context))
 
 (define (encode-context-constant context constant)
   (cond
