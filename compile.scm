@@ -328,7 +328,7 @@
     (else
       '())))
 
-(define (match-ellipsis definition-context use-context name literals pattern expression)
+(define (match-ellipsis definition-context use-context literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -347,12 +347,12 @@
       (find-pattern-variables literals pattern))
     (map
       (lambda (expression)
-        (match-pattern definition-context use-context name literals pattern expression))
+        (match-pattern definition-context use-context literals pattern expression))
       expression)))
 
-(define (match-pattern definition-context use-context name literals pattern expression)
+(define (match-pattern definition-context use-context literals pattern expression)
   (define (match pattern expression)
-    (match-pattern definition-context use-context name literals pattern expression))
+    (match-pattern definition-context use-context literals pattern expression))
 
   (cond
     ((eqv? pattern '_)
@@ -378,7 +378,6 @@
               (match-ellipsis
                 definition-context
                 use-context
-                name
                 literals
                 (car pattern)
                 (take length expression))
@@ -442,7 +441,7 @@
           (error "no syntax rule matched" expression))
         (let* (
             (rule (car rules))
-            (matches (match-pattern definition-context use-context name literals (car rule) expression)))
+            (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
             (fill-template definition-context matches (cadr rule))
             (loop (cdr rules))))))))
