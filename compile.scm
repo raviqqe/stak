@@ -6,10 +6,14 @@
 
 ; Compatibility
 
-(cond-expand
-  ((or gambit gauche)
-    (import (scheme base) (scheme cxr))
+(import
+  (scheme base)
+  (scheme cxr)
+  (scheme read)
+  (scheme write))
 
+(cond-expand
+  ((or chibi gambit gauche)
     (define (rib tag car cdr)
       (cons (cons (cons '$$rib tag) car) cdr))
 
