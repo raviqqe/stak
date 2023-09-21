@@ -164,13 +164,13 @@ Feature: Macro
 
     (define-syntax foo
       (syntax-rules ()
-        ((_ . x)
-          x)))
+        ((_ (x . y))
+          y)))
 
-    (write-u8 (foo . 65))
+    (write-u8 (foo (65 . 66)))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "B"
 
   Scenario: Match an ellipsis and an improper list
     Given a file named "main.scm" with:
@@ -179,10 +179,10 @@ Feature: Macro
 
     (define-syntax foo
       (syntax-rules ()
-        ((_ x ... . y)
+        ((_ (x ... . y))
           y)))
 
-    (write-u8 (foo 65 66 . 67))
+    (write-u8 (foo (65 66 . 67)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "C"
@@ -194,10 +194,10 @@ Feature: Macro
 
     (define-syntax foo
       (syntax-rules ()
-        ((_ x ...)
-          (x ...))))
+        ((_ (x y ...))
+          #f)))
 
-    (foo . 65)
+    (foo (1 . 2))
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
