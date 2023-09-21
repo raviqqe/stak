@@ -482,7 +482,7 @@ Feature: Macro
     (let ((bar #f))
       (write-u8 (foo bar 65)))
     """
-    When I successfully run `scheme main.scm`
+    When I run `scheme main.scm`
     Then the exit status should not be 0
 
   @advanced
