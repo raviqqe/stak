@@ -163,10 +163,10 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
-(define (list-like? xs)
+(define (relaxed-list? xs)
   (or (null? xs) (pair? xs)))
 
-(define (improper-length xs)
+(define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
     (if (pair? xs)
       (loop (cdr xs) (+ y 1))
@@ -368,12 +368,12 @@
     ((symbol? pattern)
       (list (cons pattern expression)))
 
-    ((and (pair? pattern) (list-like? expression))
+    ((and (pair? pattern) (relaxed-list? expression))
       (cond
         ((and
             (pair? (cdr pattern))
             (eqv? (cadr pattern) '...))
-          (let ((length (- (improper-length expression) (- (improper-length pattern) 2))))
+          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (maybe-append
               (match-ellipsis
                 definition-context
