@@ -84,6 +84,12 @@
 
 (define-syntax let
   (syntax-rules ()
+    ((_ () (define content ...) body1 body2 ...)
+      ((lambda () (define content ...) body1 body2 ...)))
+
+    ((_ () (define-syntax content ...) body1 body2 ...)
+      ((lambda () (define-syntax content ...) body1 body2 ...)))
+
     ((_ ((name value) ...) body1 body2 ...)
       ((lambda (name ...) body1 body2 ...) value ...))
 
