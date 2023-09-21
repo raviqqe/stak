@@ -70,7 +70,7 @@
 
     ((_ "syntax" arguments
         ((name value) ...)
-        (define new-name new-value)
+        (define-syntax new-name new-value)
         body1
         body2
         ...)
