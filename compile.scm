@@ -1014,7 +1014,7 @@
   (encode-string (string->list (symbol->string symbol)) target))
 
 (define (empty-symbol? symbol)
-  (= (string-length (symbol->string symbol)) 0))
+  (eqv? (string-ref (symbol->string symbol) 0) #\$))
 
 (define (count-empty-symbols symbols)
   (let loop ((symbols symbols) (count 0))
