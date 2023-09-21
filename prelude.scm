@@ -90,6 +90,10 @@
     ((_ () (define-syntax content ...) body1 body2 ...)
       ((lambda () (define-syntax content ...) body1 body2 ...)))
 
+    ; Optimize a case where no definition is in a body.
+    ((_ () body1 body2 ...)
+      (begin body1 body2 ...))
+
     ((_ ((name value) ...) body1 body2 ...)
       ((lambda (name ...) body1 body2 ...) value ...))
 
