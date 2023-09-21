@@ -387,15 +387,13 @@
 (define (write-string string)
   (map write-char (string->list string)))
 
-(define (write-bytevector* vector index)
-  (if (< index (bytevector-length vector))
-    (begin
-      (write-u8 (bytevector-u8-ref vector index))
-      (write-bytevector* vector (+ index 1)))
-    #f))
-
-(define (write-bytevector vector)
-  (write-bytevector* vector 0))
+(define (write-bytevector xs)
+  (let loop ((xs xs) (index 0))
+    (if (< index (bytevector-length xs))
+      (begin
+        (write-u8 (bytevector-u8-ref xs index))
+        (loop xs (+ index 1)))
+      #f)))
 
 (define (newline)
   (write-char #\newline))
