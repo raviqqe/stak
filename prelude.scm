@@ -43,8 +43,15 @@
         ...)
       (lambda "value" ((name value)) arguments body1 body2 ...))
 
-    ((_ "value" arguments (define content ...) body1 body2 ...)
-      (lambda "value" arguments (define content ...) body1 body2 ...))
+    ((_ arguments (define-syntax content ...) body1 body2 ...)
+      (lambda "syntax" arguments
+        ()
+        (define-syntax content ...)
+        body1
+        body2
+        ...))
+
+    ; TODO
 
     ((_ arguments body1 body2 ...)
       ($$lambda arguments body1 body2 ...))))
