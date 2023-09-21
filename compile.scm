@@ -562,14 +562,12 @@
                 (make-transformer context name (caddr expression)))
               #f))
 
-          ((if)
+          (($$if)
             (list
-              'if
+              '$$if
               (expand (cadr expression))
               (expand (caddr expression))
-              (if (pair? (cdddr expression))
-                (expand (cadddr expression))
-                #f)))
+              (expand (cadddr expression))))
 
           ; TODO Implement an import statement.
           ((import)
@@ -759,7 +757,7 @@
         ((begin)
           (compile-sequence context (cdr expression) continuation))
 
-        ((if)
+        (($$if)
           (compile-expression
             context
             (cadr expression)
