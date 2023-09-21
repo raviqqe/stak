@@ -20,19 +20,27 @@
     ((_ arguments (define content ...) body1 body2 ...)
       (lambda "value" arguments () (define content ...) body1 body2 ...))
 
-    ((_ "value" arguments ((name value) ...) (define (name argument ...) body1 body2 ...) body1 body2 ...)
+    ((_ "value" arguments ((name value) ...)
+        (define (name argument ...) body1 body2 ...)
+        body3
+        body4
+        ...)
       (lambda "value" arguments
         ((name value) ...)
         (define name (lambda (argument ...) body1 body2 ...))
-        body1
-        body2
+        body3
+        body4
         ...))
 
-    ((_ "value" arguments (define (name argument ... . rest) body1 body2 ...) body1 body2 ...)
+    ((_ "value" arguments ((name value) ...)
+        (define (new-name argument ... . rest) body1 body2 ...)
+        body3
+        body4
+        ...)
       (lambda "value" arguments ((name value) ...)
         (define name (lambda (argument ... . rest) body1 body2 ...))
-        body1
-        body2
+        body3
+        body4
         ...))
 
     ((_ "value" arguments ((name value) ...) (define new-name new-value) body1 body2 ...)
