@@ -476,56 +476,6 @@
   (when (null? expressions)
     (error "empty expression sequence")))
 
-(define (expand-syntax-body context expressions)
-  (let loop ((expressions expressions) (definitions '()))
-    (validate-sequence expressions)
-    (let* (
-        (expression (car expressions))
-        (predicate (predicate expression)))
-      (cond
-        ((eqv? predicate 'define)
-          (loop
-            (list (expand-body context expressions))
-            definitions))
-
-        ((eqv? predicate 'define-syntax)
-          (loop
-            (cdr expressions)
-            (cons (cdr expression) definitions)))
-
-        ((pair? definitions)
-          (expand-expression
-            context
-            (list 'letrec-syntax definitions (cons '$$begin expressions))))
-
-        (else
-          (expand-sequence context expressions))))))
-
-(define (expand-body context expressions)
-  (let loop ((expressions expressions) (definitions '()))
-    (validate-sequence expressions)
-    (let* (
-        (expression (car expressions))
-        (predicate (predicate expression)))
-      (cond
-        ((eqv? predicate 'define)
-          (loop
-            (cdr expressions)
-            (cons (expand-definition expression) definitions)))
-
-        ((eqv? predicate 'define-syntax)
-          (loop
-            (list (expand-syntax-body context expressions))
-            definitions))
-
-        ((pair? definitions)
-          (expand-expression
-            context
-            (cons 'letrec (cons (reverse definitions) expressions))))
-
-        (else
-          (expand-sequence context expressions))))))
-
 (define (expand-sequence context expressions)
   (validate-sequence expressions)
   (cons
@@ -572,7 +522,7 @@
               (list
                 '$$lambda
                 (resolve-parameters context (cadr expression))
-                (expand-body context (cddr expression)))))
+                (expand-sequence context (cddr expression)))))
 
           ((let-syntax)
             (expand-expression
