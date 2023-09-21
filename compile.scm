@@ -877,8 +877,13 @@
     (encode-context-symbols context)))
 
 (define (encode-context-constant context constant)
-  (let ((pair (assq constant (append default-constants (encode-context-constants context)))))
-    (if pair (cdr pair) #f)))
+  (cond
+    ((assv constant (append default-constants (encode-context-constants context)))
+      =>
+      cdr)
+
+    (else
+      #f)))
 
 (define (encode-context-constant-id context)
   (string->symbol
