@@ -16,6 +16,6 @@ for file in $(find bench -type f -name '*.scm' | sort); do
 
   hyperfine \
     --sort command \
-    -L script "chibi-scheme $file,target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file" \
+    -L script "target/release/stak $base.out,gsi $file,chibi-scheme $file,gosh $file,python3 $base.py" \
     "{script}"
 done
