@@ -214,7 +214,7 @@
       (cons x (read-all)))))
 
 (define (read-source)
-  (cons 'begin (read-all)))
+  (cons '$$begin (read-all)))
 
 ; Target code writing
 
@@ -495,7 +495,7 @@
         ((pair? definitions)
           (expand-expression
             context
-            (list 'letrec-syntax definitions (cons 'begin expressions))))
+            (list 'letrec-syntax definitions (cons '$$begin expressions))))
 
         (else
           (expand-sequence context expressions))))))
@@ -528,7 +528,7 @@
 (define (expand-sequence context expressions)
   (validate-sequence expressions)
   (cons
-    'begin
+    '$$begin
     (map
       (lambda (expression) (expand-expression context expression))
       expressions)))
@@ -544,7 +544,7 @@
 
       ((pair? expression)
         (case (car expression)
-          ((begin)
+          (($$begin)
             (expand-sequence context (cdr expression)))
 
           ((define)
@@ -747,7 +747,7 @@
 
     ((pair? expression)
       (case (car expression)
-        ((begin)
+        (($$begin)
           (compile-sequence context (cdr expression) continuation))
 
         (($$if)
