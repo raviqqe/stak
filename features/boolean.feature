@@ -42,3 +42,14 @@ Feature: Boolean
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Use a one-sided if expression
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (if #t (write-u8 65))
+    (if #f (write-u8 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
