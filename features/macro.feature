@@ -172,6 +172,21 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an ellipsis to an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ...)
+          (x ...))))
+
+    (foo . 65)
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
