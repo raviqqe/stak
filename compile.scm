@@ -865,7 +865,7 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context symbols constants)
+  (make-encode-context symbols constants all-symbols)
   encode-context?
   (symbols encode-context-symbols encode-context-set-symbols!)
   (constants encode-context-constants encode-context-set-constants!)
@@ -1202,6 +1202,7 @@
           (append
             (map car primitives)
             (find-symbols codes))
+          '()
           '()))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
