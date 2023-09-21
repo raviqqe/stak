@@ -342,53 +342,52 @@
       expression)))
 
 (define (match-pattern definition-context use-context name literals pattern expression)
-  (let (
-      (match-pattern
-        (lambda (pattern expression)
-          (match-pattern definition-context use-context name literals pattern expression))))
-    (cond
-      ((eqv? pattern '_)
-        '())
+  (define (match pattern expression)
+    (match-pattern definition-context use-context name literals pattern expression))
 
-      ((memv pattern literals)
-        (if (eqv?
-            (expansion-context-resolve use-context expression)
-            (expansion-context-resolve definition-context pattern))
-          '()
-          #f))
+  (cond
+    ((eqv? pattern '_)
+      '())
 
-      ((symbol? pattern)
-        (list (cons pattern expression)))
+    ((memv pattern literals)
+      (if (eqv?
+          (expansion-context-resolve use-context expression)
+          (expansion-context-resolve definition-context pattern))
+        '()
+        #f))
 
-      ((and (pair? pattern) (list? expression))
-        (cond
-          ((and
-              (pair? (cdr pattern))
-              (eqv? (cadr pattern) '...))
-            (let ((length (- (length expression) (- (length pattern) 2))))
-              (maybe-append
-                (match-ellipsis
-                  definition-context
-                  use-context
-                  name
-                  literals
-                  (car pattern)
-                  (take length expression))
-                (match-pattern (cddr pattern) (skip length expression)))))
+    ((symbol? pattern)
+      (list (cons pattern expression)))
 
-          ((pair? expression)
+    ((and (pair? pattern) (list? expression))
+      (cond
+        ((and
+            (pair? (cdr pattern))
+            (eqv? (cadr pattern) '...))
+          (let ((length (- (length expression) (- (length pattern) 2))))
             (maybe-append
-              (match-pattern (car pattern) (car expression))
-              (match-pattern (cdr pattern) (cdr expression))))
+              (match-ellipsis
+                definition-context
+                use-context
+                name
+                literals
+                (car pattern)
+                (take length expression))
+              (match (cddr pattern) (skip length expression)))))
 
-          (else
-            #f)))
+        ((pair? expression)
+          (maybe-append
+            (match (car pattern) (car expression))
+            (match (cdr pattern) (cdr expression))))
 
-      ((equal? pattern expression)
-        '())
+        (else
+          #f)))
 
-      (else
-        #f))))
+    ((equal? pattern expression)
+      '())
+
+    (else
+      #f)))
 
 (define (fill-ellipsis-template context matches template)
   (map
