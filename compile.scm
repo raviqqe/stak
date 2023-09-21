@@ -11,10 +11,10 @@
     (import (scheme base) (scheme cxr))
 
     (define (rib tag car cdr)
-      (cons (cons (cons '$rib tag) car) cdr))
+      (cons (cons (cons '$$rib tag) car) cdr))
 
     (define (rib-cons car cdr)
-      (cons (cons (cons '$rib 0) car) cdr))
+      (cons (cons (cons '$$rib 0) car) cdr))
 
     (define rib-tag cdaar)
     (define rib-car cdar)
@@ -31,7 +31,7 @@
         (pair? value)
         (pair? (car value))
         (pair? (caar value))
-        (eqv? (caaar value) '$rib))))
+        (eqv? (caaar value) '$$rib))))
 
   (else))
 
@@ -39,9 +39,9 @@
 
 (define default-constants
   '(
-    (#f . $false)
-    (#t . $true)
-    (() . $null)))
+    (#f . $$false)
+    (#t . $$true)
+    (() . $$null)))
 
 (define rib-symbol 'rib)
 
@@ -62,7 +62,7 @@
   '(
     (cons 1)
     (close 2)
-    ($- 13)))
+    ($$- 13)))
 
 ; Types
 
@@ -257,11 +257,11 @@
 
 (define primitive-functions
   '(
-    (+ . $+)
-    (- . $-)
-    (* . $*)
-    (/ . $/)
-    (< . $<)))
+    (+ . $$+)
+    (- . $$-)
+    (* . $$*)
+    (/ . $$/)
+    (< . $$<)))
 
 ; TODO Check if those primitive functions are from the `scheme base` library
 ; before applying optimization.
@@ -667,7 +667,7 @@
         ((close)
           1)
 
-        ((cons $-)
+        ((cons $$-)
           2)
 
         ((rib)
@@ -948,7 +948,7 @@
             0
             (rib constant-instruction
               (abs constant)
-              (compile-primitive-call '$- continuation))))
+              (compile-primitive-call '$$- continuation))))
 
         ((pair? constant)
           (build-constant-rib (car constant) (cdr constant) pair-type))
