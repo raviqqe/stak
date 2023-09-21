@@ -74,7 +74,7 @@
         body1
         body2
         ...)
-      (lambda "value" arguments
+      (lambda "syntax" arguments
         ((name value) ... (new-name new-value))
         body1
         body2
