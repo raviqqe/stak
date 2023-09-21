@@ -65,6 +65,11 @@
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
+(define-syntax quasiquote
+  (syntax-rules ()
+    ((_ value)
+      ($$quasiquote value))))
+
 (define-syntax quote
   (syntax-rules ()
     ((_ value)

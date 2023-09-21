@@ -554,7 +554,7 @@
                 bindings)
               (expand-expression context (caddr expression))))
 
-          ((quasiquote)
+          (($$quasiquote)
             (expand-quasiquote (cadr expression)))
 
           (($$quote)
