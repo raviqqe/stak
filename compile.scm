@@ -214,7 +214,7 @@
       (cons x (read-all)))))
 
 (define (read-source)
-  (cons 'begin (read-all)))
+  (cons '$$begin (read-all)))
 
 ; Target code writing
 
@@ -452,7 +452,7 @@
 (define (expand-quasiquote expression)
   (cond
     ((not (pair? expression))
-      (list 'quote expression))
+      `($$quote ,expression))
 
     ((eqv? (car expression) 'unquote)
       (cadr expression))
@@ -460,16 +460,14 @@
     ((and
         (pair? (car expression))
         (eqv? (caar expression) 'unquote-splicing))
-      (list
-        'append
-        (cadar expression)
-        (expand-quasiquote (cdr expression))))
+      `(append
+        ,(cadar expression)
+        ,(expand-quasiquote (cdr expression))))
 
     (else
-      (list
-        'cons
-        (expand-quasiquote (car expression))
-        (expand-quasiquote (cdr expression))))))
+      `(cons
+        ,(expand-quasiquote (car expression))
+        ,(expand-quasiquote (cdr expression))))))
 
 (define (validate-sequence expressions)
   (when (null? expressions)
@@ -490,12 +488,12 @@
         ((eqv? predicate 'define-syntax)
           (loop
             (cdr expressions)
-            (cons (expand-definition expression) definitions)))
+            (cons (cdr expression) definitions)))
 
         ((pair? definitions)
           (expand-expression
             context
-            (list 'letrec-syntax definitions (cons 'begin expressions))))
+            (list 'letrec-syntax definitions (cons '$$begin expressions))))
 
         (else
           (expand-sequence context expressions))))))
@@ -528,7 +526,7 @@
 (define (expand-sequence context expressions)
   (validate-sequence expressions)
   (cons
-    'begin
+    '$$begin
     (map
       (lambda (expression) (expand-expression context expression))
       expressions)))
@@ -544,15 +542,12 @@
 
       ((pair? expression)
         (case (car expression)
-          ((begin)
-            (expand-sequence context (cdr expression)))
-
           ((define)
             (let* (
                 (pair (expand-definition expression))
                 (name (car pair)))
               (expansion-context-set! context name name)
-              (expand (cons 'set! pair))))
+              (expand `($$set! ,@pair))))
 
           ((define-syntax)
             (let ((name (cadr expression)))
@@ -561,15 +556,6 @@
                 name
                 (make-transformer context name (caddr expression)))
               #f))
-
-          ((if)
-            (list
-              'if
-              (expand (cadr expression))
-              (expand (caddr expression))
-              (if (pair? (cdddr expression))
-                (expand (cadddr expression))
-                #f)))
 
           ; TODO Implement an import statement.
           ((import)
@@ -623,7 +609,7 @@
           ((quasiquote)
             (expand-quasiquote (cadr expression)))
 
-          ((quote)
+          (($$quote)
             expression)
 
           (else
@@ -756,10 +742,10 @@
 
     ((pair? expression)
       (case (car expression)
-        ((begin)
+        (($$begin)
           (compile-sequence context (cdr expression) continuation))
 
-        ((if)
+        (($$if)
           (compile-expression
             context
             (cadr expression)
@@ -786,10 +772,10 @@
                 '())
               (compile-primitive-call 'close continuation))))
 
-        ((quote)
+        (($$quote)
           (compile-constant (cadr expression) continuation))
 
-        ((set!)
+        (($$set!)
           (compile-expression
             context
             (caddr expression)
