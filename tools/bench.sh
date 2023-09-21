@@ -14,10 +14,8 @@ for file in $(find bench -type f -name '*.scm' | sort); do
 
   cat prelude.scm $file | ./compile.scm >$base.out
 
-  scripts="chibi-scheme $file,target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file"
-
   hyperfine \
     --sort command \
-    -L script "target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file" \
+    -L script "chibi-scheme $file,target/release/stak $base.out,gsi $file,python3 $base.py,gosh $file" \
     "{script}"
 done
