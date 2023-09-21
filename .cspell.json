@@ -6,6 +6,7 @@
     "assq",
     "assv",
     "bytevector",
+    "chibi",
     "codecov",
     "cond",
     "insta",
