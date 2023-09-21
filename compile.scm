@@ -549,7 +549,7 @@
                 (pair (expand-definition expression))
                 (name (car pair)))
               (expansion-context-set! context name name)
-              (expand (cons 'set! pair))))
+              (expand `($$set! ,@pair))))
 
           ((define-syntax)
             (let ((name (cadr expression)))
@@ -777,7 +777,7 @@
         ((quote)
           (compile-constant (cadr expression) continuation))
 
-        ((set!)
+        (($$set!)
           (compile-expression
             context
             (caddr expression)

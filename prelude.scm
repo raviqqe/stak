@@ -2,12 +2,17 @@
 ;
 ; Those syntax definitions are mostly ported from https://small.r7rs.org/attachment/r7rs.pdf.
 
-;; Sequence
+;; Base
 
 (define-syntax begin
   (syntax-rules ()
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
+
+(define-syntax set!
+  (syntax-rules ()
+    ((_ name value)
+      ($$set! name value))))
 
 ;; Binding
 
