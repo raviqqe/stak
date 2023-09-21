@@ -472,10 +472,6 @@
         ,(expand-quasiquote (car expression))
         ,(expand-quasiquote (cdr expression))))))
 
-(define (validate-sequence expressions)
-  (when (null? expressions)
-    (error "empty expression sequence")))
-
 (define (expand-expression context expression)
   (define (expand expression)
     (expand-expression context expression))
