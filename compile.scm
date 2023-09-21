@@ -1018,17 +1018,15 @@
 (define (empty-symbol? symbols)
   (< (length symbols) 4))
 
-(define (count-empty-symbols* symbols count)
-  (if (null? symbols)
-    count
-    (count-empty-symbols*
-      (cdr symbols)
-      (if (empty-symbol? symbols)
-        (+ count 1)
-        0))))
-
 (define (count-empty-symbols symbols)
-  (count-empty-symbols* symbols 0))
+  (let loop ((symbols symbols) (count 0))
+    (if (null? symbols)
+      count
+      (loop
+        (cdr symbols)
+        (if (empty-symbol? symbols)
+          (+ count 1)
+          0)))))
 
 (define (encode-symbols* symbols count target)
   ; We may encounter this only at the first call.
