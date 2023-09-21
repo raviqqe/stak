@@ -62,6 +62,9 @@
 
 (define-syntax begin
   (syntax-rules ()
+    ((_ value)
+      value)
+
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
