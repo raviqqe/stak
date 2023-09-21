@@ -163,9 +163,6 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
-(define (relaxed-list? xs)
-  (or (null? xs) (pair? xs)))
-
 (define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
     (if (pair? xs)
@@ -368,7 +365,7 @@
     ((symbol? pattern)
       (list (cons pattern expression)))
 
-    ((and (pair? pattern) (relaxed-list? expression))
+    ((pair? pattern)
       (cond
         ((and
             (pair? (cdr pattern))
