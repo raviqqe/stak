@@ -874,7 +874,8 @@
   (append
     (map cdr default-constants)
     (list rib-symbol)
-    (encode-context-symbols context)))
+    (encode-context-symbols context)
+    (map cdr (encode-context-constants context))))
 
 (define (encode-context-constant context constant)
   (cond
@@ -892,9 +893,6 @@
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
-  (encode-context-set-symbols!
-    context
-    (cons symbol (encode-context-symbols context)))
   (encode-context-set-constants!
     context
     (cons (cons constant symbol) (encode-context-constants context))))
@@ -1202,7 +1200,9 @@
           '()))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
-      (encode-context-symbols context)
+      (append
+        (encode-context-symbols context)
+        (map cdr (encode-context-constants context)))
       (encode-codes context codes '() '()))))
 
 ; Main

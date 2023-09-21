@@ -245,13 +245,11 @@
 (define car rib-car)
 (define cdr rib-cdr)
 
-(define (length* xs y)
-  (if (null? xs)
-    y
-    (length* (cdr xs) (+ y 1))))
-
 (define (length xs)
-  (length* xs 0))
+  (let loop ((xs xs) (y 0))
+    (if (null? xs)
+      y
+      (loop (cdr xs) (+ y 1)))))
 
 (define (map function list)
   (if (null? list)
@@ -389,15 +387,13 @@
 (define (write-string string)
   (map write-char (string->list string)))
 
-(define (write-bytevector* vector index)
-  (if (< index (bytevector-length vector))
-    (begin
-      (write-u8 (bytevector-u8-ref vector index))
-      (write-bytevector* vector (+ index 1)))
-    #f))
-
-(define (write-bytevector vector)
-  (write-bytevector* vector 0))
+(define (write-bytevector xs)
+  (let loop ((xs xs) (index 0))
+    (if (< index (bytevector-length xs))
+      (begin
+        (write-u8 (bytevector-u8-ref xs index))
+        (loop xs (+ index 1)))
+      #f)))
 
 (define (newline)
   (write-char #\newline))
