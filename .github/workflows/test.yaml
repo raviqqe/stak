@@ -48,6 +48,11 @@ jobs:
           - macos-latest
         interpreter:
           - name: stak
+            host: gsi
+          - name: stak
+            host: chibi-scheme
+          - name: stak
+            host: gosh
           - name: stak
             features: [gc_always]
           - name: gambit
@@ -60,6 +65,7 @@ jobs:
     env:
       STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
       SCHEME_INTERPRETER: ${{ matrix.interpreter.name }}
+      SCHEME_HOST_INTERPRETER: ${{ matrix.interpreter.host }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
