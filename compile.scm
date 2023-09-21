@@ -550,12 +550,10 @@
 
       ((pair? expression)
         (case (car expression)
-          ((define)
-            (let* (
-                (pair (expand-definition expression))
-                (name (car pair)))
+          (($$define)
+            (let ((name (cadr expression)))
               (expansion-context-set! context name name)
-              (expand `($$set! ,@pair))))
+              (expand `($$set! ,name ,(caddr expression)))))
 
           ((define-syntax)
             (let ((name (cadr expression)))
