@@ -463,8 +463,7 @@ Feature: Macro
 
     (define bar #f)
 
-    (let ((bar #f))
-      (write-u8 (foo bar 65)))
+    (write-u8 (foo bar 65))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
