@@ -1200,7 +1200,9 @@
           '()))
       (codes (build-primitives primitives (build-constants context codes codes))))
     (encode-symbols
-      (encode-context-symbols context)
+      (append
+        (encode-context-symbols context)
+        (map cdr (encode-context-constants context)))
       (encode-codes context codes '() '()))))
 
 ; Main
