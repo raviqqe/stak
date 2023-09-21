@@ -428,14 +428,13 @@
     (else
       template)))
 
-(define (make-transformer definition-context name transformer)
+(define (make-transformer definition-context transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer"))
   (let (
-      (literals (cons name (cadr transformer)))
+      (literals (cadr transformer))
       (rules (cddr transformer)))
     (lambda (use-context expression)
-      (when (eqv? expression name) (error "macro used as value:" expression))
       (let loop ((rules rules))
         (unless (pair? rules)
           (error "no syntax rule matched" expression))
@@ -557,12 +556,11 @@
               (expand `($$set! ,@pair))))
 
           ((define-syntax)
-            (let ((name (cadr expression)))
-              (expansion-context-set!
-                context
-                name
-                (make-transformer context name (caddr expression)))
-              #f))
+            (expansion-context-set!
+              context
+              (cadr expression)
+              (make-transformer context (caddr expression)))
+            #f)
 
           ; TODO Implement an import statement.
           ((import)
@@ -585,11 +583,10 @@
             (expand-expression
               (fold-left
                 (lambda (context pair)
-                  (let ((name (car pair)))
-                    (expansion-context-push
-                      context
-                      name
-                      (make-transformer context name (cadr pair)))))
+                  (expansion-context-push
+                    context
+                    (car pair)
+                    (make-transformer context (cadr pair))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -605,11 +602,10 @@
                     bindings)))
               (for-each
                 (lambda (pair)
-                  (let ((name (car pair)))
-                    (expansion-context-set!
-                      context
-                      name
-                      (make-transformer context name (cadr pair)))))
+                  (expansion-context-set!
+                    context
+                    (car pair)
+                    (make-transformer context (cadr pair))))
                 bindings)
               (expand-expression context (caddr expression))))
 
