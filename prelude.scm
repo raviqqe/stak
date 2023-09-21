@@ -25,8 +25,7 @@
         body3
         body4
         ...)
-      (lambda "value" arguments
-        ((name value) ...)
+      (lambda "value" arguments ((name value) ...)
         (define name (lambda (argument ...) body1 body2 ...))
         body3
         body4
