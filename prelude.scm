@@ -68,7 +68,17 @@
         body2
         ...))
 
-    ; TODO
+    ((_ "syntax" arguments
+        ((name value) ...)
+        (define new-name new-value)
+        body1
+        body2
+        ...)
+      (lambda "value" arguments
+        ((name value) ... (new-name new-value))
+        body1
+        body2
+        ...))
 
     ((_ arguments body1 body2 ...)
       ($$lambda arguments body1 body2 ...))))
