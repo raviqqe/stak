@@ -157,6 +157,21 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ . x)
+          x)))
+
+    (write-u8 (foo . 65))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
