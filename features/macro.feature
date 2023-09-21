@@ -172,6 +172,21 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an ellipsis and an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x ... . y)
+          y)))
+
+    (write-u8 (foo 65 66 . 67))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "C"
+
   Scenario: Match an ellipsis to an improper list
     Given a file named "main.scm" with:
     """scheme

@@ -166,6 +166,12 @@
 (define (list-like? xs)
   (or (null? xs) (pair? xs)))
 
+(define (improper-length xs)
+  (let loop ((xs xs) (y 0))
+    (if (pair? xs)
+      (loop (cdr xs) (+ y 1))
+      y)))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -367,7 +373,7 @@
         ((and
             (pair? (cdr pattern))
             (eqv? (cadr pattern) '...))
-          (let ((length (- (length expression) (- (length pattern) 2))))
+          (let ((length (- (improper-length expression) (- (improper-length pattern) 2))))
             (maybe-append
               (match-ellipsis
                 definition-context
