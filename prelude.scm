@@ -9,6 +9,11 @@
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
+(define-syntax quote
+  (syntax-rules ()
+    ((_ value)
+      ($$quote value))))
+
 (define-syntax set!
   (syntax-rules ()
     ((_ name value)

@@ -452,7 +452,7 @@
 (define (expand-quasiquote expression)
   (cond
     ((not (pair? expression))
-      (list 'quote expression))
+      (list '$$quote expression))
 
     ((eqv? (car expression) 'unquote)
       (cadr expression))
@@ -611,7 +611,7 @@
           ((quasiquote)
             (expand-quasiquote (cadr expression)))
 
-          ((quote)
+          (($$quote)
             expression)
 
           (else
@@ -774,7 +774,7 @@
                 '())
               (compile-primitive-call 'close continuation))))
 
-        ((quote)
+        (($$quote)
           (compile-constant (cadr expression) continuation))
 
         (($$set!)
