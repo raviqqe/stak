@@ -562,13 +562,6 @@
                 (make-transformer context name (caddr expression)))
               #f))
 
-          (($$if)
-            (list
-              '$$if
-              (expand (cadr expression))
-              (expand (caddr expression))
-              (expand (cadddr expression))))
-
           ; TODO Implement an import statement.
           ((import)
             #f)
