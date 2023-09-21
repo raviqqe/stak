@@ -26,6 +26,7 @@
         ...))
 
     ((_ "value" arguments
+        ((name value) ...)
         (define (name argument ...) body1 body2 ...)
         body1
         body2
@@ -43,6 +44,18 @@
         ...)
       (lambda "value" arguments
         ((name value))
+        body1
+        body2
+        ...))
+
+    ((_ "value" arguments
+        ((name value) ...)
+        (define new-name new-value)
+        body1
+        body2
+        ...)
+      (lambda "value" arguments
+        ((name value) ... (new-name new-value))
         body1
         body2
         ...))
