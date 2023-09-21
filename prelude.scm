@@ -60,7 +60,7 @@
         body2
         ...))
 
-    ((_ "syntax" arguments ((name value) ...) body1 body2 ...)
+    ((_ "value" arguments ((name value) ...) body1 body2 ...)
       (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
 
     ((_ arguments (define-syntax content ...) body1 body2 ...)
