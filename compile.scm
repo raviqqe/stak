@@ -163,6 +163,12 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
+(define (relaxed-length xs)
+  (let loop ((xs xs) (y 0))
+    (if (pair? xs)
+      (loop (cdr xs) (+ y 1))
+      y)))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -203,7 +209,7 @@
       '())
 
     (else
-      (error "invalid variadic parameter:" parameters))))
+      (error "invalid variadic parameter" parameters))))
 
 ; Source code reading
 
@@ -319,7 +325,7 @@
     (else
       '())))
 
-(define (match-ellipsis definition-context use-context name literals pattern expression)
+(define (match-ellipsis definition-context use-context literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -338,57 +344,55 @@
       (find-pattern-variables literals pattern))
     (map
       (lambda (expression)
-        (match-pattern definition-context use-context name literals pattern expression))
+        (match-pattern definition-context use-context literals pattern expression))
       expression)))
 
-(define (match-pattern definition-context use-context name literals pattern expression)
-  (let (
-      (match-pattern
-        (lambda (pattern expression)
-          (match-pattern definition-context use-context name literals pattern expression))))
-    (cond
-      ((eqv? pattern '_)
-        '())
+(define (match-pattern definition-context use-context literals pattern expression)
+  (define (match pattern expression)
+    (match-pattern definition-context use-context literals pattern expression))
 
-      ((memv pattern literals)
-        (if (eqv?
-            (expansion-context-resolve use-context expression)
-            (expansion-context-resolve definition-context pattern))
-          '()
-          #f))
+  (cond
+    ((eqv? pattern '_)
+      '())
 
-      ((symbol? pattern)
-        (list (cons pattern expression)))
+    ((memv pattern literals)
+      (if (eqv?
+          (expansion-context-resolve use-context expression)
+          (expansion-context-resolve definition-context pattern))
+        '()
+        #f))
 
-      ((and (pair? pattern) (list? expression))
-        (cond
-          ((and
-              (pair? (cdr pattern))
-              (eqv? (cadr pattern) '...))
-            (let ((length (- (length expression) (- (length pattern) 2))))
-              (maybe-append
-                (match-ellipsis
-                  definition-context
-                  use-context
-                  name
-                  literals
-                  (car pattern)
-                  (take length expression))
-                (match-pattern (cddr pattern) (skip length expression)))))
+    ((symbol? pattern)
+      (list (cons pattern expression)))
 
-          ((pair? expression)
+    ((pair? pattern)
+      (cond
+        ((and
+            (pair? (cdr pattern))
+            (eqv? (cadr pattern) '...))
+          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (maybe-append
-              (match-pattern (car pattern) (car expression))
-              (match-pattern (cdr pattern) (cdr expression))))
+              (match-ellipsis
+                definition-context
+                use-context
+                literals
+                (car pattern)
+                (take length expression))
+              (match (cddr pattern) (skip length expression)))))
 
-          (else
-            #f)))
+        ((pair? expression)
+          (maybe-append
+            (match (car pattern) (car expression))
+            (match (cdr pattern) (cdr expression))))
 
-      ((equal? pattern expression)
-        '())
+        (else
+          #f)))
 
-      (else
-        #f))))
+    ((equal? pattern expression)
+      '())
+
+    (else
+      #f)))
 
 (define (fill-ellipsis-template context matches template)
   (map
@@ -421,20 +425,19 @@
     (else
       template)))
 
-(define (make-transformer definition-context name transformer)
+(define (make-transformer definition-context transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
-    (error "unsupported macro transformer"))
+    (error "unsupported macro transformer" transformer))
   (let (
-      (literals (cons name (cadr transformer)))
+      (literals (cadr transformer))
       (rules (cddr transformer)))
     (lambda (use-context expression)
-      (when (eqv? expression name) (error "macro used as value:" expression))
       (let loop ((rules rules))
         (unless (pair? rules)
-          (error "no syntax rule matched" expression))
+          (error "invalid syntax" expression))
         (let* (
             (rule (car rules))
-            (matches (match-pattern definition-context use-context name literals (car rule) expression)))
+            (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
             (fill-template definition-context matches (cadr rule))
             (loop (cdr rules))))))))
@@ -447,7 +450,7 @@
       (cons pattern body)
       (list
         (car pattern)
-        (cons 'lambda (cons (cdr pattern) body))))))
+        (cons '$$lambda (cons (cdr pattern) body))))))
 
 (define (expand-quasiquote expression)
   (cond
@@ -542,26 +545,23 @@
 
       ((pair? expression)
         (case (car expression)
-          ((define)
-            (let* (
-                (pair (expand-definition expression))
-                (name (car pair)))
+          (($$define)
+            (let ((name (cadr expression)))
               (expansion-context-set! context name name)
-              (expand `($$set! ,@pair))))
+              (expand `($$set! ,@(cdr expression)))))
 
           ((define-syntax)
-            (let ((name (cadr expression)))
-              (expansion-context-set!
-                context
-                name
-                (make-transformer context name (caddr expression)))
-              #f))
+            (expansion-context-set!
+              context
+              (cadr expression)
+              (make-transformer context (caddr expression)))
+            #f)
 
           ; TODO Implement an import statement.
           ((import)
             #f)
 
-          ((lambda)
+          (($$lambda)
             (let (
                 (context
                   (expansion-context-append
@@ -570,7 +570,7 @@
                       (lambda (name) (cons name (denote-parameter context name)))
                       (parameter-names (cadr expression))))))
               (list
-                'lambda
+                '$$lambda
                 (resolve-parameters context (cadr expression))
                 (expand-body context (cddr expression)))))
 
@@ -578,11 +578,10 @@
             (expand-expression
               (fold-left
                 (lambda (context pair)
-                  (let ((name (car pair)))
-                    (expansion-context-push
-                      context
-                      name
-                      (make-transformer context name (cadr pair)))))
+                  (expansion-context-push
+                    context
+                    (car pair)
+                    (make-transformer context (cadr pair))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -598,11 +597,10 @@
                     bindings)))
               (for-each
                 (lambda (pair)
-                  (let ((name (car pair)))
-                    (expansion-context-set!
-                      context
-                      name
-                      (make-transformer context name (cadr pair)))))
+                  (expansion-context-set!
+                    context
+                    (car pair)
+                    (make-transformer context (cadr pair))))
                 bindings)
               (expand-expression context (caddr expression))))
 
@@ -663,7 +661,7 @@
           3)
 
         (else
-          (error "unknown primitive:" name)))
+          (error "unknown primitive" name)))
       name)
     continuation))
 
@@ -753,7 +751,7 @@
               (compile-expression context (caddr expression) continuation)
               (compile-expression context (cadddr expression) continuation))))
 
-        ((lambda)
+        (($$lambda)
           (let ((parameters (cadr expression)))
             (compile-constant
               (make-procedure
@@ -963,7 +961,7 @@
             vector-type))
 
         (else
-          (error "invalid constant:" constant))))))
+          (error "invalid constant" constant))))))
 
 (define (build-constant context constant continuation)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
@@ -1098,9 +1096,10 @@
       (* 2
         (or
           (memv-position operand (encode-context-all-symbols context))
-          (error "symbol not found:" operand))))
+          (error "symbol not found" operand))))
 
-    (else (error "invalid operand:" operand))))
+    (else
+      (error "invalid operand" operand))))
 
 (define (encode-codes context codes terminal target)
   (if (eq? codes terminal)
@@ -1160,7 +1159,8 @@
                 target
                 (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
 
-          (else (error "invalid instruction")))))))
+          (else
+            (error "invalid instruction" instruction)))))))
 
 ;; Primitives
 

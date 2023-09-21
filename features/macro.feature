@@ -157,6 +157,68 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x . y))
+          y)))
+
+    (write-u8 (foo (65 . 66)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  @advanced
+  Scenario: Match an ellipsis and an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x ... . y))
+          y)))
+
+    (write-u8 (foo (65 66 . 67)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "C"
+
+  @advanced
+  Scenario: Expand an empty ellipsis and an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x y ... . z))
+          '(y ... . z))))
+
+    (write-u8 (foo (65 . 66)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  Scenario: Match an ellipsis to an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x y ...))
+          #f)))
+
+    (foo (1 . 2))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
