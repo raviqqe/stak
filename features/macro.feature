@@ -451,6 +451,42 @@ Feature: Macro
     Then the stdout should contain exactly "A"
 
   @advanced
+  Scenario: Shadow a literal by a global value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules (bar)
+        ((_ bar x)
+          x)))
+
+    (define bar #f)
+
+    (let ((bar #f))
+      (write-u8 (foo bar 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Shadow a literal by a local value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules (bar)
+        ((_ bar x)
+          x)))
+
+    (let ((bar #f))
+      (write-u8 (foo bar 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should not be 0
+
+  @advanced
   Scenario: Capture a local value in a local macro
     Given a file named "main.scm" with:
     """scheme
