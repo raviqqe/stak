@@ -70,6 +70,7 @@
       (lambda "syntax" arguments ((name value) ... (new-name new-value)) body1 body2 ...))
 
     ((_ "syntax" arguments ((name value) ...) body1 body2 ...)
+      ; We wrap bodies in a let expression because `body1` can be a definition.
       (lambda arguments (letrec-syntax ((name value) ...) (let () body1 body2 ...))))
 
     ((_ arguments body1 body2 ...)
