@@ -21,12 +21,12 @@
       (lambda "value" arguments () (define content ...) body1 body2 ...))
 
     ((_ "value" arguments ((name value) ...)
-        (define (name argument ...) body1 body2 ...)
+        (define (new-name argument ...) body1 body2 ...)
         body3
         body4
         ...)
       (lambda "value" arguments ((name value) ...)
-        (define name (lambda (argument ...) body1 body2 ...))
+        (define new-name (lambda (argument ...) body1 body2 ...))
         body3
         body4
         ...))
@@ -37,7 +37,7 @@
         body4
         ...)
       (lambda "value" arguments ((name value) ...)
-        (define name (lambda (argument ... . rest) body1 body2 ...))
+        (define new-name (lambda (argument ... . rest) body1 body2 ...))
         body3
         body4
         ...))
@@ -48,9 +48,10 @@
     ((_ "value" arguments ((name value) ...) body1 body2 ...)
       (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
 
-    ((_ arguments (define-syntax name value) ... body1 body2 ...)
-      ; We wrap bodies in a let expression because `body1` can be a definition.
-      (lambda arguments (letrec-syntax ((name value) ...) (let () body1 body2 ...))))
+    ; TODO
+    ; ((_ arguments (define-syntax name value) ... body1 body2 ...)
+    ;   ; We wrap bodies in a let expression because `body1` can be a definition.
+    ;   (lambda arguments (letrec-syntax ((name value) ...) (let () body1 body2 ...))))
 
     ((_ arguments body1 body2 ...)
       ($$lambda arguments body1 body2 ...))))
