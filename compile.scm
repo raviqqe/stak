@@ -472,18 +472,6 @@
         ,(expand-quasiquote (car expression))
         ,(expand-quasiquote (cdr expression))))))
 
-(define (validate-sequence expressions)
-  (when (null? expressions)
-    (error "empty expression sequence")))
-
-(define (expand-sequence context expressions)
-  (validate-sequence expressions)
-  (cons
-    '$$begin
-    (map
-      (lambda (expression) (expand-expression context expression))
-      expressions)))
-
 (define (expand-expression context expression)
   (define (expand expression)
     (expand-expression context expression))
@@ -522,7 +510,7 @@
               (list
                 '$$lambda
                 (resolve-parameters context (cadr expression))
-                (expand-sequence context (cddr expression)))))
+                (expand-expression context (caddr expression)))))
 
           ((let-syntax)
             (expand-expression

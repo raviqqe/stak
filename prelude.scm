@@ -58,10 +58,13 @@
       (lambda arguments (letrec-syntax ((name value) ...) body1 body2 ...)))
 
     ((_ arguments body1 body2 ...)
-      ($$lambda arguments body1 body2 ...))))
+      ($$lambda arguments (begin body1 body2 ...)))))
 
 (define-syntax begin
   (syntax-rules ()
+    ((_ value)
+      value)
+
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
@@ -84,6 +87,16 @@
 
 (define-syntax let
   (syntax-rules ()
+    ((_ () (define content ...) body1 body2 ...)
+      ((lambda () (define content ...) body1 body2 ...)))
+
+    ((_ () (define-syntax content ...) body1 body2 ...)
+      ((lambda () (define-syntax content ...) body1 body2 ...)))
+
+    ; Optimize a case where no definition is in a body.
+    ((_ () body1 body2 ...)
+      (begin body1 body2 ...))
+
     ((_ ((name value) ...) body1 body2 ...)
       ((lambda (name ...) body1 body2 ...) value ...))
 
