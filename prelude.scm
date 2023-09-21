@@ -41,7 +41,11 @@
         body1
         body2
         ...)
-      (lambda "value" ((name value)) arguments body1 body2 ...))
+      (lambda "value" arguments
+        ((name value))
+        body1
+        body2
+        ...))
 
     ((_ arguments (define-syntax content ...) body1 body2 ...)
       (lambda "syntax" arguments
