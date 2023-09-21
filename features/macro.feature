@@ -172,6 +172,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
+  @advanced
   Scenario: Match an ellipsis and an improper list
     Given a file named "main.scm" with:
     """scheme
