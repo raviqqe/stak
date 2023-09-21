@@ -18,15 +18,32 @@
 (define-syntax lambda
   (syntax-rules (define define-syntax)
     ((_ arguments (define content ...) body1 body2 ...)
-      (lambda "value" arguments (define content ...) body1 body2 ...))
+      (lambda "value" arguments
+        ()
+        (define content ...)
+        body1
+        body2
+        ...))
 
-    ((_ "value" arguments (define (name argument ...) body1 body2 ...) body1 body2 ...)
+    ((_ "value" arguments
+        (define (name argument ...) body1 body2 ...)
+        body1
+        body2
+        ...)
+      (lambda "value" arguments
+        ((name value))
+        body1
+        body2
+        ...))
+
+    ((_ "value" arguments
+        (define (name argument ... . rest) body1 body2 ...)
+        body1
+        body2
+        ...)
       (lambda "value" ((name value)) arguments body1 body2 ...))
 
-    ((_ arguments (define name value) body1 body2 ...)
-      (lambda "value" ((name value)) arguments body1 body2 ...))
-
-    ((_ arguments (define content ...) body1 body2 ...)
+    ((_ "value" arguments (define content ...) body1 body2 ...)
       (lambda "value" arguments (define content ...) body1 body2 ...))
 
     ((_ arguments body1 body2 ...)
