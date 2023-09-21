@@ -450,7 +450,7 @@
       (cons pattern body)
       (list
         (car pattern)
-        (cons 'lambda (cons (cdr pattern) body))))))
+        (cons '$$lambda (cons (cdr pattern) body))))))
 
 (define (expand-quasiquote expression)
   (cond
@@ -561,7 +561,7 @@
           ((import)
             #f)
 
-          ((lambda)
+          (($$lambda)
             (let (
                 (context
                   (expansion-context-append
@@ -570,7 +570,7 @@
                       (lambda (name) (cons name (denote-parameter context name)))
                       (parameter-names (cadr expression))))))
               (list
-                'lambda
+                '$$lambda
                 (resolve-parameters context (cadr expression))
                 (expand-body context (cddr expression)))))
 
@@ -751,7 +751,7 @@
               (compile-expression context (caddr expression) continuation)
               (compile-expression context (cadddr expression) continuation))))
 
-        ((lambda)
+        (($$lambda)
           (let ((parameters (cadr expression)))
             (compile-constant
               (make-procedure
