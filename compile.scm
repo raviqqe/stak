@@ -874,7 +874,8 @@
   (append
     (map cdr default-constants)
     (list rib-symbol)
-    (encode-context-symbols context)))
+    (encode-context-symbols context)
+    (map cdr (encode-context-constants context))))
 
 (define (encode-context-constant context constant)
   (cond
