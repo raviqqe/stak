@@ -490,7 +490,7 @@
         ((eqv? predicate 'define-syntax)
           (loop
             (cdr expressions)
-            (cons (expand-definition expression) definitions)))
+            (cons (cdr expression) definitions)))
 
         ((pair? definitions)
           (expand-expression
