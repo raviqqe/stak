@@ -892,9 +892,6 @@
       (number->string (length (encode-context-constants context))))))
 
 (define (encode-context-add-constant! context constant symbol)
-  (encode-context-set-symbols!
-    context
-    (cons symbol (encode-context-symbols context)))
   (encode-context-set-constants!
     context
     (cons (cons constant symbol) (encode-context-constants context))))
