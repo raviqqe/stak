@@ -488,7 +488,7 @@
               (expansion-context-set! context name name)
               (expand `($$set! ,@(cdr expression)))))
 
-          (($$define-syntax)
+          ((define-syntax)
             (expansion-context-set!
               context
               (cadr expression)
@@ -512,7 +512,7 @@
                 (resolve-parameters context (cadr expression))
                 (expand-expression context (caddr expression)))))
 
-          ((let-syntax)
+          (($$let-syntax)
             (expand-expression
               (fold-left
                 (lambda (context pair)
@@ -524,7 +524,7 @@
                 (cadr expression))
               (caddr expression)))
 
-          ((letrec-syntax)
+          (($$letrec-syntax)
             (let* (
                 (bindings (cadr expression))
                 (context
