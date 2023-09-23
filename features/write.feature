@@ -58,3 +58,21 @@ Feature: Write
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "\"\\n\""
+
+  Scenario Outline: Write a number
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write <number>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<number>"
+
+    Examples:
+      | number |
+      | 0      |
+      | 1      |
+      | 42     |
+      | -1     |
+      | -42    |
