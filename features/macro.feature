@@ -648,4 +648,4 @@ Feature: Macro
     foo
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain "invalid syntax"
+    Then the stderr should contain "invalid syntax"
