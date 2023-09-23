@@ -1,5 +1,5 @@
 Feature: Write
-  Scenario: Write a character integer
+  Scenario: Write a byte
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -19,12 +19,22 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Write a special character in a string
+  Scenario: Write a escaped character
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-char #\newline)
+    (write #\A)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Write a escaped special character
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write #\newline)
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#\newline"

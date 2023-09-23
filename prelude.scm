@@ -381,6 +381,11 @@
 
 (define car rib-car)
 (define cdr rib-cdr)
+(define (cadr x) (car (cdr x)))
+(define (cddr x) (cdr (cdr x)))
+(define (caddr x) (car (cddr x)))
+
+(define (list . xs) xs)
 
 (define (length xs)
   (let loop ((xs xs) (y 0))
@@ -394,6 +399,8 @@
     (cons
       (function (car list))
       (map function (cdr list)))))
+
+(define for-each map)
 
 (define (list-ref list index)
   (if (eqv? index 0)
@@ -414,6 +421,24 @@
 
 (define memq (mem eq?))
 (define memv (mem eqv?))
+
+(define (assv x xs)
+  (if (pair? xs)
+    (let ((pair (car xs)))
+      (if (eqv? x (car pair))
+        pair
+        (assv x (##field1 xs))))
+    #f))
+
+(define assq assv)
+
+(define (assoc x lst)
+  (if (pair? lst)
+    (let ((couple (##field0 lst)))
+      (if (equal? x (##field0 couple))
+        couple
+        (assoc x (##field1 lst))))
+    #f))
 
 (define (append . lists)
   (reduce-right append-lists '() lists))
@@ -547,10 +572,10 @@
     ((char? value)
       (write-char #\#)
       (write-char #\\)
-      (let ((name (assoc (car value) (map reverse special-chars))))
-        (if (not name)
-          (write-char value)
-          (display (cadr name)))))
+      (let ((pair (assoc (car value) special-chars)))
+        (if pair
+          (display (cdr pair))
+          (write-char value))))
     ((string? value)
       (write-char #\")
       (write-chars (string->list value) escapes)
@@ -570,6 +595,9 @@
       (write-char #\)))
     (else
       (display value))))
+
+(define (display x)
+  (error "not implemented"))
 
 ; (define (display o (port (current-output-port)))
 ;   (let ((port-val (##field0 port)))
