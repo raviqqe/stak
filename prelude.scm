@@ -349,6 +349,16 @@
 
 (define eqv? eq?)
 
+(define (equal? x y)
+  (or
+    (eq? x y)
+    (and
+      (rib? x)
+      (rib? y)
+      (eq? (rib-tag x) (rib-tag y))
+      (equal? (rib-car x) (rib-car y))
+      (equal? (rib-cdr x) (rib-cdr y)))))
+
 ;; Boolean
 
 (define (not x)
@@ -422,23 +432,21 @@
 (define memq (mem eq?))
 (define memv (mem eqv?))
 
-(define (assv x xs)
+(define (assoc x xs . rest)
+  (define equal?
+    (if (null? rest)
+      equal?
+      (car rest)))
+
   (if (pair? xs)
     (let ((pair (car xs)))
-      (if (eqv? x (car pair))
+      (if (equal? x (car pair))
         pair
-        (assv x (##field1 xs))))
+        (assoc x (cdr xs) equal?)))
     #f))
 
-(define assq assv)
-
-(define (assoc x lst)
-  (if (pair? lst)
-    (let ((couple (##field0 lst)))
-      (if (equal? x (##field0 couple))
-        couple
-        (assoc x (##field1 lst))))
-    #f))
+(define (assq x xs) (assoc x xs eq?))
+(define (assv x xs) (assoc x xs eqv?))
 
 (define (append . lists)
   (reduce-right append-lists '() lists))
@@ -546,6 +554,10 @@
 (define (write-char x)
   (write-u8 (char->integer x)))
 
+; TODO
+(define (write-escaped-char x)
+  (write-u8 (char->integer x)))
+
 (define (write-string x)
   (for-each write-char (string->list x)))
 
@@ -578,12 +590,12 @@
           (write-char value))))
     ((string? value)
       (write-char #\")
-      (write-chars (string->list value) escapes)
+      (for-each write-escaped-char (string->list value))
       (write-char #\"))
     ((pair? value)
       (write-char #\()
       (write (car value))
-      (print-list (cdr value) write)
+      (write-list (cdr value) write)
       (write-char #\())
     ((vector? value)
       (write-char #\#)
@@ -591,7 +603,7 @@
       (if (< 0 (vector->list value))
         (let ((values (vector->list value)))
           (write (car values))
-          (print-list (cdr values) write)))
+          (write-list (cdr values) write)))
       (write-char #\)))
     (else
       (display value))))
@@ -657,28 +669,18 @@
 ;       (else
 ;         (crash)))))
 
-; (define (print-list lst mode port)
-;   (cond
-;     ((pair? lst)
-;       (##write-char 32 (##field0 port)) ;; #\space
-;       (mode (##field0 lst) port) ;; car
-;       (print-list (##field1 lst) mode port)) ;; cdr
+(define (write-list xs write)
+  (cond
+    ((pair? xs)
+      (write-char #\space)
+      (write (car xs))
+      (write-list (cdr xs) write))
 
-;     ((null? lst) #f)
+    ((null? xs)
+      #f)
 
-;     (else
-;       (let ((port-val (##field0 port)))
-;         (##write-char 32 port-val) ;; #\space
-;         (##write-char 46 port-val) ;; #\.
-;         (##write-char 32 port-val)) ;; #\space
-;       (mode lst port))))
-
-; (define (write-chars lst escapes port-val)
-;   (if (pair? lst)
-;     (let ((escape (assq (##field0 lst) escapes)))
-;       (if (not escape)
-;         (##write-char (##field0 lst) port-val)
-;         (begin
-;           (##write-char 92 port-val)
-;           (##write-char (cadr escape) port-val)))
-;       (write-chars (##field1 lst) escapes port-val))))
+    (else
+      (write-char #\space)
+      (write-char #\.)
+      (write-char #\space)
+      (write xs))))
