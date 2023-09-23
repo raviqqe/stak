@@ -640,6 +640,21 @@ Feature: Macro
     """scheme
     (import (scheme base))
 
+    (define-syntax foo
+      (syntax-rules ()
+        ((_)
+          65)))
+
+    foo
+    """
+    When I run `scheme main.scm`
+    Then the stderr should contain "invalid syntax"
+
+  Scenario: Resolve denotations recursively
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
     (define (id x)
       x)
 
@@ -655,18 +670,3 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
-
-  Scenario: Resolve denotations recursively
-    Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
-
-    (define-syntax foo
-      (syntax-rules ()
-        ((_)
-          65)))
-
-    foo
-    """
-    When I run `scheme main.scm`
-    Then the stderr should contain "invalid syntax"
