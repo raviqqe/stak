@@ -102,12 +102,18 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Get a value from an association list
+  Scenario Outline: Get a value from an association list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (cdr (assq 42 '((1 . 1) (42 . 65) (3 . 3)))))
+    (write-u8 (cdr (<procedure> 42 '((1 . 1) (42 . 65) (3 . 3)))))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+    Examples:
+      | procedure |
+      | assq      |
+      | assv      |
+      | assoc     |

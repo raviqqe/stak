@@ -445,14 +445,14 @@
 (define memv (mem eqv?))
 
 (define (assoc x xs . rest)
-  (define equal?
+  (define eq?
     (if (null? rest)
       equal?
       (car rest)))
 
   (if (pair? xs)
     (let ((pair (car xs)))
-      (if (equal? x (car pair))
+      (if (eq? x (car pair))
         pair
         (assoc x (cdr xs) equal?)))
     #f))

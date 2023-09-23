@@ -850,9 +850,11 @@
       car
       (build-child
         cdr
-        (rib constant-instruction
-          tag
-          (compile-primitive-call 'rib continuation))))))
+        (if (eqv? tag pair-type)
+          (compile-primitive-call 'cons continuation)
+          (rib constant-instruction
+            tag
+            (compile-primitive-call 'rib continuation)))))))
 
 (define (build-constant-codes context constant continuation)
   (let (
