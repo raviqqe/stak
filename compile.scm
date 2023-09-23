@@ -479,7 +479,10 @@
   (optimize
     (cond
       ((symbol? expression)
-        (expansion-context-resolve context expression))
+        (let ((denotation (expansion-context-resolve context expression)))
+          (when (procedure? denotation)
+            (error "invalid syntax" expression))
+          denotation))
 
       ((pair? expression)
         (case (car expression)
