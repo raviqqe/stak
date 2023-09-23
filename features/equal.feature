@@ -13,11 +13,13 @@ Feature: Equality
     (test '() #f)
     (test #f #t)
     (test #t '())
+    (test 42 42)
+    (test 42 0)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AAABBB"
+    Then the stdout should contain exactly "AAABBBAB"
 
-  Scenario: Use an equal? procedure
+  Scenario: Use an equal? procedure with scalar values
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -34,3 +36,17 @@ Feature: Equality
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAABBB"
+
+  Scenario: Use an equal? procedure with collections
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (test x y)
+      (write-u8 (if (equal? x y) 65 66)))
+
+    (test (list 1 2 3) (list 1 2 3))
+    (test (list 1 2 3) (list 1 2 3 4))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AB"
