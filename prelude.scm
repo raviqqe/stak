@@ -347,12 +347,19 @@
       (rib? x)
       (eqv? (rib-tag x) type))))
 
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
 (define eqv? eq?)
 
 (define (equal? x y)
   (or
     (eq? x y)
     (and
+      (not (singleton? x))
+      (not (singleton? y))
       (rib? x)
       (rib? y)
       (eq? (rib-tag x) (rib-tag y))
@@ -360,6 +367,11 @@
       (equal? (rib-cdr x) (rib-cdr y)))))
 
 ;; Boolean
+
+(define (boolean? x)
+  (or
+    (eq? x #f)
+    (eq? x #t)))
 
 (define (not x)
   (eq? x #f))

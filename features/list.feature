@@ -31,6 +31,16 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
+  Scenario: Create a list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (list 1 2 3)
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
   Scenario: Use a map function
     Given a file named "main.scm" with:
     """scheme
@@ -91,3 +101,13 @@ Feature: List
     """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+  Scenario: Get a value from an association list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (cdr (assq 42 '((1 . 1) (42 . 65) (3 . 3)))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
