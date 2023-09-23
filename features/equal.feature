@@ -45,8 +45,11 @@ Feature: Equality
     (define (test x y)
       (write-u8 (if (equal? x y) 65 66)))
 
-    (test (list 1 2 3) (list 1 2 3))
-    (test (list 1 2 3) (list 1 2 3 4))
+    (test '() '())
+    (test '(1) '(1))
+    (test '(1 2) '(1 2))
+    (test '(1 2 3) '(1 2 3))
+    (test '(1 2 3) '(1 2 3 4))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AB"
+    Then the stdout should contain exactly "AAAAB"
