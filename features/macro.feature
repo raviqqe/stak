@@ -633,3 +633,19 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
+
+  @stak
+  Scenario: Throw a compiler error if a macro is used as a value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_)
+          65)))
+
+    foo
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain "invalid syntax"
