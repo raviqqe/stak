@@ -15,6 +15,11 @@
     ((_ name value)
       ($$define name value))))
 
+(define-syntax define-syntax
+  (syntax-rules ()
+    ((_ name value)
+      ($$define-syntax name value))))
+
 (define-syntax lambda
   (syntax-rules (define define-syntax)
     ((_ arguments (define content ...) body1 body2 ...)
