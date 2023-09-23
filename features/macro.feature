@@ -647,5 +647,5 @@ Feature: Macro
 
     foo
     """
-    When I successfully run `scheme main.scm`
+    When I run `scheme main.scm`
     Then the stderr should contain "invalid syntax"
