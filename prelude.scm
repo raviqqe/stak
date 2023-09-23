@@ -187,10 +187,7 @@
     ((_ (test result1 result2 ...))
       (if test (begin result1 result2 ...)))
 
-    ((_ (test result1 result2 ...)
-        clause1
-        clause2
-        ...)
+    ((_ (test result1 result2 ...) clause1 clause2 ...)
       (if test
         (begin result1 result2 ...)
         (cond clause1 clause2 ...)))))
