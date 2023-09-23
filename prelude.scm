@@ -546,9 +546,10 @@
             (number->string-aux q t)
             t)))))
 
-  (let ((chars
+  (let (
+      (chars
         (if (< x 0)
-          (rib 45 (number->string-aux (##- 0 x) '()) pair-type) ;; cons
+          (cons (char->integer #\-) (number->string-aux (- 0 x) '()))
           (number->string-aux x '()))))
     (list->string chars)))
 
@@ -618,15 +619,18 @@
         (if pair
           (display (cdr pair))
           (write-char value))))
+
     ((string? value)
       (write-char #\")
       (for-each write-escaped-char (string->list value))
       (write-char #\"))
+
     ((pair? value)
       (write-char #\()
       (write (car value))
       (write-list (cdr value) write)
       (write-char #\())
+
     ((vector? value)
       (write-char #\#)
       (write-char #\()
@@ -635,6 +639,7 @@
           (write (car values))
           (write-list (cdr values) write)))
       (write-char #\)))
+
     (else
       (display value))))
 
