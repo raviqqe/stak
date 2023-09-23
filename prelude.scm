@@ -521,8 +521,8 @@
 (define (write-char x)
   (write-u8 (char->integer x)))
 
-(define (write-string string)
-  (map write-char (string->list string)))
+(define (write-string x)
+  (for-each write-char (string->list x)))
 
 (define (write-bytevector xs)
   (let loop ((xs xs) (index 0))
@@ -535,43 +535,41 @@
 (define (newline)
   (write-char #\newline))
 
-;; ---------------------- OUTPUT ---------------------- ;;
-
 (define special-chars
   '(
-    ("newline" 10)
-    ("space" 32)
-    ("tab" 9)
-    ("return" 13)))
+    (#\newline "newline")
+    (#\space "space")
+    (#\tab "tab")
+    (#\return "return")))
 
 (define (write value)
   (cond
     ((char? value)
       (write-char #\#)
       (write-char #\\)
-      (let ((name (assoc (##field0 o) (map reverse special-chars))))
+      (let ((name (assoc (car value) (map reverse special-chars))))
         (if (not name)
-          (write-char (##field0 o))
+          (write-char value)
           (display (cadr name)))))
     ((string? value)
       (write-char #\")
       (write-chars (string->list value) escapes)
       (write-char #\"))
     ((pair? value)
-      (write-char #\() ;; #\(
-      (write (##field0 o)) ;; car
-      (print-list (##field1 o) write port) ;; cdr
-      (write-char #\()) ;; #\)
+      (write-char #\()
+      (write (car value))
+      (print-list (cdr value) write)
+      (write-char #\())
     ((vector? value)
-      (write-char #\#) ;; #\#
-      (write-char #\() ;; #\(
+      (write-char #\#)
+      (write-char #\()
       (if (< 0 (vector->list value))
-        (let ((l (##field0 o))) ;; vector->list
-          (write (##field0 l) port)
-          (print-list (##field1 l) write port)))
-      (##write-char 41)) ;; #\)
+        (let ((values (vector->list value)))
+          (write (car values))
+          (print-list (cdr values) write)))
+      (write-char #\)))
     (else
-      (display o port))))
+      (display value))))
 
 ; (define (display o (port (current-output-port)))
 ;   (let ((port-val (##field0 port)))
