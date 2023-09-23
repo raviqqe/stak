@@ -341,16 +341,16 @@
 
 ; Types
 
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
 (define (instance? type)
   (lambda (x)
     (and
       (rib? x)
       (eqv? (rib-tag x) type))))
-
-(define (singleton? x)
-  (or
-    (null? x)
-    (boolean? x)))
 
 (define eqv? eq?)
 
