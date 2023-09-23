@@ -633,3 +633,25 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
+
+  @advanced
+  Scenario: Resolve denotations recursively
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (id x)
+      x)
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ y)
+          (let ((x 65)) y))))
+
+    (define (bar x)
+      (foo (id x)))
+
+    (write-u8 (bar 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
