@@ -4,6 +4,11 @@
 
 ;; Base
 
+($$define-syntax define-syntax
+  (syntax-rules ()
+    ((_ name value)
+      ($$define-syntax name value))))
+
 (define-syntax define
   (syntax-rules ()
     ((_ (name argument ...) body1 body2 ...)

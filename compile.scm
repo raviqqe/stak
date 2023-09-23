@@ -488,7 +488,7 @@
               (expansion-context-set! context name name)
               (expand `($$set! ,@(cdr expression)))))
 
-          ((define-syntax)
+          (($$define-syntax)
             (expansion-context-set!
               context
               (cadr expression)
