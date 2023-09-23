@@ -607,3 +607,29 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Put a sequence in a body of let-syntax
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let-syntax ()
+      (write-u8 65)
+      (write-u8 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AB"
+
+  @advanced
+  Scenario: Put a sequence in a body of letrec-syntax
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (letrec-syntax ()
+      (write-u8 65)
+      (write-u8 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AB"

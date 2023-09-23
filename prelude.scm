@@ -4,6 +4,11 @@
 
 ;; Base
 
+($$define-syntax define-syntax
+  (syntax-rules ()
+    ((_ name value)
+      ($$define-syntax name value))))
+
 (define-syntax define
   (syntax-rules ()
     ((_ (name argument ...) body1 body2 ...)
@@ -59,6 +64,16 @@
 
     ((_ arguments body1 body2 ...)
       ($$lambda arguments (begin body1 body2 ...)))))
+
+(define-syntax let-syntax
+  (syntax-rules ()
+    ((_ ((name value) ...) body1 body2 ...)
+      ($$let-syntax ((name value) ...) (let () body1 body2 ...)))))
+
+(define-syntax letrec-syntax
+  (syntax-rules ()
+    ((_ ((name value) ...) body1 body2 ...)
+      ($$letrec-syntax ((name value) ...) (let () body1 body2 ...)))))
 
 (define-syntax begin
   (syntax-rules ()
