@@ -634,7 +634,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @advanced
   Scenario: Resolve denotations recursively
     Given a file named "main.scm" with:
     """scheme
