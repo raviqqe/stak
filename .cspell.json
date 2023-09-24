@@ -18,7 +18,8 @@
     "repr",
     "ribbit",
     "rustup",
-    "stak"
+    "stak",
+    "unresolve"
   ],
   "patterns": [
     {

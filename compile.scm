@@ -231,6 +231,12 @@
 
 ;; Context
 
+(define-record-type denotation
+  (make-denotation name value)
+  denotation?
+  (name denotation-name)
+  (value denotation-value))
+
 (define-record-type expansion-context
   (make-expansion-context environment)
   expansion-context?
@@ -254,15 +260,6 @@
         context
         (cons (cons name procedure) environment)))))
 
-(define (expansion-context-resolve context expression)
-  (cond
-    ((assv expression (expansion-context-environment context))
-      =>
-      cdr)
-
-    (else
-      expression)))
-
 ;; Procedures
 
 (define primitive-functions
@@ -281,6 +278,17 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
+(define (resolve-denotation context expression)
+  (if (denotation? expression)
+    expression
+    (let ((pair (assv expression (expansion-context-environment context))))
+      (make-denotation expression (if pair (cdr pair) expression)))))
+
+(define (unresolve-denotation denotation)
+  (if (denotation? denotation)
+    (denotation-name denotation)
+    denotation))
+
 (define (denote-parameter context name)
   (let (
       (count
@@ -295,15 +303,17 @@
 
 (define (resolve-parameters context parameters)
   (cond
-    ((symbol? parameters)
-      (expansion-context-resolve context parameters))
+    ((or
+        (denotation? parameters)
+        (symbol? parameters))
+      (denotation-value (resolve-denotation context parameters)))
 
     ((null? parameters)
       '())
 
     (else
       (cons
-        (expansion-context-resolve context (car parameters))
+        (resolve-parameters context (car parameters))
         (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
@@ -357,8 +367,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (expansion-context-resolve use-context expression)
-          (expansion-context-resolve definition-context pattern))
+          (denotation-value (resolve-denotation use-context expression))
+          (denotation-value (resolve-denotation definition-context pattern)))
         '()
         #f))
 
@@ -409,7 +419,7 @@
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          (expansion-context-resolve context template))))
+          (resolve-denotation context template))))
 
     ((pair? template)
       (if (and
@@ -479,13 +489,13 @@
   (optimize
     (cond
       ((symbol? expression)
-        (let ((denotation (expansion-context-resolve context expression)))
-          (when (procedure? denotation)
+        (let ((value (denotation-value (resolve-denotation context expression))))
+          (when (procedure? value)
             (error "invalid syntax" expression))
-          denotation))
+          value))
 
       ((pair? expression)
-        (case (car expression)
+        (case (denotation-value (resolve-denotation context (car expression)))
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
@@ -508,7 +518,7 @@
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (denote-parameter context name)))
+                      (lambda (name) (cons name (denote-parameter context (unresolve-denotation name))))
                       (parameter-names (cadr expression))))))
               (list
                 '$$lambda
@@ -549,16 +559,16 @@
             (expand-quasiquote (cadr expression)))
 
           (($$quote)
-            expression)
+            (cons '$$quote (cdr expression)))
 
-          (else
-            (let ((expander (expansion-context-resolve context (car expression))))
-              (if (procedure? expander)
-                (expand (expander context expression))
+          (else =>
+            (lambda (value)
+              (if (procedure? value)
+                (expand (value context expression))
                 (map expand expression))))))
 
       (else
-        expression))))
+        (denotation-value (resolve-denotation context expression))))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))

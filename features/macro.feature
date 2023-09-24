@@ -51,7 +51,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Capture a free variable
     Given a file named "main.scm" with:
     """scheme
@@ -72,8 +72,7 @@ Feature: Macro
     (write-u8 x)
     """
     When I successfully run `scheme main.scm`
-    # TODO Fix this to "AB".
-    Then the stdout should contain exactly "BB"
+    Then the stdout should contain exactly "AB"
 
   Scenario: Match an ellipsis
     Given a file named "main.scm" with:
