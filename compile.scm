@@ -295,7 +295,9 @@
   (if (denotation? expression)
     expression
     (let ((pair (assv expression (expansion-context-environment context))))
-      (make-denotation expression (if pair (cdr pair) expression)))))
+      (if pair
+        (make-denotation expression (cdr pair))
+        expression))))
 
 (define (unresolve-denotation denotation)
   (if (denotation? denotation)
@@ -522,8 +524,8 @@
               (list
                 '$$lambda
                 (relaxed-deep-map
-                  (lambda (parameter)
-                    (denotation-value (resolve-denotation context parameter)))
+                  (lambda (name)
+                    (denotation-value (resolve-denotation context name)))
                   parameters)
                 (expand-expression context (caddr expression)))))
 
