@@ -360,8 +360,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (expansion-context-resolve use-context expression)
-          (expansion-context-resolve definition-context pattern))
+          (denotation-value (expansion-context-resolve use-context expression))
+          (denotation-value (expansion-context-resolve definition-context pattern)))
         '()
         #f))
 
@@ -483,9 +483,12 @@
     (cond
       ((symbol? expression)
         (let ((denotation (expansion-context-resolve context expression)))
-          (when (procedure? denotation)
-            (error "invalid syntax" expression))
-          (denotation-value denotation)))
+          (if (denotation? denotation)
+            (let ((value (denotation-value denotation)))
+              (when (procedure? denotation)
+                (error "invalid syntax" expression))
+              value)
+            denotation)))
 
       ((pair? expression)
         (case (car expression)
@@ -555,9 +558,9 @@
             expression)
 
           (else
-            (let ((expander (expansion-context-resolve context (car expression))))
-              (if (procedure? expander)
-                (expand (expander context expression))
+            (let ((denotation (expansion-context-resolve context (car expression))))
+              (if (and (denotation? denotation) (procedure? (denotation-value denotation)))
+                (expand ((denotation-value denotation) context expression))
                 (map expand expression))))))
 
       (else
