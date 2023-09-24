@@ -51,7 +51,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
+  @advanced
   Scenario: Capture a free variable
     Given a file named "main.scm" with:
     """scheme
@@ -72,8 +72,7 @@ Feature: Macro
     (write-u8 x)
     """
     When I successfully run `scheme main.scm`
-    # TODO Fix this to "AB".
-    Then the stdout should contain exactly "BB"
+    Then the stdout should contain exactly "AB"
 
   Scenario: Match an ellipsis
     Given a file named "main.scm" with:
@@ -625,3 +624,45 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Put a sequence in a body of let-syntax
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let-syntax ()
+      (write-u8 65)
+      (write-u8 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AB"
+
+  @advanced
+  Scenario: Put a sequence in a body of letrec-syntax
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (letrec-syntax ()
+      (write-u8 65)
+      (write-u8 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AB"
+
+  @stak
+  Scenario: Throw a compiler error if a macro is used as a value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_)
+          65)))
+
+    foo
+    """
+    When I run `scheme main.scm`
+    Then the stderr should contain "invalid syntax"
