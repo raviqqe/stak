@@ -279,12 +279,10 @@
       expression)))
 
 (define (resolve-denotation context expression)
-  (let ((pair (assv expression (expansion-context-environment context))))
-    (if (denotation? expression) expression
-      (make-denotation expression
-        (if pair
-          (cdr pair)
-          expression)))))
+  (if (denotation? expression)
+    expression
+    (let ((pair (assv expression (expansion-context-environment context))))
+      (make-denotation expression (if pair (cdr pair) expression)))))
 
 (define (unresolve-denotation denotation)
   (if (denotation? denotation)
