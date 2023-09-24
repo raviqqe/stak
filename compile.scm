@@ -493,7 +493,7 @@
             denotation)))
 
       ((pair? expression)
-        (case (car expression)
+        (case (denotation-value (expansion-context-resolve context (car expression)))
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
