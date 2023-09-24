@@ -59,20 +59,35 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "\"\\n\""
 
+  Scenario Outline: Write a boolean
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write <value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value |
+      | #f    |
+      | #t    |
+
   Scenario Outline: Write a number
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write <number>)
+    (write <value>)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<number>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
-      | number |
-      | 0      |
-      | 1      |
-      | 42     |
-      | -1     |
-      | -42    |
+      | value |
+      | 0     |
+      | 1     |
+      | 42    |
+      | -1    |
+      | -42   |
