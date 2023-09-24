@@ -262,9 +262,11 @@
 
 (define (expansion-context-resolve context expression)
   (let ((pair (assv expression (expansion-context-environment context))))
-    (if pair
-      (make-denotation expression (cdr pair))
-      expression)))
+    (if (denotation? expression) expression
+      (make-denotation expression
+        (if pair
+          (cdr pair)
+          expression)))))
 
 ;; Procedures
 
@@ -485,7 +487,7 @@
         (let ((denotation (expansion-context-resolve context expression)))
           (if (denotation? denotation)
             (let ((value (denotation-value denotation)))
-              (when (procedure? denotation)
+              (when (procedure? value)
                 (error "invalid syntax" expression))
               value)
             denotation)))
