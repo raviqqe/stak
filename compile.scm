@@ -559,7 +559,7 @@
             (expand-quasiquote (cadr expression)))
 
           (($$quote)
-            `($$quote ,@(cdr expression)))
+            (cons '$$quote (cdr expression)))
 
           (else =>
             (lambda (value)
