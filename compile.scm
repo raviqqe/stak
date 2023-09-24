@@ -557,7 +557,7 @@
             (expand-quasiquote (cadr expression)))
 
           (($$quote)
-            expression)
+            `($$quote ,@(cdr expression)))
 
           (else
             (let ((denotation (expansion-context-resolve context (car expression))))
