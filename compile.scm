@@ -299,14 +299,14 @@
 (define (resolve-parameters context parameters)
   (cond
     ((symbol? parameters)
-      (expansion-context-resolve context parameters))
+      (denotation-value (expansion-context-resolve context parameters)))
 
     ((null? parameters)
       '())
 
     (else
       (cons
-        (expansion-context-resolve context (car parameters))
+        (denotation-value (expansion-context-resolve context (car parameters)))
         (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
