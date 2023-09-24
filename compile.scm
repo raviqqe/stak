@@ -566,7 +566,7 @@
                 (map expand expression))))))
 
       (else
-        expression))))
+        (denotation-value (expansion-context-resolve context expression))))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
