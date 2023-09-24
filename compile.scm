@@ -482,6 +482,11 @@
         ,(expand-quasiquote (car expression))
         ,(expand-quasiquote (cdr expression))))))
 
+; https://www.researchgate.net/publication/220997237_Macros_That_Work
+;
+; Note that we distinguish unresolved identifiers and denotations even after
+; denotation resolution because there is no "true" name of global variables in
+; this implementation.
 (define (expand-expression context expression)
   (define (expand expression)
     (expand-expression context expression))
