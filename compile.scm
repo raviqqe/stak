@@ -344,7 +344,7 @@
     (else
       '())))
 
-(define (match-ellipsis definition-context use-context literals pattern expression)
+(define (match-ellipsis-pattern definition-context use-context literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -363,12 +363,12 @@
       (find-pattern-variables literals pattern))
     (map
       (lambda (expression)
-        (match definition-context use-context literals pattern expression))
+        (match-pattern definition-context use-context literals pattern expression))
       expression)))
 
-(define (match definition-context use-context literals pattern expression)
+(define (match-pattern definition-context use-context literals pattern expression)
   (define (match pattern expression)
-    (match definition-context use-context literals pattern expression))
+    (match-pattern definition-context use-context literals pattern expression))
 
   (cond
     ((eqv? pattern '_)
@@ -391,7 +391,7 @@
             (eqv? (cadr pattern) '...))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (maybe-append
-              (match-ellipsis
+              (match-ellipsis-pattern
                 definition-context
                 use-context
                 literals
@@ -456,7 +456,7 @@
           (error "invalid syntax" expression))
         (let* (
             (rule (car rules))
-            (matches (match definition-context use-context literals (car rule) expression)))
+            (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
             (transcribe definition-context matches (cadr rule))
             (loop (cdr rules))))))))
@@ -1166,4 +1166,4 @@
 
 ; Main
 
-(write (expand (read-source)))
+(write-target (encode (compile (expand (read-source)))))
