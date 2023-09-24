@@ -413,16 +413,16 @@
     (else
       #f)))
 
-(define (transcribe-ellipsis context matches template)
+(define (rewrite-ellipsis-template context matches template)
   (map
-    (lambda (matches) (transcribe context matches template))
+    (lambda (matches) (rewrite-template context matches template))
     (let ((variables (find-pattern-variables '() template)))
       (zip-alist
         (filter
           (lambda (pair) (memv (car pair) variables))
           matches)))))
 
-(define (transcribe context matches template)
+(define (rewrite-template context matches template)
   (cond
     ((symbol? template)
       (let ((pair (assv template matches)))
@@ -435,11 +435,11 @@
           (pair? (cdr template))
           (eqv? (cadr template) '...))
         (append
-          (transcribe-ellipsis context matches (car template))
-          (transcribe context matches (cddr template)))
+          (rewrite-ellipsis-template context matches (car template))
+          (rewrite-template context matches (cddr template)))
         (cons
-          (transcribe context matches (car template))
-          (transcribe context matches (cdr template)))))
+          (rewrite-template context matches (car template))
+          (rewrite-template context matches (cdr template)))))
 
     (else
       template)))
@@ -458,7 +458,7 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (transcribe definition-context matches (cadr rule))
+            (rewrite-template definition-context matches (cadr rule))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
