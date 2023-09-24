@@ -169,21 +169,18 @@
       (loop (cdr xs) (+ y 1))
       y)))
 
-(define (relaxed-map f xs)
-  (if (null? xs)
-    '()
-    (cons
-      (let ((x (car xs)))
-        (cond
-          ((null? x)
-            '())
+(define (relaxed-deep-map f xs)
+  (cond
+    ((null? xs)
+      '())
 
-          ((pair? x)
-            (relaxed-map f x))
+    ((pair? xs)
+      (cons
+        (relaxed-deep-map f (car xs))
+        (relaxed-deep-map f (cdr xs))))
 
-          (else
-            (f x))))
-      (relaxed-map f (cdr xs)))))
+    (else
+      (f xs))))
 
 (define (zip-alist alist)
   (let (
@@ -318,19 +315,10 @@
         (string-append name "$" (number->string count))))))
 
 (define (resolve-parameters context parameters)
-  (cond
-    ((or
-        (denotation? parameters)
-        (symbol? parameters))
-      (denotation-value (resolve-denotation context parameters)))
-
-    ((null? parameters)
-      '())
-
-    (else
-      (cons
-        (resolve-parameters context (car parameters))
-        (resolve-parameters context (cdr parameters))))))
+  (relaxed-deep-map
+    (lambda (parameter)
+      (denotation-value (resolve-denotation context parameter)))
+    parameters))
 
 (define (find-pattern-variables literals pattern)
   (cond
