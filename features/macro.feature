@@ -299,6 +299,24 @@ Feature: Macro
     Then the stdout should contain exactly "A"
 
   @advanced
+  Scenario: Define a local macro capturing a global value of the same name
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define foo 65)
+
+    (let-syntax (
+      (foo
+        (syntax-rules ()
+          ((_)
+            foo))))
+      (write-u8 (foo)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
