@@ -169,6 +169,22 @@
       (loop (cdr xs) (+ y 1))
       y)))
 
+(define (relaxed-map f xs)
+  (if (null? xs)
+    '()
+    (cons
+      (let ((x (car xs)))
+        (cond
+          ((null? x)
+            '())
+
+          ((pair? x)
+            (relaxed-map f x))
+
+          (else
+            (f x))))
+      (relaxed-map context (cdr parameters)))))
+
 (define (zip-alist alist)
   (let (
       (pairs
