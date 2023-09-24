@@ -561,10 +561,10 @@
           (($$quote)
             `($$quote ,@(cdr expression)))
 
-          (else
-            (let ((denotation (resolve-denotation context (car expression))))
-              (if (and (denotation? denotation) (procedure? (denotation-value denotation)))
-                (expand ((denotation-value denotation) context expression))
+          (else =>
+            (lambda (value)
+              (if (procedure? value)
+                (expand (value context expression))
                 (map expand expression))))))
 
       (else
