@@ -299,6 +299,12 @@
         (make-denotation expression (cdr pair))
         expression))))
 
+(define (resolve-denotation-value context expression)
+  (let ((denotation (resolve-denotation context expression)))
+    (if (denotation? denotation)
+      (denotation-value denotation)
+      denotation)))
+
 (define (unresolve-denotation denotation)
   (if (denotation? denotation)
     (denotation-name denotation)
@@ -367,8 +373,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (denotation-value (resolve-denotation use-context expression))
-          (denotation-value (resolve-denotation definition-context pattern)))
+          (resolve-denotation-value use-context expression)
+          (resolve-denotation-value definition-context pattern))
         '()
         #f))
 
@@ -494,13 +500,13 @@
   (optimize
     (cond
       ((symbol? expression)
-        (let ((value (denotation-value (resolve-denotation context expression))))
+        (let ((value (resolve-denotation-value context expression)))
           (when (procedure? value)
             (error "invalid syntax" expression))
           value))
 
       ((pair? expression)
-        (case (denotation-value (resolve-denotation context (car expression)))
+        (case (resolve-denotation-value context (car expression))
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
@@ -530,7 +536,7 @@
                 '$$lambda
                 (relaxed-deep-map
                   (lambda (name)
-                    (denotation-value (resolve-denotation context name)))
+                    (resolve-denotation-value context name))
                   parameters)
                 (expand-expression context (caddr expression)))))
 
@@ -577,7 +583,7 @@
                 (map expand expression))))))
 
       (else
-        (denotation-value (resolve-denotation context expression))))))
+        (resolve-denotation-value context expression)))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
