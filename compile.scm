@@ -286,6 +286,11 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
+(define (unresolve-denotation denotation)
+  (if (denotation? denotation)
+    (denotation-name denotation)
+    denotation))
+
 (define (denote-parameter context name)
   (let (
       (count
@@ -516,7 +521,7 @@
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (denote-parameter context name)))
+                      (lambda (name) (cons name (denote-parameter context (unresolve-denotation name))))
                       (parameter-names (cadr expression))))))
               (list
                 '$$lambda
