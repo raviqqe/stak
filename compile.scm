@@ -231,6 +231,12 @@
 
 ;; Context
 
+(define-record-type denotation
+  (make-denotation name value)
+  denotation?
+  (name denotation-name)
+  (value denotation-value))
+
 (define-record-type expansion-context
   (make-expansion-context environment)
   expansion-context?
