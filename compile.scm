@@ -303,7 +303,9 @@
 
 (define (resolve-parameters context parameters)
   (cond
-    ((symbol? parameters)
+    ((or
+        (denotation? parameters)
+        (symbol? parameters))
       (denotation-value (resolve-denotation context parameters)))
 
     ((null? parameters)
@@ -311,7 +313,7 @@
 
     (else
       (cons
-        (denotation-value (resolve-denotation context (car parameters)))
+        (resolve-parameters context (car parameters))
         (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
