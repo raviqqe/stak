@@ -183,7 +183,7 @@
 
           (else
             (f x))))
-      (relaxed-map context (cdr parameters)))))
+      (relaxed-map f (cdr xs)))))
 
 (define (zip-alist alist)
   (let (
