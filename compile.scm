@@ -314,12 +314,6 @@
         name
         (string-append name "$" (number->string count))))))
 
-(define (resolve-parameters context parameters)
-  (relaxed-deep-map
-    (lambda (parameter)
-      (denotation-value (resolve-denotation context parameter)))
-    parameters))
-
 (define (find-pattern-variables literals pattern)
   (cond
     ((memv pattern (append '(_ ...) literals))
@@ -517,16 +511,20 @@
             #f)
 
           (($$lambda)
-            (let (
+            (let* (
+                (parameters (relaxed-deep-map unresolve-denotation (cadr expression)))
                 (context
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (denote-parameter context (unresolve-denotation name))))
-                      (parameter-names (cadr expression))))))
+                      (lambda (name) (cons name (denote-parameter context name)))
+                      (parameter-names parameters)))))
               (list
                 '$$lambda
-                (resolve-parameters context (cadr expression))
+                (relaxed-deep-map
+                  (lambda (parameter)
+                    (denotation-value (resolve-denotation context parameter)))
+                  parameters)
                 (expand-expression context (caddr expression)))))
 
           (($$let-syntax)
