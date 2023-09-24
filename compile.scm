@@ -489,13 +489,10 @@
   (optimize
     (cond
       ((symbol? expression)
-        (let ((denotation (resolve-denotation context expression)))
-          (if (denotation? denotation)
-            (let ((value (denotation-value denotation)))
-              (when (procedure? value)
-                (error "invalid syntax" expression))
-              value)
-            denotation)))
+        (let ((value (denotation-value (resolve-denotation context expression))))
+          (when (procedure? value)
+            (error "invalid syntax" expression))
+          value))
 
       ((pair? expression)
         (case (denotation-value (resolve-denotation context (car expression)))
