@@ -293,7 +293,7 @@
 
 ; Note that we distinguish unresolved identifiers and denotations even after
 ; denotation resolution because there is no "true" name of global variables in
-; this implementation.
+; this implementation differently from the original paper of "Macros That Work."
 (define (resolve-denotation context expression)
   (if (denotation? expression)
     expression
