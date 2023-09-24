@@ -534,8 +534,7 @@
               (list
                 '$$lambda
                 (relaxed-deep-map
-                  (lambda (name)
-                    (resolve-denotation-value context name))
+                  (lambda (name) (resolve-denotation-value context name))
                   parameters)
                 (expand-expression context (caddr expression)))))
 
