@@ -363,12 +363,12 @@
       (find-pattern-variables literals pattern))
     (map
       (lambda (expression)
-        (match-pattern definition-context use-context literals pattern expression))
+        (match definition-context use-context literals pattern expression))
       expression)))
 
-(define (match-pattern definition-context use-context literals pattern expression)
+(define (match definition-context use-context literals pattern expression)
   (define (match pattern expression)
-    (match-pattern definition-context use-context literals pattern expression))
+    (match definition-context use-context literals pattern expression))
 
   (cond
     ((eqv? pattern '_)
@@ -413,16 +413,16 @@
     (else
       #f)))
 
-(define (fill-ellipsis-template context matches template)
+(define (transcribe-ellipsis context matches template)
   (map
-    (lambda (matches) (fill-template context matches template))
+    (lambda (matches) (transcribe context matches template))
     (let ((variables (find-pattern-variables '() template)))
       (zip-alist
         (filter
           (lambda (pair) (memv (car pair) variables))
           matches)))))
 
-(define (fill-template context matches template)
+(define (transcribe context matches template)
   (cond
     ((symbol? template)
       (let ((pair (assv template matches)))
@@ -435,11 +435,11 @@
           (pair? (cdr template))
           (eqv? (cadr template) '...))
         (append
-          (fill-ellipsis-template context matches (car template))
-          (fill-template context matches (cddr template)))
+          (transcribe-ellipsis context matches (car template))
+          (transcribe context matches (cddr template)))
         (cons
-          (fill-template context matches (car template))
-          (fill-template context matches (cdr template)))))
+          (transcribe context matches (car template))
+          (transcribe context matches (cdr template)))))
 
     (else
       template)))
@@ -456,9 +456,9 @@
           (error "invalid syntax" expression))
         (let* (
             (rule (car rules))
-            (matches (match-pattern definition-context use-context literals (car rule) expression)))
+            (matches (match definition-context use-context literals (car rule) expression)))
           (if matches
-            (fill-template definition-context matches (cadr rule))
+            (transcribe definition-context matches (cadr rule))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
@@ -1166,4 +1166,4 @@
 
 ; Main
 
-(write-target (encode (compile (expand (read-source)))))
+(write (expand (read-source)))
