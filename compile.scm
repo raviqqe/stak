@@ -260,14 +260,6 @@
         context
         (cons (cons name procedure) environment)))))
 
-(define (expansion-context-resolve context expression)
-  (let ((pair (assv expression (expansion-context-environment context))))
-    (if (denotation? expression) expression
-      (make-denotation expression
-        (if pair
-          (cdr pair)
-          expression)))))
-
 ;; Procedures
 
 (define primitive-functions
@@ -285,6 +277,14 @@
     (if (and pair (eqv? (length expression) 3))
       (cons (cdr pair) (cdr expression))
       expression)))
+
+(define (resolve-denotation context expression)
+  (let ((pair (assv expression (expansion-context-environment context))))
+    (if (denotation? expression) expression
+      (make-denotation expression
+        (if pair
+          (cdr pair)
+          expression)))))
 
 (define (unresolve-denotation denotation)
   (if (denotation? denotation)
@@ -306,14 +306,14 @@
 (define (resolve-parameters context parameters)
   (cond
     ((symbol? parameters)
-      (denotation-value (expansion-context-resolve context parameters)))
+      (denotation-value (resolve-denotation context parameters)))
 
     ((null? parameters)
       '())
 
     (else
       (cons
-        (denotation-value (expansion-context-resolve context (car parameters)))
+        (denotation-value (resolve-denotation context (car parameters)))
         (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
@@ -367,8 +367,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (denotation-value (expansion-context-resolve use-context expression))
-          (denotation-value (expansion-context-resolve definition-context pattern)))
+          (denotation-value (resolve-denotation use-context expression))
+          (denotation-value (resolve-denotation definition-context pattern)))
         '()
         #f))
 
@@ -419,7 +419,7 @@
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          (expansion-context-resolve context template))))
+          (resolve-denotation context template))))
 
     ((pair? template)
       (if (and
@@ -489,7 +489,7 @@
   (optimize
     (cond
       ((symbol? expression)
-        (let ((denotation (expansion-context-resolve context expression)))
+        (let ((denotation (resolve-denotation context expression)))
           (if (denotation? denotation)
             (let ((value (denotation-value denotation)))
               (when (procedure? value)
@@ -498,7 +498,7 @@
             denotation)))
 
       ((pair? expression)
-        (case (denotation-value (expansion-context-resolve context (car expression)))
+        (case (denotation-value (resolve-denotation context (car expression)))
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
@@ -565,13 +565,13 @@
             `($$quote ,@(cdr expression)))
 
           (else
-            (let ((denotation (expansion-context-resolve context (car expression))))
+            (let ((denotation (resolve-denotation context (car expression))))
               (if (and (denotation? denotation) (procedure? (denotation-value denotation)))
                 (expand ((denotation-value denotation) context expression))
                 (map expand expression))))))
 
       (else
-        (denotation-value (expansion-context-resolve context expression))))))
+        (denotation-value (resolve-denotation context expression))))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
