@@ -169,6 +169,19 @@
       (loop (cdr xs) (+ y 1))
       y)))
 
+(define (relaxed-deep-map f xs)
+  (cond
+    ((null? xs)
+      '())
+
+    ((pair? xs)
+      (cons
+        (relaxed-deep-map f (car xs))
+        (relaxed-deep-map f (cdr xs))))
+
+    (else
+      (f xs))))
+
 (define (zip-alist alist)
   (let (
       (pairs
@@ -278,11 +291,22 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
+; Note that we distinguish unresolved identifiers and denotations even after
+; denotation resolution because there is no "true" name of global variables in
+; this implementation differently from the original paper of "Macros That Work."
 (define (resolve-denotation context expression)
   (if (denotation? expression)
     expression
     (let ((pair (assv expression (expansion-context-environment context))))
-      (make-denotation expression (if pair (cdr pair) expression)))))
+      (if pair
+        (make-denotation expression (cdr pair))
+        expression))))
+
+(define (resolve-denotation-value context expression)
+  (let ((denotation (resolve-denotation context expression)))
+    (if (denotation? denotation)
+      (denotation-value denotation)
+      denotation)))
 
 (define (unresolve-denotation denotation)
   (if (denotation? denotation)
@@ -300,21 +324,6 @@
       (if (eqv? count 0)
         name
         (string-append name "$" (number->string count))))))
-
-(define (resolve-parameters context parameters)
-  (cond
-    ((or
-        (denotation? parameters)
-        (symbol? parameters))
-      (denotation-value (resolve-denotation context parameters)))
-
-    ((null? parameters)
-      '())
-
-    (else
-      (cons
-        (resolve-parameters context (car parameters))
-        (resolve-parameters context (cdr parameters))))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -367,8 +376,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (denotation-value (resolve-denotation use-context expression))
-          (denotation-value (resolve-denotation definition-context pattern)))
+          (resolve-denotation-value use-context expression)
+          (resolve-denotation-value definition-context pattern))
         '()
         #f))
 
@@ -482,6 +491,7 @@
         ,(expand-quasiquote (car expression))
         ,(expand-quasiquote (cdr expression))))))
 
+; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-expression context expression)
   (define (expand expression)
     (expand-expression context expression))
@@ -489,13 +499,13 @@
   (optimize
     (cond
       ((symbol? expression)
-        (let ((value (denotation-value (resolve-denotation context expression))))
+        (let ((value (resolve-denotation-value context expression)))
           (when (procedure? value)
             (error "invalid syntax" expression))
           value))
 
       ((pair? expression)
-        (case (denotation-value (resolve-denotation context (car expression)))
+        (case (resolve-denotation-value context (car expression))
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
@@ -513,16 +523,19 @@
             #f)
 
           (($$lambda)
-            (let (
+            (let* (
+                (parameters (relaxed-deep-map unresolve-denotation (cadr expression)))
                 (context
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (denote-parameter context (unresolve-denotation name))))
-                      (parameter-names (cadr expression))))))
+                      (lambda (name) (cons name (denote-parameter context name)))
+                      (parameter-names parameters)))))
               (list
                 '$$lambda
-                (resolve-parameters context (cadr expression))
+                (relaxed-deep-map
+                  (lambda (name) (resolve-denotation-value context name))
+                  parameters)
                 (expand-expression context (caddr expression)))))
 
           (($$let-syntax)
@@ -568,7 +581,7 @@
                 (map expand expression))))))
 
       (else
-        (denotation-value (resolve-denotation context expression))))))
+        (resolve-denotation-value context expression)))))
 
 (define (expand expression)
   (expand-expression (make-expansion-context '()) expression))
