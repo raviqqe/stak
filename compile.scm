@@ -485,7 +485,7 @@
         (let ((denotation (expansion-context-resolve context expression)))
           (when (procedure? denotation)
             (error "invalid syntax" expression))
-          denotation))
+          (denotation-value denotation)))
 
       ((pair? expression)
         (case (car expression)
