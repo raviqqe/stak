@@ -273,9 +273,6 @@
         context
         (cons (cons name procedure) environment)))))
 
-(define (expansion-context-clone context)
-  (make-expansion-context (expansion-context-environment context)))
-
 ;; Procedures
 
 (define primitive-functions
@@ -462,8 +459,6 @@
         (unless (pair? rules)
           (error "invalid syntax" expression))
         (let* (
-            ; TODO
-            ; (use-context (expansion-context-clone use-context))
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
