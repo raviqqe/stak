@@ -663,11 +663,11 @@
     ((char? x)
       (write-char x))
 
-    ;       ((pair? o)
-    ;         (##write-char 40 port-val) ;; #\(
-    ;         (display (##field0 o) port) ;; car
-    ;         (print-list (##field1 o) display port) ;; cdr
-    ;         (##write-char 41 port-val)) ;; #\)
+    ((pair? x)
+      (write-char #\()
+      (display (car x))
+      (write-list (cdr x) display)
+      (write-char #\)))
 
     ;       ((vector? o)
     ;         (##write-char 35 port-val) ;; #\#

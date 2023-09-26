@@ -110,6 +110,16 @@ Feature: Write
       | -1    |
       | -42   |
 
+  Scenario: Write a pair
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write '(1 . 2))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "(1 . 2)"
+
   Scenario: Write a procedure
     Given a file named "main.scm" with:
     """scheme
