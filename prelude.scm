@@ -341,15 +341,38 @@
 
 ; Types
 
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
 (define (instance? type)
   (lambda (x)
     (and
+      (not (singleton? x))
       (rib? x)
       (eqv? (rib-tag x) type))))
 
 (define eqv? eq?)
 
+(define (equal? x y)
+  (or
+    (eq? x y)
+    (and
+      (not (singleton? x))
+      (not (singleton? y))
+      (rib? x)
+      (rib? y)
+      (eq? (rib-tag x) (rib-tag y))
+      (equal? (rib-car x) (rib-car y))
+      (equal? (rib-cdr x) (rib-cdr y)))))
+
 ;; Boolean
+
+(define (boolean? x)
+  (or
+    (eq? x #f)
+    (eq? x #t)))
 
 (define (not x)
   (eq? x #f))
@@ -394,6 +417,8 @@
     (cons
       (function (car list))
       (map function (cdr list)))))
+
+(define for-each map)
 
 (define (list-ref list index)
   (if (eqv? index 0)
@@ -504,6 +529,8 @@
   (map integer->char (rib-cdr x)))
 
 ;; Symbol
+
+(define symbol? (instance? symbol-type))
 
 (define symbol->string rib-cdr)
 
