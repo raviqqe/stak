@@ -575,6 +575,9 @@
 
 (define vector? (instance? vector-type))
 
+(define (vector-length xs)
+  (length (vector->list xs)))
+
 (define (list->vector x)
   (rib (length x) x vector-type))
 
@@ -610,38 +613,32 @@
     (#\tab . "tab")
     (#\return . "return")))
 
-(define (write value)
+(define (write x)
   (cond
-    ((char? value)
+    ((char? x)
       (write-char #\#)
       (write-char #\\)
-      (let ((pair (assoc value special-chars)))
+      (let ((pair (assoc x special-chars)))
         (if pair
           (display (cdr pair))
-          (write-char value))))
+          (write-char x))))
 
-    ((string? value)
+    ((string? x)
       (write-char #\")
-      (for-each write-escaped-char (string->list value))
+      (for-each write-escaped-char (string->list x))
       (write-char #\"))
 
-    ((pair? value)
+    ((pair? x)
       (write-char #\()
-      (write (car value))
-      (write-list (cdr value) write)
+      (write (car x))
+      (write-list (cdr x) write)
       (write-char #\)))
 
-    ((vector? value)
-      (write-char #\#)
-      (write-char #\()
-      (if (< 0 (vector->list value))
-        (let ((values (vector->list value)))
-          (write (car values))
-          (write-list (cdr values) write)))
-      (write-char #\)))
+    ((vector? x)
+      (write-vector x write))
 
     (else
-      (display value))))
+      (display x))))
 
 (define (display x)
   (cond
@@ -653,6 +650,9 @@
       (write-char #\#)
       (write-char #\t))
 
+    ((char? x)
+      (write-char x))
+
     ((null? x)
       (write-char #\()
       (write-char #\)))
@@ -660,23 +660,11 @@
     ((number? x)
       (display (number->string x)))
 
-    ((char? x)
-      (write-char x))
-
     ((pair? x)
       (write-char #\()
       (display (car x))
       (write-list (cdr x) display)
       (write-char #\)))
-
-    ;       ((vector? o)
-    ;         (##write-char 35 port-val) ;; #\#
-    ;         (##write-char 40 port-val) ;; #\(
-    ;         (if (##< 0 (##field1 o))
-    ;           (let ((l (##field0 o))) ;; vector->list
-    ;             (display (##field0 l) port)
-    ;             (print-list (##field1 l) display port)))
-    ;         (##write-char 41 port-val)) ;; #\)
 
     ((procedure? x)
       (write-char #\#)
@@ -687,6 +675,9 @@
 
     ((symbol? x)
       (display (symbol->string x)))
+
+    ((vector? x)
+      (write-vector x display))
 
     (else
       (error "unknown type"))))
@@ -706,3 +697,12 @@
       (write-char #\.)
       (write-char #\space)
       (write xs))))
+
+(define (write-vector xs write)
+  (write-char #\#)
+  (write-char #\()
+  (if (< 0 (vector-length xs))
+    (let ((xs (vector->list xs)))
+      (write (car xs))
+      (write-list (cdr xs) write)))
+  (write-char #\)))

@@ -139,3 +139,21 @@ Feature: Write
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
+
+  Scenario Outline: Write a vector
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write <value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value              |
+      | #()                |
+      | #(1)               |
+      | #(1 2)             |
+      | #(1 2 3)           |
+      | #(1 (1 2) (3 4 5)) |
