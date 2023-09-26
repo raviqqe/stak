@@ -431,8 +431,12 @@
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          ; TODO Replace this with renaming.
-          (resolve-denotation definition-context template))))
+          (let (
+              (name (denote-parameter use-context template))
+              (denotation (resolve-denotation definition-context template)))
+            (when (denotation? denotation)
+              (expansion-context-set! use-context name (denotation-value denotation)))
+            name))))
 
     ((pair? template)
       (if (and
