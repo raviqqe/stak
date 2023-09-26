@@ -688,3 +688,78 @@ Feature: Macro
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
+
+  @advanced
+  Scenario: Bind the same name as a global value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define x 42)
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ y)
+          (let ((x y)) x))))
+
+    (write-u8 (foo 65))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Bind the same name as a local value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let ((x 42))
+      (let-syntax (
+          (foo
+            (syntax-rules ()
+              ((_ y)
+                (let ((x y)) x)))))
+        (write-u8 (foo 65))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Bind the same name as a global macro
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax x
+       (syntax-rules ()
+          ((_) 42)))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ y)
+          (let ((x y)) x))))
+
+    (write-u8 (foo 65))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @advanced
+  Scenario: Bind the same name as a local macro
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (let-syntax (
+        (x
+          (syntax-rules ()
+            ((_) 42))))
+      (let-syntax (
+          (foo
+            (syntax-rules ()
+              ((_ y)
+                (let ((x y)) x)))))
+        (write-u8 (foo 65))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
