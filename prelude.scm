@@ -448,12 +448,12 @@
       equal?
       (car rest)))
 
-  (if (pair? xs)
+  (if (null? xs)
+    #f
     (let ((pair (car xs)))
       (if (eq? x (car pair))
         pair
-        (assoc x (cdr xs) equal?)))
-    #f))
+        (assoc x (cdr xs) eq?)))))
 
 (define (assq x xs) (assoc x xs eq?))
 (define (assv x xs) (assoc x xs eqv?))
