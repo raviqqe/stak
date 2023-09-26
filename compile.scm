@@ -256,7 +256,9 @@
 ; Expansion
 
 (define default-syntactic-environment
-  (map (lambda (syntax) (cons syntax syntax)) primitive-syntaxes))
+  (map
+    (lambda (syntax) (cons syntax syntax))
+    primitive-syntaxes))
 
 (define-record-type denotation
   (make-denotation name value)
