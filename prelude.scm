@@ -651,22 +651,12 @@
       (write-char #\#)
       (write-char #\t))
 
-    ;       ((eof-object? o)
-    ;         (##write-char 35 port-val) ;; #\#
-    ;         (##write-char 101 port-val)) ;; #e
-
     ((null? value)
       (write-char #\()
       (write-char #\)))
 
-    ((integer? value)
+    ((number? value)
       (display (number->string value)))
-
-    ;       ((input-port? o)
-    ;         (display (vector (##field0 o) (##field2 (##field1 o)) (##field2 o))))
-
-    ;       ((output-port? o)
-    ;         (display (vector (##field0 o) (##field1 o) (##field2 o))))
 
     ((char? value)
       (write-char value))
