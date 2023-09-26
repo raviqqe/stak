@@ -458,7 +458,9 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (fill-template definition-context matches (cadr rule))
+            (values
+              (fill-template definition-context matches (cadr rule))
+              use-context)
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
@@ -577,7 +579,8 @@
           (else =>
             (lambda (value)
               (if (procedure? value)
-                (expand (value context expression))
+                (let-values (((expression context) (value context expression)))
+                  (expand-expression context expression))
                 (map expand expression))))))
 
       (else
