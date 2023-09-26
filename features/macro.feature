@@ -667,6 +667,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the stderr should contain "invalid syntax"
 
+  @advanced
   Scenario: Resolve denotations recursively
     Given a file named "main.scm" with:
     """scheme
