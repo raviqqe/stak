@@ -583,8 +583,7 @@
           (else =>
             (lambda (value)
               (if (procedure? value)
-                (let-values (((expression context) (value context expression)))
-                  (expand-expression context expression))
+                (expand (value context expression))
                 (map expand expression))))))
 
       (else
