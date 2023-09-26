@@ -344,7 +344,7 @@
     (else
       '())))
 
-(define (match-ellipsis definition-context use-context literals pattern expression)
+(define (match-ellipsis-pattern definition-context use-context literals pattern expression)
   (fold-right
     (lambda (all ones)
       (and
@@ -391,7 +391,7 @@
             (eqv? (cadr pattern) '...))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (maybe-append
-              (match-ellipsis
+              (match-ellipsis-pattern
                 definition-context
                 use-context
                 literals
