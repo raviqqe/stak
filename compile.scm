@@ -68,6 +68,19 @@
     (close 2)
     ($$- 13)))
 
+(define primitive-syntaxes
+  '(
+    $$begin
+    $$define
+    $$define-syntax
+    $$if
+    $$lambda
+    $$let-syntax
+    $$letrec-syntax
+    $$quasiquote
+    $$quote
+    $$set!))
+
 ; Types
 
 (define pair-type 0)
@@ -242,13 +255,16 @@
 
 ; Expansion
 
-;; Context
+(define default-syntactic-environment
+  (map (lambda (syntax) (cons syntax syntax)) primitive-syntaxes))
 
 (define-record-type denotation
   (make-denotation name value)
   denotation?
   (name denotation-name)
   (value denotation-value))
+
+;; Context
 
 (define-record-type expansion-context
   (make-expansion-context environment)
@@ -592,7 +608,9 @@
         (resolve-denotation-value context expression)))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '()) expression))
+  (expand-expression
+    (make-expansion-context default-syntactic-environment)
+    expression))
 
 ; Compilation
 
