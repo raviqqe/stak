@@ -891,8 +891,7 @@
 
 ;; Constants
 
-; Note that we do not need to check boolean and null which are registered as
-; default constants.
+; We do not need to check boolean and null which are registered as default constants.
 (define (constant-normal? constant)
   (or
     (symbol? constant)
