@@ -22,7 +22,7 @@ Feature: Write
   Scenario: Write an escaped character
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write #\A)
     """
@@ -32,7 +32,7 @@ Feature: Write
   Scenario: Write an escaped special character
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write #\newline)
     """
@@ -62,7 +62,7 @@ Feature: Write
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write <value>)
     """
@@ -77,7 +77,7 @@ Feature: Write
   Scenario Outline: Write a list
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write '<value>)
     """
@@ -95,7 +95,7 @@ Feature: Write
   Scenario Outline: Write a number
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write <value>)
     """
@@ -113,7 +113,7 @@ Feature: Write
   Scenario: Write a pair
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write '(1 . 2))
     """
@@ -123,7 +123,7 @@ Feature: Write
   Scenario: Write a procedure
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write (lambda () #f))
     """
@@ -133,7 +133,7 @@ Feature: Write
   Scenario: Write a symbol
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write 'foo)
     """
@@ -143,7 +143,7 @@ Feature: Write
   Scenario Outline: Write a vector
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (write <value>)
     """
