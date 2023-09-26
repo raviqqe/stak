@@ -8,7 +8,7 @@ Feature: Smoke
 
     (for-each
       (lambda (x) (write-u8 (if (not x) 65 66)))
-        '(#\A #\B))
+      '(#\A #\B))
 
     (define b #\B)
     """
