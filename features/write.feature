@@ -109,3 +109,13 @@ Feature: Write
       | 42    |
       | -1    |
       | -42   |
+
+  Scenario: Write a procedure
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write (lambda () #f))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "#procedure"

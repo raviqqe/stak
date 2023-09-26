@@ -682,9 +682,9 @@
     ;             (print-list (##field1 l) display port)))
     ;         (##write-char 41 port-val)) ;; #\)
 
-    ;       ((procedure? o)
-    ;         (##write-char 35 port-val) ;; #\#
-    ;         (##write-char 112 port-val)) ;; #p
+    ((procedure? value)
+      (write-char #\#)
+      (write-string "procedure"))
 
     (else
       (error "unknown type"))))
