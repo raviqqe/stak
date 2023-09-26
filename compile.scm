@@ -900,25 +900,24 @@
     (stak-procedure? constant)))
 
 (define (build-constant-rib context car cdr tag continuation)
-  (let (
-      (build-child
-        (lambda (constant continuation)
-          (build-constant
-            context
-            constant
-            (build-constant-codes
-              context
-              constant
-              continuation)))))
+  (define (build-child constant continuation)
+    (build-constant
+      context
+      constant
+      (build-constant-codes
+        context
+        constant
+        continuation)))
+
+  (build-child
+    car
     (build-child
-      car
-      (build-child
-        cdr
-        (if (eqv? tag pair-type)
-          (compile-primitive-call 'cons continuation)
-          (rib constant-instruction
-            tag
-            (compile-primitive-call 'rib continuation)))))))
+      cdr
+      (if (eqv? tag pair-type)
+        (compile-primitive-call 'cons continuation)
+        (rib constant-instruction
+          tag
+          (compile-primitive-call 'rib continuation))))))
 
 (define (build-constant-codes context constant continuation)
   (let (
