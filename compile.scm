@@ -451,7 +451,7 @@
               (name (denote-parameter use-context template))
               (denotation (resolve-denotation definition-context template)))
             (when (denotation? denotation)
-              ; TODO Test if this is really hygine.
+              ; TODO Test if this is really hygiene.
               ; It looks like this destructive update of contexts is fine because
               ; we always generate new names. But I'm not sure...
               ; For example, how about this?
