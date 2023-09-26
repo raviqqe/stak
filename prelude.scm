@@ -623,13 +623,13 @@
           (display (cdr pair))
           (write-char x))))
 
+    ((pair? x)
+      (write-list x write))
+
     ((string? x)
       (write-char #\")
       (for-each write-escaped-char (string->list x))
       (write-char #\"))
-
-    ((pair? x)
-      (write-list x write))
 
     ((vector? x)
       (write-vector x write))
