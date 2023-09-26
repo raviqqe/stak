@@ -629,10 +629,7 @@
       (write-char #\"))
 
     ((pair? x)
-      (write-char #\()
-      (write (car x))
-      (write-list (cdr x) write)
-      (write-char #\)))
+      (write-list x write))
 
     ((vector? x)
       (write-vector x write))
@@ -654,17 +651,13 @@
       (write-char x))
 
     ((null? x)
-      (write-char #\()
-      (write-char #\)))
+      (write-list x display))
 
     ((number? x)
       (display (number->string x)))
 
     ((pair? x)
-      (write-char #\()
-      (display (car x))
-      (write-list (cdr x) display)
-      (write-char #\)))
+      (write-list x display))
 
     ((procedure? x)
       (write-char #\#)
@@ -683,26 +676,28 @@
       (error "unknown type"))))
 
 (define (write-list xs write)
-  (cond
-    ((pair? xs)
-      (write-char #\space)
-      (write (car xs))
-      (write-list (cdr xs) write))
+  (write-char #\()
 
-    ((null? xs)
-      #f)
+  (when (pair? xs)
+    (write (car xs))
+    (let loop ((xs (cdr xs)))
+      (cond
+        ((pair? xs)
+          (write-char #\space)
+          (write (car xs))
+          (loop (cdr xs)))
 
-    (else
-      (write-char #\space)
-      (write-char #\.)
-      (write-char #\space)
-      (write xs))))
+        ((null? xs)
+          #f)
+
+        (else
+          (write-char #\space)
+          (write-char #\.)
+          (write-char #\space)
+          (write xs)))))
+
+  (write-char #\)))
 
 (define (write-vector xs write)
   (write-char #\#)
-  (write-char #\()
-  (if (< 0 (vector-length xs))
-    (let ((xs (vector->list xs)))
-      (write (car xs))
-      (write-list (cdr xs) write)))
-  (write-char #\)))
+  (write-list (vector->list xs) write))
