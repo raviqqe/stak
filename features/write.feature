@@ -19,7 +19,7 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Write a escaped character
+  Scenario: Write an escaped character
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -29,7 +29,7 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#\A"
 
-  Scenario: Write a escaped special character
+  Scenario: Write an escaped special character
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))

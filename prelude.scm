@@ -603,17 +603,17 @@
 
 (define special-chars
   '(
-    (#\newline "newline")
-    (#\space "space")
-    (#\tab "tab")
-    (#\return "return")))
+    (#\newline . "newline")
+    (#\space . "space")
+    (#\tab . "tab")
+    (#\return . "return")))
 
 (define (write value)
   (cond
     ((char? value)
       (write-char #\#)
       (write-char #\\)
-      (let ((pair (assoc (car value) special-chars)))
+      (let ((pair (assoc value special-chars)))
         (if pair
           (display (cdr pair))
           (write-char value))))
