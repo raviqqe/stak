@@ -187,10 +187,7 @@
     ((_ (test result1 result2 ...))
       (if test (begin result1 result2 ...)))
 
-    ((_ (test result1 result2 ...)
-        clause1
-        clause2
-        ...)
+    ((_ (test result1 result2 ...) clause1 clause2 ...)
       (if test
         (begin result1 result2 ...)
         (cond clause1 clause2 ...)))))
@@ -549,7 +546,7 @@
   (write-u8 (char->integer x)))
 
 (define (write-string string)
-  (map write-char (string->list string)))
+  (for-each write-char (string->list string)))
 
 (define (write-bytevector xs)
   (let loop ((xs xs) (index 0))
