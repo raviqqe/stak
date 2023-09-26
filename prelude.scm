@@ -627,7 +627,7 @@
       (write-char #\()
       (write (car value))
       (write-list (cdr value) write)
-      (write-char #\())
+      (write-char #\)))
 
     ((vector? value)
       (write-char #\#)
