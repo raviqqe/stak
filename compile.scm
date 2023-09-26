@@ -273,6 +273,9 @@
         context
         (cons (cons name procedure) environment)))))
 
+(define (expansion-context-clone context)
+  (make-expansion-context (expansion-context-environment context)))
+
 ;; Procedures
 
 (define primitive-functions
@@ -413,33 +416,37 @@
     (else
       #f)))
 
-(define (fill-ellipsis-template context matches template)
+(define (fill-ellipsis-template definition-context use-context matches template)
   (map
-    (lambda (matches) (fill-template context matches template))
+    (lambda (matches) (fill-template definition-context use-context matches template))
     (let ((variables (find-pattern-variables '() template)))
       (zip-alist
         (filter
           (lambda (pair) (memv (car pair) variables))
           matches)))))
 
-(define (fill-template context matches template)
+(define (fill-template definition-context use-context matches template)
+  (define (fill template)
+    (fill-template definition-context use-context matches template))
+
   (cond
     ((symbol? template)
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          (resolve-denotation context template))))
+          ; TODO Replace this with renaming.
+          (resolve-denotation definition-context template))))
 
     ((pair? template)
       (if (and
           (pair? (cdr template))
           (eqv? (cadr template) '...))
         (append
-          (fill-ellipsis-template context matches (car template))
-          (fill-template context matches (cddr template)))
+          (fill-ellipsis-template definition-context use-context matches (car template))
+          (fill (cddr template)))
         (cons
-          (fill-template context matches (car template))
-          (fill-template context matches (cdr template)))))
+          (fill (car template))
+          (fill (cdr template)))))
 
     (else
       template)))
@@ -455,11 +462,13 @@
         (unless (pair? rules)
           (error "invalid syntax" expression))
         (let* (
+            ; TODO
+            ; (use-context (expansion-context-clone use-context))
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
             (values
-              (fill-template definition-context matches (cadr rule))
+              (fill-template definition-context use-context matches (cadr rule))
               use-context)
             (loop (cdr rules))))))))
 
