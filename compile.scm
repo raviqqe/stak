@@ -891,6 +891,8 @@
 
 ;; Constants
 
+; Note that we do not need to check boolean and null which are registered as
+; default constants.
 (define (constant-normal? constant)
   (or
     (symbol? constant)
@@ -989,7 +991,9 @@
         (rib-cdr codes)
         (cond
           ((eqv? instruction constant-instruction)
-            (let ((continuation (build-constant context operand continuation)))
+            (build-constant
+              context
+              operand
               (if (stak-procedure? operand)
                 (build-constants context (procedure-code operand) continuation)
                 continuation)))
