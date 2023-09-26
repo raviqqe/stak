@@ -151,9 +151,9 @@ Feature: Write
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value              |
-      | #()                |
-      | #(1)               |
-      | #(1 2)             |
-      | #(1 2 3)           |
-      | #(1 (1 2) (3 4 5)) |
+      | value                |
+      | #()                  |
+      | #(1)                 |
+      | #(1 2)               |
+      | #(1 2 3)             |
+      | #(1 #(1 2) #(3 4 5)) |
