@@ -27,7 +27,7 @@ Feature: Write
     (write #\A)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "#\A"
 
   Scenario: Write a escaped special character
     Given a file named "main.scm" with:
