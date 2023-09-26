@@ -31,19 +31,6 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  # This is actually a test of topologically sorted initialization of constants.
-  # Should we move this to another feature?
-  Scenario: Create a complex list
-    Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
-
-    (for-each
-       )
-    """
-    When I successfully run `scheme main.scm`
-    Then the exit status should be 0
-
   Scenario: Use a map function
     Given a file named "main.scm" with:
     """scheme
