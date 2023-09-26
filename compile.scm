@@ -462,9 +462,7 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (values
-              (fill-template definition-context use-context matches (cadr rule))
-              use-context)
+            (fill-template definition-context use-context matches (cadr rule))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
