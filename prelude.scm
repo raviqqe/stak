@@ -567,6 +567,8 @@
 
 ;; Symbol
 
+(define symbol? (instance? symbol-type))
+
 (define symbol->string rib-cdr)
 
 ;; Vector
@@ -641,37 +643,31 @@
     (else
       (display value))))
 
-(define (display value)
+(define (display x)
   (cond
-    ((not value)
+    ((not x)
       (write-char #\#)
       (write-char #\f))
 
-    ((eqv? value #t)
+    ((eqv? x #t)
       (write-char #\#)
       (write-char #\t))
 
-    ((null? value)
+    ((null? x)
       (write-char #\()
       (write-char #\)))
 
-    ((number? value)
-      (display (number->string value)))
+    ((number? x)
+      (display (number->string x)))
 
-    ((char? value)
-      (write-char value))
+    ((char? x)
+      (write-char x))
 
     ;       ((pair? o)
     ;         (##write-char 40 port-val) ;; #\(
     ;         (display (##field0 o) port) ;; car
     ;         (print-list (##field1 o) display port) ;; cdr
     ;         (##write-char 41 port-val)) ;; #\)
-
-    ;       ((symbol? o)
-    ;         (write-chars (##field0 (##field1 o)) '() port-val))
-
-    ((string? value)
-      (write-string value))
 
     ;       ((vector? o)
     ;         (##write-char 35 port-val) ;; #\#
@@ -682,9 +678,15 @@
     ;             (print-list (##field1 l) display port)))
     ;         (##write-char 41 port-val)) ;; #\)
 
-    ((procedure? value)
+    ((procedure? x)
       (write-char #\#)
       (write-string "procedure"))
+
+    ((string? x)
+      (write-string x))
+
+    ((symbol? x)
+      (display (symbol->string x)))
 
     (else
       (error "unknown type"))))

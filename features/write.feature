@@ -119,3 +119,13 @@ Feature: Write
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#procedure"
+
+  Scenario: Write a symbol
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write 'foo)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "foo"
