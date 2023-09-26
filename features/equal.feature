@@ -40,6 +40,8 @@ Feature: Equality
       | #t  | '() | B      |
       | 42  | 42  | A      |
       | 42  | 0   | B      |
+      | #\A | #\A | A      |
+      | #\A | #\B | B      |
 
   Scenario Outline: Use an equal? procedure with collections
     Given a file named "main.scm" with:
