@@ -68,6 +68,19 @@
     (close 2)
     ($$- 13)))
 
+(define primitive-syntaxes
+  '(
+    $$begin
+    $$define
+    $$define-syntax
+    $$if
+    $$lambda
+    $$let-syntax
+    $$letrec-syntax
+    $$quasiquote
+    $$quote
+    $$set!))
+
 ; Types
 
 (define pair-type 0)
@@ -242,13 +255,18 @@
 
 ; Expansion
 
-;; Context
+(define default-syntactic-environment
+  (map
+    (lambda (syntax) (cons syntax syntax))
+    primitive-syntaxes))
 
 (define-record-type denotation
   (make-denotation name value)
   denotation?
   (name denotation-name)
   (value denotation-value))
+
+;; Context
 
 (define-record-type expansion-context
   (make-expansion-context environment)
@@ -413,33 +431,49 @@
     (else
       #f)))
 
-(define (fill-ellipsis-template context matches template)
+(define (fill-ellipsis-template definition-context use-context matches template)
   (map
-    (lambda (matches) (fill-template context matches template))
+    (lambda (matches) (fill-template definition-context use-context matches template))
     (let ((variables (find-pattern-variables '() template)))
       (zip-alist
         (filter
           (lambda (pair) (memv (car pair) variables))
           matches)))))
 
-(define (fill-template context matches template)
+(define (fill-template definition-context use-context matches template)
+  (define (fill template)
+    (fill-template definition-context use-context matches template))
+
   (cond
     ((symbol? template)
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          (resolve-denotation context template))))
+          (let (
+              (name (denote-parameter use-context template))
+              (denotation (resolve-denotation definition-context template)))
+            (when (denotation? denotation)
+              ; TODO Test if this is really hygiene.
+              ; It looks like this destructive update of contexts is fine because
+              ; we always generate new names. But I'm not sure...
+              ; For example, how about this?
+              ;
+              ; ```scheme
+              ; (((lambdas (x) x) f) ((lambdas (x) x) y))
+              ; ```
+              (expansion-context-set! use-context name (denotation-value denotation)))
+            name))))
 
     ((pair? template)
       (if (and
           (pair? (cdr template))
           (eqv? (cadr template) '...))
         (append
-          (fill-ellipsis-template context matches (car template))
-          (fill-template context matches (cddr template)))
+          (fill-ellipsis-template definition-context use-context matches (car template))
+          (fill (cddr template)))
         (cons
-          (fill-template context matches (car template))
-          (fill-template context matches (cdr template)))))
+          (fill (car template))
+          (fill (cdr template)))))
 
     (else
       template)))
@@ -458,7 +492,7 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (fill-template definition-context matches (cadr rule))
+            (fill-template definition-context use-context matches (cadr rule))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
@@ -584,7 +618,9 @@
         (resolve-denotation-value context expression)))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '()) expression))
+  (expand-expression
+    (make-expansion-context default-syntactic-environment)
+    expression))
 
 ; Compilation
 
