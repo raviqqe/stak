@@ -54,10 +54,14 @@ Feature: Write
     """scheme
     (import (scheme base))
 
-    (write-string "\n")
+    (write-string "foo\nbar")
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "\"\\n\""
+    Then the stdout should contain exactly:
+    """
+    foo
+    bar
+    """
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
@@ -120,6 +124,7 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "(1 . 2)"
 
+  @stak
   Scenario: Write a procedure
     Given a file named "main.scm" with:
     """scheme
