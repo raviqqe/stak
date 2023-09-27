@@ -11,7 +11,7 @@
   (scheme write))
 
 (cond-expand
-  ((or chibi gambit gauche guile)
+  ((or chibi gauche guile)
     (define (rib tag car cdr)
       (cons (cons (cons '$$rib tag) car) cdr))
 
