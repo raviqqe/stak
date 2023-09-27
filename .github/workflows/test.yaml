@@ -48,8 +48,6 @@ jobs:
           - macos-latest
         interpreter:
           - name: stak
-            host: gsi
-          - name: stak
             host: chibi-scheme
           - name: stak
             host: gosh
