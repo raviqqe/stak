@@ -797,33 +797,31 @@
 
 ;; Utility
 
-(define (find-symbols* codes symbols)
-  (if (null? codes)
-    symbols
-    (let* (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (operand
-          (if (eqv? instruction call-instruction)
-            (rib-cdr operand)
-            operand)))
-      (find-symbols*
-        (rib-cdr codes)
-        (cond
-          ((eqv? instruction if-instruction)
-            (find-symbols* operand symbols))
-
-          ((and
-              (symbol? operand)
-              (not (eqv? operand rib-symbol))
-              (not (memq operand symbols)))
-            (cons operand symbols))
-
-          (else
-            symbols))))))
-
 (define (find-symbols codes)
-  (find-symbols* codes '()))
+  (let loop ((codes codes) (symbols '()))
+    (if (null? codes)
+      symbols
+      (let* (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (operand
+            (if (eqv? instruction call-instruction)
+              (rib-cdr operand)
+              operand)))
+        (loop
+          (rib-cdr codes)
+          (cond
+            ((eqv? instruction if-instruction)
+              (loop operand symbols))
+
+            ((and
+                (symbol? operand)
+                (not (eqv? operand rib-symbol))
+                (not (memq operand symbols)))
+              (cons operand symbols))
+
+            (else
+              symbols)))))))
 
 (define (reverse-codes codes)
   (let loop ((codes codes) (result '()))
