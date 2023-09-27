@@ -585,12 +585,29 @@
 
 ; Write
 
+(define special-chars
+  '(
+    (#\newline . "newline")
+    (#\space . "space")
+    (#\tab . "tab")
+    (#\return . "return")))
+
+(define escaped-chars
+  '(
+    (#\newline . #\n)
+    (#\tab . #\t)
+    (#\return . #\r)))
+
 (define (write-char x)
   (write-u8 (char->integer x)))
 
-; TODO
 (define (write-escaped-char x)
-  (write-u8 (char->integer x)))
+  (let ((pair (assoc x escaped-chars)))
+    (if pair
+      (begin
+        (write-char #\\)
+        (write-char (cdr pair)))
+      (write-char x))))
 
 (define (write-string x)
   (for-each write-char (string->list x)))
@@ -605,13 +622,6 @@
 
 (define (newline)
   (write-char #\newline))
-
-(define special-chars
-  '(
-    (#\newline . "newline")
-    (#\space . "space")
-    (#\tab . "tab")
-    (#\return . "return")))
 
 (define (write x)
   (cond

@@ -143,6 +143,10 @@ Feature: Write
       |               |
       | foo           |
       | Hello, world! |
+      | \n            |
+      | \t            |
+      | \r            |
+      | \n\t\r        |
 
   Scenario: Write a symbol
     Given a file named "main.scm" with:
