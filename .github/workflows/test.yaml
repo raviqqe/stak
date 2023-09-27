@@ -58,7 +58,7 @@ jobs:
           - name: chibi
             tags: not @stak
           - name: gauche
-            tags: not @stak
+            tags: not @stak or @gauche
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
