@@ -141,16 +141,16 @@ Feature: Write
     """scheme
     (import (scheme base) (scheme write))
 
-    (write <value>)
+    (write "<value>")
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<value>"
+    Then the stdout should contain exactly "\"<value>\""
 
     Examples:
-      | value           |
-      | ""              |
-      | "foo"           |
-      | "Hello, world!" |
+      | value         |
+      |               |
+      | foo           |
+      | Hello, world! |
 
   Scenario: Write a symbol
     Given a file named "main.scm" with:
