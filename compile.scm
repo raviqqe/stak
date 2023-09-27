@@ -795,6 +795,8 @@
 
 ; Constant building
 
+;; Context
+
 (define-record-type constant-context
   (make-constant-context constants constant-id)
   constant-context?
@@ -818,6 +820,8 @@
   (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
     (string->symbol (string-append "$c" (number->string id)))))
+
+;; Main
 
 ; We do not need to check boolean and null which are registered as default constants.
 (define (constant-normal? constant)
