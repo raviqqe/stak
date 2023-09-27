@@ -18,7 +18,7 @@ Feature: Smoke
   Scenario: Initialize a character in a list
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base) (scheme write))
+    (import (scheme base))
 
     (define x '(#\A))
 
