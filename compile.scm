@@ -837,7 +837,7 @@
 
 (define (build-constant-codes context constant continue)
   (let (
-      (symbol (encode-context-constant context constant))
+      (symbol (constant-context-constant context constant))
       (build-rib
         (lambda (car cdr tag)
           (build-rib-constant-codes context car cdr tag continue))))
@@ -882,14 +882,14 @@
           (error "invalid constant" constant))))))
 
 (define (build-constant context constant continue)
-  (if (or (constant-normal? constant) (encode-context-constant context constant))
+  (if (or (constant-normal? constant) (constant-context-constant context constant))
     (continue)
-    (let ((id (encode-context-constant-id context)))
+    (let ((id (constant-context-constant-id context)))
       (build-constant-codes
         context
         constant
         (lambda ()
-          (encode-context-add-constant! context constant id)
+          (constant-context-add-constant! context constant id)
           (rib set-instruction id (continue)))))))
 
 (define (build-constants context codes continue)
@@ -971,42 +971,13 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context symbols constants constant-id all-symbols)
+  (make-encode-context symbols constant-context)
   encode-context?
   (symbols encode-context-symbols encode-context-set-symbols!)
-  (constants encode-context-constants encode-context-set-constants!)
-  (constant-id encode-context-constant-id* encode-context-set-constant-id!)
-  (all-symbols encode-context-all-symbols* encode-context-set-all-symbols!))
-
-(define (encode-context-all-symbols context)
-  (when (not (encode-context-all-symbols* context))
-    (encode-context-set-all-symbols!
-      context
-      (append
-        (map cdr default-constants)
-        (list rib-symbol)
-        (encode-context-symbols context)
-        (map cdr (encode-context-constants context)))))
-  (encode-context-all-symbols* context))
+  (constant-context encode-context-constant-constant))
 
 (define (encode-context-constant context constant)
-  (cond
-    ((assv constant (append default-constants (encode-context-constants context)))
-      =>
-      cdr)
-
-    (else
-      #f)))
-
-(define (encode-context-constant-id context)
-  (let ((id (encode-context-constant-id* context)))
-    (encode-context-set-constant-id! context (+ id 1))
-    (string->symbol (string-append "$c" (number->string id)))))
-
-(define (encode-context-add-constant! context constant symbol)
-  (encode-context-set-constants!
-    context
-    (cons (cons constant symbol) (encode-context-constants context))))
+  (constant-context-constant (encode-context-constant-context context)))
 
 ;; Symbols
 
@@ -1105,7 +1076,7 @@
     ((symbol? operand)
       (* 2
         (or
-          (memv-position operand (encode-context-all-symbols context))
+          (memv-position operand (encode-context-symbols context))
           (error "symbol not found" operand))))
 
     (else
@@ -1196,23 +1167,21 @@
 
 (define (encode codes)
   (let* (
-      (context
-        (make-encode-context
-          (append
-            (map car primitives)
-            (find-symbols codes))
-          '()
-          0
-          #f))
+      (constant-context (make-constant-context '() 0))
       (codes
         (build-primitives
           primitives
-          (build-constants context codes (lambda () codes)))))
+          (build-constants constant-context codes (lambda () codes))))
+      (symbols (find-symbols codes)))
     (encode-symbols
-      (append
-        (encode-context-symbols context)
-        (map cdr (encode-context-constants context)))
-      (encode-codes context codes '() '()))))
+      symbols
+      (encode-codes
+        (make-encode-context
+          (append (map cdr default-constants) (list rib-symbol) symbols)
+          constant-context)
+        codes
+        '()
+        '()))))
 
 ; Main
 
