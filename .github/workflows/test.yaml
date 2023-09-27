@@ -55,8 +55,6 @@ jobs:
             host: guile
           - name: stak
             features: [gc_always]
-          - name: gambit
-            tags: not @stak and not @advanced
           - name: chibi
             tags: not @stak
           - name: gauche
