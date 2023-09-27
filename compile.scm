@@ -852,10 +852,11 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context symbols constants all-symbols)
+  (make-encode-context symbols constants constant-id all-symbols)
   encode-context?
   (symbols encode-context-symbols encode-context-set-symbols!)
   (constants encode-context-constants encode-context-set-constants!)
+  (constant-id encode-context-constant-id* encode-context-set-constant-id!)
   (all-symbols encode-context-all-symbols* encode-context-set-all-symbols!))
 
 (define (encode-context-all-symbols context)
@@ -879,10 +880,9 @@
       #f)))
 
 (define (encode-context-constant-id context)
-  (string->symbol
-    (string-append
-      "$c"
-      (number->string (length (encode-context-constants context))))))
+  (let ((id (encode-context-constant-id* context)))
+    (encode-context-set-constant-id! context (+ id 1))
+    (string->symbol (string-append "$c" (number->string id)))))
 
 (define (encode-context-add-constant! context constant symbol)
   (encode-context-set-constants!
@@ -1188,6 +1188,7 @@
             (map car primitives)
             (find-symbols codes))
           '()
+          0
           #f))
       (codes
         (build-primitives
