@@ -799,7 +799,7 @@
   (make-constant-context constants constant-id)
   constant-context?
   (constants constant-context-constants constant-context-set-constants!)
-  (constant-id constant-context-constant-id* constant-context-set-constant-id!))
+  (constant-id constant-context-constant-id constant-context-set-constant-id!))
 
 (define (constant-context-constant context constant)
   (cond
@@ -814,8 +814,8 @@
     context
     (cons (cons constant symbol) (constant-context-constants context))))
 
-(define (constant-context-constant-id context)
-  (let ((id (constant-context-constant-id* context)))
+(define (constant-context-generate-constant-id! context)
+  (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
     (string->symbol (string-append "$c" (number->string id)))))
 
@@ -841,7 +841,7 @@
             (rib
               constant-instruction
               tag
-              (compile-primitive-call 'rib (continue)))))))))
+              (compile-primitive-call rib-symbol (continue)))))))))
 
 (define (build-constant-codes context constant continue)
   (let (
@@ -892,7 +892,7 @@
 (define (build-constant context constant continue)
   (if (or (constant-normal? constant) (constant-context-constant context constant))
     (continue)
-    (let ((id (constant-context-constant-id context)))
+    (let ((id (constant-context-generate-constant-id! context)))
       (build-constant-codes
         context
         constant
@@ -1161,7 +1161,7 @@
       (rib constant-instruction
         procedure-type
         (compile-primitive-call
-          'rib
+          rib-symbol
           (rib set-instruction (car primitive) continuation))))))
 
 (define (build-primitives primitives continuation)
