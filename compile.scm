@@ -801,15 +801,23 @@
   (constants constant-context-constants constant-context-set-constants!)
   (constant-id constant-context-constant-id* constant-context-set-constant-id!))
 
-(define (constant-context-constant-id context)
-  (let ((id (constant-context-constant-id* context)))
-    (constant-context-set-constant-id! context (+ id 1))
-    (string->symbol (string-append "$c" (number->string id)))))
+(define (constant-context-constant context constant)
+  (cond
+    ((assv constant (append default-constants (constant-context-constants context))) =>
+      cdr)
+
+    (else
+      #f)))
 
 (define (constant-context-add-constant! context constant symbol)
   (constant-context-set-constants!
     context
     (cons (cons constant symbol) (constant-context-constants context))))
+
+(define (constant-context-constant-id context)
+  (let ((id (constant-context-constant-id* context)))
+    (constant-context-set-constant-id! context (+ id 1))
+    (string->symbol (string-append "$c" (number->string id)))))
 
 ; We do not need to check boolean and null which are registered as default constants.
 (define (constant-normal? constant)
@@ -974,10 +982,10 @@
   (make-encode-context symbols constant-context)
   encode-context?
   (symbols encode-context-symbols encode-context-set-symbols!)
-  (constant-context encode-context-constant-constant))
+  (constant-context encode-context-constant-context))
 
 (define (encode-context-constant context constant)
-  (constant-context-constant (encode-context-constant-context context)))
+  (constant-context-constant (encode-context-constant-context context) constant))
 
 ;; Symbols
 
