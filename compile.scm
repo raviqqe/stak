@@ -918,7 +918,7 @@
 (define (build-constant-codes context constant continue)
   (let (
       (symbol (encode-context-constant context constant))
-      (build-rib-constant-codes
+      (build-rib
         (lambda (car cdr tag)
           (build-rib-constant-codes context car cdr tag continue))))
     (if symbol
@@ -928,13 +928,13 @@
           (rib constant-instruction constant (continue)))
 
         ((bytevector? constant)
-          (build-rib-constant-codes
+          (build-rib
             (bytevector-length constant)
             (bytevector->list constant)
             bytevector-type))
 
         ((char? constant)
-          (build-rib-constant-codes (char->integer constant) '() char-type))
+          (build-rib (char->integer constant) '() char-type))
 
         ((and (number? constant) (> 0 constant))
           (rib constant-instruction
@@ -944,16 +944,16 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          (build-rib-constant-codes (car constant) (cdr constant) pair-type))
+          (build-rib (car constant) (cdr constant) pair-type))
 
         ((string? constant)
-          (build-rib-constant-codes
+          (build-rib
             (string-length constant)
             (map char->integer (string->list constant))
             string-type))
 
         ((vector? constant)
-          (build-rib-constant-codes
+          (build-rib
             (vector-length constant)
             (vector->list constant)
             vector-type))
