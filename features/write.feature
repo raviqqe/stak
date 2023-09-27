@@ -96,6 +96,8 @@ Feature: Write
       | (1 2)             |
       | (1 2 3)           |
       | (1 (1 2) (3 4 5)) |
+      | (1 . 2)           |
+      | (1 2 . 3 )        |
 
   Scenario Outline: Write a number
     Given a file named "main.scm" with:
@@ -114,16 +116,6 @@ Feature: Write
       | 42    |
       | -1    |
       | -42   |
-
-  Scenario: Write a pair
-    Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
-
-    (write '(1 . 2))
-    """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "(1 . 2)"
 
   @stak
   Scenario: Write a procedure
