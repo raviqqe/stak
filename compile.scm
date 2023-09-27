@@ -793,102 +793,23 @@
 (define (compile expression)
   (compile-expression (make-compilation-context '()) expression '()))
 
-; Encoding
+; Constant building
 
-;; Utility
+(define-record-type constant-context
+  (make-constant-context constants constant-id)
+  constant-context?
+  (constants constant-context-constants constant-context-set-constants!)
+  (constant-id constant-context-constant-id* constant-context-set-constant-id!))
 
-(define (find-symbols codes)
-  (let loop ((codes codes) (symbols '()))
-    (if (null? codes)
-      symbols
-      (let* (
-          (instruction (rib-tag codes))
-          (operand (rib-car codes))
-          (operand
-            (if (eqv? instruction call-instruction)
-              (rib-cdr operand)
-              operand)))
-        (loop
-          (rib-cdr codes)
-          (cond
-            ((eqv? instruction if-instruction)
-              (loop operand symbols))
-
-            ((and
-                (symbol? operand)
-                (not (eqv? operand rib-symbol))
-                (not (memq operand symbols)))
-              (cons operand symbols))
-
-            (else
-              symbols)))))))
-
-(define (reverse-codes codes)
-  (let loop ((codes codes) (result '()))
-    (if (null? codes)
-      result
-      (loop (rib-cdr codes) (cons codes result)))))
-
-(define (find-continuation left right)
-  (let loop (
-      (left (reverse-codes left))
-      (right (reverse-codes right))
-      (result '()))
-    (if (and
-        (pair? left)
-        (pair? right)
-        (eq? (car left) (car right)))
-      (loop (cdr left) (cdr right) (car left))
-      result)))
-
-(define (count-skips codes continuation)
-  (let loop ((codes codes) (count 0))
-    (if (eq? codes continuation)
-      count
-      (loop (rib-cdr codes) (+ 1 count)))))
-
-;; Context
-
-; TODO Consider splitting a context for constant building.
-(define-record-type encode-context
-  (make-encode-context symbols constants constant-id all-symbols)
-  encode-context?
-  (symbols encode-context-symbols encode-context-set-symbols!)
-  (constants encode-context-constants encode-context-set-constants!)
-  (constant-id encode-context-constant-id* encode-context-set-constant-id!)
-  (all-symbols encode-context-all-symbols* encode-context-set-all-symbols!))
-
-(define (encode-context-all-symbols context)
-  (when (not (encode-context-all-symbols* context))
-    (encode-context-set-all-symbols!
-      context
-      (append
-        (map cdr default-constants)
-        (list rib-symbol)
-        (encode-context-symbols context)
-        (map cdr (encode-context-constants context)))))
-  (encode-context-all-symbols* context))
-
-(define (encode-context-constant context constant)
-  (cond
-    ((assv constant (append default-constants (encode-context-constants context)))
-      =>
-      cdr)
-
-    (else
-      #f)))
-
-(define (encode-context-constant-id context)
-  (let ((id (encode-context-constant-id* context)))
-    (encode-context-set-constant-id! context (+ id 1))
+(define (constant-context-constant-id context)
+  (let ((id (constant-context-constant-id* context)))
+    (constant-context-set-constant-id! context (+ id 1))
     (string->symbol (string-append "$c" (number->string id)))))
 
-(define (encode-context-add-constant! context constant symbol)
-  (encode-context-set-constants!
+(define (constant-context-add-constant! context constant symbol)
+  (constant-context-set-constants!
     context
-    (cons (cons constant symbol) (encode-context-constants context))))
-
-;; Constants
+    (cons (cons constant symbol) (constant-context-constants context))))
 
 ; We do not need to check boolean and null which are registered as default constants.
 (define (constant-normal? constant)
@@ -992,6 +913,100 @@
 
         (else
           (continue))))))
+
+; Encoding
+
+;; Utility
+
+(define (find-symbols codes)
+  (let loop ((codes codes) (symbols '()))
+    (if (null? codes)
+      symbols
+      (let* (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (operand
+            (if (eqv? instruction call-instruction)
+              (rib-cdr operand)
+              operand)))
+        (loop
+          (rib-cdr codes)
+          (cond
+            ((eqv? instruction if-instruction)
+              (loop operand symbols))
+
+            ((and
+                (symbol? operand)
+                (not (eqv? operand rib-symbol))
+                (not (memq operand symbols)))
+              (cons operand symbols))
+
+            (else
+              symbols)))))))
+
+(define (reverse-codes codes)
+  (let loop ((codes codes) (result '()))
+    (if (null? codes)
+      result
+      (loop (rib-cdr codes) (cons codes result)))))
+
+(define (find-continuation left right)
+  (let loop (
+      (left (reverse-codes left))
+      (right (reverse-codes right))
+      (result '()))
+    (if (and
+        (pair? left)
+        (pair? right)
+        (eq? (car left) (car right)))
+      (loop (cdr left) (cdr right) (car left))
+      result)))
+
+(define (count-skips codes continuation)
+  (let loop ((codes codes) (count 0))
+    (if (eq? codes continuation)
+      count
+      (loop (rib-cdr codes) (+ 1 count)))))
+
+;; Context
+
+(define-record-type encode-context
+  (make-encode-context symbols constants constant-id all-symbols)
+  encode-context?
+  (symbols encode-context-symbols encode-context-set-symbols!)
+  (constants encode-context-constants encode-context-set-constants!)
+  (constant-id encode-context-constant-id* encode-context-set-constant-id!)
+  (all-symbols encode-context-all-symbols* encode-context-set-all-symbols!))
+
+(define (encode-context-all-symbols context)
+  (when (not (encode-context-all-symbols* context))
+    (encode-context-set-all-symbols!
+      context
+      (append
+        (map cdr default-constants)
+        (list rib-symbol)
+        (encode-context-symbols context)
+        (map cdr (encode-context-constants context)))))
+  (encode-context-all-symbols* context))
+
+(define (encode-context-constant context constant)
+  (cond
+    ((assv constant (append default-constants (encode-context-constants context)))
+      =>
+      cdr)
+
+    (else
+      #f)))
+
+(define (encode-context-constant-id context)
+  (let ((id (encode-context-constant-id* context)))
+    (encode-context-set-constant-id! context (+ id 1))
+    (string->symbol (string-append "$c" (number->string id)))))
+
+(define (encode-context-add-constant! context constant symbol)
+  (encode-context-set-constants!
+    context
+    (cons (cons constant symbol) (encode-context-constants context))))
 
 ;; Symbols
 
