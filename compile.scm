@@ -815,7 +815,7 @@
 (define (constant-context-generate-constant-id! context)
   (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
-    (string->symbol (string-append "$c" (number->string id)))))
+    (string->symbol (string-append "$" (number->string id)))))
 
 ;; Main
 
