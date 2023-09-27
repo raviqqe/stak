@@ -1,6 +1,6 @@
 ; Stak compiler based on Ribbit's
 ;
-; All compiler-generated variables are prefixed with `$`.
+; All compiler-internal variables contain at least one `$` character in their names.
 
 ; Compatibility
 
@@ -329,17 +329,13 @@
     (denotation-name denotation)
     denotation))
 
-(define (denote-parameter context name)
+(define (rename-variable context name)
   (let (
       (count
         (list-count
           (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context)))
-      (name (string-append "$" (symbol->string name))))
-    (string->symbol
-      (if (eqv? count 0)
-        name
-        (string-append name "$" (number->string count))))))
+          (expansion-context-environment context))))
+    (string->symbol (string-append (symbol->string name) "$" (number->string count)))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -448,7 +444,7 @@
         (if pair
           (cdr pair)
           (let (
-              (name (denote-parameter use-context template))
+              (name (rename-variable use-context template))
               (denotation (resolve-denotation definition-context template)))
             (when (denotation? denotation)
               ; TODO Refactor this.
@@ -561,7 +557,7 @@
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (denote-parameter context name)))
+                      (lambda (name) (cons name (rename-variable context name)))
                       (parameter-names parameters)))))
               (list
                 '$$lambda
@@ -817,7 +813,7 @@
 (define (constant-context-generate-constant-id! context)
   (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
-    (string->symbol (string-append "$c" (number->string id)))))
+    (string->symbol (string-append "$" (number->string id)))))
 
 ;; Main
 
