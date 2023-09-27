@@ -936,8 +936,7 @@
         ((char? constant)
           (build-rib-constant-codes (char->integer constant) '() char-type))
 
-        ; Negative number
-        ((number? constant)
+        ((and (number? constant) (> 0 constant))
           (rib constant-instruction
             0
             (rib constant-instruction
