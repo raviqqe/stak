@@ -898,46 +898,50 @@
     (and (number? constant) (>= constant 0))
     (stak-procedure? constant)))
 
-(define (build-constant-rib context car cdr tag continuation)
-  (define (build-child constant continuation)
+(define (build-rib-constant-codes context car cdr tag continue)
+  (define (build-child constant continue)
     (build-constant
       context
       constant
-      (build-constant-codes
-        context
-        constant
-        continuation)))
+      (lambda ()
+        (build-constant-codes
+          context
+          constant
+          continue))))
 
   (build-child
     car
-    (build-child
-      cdr
-      (if (eqv? tag pair-type)
-        (compile-primitive-call 'cons continuation)
-        (rib constant-instruction
-          tag
-          (compile-primitive-call 'rib continuation))))))
+    (lambda ()
+      (build-child
+        cdr
+        (lambda ()
+          (if (eqv? tag pair-type)
+            (compile-primitive-call 'cons (continue))
+            (rib
+              constant-instruction
+              tag
+              (compile-primitive-call 'rib (continue)))))))))
 
-(define (build-constant-codes context constant continuation)
+(define (build-constant-codes context constant continue)
   (let (
       (symbol (encode-context-constant context constant))
-      (build-constant-rib
+      (build-rib-constant-codes
         (lambda (car cdr tag)
-          (build-constant-rib context car cdr tag continuation))))
+          (build-rib-constant-codes context car cdr tag continue))))
     (if symbol
-      (rib get-instruction symbol continuation)
+      (rib get-instruction symbol (continue))
       (cond
         ((constant-normal? constant)
-          (rib constant-instruction constant continuation))
+          (rib constant-instruction constant (continue)))
 
         ((bytevector? constant)
-          (build-constant-rib
+          (build-rib-constant-codes
             (bytevector-length constant)
             (bytevector->list constant)
             bytevector-type))
 
         ((char? constant)
-          (build-constant-rib (char->integer constant) '() char-type))
+          (build-rib-constant-codes (char->integer constant) '() char-type))
 
         ; Negative number
         ((number? constant)
@@ -945,19 +949,19 @@
             0
             (rib constant-instruction
               (abs constant)
-              (compile-primitive-call '$$- continuation))))
+              (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          (build-constant-rib (car constant) (cdr constant) pair-type))
+          (build-rib-constant-codes (car constant) (cdr constant) pair-type))
 
         ((string? constant)
-          (build-constant-rib
+          (build-rib-constant-codes
             (string-length constant)
             (map char->integer (string->list constant))
             string-type))
 
         ((vector? constant)
-          (build-constant-rib
+          (build-rib-constant-codes
             (vector-length constant)
             (vector->list constant)
             vector-type))
@@ -965,42 +969,38 @@
         (else
           (error "invalid constant" constant))))))
 
-(define (build-constant context constant continuation)
+(define (build-constant context constant continue)
   (if (or (constant-normal? constant) (encode-context-constant context constant))
-    continuation
-    (let* (
-        (id (encode-context-constant-id context))
-        (continuation
-          (build-constant-codes
-            context
-            constant
-            (rib set-instruction id continuation))))
-      (encode-context-add-constant! context constant id)
-      continuation)))
+    (continue)
+    (let ((id (encode-context-constant-id context)))
+      (build-constant-codes
+        context
+        constant
+        (lambda ()
+          (encode-context-add-constant! context constant id)
+          (rib set-instruction id (continue)))))))
 
-(define (build-constants context codes continuation)
+(define (build-constants context codes continue)
   (if (null? codes)
-    continuation
+    (continue)
     (let (
+        (continue (lambda () (build-constants context (rib-cdr codes) continue)))
         (instruction (rib-tag codes))
         (operand (rib-car codes)))
-      (build-constants
-        context
-        (rib-cdr codes)
-        (cond
-          ((eqv? instruction constant-instruction)
-            (build-constant
-              context
-              operand
-              (if (stak-procedure? operand)
-                (build-constants context (procedure-code operand) continuation)
-                continuation)))
+      (cond
+        ((eqv? instruction constant-instruction)
+          (build-constant
+            context
+            operand
+            (if (stak-procedure? operand)
+              (lambda () (build-constants context (procedure-code operand) continue))
+              continue)))
 
-          ((eqv? instruction if-instruction)
-            (build-constants context operand continuation))
+        ((eqv? instruction if-instruction)
+          (build-constants context operand continue))
 
-          (else
-            continuation))))))
+        (else
+          (continue))))))
 
 ;; Symbols
 
@@ -1197,7 +1197,10 @@
             (find-symbols codes))
           '()
           #f))
-      (codes (build-primitives primitives (build-constants context codes codes))))
+      (codes
+        (build-primitives
+          primitives
+          (build-constants context codes (lambda () codes)))))
     (encode-symbols
       (append
         (encode-context-symbols context)
