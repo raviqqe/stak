@@ -6,7 +6,7 @@ set -ex
 
 cd $(dirname $0)/..
 
-brew install gambit-scheme gauche guile
+brew install gauche
 bundler install
 
 cargo build $(feature_flags)

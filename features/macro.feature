@@ -51,7 +51,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Capture a free variable
     Given a file named "main.scm" with:
     """scheme
@@ -89,7 +88,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Match a succeeding ellipsis
     Given a file named "main.scm" with:
     """scheme
@@ -171,7 +169,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  @advanced
   Scenario: Match an ellipsis and an improper list
     Given a file named "main.scm" with:
     """scheme
@@ -187,7 +184,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "C"
 
-  @advanced
   Scenario: Expand an empty ellipsis and an improper list
     Given a file named "main.scm" with:
     """scheme
@@ -282,7 +278,6 @@ Feature: Macro
     """
     Then the exit status should not be 0
 
-  @advanced
   Scenario: Define a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -298,7 +293,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Define a local macro capturing a global value of the same name
     Given a file named "main.scm" with:
     """scheme
@@ -316,7 +310,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -334,7 +327,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  @advanced
   Scenario: Define a mutually recursive local macro
     Given a file named "main.scm" with:
     """scheme
@@ -358,7 +350,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Define a recursive local macro in a body
     Given a file named "main.scm" with:
     """scheme
@@ -377,7 +368,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  @advanced
   Scenario: Define a mutually recursive local macro in a body
     Given a file named "main.scm" with:
     """scheme
@@ -403,7 +393,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Shadow a global value by a global macro
     Given a file named "main.scm" with:
     """scheme
@@ -421,7 +410,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Use a global macro as a shadowed value
     Given a file named "main.scm" with:
     """scheme
@@ -439,7 +427,6 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  @advanced
   Scenario: Use a higher-order macro
     Given a file named "main.scm" with:
     """scheme
@@ -460,7 +447,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Shadow a global macro by a global value
     Given a file named "main.scm" with:
     """scheme
@@ -478,7 +464,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Shadow a local value by a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -495,7 +480,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Use a local macro as a shadowed value
     Given a file named "main.scm" with:
     """scheme
@@ -512,7 +496,6 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  @advanced
   Scenario: Shadow a local macro by a local value
     Given a file named "main.scm" with:
     """scheme
@@ -529,7 +512,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Shadow a literal by a global value
     Given a file named "main.scm" with:
     """scheme
@@ -547,7 +529,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Shadow a literal by a local value
     Given a file named "main.scm" with:
     """scheme
@@ -564,7 +545,6 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  @advanced
   Scenario: Capture a local value in a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -582,7 +562,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Capture a local macro in a local macro
     Given a file named "main.scm" with:
     """scheme
@@ -604,7 +583,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Capture a local macro in a local macro of the same name
     Given a file named "main.scm" with:
     """scheme
@@ -625,7 +603,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Put a sequence in a body of let-syntax
     Given a file named "main.scm" with:
     """scheme
@@ -638,7 +615,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @advanced
   Scenario: Put a sequence in a body of letrec-syntax
     Given a file named "main.scm" with:
     """scheme
@@ -667,7 +643,6 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the stderr should contain "invalid syntax"
 
-  @advanced
   Scenario: Resolve denotations recursively
     Given a file named "main.scm" with:
     """scheme
@@ -689,7 +664,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  @advanced
   Scenario: Bind the same name as a global value
     Given a file named "main.scm" with:
     """scheme
@@ -707,7 +681,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Bind the same name as a local value
     Given a file named "main.scm" with:
     """scheme
@@ -724,7 +697,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Bind the same name as a global macro
     Given a file named "main.scm" with:
     """scheme
@@ -744,7 +716,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @advanced
   Scenario: Bind the same name as a local macro
     Given a file named "main.scm" with:
     """scheme
