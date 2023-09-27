@@ -2,7 +2,7 @@
 
 ; Stak compiler based on Ribbit's
 ;
-; All compiler-generated variables are prefixed with `$`.
+; All compiler-internal variables contain at least one `$` character in their names.
 
 ; Compatibility
 
