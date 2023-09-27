@@ -284,8 +284,9 @@
 
 ; Primitives
 
-(define (primitive id) (rib id '() procedure-type))
+(define (primitive id) ($$rib id '() procedure-type))
 
+(define rib $$rib)
 (define cons (primitive 1))
 (define close (primitive 2))
 (define rib? (primitive 3))

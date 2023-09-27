@@ -47,7 +47,7 @@
     (#t . $$true)
     (() . $$null)))
 
-(define rib-symbol 'rib)
+(define rib-symbol '$$rib)
 
 ; Instructions
 
@@ -657,7 +657,7 @@
         ((cons $$-)
           2)
 
-        ((rib)
+        (($$rib)
           3)
 
         (else
