@@ -19,15 +19,22 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Write an escaped character
+  Scenario Outline: Write an escaped character
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))
 
-    (write #\A)
+    (write <value>)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "#\A"
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value     |
+      | #\\a      |
+      | #\\A      |
+      | #\\\\\\\\ |
+      | #\\(      |
 
   @stak
   Scenario Outline: Write an escaped special character
