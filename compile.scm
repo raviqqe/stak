@@ -851,6 +851,7 @@
 
 ;; Context
 
+; TODO Consider splitting a context for constant building.
 (define-record-type encode-context
   (make-encode-context symbols constants constant-id all-symbols)
   encode-context?
