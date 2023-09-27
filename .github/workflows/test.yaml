@@ -52,6 +52,8 @@ jobs:
           - name: stak
             host: gosh
           - name: stak
+            host: guile
+          - name: stak
             features: [gc_always]
           - name: gambit
             tags: not @stak and not @advanced
