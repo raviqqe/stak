@@ -336,12 +336,12 @@
       (count
         (list-count
           (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context)))
-      (name (string-append "$" (symbol->string name))))
+          (expansion-context-environment context))))
     (string->symbol
-      (if (eqv? count 0)
-        name
-        (string-append name "$" (number->string count))))))
+      (string-append
+        (symbol->string name)
+        "$"
+        (number->string count)))))
 
 (define (find-pattern-variables literals pattern)
   (cond
