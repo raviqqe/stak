@@ -98,7 +98,7 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAAAAAA"
 
-  @stak
+  @stak @guile
   Scenario: Use comparison operators with an insufficient number of arguments
     Given a file named "main.scm" with:
     """scheme
