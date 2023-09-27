@@ -331,7 +331,7 @@
     (denotation-name denotation)
     denotation))
 
-(define (denote-parameter context name)
+(define (rename-variable context name)
   (let (
       (count
         (list-count
@@ -450,7 +450,7 @@
         (if pair
           (cdr pair)
           (let (
-              (name (denote-parameter use-context template))
+              (name (rename-variable use-context template))
               (denotation (resolve-denotation definition-context template)))
             (when (denotation? denotation)
               ; TODO Refactor this.
@@ -563,7 +563,7 @@
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (denote-parameter context name)))
+                      (lambda (name) (cons name (rename-variable context name)))
                       (parameter-names parameters)))))
               (list
                 '$$lambda
