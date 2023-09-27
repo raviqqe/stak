@@ -12,7 +12,7 @@ cd $(dirname $0)/..
 for file in $(find bench -type f -name '*.scm' | sort); do
   base=${file%.scm}
 
-  cat prelude.scm $file | ./compile.scm >$base.out
+  cat prelude.scm $file | gosh compile.scm >$base.out
 
   hyperfine \
     --sort command \
