@@ -36,7 +36,7 @@ Feature: Write
       | #\\\\\\\\ |
       | #\\(      |
 
-  @stak @gauche
+  @stak @gauche @guile
   Scenario Outline: Write an escaped special character
     Given a file named "main.scm" with:
     """scheme
