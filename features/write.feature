@@ -41,11 +41,11 @@ Feature: Write
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value    |
-      | #\newline |
-      | #\return |
-      | #\space  |
-      | #\tab    |
+      | value      |
+      | #\\newline |
+      | #\\return  |
+      | #\\space   |
+      | #\\tab     |
 
   Scenario: Write a string
     Given a file named "main.scm" with:
@@ -150,10 +150,10 @@ Feature: Write
       |               |
       | foo           |
       | Hello, world! |
-      | \n            |
-      | \t            |
-      | \r            |
-      | \n\t\r        |
+      | \\n           |
+      | \\t           |
+      | \\r           |
+      | \\n\\t\\r     |
 
   Scenario: Write a symbol
     Given a file named "main.scm" with:
