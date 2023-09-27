@@ -25,4 +25,4 @@ Feature: Smoke
     (write-u8 (char->integer #\A))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "BB"
+    Then the stdout should contain exactly "A"
