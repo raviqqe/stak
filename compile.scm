@@ -1,5 +1,3 @@
-#!/usr/bin/env gsi
-
 ; Stak compiler based on Ribbit's
 ;
 ; All compiler-generated variables are prefixed with `$`.
@@ -13,7 +11,7 @@
   (scheme write))
 
 (cond-expand
-  ((or chibi gambit gauche)
+  ((or chibi gambit gauche guile)
     (define (rib tag car cdr)
       (cons (cons (cons '$$rib tag) car) cdr))
 

@@ -588,10 +588,15 @@
 
 (define special-chars
   '(
+    (#\alarm . "alarm")
+    (#\backspace . "backspace")
+    (#\delete . "delete")
+    (#\escape . "escape")
     (#\newline . "newline")
+    (#\null . "null")
+    (#\return . "return")
     (#\space . "space")
-    (#\tab . "tab")
-    (#\return . "return")))
+    (#\tab . "tab")))
 
 (define escaped-chars
   '(

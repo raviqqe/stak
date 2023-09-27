@@ -55,13 +55,17 @@ jobs:
           - name: stak
             host: gosh
           - name: stak
+            host: guile
+          - name: stak
             features: [gc_always]
           - name: gambit
             tags: not @stak and not @advanced
           - name: chibi
             tags: not @stak
           - name: gauche
-            tags: not @stak
+            tags: not @stak or @gauche
+          - name: guile
+            tags: not @stak or @guile
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
