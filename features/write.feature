@@ -136,6 +136,22 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#procedure"
 
+  Scenario Outline: Write a string
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write <value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value           |
+      | ""              |
+      | "foo"           |
+      | "Hello, world!" |
+
   Scenario: Write a symbol
     Given a file named "main.scm" with:
     """scheme
