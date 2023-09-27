@@ -48,11 +48,16 @@ Feature: Write
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value      |
-      | #\\newline |
-      | #\\return  |
-      | #\\space   |
-      | #\\tab     |
+      | value        |
+      | #\\alarm     |
+      | #\\backspace |
+      | #\\delete    |
+      | #\\escape    |
+      | #\\newline   |
+      | #\\null      |
+      | #\\return    |
+      | #\\space     |
+      | #\\tab       |
 
   Scenario: Write a string
     Given a file named "main.scm" with:
