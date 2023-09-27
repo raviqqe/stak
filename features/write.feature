@@ -97,7 +97,7 @@ Feature: Write
       | (1 2 3)           |
       | (1 (1 2) (3 4 5)) |
       | (1 . 2)           |
-      | (1 2 . 3 )        |
+      | (1 2 . 3)         |
 
   Scenario Outline: Write a number
     Given a file named "main.scm" with:
