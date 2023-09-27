@@ -401,6 +401,11 @@
 
 (define car rib-car)
 (define cdr rib-cdr)
+(define (cadr x) (car (cdr x)))
+(define (cddr x) (cdr (cdr x)))
+(define (caddr x) (car (cddr x)))
+
+(define (list . xs) xs)
 
 (define (length xs)
   (let loop ((xs xs) (y 0))
@@ -436,6 +441,22 @@
 
 (define memq (mem eq?))
 (define memv (mem eqv?))
+
+(define (assoc x xs . rest)
+  (define eq?
+    (if (null? rest)
+      equal?
+      (car rest)))
+
+  (if (null? xs)
+    #f
+    (let ((pair (car xs)))
+      (if (eq? x (car pair))
+        pair
+        (assoc x (cdr xs) eq?)))))
+
+(define (assq x xs) (assoc x xs eq?))
+(define (assv x xs) (assoc x xs eqv?))
 
 (define (append . lists)
   (reduce-right append-lists '() lists))
@@ -511,6 +532,25 @@
 (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
 (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
+(define (number->string x)
+  ; TODO Make a radix an optional argument.
+  (define radix 10)
+
+  (define (number->string-aux x tail)
+    (let ((q (/ x radix)))
+      (let ((d (- x (* q radix))))
+        (let ((t (cons (if (< 9 d) (+ 65 (- d 10)) (+ 48 d)) tail)))
+          (if (< 0 q)
+            (number->string-aux q t)
+            t)))))
+
+  (let (
+      (chars
+        (if (< x 0)
+          (cons (char->integer #\-) (number->string-aux (- 0 x) '()))
+          (number->string-aux x '()))))
+    (list->string chars)))
+
 ;; Procedure
 
 (define procedure? (instance? procedure-type))
@@ -535,6 +575,9 @@
 
 (define vector? (instance? vector-type))
 
+(define (vector-length xs)
+  (length (vector->list xs)))
+
 (define (list->vector x)
   (rib (length x) x vector-type))
 
@@ -542,11 +585,32 @@
 
 ; Write
 
+(define special-chars
+  '(
+    (#\newline . "newline")
+    (#\space . "space")
+    (#\tab . "tab")
+    (#\return . "return")))
+
+(define escaped-chars
+  '(
+    (#\newline . #\n)
+    (#\tab . #\t)
+    (#\return . #\r)))
+
 (define (write-char x)
   (write-u8 (char->integer x)))
 
-(define (write-string string)
-  (for-each write-char (string->list string)))
+(define (write-escaped-char x)
+  (let ((pair (assoc x escaped-chars)))
+    (if pair
+      (begin
+        (write-char #\\)
+        (write-char (cdr pair)))
+      (write-char x))))
+
+(define (write-string x)
+  (for-each write-char (string->list x)))
 
 (define (write-bytevector xs)
   (let loop ((xs xs) (index 0))
@@ -558,3 +622,92 @@
 
 (define (newline)
   (write-char #\newline))
+
+(define (write x)
+  (cond
+    ((char? x)
+      (write-char #\#)
+      (write-char #\\)
+      (let ((pair (assoc x special-chars)))
+        (if pair
+          (display (cdr pair))
+          (write-char x))))
+
+    ((pair? x)
+      (write-list x write))
+
+    ((string? x)
+      (write-char #\")
+      (for-each write-escaped-char (string->list x))
+      (write-char #\"))
+
+    ((vector? x)
+      (write-vector x write))
+
+    (else
+      (display x))))
+
+(define (display x)
+  (cond
+    ((not x)
+      (write-char #\#)
+      (write-char #\f))
+
+    ((eqv? x #t)
+      (write-char #\#)
+      (write-char #\t))
+
+    ((char? x)
+      (write-char x))
+
+    ((null? x)
+      (write-list x display))
+
+    ((number? x)
+      (display (number->string x)))
+
+    ((pair? x)
+      (write-list x display))
+
+    ((procedure? x)
+      (write-char #\#)
+      (write-string "procedure"))
+
+    ((string? x)
+      (write-string x))
+
+    ((symbol? x)
+      (display (symbol->string x)))
+
+    ((vector? x)
+      (write-vector x display))
+
+    (else
+      (error "unknown type"))))
+
+(define (write-list xs write)
+  (write-char #\()
+
+  (when (pair? xs)
+    (write (car xs))
+    (let loop ((xs (cdr xs)))
+      (cond
+        ((pair? xs)
+          (write-char #\space)
+          (write (car xs))
+          (loop (cdr xs)))
+
+        ((null? xs)
+          #f)
+
+        (else
+          (write-char #\space)
+          (write-char #\.)
+          (write-char #\space)
+          (write xs)))))
+
+  (write-char #\)))
+
+(define (write-vector xs write)
+  (write-char #\#)
+  (write-list (vector->list xs) write))
