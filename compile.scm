@@ -900,14 +900,7 @@
 
 (define (build-rib-constant-codes context car cdr tag continue)
   (define (build-child constant continue)
-    (build-constant
-      context
-      constant
-      (lambda ()
-        (build-constant-codes
-          context
-          constant
-          continue))))
+    (build-constant context constant (lambda () (build-constant-codes context constant continue))))
 
   (build-child
     car
