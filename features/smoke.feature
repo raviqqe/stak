@@ -14,3 +14,15 @@ Feature: Smoke
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "BB"
+
+  Scenario: Initialize a character in a list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (define x '(#\A))
+
+    (write-u8 (char->integer #\A))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "BB"
