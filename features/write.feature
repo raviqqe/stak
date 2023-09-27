@@ -30,15 +30,22 @@ Feature: Write
     Then the stdout should contain exactly "#\A"
 
   @stak
-  Scenario: Write an escaped special character
+  Scenario Outline: Write an escaped special character
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))
 
-    (write #\newline)
+    (write <value>)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "#\newline"
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value    |
+      | #\newline |
+      | #\return |
+      | #\space  |
+      | #\tab    |
 
   Scenario: Write a string
     Given a file named "main.scm" with:
