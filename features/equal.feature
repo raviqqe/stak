@@ -25,7 +25,7 @@ Feature: Equality
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (equal? <lhs> <rhs>) 65 66))
+    (write-u8 (if (eqv? <lhs> <rhs>) 65 66))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
