@@ -399,6 +399,14 @@
 
 (define char->integer rib-car)
 
+;; EOF object
+
+(define eof (rib 0 '() eof-object-type))
+
+(define eof-object? (instance? eof-object-type))
+
+(define (eof-object) eof)
+
 ;; List
 
 (define pair? (instance? pair-type))
@@ -558,6 +566,19 @@
           (number->string-aux x '()))))
     (list->string chars)))
 
+;; Port
+
+(define (make-port name)
+  (rib #f name port-type))
+
+(define stdin-port (make-port 'stdin))
+
+(define stdout-port (make-port 'stdout))
+
+(define (current-input-port) stdin-port)
+
+(define (current-output-port) stdout-port)
+
 ;; Procedure
 
 (define procedure? (instance? procedure-type))
@@ -590,17 +611,22 @@
 
 (define vector->list rib-cdr)
 
-; Input
-
-(define (make-port name)
-  (rib #f name port-type))
-
-(define stdin-port (make-port 'stdin))
-
-(define (current-input-port)
-  stdin-port)
-
 ; Read
+
+(define (read-char . rest)
+  (let* (
+      (port (if (null? rest) stdin-port (car rest)))
+      (last-char (read-u8)))
+    (unless (eqv? (rib-cdr port) (rib-cdr stdin-port))
+      (error "unsupported port"))
+
+    (if (null? last-char)
+      (let ((ch (read-u8)))
+        (if (null? ch) ##eof (integer->char ch)))
+
+      (begin
+        (##set-last-char port '())
+        last-ch))))
 
 (define (peek-char . rest)
   (let* (
