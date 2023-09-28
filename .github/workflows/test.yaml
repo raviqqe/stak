@@ -59,11 +59,8 @@ jobs:
           - name: stak
             features: [gc_always]
           - name: chibi
-            tags: not @stak
           - name: gauche
-            tags: not @stak or @gauche
           - name: guile
-            tags: not @stak or @guile
     runs-on: ${{ matrix.os }}
     env:
       STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
@@ -74,7 +71,7 @@ jobs:
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
       - run: brew install chibi-scheme gauche guile
-      - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @any' }}'
+      - run: tools/integration_test.sh --tags 'not @stak or @${{ matrix.interpreter.name }}'
   test:
     needs:
       - build
