@@ -575,6 +575,8 @@
 
 ;; Port
 
+(define port? (instance? port-type))
+
 (define (make-port name)
   (rib #f name port-type))
 
