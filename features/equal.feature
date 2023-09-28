@@ -20,7 +20,7 @@ Feature: Equality
       | 42  | 42  | A      |
       | 42  | 0   | B      |
 
-  Scenario Outline: Use an eqv? procedure with scalar values
+  Scenario Outline: Use an eqv? procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
