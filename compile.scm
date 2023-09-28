@@ -449,7 +449,7 @@
             (when (denotation? denotation)
               ; TODO Refactor this.
               ;
-              ; This destructive update of contexts is fine because
+              ; This destructive update of a context is fine because
               ; we always generate fresh variables. But it accumulates garbages
               ; of unused variables in the context.
               (expansion-context-set! use-context name (denotation-value denotation)))
