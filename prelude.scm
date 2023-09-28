@@ -392,7 +392,7 @@
 (define char? (instance? char-type))
 
 (define (char-whitespace? x)
-  (pair? (memv x '(#\newline #\return #\space #\tab #\vtab))))
+  (pair? (memv x '(#\newline #\return #\space #\tab))))
 
 (define (integer->char x)
   (rib x '() char-type))
