@@ -533,23 +533,22 @@
 (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
 (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
-(define (number->string x)
-  ; TODO Make a radix an optional argument.
-  (define radix 10)
+(define (number->string x . rest)
+  (define radix (if (null? rest) 10 (car rest)))
 
-  (define (number->string-aux x tail)
+  (define (convert x tail)
     (let ((q (/ x radix)))
       (let ((d (- x (* q radix))))
         (let ((t (cons (if (< 9 d) (+ 65 (- d 10)) (+ 48 d)) tail)))
           (if (< 0 q)
-            (number->string-aux q t)
+            (convert q t)
             t)))))
 
   (let (
       (chars
         (if (< x 0)
-          (cons (char->integer #\-) (number->string-aux (- 0 x) '()))
-          (number->string-aux x '()))))
+          (cons (char->integer #\-) (convert (- 0 x) '()))
+          (convert x '()))))
     (list->string chars)))
 
 ;; Procedure
