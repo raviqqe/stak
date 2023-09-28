@@ -592,33 +592,36 @@
 
 ; Input
 
-(define stdin-port
-  (rib #f '() port-type))
+(define (make-port name)
+  (rib #f name port-type))
+
+(define stdin-port (make-port 'stdin))
 
 (define (current-input-port)
   stdin-port)
 
 ; Read
 
-(define (set-last-char port char)
-  (rib-set-car! port char))
-
 (define (peek-char . rest)
   (let* (
       (port (if (null? rest) stdin-port (car rest)))
       (char (read-char port)))
-    (set-last-char port char)
+    (rib-set-car! port char)
     char))
 
 (define (read . rest)
   (let (
       (port (if (null? rest) stdin-port (car rest)))
       (char (peek-non-whitespace-char port)))
-    (cond ((eof-object? char) char)
-      ((##eqv? char 40) ;; #\(
+    (cond
+      ((eof-object? char)
+        char)
+
+      ((eqv? char #\()
         (read-char port)
         (read-list port))
-      ((eqv? char #\#) ;; #\#
+
+      ((#\#)
         (read-char port) ;; skip "#"
         (let ((c (##field0 (peek-char port))))
           (cond ((##eqv? c 102) ;; #\f
@@ -632,19 +635,22 @@
               (let ((ch (peek-char port)))
                 (if (char-whitespace? ch)
                   (read-char port)
-                  (let ((str (read-symbol port (lambda (x) x))))
+                  (let ((str (read-symbol port)))
                     (cond
                       ((null? str) (read-char port))
                       ((##eqv? (length str) 1) (integer->char (##field0 str)))
                       (else (integer->char (cadr (assoc (list->string (map char-downcase (map integer->char str))) special-chars)))))))))
             (else
               (list->vector (read port))))))
+
       ((##eqv? c 39) ;; #\'
         (read-char port) ;; skip "'"
         (list 'quote (read port)))
+
       ((##eqv? c 96) ;; #\`
         (read-char port) ;; skip "`"
         (list 'quasiquote (read port)))
+
       ((##eqv? c 44) ;; #\,
         (read-char port) ;; skip ","
         (let ((c (##field0 (peek-char port))))
@@ -653,12 +659,14 @@
               (read-char port) ;; skip "@"
               (list 'unquote-splicing (read port)))
             (list 'unquote (read port)))))
+
       ((##eqv? c 34) ;; #\"
         (read-char port) ;; skip """
         (list->string (read-chars '() port)))
+
       (else
         ;; (read-char port) ;; skip first char
-        (let ((s (##list->string (read-symbol port char-downcase))))
+        (let ((s (##list->string (read-symbol port))))
           (let ((n (string->number s)))
             (or n
               (string->symbol s))))))))
@@ -678,17 +686,17 @@
               x)
             (cons x (read-list port))))))))
 
-(define (read-symbol port case-transform)
-  ;; FIXME: change char-downcase to char-upcase
-  (let ((c (##field0 (case-transform (peek-char port)))))
-    (if (or (##eqv? c 40) ;; #\(
-        (##eqv? c 41) ;; #\)
-        (##eqv? c 0) ;; eof
-        (##< c 33)) ;; whitespace
+(define (read-symbol port)
+  (let ((char (peek-char port)))
+    (if (or
+        (eqv? char #\()
+        (eqv? char #\))
+        (eof-object? char)
+        (char-whitespace? char))
       '()
       (begin
         (read-char port)
-        (cons c (read-symbol port case-transform))))))
+        (cons char (read-symbol port))))))
 
 (define (read-chars port)
   (let loop ((xs '()))
