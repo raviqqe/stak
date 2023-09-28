@@ -587,25 +587,35 @@
 
 (define vector->list rib-cdr)
 
+; Input
+
+(define stdin-port
+  (rib #f '() port-type))
+
+(define (current-input-port)
+  stdin-port)
+
 ; Read
 
-(define special-chars '(("newline" 10)
-    ("space" 32)
-    ("tab" 9)
-    ("return" 13)))
+(define (set-last-char port char)
+  (rib-set-car! port char))
 
-(define escapes '((10 110) ;; \n -> n
-    (13 116) ;; \t -> t
-    (92 92) ;; \\ -> \
-    (34 34))) ;; \" -> "
+(define (peek-char . rest)
+  (let* (
+      (port (if (null? rest) stdin-port (car rest)))
+      (char (read-char port)))
+    (set-last-char port char)
+    char))
 
-(define (read)
-  (let ((c (peek-char-non-whitespace port)))
-    (cond ((eof-object? c) c)
-      ((##eqv? c 40) ;; #\(
+(define (read . rest)
+  (let (
+      (port (if (null? rest) stdin-port (car rest)))
+      (char (peek-char-non-whitespace port)))
+    (cond ((eof-object? char) char)
+      ((##eqv? char 40) ;; #\(
         (read-char port)
         (read-list port))
-      ((##eqv? c 35) ;; #\#
+      ((eqv? char #\#) ;; #\#
         (read-char port) ;; skip "#"
         (let ((c (##field0 (peek-char port))))
           (cond ((##eqv? c 102) ;; #\f
