@@ -688,26 +688,36 @@
         (read-char port)
         (cons c (read-symbol port case-transform))))))
 
-(define (read-chars lst port)
-  (let ((c (##field0 (read-char port))))
-    (cond ((##eqv? c 0) '()) ;; eof
-      ((##eqv? c 34) (reverse lst)) ;; #\"
-      ((##eqv? c 92) ;; #\\
-        (let ((c2 (##field0 (read-char port))))
-          (read-chars
-            (##rib (cond
-                ;#; ;; support for \n in strings
-                ((##eqv? c2 110) 10) ;; #\n
-                ;#; ;; support for \r in strings
-                ((##eqv? c2 114) 13) ;; #\r
-                ;#; ;; support for \t in strings
-                ((##eqv? c2 116) 9) ;; #\t
-                (else c2))
-              lst
-              0)
-            port)))
-      (else
-        (read-chars (cons c lst) port)))))
+(define (read-chars port)
+  (let loop ((xs '()))
+    (let ((char (read-char port)))
+      (cond
+        ((eof-object? char)
+          (error "unexpected end of port"))
+
+        ((eqv? char #\")
+          (reverse xs))
+
+        ((eqv? char #\\)
+          (let ((char (read-char port)))
+            (loop
+              (cons
+                (case char
+                  ((#\n)
+                    #\newline)
+
+                  ((#\r)
+                    #\return)
+
+                  ((#\t)
+                    #\tab)
+
+                  (else
+                    char))
+                xs))))
+
+        (else
+          (loop (cons char xs)))))))
 
 (define (peek-non-whitespace-char port)
   (let ((char (peek-char port)))
