@@ -109,3 +109,30 @@ Feature: Number
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AA"
+
+  Scenario Outline: Use comparison operators
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-string (number->string <value> <radix>))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | radix | output |
+      | 0     |       | 0      |
+      | 1     |       | 1      |
+      | 2     |       | 2      |
+      | 42    |       | 42     |
+      | -1    |       | -1     |
+      | -2    |       | -2     |
+      | -42   |       | -42    |
+      | 0     | 16    | 0      |
+      | 1     | 16    | 1      |
+      | 2     | 16    | 2      |
+      | 42    | 16    | 2A     |
+      | -1    | 16    | -1     |
+      | -2    | 16    | -2     |
+      | -42   | 16    | -2A    |

@@ -533,23 +533,31 @@
 (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
 (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
+(define (abs x)
+  (if (< x 0)
+    (- 0 x)
+    x))
+
 (define (number->string x . rest)
-  (define radix (if (null? rest) 10 (car rest)))
-
-  (define (convert x tail)
-    (let ((q (/ x radix)))
-      (let ((d (- x (* q radix))))
-        (let ((t (cons (if (< 9 d) (+ 65 (- d 10)) (+ 48 d)) tail)))
-          (if (< 0 q)
-            (convert q t)
-            t)))))
-
-  (let (
-      (chars
+  (let ((radix (if (null? rest) 10 (car rest))))
+    (list->string
+      (append
         (if (< x 0)
-          (cons (char->integer #\-) (convert (- 0 x) '()))
-          (convert x '()))))
-    (list->string chars)))
+          (list (char->integer #\-))
+          '())
+        (let loop ((x (abs x)) (ys '()))
+          (let* (
+              (q (/ x radix))
+              (d (- x (* q radix)))
+              (ys
+                (cons
+                  (if (< 9 d)
+                    (+ (char->integer #\A) (- d 10))
+                    (+ (char->integer #\0) d))
+                  ys)))
+            (if (< 0 q)
+              (loop q ys)
+              ys)))))))
 
 ;; Procedure
 
