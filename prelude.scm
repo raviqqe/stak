@@ -588,19 +588,6 @@
 
 (define (current-output-port) stdout-port)
 
-;; Port
-
-(define (make-port name)
-  (rib #f name port-type))
-
-(define stdin-port (make-port 'stdin))
-
-(define stdout-port (make-port 'stdout))
-
-(define (current-input-port) stdin-port)
-
-(define (current-output-port) stdout-port)
-
 ;; Procedure
 
 (define procedure? (instance? procedure-type))
