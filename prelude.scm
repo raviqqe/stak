@@ -351,7 +351,10 @@
       (rib? x)
       (eqv? (rib-tag x) type))))
 
-(define eqv? eq?)
+(define (eqv? x y)
+  (if (and (char? x) (char? y))
+    (eqv? (char->integer x) (char->integer y))
+    (eq? x y)))
 
 (define (equal? x y)
   (or
