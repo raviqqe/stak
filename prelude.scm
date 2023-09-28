@@ -613,7 +613,7 @@
 (define (read . rest)
   (let (
       (port (if (null? rest) stdin-port (car rest)))
-      (char (peek-non-blank-char port)))
+      (char (peek-non-whitespace-char port)))
     (cond ((eof-object? char) char)
       ((##eqv? char 40) ;; #\(
         (read-char port)
@@ -664,7 +664,7 @@
               (string->symbol s))))))))
 
 (define (read-list port)
-  (let ((c (peek-non-blank-char port)))
+  (let ((c (peek-non-whitespace-char port)))
     (cond
       ((##eqv? c 41) ;; #\)
         (read-char port) ;; skip ")"
@@ -709,24 +709,32 @@
       (else
         (read-chars (cons c lst) port)))))
 
-(define (peek-non-blank-char port)
+(define (peek-non-whitespace-char port)
   (let ((char (peek-char port)))
     (if (eof-object? char)
       char
-      (if (char-whitespace? char)
-        (begin
-          (read-char port)
-          (peek-non-blank-char port))
-        (if (eqv? char #\;)
-          (skip-comment port)
+      (cond
+        ((char-whitespace? char)
+          (begin
+            (read-char port) ; Skip a whitespace.
+            (peek-non-whitespace-char port)))
+
+        ((eqv? char #\;)
+          (skip-comment port))
+
+        (else
           char)))))
 
 (define (skip-comment port)
   (let ((char (read-char port)))
-    (if (eof-object? char)
-      char
-      (if (eqv? char #\newline)
-        (peek-non-blank-char port)
+    (cond
+      ((eof-object? char)
+        char)
+
+      ((eqv? char #\newline)
+        (peek-non-whitespace-char port))
+
+      (else
         (skip-comment port)))))
 
 ; Write
