@@ -547,24 +547,31 @@
 (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
 (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
-(define (number->string x)
-  ; TODO Make a radix an optional argument.
-  (define radix 10)
+(define (abs x)
+  (if (< x 0)
+    (- 0 x)
+    x))
 
-  (define (number->string-aux x tail)
-    (let ((q (/ x radix)))
-      (let ((d (- x (* q radix))))
-        (let ((t (cons (if (< 9 d) (+ 65 (- d 10)) (+ 48 d)) tail)))
-          (if (< 0 q)
-            (number->string-aux q t)
-            t)))))
-
-  (let (
-      (chars
+(define (number->string x . rest)
+  (let ((radix (if (null? rest) 10 (car rest))))
+    (list->string
+      (append
         (if (< x 0)
-          (cons (char->integer #\-) (number->string-aux (- 0 x) '()))
-          (number->string-aux x '()))))
-    (list->string chars)))
+          (list (char->integer #\-))
+          '())
+        (let loop ((x (abs x)) (ys '()))
+          (let* (
+              (q (/ x radix))
+              (d (- x (* q radix)))
+              (ys
+                (cons
+                  (if (< 9 d)
+                    (+ (char->integer #\a) (- d 10))
+                    (+ (char->integer #\0) d))
+                  ys)))
+            (if (< 0 q)
+              (loop q ys)
+              ys)))))))
 
 ;; Port
 
