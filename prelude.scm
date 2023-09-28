@@ -552,7 +552,7 @@
               (ys
                 (cons
                   (if (< 9 d)
-                    (+ (char->integer #\A) (- d 10))
+                    (+ (char->integer #\a) (- d 10))
                     (+ (char->integer #\0) d))
                   ys)))
             (if (< 0 q)
