@@ -449,13 +449,9 @@
             (when (denotation? denotation)
               ; TODO Refactor this.
               ;
-              ; It looks like this destructive update of contexts is fine because
-              ; we always generate new names. But I'm not sure...
-              ; For example, how about this?
-              ;
-              ; ```scheme
-              ; (((lambdas (x) x) f) ((lambdas (x) x) y))
-              ; ```
+              ; This destructive update of contexts is fine because
+              ; we always generate fresh variables. But it accumulates garbages
+              ; of unused variables in the context.
               (expansion-context-set! use-context name (denotation-value denotation)))
             name))))
 
