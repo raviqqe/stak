@@ -391,10 +391,21 @@
 
 (define char? (instance? char-type))
 
+(define (char-whitespace? x)
+  (pair? (memv x '(#\newline #\return #\space #\tab))))
+
 (define (integer->char x)
   (rib x '() char-type))
 
 (define char->integer rib-car)
+
+;; EOF object
+
+(define eof (rib 0 '() eof-object-type))
+
+(define eof-object? (instance? eof-object-type))
+
+(define (eof-object) eof)
 
 ;; List
 
@@ -561,6 +572,21 @@
             (if (< 0 q)
               (loop q ys)
               ys)))))))
+
+;; Port
+
+(define port? (instance? port-type))
+
+(define (make-port name)
+  (rib #f name port-type))
+
+(define stdin-port (make-port 'stdin))
+
+(define stdout-port (make-port 'stdout))
+
+(define (current-input-port) stdin-port)
+
+(define (current-output-port) stdout-port)
 
 ;; Procedure
 
