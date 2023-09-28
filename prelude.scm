@@ -391,6 +391,9 @@
 
 (define char? (instance? char-type))
 
+(define (char-whitespace? x)
+  (pair? (memv x '(#\newline #\return #\space #\tab #\vtab))))
+
 (define (integer->char x)
   (rib x '() char-type))
 
@@ -610,7 +613,7 @@
 (define (read . rest)
   (let (
       (port (if (null? rest) stdin-port (car rest)))
-      (char (peek-char-non-whitespace port)))
+      (char (peek-non-blank-char port)))
     (cond ((eof-object? char) char)
       ((##eqv? char 40) ;; #\(
         (read-char port)
@@ -661,7 +664,7 @@
               (string->symbol s))))))))
 
 (define (read-list port)
-  (let ((c (peek-char-non-whitespace port)))
+  (let ((c (peek-non-blank-char port)))
     (cond
       ((##eqv? c 41) ;; #\)
         (read-char port) ;; skip ")"
@@ -706,24 +709,24 @@
       (else
         (read-chars (cons c lst) port)))))
 
-(define (peek-char-non-whitespace port)
-  (let ((c (peek-char port)))
-    (if (eof-object? c) ;; eof?
-      c
-      (if (char-whitespace? c)
+(define (peek-non-blank-char port)
+  (let ((char (peek-char port)))
+    (if (eof-object? char)
+      char
+      (if (char-whitespace? char)
         (begin
           (read-char port)
-          (peek-char-non-whitespace port))
-        (if (##eqv? (##field0 c) 59) ;; #\;
+          (peek-non-blank-char port))
+        (if (eqv? char #\;)
           (skip-comment port)
-          (##field0 c)))))) ;; returns the code point of the char
+          char)))))
 
 (define (skip-comment port)
-  (let ((c (read-char port)))
-    (if (eof-object? c)
-      c
-      (if (##eqv? (##field0 c) 10) ;; #\newline
-        (peek-char-non-whitespace port)
+  (let ((char (read-char port)))
+    (if (eof-object? char)
+      char
+      (if (eqv? char #\newline)
+        (peek-non-blank-char port)
         (skip-comment port)))))
 
 ; Write
