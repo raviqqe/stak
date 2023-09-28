@@ -110,7 +110,7 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AA"
 
-  Scenario Outline: Use comparison operators
+  Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
