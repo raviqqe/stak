@@ -12,7 +12,7 @@ Feature: Character
     Examples:
       | expression         |
       | #\\A               |
-      | #\newline          |
+      | #\\newline         |
       | (integer->char 65) |
 
   Scenario Outline: Check if a value is a whitespace
