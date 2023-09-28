@@ -587,6 +587,135 @@
 
 (define vector->list rib-cdr)
 
+; Read
+
+(define special-chars '(("newline" 10)
+    ("space" 32)
+    ("tab" 9)
+    ("return" 13)))
+
+(define escapes '((10 110) ;; \n -> n
+    (13 116) ;; \t -> t
+    (92 92) ;; \\ -> \
+    (34 34))) ;; \" -> "
+
+(define (read)
+  (let ((c (peek-char-non-whitespace port)))
+    (cond ((eof-object? c) c)
+      ((##eqv? c 40) ;; #\(
+        (read-char port)
+        (read-list port))
+      ((##eqv? c 35) ;; #\#
+        (read-char port) ;; skip "#"
+        (let ((c (##field0 (peek-char port))))
+          (cond ((##eqv? c 102) ;; #\f
+              (read-char port) ;; skip "f"
+              #f)
+            ((##eqv? c 116) ;; #\t
+              (read-char port) ;; skip "t"
+              #t)
+            ((##eqv? c 92) ;; #\\
+              (read-char port) ;; skip "\\"
+              (let ((ch (peek-char port)))
+                (if (char-whitespace? ch)
+                  (read-char port)
+                  (let ((str (read-symbol port (lambda (x) x))))
+                    (cond
+                      ((null? str) (read-char port))
+                      ((##eqv? (length str) 1) (integer->char (##field0 str)))
+                      (else (integer->char (cadr (assoc (list->string (map char-downcase (map integer->char str))) special-chars)))))))))
+            (else
+              (list->vector (read port))))))
+      ((##eqv? c 39) ;; #\'
+        (read-char port) ;; skip "'"
+        (list 'quote (read port)))
+      ((##eqv? c 96) ;; #\`
+        (read-char port) ;; skip "`"
+        (list 'quasiquote (read port)))
+      ((##eqv? c 44) ;; #\,
+        (read-char port) ;; skip ","
+        (let ((c (##field0 (peek-char port))))
+          (if (##eqv? c 64) ;; #\@
+            (begin
+              (read-char port) ;; skip "@"
+              (list 'unquote-splicing (read port)))
+            (list 'unquote (read port)))))
+      ((##eqv? c 34) ;; #\"
+        (read-char port) ;; skip """
+        (##list->string (read-chars '() port)))
+      (else
+        ;; (read-char port) ;; skip first char
+        (let ((s (##list->string (read-symbol port char-downcase))))
+          (let ((n (string->number s)))
+            (or n
+              (string->symbol s))))))))
+
+(define (read-list port)
+  (let ((c (peek-char-non-whitespace port)))
+    (cond
+      ((##eqv? c 41) ;; #\)
+        (read-char port) ;; skip ")"
+        '())
+      (else (let ((first (read port)))
+          (if (and (symbol? first) (equal? (symbol->string first) "."))
+            (let ((result (read port)))
+              (read-char port)
+              result)
+            (cons first (read-list port))))))))
+
+(define (read-symbol port case-transform)
+  ;; FIXME: change char-downcase to char-upcase
+  (let ((c (##field0 (case-transform (peek-char port)))))
+    (if (or (##eqv? c 40) ;; #\(
+        (##eqv? c 41) ;; #\)
+        (##eqv? c 0) ;; eof
+        (##< c 33)) ;; whitespace
+      '()
+      (begin
+        (read-char port)
+        (cons c (read-symbol port case-transform))))))
+
+(define (read-chars lst port)
+  (let ((c (##field0 (read-char port))))
+    (cond ((##eqv? c 0) '()) ;; eof
+      ((##eqv? c 34) (reverse lst)) ;; #\"
+      ((##eqv? c 92) ;; #\\
+        (let ((c2 (##field0 (read-char port))))
+          (read-chars
+            (##rib (cond
+                ;#; ;; support for \n in strings
+                ((##eqv? c2 110) 10) ;; #\n
+                ;#; ;; support for \r in strings
+                ((##eqv? c2 114) 13) ;; #\r
+                ;#; ;; support for \t in strings
+                ((##eqv? c2 116) 9) ;; #\t
+                (else c2))
+              lst
+              0)
+            port)))
+      (else
+        (read-chars (cons c lst) port)))))
+
+(define (peek-char-non-whitespace port)
+  (let ((c (peek-char port)))
+    (if (eof-object? c) ;; eof?
+      c
+      (if (char-whitespace? c)
+        (begin
+          (read-char port)
+          (peek-char-non-whitespace port))
+        (if (##eqv? (##field0 c) 59) ;; #\;
+          (skip-comment port)
+          (##field0 c)))))) ;; returns the code point of the char
+
+(define (skip-comment port)
+  (let ((c (read-char port)))
+    (if (eof-object? c)
+      c
+      (if (##eqv? (##field0 c) 10) ;; #\newline
+        (peek-char-non-whitespace port)
+        (skip-comment port)))))
+
 ; Write
 
 (define special-chars
