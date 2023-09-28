@@ -655,7 +655,7 @@
             (list 'unquote (read port)))))
       ((##eqv? c 34) ;; #\"
         (read-char port) ;; skip """
-        (##list->string (read-chars '() port)))
+        (list->string (read-chars '() port)))
       (else
         ;; (read-char port) ;; skip first char
         (let ((s (##list->string (read-symbol port char-downcase))))
@@ -664,17 +664,19 @@
               (string->symbol s))))))))
 
 (define (read-list port)
-  (let ((c (peek-non-whitespace-char port)))
+  (let ((char (peek-non-whitespace-char port)))
     (cond
-      ((##eqv? c 41) ;; #\)
-        (read-char port) ;; skip ")"
+      ((eqv? char #\))
+        (read-char port)
         '())
-      (else (let ((first (read port)))
-          (if (and (symbol? first) (equal? (symbol->string first) "."))
-            (let ((result (read port)))
+
+      (else
+        (let ((x (read port)))
+          (if (and (symbol? x) (equal? (symbol->string x) "."))
+            (let ((x (read port)))
               (read-char port)
-              result)
-            (cons first (read-list port))))))))
+              x)
+            (cons x (read-list port))))))))
 
 (define (read-symbol port case-transform)
   ;; FIXME: change char-downcase to char-upcase
