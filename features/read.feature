@@ -177,17 +177,6 @@ Feature: Read
 
     Examples:
       | value           |
-      | ()              |
-      | (())            |
-      | (() ())         |
-      | (() () ())      |
-      | (1 . 2)         |
-      | (1 2 . 3)       |
-      | (foo)           |
-      | (foo bar)       |
-      | (foo bar baz)   |
-      | (foo . bar)     |
-      | (foo bar . baz) |
       | #f              |
       | #t              |
       | 0               |
@@ -203,3 +192,17 @@ Feature: Read
       | "foo"           |
       | "Hello, world!" |
       | "\\n\\r\\t"     |
+      | ()              |
+      | (1)             |
+      | (1 2)           |
+      | (1 2 3)         |
+      | (1 . 2)         |
+      | (1 2 . 3)       |
+      | (foo)           |
+      | (foo bar)       |
+      | (foo bar baz)   |
+      | (foo . bar)     |
+      | (foo bar . baz) |
+      | #(foo)          |
+      | #(foo bar)      |
+      | #(foo bar baz)  |
