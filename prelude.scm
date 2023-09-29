@@ -590,7 +590,7 @@
       (#\A . #\Z)
       (#\a . #\z))))
 
-(define (string->number str . rest)
+(define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
 
   (define (convert-16 char)
@@ -623,13 +623,13 @@
           #f))
       n))
 
-  (let ((lst (##string->list str)))
-    (if (null? lst)
+  (let ((xs (string->list x)))
+    (if (null? xs)
       #f
-      (if (##eqv? (##field0 lst) 45) ;; car
-        (string->number-aux (##field1 lst)) ;; cdr
-        (let ((n (string->number-aux lst)))
-          (and n (##- 0 n)))))))
+      (let ((negative (eqv? (car xs) #\-)))
+        (if (eqv? (car xs) #\-)
+          (- 0 (string->number-aux (cdr xs)))
+          (string->number-aux xs))))))
 
 ;; Port
 
