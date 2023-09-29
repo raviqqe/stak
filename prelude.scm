@@ -563,7 +563,7 @@
     (list->string
       (append
         (if (< x 0)
-          (list (char->integer #\-))
+          (list #\-)
           '())
         (let loop ((x (abs x)) (ys '()))
           (let* (
@@ -571,9 +571,10 @@
               (d (- x (* q radix)))
               (ys
                 (cons
-                  (if (< 9 d)
-                    (+ (char->integer #\a) (- d 10))
-                    (+ (char->integer #\0) d))
+                  (integer->char
+                    (if (< 9 d)
+                      (+ (char->integer #\a) (- d 10))
+                      (+ (char->integer #\0) d)))
                   ys)))
             (if (< 0 q)
               (loop q ys)
@@ -603,10 +604,14 @@
 (define string? (instance? string-type))
 
 (define (list->string x)
-  (rib (length x) x string-type))
+  (rib (length x) (map char->integer x) string-type))
 
 (define (string->list x)
   (map integer->char (rib-cdr x)))
+
+; TODO Use an apply procedure.
+(define (string-append . xs)
+  (list->string (reduce-right (lambda (y x) (append (string->list x) y)) '() xs)))
 
 ;; Symbol
 
@@ -616,14 +621,10 @@
 
 (define symbol->string rib-cdr)
 
-; TODO Implement string-append.
-(define (string->uninterned-symbol x)
-  (rib #f (string-append x) symbol-type))
-
 (define (string->symbol x)
   (let loop ((x x) (symbols symbol-table))
     (if (null? symbols)
-      (let ((symbol (string->uninterned-symbol x)))
+      (let ((symbol (rib #f (string-append x) symbol-type)))
         (set! symbol-table (cons symbol symbol-table))
         symbol)
       (let ((symbol (car symbols)))
