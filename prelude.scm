@@ -589,19 +589,19 @@
   (define radix (if (null? rest) 10 (car rest)))
 
   (define (convert-16 char)
-    (let ((x (char->integer char)))
-      (cond
-        ((and (<= (char->integer #\0) char) (< x (char->integer #\9)))
-          (- x (char->integer #\0)))
-
-        ((and (<= (char->integer #\A) x) (<= x (char->integer #\Z)))
-          (- x (char->integer #\A)))
-
-        ((and (<= (char->integer #\a) x) (<= x (char->integer #\z)))
-          (- x (char->integer #\a)))
-
-        (else
-          (error "invalid digit character")))))
+    (let* (
+        (x (char->integer char))
+        (y
+          (member
+            x
+            digit-characters
+            (lambda (x range)
+              (and
+                (<= (char->integer (car range)) x)
+                (<= x (char->integer (cdr range))))))))
+      (unless y
+        (error "invalid digit character"))
+      (- x (char->integer (car (car y))))))
 
   (define (convert c)
     (if (and (##< 47 c) (##< c 58)) ;; 0-9
