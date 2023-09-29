@@ -577,8 +577,15 @@
 
 (define port? (instance? port-type))
 
+; TODO Use a record type.
 (define (make-port name)
   (rib #f name port-type))
+
+(define (port-last-char port)
+  (rib-car port))
+
+(define (port-set-last-char! port char)
+  (rib-set-car! port char))
 
 (define stdin-port (make-port 'stdin))
 
@@ -625,17 +632,16 @@
 (define (read-char . rest)
   (let* (
       (port (if (null? rest) stdin-port (car rest)))
-      (last-char (read-u8)))
+      (char (port-last-char port)))
     (unless (eqv? (rib-cdr port) (rib-cdr stdin-port))
       (error "unsupported port"))
 
-    (if (null? last-char)
-      (let ((ch (read-u8)))
-        (if (null? ch) ##eof (integer->char ch)))
-
+    (if char
       (begin
-        (##set-last-char port '())
-        last-ch))))
+        (port-set-last-char! port #f)
+        char)
+      (let ((char (read-u8)))
+        (if char (integer->char char) eof)))))
 
 (define (peek-char . rest)
   (let* (
@@ -656,9 +662,9 @@
         (read-char port)
         (read-list port))
 
-      ((#\#)
-        (read-char port) ;; skip "#"
-        (let ((c (##field0 (peek-char port))))
+      ((eqv? char #\#)
+        (read-char port) ;; skip #
+        (let ((char (peek-char port)))
           (cond ((##eqv? c 102) ;; #\f
               (read-char port) ;; skip "f"
               #f)
