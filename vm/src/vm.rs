@@ -503,6 +503,9 @@ impl<'a, T: Device> Vm<'a, T> {
                     .write(self.top().assume_number().to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
             }
+            Primitive::APPLY => {
+                trace!("dump", self.top());
+            }
             Primitive::DUMP => {
                 trace!("dump", self.top());
             }
