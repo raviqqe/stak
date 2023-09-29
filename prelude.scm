@@ -602,8 +602,8 @@
             digit-characters
             (lambda (x range)
               (and
-                (<= (char->integer (car range)) x)
-                (<= x (char->integer (cdr range))))))))
+                (<= (car range) x)
+                (<= x (cdr range)))))))
       (unless y
         (error "invalid digit character"))
       (- x (char->integer (car (car y))))))
