@@ -666,7 +666,7 @@
   (input-byte->char (peek-u8 (get-port rest))))
 
 (define (read . rest)
-  (let (
+  (let* (
       (port (get-port rest))
       (char (peek-non-whitespace-char port)))
     (cond
