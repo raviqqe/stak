@@ -188,6 +188,8 @@ Feature: Read
       | (foo bar baz)   |
       | (foo . bar)     |
       | (foo bar . baz) |
+      | #f              |
+      | #t              |
       | 0               |
       | 1               |
       | 2               |
