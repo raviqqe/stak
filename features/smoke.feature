@@ -26,3 +26,18 @@ Feature: Smoke
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Compile symbols in an if expression in a function
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (define (foo)
+      (if #t
+        (list 'foo)
+        (list 'bar)))
+
+    (write (foo))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "foo"
