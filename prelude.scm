@@ -600,18 +600,11 @@
           (member
             x
             digit-characters
-            (lambda (x range)
+            (lambda (x pair)
               (and
-                (<= (car range) x)
-                (<= x (cdr range)))))))
-      (unless y
-        (error "invalid digit character"))
-      (- x (char->integer (car (car y))))))
-
-  (define (convert c)
-    (if (and (##< 47 c) (##< c 58)) ;; 0-9
-      (##- c 48)
-      #f))
+                (<= (car pair) x)
+                (<= x (cdr pair)))))))
+      (and y (- x (char->integer (car (car y)))))))
 
   (define (string->number-aux lst)
     (if (null? lst)
