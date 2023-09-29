@@ -579,6 +579,46 @@
               (loop q ys)
               ys)))))))
 
+(define (string->number str . rest)
+	(define radix (if (null? rest) 10 (car rest))
+
+  (define (convert-16 c)
+    (cond
+      ((and (##< 47 c) (##< c 58)) (##- c 48)) ;; 0-9
+      ((and (##< 64 c) (##< c 71)) (##- c 65)) ;; A-F
+      ((and (##< 96 c) (##< c 103)) (##- c 97)) ;; a-f
+      (else #f)))
+
+  (define (convert c)
+    (if (and (##< 47 c) (##< c 58)) ;; 0-9
+      (##- c 48)
+      #f))
+
+  (define (string->number-aux lst)
+    (if (null? lst)
+      #f
+      (string->number-aux2 lst 0 (if (##eqv? radix 16) convert-16 convert))))
+
+  (define (string->number-aux2 lst n converter)
+    (if (pair? lst)
+      (let* ((c (##field0 lst))
+          (x (converter c)))
+        (if x
+          (string->number-aux2
+            (##field1 lst) ;; cdr
+            (##- (##* radix n) x)
+            converter)
+          #f))
+      n))
+
+  (let ((lst (##string->list str)))
+    (if (null? lst)
+      #f
+      (if (##eqv? (##field0 lst) 45) ;; car
+        (string->number-aux (##field1 lst)) ;; cdr
+        (let ((n (string->number-aux lst)))
+          (and n (##- 0 n)))))))
+
 ;; Port
 
 (define port? (instance? port-type))
