@@ -173,6 +173,21 @@ Feature: Read
     And the stdout should contain exactly "<value>"
 
     Examples:
-      | value |
-      | ()    |
-      | ""    |
+      | value           |
+      | ()              |
+      | (foo)           |
+      | (foo bar)       |
+      | (foo bar baz)   |
+      | (foo . bar)     |
+      | (foo bar . baz) |
+      | 0               |
+      | 1               |
+      | 2               |
+      | 42              |
+      | -1              |
+      | -2              |
+      | -42             |
+      | x               |
+      | foo             |
+      | ""              |
+      | "foo"           |

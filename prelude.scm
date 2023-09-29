@@ -755,7 +755,7 @@
           (error "unexpected end of port"))
 
         ((eqv? char #\")
-          (list->string (map char->integer (reverse xs))))
+          (list->string (reverse xs)))
 
         ((eqv? char #\\)
           (let ((char (read-char port)))
