@@ -34,8 +34,8 @@ Feature: Smoke
 
     (define (foo)
       (if #f
-        (list 'foo)
-        (list 'bar)))
+        'foo
+        'bar))
 
     (write-string (symbol->string (foo)))
     """
