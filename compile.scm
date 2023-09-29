@@ -133,9 +133,7 @@
 (define (fold-right f y xs)
   (if (null? xs)
     y
-    (f
-      (fold-right f y (cdr xs))
-      (car xs))))
+    (f (fold-right f y (cdr xs)) (car xs))))
 
 (define (take n list)
   (if (eqv? n 0)
