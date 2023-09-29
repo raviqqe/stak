@@ -159,7 +159,7 @@ Feature: Read
   Scenario Outline: Read a value
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base) (scheme write))
+    (import (scheme base) (scheme read) (scheme write))
 
     (write (read))
     """
