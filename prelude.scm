@@ -787,7 +787,7 @@
       (cond
         ((char-whitespace? char)
           (begin
-            (read-char port) ; Skip a whitespace.
+            (read-char port)
             (peek-non-whitespace-char port)))
 
         ((eqv? char #\;)
