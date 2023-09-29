@@ -662,47 +662,46 @@
         (read-char port)
         (read-list port))
 
-      ((eqv? char #\#)
-        (read-char port) ;; skip #
-        (let ((char (peek-char port)))
-          (cond ((##eqv? c 102) ;; #\f
-              (read-char port) ;; skip "f"
-              #f)
-            ((##eqv? c 116) ;; #\t
-              (read-char port) ;; skip "t"
-              #t)
-            ((##eqv? c 92) ;; #\\
-              (read-char port) ;; skip "\\"
-              (let ((ch (peek-char port)))
-                (if (char-whitespace? ch)
-                  (read-char port)
-                  (let ((str (read-symbol port)))
-                    (cond
-                      ((null? str) (read-char port))
-                      ((##eqv? (length str) 1) (integer->char (##field0 str)))
-                      (else (integer->char (cadr (assoc (list->string (map char-downcase (map integer->char str))) special-chars)))))))))
-            (else
-              (list->vector (read port))))))
+      ; ((eqv? char #\#)
+      ;   (read-char port) ;; skip #
+      ;   (let ((char (peek-char port)))
+      ;     (cond ((eqv? c 102) ;; #\f
+      ;         (read-char port) ;; skip "f"
+      ;         #f)
+      ;       ((eqv? c 116) ;; #\t
+      ;         (read-char port) ;; skip "t"
+      ;         #t)
+      ;       ((eqv? c 92) ;; #\\
+      ;         (read-char port) ;; skip "\\"
+      ;         (let ((ch (peek-char port)))
+      ;           (if (char-whitespace? ch)
+      ;             (read-char port)
+      ;             (let ((str (read-symbol port)))
+      ;               (cond
+      ;                 ((null? str) (read-char port))
+      ;                 ((##eqv? (length str) 1) (integer->char (##field0 str)))
+      ;                 (else (integer->char (cadr (assoc (list->string (map char-downcase (map integer->char str))) special-chars)))))))))
+      ;       (else
+      ;         (list->vector (read port))))))
 
-      ((##eqv? c 39) ;; #\'
-        (read-char port) ;; skip "'"
+      ((eqv? char #\')
+        (read-char port)
         (list 'quote (read port)))
 
-      ((##eqv? c 96) ;; #\`
-        (read-char port) ;; skip "`"
+      ((eqv? char #\`)
+        (read-char port)
         (list 'quasiquote (read port)))
 
-      ((##eqv? c 44) ;; #\,
-        (read-char port) ;; skip ","
-        (let ((c (##field0 (peek-char port))))
-          (if (##eqv? c 64) ;; #\@
-            (begin
-              (read-char port) ;; skip "@"
-              (list 'unquote-splicing (read port)))
-            (list 'unquote (read port)))))
+      ((eqv? char #\,)
+        (read-char port)
+        (if (eqv? (peek-char port) #\@)
+          (begin
+            (read-char port)
+            (list 'unquote-splicing (read port)))
+          (list 'unquote (read port))))
 
-      ((##eqv? c 34) ;; #\"
-        (read-char port) ;; skip """
+      ((eqv? char #\")
+        (read-char port)
         (list->string (read-chars '() port)))
 
       (else
