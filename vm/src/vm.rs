@@ -668,7 +668,7 @@ impl<'a, T: Device> Vm<'a, T> {
         self.symbols = self.stack;
         self.stack = NULL;
 
-        // Set a rib primitive's environment to a symbol table for access from libraries.
+        // Set a rib primitive's environment to a symbol table for access from a base library.
         *self.cdr_value_mut(self.car_value(self.car(self.tail(self.symbols, Number::new(3))))) =
             self.symbols.set_tag(Type::Procedure as u8).into();
 
