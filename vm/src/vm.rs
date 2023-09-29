@@ -473,6 +473,7 @@ impl<'a, T: Device> Vm<'a, T> {
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
+                // Preserve a tag.
                 *self.cdr_value_mut(x) = y
                     .to_cons()
                     .map(|cons| {
