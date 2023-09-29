@@ -508,6 +508,12 @@
     ys
     (cons (car xs) (append-lists ys (cdr xs)))))
 
+(define (reverse xs)
+  (let loop ((xs xs) (ys '()))
+    (if (null? xs)
+      ys
+      (loop (cdr xs) (cons (car xs) ys)))))
+
 (define (fold-left f y xs)
   (if (null? xs)
     y

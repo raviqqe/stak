@@ -170,7 +170,10 @@ Feature: Read
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly "<value>"
+    And the stdout should contain exactly:
+    """text
+    <value>
+    """
 
     Examples:
       | value           |
@@ -196,3 +199,5 @@ Feature: Read
       | foo             |
       | ""              |
       | "foo"           |
+      | "Hello, world!" |
+      | "\\n\\r\\t"     |
