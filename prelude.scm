@@ -580,10 +580,15 @@
               ys)))))))
 
 (define digit-characters
-  '(
-    (#\0 . #\9)
-    (#\A . #\Z)
-    (#\a . #\z)))
+  (map
+    (lambda (pair)
+      (cons
+        (char->integer (car pair))
+        (char->integer (cdr pair))))
+    '(
+      (#\0 . #\9)
+      (#\A . #\Z)
+      (#\a . #\z))))
 
 (define (string->number str . rest)
   (define radix (if (null? rest) 10 (car rest)))
