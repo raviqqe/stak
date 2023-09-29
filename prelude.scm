@@ -621,7 +621,7 @@
   (rib #f (string-append x) symbol-type))
 
 (define (string->symbol x)
-  (let loop (((x x) (symbols symbol-table)))
+  (let loop ((x x) (symbols symbol-table))
     (if (null? symbols)
       (let ((symbol (string->uninterned-symbol x)))
         (set! symbol-table (cons symbol symbol-table))
