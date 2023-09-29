@@ -705,11 +705,8 @@
         (list->string (read-chars '() port)))
 
       (else
-        ;; (read-char port) ;; skip first char
-        (let ((s (##list->string (read-symbol port))))
-          (let ((n (string->number s)))
-            (or n
-              (string->symbol s))))))))
+        (let ((s (list->string (read-symbol port))))
+          (or (string->number s) (string->symbol s)))))))
 
 (define (read-list port)
   (let ((char (peek-non-whitespace-char port)))
