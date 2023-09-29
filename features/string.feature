@@ -34,5 +34,5 @@ Feature: String
       |                   |           |
       | ""                |           |
       | "foo"             | foo       |
-      | "foo" "bar"       | foobar    |
-      | "foo" "bar" "baz" | foobarbaz |
+      | "app" "le"        | apple     |
+      | "dis" "cov" "ery" | discovery |
