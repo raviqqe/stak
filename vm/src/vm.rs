@@ -58,8 +58,8 @@ pub struct Vm<'a, T: Device> {
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
 impl<'a, T: Device> Vm<'a, T> {
-    pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
-        Ok(Self {
+    pub fn new(heap: &'a mut [Value], device: T) -> Self {
+        Self {
             device,
             program_counter: NULL,
             stack: NULL,
@@ -67,7 +67,7 @@ impl<'a, T: Device> Vm<'a, T> {
             allocation_index: 0,
             space: false,
             heap,
-        })
+        }
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
@@ -666,7 +666,8 @@ impl<'a, T: Device> Vm<'a, T> {
         self.initialize_symbol(TRUE.into())?;
         self.initialize_symbol(FALSE.into())?;
 
-        // Set a rib primitive's environment to a symbol table for access from a base library.
+        // Set a rib primitive's environment to a symbol table for access from a base
+        // library.
         *self.cdr_value_mut(self.car_value(self.car(self.tail(self.stack, Number::new(3))))) =
             self.stack.set_tag(Type::Procedure as u8).into();
 
@@ -866,7 +867,7 @@ mod tests {
     }
 
     fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
-        Vm::<_>::new(heap, FakeDevice::new()).unwrap()
+        Vm::<_>::new(heap, FakeDevice::new())
     }
 
     macro_rules! assert_snapshot {
@@ -887,14 +888,6 @@ mod tests {
         let vm = create_vm(&mut heap);
 
         assert_snapshot!(vm);
-    }
-
-    #[test]
-    fn create_with_too_small_heap() {
-        assert_eq!(
-            Vm::<FixedBufferDevice<0, 0>>::new(&mut [], Default::default()).unwrap_err(),
-            Error::OutOfMemory
-        );
     }
 
     #[test]
