@@ -49,8 +49,7 @@ pub struct Vm<'a, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
-    symbols: Cons,
-    cons: Cons,
+    temporary: Cons,
     allocation_index: usize,
     space: bool,
     heap: &'a mut [Value],
@@ -64,8 +63,7 @@ impl<'a, T: Device> Vm<'a, T> {
             device,
             program_counter: NULL,
             stack: NULL,
-            symbols: NULL,
-            cons: NULL,
+            temporary: NULL,
             allocation_index: 0,
             space: false,
             heap,
@@ -115,7 +113,7 @@ impl<'a, T: Device> Vm<'a, T> {
                             {
                                 return Err(Error::ArgumentCount);
                             } else if variadic {
-                                *self.cdr_mut(self.cons) = procedure.into();
+                                *self.cdr_mut(self.temporary) = procedure.into();
 
                                 let mut list = NULL;
 
@@ -127,11 +125,11 @@ impl<'a, T: Device> Vm<'a, T> {
 
                                 self.push(list.into())?;
 
-                                procedure = self.cdr(self.cons).assume_cons();
+                                procedure = self.cdr(self.temporary).assume_cons();
                             }
 
-                            *self.cdr_mut(self.cons) = self.stack.into();
-                            self.stack = self.cons;
+                            *self.cdr_mut(self.temporary) = self.stack.into();
+                            self.stack = self.temporary;
 
                             let last_argument_cons = self.tail(
                                 self.stack,
@@ -348,7 +346,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     fn initialize_cons(&mut self) -> Result<(), Error> {
         let cons = self.allocate(FALSE.into(), FALSE.into())?;
-        self.cons = self.allocate(cons.into(), FALSE.into())?;
+        self.temporary = self.allocate(cons.into(), FALSE.into())?;
 
         Ok(())
     }
@@ -565,8 +563,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
-        self.symbols = self.copy_cons(self.symbols)?;
-        self.cons = self.copy_cons(self.cons)?;
+        self.temporary = self.copy_cons(self.temporary)?;
 
         if let Some(cons) = cons {
             *cons = self.copy_cons(*cons)?;
@@ -623,9 +620,11 @@ impl<'a, T: Device> Vm<'a, T> {
 
         trace!("decode", "end");
 
-        // Implicit top-level frame
+        // Initialize an implicit top-level frame.
         let continuation = self.allocate(NULL.into(), NULL.into())?.into();
         self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
+
+        self.initialize_cons()?;
 
         Ok(())
     }
@@ -671,12 +670,12 @@ impl<'a, T: Device> Vm<'a, T> {
         self.initialize_symbol(TRUE.into())?;
         self.initialize_symbol(FALSE.into())?;
 
-        self.symbols = self.stack;
-        self.stack = NULL;
-
         // Set a rib primitive's environment to a symbol table for access from a base library.
-        *self.cdr_value_mut(self.car_value(self.car(self.tail(self.symbols, Number::new(3))))) =
-            self.symbols.set_tag(Type::Procedure as u8).into();
+        *self.cdr_value_mut(self.car_value(self.car(self.tail(self.stack, Number::new(3))))) =
+            self.stack.set_tag(Type::Procedure as u8).into();
+
+        self.temporary = self.stack;
+        self.stack = NULL;
 
         Ok(())
     }
@@ -789,7 +788,7 @@ impl<'a, T: Device> Vm<'a, T> {
         trace!("symbol", is_symbol);
 
         if is_symbol {
-            self.car(self.tail(self.symbols, index))
+            self.car(self.tail(self.temporary, index))
         } else {
             index.into()
         }
@@ -826,7 +825,6 @@ impl<'a, T: Device> Display for Vm<'a, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "program counter: {}", self.program_counter)?;
         writeln!(formatter, "stack: {}", self.stack)?;
-        writeln!(formatter, "symbols: {}", self.symbols)?;
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
@@ -844,9 +842,7 @@ impl<'a, T: Device> Display for Vm<'a, T> {
                 write!(formatter, " <- program counter")?;
             } else if index == self.stack.index() {
                 write!(formatter, " <- stack")?;
-            } else if index == self.symbols.index() {
-                write!(formatter, " <- symbols")?;
-            } else if index == self.cons.index() {
+            } else if index == self.temporary.index() {
                 write!(formatter, " <- cons")?;
             }
 
