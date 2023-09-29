@@ -422,6 +422,8 @@
 
 (define car rib-car)
 (define cdr rib-cdr)
+(define set-car! rib-set-car!)
+(define set-cdr! rib-set-cdr!)
 (define (cadr x) (car (cdr x)))
 (define (cddr x) (cdr (cdr x)))
 (define (caddr x) (car (cddr x)))
@@ -460,8 +462,24 @@
       (else
         (memv x (cdr xs))))))
 
-(define memq (mem eq?))
-(define memv (mem eqv?))
+(define (member x xs . rest)
+  (define eq?
+    (if (null? rest)
+      equal?
+      (car rest)))
+
+  (cond
+    ((null? xs)
+      #f)
+
+    ((eq? x (car xs))
+      xs)
+
+    (else
+      (member x (cdr xs) eq?))))
+
+(define (memq x xs) (member x xs eq?))
+(define (memv x xs) (member x xs eqv?))
 
 (define (assoc x xs . rest)
   (define eq?
@@ -485,7 +503,20 @@
 (define (append-lists ys xs)
   (if (null? xs)
     ys
-    (cons (car xs) (append-lists (cdr xs) ys))))
+    (cons (car xs) (append-lists ys (cdr xs)))))
+
+(define (fold-left f y xs)
+  (if (null? xs)
+    y
+    (fold-left
+      f
+      (f y (car xs))
+      (cdr xs))))
+
+(define (fold-right f y xs)
+  (if (null? xs)
+    y
+    (f (fold-right f y (cdr xs)) (car xs))))
 
 (define (reduce-right f y xs)
   (cond
@@ -496,17 +527,7 @@
       (car xs))
 
     (else
-      (f
-        (reduce-right f y (cdr xs))
-        (car xs)))))
-
-(define (fold-left f y xs)
-  (if (null? xs)
-    y
-    (fold-left
-      f
-      (f y (car xs))
-      (cdr xs))))
+      (f (reduce-right f y (cdr xs)) (car xs)))))
 
 ;; Number
 
@@ -563,7 +584,7 @@
     (list->string
       (append
         (if (< x 0)
-          (list (char->integer #\-))
+          (list #\-)
           '())
         (let loop ((x (abs x)) (ys '()))
           (let* (
@@ -571,9 +592,10 @@
               (d (- x (* q radix)))
               (ys
                 (cons
-                  (if (< 9 d)
-                    (+ (char->integer #\a) (- d 10))
-                    (+ (char->integer #\0) d))
+                  (integer->char
+                    (if (< 9 d)
+                      (+ (char->integer #\a) (- d 10))
+                      (+ (char->integer #\0) d)))
                   ys)))
             (if (< 0 q)
               (loop q ys)
@@ -649,16 +671,33 @@
 (define string? (instance? string-type))
 
 (define (list->string x)
-  (rib (length x) x string-type))
+  (rib (length x) (map char->integer x) string-type))
 
 (define (string->list x)
   (map integer->char (rib-cdr x)))
+
+; TODO Use an apply procedure.
+(define (string-append . xs)
+  (list->string (fold-right (lambda (y x) (append (string->list x) y)) '() xs)))
 
 ;; Symbol
 
 (define symbol? (instance? symbol-type))
 
+(define symbol-table (rib-cdr $$rib))
+
 (define symbol->string rib-cdr)
+
+(define (string->symbol x)
+  (let loop ((x x) (symbols symbol-table))
+    (if (null? symbols)
+      (let ((symbol (rib #f (string-append x) symbol-type)))
+        (set! symbol-table (cons symbol symbol-table))
+        symbol)
+      (let ((symbol (car symbols)))
+        (if (equal? (symbol->string symbol) x)
+          symbol
+          (loop x (cdr symbols)))))))
 
 ;; Vector
 
