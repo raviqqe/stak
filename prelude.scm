@@ -424,8 +424,11 @@
 (define cdr rib-cdr)
 (define set-car! rib-set-car!)
 (define set-cdr! rib-set-cdr!)
+(define (caar x) (car (car x)))
 (define (cadr x) (car (cdr x)))
+(define (cdar x) (cdr (car x)))
 (define (cddr x) (cdr (cdr x)))
+(define (caaar x) (car (caar x)))
 (define (caddr x) (car (cddr x)))
 
 (define (list . xs) xs)
@@ -605,12 +608,14 @@
   (map
     (lambda (pair)
       (cons
-        (char->integer (car pair))
-        (char->integer (cdr pair))))
+        (cons
+          (char->integer (caar pair))
+          (char->integer (cdar pair)))
+        (cdr pair)))
     '(
-      (#\0 . #\9)
-      (#\A . #\F)
-      (#\a . #\f))))
+      ((#\0 . #\9) . 0)
+      ((#\A . #\F) . 10)
+      ((#\a . #\f) . 10))))
 
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
@@ -622,8 +627,8 @@
           (member
             x
             digit-characters
-            (lambda (x pair) (<= (car pair) x (cdr pair))))))
-      (and y (- x (car (car y))))))
+            (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+      (and y (+ (- x (caaar y)) (cdar y)))))
 
   (define (convert xs)
     (let loop ((xs xs) (y 0))
