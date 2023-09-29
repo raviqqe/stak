@@ -620,9 +620,9 @@
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
 
-  (define (convert-digit char)
+  (define (convert-digit x)
     (let* (
-        (x (char->integer char))
+        (x (char->integer x))
         (y
           (member
             x
@@ -638,11 +638,15 @@
           (and x (loop (cdr xs) (+ (* radix y) x)))))))
 
   (let ((xs (string->list x)))
-    (if (null? xs)
-      #f
-      (if (eqv? (car xs) #\-)
+    (cond
+      ((null? xs)
+        #f)
+
+      ((eqv? (car xs) #\-)
         (let ((x (convert (cdr xs))))
-          (and x (- x)))
+          (and x (- x))))
+
+      (else
         (convert xs)))))
 
 ;; Port
