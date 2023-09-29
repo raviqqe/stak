@@ -83,6 +83,12 @@
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
+; TODO Implement an import statement.
+(define-syntax import
+  (syntax-rules ()
+    ((_ x ...)
+      #f)))
+
 (define-syntax quasiquote
   (syntax-rules ()
     ((_ value)
