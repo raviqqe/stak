@@ -580,14 +580,22 @@
               ys)))))))
 
 (define (string->number str . rest)
-	(define radix (if (null? rest) 10 (car rest))
+  (define radix (if (null? rest) 10 (car rest)))
 
-  (define (convert-16 c)
-    (cond
-      ((and (##< 47 c) (##< c 58)) (##- c 48)) ;; 0-9
-      ((and (##< 64 c) (##< c 71)) (##- c 65)) ;; A-F
-      ((and (##< 96 c) (##< c 103)) (##- c 97)) ;; a-f
-      (else #f)))
+  (define (convert-16 char)
+    (let ((x (char->integer char)))
+      (cond
+        ((and (<= (char->integer #\0) char) (< x (char->integer #\9)))
+          (- x (char->integer #\0)))
+
+        ((and (<= (char->integer #\A) x) (<= x (char->integer #\Z)))
+          (- x (char->integer #\A)))
+
+        ((and (<= (char->integer #\A) x) (<= x (char->integer #\Z)))
+          (- x (char->integer #\A)))
+
+        (else
+          (error "invalid digit character"))))
 
   (define (convert c)
     (if (and (##< 47 c) (##< c 58)) ;; 0-9
