@@ -424,8 +424,11 @@
 (define cdr rib-cdr)
 (define set-car! rib-set-car!)
 (define set-cdr! rib-set-cdr!)
+(define (caar x) (car (car x)))
 (define (cadr x) (car (cdr x)))
+(define (cdar x) (cdr (car x)))
 (define (cddr x) (cdr (cdr x)))
+(define (caaar x) (car (caar x)))
 (define (caddr x) (car (cddr x)))
 
 (define (list . xs) xs)
@@ -600,6 +603,51 @@
             (if (< 0 q)
               (loop q ys)
               ys)))))))
+
+(define digit-characters
+  (map
+    (lambda (pair)
+      (cons
+        (cons
+          (char->integer (caar pair))
+          (char->integer (cdar pair)))
+        (cdr pair)))
+    '(
+      ((#\0 . #\9) . 0)
+      ((#\A . #\F) . 10)
+      ((#\a . #\f) . 10))))
+
+(define (string->number x . rest)
+  (define radix (if (null? rest) 10 (car rest)))
+
+  (define (convert-digit x)
+    (let* (
+        (x (char->integer x))
+        (y
+          (member
+            x
+            digit-characters
+            (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+      (and y (+ (- x (caaar y)) (cdar y)))))
+
+  (define (convert xs)
+    (let loop ((xs xs) (y 0))
+      (if (null? xs)
+        y
+        (let ((x (convert-digit (car xs))))
+          (and x (loop (cdr xs) (+ (* radix y) x)))))))
+
+  (let ((xs (string->list x)))
+    (cond
+      ((null? xs)
+        #f)
+
+      ((eqv? (car xs) #\-)
+        (let ((x (convert (cdr xs))))
+          (and x (- x))))
+
+      (else
+        (convert xs)))))
 
 ;; Port
 
