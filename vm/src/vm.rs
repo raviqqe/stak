@@ -670,6 +670,7 @@ impl<'a, T: Device> Vm<'a, T> {
         *self.cdr_value_mut(self.car_value(self.car(self.tail(self.stack, Number::new(3))))) =
             self.stack.set_tag(Type::Procedure as u8).into();
 
+        // Allow access to a symbol table during decoding.
         self.temporary = self.stack;
         self.stack = NULL;
 
