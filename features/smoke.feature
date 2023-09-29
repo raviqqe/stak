@@ -40,6 +40,7 @@ Feature: Smoke
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "bar"
 
+  @stak
   Scenario: Preserve a tag when a cdr is set
     Given a file named "main.scm" with:
     """scheme
