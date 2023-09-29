@@ -485,7 +485,7 @@
 (define (append-lists ys xs)
   (if (null? xs)
     ys
-    (cons (car xs) (append-lists (cdr xs) ys))))
+    (cons (car xs) (append-lists ys (cdr xs)))))
 
 (define (reduce-right f y xs)
   (cond

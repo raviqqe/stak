@@ -51,6 +51,24 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
+  Scenario Outline: Use an append procedure
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (map write-u8 (append <values>))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values            | output |
+      |                   |        |
+      | '(65)             | A      |
+      | '(65) '(66)       | AB     |
+      | '(65) '(66) '(67) | ABC    |
+      | '(65 66) '(67 68) | ABCD   |
+
   Scenario: Use a memq function
     Given a file named "main.scm" with:
     """scheme
@@ -70,26 +88,6 @@ Feature: List
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
-
-  Scenario: Use an append function
-    Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
-
-    (map write-u8 (append '(65) '(66)))
-    """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AB"
-
-  Scenario: Use an append function with three lists
-    Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
-
-    (map write-u8 (append '(65) '(66) '(67)))
-    """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "ABC"
 
   @stak
   Scenario: Get a tag of a pair with a non-cons cdr
