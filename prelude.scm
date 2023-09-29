@@ -591,8 +591,8 @@
         ((and (<= (char->integer #\A) x) (<= x (char->integer #\Z)))
           (- x (char->integer #\A)))
 
-        ((and (<= (char->integer #\A) x) (<= x (char->integer #\Z)))
-          (- x (char->integer #\A)))
+        ((and (<= (char->integer #\a) x) (<= x (char->integer #\z)))
+          (- x (char->integer #\a)))
 
         (else
           (error "invalid digit character"))))
