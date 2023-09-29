@@ -36,13 +36,13 @@ impl<const I: usize, const O: usize> Default for FixedBufferDevice<I, O> {
 impl<const I: usize, const O: usize> Device for FixedBufferDevice<I, O> {
     type Error = ();
 
-    fn read(&mut self) -> Result<u8, Self::Error> {
+    fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         if let Some(&byte) = self.input.get(self.input_index) {
             self.input_index += 1;
 
-            Ok(byte)
+            Ok(Some(byte))
         } else {
-            Err(())
+            Ok(None)
         }
     }
 
