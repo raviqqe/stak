@@ -308,7 +308,7 @@
 (define $$- (primitive 13))
 (define $$* (primitive 14))
 (define $$/ (primitive 15))
-(define read-u8 (primitive 16))
+(define $$read-u8 (primitive 16))
 (define write-u8 (primitive 17))
 (define dump (primitive 18))
 
@@ -587,11 +587,12 @@
 (define (make-port name)
   (rib #f name port-type))
 
-(define (port-last-char port)
+; TODO Support multiple bytes.
+(define (port-last-byte port)
   (rib-car port))
 
-(define (port-set-last-char! port char)
-  (rib-set-car! port char))
+(define (port-set-last-byte! port byte)
+  (rib-set-car! port byte))
 
 (define stdin-port (make-port 'stdin))
 
@@ -635,30 +636,38 @@
 
 ; Read
 
-(define (read-char . rest)
-  (let* (
-      (port (if (null? rest) stdin-port (car rest)))
-      (char (port-last-char port)))
-    (unless (eqv? (rib-cdr port) (rib-cdr stdin-port))
-      (error "unsupported port"))
+(define (get-port rest)
+  (if (null? rest) stdin-port (car rest)))
 
-    (if char
+(define (input-byte->char x)
+  (if (number? x) (integer->char x) x))
+
+(define (read-u8 . rest)
+  (let* (
+      (port (get-port rest))
+      (x (port-last-byte port)))
+    (if x
       (begin
-        (port-set-last-char! port #f)
-        char)
-      (let ((char (read-u8)))
-        (if char (integer->char char) eof)))))
+        (port-set-last-byte! port #f)
+        x)
+      (or ($$read-u8) eof))))
+
+(define (peek-u8 . rest)
+  (let* (
+      (port (get-port rest))
+      (x (read-u8 port)))
+    (port-set-last-byte! port x)
+    x))
+
+(define (read-char . rest)
+  (input-byte->char (read-u8 (get-port rest))))
 
 (define (peek-char . rest)
-  (let* (
-      (port (if (null? rest) stdin-port (car rest)))
-      (char (read-char port)))
-    (rib-set-car! port char)
-    char))
+  (input-byte->char (peek-u8 (get-port rest))))
 
 (define (read . rest)
   (let (
-      (port (if (null? rest) stdin-port (car rest)))
+      (port (get-port rest))
       (char (peek-non-whitespace-char port)))
     (cond
       ((eof-object? char)
