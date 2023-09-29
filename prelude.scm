@@ -701,8 +701,7 @@
           (list 'unquote (read port))))
 
       ((eqv? char #\")
-        (read-char port)
-        (list->string (read-chars '() port)))
+        (read-string port))
 
       (else
         (let ((s (list->string (read-symbol port))))
@@ -735,7 +734,8 @@
         (read-char port)
         (cons char (read-symbol port))))))
 
-(define (read-chars port)
+(define (read-string port)
+  (read-char port)
   (let loop ((xs '()))
     (let ((char (read-char port)))
       (cond
@@ -743,7 +743,7 @@
           (error "unexpected end of port"))
 
         ((eqv? char #\")
-          (reverse xs))
+          (list->string (reverse xs)))
 
         ((eqv? char #\\)
           (let ((char (read-char port)))
