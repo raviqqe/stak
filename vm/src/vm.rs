@@ -473,8 +473,13 @@ impl<'a, T: Device> Vm<'a, T> {
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                // TODO Should we preserve a tag?
-                *self.cdr_value_mut(x) = y;
+                *self.cdr_value_mut(x) = y
+                    .to_cons()
+                    .map(|cons| {
+                        cons.set_tag(self.cdr(x.assume_cons()).assume_cons().tag())
+                            .into()
+                    })
+                    .unwrap_or(y);
                 self.set_top(y);
             }
             Primitive::SET_TAG => {
