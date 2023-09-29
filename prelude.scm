@@ -687,6 +687,8 @@
 (define symbol? (instance? symbol-type))
 
 (define symbol-table (rib-cdr $$rib))
+; Allow garbage collection for a symbol table.
+(rib-set-cdr! $$rib #f)
 
 (define symbol->string rib-cdr)
 
