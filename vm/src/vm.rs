@@ -504,7 +504,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     .map_err(|_| Error::WriteOutput)?;
             }
             Primitive::APPLY => {
-                trace!("dump", self.top());
+                todo!()
             }
             Primitive::DUMP => {
                 trace!("dump", self.top());
