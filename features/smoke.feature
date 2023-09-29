@@ -33,11 +33,11 @@ Feature: Smoke
     (import (scheme base) (scheme write))
 
     (define (foo)
-      (if #t
+      (if #f
         (list 'foo)
         (list 'bar)))
 
-    (write (foo))
+    (write-string (symbol->string (foo)))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "foo"
+    Then the stdout should contain exactly "bar"
