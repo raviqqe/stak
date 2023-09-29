@@ -616,7 +616,7 @@
 
 (define symbol->string rib-cdr)
 
-; TODO Implemenet string-append.
+; TODO Implement string-append.
 (define (string->uninterned-symbol x)
   (rib #f (string-append x) symbol-type))
 
