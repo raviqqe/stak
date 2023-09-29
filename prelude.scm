@@ -593,7 +593,7 @@
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
 
-  (define (convert-16 char)
+  (define (convert-digit char)
     (let* (
         (x (char->integer char))
         (y
@@ -606,20 +606,14 @@
                 (<= x (cdr pair)))))))
       (and y (- x (char->integer (car (car y)))))))
 
-  (define (string->number-aux lst)
-    (if (null? lst)
-      #f
-      (string->number-aux2 lst 0 (if (##eqv? radix 16) convert-16 convert))))
-
-  (define (string->number-aux2 lst n converter)
+  (define (convert xs)
     (if (pair? lst)
-      (let* ((c (##field0 lst))
-          (x (converter c)))
+      (let* ((c (car lst))
+          (x (convert-digit c)))
         (if x
           (string->number-aux2
             (##field1 lst) ;; cdr
-            (##- (##* radix n) x)
-            converter)
+            (##- (##* radix n) x))
           #f))
       n))
 
@@ -628,8 +622,8 @@
       #f
       (let ((negative (eqv? (car xs) #\-)))
         (if (eqv? (car xs) #\-)
-          (- 0 (string->number-aux (cdr xs)))
-          (string->number-aux xs))))))
+          (- 0 (convert (cdr xs)))
+          (convert xs))))))
 
 ;; Port
 
