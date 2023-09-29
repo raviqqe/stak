@@ -8,7 +8,7 @@ Feature: Read
     (write-u8 (read-u8))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     A
     """
     When I run `scheme main.scm` interactively
@@ -27,7 +27,7 @@ Feature: Read
     (write-u8 (read-u8))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     ABC
     """
     When I run `scheme main.scm` interactively
@@ -44,7 +44,7 @@ Feature: Read
     (write-u8 (peek-u8))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     A
     """
     When I run `scheme main.scm` interactively
@@ -62,7 +62,7 @@ Feature: Read
     (write-u8 (peek-u8))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     A
     """
     When I run `scheme main.scm` interactively
@@ -81,7 +81,7 @@ Feature: Read
     (write-u8 (read-u8))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     AB
     """
     When I run `scheme main.scm` interactively
@@ -97,7 +97,7 @@ Feature: Read
     (write-char (read-char))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     A
     """
     When I run `scheme main.scm` interactively
@@ -113,7 +113,7 @@ Feature: Read
     (write-char (peek-char))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     A
     """
     When I run `scheme main.scm` interactively
@@ -130,7 +130,7 @@ Feature: Read
     (write-char (peek-char))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     A
     """
     When I run `scheme main.scm` interactively
@@ -148,7 +148,7 @@ Feature: Read
     (write-char (read-char))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     AB
     """
     When I run `scheme main.scm` interactively
@@ -164,7 +164,7 @@ Feature: Read
     (write (read))
     """
     And a file named "input.txt" with:
-    """scheme
+    """text
     <value>
     """
     When I run `scheme main.scm` interactively
