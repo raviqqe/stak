@@ -579,6 +579,12 @@
               (loop q ys)
               ys)))))))
 
+(define digit-characters
+  '(
+    (#\0 . #\9)
+    (#\A . #\Z)
+    (#\a . #\z)))
+
 (define (string->number str . rest)
   (define radix (if (null? rest) 10 (car rest)))
 
@@ -595,7 +601,7 @@
           (- x (char->integer #\a)))
 
         (else
-          (error "invalid digit character"))))
+          (error "invalid digit character")))))
 
   (define (convert c)
     (if (and (##< 47 c) (##< c 58)) ;; 0-9
