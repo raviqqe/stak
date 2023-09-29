@@ -635,15 +635,14 @@
       (if (null? xs)
         y
         (let ((x (convert-digit (car xs))))
-          (if x
-            (loop (cdr xs) (+ (* radix y) x))
-            #f)))))
+          (and x (loop (cdr xs) (+ (* radix y) x)))))))
 
   (let ((xs (string->list x)))
     (if (null? xs)
       #f
       (if (eqv? (car xs) #\-)
-        (- 0 (convert (cdr xs)))
+        (let ((x (convert (cdr xs))))
+          (and x (- x)))
         (convert xs)))))
 
 ;; Port

@@ -167,3 +167,21 @@ Feature: Number
       | -1    | 16    | -1     |
       | -2    | 16    | -2     |
       | -2a   | 16    | -42    |
+
+  Scenario Outline: Convert an invalid string to a number
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (string->number "<value>") 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+    Examples:
+      | value |
+      | x     |
+      | foo   |
+      | 2x    |
+      | -x    |
+      | -2x   |
