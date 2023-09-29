@@ -473,6 +473,7 @@ impl<'a, T: Device> Vm<'a, T> {
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
+                // TODO Should we preserve a tag?
                 *self.cdr_value_mut(x) = y;
                 self.set_top(y);
             }
@@ -657,10 +658,7 @@ impl<'a, T: Device> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(
-            Number::new(Primitive::Rib as i64).into(),
-            NULL.set_tag(Type::Procedure as u8).into(),
-        )?;
+        let rib = self.allocate(Number::new(Primitive::Rib as i64).into(), FALSE.into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(NULL.into())?;
@@ -669,6 +667,10 @@ impl<'a, T: Device> Vm<'a, T> {
 
         self.symbols = self.stack;
         self.stack = NULL;
+
+        // Set a rib primitive's environment to a symbol table for access from libraries.
+        *self.cdr_value_mut(self.car_value(self.car(self.tail(self.symbols, Number::new(3))))) =
+            self.symbols.set_tag(Type::Procedure as u8).into();
 
         Ok(())
     }
