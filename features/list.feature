@@ -69,6 +69,23 @@ Feature: List
       | '(65) '(66) '(67) | ABC    |
       | '(65 66) '(67 68) | ABCD   |
 
+  Scenario: Share the last argument in an append procedure
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define x (list 65))
+    (define y (append '(65) x))
+
+    (map write-u8 y)
+
+    (set-car! x 66)
+
+    (map write-u8 y)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AAAB"
+
   Scenario Outline: Use a memq function
     Given a file named "main.scm" with:
     """scheme

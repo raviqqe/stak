@@ -422,6 +422,8 @@
 
 (define car rib-car)
 (define cdr rib-cdr)
+(define set-car! rib-set-car!)
+(define set-cdr! rib-set-cdr!)
 (define (cadr x) (car (cdr x)))
 (define (cddr x) (cdr (cdr x)))
 (define (caddr x) (car (cddr x)))
@@ -496,7 +498,7 @@
 (define (assv x xs) (assoc x xs eqv?))
 
 (define (append . lists)
-  (fold-right append-lists '() lists))
+  (reduce-right append-lists '() lists))
 
 (define (append-lists ys xs)
   (if (null? xs)
@@ -515,6 +517,17 @@
   (if (null? xs)
     y
     (f (fold-right f y (cdr xs)) (car xs))))
+
+(define (reduce-right f y xs)
+  (cond
+    ((null? xs)
+      y)
+
+    ((null? (cdr xs))
+      (car xs))
+
+    (else
+      (f (reduce-right f y (cdr xs)) (car xs)))))
 
 ;; Number
 
