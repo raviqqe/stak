@@ -151,7 +151,7 @@ impl<'a, T: Device> Vm<'a, T> {
                             self.program_counter =
                                 self.cdr(self.code(procedure).assume_cons()).assume_cons();
 
-                            self.initialize_cons()?;
+                            self.initialize_temporary_for_run()?;
                         }
                         TypedValue::Number(primitive) => {
                             self.operate_primitive(primitive.to_i64() as u8)?;
@@ -340,7 +340,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(cons)
     }
 
-    fn initialize_cons(&mut self) -> Result<(), Error> {
+    fn initialize_temporary_for_run(&mut self) -> Result<(), Error> {
         let cons = self.allocate(FALSE.into(), FALSE.into())?;
         self.temporary = self.allocate(cons.into(), FALSE.into())?;
 
@@ -620,7 +620,7 @@ impl<'a, T: Device> Vm<'a, T> {
         let continuation = self.allocate(NULL.into(), NULL.into())?.into();
         self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
 
-        self.initialize_cons()?;
+        self.initialize_temporary_for_run()?;
 
         Ok(())
     }
@@ -840,7 +840,7 @@ impl<'a, T: Device> Display for Vm<'a, T> {
             } else if index == self.stack.index() {
                 write!(formatter, " <- stack")?;
             } else if index == self.temporary.index() {
-                write!(formatter, " <- cons")?;
+                write!(formatter, " <- temporary")?;
             }
 
             writeln!(formatter)?;
