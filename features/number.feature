@@ -164,9 +164,11 @@ Feature: Number
       | 1     | 16    | 1      |
       | 2     | 16    | 2      |
       | 2a    | 16    | 42     |
+      | 2A    | 16    | 42     |
       | -1    | 16    | -1     |
       | -2    | 16    | -2     |
       | -2a   | 16    | -42    |
+      | -2A   | 16    | -42    |
 
   Scenario Outline: Convert an invalid string to a number
     Given a file named "main.scm" with:
