@@ -772,27 +772,41 @@
         (read-char port)
         (read-list port))
 
-      ; ((eqv? char #\#)
-      ;   (read-char port) ;; skip #
-      ;   (let ((char (peek-char port)))
-      ;     (cond ((eqv? c 102) ;; #\f
-      ;         (read-char port) ;; skip "f"
-      ;         #f)
-      ;       ((eqv? c 116) ;; #\t
-      ;         (read-char port) ;; skip "t"
-      ;         #t)
-      ;       ((eqv? c 92) ;; #\\
-      ;         (read-char port) ;; skip "\\"
-      ;         (let ((ch (peek-char port)))
-      ;           (if (char-whitespace? ch)
-      ;             (read-char port)
-      ;             (let ((str (read-symbol port)))
-      ;               (cond
-      ;                 ((null? str) (read-char port))
-      ;                 ((##eqv? (length str) 1) (integer->char (##field0 str)))
-      ;                 (else (integer->char (cadr (assoc (list->string (map char-downcase (map integer->char str))) special-chars)))))))))
-      ;       (else
-      ;         (list->vector (read port))))))
+      ((eqv? char #\#)
+        (read-char port)
+        (let ((char (peek-char port)))
+          (cond
+            ((eqv? char #\f)
+              (read-char port)
+              #f)
+
+            ((eqv? char #\t)
+              (read-char port)
+              #t)
+
+            ((eqv? char #\\)
+              (read-char port)
+              (let ((char (peek-char port)))
+                (if (char-whitespace? char)
+                  (read-char port)
+                  (let ((x (read-symbol port)))
+                    (cond
+                      ((null? x)
+                        (read-char port))
+
+                      ((eqv? (length x) 1)
+                        (integer->char (car x)))
+
+                      (else
+                        (integer->char
+                          (cadr
+                            (assoc
+                              (list->string (map integer->char str))
+                              special-chars)))))))))
+
+            (else
+              ; TODO Use read-list.
+              (list->vector (read port))))))
 
       ((eqv? char #\')
         (read-char port)
