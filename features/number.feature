@@ -140,3 +140,30 @@ Feature: Number
       | -1    | 16    | -1     |
       | -2    | 16    | -2     |
       | -42   | 16    | -2a    |
+
+  Scenario Outline: Convert a string to a number
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-string (number->string (string->number "<value>" <radix>)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | radix | output |
+      | 0     |       | 0      |
+      | 1     |       | 1      |
+      | 2     |       | 2      |
+      | 42    |       | 42     |
+      | -1    |       | -1     |
+      | -2    |       | -2     |
+      | -42   |       | -42    |
+      | 0     | 16    | 0      |
+      | 1     | 16    | 1      |
+      | 2     | 16    | 2      |
+      | 2a    | 16    | 42     |
+      | -1    | 16    | -1     |
+      | -2    | 16    | -2     |
+      | -2a   | 16    | -42    |

@@ -609,8 +609,8 @@
         (char->integer (cdr pair))))
     '(
       (#\0 . #\9)
-      (#\A . #\Z)
-      (#\a . #\z))))
+      (#\A . #\F)
+      (#\a . #\f))))
 
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
@@ -622,30 +622,24 @@
           (member
             x
             digit-characters
-            (lambda (x pair)
-              (and
-                (<= (car pair) x)
-                (<= x (cdr pair)))))))
-      (and y (- x (char->integer (car (car y)))))))
+            (lambda (x pair) (<= (car pair) x (cdr pair))))))
+      (and y (- x (car (car y))))))
 
   (define (convert xs)
-    (if (pair? lst)
-      (let* ((c (car lst))
-          (x (convert-digit c)))
-        (if x
-          (string->number-aux2
-            (##field1 lst) ;; cdr
-            (##- (##* radix n) x))
-          #f))
-      n))
+    (let loop ((xs xs) (y 0))
+      (if (null? xs)
+        y
+        (let ((x (convert-digit (car xs))))
+          (if x
+            (loop (cdr xs) (+ (* radix y) x))
+            #f)))))
 
   (let ((xs (string->list x)))
     (if (null? xs)
       #f
-      (let ((negative (eqv? (car xs) #\-)))
-        (if (eqv? (car xs) #\-)
-          (- 0 (convert (cdr xs)))
-          (convert xs))))))
+      (if (eqv? (car xs) #\-)
+        (- 0 (convert (cdr xs)))
+        (convert xs)))))
 
 ;; Port
 
