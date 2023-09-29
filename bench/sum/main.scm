@@ -1,11 +1,9 @@
 (import (scheme base))
 
-(define (sum* x y)
-  (if (eqv? x 0)
-    y
-    (sum* (- x 1) (+ x y))))
-
 (define (sum x)
-  (sum* x 0))
+  (let loop ((x x) (y 0))
+    (if (eq? x 0)
+      y
+      (loop (- x 1) (+ x y)))))
 
 (sum 100000000)
