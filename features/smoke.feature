@@ -33,9 +33,7 @@ Feature: Smoke
     (import (scheme base) (scheme write))
 
     (define (foo)
-      (if #f
-        'foo
-        'bar))
+      (if #f 'foo 'bar))
 
     (write-string (symbol->string (foo)))
     """
