@@ -175,6 +175,7 @@ Feature: Read
     Examples:
       | value           |
       | ()              |
+      | (())            |
       | (foo)           |
       | (foo bar)       |
       | (foo bar baz)   |
