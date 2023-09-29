@@ -155,3 +155,24 @@ Feature: Read
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
+
+  Scenario Outline: Read a value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write (read))
+    """
+    And a file named "input.txt" with:
+    """scheme
+    <value>
+    """
+    When I run `scheme main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "<value>"
+
+    Examples:
+      | value |
+      | ()    |
+      | ""    |
