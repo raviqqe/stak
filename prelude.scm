@@ -745,9 +745,7 @@
         (eof-object? char)
         (char-whitespace? char))
       '()
-      (begin
-        (read-char port)
-        (cons char (read-symbol port))))))
+      (cons (read-char port) (read-symbol port)))))
 
 (define (read-string port)
   (let loop ((xs '()))
