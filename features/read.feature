@@ -1,4 +1,5 @@
 Feature: Read
+  @stak @chibi @gauche
   Scenario: Read a byte
     Given a file named "main.scm" with:
     """scheme
@@ -15,6 +16,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
+  @stak @chibi @gauche
   Scenario: Read bytes
     Given a file named "main.scm" with:
     """scheme
