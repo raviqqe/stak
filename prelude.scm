@@ -460,8 +460,24 @@
       (else
         (memv x (cdr xs))))))
 
-(define memq (mem eq?))
-(define memv (mem eqv?))
+(define (member x xs . rest)
+  (define eq?
+    (if (null? rest)
+      equal?
+      (car rest)))
+
+  (cond
+    ((null? xs)
+      #f)
+
+    ((eq? x (car xs))
+      xs)
+
+    (else
+      (member x (cdr xs) eq?))))
+
+(define (memq x xs) (member x xs eq?))
+(define (memv x xs) (member x xs eqv?))
 
 (define (assoc x xs . rest)
   (define eq?

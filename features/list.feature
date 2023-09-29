@@ -69,25 +69,68 @@ Feature: List
       | '(65) '(66) '(67) | ABC    |
       | '(65 66) '(67 68) | ABCD   |
 
-  Scenario: Use a memq function
+  Scenario Outline: Use a memq function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (memq 2 '(1 2 3)) 65 66))
+    (write-u8 (if (memq <value> '(<values>)) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
 
-  Scenario: Use a memv function
+    Examples:
+      | value | values | output |
+      | 1     |        | B      |
+      | 1     | 1      | A      |
+      | 2     | 1      | B      |
+      | 1     | 1 2    | A      |
+      | 2     | 1 2    | A      |
+      | 3     | 1 2    | B      |
+      | 1     | 1 2 3  | A      |
+      | 4     | 1 2 3  | B      |
+
+  Scenario Outline: Use a memv function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (memv 2 '(1 2 3)) 65 66))
+    (write-u8 (if (memv <value> '(<values>)) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | values         | output |
+      | #\\A  |                | B      |
+      | #\\A  | #\\A           | A      |
+      | #\\B  | #\\A           | B      |
+      | #\\A  | #\\A #\\B      | A      |
+      | #\\B  | #\\A #\\B      | A      |
+      | #\\C  | #\\A #\\B      | B      |
+      | #\\A  | #\\A #\\B #\\C | A      |
+      | #\\D  | #\\A #\\B #\\C | B      |
+
+  Scenario Outline: Use a member function
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (member <value> '(<values>)) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | values      | output |
+      | '(1)  |             | B      |
+      | '(1)  | (1)         | A      |
+      | '(2)  | (1)         | B      |
+      | '(1)  | (1) (2)     | A      |
+      | '(2)  | (1) (2)     | A      |
+      | '(3)  | (1) (2)     | B      |
+      | '(1)  | (1) (2) (3) | A      |
+      | '(4)  | (1) (2) (3) | B      |
 
   @stak
   Scenario: Get a tag of a pair with a non-cons cdr
