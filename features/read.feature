@@ -35,6 +35,60 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "ABC"
 
+  @stak @chibi @gauche
+  Scenario: Peek a byte
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (peek-u8))
+    """
+    And a file named "input.txt" with:
+    """scheme
+    A
+    """
+    When I run `scheme main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
+
+  @stak @chibi @gauche
+  Scenario: Peek a byte multiple times
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (peek-u8))
+    (write-u8 (peek-u8))
+    """
+    And a file named "input.txt" with:
+    """scheme
+    A
+    """
+    When I run `scheme main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "AA"
+
+  @stak @chibi @gauche
+  Scenario: Peek and read bytes
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (peek-u8))
+    (write-u8 (read-u8))
+    (write-u8 (read-u8))
+    """
+    And a file named "input.txt" with:
+    """scheme
+    AB
+    """
+    When I run `scheme main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "AAB"
+
   Scenario: Read a character
     Given a file named "main.scm" with:
     """scheme
