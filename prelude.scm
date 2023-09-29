@@ -480,17 +480,12 @@
 (define (assv x xs) (assoc x xs eqv?))
 
 (define (append . lists)
-  (reduce-right append-lists '() lists))
+  (fold-right append-lists '() lists))
 
 (define (append-lists ys xs)
   (if (null? xs)
     ys
     (cons (car xs) (append-lists ys (cdr xs)))))
-
-(define (reduce-right f y xs)
-  (if (null? xs)
-    y
-    (f (reduce-right f y (cdr xs)) (car xs))))
 
 (define (fold-left f y xs)
   (if (null? xs)
@@ -499,6 +494,11 @@
       f
       (f y (car xs))
       (cdr xs))))
+
+(define (fold-right f y xs)
+  (if (null? xs)
+    y
+    (f (fold-right f y (cdr xs)) (car xs))))
 
 ;; Number
 
@@ -603,7 +603,7 @@
 
 ; TODO Use an apply procedure.
 (define (string-append . xs)
-  (list->string (reduce-right (lambda (y x) (append (string->list x) y)) '() xs)))
+  (list->string (fold-right (lambda (y x) (append (string->list x) y)) '() xs)))
 
 ;; Symbol
 
