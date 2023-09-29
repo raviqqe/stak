@@ -488,17 +488,9 @@
     (cons (car xs) (append-lists ys (cdr xs)))))
 
 (define (reduce-right f y xs)
-  (cond
-    ((null? xs)
-      y)
-
-    ((null? (cdr xs))
-      (car xs))
-
-    (else
-      (f
-        (reduce-right f y (cdr xs))
-        (car xs)))))
+  (if (null? xs)
+    y
+    (f (reduce-right f y (cdr xs)) (car xs))))
 
 (define (fold-left f y xs)
   (if (null? xs)
