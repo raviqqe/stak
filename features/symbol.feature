@@ -8,3 +8,13 @@ Feature: Symbol
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
+
+  Scenario: Convert a string to a symbol
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (eq? (string->symbol "foo") 'foo) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
