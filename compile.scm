@@ -935,6 +935,11 @@
         (loop
           (rib-cdr codes)
           (cond
+            ((and
+                (eqv? instruction constant-instruction)
+                (stak-procedure? operand))
+              (loop (procedure-code operand) symbols))
+
             ((eqv? instruction if-instruction)
               (loop operand symbols))
 
