@@ -59,7 +59,7 @@ pub struct Vm<'a, T: Device> {
 // volatile variables live across garbage collections.
 impl<'a, T: Device> Vm<'a, T> {
     pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
-        let mut vm = Self {
+        Ok(Self {
             device,
             program_counter: NULL,
             stack: NULL,
@@ -67,11 +67,7 @@ impl<'a, T: Device> Vm<'a, T> {
             allocation_index: 0,
             space: false,
             heap,
-        };
-
-        vm.initialize_cons()?;
-
-        Ok(vm)
+        })
     }
 
     pub fn run(&mut self) -> Result<(), Error> {
