@@ -543,10 +543,6 @@
               (make-transformer context (caddr expression)))
             #f)
 
-          ; TODO Implement an import statement.
-          ((import)
-            #f)
-
           (($$lambda)
             (let* (
                 (parameters (relaxed-deep-map unresolve-denotation (cadr expression)))
