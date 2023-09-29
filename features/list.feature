@@ -51,45 +51,104 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Use a memq function
+  Scenario Outline: Use an append procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (memq 2 '(1 2 3)) 65 66))
+    (map write-u8 (append <values>))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
 
-  Scenario: Use a memv function
+    Examples:
+      | values            | output |
+      |                   |        |
+      | '(65)             | A      |
+      | '(65) '(66)       | AB     |
+      | '(65) '(66) '(67) | ABC    |
+      | '(65 66) '(67 68) | ABCD   |
+
+  Scenario: Share the last argument in an append procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (memv 2 '(1 2 3)) 65 66))
+    (define x (list 65))
+    (define y (append '(65) x))
+
+    (map write-u8 y)
+
+    (set-car! x 66)
+
+    (map write-u8 y)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    # spell-checker: disable-next-line
+    Then the stdout should contain exactly "AAAB"
 
-  Scenario: Use an append function
+  Scenario Outline: Use a memq function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (map write-u8 (append '(65) '(66)))
+    (write-u8 (if (memq <value> '(<values>)) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AB"
+    Then the stdout should contain exactly "<output>"
 
-  Scenario: Use an append function with three lists
+    Examples:
+      | value | values | output |
+      | 1     |        | B      |
+      | 1     | 1      | A      |
+      | 2     | 1      | B      |
+      | 1     | 1 2    | A      |
+      | 2     | 1 2    | A      |
+      | 3     | 1 2    | B      |
+      | 1     | 1 2 3  | A      |
+      | 4     | 1 2 3  | B      |
+
+  Scenario Outline: Use a memv function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (map write-u8 (append '(65) '(66) '(67)))
+    (write-u8 (if (memv <value> '(<values>)) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "ABC"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | values         | output |
+      | #\\A  |                | B      |
+      | #\\A  | #\\A           | A      |
+      | #\\B  | #\\A           | B      |
+      | #\\A  | #\\A #\\B      | A      |
+      | #\\B  | #\\A #\\B      | A      |
+      | #\\C  | #\\A #\\B      | B      |
+      | #\\A  | #\\A #\\B #\\C | A      |
+      | #\\D  | #\\A #\\B #\\C | B      |
+
+  Scenario Outline: Use a member function
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (member <value> '(<values>)) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | values      | output |
+      | '(1)  |             | B      |
+      | '(1)  | (1)         | A      |
+      | '(2)  | (1)         | B      |
+      | '(1)  | (1) (2)     | A      |
+      | '(2)  | (1) (2)     | A      |
+      | '(3)  | (1) (2)     | B      |
+      | '(1)  | (1) (2) (3) | A      |
+      | '(4)  | (1) (2) (3) | B      |
 
   @stak
   Scenario: Get a tag of a pair with a non-cons cdr
