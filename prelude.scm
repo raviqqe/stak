@@ -612,7 +612,23 @@
 
 (define symbol? (instance? symbol-type))
 
+(define symbol-table (rib-cdr $$rib))
+
 (define symbol->string rib-cdr)
+
+(define (string->uninterned-symbol x)
+  (rib #f (string-append x) symbol-type))
+
+(define (string->symbol x)
+  (let loop (((x x) (symbols symbol-table)))
+    (if (pair? symbols)
+      (let ((symbol (car symbols)))
+        (if (equal? (symbol->string symbol) x)
+          symbol
+          (loop x (cdr symbols))))
+      (let ((symbol (string->uninterned-symbol x)))
+        (set! symtbl (##rib sym symtbl pair-type)) ;; cons
+        sym))))
 
 ;; Vector
 
