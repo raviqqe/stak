@@ -642,7 +642,7 @@
       continuation
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-(define (compile-call* context function arguments argument-count continuation)
+(define (compile-raw-call context function arguments argument-count continuation)
   (if (null? arguments)
     (rib
       call-instruction
@@ -653,7 +653,7 @@
     (compile-expression
       context
       (car arguments)
-      (compile-call*
+      (compile-raw-call
         (compilation-context-push-local context #f)
         function
         (cdr arguments)
@@ -663,22 +663,19 @@
 (define (compile-call context expression continuation)
   (let* (
       (function (car expression))
-      (arguments (cdr expression)))
-    (if (eqv? function '$$apply)
-      (compile-call* context (car arguments) (cdr arguments) 1 continuation)
-      (let (
-          (continue
-            (lambda (context function continuation)
-              (compile-call* context function arguments (* 2 (length arguments)) continuation))))
-        (if (symbol? function)
-          (continue context function continuation)
-          (compile-expression
-            context
-            function
-            (continue
-              (compilation-context-push-local context '$function)
-              '$function
-              (compile-unbind continuation))))))))
+      (arguments (cdr expression))
+      (continue
+        (lambda (context function continuation)
+          (compile-raw-call context function arguments (* 2 (length arguments)) continuation))))
+    (if (symbol? function)
+      (continue context function continuation)
+      (compile-expression
+        context
+        function
+        (continue
+          (compilation-context-push-local context '$function)
+          '$function
+          (compile-unbind continuation))))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
@@ -695,6 +692,9 @@
 
     ((pair? expression)
       (case (car expression)
+        (($$apply)
+          (compile-raw-call context (cadr expression) (cddr expression) 1 continuation))
+
         (($$begin)
           (compile-sequence context (cdr expression) continuation))
 
