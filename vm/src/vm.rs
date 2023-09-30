@@ -44,6 +44,7 @@ macro_rules! assert_index_range {
     };
 }
 
+#[derive(Debug)]
 struct ArgumentInfo {
     // A count does not include a variadic argument.
     count: Number,
@@ -113,9 +114,10 @@ impl<'a, T: Device> Vm<'a, T> {
                                 }
                             };
 
-                            trace!("argument count", argument_count);
-                            trace!("parameter count", (parameter_count, variadic));
-                            trace!("variadic", variadic);
+                            trace!("argument count", arguments.count);
+                            trace!("argument variadic", arguments.variadic);
+                            trace!("parameter count", parameters.count);
+                            trace!("parameter variadic", parameters.variadic);
 
                             if parameters.variadic && arguments.count < parameters.count
                                 || !parameters.variadic && arguments.count != parameters.count
