@@ -123,14 +123,14 @@
     (f (fold-right f y (cdr xs)) (car xs))))
 
 (define (take n list)
-  (if (eqv? n 0)
+  (if (= n 0)
     '()
     (cons
       (car list)
       (take (- n 1) (cdr list)))))
 
 (define (skip n list)
-  (if (eqv? n 0)
+  (if (= n 0)
     list
     (skip (- n 1) (cdr list))))
 
@@ -277,7 +277,7 @@
 ; before applying optimization.
 (define (optimize expression)
   (let ((pair (assv (predicate expression) primitive-functions)))
-    (if (and pair (eqv? (length expression) 3))
+    (if (and pair (= (length expression) 3))
       (cons (cdr pair) (cdr expression))
       expression)))
 
@@ -973,10 +973,10 @@
 
 (define (encode-symbols* symbols count target)
   ; We may encounter this only at the first call.
-  (if (eqv? count 0)
+  (if (= count 0)
     target
     (let ((target (encode-symbol (car symbols) target)))
-      (if (eqv? count 1)
+      (if (= count 1)
         target
         (encode-symbols*
           (cdr symbols)
@@ -1007,7 +1007,7 @@
       (x (quotient integer base))
       (bit 0)
       (target target))
-    (if (eqv? x 0)
+    (if (= x 0)
       (values (encode-integer-part integer base bit) target)
       (loop
         (quotient x integer-base)
