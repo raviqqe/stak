@@ -100,9 +100,9 @@ impl<'a, T: Device> Vm<'a, T> {
                             // Non-primitive procedures may update any cons's of arguments on a
                             // stack destructively.
 
-                            let arguments = Self::parse_argument_info(self.argument_count());
+                            let arguments = Self::parse_argument_count(self.argument_count());
                             let parameters =
-                                Self::parse_argument_info(self.car(code).assume_number());
+                                Self::parse_argument_count(self.car(code).assume_number());
 
                             trace!("argument count", arguments.count);
                             trace!("argument variadic", arguments.variadic);
@@ -209,7 +209,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
-    fn parse_argument_info(info: Number) -> ArgumentInfo {
+    fn parse_argument_count(info: Number) -> ArgumentInfo {
         let info = info.to_i64();
 
         ArgumentInfo {
