@@ -714,9 +714,9 @@
 (define symbol->string rib-cdr)
 
 (define (string->symbol x)
-  (let ((x (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
-    (if x
-      (car x)
+  (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
+    (if pair
+      (car pair)
       (let ((x (rib #f (string-append x) symbol-type)))
         (set! symbol-table (cons x symbol-table))
         x))))
