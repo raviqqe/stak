@@ -194,3 +194,13 @@ Feature: Write
       | #(1 2)               |
       | #(1 2 3)             |
       | #(1 #(1 2) #(3 4 5)) |
+
+  Scenario: Write to a port
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write '(42 foo #f) (current-output-port))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "(42 foo #f)"
