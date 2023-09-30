@@ -143,12 +143,18 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "X"
 
-  Scenario: Call an apply function
+  Scenario Outline: Call an apply function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (apply + '(60 5)))
+    (write-u8 (apply + '(<values>)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+    Examples:
+      | values  |
+      | 65      |
+      | 60 5    |
+      | 42 18 5 |
