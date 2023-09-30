@@ -159,30 +159,11 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
-(define (relaxed-car xs)
-  (if (pair? xs) (car xs) xs))
-
-(define (relaxed-cdr xs)
-  (if (pair? xs) (cdr xs) '()))
-
 (define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
     (if (pair? xs)
       (loop (cdr xs) (+ y 1))
       y)))
-
-(define (relaxed-map f xs)
-  (cond
-    ((null? xs)
-      '())
-
-    ((pair? xs)
-      (cons
-        (f (car xs))
-        (relaxed-map f (cdr xs))))
-
-    (else
-      (f xs))))
 
 (define (relaxed-deep-map f xs)
   (cond
@@ -583,7 +564,7 @@
             (lambda (value)
               (if (procedure? value)
                 (expand (value context expression))
-                (relaxed-map expand expression))))))
+                (map expand expression))))))
 
       (else
         expression))))
@@ -676,11 +657,11 @@
       continuation)
     (compile-expression
       context
-      (relaxed-car arguments)
+      (car arguments)
       (compile-call*
         (compilation-context-push-local context #f)
         function
-        (relaxed-cdr arguments)
+        (cdr arguments)
         argument-count
         continuation))))
 
