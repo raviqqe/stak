@@ -205,3 +205,19 @@ Feature: Read
       | #(foo)          |
       | #(foo bar)      |
       | #(foo bar baz)  |
+
+  Scenario: Read from a port
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme read))
+
+    (write-u8 (if (equal? (read (current-input-port)) 'foo) 65 66))
+    """
+    And a file named "input.txt" with:
+    """text
+    foo
+    """
+    When I run `scheme main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
