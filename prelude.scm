@@ -310,8 +310,7 @@
 (define $$/ (primitive 15))
 (define read-u8 (primitive 16))
 (define write-u8 (primitive 17))
-(define apply (primitive 18))
-(define dump (primitive 19))
+(define dump (primitive 18))
 
 ; Continuation
 
