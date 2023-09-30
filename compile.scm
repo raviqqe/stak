@@ -642,12 +642,17 @@
       continuation
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
+(define (compile-argument-count arguments)
+  (+
+    (* 2 (relaxed-length arguments))
+    (if (eqv? (last-cdr arguments) '()) 0 1)))
+
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
     (rib
       call-instruction
       (rib-cons
-        (* 2 argument-count)
+        argument-count
         (compilation-context-resolve context function))
       continuation)
     (compile-expression
@@ -666,7 +671,7 @@
       (arguments (cdr expression))
       (continue
         (lambda (context function continuation)
-          (compile-call* context function arguments (length arguments) continuation))))
+          (compile-call* context function arguments (compile-argument-count arguments) continuation))))
     (if (symbol? function)
       (continue context function continuation)
       (compile-expression
