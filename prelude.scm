@@ -731,6 +731,18 @@
 
 ; Read
 
+(define special-chars
+  '(
+    ("alarm" . #\alarm)
+    ("backspace" . #\backspace)
+    ("delete" . #\delete)
+    ("escape" . #\escape)
+    ("newline" . #\newline)
+    ("null" . #\null)
+    ("return" . #\return)
+    ("space" . #\space)
+    ("tab" . #\tab)))
+
 (define (get-port rest)
   (if (null? rest) stdin-port (car rest)))
 
@@ -795,14 +807,10 @@
                         (read-char port))
 
                       ((eqv? (length x) 1)
-                        (integer->char (car x)))
+                        (car x))
 
                       (else
-                        (integer->char
-                          (cadr
-                            (assoc
-                              (list->string (map integer->char str))
-                              special-chars)))))))))
+                        (cdr (assoc (list->string x) special-chars))))))))
 
             (else
               ; TODO Use read-list.
@@ -917,17 +925,10 @@
 
 ; Write
 
-(define special-chars
-  '(
-    (#\alarm . "alarm")
-    (#\backspace . "backspace")
-    (#\delete . "delete")
-    (#\escape . "escape")
-    (#\newline . "newline")
-    (#\null . "null")
-    (#\return . "return")
-    (#\space . "space")
-    (#\tab . "tab")))
+(define special-char-names
+  (map
+    (lambda (pair) (cons (cdr pair) (car pair)))
+    special-chars))
 
 (define escaped-chars
   '(
@@ -965,7 +966,7 @@
     ((char? x)
       (write-char #\#)
       (write-char #\\)
-      (let ((pair (assoc x special-chars)))
+      (let ((pair (assoc x special-char-names)))
         (if pair
           (display (cdr pair))
           (write-char x))))

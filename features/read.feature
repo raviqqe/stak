@@ -188,6 +188,8 @@ Feature: Read
       | -42             |
       | x               |
       | foo             |
+      | #\\A            |
+      | #\\newline      |
       | ""              |
       | "foo"           |
       | "Hello, world!" |
