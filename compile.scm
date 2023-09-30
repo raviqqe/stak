@@ -665,7 +665,7 @@
       (function (car expression))
       (arguments (cdr expression)))
     (if (eqv? function '$$apply)
-      (compile-call* context (car arguments) (cdr arguments) 3 continuation)
+      (compile-call* context (car arguments) (cdr arguments) 1 continuation)
       (let (
           (continue
             (lambda (context function continuation)
