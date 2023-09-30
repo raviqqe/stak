@@ -312,6 +312,9 @@
 (define $$write-u8 (primitive 17))
 (define dump (primitive 18))
 
+(define (apply f xs)
+  ($$apply f xs))
+
 ; Continuation
 
 (define dummy-function (lambda () #f))
