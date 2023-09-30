@@ -642,11 +642,6 @@
       continuation
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-(define (compile-argument-count arguments)
-  (+
-    (* 2 (relaxed-length arguments))
-    (if (eqv? (last-cdr arguments) '()) 0 1)))
-
 (define (compile-call* context function arguments argument-count continuation)
   (if (null? arguments)
     (rib
@@ -668,19 +663,22 @@
 (define (compile-call context expression continuation)
   (let* (
       (function (car expression))
-      (arguments (cdr expression))
-      (continue
-        (lambda (context function continuation)
-          (compile-call* context function arguments (compile-argument-count arguments) continuation))))
-    (if (symbol? function)
-      (continue context function continuation)
-      (compile-expression
-        context
-        function
-        (continue
-          (compilation-context-push-local context '$function)
-          '$function
-          (compile-unbind continuation))))))
+      (arguments (cdr expression)))
+    (if (eqv? function '$$apply)
+      (compile-call* context (car arguments) (cdr arguments) 3 continuation)
+      (let (
+          (continue
+            (lambda (context function continuation)
+              (compile-call* context function arguments (* 2 (length arguments)) continuation))))
+        (if (symbol? function)
+          (continue context function continuation)
+          (compile-expression
+            context
+            function
+            (continue
+              (compilation-context-push-local context '$function)
+              '$function
+              (compile-unbind continuation))))))))
 
 (define (compile-unbind continuation)
   (if (null? continuation)
