@@ -123,7 +123,9 @@ impl<'a, T: Device> Vm<'a, T> {
                                 };
 
                                 for _ in 0..(parameters.count.to_i64() - arguments.count.to_i64()) {
-                                    self.push(self.car(list))?;
+                                    self.push(list.into())?;
+                                    list = self.top().assume_cons();
+                                    self.set_top(self.car(list));
                                     list = self.cdr(list).assume_cons();
                                 }
 
