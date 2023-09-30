@@ -180,3 +180,16 @@ Feature: Function
       | (65) (66) (67)          | ABC    |
       | (65 66) (67 68)         | ABCD   |
       | (65 66) (67 68) (69 70) | ABCDEF |
+
+  Scenario: Call an apply function with a fixed number of arguments
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (f x y)
+      (+ x y))
+
+    (write-u8 (apply f '(60 5)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
