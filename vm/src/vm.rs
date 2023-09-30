@@ -45,6 +45,7 @@ macro_rules! assert_index_range {
 }
 
 struct ArgumentInfo {
+    // A count does not include a variadic argument.
     count: Number,
     variadic: bool,
 }
