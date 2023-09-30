@@ -13,7 +13,7 @@ fn main() {
 
 fn run() -> Result<(), Box<dyn Error>> {
     let mut heap = [Number::new(0).into(); HEAP_SIZE];
-    let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default())?;
+    let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default());
 
     vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",

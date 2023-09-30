@@ -9,7 +9,7 @@ cd $(dirname $0)/..
 brew install gauche
 bundler install
 
-cargo build $(feature_flags)
+cargo build --release $(feature_flags)
 
 export PATH=$PWD/tools/scheme/${SCHEME_INTERPRETER:-stak}:$PATH
 

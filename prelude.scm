@@ -308,8 +308,8 @@
 (define $$- (primitive 13))
 (define $$* (primitive 14))
 (define $$/ (primitive 15))
-(define read-u8 (primitive 16))
-(define write-u8 (primitive 17))
+(define $$read-u8 (primitive 16))
+(define $$write-u8 (primitive 17))
 (define dump (primitive 18))
 
 ; Continuation
@@ -334,13 +334,16 @@
 
 ; Error
 
-(define (error message)
+(define (error message . rest)
   (unwind
     (lambda ()
       (rib-set-car!
         (rib-cdr (close dummy-function)) ; frame
         (cons '() '()))
-      (write-string message)
+      (write-string message (current-error-port))
+      (write-char #\space (current-error-port))
+      (when (pair? rest)
+        (write (car rest) (current-error-port)))
       #f)))
 
 ; Types
@@ -424,8 +427,11 @@
 (define cdr rib-cdr)
 (define set-car! rib-set-car!)
 (define set-cdr! rib-set-cdr!)
+(define (caar x) (car (car x)))
 (define (cadr x) (car (cdr x)))
+(define (cdar x) (cdr (car x)))
 (define (cddr x) (cdr (cdr x)))
+(define (caaar x) (car (caar x)))
 (define (caddr x) (car (cddr x)))
 
 (define (list . xs) xs)
@@ -504,6 +510,12 @@
   (if (null? xs)
     ys
     (cons (car xs) (append-lists ys (cdr xs)))))
+
+(define (reverse xs)
+  (let loop ((xs xs) (ys '()))
+    (if (null? xs)
+      ys
+      (loop (cdr xs) (cons (car xs) ys)))))
 
 (define (fold-left f y xs)
   (if (null? xs)
@@ -601,20 +613,77 @@
               (loop q ys)
               ys)))))))
 
+(define digit-characters
+  (map
+    (lambda (pair)
+      (cons
+        (cons
+          (char->integer (caar pair))
+          (char->integer (cdar pair)))
+        (cdr pair)))
+    '(
+      ((#\0 . #\9) . 0)
+      ((#\A . #\F) . 10)
+      ((#\a . #\f) . 10))))
+
+(define (string->number x . rest)
+  (define radix (if (null? rest) 10 (car rest)))
+
+  (define (convert-digit x)
+    (let* (
+        (x (char->integer x))
+        (y
+          (member
+            x
+            digit-characters
+            (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+      (and y (+ (- x (caaar y)) (cdar y)))))
+
+  (define (convert xs)
+    (let loop ((xs xs) (y 0))
+      (if (null? xs)
+        y
+        (let ((x (convert-digit (car xs))))
+          (and x (loop (cdr xs) (+ (* radix y) x)))))))
+
+  (let ((xs (string->list x)))
+    (cond
+      ((null? xs)
+        #f)
+
+      ((eqv? (car xs) #\-)
+        (let ((x (convert (cdr xs))))
+          (and x (- x))))
+
+      (else
+        (convert xs)))))
+
 ;; Port
 
 (define port? (instance? port-type))
 
+; TODO Use a record type.
 (define (make-port name)
   (rib #f name port-type))
+
+; TODO Support multiple bytes.
+(define (port-last-byte port)
+  (rib-car port))
+
+(define (port-set-last-byte! port byte)
+  (rib-set-car! port byte))
 
 (define stdin-port (make-port 'stdin))
 
 (define stdout-port (make-port 'stdout))
 
+(define stderr-port (make-port 'stderr))
+
 (define (current-input-port) stdin-port)
 
 (define (current-output-port) stdout-port)
+
+(define (current-error-port) stderr-port)
 
 ;; Procedure
 
@@ -639,6 +708,8 @@
 (define symbol? (instance? symbol-type))
 
 (define symbol-table (rib-cdr $$rib))
+; Allow garbage collection for a symbol table.
+(rib-set-cdr! $$rib #f)
 
 (define symbol->string rib-cdr)
 
@@ -665,19 +736,213 @@
 
 (define vector->list rib-cdr)
 
-; Write
+; Read
 
 (define special-chars
   '(
-    (#\alarm . "alarm")
-    (#\backspace . "backspace")
-    (#\delete . "delete")
-    (#\escape . "escape")
-    (#\newline . "newline")
-    (#\null . "null")
-    (#\return . "return")
-    (#\space . "space")
-    (#\tab . "tab")))
+    ("alarm" . #\alarm)
+    ("backspace" . #\backspace)
+    ("delete" . #\delete)
+    ("escape" . #\escape)
+    ("newline" . #\newline)
+    ("null" . #\null)
+    ("return" . #\return)
+    ("space" . #\space)
+    ("tab" . #\tab)))
+
+(define (get-input-port rest)
+  (if (null? rest) stdin-port (car rest)))
+
+(define (input-byte->char x)
+  (if (number? x) (integer->char x) x))
+
+(define (read-u8 . rest)
+  (let* (
+      (port (get-input-port rest))
+      (x (port-last-byte port)))
+    (if x
+      (begin
+        (port-set-last-byte! port #f)
+        x)
+      (or ($$read-u8) eof))))
+
+(define (peek-u8 . rest)
+  (let* (
+      (port (get-input-port rest))
+      (x (read-u8 port)))
+    (port-set-last-byte! port x)
+    x))
+
+(define (read-char . rest)
+  (input-byte->char (read-u8 (get-input-port rest))))
+
+(define (peek-char . rest)
+  (input-byte->char (peek-u8 (get-input-port rest))))
+
+(define (read . rest)
+  (let* (
+      (port (get-input-port rest))
+      (char (peek-non-whitespace-char port)))
+    (cond
+      ((eof-object? char)
+        char)
+
+      ((eqv? char #\()
+        (read-list port))
+
+      ((eqv? char #\#)
+        (read-char port)
+        (let ((char (peek-char port)))
+          (cond
+            ((eqv? char #\f)
+              (read-char port)
+              #f)
+
+            ((eqv? char #\t)
+              (read-char port)
+              #t)
+
+            ((eqv? char #\\)
+              (read-char port)
+              (let ((char (peek-char port)))
+                (if (char-whitespace? char)
+                  (read-char port)
+                  (let ((x (read-symbol-chars port)))
+                    (cond
+                      ((null? x)
+                        (read-char port))
+
+                      ((eqv? (length x) 1)
+                        (car x))
+
+                      (else
+                        (cdr (assoc (list->string x) special-chars))))))))
+
+            (else
+              (list->vector (read-list port))))))
+
+      ((eqv? char #\')
+        (read-char port)
+        (list 'quote (read port)))
+
+      ((eqv? char #\`)
+        (read-char port)
+        (list 'quasiquote (read port)))
+
+      ((eqv? char #\,)
+        (read-char port)
+        (if (eqv? (peek-char port) #\@)
+          (begin
+            (read-char port)
+            (list 'unquote-splicing (read port)))
+          (list 'unquote (read port))))
+
+      ((eqv? char #\")
+        (read-string port))
+
+      (else
+        (let ((x (list->string (read-symbol-chars port))))
+          (or (string->number x) (string->symbol x)))))))
+
+(define (read-list port)
+  (define (read-tail)
+    (let ((char (peek-non-whitespace-char port)))
+      (cond
+        ((eqv? char #\))
+          (read-char port)
+          '())
+
+        (else
+          (let ((x (read port)))
+            (if (and (symbol? x) (equal? (symbol->string x) "."))
+              (let ((x (read port)))
+                (read-char port)
+                x)
+              (cons x (read-tail))))))))
+
+  (unless (eqv? (read-char port) #\()
+    (error "( expected"))
+  (read-tail))
+
+(define (read-symbol-chars port)
+  (let ((char (peek-char port)))
+    (if (or
+        (memv char '(#\( #\)))
+        (eof-object? char)
+        (char-whitespace? char))
+      '()
+      (cons (read-char port) (read-symbol-chars port)))))
+
+(define (read-string port)
+  (unless (eqv? (read-char port) #\")
+    (error "\" expected"))
+  (let loop ((xs '()))
+    (let ((char (read-char port)))
+      (cond
+        ((eof-object? char)
+          (error "unexpected end of port"))
+
+        ((eqv? char #\")
+          (list->string (reverse xs)))
+
+        ((eqv? char #\\)
+          (let ((char (read-char port)))
+            (loop
+              (cons
+                (case char
+                  ((#\n)
+                    #\newline)
+
+                  ((#\r)
+                    #\return)
+
+                  ((#\t)
+                    #\tab)
+
+                  (else
+                    char))
+                xs))))
+
+        (else
+          (loop (cons char xs)))))))
+
+(define (peek-non-whitespace-char port)
+  (let ((char (peek-char port)))
+    (if (eof-object? char)
+      char
+      (cond
+        ((char-whitespace? char)
+          (begin
+            (read-char port)
+            (peek-non-whitespace-char port)))
+
+        ((eqv? char #\;)
+          (skip-comment port))
+
+        (else
+          char)))))
+
+(define (skip-comment port)
+  (let ((char (read-char port)))
+    (cond
+      ((eof-object? char)
+        char)
+
+      ((eqv? char #\newline)
+        (peek-non-whitespace-char port))
+
+      (else
+        (skip-comment port)))))
+
+; Write
+
+(define (get-output-port rest)
+  (if (null? rest) stdout-port (car rest)))
+
+(define special-char-names
+  (map
+    (lambda (pair) (cons (cdr pair) (car pair)))
+    special-chars))
 
 (define escaped-chars
   '(
@@ -685,116 +950,132 @@
     (#\tab . #\t)
     (#\return . #\r)))
 
-(define (write-char x)
-  (write-u8 (char->integer x)))
+(define (write-u8 byte . rest)
+  ; TODO Use a port.
+  ($$write-u8 byte))
 
-(define (write-escaped-char x)
-  (let ((pair (assoc x escaped-chars)))
+(define (write-char x . rest)
+  (write-u8 (char->integer x) (get-output-port rest)))
+
+(define (write-escaped-char x . rest)
+  (let (
+      (port (get-output-port rest))
+      (pair (assoc x escaped-chars)))
     (if pair
       (begin
-        (write-char #\\)
-        (write-char (cdr pair)))
-      (write-char x))))
+        (write-char #\\ port)
+        (write-char (cdr pair) port))
+      (write-char x port))))
 
-(define (write-string x)
-  (for-each write-char (string->list x)))
+(define (write-string x . rest)
+  (for-each
+    (lambda (x) (write-char x port))
+    (string->list x)))
 
-(define (write-bytevector xs)
+(define (write-bytevector xs . rest)
+  (define port (if (null? rest) stdout-port (car rest)))
+
   (let loop ((xs xs) (index 0))
     (if (< index (bytevector-length xs))
       (begin
-        (write-u8 (bytevector-u8-ref xs index))
+        (write-u8 (bytevector-u8-ref xs index) port)
         (loop xs (+ index 1)))
       #f)))
 
-(define (newline)
-  (write-char #\newline))
+(define (newline . rest)
+  (write-char #\newline (get-output-port rest)))
 
-(define (write x)
+(define (write x . rest)
+  (define port (if (null? rest) stdout-port (car rest)))
+
   (cond
     ((char? x)
-      (write-char #\#)
-      (write-char #\\)
-      (let ((pair (assoc x special-chars)))
+      (write-char #\# port)
+      (write-char #\\ port)
+      (let ((pair (assoc x special-char-names)))
         (if pair
-          (display (cdr pair))
-          (write-char x))))
+          (display (cdr pair) port)
+          (write-char x port))))
 
     ((pair? x)
-      (write-list x write))
+      (write-list x write port))
 
     ((string? x)
-      (write-char #\")
-      (for-each write-escaped-char (string->list x))
-      (write-char #\"))
+      (write-char #\" port)
+      (for-each
+        (lambda (x) (write-escaped-char x port))
+        (string->list x))
+      (write-char #\" port))
 
     ((vector? x)
-      (write-vector x write))
+      (write-vector x write port))
 
     (else
       (display x))))
 
-(define (display x)
+(define (display x . rest)
+  (define port (if (null? rest) stdout-port (car rest)))
+
   (cond
     ((not x)
-      (write-char #\#)
-      (write-char #\f))
+      (write-char #\# port)
+      (write-char #\f port))
 
     ((eqv? x #t)
-      (write-char #\#)
-      (write-char #\t))
+      (write-char #\# port)
+      (write-char #\t port))
 
     ((char? x)
-      (write-char x))
+      (write-char x port))
 
     ((null? x)
-      (write-list x display))
+      (write-list x display port))
 
     ((number? x)
-      (display (number->string x)))
+      (display (number->string x) port))
 
     ((pair? x)
-      (write-list x display))
+      (write-list x display port))
 
     ((procedure? x)
-      (write-char #\#)
-      (write-string "procedure"))
+      (write-char #\# port)
+      (write-string "procedure" port))
 
     ((string? x)
-      (write-string x))
+      (write-string x port))
 
     ((symbol? x)
-      (display (symbol->string x)))
+      (display (symbol->string x) port))
 
     ((vector? x)
-      (write-vector x display))
+      (write-vector x display port))
 
     (else
       (error "unknown type"))))
 
-(define (write-list xs write)
-  (write-char #\()
+(define (write-list xs write port)
+  (write-char #\( port)
 
   (when (pair? xs)
-    (write (car xs))
+    (write (car xs) port)
     (let loop ((xs (cdr xs)))
       (cond
         ((pair? xs)
-          (write-char #\space)
-          (write (car xs))
+          (write-char #\space port)
+          (write (car xs) port)
           (loop (cdr xs)))
 
         ((null? xs)
           #f)
 
         (else
-          (write-char #\space)
-          (write-char #\.)
-          (write-char #\space)
-          (write xs)))))
+          (write-char #\space port)
+          (write-char #\. port)
+          (write-char #\space port)
+          (write xs port)))))
 
-  (write-char #\)))
+  (write-char #\) port))
 
-(define (write-vector xs write)
-  (write-char #\#)
-  (write-list (vector->list xs) write))
+(define (write-vector xs write port)
+  (write-char #\# port)
+  (write-list (vector->list xs) write port))
