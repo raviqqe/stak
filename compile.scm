@@ -256,12 +256,6 @@
     (lambda (syntax) (cons syntax syntax))
     primitive-syntaxes))
 
-(define-record-type denotation
-  (make-denotation name value)
-  denotation?
-  (name denotation-name)
-  (value denotation-value))
-
 ;; Context
 
 (define-record-type expansion-context
@@ -305,22 +299,14 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
-; Note that we distinguish unresolved identifiers and denotations even after
-; denotation resolution because there is no "true" name of global variables in
-; this implementation differently from the original paper of "Macros That Work."
-(define (resolve-denotation context expression)
-  (when (denotation? expression)
-    (error "invalid expression"))
-  (let ((pair (assv expression (expansion-context-environment context))))
-    (if pair
-      (make-denotation expression (cdr pair))
-      expression)))
+(define (resolve-denotation context name)
+  (assv name (expansion-context-environment context)))
 
 (define (resolve-denotation-value context expression)
-  (let ((denotation (resolve-denotation context expression)))
-    (if (denotation? denotation)
-      (denotation-value denotation)
-      denotation)))
+  (let ((pair (resolve-denotation context expression)))
+    (if pair
+      (cdr pair)
+      expression)))
 
 (define (rename-variable context name)
   (let (
@@ -438,14 +424,14 @@
           (cdr pair)
           (let (
               (name (rename-variable use-context template))
-              (denotation (resolve-denotation definition-context template)))
-            (when (denotation? denotation)
+              (pair (resolve-denotation definition-context template)))
+            (when pair
               ; TODO Refactor this.
               ;
               ; This destructive update of a context is fine because
               ; we always generate fresh variables. But it accumulates garbages
               ; of unused variables in the context.
-              (expansion-context-set! use-context name (denotation-value denotation)))
+              (expansion-context-set! use-context name (cdr pair)))
             name))))
 
     ((pair? template)
