@@ -123,10 +123,8 @@ impl<'a, T: Device> Vm<'a, T> {
                                 };
 
                                 for _ in 0..(parameters.count.to_i64() - arguments.count.to_i64()) {
-                                    let cdr = self.cdr(list).assume_cons();
-                                    *self.cdr_mut(list) = self.stack.into();
-                                    self.stack = list;
-                                    list = cdr;
+                                    self.push(self.car(list))?;
+                                    list = self.cdr(list).assume_cons();
                                 }
 
                                 for _ in 0..(arguments.count.to_i64() - parameters.count.to_i64()) {
