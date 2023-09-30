@@ -549,7 +549,7 @@
                     bindings)))
               (for-each
                 (lambda (pair)
-                  (expansion-context-push!
+                  (expansion-context-set!
                     context
                     (car pair)
                     (make-transformer context (cadr pair))))
