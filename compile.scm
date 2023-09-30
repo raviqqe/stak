@@ -309,12 +309,12 @@
 ; denotation resolution because there is no "true" name of global variables in
 ; this implementation differently from the original paper of "Macros That Work."
 (define (resolve-denotation context expression)
-  (if (denotation? expression)
-    expression
-    (let ((pair (assv expression (expansion-context-environment context))))
-      (if pair
-        (make-denotation expression (cdr pair))
-        expression))))
+  (when (denotation? expression)
+    (error "invalid expression"))
+  (let ((pair (assv expression (expansion-context-environment context))))
+    (if pair
+      (make-denotation expression (cdr pair))
+      expression)))
 
 (define (resolve-denotation-value context expression)
   (let ((denotation (resolve-denotation context expression)))
