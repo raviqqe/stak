@@ -105,25 +105,20 @@ impl<'a, T: Device> Vm<'a, T> {
                                 // TODO
                                 variadic: false,
                             };
-                            let parameters = {
-                                let number = self.car(code).assume_number();
-
-                                ArgumentInfo {
-                                    count: Number::new(number.to_i64() / 2),
-                                    variadic: number.to_i64() & 1 == 1,
-                                }
-                            };
+                            let parameters =
+                                Self::parse_argument_info(self.car(code).assume_number());
 
                             trace!("argument count", arguments.count);
                             trace!("argument variadic", arguments.variadic);
                             trace!("parameter count", parameters.count);
                             trace!("parameter variadic", parameters.variadic);
 
-                            if parameters.variadic && arguments.count < parameters.count
-                                || !parameters.variadic && arguments.count != parameters.count
+                            if !arguments.variadic
+                                && !parameters.variadic
+                                && arguments.count != parameters.count
                             {
                                 return Err(Error::ArgumentCount);
-                            } else if parameters.variadic {
+                            } else if arguments.variadic || parameters.variadic {
                                 *self.cdr_mut(self.temporary) = procedure.into();
 
                                 let mut list = NULL;
@@ -216,6 +211,15 @@ impl<'a, T: Device> Vm<'a, T> {
         }
 
         Ok(())
+    }
+
+    fn parse_argument_info(info: Number) -> ArgumentInfo {
+        let info = info.to_i64();
+
+        ArgumentInfo {
+            count: Number::new(info / 2),
+            variadic: info & 1 == 1,
+        }
     }
 
     fn advance_program_counter(&mut self) {
