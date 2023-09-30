@@ -100,11 +100,7 @@ impl<'a, T: Device> Vm<'a, T> {
                             // Non-primitive procedures may update any cons's of arguments on a
                             // stack destructively.
 
-                            let arguments = ArgumentInfo {
-                                count: self.argument_count(),
-                                // TODO
-                                variadic: false,
-                            };
+                            let arguments = Self::parse_argument_info(self.argument_count());
                             let parameters =
                                 Self::parse_argument_info(self.car(code).assume_number());
 

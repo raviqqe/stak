@@ -647,7 +647,7 @@
     (rib
       call-instruction
       (rib-cons
-        argument-count
+        (* 2 argument-count)
         (compilation-context-resolve context function))
       continuation)
     (compile-expression
