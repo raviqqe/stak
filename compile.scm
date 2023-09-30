@@ -285,9 +285,11 @@
   (assv name (expansion-context-environment context)))
 
 (define (resolve-denotation-value context expression)
-  (let ((pair (resolve-denotation context expression)))
-    (if pair
-      (cdr pair)
+  (cond
+    ((resolve-denotation context expression) =>
+      cdr)
+
+    (else
       expression)))
 
 (define (rename-variable context name)
