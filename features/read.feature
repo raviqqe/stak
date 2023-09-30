@@ -159,9 +159,9 @@ Feature: Read
   Scenario Outline: Read a value
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base) (scheme read) (scheme write))
+    (import (scheme base) (scheme read))
 
-    (write (read))
+    (write-u8 (if (equal? (read) '<value>) 65 66))
     """
     And a file named "input.txt" with:
     """text
@@ -170,10 +170,7 @@ Feature: Read
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
-    And the stdout should contain exactly:
-    """text
-    <value>
-    """
+    And the stdout should contain exactly "A"
 
     Examples:
       | value           |
