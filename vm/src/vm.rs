@@ -134,7 +134,9 @@ impl<'a, T: Device> Vm<'a, T> {
                                     list = cons;
                                 }
 
-                                self.push(list.into())?;
+                                if parameters.variadic {
+                                    self.push(list.into())?;
+                                }
 
                                 procedure = self.cdr(self.temporary).assume_cons();
                             }
