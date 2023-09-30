@@ -642,7 +642,7 @@
       continuation
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-(define (compile-call* context function arguments argument-count continuation)
+(define (compile-raw-call context function arguments argument-count continuation)
   (if (null? arguments)
     (rib
       call-instruction
@@ -653,20 +653,25 @@
     (compile-expression
       context
       (car arguments)
-      (compile-call*
+      (compile-raw-call
         (compilation-context-push-local context #f)
         function
         (cdr arguments)
         argument-count
         continuation))))
 
-(define (compile-call context expression continuation)
+(define (compile-call context expression variadic continuation)
   (let* (
       (function (car expression))
       (arguments (cdr expression))
       (continue
         (lambda (context function continuation)
-          (compile-call* context function arguments (length arguments) continuation))))
+          (compile-raw-call
+            context
+            function
+            arguments
+            (- (* 2 (length arguments)) (if variadic 1 0))
+            continuation))))
     (if (symbol? function)
       (continue context function continuation)
       (compile-expression
@@ -692,6 +697,9 @@
 
     ((pair? expression)
       (case (car expression)
+        (($$apply)
+          (compile-call context (cdr expression) #t continuation))
+
         (($$begin)
           (compile-sequence context (cdr expression) continuation))
 
@@ -737,7 +745,7 @@
               (compile-unspecified continuation))))
 
         (else
-          (compile-call context expression continuation))))
+          (compile-call context expression #f continuation))))
 
     (else
       (compile-constant expression continuation))))

@@ -142,3 +142,70 @@ Feature: Function
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "X"
+
+  Scenario Outline: Call an apply function
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (+ 48 (apply + '(<values>))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values | output |
+      |        | 0      |
+      | 1      | 1      |
+      | 1 2    | 3      |
+      | 1 2 3  | 6      |
+
+  Scenario Outline: Call an apply function with a correct argument order
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (map write-u8 (apply append '(<values>)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values                  | output |
+      |                         |        |
+      | ()                      |        |
+      | () ()                   |        |
+      | (65)                    | A      |
+      | (65) (66)               | AB     |
+      | (65) (66) (67)          | ABC    |
+      | (65 66) (67 68)         | ABCD   |
+      | (65 66) (67 68) (69 70) | ABCDEF |
+
+  Scenario: Call an apply function with a fixed number of arguments
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (f x y)
+      (+ x y))
+
+    (write-u8 (apply f '(60 5)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Call an apply function twice with the same list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (f x y)
+      (+ x y))
+
+    (define xs '(60 5))
+
+    (write-u8 (apply f xs))
+    (write-u8 (apply f xs))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AA"
