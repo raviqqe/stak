@@ -702,9 +702,8 @@
 (define (string->list x)
   (map integer->char (rib-cdr x)))
 
-; TODO Use an apply procedure.
 (define (string-append . xs)
-  (list->string (fold-right (lambda (y x) (append (string->list x) y)) '() xs)))
+  (list->string (apply append (map string->list xs))))
 
 ;; Symbol
 
