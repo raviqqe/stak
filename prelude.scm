@@ -714,15 +714,12 @@
 (define symbol->string rib-cdr)
 
 (define (string->symbol x)
-  (let loop ((x x) (symbols symbol-table))
-    (if (null? symbols)
-      (let ((symbol (rib #f (string-append x) symbol-type)))
-        (set! symbol-table (cons symbol symbol-table))
-        symbol)
-      (let ((symbol (car symbols)))
-        (if (equal? (symbol->string symbol) x)
-          symbol
-          (loop x (cdr symbols)))))))
+  (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
+    (if pair
+      (car pair)
+      (let ((x (rib #f (string-append x) symbol-type)))
+        (set! symbol-table (cons x symbol-table))
+        x))))
 
 ;; Vector
 

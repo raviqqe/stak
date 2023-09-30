@@ -66,19 +66,6 @@
     (close 2)
     ($$- 13)))
 
-(define primitive-syntaxes
-  '(
-    $$begin
-    $$define
-    $$define-syntax
-    $$if
-    $$lambda
-    $$let-syntax
-    $$letrec-syntax
-    $$quasiquote
-    $$quote
-    $$set!))
-
 ; Types
 
 (define pair-type 0)
@@ -251,17 +238,6 @@
 
 ; Expansion
 
-(define default-syntactic-environment
-  (map
-    (lambda (syntax) (cons syntax syntax))
-    primitive-syntaxes))
-
-(define-record-type denotation
-  (make-denotation name value)
-  denotation?
-  (name denotation-name)
-  (value denotation-value))
-
 ;; Context
 
 (define-record-type expansion-context
@@ -272,20 +248,20 @@
 (define (expansion-context-append context pairs)
   (make-expansion-context (append pairs (expansion-context-environment context))))
 
-(define (expansion-context-push context name procedure)
-  (expansion-context-append context (list (cons name procedure))))
+(define (expansion-context-push context name denotation)
+  (expansion-context-append context (list (cons name denotation))))
 
-(define (expansion-context-set! context name procedure)
+(define (expansion-context-set! context name denotation)
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
     (if pair
-      (set-cdr! pair procedure)
+      (set-cdr! pair denotation)
       ; This works because we pass a reference to an environment in a context
       ; to macro transformers.
       (expansion-context-set-environment!
         context
-        (cons (cons name procedure) environment)))))
+        (cons (cons name denotation) (expansion-context-environment context))))))
 
 ;; Procedures
 
@@ -305,27 +281,16 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
-; Note that we distinguish unresolved identifiers and denotations even after
-; denotation resolution because there is no "true" name of global variables in
-; this implementation differently from the original paper of "Macros That Work."
-(define (resolve-denotation context expression)
-  (if (denotation? expression)
-    expression
-    (let ((pair (assv expression (expansion-context-environment context))))
-      (if pair
-        (make-denotation expression (cdr pair))
-        expression))))
+(define (resolve-denotation context name)
+  (assv name (expansion-context-environment context)))
 
 (define (resolve-denotation-value context expression)
-  (let ((denotation (resolve-denotation context expression)))
-    (if (denotation? denotation)
-      (denotation-value denotation)
-      denotation)))
+  (cond
+    ((resolve-denotation context expression) =>
+      cdr)
 
-(define (unresolve-denotation denotation)
-  (if (denotation? denotation)
-    (denotation-name denotation)
-    denotation))
+    (else
+      expression)))
 
 (define (rename-variable context name)
   (let (
@@ -443,14 +408,13 @@
           (cdr pair)
           (let (
               (name (rename-variable use-context template))
-              (denotation (resolve-denotation definition-context template)))
-            (when (denotation? denotation)
-              ; TODO Refactor this.
-              ;
-              ; This destructive update of a context is fine because
-              ; we always generate fresh variables. But it accumulates garbages
-              ; of unused variables in the context.
-              (expansion-context-set! use-context name (denotation-value denotation)))
+              (pair (resolve-denotation definition-context template)))
+            ; TODO Refactor this.
+            ;
+            ; This destructive update of a context is fine because
+            ; we always generate fresh variables. But it accumulates garbages
+            ; of unused variables in the context.
+            (expansion-context-set! use-context name (if pair (cdr pair) template))
             name))))
 
     ((pair? template)
@@ -543,18 +507,21 @@
 
           (($$lambda)
             (let* (
-                (parameters (relaxed-deep-map unresolve-denotation (cadr expression)))
+                (parameters (cadr expression))
                 (context
                   (expansion-context-append
                     context
                     (map
                       (lambda (name) (cons name (rename-variable context name)))
-                      (parameter-names parameters)))))
+                      (parameter-names parameters))))
+                ; We need to resolve parameter denotations before expanding a body.
+                (parameters
+                  (relaxed-deep-map
+                    (lambda (name) (resolve-denotation-value context name))
+                    parameters)))
               (list
                 '$$lambda
-                (relaxed-deep-map
-                  (lambda (name) (resolve-denotation-value context name))
-                  parameters)
+                parameters
                 (expand-expression context (caddr expression)))))
 
           (($$let-syntax)
@@ -600,11 +567,11 @@
                 (map expand expression))))))
 
       (else
-        (resolve-denotation-value context expression)))))
+        expression))))
 
 (define (expand expression)
   (expand-expression
-    (make-expansion-context default-syntactic-environment)
+    (make-expansion-context '())
     expression))
 
 ; Compilation
