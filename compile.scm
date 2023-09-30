@@ -281,12 +281,12 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
-(define (resolve-denotation context name)
+(define (resolve-denotation-pair context name)
   (assv name (expansion-context-environment context)))
 
-(define (resolve-denotation-value context expression)
+(define (resolve-denotation context expression)
   (cond
-    ((resolve-denotation context expression) =>
+    ((resolve-denotation-pair context expression) =>
       cdr)
 
     (else
@@ -351,8 +351,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (resolve-denotation-value use-context expression)
-          (resolve-denotation-value definition-context pattern))
+          (resolve-denotation use-context expression)
+          (resolve-denotation definition-context pattern))
         '()
         #f))
 
@@ -408,7 +408,7 @@
           (cdr pair)
           (let (
               (name (rename-variable use-context template))
-              (pair (resolve-denotation definition-context template)))
+              (pair (resolve-denotation-pair definition-context template)))
             ; TODO Refactor this.
             ;
             ; This destructive update of a context is fine because
@@ -486,13 +486,13 @@
   (optimize
     (cond
       ((symbol? expression)
-        (let ((value (resolve-denotation-value context expression)))
+        (let ((value (resolve-denotation context expression)))
           (when (procedure? value)
             (error "invalid syntax" expression))
           value))
 
       ((pair? expression)
-        (case (resolve-denotation-value context (car expression))
+        (case (resolve-denotation context (car expression))
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
@@ -517,7 +517,7 @@
                 ; We need to resolve parameter denotations before expanding a body.
                 (parameters
                   (relaxed-deep-map
-                    (lambda (name) (resolve-denotation-value context name))
+                    (lambda (name) (resolve-denotation context name))
                     parameters)))
               (list
                 '$$lambda
