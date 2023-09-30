@@ -743,7 +743,7 @@
     ("space" . #\space)
     ("tab" . #\tab)))
 
-(define (get-port rest)
+(define (get-input-port rest)
   (if (null? rest) stdin-port (car rest)))
 
 (define (input-byte->char x)
@@ -751,7 +751,7 @@
 
 (define (read-u8 . rest)
   (let* (
-      (port (get-port rest))
+      (port (get-input-port rest))
       (x (port-last-byte port)))
     (if x
       (begin
@@ -761,20 +761,20 @@
 
 (define (peek-u8 . rest)
   (let* (
-      (port (get-port rest))
+      (port (get-input-port rest))
       (x (read-u8 port)))
     (port-set-last-byte! port x)
     x))
 
 (define (read-char . rest)
-  (input-byte->char (read-u8 (get-port rest))))
+  (input-byte->char (read-u8 (get-input-port rest))))
 
 (define (peek-char . rest)
-  (input-byte->char (peek-u8 (get-port rest))))
+  (input-byte->char (peek-u8 (get-input-port rest))))
 
 (define (read . rest)
   (let* (
-      (port (get-port rest))
+      (port (get-input-port rest))
       (char (peek-non-whitespace-char port)))
     (cond
       ((eof-object? char)
