@@ -44,7 +44,6 @@ macro_rules! assert_index_range {
     };
 }
 
-#[derive(Debug)]
 struct ArgumentInfo {
     count: Number,
     variadic: bool,
