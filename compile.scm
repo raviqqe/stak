@@ -66,19 +66,6 @@
     (close 2)
     ($$- 13)))
 
-(define primitive-syntaxes
-  '(
-    $$begin
-    $$define
-    $$define-syntax
-    $$if
-    $$lambda
-    $$let-syntax
-    $$letrec-syntax
-    $$quasiquote
-    $$quote
-    $$set!))
-
 ; Types
 
 (define pair-type 0)
@@ -251,11 +238,6 @@
 
 ; Expansion
 
-(define default-syntactic-environment
-  (map
-    (lambda (syntax) (cons syntax syntax))
-    primitive-syntaxes))
-
 ;; Context
 
 (define-record-type expansion-context
@@ -425,13 +407,12 @@
           (let (
               (name (rename-variable use-context template))
               (pair (resolve-denotation definition-context template)))
-            (when pair
-              ; TODO Refactor this.
-              ;
-              ; This destructive update of a context is fine because
-              ; we always generate fresh variables. But it accumulates garbages
-              ; of unused variables in the context.
-              (expansion-context-set! use-context name (cdr pair)))
+            ; TODO Refactor this.
+            ;
+            ; This destructive update of a context is fine because
+            ; we always generate fresh variables. But it accumulates garbages
+            ; of unused variables in the context.
+            (expansion-context-set! use-context name (if pair (cdr pair) template))
             name))))
 
     ((pair? template)
@@ -585,7 +566,7 @@
 
 (define (expand expression)
   (expand-expression
-    (make-expansion-context default-syntactic-environment)
+    (make-expansion-context '())
     expression))
 
 ; Compilation
