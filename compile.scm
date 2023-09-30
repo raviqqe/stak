@@ -251,20 +251,17 @@
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
 
-(define (expansion-context-push! context name denotation)
-  ; This works because we pass a reference to an environment in a context
-  ; to macro transformers.
-  (expansion-context-set-environment!
-    context
-    (cons (cons name denotation) (expansion-context-environment context))))
-
 (define (expansion-context-set! context name denotation)
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
     (if pair
       (set-cdr! pair denotation)
-      (expansion-context-push! context name denotation))))
+      ; This works because we pass a reference to an environment in a context
+      ; to macro transformers.
+      (expansion-context-set-environment!
+        context
+        (cons (cons name denotation) (expansion-context-environment context))))))
 
 ;; Procedures
 
@@ -417,7 +414,7 @@
             ; This destructive update of a context is fine because
             ; we always generate fresh variables. But it accumulates garbages
             ; of unused variables in the context.
-            (expansion-context-push! use-context name (if pair (cdr pair) template))
+            (expansion-context-set! use-context name (if pair (cdr pair) template))
             name))))
 
     ((pair? template)
