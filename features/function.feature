@@ -142,3 +142,13 @@ Feature: Function
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "X"
+
+  Scenario: Call an apply function
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (apply + '(60 5)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
