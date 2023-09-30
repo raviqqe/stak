@@ -44,6 +44,12 @@ macro_rules! assert_index_range {
     };
 }
 
+struct ArgumentInfo {
+    // A count does not include a variadic argument.
+    count: Number,
+    variadic: bool,
+}
+
 #[derive(Debug)]
 pub struct Vm<'a, T: Device> {
     device: T,
@@ -99,27 +105,34 @@ impl<'a, T: Device> Vm<'a, T> {
                             // Non-primitive procedures may update any cons's of arguments on a
                             // stack destructively.
 
-                            let argument_count = self.argument_count();
-                            // A parameter count does not include a variadic parameter.
-                            let (parameter_count, variadic) = {
+                            let arguments = ArgumentInfo {
+                                count: self.argument_count(),
+                                // TODO
+                                variadic: false,
+                            };
+                            let parameters = {
                                 let number = self.car(code).assume_number();
-                                (Number::new(number.to_i64() / 2), number.to_i64() & 1 == 1)
+
+                                ArgumentInfo {
+                                    count: Number::new(number.to_i64() / 2),
+                                    variadic: number.to_i64() & 1 == 1,
+                                }
                             };
 
                             trace!("argument count", argument_count);
-                            trace!("parameter count", parameter_count);
+                            trace!("parameter count", (parameter_count, variadic));
                             trace!("variadic", variadic);
 
-                            if variadic && argument_count < parameter_count
-                                || !variadic && argument_count != parameter_count
+                            if parameters.variadic && arguments.count < parameters.count
+                                || !parameters.variadic && arguments.count != parameters.count
                             {
                                 return Err(Error::ArgumentCount);
-                            } else if variadic {
+                            } else if parameters.variadic {
                                 *self.cdr_mut(self.cons) = procedure.into();
 
                                 let mut list = NULL;
 
-                                for _ in 0..(argument_count.to_i64() - parameter_count.to_i64()) {
+                                for _ in 0..(arguments.count.to_i64() - parameters.count.to_i64()) {
                                     let cons = self.pop_cons()?;
                                     *self.cdr_mut(cons) = list.into();
                                     list = cons;
@@ -136,7 +149,8 @@ impl<'a, T: Device> Vm<'a, T> {
                             let last_argument_cons = self.tail(
                                 self.stack,
                                 Number::new(
-                                    parameter_count.to_i64() + if variadic { 1 } else { 0 },
+                                    parameters.count.to_i64()
+                                        + if parameters.variadic { 1 } else { 0 },
                                 ),
                             );
 
@@ -509,9 +523,6 @@ impl<'a, T: Device> Vm<'a, T> {
                 self.device
                     .write(self.top().assume_number().to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
-            }
-            Primitive::APPLY => {
-                todo!()
             }
             Primitive::DUMP => {
                 trace!("dump", self.top());
