@@ -514,6 +514,7 @@
                     (map
                       (lambda (name) (cons name (rename-variable context name)))
                       (parameter-names parameters))))
+                ; We need to resolve parameter denotations before expanding a body.
                 (parameters
                   (relaxed-deep-map
                     (lambda (name) (resolve-denotation-value context name))
