@@ -13,12 +13,12 @@ impl StdioDevice {
 impl Device for StdioDevice {
     type Error = Error;
 
-    fn read(&mut self) -> Result<u8, Self::Error> {
+    fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        stdin().read_exact(&mut buffer)?;
+        let count = stdin().read(&mut buffer)?;
 
-        Ok(buffer[0])
+        Ok(if count == 0 { None } else { Some(buffer[0]) })
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {

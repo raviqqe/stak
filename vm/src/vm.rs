@@ -497,7 +497,12 @@ impl<'a, T: Device> Vm<'a, T> {
             Primitive::DIVIDE => self.operate_binary(Div::div)?,
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| Error::ReadInput)?;
-                self.push(Number::new(byte as i64).into())?;
+
+                self.push(if let Some(byte) = byte {
+                    Number::new(byte as i64).into()
+                } else {
+                    FALSE.into()
+                })?;
             }
             Primitive::WRITE => {
                 self.device
