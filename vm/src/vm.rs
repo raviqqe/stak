@@ -115,7 +115,18 @@ impl<'a, T: Device> Vm<'a, T> {
                             } else if arguments.variadic || parameters.variadic {
                                 *self.cdr_mut(self.temporary) = procedure.into();
 
-                                let mut list = NULL;
+                                let mut list = if arguments.variadic {
+                                    self.pop()?.assume_cons()
+                                } else {
+                                    NULL
+                                };
+
+                                for _ in 0..(parameters.count.to_i64() - arguments.count.to_i64()) {
+                                    let cdr = self.cdr(list).assume_cons();
+                                    *self.cdr_mut(list) = self.stack.into();
+                                    self.stack = list;
+                                    list = cdr;
+                                }
 
                                 for _ in 0..(arguments.count.to_i64() - parameters.count.to_i64()) {
                                     let cons = self.pop_cons()?;
