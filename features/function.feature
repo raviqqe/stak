@@ -148,13 +148,35 @@ Feature: Function
     """scheme
     (import (scheme base))
 
-    (write-u8 (apply + '(<values>)))
+    (write-u8 (+ 48 (apply + '(<values>))))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | values  |
-      | 65      |
-      | 60 5    |
-      | 42 18 5 |
+      | values | output |
+      |        | 0      |
+      | 1      | 1      |
+      | 1 2    | 3      |
+      | 1 2 3  | 6      |
+
+  Scenario Outline: Call an apply function with a correct argument order
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (map write-u8 (apply append '(<values>)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values                  | output |
+      |                         |        |
+      | ()                      |        |
+      | () ()                   |        |
+      | (65)                    | A      |
+      | (65) (66)               | AB     |
+      | (65) (66) (67)          | ABC    |
+      | (65 66) (67 68)         | ABCD   |
+      | (65 66) (67 68) (69 70) | ABCDEF |
