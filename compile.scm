@@ -322,11 +322,6 @@
       (denotation-value denotation)
       denotation)))
 
-(define (unresolve-denotation denotation)
-  (if (denotation? denotation)
-    (denotation-name denotation)
-    denotation))
-
 (define (rename-variable context name)
   (let (
       (count
@@ -543,7 +538,7 @@
 
           (($$lambda)
             (let* (
-                (parameters (relaxed-deep-map unresolve-denotation (cadr expression)))
+                (parameters (cadr expression))
                 (context
                   (expansion-context-append
                     context
