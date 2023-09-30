@@ -516,12 +516,14 @@
                     context
                     (map
                       (lambda (name) (cons name (rename-variable context name)))
-                      (parameter-names parameters)))))
+                      (parameter-names parameters))))
+                (parameters
+                  (relaxed-deep-map
+                    (lambda (name) (resolve-denotation-value context name))
+                    parameters)))
               (list
                 '$$lambda
-                (relaxed-deep-map
-                  (lambda (name) (resolve-denotation-value context name))
-                  parameters)
+                parameters
                 (expand-expression context (caddr expression)))))
 
           (($$let-syntax)
