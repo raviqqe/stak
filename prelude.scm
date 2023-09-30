@@ -313,7 +313,7 @@
 (define dump (primitive 18))
 
 (define (apply f xs)
-  ($$apply f xs))
+  ($$apply f (append xs '())))
 
 ; Continuation
 

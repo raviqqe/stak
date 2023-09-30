@@ -193,3 +193,19 @@ Feature: Function
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Call an apply function twice with the same list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (f x y)
+      (+ x y))
+
+    (define xs '(60 5))
+
+    (write-u8 (apply f xs))
+    (write-u8 (apply f xs))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AA"
