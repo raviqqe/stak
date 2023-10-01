@@ -214,6 +214,23 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
+  Scenario: Expand an ellipsis of an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x . y) ...)
+          (begin (define (x . y) y) ...))))
+
+    (foo (f . x))
+
+    (map write-u8 (f 65 66 67))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
