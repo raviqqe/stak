@@ -313,7 +313,7 @@
 (define bytevector-type 6)
 (define eof-object-type 7)
 (define port-type 8)
-(define record-type 8)
+(define record-type 9)
 
 ; Primitives
 
