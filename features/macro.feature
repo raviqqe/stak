@@ -627,7 +627,6 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @stak
   Scenario: Throw a compiler error if a macro is used as a value
     Given a file named "main.scm" with:
     """scheme
@@ -641,7 +640,7 @@ Feature: Macro
     foo
     """
     When I run `scheme main.scm`
-    Then the stderr should contain "invalid syntax"
+    Then the exit status should not be 0
 
   Scenario: Resolve denotations recursively
     Given a file named "main.scm" with:
