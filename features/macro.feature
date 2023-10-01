@@ -224,10 +224,12 @@ Feature: Macro
         ((_ (x . y) ...)
           (begin (define (x . y) y) ...))))
 
-    (foo (x . y))
+    (foo (f . x))
+
+    (map write-u8 (f 65 66 67))
     """
-    When I run `scheme main.scm`
-    Then the exit status should be 0
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
 
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
