@@ -222,7 +222,7 @@ Feature: Macro
     (define-syntax foo
       (syntax-rules ()
         ((_ (x . y) ...)
-          ((define (x . y) y) ...))))
+          (begin (define (x . y) y) ...))))
 
     (foo (x . y))
     """
