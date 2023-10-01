@@ -293,11 +293,14 @@
         (define constructor
           (record-constructor type '(constructor-tag ...)))
 
-        (define predicate
-          (record-predicate type))
+        (define predicate (record-predicate type))
 
         (define-record-field type field accessor . more)
         ...))))
+
+(define (record-predicate type)
+  (lambda (x)
+    (record?)))
 
 ; Type IDs
 
@@ -310,6 +313,7 @@
 (define bytevector-type 6)
 (define eof-object-type 7)
 (define port-type 8)
+(define record-type 8)
 
 ; Primitives
 
