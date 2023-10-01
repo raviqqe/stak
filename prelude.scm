@@ -278,26 +278,6 @@
     ((_ test result1 result2 ...)
       (when (not test) result1 result2 ...))))
 
-;; Record
-
-(define-syntax define-record-type
-  (syntax-rules ()
-    ((define-record-type type
-        (constructor field ...)
-        predicate
-        (field getter . rest)
-        ...)
-      (begin
-        (define type (list 'type))
-
-        (define constructor
-          (record-constructor type '(constructor-tag ...)))
-
-        (define predicate (record-predicate type))
-
-        (define-record-field type field accessor . more)
-        ...))))
-
 ; Type IDs
 
 (define pair-type 0)
@@ -405,13 +385,36 @@
 
 ;; Record
 
+(define-syntax define-record-type
+  (syntax-rules ()
+    ((_ id
+        (constructor field ...)
+        predicate
+        (field getter . rest)
+        ...)
+      (begin
+        (define id (cons 'id '(field ...)))
+        (define constructor (record-constructor id))
+        (define predicate (record-predicate id))
+
+        (define-record-field id field getter . rest)
+        ...))))
+
+(define-syntax define-record-field
+  (syntax-rules ()
+    ((_ id field getter)
+      (define getter (record-accessor type 'field)))
+
+    ((_ id field getter setter)
+      (begin
+        (define getter (record-accessor type 'field-tag))
+        (define setter (record-modifier type 'field-tag))))))
+
 (define record? (instance? record-type))
 
-(define (make-record type)
-  (lambda (x)
-    (and
-      (record? x)
-      (eq? (rib-cdr x)))))
+(define (record-constructor id)
+  (lambda xs
+    (rib (list->vector xs) id record-type)))
 
 (define (record-predicate type)
   (lambda (x)
