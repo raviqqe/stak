@@ -432,7 +432,7 @@
 (define (record-setter type field)
   (let ((index (field-index type field)))
     (lambda (record value)
-      (vector-set! (rib-car record) index value)))
+      (vector-set! (rib-car record) index value))))
 
 (define (field-index type field)
   (memv-position field (cdr type)))
