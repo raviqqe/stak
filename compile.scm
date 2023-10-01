@@ -308,13 +308,10 @@
     ((symbol? pattern)
       (list pattern))
 
-    ((list? pattern)
-      (fold-left
-        append
-        '()
-        (map
-          (lambda (pattern) (find-pattern-variables literals pattern))
-          pattern)))
+    ((pair? pattern)
+      (append
+        (find-pattern-variables literals (car pattern))
+        (find-pattern-variables literals (cdr pattern))))
 
     (else
       '())))
