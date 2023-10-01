@@ -397,8 +397,7 @@
         (define constructor (record-constructor id))
         (define predicate (record-predicate id))
 
-        ; TODO
-        ; (define-record-field id field getter . rest)
+        (define-record-field id field getter . rest)
         ...))))
 
 (define-syntax define-record-field
