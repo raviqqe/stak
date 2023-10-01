@@ -85,7 +85,7 @@ Feature: Record
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Make a record
+    Scenario: Get a field
       Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
