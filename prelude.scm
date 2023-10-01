@@ -288,13 +288,15 @@
         (field getter . rest)
         ...)
       (begin
-        (define type
-          (make-record-type 'type '(field-tag ...)))
+        (define type (list 'type))
+
         (define constructor
           (record-constructor type '(constructor-tag ...)))
+
         (define predicate
           (record-predicate type))
-        (define-record-field type field-tag accessor . more)
+
+        (define-record-field type field accessor . more)
         ...))))
 
 ; Type IDs
