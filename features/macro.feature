@@ -214,6 +214,21 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
+  Scenario: Expand an ellipsis of an improper list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x . y) ...)
+          ((define (x . y) y) ...))))
+
+    (foo (x . y))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
