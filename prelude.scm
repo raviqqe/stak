@@ -298,14 +298,6 @@
         (define-record-field type field accessor . more)
         ...))))
 
-(define record? (instance? record-type))
-
-(define (record-predicate type)
-  (lambda (x)
-    (and
-      (record? x)
-      (eq? (rib-cdr x)))))
-
 ; Type IDs
 
 (define pair-type 0)
@@ -410,6 +402,22 @@
       (eq? (rib-tag x) (rib-tag y))
       (equal? (rib-car x) (rib-car y))
       (equal? (rib-cdr x) (rib-cdr y)))))
+
+;; Record
+
+(define record? (instance? record-type))
+
+(define (make-record type)
+  (lambda (x)
+    (and
+      (record? x)
+      (eq? (rib-cdr x)))))
+
+(define (record-predicate type)
+  (lambda (x)
+    (and
+      (record? x)
+      (eq? (rib-cdr x)))))
 
 ;; Boolean
 
