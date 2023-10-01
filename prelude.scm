@@ -420,7 +420,7 @@
   (lambda (x)
     (and
       (record? x)
-      (eq? (rib-cdr x)))))
+      (eq? (rib-cdr x) type))))
 
 ;; Boolean
 
