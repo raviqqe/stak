@@ -227,7 +227,7 @@ Feature: Macro
     (foo (x . y))
     """
     When I run `scheme main.scm`
-    Then the exit status should not be 0
+    Then the exit status should be 0
 
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
