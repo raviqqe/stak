@@ -298,9 +298,13 @@
         (define-record-field type field accessor . more)
         ...))))
 
+(define record? (instance? record-type))
+
 (define (record-predicate type)
   (lambda (x)
-    (record?)))
+    (and
+      (record? x)
+      (eq? (rib-cdr x)))))
 
 ; Type IDs
 
