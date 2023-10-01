@@ -231,6 +231,21 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
+  Scenario: Expand an ellipsis and normal pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x y ...)
+          (begin (x y) ...))))
+
+    (foo write-u8 65 66 67)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
