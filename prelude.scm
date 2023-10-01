@@ -385,6 +385,8 @@
 
 ;; Record
 
+; For now, we do not use record types for any built-in types for efficiency of
+; data representation.
 (define-syntax define-record-type
   (syntax-rules ()
     ((_ id
@@ -402,25 +404,38 @@
 
 (define-syntax define-record-field
   (syntax-rules ()
-    ((_ id field getter)
-      (define getter (record-accessor type 'field)))
+    ((_ type field getter)
+      (define getter (record-getter type 'field)))
 
-    ((_ id field getter setter)
+    ((_ type field getter setter)
       (begin
-        (define getter (record-accessor type 'field-tag))
-        (define setter (record-modifier type 'field-tag))))))
+        (define-record-field type field getter)
+        (define setter (record-setter type 'field))))))
 
 (define record? (instance? record-type))
 
-(define (record-constructor id)
+(define (record-constructor type)
   (lambda xs
-    (rib (list->vector xs) id record-type)))
+    (rib (list->vector xs) type record-type)))
 
 (define (record-predicate type)
   (lambda (x)
     (and
       (record? x)
       (eq? (rib-cdr x) type))))
+
+(define (record-getter type field)
+  (let ((index (field-index type field)))
+    (lambda (record)
+      (vector-ref (rib-car record) index))))
+
+(define (record-setter type field)
+  (let ((index (field-index type field)))
+    (lambda (record value)
+      (vector-set! (rib-car record) index value)))
+
+(define (field-index type field)
+  (memv-position field (cdr type)))
 
 ;; Boolean
 
@@ -573,6 +588,21 @@
 
     (else
       (f (reduce-right f y (cdr xs)) (car xs)))))
+
+(define (list-position f xs)
+  (let loop ((xs xs) (index 0))
+    (cond
+      ((null? xs)
+        #f)
+
+      ((f (car xs))
+        index)
+
+      (else
+        (loop (cdr xs) (+ index 1))))))
+
+(define (memv-position one xs)
+  (list-position (lambda (other) (eqv? one other)) xs))
 
 ;; Number
 
