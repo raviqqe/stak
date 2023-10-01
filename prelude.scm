@@ -83,12 +83,6 @@
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
-; TODO Implement an import statement.
-(define-syntax import
-  (syntax-rules ()
-    ((_ x ...)
-      #f)))
-
 (define-syntax quasiquote
   (syntax-rules ()
     ((_ value)
@@ -103,6 +97,14 @@
   (syntax-rules ()
     ((_ name value)
       ($$set! name value))))
+
+;; Library system
+
+; TODO Implement an import statement.
+(define-syntax import
+  (syntax-rules ()
+    ((_ x ...)
+      #f)))
 
 ;; Binding
 
@@ -275,6 +277,25 @@
   (syntax-rules ()
     ((_ test result1 result2 ...)
       (when (not test) result1 result2 ...))))
+
+;; Record
+
+(define-syntax define-record-type
+  (syntax-rules ()
+    ((define-record-type type
+        (constructor constructor-tag ...)
+        predicate
+        (field-tag accessor . more)
+        ...)
+      (begin
+        (define type
+          (make-record-type 'type '(field-tag ...)))
+        (define constructor
+          (record-constructor type '(constructor-tag ...)))
+        (define predicate
+          (record-predicate type))
+        (define-record-field type field-tag accessor . more)
+        ...))))
 
 ; Type IDs
 
