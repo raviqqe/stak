@@ -283,9 +283,9 @@
 (define-syntax define-record-type
   (syntax-rules ()
     ((define-record-type type
-        (constructor constructor-tag ...)
+        (constructor field ...)
         predicate
-        (field-tag accessor . more)
+        (field getter . rest)
         ...)
       (begin
         (define type
