@@ -459,18 +459,6 @@
     (car list)
     (list-ref (cdr list) (- index 1))))
 
-(define (mem eq?)
-  (lambda (x xs)
-    (cond
-      ((null? xs)
-        #f)
-
-      ((eq? x (car xs))
-        xs)
-
-      (else
-        (memv x (cdr xs))))))
-
 (define (member x xs . rest)
   (define eq?
     (if (null? rest)
