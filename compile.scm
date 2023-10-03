@@ -179,24 +179,27 @@
       (f xs))))
 
 (define (zip-alist alist)
-  (let (
-      (pairs
-        (map
-          (lambda (pair)
-            (let (
-                (key (car pair))
-                (value (cdr pair)))
-              (if (pair? value)
-                (cons
-                  (cons key (car value))
-                  (cons key (cdr value)))
-                #f)))
-          alist)))
-    (if (or (null? alist) (memv #f pairs))
-      '()
-      (cons
-        (map car pairs)
-        (zip-alist (map cdr pairs))))))
+  (define (zip alist)
+    (let (
+        (pairs
+          (map
+            (lambda (pair)
+              (let (
+                  (key (car pair))
+                  (value (cdr pair)))
+                (if (pair? value)
+                  (cons
+                    (cons key (car value))
+                    (cons key (cdr value)))
+                  #f)))
+            alist)))
+      (if (memv #f pairs)
+        '()
+        (cons
+          (map car pairs)
+          (zip-alist (map cdr pairs))))))
+
+  (if (null? alist) '() (zip alist)))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
