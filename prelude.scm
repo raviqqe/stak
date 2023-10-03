@@ -813,8 +813,7 @@
 (define (make-vector length . rest)
   (rib length (apply make-list (cons length rest)) vector-type))
 
-(define (vector-length xs)
-  (length (vector->list xs)))
+(define vector-length rib-car)
 
 (define (vector-ref vector index)
   (list-ref (rib-cdr vector) index))
