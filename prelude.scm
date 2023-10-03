@@ -334,8 +334,8 @@
 (define unwind #f)
 
 ((call/cc
-    (lambda (k)
-      (set! unwind k)
+    (lambda (continuation)
+      (set! unwind continuation)
       dummy-function)))
 
 ; Error
