@@ -1,4 +1,33 @@
 Feature: Record
+  Scenario Outline: Check if a record is a subtype
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-record-type foo
+      (make-foo)
+      foo?)
+
+    (write-u8 (if (<predicate> (make-foo)) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+    Examples:
+      | predicate   |
+      | boolean?    |
+      | bytevector? |
+      | char?       |
+      | eof-object? |
+      | null?       |
+      | number?     |
+      | pair?       |
+      | port?       |
+      | procedure?  |
+      | string?     |
+      | symbol?     |
+      | vector?     |
+
   Rule: Record with no field
     Scenario: Define a record type
       Given a file named "main.scm" with:
