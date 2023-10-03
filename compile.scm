@@ -316,27 +316,40 @@
     (else
       '())))
 
+(define-record-type ellipsis-match
+  (make-ellipsis-match value)
+  ellipsis-match?
+  (value ellipsis-match-value))
+
 (define (match-ellipsis-pattern definition-context use-context literals pattern expression)
-  (fold-right
-    (lambda (all ones)
-      (and
-        all
-        ones
-        (map
-          (lambda (pair)
-            (let ((name (car pair)))
-              (cons name
-                (cons
-                  (cdr pair)
-                  (cdr (assv name all))))))
-          ones)))
-    (map
-      (lambda (name) (cons name '()))
-      (find-pattern-variables literals pattern))
-    (map
-      (lambda (expression)
-        (match-pattern definition-context use-context literals pattern expression))
-      expression)))
+  (let (
+      (xs
+        (fold-right
+          (lambda (all ones)
+            (and
+              all
+              ones
+              (map
+                (lambda (pair)
+                  (let ((name (car pair)))
+                    (cons name
+                      (cons
+                        (cdr pair)
+                        (cdr (assv name all))))))
+                ones)))
+          (map
+            (lambda (name) (cons name '()))
+            (find-pattern-variables literals pattern))
+          (map
+            (lambda (expression)
+              (match-pattern definition-context use-context literals pattern expression))
+            expression))))
+    (and
+      xs
+      (map
+        (lambda (pair)
+          (cons (car pair) (make-ellipsis-match (cdr pair))))
+        xs))))
 
 (define (match-pattern definition-context use-context literals pattern expression)
   (define (match pattern expression)
@@ -390,9 +403,12 @@
     (lambda (matches) (fill-template definition-context use-context matches template))
     (let ((variables (find-pattern-variables '() template)))
       (zip-alist
-        (filter
-          (lambda (pair) (memv (car pair) variables))
-          matches)))))
+        (map
+          (lambda (pair)
+            (cons (car pair) (ellipsis-match-value (cdr pair))))
+          (filter
+            (lambda (pair) (memv (car pair) variables))
+            matches))))))
 
 (define (fill-template definition-context use-context matches template)
   (define (fill template)
