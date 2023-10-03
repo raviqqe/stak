@@ -496,6 +496,16 @@
 
 (define (list . xs) xs)
 
+(define (make-list length . rest)
+  (define fill (if (null? rest) #f (car rest)))
+
+  (define (make length)
+    (if (= length 0)
+      '()
+      (cons fill (make (- length 1)))))
+
+  (make length))
+
 (define (length xs)
   (let loop ((xs xs) (y 0))
     (if (null? xs)
@@ -787,8 +797,17 @@
 
 (define vector? (instance? vector-type))
 
+(define (vector . rest)
+  (rib (length rest) rest vector-type))
+
+(define (make-vector length . rest)
+  (rib length (apply make-list (cons length rest)) vector-type))
+
 (define (vector-length xs)
   (length (vector->list xs)))
+
+(define (vector-ref vector index)
+  (list-ref (rib-cdr vector) index))
 
 (define (list->vector x)
   (rib (length x) x vector-type))
