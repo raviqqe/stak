@@ -231,6 +231,21 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
+  Scenario: Expand a list with an ellipsis pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x)
+          (x ...))))
+
+    (foo (write-u8 65))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
   Scenario: Match a literal identifier
     Given a file named "main.scm" with:
     """scheme
