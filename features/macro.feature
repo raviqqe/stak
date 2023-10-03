@@ -88,7 +88,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Match a succeeding ellipsis pattern
+  Scenario: Match a preceding ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -99,6 +99,21 @@ Feature: Macro
           (y x ...))))
 
     (foo 65 write-u8)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a succeeding ellipsis pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x y ...)
+          (x y ...))))
+
+    (foo write-u8 65)
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
