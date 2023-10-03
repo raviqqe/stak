@@ -22,16 +22,18 @@ Feature: Dynamic wind
     (define (g)
       (dynamic-wind
         (lambda () (write-u8 65))
-        (lambda () (f #f))
+        (lambda () (call/cc (lambda (k) (set! f k))))
         (lambda () (write-u8 66))))
 
-    (call/cc
-      (lambda (k)
-        (set! f k)
-        (g)))
+    (g)
+
+    (when f
+      (let ((g f))
+        (set! f #f)
+        (g #f)))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AB"
+    Then the stdout should contain exactly "ABAB"
 
   Scenario: Call an after callback on an exit from dynamic extent
     Given a file named "main.scm" with:
