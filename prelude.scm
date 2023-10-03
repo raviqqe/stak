@@ -83,12 +83,6 @@
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
-; TODO Implement an import statement.
-(define-syntax import
-  (syntax-rules ()
-    ((_ x ...)
-      #f)))
-
 (define-syntax quasiquote
   (syntax-rules ()
     ((_ value)
@@ -103,6 +97,14 @@
   (syntax-rules ()
     ((_ name value)
       ($$set! name value))))
+
+;; Library system
+
+; TODO Implement an import statement.
+(define-syntax import
+  (syntax-rules ()
+    ((_ x ...)
+      #f)))
 
 ;; Binding
 
@@ -287,6 +289,7 @@
 (define bytevector-type 6)
 (define eof-object-type 7)
 (define port-type 8)
+(define record-type 9)
 
 ; Primitives
 
@@ -380,6 +383,60 @@
       (equal? (rib-car x) (rib-car y))
       (equal? (rib-cdr x) (rib-cdr y)))))
 
+;; Record
+
+; For now, we do not use record types for any built-in types for efficiency of
+; data representation.
+(define-syntax define-record-type
+  (syntax-rules ()
+    ((_ id
+        (constructor field ...)
+        predicate
+        (field getter . rest)
+        ...)
+      (begin
+        (define id (cons 'id '(field ...)))
+        (define constructor (record-constructor id))
+        (define predicate (record-predicate id))
+
+        (define-record-field id field getter . rest)
+        ...))))
+
+(define-syntax define-record-field
+  (syntax-rules ()
+    ((_ type field getter)
+      (define getter (record-getter type 'field)))
+
+    ((_ type field getter setter)
+      (begin
+        (define-record-field type field getter)
+        (define setter (record-setter type 'field))))))
+
+(define record? (instance? record-type))
+
+(define (record-constructor type)
+  (lambda xs
+    (rib (list->vector xs) type record-type)))
+
+(define (record-predicate type)
+  (lambda (x)
+    (and
+      (record? x)
+      (eq? (rib-cdr x) type))))
+
+(define (record-getter type field)
+  (let ((index (field-index type field)))
+    (lambda (record)
+      (vector-ref (rib-car record) index))))
+
+(define (record-setter type field)
+  (let ((index (field-index type field)))
+    (lambda (record value)
+      (vector-set! (rib-car record) index value))))
+
+(define (field-index type field)
+  (memv-position field (cdr type)))
+
 ;; Boolean
 
 (define (boolean? x)
@@ -439,6 +496,16 @@
 
 (define (list . xs) xs)
 
+(define (make-list length . rest)
+  (define fill (if (null? rest) #f (car rest)))
+
+  (define (make length)
+    (if (= length 0)
+      '()
+      (cons fill (make (- length 1)))))
+
+  (make length))
+
 (define (length xs)
   (let loop ((xs xs) (y 0))
     (if (null? xs)
@@ -455,9 +522,15 @@
 (define for-each map)
 
 (define (list-ref list index)
-  (if (eqv? index 0)
-    (car list)
-    (list-ref (cdr list) (- index 1))))
+  (car (list-tail list index)))
+
+(define (list-set! list index value)
+  (set-car! (list-tail list index) value))
+
+(define (list-tail list index)
+  (if (zero? index)
+    list
+    (list-tail (cdr list) (- index 1))))
 
 (define (member x xs . rest)
   (define eq?
@@ -532,6 +605,21 @@
     (else
       (f (reduce-right f y (cdr xs)) (car xs)))))
 
+(define (list-position f xs)
+  (let loop ((xs xs) (index 0))
+    (cond
+      ((null? xs)
+        #f)
+
+      ((f (car xs))
+        index)
+
+      (else
+        (loop (cdr xs) (+ index 1))))))
+
+(define (memv-position one xs)
+  (list-position (lambda (other) (eqv? one other)) xs))
+
 ;; Number
 
 (define (integer? x)
@@ -544,6 +632,10 @@
 
 (define (exact? x) #t)
 (define (inexact? x) #f)
+
+(define (zero? x) (eqv? x 0))
+(define (positive? x) (> x 0))
+(define (negative? x) (< x 0))
 
 (define (arithmetic-operator f y)
   (lambda xs (fold-left f y xs)))
@@ -715,8 +807,19 @@
 
 (define vector? (instance? vector-type))
 
-(define (vector-length xs)
-  (length (vector->list xs)))
+(define (vector . rest)
+  (rib (length rest) rest vector-type))
+
+(define (make-vector length . rest)
+  (rib length (apply make-list (cons length rest)) vector-type))
+
+(define vector-length rib-car)
+
+(define (vector-ref vector index)
+  (list-ref (rib-cdr vector) index))
+
+(define (vector-set! vector index value)
+  (list-set! (rib-cdr vector) index value))
 
 (define (list->vector x)
   (rib (length x) x vector-type))
