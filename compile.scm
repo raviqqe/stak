@@ -323,7 +323,7 @@
 
 (define (match-ellipsis-pattern definition-context use-context literals pattern expression)
   (let (
-      (xs
+      (matches
         (fold-right
           (lambda (all ones)
             (and
@@ -345,11 +345,11 @@
               (match-pattern definition-context use-context literals pattern expression))
             expression))))
     (and
-      xs
+      matches
       (map
         (lambda (pair)
           (cons (car pair) (make-ellipsis-match (cdr pair))))
-        xs))))
+        matches))))
 
 (define (match-pattern definition-context use-context literals pattern expression)
   (define (match pattern expression)
