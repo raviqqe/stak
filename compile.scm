@@ -178,25 +178,18 @@
     (else
       (f xs))))
 
-(define (zip-alist alist)
-  (let (
-      (pairs
-        (map
-          (lambda (pair)
-            (let (
-                (key (car pair))
-                (value (cdr pair)))
-              (if (pair? value)
-                (cons
-                  (cons key (car value))
-                  (cons key (cdr value)))
-                #f)))
-          alist)))
-    (if (memv #f pairs)
+(define (map-values f xs)
+  (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
+
+(define (zip-alist xs)
+  (define (zip xs)
+    (if (memv #f (map (lambda (pair) (pair? (cdr pair))) xs))
       '()
       (cons
-        (map car pairs)
-        (zip-alist (map cdr pairs))))))
+        (map-values car xs)
+        (zip (map-values cdr xs)))))
+
+  (if (null? xs) '() (zip xs)))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -401,14 +394,20 @@
 (define (fill-ellipsis-template definition-context use-context matches template)
   (map
     (lambda (matches) (fill-template definition-context use-context matches template))
-    (let ((variables (find-pattern-variables '() template)))
-      (zip-alist
-        (map
-          (lambda (pair)
-            (cons (car pair) (ellipsis-match-value (cdr pair))))
-          (filter
-            (lambda (pair) (memv (car pair) variables))
-            matches))))))
+    (let* (
+        (variables (find-pattern-variables '() template))
+        (matches (filter (lambda (pair) (memv (car pair) variables)) matches))
+        (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
+        (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+      (when (null? ellipsis-matches)
+        (error "no ellipsis pattern variables" template))
+      (map
+        (lambda (matches) (append singleton-matches matches))
+        (zip-alist
+          (map
+            (lambda (pair)
+              (cons (car pair) (ellipsis-match-value (cdr pair))))
+            ellipsis-matches))))))
 
 (define (fill-template definition-context use-context matches template)
   (define (fill template)
