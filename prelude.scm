@@ -838,9 +838,7 @@
   (after point-after)
   (parent point-parent))
 
-(define root-point (make-point 0 #f #f #f))
-
-(define current-point root-point)
+(define current-point (make-point 0 #f #f #f))
 
 (define (mark-point x)
   (set! current-point x))
