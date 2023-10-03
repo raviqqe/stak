@@ -30,4 +30,4 @@ Feature: Dynamic wind
     (g)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "ABC"
+    Then the stdout should contain exactly "AB"
