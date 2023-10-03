@@ -840,17 +840,16 @@
 
 (define root-point (make-point 0 #f #f #f))
 
+(define current-point root-point)
+
 (define (mark-point x)
-  (let ((point root-point))
-    (lambda (x)
-      (when x (set! point x))
-      point)))
+  (set! current-point x))
 
 (mark-point root-point)
 
 (define (dynamic-wind before thunk after)
   (before)
-  (let ((here (mark-point root-point)))
+  (let ((here current-point))
     (mark-point (make-point (+ (point-depth here) 1) before after here))
     (let ((value (thunk)))
       (mark-point here)
