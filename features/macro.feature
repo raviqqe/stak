@@ -148,6 +148,23 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
+  Scenario: Match a deeply nested ellipsis pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ ((x ...) ...) ...)
+          (begin (begin (x ...) ...) ...))))
+
+    (foo
+      ((write-u8 65))
+      ((write-u8 66) (write-u8 67 (current-output-port))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
+
   Scenario: Expand an ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
