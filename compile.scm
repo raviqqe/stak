@@ -192,7 +192,7 @@
                   (cons key (cdr value)))
                 #f)))
           alist)))
-    (if (memv #f pairs)
+    (if (or (null? alist) (memv #f pairs))
       '()
       (cons
         (map car pairs)
@@ -401,14 +401,20 @@
 (define (fill-ellipsis-template definition-context use-context matches template)
   (map
     (lambda (matches) (fill-template definition-context use-context matches template))
-    (let ((variables (find-pattern-variables '() template)))
-      (zip-alist
-        (map
-          (lambda (pair)
-            (cons (car pair) (ellipsis-match-value (cdr pair))))
-          (filter
-            (lambda (pair) (memv (car pair) variables))
-            matches))))))
+    (let* (
+        (variables (find-pattern-variables '() template))
+        (matches (filter (lambda (pair) (memv (car pair) variables)) matches))
+        (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
+        (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+      (when (null? ellipsis-matches)
+        (error "no ellipsis pattern variables" template))
+      (map
+        (lambda (alist) (append singleton-matches alist))
+        (zip-alist
+          (map
+            (lambda (pair)
+              (cons (car pair) (ellipsis-match-value (cdr pair))))
+            ellipsis-matches))))))
 
 (define (fill-template definition-context use-context matches template)
   (define (fill template)
