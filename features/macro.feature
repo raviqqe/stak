@@ -73,7 +73,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Match an ellipsis
+  Scenario: Match an ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -88,7 +88,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Match a succeeding ellipsis
+  Scenario: Match a preceding ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -103,7 +103,22 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Match an ellipsis with an empty list
+  Scenario: Match a succeeding ellipsis pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ x y ...)
+          (x y ...))))
+
+    (foo write-u8 65)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match an ellipsis pattern with an empty list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -118,7 +133,39 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Expand an ellipsis
+  Scenario: Match a nested ellipsis pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ (x ...) ...)
+          (begin (x ...) ...))))
+
+    (foo (write-u8 65) (write-u8 66 (current-output-port)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "AB"
+
+  Scenario: Match a deeply nested ellipsis pattern
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-syntax foo
+      (syntax-rules ()
+        ((_ ((x ...) ...) ...)
+          (begin (begin (x ...) ...) ...))))
+
+    (foo
+      ((write-u8 65))
+      ((write-u8 66) (write-u8 67 (current-output-port))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario: Expand an ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -169,7 +216,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario: Match an ellipsis and an improper list
+  Scenario: Match an ellipsis pattern and an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -184,7 +231,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "C"
 
-  Scenario: Expand an empty ellipsis and an improper list
+  Scenario: Expand an empty ellipsis pattern and an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))
@@ -199,7 +246,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario: Match an ellipsis to an improper list
+  Scenario: Match an ellipsis pattern to an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -214,7 +261,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Expand an ellipsis of an improper list
+  Scenario: Expand an ellipsis pattern of an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -246,7 +293,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Expand an ellipsis and normal pattern
+  Scenario: Expand ellipsis and singleton patterns
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
