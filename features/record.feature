@@ -103,3 +103,24 @@ Feature: Record
       """
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "AB"
+
+    Scenario: Set a field
+      Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-record-type foo
+        (make-foo x y)
+        foo?
+        (x foo-x)
+        (y foo-y foo-set-y!))
+
+      (define record (make-foo 65 66))
+
+      (foo-set-y! record 88)
+
+      (write-u8 (foo-x record))
+      (write-u8 (foo-y record))
+      """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "AX"
