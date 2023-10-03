@@ -73,7 +73,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Match an ellipsis
+  Scenario: Match an ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -88,7 +88,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Match a succeeding ellipsis
+  Scenario: Match a succeeding ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -103,7 +103,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Match an ellipsis with an empty list
+  Scenario: Match an ellipsis pattern with an empty list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -118,7 +118,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Expand an ellipsis
+  Scenario: Expand an ellipsis pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -169,7 +169,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario: Match an ellipsis and an improper list
+  Scenario: Match an ellipsis pattern and an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -184,7 +184,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "C"
 
-  Scenario: Expand an empty ellipsis and an improper list
+  Scenario: Expand an empty ellipsis pattern and an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))
@@ -199,7 +199,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario: Match an ellipsis to an improper list
+  Scenario: Match an ellipsis pattern to an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -214,7 +214,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Expand an ellipsis of an improper list
+  Scenario: Expand an ellipsis pattern of an improper list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -246,7 +246,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Expand an ellipsis and normal pattern
+  Scenario: Expand an ellipsis pattern and singleton pattern
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
