@@ -409,7 +409,7 @@
       (when (null? ellipsis-matches)
         (error "no ellipsis pattern variables" template))
       (map
-        (lambda (alist) (append singleton-matches alist))
+        (lambda (matches) (append singleton-matches matches))
         (zip-alist
           (map
             (lambda (pair)
