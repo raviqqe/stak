@@ -845,8 +845,6 @@
 (define (mark-point x)
   (set! current-point x))
 
-(mark-point root-point)
-
 (define (dynamic-wind before thunk after)
   (before)
   (let ((here current-point))
