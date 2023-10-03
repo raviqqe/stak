@@ -22,12 +22,13 @@ Feature: Dynamic wind
     (define (g)
       (dynamic-wind
         (lambda () (write-u8 65))
-        (lambda () (call/cc (lambda (k) (f #f))))
+        (lambda () (f #f))
         (lambda () (write-u8 66))))
 
-    (call/cc (lambda (k) (set! f k)))
-
-    (g)
+    (call/cc
+      (lambda (k)
+        (set! f k)
+        (g)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
