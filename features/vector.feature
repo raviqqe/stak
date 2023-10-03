@@ -63,3 +63,26 @@ Feature: Vector
       | (vector 65 66 67) | 0     | A      |
       | (vector 65 66 67) | 1     | B      |
       | (vector 65 66 67) | 2     | C      |
+
+  Scenario Outline: Set an element in a vector
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define xs <vector>)
+
+    (vector-set! xs <index> 88)
+
+    (map write-u8 (vector->list xs))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | vector            | index | output |
+      | (vector 65)       | 0     | X      |
+      | (vector 65 66)    | 0     | XB     |
+      | (vector 65 66)    | 1     | AX     |
+      | (vector 65 66 67) | 0     | XBC    |
+      | (vector 65 66 67) | 1     | AXC    |
+      | (vector 65 66 67) | 2     | ABX    |

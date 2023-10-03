@@ -522,9 +522,15 @@
 (define for-each map)
 
 (define (list-ref list index)
-  (if (eqv? index 0)
-    (car list)
-    (list-ref (cdr list) (- index 1))))
+  (car (list-tail list index)))
+
+(define (list-set! list index value)
+  (set-car! (list-tail list index) value))
+
+(define (list-tail list index)
+  (if (zero? index)
+    list
+    (list-tail (cdr list) (- index 1))))
 
 (define (member x xs . rest)
   (define eq?
@@ -626,6 +632,10 @@
 
 (define (exact? x) #t)
 (define (inexact? x) #f)
+
+(define (zero? x) (eqv? x 0))
+(define (positive? x) (> x 0))
+(define (negative? x) (< x 0))
 
 (define (arithmetic-operator f y)
   (lambda xs (fold-left f y xs)))
@@ -808,6 +818,9 @@
 
 (define (vector-ref vector index)
   (list-ref (rib-cdr vector) index))
+
+(define (vector-set! vector index value)
+  (list-set! (rib-cdr vector) index value))
 
 (define (list->vector x)
   (rib (length x) x vector-type))
