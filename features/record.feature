@@ -106,8 +106,10 @@ Feature: Record
       (import (scheme base))
 
       (define-record-type foo
-        (make-foo)
-        foo?)
+        (make-foo x y)
+        foo?
+        (x foo-x)
+        (y foo-y))
 
       (write-u8 (if (foo? (make-foo 1 2)) 65 66))
       """
