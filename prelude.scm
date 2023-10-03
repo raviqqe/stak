@@ -338,49 +338,6 @@
       (set! unwind k)
       dummy-function)))
 
-;; Dynamic wind
-
-(define %make-point vector)
-(define (%point-depth point) (vector-ref point 0))
-(define (%point-in point) (vector-ref point 1))
-(define (%point-out point) (vector-ref point 2))
-(define (%point-parent point) (vector-ref point 3))
-
-(define root-point ; Shared among all state spaces
-  (%make-point 0
-    (lambda () (error "winding in to root!"))
-    (lambda () (error "winding out of root!"))
-    #f))
-
-(define %dk
-  (let ((dk root-point))
-    (lambda o (if (pair? o) (set! dk (car o)) dk))))
-
-(%dk root-point)
-
-(define (dynamic-wind in body out)
-  (in)
-  (let ((here (%dk)))
-    (%dk (%make-point (+ (%point-depth here) 1)
-        in
-        out
-        here))
-    (let ((res (body)))
-      (%dk here)
-      (out)
-      res)))
-
-(define (travel-to-point! here target)
-  (cond
-    ((eq? here target)
-      'done)
-    ((< (%point-depth here) (%point-depth target))
-      (travel-to-point! here (%point-parent target))
-      ((%point-in target)))
-    (else
-      ((%point-out here))
-      (travel-to-point! (%point-parent here) target))))
-
 ; Error
 
 (define (error message . rest)
@@ -868,6 +825,54 @@
   (rib (length x) x vector-type))
 
 (define vector->list rib-cdr)
+
+; Control
+
+;; Dynamic wind
+
+(define make-point vector)
+(define (point-depth point) (vector-ref point 0))
+(define (point-in point) (vector-ref point 1))
+(define (point-out point) (vector-ref point 2))
+(define (point-parent point) (vector-ref point 3))
+
+(define root-point ; Shared among all state spaces
+  (make-point
+    0
+    (lambda () (error "winding in to root!"))
+    (lambda () (error "winding out of root!"))
+    #f))
+
+(define dk
+  (let ((dk root-point))
+    (lambda o (if (pair? o) (set! dk (car o)) dk))))
+
+(dk root-point)
+
+(define (dynamic-wind before thunk after)
+  (before)
+  (let ((here (dk)))
+    (dk
+      (make-point
+        (+ (point-depth here) 1)
+        before
+        after
+        here))
+    (let ((value (thunk)))
+      (dk here)
+      (after)
+      value)))
+
+(define (travel-to-point! here target)
+  (cond
+    ((eq? here target)
+      'done)
+    ((< (point-depth here) (point-depth target))
+      (travel-to-point! here (point-parent target))
+      ((point-in target)))
+    (else
+      ((point-out here))
+      (travel-to-point! (point-parent here) target))))
 
 ; Read
 
