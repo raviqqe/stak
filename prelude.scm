@@ -830,36 +830,30 @@
 
 ;; Dynamic wind
 
-(define make-point vector)
-(define (point-depth point) (vector-ref point 0))
-(define (point-in point) (vector-ref point 1))
-(define (point-out point) (vector-ref point 2))
-(define (point-parent point) (vector-ref point 3))
+(define-record-type point
+  (make-point depth before after parent)
+  point?
+  (depth point-depth)
+  (before point-before)
+  (after point-after)
+  (parent point-parent))
 
-(define root-point ; Shared among all state spaces
-  (make-point
-    0
-    (lambda () (error "winding in to root!"))
-    (lambda () (error "winding out of root!"))
-    #f))
+(define root-point (make-point 0 #f #f #f))
 
-(define dk
-  (let ((dk root-point))
-    (lambda o (if (pair? o) (set! dk (car o)) dk))))
+(define (mark-point x)
+  (let ((point root-point))
+    (lambda (x)
+      (when x (set! point x))
+      point)))
 
-(dk root-point)
+(mark-point root-point)
 
 (define (dynamic-wind before thunk after)
   (before)
-  (let ((here (dk)))
-    (dk
-      (make-point
-        (+ (point-depth here) 1)
-        before
-        after
-        here))
+  (let ((here (mark-point root-point)))
+    (mark-point (make-point (+ (point-depth here) 1) before after here))
     (let ((value (thunk)))
-      (dk here)
+      (mark-point here)
       (after)
       value)))
 
