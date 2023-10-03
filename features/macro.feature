@@ -293,7 +293,7 @@ Feature: Macro
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Expand an ellipsis and singleton pattern
+  Scenario: Expand ellipsis and singleton patterns
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
