@@ -860,12 +860,14 @@
 (define (travel-to-point! here target)
   (cond
     ((eq? here target)
-      'done)
+      #f)
+
     ((< (point-depth here) (point-depth target))
       (travel-to-point! here (point-parent target))
       ((point-in target)))
+
     (else
-      ((point-out here))
+      ((point-after here))
       (travel-to-point! (point-parent here) target))))
 
 ; Read
