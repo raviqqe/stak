@@ -81,6 +81,7 @@ Feature: Dynamic wind
         (g #f)))
     """
     When I successfully run `scheme main.scm`
+    # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDABCD"
 
   Scenario: Call callbacks for nested dynamic extents
@@ -119,4 +120,5 @@ Feature: Dynamic wind
         (h #f)))
     """
     When I successfully run `scheme main.scm`
+    # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDEFGHABCDEFGH"
