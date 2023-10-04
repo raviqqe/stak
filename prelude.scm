@@ -840,15 +840,15 @@
 
 (define current-point (make-point 0 #f #f #f))
 
-(define (mark-point x)
+(define (set-current-point x)
   (set! current-point x))
 
 (define (dynamic-wind before thunk after)
   (before)
   (let ((point current-point))
-    (mark-point (make-point (+ (point-depth point) 1) before after point))
+    (set-current-point (make-point (+ (point-depth point) 1) before after point))
     (let ((value (thunk)))
-      (mark-point point)
+      (set-current-point point)
       (after)
       value)))
 
