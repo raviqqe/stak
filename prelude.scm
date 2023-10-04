@@ -329,7 +329,7 @@
     (receiver
       (lambda (argument)
         (travel-to-point! current-point point)
-        (set-current-point point)
+        (set-current-point! point)
         (rib-set-car!
           (rib-cdr (rib-cdr (close dummy-function))) ; frame
           continuation)
@@ -844,15 +844,15 @@
 
 (define current-point (make-point 0 #f #f #f))
 
-(define (set-current-point x)
+(define (set-current-point! x)
   (set! current-point x))
 
 (define (dynamic-wind before thunk after)
   (before)
   (let ((point current-point))
-    (set-current-point (make-point (+ (point-depth point) 1) before after point))
+    (set-current-point! (make-point (+ (point-depth point) 1) before after point))
     (let ((value (thunk)))
-      (set-current-point point)
+      (set-current-point! point)
       (after)
       value)))
 
