@@ -318,40 +318,6 @@
 (define (apply f xs)
   ($$apply f xs))
 
-; Continuation
-
-(define dummy-function (lambda () #f))
-
-(define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function)))))))
-    (receiver
-      (lambda (argument)
-        (rib-set-car!
-          (rib-cdr (rib-cdr (close dummy-function))) ; frame
-          continuation)
-        argument))))
-
-(define unwind #f)
-
-((call/cc
-    (lambda (k)
-      (set! unwind k)
-      dummy-function)))
-
-; Error
-
-(define (error message . rest)
-  (unwind
-    (lambda ()
-      (rib-set-car!
-        (rib-cdr (close dummy-function)) ; frame
-        (cons '() '()))
-      (write-string message (current-error-port))
-      (write-char #\space (current-error-port))
-      (when (pair? rest)
-        (write (car rest) (current-error-port)))
-      #f)))
-
 ; Types
 
 (define (singleton? x)
@@ -1169,3 +1135,82 @@
 (define (write-vector xs write port)
   (write-char #\# port)
   (write-list (vector->list xs) write port))
+
+; Control
+
+;; Continuation
+
+(define dummy-function (lambda () #f))
+
+(define (call/cc receiver)
+  (let (
+      (continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function))))))
+      (point current-point))
+    (receiver
+      (lambda (argument)
+        (travel-to-point! current-point point)
+        (set-current-point! point)
+        (rib-set-car!
+          (rib-cdr (rib-cdr (close dummy-function))) ; frame
+          continuation)
+        argument))))
+
+;; Dynamic wind
+
+(define-record-type point
+  (make-point depth before after parent)
+  point?
+  (depth point-depth)
+  (before point-before)
+  (after point-after)
+  (parent point-parent))
+
+(define current-point (make-point 0 #f #f #f))
+
+(define (set-current-point! x)
+  (set! current-point x))
+
+(define (dynamic-wind before thunk after)
+  (before)
+  (let ((point current-point))
+    (set-current-point! (make-point (+ (point-depth point) 1) before after point))
+    (let ((value (thunk)))
+      (set-current-point! point)
+      (after)
+      value)))
+
+(define (travel-to-point! from to)
+  (cond
+    ((eq? from to)
+      #f)
+
+    ((< (point-depth from) (point-depth to))
+      (travel-to-point! from (point-parent to))
+      ((point-before to)))
+
+    (else
+      ((point-after from))
+      (travel-to-point! (point-parent from) to))))
+
+;; Error
+
+(define (error message . rest)
+  (unwind
+    (lambda ()
+      (rib-set-car!
+        (rib-cdr (close dummy-function)) ; frame
+        (cons '() '()))
+      (write-string message (current-error-port))
+      (write-char #\space (current-error-port))
+      (when (pair? rest)
+        (write (car rest) (current-error-port)))
+      #f)))
+
+;; Unwind
+
+(define unwind #f)
+
+((call/cc
+    (lambda (continuation)
+      (set! unwind continuation)
+      dummy-function)))
