@@ -323,9 +323,13 @@
 (define dummy-function (lambda () #f))
 
 (define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function)))))))
+  (let (
+      (continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function))))))
+      (point current-point))
     (receiver
       (lambda (argument)
+        (travel-to-point! current-point point)
+        (set-current-point point)
         (rib-set-car!
           (rib-cdr (rib-cdr (close dummy-function))) ; frame
           continuation)
