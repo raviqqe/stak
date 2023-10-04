@@ -845,25 +845,25 @@
 
 (define (dynamic-wind before thunk after)
   (before)
-  (let ((here current-point))
-    (mark-point (make-point (+ (point-depth here) 1) before after here))
+  (let ((point current-point))
+    (mark-point (make-point (+ (point-depth point) 1) before after point))
     (let ((value (thunk)))
-      (mark-point here)
+      (mark-point point)
       (after)
       value)))
 
-(define (travel-to-point! here target)
+(define (travel-to-point! from to)
   (cond
-    ((eq? here target)
+    ((eq? from to)
       #f)
 
-    ((< (point-depth here) (point-depth target))
-      (travel-to-point! here (point-parent target))
-      ((point-in target)))
+    ((< (point-depth from) (point-depth to))
+      (travel-to-point! from (point-parent to))
+      ((point-before to)))
 
     (else
-      ((point-after here))
-      (travel-to-point! (point-parent here) target))))
+      ((point-after from))
+      (travel-to-point! (point-parent from) to))))
 
 ; Read
 
