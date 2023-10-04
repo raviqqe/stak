@@ -335,13 +335,6 @@
           continuation)
         argument))))
 
-(define unwind #f)
-
-((call/cc
-    (lambda (continuation)
-      (set! unwind continuation)
-      dummy-function)))
-
 ; Error
 
 (define (error message . rest)
@@ -1212,3 +1205,12 @@
 (define (write-vector xs write port)
   (write-char #\# port)
   (write-list (vector->list xs) write port))
+
+; Unwind
+
+(define unwind #f)
+
+((call/cc
+    (lambda (continuation)
+      (set! unwind continuation)
+      dummy-function)))
