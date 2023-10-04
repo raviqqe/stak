@@ -12,7 +12,7 @@ Feature: Dynamic wind
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Call a before callback on an entrance into dynamic extent
+  Scenario: Call a before callback on an entrance into a dynamic extent
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -35,7 +35,7 @@ Feature: Dynamic wind
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABAB"
 
-  Scenario: Call an after callback on an exit from dynamic extent
+  Scenario: Call an after callback on an exit from a dynamic extent
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -56,7 +56,7 @@ Feature: Dynamic wind
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Call callbacks for nested dynamic extent
+  Scenario: Call callbacks for nested dynamic extents
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -83,7 +83,7 @@ Feature: Dynamic wind
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABCDABCD"
 
-  Scenario: Call callbacks for nested dynamic extent
+  Scenario: Call callbacks for nested dynamic extents
     Given a file named "main.scm" with:
     """
     (import (scheme base))
