@@ -82,3 +82,41 @@ Feature: Dynamic wind
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABCDABCD"
+
+  Scenario: Call callbacks for nested dynamic extent
+    Given a file named "main.scm" with:
+    """
+    (import (scheme base))
+
+    (define f #f)
+    (define g #f)
+
+    (define (h)
+      (dynamic-wind
+        (lambda () (write-u8 65))
+        (lambda ()
+          (dynamic-wind
+            (lambda () (write-u8 66))
+            (lambda ()
+              (call/cc (lambda (k) (set! f k)))
+              (when g (g #f)))
+            (lambda () (write-u8 67))))
+        (lambda () (write-u8 68)))
+      (dynamic-wind
+        (lambda () (write-u8 69))
+        (lambda ()
+          (dynamic-wind
+            (lambda () (write-u8 70))
+            (lambda () (call/cc (lambda (k) (set! g k))))
+            (lambda () (write-u8 71))))
+        (lambda () (write-u8 72))))
+
+    (h)
+
+    (when f
+      (let ((h f))
+        (set! f #f)
+        (h #f)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABCDEFGHABCDEFGH"
