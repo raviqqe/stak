@@ -857,13 +857,13 @@
     ((eq? from to)
       #f)
 
-    ((< (point-depth from) (point-depth to))
-      (travel-to-point! from (point-parent to))
-      ((point-before to)))
+    ((> (point-depth from) (point-depth to))
+      ((point-after from))
+      (travel-to-point! (point-parent from) to))
 
     (else
-      ((point-after from))
-      (travel-to-point! (point-parent from) to))))
+      (travel-to-point! from (point-parent to))
+      ((point-before to)))))
 
 ; Read
 
