@@ -170,29 +170,27 @@
       (begin
         (define name1 (call-with-values (lambda () value) list))
         (define name2
-          (let ((element (cadr name1)))
+          (let ((x (cadr name1)))
             (set-cdr! name1 (cddr name1))
-            element))
+            x))
         ...
         (define last-name
-          (let ((element (cadr name1)))
+          (let ((x (cadr name1)))
             (set! name1 (car name1))
-            element))))
+            x))))
 
-    ((_ (var0 var1 ... . varn) value)
+    ((_ (name1 name2 ... . last-name) value)
       (begin
-        (define var0
-          (call-with-values (lambda () value)
-            list))
-        (define var1
-          (let ((v (cadr var0)))
-            (set-cdr! var0 (cddr var0))
-            v))
+        (define name1 (call-with-values (lambda () value) list))
+        (define name2
+          (let ((x (cadr name1)))
+            (set-cdr! name1 (cddr name1))
+            x))
         ...
-        (define varn
-          (let ((v (cdr var0)))
-            (set! var0 (car var0))
-            v))))
+        (define last-name
+          (let ((x (cdr name1)))
+            (set! name1 (car name1))
+            x))))
 
     ((_ name value)
       (define name (call-with-values (lambda () value) list)))))
