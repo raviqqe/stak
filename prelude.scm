@@ -195,59 +195,37 @@
     ((_ name value)
       (define name (call-with-values (lambda () value) list)))))
 
-; TODO
 (define-syntax let-values
   (syntax-rules ()
     ((_ (binding ...) body1 body2 ...)
-      (let-values "bind"
-        (binding ...)
-        ()
-        (begin body1 body2 ...)))
+      (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
 
-    ((_ "bind" () tmps body)
-      (let tmps body))
+    ((_ "multiple" () singles body)
+      (let singles body))
 
-    ((_ "bind" ((b0 e0)
-          binding
-          ...)
-        tmps
-        body)
-      (let-values "mktmp" b0 e0 ()
-        (binding ...)
-        tmps
-        body))
-    ((_ "mktmp" () e0 args
-        bindings
-        tmps
-        body)
+    ((_ "multiple" ((names value) binding ...) singles body)
+      (let-values "single" names value () (binding ...) singles body))
+
+    ((_ "single" () value arguments bindings singles body)
       (call-with-values
-        (lambda () e0)
-        (lambda args
-          (let-values "bind"
-            bindings
-            tmps
-            body))))
+        (lambda () value)
+        (lambda arguments
+          (let-values "multiple" bindings singles body))))
 
-    ((_ "mktmp" (a . b) e0 (arg ...)
+    ((_ "single" (name . names) value (argument ...) bindings (single ...) body)
+      (let-values "single"
+        names
+        value
+        (argument ... x)
         bindings
-        (tmp ...)
-        body)
-      (let-values "mktmp" b e0 (arg ... x)
-        bindings
-        (tmp ... (a x))
+        (single ... (name x))
         body))
 
-    ((_ "mktmp" a e0 (arg ...)
-        bindings
-        (tmp ...)
-        body)
+    ((_ "single" name value (argument ...) bindings (single ...) body)
       (call-with-values
-        (lambda () e0)
-        (lambda (arg ... . x)
-          (let-values "bind"
-            bindings
-            (tmp ... (a x))
-            body))))))
+        (lambda () value)
+        (lambda (argument ... . x)
+          (let-values "multiple" bindings (single ... (name x)) body))))))
 
 (define-syntax let*-values
   (syntax-rules ()
