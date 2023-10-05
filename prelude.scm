@@ -158,6 +158,50 @@
         body2
         ...))))
 
+(define-syntax define-values
+  (syntax-rules ()
+    ((define-values () body)
+      body)
+
+    ((define-values (name) body)
+      (define name (car body)))
+
+    ; TODO
+    ((define-values (name0 name1 ... last-name) value)
+      (begin
+        (define var0
+          (call-with-values (lambda () value)
+            list))
+        (define var1
+          (let ((v (cadr var0)))
+            (set-cdr! var0 (cddr var0))
+            v))
+        ...
+        (define varn
+          (let ((v (cadr var0)))
+            (set! var0 (car var0))
+            v))))
+
+    ((define-values (var0 var1 ... . varn) value)
+      (begin
+        (define var0
+          (call-with-values (lambda () value)
+            list))
+        (define var1
+          (let ((v (cadr var0)))
+            (set-cdr! var0 (cddr var0))
+            v))
+        ...
+        (define varn
+          (let ((v (cdr var0)))
+            (set! var0 (car var0))
+            v))))
+    ((define-values var value)
+      (define var
+        (call-with-values (lambda () value)
+          list)))))
+
+; TODO
 (define-syntax let-values
   (syntax-rules ()
     ((let-values (binding ...) body1 body2 ...)
@@ -209,6 +253,7 @@
             (tmp ... (a x))
             body))))))
 
+; TODO
 (define-syntax let*-values
   (syntax-rules ()
     ((let*-values () body1 body2 ...)
