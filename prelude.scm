@@ -395,7 +395,7 @@
 (define eof-object-type 7)
 (define port-type 8)
 (define record-type 9)
-(define values-type 10)
+(define tuple-type 10)
 
 ; Primitives
 
@@ -1247,12 +1247,12 @@
 ;; Multi-value
 
 (define (values . xs)
-  (rib-set-tag! xs values-type)
+  (rib-set-tag! xs tuple-type)
   (call/cc (lambda (continuation) (continuation xs))))
 
 (define (call-with-values producer consumer)
   (let ((xs (producer)))
-    (if (eqv? (rib-tag xs) values-type)
+    (if (eqv? (rib-tag xs) tuple-type)
       (apply consumer xs)
       (consumer xs))))
 
