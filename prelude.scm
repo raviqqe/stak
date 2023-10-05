@@ -255,7 +255,6 @@
             (tmp ... (a x))
             body))))))
 
-; TODO
 (define-syntax let*-values
   (syntax-rules ()
     ((_ () body1 body2 ...)
