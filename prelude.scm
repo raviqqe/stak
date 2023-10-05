@@ -1198,6 +1198,14 @@
 
 ; Control
 
+;; Multi-value
+
+(define (values . xs)
+  (call/cc (lambda (continuation) (continuation xs))))
+
+(define (call-with-values producer consumer)
+  (apply consumer (producer)))
+
 ;; Continuation
 
 (define dummy-function (lambda () #f))
