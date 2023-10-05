@@ -424,6 +424,7 @@
               (name (rename-variable use-context template))
               (pair (resolve-denotation-pair definition-context template)))
             ; TODO Refactor this.
+            ; TODO Consider variable IDs.
             ;
             ; This destructive update of a context is fine because
             ; we always generate fresh variables. But it accumulates garbages
