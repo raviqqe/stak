@@ -160,29 +160,26 @@
 
 (define-syntax define-values
   (syntax-rules ()
-    ((define-values () body)
-      body)
+    ((_ () value)
+      value)
 
-    ((define-values (name) body)
-      (define name (car body)))
+    ((_ (name) value)
+      (define name (call-with-values (lambda () value) (lambda (x) x))))
 
-    ; TODO
-    ((define-values (name0 name1 ... last-name) value)
+    ((_ (name1 name2 ... last-name) value)
       (begin
-        (define var0
-          (call-with-values (lambda () value)
-            list))
-        (define var1
-          (let ((v (cadr var0)))
-            (set-cdr! var0 (cddr var0))
-            v))
+        (define name1 (call-with-values (lambda () value) list))
+        (define name2
+          (let ((element (cadr name1)))
+            (set-cdr! name1 (cddr name1))
+            element))
         ...
-        (define varn
-          (let ((v (cadr var0)))
-            (set! var0 (car var0))
-            v))))
+        (define last-name
+          (let ((element (cadr name1)))
+            (set! name1 (car name1))
+            element))))
 
-    ((define-values (var0 var1 ... . varn) value)
+    ((_ (var0 var1 ... . varn) value)
       (begin
         (define var0
           (call-with-values (lambda () value)
@@ -196,10 +193,9 @@
           (let ((v (cdr var0)))
             (set! var0 (car var0))
             v))))
-    ((define-values var value)
-      (define var
-        (call-with-values (lambda () value)
-          list)))))
+
+    ((_ name value)
+      (define name (call-with-values (lambda () value) list)))))
 
 ; TODO
 (define-syntax let-values
@@ -1248,13 +1244,12 @@
 ;; Multi-value
 
 (define (values . xs)
-  (rib-set-tag! xs tuple-type)
-  (call/cc (lambda (continuation) (continuation xs))))
+  (rib #f xs tuple-type))
 
 (define (call-with-values producer consumer)
   (let ((xs (producer)))
     (if (eqv? (rib-tag xs) tuple-type)
-      (apply consumer xs)
+      (apply consumer (cdr xs))
       (consumer xs))))
 
 ;; Continuation
