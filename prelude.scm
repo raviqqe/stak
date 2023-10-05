@@ -204,16 +204,16 @@
 ; TODO
 (define-syntax let-values
   (syntax-rules ()
-    ((let-values (binding ...) body1 body2 ...)
+    ((_ (binding ...) body1 body2 ...)
       (let-values "bind"
         (binding ...)
         ()
         (begin body1 body2 ...)))
 
-    ((let-values "bind" () tmps body)
+    ((_ "bind" () tmps body)
       (let tmps body))
 
-    ((let-values "bind" ((b0 e0)
+    ((_ "bind" ((b0 e0)
           binding
           ...)
         tmps
@@ -222,7 +222,7 @@
         (binding ...)
         tmps
         body))
-    ((let-values "mktmp" () e0 args
+    ((_ "mktmp" () e0 args
         bindings
         tmps
         body)
@@ -233,7 +233,8 @@
             bindings
             tmps
             body))))
-    ((let-values "mktmp" (a . b) e0 (arg ...)
+
+    ((_ "mktmp" (a . b) e0 (arg ...)
         bindings
         (tmp ...)
         body)
@@ -241,7 +242,8 @@
         bindings
         (tmp ... (a x))
         body))
-    ((let-values "mktmp" a e0 (arg ...)
+
+    ((_ "mktmp" a e0 (arg ...)
         bindings
         (tmp ...)
         body)
@@ -256,10 +258,10 @@
 ; TODO
 (define-syntax let*-values
   (syntax-rules ()
-    ((let*-values () body1 body2 ...)
+    ((_ () body1 body2 ...)
       (let () body1 body2 ...))
 
-    ((let*-values (binding1 binding2 ...) body1 body2 ...)
+    ((_ (binding1 binding2 ...) body1 body2 ...)
       (let-values (binding1)
         (let*-values (binding2 ...) body1 body2 ...)))))
 
