@@ -57,3 +57,17 @@ Feature: Multiple values
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Define a list from values
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define-values xs (values 65 66 67))
+
+    (write-u8 (car xs))
+    (write-u8 (cadr xs))
+    (write-u8 (caddr xs))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
