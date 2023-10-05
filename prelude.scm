@@ -160,13 +160,15 @@
 
 (define-syntax let-values
   (syntax-rules ()
-    ((let-values (binding ...) body0 body1 ...)
+    ((let-values (binding ...) body1 body2 ...)
       (let-values "bind"
         (binding ...)
         ()
-        (begin body0 body1 ...)))
+        (begin body1 body2 ...)))
+
     ((let-values "bind" () tmps body)
       (let tmps body))
+
     ((let-values "bind" ((b0 e0)
           binding
           ...)
@@ -209,17 +211,12 @@
 
 (define-syntax let*-values
   (syntax-rules ()
-    ((let*-values () body0 body1 ...)
-      (let () body0 body1 ...))
-    ((let*-values (binding0 binding1 ...)
-        body0
-        body1
-        ...)
-      (let-values (binding0)
-        (let*-values (binding1 ...)
-          body0
-          body1
-          ...)))))
+    ((let*-values () body1 body2 ...)
+      (let () body1 body2 ...))
+
+    ((let*-values (binding1 binding2 ...) body1 body2 ...)
+      (let-values (binding1)
+        (let*-values (binding2 ...) body1 body2 ...)))))
 
 ;; Conditional
 
