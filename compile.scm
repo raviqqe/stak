@@ -258,8 +258,9 @@
         (cons (cons name denotation) (expansion-context-environment context))))))
 
 (define (expansion-context-generate-variable-id context)
-  (let ((id (expansion-context-variable-id context))))
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (let ((id (expansion-context-variable-id context)))
+    (expansion-context-set-variable-id! context (+ id 1))
+    (string->symbol (string-append "$" (number->string id)))))
 
 ;; Procedures
 
