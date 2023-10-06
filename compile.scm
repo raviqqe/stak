@@ -305,7 +305,7 @@
 
 (define (rename-variable context name)
   (if (internal-symbol? name)
-    name
+    #f
     (string->symbol
       (string-append
         "$"
@@ -436,16 +436,15 @@
       (let ((pair (assv template matches)))
         (if pair
           (cdr pair)
-          (let (
-              (name (rename-variable use-context template))
-              (pair (resolve-denotation-pair definition-context template)))
-            ; TODO Refactor this.
-            ;
+          (let ((name (rename-variable use-context template)))
             ; This destructive update of a context is fine because
             ; we always generate fresh variables. But it accumulates garbages
             ; of unused variables in the context.
-            (expansion-context-set! use-context name (if pair (cdr pair) template))
-            name))))
+            (if name
+              (let ((pair (resolve-denotation-pair definition-context template)))
+                (expansion-context-set! use-context name (if pair (cdr pair) template))
+                name)
+              template)))))
 
     ((pair? template)
       (if (and
@@ -541,9 +540,13 @@
                 (context
                   (expansion-context-append
                     context
-                    (map
-                      (lambda (name) (cons name (rename-variable context name)))
-                      (parameter-names parameters))))
+                    (filter
+                      (lambda (x) x)
+                      (map
+                        (lambda (name)
+                          (let ((new-name (rename-variable context name)))
+                            (and new-name (cons name new-name))))
+                        (parameter-names parameters)))))
                 ; We need to resolve parameter denotations before expanding a body.
                 (parameters
                   (relaxed-deep-map
