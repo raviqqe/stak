@@ -376,14 +376,16 @@
             (pair? (cdr pattern))
             (eqv? (cadr pattern) '...))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
-            (maybe-append
-              (match-ellipsis-pattern
-                definition-context
-                use-context
-                literals
-                (car pattern)
-                (take length expression))
-              (match (cddr pattern) (skip length expression)))))
+            (and
+              (>= length 0)
+              (maybe-append
+                (match-ellipsis-pattern
+                  definition-context
+                  use-context
+                  literals
+                  (car pattern)
+                  (take length expression))
+                (match (cddr pattern) (skip length expression))))))
 
         ((pair? expression)
           (maybe-append

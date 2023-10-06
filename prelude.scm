@@ -158,6 +158,84 @@
         body2
         ...))))
 
+(define-syntax define-values
+  (syntax-rules ()
+    ((_ () value)
+      value)
+
+    ((_ (name) value)
+      (define name (call-with-values (lambda () value) (lambda (x) x))))
+
+    ((_ (name1 name2 ... last-name) value)
+      (begin
+        (define name1 (call-with-values (lambda () value) list))
+        (define name2
+          (let ((x (cadr name1)))
+            (set-cdr! name1 (cddr name1))
+            x))
+        ...
+        (define last-name
+          (let ((x (cadr name1)))
+            (set! name1 (car name1))
+            x))))
+
+    ((_ (name1 name2 ... . last-name) value)
+      (begin
+        (define name1 (call-with-values (lambda () value) list))
+        (define name2
+          (let ((x (cadr name1)))
+            (set-cdr! name1 (cddr name1))
+            x))
+        ...
+        (define last-name
+          (let ((x (cdr name1)))
+            (set! name1 (car name1))
+            x))))
+
+    ((_ name value)
+      (define name (call-with-values (lambda () value) list)))))
+
+(define-syntax let-values
+  (syntax-rules ()
+    ((_ (binding ...) body1 body2 ...)
+      (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
+
+    ((_ "multiple" () singles body)
+      (let singles body))
+
+    ((_ "multiple" ((names value) binding ...) singles body)
+      (let-values "single" names value () (binding ...) singles body))
+
+    ((_ "single" () value arguments bindings singles body)
+      (call-with-values
+        (lambda () value)
+        (lambda arguments
+          (let-values "multiple" bindings singles body))))
+
+    ((_ "single" (name . names) value (argument ...) bindings (single ...) body)
+      (let-values "single"
+        names
+        value
+        (argument ... x)
+        bindings
+        (single ... (name x))
+        body))
+
+    ((_ "single" name value (argument ...) bindings (single ...) body)
+      (call-with-values
+        (lambda () value)
+        (lambda (argument ... . x)
+          (let-values "multiple" bindings (single ... (name x)) body))))))
+
+(define-syntax let*-values
+  (syntax-rules ()
+    ((_ () body1 body2 ...)
+      (let () body1 body2 ...))
+
+    ((_ (binding1 binding2 ...) body1 body2 ...)
+      (let-values (binding1)
+        (let*-values (binding2 ...) body1 body2 ...)))))
+
 ;; Conditional
 
 (define-syntax if
@@ -290,6 +368,7 @@
 (define eof-object-type 7)
 (define port-type 8)
 (define record-type 9)
+(define tuple-type 10)
 
 ; Primitives
 
@@ -1137,6 +1216,17 @@
   (write-list (vector->list xs) write port))
 
 ; Control
+
+;; Multi-value
+
+(define (values . xs)
+  (rib #f xs tuple-type))
+
+(define (call-with-values producer consumer)
+  (let ((xs (producer)))
+    (if (eqv? (rib-tag xs) tuple-type)
+      (apply consumer (cdr xs))
+      (consumer xs))))
 
 ;; Continuation
 
