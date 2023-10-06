@@ -234,9 +234,10 @@
 ;; Context
 
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment variable-id)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (variable-id expansion-context-variable-id expansion-context-set-variable-id))
 
 (define (expansion-context-append context pairs)
   (make-expansion-context (append pairs (expansion-context-environment context))))
@@ -255,6 +256,10 @@
       (expansion-context-set-environment!
         context
         (cons (cons name denotation) (expansion-context-environment context))))))
+
+(define (expansion-context-generate-variable-id context)
+  (let ((id (expansion-context-variable-id context))))
+  (make-expansion-context (append pairs (expansion-context-environment context))))
 
 ;; Procedures
 
