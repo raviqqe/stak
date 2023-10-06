@@ -291,14 +291,6 @@
     (else
       expression)))
 
-(define (rename-variable context name)
-  (let (
-      (count
-        (list-count
-          (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context))))
-    (string->symbol (string-append (symbol->string name) "$" (number->string count)))))
-
 (define (find-pattern-variables literals pattern)
   (cond
     ((memv pattern (append '(_ ...) literals))
