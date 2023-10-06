@@ -213,6 +213,9 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
+(define (internal-symbol? symbol)
+  (eqv? (string-ref (symbol->string symbol) 0) #\$))
+
 ; Source code reading
 
 (define (read-all)
@@ -242,7 +245,7 @@
   (make-expansion-context environment variable-id)
   expansion-context?
   (environment expansion-context-environment expansion-context-set-environment!)
-  (variable-id expansion-context-variable-id expansion-context-set-variable-id!))
+  (variable-id expansion-context-variable-id))
 
 (define (expansion-context-append context pairs)
   (make-expansion-context
@@ -264,12 +267,12 @@
         context
         (cons (cons name denotation) (expansion-context-environment context))))))
 
-(define (expansion-context-generate-variable-id context)
+(define (expansion-context-generate-variable-id! context)
   (let* (
       (cell (expansion-context-variable-id context))
       (id (id-cell-id cell)))
     (id-cell-set-id! cell (+ id 1))
-    (string->symbol (string-append "$" (number->string id)))))
+    id))
 
 ;; Procedures
 
@@ -299,6 +302,14 @@
 
     (else
       expression)))
+
+(define (rename-variable context name)
+  (if (internal-symbol? name)
+    name
+    (string->symbol
+      (string-append
+        "$"
+        (number->string (expansion-context-generate-variable-id! context))))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -426,7 +437,7 @@
         (if pair
           (cdr pair)
           (let (
-              (name (expansion-context-generate-variable-id use-context))
+              (name (rename-variable use-context template))
               (pair (resolve-denotation-pair definition-context template)))
             ; TODO Refactor this.
             ;
@@ -531,7 +542,7 @@
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (expansion-context-generate-variable-id context)))
+                      (lambda (name) (cons name (rename-variable context name)))
                       (parameter-names parameters))))
                 ; We need to resolve parameter denotations before expanding a body.
                 (parameters
@@ -985,16 +996,13 @@
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
-(define (empty-symbol? symbol)
-  (eqv? (string-ref (symbol->string symbol) 0) #\$))
-
-(define (count-empty-symbols symbols)
+(define (count-internal-symbols symbols)
   (let loop ((symbols symbols) (count 0))
     (if (null? symbols)
       count
       (loop
         (cdr symbols)
-        (if (empty-symbol? (car symbols))
+        (if (internal-symbol? (car symbols))
           (+ count 1)
           0)))))
 
@@ -1010,10 +1018,10 @@
           (- count 1)
           (cons (char->integer #\,) target))))))
 
-; TODO Should we put all empty symbols at the end?
+; TODO Should we put all internal symbols at the end?
 (define (encode-symbols symbols target)
   (let (
-      (count (count-empty-symbols symbols))
+      (count (count-internal-symbols symbols))
       (target (cons (char->integer #\;) target)))
     (encode-integer
       count
