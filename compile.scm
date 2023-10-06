@@ -286,10 +286,11 @@
       expression)))
 
 (define (rename-variable context name)
-  (let (
+  (let* (
+      (denotation (resolve-denotation context name))
       (count
         (list-count
-          (lambda (pair) (eqv? (car pair) name))
+          (lambda (pair) (eqv? (cdr pair) denotation))
           (expansion-context-environment context))))
     (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
 
