@@ -237,10 +237,12 @@
   (make-expansion-context environment variable-id)
   expansion-context?
   (environment expansion-context-environment expansion-context-set-environment!)
-  (variable-id expansion-context-variable-id expansion-context-set-variable-id))
+  (variable-id expansion-context-variable-id expansion-context-set-variable-id!))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-variable-id context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
