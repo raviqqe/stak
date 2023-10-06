@@ -134,6 +134,17 @@
     list
     (skip (- n 1) (cdr list))))
 
+(define (list-unique xs)
+  (let loop ((xs xs) (ys '()))
+    (if (null? xs)
+      ys
+      (loop
+        (cdr xs)
+        (let ((x (car xs)))
+          (if (memv x ys)
+            ys
+            (cons x ys)))))))
+
 (define (list-position f xs)
   (let loop ((xs xs) (index 0))
     (cond
@@ -296,20 +307,23 @@
 
 ; TODO Make symbols unique.
 (define (find-pattern-variables bound-variables pattern)
-  (cond
-    ((memv pattern (append '(_ ...) bound-variables))
-      '())
+  (define (find pattern)
+    (cond
+      ((memv pattern (append '(_ ...) bound-variables))
+        '())
 
-    ((symbol? pattern)
-      (list pattern))
+      ((symbol? pattern)
+        (list pattern))
 
-    ((pair? pattern)
-      (append
-        (find-pattern-variables bound-variables (car pattern))
-        (find-pattern-variables bound-variables (cdr pattern))))
+      ((pair? pattern)
+        (append
+          (find-pattern-variables bound-variables (car pattern))
+          (find-pattern-variables bound-variables (cdr pattern))))
 
-    (else
-      '())))
+      (else
+        '())))
+
+  (list-unique (find pattern)))
 
 (define-record-type ellipsis-match
   (make-ellipsis-match value)
