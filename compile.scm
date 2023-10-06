@@ -583,7 +583,7 @@
 
 (define (expand expression)
   (expand-expression
-    (make-expansion-context '())
+    (make-expansion-context '() 0)
     expression))
 
 ; Compilation
