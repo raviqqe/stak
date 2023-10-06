@@ -425,7 +425,7 @@
         (if pair
           (cdr pair)
           (let (
-              (name (rename-variable use-context template))
+              (name (expansion-context-generate-variable-id use-context))
               (pair (resolve-denotation-pair definition-context template)))
             ; TODO Refactor this.
             ;
