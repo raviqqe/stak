@@ -233,13 +233,21 @@
 
 ;; Context
 
+(define-record-type id-cell
+  (make-id-cell id)
+  id-cell?
+  (id id-cell-id id-cell-set-id!))
+
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment variable-id)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (variable-id expansion-context-variable-id))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-variable-id context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -255,6 +263,13 @@
       (expansion-context-set-environment!
         context
         (cons (cons name denotation) (expansion-context-environment context))))))
+
+(define (expansion-context-generate-variable-id! context)
+  (let* (
+      (cell (expansion-context-variable-id context))
+      (id (id-cell-id cell)))
+    (id-cell-set-id! cell (+ id 1))
+    id))
 
 ;; Procedures
 
@@ -285,12 +300,12 @@
     (else
       expression)))
 
-(define variable-id 0)
-
 (define (rename-variable context name)
-  (let ((id variable-id))
-    (set! variable-id (+ variable-id 1))
-    (string->symbol (string-append (symbol->string name) "$" (number->string id)))))
+  (string->symbol
+    (string-append
+      (symbol->string name)
+      "$"
+      (number->string (expansion-context-generate-variable-id! context) 32))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -596,7 +611,7 @@
 
 (define (expand expression)
   (expand-expression
-    (make-expansion-context '())
+    (make-expansion-context '() (make-id-cell 0))
     expression))
 
 ; Compilation
