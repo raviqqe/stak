@@ -62,8 +62,8 @@
 
 (define primitives
   '(
-    (cons 1)
-    (close 2)
+    ($$cons 1)
+    ($$close 2)
     ($$- 13)))
 
 ; Types
@@ -632,10 +632,10 @@
     call-instruction
     (rib-cons
       (case name
-        ((close)
+        (($$close)
           1)
 
-        ((cons $$-)
+        (($$cons $$-)
           2)
 
         (($$rib)
@@ -757,7 +757,7 @@
                     (cddr expression)
                     '()))
                 '())
-              (compile-primitive-call 'close continuation))))
+              (compile-primitive-call '$$close continuation))))
 
         (($$quote)
           (compile-constant (cadr expression) continuation))
@@ -830,7 +830,7 @@
         cdr
         (lambda ()
           (if (eqv? tag pair-type)
-            (compile-primitive-call 'cons (continue))
+            (compile-primitive-call '$$cons (continue))
             (rib
               constant-instruction
               tag
