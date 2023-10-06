@@ -295,10 +295,9 @@
     (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
 
 ; TODO Make symbols unique.
-; TODO Rename this function.
-(define (find-pattern-variables literals pattern)
+(define (find-pattern-variables bound-variables pattern)
   (cond
-    ((memv pattern (append '(_ ...) literals))
+    ((memv pattern (append '(_ ...) bound-variables))
       '())
 
     ((symbol? pattern)
@@ -306,8 +305,8 @@
 
     ((pair? pattern)
       (append
-        (find-pattern-variables literals (car pattern))
-        (find-pattern-variables literals (cdr pattern))))
+        (find-pattern-variables bound-variables (car pattern))
+        (find-pattern-variables bound-variables (cdr pattern))))
 
     (else
       '())))
