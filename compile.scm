@@ -285,13 +285,12 @@
     (else
       expression)))
 
+(define variable-id 0)
+
 (define (rename-variable context name)
-  (let (
-      (count
-        (list-count
-          (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context))))
-    (string->symbol (string-append (symbol->string name) "$" (number->string count)))))
+  (let ((id variable-id))
+    (set! variable-id (+ variable-id 1))
+    (string->symbol (string-append (symbol->string name) "$" (number->string id)))))
 
 (define (find-pattern-variables literals pattern)
   (cond
