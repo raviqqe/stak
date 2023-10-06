@@ -294,6 +294,7 @@
           (expansion-context-environment context))))
     (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
 
+; TODO Make symbols unique.
 (define (find-pattern-variables literals pattern)
   (cond
     ((memv pattern (append '(_ ...) literals))
