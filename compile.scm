@@ -639,10 +639,10 @@
     call-instruction
     (rib-cons
       (case name
-        ((close)
+        (($$close)
           1)
 
-        ((cons $$-)
+        (($$cons $$-)
           2)
 
         (($$rib)
