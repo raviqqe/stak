@@ -309,7 +309,7 @@
     (string->symbol
       (string-append
         "$"
-        (number->string (expansion-context-generate-variable-id! context))))))
+        (number->string (expansion-context-generate-variable-id! context) 16)))))
 
 (define (find-pattern-variables literals pattern)
   (cond
