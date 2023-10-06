@@ -149,12 +149,6 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
-
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
@@ -233,13 +227,21 @@
 
 ;; Context
 
+(define-record-type id-cell
+  (make-id-cell id)
+  id-cell?
+  (id id-cell-id id-cell-set-id!))
+
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment variable-id)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (variable-id expansion-context-variable-id))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-variable-id context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -255,6 +257,13 @@
       (expansion-context-set-environment!
         context
         (cons (cons name denotation) (expansion-context-environment context))))))
+
+(define (expansion-context-generate-variable-id! context)
+  (let* (
+      (cell (expansion-context-variable-id context))
+      (id (id-cell-id cell)))
+    (id-cell-set-id! cell (+ id 1))
+    id))
 
 ;; Procedures
 
@@ -286,12 +295,11 @@
       expression)))
 
 (define (rename-variable context name)
-  (let (
-      (count
-        (list-count
-          (lambda (pair) (eqv? (car pair) name))
-          (expansion-context-environment context))))
-    (string->symbol (string-append (symbol->string name) "$" (number->string count)))))
+  (string->symbol
+    (string-append
+      (symbol->string name)
+      "$"
+      (number->string (expansion-context-generate-variable-id! context) 32))))
 
 (define (find-pattern-variables literals pattern)
   (cond
@@ -415,19 +423,13 @@
 
   (cond
     ((symbol? template)
-      (let ((pair (assv template matches)))
-        (if pair
-          (cdr pair)
-          (let (
-              (name (rename-variable use-context template))
-              (pair (resolve-denotation-pair definition-context template)))
-            ; TODO Refactor this.
-            ;
-            ; This destructive update of a context is fine because
-            ; we always generate fresh variables. But it accumulates garbages
-            ; of unused variables in the context.
-            (expansion-context-set! use-context name (if pair (cdr pair) template))
-            name))))
+      (cond
+        ((assv template matches) =>
+          cdr)
+
+        ; Skip a literal.
+        (else
+          template)))
 
     ((pair? template)
       (if (and
@@ -457,7 +459,27 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (fill-template definition-context use-context matches (cadr rule))
+            (let* (
+                (template (cadr rule))
+                (names
+                  (map
+                    (lambda (name) (cons name (rename-variable use-context name)))
+                    (find-pattern-variables (append literals (map car matches)) template))))
+              (for-each
+                (lambda (pair)
+                  (expansion-context-set!
+                    use-context
+                    (cdr pair)
+                    (let* (
+                        (name (car pair))
+                        (pair (resolve-denotation-pair definition-context name)))
+                      (if pair (cdr pair) name))))
+                names)
+              (fill-template
+                definition-context
+                use-context
+                (append names matches)
+                template))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
@@ -583,7 +605,7 @@
 
 (define (expand expression)
   (expand-expression
-    (make-expansion-context '())
+    (make-expansion-context '() (make-id-cell 0))
     expression))
 
 ; Compilation
