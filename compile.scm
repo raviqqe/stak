@@ -530,7 +530,7 @@
                   (expansion-context-append
                     context
                     (map
-                      (lambda (name) (cons name (rename-variable context name)))
+                      (lambda (name) (cons name (expansion-context-generate-variable-id context)))
                       (parameter-names parameters))))
                 ; We need to resolve parameter denotations before expanding a body.
                 (parameters
