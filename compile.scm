@@ -149,12 +149,6 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
-
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
