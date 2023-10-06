@@ -414,19 +414,13 @@
 
   (cond
     ((symbol? template)
-      (let ((pair (assv template matches)))
-        (if pair
-          (cdr pair)
-          (let (
-              (name (rename-variable use-context template))
-              (pair (resolve-denotation-pair definition-context template)))
-            ; TODO Refactor this.
-            ;
-            ; This destructive update of a context is fine because
-            ; we always generate fresh variables. But it accumulates garbages
-            ; of unused variables in the context.
-            (expansion-context-set! use-context name (if pair (cdr pair) template))
-            name))))
+      (cond
+        ((assv template matches) =>
+          cdr)
+
+        ; Skip a literal.
+        (else
+          template)))
 
     ((pair? template)
       (if (and
@@ -456,7 +450,27 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (fill-template definition-context use-context matches (cadr rule))
+            (let* (
+                (template (cadr rule))
+                (names
+                  (map
+                    (lambda (name) (cons name (rename-variable use-context name)))
+                    (find-pattern-variables (append literals (map car matches)) template))))
+              (for-each
+                (lambda (pair)
+                  (expansion-context-set!
+                    use-context
+                    (cdr pair)
+                    (let* (
+                        (name (car pair))
+                        (pair (resolve-denotation-pair definition-context name)))
+                      (if pair (cdr pair) name))))
+                names)
+              (fill-template
+                definition-context
+                use-context
+                (append names matches)
+                template))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
