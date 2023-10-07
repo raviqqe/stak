@@ -790,13 +790,13 @@
 
 ; TODO Support multiple bytes.
 (define-record-type port
-  (make-port* last-byte descriptor)
+  (make-port* descriptor last-byte)
   port?
-  (last-byte port-last-byte port-set-last-byte!)
-  (descriptor port-descriptor))
+  (descriptor port-descriptor)
+  (last-byte port-last-byte port-set-last-byte!))
 
 (define (make-port descriptor)
-  (make-port* #f descriptor))
+  (make-port* descriptor #f))
 
 (define stdin-port (make-port 'stdin))
 
