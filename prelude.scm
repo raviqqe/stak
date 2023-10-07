@@ -788,18 +788,15 @@
 
 ;; Port
 
-(define port? (instance? port-type))
-
-; TODO Use a record type.
-(define (make-port name)
-  (rib #f name port-type))
-
 ; TODO Support multiple bytes.
-(define (port-last-byte port)
-  (rib-car port))
+(define-record-type port
+  (make-port* last-byte descriptor)
+  port?
+  (last-byte port-last-byte port-set-last-byte!)
+  (descriptor port-descriptor))
 
-(define (port-set-last-byte! port byte)
-  (rib-set-car! port byte))
+(define (make-port descriptor)
+  (make-port* #f descriptor))
 
 (define stdin-port (make-port 'stdin))
 
