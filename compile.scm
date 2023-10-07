@@ -8,7 +8,8 @@
   (scheme base)
   (scheme cxr)
   (scheme read)
-  (scheme write))
+  (scheme write)
+  (gauche time))
 
 (cond-expand
   ((or chibi gauche guile)
@@ -460,7 +461,12 @@
     (error "unsupported macro transformer" transformer))
   (let (
       (literals (cadr transformer))
-      (rules (cddr transformer)))
+      (rules (cddr transformer))
+      (free-variables
+        (map
+          (lambda (rule)
+            (find-pattern-variables (append literals (map car matches)) template))
+          rules)))
     (lambda (use-context expression)
       (let loop ((rules rules))
         (unless (pair? rules)
@@ -469,27 +475,28 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (let* (
-                (template (cadr rule))
-                (names
-                  (map
-                    (lambda (name) (cons name (rename-variable use-context name)))
-                    (find-pattern-variables (append literals (map car matches)) template))))
-              (for-each
-                (lambda (pair)
-                  (expansion-context-set!
-                    use-context
-                    (cdr pair)
-                    (let* (
-                        (name (car pair))
-                        (pair (resolve-denotation-pair definition-context name)))
-                      (if pair (cdr pair) name))))
-                names)
-              (fill-template
-                definition-context
-                use-context
-                (append names matches)
-                template))
+            (time
+              (let* (
+                  (template (cadr rule))
+                  (names
+                    (map
+                      (lambda (name) (cons name (rename-variable use-context name)))
+                      (find-pattern-variables (append literals (map car matches)) template))))
+                (for-each
+                  (lambda (pair)
+                    (expansion-context-set!
+                      use-context
+                      (cdr pair)
+                      (let* (
+                          (name (car pair))
+                          (pair (resolve-denotation-pair definition-context name)))
+                        (if pair (cdr pair) name))))
+                  names)
+                (fill-template
+                  definition-context
+                  use-context
+                  (append names matches)
+                  template)))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
