@@ -302,7 +302,6 @@
           (expansion-context-environment context))))
     (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
 
-; TODO Make symbols unique.
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
     (cond
@@ -314,8 +313,8 @@
 
       ((pair? pattern)
         (append
-          (find-pattern-variables bound-variables (car pattern))
-          (find-pattern-variables bound-variables (cdr pattern))))
+          (find (car pattern))
+          (find (cdr pattern))))
 
       (else
         '())))
