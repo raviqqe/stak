@@ -871,7 +871,7 @@
 
 ;; Tuple
 
-; This is used primarily for multiple values.
+; A tuple is primarily used to represent multiple values.
 (define-record-type tuple
   (make-tuple values)
   tuple?
