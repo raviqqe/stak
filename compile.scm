@@ -8,8 +8,7 @@
   (scheme base)
   (scheme cxr)
   (scheme read)
-  (scheme write)
-  (gauche time))
+  (scheme write))
 
 (cond-expand
   ((or chibi gauche guile)
@@ -475,28 +474,27 @@
             (rule (car rules))
             (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (time
-              (let* (
-                  (template (cadr rule))
-                  (names
-                    (map
-                      (lambda (name) (cons name (rename-variable use-context name)))
-                      (find-pattern-variables (append literals (map car matches)) template))))
-                (for-each
-                  (lambda (pair)
-                    (expansion-context-set!
-                      use-context
-                      (cdr pair)
-                      (let* (
-                          (name (car pair))
-                          (pair (resolve-denotation-pair definition-context name)))
-                        (if pair (cdr pair) name))))
-                  names)
-                (fill-template
-                  definition-context
-                  use-context
-                  (append names matches)
-                  template)))
+            (let* (
+                (template (cadr rule))
+                (names
+                  (map
+                    (lambda (name) (cons name (rename-variable use-context name)))
+                    (find-pattern-variables (append literals (map car matches)) template))))
+              (for-each
+                (lambda (pair)
+                  (expansion-context-set!
+                    use-context
+                    (cdr pair)
+                    (let* (
+                        (name (car pair))
+                        (pair (resolve-denotation-pair definition-context name)))
+                      (if pair (cdr pair) name))))
+                names)
+              (fill-template
+                definition-context
+                use-context
+                (append names matches)
+                template))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
