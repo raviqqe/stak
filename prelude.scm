@@ -365,9 +365,7 @@
 (define char-type 4)
 (define vector-type 5)
 (define bytevector-type 6)
-(define eof-object-type 7)
 (define record-type 9)
-(define tuple-type 10)
 
 ; Primitives
 
@@ -511,14 +509,6 @@
   (rib x '() char-type))
 
 (define char->integer rib-car)
-
-;; EOF object
-
-(define eof (rib 0 '() eof-object-type))
-
-(define eof-object? (instance? eof-object-type))
-
-(define (eof-object) eof)
 
 ;; List
 
@@ -843,6 +833,18 @@
 
 (define vector->list rib-cdr)
 
+; Derived types
+
+;; EOF object
+
+(define-record-type eof-object
+  (make-eof-object)
+  eof-object?)
+
+(define eof (make-eof-object))
+
+(define (eof-object) eof)
+
 ;; Port
 
 ; TODO Support multiple bytes.
@@ -866,6 +868,13 @@
 (define (current-output-port) stdout-port)
 
 (define (current-error-port) stderr-port)
+
+;; Tuple
+
+(define-record-type tuple
+  (make-tuple values)
+  tuple?
+  (values tuple-values))
 
 ; Read
 
@@ -1216,12 +1225,12 @@
 ;; Multi-value
 
 (define (values . xs)
-  (rib #f xs tuple-type))
+  (make-tuple xs))
 
 (define (call-with-values producer consumer)
   (let ((xs (producer)))
-    (if (eqv? (rib-tag xs) tuple-type)
-      (apply consumer (cdr xs))
+    (if (tuple? xs)
+      (apply consumer (tuple-values xs))
       (consumer xs))))
 
 ;; Continuation
