@@ -285,12 +285,9 @@
       (cons (cdr pair) (cdr expression))
       expression)))
 
-(define (resolve-denotation-pair context name)
-  (assv name (expansion-context-environment context)))
-
 (define (resolve-denotation context expression)
   (cond
-    ((resolve-denotation-pair context expression) =>
+    ((assv expression (expansion-context-environment context)) =>
       cdr)
 
     (else
