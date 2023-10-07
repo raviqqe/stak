@@ -308,10 +308,10 @@
       "$"
       (number->string (expansion-context-generate-variable-id! context) 32))))
 
-(define (find-pattern-variables literals pattern)
+(define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
     (cond
-      ((memv pattern (append '(_ ...) literals))
+      ((memv pattern (append '(_ ...) bound-variables))
         '())
 
       ((symbol? pattern)
