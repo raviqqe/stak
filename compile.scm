@@ -458,16 +458,19 @@
 (define (make-transformer definition-context transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer" transformer))
-  (let (
+  (let* (
       (literals (cadr transformer))
       (rules (cddr transformer))
+      (placeholder-variables
+        (map (lambda (rule) (find-pattern-variables literals (car rule))) rules))
       (free-variables
         (map
-          (lambda (rule)
-            (find-pattern-variables (append literals (map car matches)) template))
-          rules)))
+          (lambda (rule variables)
+            (find-pattern-variables (append literals variables) (cadr rule)))
+          rules
+          placeholder-variables)))
     (lambda (use-context expression)
-      (let loop ((rules rules))
+      (let loop ((rules rules) (free-variables free-variables))
         (unless (pair? rules)
           (error "invalid syntax" expression))
         (let* (
@@ -479,7 +482,7 @@
                 (names
                   (map
                     (lambda (name) (cons name (rename-variable use-context name)))
-                    (find-pattern-variables (append literals (map car matches)) template))))
+                    (car free-variables))))
               (for-each
                 (lambda (pair)
                   (expansion-context-set!
@@ -495,7 +498,7 @@
                 use-context
                 (append names matches)
                 template))
-            (loop (cdr rules))))))))
+            (loop (cdr rules) (cdr free-variables))))))))
 
 (define (expand-definition definition)
   (let (
