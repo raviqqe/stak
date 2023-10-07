@@ -12,7 +12,7 @@
 
 (cond-expand
   ((or chibi gauche guile)
-    (define-record-type rib
+    (define-record-type rib*
       (make-rib tag car cdr)
       rib?
       (tag rib-tag)
