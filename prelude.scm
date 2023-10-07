@@ -871,6 +871,7 @@
 
 ;; Tuple
 
+; This is used primarily for multiple values.
 (define-record-type tuple
   (make-tuple values)
   tuple?
