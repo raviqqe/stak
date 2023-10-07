@@ -160,12 +160,6 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
-
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
@@ -244,13 +238,21 @@
 
 ;; Context
 
+(define-record-type id-cell
+  (make-id-cell id)
+  id-cell?
+  (id id-cell-id id-cell-set-id!))
+
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment variable-id)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (variable-id expansion-context-variable-id))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-variable-id context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -266,6 +268,13 @@
       (expansion-context-set-environment!
         context
         (cons (cons name denotation) (expansion-context-environment context))))))
+
+(define (expansion-context-generate-variable-id! context)
+  (let* (
+      (cell (expansion-context-variable-id context))
+      (id (id-cell-id cell)))
+    (id-cell-set-id! cell (+ id 1))
+    id))
 
 ;; Procedures
 
@@ -294,19 +303,15 @@
       expression)))
 
 (define (rename-variable context name)
-  (let* (
-      (denotation (resolve-denotation context name))
-      (count
-        (list-count
-          (lambda (pair) (eqv? (cdr pair) denotation))
-          (expansion-context-environment context))))
-    (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
+  (string->symbol
+    (string-append
+      "$"
+      (number->string (expansion-context-generate-variable-id! context) 32))))
 
-; TODO Make symbols unique.
-(define (find-pattern-variables bound-variables pattern)
+(define (find-pattern-variables literals pattern)
   (define (find pattern)
     (cond
-      ((memv pattern (append '(_ ...) bound-variables))
+      ((memv pattern (append '(_ ...) literals))
         '())
 
       ((symbol? pattern)
@@ -314,8 +319,8 @@
 
       ((pair? pattern)
         (append
-          (find-pattern-variables bound-variables (car pattern))
-          (find-pattern-variables bound-variables (cdr pattern))))
+          (find (car pattern))
+          (find (cdr pattern))))
 
       (else
         '())))
@@ -609,7 +614,7 @@
 
 (define (expand expression)
   (expand-expression
-    (make-expansion-context '())
+    (make-expansion-context '() (make-id-cell 0))
     expression))
 
 ; Compilation
