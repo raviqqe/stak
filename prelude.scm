@@ -427,8 +427,8 @@
 
 ;; Record
 
-; For now, we use record types only for certain built-in types not to degrade
-; space efficiency of those data
+; We use record types only for certain built-in types not to degrade space
+; efficiency of those data.
 (define-syntax define-record-type
   (syntax-rules ()
     ((_ id
