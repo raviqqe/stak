@@ -785,30 +785,6 @@
       (else
         (convert xs)))))
 
-;; Port
-
-; TODO Support multiple bytes.
-(define-record-type port
-  (make-port* descriptor last-byte)
-  port?
-  (descriptor port-descriptor)
-  (last-byte port-last-byte port-set-last-byte!))
-
-(define (make-port descriptor)
-  (make-port* descriptor #f))
-
-(define stdin-port (make-port 'stdin))
-
-(define stdout-port (make-port 'stdout))
-
-(define stderr-port (make-port 'stderr))
-
-(define (current-input-port) stdin-port)
-
-(define (current-output-port) stdout-port)
-
-(define (current-error-port) stderr-port)
-
 ;; Procedure
 
 (define procedure? (instance? procedure-type))
@@ -866,6 +842,30 @@
   (rib (length x) x vector-type))
 
 (define vector->list rib-cdr)
+
+;; Port
+
+; TODO Support multiple bytes.
+(define-record-type port
+  (make-port* descriptor last-byte)
+  port?
+  (descriptor port-descriptor)
+  (last-byte port-last-byte port-set-last-byte!))
+
+(define (make-port descriptor)
+  (make-port* descriptor #f))
+
+(define stdin-port (make-port 'stdin))
+
+(define stdout-port (make-port 'stdout))
+
+(define stderr-port (make-port 'stderr))
+
+(define (current-input-port) stdin-port)
+
+(define (current-output-port) stdout-port)
+
+(define (current-error-port) stderr-port)
 
 ; Read
 
