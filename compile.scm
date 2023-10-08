@@ -75,26 +75,23 @@
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
 
-(define (bytevector->list vector)
+(define (bytevector->list xs)
   (let loop ((index 0) (result '()))
-    (if (< index (bytevector-length vector))
+    (if (< index (bytevector-length xs))
       (cons
-        (bytevector-u8-ref vector index)
+        (bytevector-u8-ref xs index)
         (loop (+ 1 index) result))
       result)))
 
-(define (last-cdr list)
-  (if (pair? list)
-    (last-cdr (cdr list))
-    list))
+(define (last-cdr xs)
+  (if (pair? xs)
+    (last-cdr (cdr xs))
+    xs))
 
 (define (set-last-cdr! xs x)
-  (cond
-    ((pair? (cdr xs))
-      (set-last-cdr! (cdr xs) x))
-
-    (else
-      (set-cdr! xs x))))
+  (if (pair? (cdr xs))
+    (set-last-cdr! (cdr xs) x)
+    (set-cdr! xs x)))
 
 (define (filter f xs)
   (if (null? xs)
