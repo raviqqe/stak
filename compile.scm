@@ -971,11 +971,8 @@
     codes))
 
 (define (find-continuation left right)
-  (let* (
-      (count (- (code-length left) (code-length right)))
-      (left (if (positive? count) (skip-codes count left) left))
-      (right (if (negative? count) (skip-codes (abs count) right) right)))
-    (let loop ((left left) (right right))
+  (let ((count (- (code-length left) (code-length right))))
+    (let loop ((left (skip-codes count left)) (right (skip-codes (- count) right)))
       (if (eq? left right)
         left
         (loop (rib-cdr left) (rib-cdr right))))))
