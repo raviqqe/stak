@@ -755,7 +755,7 @@
             (cadr expression)
             (rib
               if-instruction
-              (compile-expression context (caddr expression) (rib continue-instruction #f continuation))
+              (compile-expression context (caddr expression) (rib continue-instruction 0 continuation))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
@@ -1160,7 +1160,7 @@
                 (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
 
           ((eqv? instruction continue-instruction)
-            (encode-instruction continue-instruction 0 #f target))
+            (encode-simple continue-instruction))
 
           (else
             (error "invalid instruction" instruction)))))))
