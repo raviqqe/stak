@@ -365,7 +365,7 @@
 (define char-type 4)
 (define vector-type 5)
 (define bytevector-type 6)
-(define record-type 9)
+(define record-type 7)
 
 ; Primitives
 
