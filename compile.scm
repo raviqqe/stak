@@ -253,12 +253,17 @@
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
-    (if pair
-      (set-cdr! pair denotation)
-      (let ((tail (list (cons name denotation))))
-        (if (null? environment)
-          (expansion-context-set-environment! context tail)
-          (set-last-cdr! environment tail))))))
+    (when pair (set-cdr! pair denotation))
+    pair))
+
+(define (expansion-context-set-last! context name denotation)
+  (unless (expansion-context-set! context name denotation)
+    (let (
+        (environment (expansion-context-environment context))
+        (tail (list (cons name denotation))))
+      (if (null? environment)
+        (expansion-context-set-environment! context tail)
+        (set-last-cdr! environment tail)))))
 
 ;; Procedures
 
@@ -529,7 +534,7 @@
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set!
+            (expansion-context-set-last!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
