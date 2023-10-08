@@ -612,7 +612,6 @@
         expression))))
 
 (define (expand expression)
-  ; TODO
   (expand-expression (make-expansion-context '()) expression))
 
 ; Compilation
