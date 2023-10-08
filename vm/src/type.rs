@@ -8,6 +8,4 @@ pub enum Type {
     Character,
     Vector,
     ByteVector,
-    Eof,
-    Port,
 }
