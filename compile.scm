@@ -257,7 +257,7 @@
 
 (define (expansion-context-set! context name denotation)
   (set-cdr!
-    (assv name (environment (expansion-context-environment context)))
+    (assv name (expansion-context-environment context))
     denotation))
 
 (define (expansion-context-set-last! context name denotation)
