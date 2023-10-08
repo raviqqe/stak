@@ -219,17 +219,6 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
-(define (code-length codes)
-  (let loop ((codes codes) (length 0))
-    (if (rib? codes)
-      (loop (rib-cdr codes) (+ length 1))
-      length)))
-
-(define (skip-codes count codes)
-  (if (and (> count 0) (rib? codes))
-    (skip-codes (- count 1) (rib-cdr codes))
-    codes))
-
 ; Source code reading
 
 (define (read-all)
@@ -914,25 +903,25 @@
           (rib set-instruction id (continue)))))))
 
 (define (build-constants context codes)
-  (let loop ((codes codes) (terminal '()) (continue (lambda () codes)))
-    (if (eq? codes terminal)
+  (let loop ((codes codes) (continue (lambda () codes)))
+    (if (terminal-codes? codes)
       (continue)
       (let* (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
           (codes (rib-cdr codes))
-          (continue (lambda () (loop codes terminal continue))))
+          (continue (lambda () (loop codes continue))))
         (cond
           ((eqv? instruction constant-instruction)
             (build-constant
               context
               operand
               (if (stak-procedure? operand)
-                (lambda () (loop (procedure-code operand) '() continue))
+                (lambda () (loop (procedure-code operand) continue))
                 continue)))
 
           ((eqv? instruction if-instruction)
-            (loop operand (find-continuation operand codes) continue))
+            (loop operand continue))
 
           (else
             (continue)))))))
@@ -942,8 +931,8 @@
 ;; Utility
 
 (define (find-symbols codes)
-  (let loop ((codes codes) (terminal '()) (symbols '()))
-    (if (eq? codes terminal)
+  (let loop ((codes codes) (symbols '()))
+    (if (terminal-codes? codes)
       symbols
       (let* (
           (instruction (rib-tag codes))
@@ -955,15 +944,14 @@
               operand)))
         (loop
           codes
-          terminal
           (cond
             ((and
                 (eqv? instruction constant-instruction)
                 (stak-procedure? operand))
-              (loop (procedure-code operand) '() symbols))
+              (loop (procedure-code operand) symbols))
 
             ((eqv? instruction if-instruction)
-              (loop operand (find-continuation operand codes) symbols))
+              (loop operand symbols))
 
             ((and
                 (symbol? operand)
@@ -974,12 +962,12 @@
             (else
               symbols)))))))
 
-(define (find-continuation left right)
-  (let ((count (- (code-length left) (code-length right))))
-    (let loop ((left (skip-codes count left)) (right (skip-codes (- count) right)))
-      (if (eq? left right)
-        left
-        (loop (rib-cdr left) (rib-cdr right))))))
+(define (find-continuation codes)
+  (if (terminal-codes? codes)
+    (if (rib? codes)
+      (rib-cdr codes)
+      codes)
+    (find-continuation (rib-cdr codes))))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
@@ -1080,7 +1068,6 @@
     (encode-codes
       context
       (rib-cdr code)
-      '()
       (encode-instruction
         closure-instruction
         (rib-car code)
@@ -1101,8 +1088,11 @@
     (else
       (error "invalid operand" operand))))
 
-(define (encode-codes context codes terminal target)
-  (if (eq? codes terminal)
+(define (terminal-codes? codes)
+  (or (null? codes) (eqv? (rib-tag codes) continue-instruction)))
+
+(define (encode-codes context codes target)
+  (if (terminal-codes? codes)
     target
     (let* (
         (instruction (rib-tag codes))
@@ -1119,7 +1109,6 @@
       (encode-codes
         context
         rest
-        terminal
         (cond
           ((memv instruction (list set-instruction get-instruction))
             (encode-simple instruction))
@@ -1148,12 +1137,11 @@
 
           ((eqv? instruction if-instruction)
             (let* (
-                (continuation (find-continuation operand rest))
+                (continuation (find-continuation operand))
                 (target
                   (encode-codes
                     context
                     operand
-                    continuation
                     (encode-instruction if-instruction 0 #f target))))
               (if (null? continuation)
                 target
@@ -1202,7 +1190,6 @@
           (append (map cdr default-constants) (list rib-symbol) symbols)
           constant-context)
         codes
-        '()
         '()))))
 
 ; Main
