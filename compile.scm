@@ -46,6 +46,7 @@
 ; Only for encoding
 (define closure-instruction 5)
 (define skip-instruction 6)
+(define continue-instruction 7)
 
 ; Primitives
 
@@ -752,8 +753,9 @@
           (compile-expression
             context
             (cadr expression)
-            (rib if-instruction
-              (compile-expression context (caddr expression) continuation)
+            (rib
+              if-instruction
+              (compile-expression context (caddr expression) (rib continue-instruction #f continuation))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
@@ -874,9 +876,11 @@
           (build-rib (char->integer constant) '() char-type))
 
         ((and (number? constant) (> 0 constant))
-          (rib constant-instruction
+          (rib
+            constant-instruction
             0
-            (rib constant-instruction
+            (rib
+              constant-instruction
               (abs constant)
               (compile-primitive-call '$$- (continue)))))
 
@@ -1154,6 +1158,9 @@
               (if (null? continuation)
                 target
                 (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
+
+          ((eqv? instruction continue-instruction)
+            target)
 
           (else
             (error "invalid instruction" instruction)))))))
