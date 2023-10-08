@@ -959,12 +959,6 @@
             (else
               symbols)))))))
 
-(define (reverse-codes codes)
-  (let loop ((codes codes) (result '()))
-    (if (null? codes)
-      result
-      (loop (rib-cdr codes) (cons codes result)))))
-
 ; This code's time complexity is O(n^2).
 ; However, this works better typically than O(n) codes which reverses left and right codes.
 (define (find-continuation left right)
