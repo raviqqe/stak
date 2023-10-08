@@ -90,9 +90,6 @@
 
 (define (set-last-cdr! xs x)
   (cond
-    ((not (pair? xs))
-      (error "empty list" xs))
-
     ((pair? (cdr xs))
       (set-last-cdr! (cdr xs) x))
 
