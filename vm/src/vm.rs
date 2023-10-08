@@ -212,7 +212,9 @@ impl<'a, T: Device> Vm<'a, T> {
                     })
                     .assume_cons();
                 }
-                _ => return Err(Error::IllegalInstruction),
+                _ => {
+                    // Ignore an invalid instruction.
+                }
             }
 
             trace_heap!(self);
