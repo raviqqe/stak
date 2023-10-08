@@ -962,7 +962,7 @@
 (define (code-length codes)
   (let loop ((codes codes) ((length 0)))
     (if (rib? codes)
-      (code-length (rib-cdr codes) (+ length 1))
+      (loop (rib-cdr codes) (+ length 1))
       length)))
 
 (define (reverse-codes codes)
