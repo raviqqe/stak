@@ -901,10 +901,11 @@
 (define (build-constants context codes continue)
   (if (null? codes)
     (continue)
-    (let (
-        (continue (lambda () (build-constants context (rib-cdr codes) continue)))
+    (let* (
         (instruction (rib-tag codes))
-        (operand (rib-car codes)))
+        (operand (rib-car codes))
+        (codes (rib-cdr codes))
+        (continue (lambda () (build-constants context codes continue))))
       (cond
         ((eqv? instruction constant-instruction)
           (build-constant
