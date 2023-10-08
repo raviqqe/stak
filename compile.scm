@@ -966,29 +966,25 @@
       (loop (rib-cdr codes) (cons codes result)))))
 
 ; This code's time complexity is O(n^2).
-; However, this works faster in general than O(n) codes which reverses left and right codes.
+; However, this works better typically than O(n) codes which reverses left and right codes.
 (define (find-continuation left right)
   (define (find-right limit left right)
     (cond
-      ((eqv? limit 0)
-        #f)
-
       ((eq? left right)
         left)
 
-      (else
-        (find-right limit))))
+      ((or (eqv? limit 0) (null? left))
+        #f)
 
-  (let loop (
-      (left (reverse-codes left))
-      (right (reverse-codes right))
-      (result '()))
-    (if (and
-        (pair? left)
-        (pair? right)
-        (eq? (car left) (car right)))
-      (loop (cdr left) (cdr right) (car left))
-      result)))
+      (else
+        (find-right (- limit 1) (rib-cdr left) right))))
+
+  (let loop ((limit 0) (right right))
+    (if (null? right)
+      '()
+      (or
+        (find-right limit left right)
+        (loop (+ limit 1) (rib-cdr right))))))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
