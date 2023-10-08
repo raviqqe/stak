@@ -926,26 +926,28 @@
 ;; Utility
 
 (define (find-symbols codes)
-  (let loop ((codes codes) (symbols '()))
-    (if (null? codes)
+  (let loop ((codes codes) (terminal '()) (symbols '()))
+    (if (eq? codes terminal)
       symbols
       (let* (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
+          (codes (rib-cdr codes))
           (operand
             (if (eqv? instruction call-instruction)
               (rib-cdr operand)
               operand)))
         (loop
-          (rib-cdr codes)
+          codes
+          terminal
           (cond
             ((and
                 (eqv? instruction constant-instruction)
                 (stak-procedure? operand))
-              (loop (procedure-code operand) symbols))
+              (loop (procedure-code operand) '() symbols))
 
             ((eqv? instruction if-instruction)
-              (loop operand symbols))
+              (loop operand (find-continuation operand codes) symbols))
 
             ((and
                 (symbol? operand)
