@@ -75,18 +75,23 @@
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
 
-(define (bytevector->list vector)
+(define (bytevector->list xs)
   (let loop ((index 0) (result '()))
-    (if (< index (bytevector-length vector))
+    (if (< index (bytevector-length xs))
       (cons
-        (bytevector-u8-ref vector index)
+        (bytevector-u8-ref xs index)
         (loop (+ 1 index) result))
       result)))
 
-(define (last-cdr list)
-  (if (pair? list)
-    (last-cdr (cdr list))
-    list))
+(define (last-cdr xs)
+  (if (pair? xs)
+    (last-cdr (cdr xs))
+    xs))
+
+(define (set-last-cdr! xs x)
+  (if (pair? (cdr xs))
+    (set-last-cdr! (cdr xs) x)
+    (set-cdr! xs x)))
 
 (define (filter f xs)
   (if (null? xs)
@@ -250,11 +255,10 @@
       (pair (assv name environment)))
     (if pair
       (set-cdr! pair denotation)
-      ; This works because we pass a reference to an environment in a context
-      ; to macro transformers.
-      (expansion-context-set-environment!
-        context
-        (cons (cons name denotation) (expansion-context-environment context))))))
+      (let ((tail (list (cons name denotation))))
+        (if (null? environment)
+          (expansion-context-set-environment! context tail)
+          (set-last-cdr! environment tail))))))
 
 ;; Procedures
 
@@ -459,19 +463,19 @@
                 (names
                   (map
                     (lambda (name) (cons name (rename-variable use-context name)))
-                    (find-pattern-variables (append literals (map car matches)) template))))
-              (for-each
-                (lambda (pair)
-                  (expansion-context-set!
+                    (find-pattern-variables (append literals (map car matches)) template)))
+                (use-context
+                  (expansion-context-append
                     use-context
-                    (cdr pair)
-                    (resolve-denotation definition-context (car pair))))
-                names)
-              (fill-template
-                definition-context
-                use-context
-                (append names matches)
-                template))
+                    (map
+                      (lambda (pair)
+                        (cons
+                          (cdr pair)
+                          (resolve-denotation definition-context (car pair))))
+                      names))))
+              (values
+                (fill-template definition-context use-context (append names matches) template)
+                use-context))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
@@ -589,16 +593,15 @@
           (else =>
             (lambda (value)
               (if (procedure? value)
-                (expand (value context expression))
+                (let-values (((expression context) (value context expression)))
+                  (expand-expression context expression))
                 (map expand expression))))))
 
       (else
         expression))))
 
 (define (expand expression)
-  (expand-expression
-    (make-expansion-context '())
-    expression))
+  (expand-expression (make-expansion-context '()) expression))
 
 ; Compilation
 
