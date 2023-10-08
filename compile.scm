@@ -250,11 +250,6 @@
   (expansion-context-append context (list (cons name denotation))))
 
 (define (expansion-context-set! context name denotation)
-  (set-cdr!
-    (assv name (expansion-context-environment context))
-    denotation))
-
-(define (expansion-context-set-last! context name denotation)
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
@@ -530,11 +525,11 @@
         (case (resolve-denotation context (car expression))
           (($$define)
             (let ((name (cadr expression)))
-              (expansion-context-set-last! context name name)
+              (expansion-context-set! context name name)
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set-last!
+            (expansion-context-set!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
