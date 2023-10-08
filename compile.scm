@@ -218,6 +218,17 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
+(define (code-length codes)
+  (let loop ((codes codes) (length 0))
+    (if (rib? codes)
+      (loop (rib-cdr codes) (+ length 1))
+      length)))
+
+(define (skip-codes count codes)
+  (if (and (> count 0) (rib? codes))
+    (skip-codes (- count 1) (rib-cdr codes))
+    codes))
+
 ; Source code reading
 
 (define (read-all)
@@ -958,17 +969,6 @@
 
             (else
               symbols)))))))
-
-(define (code-length codes)
-  (let loop ((codes codes) (length 0))
-    (if (rib? codes)
-      (loop (rib-cdr codes) (+ length 1))
-      length)))
-
-(define (skip-codes count codes)
-  (if (and (> count 0) (rib? codes))
-    (skip-codes (- count 1) (rib-cdr codes))
-    codes))
 
 (define (find-continuation left right)
   (let ((count (- (code-length left) (code-length right))))
