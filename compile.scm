@@ -249,12 +249,23 @@
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
 
-(define (expansion-context-set! context name denotation)
+(define (expansion-context-set-or-fallback! context name denotation fallback)
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
     (if pair
       (set-cdr! pair denotation)
+      (fallback environment))))
+
+(define (expansion-context-set! context name denotation)
+  (expansion-context-set-or-fallback! context name denotation (lambda (environment) #f)))
+
+(define (expansion-context-set-last! context name denotation)
+  (expansion-context-set-or-fallback!
+    context
+    name
+    denotation
+    (lambda (environment)
       (let ((tail (list (cons name denotation))))
         (if (null? environment)
           (expansion-context-set-environment! context tail)
@@ -529,7 +540,7 @@
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set!
+            (expansion-context-set-last!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
