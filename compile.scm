@@ -960,7 +960,7 @@
               symbols)))))))
 
 (define (code-length codes)
-  (let loop ((codes codes) ((length 0)))
+  (let loop ((codes codes) (length 0))
     (if (rib? codes)
       (loop (rib-cdr codes) (+ length 1))
       length)))
