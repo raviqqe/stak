@@ -929,7 +929,7 @@
 ;; Utility
 
 (define (find-symbols codes)
-  (let loop ((codes codes) (terminal '()) (symbols '()))
+  (define (find codes terminal symbols)
     (if (eq? codes terminal)
       symbols
       (let* (
@@ -940,17 +940,17 @@
             (if (eqv? instruction call-instruction)
               (rib-cdr operand)
               operand)))
-        (loop
+        (find
           codes
           terminal
           (cond
             ((and
                 (eqv? instruction constant-instruction)
                 (stak-procedure? operand))
-              (loop (procedure-code operand) '() symbols))
+              (find (procedure-code operand) '() symbols))
 
             ((eqv? instruction if-instruction)
-              (loop operand (find-continuation operand codes) symbols))
+              (find operand (find-continuation operand codes) symbols))
 
             ((and
                 (symbol? operand)
@@ -959,7 +959,9 @@
               (cons operand symbols))
 
             (else
-              symbols)))))))
+              symbols))))))
+
+  (find codes '() '()))
 
 (define (reverse-codes codes)
   (let loop ((codes codes) (result '()))
