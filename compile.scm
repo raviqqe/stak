@@ -898,31 +898,29 @@
           (constant-context-add-constant! context constant id)
           (rib set-instruction id (continue)))))))
 
-(define (build-constants context codes continue)
-  (define (build codes terminal continue)
+(define (build-constants context codes)
+  (let loop ((codes codes) (terminal '()) (continue (lambda () codes)))
     (if (eq? codes terminal)
       (continue)
       (let* (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
           (codes (rib-cdr codes))
-          (continue (lambda () (build codes terminal continue))))
+          (continue (lambda () (loop codes terminal continue))))
         (cond
           ((eqv? instruction constant-instruction)
             (build-constant
               context
               operand
               (if (stak-procedure? operand)
-                (lambda () (build (procedure-code operand) '() continue))
+                (lambda () (loop (procedure-code operand) '() continue))
                 continue)))
 
           ((eqv? instruction if-instruction)
-            (build operand (find-continuation operand codes) continue))
+            (loop operand (find-continuation operand codes) continue))
 
           (else
-            (continue))))))
-
-  (build codes '() continue))
+            (continue)))))))
 
 ; Encoding
 
@@ -1188,7 +1186,7 @@
       (codes
         (build-primitives
           primitives
-          (build-constants constant-context codes (lambda () codes))))
+          (build-constants constant-context codes)))
       (symbols (find-symbols codes)))
     (encode-symbols
       symbols
