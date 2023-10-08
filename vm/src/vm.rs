@@ -214,6 +214,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 }
                 _ => {
                     // Ignore an invalid instruction.
+                    self.advance_program_counter()
                 }
             }
 
