@@ -965,23 +965,20 @@
       (loop (rib-cdr codes) (+ length 1))
       length)))
 
-(define (reverse-codes codes)
-  (let loop ((codes codes) (result '()))
-    (if (null? codes)
-      result
-      (loop (rib-cdr codes) (cons codes result)))))
+(define (skip-codes count codes)
+  (if (and (> count 0) (rib? codes))
+    (skip-codes (- count 1) (rib-cdr codes))
+    codes))
 
 (define (find-continuation left right)
-  (let loop (
-      (left (reverse-codes left))
-      (right (reverse-codes right))
-      (result '()))
-    (if (and
-        (pair? left)
-        (pair? right)
-        (eq? (car left) (car right)))
-      (loop (cdr left) (cdr right) (car left))
-      result)))
+  (let* (
+      (count (- (code-length left) (code-length right)))
+      (left (if (positive? count) (skip-codes count left) left))
+      (right (if (negative? count) (skip-codes (abs count) right) right)))
+    (let loop ((left left) (right right))
+      (if (eq? left right)
+        left
+        (loop (rib-cdr left) (rib-cdr right))))))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
