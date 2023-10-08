@@ -898,53 +898,57 @@
           (constant-context-add-constant! context constant id)
           (rib set-instruction id (continue)))))))
 
-(define (build-constants context codes continue)
-  (if (null? codes)
-    (continue)
-    (let (
-        (continue (lambda () (build-constants context (rib-cdr codes) continue)))
-        (instruction (rib-tag codes))
-        (operand (rib-car codes)))
-      (cond
-        ((eqv? instruction constant-instruction)
-          (build-constant
-            context
-            operand
-            (if (stak-procedure? operand)
-              (lambda () (build-constants context (procedure-code operand) continue))
-              continue)))
+(define (build-constants context codes)
+  (let loop ((codes codes) (terminal '()) (continue (lambda () codes)))
+    (if (eq? codes terminal)
+      (continue)
+      (let* (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (codes (rib-cdr codes))
+          (continue (lambda () (loop codes terminal continue))))
+        (cond
+          ((eqv? instruction constant-instruction)
+            (build-constant
+              context
+              operand
+              (if (stak-procedure? operand)
+                (lambda () (loop (procedure-code operand) '() continue))
+                continue)))
 
-        ((eqv? instruction if-instruction)
-          (build-constants context operand continue))
+          ((eqv? instruction if-instruction)
+            (loop operand (find-continuation operand codes) continue))
 
-        (else
-          (continue))))))
+          (else
+            (continue)))))))
 
 ; Encoding
 
 ;; Utility
 
 (define (find-symbols codes)
-  (let loop ((codes codes) (symbols '()))
-    (if (null? codes)
+  (let loop ((codes codes) (terminal '()) (symbols '()))
+    (if (eq? codes terminal)
       symbols
       (let* (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
+          (codes (rib-cdr codes))
           (operand
             (if (eqv? instruction call-instruction)
               (rib-cdr operand)
               operand)))
         (loop
-          (rib-cdr codes)
+          codes
+          terminal
           (cond
             ((and
                 (eqv? instruction constant-instruction)
                 (stak-procedure? operand))
-              (loop (procedure-code operand) symbols))
+              (loop (procedure-code operand) '() symbols))
 
             ((eqv? instruction if-instruction)
-              (loop operand symbols))
+              (loop operand (find-continuation operand codes) symbols))
 
             ((and
                 (symbol? operand)
@@ -1182,7 +1186,7 @@
       (codes
         (build-primitives
           primitives
-          (build-constants constant-context codes (lambda () codes))))
+          (build-constants constant-context codes)))
       (symbols (find-symbols codes)))
     (encode-symbols
       symbols
