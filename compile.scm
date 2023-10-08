@@ -249,27 +249,21 @@
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
 
-(define (expansion-context-set-or-fallback! context name denotation fallback)
+(define (expansion-context-set! context name denotation)
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
-    (if pair
-      (set-cdr! pair denotation)
-      (fallback environment))))
-
-(define (expansion-context-set! context name denotation)
-  (expansion-context-set-or-fallback! context name denotation (lambda (environment) #f)))
+    (when pair (set-cdr! pair denotation))
+    pair))
 
 (define (expansion-context-set-last! context name denotation)
-  (expansion-context-set-or-fallback!
-    context
-    name
-    denotation
-    (lambda (environment)
-      (let ((tail (list (cons name denotation))))
-        (if (null? environment)
-          (expansion-context-set-environment! context tail)
-          (set-last-cdr! environment tail))))))
+  (unless (expansion-context-set! context name denotation)
+    (let (
+        (environment (expansion-context-environment context))
+        (tail (list (cons name denotation))))
+      (if (null? environment)
+        (expansion-context-set-environment! context tail)
+        (set-last-cdr! environment tail)))))
 
 ;; Procedures
 
