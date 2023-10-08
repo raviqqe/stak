@@ -746,7 +746,10 @@ impl<'a, T: Device> Vm<'a, T> {
                     )?;
                     self.append_instruction(instruction, operand.into(), r#return)?
                 }
-                code::Instruction::SET | code::Instruction::GET | code::Instruction::CONSTANT => {
+                code::Instruction::SET
+                | code::Instruction::GET
+                | code::Instruction::CONSTANT
+                | 7 => {
                     self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {

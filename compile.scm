@@ -1160,7 +1160,7 @@
                 (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
 
           ((eqv? instruction continue-instruction)
-            target)
+            (encode-instruction continue-instruction 0 #f target))
 
           (else
             (error "invalid instruction" instruction)))))))
