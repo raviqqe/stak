@@ -88,6 +88,17 @@
     (last-cdr (cdr list))
     list))
 
+(define (set-last-cdr! xs x)
+  (cond
+    ((not (pair? xs))
+      (error "empty list" xs))
+
+    ((pair? (cdr xs))
+      (set-last-cdr! (cdr xs) x))
+
+    (else
+      (set-cdr! xs x))))
+
 (define (filter f xs)
   (if (null? xs)
     '()
@@ -245,16 +256,20 @@
   (expansion-context-append context (list (cons name denotation))))
 
 (define (expansion-context-set! context name denotation)
+  (set-cdr!
+    (assv name (environment (expansion-context-environment context)))
+    denotation))
+
+(define (expansion-context-set-last! context name denotation)
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
     (if pair
       (set-cdr! pair denotation)
-      ; This works because we pass a reference to an environment in a context
-      ; to macro transformers.
-      (expansion-context-set-environment!
-        context
-        (cons (cons name denotation) (expansion-context-environment context))))))
+      (let ((tail (list (cons name denotation))))
+        (if (null? environment)
+          (expansion-context-set-environment! context tail)
+          (set-last-cdr! environment tail))))))
 
 ;; Procedures
 
@@ -521,11 +536,11 @@
         (case (resolve-denotation context (car expression))
           (($$define)
             (let ((name (cadr expression)))
-              (expansion-context-set! context name name)
+              (expansion-context-set-last! context name name)
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set!
+            (expansion-context-set-last!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
@@ -597,6 +612,7 @@
         expression))))
 
 (define (expand expression)
+  ; TODO
   (expand-expression (make-expansion-context '()) expression))
 
 ; Compilation
