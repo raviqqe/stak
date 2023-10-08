@@ -459,19 +459,19 @@
                 (names
                   (map
                     (lambda (name) (cons name (rename-variable use-context name)))
-                    (find-pattern-variables (append literals (map car matches)) template))))
-              (for-each
-                (lambda (pair)
-                  (expansion-context-set!
+                    (find-pattern-variables (append literals (map car matches)) template)))
+                (use-context
+                  (expansion-context-append
                     use-context
-                    (cdr pair)
-                    (resolve-denotation definition-context (car pair))))
-                names)
-              (fill-template
-                definition-context
-                use-context
-                (append names matches)
-                template))
+                    (map
+                      (lambda (pair)
+                        (cons
+                          (cdr pair)
+                          (resolve-denotation definition-context (car pair))))
+                      names))))
+              (values
+                (fill-template definition-context use-context (append names matches) template)
+                use-context))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
