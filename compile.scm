@@ -1068,6 +1068,7 @@
     (encode-codes
       context
       (rib-cdr code)
+      '()
       (encode-instruction
         closure-instruction
         (rib-car code)
@@ -1091,8 +1092,8 @@
 (define (terminal-codes? codes)
   (or (null? codes) (eqv? (rib-tag codes) continue-instruction)))
 
-(define (encode-codes context codes target)
-  (if (terminal-codes? codes)
+(define (encode-codes context codes terminal target)
+  (if (eq? codes terminal)
     target
     (let* (
         (instruction (rib-tag codes))
@@ -1109,6 +1110,7 @@
       (encode-codes
         context
         rest
+        terminal
         (cond
           ((memv instruction (list set-instruction get-instruction))
             (encode-simple instruction))
@@ -1142,6 +1144,7 @@
                   (encode-codes
                     context
                     operand
+                    continuation
                     (encode-instruction if-instruction 0 #f target))))
               (if (null? continuation)
                 target
@@ -1190,6 +1193,7 @@
           (append (map cdr default-constants) (list rib-symbol) symbols)
           constant-context)
         codes
+        '()
         '()))))
 
 ; Main
