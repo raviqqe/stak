@@ -57,7 +57,9 @@ jobs:
           - name: stak
             host: guile
           - name: stak
-            features: [gc_always]
+            features:
+              [gc_always]
+              # TODO Can we remove this special field?
             tags: not @long
           - name: chibi
           - name: gauche
