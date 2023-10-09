@@ -212,10 +212,11 @@ impl<'a, T: Device> Vm<'a, T> {
                     })
                     .assume_cons();
                 }
-                _ => {
+                code::Instruction::NOP => {
                     // Ignore an invalid instruction.
                     self.advance_program_counter()
                 }
+                _ => return Err(Error::IllegalInstruction),
             }
 
             trace_heap!(self);
@@ -749,7 +750,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 code::Instruction::SET
                 | code::Instruction::GET
                 | code::Instruction::CONSTANT
-                | 7 => {
+                | code::Instruction::NOP => {
                     self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {
