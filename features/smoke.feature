@@ -58,3 +58,22 @@ Feature: Smoke
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "7B7A"
+
+  Scenario: Compile many conditionals
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+    """
+    And a file named "line.scm" with:
+    """scheme
+    (write-u8 (if #t (if #t 65 66) (if #t 67 68)))
+    """
+    And I run the following script:
+    """sh
+    for _ in $(seq 1000); do
+      cat line.scm >> main.scm
+    done
+    """
+    And the exit status should be 0
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
