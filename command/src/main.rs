@@ -4,7 +4,7 @@ use vm::{Number, Vm};
 
 // TODO Change this value through an environment variable.
 // TODO Make a default value `1 << 17`.
-const HEAP_SIZE: usize = 1 << 22;
+const HEAP_SIZE: usize = 1 << 20;
 
 fn main() {
     if let Err(error) = run() {
