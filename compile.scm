@@ -46,6 +46,7 @@
 ; Only for encoding
 (define closure-instruction 5)
 (define skip-instruction 6)
+(define nop-instruction 7)
 
 ; Primitives
 
@@ -217,17 +218,6 @@
 
     (else
       (error "invalid variadic parameter" parameters))))
-
-(define (code-length codes)
-  (let loop ((codes codes) (length 0))
-    (if (rib? codes)
-      (loop (rib-cdr codes) (+ length 1))
-      length)))
-
-(define (skip-codes count codes)
-  (if (and (> count 0) (rib? codes))
-    (skip-codes (- count 1) (rib-cdr codes))
-    codes))
 
 ; Source code reading
 
@@ -752,8 +742,12 @@
           (compile-expression
             context
             (cadr expression)
-            (rib if-instruction
-              (compile-expression context (caddr expression) continuation)
+            (rib
+              if-instruction
+              (compile-expression
+                context
+                (caddr expression)
+                (if (null? continuation) '() (rib nop-instruction 0 continuation)))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
@@ -874,9 +868,11 @@
           (build-rib (char->integer constant) '() char-type))
 
         ((and (number? constant) (> 0 constant))
-          (rib constant-instruction
+          (rib
+            constant-instruction
             0
-            (rib constant-instruction
+            (rib
+              constant-instruction
               (abs constant)
               (compile-primitive-call '$$- (continue)))))
 
@@ -910,25 +906,25 @@
           (rib set-instruction id (continue)))))))
 
 (define (build-constants context codes)
-  (let loop ((codes codes) (terminal '()) (continue (lambda () codes)))
-    (if (eq? codes terminal)
+  (let loop ((codes codes) (continue (lambda () codes)))
+    (if (terminal-codes? codes)
       (continue)
       (let* (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
           (codes (rib-cdr codes))
-          (continue (lambda () (loop codes terminal continue))))
+          (continue (lambda () (loop codes continue))))
         (cond
           ((eqv? instruction constant-instruction)
             (build-constant
               context
               operand
               (if (stak-procedure? operand)
-                (lambda () (loop (procedure-code operand) '() continue))
+                (lambda () (loop (procedure-code operand) continue))
                 continue)))
 
           ((eqv? instruction if-instruction)
-            (loop operand (find-continuation operand codes) continue))
+            (loop operand continue))
 
           (else
             (continue)))))))
@@ -938,8 +934,8 @@
 ;; Utility
 
 (define (find-symbols codes)
-  (let loop ((codes codes) (terminal '()) (symbols '()))
-    (if (eq? codes terminal)
+  (let loop ((codes codes) (symbols '()))
+    (if (terminal-codes? codes)
       symbols
       (let* (
           (instruction (rib-tag codes))
@@ -951,15 +947,14 @@
               operand)))
         (loop
           codes
-          terminal
           (cond
             ((and
                 (eqv? instruction constant-instruction)
                 (stak-procedure? operand))
-              (loop (procedure-code operand) '() symbols))
+              (loop (procedure-code operand) symbols))
 
             ((eqv? instruction if-instruction)
-              (loop operand (find-continuation operand codes) symbols))
+              (loop operand symbols))
 
             ((and
                 (symbol? operand)
@@ -970,12 +965,22 @@
             (else
               symbols)))))))
 
-(define (find-continuation left right)
-  (let ((count (- (code-length left) (code-length right))))
-    (let loop ((left (skip-codes count left)) (right (skip-codes (- count) right)))
-      (if (eq? left right)
-        left
-        (loop (rib-cdr left) (rib-cdr right))))))
+(define (nop-codes? codes)
+  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+
+(define (terminal-codes? codes)
+  (or (null? codes) (nop-codes? codes)))
+
+(define (find-continuation codes)
+  (cond
+    ((null? codes)
+      '())
+
+    ((nop-codes? codes)
+      (rib-cdr codes))
+
+    (else
+      (find-continuation (rib-cdr codes)))))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
@@ -1076,7 +1081,6 @@
     (encode-codes
       context
       (rib-cdr code)
-      '()
       (encode-instruction
         closure-instruction
         (rib-car code)
@@ -1097,66 +1101,70 @@
     (else
       (error "invalid operand" operand))))
 
-(define (encode-codes context codes terminal target)
-  (if (eq? codes terminal)
-    target
-    (let* (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (rest (rib-cdr codes))
-        (return (null? rest))
-        (encode-simple
-          (lambda (instruction)
-            (encode-instruction
-              instruction
-              (encode-operand context operand)
-              return
-              target))))
-      (encode-codes
-        context
-        rest
-        terminal
-        (cond
-          ((memv instruction (list set-instruction get-instruction))
-            (encode-simple instruction))
+(define (encode-codes context codes target)
+  (cond
+    ((null? codes)
+      target)
 
-          ((eqv? instruction call-instruction)
-            (encode-instruction
-              instruction
-              (rib-car operand)
-              return
-              (encode-integer (encode-operand context (rib-cdr operand)) target)))
+    ((nop-codes? codes)
+      (encode-instruction nop-instruction 0 #f target))
 
-          ((and
-              (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
-            (encode-procedure context operand return target))
+    (else
+      (let* (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (codes (rib-cdr codes))
+          (return (null? codes))
+          (encode-simple
+            (lambda (instruction)
+              (encode-instruction
+                instruction
+                (encode-operand context operand)
+                return
+                target))))
+        (encode-codes
+          context
+          codes
+          (cond
+            ((memv instruction (list set-instruction get-instruction))
+              (encode-simple instruction))
 
-          ((eqv? instruction constant-instruction)
-            (let ((symbol (encode-context-constant context operand)))
-              (if symbol
-                (encode-instruction
-                  get-instruction
-                  (encode-operand context symbol)
-                  return
-                  target)
-                (encode-simple constant-instruction))))
+            ((eqv? instruction call-instruction)
+              (encode-instruction
+                instruction
+                (rib-car operand)
+                return
+                (encode-integer (encode-operand context (rib-cdr operand)) target)))
 
-          ((eqv? instruction if-instruction)
-            (let* (
-                (continuation (find-continuation operand rest))
-                (target
-                  (encode-codes
-                    context
-                    operand
-                    continuation
-                    (encode-instruction if-instruction 0 #f target))))
-              (if (null? continuation)
-                target
-                (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
+            ((and
+                (eqv? instruction constant-instruction)
+                (stak-procedure? operand))
+              (encode-procedure context operand return target))
 
-          (else
-            (error "invalid instruction" instruction)))))))
+            ((eqv? instruction constant-instruction)
+              (let ((symbol (encode-context-constant context operand)))
+                (if symbol
+                  (encode-instruction
+                    get-instruction
+                    (encode-operand context symbol)
+                    return
+                    target)
+                  (encode-simple constant-instruction))))
+
+            ((eqv? instruction if-instruction)
+              (let (
+                  (continuation (find-continuation operand))
+                  (target
+                    (encode-codes
+                      context
+                      operand
+                      (encode-instruction if-instruction 0 #f target))))
+                (if (null? continuation)
+                  target
+                  (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
+
+            (else
+              (error "invalid instruction" instruction))))))))
 
 ;; Primitives
 
@@ -1195,7 +1203,6 @@
           (append (map cdr default-constants) (list rib-symbol) symbols)
           constant-context)
         codes
-        '()
         '()))))
 
 ; Main

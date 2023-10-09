@@ -212,6 +212,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     })
                     .assume_cons();
                 }
+                code::Instruction::NOP => self.advance_program_counter(),
                 _ => return Err(Error::IllegalInstruction),
             }
 
@@ -743,7 +744,10 @@ impl<'a, T: Device> Vm<'a, T> {
                     )?;
                     self.append_instruction(instruction, operand.into(), r#return)?
                 }
-                code::Instruction::SET | code::Instruction::GET | code::Instruction::CONSTANT => {
+                code::Instruction::SET
+                | code::Instruction::GET
+                | code::Instruction::CONSTANT
+                | code::Instruction::NOP => {
                     self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {

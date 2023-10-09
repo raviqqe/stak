@@ -14,6 +14,7 @@ pub enum Instruction {
     #[cfg(feature = "alloc")]
     Closure(u64, Vec<Instruction>),
     Skip(u64),
+    Nop(u64),
 }
 
 impl Instruction {
@@ -24,6 +25,7 @@ impl Instruction {
     pub const IF: u8 = 4;
     pub const CLOSURE: u8 = 5;
     pub const SKIP: u8 = 6;
+    pub const NOP: u8 = 7;
 }
 
 pub(crate) struct DisplayInstruction<'a> {
@@ -70,6 +72,7 @@ impl<'a> Display for DisplayInstruction<'a> {
                 )
             }
             Instruction::Skip(count) => write!(formatter, "skip {}", count),
+            Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
         }
     }
 }

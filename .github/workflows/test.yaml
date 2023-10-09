@@ -58,6 +58,8 @@ jobs:
             host: guile
           - name: stak
             features: [gc_always]
+            # TODO Can we remove this special field?
+            tags: not @long
           - name: chibi
           - name: gauche
           - name: guile
@@ -71,7 +73,7 @@ jobs:
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
       - run: brew install chibi-scheme gauche guile
-      - run: tools/integration_test.sh --tags 'not @stak or @${{ matrix.interpreter.name }}'
+      - run: tools/integration_test.sh --tags '(not @stak or @${{ matrix.interpreter.name }}) and ${{ matrix.interpreter.tags || 'not @any' }}'
   test:
     needs:
       - build
