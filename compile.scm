@@ -1098,8 +1098,8 @@
     (let* (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
-        (rest (rib-cdr codes))
-        (return (null? rest))
+        (codes (rib-cdr codes))
+        (return (null? codes))
         (encode-simple
           (lambda (instruction)
             (encode-instruction
@@ -1109,7 +1109,7 @@
               target))))
       (encode-codes
         context
-        rest
+        codes
         terminal
         (cond
           ((memv instruction (list set-instruction get-instruction))
@@ -1148,7 +1148,7 @@
                     (encode-instruction if-instruction 0 #f target))))
               (if (null? continuation)
                 target
-                (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
+                (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
 
           ((eqv? instruction continue-instruction)
             (encode-simple continue-instruction))
