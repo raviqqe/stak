@@ -962,15 +962,18 @@
             (else
               symbols)))))))
 
+(define (nop-codes? codes)
+  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+
 (define (terminal-codes? codes)
-  (or (null? codes) (eqv? (rib-tag codes) nop-instruction)))
+  (or (null? codes) (nop-codes? codes)))
 
 (define (find-continuation codes)
   (cond
     ((null? codes)
       '())
 
-    ((terminal-codes? codes)
+    ((nop-codes? codes)
       (rib-cdr codes))
 
     (else
