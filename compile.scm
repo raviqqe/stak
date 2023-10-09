@@ -986,7 +986,7 @@
   (let loop ((codes codes) (count 0))
     (if (eq? codes continuation)
       count
-      (loop (rib-cdr codes) (+ 1 count)))))
+      (loop (rib-cdr codes) (+ (if (nop-codes? codes) 0 1) count)))))
 
 ;; Context
 
@@ -1103,11 +1103,8 @@
 
 (define (encode-codes context codes target)
   (cond
-    ((null? codes)
+    ((terminal-codes? codes)
       target)
-
-    ((nop-codes? codes)
-      (encode-instruction nop-instruction 0 #f target))
 
     (else
       (let* (
