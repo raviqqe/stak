@@ -2,6 +2,8 @@ use device::StdioDevice;
 use std::{env::args, error::Error, fs::read, process::exit};
 use vm::{Number, Vm};
 
+// TODO Change this value through an environment variable.
+// TODO Make a default value `1 << 17`.
 const HEAP_SIZE: usize = 1 << 22;
 
 fn main() {
