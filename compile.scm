@@ -1116,7 +1116,7 @@
         codes
         terminal
         (cond
-          ((memv instruction (list set-instruction get-instruction))
+          ((memv instruction (list set-instruction get-instruction continue-instruction))
             (encode-simple instruction))
 
           ((eqv? instruction call-instruction)
@@ -1153,9 +1153,6 @@
               (if (null? continuation)
                 target
                 (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
-
-          ((eqv? instruction continue-instruction)
-            (encode-simple continue-instruction))
 
           (else
             (error "invalid instruction" instruction)))))))
