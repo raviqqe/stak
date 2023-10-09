@@ -60,20 +60,27 @@ Feature: Smoke
     Then the stdout should contain exactly "7B7A"
 
   @long
-  Scenario: Compile many conditionals
+  Scenario: Compile many sequential if expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))
     """
-    And a file named "line.scm" with:
+    And a file named "foo.scm" with:
     """scheme
     (write-u8 (if #t (if #t 65 66) (if #t 67 68)))
     """
     And I run the following script:
     """sh
-    for _ in $(seq 10000); do
-      cat line.scm >> main.scm
+    for _ in $(seq 13); do
+      for _ in $(seq 2); do
+        cat foo.scm >> bar.scm
+      done
+
+      cp bar.scm foo.scm
+      rm bar.scm
     done
+
+    cat foo.scm >> main.scm
     """
     And the exit status should be 0
     When I successfully run `scheme main.scm`
