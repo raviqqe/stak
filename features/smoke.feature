@@ -59,6 +59,7 @@ Feature: Smoke
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "7B7A"
 
+  @long
   Scenario: Compile many conditionals
     Given a file named "main.scm" with:
     """scheme
