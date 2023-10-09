@@ -966,11 +966,15 @@
   (or (null? codes) (eqv? (rib-tag codes) continue-instruction)))
 
 (define (find-continuation codes)
-  (if (terminal-codes? codes)
-    (if (rib? codes)
-      (rib-cdr codes)
-      codes)
-    (find-continuation (rib-cdr codes))))
+  (cond
+    ((null? codes)
+      '())
+
+    ((terminal-codes? codes)
+      (rib-cdr codes))
+
+    (else
+      (find-continuation (rib-cdr codes)))))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
