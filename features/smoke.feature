@@ -70,7 +70,7 @@ Feature: Smoke
     """
     And I run the following script:
     """sh
-    for _ in $(seq 1000); do
+    for _ in $(seq 10000); do
       cat line.scm >> main.scm
     done
     """
