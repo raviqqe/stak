@@ -962,6 +962,9 @@
             (else
               symbols)))))))
 
+(define (terminal-codes? codes)
+  (or (null? codes) (eqv? (rib-tag codes) continue-instruction)))
+
 (define (find-continuation codes)
   (if (terminal-codes? codes)
     (if (rib? codes)
@@ -1088,9 +1091,6 @@
 
     (else
       (error "invalid operand" operand))))
-
-(define (terminal-codes? codes)
-  (or (null? codes) (eqv? (rib-tag codes) continue-instruction)))
 
 (define (encode-codes context codes terminal target)
   (if (eq? codes terminal)
