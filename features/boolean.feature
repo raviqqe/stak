@@ -100,3 +100,40 @@ Feature: Boolean
       | #f     | #t     | #f     | BAB    |
       | #f     | #f     | #t     | BBA    |
       | #f     | #f     | #f     | BBB    |
+
+  Scenario Outline: Use sequenced if expressions in a nested if expression
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (if <value1>
+      (begin
+        (write-u8 65)
+        (if <value2>
+          (write-u8 65)
+          (write-u8 66))
+        (if <value3>
+          (write-u8 65)
+          (write-u8 66)))
+      (begin
+        (write-u8 66)
+        (if <value2>
+          (write-u8 65)
+          (write-u8 66))
+        (if <value3>
+          (write-u8 65)
+          (write-u8 66))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value1 | value2 | value3 | output |
+      | #t     | #t     | #t     | AAA    |
+      | #t     | #t     | #f     | AAB    |
+      | #t     | #f     | #t     | ABA    |
+      | #t     | #f     | #f     | ABB    |
+      | #f     | #t     | #t     | BAA    |
+      | #f     | #t     | #f     | BAB    |
+      | #f     | #f     | #t     | BBA    |
+      | #f     | #f     | #f     | BBB    |
