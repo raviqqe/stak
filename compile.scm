@@ -1152,7 +1152,7 @@
                   (encode-simple constant-instruction))))
 
             ((eqv? instruction if-instruction)
-              (let* (
+              (let (
                   (continuation (find-continuation operand))
                   (target
                     (encode-codes
