@@ -87,6 +87,7 @@ impl<'a> Decoder<'a> {
                     ),
                 ),
                 Instruction::SKIP => Instruction::Skip(integer),
+                Instruction::NOP => Instruction::Nop(integer),
                 _ => return Err(Error::IllegalInstruction),
             };
 
