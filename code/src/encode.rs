@@ -73,6 +73,9 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 encode_instructions(codes, body);
             }
             Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, true),
+            Instruction::Nop(operand) => {
+                encode_instruction(codes, Instruction::NOP, *operand, r#return)
+            }
         }
     }
 }

@@ -46,7 +46,7 @@
 ; Only for encoding
 (define closure-instruction 5)
 (define skip-instruction 6)
-(define continue-instruction 7)
+(define nop-instruction 7)
 
 ; Primitives
 
@@ -744,7 +744,7 @@
             (cadr expression)
             (rib
               if-instruction
-              (compile-expression context (caddr expression) (rib continue-instruction 0 continuation))
+              (compile-expression context (caddr expression) (rib nop-instruction 0 continuation))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
@@ -963,7 +963,7 @@
               symbols)))))))
 
 (define (terminal-codes? codes)
-  (or (null? codes) (eqv? (rib-tag codes) continue-instruction)))
+  (or (null? codes) (eqv? (rib-tag codes) nop-instruction)))
 
 (define (find-continuation codes)
   (cond
@@ -1116,7 +1116,7 @@
         codes
         terminal
         (cond
-          ((memv instruction (list set-instruction get-instruction continue-instruction))
+          ((memv instruction (list set-instruction get-instruction nop-instruction))
             (encode-simple instruction))
 
           ((eqv? instruction call-instruction)
