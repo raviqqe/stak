@@ -212,10 +212,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     })
                     .assume_cons();
                 }
-                code::Instruction::NOP => {
-                    // Ignore an invalid instruction.
-                    self.advance_program_counter()
-                }
+                code::Instruction::NOP => self.advance_program_counter(),
                 _ => return Err(Error::IllegalInstruction),
             }
 
