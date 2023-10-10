@@ -1327,9 +1327,9 @@
         (new-local
           (append new-cells old-local)))
       (dynamic-wind
-        (lambda () (dynamic-environment-set! new-local))
+        (lambda () (set! dynamic-environment new))
         body
-        (lambda () (dynamic-environment-set! old-local))))))
+        (lambda () (set! dynamic-environment old))))))
 
 (define dynamic-lookup
   (lambda (parameter cell)
@@ -1338,9 +1338,6 @@
       cell)))
 
 (define dynamic-environment '())
-
-(define dynamic-environment-set!
-  (lambda (new-env) (set! dynamic-environment new-env)))
 
 ;; Error
 
