@@ -1300,12 +1300,12 @@
 
     ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
       (let (
-          (parameter1 parameter1)
+          (parameter parameter1)
           (old (parameter1)))
         (dynamic-wind
-          (lambda () (parameter1 value1))
+          (lambda () (parameter value1))
           (lambda () (parameterize ((parameter2 value2) ...) body ...))
-          (lambda () (parameter1 old)))))))
+          (lambda () (parameter old)))))))
 
 ;; Error
 
