@@ -1293,18 +1293,18 @@
   (let ((cell (cons #f (convert x))))
     (letrec (
         (parameter
-          (lambda new-val
+          (lambda x
             (let (
                 (cell
                   (or
                     (assq parameter (dynamic-env-local-get))
                     cell)))
-              (cond ((null? new-val)
+              (cond ((null? x)
                   (cdr cell))
-                ((null? (cdr new-val))
-                  (set-cdr! cell (convert (car new-val))))
+                ((null? (cdr x))
+                  (set-cdr! cell (convert (car x))))
                 (else ; this case is needed for parameterize
-                  (convert (car new-val))))))))
+                  (convert (car x))))))))
       (set-car! cell parameter)
       parameter)))
 
