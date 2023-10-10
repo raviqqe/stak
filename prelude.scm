@@ -1284,23 +1284,25 @@
 
 ;; Parameter
 
-(define make-parameter
-  (lambda (init . conv)
-    (let ((converter
-          (if (null? conv) (lambda (x) x) (car conv))))
-      (let ((global-cell
-            (cons #f (converter init))))
-        (letrec ((parameter
-              (lambda new-val
-                (let ((cell (dynamic-lookup parameter global-cell)))
-                  (cond ((null? new-val)
-                      (cdr cell))
-                    ((null? (cdr new-val))
-                      (set-cdr! cell (converter (car new-val))))
-                    (else ; this case is needed for parameterize
-                      (converter (car new-val))))))))
-          (set-car! global-cell parameter)
-          parameter)))))
+(define (make-parameter x . rest)
+  (define convert
+    (if (pair? rest)
+      (car rest)
+      (lambda (x) x)))
+
+  (let ((global-cell
+        (cons #f (converter x))))
+    (letrec ((parameter
+          (lambda new-val
+            (let ((cell (dynamic-lookup parameter global-cell)))
+              (cond ((null? new-val)
+                  (cdr cell))
+                ((null? (cdr new-val))
+                  (set-cdr! cell (converter (car new-val))))
+                (else ; this case is needed for parameterize
+                  (converter (car new-val))))))))
+      (set-car! global-cell parameter)
+      parameter)))
 
 (define-syntax parameterize
   (syntax-rules ()
