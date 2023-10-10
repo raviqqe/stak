@@ -209,3 +209,22 @@ Feature: Function
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AA"
+
+  Scenario: Call immediate functions accessing a local variable
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (foo x y z)
+      (x)
+      (y)
+      (z))
+
+    (let ((f write-u8))
+      (foo
+        (lambda () (f 65))
+        (lambda () (f 66))
+        (lambda () (f 67))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
