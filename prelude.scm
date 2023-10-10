@@ -1290,18 +1290,22 @@
       (car rest)
       (lambda (x) x)))
 
-  (let ((global-cell (cons #f (converter x))))
+  (let ((cell (cons #f (converter x))))
     (letrec (
         (parameter
           (lambda new-val
-            (let ((cell (dynamic-lookup parameter global-cell)))
+            (let (
+                (cell
+                  (or
+                    (assq parameter (dynamic-env-local-get))
+                    cell)))
               (cond ((null? new-val)
                   (cdr cell))
                 ((null? (cdr new-val))
                   (set-cdr! cell (converter (car new-val))))
                 (else ; this case is needed for parameterize
                   (converter (car new-val))))))))
-      (set-car! global-cell parameter)
+      (set-car! cell parameter)
       parameter)))
 
 (define-syntax parameterize
