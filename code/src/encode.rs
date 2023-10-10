@@ -422,6 +422,11 @@ mod tests {
     }
 
     #[test]
+    fn encode_nop() {
+        encode_and_decode(&Program::new(vec![], vec![Instruction::Nop(42)]));
+    }
+
+    #[test]
     fn encode_sequence() {
         encode_and_decode(&Program::new(
             vec![],
