@@ -1,4 +1,3 @@
-use alloc::string::FromUtf8Error;
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -9,13 +8,6 @@ pub enum Error {
     MissingInteger,
     MissingOperand,
     MissingElseBranch,
-    Utf8(FromUtf8Error),
-}
-
-impl From<FromUtf8Error> for Error {
-    fn from(error: FromUtf8Error) -> Self {
-        Self::Utf8(error)
-    }
 }
 
 #[cfg(feature = "std")]
@@ -30,7 +22,6 @@ impl Display for Error {
             Self::MissingInteger => write!(formatter, "missing integer"),
             Self::MissingOperand => write!(formatter, "missing operand"),
             Self::MissingElseBranch => write!(formatter, "missing else branch"),
-            Self::Utf8(error) => write!(formatter, "{}", error),
         }
     }
 }
