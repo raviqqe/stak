@@ -1292,17 +1292,9 @@
   (define value (convert x))
 
   (define (parameter . rest)
-    (let (
-        (cell
-          (or
-            (assq parameter dynamic-environment)
-            cell)))
-      (cond
-        ((null? rest)
-          (cdr cell))
-
-        (else
-          (set-cdr! cell (convert (car rest)))))))
+    (if (null? rest)
+      value
+      (set-cdr! cell (convert (car rest)))))
 
   (set-car! cell parameter)
   parameter)
