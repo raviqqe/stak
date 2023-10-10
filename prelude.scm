@@ -1314,12 +1314,11 @@
   (syntax-rules ()
     ((_ ((parameter value) ...) body ...)
       (dynamic-bind
-        (list parameter ...)
-        (list value ...)
+        (list (cons parameter value) ...)
         (lambda () body ...)))))
 
 (define dynamic-bind
-  (lambda (parameters values body)
+  (lambda (bindings body)
     (let* (
         (old dynamic-environment)
         (new
