@@ -74,7 +74,7 @@ mod tests {
     fn display_closure() {
         assert_display_snapshot!(Program::new(
             vec![],
-            vec![Instruction::Closure(
+            vec![Instruction::Close(
                 42,
                 vec![Instruction::Constant(Operand::Integer(2045))],
             )],
@@ -88,7 +88,7 @@ mod tests {
             vec![
                 Instruction::Constant(Operand::Integer(0)),
                 Instruction::Constant(Operand::Integer(1)),
-                Instruction::Closure(
+                Instruction::Close(
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),

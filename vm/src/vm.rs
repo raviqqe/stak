@@ -1,6 +1,5 @@
 use crate::{
     cons::{Cons, FALSE, MOVED, NULL, TRUE},
-    instruction::Instruction,
     number::Number,
     primitive::Primitive,
     r#type::Type,
@@ -83,7 +82,7 @@ impl<'a, T: Device> Vm<'a, T> {
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
-                Instruction::CALL => {
+                code::Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let mut procedure = self.procedure();
 
@@ -178,13 +177,13 @@ impl<'a, T: Device> Vm<'a, T> {
                         }
                     }
                 }
-                Instruction::SET => {
+                code::Instruction::SET => {
                     let operand = self.operand_variable();
                     let value = self.pop()?;
                     *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
-                Instruction::GET => {
+                code::Instruction::GET => {
                     let operand = self.operand_variable();
 
                     trace!("operand", operand);
@@ -196,7 +195,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     self.push(value)?;
                     self.advance_program_counter();
                 }
-                Instruction::CONSTANT => {
+                code::Instruction::CONSTANT => {
                     let constant = self.operand();
 
                     trace!("constant", constant);
@@ -204,7 +203,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     self.push(constant)?;
                     self.advance_program_counter();
                 }
-                Instruction::IF => {
+                code::Instruction::IF => {
                     self.program_counter = (if self.pop()? == FALSE.into() {
                         self.cdr(self.program_counter)
                     } else {
@@ -212,6 +211,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     })
                     .assume_cons();
                 }
+                code::Instruction::NOP => self.advance_program_counter(),
                 _ => return Err(Error::IllegalInstruction),
             }
 
@@ -537,9 +537,6 @@ impl<'a, T: Device> Vm<'a, T> {
                     .write(self.top().assume_number().to_i64() as u8)
                     .map_err(|_| Error::WriteOutput)?;
             }
-            Primitive::DUMP => {
-                trace!("dump", self.top());
-            }
             _ => return Err(Error::IllegalPrimitive),
         }
 
@@ -743,7 +740,10 @@ impl<'a, T: Device> Vm<'a, T> {
                     )?;
                     self.append_instruction(instruction, operand.into(), r#return)?
                 }
-                code::Instruction::SET | code::Instruction::GET | code::Instruction::CONSTANT => {
+                code::Instruction::SET
+                | code::Instruction::GET
+                | code::Instruction::CONSTANT
+                | code::Instruction::NOP => {
                     self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {
@@ -751,9 +751,9 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    self.append_instruction(Instruction::IF, then.into(), false)?
+                    self.append_instruction(instruction, then.into(), false)?
                 }
-                code::Instruction::CLOSURE => {
+                code::Instruction::CLOSE => {
                     let code = self.allocate(
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
@@ -763,7 +763,11 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    self.append_instruction(Instruction::CONSTANT, procedure.into(), r#return)?
+                    self.append_instruction(
+                        code::Instruction::CONSTANT,
+                        procedure.into(),
+                        r#return,
+                    )?
                 }
                 code::Instruction::SKIP => {
                     self.tail(self.program_counter, Number::new(integer as i64))
@@ -1077,7 +1081,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Closure(0, vec![Instruction::Call(0, Operand::Integer(1))]),
+                    Instruction::Close(0, vec![Instruction::Call(0, Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(0)),
                 ],
             ));

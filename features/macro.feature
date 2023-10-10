@@ -366,10 +366,7 @@ Feature: Macro
 
     (foo 42)
     """
-    When I run the following script:
-    """sh
-    compile.sh main.scm > main.out
-    """
+    When I run `scheme main.scm`
     Then the exit status should not be 0
 
   Scenario: Define a local macro

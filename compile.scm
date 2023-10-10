@@ -12,28 +12,17 @@
 
 (cond-expand
   ((or chibi gauche guile)
-    (define (rib tag car cdr)
-      (cons (cons (cons '$$rib tag) car) cdr))
+    (define-record-type rib*
+      (make-rib tag car cdr)
+      rib?
+      (tag rib-tag)
+      (car rib-car rib-set-car!)
+      (cdr rib-cdr rib-set-cdr!))
+
+    (define rib make-rib)
 
     (define (rib-cons car cdr)
-      (cons (cons (cons '$$rib 0) car) cdr))
-
-    (define rib-tag cdaar)
-    (define rib-car cdar)
-    (define rib-cdr cdr)
-
-    (define (rib-set-car! rib car)
-      (set-cdr! (car rib) car))
-
-    (define (rib-set-cdr! rib cdr)
-      (set-cdr! rib cdr))
-
-    (define (rib? value)
-      (and
-        (pair? value)
-        (pair? (car value))
-        (pair? (caar value))
-        (eqv? (caaar value) '$$rib))))
+      (rib 0 car cdr)))
 
   (else))
 
@@ -54,16 +43,17 @@
 (define get-instruction 2)
 (define constant-instruction 3)
 (define if-instruction 4)
+(define nop-instruction 5)
 ; Only for encoding
-(define closure-instruction 5)
-(define skip-instruction 6)
+(define close-instruction 6)
+(define skip-instruction 7)
 
 ; Primitives
 
 (define primitives
   '(
-    (cons 1)
-    (close 2)
+    ($$cons 1)
+    ($$close 2)
     ($$- 13)))
 
 ; Types
@@ -86,18 +76,23 @@
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
 
-(define (bytevector->list vector)
+(define (bytevector->list xs)
   (let loop ((index 0) (result '()))
-    (if (< index (bytevector-length vector))
+    (if (< index (bytevector-length xs))
       (cons
-        (bytevector-u8-ref vector index)
+        (bytevector-u8-ref xs index)
         (loop (+ 1 index) result))
       result)))
 
-(define (last-cdr list)
-  (if (pair? list)
-    (last-cdr (cdr list))
-    list))
+(define (last-cdr xs)
+  (if (pair? xs)
+    (last-cdr (cdr xs))
+    xs))
+
+(define (set-last-cdr! xs x)
+  (if (pair? (cdr xs))
+    (set-last-cdr! (cdr xs) x)
+    (set-cdr! xs x)))
 
 (define (filter f xs)
   (if (null? xs)
@@ -134,6 +129,17 @@
     list
     (skip (- n 1) (cdr list))))
 
+(define (list-unique xs)
+  (let loop ((xs xs) (ys '()))
+    (if (null? xs)
+      ys
+      (loop
+        (cdr xs)
+        (let ((x (car xs)))
+          (if (memv x ys)
+            ys
+            (cons x ys)))))))
+
 (define (list-position f xs)
   (let loop ((xs xs) (index 0))
     (cond
@@ -148,6 +154,12 @@
 
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
+
+(define (list-count f xs)
+  (let loop ((xs xs) (count 0))
+    (if (null? xs)
+      count
+      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
 ; Note that the original `append` function works in this way natively on some Scheme implementations.
 (define (maybe-append xs ys)
@@ -227,21 +239,13 @@
 
 ;; Context
 
-(define-record-type id-cell
-  (make-id-cell id)
-  id-cell?
-  (id id-cell-id id-cell-set-id!))
-
 (define-record-type expansion-context
-  (make-expansion-context environment variable-id)
+  (make-expansion-context environment)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!)
-  (variable-id expansion-context-variable-id))
+  (environment expansion-context-environment expansion-context-set-environment!))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context
-    (append pairs (expansion-context-environment context))
-    (expansion-context-variable-id context)))
+  (make-expansion-context (append pairs (expansion-context-environment context))))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -250,20 +254,17 @@
   (let* (
       (environment (expansion-context-environment context))
       (pair (assv name environment)))
-    (if pair
-      (set-cdr! pair denotation)
-      ; This works because we pass a reference to an environment in a context
-      ; to macro transformers.
-      (expansion-context-set-environment!
-        context
-        (cons (cons name denotation) (expansion-context-environment context))))))
+    (when pair (set-cdr! pair denotation))
+    pair))
 
-(define (expansion-context-generate-variable-id! context)
-  (let* (
-      (cell (expansion-context-variable-id context))
-      (id (id-cell-id cell)))
-    (id-cell-set-id! cell (+ id 1))
-    id))
+(define (expansion-context-set-last! context name denotation)
+  (unless (expansion-context-set! context name denotation)
+    (let (
+        (environment (expansion-context-environment context))
+        (tail (list (cons name denotation))))
+      (if (null? environment)
+        (expansion-context-set-environment! context tail)
+        (set-last-cdr! environment tail)))))
 
 ;; Procedures
 
@@ -275,47 +276,74 @@
     (/ . $$/)
     (< . $$<)))
 
-; TODO Check if those primitive functions are from the `scheme base` library
-; before applying optimization.
 (define (optimize expression)
-  (let ((pair (assv (predicate expression) primitive-functions)))
-    (if (and pair (= (length expression) 3))
-      (cons (cdr pair) (cdr expression))
-      expression)))
+  (let ((predicate (predicate expression)))
+    (cond
+      ((eqv? predicate '$$begin)
+        ; Omit top-level constants.
+        (cons '$$begin
+          (let loop ((expressions (cdr expression)))
+            (let (
+                (expression (car expressions))
+                (expressions (cdr expressions)))
+              (cond
+                ((null? expressions)
+                  (list expression))
 
-(define (resolve-denotation-pair context name)
-  (assv name (expansion-context-environment context)))
+                ((pair? expression)
+                  (cons expression (loop expressions)))
+
+                (else
+                  (loop expressions)))))))
+
+      ; TODO Check if those primitive functions are from the `scheme base` library
+      ; before applying optimization.
+      ((and
+          (list? expression)
+          (= (length expression) 3)
+          (assv predicate primitive-functions))
+        =>
+        (lambda (pair)
+          (cons (cdr pair) (cdr expression))))
+
+      (else
+        expression))))
 
 (define (resolve-denotation context expression)
   (cond
-    ((resolve-denotation-pair context expression) =>
+    ((assv expression (expansion-context-environment context)) =>
       cdr)
 
     (else
       expression)))
 
 (define (rename-variable context name)
-  (string->symbol
-    (string-append
-      (symbol->string name)
-      "$"
-      (number->string (expansion-context-generate-variable-id! context) 32))))
+  (let* (
+      (denotation (resolve-denotation context name))
+      (count
+        (list-count
+          (lambda (pair) (eqv? (cdr pair) denotation))
+          (expansion-context-environment context))))
+    (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
 
-(define (find-pattern-variables literals pattern)
-  (cond
-    ((memv pattern (append '(_ ...) literals))
-      '())
+(define (find-pattern-variables bound-variables pattern)
+  (define (find pattern)
+    (cond
+      ((memv pattern (append '(_ ...) bound-variables))
+        '())
 
-    ((symbol? pattern)
-      (list pattern))
+      ((symbol? pattern)
+        (list pattern))
 
-    ((pair? pattern)
-      (append
-        (find-pattern-variables literals (car pattern))
-        (find-pattern-variables literals (cdr pattern))))
+      ((pair? pattern)
+        (append
+          (find (car pattern))
+          (find (cdr pattern))))
 
-    (else
-      '())))
+      (else
+        '())))
+
+  (list-unique (find pattern)))
 
 (define-record-type ellipsis-match
   (make-ellipsis-match value)
@@ -466,22 +494,19 @@
                 (names
                   (map
                     (lambda (name) (cons name (rename-variable use-context name)))
-                    (find-pattern-variables (append literals (map car matches)) template))))
-              (for-each
-                (lambda (pair)
-                  (expansion-context-set!
+                    (find-pattern-variables (append literals (map car matches)) template)))
+                (use-context
+                  (expansion-context-append
                     use-context
-                    (cdr pair)
-                    (let* (
-                        (name (car pair))
-                        (pair (resolve-denotation-pair definition-context name)))
-                      (if pair (cdr pair) name))))
-                names)
-              (fill-template
-                definition-context
-                use-context
-                (append names matches)
-                template))
+                    (map
+                      (lambda (pair)
+                        (cons
+                          (cdr pair)
+                          (resolve-denotation definition-context (car pair))))
+                      names))))
+              (values
+                (fill-template definition-context use-context (append names matches) template)
+                use-context))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
@@ -535,7 +560,7 @@
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set!
+            (expansion-context-set-last!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
@@ -599,16 +624,15 @@
           (else =>
             (lambda (value)
               (if (procedure? value)
-                (expand (value context expression))
+                (let-values (((expression context) (value context expression)))
+                  (expand-expression context expression))
                 (map expand expression))))))
 
       (else
         expression))))
 
 (define (expand expression)
-  (expand-expression
-    (make-expansion-context '() (make-id-cell 0))
-    expression))
+  (expand-expression (make-expansion-context '()) expression))
 
 ; Compilation
 
@@ -639,10 +663,10 @@
     call-instruction
     (rib-cons
       (case name
-        ((close)
+        (($$close)
           1)
 
-        ((cons $$-)
+        (($$cons $$-)
           2)
 
         (($$rib)
@@ -743,8 +767,12 @@
           (compile-expression
             context
             (cadr expression)
-            (rib if-instruction
-              (compile-expression context (caddr expression) continuation)
+            (rib
+              if-instruction
+              (compile-expression
+                context
+                (caddr expression)
+                (if (null? continuation) '() (rib nop-instruction 0 continuation)))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
@@ -764,7 +792,7 @@
                     (cddr expression)
                     '()))
                 '())
-              (compile-primitive-call 'close continuation))))
+              (compile-primitive-call '$$close continuation))))
 
         (($$quote)
           (compile-constant (cadr expression) continuation))
@@ -837,7 +865,7 @@
         cdr
         (lambda ()
           (if (eqv? tag pair-type)
-            (compile-primitive-call 'cons (continue))
+            (compile-primitive-call '$$cons (continue))
             (rib
               constant-instruction
               tag
@@ -865,9 +893,11 @@
           (build-rib (char->integer constant) '() char-type))
 
         ((and (number? constant) (> 0 constant))
-          (rib constant-instruction
+          (rib
+            constant-instruction
             0
-            (rib constant-instruction
+            (rib
+              constant-instruction
               (abs constant)
               (compile-primitive-call '$$- (continue)))))
 
@@ -900,27 +930,29 @@
           (constant-context-add-constant! context constant id)
           (rib set-instruction id (continue)))))))
 
-(define (build-constants context codes continue)
-  (if (null? codes)
-    (continue)
-    (let (
-        (continue (lambda () (build-constants context (rib-cdr codes) continue)))
-        (instruction (rib-tag codes))
-        (operand (rib-car codes)))
-      (cond
-        ((eqv? instruction constant-instruction)
-          (build-constant
-            context
-            operand
-            (if (stak-procedure? operand)
-              (lambda () (build-constants context (procedure-code operand) continue))
-              continue)))
+(define (build-constants context codes)
+  (let loop ((codes codes) (continue (lambda () codes)))
+    (if (terminal-codes? codes)
+      (continue)
+      (let* (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (codes (rib-cdr codes))
+          (continue (lambda () (loop codes continue))))
+        (cond
+          ((eqv? instruction constant-instruction)
+            (build-constant
+              context
+              operand
+              (if (stak-procedure? operand)
+                (lambda () (loop (procedure-code operand) continue))
+                continue)))
 
-        ((eqv? instruction if-instruction)
-          (build-constants context operand continue))
+          ((eqv? instruction if-instruction)
+            (loop operand continue))
 
-        (else
-          (continue))))))
+          (else
+            (continue)))))))
 
 ; Encoding
 
@@ -928,17 +960,18 @@
 
 (define (find-symbols codes)
   (let loop ((codes codes) (symbols '()))
-    (if (null? codes)
+    (if (terminal-codes? codes)
       symbols
       (let* (
           (instruction (rib-tag codes))
           (operand (rib-car codes))
+          (codes (rib-cdr codes))
           (operand
             (if (eqv? instruction call-instruction)
               (rib-cdr operand)
               operand)))
         (loop
-          (rib-cdr codes)
+          codes
           (cond
             ((and
                 (eqv? instruction constant-instruction)
@@ -957,23 +990,22 @@
             (else
               symbols)))))))
 
-(define (reverse-codes codes)
-  (let loop ((codes codes) (result '()))
-    (if (null? codes)
-      result
-      (loop (rib-cdr codes) (cons codes result)))))
+(define (nop-codes? codes)
+  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
 
-(define (find-continuation left right)
-  (let loop (
-      (left (reverse-codes left))
-      (right (reverse-codes right))
-      (result '()))
-    (if (and
-        (pair? left)
-        (pair? right)
-        (eq? (car left) (car right)))
-      (loop (cdr left) (cdr right) (car left))
-      result)))
+(define (terminal-codes? codes)
+  (or (null? codes) (nop-codes? codes)))
+
+(define (find-continuation codes)
+  (cond
+    ((null? codes)
+      '())
+
+    ((nop-codes? codes)
+      (rib-cdr codes))
+
+    (else
+      (find-continuation (rib-cdr codes)))))
 
 (define (count-skips codes continuation)
   (let loop ((codes codes) (count 0))
@@ -1074,9 +1106,8 @@
     (encode-codes
       context
       (rib-cdr code)
-      '()
       (encode-instruction
-        closure-instruction
+        close-instruction
         (rib-car code)
         return
         target))))
@@ -1095,14 +1126,14 @@
     (else
       (error "invalid operand" operand))))
 
-(define (encode-codes context codes terminal target)
-  (if (eq? codes terminal)
+(define (encode-codes context codes target)
+  (if (terminal-codes? codes)
     target
     (let* (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
-        (rest (rib-cdr codes))
-        (return (null? rest))
+        (codes (rib-cdr codes))
+        (return (null? codes))
         (encode-simple
           (lambda (instruction)
             (encode-instruction
@@ -1112,8 +1143,7 @@
               target))))
       (encode-codes
         context
-        rest
-        terminal
+        codes
         (cond
           ((memv instruction (list set-instruction get-instruction))
             (encode-simple instruction))
@@ -1141,17 +1171,16 @@
                 (encode-simple constant-instruction))))
 
           ((eqv? instruction if-instruction)
-            (let* (
-                (continuation (find-continuation operand rest))
+            (let (
+                (continuation (find-continuation operand))
                 (target
                   (encode-codes
                     context
                     operand
-                    continuation
                     (encode-instruction if-instruction 0 #f target))))
               (if (null? continuation)
                 target
-                (encode-instruction skip-instruction (count-skips rest continuation) #t target))))
+                (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
 
           (else
             (error "invalid instruction" instruction)))))))
@@ -1184,7 +1213,7 @@
       (codes
         (build-primitives
           primitives
-          (build-constants constant-context codes (lambda () codes))))
+          (build-constants constant-context codes)))
       (symbols (find-symbols codes)))
     (encode-symbols
       symbols
@@ -1193,7 +1222,6 @@
           (append (map cdr default-constants) (list rib-symbol) symbols)
           constant-context)
         codes
-        '()
         '()))))
 
 ; Main

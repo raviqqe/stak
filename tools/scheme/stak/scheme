@@ -5,4 +5,5 @@ set -e
 directory=$(dirname $0)/../../..
 
 $directory/tools/compile.sh "$@" >main.out
+$directory/target/release/stak-decode main.out >/dev/null
 $directory/target/release/stak main.out

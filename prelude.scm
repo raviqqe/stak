@@ -365,10 +365,7 @@
 (define char-type 4)
 (define vector-type 5)
 (define bytevector-type 6)
-(define eof-object-type 7)
-(define port-type 8)
-(define record-type 9)
-(define tuple-type 10)
+(define record-type 7)
 
 ; Primitives
 
@@ -392,7 +389,6 @@
 (define $$/ (primitive 15))
 (define $$read-u8 (primitive 16))
 (define $$write-u8 (primitive 17))
-(define dump (primitive 18))
 
 (define (apply f xs)
   ($$apply f xs))
@@ -430,8 +426,8 @@
 
 ;; Record
 
-; For now, we do not use record types for any built-in types for efficiency of
-; data representation.
+; We use record types only for certain built-in types not to degrade space
+; efficiency of their values
 (define-syntax define-record-type
   (syntax-rules ()
     ((_ id
@@ -512,14 +508,6 @@
   (rib x '() char-type))
 
 (define char->integer rib-car)
-
-;; EOF object
-
-(define eof (rib 0 '() eof-object-type))
-
-(define eof-object? (instance? eof-object-type))
-
-(define (eof-object) eof)
 
 ;; List
 
@@ -786,33 +774,6 @@
       (else
         (convert xs)))))
 
-;; Port
-
-(define port? (instance? port-type))
-
-; TODO Use a record type.
-(define (make-port name)
-  (rib #f name port-type))
-
-; TODO Support multiple bytes.
-(define (port-last-byte port)
-  (rib-car port))
-
-(define (port-set-last-byte! port byte)
-  (rib-set-car! port byte))
-
-(define stdin-port (make-port 'stdin))
-
-(define stdout-port (make-port 'stdout))
-
-(define stderr-port (make-port 'stderr))
-
-(define (current-input-port) stdin-port)
-
-(define (current-output-port) stdout-port)
-
-(define (current-error-port) stderr-port)
-
 ;; Procedure
 
 (define procedure? (instance? procedure-type))
@@ -870,6 +831,50 @@
   (rib (length x) x vector-type))
 
 (define vector->list rib-cdr)
+
+; Derived types
+
+;; EOF object
+
+(define-record-type eof-object
+  (make-eof-object)
+  eof-object?)
+
+(define eof (make-eof-object))
+
+(define (eof-object) eof)
+
+;; Port
+
+; TODO Support multiple bytes.
+(define-record-type port
+  (make-port* descriptor last-byte)
+  port?
+  (descriptor port-descriptor)
+  (last-byte port-last-byte port-set-last-byte!))
+
+(define (make-port descriptor)
+  (make-port* descriptor #f))
+
+(define stdin-port (make-port 'stdin))
+
+(define stdout-port (make-port 'stdout))
+
+(define stderr-port (make-port 'stderr))
+
+(define (current-input-port) stdin-port)
+
+(define (current-output-port) stdout-port)
+
+(define (current-error-port) stderr-port)
+
+;; Tuple
+
+; A tuple is primarily used to represent multiple values.
+(define-record-type tuple
+  (make-tuple values)
+  tuple?
+  (values tuple-values))
 
 ; Read
 
@@ -1220,12 +1225,12 @@
 ;; Multi-value
 
 (define (values . xs)
-  (rib #f xs tuple-type))
+  (make-tuple xs))
 
 (define (call-with-values producer consumer)
   (let ((xs (producer)))
-    (if (eqv? (rib-tag xs) tuple-type)
-      (apply consumer (cdr xs))
+    (if (tuple? xs)
+      (apply consumer (tuple-values xs))
       (consumer xs))))
 
 ;; Continuation
