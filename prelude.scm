@@ -1291,7 +1291,8 @@
       (lambda (x) x)))
 
   (let ((global-cell (cons #f (converter x))))
-    (letrec ((parameter
+    (letrec (
+        (parameter
           (lambda new-val
             (let ((cell (dynamic-lookup parameter global-cell)))
               (cond ((null? new-val)
@@ -1328,10 +1329,10 @@
         (lambda () (dynamic-env-local-set! old-local))))))
 
 (define dynamic-lookup
-  (lambda (parameter global-cell)
+  (lambda (parameter cell)
     (or
       (assq parameter (dynamic-env-local-get))
-      global-cell)))
+      cell)))
 
 (define dynamic-env-local '())
 
