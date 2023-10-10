@@ -1299,11 +1299,11 @@
       (begin body ...))
 
     ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
-      (let ((value (parameter1))))
-      (dynamic-wind
-        (lambda () (parameter1 new))
-        (lambda () (parameterize ((parameter2 value2) ...) body ...))
-        (lambda () (parameter2 old))))))
+      (let ((old (parameter1)))
+        (dynamic-wind
+          (lambda () (parameter1 value1))
+          (lambda () (parameterize ((parameter2 value2) ...) body ...))
+          (lambda () (parameter2 old)))))))
 
 ;; Error
 
