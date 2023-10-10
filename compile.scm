@@ -279,10 +279,19 @@
 ; TODO Check if those primitive functions are from the `scheme base` library
 ; before applying optimization.
 (define (optimize expression)
-  (let ((pair (assv (predicate expression) primitive-functions)))
-    (if (and pair (= (length expression) 3))
-      (cons (cdr pair) (cdr expression))
-      expression)))
+  (let ((predicate (predicate expression)))
+    (cond
+      ((eqv? (predicate expression) '$$begin)
+        expression)
+
+      ((and
+          (list? expression)
+          (= (length expression) 3)
+          (assv predicate primitive-functions))
+        (cons (cdr pair) (cdr expression)))
+
+      (else
+        expression))))
 
 (define (resolve-denotation context expression)
   (cond
