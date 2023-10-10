@@ -280,7 +280,17 @@
   (let ((predicate (predicate expression)))
     (cond
       ((eqv? predicate '$$begin)
-        expression)
+        ; Omit top-level constants.
+        (cons '$$begin
+          (let loop ((expressions (cdr expression)))
+            (if (null? expressions)
+              '()
+              (let (
+                  (expression (car expressions))
+                  (expressions (cdr expressions)))
+                (if (or (pair? expression) (null? expressions))
+                  (cons expression (loop expressions))
+                  (loop expressions)))))))
 
       ; TODO Check if those primitive functions are from the `scheme base` library
       ; before applying optimization.
