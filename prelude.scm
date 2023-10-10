@@ -1293,7 +1293,7 @@
     (let (
         (cell
           (or
-            (assq parameter (dynamic-env-local-get))
+            (assq parameter dynamic-env-local)
             cell)))
       (cond
         ((null? rest)
@@ -1318,8 +1318,7 @@
 
 (define dynamic-bind
   (lambda (parameters values body)
-    (let* ((old-local
-          (dynamic-env-local-get))
+    (let* ((old-local dynamic-env-local)
         (new-cells
           (map (lambda (parameter value)
               (cons parameter (parameter value #f)))
@@ -1335,7 +1334,7 @@
 (define dynamic-lookup
   (lambda (parameter cell)
     (or
-      (assq parameter (dynamic-env-local-get))
+      (assq parameter dynamic-env-local)
       cell)))
 
 (define dynamic-env-local '())
