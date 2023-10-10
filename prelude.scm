@@ -1285,10 +1285,7 @@
 ;; Parameter
 
 (define (make-parameter x . rest)
-  (define convert
-    (if (pair? rest)
-      (car rest)
-      (lambda (x) x)))
+  (define convert (if (pair? rest) (car rest) (lambda (x) x)))
 
   (define cell (cons #f (convert x)))
 
