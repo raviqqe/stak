@@ -288,7 +288,9 @@
           (list? expression)
           (= (length expression) 3)
           (assv predicate primitive-functions))
-        (cons (cdr pair) (cdr expression)))
+        =>
+        (lambda (pair)
+          (cons (cdr pair) (cdr expression))))
 
       (else
         expression))))
