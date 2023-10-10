@@ -281,7 +281,7 @@
 (define (optimize expression)
   (let ((predicate (predicate expression)))
     (cond
-      ((eqv? (predicate expression) '$$begin)
+      ((eqv? predicate '$$begin)
         expression)
 
       ((and
