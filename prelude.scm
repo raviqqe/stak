@@ -1293,21 +1293,21 @@
   (let ((cell (cons #f (convert x))))
     (letrec (
         (parameter
-          (lambda x
+          (lambda rest
             (let (
                 (cell
                   (or
                     (assq parameter (dynamic-env-local-get))
                     cell)))
               (cond
-                ((null? x)
+                ((null? rest)
                   (cdr cell))
 
-                ((null? (cdr x))
-                  (set-cdr! cell (convert (car x))))
+                ((null? (cdr rest))
+                  (set-cdr! cell (convert (car rest))))
 
                 (else
-                  (convert (car x))))))))
+                  (convert (car rest))))))))
       (set-car! cell parameter)
       parameter)))
 
