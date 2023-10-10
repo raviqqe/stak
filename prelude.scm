@@ -1324,10 +1324,10 @@
         (new
           (append
             (map
-              (lambda (parameter value)
-                (cons parameter (parameter value #f)))
-              parameters
-              values)
+              (lambda (binding)
+                (let ((parameter (car binding)))
+                  (cons parameter (parameter (cdr binding) #f))))
+              bindings)
             old)))
       (dynamic-wind
         (lambda () (set! dynamic-environment new))
