@@ -1305,10 +1305,10 @@
 
 (define-syntax parameterize
   (syntax-rules ()
-    ((_ ((expression1 expression2) ...) body ...)
+    ((_ ((name value) ...) body ...)
       (dynamic-bind
-        (list expression1 ...)
-        (list expression2 ...)
+        (list name ...)
+        (list value ...)
         (lambda () body ...)))))
 
 (define dynamic-bind
