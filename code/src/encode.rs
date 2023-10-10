@@ -68,8 +68,8 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                 encode_instruction(codes, Instruction::IF, Default::default(), false);
                 encode_instructions(codes, then);
             }
-            Instruction::Closure(arity, body) => {
-                encode_instruction(codes, Instruction::CLOSURE, *arity, r#return);
+            Instruction::Close(arity, body) => {
+                encode_instruction(codes, Instruction::CLOSE, *arity, r#return);
                 encode_instructions(codes, body);
             }
             Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, true),
@@ -217,7 +217,7 @@ mod tests {
     fn encode_closure() {
         encode_and_decode(&Program::new(
             vec![],
-            vec![Instruction::Closure(
+            vec![Instruction::Close(
                 42,
                 vec![Instruction::Call(0, Operand::Integer(0))],
             )],
@@ -229,7 +229,7 @@ mod tests {
         encode_and_decode(&Program::new(
             vec![],
             vec![
-                Instruction::Closure(42, vec![Instruction::Call(0, Operand::Integer(1))]),
+                Instruction::Close(42, vec![Instruction::Call(0, Operand::Integer(1))]),
                 Instruction::Constant(Operand::Integer(2)),
             ],
         ));
@@ -242,7 +242,7 @@ mod tests {
             vec![
                 Instruction::Constant(Operand::Integer(0)),
                 Instruction::Constant(Operand::Integer(1)),
-                Instruction::Closure(
+                Instruction::Close(
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),
@@ -262,7 +262,7 @@ mod tests {
             vec![
                 Instruction::Constant(Operand::Integer(0)),
                 Instruction::Constant(Operand::Integer(1)),
-                Instruction::Closure(
+                Instruction::Close(
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),
@@ -287,7 +287,7 @@ mod tests {
             vec![
                 Instruction::Constant(Operand::Integer(0)),
                 Instruction::Constant(Operand::Integer(1)),
-                Instruction::Closure(
+                Instruction::Close(
                     42,
                     vec![
                         Instruction::Constant(Operand::Integer(2)),
