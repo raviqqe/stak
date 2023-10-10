@@ -48,6 +48,10 @@
 (define closure-instruction 6)
 (define skip-instruction 7)
 
+; Marks
+
+(define then-continuation-mark 0)
+
 ; Primitives
 
 (define primitives
