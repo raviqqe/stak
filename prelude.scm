@@ -1319,12 +1319,13 @@
         (lambda () body ...)))))
 
 (define dynamic-bind
-  (lambda (parameters values body)
+  (lambda (names values body)
     (let* ((old-local dynamic-environment)
         (new-cells
-          (map (lambda (parameter value)
-              (cons parameter (parameter value #f)))
-            parameters
+          (map
+            (lambda (name value)
+              (cons name (name value #f)))
+            names
             values))
         (new-local
           (append new-cells old-local)))
