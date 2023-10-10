@@ -1290,26 +1290,27 @@
       (car rest)
       (lambda (x) x)))
 
-  (let ((cell (cons #f (convert x))))
-    (letrec (
-        (parameter
-          (lambda rest
-            (let (
-                (cell
-                  (or
-                    (assq parameter (dynamic-env-local-get))
-                    cell)))
-              (cond
-                ((null? rest)
-                  (cdr cell))
+  (define cell (cons #f (convert x)))
 
-                ((null? (cdr rest))
-                  (set-cdr! cell (convert (car rest))))
+  (letrec (
+      (parameter
+        (lambda rest
+          (let (
+              (cell
+                (or
+                  (assq parameter (dynamic-env-local-get))
+                  cell)))
+            (cond
+              ((null? rest)
+                (cdr cell))
 
-                (else
-                  (convert (car rest))))))))
-      (set-car! cell parameter)
-      parameter)))
+              ((null? (cdr rest))
+                (set-cdr! cell (convert (car rest))))
+
+              (else
+                (convert (car rest))))))))
+    (set-car! cell parameter)
+    parameter))
 
 (define-syntax parameterize
   (syntax-rules ()
