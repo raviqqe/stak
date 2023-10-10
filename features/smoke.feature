@@ -40,6 +40,18 @@ Feature: Smoke
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "bar"
 
+  Scenario: Capture a local variable in a closure at the second argument
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define x '(#\A))
+
+    (write-u8 (char->integer #\A))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   @stak
   Scenario: Preserve a tag when a cdr is set
     Given a file named "main.scm" with:
