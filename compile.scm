@@ -276,14 +276,14 @@
     (/ . $$/)
     (< . $$<)))
 
-; TODO Check if those primitive functions are from the `scheme base` library
-; before applying optimization.
 (define (optimize expression)
   (let ((predicate (predicate expression)))
     (cond
       ((eqv? predicate '$$begin)
         expression)
 
+      ; TODO Check if those primitive functions are from the `scheme base` library
+      ; before applying optimization.
       ((and
           (list? expression)
           (= (length expression) 3)
