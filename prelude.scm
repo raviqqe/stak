@@ -1307,7 +1307,7 @@
   (syntax-rules ()
     ((_ ((name value) ...) body ...)
       (dynamic-bind
-        (list name ...)
+        (list 'name ...)
         (list value ...)
         (lambda () body ...)))))
 
