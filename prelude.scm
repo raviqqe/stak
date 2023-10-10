@@ -1291,13 +1291,10 @@
 
   (define value (convert x))
 
-  (define (parameter . rest)
+  (lambda rest
     (if (null? rest)
       value
-      (set-cdr! cell (convert (car rest)))))
-
-  (set-car! cell parameter)
-  parameter)
+      (set-cdr! cell (convert (car rest))))))
 
 (define-syntax parameterize
   (syntax-rules ()
