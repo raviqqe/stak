@@ -1,6 +1,6 @@
 use device::StdioDevice;
 use std::{
-    env::{self, args, VarError},
+    env::{self, args},
     error::Error,
     fs::read,
     process::exit,
