@@ -1284,6 +1284,8 @@
 
 ;; Parameter
 
+(define dynamic-environment '())
+
 (define (make-parameter x . rest)
   (define convert (if (pair? rest) (car rest) (lambda (x) x)))
 
@@ -1330,14 +1332,6 @@
         (lambda () (set! dynamic-environment new))
         body
         (lambda () (set! dynamic-environment old))))))
-
-(define dynamic-lookup
-  (lambda (parameter cell)
-    (or
-      (assq parameter dynamic-environment)
-      cell)))
-
-(define dynamic-environment '())
 
 ;; Error
 
