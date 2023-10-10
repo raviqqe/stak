@@ -1288,13 +1288,12 @@
 
 (define (make-parameter x . rest)
   (define convert (if (pair? rest) (car rest) (lambda (x) x)))
-
   (define value (convert x))
 
   (lambda rest
     (if (null? rest)
       value
-      (set-cdr! cell (convert (car rest))))))
+      (set-cdr! value (convert (car rest))))))
 
 (define-syntax parameterize
   (syntax-rules ()
