@@ -68,7 +68,6 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAAAAAAAAAA"
 
-  @stak
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
     """scheme
@@ -77,7 +76,7 @@ Feature: Number
     (define (test x y)
       (write-u8 (if (= x y) 65 66)))
 
-    (test (/ 2) 0)
+    (test (/ 2) (/ 1 2))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
