@@ -1284,8 +1284,6 @@
 
 ;; Parameter
 
-(define dynamic-environment '())
-
 (define (make-parameter x . rest)
   (define convert (if (pair? rest) (car rest) (lambda (x) x)))
   (set! x (convert x))
@@ -1300,17 +1298,12 @@
     ((_ () body ...)
       (begin body ...))
 
-    ((_ ((parameter value) ...) body ...)
-      (dynamic-bind
-        (list (cons parameter value) ...)
-        (lambda () body ...)))))
-
-(define dynamic-bind
-  (lambda (bindings body)
-    (dynamic-wind
-      (lambda () (set! dynamic-environment new))
-      body
-      (lambda () (set! dynamic-environment old)))))
+    ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
+      (let ((value (parameter1))))
+      (dynamic-wind
+        (lambda () (parameter1 new))
+        (lambda () (parameterize ((parameter2 value2) ...) body ...))
+        (lambda () (parameter2 old))))))
 
 ;; Error
 
