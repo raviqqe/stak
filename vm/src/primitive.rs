@@ -19,7 +19,6 @@ pub enum Primitive {
     Divide,
     Read,
     Write,
-    Dump,
 }
 
 impl Primitive {
@@ -41,5 +40,4 @@ impl Primitive {
     pub const DIVIDE: u8 = Self::Divide as _;
     pub const READ: u8 = Self::Read as _;
     pub const WRITE: u8 = Self::Write as _;
-    pub const DUMP: u8 = Self::Dump as _;
 }
