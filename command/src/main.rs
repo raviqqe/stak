@@ -1,11 +1,13 @@
 use device::StdioDevice;
 use std::{
-    env::{self, args},
+    env::{self, args, VarError},
     error::Error,
     fs::read,
     process::exit,
 };
 use vm::{Number, Vm};
+
+const DEFAULT_HEAP_SIZE: usize = 1 << 17;
 
 fn main() {
     if let Err(error) = run() {
@@ -15,7 +17,11 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let size = env::var("STAK_HEAP_SIZE").parse()?;
+    let size = env::var("STAK_HEAP_SIZE")
+        .ok()
+        .map(|string| string.parse())
+        .transpose()?
+        .unwrap_or(DEFAULT_HEAP_SIZE);
     let mut heap = vec![Number::new(0).into(); size];
     let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default());
 
