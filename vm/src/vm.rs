@@ -1,6 +1,5 @@
 use crate::{
     cons::{Cons, FALSE, MOVED, NULL, TRUE},
-    instruction::Instruction,
     number::Number,
     primitive::Primitive,
     r#type::Type,
@@ -755,7 +754,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    self.append_instruction(Instruction::IF, then.into(), false)?
+                    self.append_instruction(instruction, then.into(), false)?
                 }
                 code::Instruction::CLOSURE => {
                     let code = self.allocate(
@@ -767,7 +766,11 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     self.program_counter = self.pop()?.assume_cons();
 
-                    self.append_instruction(Instruction::CONSTANT, procedure.into(), r#return)?
+                    self.append_instruction(
+                        code::Instruction::CONSTANT,
+                        procedure.into(),
+                        r#return,
+                    )?
                 }
                 code::Instruction::SKIP => {
                     self.tail(self.program_counter, Number::new(integer as i64))
