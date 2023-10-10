@@ -43,10 +43,10 @@
 (define get-instruction 2)
 (define constant-instruction 3)
 (define if-instruction 4)
+(define nop-instruction 5)
 ; Only for encoding
-(define closure-instruction 5)
-(define skip-instruction 6)
-(define nop-instruction 7)
+(define closure-instruction 6)
+(define skip-instruction 7)
 
 ; Primitives
 
