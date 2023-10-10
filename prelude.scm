@@ -1320,15 +1320,16 @@
 
 (define dynamic-bind
   (lambda (parameters values body)
-    (let* ((old-local dynamic-environment)
-        (new-cells
-          (map
-            (lambda (parameter value)
-              (cons parameter (parameter value #f)))
-            parameters
-            values))
-        (new-local
-          (append new-cells old-local)))
+    (let* (
+        (old dynamic-environment)
+        (new
+          (append
+            (map
+              (lambda (parameter value)
+                (cons parameter (parameter value #f)))
+              parameters
+              values)
+            old)))
       (dynamic-wind
         (lambda () (set! dynamic-environment new))
         body
