@@ -1290,7 +1290,7 @@
       (car rest)
       (lambda (x) x)))
 
-  (let ((cell (cons #f (converter x))))
+  (let ((cell (cons #f (convert x))))
     (letrec (
         (parameter
           (lambda new-val
@@ -1302,9 +1302,9 @@
               (cond ((null? new-val)
                   (cdr cell))
                 ((null? (cdr new-val))
-                  (set-cdr! cell (converter (car new-val))))
+                  (set-cdr! cell (convert (car new-val))))
                 (else ; this case is needed for parameterize
-                  (converter (car new-val))))))))
+                  (convert (car new-val))))))))
       (set-car! cell parameter)
       parameter)))
 
