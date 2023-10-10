@@ -986,7 +986,7 @@
   (let loop ((codes codes) (count 0))
     (if (eq? codes continuation)
       count
-      (loop (rib-cdr codes) (+ (if (nop-codes? codes) 0 1) count)))))
+      (loop (rib-cdr codes) (+ 1 count)))))
 
 ;; Context
 
