@@ -1289,7 +1289,7 @@
 (define (make-parameter x . rest)
   (define convert (if (pair? rest) (car rest) (lambda (x) x)))
 
-  (define cell (cons #f (convert x)))
+  (define value (convert x))
 
   (define (parameter . rest)
     (let (
@@ -1301,11 +1301,8 @@
         ((null? rest)
           (cdr cell))
 
-        ((null? (cdr rest))
-          (set-cdr! cell (convert (car rest))))
-
         (else
-          (convert (car rest))))))
+          (set-cdr! cell (convert (car rest)))))))
 
   (set-car! cell parameter)
   parameter)
