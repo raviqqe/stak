@@ -22,3 +22,22 @@ Feature: Parameter
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABA"
+
+  Scenario: Use multiple parameters
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define x (make-parameter 65))
+    (define y (make-parameter 66))
+
+    (write-u8 (x))
+    (write-u8 (y))
+    (parameterize ((x 67) (y 68))
+      (write-u8 (x))
+      (write-u8 (y)))
+    (write-u8 (x))
+    (write-u8 (y))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABCDAB"
