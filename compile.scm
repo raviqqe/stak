@@ -1102,66 +1102,63 @@
       (error "invalid operand" operand))))
 
 (define (encode-codes context codes target)
-  (cond
-    ((terminal-codes? codes)
-      target)
+  (if (terminal-codes? codes)
+    target
+    (let* (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (codes (rib-cdr codes))
+        (return (null? codes))
+        (encode-simple
+          (lambda (instruction)
+            (encode-instruction
+              instruction
+              (encode-operand context operand)
+              return
+              target))))
+      (encode-codes
+        context
+        codes
+        (cond
+          ((memv instruction (list set-instruction get-instruction))
+            (encode-simple instruction))
 
-    (else
-      (let* (
-          (instruction (rib-tag codes))
-          (operand (rib-car codes))
-          (codes (rib-cdr codes))
-          (return (null? codes))
-          (encode-simple
-            (lambda (instruction)
-              (encode-instruction
-                instruction
-                (encode-operand context operand)
-                return
-                target))))
-        (encode-codes
-          context
-          codes
-          (cond
-            ((memv instruction (list set-instruction get-instruction))
-              (encode-simple instruction))
+          ((eqv? instruction call-instruction)
+            (encode-instruction
+              instruction
+              (rib-car operand)
+              return
+              (encode-integer (encode-operand context (rib-cdr operand)) target)))
 
-            ((eqv? instruction call-instruction)
-              (encode-instruction
-                instruction
-                (rib-car operand)
-                return
-                (encode-integer (encode-operand context (rib-cdr operand)) target)))
+          ((and
+              (eqv? instruction constant-instruction)
+              (stak-procedure? operand))
+            (encode-procedure context operand return target))
 
-            ((and
-                (eqv? instruction constant-instruction)
-                (stak-procedure? operand))
-              (encode-procedure context operand return target))
+          ((eqv? instruction constant-instruction)
+            (let ((symbol (encode-context-constant context operand)))
+              (if symbol
+                (encode-instruction
+                  get-instruction
+                  (encode-operand context symbol)
+                  return
+                  target)
+                (encode-simple constant-instruction))))
 
-            ((eqv? instruction constant-instruction)
-              (let ((symbol (encode-context-constant context operand)))
-                (if symbol
-                  (encode-instruction
-                    get-instruction
-                    (encode-operand context symbol)
-                    return
-                    target)
-                  (encode-simple constant-instruction))))
+          ((eqv? instruction if-instruction)
+            (let (
+                (continuation (find-continuation operand))
+                (target
+                  (encode-codes
+                    context
+                    operand
+                    (encode-instruction if-instruction 0 #f target))))
+              (if (null? continuation)
+                target
+                (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
 
-            ((eqv? instruction if-instruction)
-              (let (
-                  (continuation (find-continuation operand))
-                  (target
-                    (encode-codes
-                      context
-                      operand
-                      (encode-instruction if-instruction 0 #f target))))
-                (if (null? continuation)
-                  target
-                  (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
-
-            (else
-              (error "invalid instruction" instruction))))))))
+          (else
+            (error "invalid instruction" instruction)))))))
 
 ;; Primitives
 
