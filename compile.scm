@@ -276,13 +276,38 @@
     (/ . $$/)
     (< . $$<)))
 
-; TODO Check if those primitive functions are from the `scheme base` library
-; before applying optimization.
 (define (optimize expression)
-  (let ((pair (assv (predicate expression) primitive-functions)))
-    (if (and pair (= (length expression) 3))
-      (cons (cdr pair) (cdr expression))
-      expression)))
+  (let ((predicate (predicate expression)))
+    (cond
+      ((eqv? predicate '$$begin)
+        ; Omit top-level constants.
+        (cons '$$begin
+          (let loop ((expressions (cdr expression)))
+            (let (
+                (expression (car expressions))
+                (expressions (cdr expressions)))
+              (cond
+                ((null? expressions)
+                  (list expression))
+
+                ((pair? expression)
+                  (cons expression (loop expressions)))
+
+                (else
+                  (loop expressions)))))))
+
+      ; TODO Check if those primitive functions are from the `scheme base` library
+      ; before applying optimization.
+      ((and
+          (list? expression)
+          (= (length expression) 3)
+          (assv predicate primitive-functions))
+        =>
+        (lambda (pair)
+          (cons (cdr pair) (cdr expression))))
+
+      (else
+        expression))))
 
 (define (resolve-denotation context expression)
   (cond
