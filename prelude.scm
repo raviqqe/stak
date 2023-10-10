@@ -1305,7 +1305,7 @@
 
 (define-syntax parameterize
   (syntax-rules ()
-    ((parameterize ((expr1 expr2) ...) body ...)
+    ((_ ((expr1 expr2) ...) body ...)
       (dynamic-bind (list expr1 ...)
         (list expr2 ...)
         (lambda () body ...)))))
