@@ -45,9 +45,13 @@ Feature: Smoke
     """scheme
     (import (scheme base))
 
-    (define x '(#\A))
+    (define (foo x y)
+      (y))
 
-    (write-u8 (char->integer #\A))
+    (write-u8
+      ((lambda (f)
+          (foo #f (lambda () (f 65))))
+        (lambda (x) x)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
