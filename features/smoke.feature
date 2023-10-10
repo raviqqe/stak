@@ -83,5 +83,6 @@ Feature: Smoke
     cat foo.scm >> main.scm
     """
     And the exit status should be 0
-    When I successfully run `scheme main.scm`
+    When I set the environment variable "STAK_HEAP_SIZE" to "1048576"
+    And I successfully run `scheme main.scm`
     Then the exit status should be 0
