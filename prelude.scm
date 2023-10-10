@@ -1293,7 +1293,7 @@
     (let (
         (cell
           (or
-            (assq parameter dynamic-env-local)
+            (assq parameter dynamic-environment)
             cell)))
       (cond
         ((null? rest)
@@ -1318,7 +1318,7 @@
 
 (define dynamic-bind
   (lambda (parameters values body)
-    (let* ((old-local dynamic-env-local)
+    (let* ((old-local dynamic-environment)
         (new-cells
           (map (lambda (parameter value)
               (cons parameter (parameter value #f)))
@@ -1327,23 +1327,20 @@
         (new-local
           (append new-cells old-local)))
       (dynamic-wind
-        (lambda () (dynamic-env-local-set! new-local))
+        (lambda () (dynamic-environment-set! new-local))
         body
-        (lambda () (dynamic-env-local-set! old-local))))))
+        (lambda () (dynamic-environment-set! old-local))))))
 
 (define dynamic-lookup
   (lambda (parameter cell)
     (or
-      (assq parameter dynamic-env-local)
+      (assq parameter dynamic-environment)
       cell)))
 
-(define dynamic-env-local '())
+(define dynamic-environment '())
 
-(define dynamic-env-local-get
-  (lambda () dynamic-env-local))
-
-(define dynamic-env-local-set!
-  (lambda (new-env) (set! dynamic-env-local new-env)))
+(define dynamic-environment-set!
+  (lambda (new-env) (set! dynamic-environment new-env)))
 
 ;; Error
 
