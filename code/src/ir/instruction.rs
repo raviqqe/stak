@@ -11,10 +11,10 @@ pub enum Instruction {
     Constant(Operand),
     #[cfg(feature = "alloc")]
     If(Vec<Instruction>),
+    Nop(u64),
     #[cfg(feature = "alloc")]
     Closure(u64, Vec<Instruction>),
     Skip(u64),
-    Nop(u64),
 }
 
 impl Instruction {
@@ -23,9 +23,9 @@ impl Instruction {
     pub const GET: u8 = 2;
     pub const CONSTANT: u8 = 3;
     pub const IF: u8 = 4;
-    pub const CLOSURE: u8 = 5;
-    pub const SKIP: u8 = 6;
-    pub const NOP: u8 = 7;
+    pub const NOP: u8 = 5;
+    pub const CLOSURE: u8 = 6;
+    pub const SKIP: u8 = 7;
 }
 
 pub(crate) struct DisplayInstruction<'a> {
@@ -43,9 +43,9 @@ impl<'a> DisplayInstruction<'a> {
     }
 }
 
+#[cfg(feature = "alloc")]
 impl<'a> Display for DisplayInstruction<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        #[cfg(feature = "alloc")]
         let indent = self.indent + 1;
 
         match self.instruction {
@@ -53,7 +53,6 @@ impl<'a> Display for DisplayInstruction<'a> {
             Instruction::Set(operand) => write!(formatter, "set {}", operand),
             Instruction::Get(operand) => write!(formatter, "get {}", operand),
             Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
-            #[cfg(feature = "alloc")]
             Instruction::If(instructions) => {
                 write!(formatter, "if")?;
                 write!(
@@ -62,7 +61,7 @@ impl<'a> Display for DisplayInstruction<'a> {
                     DisplayInstructionList::new(instructions, indent)
                 )
             }
-            #[cfg(feature = "alloc")]
+            Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
             Instruction::Closure(arity, instructions) => {
                 write!(formatter, "closure {}", arity)?;
                 write!(
@@ -72,7 +71,6 @@ impl<'a> Display for DisplayInstruction<'a> {
                 )
             }
             Instruction::Skip(count) => write!(formatter, "skip {}", count),
-            Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
         }
     }
 }

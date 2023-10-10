@@ -83,7 +83,7 @@ impl<'a, T: Device> Vm<'a, T> {
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
-                Instruction::CALL => {
+                code::Instruction::CALL => {
                     let r#return = instruction == NULL;
                     let mut procedure = self.procedure();
 
@@ -178,13 +178,13 @@ impl<'a, T: Device> Vm<'a, T> {
                         }
                     }
                 }
-                Instruction::SET => {
+                code::Instruction::SET => {
                     let operand = self.operand_variable();
                     let value = self.pop()?;
                     *self.car_mut(operand) = value;
                     self.advance_program_counter();
                 }
-                Instruction::GET => {
+                code::Instruction::GET => {
                     let operand = self.operand_variable();
 
                     trace!("operand", operand);
@@ -196,7 +196,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     self.push(value)?;
                     self.advance_program_counter();
                 }
-                Instruction::CONSTANT => {
+                code::Instruction::CONSTANT => {
                     let constant = self.operand();
 
                     trace!("constant", constant);
@@ -204,7 +204,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     self.push(constant)?;
                     self.advance_program_counter();
                 }
-                Instruction::IF => {
+                code::Instruction::IF => {
                     self.program_counter = (if self.pop()? == FALSE.into() {
                         self.cdr(self.program_counter)
                     } else {
