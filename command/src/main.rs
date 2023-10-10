@@ -1,10 +1,13 @@
 use device::StdioDevice;
-use std::{env::args, error::Error, fs::read, process::exit};
+use std::{
+    env::{self, args},
+    error::Error,
+    fs::read,
+    process::exit,
+};
 use vm::{Number, Vm};
 
-// TODO Change this value through an environment variable.
-// TODO Make a default value `1 << 17`.
-const HEAP_SIZE: usize = 1 << 20;
+const DEFAULT_HEAP_SIZE: usize = 1 << 17;
 
 fn main() {
     if let Err(error) = run() {
@@ -14,7 +17,12 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let mut heap = vec![Number::new(0).into(); HEAP_SIZE];
+    let size = env::var("STAK_HEAP_SIZE")
+        .ok()
+        .map(|string| string.parse())
+        .transpose()?
+        .unwrap_or(DEFAULT_HEAP_SIZE);
+    let mut heap = vec![Number::new(0).into(); size];
     let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default());
 
     vm.initialize(read(args().nth(1).ok_or(format!(
