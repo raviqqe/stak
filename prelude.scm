@@ -1299,7 +1299,9 @@
       (begin body ...))
 
     ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
-      (let ((old (parameter1)))
+      (let (
+          (parameter1 parameter1)
+          (old (parameter1)))
         (dynamic-wind
           (lambda () (parameter1 value1))
           (lambda () (parameterize ((parameter2 value2) ...) body ...))
