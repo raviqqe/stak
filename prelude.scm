@@ -1297,6 +1297,9 @@
 
 (define-syntax parameterize
   (syntax-rules ()
+    ((_ () body ...)
+      (begin body ...))
+
     ((_ ((parameter value) ...) body ...)
       (dynamic-bind
         (list (cons parameter value) ...)
@@ -1304,20 +1307,10 @@
 
 (define dynamic-bind
   (lambda (bindings body)
-    (let* (
-        (old dynamic-environment)
-        (new
-          (append
-            (map
-              (lambda (binding)
-                (let ((parameter (car binding)))
-                  (cons parameter (parameter (cdr binding) #f))))
-              bindings)
-            old)))
-      (dynamic-wind
-        (lambda () (set! dynamic-environment new))
-        body
-        (lambda () (set! dynamic-environment old))))))
+    (dynamic-wind
+      (lambda () (set! dynamic-environment new))
+      body
+      (lambda () (set! dynamic-environment old)))))
 
 ;; Error
 
