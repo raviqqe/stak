@@ -81,7 +81,6 @@ pub(crate) struct DisplayInstructionList<'a> {
 }
 
 impl<'a> DisplayInstructionList<'a> {
-    #[cfg(feature = "alloc")]
     pub fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
@@ -90,6 +89,7 @@ impl<'a> DisplayInstructionList<'a> {
     }
 }
 
+#[cfg(feature = "alloc")]
 impl<'a> Display for DisplayInstructionList<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         for instruction in self.instructions {
