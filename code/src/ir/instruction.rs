@@ -13,7 +13,7 @@ pub enum Instruction {
     If(Vec<Instruction>),
     Nop(u64),
     #[cfg(feature = "alloc")]
-    Closure(u64, Vec<Instruction>),
+    Close(u64, Vec<Instruction>),
     Skip(u64),
 }
 
@@ -24,7 +24,7 @@ impl Instruction {
     pub const CONSTANT: u8 = 3;
     pub const IF: u8 = 4;
     pub const NOP: u8 = 5;
-    pub const CLOSURE: u8 = 6;
+    pub const CLOSE: u8 = 6;
     pub const SKIP: u8 = 7;
 }
 
@@ -62,7 +62,7 @@ impl<'a> Display for DisplayInstruction<'a> {
                 )
             }
             Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
-            Instruction::Closure(arity, instructions) => {
+            Instruction::Close(arity, instructions) => {
                 write!(formatter, "closure {}", arity)?;
                 write!(
                     formatter,

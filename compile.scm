@@ -45,7 +45,7 @@
 (define if-instruction 4)
 (define nop-instruction 5)
 ; Only for encoding
-(define closure-instruction 6)
+(define close-instruction 6)
 (define skip-instruction 7)
 
 ; Primitives
@@ -1082,7 +1082,7 @@
       context
       (rib-cdr code)
       (encode-instruction
-        closure-instruction
+        close-instruction
         (rib-car code)
         return
         target))))

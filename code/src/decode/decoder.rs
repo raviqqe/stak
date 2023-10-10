@@ -76,7 +76,7 @@ impl<'a> Decoder<'a> {
 
                     instruction
                 }
-                Instruction::CLOSURE => Instruction::Closure(
+                Instruction::CLOSE => Instruction::Close(
                     integer,
                     replace(
                         {

@@ -756,7 +756,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     self.append_instruction(instruction, then.into(), false)?
                 }
-                code::Instruction::CLOSURE => {
+                code::Instruction::CLOSE => {
                     let code = self.allocate(
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
@@ -1084,7 +1084,7 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Closure(0, vec![Instruction::Call(0, Operand::Integer(1))]),
+                    Instruction::Close(0, vec![Instruction::Call(0, Operand::Integer(1))]),
                     Instruction::Constant(Operand::Integer(0)),
                 ],
             ));
