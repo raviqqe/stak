@@ -1303,7 +1303,7 @@
         (dynamic-wind
           (lambda () (parameter1 value1))
           (lambda () (parameterize ((parameter2 value2) ...) body ...))
-          (lambda () (parameter2 old)))))))
+          (lambda () (parameter1 old)))))))
 
 ;; Error
 
