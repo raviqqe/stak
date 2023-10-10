@@ -1299,11 +1299,14 @@
                   (or
                     (assq parameter (dynamic-env-local-get))
                     cell)))
-              (cond ((null? x)
+              (cond
+                ((null? x)
                   (cdr cell))
+
                 ((null? (cdr x))
                   (set-cdr! cell (convert (car x))))
-                (else ; this case is needed for parameterize
+
+                (else
                   (convert (car x))))))))
       (set-car! cell parameter)
       parameter)))
