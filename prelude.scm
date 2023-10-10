@@ -1312,9 +1312,9 @@
 
 (define-syntax parameterize
   (syntax-rules ()
-    ((_ ((name value) ...) body ...)
+    ((_ ((parameter value) ...) body ...)
       (dynamic-bind
-        (list 'name ...)
+        (list parameter ...)
         (list value ...)
         (lambda () body ...)))))
 
