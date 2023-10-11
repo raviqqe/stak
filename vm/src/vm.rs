@@ -126,10 +126,9 @@ impl<'a, T: Device> Vm<'a, T> {
                                 self.continuation()
                             } else {
                                 self.allocate(self.cdr(program_counter), self.stack.into())?
-                                    .into()
                             };
                             self.stack = self.allocate(
-                                continuation,
+                                continuation.into(),
                                 self.environment(self.program_counter)
                                     .set_tag(FRAME_TAG)
                                     .into(),
@@ -216,9 +215,9 @@ impl<'a, T: Device> Vm<'a, T> {
         if self.program_counter == NULL {
             let continuation = self.continuation();
 
-            self.program_counter = self.car_value(continuation).assume_cons();
+            self.program_counter = self.car(continuation).assume_cons();
             // Keep a value at the top of a stack.
-            *self.cdr_mut(self.stack) = self.cdr_value(continuation);
+            *self.cdr_mut(self.stack) = self.cdr(continuation);
         }
     }
 
@@ -257,14 +256,14 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     // (program-counter . stack)
-    fn continuation(&self) -> Value {
+    fn continuation(&self) -> Cons {
         let mut stack = self.stack;
 
         while self.cdr(stack).assume_cons().tag() != FRAME_TAG {
             stack = self.cdr(stack).assume_cons();
         }
 
-        self.car(stack)
+        self.car(stack).assume_cons()
     }
 
     fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
@@ -287,19 +286,13 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
-        let cons = self.pop_cons()?;
-
-        Ok(self.car(cons))
-    }
-
-    fn pop_cons(&mut self) -> Result<Cons, Error> {
         if self.stack == NULL {
             return Err(Error::StackUnderflow);
         }
 
-        let stack = self.stack;
+        let value = self.car(self.stack);
         self.stack = self.cdr(self.stack).assume_cons();
-        Ok(stack)
+        Ok(value)
     }
 
     fn top(&self) -> Value {
