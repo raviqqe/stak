@@ -1314,55 +1314,36 @@
 
 ;; Exception
 
-(define (exception-handler exception)
-  (display exception)
-  (newline)
-  ; Raise an non-recoverable exception in any way.
-  (#f))
+(define-record-type error-object
+  (make-error-object message rest)
+  error-object?
+  (message error-object-message)
+  (rest error-object-rest))
 
-(define (with-exception-handler new thunk)
-  (let ((old #f))
-    (dynamic-wind
-      (lambda ()
-        (set! old exception-handler)
-        (set! exception-handler new))
-      thunk
-      (lambda ()
-        (set! exception-handler old)))))
+(define exception-handler
+  (make-parameter
+    (lambda (exception)
+      (let ((port (current-error-port)))
+        (if (error-object? exception)
+          (begin
+            (write-string (error-object-message exception) port)
+            (write-char #\space port)
+            (let ((rest (error-object-rest exception)))
+              (when (pair? rest)
+                (write (car rest) port))))
+          (display exception port))
+        (newline port)
+        ; Raise an non-recoverable exception in any way.
+        (#f)))))
+
+(define (with-exception-handler handler thunk)
+  (parameterize ((exception-handler handler)) thunk))
+
+(define (raise exception)
+  ((exception-handler) exception))
 
 (define (raise-continuable exception)
-  (exception-handler exception))
-
-(define-syntax handle-exceptions
-  (syntax-rules ()
-    ((_ var handle-body e1 e2 ...)
-      ((call-with-current-continuation
-          (lambda (k)
-            (with-exception-handler
-              (lambda (var)
-                (k (lambda () handle-body)))
-              (lambda ()
-                (call-with-values
-                  (lambda () e1 e2 ...)
-                  (lambda args (k (lambda () (apply values args)))))))))))))
+  (raise exception))
 
 (define (error message . rest)
-  (unwind
-    (lambda ()
-      (rib-set-car!
-        (rib-cdr (close dummy-function)) ; frame
-        (cons '() '()))
-      (write-string message (current-error-port))
-      (write-char #\space (current-error-port))
-      (when (pair? rest)
-        (write (car rest) (current-error-port)))
-      #f)))
-
-;; Unwind
-
-(define unwind #f)
-
-((call/cc
-    (lambda (continuation)
-      (set! unwind continuation)
-      dummy-function)))
+  (raise (make-error-object message rest)))
