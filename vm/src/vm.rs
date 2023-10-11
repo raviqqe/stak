@@ -139,6 +139,10 @@ impl<'a, T: Device> Vm<'a, T> {
                                 .assume_cons();
 
                             for _ in 0..parameters.count.to_i64() {
+                                if self.temporary == NULL {
+                                    return Err(Error::ArgumentCount);
+                                }
+
                                 self.push(self.car(self.temporary))?;
                                 self.temporary = self.cdr(self.temporary).assume_cons();
                             }
