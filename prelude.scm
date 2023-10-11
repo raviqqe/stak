@@ -1092,7 +1092,15 @@
     (#\return . #\r)))
 
 (define (write-u8 byte . rest)
-  ($$write-u8 byte))
+  (case (port-descriptor (get-output-port rest))
+    ((stdout)
+      ($$write-u8 byte))
+
+    ((stderr)
+      ($$write-error-u8 byte))
+
+    (else
+      (error "invalid port"))))
 
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
@@ -1108,6 +1116,8 @@
       (write-char x port))))
 
 (define (write-string x . rest)
+  (define port (get-output-port rest))
+
   (for-each
     (lambda (x) (write-char x port))
     (string->list x)))
