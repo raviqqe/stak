@@ -24,5 +24,4 @@ Feature: Error
     """
     When I run `scheme main.scm`
     Then the stderr should contain "Oh, no!"
-    # TODO Write an error message to stderr.
     # TODO Test an exit code.
