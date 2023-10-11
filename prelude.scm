@@ -1342,10 +1342,13 @@
   (parameterize ((exception-handler handler)) thunk))
 
 (define (raise exception)
-  ((exception-handler) exception))
+  (raise-continuable exception)
+  ; TODO Call a previous exception handler.
+  ; (raise exception)
+  #f)
 
 (define (raise-continuable exception)
-  (raise exception))
+  ((exception-handler) exception))
 
 (define (error message . rest)
   (raise (make-error-object message rest)))
