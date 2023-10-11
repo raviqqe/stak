@@ -339,13 +339,6 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(cons)
     }
 
-    fn initialize_temporary_for_run(&mut self) -> Result<(), Error> {
-        let cons = self.allocate(FALSE.into(), FALSE.into())?;
-        self.temporary = self.allocate(cons.into(), FALSE.into())?;
-
-        Ok(())
-    }
-
     fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
@@ -620,8 +613,6 @@ impl<'a, T: Device> Vm<'a, T> {
         // Initialize an implicit top-level frame.
         let continuation = self.allocate(NULL.into(), NULL.into())?.into();
         self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
-
-        self.initialize_temporary_for_run()?;
 
         Ok(())
     }
