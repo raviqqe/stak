@@ -1349,3 +1349,7 @@
 
 (define (error message . rest)
   (raise (make-error-object message rest)))
+
+; TODO Implement those errors.
+(define (read-error? value) #f)
+(define (file-error? value) #f)
