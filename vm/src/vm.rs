@@ -857,7 +857,7 @@ mod tests {
 
     const HEAP_SIZE: usize = 1 << 9;
 
-    type FakeDevice = FixedBufferDevice<16, 16>;
+    type FakeDevice = FixedBufferDevice<16, 16, 16>;
 
     fn create_heap() -> [Value; HEAP_SIZE] {
         [ZERO.into(); HEAP_SIZE]
