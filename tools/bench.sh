@@ -2,7 +2,7 @@
 
 set -ex
 
-brew install chibi-scheme gambit-scheme gauche
+brew install chibi-scheme gambit-scheme gauche guile
 
 cargo install hyperfine
 cargo build --release
@@ -16,6 +16,6 @@ for file in $(find bench -type f -name '*.scm' | sort); do
 
   hyperfine \
     --sort command \
-    -L script "target/release/stak $base.out,gsi $file,chibi-scheme $file,gosh $file,python3 $base.py" \
+    -L script "target/release/stak $base.out,gsi $file,chibi-scheme $file,guile $file,gosh $file,python3 $base.py" \
     "{script}"
 done
