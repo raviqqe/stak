@@ -1,3 +1,5 @@
+use core::fmt::Debug;
+
 pub trait Device {
     type Error: Debug;
 
