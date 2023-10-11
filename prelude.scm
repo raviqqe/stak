@@ -1320,12 +1320,12 @@
   ; Raise an non-recoverable exception in any way.
   (#f))
 
-(define (with-exception-handler handler thunk)
+(define (with-exception-handler new thunk)
   (let ((old #f))
     (dynamic-wind
       (lambda ()
         (set! old exception-handler)
-        (set! exception-handler handler))
+        (set! exception-handler new))
       thunk
       (lambda ()
         (set! exception-handler old)))))
@@ -1345,36 +1345,6 @@
                 (call-with-values
                   (lambda () e1 e2 ...)
                   (lambda args (k (lambda () (apply values args)))))))))))))
-
-; the following is an approximate implementation of conditions that uses lists,
-; instead of a disjoint class of values
-
-(define (condition? obj)
-  ; a condition is represented as a pair where the first value of the
-  ; pair is this function. a program could forge conditions, and they're
-  ; not disjoint from scheme pairs.
-  (and (pair? obj)
-    (eq? condition? (car obj))))
-
-(define (make-property-condition kind-key . prop-vals)
-  (cons condition? (list (cons kind-key prop-vals))))
-
-(define (make-composite-condition . conditions)
-  (cons condition? (apply append
-      (map cdr conditions))))
-
-(define (condition-predicate kind-key)
-  (lambda (exception)
-    (if (condition? exception)
-      (assq kind-key (cdr exception))
-      #f)))
-
-(define (condition-property-accessor kind-key prop-key)
-  (lambda (exception)
-    (let ((p ((condition-predicate kind-key) exception)))
-      ; either cadr or cdr could fail; should check arguments for
-      ; better error reporting:
-      (cadr (memq prop-key (cdr p))))))
 
 (define (error message . rest)
   (unwind
