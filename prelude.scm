@@ -1312,7 +1312,74 @@
           (lambda () (parameterize ((parameter2 value2) ...) body ...))
           (lambda () (parameter old)))))))
 
-;; Error
+;; Exception
+
+; TODO
+(define (current-exception-handler)
+  #f)
+
+(define (with-exception-handler handler thunk)
+  (let ((old #f))
+    (dynamic-wind
+      (lambda ()
+        (set! old *current-exn-handler*)
+        (set! *current-exn-handler* handler))
+      thunk
+      (lambda ()
+        (set! *current-exn-handler* old)))))
+
+(define (abort obj)
+  ((current-exception-handler) obj)
+  (abort (make-property-condition
+      'exn
+      'message
+      "exception handler returned")))
+
+(define (signal exn)
+  ((current-exception-handler) exn))
+
+(define-syntax handle-exceptions
+  (syntax-rules ()
+    ((_ var handle-body e1 e2 ...)
+      ((call-with-current-continuation
+          (lambda (k)
+            (with-exception-handler
+              (lambda (var)
+                (k (lambda () handle-body)))
+              (lambda ()
+                (call-with-values
+                  (lambda () e1 e2 ...)
+                  (lambda args (k (lambda () (apply values args)))))))))))))
+
+; the following is an approximate implementation of conditions that uses lists,
+; instead of a disjoint class of values
+
+(define (condition? obj)
+  ; a condition is represented as a pair where the first value of the
+  ; pair is this function. a program could forge conditions, and they're
+  ; not disjoint from scheme pairs.
+  (and (pair? obj)
+    (eq? condition? (car obj))))
+
+(define (make-property-condition kind-key . prop-vals)
+  (cons condition? (list (cons kind-key prop-vals))))
+
+(define (make-composite-condition . conditions)
+  (cons condition? (apply append
+      (map cdr conditions))))
+
+(define (condition-predicate kind-key)
+  (lambda (exn)
+    (if (condition? exn)
+      (assq kind-key (cdr exn))
+      #f)))
+
+(define (condition-property-accessor kind-key prop-key)
+  (lambda (exn)
+    (let ((p ((condition-predicate kind-key) exn)))
+      ; either cadr or cdr could fail; should check arguments for
+      ; better error reporting:
+      (cadr (memq prop-key (cdr p))))))
 
 (define (error message . rest)
   (unwind
