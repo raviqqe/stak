@@ -97,6 +97,7 @@ mod tests {
 
         assert_eq!(device.write(42), Ok(()));
         assert_eq!(device.write(42), Err(()));
+        assert_eq!(device.output(), [42]);
     }
 
     #[test]
@@ -105,5 +106,6 @@ mod tests {
 
         assert_eq!(device.write_error(42), Ok(()));
         assert_eq!(device.write_error(42), Err(()));
+        assert_eq!(device.error(), [42]);
     }
 }
