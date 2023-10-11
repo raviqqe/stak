@@ -210,7 +210,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AA"
 
-  Scenario: Call immediate functions accessing a local variable
+  Scenario: Call immediate functions capturing a local variable
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
