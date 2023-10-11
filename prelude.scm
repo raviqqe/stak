@@ -389,6 +389,7 @@
 (define $$/ (primitive 15))
 (define $$read-u8 (primitive 16))
 (define $$write-u8 (primitive 17))
+(define $$write-error-u8 (primitive 18))
 
 (define (apply f xs)
   ($$apply f xs))
