@@ -58,4 +58,5 @@ Feature: Parameter
     (write-u8 (y))
     """
     When I successfully run `scheme main.scm`
+    # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDAB"
