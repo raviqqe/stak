@@ -1356,3 +1356,13 @@
 ; TODO Implement those errors.
 (define (read-error? value) #f)
 (define (file-error? value) #f)
+  #f)
+
+;; Unwind
+
+(define unwind #f)
+
+((call/cc
+    (lambda (continuation)
+      (set! unwind continuation)
+      dummy-function)))
