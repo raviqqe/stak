@@ -389,6 +389,7 @@
 (define $$/ (primitive 15))
 (define $$read-u8 (primitive 16))
 (define $$write-u8 (primitive 17))
+(define $$write-error-u8 (primitive 18))
 
 (define (apply f xs)
   ($$apply f xs))
@@ -891,7 +892,7 @@
     ("tab" . #\tab)))
 
 (define (get-input-port rest)
-  (if (null? rest) stdin-port (car rest)))
+  (if (null? rest) (current-input-port) (car rest)))
 
 (define (input-byte->char x)
   (if (number? x) (integer->char x) x))
@@ -1077,7 +1078,7 @@
 ; Write
 
 (define (get-output-port rest)
-  (if (null? rest) stdout-port (car rest)))
+  (if (null? rest) (current-output-port) (car rest)))
 
 (define special-char-names
   (map
@@ -1091,8 +1092,15 @@
     (#\return . #\r)))
 
 (define (write-u8 byte . rest)
-  ; TODO Use a port.
-  ($$write-u8 byte))
+  (case (port-descriptor (get-output-port rest))
+    ((stdout)
+      ($$write-u8 byte))
+
+    ((stderr)
+      ($$write-error-u8 byte))
+
+    (else
+      (error "invalid port"))))
 
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
@@ -1108,12 +1116,14 @@
       (write-char x port))))
 
 (define (write-string x . rest)
+  (define port (get-output-port rest))
+
   (for-each
     (lambda (x) (write-char x port))
     (string->list x)))
 
 (define (write-bytevector xs . rest)
-  (define port (if (null? rest) stdout-port (car rest)))
+  (define port (get-output-port rest))
 
   (let loop ((xs xs) (index 0))
     (if (< index (bytevector-length xs))
@@ -1126,7 +1136,7 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (define port (if (null? rest) stdout-port (car rest)))
+  (define port (get-output-port rest))
 
   (cond
     ((char? x)
@@ -1154,7 +1164,7 @@
       (display x))))
 
 (define (display x . rest)
-  (define port (if (null? rest) stdout-port (car rest)))
+  (define port (get-output-port rest))
 
   (cond
     ((not x)
