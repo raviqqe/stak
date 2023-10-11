@@ -1314,8 +1314,11 @@
 
 ;; Exception
 
-; TODO Add a default handler.
-(define exception-handler #f)
+(define (exception-handler exception)
+  (display exception)
+  (newline)
+  ; Raise an non-recoverable exception in any way.
+  (#f))
 
 (define (with-exception-handler handler thunk)
   (let ((old #f))
