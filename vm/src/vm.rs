@@ -619,6 +619,8 @@ impl<'a, T: Device> Vm<'a, T> {
         let continuation = self.allocate(NULL.into(), NULL.into())?.into();
         self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
 
+        self.temporary = NULL;
+
         Ok(())
     }
 
