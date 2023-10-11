@@ -117,7 +117,7 @@ impl<'a, T: Device> Vm<'a, T> {
                                 list = self.cons(value, list)?;
                             }
 
-                            // Use a `self.program_counter` field as a escape cell for a procedure.
+                            // Use a `program_counter` field as an escape cell for a procedure.
                             let program_counter = self.program_counter;
                             self.program_counter = self.temporary;
                             self.temporary = list;
