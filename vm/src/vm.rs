@@ -84,7 +84,7 @@ impl<'a, T: Device> Vm<'a, T> {
             match instruction.tag() {
                 code::Instruction::CALL => {
                     let r#return = instruction == NULL;
-                    let mut procedure = self.procedure();
+                    let procedure = self.procedure();
 
                     trace!("procedure", procedure);
                     trace!("return", r#return);
@@ -95,9 +95,6 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(code) => {
-                            // Non-primitive procedures may update any cons's of arguments on a
-                            // stack destructively.
-
                             let arguments = Self::parse_argument_count(self.argument_count());
                             let parameters =
                                 Self::parse_argument_count(self.car(code).assume_number());
@@ -107,69 +104,52 @@ impl<'a, T: Device> Vm<'a, T> {
                             trace!("parameter count", parameters.count);
                             trace!("parameter variadic", parameters.variadic);
 
-                            if !arguments.variadic
-                                && !parameters.variadic
-                                && arguments.count != parameters.count
-                            {
-                                return Err(Error::ArgumentCount);
-                            } else if arguments.variadic || parameters.variadic {
-                                *self.cdr_mut(self.temporary) = procedure.into();
+                            self.temporary = procedure;
 
-                                let mut list = if arguments.variadic {
-                                    self.pop()?.assume_cons()
-                                } else {
-                                    NULL
-                                };
-
-                                for _ in 0..(parameters.count.to_i64() - arguments.count.to_i64()) {
-                                    self.push(list.into())?;
-                                    list = self.top().assume_cons();
-                                    self.set_top(self.car(list));
-                                    list = self.cdr(list).assume_cons();
-                                }
-
-                                for _ in 0..(arguments.count.to_i64() - parameters.count.to_i64()) {
-                                    let cons = self.pop_cons()?;
-                                    *self.cdr_mut(cons) = list.into();
-                                    list = cons;
-                                }
-
-                                if parameters.variadic {
-                                    self.push(list.into())?;
-                                }
-
-                                procedure = self.cdr(self.temporary).assume_cons();
-                            }
-
-                            *self.cdr_mut(self.temporary) = self.stack.into();
-                            self.stack = self.temporary;
-
-                            let last_argument_cons = self.tail(
-                                self.stack,
-                                Number::new(
-                                    parameters.count.to_i64()
-                                        + if parameters.variadic { 1 } else { 0 },
-                                ),
-                            );
-
-                            if r#return {
-                                *self.car_mut(self.stack) = self.continuation();
+                            let mut list = if arguments.variadic {
+                                self.pop()?.assume_cons()
                             } else {
-                                let continuation = self.top();
-                                *self.car_value_mut(continuation) = self.cdr(self.program_counter);
-                                *self.cdr_value_mut(continuation) = self.cdr(last_argument_cons);
+                                NULL
+                            };
+
+                            for _ in 0..arguments.count.to_i64() {
+                                let value = self.pop()?;
+                                list = self.cons(value, list)?;
                             }
 
-                            let frame = self.stack;
-                            *self.cdr_mut(last_argument_cons) = frame.into();
-                            self.pop_cons()?;
-                            *self.cdr_mut(frame) =
-                                self.environment(procedure).set_tag(FRAME_TAG).into();
+                            // Use a `program_counter` field as an escape cell for a procedure.
+                            let program_counter = self.program_counter;
+                            self.program_counter = self.temporary;
+                            self.temporary = list;
 
-                            self.program_counter =
-                                self.cdr(self.code(procedure).assume_cons()).assume_cons();
+                            let continuation = if r#return {
+                                self.continuation()
+                            } else {
+                                self.allocate(self.cdr(program_counter), self.stack.into())?
+                                    .into()
+                            };
+                            self.stack = self.allocate(
+                                continuation,
+                                self.environment(self.program_counter)
+                                    .set_tag(FRAME_TAG)
+                                    .into(),
+                            )?;
+                            self.program_counter = self
+                                .cdr(self.code(self.program_counter).assume_cons())
+                                .assume_cons();
 
-                            self.initialize_temporary_for_run()?;
+                            for _ in 0..parameters.count.to_i64() {
+                                if self.temporary == NULL {
+                                    return Err(Error::ArgumentCount);
+                                }
+
+                                self.push(self.car(self.temporary))?;
+                                self.temporary = self.cdr(self.temporary).assume_cons();
+                            }
+
+                            if parameters.variadic {
+                                self.push(self.temporary.into())?;
+                            }
                         }
                         TypedValue::Number(primitive) => {
                             self.operate_primitive(primitive.to_i64() as u8)?;
@@ -366,13 +346,6 @@ impl<'a, T: Device> Vm<'a, T> {
         debug_assert!(self.allocation_index <= self.space_size());
 
         Ok(cons)
-    }
-
-    fn initialize_temporary_for_run(&mut self) -> Result<(), Error> {
-        let cons = self.allocate(FALSE.into(), FALSE.into())?;
-        self.temporary = self.allocate(cons.into(), FALSE.into())?;
-
-        Ok(())
     }
 
     fn is_out_of_memory(&self) -> bool {
@@ -650,7 +623,7 @@ impl<'a, T: Device> Vm<'a, T> {
         let continuation = self.allocate(NULL.into(), NULL.into())?.into();
         self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
 
-        self.initialize_temporary_for_run()?;
+        self.temporary = NULL;
 
         Ok(())
     }
