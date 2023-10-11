@@ -1314,29 +1314,21 @@
 
 ;; Exception
 
-; TODO
-(define (current-exception-handler)
-  #f)
+; TODO Add a default handler.
+(define exception-handler #f)
 
 (define (with-exception-handler handler thunk)
   (let ((old #f))
     (dynamic-wind
       (lambda ()
-        (set! old *current-exn-handler*)
-        (set! *current-exn-handler* handler))
+        (set! old exception-handler)
+        (set! exception-handler handler))
       thunk
       (lambda ()
-        (set! *current-exn-handler* old)))))
+        (set! exception-handler old)))))
 
-(define (abort obj)
-  ((current-exception-handler) obj)
-  (abort (make-property-condition
-      'exn
-      'message
-      "exception handler returned")))
-
-(define (signal exn)
-  ((current-exception-handler) exn))
+(define (raise-continuable exception)
+  (exception-handler exception))
 
 (define-syntax handle-exceptions
   (syntax-rules ()
@@ -1369,14 +1361,14 @@
       (map cdr conditions))))
 
 (define (condition-predicate kind-key)
-  (lambda (exn)
-    (if (condition? exn)
-      (assq kind-key (cdr exn))
+  (lambda (exception)
+    (if (condition? exception)
+      (assq kind-key (cdr exception))
       #f)))
 
 (define (condition-property-accessor kind-key prop-key)
-  (lambda (exn)
-    (let ((p ((condition-predicate kind-key) exn)))
+  (lambda (exception)
+    (let ((p ((condition-predicate kind-key) exception)))
       ; either cadr or cdr could fail; should check arguments for
       ; better error reporting:
       (cadr (memq prop-key (cdr p))))))
