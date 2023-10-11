@@ -9,11 +9,24 @@ No-`std` and no-`alloc` Scheme implementation in Rust
 
 For working examples, see [a `features` directory](/features).
 
+## Goal
+
+- Minimal implementation of [R7RS small][r7rs-small]
+- Small memory footprint
+
+## Limitations
+
+- Numbers are 63-bit integers.
+- Some runtime errors are not raised
+  - e.g. argument count and out-of-memory errors
+
 ## References
 
-- [R7RS small](https://small.r7rs.org/)
+- [R7RS small][r7rs-small]
 - [Ribbit Scheme](https://github.com/udem-dlteam/ribbit)
 
 ## License
 
 [MIT](LICENSE)
+
+[r7rs-small]: https://small.r7rs.org/

@@ -23,6 +23,5 @@ Feature: Error
     (error "Oh, no!")
     """
     When I run `scheme main.scm`
-    # TODO Write an error message to stderr.
-    Then the stdout should contain "Oh, no!"
+    Then the stderr should contain "Oh, no!"
     And the exit status should not be 0

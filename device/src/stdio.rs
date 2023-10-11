@@ -1,5 +1,5 @@
 use crate::Device;
-use std::io::{stdin, stdout, Error, Read, Write};
+use std::io::{stderr, stdin, stdout, Error, Read, Write};
 
 #[derive(Debug, Default)]
 pub struct StdioDevice {}
@@ -23,6 +23,12 @@ impl Device for StdioDevice {
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         stdout().write_all(&[byte])?;
+
+        Ok(())
+    }
+
+    fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
+        stderr().write_all(&[byte])?;
 
         Ok(())
     }
