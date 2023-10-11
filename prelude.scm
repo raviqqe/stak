@@ -1092,7 +1092,7 @@
     (#\return . #\r)))
 
 (define (write-u8 byte . rest)
-  (case (port-descriptor port)
+  (case (port-descriptor (if (null? rest) (current-output-port) (car rest)))
     ((stderr)
       ($$write-error-u8 byte))
 
@@ -1100,7 +1100,7 @@
       ($$write-u8 byte))
 
     (else
-      (error "invalid port"))))
+      (error "invalid port" port))))
 
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
