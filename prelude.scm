@@ -1078,7 +1078,7 @@
 ; Write
 
 (define (get-output-port rest)
-  (if (null? rest) stdout-port (car rest)))
+  (get-output-port rest))
 
 (define special-char-names
   (map
@@ -1092,7 +1092,7 @@
     (#\return . #\r)))
 
 (define (write-u8 byte . rest)
-  (case (port-descriptor (if (null? rest) (current-output-port) (car rest)))
+  (case (port-descriptor (get-output-port rest))
     ((stderr)
       ($$write-error-u8 byte))
 
@@ -1121,7 +1121,7 @@
     (string->list x)))
 
 (define (write-bytevector xs . rest)
-  (define port (if (null? rest) stdout-port (car rest)))
+  (define port (get-output-port rest))
 
   (let loop ((xs xs) (index 0))
     (if (< index (bytevector-length xs))
@@ -1134,7 +1134,7 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (define port (if (null? rest) stdout-port (car rest)))
+  (define port (get-output-port rest))
 
   (cond
     ((char? x)
@@ -1162,7 +1162,7 @@
       (display x))))
 
 (define (display x . rest)
-  (define port (if (null? rest) stdout-port (car rest)))
+  (define port (get-output-port rest))
 
   (cond
     ((not x)
