@@ -11,8 +11,8 @@ For working examples, see [a `features` directory](/features).
 
 ## Goal
 
-- [R7RS small][r7rs-small]
-- Minimal memory footprint
+- Minimal implementation of [R7RS small][r7rs-small]
+- Small memory footprint
 
 ## References
 
