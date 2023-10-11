@@ -1,8 +1,8 @@
 ---
 source: code/src/ir/program.rs
-expression: "Program::new(vec![],\n    vec![Instruction ::\n        Closure(42, vec!\n        [Instruction :: Constant(Operand :: Integer(2045))],)])"
+expression: "Program::new(vec![],\n    vec![Instruction ::\n        Close(42, vec! [Instruction :: Constant(Operand :: Integer(2045))],)])"
 ---
-symbols: 
-instructions:
+# symbols
+# instructions
 closure 42
   constant i2045
