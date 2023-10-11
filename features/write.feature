@@ -147,6 +147,21 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#procedure"
 
+  @stak
+  Scenario: Write a record
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (define-record-type foo
+      (make-foo)
+      foo?)
+
+    (write (make-foo))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "#record"
+
   Scenario Outline: Write a string
     Given a file named "main.scm" with:
     """scheme
