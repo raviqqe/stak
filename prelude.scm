@@ -1287,6 +1287,31 @@
       ((point-after from))
       (travel-to-point! (point-parent from) to))))
 
+;; Parameter
+
+(define (make-parameter x . rest)
+  (define convert (if (pair? rest) (car rest) (lambda (x) x)))
+  (set! x (convert x))
+
+  (lambda rest
+    (if (null? rest)
+      x
+      (set! x (convert (car rest))))))
+
+(define-syntax parameterize
+  (syntax-rules ()
+    ((_ () body ...)
+      (begin body ...))
+
+    ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
+      (let* (
+          (parameter parameter1)
+          (old (parameter)))
+        (dynamic-wind
+          (lambda () (parameter value1))
+          (lambda () (parameterize ((parameter2 value2) ...) body ...))
+          (lambda () (parameter old)))))))
+
 ;; Error
 
 (define (error message . rest)
