@@ -104,6 +104,8 @@ impl<'a, T: Device> Vm<'a, T> {
                             trace!("parameter count", parameters.count);
                             trace!("parameter variadic", parameters.variadic);
 
+                            self.temporary = procedure;
+
                             let mut list = if arguments.variadic {
                                 self.pop()?.assume_cons()
                             } else {
@@ -123,7 +125,7 @@ impl<'a, T: Device> Vm<'a, T> {
                             };
                             self.stack = self.allocate(
                                 continuation,
-                                self.environment(procedure).set_tag(FRAME_TAG).into(),
+                                self.environment(self.temporary).set_tag(FRAME_TAG).into(),
                             )?;
 
                             // TODO Reuse cons's?
@@ -136,8 +138,9 @@ impl<'a, T: Device> Vm<'a, T> {
                                 self.push(list.into())?;
                             }
 
-                            self.program_counter =
-                                self.cdr(self.code(procedure).assume_cons()).assume_cons();
+                            self.program_counter = self
+                                .cdr(self.code(self.temporary).assume_cons())
+                                .assume_cons();
                         }
                         TypedValue::Number(primitive) => {
                             self.operate_primitive(primitive.to_i64() as u8)?;
