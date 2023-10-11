@@ -33,8 +33,6 @@ impl Display for Program {
             writeln!(formatter, "{}", symbol)?;
         }
 
-        writeln!(formatter)?;
-
         write!(formatter, "instructions:")?;
         write!(
             formatter,
