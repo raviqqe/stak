@@ -1333,7 +1333,7 @@
                   (write-char #\space port)
                   (write value port))
                 irritants)))
-          (display exception port))
+          (write exception port))
         (newline port)
         ; Raise an non-recoverable exception in any way.
         (#f)))))
