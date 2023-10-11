@@ -117,9 +117,10 @@ impl<'a, T: Device> Vm<'a, T> {
                                 list = self.cons(value, list)?;
                             }
 
-                            // Use a `self.program_counter` field as a escape cell for arguments.
+                            // Use a `self.program_counter` field as a escape cell for a procedure.
                             let program_counter = self.program_counter;
-                            self.program_counter = list;
+                            self.program_counter = self.temporary;
+                            self.temporary = list;
 
                             let continuation = if r#return {
                                 self.continuation()
@@ -129,26 +130,22 @@ impl<'a, T: Device> Vm<'a, T> {
                             };
                             self.stack = self.allocate(
                                 continuation,
-                                self.environment(self.temporary).set_tag(FRAME_TAG).into(),
+                                self.environment(self.program_counter)
+                                    .set_tag(FRAME_TAG)
+                                    .into(),
                             )?;
+                            self.program_counter = self
+                                .cdr(self.code(self.program_counter).assume_cons())
+                                .assume_cons();
 
-                            list = self.program_counter;
-
-                            // TODO Reuse cons's?
                             for _ in 0..parameters.count.to_i64() {
-                                self.push(list.into())?;
-                                list = self.top().assume_cons();
-                                self.set_top(self.car(list));
-                                list = self.cdr(list).assume_cons();
+                                self.push(self.car(self.temporary))?;
+                                self.temporary = self.cdr(self.temporary).assume_cons();
                             }
 
                             if parameters.variadic {
-                                self.push(list.into())?;
+                                self.push(self.temporary.into())?;
                             }
-
-                            self.program_counter = self
-                                .cdr(self.code(self.temporary).assume_cons())
-                                .assume_cons();
                         }
                         TypedValue::Number(primitive) => {
                             self.operate_primitive(primitive.to_i64() as u8)?;
