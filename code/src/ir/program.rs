@@ -27,13 +27,13 @@ impl Program {
 
 impl Display for Program {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        writeln!(formatter, "symbols:")?;
+        writeln!(formatter, "# symbols")?;
 
         for symbol in &self.symbols {
             writeln!(formatter, "{}", symbol)?;
         }
 
-        write!(formatter, "instructions:")?;
+        write!(formatter, "# instructions")?;
         write!(
             formatter,
             "{}",
