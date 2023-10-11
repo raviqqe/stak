@@ -499,6 +499,13 @@ impl<'a, T: Device> Vm<'a, T> {
                     .map_err(|_| Error::WriteOutput)?;
                 self.push(byte)?;
             }
+            Primitive::WRITE_ERROR => {
+                let byte = self.pop()?;
+                self.device
+                    .write_error(byte.assume_number().to_i64() as u8)
+                    .map_err(|_| Error::WriteError)?;
+                self.push(byte)?;
+            }
             _ => return Err(Error::IllegalPrimitive),
         }
 

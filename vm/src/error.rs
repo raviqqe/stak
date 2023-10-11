@@ -14,6 +14,7 @@ pub enum Error {
     ProcedureExpected,
     ReadInput,
     StackUnderflow,
+    WriteError,
     WriteOutput,
 }
 
@@ -35,6 +36,7 @@ impl Display for Error {
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
             Self::ReadInput => write!(formatter, "failed to read input"),
             Self::StackUnderflow => write!(formatter, "stack underflow"),
+            Self::WriteError => write!(formatter, "failed to write error"),
             Self::WriteOutput => write!(formatter, "failed to write output"),
         }
     }
