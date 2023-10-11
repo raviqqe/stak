@@ -1356,7 +1356,6 @@
 ; TODO Implement those errors.
 (define (read-error? value) #f)
 (define (file-error? value) #f)
-  #f)
 
 ;; Unwind
 
