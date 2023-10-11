@@ -117,10 +117,14 @@ impl<'a, T: Device> Vm<'a, T> {
                                 list = self.cons(value, list)?;
                             }
 
+                            // Use a `self.program_counter` field as a escape cell for arguments.
+                            let program_counter = self.program_counter;
+                            self.program_counter = list;
+
                             let continuation = if r#return {
                                 self.continuation()
                             } else {
-                                self.allocate(self.cdr(self.program_counter), self.stack.into())?
+                                self.allocate(self.cdr(program_counter), self.stack.into())?
                                     .into()
                             };
                             self.stack = self.allocate(
@@ -128,9 +132,13 @@ impl<'a, T: Device> Vm<'a, T> {
                                 self.environment(self.temporary).set_tag(FRAME_TAG).into(),
                             )?;
 
+                            list = self.program_counter;
+
                             // TODO Reuse cons's?
                             for _ in 0..parameters.count.to_i64() {
-                                self.push(self.car(list.into()))?;
+                                self.push(list.into())?;
+                                list = self.top().assume_cons();
+                                self.set_top(self.car(list));
                                 list = self.cdr(list).assume_cons();
                             }
 
