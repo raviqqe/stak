@@ -1327,8 +1327,9 @@
         (if (error-object? exception)
           (begin
             (write-string (error-object-message exception) port)
-            (let ((rest (error-object-irritants exception)))
-              (for-each (lambda (value)
+            (let ((irritants (error-object-irritants exception)))
+              (for-each
+                (lambda (value)
                   (write-char #\space port)
                   (write value port))
                 irritants)))
