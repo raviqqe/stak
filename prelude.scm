@@ -1092,8 +1092,15 @@
     (#\return . #\r)))
 
 (define (write-u8 byte . rest)
-  ; TODO Use a port.
-  ($$write-u8 byte))
+  (case (port-descriptor port)
+    ((stderr)
+      ($$write-error-u8 byte))
+
+    ((stdout)
+      ($$write-u8 byte))
+
+    (else
+      (error "invalid port"))))
 
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
