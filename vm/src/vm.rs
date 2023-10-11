@@ -95,9 +95,6 @@ impl<'a, T: Device> Vm<'a, T> {
 
                     match self.code(procedure).to_typed() {
                         TypedValue::Cons(code) => {
-                            // Non-primitive procedures may update any cons's of arguments on a
-                            // stack destructively.
-
                             let arguments = Self::parse_argument_count(self.argument_count());
                             let parameters =
                                 Self::parse_argument_count(self.car(code).assume_number());
