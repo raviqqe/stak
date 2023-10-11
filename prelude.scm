@@ -892,7 +892,7 @@
     ("tab" . #\tab)))
 
 (define (get-input-port rest)
-  (if (null? rest) stdin-port (car rest)))
+  (if (null? rest) (current-input-port) (car rest)))
 
 (define (input-byte->char x)
   (if (number? x) (integer->char x) x))
