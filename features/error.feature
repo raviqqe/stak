@@ -14,7 +14,6 @@ Feature: Error
     Then the stdout should contain "A"
     And the exit status should not be 0
 
-  @stak
   Scenario: Print an error message
     Given a file named "main.scm" with:
     """scheme
