@@ -63,7 +63,7 @@ jobs:
             tags: not @stak or @chibi
           - name: gauche
             tags: not @stak or @gauche
-          - name: guile
+          - name: guile --no-auto-compile
             tags: not @stak or @guile
     runs-on: ${{ matrix.os }}
     env:
