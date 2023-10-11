@@ -1345,7 +1345,7 @@
                 irritants)))
           (write exception port))
         (newline port)
-        ; Raise an non-recoverable exception in any way.
+        ; TODO Use an exit primitive.
         (#f)))))
 
 (define (with-exception-handler handler thunk)
