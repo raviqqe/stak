@@ -12,7 +12,7 @@ Feature: Error
     """
     When I run `scheme main.scm`
     Then the stdout should contain "A"
-    # TODO Test an exit code.
+    And the exit status should not be 0
 
   @stak
   Scenario: Print an error message
@@ -40,4 +40,4 @@ Feature: Error
     """
     When I run `scheme main.scm`
     Then the stdout should contain "A"
-    # TODO Test an exit code.
+    And the exit status should not be 0
