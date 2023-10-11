@@ -1168,12 +1168,10 @@
 
   (cond
     ((not x)
-      (write-char #\# port)
-      (write-char #\f port))
+      (write-string "#f" port))
 
     ((eqv? x #t)
-      (write-char #\# port)
-      (write-char #\t port))
+      (write-string "#t" port))
 
     ((char? x)
       (write-char x port))
@@ -1188,8 +1186,10 @@
       (write-list x display port))
 
     ((procedure? x)
-      (write-char #\# port)
-      (write-string "procedure" port))
+      (write-string "#procedure" port))
+
+    ((record? x)
+      (write-string "#record" port))
 
     ((string? x)
       (write-string x port))
