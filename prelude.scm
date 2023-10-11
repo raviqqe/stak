@@ -1315,10 +1315,10 @@
 ;; Exception
 
 (define-record-type error-object
-  (make-error-object message rest)
+  (make-error-object message irritants)
   error-object?
   (message error-object-message)
-  (rest error-object-rest))
+  (irritants error-object-irritants))
 
 (define exception-handler
   (make-parameter
@@ -1328,7 +1328,7 @@
           (begin
             (write-string (error-object-message exception) port)
             (write-char #\space port)
-            (let ((rest (error-object-rest exception)))
+            (let ((rest (error-object-irritants exception)))
               (when (pair? rest)
                 (write (car rest) port))))
           (display exception port))
