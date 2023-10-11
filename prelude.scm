@@ -1078,7 +1078,7 @@
 ; Write
 
 (define (get-output-port rest)
-  (get-output-port rest))
+  (if (null? rest) (current-output-port) (car rest)))
 
 (define special-char-names
   (map
@@ -1092,15 +1092,7 @@
     (#\return . #\r)))
 
 (define (write-u8 byte . rest)
-  (case (port-descriptor (get-output-port rest))
-    ((stderr)
-      ($$write-error-u8 byte))
-
-    ((stdout)
-      ($$write-u8 byte))
-
-    (else
-      (error "invalid port" port))))
+  ($$write-u8 byte))
 
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
