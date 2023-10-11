@@ -1327,10 +1327,11 @@
         (if (error-object? exception)
           (begin
             (write-string (error-object-message exception) port)
-            (write-char #\space port)
             (let ((rest (error-object-irritants exception)))
-              (when (pair? rest)
-                (write (car rest) port))))
+              (for-each (lambda (value)
+                  (write-char #\space port)
+                  (write value port))
+                irritants)))
           (display exception port))
         (newline port)
         ; Raise an non-recoverable exception in any way.
