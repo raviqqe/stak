@@ -14,6 +14,12 @@ For working examples, see [a `features` directory](/features).
 - Minimal implementation of [R7RS small][r7rs-small]
 - Small memory footprint
 
+## Limitations
+
+- Numbers are 63-bit integers.
+- Some runtime errors are not raised
+  - e.g. argument count and out-of-memory errors
+
 ## References
 
 - [R7RS small][r7rs-small]
