@@ -401,7 +401,7 @@
     (exit-success)
     (begin
       (write (car rest) (current-error-port))
-      ; Cause an non-recoverable error.
+      ; Raise a non-recoverable error.
       (#f))))
 
 ; Types
