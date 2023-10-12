@@ -506,7 +506,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     .map_err(|_| Error::WriteError)?;
                 self.push(byte)?;
             }
-            Primitive::EXIT => return Err(Error::Exit(self.pop()?))
+            Primitive::EXIT => return Err(Error::Exit),
             _ => return Err(Error::IllegalPrimitive),
         }
 

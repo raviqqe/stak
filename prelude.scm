@@ -395,6 +395,8 @@
 (define (apply f xs)
   ($$apply f xs))
 
+(define exit (rib (cons 0 '()) '() procedure-type))
+
 ; Types
 
 (define (singleton? x)
