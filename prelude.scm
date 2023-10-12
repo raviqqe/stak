@@ -390,12 +390,23 @@
 (define $$read-u8 (primitive 16))
 (define $$write-u8 (primitive 17))
 (define $$write-error-u8 (primitive 18))
-(define exit (primitive 19))
 
 (define (apply f xs)
   ($$apply f xs))
 
-(define exit (rib (cons 0 '()) '() procedure-type))
+(define exit-success (rib (cons 0 '()) '() procedure-type))
+
+(define (exit . rest)
+  (cond
+    ((null? rest)
+      (exit-success))
+
+    ((eqv? (car rest) #t)
+      (exit-success))
+
+    (else
+      (write (car rest) (current-error-port))
+      (#f))))
 
 ; Types
 
