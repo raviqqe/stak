@@ -394,6 +394,16 @@
 (define (apply f xs)
   ($$apply f xs))
 
+(define exit-success (rib (cons 0 '()) '() procedure-type))
+
+(define (exit . rest)
+  (if (or (null? rest) (eqv? (car rest) #t))
+    (exit-success)
+    (begin
+      (write (car rest) (current-error-port))
+      ; Raise a non-recoverable error.
+      (#f))))
+
 ; Types
 
 (define (singleton? x)
