@@ -406,6 +406,7 @@
 
     (else
       (write (car rest) (current-error-port))
+      ; Cause an non-recoverable error.
       (#f))))
 
 ; Types
