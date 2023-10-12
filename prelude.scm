@@ -397,14 +397,9 @@
 (define exit-success (rib (cons 0 '()) '() procedure-type))
 
 (define (exit . rest)
-  (cond
-    ((null? rest)
-      (exit-success))
-
-    ((eqv? (car rest) #t)
-      (exit-success))
-
-    (else
+  (if (or (null? rest) (eqv? (car rest) #t))
+    (exit-success)
+    (begin
       (write (car rest) (current-error-port))
       ; Cause an non-recoverable error.
       (#f))))
