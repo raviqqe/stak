@@ -20,6 +20,7 @@ pub enum Primitive {
     Read,
     Write,
     WriteError,
+    Exit,
 }
 
 impl Primitive {
@@ -42,4 +43,5 @@ impl Primitive {
     pub const READ: u8 = Self::Read as _;
     pub const WRITE: u8 = Self::Write as _;
     pub const WRITE_ERROR: u8 = Self::WriteError as _;
+    pub const EXIT: u8 = Self::Exit as _;
 }
