@@ -1355,8 +1355,7 @@
                 irritants)))
           (write exception port))
         (newline port)
-        ; TODO Use an exit primitive.
-        (#f)))))
+        (exit #f)))))
 
 (define (with-exception-handler handler thunk)
   (parameterize ((exception-handler handler)) thunk))
