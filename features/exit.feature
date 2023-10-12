@@ -2,7 +2,7 @@ Feature: Exit
   Scenario: Exit an interpreter
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme process-context))
 
     (exit)
 
@@ -14,7 +14,7 @@ Feature: Exit
   Scenario: Exit an interpreter with a true value
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme process-context))
 
     (exit #t)
     """
@@ -24,7 +24,7 @@ Feature: Exit
   Scenario: Exit an interpreter with a false value
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme process-context))
 
     (exit #f)
     """
