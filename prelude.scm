@@ -402,7 +402,7 @@
     (begin
       (write (car rest) (current-error-port))
       ; Raise a non-recoverable error.
-      (#f))))
+      ((lambda (x) #f)))))
 
 ; Types
 
