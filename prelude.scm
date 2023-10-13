@@ -400,7 +400,7 @@
   (if (or (null? rest) (eqv? (car rest) #t))
     (exit-success)
     ; Raise a non-recoverable error.
-    (#f)))
+    ((lambda (x) #f))))
 
 ; Types
 
@@ -1330,19 +1330,72 @@
           (lambda () (parameterize ((parameter2 value2) ...) body ...))
           (lambda () (parameter old)))))))
 
-;; Error
+;; Exception
 
-(define (error message . rest)
-  (unwind
-    (lambda ()
-      (rib-set-car!
-        (rib-cdr (close dummy-function)) ; frame
-        (cons '() '()))
-      (write-string message (current-error-port))
-      (write-char #\space (current-error-port))
-      (when (pair? rest)
-        (write (car rest) (current-error-port)))
-      #f)))
+(define-record-type error-object
+  (make-error-object type message irritants)
+  error-object?
+  (type error-object-type)
+  (message error-object-message)
+  (irritants error-object-irritants))
+
+(define current-exception-handler
+  (make-parameter
+    (lambda (exception)
+      ; TODO Use `parameterize`.
+      (define port (current-error-port))
+
+      (if (error-object? exception)
+        (begin
+          (write-string (error-object-message exception) port)
+          (let ((irritants (error-object-irritants exception)))
+            (for-each
+              (lambda (value)
+                (write-char #\space port)
+                (write value port))
+              irritants)))
+        (write exception port))
+      (newline port)
+      (exit #f))
+    (lambda (handler)
+      (lambda (pair)
+        (let* (
+            (exception (cdr pair))
+            (value (handler exception)))
+          (unless (car pair)
+            (error "exception handler returned on a non-continuable exception" exception))
+          value)))))
+
+(define (with-exception-handler handler thunk)
+  (let ((old (current-exception-handler)))
+    (parameterize (
+        (current-exception-handler
+          (lambda (exception)
+            (parameterize ((current-exception-handler old))
+              (handler exception)))))
+      (thunk))))
+
+(define (raise-value continuable)
+  (lambda (value)
+    ((current-exception-handler) (cons continuable value))))
+
+(define raise (raise-value #f))
+(define raise-continuable (raise-value #t))
+
+(define (error-type type)
+  (lambda (message . rest)
+    (raise (make-error-object type message rest))))
+
+(define (error-type? type)
+  (lambda (error)
+    (eqv? (error-object-type error) type)))
+
+(define error (error-type #f))
+(define read-error (error-type 'read))
+(define file-error (error-type 'file))
+
+(define read-error? (error-type? 'read))
+(define file-error? (error-type? 'file))
 
 ;; Unwind
 
