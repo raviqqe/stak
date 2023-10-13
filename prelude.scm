@@ -1382,22 +1382,20 @@
 (define raise (raise-value #f))
 (define raise-continuable (raise-value #t))
 
-(define (error message . rest)
-  (raise (make-error-object #f message rest)))
+(define (error-type type)
+  (lambda (message . rest)
+    (raise (make-error-object type message rest))))
 
-; TODO Use this.
-(define (read-error message . rest)
-  (raise (make-error-object 'read message rest)))
+(define (error-type? type)
+  (lambda (error)
+    (eqv? (error-object-type error) type)))
 
-(define (read-error? error)
-  (eqv? (error-object-type error) 'read))
+(define error (error-type #f))
+(define read-error (error-type 'read))
+(define file-error (error-type 'file))
 
-; TODO Use this.
-(define (file-error message . rest)
-  (raise (make-error-object 'file message rest)))
-
-(define (file-error? error)
-  (eqv? (error-object-type error) 'file))
+(define read-error? (error-type? 'read))
+(define file-error? (error-type? 'file))
 
 ;; Unwind
 
