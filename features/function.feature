@@ -228,3 +228,15 @@ Feature: Function
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Call a function with too few arguments
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (f x) (+ x 5))
+
+    (write-u8 (f))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
