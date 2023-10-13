@@ -18,7 +18,7 @@ For working examples, see [a `features` directory](/features).
 ## Limitations
 
 - Numbers are 63-bit integers.
-- Some runtime errors are not raised
+- Some runtime errors are not raised.
   - e.g. argument count and out-of-memory errors
 
 ## References
