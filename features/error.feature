@@ -64,6 +64,7 @@ Feature: Error
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
+  @stak @gauche @guile
   Scenario: Leave a dynamic extent
     Given a file named "main.scm" with:
     """scheme
