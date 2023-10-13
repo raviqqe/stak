@@ -1341,6 +1341,7 @@
 (define exception-handler
   (make-parameter
     (lambda (exception)
+      ; TODO Use `parameterize`.
       (define port (current-error-port))
 
       (if (error-object? exception)
