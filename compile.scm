@@ -969,37 +969,36 @@
 
 ;; Utility
 
-(define (find-symbols codes)
-  (let loop ((codes codes) (symbols '()))
-    (if (terminal-codes? codes)
-      symbols
-      (let* (
-          (instruction (rib-tag codes))
-          (operand (rib-car codes))
-          (codes (rib-cdr codes))
-          (operand
-            (if (eqv? instruction call-instruction)
-              (rib-cdr operand)
-              operand)))
-        (loop
-          codes
-          (cond
-            ((and
-                (eqv? instruction constant-instruction)
-                (stak-procedure? operand))
-              (loop (procedure-code operand) symbols))
+(define (find-symbols codes symbols)
+  (if (terminal-codes? codes)
+    symbols
+    (let* (
+        (instruction (rib-tag codes))
+        (operand (rib-car codes))
+        (codes (rib-cdr codes))
+        (operand
+          (if (eqv? instruction call-instruction)
+            (rib-cdr operand)
+            operand)))
+      (find-symbols
+        codes
+        (cond
+          ((and
+              (eqv? instruction constant-instruction)
+              (stak-procedure? operand))
+            (find-symbols (procedure-code operand) symbols))
 
-            ((eqv? instruction if-instruction)
-              (loop operand symbols))
+          ((eqv? instruction if-instruction)
+            (find-symbols operand symbols))
 
-            ((and
-                (symbol? operand)
-                (not (eqv? operand rib-symbol))
-                (not (memq operand symbols)))
-              (cons operand symbols))
+          ((and
+              (symbol? operand)
+              (not (eqv? operand rib-symbol))
+              (not (memq operand symbols)))
+            (cons operand symbols))
 
-            (else
-              symbols)))))))
+          (else
+            symbols))))))
 
 (define (nop-codes? codes)
   (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
@@ -1225,7 +1224,7 @@
         (build-primitives
           primitives
           (build-constants constant-context codes)))
-      (symbols (find-symbols codes)))
+      (symbols (find-symbols codes (map cdr (constant-context-symbols constant-context)))))
     (encode-symbols
       symbols
       (encode-codes
