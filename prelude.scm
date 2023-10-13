@@ -1357,12 +1357,10 @@
       (exit #f))
     (lambda (handler)
       (lambda (pair)
-        (let ((value (cdr pair)))
-          (if (car pair)
-            (handler value)
-            (begin
-              (handler value)
-              (error "exception handler returned on a non-continuable exception" exception))))))))
+        (let ((value (handler (cdr pair))))
+          (unless (car pair)
+            (error "exception handler returned on a non-continuable exception" exception))
+          value)))))
 
 (define (with-exception-handler handler thunk)
   (let ((old (exception-handler)))
