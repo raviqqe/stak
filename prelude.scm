@@ -1361,7 +1361,8 @@
     (parameterize (
         (exception-handler
           (lambda (exception)
-            (parameterize ((exception-handler old)) (handler exception)))))
+            (parameterize ((exception-handler old))
+              (handler exception)))))
       (thunk))))
 
 (define (raise exception)
