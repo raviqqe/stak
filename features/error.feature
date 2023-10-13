@@ -25,7 +25,7 @@ Feature: Error
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
 
-  Scenario: Raise a continuable error
+  Scenario: Raise a continuable exception
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -37,3 +37,15 @@ Feature: Error
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain "A"
+
+  Scenario: Raise an exception in a handler
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (with-exception-handler
+      (lambda (error) (raise-continuable #f))
+      (lambda () (raise-continuable #f)))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
