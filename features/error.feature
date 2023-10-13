@@ -50,7 +50,7 @@ Feature: Error
         (lambda () (raise-continuable #f))))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain "A"
+    Then the stdout should contain exactly "A"
 
   Scenario: Raise an exception in a handler
     Given a file named "main.scm" with:
