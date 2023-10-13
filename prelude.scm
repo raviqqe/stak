@@ -1335,21 +1335,23 @@
 (define current-exception-handler
   (make-parameter
     (lambda (exception)
-      ; TODO Use `parameterize`.
-      (define port (current-error-port))
+      (unwind
+        (lambda ()
+          ; TODO Use `parameterize`.
+          (define port (current-error-port))
 
-      (if (error-object? exception)
-        (begin
-          (write-string (error-object-message exception) port)
-          (let ((irritants (error-object-irritants exception)))
-            (for-each
-              (lambda (value)
-                (write-char #\space port)
-                (write value port))
-              irritants)))
-        (write exception port))
-      (newline port)
-      ($$halt))
+          (if (error-object? exception)
+            (begin
+              (write-string (error-object-message exception) port)
+              (let ((irritants (error-object-irritants exception)))
+                (for-each
+                  (lambda (value)
+                    (write-char #\space port)
+                    (write value port))
+                  irritants)))
+            (write exception port))
+          (newline port)
+          ($$halt))))
     (lambda (handler)
       (lambda (pair)
         (let* (
@@ -1403,7 +1405,10 @@
 
 (define exit-success (rib (cons 0 '()) '() procedure-type))
 
-(define (exit . rest)
+(define (emergency-exit . rest)
   (if (or (null? rest) (eqv? (car rest) #t))
     (exit-success)
     ($$halt)))
+
+(define (exit . rest)
+  (unwind (lambda () (apply emergency-exit rest))))

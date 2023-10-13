@@ -63,3 +63,18 @@ Feature: Error
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
+
+  @stak @gauche @guile
+  Scenario: Leave a dynamic extent
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme process-context))
+
+    (dynamic-wind
+      (lambda () (write-u8 65))
+      (lambda () (error ""))
+      (lambda () (write-u8 66)))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stdout should contain exactly "AB"
