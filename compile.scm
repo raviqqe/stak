@@ -1213,6 +1213,7 @@
         (build-primitives
           primitives
           (build-constants constant-context codes)))
+      ; Put internal symbols for constants at the beginning.
       (symbols (find-symbols codes (map cdr (constant-context-constants constant-context)))))
     (encode-symbols
       symbols
