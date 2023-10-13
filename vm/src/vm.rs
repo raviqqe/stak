@@ -148,6 +148,8 @@ impl<'a, T: Device> Vm<'a, T> {
 
                             if parameters.variadic {
                                 self.push(self.temporary.into())?;
+                            } else if self.temporary != NULL {
+                                return Err(Error::ArgumentCount);
                             }
                         }
                         TypedValue::Number(primitive) => {
