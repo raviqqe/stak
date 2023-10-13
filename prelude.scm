@@ -1341,19 +1341,20 @@
 (define exception-handler
   (make-parameter
     (lambda (exception)
-      (let ((port (current-error-port)))
-        (if (error-object? exception)
-          (begin
-            (write-string (error-object-message exception) port)
-            (let ((irritants (error-object-irritants exception)))
-              (for-each
-                (lambda (value)
-                  (write-char #\space port)
-                  (write value port))
-                irritants)))
-          (write exception port))
-        (newline port)
-        (exit #f)))))
+      (define port (current-error-port))
+
+      (if (error-object? exception)
+        (begin
+          (write-string (error-object-message exception) port)
+          (let ((irritants (error-object-irritants exception)))
+            (for-each
+              (lambda (value)
+                (write-char #\space port)
+                (write value port))
+              irritants)))
+        (write exception port))
+      (newline port)
+      (exit #f))))
 
 (define (with-exception-handler handler thunk)
   (let ((old (exception-handler)))
