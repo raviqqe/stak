@@ -390,17 +390,10 @@
 (define $$read-u8 (primitive 16))
 (define $$write-u8 (primitive 17))
 (define $$write-error-u8 (primitive 18))
+(define $$halt (primitive 19))
 
 (define (apply f xs)
   ($$apply f xs))
-
-(define exit-success (rib (cons 0 '()) '() procedure-type))
-
-(define (exit . rest)
-  (if (or (null? rest) (eqv? (car rest) #t))
-    (exit-success)
-    ; Raise a non-recoverable error.
-    ((lambda (x) #f))))
 
 ; Types
 
@@ -1356,7 +1349,7 @@
               irritants)))
         (write exception port))
       (newline port)
-      (exit #f))
+      ($$halt))
     (lambda (handler)
       (lambda (pair)
         (let* (
