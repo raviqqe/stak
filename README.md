@@ -12,6 +12,7 @@ For working examples, see [a `features` directory](/features).
 ## Goal
 
 - Minimal implementation of [R7RS small][r7rs-small]
+- Subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
 - Small memory footprint
 
 ## Limitations
