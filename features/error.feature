@@ -24,3 +24,16 @@ Feature: Error
     When I run `scheme main.scm`
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
+
+  Scenario: Raise a continuable error
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8
+      (with-exception-handler
+        (lambda (error) 65)
+        (lambda () (raise-continuable #f))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain "A"

@@ -1356,7 +1356,7 @@
         (exit #f)))))
 
 (define (with-exception-handler handler thunk)
-  (parameterize ((exception-handler handler)) thunk))
+  (parameterize ((exception-handler handler)) (thunk)))
 
 (define (raise exception)
   (raise-continuable exception)
