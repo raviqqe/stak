@@ -234,9 +234,9 @@ Feature: Function
     """scheme
     (import (scheme base))
 
-    (define (f x) (+ x 5))
+    (define (f x) x)
 
-    (write-u8 (f))
+    (f)
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
@@ -246,9 +246,9 @@ Feature: Function
     """scheme
     (import (scheme base))
 
-    (define (f x) (+ x 5))
+    (define (f) #f)
 
-    (write-u8 (f))
+    (f #f)
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
