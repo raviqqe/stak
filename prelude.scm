@@ -1339,7 +1339,7 @@
   (message error-object-message)
   (irritants error-object-irritants))
 
-(define exception-handler
+(define current-exception-handler
   (make-parameter
     (lambda (exception)
       ; TODO Use `parameterize`.
@@ -1367,17 +1367,17 @@
           value)))))
 
 (define (with-exception-handler handler thunk)
-  (let ((old (exception-handler)))
+  (let ((old (current-exception-handler)))
     (parameterize (
-        (exception-handler
+        (current-exception-handler
           (lambda (exception)
-            (parameterize ((exception-handler old))
+            (parameterize ((current-exception-handler old))
               (handler exception)))))
       (thunk))))
 
 (define (raise-value continuable)
   (lambda (value)
-    ((exception-handler) (cons continuable value))))
+    ((current-exception-handler) (cons continuable value))))
 
 (define raise (raise-value #f))
 (define raise-continuable (raise-value #t))
