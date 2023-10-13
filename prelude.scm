@@ -1356,7 +1356,12 @@
         (exit #f)))))
 
 (define (with-exception-handler handler thunk)
-  (parameterize ((exception-handler handler)) (thunk)))
+  (let ((old (exception-handler)))
+    (parameterize (
+        (exception-handler
+          (lambda (exception)
+            (parameterize ((exception-handler old)) (handler exception)))))
+      (thunk))))
 
 (define (raise exception)
   (raise-continuable exception)
