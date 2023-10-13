@@ -1333,8 +1333,9 @@
 ;; Exception
 
 (define-record-type error-object
-  (make-error-object message irritants)
+  (make-error-object type message irritants)
   error-object?
+  (type error-object-type)
   (message error-object-message)
   (irritants error-object-irritants))
 
@@ -1382,11 +1383,21 @@
 (define raise-continuable (raise-value #t))
 
 (define (error message . rest)
-  (raise (make-error-object message rest)))
+  (raise (make-error-object #f message rest)))
 
-; TODO Implement those errors.
-(define (read-error? value) #f)
-(define (file-error? value) #f)
+; TODO Use this.
+(define (read-error message . rest)
+  (raise (make-error-object 'read message rest)))
+
+(define (read-error? error)
+  (eqv? (error-object-type error) 'read))
+
+; TODO Use this.
+(define (file-error message . rest)
+  (raise (make-error-object 'file message rest)))
+
+(define (file-error? error)
+  (eqv? (error-object-type error) 'file))
 
 ;; Unwind
 
