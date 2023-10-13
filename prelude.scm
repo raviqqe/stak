@@ -1398,3 +1398,12 @@
     (lambda (continuation)
       (set! unwind continuation)
       dummy-function)))
+
+; Process context
+
+(define exit-success (rib (cons 0 '()) '() procedure-type))
+
+(define (exit . rest)
+  (if (or (null? rest) (eqv? (car rest) #t))
+    (exit-success)
+    ($$halt)))
