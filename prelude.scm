@@ -1404,6 +1404,8 @@
 (define exit-success (rib (cons 0 '()) '() procedure-type))
 
 (define (exit . rest)
-  (if (or (null? rest) (eqv? (car rest) #t))
-    (exit-success)
-    ($$halt)))
+  (unwind
+    (lambda ()
+      (if (or (null? rest) (eqv? (car rest) #t))
+        (exit-success)
+        ($$halt)))))
