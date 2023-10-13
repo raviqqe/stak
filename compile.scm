@@ -1213,7 +1213,7 @@
         (build-primitives
           primitives
           (build-constants constant-context codes)))
-      (symbols (find-symbols codes (map cdr (constant-context-symbols constant-context)))))
+      (symbols (find-symbols codes (map cdr (constant-context-constants constant-context)))))
     (encode-symbols
       symbols
       (encode-codes
