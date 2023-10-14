@@ -154,3 +154,23 @@ Feature: Error
     When I run `scheme main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly "AB"
+
+  Scenario: Use a guard expression
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (guard
+      (condition
+        ((null? condition)
+          #f)
+
+        ((number? condition)
+          (write-u8 condition))
+
+        ((string? condition)
+          #f))
+      (raise 65))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"

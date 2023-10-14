@@ -1395,6 +1395,67 @@
 (define read-error? (error-type? 'read))
 (define file-error? (error-type? 'file))
 
+(define-syntax guard
+  (syntax-rules ()
+    ((_ (name clause ...) body1 body2 ...)
+      ((call/cc
+          (lambda (guard-continuation)
+            (with-exception-handler
+              (lambda (exception)
+                ((call/cc
+                    (lambda (handler-continuation)
+                      (guard-continuation
+                        (lambda ()
+                          (let ((name exception))
+                            (guard*
+                              (handler-continuation
+                                (lambda () (raise-continuable name)))
+                              clause
+                              ...))))))))
+              (lambda ()
+                (call-with-values
+                  (lambda () body1 body2 ...)
+                  (lambda arguments
+                    (guard-continuation
+                      (lambda ()
+                        (apply values arguments)))))))))))))
+
+(define-syntax guard*
+  (syntax-rules (else =>)
+    ((_ re-raise (else result1 result2 ...))
+      (begin result1 result2 ...))
+
+    ((_ re-raise (test => result))
+      (let ((temp test))
+        (if temp
+          (result temp)
+          re-raise)))
+
+    ((_ re-raise (test => result) clause1 clause2 ...)
+      (let ((temp test))
+        (if temp
+          (result temp)
+          (guard* re-raise clause1 clause2 ...))))
+
+    ((_ re-raise (test))
+      (or test re-raise))
+
+    ((_ re-raise (test) clause1 clause2 ...)
+      (let ((temp test))
+        (if temp
+          temp
+          (guard* re-raise clause1 clause2 ...))))
+
+    ((_ re-raise (test result1 result2 ...))
+      (if test
+        (begin result1 result2 ...)
+        re-raise))
+
+    ((_ re-raise (test result1 result2 ...) clause1 clause2 ...)
+      (if test
+        (begin result1 result2 ...)
+        (guard* re-raise clause1 clause2 ...)))))
+
 ;; Unwind
 
 (define unwind #f)
