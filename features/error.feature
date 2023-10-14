@@ -109,6 +109,20 @@ Feature: Error
     And the stdout should contain "bar"
     And the stdout should contain "baz"
 
+  Scenario: Terminate on a continued non-continuable exception
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8
+      (with-exception-handler
+        (lambda (value) 65)
+        (lambda () (raise #f))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stdout should contain exactly ""
+
   @stak @gauche @guile
   Scenario: Leave a dynamic extent
     Given a file named "main.scm" with:
