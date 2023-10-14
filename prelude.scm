@@ -1162,7 +1162,7 @@
       (write-vector x write port))
 
     (else
-      (display x))))
+      (display x port))))
 
 (define (display x . rest)
   (define port (get-output-port rest))
@@ -1353,12 +1353,11 @@
             (if (error-object? exception)
               (begin
                 (write-string (error-object-message exception) port)
-                (let ((irritants (error-object-irritants exception)))
-                  (for-each
-                    (lambda (value)
-                      (write-char #\space port)
-                      (write value port))
-                    irritants)))
+                (for-each
+                  (lambda (value)
+                    (write-char #\space port)
+                    (write value port))
+                  (error-object-irritants exception)))
               (write exception port))
             (newline port)
             ($$halt)))))))
