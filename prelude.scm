@@ -1364,13 +1364,13 @@
 
 (define (with-exception-handler handler thunk)
   (let (
-      (handler (convert-exception-handler handler))
+      (new (convert-exception-handler handler))
       (old (current-exception-handler)))
     (parameterize (
         (current-exception-handler
           (lambda (exception)
             (parameterize ((current-exception-handler old))
-              (handler exception)))))
+              (new exception)))))
       (thunk))))
 
 (define (raise-value continuable)
