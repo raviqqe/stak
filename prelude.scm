@@ -1404,7 +1404,7 @@
                       (guard-k
                         (lambda ()
                           (let ((var condition))
-                            (guard-aux
+                            (guard*
                               (handler-k
                                 (lambda ()
                                   (raise-continuable condition)))
@@ -1418,7 +1418,7 @@
                       (lambda ()
                         (apply values args)))))))))))))
 
-(define-syntax guard-aux
+(define-syntax guard*
   (syntax-rules (else =>)
     ((_ re-raise (else result1 result2 ...))
       (begin result1 result2 ...))
@@ -1436,7 +1436,7 @@
       (let ((temp test))
         (if temp
           (result temp)
-          (guard-aux re-raise clause1 clause2 ...))))
+          (guard* re-raise clause1 clause2 ...))))
 
     ((_ re-raise (test))
       (or test re-raise))
@@ -1445,7 +1445,7 @@
       (let ((temp test))
         (if temp
           temp
-          (guard-aux re-raise clause1 clause2 ...))))
+          (guard* re-raise clause1 clause2 ...))))
 
     ((_ re-raise (test result1 result2 ...))
       (if test
@@ -1459,7 +1459,7 @@
         ...)
       (if test
         (begin result1 result2 ...)
-        (guard-aux re-raise clause1 clause2 ...)))))
+        (guard* re-raise clause1 clause2 ...)))))
 
 ;; Unwind
 
