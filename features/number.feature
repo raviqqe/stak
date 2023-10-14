@@ -135,10 +135,19 @@ Feature: Number
       | 0     | 16    | 0      |
       | 1     | 16    | 1      |
       | 2     | 16    | 2      |
+      | 15    | 16    | f      |
       | 42    | 16    | 2a     |
       | -1    | 16    | -1     |
       | -2    | 16    | -2     |
       | -42   | 16    | -2a    |
+      | 0     | 32    | 0      |
+      | 1     | 32    | 1      |
+      | 2     | 32    | 2      |
+      | 31    | 32    | v      |
+      | 42    | 32    | 1a     |
+      | -1    | 32    | -1     |
+      | -2    | 32    | -2     |
+      | -42   | 32    | -1a    |
 
   Scenario Outline: Convert a string to a number
     Given a file named "main.scm" with:
@@ -162,12 +171,23 @@ Feature: Number
       | 0     | 16    | 0      |
       | 1     | 16    | 1      |
       | 2     | 16    | 2      |
+      | f     | 16    | 15     |
       | 2a    | 16    | 42     |
       | 2A    | 16    | 42     |
       | -1    | 16    | -1     |
       | -2    | 16    | -2     |
       | -2a   | 16    | -42    |
       | -2A   | 16    | -42    |
+      | 0     | 32    | 0      |
+      | 1     | 32    | 1      |
+      | 2     | 32    | 2      |
+      | v     | 32    | 31     |
+      | 1a    | 32    | 42     |
+      | 1A    | 32    | 42     |
+      | -1    | 32    | -1     |
+      | -2    | 32    | -2     |
+      | -1a   | 32    | -42    |
+      | -1A   | 32    | -42    |
 
   Scenario Outline: Convert an invalid string to a number
     Given a file named "main.scm" with:
