@@ -750,18 +750,18 @@
       ((#\A . #\F) . 10)
       ((#\a . #\f) . 10))))
 
+(define (convert-digit x)
+  (let* (
+      (x (char->integer x))
+      (y
+        (member
+          x
+          digit-characters
+          (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+    (and y (+ (- x (caaar y)) (cdar y)))))
+
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
-
-  (define (convert-digit x)
-    (let* (
-        (x (char->integer x))
-        (y
-          (member
-            x
-            digit-characters
-            (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-      (and y (+ (- x (caaar y)) (cdar y)))))
 
   (define (convert xs)
     (let loop ((xs xs) (y 0))
