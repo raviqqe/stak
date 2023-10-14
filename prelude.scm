@@ -1392,6 +1392,32 @@
 (define read-error? (error-type? 'read))
 (define file-error? (error-type? 'file))
 
+(define-syntax guard
+  (syntax-rules ()
+    ((guard (var clause ...) e1 e2 ...)
+      ((call/cc
+          (lambda (guard-k)
+            (with-exception-handler
+              (lambda (condition)
+                ((call/cc
+                    (lambda (handler-k)
+                      (guard-k
+                        (lambda ()
+                          (let ((var condition))
+                            (guard-aux
+                              (handler-k
+                                (lambda ()
+                                  (raise-continuable condition)))
+                              clause
+                              ...))))))))
+              (lambda ()
+                (call-with-values
+                  (lambda () e1 e2 ...)
+                  (lambda args
+                    (guard-k
+                      (lambda ()
+                        (apply values args)))))))))))))
+
 ;; Unwind
 
 (define unwind #f)
