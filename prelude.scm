@@ -98,6 +98,11 @@
     ((_ name value)
       ($$set! name value))))
 
+(define-syntax cond-expand
+  (syntax-rules ()
+    ((_ caluse ...)
+      #f)))
+
 ;; Library system
 
 ; TODO Implement an import statement.
