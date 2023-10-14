@@ -1397,29 +1397,28 @@
 
 (define-syntax guard
   (syntax-rules ()
-    ((_ (var clause ...) e1 e2 ...)
+    ((_ (name clause ...) body1 body2 ...)
       ((call/cc
-          (lambda (guard-k)
+          (lambda (guard-continuation)
             (with-exception-handler
-              (lambda (condition)
+              (lambda (exception)
                 ((call/cc
-                    (lambda (handler-k)
-                      (guard-k
+                    (lambda (handler-continuation)
+                      (guard-continuation
                         (lambda ()
-                          (let ((var condition))
+                          (let ((name exception))
                             (guard*
-                              (handler-k
-                                (lambda ()
-                                  (raise-continuable condition)))
+                              (handler-continuation
+                                (lambda () (raise-continuable name)))
                               clause
                               ...))))))))
               (lambda ()
                 (call-with-values
-                  (lambda () e1 e2 ...)
-                  (lambda args
-                    (guard-k
+                  (lambda () body1 body2 ...)
+                  (lambda arguments
+                    (guard-continuation
                       (lambda ()
-                        (apply values args)))))))))))))
+                        (apply values arguments)))))))))))))
 
 (define-syntax guard*
   (syntax-rules (else =>)
