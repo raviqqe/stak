@@ -1431,10 +1431,7 @@
           (result temp)
           re-raise)))
 
-    ((_ re-raise (test => result)
-        clause1
-        clause2
-        ...)
+    ((_ re-raise (test => result) clause1 clause2 ...)
       (let ((temp test))
         (if temp
           (result temp)
@@ -1454,11 +1451,7 @@
         (begin result1 result2 ...)
         re-raise))
 
-    ((_ re-raise
-        (test result1 result2 ...)
-        clause1
-        clause2
-        ...)
+    ((_ re-raise (test result1 result2 ...) clause1 clause2 ...)
       (if test
         (begin result1 result2 ...)
         (guard* re-raise clause1 clause2 ...)))))
