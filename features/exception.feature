@@ -174,3 +174,83 @@ Feature: Error
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Use an else clause in a guard expression
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (guard
+      (condition
+        ((null? condition)
+          #f)
+
+        ((string? condition)
+          #f)
+
+        (else
+          (write-u8 condition)))
+      (raise 65))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use nested guard expressions
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (guard
+      (condition
+        ((null? condition)
+          #f)
+
+        ((number? condition)
+          (write-u8 condition))
+
+        ((string? condition)
+          #f))
+      (guard
+        (condition
+          ((null? condition)
+            #f)
+
+          ((number? condition)
+            (write-u8 condition))
+
+          ((string? condition)
+            #f))
+        (raise 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use a guard expression in a clause
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (guard
+      (condition
+        ((null? condition)
+          #f)
+
+        ((number? condition)
+          (guard
+            (condition
+              ((null? condition)
+                #f)
+
+              ((number? condition)
+                (write-u8 condition))
+
+              ((string? condition)
+                #f))
+            (raise condition)))
+
+        ((string? condition)
+          #f))
+      (raise 65))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
