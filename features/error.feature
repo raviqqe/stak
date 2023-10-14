@@ -64,6 +64,22 @@ Feature: Error
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
+  Scenario: Raise an exception in handlers
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (with-exception-handler
+      (lambda (error) (error "Oh, no!"))
+      (lambda ()
+        (with-exception-handler
+          (lambda (error) (raise #f))
+          (lambda () (raise-continuable #f)))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stderr should contain "Oh, no!"
+
   @stak @gauche @guile
   Scenario: Leave a dynamic extent
     Given a file named "main.scm" with:
