@@ -747,27 +747,31 @@
         (cdr pair)))
     '(
       ((#\0 . #\9) . 0)
-      ((#\A . #\F) . 10)
-      ((#\a . #\f) . 10))))
+      ((#\A . #\Z) . 10)
+      ((#\a . #\z) . 10))))
 
+(define (convert-digit x radix)
+  (let* (
+      (x (char->integer x))
+      (y
+        (member
+          x
+          digit-characters
+          (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+    (and
+      y
+      (let ((y (+ (- x (caaar y)) (cdar y))))
+        (and (< y radix) y)))))
+
+; TODO Fix performance.
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
-
-  (define (convert-digit x)
-    (let* (
-        (x (char->integer x))
-        (y
-          (member
-            x
-            digit-characters
-            (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-      (and y (+ (- x (caaar y)) (cdar y)))))
 
   (define (convert xs)
     (let loop ((xs xs) (y 0))
       (if (null? xs)
         y
-        (let ((x (convert-digit (car xs))))
+        (let ((x (convert-digit (car xs) radix)))
           (and x (loop (cdr xs) (+ (* radix y) x)))))))
 
   (let ((xs (string->list x)))
