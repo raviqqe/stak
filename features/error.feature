@@ -123,6 +123,22 @@ Feature: Error
     Then the exit status should not be 0
     And the stdout should contain exactly ""
 
+  @stak
+  Scenario: Terminate on a continued non-continuable exception with a proper message
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8
+      (with-exception-handler
+        (lambda (value) 65)
+        (lambda () (raise #f))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stdout should contain exactly ""
+    And the stderr should contain "exception handler returned on a non-continuable exception"
+
   @stak @gauche @guile
   Scenario: Leave a dynamic extent
     Given a file named "main.scm" with:
