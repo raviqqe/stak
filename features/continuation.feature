@@ -62,8 +62,8 @@ Feature: Continuation
       (backtrack #f))
     """
     When I run `scheme main.scm`
-    # TODO Use `contain exactly`.
-    Then the stdout should contain:
+    Then the exit status should not be 0
+    And the stdout should contain exactly:
     """
     A
     B
@@ -92,5 +92,4 @@ Feature: Continuation
     Y
     Z
     """
-    # TODO Test stderr.
-    # TODO Test an exit code.
+    And the stderr should contain "Oh, no!"
