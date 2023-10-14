@@ -64,21 +64,50 @@ Feature: Error
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Raise an exception in handlers
+  Scenario: Raise an exception in nested handlers
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
     (with-exception-handler
-      (lambda (value) (error "Oh, no!"))
+      (lambda (value) (error "foo"))
       (lambda ()
         (with-exception-handler
-          (lambda (value) (raise #f))
-          (lambda () (raise-continuable #f)))))
+          (lambda (value)
+            (display "bar")
+            (raise #f))
+          (lambda () (raise #f)))))
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
-    And the stderr should contain "Oh, no!"
+    And the stderr should contain "foo"
+    And the stdout should contain "bar"
+
+  Scenario: Raise an exception in deeply nested handlers
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+
+    (with-exception-handler
+      (lambda (value) (error "foo"))
+      (lambda ()
+        (with-exception-handler
+          (lambda (value)
+            (display "bar")
+            (raise #f))
+          (lambda ()
+            (with-exception-handler
+              (lambda (value)
+                (display "baz")
+                (raise #f))
+              (lambda () (raise #f)))))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stderr should contain "foo"
+    And the stdout should contain "bar"
+    And the stdout should contain "baz"
 
   @stak @gauche @guile
   Scenario: Leave a dynamic extent
