@@ -763,6 +763,7 @@
       (let ((y (+ (- x (caaar y)) (cdar y))))
         (and (< y radix) y)))))
 
+; TODO Fix performance.
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
 
