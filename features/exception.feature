@@ -174,3 +174,33 @@ Feature: Error
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Use nested guard expressions
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (guard
+      (condition
+        ((null? condition)
+          #f)
+
+        ((number? condition)
+          (write-u8 condition))
+
+        ((string? condition)
+          #f))
+      (guard
+        (condition
+          ((null? condition)
+            #f)
+
+          ((number? condition)
+            (write-u8 condition))
+
+          ((string? condition)
+            #f))
+        (raise 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
