@@ -149,6 +149,7 @@ Feature: Number
       | -2    | 32    | -2     |
       | -42   | 32    | -1a    |
 
+  @stak @gauche @guile
   Scenario Outline: Convert a string to a number
     Given a file named "main.scm" with:
     """scheme
