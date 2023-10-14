@@ -1420,40 +1420,46 @@
 
 (define-syntax guard-aux
   (syntax-rules (else =>)
-    ((guard-aux reraise (else result1 result2 ...))
+    ((_ re-raise (else result1 result2 ...))
       (begin result1 result2 ...))
-    ((guard-aux reraise (test => result))
+
+    ((_ re-raise (test => result))
       (let ((temp test))
         (if temp
           (result temp)
-          reraise)))
-    ((guard-aux reraise (test => result)
+          re-raise)))
+
+    ((_ re-raise (test => result)
         clause1
         clause2
         ...)
       (let ((temp test))
         (if temp
           (result temp)
-          (guard-aux reraise clause1 clause2 ...))))
-    ((guard-aux reraise (test))
-      (or test reraise))
-    ((guard-aux reraise (test) clause1 clause2 ...)
+          (guard-aux re-raise clause1 clause2 ...))))
+
+    ((_ re-raise (test))
+      (or test re-raise))
+
+    ((_ re-raise (test) clause1 clause2 ...)
       (let ((temp test))
         (if temp
           temp
-          (guard-aux reraise clause1 clause2 ...))))
-    ((guard-aux reraise (test result1 result2 ...))
+          (guard-aux re-raise clause1 clause2 ...))))
+
+    ((_ re-raise (test result1 result2 ...))
       (if test
         (begin result1 result2 ...)
-        reraise))
-    ((guard-aux reraise
+        re-raise))
+
+    ((_ re-raise
         (test result1 result2 ...)
         clause1
         clause2
         ...)
       (if test
         (begin result1 result2 ...)
-        (guard-aux reraise clause1 clause2 ...)))))
+        (guard-aux re-raise clause1 clause2 ...)))))
 
 ;; Unwind
 
