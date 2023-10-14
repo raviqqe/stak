@@ -750,7 +750,7 @@
       ((#\A . #\F) . 10)
       ((#\a . #\f) . 10))))
 
-(define (convert-digit x)
+(define (convert-digit x radix)
   (let* (
       (x (char->integer x))
       (y
@@ -758,7 +758,10 @@
           x
           digit-characters
           (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-    (and y (+ (- x (caaar y)) (cdar y)))))
+    (and
+      y
+      (let ((y (+ (- x (caaar y)) (cdar y))))
+        (and (< y radix) y)))))
 
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
@@ -767,7 +770,7 @@
     (let loop ((xs xs) (y 0))
       (if (null? xs)
         y
-        (let ((x (convert-digit (car xs))))
+        (let ((x (convert-digit (car xs) radix)))
           (and x (loop (cdr xs) (+ (* radix y) x)))))))
 
   (let ((xs (string->list x)))
