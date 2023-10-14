@@ -64,6 +64,7 @@ Feature: Error
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
+  @stak @guile
   Scenario: Raise an exception in nested handlers
     Given a file named "main.scm" with:
     """scheme
@@ -83,6 +84,7 @@ Feature: Error
     And the stderr should contain "foo"
     And the stdout should contain "bar"
 
+  @stak @guile
   Scenario: Raise an exception in deeply nested handlers
     Given a file named "main.scm" with:
     """scheme
