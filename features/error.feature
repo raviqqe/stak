@@ -88,7 +88,6 @@ Feature: Error
     """scheme
     (import (scheme base))
 
-
     (with-exception-handler
       (lambda (value) (error "foo"))
       (lambda ()
