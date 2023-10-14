@@ -32,7 +32,7 @@ Feature: Error
 
     (write-u8
       (with-exception-handler
-        (lambda (error) 65)
+        (lambda (value) 65)
         (lambda () (raise #f))))
     """
     When I run `scheme main.scm`
@@ -46,7 +46,7 @@ Feature: Error
 
     (write-u8
       (with-exception-handler
-        (lambda (error) 65)
+        (lambda (value) 65)
         (lambda () (raise-continuable #f))))
     """
     When I successfully run `scheme main.scm`
@@ -58,7 +58,7 @@ Feature: Error
     (import (scheme base))
 
     (with-exception-handler
-      (lambda (error) (raise #f))
+      (lambda (value) (raise #f))
       (lambda () (raise-continuable #f)))
     """
     When I run `scheme main.scm`
@@ -70,10 +70,10 @@ Feature: Error
     (import (scheme base))
 
     (with-exception-handler
-      (lambda (error) (error "Oh, no!"))
+      (lambda (value) (error "Oh, no!"))
       (lambda ()
         (with-exception-handler
-          (lambda (error) (raise #f))
+          (lambda (value) (raise #f))
           (lambda () (raise-continuable #f)))))
     """
     When I run `scheme main.scm`

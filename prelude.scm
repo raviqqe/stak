@@ -1351,15 +1351,7 @@
                   irritants)))
             (write exception port))
           (newline port)
-          ($$halt))))
-    (lambda (handler)
-      (lambda (pair)
-        (let* (
-            (exception (cdr pair))
-            (value (handler exception)))
-          (unless (car pair)
-            (error "exception handler returned on a non-continuable exception" exception))
-          value)))))
+          ($$halt))))))
 
 (define (with-exception-handler handler thunk)
   (let ((old (current-exception-handler)))
@@ -1371,8 +1363,11 @@
       (thunk))))
 
 (define (raise-value continuable)
-  (lambda (value)
-    ((current-exception-handler) (cons continuable value))))
+  (lambda (exception)
+    (let ((value ((current-exception-handler) exception)))
+      (unless continuable
+        (error "exception handler returned on a non-continuable exception" exception))
+      value)))
 
 (define raise (raise-value #f))
 (define raise-continuable (raise-value #t))
