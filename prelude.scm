@@ -1394,7 +1394,7 @@
 
 (define-syntax guard
   (syntax-rules ()
-    ((guard (var clause ...) e1 e2 ...)
+    ((_ (var clause ...) e1 e2 ...)
       ((call/cc
           (lambda (guard-k)
             (with-exception-handler
