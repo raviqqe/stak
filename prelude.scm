@@ -1364,13 +1364,14 @@
             ($$halt)))))))
 
 (define (with-exception-handler handler thunk)
-  (let ((old (current-exception-handler)))
+  (let (
+      (handler (convert-exception-handler handler))
+      (old (current-exception-handler)))
     (parameterize (
         (current-exception-handler
-          (convert-exception-handler
-            (lambda (exception)
-              (parameterize ((current-exception-handler old))
-                (handler exception))))))
+          (lambda (exception)
+            (parameterize ((current-exception-handler old))
+              (handler exception)))))
       (thunk))))
 
 (define (raise-value continuable)
