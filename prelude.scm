@@ -101,7 +101,7 @@
 ; TODO Implement `cond-expand`.
 (define-syntax cond-expand
   (syntax-rules ()
-    ((_ caluse ...)
+    ((_ clause ...)
       #f)))
 
 ;; Library system
