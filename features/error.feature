@@ -32,7 +32,7 @@ Feature: Error
 
     (write-u8
       (with-exception-handler
-        (lambda (error) 65)
+        (lambda (value) 65)
         (lambda () (raise #f))))
     """
     When I run `scheme main.scm`
@@ -46,7 +46,7 @@ Feature: Error
 
     (write-u8
       (with-exception-handler
-        (lambda (error) 65)
+        (lambda (value) 65)
         (lambda () (raise-continuable #f))))
     """
     When I successfully run `scheme main.scm`
@@ -58,11 +58,87 @@ Feature: Error
     (import (scheme base))
 
     (with-exception-handler
-      (lambda (error) (raise #f))
+      (lambda (value) (raise #f))
       (lambda () (raise-continuable #f)))
     """
     When I run `scheme main.scm`
     Then the exit status should not be 0
+
+  @stak @guile
+  Scenario: Raise an exception in nested handlers
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (with-exception-handler
+      (lambda (value) (error "foo"))
+      (lambda ()
+        (with-exception-handler
+          (lambda (value)
+            (display "bar")
+            (raise #f))
+          (lambda () (raise #f)))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stderr should contain "foo"
+    And the stdout should contain "bar"
+
+  @stak @guile
+  Scenario: Raise an exception in deeply nested handlers
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (with-exception-handler
+      (lambda (value) (error "foo"))
+      (lambda ()
+        (with-exception-handler
+          (lambda (value)
+            (display "bar")
+            (raise #f))
+          (lambda ()
+            (with-exception-handler
+              (lambda (value)
+                (display "baz")
+                (raise #f))
+              (lambda () (raise #f)))))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stderr should contain "foo"
+    And the stdout should contain "bar"
+    And the stdout should contain "baz"
+
+  Scenario: Terminate on a continued non-continuable exception
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8
+      (with-exception-handler
+        (lambda (value) 65)
+        (lambda () (raise #f))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stdout should contain exactly ""
+
+  @stak
+  Scenario: Terminate on a continued non-continuable exception with a proper message
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8
+      (with-exception-handler
+        (lambda (value) 65)
+        (lambda () (raise #f))))
+    """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+    And the stdout should contain exactly ""
+    And the stderr should contain "exception handler returned on a non-continuable exception"
 
   @stak @gauche @guile
   Scenario: Leave a dynamic extent

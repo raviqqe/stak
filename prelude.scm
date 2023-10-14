@@ -1162,7 +1162,7 @@
       (write-vector x write port))
 
     (else
-      (display x))))
+      (display x port))))
 
 (define (display x . rest)
   (define port (get-output-port rest))
@@ -1332,42 +1332,45 @@
   (message error-object-message)
   (irritants error-object-irritants))
 
+(define (convert-exception-handler handler)
+  (lambda (pair)
+    (let* (
+        (exception (cdr pair))
+        (value (handler exception)))
+      (unless (car pair)
+        (error "exception handler returned on a non-continuable exception" exception))
+      value)))
+
 (define current-exception-handler
   (make-parameter
-    (lambda (exception)
-      (unwind
-        (lambda ()
-          ; TODO Use `parameterize`.
-          (define port (current-error-port))
+    (convert-exception-handler
+      (lambda (exception)
+        (unwind
+          (lambda ()
+            ; TODO Use `parameterize`.
+            (define port (current-error-port))
 
-          (if (error-object? exception)
-            (begin
-              (write-string (error-object-message exception) port)
-              (let ((irritants (error-object-irritants exception)))
+            (if (error-object? exception)
+              (begin
+                (write-string (error-object-message exception) port)
                 (for-each
                   (lambda (value)
                     (write-char #\space port)
                     (write value port))
-                  irritants)))
-            (write exception port))
-          (newline port)
-          ($$halt))))
-    (lambda (handler)
-      (lambda (pair)
-        (let* (
-            (exception (cdr pair))
-            (value (handler exception)))
-          (unless (car pair)
-            (error "exception handler returned on a non-continuable exception" exception))
-          value)))))
+                  (error-object-irritants exception)))
+              (write exception port))
+            (newline port)
+            ($$halt)))))))
 
 (define (with-exception-handler handler thunk)
-  (let ((old (current-exception-handler)))
+  (let (
+      (new (convert-exception-handler handler))
+      (old (current-exception-handler)))
     (parameterize (
         (current-exception-handler
           (lambda (exception)
             (parameterize ((current-exception-handler old))
-              (handler exception)))))
+              (new exception)))))
       (thunk))))
 
 (define (raise-value continuable)
