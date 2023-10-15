@@ -500,18 +500,14 @@ impl<'a, T: Device> Vm<'a, T> {
                     FALSE.into()
                 })?;
             }
-            Primitive::WRITE => {
-                self.device
-                    .write(self.top().assume_number().to_i64() as u8)
-                    .map_err(|_| Error::WriteOutput)?;
-            }
-            Primitive::WRITE_ERROR => {
-                let byte = self.pop()?;
-                self.device
-                    .write_error(byte.assume_number().to_i64() as u8)
-                    .map_err(|_| Error::WriteError)?;
-                self.push(byte)?;
-            }
+            Primitive::WRITE => self
+                .device
+                .write(self.top().assume_number().to_i64() as u8)
+                .map_err(|_| Error::WriteOutput)?,
+            Primitive::WRITE_ERROR => self
+                .device
+                .write_error(self.top().assume_number().to_i64() as u8)
+                .map_err(|_| Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
             _ => return Err(Error::IllegalPrimitive),
         }
