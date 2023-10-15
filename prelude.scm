@@ -1115,17 +1115,9 @@
 (define (make-port descriptor)
   (make-port* descriptor #f))
 
-(define stdin-port (make-port 'stdin))
-
-(define stdout-port (make-port 'stdout))
-
-(define stderr-port (make-port 'stderr))
-
-(define current-input-port (make-parameter stdin-port))
-
-(define current-output-port (make-parameter stdout-port))
-
-(define current-error-port (make-parameter stderr-port))
+(define current-input-port (make-parameter (make-port 'stdin)))
+(define current-output-port (make-parameter (make-port 'stdout)))
+(define current-error-port (make-parameter (make-port 'stderr)))
 
 ;; Tuple
 
@@ -1179,37 +1171,39 @@
   (input-byte->char (peek-u8 (get-input-port rest))))
 
 (define (read . rest)
-  (let* (
-      (port (get-input-port rest))
-      (char (peek-non-whitespace-char port)))
+  (parameterize ((current-input-port (get-input-port rest)))
+    (read-raw)))
+
+(define (read-raw)
+  (let ((char (peek-non-whitespace-char)))
     (cond
       ((eof-object? char)
         char)
 
       ((eqv? char #\()
-        (read-list port))
+        (read-list))
 
       ((eqv? char #\#)
-        (read-char port)
-        (let ((char (peek-char port)))
+        (read-char)
+        (let ((char (peek-char)))
           (cond
             ((eqv? char #\f)
-              (read-char port)
+              (read-char)
               #f)
 
             ((eqv? char #\t)
-              (read-char port)
+              (read-char)
               #t)
 
             ((eqv? char #\\)
-              (read-char port)
-              (let ((char (peek-char port)))
+              (read-char)
+              (let ((char (peek-char)))
                 (if (char-whitespace? char)
-                  (read-char port)
-                  (let ((x (read-symbol-chars port)))
+                  (read-char)
+                  (let ((x (read-symbol-chars)))
                     (cond
                       ((null? x)
-                        (read-char port))
+                        (read-char))
 
                       ((eqv? (length x) 1)
                         (car x))
@@ -1218,74 +1212,74 @@
                         (cdr (assoc (list->string x) special-chars))))))))
 
             (else
-              (list->vector (read-list port))))))
+              (list->vector (read-list))))))
 
       ((eqv? char #\')
-        (read-char port)
-        (list 'quote (read port)))
+        (read-char)
+        (list 'quote (read-raw)))
 
       ((eqv? char #\`)
-        (read-char port)
-        (list 'quasiquote (read port)))
+        (read-char)
+        (list 'quasiquote (read-raw)))
 
       ((eqv? char #\,)
-        (read-char port)
-        (if (eqv? (peek-char port) #\@)
+        (read-char)
+        (if (eqv? (peek-char) #\@)
           (begin
-            (read-char port)
-            (list 'unquote-splicing (read port)))
-          (list 'unquote (read port))))
+            (read-char)
+            (list 'unquote-splicing (read-raw)))
+          (list 'unquote (read-raw))))
 
       ((eqv? char #\")
-        (read-string port))
+        (read-string))
 
       (else
-        (let ((x (list->string (read-symbol-chars port))))
+        (let ((x (list->string (read-symbol-chars))))
           (or (string->number x) (string->symbol x)))))))
 
-(define (read-list port)
+(define (read-list)
   (define (read-tail)
-    (let ((char (peek-non-whitespace-char port)))
+    (let ((char (peek-non-whitespace-char)))
       (cond
         ((eqv? char #\))
-          (read-char port)
+          (read-char)
           '())
 
         (else
-          (let ((x (read port)))
+          (let ((x (read-raw)))
             (if (and (symbol? x) (equal? (symbol->string x) "."))
-              (let ((x (read port)))
-                (read-char port)
+              (let ((x (read-raw)))
+                (read-char)
                 x)
               (cons x (read-tail))))))))
 
-  (unless (eqv? (read-char port) #\()
+  (unless (eqv? (read-char) #\()
     (error "( expected"))
   (read-tail))
 
-(define (read-symbol-chars port)
-  (let ((char (peek-char port)))
+(define (read-symbol-chars)
+  (let ((char (peek-char)))
     (if (or
         (memv char '(#\( #\)))
         (eof-object? char)
         (char-whitespace? char))
       '()
-      (cons (read-char port) (read-symbol-chars port)))))
+      (cons (read-char) (read-symbol-chars)))))
 
-(define (read-string port)
-  (unless (eqv? (read-char port) #\")
+(define (read-string)
+  (unless (eqv? (read-char) #\")
     (error "\" expected"))
   (let loop ((xs '()))
-    (let ((char (read-char port)))
+    (let ((char (read-char)))
       (cond
         ((eof-object? char)
-          (error "unexpected end of port"))
+          (error "unexpected end of "))
 
         ((eqv? char #\")
           (list->string (reverse xs)))
 
         ((eqv? char #\\)
-          (let ((char (read-char port)))
+          (let ((char (read-char)))
             (loop
               (cons
                 (case char
@@ -1305,33 +1299,33 @@
         (else
           (loop (cons char xs)))))))
 
-(define (peek-non-whitespace-char port)
-  (let ((char (peek-char port)))
+(define (peek-non-whitespace-char)
+  (let ((char (peek-char)))
     (if (eof-object? char)
       char
       (cond
         ((char-whitespace? char)
           (begin
-            (read-char port)
-            (peek-non-whitespace-char port)))
+            (read-char)
+            (peek-non-whitespace-char)))
 
         ((eqv? char #\;)
-          (skip-comment port))
+          (skip-comment))
 
         (else
           char)))))
 
-(define (skip-comment port)
-  (let ((char (read-char port)))
+(define (skip-comment)
+  (let ((char (read-char)))
     (cond
       ((eof-object? char)
         char)
 
       ((eqv? char #\newline)
-        (peek-non-whitespace-char port))
+        (peek-non-whitespace-char))
 
       (else
-        (skip-comment port)))))
+        (skip-comment)))))
 
 ; Write
 
