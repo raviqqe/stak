@@ -10,7 +10,7 @@ repository.workspace = true
 
 [features]
 gc_always = ["vm/gc_always"]
-profile = ["vm/profile"]
+no_inline = ["vm/no_inline"]
 trace = ["vm/trace"]
 trace_heap = ["vm/trace_heap"]
 

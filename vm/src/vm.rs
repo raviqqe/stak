@@ -75,7 +75,7 @@ impl<'a, T: Device> Vm<'a, T> {
         }
     }
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn run(&mut self) -> Result<(), Error> {
         while self.program_counter != NULL {
             let instruction = self.cdr(self.program_counter).assume_cons();
@@ -212,7 +212,7 @@ impl<'a, T: Device> Vm<'a, T> {
         }
     }
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn advance_program_counter(&mut self) {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
@@ -307,7 +307,7 @@ impl<'a, T: Device> Vm<'a, T> {
         *self.car_mut(self.stack) = value;
     }
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_raw(car, cdr)?;
 
@@ -328,7 +328,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(cons)
     }
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
@@ -405,7 +405,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     // Primitive operations
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         trace!("primitive", primitive);
 
@@ -560,7 +560,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     // Garbage collection
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {
         self.allocation_index = 0;
         self.space = !self.space;
@@ -611,7 +611,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     // Initialization
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
 
@@ -634,7 +634,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             let symbol = self.create_symbol(NULL, 0)?;
@@ -703,7 +703,7 @@ impl<'a, T: Device> Vm<'a, T> {
         self.push(symbol.into())
     }
 
-    #[cfg_attr(feature = "profile", inline(never))]
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         while let Some((instruction, r#return, integer)) = self.decode_instruction(input)? {
             trace!("instruction", instruction);
