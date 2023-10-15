@@ -98,6 +98,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn call(&mut self, instruction: Cons) -> Result<(), Error> {
         let r#return = instruction == NULL;
         let procedure = self.procedure();
@@ -176,6 +177,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn set(&mut self) -> Result<(), Error> {
         let operand = self.operand_variable();
         let value = self.pop()?;
@@ -186,6 +188,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_variable();
 
@@ -201,6 +204,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand();
 
@@ -212,6 +216,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(())
     }
 
+    #[cfg_attr(feature = "no_inline", inline(never))]
     fn r#if(&mut self) -> Result<(), Error> {
         self.program_counter = (if self.pop()? == FALSE.into() {
             self.cdr(self.program_counter)
