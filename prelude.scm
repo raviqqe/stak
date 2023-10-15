@@ -790,12 +790,12 @@
           x
           digit-characters
           (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+    ; TODO Fix performance.
     (and
       y
       (let ((y (+ (- x (caaar y)) (cdar y))))
         (and (< y radix) y)))))
 
-; TODO Fix performance.
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
 
