@@ -809,12 +809,7 @@
 
   (let ((xs (string->list x)))
     (cond
-      ((or
-          (null? xs)
-          (let ((char (car xs)))
-            (and
-              (<= radix 10)
-              (not (or (eqv? char #\-) (char<=? #\0 char #\9))))))
+      ((null? xs)
         #f)
 
       ((eqv? (car xs) #\-)
