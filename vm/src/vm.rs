@@ -75,6 +75,7 @@ impl<'a, T: Device> Vm<'a, T> {
         }
     }
 
+    #[cfg_attr(feature = "profile", inline(never))]
     pub fn run(&mut self) -> Result<(), Error> {
         while self.program_counter != NULL {
             let instruction = self.cdr(self.program_counter).assume_cons();
@@ -211,6 +212,7 @@ impl<'a, T: Device> Vm<'a, T> {
         }
     }
 
+    #[cfg_attr(feature = "profile", inline(never))]
     fn advance_program_counter(&mut self) {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
@@ -305,6 +307,7 @@ impl<'a, T: Device> Vm<'a, T> {
         *self.car_mut(self.stack) = value;
     }
 
+    #[cfg_attr(feature = "profile", inline(never))]
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_raw(car, cdr)?;
 
@@ -325,6 +328,7 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(cons)
     }
 
+    #[cfg_attr(feature = "profile", inline(never))]
     fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
@@ -401,6 +405,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     // Primitive operations
 
+    #[cfg_attr(feature = "profile", inline(never))]
     fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
         trace!("primitive", primitive);
 
@@ -555,6 +560,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     // Garbage collection
 
+    #[cfg_attr(feature = "profile", inline(never))]
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {
         self.allocation_index = 0;
         self.space = !self.space;
