@@ -20,8 +20,5 @@ for file in $(find bench -type f -name '*.scm' | sort); do
     scripts="$scripts,python3 $base.py"
   fi
 
-  hyperfine \
-    --sort command \
-    -L script "$scripts" \
-    "{script}"
+  hyperfine --sort command -L script "$scripts" "{script}"
 done
