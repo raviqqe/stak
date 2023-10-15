@@ -83,122 +83,142 @@ impl<'a, T: Device> Vm<'a, T> {
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
-                code::Instruction::CALL => {
-                    let r#return = instruction == NULL;
-                    let procedure = self.procedure();
-
-                    trace!("procedure", procedure);
-                    trace!("return", r#return);
-
-                    if self.environment(procedure).tag() != Type::Procedure as u8 {
-                        return Err(Error::ProcedureExpected);
-                    }
-
-                    match self.code(procedure).to_typed() {
-                        TypedValue::Cons(code) => {
-                            let arguments = Self::parse_argument_count(self.argument_count());
-                            let parameters =
-                                Self::parse_argument_count(self.car(code).assume_number());
-
-                            trace!("argument count", arguments.count);
-                            trace!("argument variadic", arguments.variadic);
-                            trace!("parameter count", parameters.count);
-                            trace!("parameter variadic", parameters.variadic);
-
-                            self.temporary = procedure;
-
-                            let mut list = if arguments.variadic {
-                                self.pop()?.assume_cons()
-                            } else {
-                                NULL
-                            };
-
-                            for _ in 0..arguments.count.to_i64() {
-                                let value = self.pop()?;
-                                list = self.cons(value, list)?;
-                            }
-
-                            // Use a `program_counter` field as an escape cell for a procedure.
-                            let program_counter = self.program_counter;
-                            self.program_counter = self.temporary;
-                            self.temporary = list;
-
-                            let continuation = if r#return {
-                                self.continuation()
-                            } else {
-                                self.allocate(self.cdr(program_counter), self.stack.into())?
-                            };
-                            self.stack = self.allocate(
-                                continuation.into(),
-                                self.environment(self.program_counter)
-                                    .set_tag(FRAME_TAG)
-                                    .into(),
-                            )?;
-                            self.program_counter = self
-                                .cdr(self.code(self.program_counter).assume_cons())
-                                .assume_cons();
-
-                            for _ in 0..parameters.count.to_i64() {
-                                if self.temporary == NULL {
-                                    return Err(Error::ArgumentCount);
-                                }
-
-                                self.push(self.car(self.temporary))?;
-                                self.temporary = self.cdr(self.temporary).assume_cons();
-                            }
-
-                            if parameters.variadic {
-                                self.push(self.temporary.into())?;
-                            } else if self.temporary != NULL {
-                                return Err(Error::ArgumentCount);
-                            }
-                        }
-                        TypedValue::Number(primitive) => {
-                            self.operate_primitive(primitive.to_i64() as u8)?;
-                            self.advance_program_counter();
-                        }
-                    }
-                }
-                code::Instruction::SET => {
-                    let operand = self.operand_variable();
-                    let value = self.pop()?;
-                    *self.car_mut(operand) = value;
-                    self.advance_program_counter();
-                }
-                code::Instruction::GET => {
-                    let operand = self.operand_variable();
-
-                    trace!("operand", operand);
-
-                    let value = self.car(operand);
-
-                    trace!("value", value);
-
-                    self.push(value)?;
-                    self.advance_program_counter();
-                }
-                code::Instruction::CONSTANT => {
-                    let constant = self.operand();
-
-                    trace!("constant", constant);
-
-                    self.push(constant)?;
-                    self.advance_program_counter();
-                }
-                code::Instruction::IF => {
-                    self.program_counter = (if self.pop()? == FALSE.into() {
-                        self.cdr(self.program_counter)
-                    } else {
-                        self.operand()
-                    })
-                    .assume_cons();
-                }
+                code::Instruction::CALL => self.call(instruction)?,
+                code::Instruction::SET => self.set()?,
+                code::Instruction::GET => self.get()?,
+                code::Instruction::CONSTANT => self.constant()?,
+                code::Instruction::IF => self.r#if()?,
                 code::Instruction::NOP => self.advance_program_counter(),
                 _ => return Err(Error::IllegalInstruction),
             }
 
             trace_heap!(self);
         }
+
+        Ok(())
+    }
+
+    fn call(&mut self, instruction: Cons) -> Result<(), Error> {
+        let r#return = instruction == NULL;
+        let procedure = self.procedure();
+
+        trace!("procedure", procedure);
+        trace!("return", r#return);
+
+        if self.environment(procedure).tag() != Type::Procedure as u8 {
+            return Err(Error::ProcedureExpected);
+        }
+
+        match self.code(procedure).to_typed() {
+            TypedValue::Cons(code) => {
+                let arguments = Self::parse_argument_count(self.argument_count());
+                let parameters = Self::parse_argument_count(self.car(code).assume_number());
+
+                trace!("argument count", arguments.count);
+                trace!("argument variadic", arguments.variadic);
+                trace!("parameter count", parameters.count);
+                trace!("parameter variadic", parameters.variadic);
+
+                self.temporary = procedure;
+
+                let mut list = if arguments.variadic {
+                    self.pop()?.assume_cons()
+                } else {
+                    NULL
+                };
+
+                for _ in 0..arguments.count.to_i64() {
+                    let value = self.pop()?;
+                    list = self.cons(value, list)?;
+                }
+
+                // Use a `program_counter` field as an escape cell for a procedure.
+                let program_counter = self.program_counter;
+                self.program_counter = self.temporary;
+                self.temporary = list;
+
+                let continuation = if r#return {
+                    self.continuation()
+                } else {
+                    self.allocate(self.cdr(program_counter), self.stack.into())?
+                };
+                self.stack = self.allocate(
+                    continuation.into(),
+                    self.environment(self.program_counter)
+                        .set_tag(FRAME_TAG)
+                        .into(),
+                )?;
+                self.program_counter = self
+                    .cdr(self.code(self.program_counter).assume_cons())
+                    .assume_cons();
+
+                for _ in 0..parameters.count.to_i64() {
+                    if self.temporary == NULL {
+                        return Err(Error::ArgumentCount);
+                    }
+
+                    self.push(self.car(self.temporary))?;
+                    self.temporary = self.cdr(self.temporary).assume_cons();
+                }
+
+                if parameters.variadic {
+                    self.push(self.temporary.into())?;
+                } else if self.temporary != NULL {
+                    return Err(Error::ArgumentCount);
+                }
+            }
+            TypedValue::Number(primitive) => {
+                self.operate_primitive(primitive.to_i64() as u8)?;
+                self.advance_program_counter();
+            }
+        }
+
+        Ok(())
+    }
+
+    fn set(&mut self) -> Result<(), Error> {
+        let operand = self.operand_variable();
+        let value = self.pop()?;
+
+        *self.car_mut(operand) = value;
+        self.advance_program_counter();
+
+        Ok(())
+    }
+
+    fn get(&mut self) -> Result<(), Error> {
+        let operand = self.operand_variable();
+
+        trace!("operand", operand);
+
+        let value = self.car(operand);
+
+        trace!("value", value);
+
+        self.push(value)?;
+        self.advance_program_counter();
+
+        Ok(())
+    }
+
+    fn constant(&mut self) -> Result<(), Error> {
+        let constant = self.operand();
+
+        trace!("constant", constant);
+
+        self.push(constant)?;
+        self.advance_program_counter();
+
+        Ok(())
+    }
+
+    fn r#if(&mut self) -> Result<(), Error> {
+        self.program_counter = (if self.pop()? == FALSE.into() {
+            self.cdr(self.program_counter)
+        } else {
+            self.operand()
+        })
+        .assume_cons();
 
         Ok(())
     }
