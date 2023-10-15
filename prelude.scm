@@ -1238,19 +1238,16 @@
 
 (define (read-list)
   (define (read-tail)
-    (let ((char (peek-non-whitespace-char)))
-      (cond
-        ((eqv? char #\))
-          (read-char)
-          '())
-
-        (else
+    (if (eqv? (peek-non-whitespace-char) #\))
+      (begin
+        (read-char)
+        '())
+      (let ((x (read-raw)))
+        (if (and (symbol? x) (equal? (symbol->string x) "."))
           (let ((x (read-raw)))
-            (if (and (symbol? x) (equal? (symbol->string x) "."))
-              (let ((x (read-raw)))
-                (read-char)
-                x)
-              (cons x (read-tail))))))))
+            (read-char)
+            x)
+          (cons x (read-tail))))))
 
   (unless (eqv? (read-char) #\()
     (error "( expected"))
