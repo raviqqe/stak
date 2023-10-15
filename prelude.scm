@@ -793,8 +793,8 @@
     (and
       y
       ; TODO Fix performance.
-      (let ((y ($$+ ($$- x (rib-car (rib-car (rib-car y)))) (rib-cdr (rib-car y)))))
-        ($$if ($$< y radix) y #f)))))
+      (let ((y (+ (- x (caaar y)) (cdar y))))
+        (and (< y radix) y)))))
 
 (define (string->number x . rest)
   (define radix (if (null? rest) 10 (car rest)))
