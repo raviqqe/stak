@@ -162,7 +162,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 code::Instruction::SET => {
                     let operand = self.operand_variable();
                     let value = self.pop()?;
-                    *self.car_mut(operand) = value;
+                    self.set_car(operand, value);
                     self.advance_program_counter();
                 }
                 code::Instruction::GET => {
@@ -304,7 +304,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn set_top(&mut self, value: Value) {
-        *self.car_mut(self.stack) = value;
+        self.set_car(self.stack,  value);
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
@@ -339,7 +339,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
         assert_index_range!(self, cons);
 
-        *self.car_mut(cons) = car;
+        self.set_car(cons, car);
         *self.cdr_mut(cons) = cdr;
 
         debug_assert!(self.allocation_index <= self.space_size());
@@ -383,16 +383,16 @@ impl<'a, T: Device> Vm<'a, T> {
         self.cdr(cons.assume_cons())
     }
 
-    fn car_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index()]
+    fn set_car(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index()] = value
     }
 
     fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
         &mut self.heap[cons.index() + 1]
     }
 
-    fn car_value_mut(&mut self, cons: Value) -> &mut Value {
-        self.car_mut(cons.assume_cons())
+    fn set_car_value(&mut self, cons: Value, value: Value) {
+        self.set_car(cons.assume_cons(), value);
     }
 
     fn cdr_value_mut(&mut self, cons: Value) -> &mut Value {
@@ -463,7 +463,7 @@ impl<'a, T: Device> Vm<'a, T> {
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.car_value_mut(x) = y;
+                self.set_car_value(x, y);
                 self.set_top(y);
             }
             Primitive::SET_CDR => {
@@ -600,7 +600,7 @@ impl<'a, T: Device> Vm<'a, T> {
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            *self.car_mut(cons) = MOVED.into();
+            self.set_car(cons, MOVED.into());
             // Set a forward pointer.
             *self.cdr_mut(cons) = copy.into();
 
