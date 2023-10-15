@@ -297,6 +297,14 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(value)
     }
 
+    fn top(&self) -> Value {
+        self.car(self.stack)
+    }
+
+    fn set_top(&mut self, value: Value) {
+        *self.car_mut(self.stack) = value;
+    }
+
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_raw(car, cdr)?;
 
@@ -405,7 +413,7 @@ impl<'a, T: Device> Vm<'a, T> {
                         .set_tag(tag.assume_number().to_i64() as u8)
                         .into(),
                 )?;
-                self.push(rib.into())?;
+                self.set_top(rib.into());
             }
             Primitive::CONS => {
                 let [car, cdr] = self.pop_arguments::<2>()?;
@@ -415,45 +423,43 @@ impl<'a, T: Device> Vm<'a, T> {
                         .map(|cons| cons.set_tag(Type::Pair as u8).into())
                         .unwrap_or(cdr),
                 )?;
-                self.push(cons.into())?;
+                self.set_top(cons.into());
             }
             Primitive::CLOSE => {
-                let procedure = self.pop()?;
                 let cons = self.allocate(
-                    self.car_value(procedure),
-                    self.stack.set_tag(Type::Procedure as u8).into(),
+                    self.car_value(self.top()),
+                    self.cdr(self.stack)
+                        .assume_cons()
+                        .set_tag(Type::Procedure as u8)
+                        .into(),
                 )?;
 
-                self.push(cons.into())?;
+                self.set_top(cons.into());
             }
             Primitive::IS_CONS => {
-                let x = self.pop()?;
-                self.push(self.boolean(x.is_cons()))?;
+                self.set_top(self.boolean(self.top().is_cons()));
             }
             Primitive::CAR => {
-                let x = self.pop()?;
-                self.push(self.car_value(x))?;
+                self.set_top(self.car_value(self.top()));
             }
             Primitive::CDR => {
-                let x = self.pop()?;
-                self.push(self.cdr_value(x))?;
+                self.set_top(self.cdr_value(self.top()));
             }
             Primitive::TAG => {
-                let x = self.pop()?;
-                self.push(
+                self.set_top(
                     Number::new(
-                        self.cdr_value(x)
+                        self.cdr_value(self.top())
                             .to_cons()
                             .map(|cons| cons.tag() as i64)
                             .unwrap_or(Type::Pair as _),
                     )
                     .into(),
-                )?;
+                );
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 *self.car_value_mut(x) = y;
-                self.push(y)?;
+                self.set_top(y);
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
@@ -465,7 +471,7 @@ impl<'a, T: Device> Vm<'a, T> {
                             .into()
                     })
                     .unwrap_or(y);
-                self.push(y)?;
+                self.set_top(y);
             }
             Primitive::SET_TAG => {
                 let [x, y] = self.pop_arguments::<2>()?;
@@ -474,11 +480,11 @@ impl<'a, T: Device> Vm<'a, T> {
                     .assume_cons()
                     .set_tag(y.assume_number().to_i64() as u8)
                     .into();
-                self.push(y)?;
+                self.set_top(y);
             }
             Primitive::EQUAL => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                self.push(self.boolean(x == y))?;
+                self.set_top(self.boolean(x == y));
             }
             Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
             Primitive::ADD => self.operate_binary(Add::add)?,
@@ -494,20 +500,14 @@ impl<'a, T: Device> Vm<'a, T> {
                     FALSE.into()
                 })?;
             }
-            Primitive::WRITE => {
-                let byte = self.pop()?;
-                self.device
-                    .write(byte.assume_number().to_i64() as u8)
-                    .map_err(|_| Error::WriteOutput)?;
-                self.push(byte)?;
-            }
-            Primitive::WRITE_ERROR => {
-                let byte = self.pop()?;
-                self.device
-                    .write_error(byte.assume_number().to_i64() as u8)
-                    .map_err(|_| Error::WriteError)?;
-                self.push(byte)?;
-            }
+            Primitive::WRITE => self
+                .device
+                .write(self.top().assume_number().to_i64() as u8)
+                .map_err(|_| Error::WriteOutput)?,
+            Primitive::WRITE_ERROR => self
+                .device
+                .write_error(self.top().assume_number().to_i64() as u8)
+                .map_err(|_| Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
             _ => return Err(Error::IllegalPrimitive),
         }
@@ -518,13 +518,17 @@ impl<'a, T: Device> Vm<'a, T> {
     fn operate_binary(&mut self, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(Number::new(operate(x.to_i64(), y.to_i64())).into())
+        self.set_top(Number::new(operate(x.to_i64(), y.to_i64())).into());
+
+        Ok(())
     }
 
     fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(self.boolean(operate(x.to_i64(), y.to_i64())))
+        self.set_top(self.boolean(operate(x.to_i64(), y.to_i64())));
+
+        Ok(())
     }
 
     fn pop_number_arguments<const M: usize>(&mut self) -> Result<[Number; M], Error> {
@@ -540,9 +544,11 @@ impl<'a, T: Device> Vm<'a, T> {
     fn pop_arguments<const M: usize>(&mut self) -> Result<[Value; M], Error> {
         let mut values = [ZERO.into(); M];
 
-        for index in 0..M {
+        for index in 0..M - 1 {
             values[M - 1 - index] = self.pop()?;
         }
+
+        values[0] = self.top();
 
         Ok(values)
     }
