@@ -517,6 +517,16 @@
 
 (define char->integer rib-car)
 
+(define (char-compare compare)
+  (lambda xs
+    (apply compare (map char->integer xs))))
+
+(define char=? (char-compare =))
+(define char<? (char-compare >))
+(define char<=? (char-compare >=))
+(define char>? (char-compare >))
+(define char>=? (char-compare >=))
+
 ;; List
 
 (define pair? (instance? pair-type))
