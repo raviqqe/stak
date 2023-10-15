@@ -303,8 +303,8 @@ impl<'a, T: Device> Vm<'a, T> {
         self.car(self.stack)
     }
 
-    fn top_mut(&mut self) -> &mut Value {
-        self.car_mut(self.stack)
+    fn set_top(&mut self, value: Value) {
+        *self.car_mut(self.stack) = value;
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
@@ -418,7 +418,7 @@ impl<'a, T: Device> Vm<'a, T> {
                         .set_tag(tag.assume_number().to_i64() as u8)
                         .into(),
                 )?;
-                *self.top_mut() = rib.into();
+                self.set_top(rib.into());
             }
             Primitive::CONS => {
                 let [car, cdr] = self.pop_arguments::<2>()?;
@@ -428,7 +428,7 @@ impl<'a, T: Device> Vm<'a, T> {
                         .map(|cons| cons.set_tag(Type::Pair as u8).into())
                         .unwrap_or(cdr),
                 )?;
-                *self.top_mut() = cons.into();
+                self.set_top(cons.into());
             }
             Primitive::CLOSE => {
                 let cons = self.allocate(
@@ -439,16 +439,16 @@ impl<'a, T: Device> Vm<'a, T> {
                         .into(),
                 )?;
 
-                *self.top_mut() = cons.into();
+                self.set_top(cons.into());
             }
             Primitive::IS_CONS => {
-                *self.top_mut() = self.boolean(self.top().is_cons());
+                self.set_top(self.boolean(self.top().is_cons()));
             }
             Primitive::CAR => {
-                *self.top_mut() = self.car_value(self.top());
+                self.set_top(self.car_value(self.top()));
             }
             Primitive::CDR => {
-                *self.top_mut() = self.cdr_value(self.top());
+                self.set_top(self.cdr_value(self.top()));
             }
             Primitive::TAG => {
                 self.set_top(
@@ -464,7 +464,7 @@ impl<'a, T: Device> Vm<'a, T> {
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 *self.car_value_mut(x) = y;
-                *self.top_mut() = y;
+                self.set_top(y);
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
@@ -476,7 +476,7 @@ impl<'a, T: Device> Vm<'a, T> {
                             .into()
                     })
                     .unwrap_or(y);
-                *self.top_mut() = y;
+                self.set_top(y);
             }
             Primitive::SET_TAG => {
                 let [x, y] = self.pop_arguments::<2>()?;
@@ -485,11 +485,11 @@ impl<'a, T: Device> Vm<'a, T> {
                     .assume_cons()
                     .set_tag(y.assume_number().to_i64() as u8)
                     .into();
-                *self.top_mut() = y;
+                self.set_top(y);
             }
             Primitive::EQUAL => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.top_mut() = self.boolean(x == y);
+                self.set_top(self.boolean(x == y));
             }
             Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
             Primitive::ADD => self.operate_binary(Add::add)?,
@@ -523,7 +523,7 @@ impl<'a, T: Device> Vm<'a, T> {
     fn operate_binary(&mut self, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        *self.top_mut() = Number::new(operate(x.to_i64(), y.to_i64())).into();
+        self.set_top(Number::new(operate(x.to_i64(), y.to_i64())).into());
 
         Ok(())
     }
@@ -531,7 +531,7 @@ impl<'a, T: Device> Vm<'a, T> {
     fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        *self.top_mut() = self.boolean(operate(x.to_i64(), y.to_i64()));
+        self.set_top(self.boolean(operate(x.to_i64(), y.to_i64())));
 
         Ok(())
     }
