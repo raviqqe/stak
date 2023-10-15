@@ -1372,20 +1372,18 @@
       (lambda (exception)
         (unwind
           (lambda ()
-            ; TODO Use `parameterize`.
-            (define port (current-error-port))
-
-            (if (error-object? exception)
-              (begin
-                (write-string (error-object-message exception) port)
-                (for-each
-                  (lambda (value)
-                    (write-char #\space port)
-                    (write value port))
-                  (error-object-irritants exception)))
-              (write exception port))
-            (newline port)
-            ($$halt)))))))
+            (parameterize ((current-output-port (current-error-port)))
+              (if (error-object? exception)
+                (begin
+                  (write-string (error-object-message exception) port)
+                  (for-each
+                    (lambda (value)
+                      (write-char #\space port)
+                      (write value port))
+                    (error-object-irritants exception)))
+                (write exception port))
+              (newline port)
+              ($$halt))))))))
 
 (define (with-exception-handler handler thunk)
   (let (
