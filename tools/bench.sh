@@ -22,6 +22,6 @@ for file in $(find bench -type f -name '*.scm' | sort); do
 
   hyperfine \
     --sort command \
-    -L script $scripts \
+    -L script "$scripts" \
     "{script}"
 done
