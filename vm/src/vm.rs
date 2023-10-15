@@ -17,8 +17,6 @@ const CONS_FIELD_COUNT: usize = 2;
 const ZERO: Number = Number::new(0);
 const FRAME_TAG: u8 = 1;
 
-const SINGLETONS: &[Cons] = &[FALSE, TRUE, NULL];
-
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
         #[cfg(feature = "trace")]
@@ -36,7 +34,7 @@ macro_rules! trace_heap {
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            SINGLETONS.contains(&$cons)
+            $cons.is_singleton()
                 || $self.allocation_start() <= $cons.index()
                     && $cons.index() < $self.allocation_end()
         );
@@ -617,7 +615,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if SINGLETONS.contains(&cons) {
+        Ok(if cons.is_singleton() {
             cons
         } else if self.car(cons) == MOVED.into() {
             // Get a forward pointer.

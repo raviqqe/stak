@@ -40,6 +40,10 @@ impl Cons {
     pub(crate) const fn to_raw(self) -> u64 {
         self.0
     }
+
+    pub(crate) const fn is_singleton(self) -> bool {
+        self.index() > MOVED.index()
+    }
 }
 
 impl PartialEq for Cons {
@@ -109,5 +113,15 @@ mod tests {
 
         assert_eq!(cons.index(), 0);
         assert_eq!(cons.tag(), TAG_MASK as u8);
+    }
+
+    #[test]
+    fn is_singleton() {
+        assert!(!Cons::new(0).is_singleton());
+        assert!(!Cons::new(42).is_singleton());
+        assert!(FALSE.is_singleton());
+        assert!(TRUE.is_singleton());
+        assert!(NULL.is_singleton());
+        assert!(!MOVED.is_singleton());
     }
 }
