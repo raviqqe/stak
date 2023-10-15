@@ -1185,7 +1185,7 @@
 
       ((eqv? char #\#)
         (read-char)
-        (case (char (peek-char))
+        (case (peek-char)
           ((#\f)
             (read-char)
             #f)
