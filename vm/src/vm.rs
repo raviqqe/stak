@@ -244,7 +244,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
             self.program_counter = self.car(continuation).assume_cons();
             // Keep a value at the top of a stack.
-            *self.cdr_mut(self.stack) = self.cdr(continuation);
+            self.set_cdr(self.stack, self.cdr(continuation));
         }
     }
 
@@ -327,7 +327,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn set_top(&mut self, value: Value) {
-        *self.car_mut(self.stack) = value;
+        self.set_car(self.stack, value);
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
@@ -362,8 +362,8 @@ impl<'a, T: Device> Vm<'a, T> {
 
         assert_index_range!(self, cons);
 
-        *self.car_mut(cons) = car;
-        *self.cdr_mut(cons) = cdr;
+        self.set_car(cons, car);
+        self.set_cdr(cons, cdr);
 
         debug_assert!(self.allocation_index <= self.space_size());
 
@@ -406,20 +406,20 @@ impl<'a, T: Device> Vm<'a, T> {
         self.cdr(cons.assume_cons())
     }
 
-    fn car_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index()]
+    fn set_car(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index()] = value
     }
 
-    fn cdr_mut(&mut self, cons: Cons) -> &mut Value {
-        &mut self.heap[cons.index() + 1]
+    fn set_cdr(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index() + 1] = value;
     }
 
-    fn car_value_mut(&mut self, cons: Value) -> &mut Value {
-        self.car_mut(cons.assume_cons())
+    fn set_car_value(&mut self, cons: Value, value: Value) {
+        self.set_car(cons.assume_cons(), value);
     }
 
-    fn cdr_value_mut(&mut self, cons: Value) -> &mut Value {
-        self.cdr_mut(cons.assume_cons())
+    fn set_cdr_value(&mut self, cons: Value, value: Value) {
+        self.set_cdr(cons.assume_cons(), value);
     }
 
     fn boolean(&self, value: bool) -> Value {
@@ -486,28 +486,32 @@ impl<'a, T: Device> Vm<'a, T> {
             }
             Primitive::SET_CAR => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.car_value_mut(x) = y;
+                self.set_car_value(x, y);
                 self.set_top(y);
             }
             Primitive::SET_CDR => {
                 let [x, y] = self.pop_arguments::<2>()?;
                 // Preserve a tag.
-                *self.cdr_value_mut(x) = y
-                    .to_cons()
-                    .map(|cons| {
-                        cons.set_tag(self.cdr(x.assume_cons()).assume_cons().tag())
-                            .into()
-                    })
-                    .unwrap_or(y);
+                self.set_cdr_value(
+                    x,
+                    y.to_cons()
+                        .map(|cons| {
+                            cons.set_tag(self.cdr(x.assume_cons()).assume_cons().tag())
+                                .into()
+                        })
+                        .unwrap_or(y),
+                );
                 self.set_top(y);
             }
             Primitive::SET_TAG => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                *self.cdr_value_mut(x) = self
-                    .cdr_value(x)
-                    .assume_cons()
-                    .set_tag(y.assume_number().to_i64() as u8)
-                    .into();
+                self.set_cdr_value(
+                    x,
+                    self.cdr_value(x)
+                        .assume_cons()
+                        .set_tag(y.assume_number().to_i64() as u8)
+                        .into(),
+                );
                 self.set_top(y);
             }
             Primitive::EQUAL => {
@@ -623,9 +627,9 @@ impl<'a, T: Device> Vm<'a, T> {
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            *self.car_mut(cons) = MOVED.into();
+            self.set_car(cons, MOVED.into());
             // Set a forward pointer.
-            *self.cdr_mut(cons) = copy.into();
+            self.set_cdr(cons, copy.into());
 
             copy
         }
@@ -701,8 +705,10 @@ impl<'a, T: Device> Vm<'a, T> {
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        *self.cdr_value_mut(self.car_value(self.car(self.tail(self.stack, Number::new(3))))) =
-            self.stack.set_tag(Type::Procedure as u8).into();
+        self.set_cdr_value(
+            self.car_value(self.car(self.tail(self.stack, Number::new(3)))),
+            self.stack.set_tag(Type::Procedure as u8).into(),
+        );
 
         // Allow access to a symbol table during decoding.
         self.temporary = self.stack;
@@ -1047,7 +1053,7 @@ mod tests {
             let mut vm = create_vm(&mut heap);
 
             let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
-            *vm.cdr_mut(cons) = cons.into();
+            vm.set_cdr(cons, cons.into());
 
             vm.collect_garbages(None).unwrap();
 
