@@ -496,6 +496,60 @@
 (define (not x)
   (eq? x #f))
 
+;; Number
+
+(define (integer? x)
+  (not (rib? x)))
+
+(define rational? integer?)
+(define real? rational?)
+(define complex? real?)
+(define number? complex?)
+
+(define (exact? x) #t)
+(define (inexact? x) #f)
+
+(define (zero? x) (eqv? x 0))
+(define (positive? x) (> x 0))
+(define (negative? x) (< x 0))
+
+(define (arithmetic-operator f y)
+  (lambda xs (fold-left f y xs)))
+
+(define (inverse-arithmetic-operator f y)
+  (lambda (x . xs)
+    (if (null? xs)
+      (f y x)
+      (fold-left f x xs))))
+
+(define + (arithmetic-operator $$+ 0))
+(define - (inverse-arithmetic-operator $$- 0))
+(define * (arithmetic-operator $$* 1))
+(define / (inverse-arithmetic-operator $$/ 1))
+
+(define (comparison-operator f)
+  (lambda xs
+    (if (null? xs)
+      #t
+      (let loop (
+          (x (car xs))
+          (xs (cdr xs)))
+        (if (null? xs)
+          #t
+          (let ((y (car xs)))
+            (and (f x y) (loop y (cdr xs)))))))))
+
+(define = (comparison-operator eqv?))
+(define < (comparison-operator $$<))
+(define > (comparison-operator (lambda (x y) ($$< y x))))
+(define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
+(define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
+
+(define (abs x)
+  (if (< x 0)
+    (- 0 x)
+    x))
+
 ;; Bytevector
 
 (define bytevector? (instance? bytevector-type))
@@ -522,8 +576,8 @@
     (apply compare (map char->integer xs))))
 
 (define char=? (char-compare =))
-(define char<? (char-compare >))
-(define char<=? (char-compare >=))
+(define char<? (char-compare <))
+(define char<=? (char-compare <=))
 (define char>? (char-compare >))
 (define char>=? (char-compare >=))
 
@@ -671,59 +725,28 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-;; Number
+;; Procedure
 
-(define (integer? x)
-  (not (rib? x)))
+(define procedure? (instance? procedure-type))
 
-(define rational? integer?)
-(define real? rational?)
-(define complex? real?)
-(define number? complex?)
+;; String
 
-(define (exact? x) #t)
-(define (inexact? x) #f)
+(define string? (instance? string-type))
 
-(define (zero? x) (eqv? x 0))
-(define (positive? x) (> x 0))
-(define (negative? x) (< x 0))
+(define (list->string x)
+  (rib (length x) (map char->integer x) string-type))
 
-(define (arithmetic-operator f y)
-  (lambda xs (fold-left f y xs)))
+(define (string->list x)
+  (map integer->char (rib-cdr x)))
 
-(define (inverse-arithmetic-operator f y)
-  (lambda (x . xs)
-    (if (null? xs)
-      (f y x)
-      (fold-left f x xs))))
+(define (string-append . xs)
+  (list->string (apply append (map string->list xs))))
 
-(define + (arithmetic-operator $$+ 0))
-(define - (inverse-arithmetic-operator $$- 0))
-(define * (arithmetic-operator $$* 1))
-(define / (inverse-arithmetic-operator $$/ 1))
+(define (string-length x)
+  (length (rib-cdr x)))
 
-(define (comparison-operator f)
-  (lambda xs
-    (if (null? xs)
-      #t
-      (let loop (
-          (x (car xs))
-          (xs (cdr xs)))
-        (if (null? xs)
-          #t
-          (let ((y (car xs)))
-            (and (f x y) (loop y (cdr xs)))))))))
-
-(define = (comparison-operator eqv?))
-(define < (comparison-operator $$<))
-(define > (comparison-operator (lambda (x y) ($$< y x))))
-(define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
-(define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
-
-(define (abs x)
-  (if (< x 0)
-    (- 0 x)
-    x))
+(define (string-ref x index)
+  (integer->char (list-ref (rib-cdr x) index)))
 
 (define (number->string x . rest)
   (let ((radix (if (null? rest) 10 (car rest))))
@@ -800,29 +823,6 @@
 
       (else
         (convert xs)))))
-
-;; Procedure
-
-(define procedure? (instance? procedure-type))
-
-;; String
-
-(define string? (instance? string-type))
-
-(define (list->string x)
-  (rib (length x) (map char->integer x) string-type))
-
-(define (string->list x)
-  (map integer->char (rib-cdr x)))
-
-(define (string-append . xs)
-  (list->string (apply append (map string->list xs))))
-
-(define (string-length x)
-  (length (rib-cdr x)))
-
-(define (string-ref x index)
-  (integer->char (list-ref (rib-cdr x) index)))
 
 ;; Symbol
 
