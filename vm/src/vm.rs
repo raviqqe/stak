@@ -518,17 +518,13 @@ impl<'a, T: Device> Vm<'a, T> {
     fn operate_binary(&mut self, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(Number::new(operate(x.to_i64(), y.to_i64())).into())?;
-
-        Ok(())
+        self.push(Number::new(operate(x.to_i64(), y.to_i64())).into())
     }
 
     fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.push(self.boolean(operate(x.to_i64(), y.to_i64())))?;
-
-        Ok(())
+        self.push(self.boolean(operate(x.to_i64(), y.to_i64())))
     }
 
     fn pop_number_arguments<const M: usize>(&mut self) -> Result<[Number; M], Error> {
