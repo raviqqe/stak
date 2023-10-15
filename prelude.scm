@@ -1185,34 +1185,33 @@
 
       ((eqv? char #\#)
         (read-char)
-        (let ((char (peek-char)))
-          (cond
-            ((eqv? char #\f)
-              (read-char)
-              #f)
+        (case (char (peek-char))
+          ((#\f)
+            (read-char)
+            #f)
 
-            ((eqv? char #\t)
-              (read-char)
-              #t)
+          ((#\t)
+            (read-char)
+            #t)
 
-            ((eqv? char #\\)
-              (read-char)
-              (let ((char (peek-char)))
-                (if (char-whitespace? char)
-                  (read-char)
-                  (let ((x (read-symbol-chars)))
-                    (cond
-                      ((null? x)
-                        (read-char))
+          ((#\\)
+            (read-char)
+            (let ((char (peek-char)))
+              (if (char-whitespace? char)
+                (read-char)
+                (let ((x (read-symbol-chars)))
+                  (cond
+                    ((null? x)
+                      (read-char))
 
-                      ((eqv? (length x) 1)
-                        (car x))
+                    ((eqv? (length x) 1)
+                      (car x))
 
-                      (else
-                        (cdr (assoc (list->string x) special-chars))))))))
+                    (else
+                      (cdr (assoc (list->string x) special-chars))))))))
 
-            (else
-              (list->vector (read-list))))))
+          (else
+            (list->vector (read-list)))))
 
       ((eqv? char #\')
         (read-char)
