@@ -790,9 +790,9 @@
           x
           digit-characters
           (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-    ; TODO Fix performance.
     (and
       y
+      ; TODO Fix performance.
       (let ((y (+ (- x (caaar y)) (cdar y))))
         (and (< y radix) y)))))
 
