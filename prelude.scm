@@ -811,7 +811,7 @@
     (cond
       ((or
           (null? xs)
-          (let ((char (string-ref string 0)))
+          (let ((char (car xs)))
             (and
               (<= radix 10)
               (not (or (eqv? char #\-) (char<=? #\0 char #\9))))))
