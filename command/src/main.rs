@@ -7,7 +7,7 @@ use std::{
 };
 use vm::{Number, Vm};
 
-const DEFAULT_HEAP_SIZE: usize = 1 << 25;
+const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
 fn main() {
     if let Err(error) = run() {
