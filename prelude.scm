@@ -776,7 +776,12 @@
 
   (let ((xs (string->list x)))
     (cond
-      ((null? xs)
+      ((or
+          (null? xs)
+          (let ((char (string-ref string 0)))
+            (and
+              (<= radix 10)
+              (not (or (eqv? char #\-) (char<=? #\0 char #\9))))))
         #f)
 
       ((eqv? (car xs) #\-)
@@ -802,6 +807,12 @@
 
 (define (string-append . xs)
   (list->string (apply append (map string->list xs))))
+
+(define (string-length x)
+  (length (rib-cdr x)))
+
+(define (string-ref x index)
+  (integer->char (list-ref (rib-cdr x) index)))
 
 ;; Symbol
 

@@ -46,3 +46,22 @@ Feature: String
       | "foo"             | foo       |
       | "app" "le"        | apple     |
       | "dis" "cov" "ery" | discovery |
+
+  Scenario Outline: Get a character in a string
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-char (string-ref "<string>" <index>))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | string | index | output |
+      | a      | 0     | a      |
+      | ab     | 0     | a      |
+      | ab     | 1     | b      |
+      | abc    | 0     | a      |
+      | abc    | 1     | b      |
+      | abc    | 2     | c      |
