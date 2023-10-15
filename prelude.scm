@@ -603,12 +603,10 @@
 (define (make-list length . rest)
   (define fill (if (null? rest) #f (car rest)))
 
-  (define (make length)
+  (let loop ((length length))
     (if (= length 0)
       '()
-      (cons fill (make (- length 1)))))
-
-  (make length))
+      (cons fill (loop (- length 1))))))
 
 (define (length xs)
   (let loop ((xs xs) (y 0))
