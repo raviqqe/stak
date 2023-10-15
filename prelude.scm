@@ -1272,7 +1272,7 @@
     (let ((char (read-char)))
       (cond
         ((eof-object? char)
-          (error "unexpected end of "))
+          (error "unexpected end of input"))
 
         ((eqv? char #\")
           (list->string (reverse xs)))
@@ -1300,19 +1300,17 @@
 
 (define (peek-non-whitespace-char)
   (let ((char (peek-char)))
-    (if (eof-object? char)
-      char
-      (cond
-        ((char-whitespace? char)
-          (begin
-            (read-char)
-            (peek-non-whitespace-char)))
+    (cond
+      ((char-whitespace? char)
+        (begin
+          (read-char)
+          (peek-non-whitespace-char)))
 
-        ((eqv? char #\;)
-          (skip-comment))
+      ((eqv? char #\;)
+        (skip-comment))
 
-        (else
-          char)))))
+      (else
+        char))))
 
 (define (skip-comment)
   (let ((char (read-char)))
