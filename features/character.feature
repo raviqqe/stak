@@ -57,3 +57,24 @@ Feature: Character
     A
     B
     """
+
+  Scenario Outline: Compare characters
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (<predicate> <characters>) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | characters     | output |
+      | char=?    | #\\A #\\A      | A      |
+      | char=?    | #\\A #\\B      | B      |
+      | char=?    | #\\A #\\A #\\A | A      |
+      | char=?    | #\\A #\\A #\\B | B      |
+      | char<?    | #\\A #\\B      | A      |
+      | char<?    | #\\A #\\A      | B      |
+      | char<?    | #\\A #\\B #\\C | A      |
+      | char<?    | #\\A #\\B #\\B | B      |
