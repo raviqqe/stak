@@ -9,7 +9,13 @@ cargo build --release
 
 cd $(dirname $0)/..
 
-for file in $(find bench -type f -name '*.scm' | sort); do
+filter=.
+
+if [ $# -gt 0 ]; then
+  filter="$@"
+fi
+
+for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   base=${file%.scm}
 
   cat prelude.scm $file | gosh compile.scm >$base.out
