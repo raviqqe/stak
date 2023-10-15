@@ -180,7 +180,7 @@ impl<'a, T: Device> Vm<'a, T> {
         let operand = self.operand_variable();
         let value = self.pop()?;
 
-        *self.car_mut(operand) = value;
+        self.set_car(operand, value);
         self.advance_program_counter();
 
         Ok(())
