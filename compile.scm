@@ -788,7 +788,7 @@
                     (compilation-context-append-locals
                       context
                       ; #f is for a frame.
-                      (reverse (cons #f (parameter-names parameters))))
+                      (cons #f (reverse (parameter-names parameters))))
                     (cddr expression)
                     '()))
                 '())
