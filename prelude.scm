@@ -642,15 +642,16 @@
       equal?
       (car rest)))
 
-  (cond
-    ((null? xs)
-      #f)
+  (let loop ((xs xs))
+    (cond
+      ((null? xs)
+        #f)
 
-    ((eq? x (car xs))
-      xs)
+      ((eq? x (car xs))
+        xs)
 
-    (else
-      (member x (cdr xs) eq?))))
+      (else
+        (loop (cdr xs))))))
 
 (define (memq x xs) (member x xs eq?))
 (define (memv x xs) (member x xs eqv?))
@@ -661,12 +662,13 @@
       equal?
       (car rest)))
 
-  (if (null? xs)
-    #f
-    (let ((pair (car xs)))
-      (if (eq? x (car pair))
-        pair
-        (assoc x (cdr xs) eq?)))))
+  (let loop ((xs xs))
+    (if (null? xs)
+      #f
+      (let ((pair (car xs)))
+        (if (eq? x (car pair))
+          pair
+          (loop (cdr xs)))))))
 
 (define (assq x xs) (assoc x xs eq?))
 (define (assv x xs) (assoc x xs eqv?))
