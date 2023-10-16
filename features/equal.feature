@@ -1,5 +1,5 @@
 Feature: Equality
-  Scenario Outline: Use an eq? procedure
+  Scenario Outline: Use an `eq?` procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -20,7 +20,7 @@ Feature: Equality
       | 42  | 42  | A      |
       | 42  | 0   | B      |
 
-  Scenario Outline: Use an eqv? procedure
+  Scenario Outline: Use an `eqv?` procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -43,7 +43,7 @@ Feature: Equality
       | #\\A | #\\A | A      |
       | #\\A | #\\B | B      |
 
-  Scenario Outline: Use an equal? procedure with scalar values
+  Scenario Outline: Use an `equal?` procedure with scalar values
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -66,7 +66,7 @@ Feature: Equality
       | #\\A | #\\A | A      |
       | #\\A | #\\B | B      |
 
-  Scenario Outline: Use an equal? procedure with collections
+  Scenario Outline: Use an `equal?` procedure with collections
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
