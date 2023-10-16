@@ -86,7 +86,7 @@ Feature: Dynamic wind
 
   Scenario: Call callbacks for nested dynamic extents
     Given a file named "main.scm" with:
-    """
+    """scheme
     (import (scheme base))
 
     (define f #f)
