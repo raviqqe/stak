@@ -126,45 +126,46 @@ impl<'a, T: Device> Vm<'a, T> {
                     NULL
                 };
 
-                for _ in 0..arguments.count.to_i64() {
+                for _ in 0..(arguments.count.to_i64() - parameters.count.to_i64()) {
                     let value = self.pop()?;
                     list = self.cons(value, list)?;
                 }
 
-                // Use a `program_counter` field as an escape cell for a procedure.
-                let program_counter = self.program_counter;
-                self.program_counter = self.temporary;
-                self.temporary = list;
+                for _ in 0..(parameters.count.to_i64() - arguments.count.to_i64()) {
+                    if list == NULL {
+                        return Err(Error::ArgumentCount);
+                    }
+
+                    // TODO
+                    self.push(self.car(list))?;
+                    list = self.cdr(list).assume_cons();
+                }
+
+                if parameters.variadic {
+                    self.push(list.into())?;
+                } else if list != NULL {
+                    return Err(Error::ArgumentCount);
+                }
 
                 let continuation = if r#return {
                     self.continuation()
                 } else {
-                    self.allocate(self.cdr(program_counter), self.stack.into())?
+                    self.allocate(
+                        self.cdr(self.program_counter),
+                        self.tail(
+                            self.stack.into(),
+                            Number::new(
+                                parameters.count.to_i64() + if parameters.variadic { 1 } else { 0 },
+                            ),
+                        )
+                        .into(),
+                    )?
                 };
                 self.stack = self.allocate(
                     continuation.into(),
-                    self.environment(self.program_counter)
-                        .set_tag(FRAME_TAG)
-                        .into(),
+                    self.environment(procedure).set_tag(FRAME_TAG).into(),
                 )?;
-                self.program_counter = self
-                    .cdr(self.code(self.program_counter).assume_cons())
-                    .assume_cons();
-
-                for _ in 0..parameters.count.to_i64() {
-                    if self.temporary == NULL {
-                        return Err(Error::ArgumentCount);
-                    }
-
-                    self.push(self.car(self.temporary))?;
-                    self.temporary = self.cdr(self.temporary).assume_cons();
-                }
-
-                if parameters.variadic {
-                    self.push(self.temporary.into())?;
-                } else if self.temporary != NULL {
-                    return Err(Error::ArgumentCount);
-                }
+                self.program_counter = self.cdr(self.code(procedure).assume_cons()).assume_cons();
             }
             TypedValue::Number(primitive) => {
                 self.operate_primitive(primitive.to_i64() as u8)?;
