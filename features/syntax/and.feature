@@ -1,15 +1,19 @@
 Feature: and
-  Scenario: Use an `and` operator
+  Scenario Outline: Use an `and` operator
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (and) 65 66))
-    (write-u8 (if (and #t) 65 66))
-    (write-u8 (if (and #f) 65 66))
-    (write-u8 (if (and #t #t) 65 66))
-    (write-u8 (if (and #t #f) 65 66))
+    (write-u8 (if (and <values>) 65 66))
     """
     When I successfully run `scheme main.scm`
     # spell-checker: disable-next-line
-    Then the stdout should contain exactly "AABAB"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values | output |
+      |        | A      |
+      | #t     | A      |
+      | #f     | B      |
+      | #t #t  | A      |
+      | #t #f  | B      |
