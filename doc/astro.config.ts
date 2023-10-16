@@ -39,7 +39,8 @@ export default defineConfig({
                     (await readFile(path, "utf-8"))
                       .split("\n")
                       .find((line) => line.startsWith("# "))
-                      ?.replace("# ", "") ?? "",
+                      ?.replace("# ", "")
+                      .trim() ?? "",
                   link: join("examples", parsed.dir, parsed.name),
                 };
               },
