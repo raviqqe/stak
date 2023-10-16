@@ -10,7 +10,7 @@ rm -rf $directory/*
 go run github.com/raviqqe/gherkin2markdown@latest features $directory
 
 for file in $(find $directory -name '*.md'); do
-  new_file=$(dirname $file)/new.$(basename $file)
+  new_file=$(dirname $file)/new_$(basename $file)
 
   (
     echo ---
