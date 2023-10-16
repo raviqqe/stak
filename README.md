@@ -5,13 +5,10 @@
 [![Codecov](https://img.shields.io/codecov/c/github/raviqqe/stak.svg?style=flat-square)](https://codecov.io/gh/raviqqe/stak)
 [![License](https://img.shields.io/github/license/raviqqe/stak.svg?style=flat-square)](LICENSE)
 
-No-`std` and no-`alloc` [Scheme][scheme] implementation in Rust
+No-`std` and no-`alloc` Scheme implementation in Rust
 
 For working examples, see [the documentation](https://raviqqe.github.io/stak).
 
 ## License
 
 [MIT](LICENSE)
-
-[scheme]: https://www.scheme.org/
-[r7rs-small]: https://small.r7rs.org/
