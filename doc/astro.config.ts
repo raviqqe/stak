@@ -51,6 +51,7 @@ export default defineConfig({
     sitemap(),
     starlight({
       title: "Stak",
+      favicon: "/icon.svg",
       social: {
         github: "https://github.com/raviqqe/stak",
       },
