@@ -2,30 +2,39 @@ import { defineConfig } from "astro/config";
 import prefetch from "@astrojs/prefetch";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
-import { sortBy } from "lodash";
-import { readFile, readdir } from "node:fs/promises";
-import { join, parse, relative } from "node:path";
+import { sortBy, capitalize } from "lodash";
+import { readFile, readdir, stat } from "node:fs/promises";
+import { join, parse } from "node:path";
+
+type Item = { label: string; link: string } | { label: string; items: Item[] };
 
 const documentDirectory = "src/content/docs";
 
-const listItems = async (path: string) => {
-  const directory = join(documentDirectory, path);
-
+const listItems = async (directory: string): Promise<Item[]> => {
   return sortBy(
     await Promise.all(
-      (await readdir(directory)).map(async (path) => {
-        const parsed = parse(relative(directory, path));
+      (await readdir(join(documentDirectory, directory)))
+        .filter((path) => !path.startsWith("."))
+        .map(async (path) => {
+          const fullPath = join(documentDirectory, directory, path);
+          const parsed = parse(path);
+          path = join(directory, parsed.name);
 
-        return {
-          label:
-            (await readFile(path, "utf-8"))
-              .split("\n")
-              .find((line) => line.startsWith("title: "))
-              ?.replace("title: ", "")
-              .trim() ?? "",
-          link: join("examples", parsed.dir, parsed.name),
-        };
-      }),
+          return (await stat(fullPath)).isDirectory()
+            ? {
+                label: capitalize(parsed.name.replace("-", " ")),
+                items: await listItems(path),
+              }
+            : {
+                label:
+                  (await readFile(fullPath, "utf-8"))
+                    .split("\n")
+                    .find((line) => line.startsWith("title: "))
+                    ?.replace("title: ", "")
+                    .trim() ?? "",
+                link: path,
+              };
+        }),
     ),
     "label",
   );
