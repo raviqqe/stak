@@ -9,7 +9,7 @@ directory=doc/src/content/docs/examples
 rm -rf $directory/*
 go run github.com/raviqqe/gherkin2markdown@latest features $directory
 
-for file in $(find $directory -name '*.md'); do
+for file in $(find $directory -name '*.md' | grep -v smoke); do
   new_file=$(dirname $file)/new_$(basename $file)
 
   (
