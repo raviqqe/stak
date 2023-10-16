@@ -1,5 +1,5 @@
-Feature: Function
-  Scenario: Call a global function
+Feature: Procedure
+  Scenario: Call a global procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -11,7 +11,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call a local function
+  Scenario: Call a local procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -22,7 +22,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call an immediate function
+  Scenario: Call an immediate procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -32,7 +32,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call nested immediate functions
+  Scenario: Call nested immediate procedures
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -126,7 +126,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Call a fibonacci function
+  Scenario: Call a fibonacci procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -143,7 +143,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "X"
 
-  Scenario Outline: Call an `apply` function
+  Scenario Outline: Call an `apply` procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -160,7 +160,7 @@ Feature: Function
       | 1 2    | 3      |
       | 1 2 3  | 6      |
 
-  Scenario Outline: Call an `apply` function with a correct argument order
+  Scenario Outline: Call an `apply` procedure with a correct argument order
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -181,7 +181,7 @@ Feature: Function
       | (65 66) (67 68)         | ABCD   |
       | (65 66) (67 68) (69 70) | ABCDEF |
 
-  Scenario: Call an `apply` function with a fixed number of arguments
+  Scenario: Call an `apply` procedure with a fixed number of arguments
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -194,7 +194,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call an `apply` function twice with the same list
+  Scenario: Call an `apply` procedure twice with the same list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -210,7 +210,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AA"
 
-  Scenario: Call immediate functions capturing a local variable
+  Scenario: Call immediate procedures capturing a local variable
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -229,7 +229,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Call a function with too few arguments
+  Scenario: Call a procedure with too few arguments
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -241,7 +241,7 @@ Feature: Function
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Call a function with too many arguments
+  Scenario: Call a procedure with too many arguments
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))

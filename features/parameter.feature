@@ -9,7 +9,7 @@ Feature: Parameter
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Parameterize a function
+  Scenario: Parameterize a procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -23,7 +23,7 @@ Feature: Parameter
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABA"
 
-  Scenario: Parameterize nested functions
+  Scenario: Parameterize nested procedures
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
