@@ -41,7 +41,7 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Use a map function
+  Scenario: Use a `map` function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -51,7 +51,7 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario Outline: Use an append procedure
+  Scenario Outline: Use an `append` procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -69,7 +69,7 @@ Feature: List
       | '(65) '(66) '(67) | ABC    |
       | '(65 66) '(67 68) | ABCD   |
 
-  Scenario: Share the last argument in an append procedure
+  Scenario: Share the last argument in an `append` procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -87,7 +87,7 @@ Feature: List
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AAAB"
 
-  Scenario Outline: Use a memq function
+  Scenario Outline: Use a `memq` function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -108,7 +108,7 @@ Feature: List
       | 1     | 1 2 3  | A      |
       | 4     | 1 2 3  | B      |
 
-  Scenario Outline: Use a memv function
+  Scenario Outline: Use a `memv` function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -129,7 +129,7 @@ Feature: List
       | #\\A  | #\\A #\\B #\\C | A      |
       | #\\D  | #\\A #\\B #\\C | B      |
 
-  Scenario Outline: Use a member function
+  Scenario Outline: Use a `member` function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
