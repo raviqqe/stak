@@ -13,7 +13,7 @@ hero:
 
 # Stak
 
-No-`std` and no-`alloc` [Scheme][scheme] implementation in Rust
+Stak is a no-`std` and no-`alloc` [Scheme][scheme] implementation in Rust. This project is a fork of [Ribbit Scheme][ribbit], the tiny R4RS implementation.
 
 ## Goals
 
