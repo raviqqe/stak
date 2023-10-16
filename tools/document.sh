@@ -17,7 +17,7 @@ for file in $(find $directory -name '*.md'); do
     echo title: $(grep -o '^# \(.*\)$' $file | sed 's/# *//')
     echo ---
     cat $file
-  ) >>$new_file
+  ) >$new_file
   mv $new_file $file
 done
 
