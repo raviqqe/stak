@@ -23,7 +23,7 @@ For working examples, see [the documentation](https://raviqqe.github.io/stak).
 
 ## References
 
-- [Scheme programming language][scheme]
+- [Scheme][scheme]
 - [R7RS small][r7rs-small]
 - [Ribbit Scheme](https://github.com/udem-dlteam/ribbit)
 
