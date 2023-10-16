@@ -15,6 +15,7 @@
     "memq",
     "memv",
     "quasiquote",
+    "raviqqe",
     "repr",
     "ribbit",
     "rustup",
