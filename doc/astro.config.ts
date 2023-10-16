@@ -17,6 +17,16 @@ export default defineConfig({
       social: {
         github: "https://github.com/raviqqe/stak",
       },
+      sidebar: [
+        {
+          label: "Home",
+          link: "/",
+        },
+        {
+          label: "Examples",
+          autogenerate: { directory: "examples" },
+        },
+      ],
     }),
   ],
   site: "https://raviqqe.github.io/stak",
