@@ -17,12 +17,12 @@ const listItems = async (directory: string): Promise<Item[]> => {
         .filter((path) => !path.startsWith("."))
         .map(async (path) => {
           const fullPath = join(documentDirectory, directory, path);
-          const parsed = parse(path);
-          path = join(directory, parsed.name);
+          const { name } = parse(path);
+          path = join(directory, name);
 
           return (await stat(fullPath)).isDirectory()
             ? {
-                label: capitalize(parsed.name.replace("-", " ")),
+                label: capitalize(name.replace("-", " ")),
                 items: await listItems(path),
               }
             : {
