@@ -1,5 +1,5 @@
-Feature: and
-  Scenario: Use an and operator
+Feature: `and`
+  Scenario: Use an `and` operator
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
