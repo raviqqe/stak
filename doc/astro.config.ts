@@ -2,6 +2,34 @@ import { defineConfig } from "astro/config";
 import prefetch from "@astrojs/prefetch";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
+import { sortBy } from "lodash";
+import { readFile, readdir } from "node:fs/promises";
+import { join, parse, relative } from "node:path";
+
+const documentDirectory = "src/content/docs";
+
+const listItems = async (path: string) => {
+  const directory = join(documentDirectory, path);
+
+  return sortBy(
+    await Promise.all(
+      (await readdir(directory)).map(async (path) => {
+        const parsed = parse(relative(directory, path));
+
+        return {
+          label:
+            (await readFile(path, "utf-8"))
+              .split("\n")
+              .find((line) => line.startsWith("title: "))
+              ?.replace("title: ", "")
+              .trim() ?? "",
+          link: join("examples", parsed.dir, parsed.name),
+        };
+      }),
+    ),
+    "label",
+  );
+};
 
 export default defineConfig({
   base: "/stak",
@@ -24,7 +52,7 @@ export default defineConfig({
         },
         {
           label: "Examples",
-          autogenerate: { directory: "examples" },
+          items: await listItems("examples"),
         },
       ],
     }),
