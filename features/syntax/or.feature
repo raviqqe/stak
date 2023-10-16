@@ -1,5 +1,5 @@
 Feature: or
-  Scenario: Use an or operator
+  Scenario: Use an `or` operator
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
