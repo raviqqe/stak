@@ -3,6 +3,9 @@ title: Miniature, embeddable Scheme
 description: No-std and no-alloc Scheme implementation in Rust.
 template: splash
 hero:
+  image:
+    alt: Stak logo
+    file: ../../../public/icon.svg
   tagline: No-std and no-alloc Scheme implementation in Rust.
   actions:
     - text: Examples
