@@ -1,0 +1,26 @@
+name: document
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+      - uses: actions/configure-pages@v3
+      - run: tools/document.sh
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: doc/dist
+      - uses: actions/deploy-pages@v2
+        if: github.ref == 'refs/heads/main'
