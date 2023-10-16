@@ -19,7 +19,7 @@ Feature: let
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call a bound function
+  Scenario: Call a bound procedure
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -48,7 +48,7 @@ Feature: let
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Do not corrupt a function environment
+  Scenario: Do not corrupt a procedure environment
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
