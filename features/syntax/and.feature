@@ -7,7 +7,6 @@ Feature: and
     (write-u8 (if (and <values>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    # spell-checker: disable-next-line
     Then the stdout should contain exactly "<output>"
 
     Examples:

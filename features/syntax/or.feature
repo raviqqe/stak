@@ -1,17 +1,34 @@
 Feature: or
-  Scenario: Use an `or` operator
+  Scenario Outline: Use an `or` operator
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (or) 65 66))
-    (write-u8 (if (or #t) 65 66))
-    (write-u8 (if (or #f) 65 66))
-    (write-u8 (if (or #f #f) 65 66))
-    (write-u8 (if (or #f #t) 65 66))
-    (write-u8 (or 65 #f))
-    (write-u8 (or #f 65))
+    (write-u8 (if (or <values>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    # spell-checker: disable-next-line
-    Then the stdout should contain exactly "BABBAAA"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values | output |
+      |        | B      |
+      | #f     | B      |
+      | #t     | A      |
+      | #f #f  | B      |
+      | #f #t  | A      |
+
+  Scenario Outline: Return the first true value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (or <values>))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values |
+      | 65     |
+      | 65 #f  |
+      | #f 65  |
