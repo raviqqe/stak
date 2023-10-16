@@ -9,24 +9,6 @@ No-`std` and no-`alloc` [Scheme][scheme] implementation in Rust
 
 For working examples, see [the documentation](https://raviqqe.github.io/stak).
 
-## Goal
-
-- Minimal implementation of [R7RS small][r7rs-small]
-- Subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
-- Small memory footprint
-
-## Limitations
-
-- Numbers are 63-bit integers.
-- Some runtime errors are not raised.
-  - e.g. argument count and out-of-memory errors
-
-## References
-
-- [Scheme][scheme]
-- [R7RS small][r7rs-small]
-- [Ribbit Scheme](https://github.com/udem-dlteam/ribbit)
-
 ## License
 
 [MIT](LICENSE)
