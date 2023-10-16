@@ -13,21 +13,14 @@ export default defineConfig({
     prefetch({ selector: "a", intentSelector: "a" }),
     sitemap(),
     starlight({
-      title: "My Docs",
+      title: "Stak",
       social: {
-        github: "https://github.com/withastro/starlight",
+        github: "https://github.com/raviqqe/stak",
       },
       sidebar: [
         {
-          label: "Guides",
-          items: [
-            // Each item here is one entry in the navigation menu.
-            { label: "Example Guide", link: "/guides/example/" },
-          ],
-        },
-        {
-          label: "Reference",
-          autogenerate: { directory: "reference" },
+          label: "Examples",
+          items: [{ label: "String", link: "/examples/string" }],
         },
       ],
     }),
