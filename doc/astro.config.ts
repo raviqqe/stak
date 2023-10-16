@@ -5,7 +5,7 @@ import starlight from "@astrojs/starlight";
 import { readFile } from "node:fs/promises";
 import { join, parse, relative } from "node:path";
 import { glob } from "glob";
-import lodash, { sortBy } from "lodash";
+import { sortBy } from "lodash";
 
 const exampleDirectory = "src/content/docs/examples";
 
