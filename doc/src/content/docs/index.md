@@ -10,5 +10,3 @@ hero:
       icon: right-arrow
       variant: primary
 ---
-
-# Hello, world!
