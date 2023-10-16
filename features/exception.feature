@@ -155,7 +155,7 @@ Feature: Error
     Then the exit status should not be 0
     And the stdout should contain exactly "AB"
 
-  Scenario: Use a guard expression
+  Scenario: Use a `guard` expression
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -175,7 +175,7 @@ Feature: Error
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use an else clause in a guard expression
+  Scenario: Use an `else` clause in a guard expression
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -195,7 +195,7 @@ Feature: Error
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use nested guard expressions
+  Scenario: Use nested `guard` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -225,7 +225,7 @@ Feature: Error
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use a guard expression in a clause
+  Scenario: Use a `guard` expression in a clause
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
