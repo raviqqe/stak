@@ -10,6 +10,8 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/prefetch": "^0.4.1",
+    "@astrojs/sitemap": "^3.0.1",
     "astro": "^3.3.0"
   },
   "devDependencies": {
