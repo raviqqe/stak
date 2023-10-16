@@ -4,7 +4,7 @@ description: No-std and no-alloc Scheme implementation in Rust.
 template: splash
 hero:
   image:
-    alt: Stak icon
+    alt: Icon
     file: ../../../public/icon.svg
   tagline: No-std and no-alloc Scheme implementation in Rust.
   actions:
