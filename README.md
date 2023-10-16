@@ -7,7 +7,7 @@
 
 No-`std` and no-`alloc` Scheme implementation in Rust
 
-For working examples, see [the documentation](https://raviqqe.github.io/stak).
+The documentation is [here](https://raviqqe.github.io/stak).
 
 ## License
 
