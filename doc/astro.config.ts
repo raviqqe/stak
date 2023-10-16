@@ -36,7 +36,7 @@ const listItems = async (directory: string): Promise<Item[]> => {
               };
         }),
     ),
-    "label",
+    ({ label, link }) => [!link, label],
   );
 };
 
