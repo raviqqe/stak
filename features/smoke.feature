@@ -41,7 +41,7 @@ Feature: Smoke
     Then the stdout should contain exactly "bar"
 
   @stak
-  Scenario: Preserve a tag when a cdr is set
+  Scenario: Preserve a tag when a `cdr` is set
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))
@@ -60,7 +60,7 @@ Feature: Smoke
     Then the stdout should contain exactly "7B7A"
 
   @long
-  Scenario: Compile many sequential if expressions
+  Scenario: Compile many sequential `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme write))

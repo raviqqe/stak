@@ -143,7 +143,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "X"
 
-  Scenario Outline: Call an apply function
+  Scenario Outline: Call an `apply` function
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -160,7 +160,7 @@ Feature: Function
       | 1 2    | 3      |
       | 1 2 3  | 6      |
 
-  Scenario Outline: Call an apply function with a correct argument order
+  Scenario Outline: Call an `apply` function with a correct argument order
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -181,7 +181,7 @@ Feature: Function
       | (65 66) (67 68)         | ABCD   |
       | (65 66) (67 68) (69 70) | ABCDEF |
 
-  Scenario: Call an apply function with a fixed number of arguments
+  Scenario: Call an `apply` function with a fixed number of arguments
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -194,7 +194,7 @@ Feature: Function
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call an apply function twice with the same list
+  Scenario: Call an `apply` function twice with the same list
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))

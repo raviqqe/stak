@@ -12,7 +12,7 @@ Feature: Multiple values
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Call call-with-values with a value
+  Scenario: Call `call-with-values` with a value
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -22,7 +22,7 @@ Feature: Multiple values
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Rule: define-values
+  Rule: `define-values`
     Scenario: Define no value
       Given a file named "main.scm" with:
       """scheme
@@ -87,7 +87,7 @@ Feature: Multiple values
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "ABC"
 
-  Rule: let-values
+  Rule: `let-values`
     Scenario: Define no value
       Given a file named "main.scm" with:
       """scheme

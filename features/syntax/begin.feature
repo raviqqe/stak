@@ -1,5 +1,5 @@
 Feature: begin
-  Scenario: Use a begin expression
+  Scenario: Use a `begin` expression
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -11,7 +11,7 @@ Feature: begin
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Use a begin expression with no value
+  Scenario: Use a `begin` expression with no value
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
