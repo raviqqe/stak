@@ -19,8 +19,17 @@ export default defineConfig({
       },
       sidebar: [
         {
+          label: "Home",
+          link: "/",
+        },
+        {
           label: "Examples",
-          items: [{ label: "String", link: "/examples/string" }],
+          items: [
+            {
+              label: "String",
+              link: "/examples/string",
+            },
+          ],
         },
       ],
     }),
