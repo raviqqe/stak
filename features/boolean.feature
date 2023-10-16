@@ -1,5 +1,5 @@
 Feature: Boolean
-  Scenario: Use if expressions
+  Scenario: Use `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -10,7 +10,7 @@ Feature: Boolean
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "BA"
 
-  Scenario: Use nested if expressions
+  Scenario: Use nested `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -21,7 +21,7 @@ Feature: Boolean
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Use deeply nested if expressions
+  Scenario: Use deeply nested `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -43,7 +43,7 @@ Feature: Boolean
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Use a one-sided if expression
+  Scenario: Use a one-sided `if` expression
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -54,7 +54,7 @@ Feature: Boolean
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario Outline: Use sequenced if expressions
+  Scenario Outline: Use sequenced `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -83,7 +83,7 @@ Feature: Boolean
       | #f     | #f     | #t     | BBA    |
       | #f     | #f     | #f     | BBB    |
 
-  Scenario Outline: Use deeply nested if expressions
+  Scenario Outline: Use deeply nested `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -130,7 +130,7 @@ Feature: Boolean
       | #f     | #f     | #t     | BBA    |
       | #f     | #f     | #f     | BBB    |
 
-  Scenario Outline: Use sequenced if expressions in a nested if expression
+  Scenario Outline: Use sequenced `if` expressions in a nested `if` expression
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
