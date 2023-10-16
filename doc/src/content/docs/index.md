@@ -6,7 +6,7 @@ hero:
   tagline: No-std and no-alloc Scheme implementation in Rust.
   actions:
     - text: Examples
-      link: /examples
+      link: examples
       icon: right-arrow
       variant: primary
 ---
