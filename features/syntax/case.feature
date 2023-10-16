@@ -31,7 +31,7 @@ Feature: case
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario: Evaluate an else clause
+  Scenario: Evaluate an `else` clause
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
