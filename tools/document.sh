@@ -14,7 +14,7 @@ for file in $(find $directory -name '*.md'); do
 
   (
     echo ---
-    echo title: \'$(grep -o '^# \(.*\)$' $file | sed 's/# *//')\'
+    echo title: $(grep -o '^# \(.*\)$' $file | sed 's/# *//')
     echo ---
     cat $file | grep -v '^# '
   ) >$new_file
