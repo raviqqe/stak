@@ -1,15 +1,21 @@
 Feature: List
-  Scenario: Use literals
+  Scenario Outline: Use literals
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (define x '())
-    (define y '(1 2 3))
-    (define z '((1) (2 2) (3 3 3)))
+    (define x '<value>)
     """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+    Examples:
+      | value               |
+      | ()                  |
+      | (1)                 |
+      | (1 2)               |
+      | (1 2 3)             |
+      | ((1) (2 2) (3 3 3)) |
 
   Scenario: Create a pair
     Given a file named "main.scm" with:
