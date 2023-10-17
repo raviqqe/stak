@@ -2,8 +2,6 @@
 ;
 ; All compiler-internal variables contain at least one `$` character in their names.
 
-; Compatibility
-
 (import
   (scheme base)
   (scheme cxr)
