@@ -1,17 +1,21 @@
 Feature: Number
-  Scenario: Use literals
+  Scenario Outline: Use literals
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (define x 0)
-    (define y 1)
-    (define z 42)
-    (define v -1)
-    (define w -42)
+    (define x <value>)
     """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+    Examples:
+      | value |
+      | 0     |
+      | 1     |
+      | 42    |
+      | -1    |
+      | -42   |
 
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
@@ -33,40 +37,45 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use integers around the encoding base
+  Scenario Outline: Use integers around the encoding base
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (- 127 60))
-    (write-u8 (- 128 60))
-    (write-u8 (- 129 60))
+    (write-u8 (- <value> 60))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "CDE"
+    Then the stdout should contain exactly "<output>"
 
-  Scenario: Use arithmetic operators
+    Examples:
+      | value | output |
+      | 127   | C      |
+      | 128   | D      |
+      | 129   | E      |
+
+  Scenario Outline: Use arithmetic operators
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (define (test x y)
-      (write-u8 (if (= x y) 65 66)))
-
-    (test (+) 0)
-    (test (+ 1) 1)
-    (test (+ 1 2) 3)
-    (test (- 1) -1)
-    (test (- 0 1) -1)
-    (test (- 0 1 2) -3)
-    (test (*) 1)
-    (test (* 2) 2)
-    (test (* 2 3) 6)
-    (test (/ 6 2) 3)
-    (test (/ 6 2 3) 1)
+    (write-u8 (if (= <expression> <value>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AAAAAAAAAAA"
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | expression | value |
+      | (+)        | 0     |
+      | (+ 1)      | 1     |
+      | (+ 1 2)    | 3     |
+      | (- 1)      | -1    |
+      | (- 0 1)    | -1    |
+      | (- 0 1 2)  | -3    |
+      | (*)        | 1     |
+      | (* 2)      | 2     |
+      | (* 2 3)    | 6     |
+      | (/ 6 2)    | 3     |
+      | (/ 6 2 3)  | 1     |
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
@@ -102,16 +111,20 @@ Feature: Number
       | (>= 0 0)   |
 
   @stak @guile
-  Scenario: Use comparison operators with an insufficient number of arguments
+  Scenario Outline: Use comparison operators with an insufficient number of arguments
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (<) 65 66))
-    (write-u8 (if (< 0) 65 66))
+    (write-u8 (if (< <values>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AA"
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values |
+      |        |
+      | 0      |
 
   Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:
