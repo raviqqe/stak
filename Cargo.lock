@@ -83,7 +83,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "insta",
  "pretty_assertions",
