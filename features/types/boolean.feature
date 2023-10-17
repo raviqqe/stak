@@ -1,14 +1,18 @@
 Feature: Boolean
-  Scenario: Use `if` expressions
+  Scenario Outline: Use `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if #f 65 66))
-    (write-u8 (if #t 65 66))
+    (write-u8 (if <value> 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "BA"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | #f    | B      |
+      | #t    | A      |
 
   Scenario: Use nested `if` expressions
     Given a file named "main.scm" with:
