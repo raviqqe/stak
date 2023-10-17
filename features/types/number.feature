@@ -1,17 +1,21 @@
 Feature: Number
-  Scenario: Use literals
+  Scenario Outline: Use literals
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (define x 0)
-    (define y 1)
-    (define z 42)
-    (define v -1)
-    (define w -42)
+    (define x <value>)
     """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+    Examples:
+      | value |
+      | 0     |
+      | 1     |
+      | 42    |
+      | -1    |
+      | -42   |
 
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
