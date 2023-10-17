@@ -106,16 +106,20 @@ Feature: Number
       | (>= 0 0)   |
 
   @stak @guile
-  Scenario: Use comparison operators with an insufficient number of arguments
+  Scenario Outline: Use comparison operators with an insufficient number of arguments
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (<) 65 66))
-    (write-u8 (if (< 0) 65 66))
+    (write-u8 (if (< <values>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AA"
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values |
+      |        |
+      | 0      |
 
   Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:
