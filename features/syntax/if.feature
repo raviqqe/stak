@@ -55,9 +55,9 @@ Feature: if
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | expression | output |
-      | #f         |        |
-      | #t         | A      |
+      | value | output |
+      | #f    |        |
+      | #t    | A      |
 
   Scenario Outline: Use sequenced `if` expressions
     Given a file named "main.scm" with:

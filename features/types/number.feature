@@ -33,17 +33,21 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use integers around the encoding base
+  Scenario Outline: Use integers around the encoding base
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (- 127 60))
-    (write-u8 (- 128 60))
-    (write-u8 (- 129 60))
+    (write-u8 (- <value> 60))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "CDE"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 127   | C      |
+      | 128   | D      |
+      | 129   | E      |
 
   Scenario: Use arithmetic operators
     Given a file named "main.scm" with:
