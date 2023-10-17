@@ -29,16 +29,20 @@ Feature: Boolean
       | (if #t (if #t 65 67) 67) | A      |
       | (if #f 67 (if #f 67 66)) | B      |
 
-  Scenario: Use deeply nested `if` expressions
+  Scenario Outline: Use deeply nested `if` expressions
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 (if #t (if #t (if #t 65 67) 67) 67))
-    (write-u8 (if #f 67 (if #f 67 (if #f 67 66))))
+    (write-u8 <expression>)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AB"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | expression                          | output |
+      | (if #t (if #t (if #t 65 67) 67) 67) | A      |
+      | (if #f 67 (if #f 67 (if #f 67 66))) | B      |
 
   Scenario: Use a not operator
     Given a file named "main.scm" with:
