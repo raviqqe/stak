@@ -49,28 +49,29 @@ Feature: Number
       | 128   | D      |
       | 129   | E      |
 
-  Scenario: Use arithmetic operators
+  Scenario Outline: Use arithmetic operators
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (define (test x y)
-      (write-u8 (if (= x y) 65 66)))
-
-    (test (+) 0)
-    (test (+ 1) 1)
-    (test (+ 1 2) 3)
-    (test (- 1) -1)
-    (test (- 0 1) -1)
-    (test (- 0 1 2) -3)
-    (test (*) 1)
-    (test (* 2) 2)
-    (test (* 2 3) 6)
-    (test (/ 6 2) 3)
-    (test (/ 6 2 3) 1)
+    (write-u8 (if (= <expression> <value>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AAAAAAAAAAA"
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | expression | value |
+      | (+)        | 0     |
+      | (+ 1)      | 1     |
+      | (+ 1 2)    | 3     |
+      | (- 1)      | -1    |
+      | (- 0 1)    | -1    |
+      | (- 0 1 2)  | -3    |
+      | (*)        | 1     |
+      | (* 2)      | 2     |
+      | (* 2 3)    | 6     |
+      | (/ 6 2)    | 3     |
+      | (/ 6 2 3)  | 1     |
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
