@@ -15,9 +15,5 @@ trace = ["vm/trace"]
 trace_heap = ["vm/trace_heap"]
 
 [dependencies]
-device = { package = "stak-device", version = "0.1", path = "../device", features = [
-  "std",
-] }
-vm = { package = "stak-vm", version = "0.1", path = "../vm", features = [
-  "std",
-] }
+device = { package = "stak-device", path = "../device", features = ["std"] }
+vm = { package = "stak-vm", path = "../vm", features = ["std"] }

@@ -9,7 +9,4 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-code = { package = "stak-code", version = "0.1", path = "../code", features = [
-  "alloc",
-  "std",
-] }
+code = { package = "stak-code", path = "../code", features = ["alloc", "std"] }
