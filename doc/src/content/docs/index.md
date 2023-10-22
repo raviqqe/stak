@@ -18,7 +18,7 @@ hero:
 
 Stak is a no-`std` and no-`alloc` [Scheme][scheme] implementation in Rust.
 
-This project is a fork of [Ribbit Scheme][ribbit], the tiny R4RS implementation.
+This project is a fork of [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
 
 ## Goals
 
