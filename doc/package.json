@@ -17,7 +17,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.200",
+    "@types/lodash": "^4.14.201",
     "@types/node": "^20.9.0",
     "prettier": "^3.0.3",
     "prettier-plugin-astro": "^0.12.1",
