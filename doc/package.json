@@ -13,7 +13,7 @@
     "@astrojs/prefetch": "^0.4.1",
     "@astrojs/sitemap": "^3.0.3",
     "@astrojs/starlight": "^0.12.0",
-    "astro": "^3.4.4",
+    "astro": "^3.5.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
