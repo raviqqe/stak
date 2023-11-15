@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import prefetch from "@astrojs/prefetch";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
-import { sortBy, capitalize } from "lodash";
+import { sortBy, capitalize } from "@raviqqe/loscore";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
 
