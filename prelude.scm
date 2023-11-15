@@ -1462,16 +1462,16 @@
     (let ((value (cdr xs)))
       (case (car xs)
         ((quote)
-          (write-quote #\' value display port))
+          (write-quote #\' value write port))
 
         ((quasiquote)
-          (write-quote #\` value display port))
+          (write-quote #\` value write port))
 
         ((unquote)
-          (write-quote #\, value display port))
+          (write-quote #\, value write port))
 
         (else
-          (write-sequence x display port))))))
+          (write-sequence x write port))))))
 
 (define (write-sequence xs write port)
   (write-char #\( port)
