@@ -198,3 +198,57 @@ Feature: List
       | assq      |
       | assv      |
       | assoc     |
+
+  Scenario Outline: Check if a value is a pair
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (pair? <value>) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value      | output |
+      | #f         | B      |
+      | '()        | B      |
+      | '(1)       | A      |
+      | '(1 2)     | A      |
+      | (cons 1 2) | A      |
+
+  Scenario Outline: Check if a value is null
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (null? <value>) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value      | output |
+      | #f         | B      |
+      | '()        | A      |
+      | '(1)       | B      |
+      | '(1 2)     | B      |
+      | (cons 1 2) | B      |
+
+  Scenario Outline: Check if a value is a list
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (if (list? <value>) 65 66))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value      | output |
+      | #f         | B      |
+      | '()        | A      |
+      | '(1)       | A      |
+      | '(1 2)     | A      |
+      | (cons 1 2) | B      |
