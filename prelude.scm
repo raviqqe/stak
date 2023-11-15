@@ -1389,32 +1389,31 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (define port (get-output-port rest))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (cond
+      ((char? x)
+        (write-char #\# port)
+        (write-char #\\ port)
+        (let ((pair (assoc x special-char-names)))
+          (if pair
+            (display (cdr pair) port)
+            (write-char x port))))
 
-  (cond
-    ((char? x)
-      (write-char #\# port)
-      (write-char #\\ port)
-      (let ((pair (assoc x special-char-names)))
-        (if pair
-          (display (cdr pair) port)
-          (write-char x port))))
+      ((pair? x)
+        (write-list x write port))
 
-    ((pair? x)
-      (write-list x write port))
+      ((string? x)
+        (write-char #\" port)
+        (for-each
+          (lambda (x) (write-escaped-char x port))
+          (string->list x))
+        (write-char #\" port))
 
-    ((string? x)
-      (write-char #\" port)
-      (for-each
-        (lambda (x) (write-escaped-char x port))
-        (string->list x))
-      (write-char #\" port))
+      ((vector? x)
+        (write-vector x write port))
 
-    ((vector? x)
-      (write-vector x write port))
-
-    (else
-      (display x port))))
+      (else
+        (display x port)))))
 
 (define (display x . rest)
   (define port (get-output-port rest))
