@@ -1,5 +1,4 @@
 import { defineConfig } from "astro/config";
-import prefetch from "@astrojs/prefetch";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { sortBy, capitalize } from "@raviqqe/loscore";
@@ -47,7 +46,6 @@ export default defineConfig({
     remotePatterns: [{ protocol: "https" }],
   },
   integrations: [
-    prefetch({ selector: "a", intentSelector: "a" }),
     sitemap(),
     starlight({
       title: "Stak",
@@ -70,5 +68,6 @@ export default defineConfig({
       ],
     }),
   ],
+  prefetch: { prefetchAll: true },
   site: "https://raviqqe.github.io/stak",
 });
