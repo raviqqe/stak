@@ -1459,7 +1459,7 @@
 (define (write-list xs write port)
   (if (null? xs)
     (write-sequence xs write port)
-    (let ((value (cdr xs)))
+    (let ((value (cadr xs)))
       (case (car xs)
         ((quote)
           (write-quote #\' value write port))
