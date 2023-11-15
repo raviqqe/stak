@@ -1430,7 +1430,7 @@
       (write-char x port))
 
     ((null? x)
-      (write-list x display port))
+      (write-sequence x display port))
 
     ((number? x)
       (display (number->string x) port))
@@ -1469,8 +1469,8 @@
       (error "unknown type"))))
 
 (define (write-list xs write port)
-  (let ((value (cdr x)))
-    (case (car x)
+  (let ((value (cdr xs)))
+    (case (car xs)
       ((quote)
         (write-quote #\' value display port))
 
