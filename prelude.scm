@@ -1471,7 +1471,7 @@
           (write-quote #\, value write port))
 
         (else
-          (write-sequence x write port))))))
+          (write-sequence xs write port))))))
 
 (define (write-sequence xs write port)
   (write-char #\( port)
