@@ -1436,7 +1436,19 @@
       (display (number->string x) port))
 
     ((pair? x)
-      (write-list x display port))
+      (let ((value (cdr x)))
+        (case (car x)
+          ((quote)
+            (write-quote #\' value display port))
+
+          ((quasiquote)
+            (write-quote #\` value display port))
+
+          ((unquote)
+            (write-quote #\, value display port))
+
+          (else
+            (write-list x display port)))))
 
     ((procedure? x)
       (write-string "#procedure" port))
@@ -1478,6 +1490,11 @@
           (write xs port)))))
 
   (write-char #\) port))
+
+(define (write-quote char value write port)
+  (write-char char port)
+  (write-char #\space port)
+  (write value port))
 
 (define (write-vector xs write port)
   (write-char #\# port)
