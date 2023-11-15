@@ -1398,9 +1398,7 @@
 
       ((string? x)
         (write-char #\")
-        (for-each
-          (lambda (x) (write-escaped-char x))
-          (string->list x))
+        (for-each write-escaped-char (string->list x))
         (write-char #\"))
 
       ((vector? x)
