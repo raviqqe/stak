@@ -1416,44 +1416,43 @@
         (display x)))))
 
 (define (display x . rest)
-  (define port (get-output-port rest))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (cond
+      ((not x)
+        (write-string "#f" port))
 
-  (cond
-    ((not x)
-      (write-string "#f" port))
+      ((eqv? x #t)
+        (write-string "#t" port))
 
-    ((eqv? x #t)
-      (write-string "#t" port))
+      ((char? x)
+        (write-char x port))
 
-    ((char? x)
-      (write-char x port))
+      ((null? x)
+        (write-sequence x display port))
 
-    ((null? x)
-      (write-sequence x display port))
+      ((number? x)
+        (display (number->string x) port))
 
-    ((number? x)
-      (display (number->string x) port))
+      ((pair? x)
+        (write-list x display port))
 
-    ((pair? x)
-      (write-list x display port))
+      ((procedure? x)
+        (write-string "#procedure" port))
 
-    ((procedure? x)
-      (write-string "#procedure" port))
+      ((record? x)
+        (write-string "#record" port))
 
-    ((record? x)
-      (write-string "#record" port))
+      ((string? x)
+        (write-string x port))
 
-    ((string? x)
-      (write-string x port))
+      ((symbol? x)
+        (display (symbol->string x) port))
 
-    ((symbol? x)
-      (display (symbol->string x) port))
+      ((vector? x)
+        (write-vector x display port))
 
-    ((vector? x)
-      (write-vector x display port))
-
-    (else
-      (error "unknown type"))))
+      (else
+        (error "unknown type")))))
 
 (define (write-list xs write port)
   (if (null? xs)
