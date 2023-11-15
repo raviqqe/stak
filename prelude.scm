@@ -1358,150 +1358,140 @@
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
 
-(define (write-escaped-char x . rest)
-  (let (
-      (port (get-output-port rest))
-      (pair (assoc x escaped-chars)))
+(define (write-escaped-char x)
+  (let ((pair (assoc x escaped-chars)))
     (if pair
       (begin
-        (write-char #\\ port)
-        (write-char (cdr pair) port))
-      (write-char x port))))
+        (write-char #\\)
+        (write-char (cdr pair)))
+      (write-char x))))
 
 (define (write-string x . rest)
-  (define port (get-output-port rest))
-
-  (for-each
-    (lambda (x) (write-char x port))
-    (string->list x)))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (for-each write-char (string->list x))))
 
 (define (write-bytevector xs . rest)
-  (define port (get-output-port rest))
-
-  (let loop ((xs xs) (index 0))
-    (if (< index (bytevector-length xs))
-      (begin
-        (write-u8 (bytevector-u8-ref xs index) port)
-        (loop xs (+ index 1)))
-      #f)))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (let loop ((xs xs) (index 0))
+      (if (< index (bytevector-length xs))
+        (begin
+          (write-u8 (bytevector-u8-ref xs index))
+          (loop xs (+ index 1)))
+        #f))))
 
 (define (newline . rest)
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (define port (get-output-port rest))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (cond
+      ((char? x)
+        (write-char #\#)
+        (write-char #\\)
+        (let ((pair (assoc x special-char-names)))
+          (if pair
+            (display (cdr pair))
+            (write-char x))))
 
-  (cond
-    ((char? x)
-      (write-char #\# port)
-      (write-char #\\ port)
-      (let ((pair (assoc x special-char-names)))
-        (if pair
-          (display (cdr pair) port)
-          (write-char x port))))
+      ((pair? x)
+        (write-list x write))
 
-    ((pair? x)
-      (write-list x write port))
+      ((string? x)
+        (write-char #\")
+        (for-each write-escaped-char (string->list x))
+        (write-char #\"))
 
-    ((string? x)
-      (write-char #\" port)
-      (for-each
-        (lambda (x) (write-escaped-char x port))
-        (string->list x))
-      (write-char #\" port))
-
-    ((vector? x)
-      (write-vector x write port))
-
-    (else
-      (display x port))))
-
-(define (display x . rest)
-  (define port (get-output-port rest))
-
-  (cond
-    ((not x)
-      (write-string "#f" port))
-
-    ((eqv? x #t)
-      (write-string "#t" port))
-
-    ((char? x)
-      (write-char x port))
-
-    ((null? x)
-      (write-sequence x display port))
-
-    ((number? x)
-      (display (number->string x) port))
-
-    ((pair? x)
-      (write-list x display port))
-
-    ((procedure? x)
-      (write-string "#procedure" port))
-
-    ((record? x)
-      (write-string "#record" port))
-
-    ((string? x)
-      (write-string x port))
-
-    ((symbol? x)
-      (display (symbol->string x) port))
-
-    ((vector? x)
-      (write-vector x display port))
-
-    (else
-      (error "unknown type"))))
-
-(define (write-list xs write port)
-  (if (null? xs)
-    (write-sequence xs write port)
-    (case (car xs)
-      ((quote)
-        (write-quote #\' (cadr xs) write port))
-
-      ((quasiquote)
-        (write-quote #\` (cadr xs) write port))
-
-      ((unquote)
-        (write-quote #\, (cadr xs) write port))
+      ((vector? x)
+        (write-vector x write))
 
       (else
-        (write-sequence xs write port)))))
+        (display x)))))
 
-(define (write-sequence xs write port)
-  (write-char #\( port)
+(define (display x . rest)
+  (parameterize ((current-output-port (get-output-port rest)))
+    (cond
+      ((not x)
+        (write-string "#f"))
+
+      ((eqv? x #t)
+        (write-string "#t"))
+
+      ((char? x)
+        (write-char x))
+
+      ((null? x)
+        (write-sequence x display))
+
+      ((number? x)
+        (display (number->string x)))
+
+      ((pair? x)
+        (write-list x display))
+
+      ((procedure? x)
+        (write-string "#procedure"))
+
+      ((record? x)
+        (write-string "#record"))
+
+      ((string? x)
+        (write-string x))
+
+      ((symbol? x)
+        (display (symbol->string x)))
+
+      ((vector? x)
+        (write-vector x display))
+
+      (else
+        (error "unknown type")))))
+
+(define (write-list xs write)
+  (if (null? xs)
+    (write-sequence xs write)
+    (case (car xs)
+      ((quote)
+        (write-quote #\' (cadr xs) write))
+
+      ((quasiquote)
+        (write-quote #\` (cadr xs) write))
+
+      ((unquote)
+        (write-quote #\, (cadr xs) write))
+
+      (else
+        (write-sequence xs write)))))
+
+(define (write-sequence xs write)
+  (write-char #\()
 
   (when (pair? xs)
-    (write (car xs) port)
+    (write (car xs))
     (let loop ((xs (cdr xs)))
       (cond
         ((pair? xs)
-          (write-char #\space port)
-          (write (car xs) port)
+          (write-char #\space)
+          (write (car xs))
           (loop (cdr xs)))
 
         ((null? xs)
           #f)
 
         (else
-          (write-char #\space port)
-          (write-char #\. port)
-          (write-char #\space port)
-          (write xs port)))))
+          (write-char #\space)
+          (write-char #\.)
+          (write-char #\space)
+          (write xs)))))
 
-  (write-char #\) port))
+  (write-char #\)))
 
-(define (write-quote char value write port)
-  (write-char char port)
-  (write value port))
+(define (write-quote char value write)
+  (write-char char)
+  (write value))
 
-(define (write-vector xs write port)
-  (write-char #\# port)
-  (write-sequence (vector->list xs) write port))
+(define (write-vector xs write)
+  (write-char #\#)
+  (write-sequence (vector->list xs) write))
 
 ; Process context
 
