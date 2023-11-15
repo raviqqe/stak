@@ -219,3 +219,20 @@ Feature: Write
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "(42 foo #f)"
+
+  @stak @gauche
+  Scenario Outline: Write a quote
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write <value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value  | output |
+      | ''()   | '()    |
+      | '`()   | `()    |
+      | '`(,1) | `(,1)  |

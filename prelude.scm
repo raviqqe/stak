@@ -1430,7 +1430,7 @@
       (write-char x port))
 
     ((null? x)
-      (write-list x display port))
+      (write-sequence x display port))
 
     ((number? x)
       (display (number->string x) port))
@@ -1457,6 +1457,22 @@
       (error "unknown type"))))
 
 (define (write-list xs write port)
+  (if (null? xs)
+    (write-sequence xs write port)
+    (case (car xs)
+      ((quote)
+        (write-quote #\' (cadr xs) write port))
+
+      ((quasiquote)
+        (write-quote #\` (cadr xs) write port))
+
+      ((unquote)
+        (write-quote #\, (cadr xs) write port))
+
+      (else
+        (write-sequence xs write port)))))
+
+(define (write-sequence xs write port)
   (write-char #\( port)
 
   (when (pair? xs)
@@ -1479,9 +1495,13 @@
 
   (write-char #\) port))
 
+(define (write-quote char value write port)
+  (write-char char port)
+  (write value port))
+
 (define (write-vector xs write port)
   (write-char #\# port)
-  (write-list (vector->list xs) write port))
+  (write-sequence (vector->list xs) write port))
 
 ; Process context
 
