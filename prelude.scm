@@ -1469,6 +1469,21 @@
       (error "unknown type"))))
 
 (define (write-list xs write port)
+  (let ((value (cdr x)))
+    (case (car x)
+      ((quote)
+        (write-quote #\' value display port))
+
+      ((quasiquote)
+        (write-quote #\` value display port))
+
+      ((unquote)
+        (write-quote #\, value display port))
+
+      (else
+        (write-sequence x display port)))))
+
+(define (write-sequence xs write port)
   (write-char #\( port)
 
   (when (pair? xs)
@@ -1498,7 +1513,7 @@
 
 (define (write-vector xs write port)
   (write-char #\# port)
-  (write-list (vector->list xs) write port))
+  (write-sequence (vector->list xs) write port))
 
 ; Process context
 
