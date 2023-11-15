@@ -1454,52 +1454,52 @@
       (else
         (error "unknown type")))))
 
-(define (write-list xs write port)
+(define (write-list xs write)
   (if (null? xs)
-    (write-sequence xs write port)
+    (write-sequence xs write)
     (case (car xs)
       ((quote)
-        (write-quote #\' (cadr xs) write port))
+        (write-quote #\' (cadr xs) write))
 
       ((quasiquote)
-        (write-quote #\` (cadr xs) write port))
+        (write-quote #\` (cadr xs) write))
 
       ((unquote)
-        (write-quote #\, (cadr xs) write port))
+        (write-quote #\, (cadr xs) write))
 
       (else
-        (write-sequence xs write port)))))
+        (write-sequence xs write)))))
 
-(define (write-sequence xs write port)
-  (write-char #\( port)
+(define (write-sequence xs write)
+  (write-char #\()
 
   (when (pair? xs)
-    (write (car xs) port)
+    (write (car xs))
     (let loop ((xs (cdr xs)))
       (cond
         ((pair? xs)
-          (write-char #\space port)
-          (write (car xs) port)
+          (write-char #\space)
+          (write (car xs))
           (loop (cdr xs)))
 
         ((null? xs)
           #f)
 
         (else
-          (write-char #\space port)
-          (write-char #\. port)
-          (write-char #\space port)
-          (write xs port)))))
+          (write-char #\space)
+          (write-char #\.)
+          (write-char #\space)
+          (write xs)))))
 
-  (write-char #\) port))
+  (write-char #\)))
 
-(define (write-quote char value write port)
-  (write-char char port)
-  (write value port))
+(define (write-quote char value write)
+  (write-char char)
+  (write value))
 
-(define (write-vector xs write port)
-  (write-char #\# port)
-  (write-sequence (vector->list xs) write port))
+(define (write-vector xs write)
+  (write-char #\#)
+  (write-sequence (vector->list xs) write))
 
 ; Process context
 
