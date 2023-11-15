@@ -1369,21 +1369,17 @@
       (write-char x port))))
 
 (define (write-string x . rest)
-  (define port (get-output-port rest))
-
-  (for-each
-    (lambda (x) (write-char x port))
-    (string->list x)))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (for-each write-char (string->list x))))
 
 (define (write-bytevector xs . rest)
-  (define port (get-output-port rest))
-
-  (let loop ((xs xs) (index 0))
-    (if (< index (bytevector-length xs))
-      (begin
-        (write-u8 (bytevector-u8-ref xs index) port)
-        (loop xs (+ index 1)))
-      #f)))
+  (parameterize ((current-output-port (get-output-port rest)))
+    (let loop ((xs xs) (index 0))
+      (if (< index (bytevector-length xs))
+        (begin
+          (write-u8 (bytevector-u8-ref xs index))
+          (loop xs (+ index 1)))
+        #f))))
 
 (define (newline . rest)
   (write-char #\newline (get-output-port rest)))
