@@ -1436,19 +1436,7 @@
       (display (number->string x) port))
 
     ((pair? x)
-      (let ((value (cdr x)))
-        (case (car x)
-          ((quote)
-            (write-quote #\' value display port))
-
-          ((quasiquote)
-            (write-quote #\` value display port))
-
-          ((unquote)
-            (write-quote #\, value display port))
-
-          (else
-            (write-list x display port)))))
+      (write-list x display port))
 
     ((procedure? x)
       (write-string "#procedure" port))
