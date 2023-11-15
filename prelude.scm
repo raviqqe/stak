@@ -1498,7 +1498,6 @@
 
 (define (write-quote char value write port)
   (write-char char port)
-  (write-char #\space port)
   (write value port))
 
 (define (write-vector xs write port)
