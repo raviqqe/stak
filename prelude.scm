@@ -1419,37 +1419,37 @@
   (parameterize ((current-output-port (get-output-port rest)))
     (cond
       ((not x)
-        (write-string "#f" port))
+        (write-string "#f"))
 
       ((eqv? x #t)
-        (write-string "#t" port))
+        (write-string "#t"))
 
       ((char? x)
-        (write-char x port))
+        (write-char x))
 
       ((null? x)
-        (write-sequence x display port))
+        (write-sequence x display))
 
       ((number? x)
-        (display (number->string x) port))
+        (display (number->string x)))
 
       ((pair? x)
-        (write-list x display port))
+        (write-list x display))
 
       ((procedure? x)
-        (write-string "#procedure" port))
+        (write-string "#procedure"))
 
       ((record? x)
-        (write-string "#record" port))
+        (write-string "#record"))
 
       ((string? x)
-        (write-string x port))
+        (write-string x))
 
       ((symbol? x)
-        (display (symbol->string x) port))
+        (display (symbol->string x)))
 
       ((vector? x)
-        (write-vector x display port))
+        (write-vector x display))
 
       (else
         (error "unknown type")))))
