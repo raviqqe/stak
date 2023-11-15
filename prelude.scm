@@ -1459,19 +1459,18 @@
 (define (write-list xs write port)
   (if (null? xs)
     (write-sequence xs write port)
-    (let ((value (cadr xs)))
-      (case (car xs)
-        ((quote)
-          (write-quote #\' value write port))
+    (case (car xs)
+      ((quote)
+        (write-quote #\' (cadr xs) write port))
 
-        ((quasiquote)
-          (write-quote #\` value write port))
+      ((quasiquote)
+        (write-quote #\` (cadr xs) write port))
 
-        ((unquote)
-          (write-quote #\, value write port))
+      ((unquote)
+        (write-quote #\, (cadr xs) write port))
 
-        (else
-          (write-sequence xs write port))))))
+      (else
+        (write-sequence xs write port)))))
 
 (define (write-sequence xs write port)
   (write-char #\( port)
