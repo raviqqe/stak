@@ -587,6 +587,13 @@
 (define (null? x)
   (eq? x '()))
 
+(define (list? x)
+  (or
+    (null? x)
+    (and
+      (pair? x)
+      (list? (cdr x)))))
+
 (define car rib-car)
 (define cdr rib-cdr)
 (define set-car! rib-set-car!)
