@@ -1358,15 +1358,13 @@
 (define (write-char x . rest)
   (write-u8 (char->integer x) (get-output-port rest)))
 
-(define (write-escaped-char x . rest)
-  (let (
-      (port (get-output-port rest))
-      (pair (assoc x escaped-chars)))
+(define (write-escaped-char x)
+  (let ((pair (assoc x escaped-chars)))
     (if pair
       (begin
-        (write-char #\\ port)
-        (write-char (cdr pair) port))
-      (write-char x port))))
+        (write-char #\\)
+        (write-char (cdr pair)))
+      (write-char x))))
 
 (define (write-string x . rest)
   (parameterize ((current-output-port (get-output-port rest)))
