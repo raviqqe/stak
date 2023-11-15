@@ -231,5 +231,7 @@ Feature: Write
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value | output |
-      | ''()  | '()    |
+      | value  | output |
+      | ''()   | '()    |
+      | '`()   | `()    |
+      | '`(,1) | `(,1)  |
