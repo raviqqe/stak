@@ -1392,28 +1392,28 @@
   (parameterize ((current-output-port (get-output-port rest)))
     (cond
       ((char? x)
-        (write-char #\# port)
-        (write-char #\\ port)
+        (write-char #\#)
+        (write-char #\\)
         (let ((pair (assoc x special-char-names)))
           (if pair
-            (display (cdr pair) port)
-            (write-char x port))))
+            (display (cdr pair))
+            (write-char x))))
 
       ((pair? x)
-        (write-list x write port))
+        (write-list x write))
 
       ((string? x)
-        (write-char #\" port)
+        (write-char #\")
         (for-each
-          (lambda (x) (write-escaped-char x port))
+          (lambda (x) (write-escaped-char x))
           (string->list x))
-        (write-char #\" port))
+        (write-char #\"))
 
       ((vector? x)
-        (write-vector x write port))
+        (write-vector x write))
 
       (else
-        (display x port)))))
+        (display x)))))
 
 (define (display x . rest)
   (define port (get-output-port rest))
