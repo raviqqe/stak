@@ -1457,19 +1457,21 @@
       (error "unknown type"))))
 
 (define (write-list xs write port)
-  (let ((value (cdr xs)))
-    (case (car xs)
-      ((quote)
-        (write-quote #\' value display port))
+  (if (null? xs)
+    (write-sequence xs write port)
+    (let ((value (cdr xs)))
+      (case (car xs)
+        ((quote)
+          (write-quote #\' value display port))
 
-      ((quasiquote)
-        (write-quote #\` value display port))
+        ((quasiquote)
+          (write-quote #\` value display port))
 
-      ((unquote)
-        (write-quote #\, value display port))
+        ((unquote)
+          (write-quote #\, value display port))
 
-      (else
-        (write-sequence x display port)))))
+        (else
+          (write-sequence x display port))))))
 
 (define (write-sequence xs write port)
   (write-char #\( port)
