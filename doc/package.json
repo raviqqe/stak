@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.0.3",
-    "@astrojs/starlight": "^0.12.0",
+    "@astrojs/starlight": "^0.12.1",
     "@raviqqe/loscore": "^0.1.7",
     "astro": "^3.5.4"
   },
