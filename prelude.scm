@@ -604,6 +604,7 @@
 (define (cddr x) (cdr (cdr x)))
 (define (caaar x) (car (caar x)))
 (define (caddr x) (car (cddr x)))
+(define (cadar x) (car (cdar x)))
 
 (define (list . xs) xs)
 
