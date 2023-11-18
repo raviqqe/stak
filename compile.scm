@@ -115,17 +115,17 @@
     y
     (f (fold-right f y (cdr xs)) (car xs))))
 
-(define (take n list)
+(define (take n xs)
   (if (= n 0)
     '()
     (cons
-      (car list)
-      (take (- n 1) (cdr list)))))
+      (car xs)
+      (take (- n 1) (cdr xs)))))
 
-(define (skip n list)
+(define (skip n xs)
   (if (= n 0)
-    list
-    (skip (- n 1) (cdr list))))
+    xs
+    (skip (- n 1) (cdr xs))))
 
 (define (list-unique xs)
   (let loop ((xs xs) (ys '()))
