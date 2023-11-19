@@ -264,6 +264,6 @@ Feature: List
     Then the stdout should contain exactly "A"
 
     Examples:
-      | procedure | value   |
-      | car       | (65 66) |
-      | cdr       | (66 65) |
+      | procedure | value     |
+      | car       | (65 . 66) |
+      | cdr       | (66 . 65) |
