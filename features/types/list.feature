@@ -271,3 +271,5 @@ Feature: List
       | cadr      | (66 65)      |
       | cdar      | ((66 . 65))  |
       | cddr      | (66 66 . 65) |
+      | caaar     | (((65)))     |
+      | caadr     | (66 (65))    |
