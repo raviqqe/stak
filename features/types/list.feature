@@ -264,10 +264,10 @@ Feature: List
     Then the stdout should contain exactly "A"
 
     Examples:
-      | procedure | value          |
-      | car       | (65)           |
-      | cdr       | (66 . 65)      |
-      | caar      | ((65))         |
-      | cadr      | (66 65)        |
-      | cdar      | ((66 . 65))    |
-      | cddr      | (66 (66 . 65)) |
+      | procedure | value        |
+      | car       | (65)         |
+      | cdr       | (66 . 65)    |
+      | caar      | ((65))       |
+      | cadr      | (66 65)      |
+      | cdar      | ((66 . 65))  |
+      | cddr      | (66 66 . 65) |
