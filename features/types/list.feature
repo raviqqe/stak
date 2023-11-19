@@ -252,3 +252,18 @@ Feature: List
       | '(1)       | A      |
       | '(1 2)     | A      |
       | (cons 1 2) | B      |
+
+  Scenario Outline: Apply a cxr procedure
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme cxr))
+
+    (write-u8 (<procedure> '<value>)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | procedure | value   |
+      | car       | (65 66) |
+      | cdr       | (66 65) |
