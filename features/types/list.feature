@@ -258,7 +258,7 @@ Feature: List
     """scheme
     (import (scheme base) (scheme cxr))
 
-    (write-u8 (<procedure> '<value>)))
+    (write-u8 (<procedure> '<value>))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
