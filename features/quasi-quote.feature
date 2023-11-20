@@ -71,3 +71,15 @@ Feature: Quasi-quote
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Unquote and splice an expression
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define (f x) (list x))
+
+    (map write-u8 `(,@(f 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
