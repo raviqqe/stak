@@ -217,6 +217,19 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
+(define (non-singleton-rib? value)
+  ; TODO Can we remove this check?
+  ; We can make it back to objects on heap.
+  ; See also a `singleton?` procedure in a prelude library.
+  (and
+    (rib? value)
+    (not (singleton? value))))
+
 ; Source code reading
 
 (define (read-all)
@@ -677,7 +690,7 @@
 
 (define (drop? codes)
   (and
-    (rib? codes)
+    (non-singleton-rib? codes)
     (eqv? (rib-tag codes) set-instruction)
     (eqv? (rib-car codes) 0)))
 
@@ -988,7 +1001,7 @@
             symbols))))))
 
 (define (nop-codes? codes)
-  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+  (and (non-singleton-rib? codes) (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
