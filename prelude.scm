@@ -839,23 +839,19 @@
   (define radix (if (null? rest) 10 (car rest)))
 
   (define (convert xs)
-    (let loop ((xs xs) (y 0))
-      (if (null? xs)
-        y
-        (let ((x (convert-digit (car xs) radix)))
-          (and x (loop (cdr xs) (+ (* radix y) x)))))))
+    (and
+      (pair? xs)
+      (let loop ((xs xs) (y 0))
+        (if (null? xs)
+          y
+          (let ((x (convert-digit (car xs) radix)))
+            (and x (loop (cdr xs) (+ (* radix y) x))))))))
 
   (let ((xs (string->list x)))
-    (cond
-      ((null? xs)
-        #f)
-
-      ((eqv? (car xs) #\-)
-        (let ((x (convert (cdr xs))))
-          (and x (- x))))
-
-      (else
-        (convert xs)))))
+    (if (and (pair? xs) (eqv? (car xs) #\-))
+      (let ((x (convert (cdr xs))))
+        (and x (- x)))
+      (convert xs))))
 
 ;; Symbol
 
