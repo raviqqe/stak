@@ -9,6 +9,9 @@ run() {
 }
 
 cd $(dirname $0)/..
+
+brew install gauche
+
 set -x
 
 for file in test/*.scm; do
