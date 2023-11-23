@@ -1045,7 +1045,9 @@
   (encode-string (string->list (symbol->string symbol)) target))
 
 (define (empty-symbol? symbol)
-  (eqv? (string-ref (symbol->string symbol) 0) #\$))
+  ; TODO Check empty symbols reliably.
+  ; (eqv? (string-ref (symbol->string symbol) 0) #\$)
+  #f)
 
 (define (count-empty-symbols symbols)
   (let loop ((symbols symbols) (count 0))
