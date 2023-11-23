@@ -848,16 +848,10 @@
             (and x (loop (cdr xs) (+ (* radix y) x))))))))
 
   (let ((xs (string->list x)))
-    (cond
-      ((null? xs)
-        #f)
-
-      ((eqv? (car xs) #\-)
-        (let ((x (convert (cdr xs))))
-          (and x (- x))))
-
-      (else
-        (convert xs)))))
+    (if (and (pair? xs) (eqv? (car xs) #\-))
+      (let ((x (convert (cdr xs))))
+        (and x (- x)))
+      (convert xs))))
 
 ;; Symbol
 
