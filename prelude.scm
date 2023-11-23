@@ -525,7 +525,8 @@
 (define + (arithmetic-operator $$+ 0))
 (define - (inverse-arithmetic-operator $$- 0))
 (define * (arithmetic-operator $$* 1))
-(define / (inverse-arithmetic-operator $$/ 1))
+(define quotient (inverse-arithmetic-operator $$/ 1))
+(define / quotient)
 
 (define (comparison-operator f)
   (lambda xs
