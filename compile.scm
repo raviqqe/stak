@@ -65,15 +65,15 @@
 
 ; Utility
 
+; TODO Can we remove this check?
+; We can make it back to objects on heap.
+; See also a `singleton?` procedure in a prelude library.
 (define (singleton? x)
   (or
     (null? x)
     (boolean? x)))
 
 (define (non-singleton-rib? value)
-  ; TODO Can we remove this check?
-  ; We can make it back to objects on heap.
-  ; See also a `singleton?` procedure in a prelude library.
   (and
     (rib? value)
     (not (singleton? value))))
