@@ -30,12 +30,11 @@
   '(
     (#f . $$false)
     (#t . $$true)
-    (() . $$null)))
+    (() . $$null)
+    ; It is fine to have a key duplicate with `false`'s because it is never hit.
+    (#f . $$rib)))
 
-(define rib-symbol '$$rib)
-
-(define default-symbols
-  (append (map cdr default-constants) (list rib-symbol)))
+(define default-symbols (map cdr default-constants))
 
 ; Instructions
 
@@ -883,7 +882,7 @@
             (make-rib
               constant-instruction
               tag
-              (compile-primitive-call rib-symbol (continue)))))))))
+              (compile-primitive-call '$$rib (continue)))))))))
 
 (define (build-constant-codes context constant continue)
   (let (
@@ -1211,7 +1210,7 @@
       (make-rib constant-instruction
         procedure-type
         (compile-primitive-call
-          rib-symbol
+          '$$rib
           (make-rib set-instruction (car primitive) continuation))))))
 
 (define (build-primitives primitives continuation)
