@@ -4,7 +4,7 @@ set -e
 
 run() {
   tools/compile.sh ./compile.scm >compile.out
-  cat $1 | cargo run --release --bin stak compile.out >main.out
+  cargo run --release --bin stak compile.out <$1 >main.out
   cargo run --release --bin stak main.out
 }
 
