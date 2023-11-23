@@ -996,7 +996,7 @@
           ((and
               (symbol? operand)
               (not (memv operand default-symbols))
-              (not (memq operand symbols)))
+              (not (memv operand symbols)))
             (cons operand symbols))
 
           (else
