@@ -222,6 +222,7 @@ Feature: Number
 
     Examples:
       | value |
+      |       |
       | x     |
       | foo   |
       | -     |
