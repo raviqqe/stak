@@ -1042,7 +1042,12 @@
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
+  (encode-string
+    ; Internal symbols may not have string representations.
+    (if (symbol->string symbol)
+      (string->list (symbol->string symbol))
+      '())
+    target))
 
 (define (empty-symbol? symbol)
   ; TODO Check empty symbols reliably.

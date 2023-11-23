@@ -727,7 +727,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
-        let symbol = self.allocate(value, NULL.set_tag(Type::Symbol as u8).into())?;
+        let symbol = self.allocate(value, FALSE.set_tag(Type::Symbol as u8).into())?;
 
         self.push(symbol.into())
     }
