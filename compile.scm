@@ -993,6 +993,7 @@
 
           ((and
               (symbol? operand)
+              (not (memv operand (map cdr default-constants)))
               (not (eqv? operand rib-symbol))
               (not (memq operand symbols)))
             (cons operand symbols))
