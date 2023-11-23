@@ -76,12 +76,19 @@ jobs:
       - uses: ruby/setup-ruby@v1
       - run: brew install chibi-scheme gauche guile
       - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @none' }}'
+  self_host_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - run: tools/self_host_test.sh
   test:
     needs:
       - build
       - unit_test
       - coverage
       - integration_test
+      - self_host_test
     if: always()
     runs-on: ubuntu-latest
     steps:
