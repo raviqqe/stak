@@ -231,7 +231,7 @@
 ; Target code writing
 
 (define (write-target codes)
-  (map write-u8 codes))
+  (for-each write-u8 codes))
 
 ; Expansion
 
@@ -614,7 +614,7 @@
               (expand-expression context (caddr expression))))
 
           (($$quasiquote)
-            (expand-quasiquote (cadr expression)))
+            (expand-expression context (expand-quasiquote (cadr expression))))
 
           (($$quote)
             (cons '$$quote (cdr expression)))
