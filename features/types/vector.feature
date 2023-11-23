@@ -24,7 +24,7 @@ Feature: Vector
     """scheme
     (import (scheme base))
 
-    (map write-u8 (vector->list #(65 66 67)))
+    (for-each write-u8 (vector->list #(65 66 67)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
@@ -73,7 +73,7 @@ Feature: Vector
 
     (vector-set! xs <index> 88)
 
-    (map write-u8 (vector->list xs))
+    (for-each write-u8 (vector->list xs))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"

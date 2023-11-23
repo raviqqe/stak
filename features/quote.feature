@@ -14,7 +14,7 @@ Feature: Quote
     """scheme
     (import (scheme base))
 
-    (map write-u8 '(65 66 67))
+    (for-each write-u8 '(65 66 67))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"

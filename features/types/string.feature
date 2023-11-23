@@ -14,7 +14,7 @@ Feature: String
     """scheme
     (import (scheme base))
 
-    (map write-char (string->list "Hello, world!"))
+    (for-each write-char (string->list "Hello, world!"))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "Hello, world!"
