@@ -1046,6 +1046,7 @@
 
 (define (empty-symbol? symbol)
   ; TODO Check empty symbols reliably.
+  ; This doesn't work when compiling this compiler itself.
   ; (eqv? (string-ref (symbol->string symbol) 0) #\$)
   #f)
 
