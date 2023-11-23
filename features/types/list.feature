@@ -279,3 +279,4 @@ Feature: List
       | cdadr     | (66 (66 . 65))  |
       | cddar     | ((66 66 . 65))  |
       | cdddr     | (66 66 66 . 65) |
+      | cadddr    | (66 66 66 65)   |
