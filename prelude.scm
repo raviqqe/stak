@@ -525,7 +525,17 @@
 (define + (arithmetic-operator $$+ 0))
 (define - (inverse-arithmetic-operator $$- 0))
 (define * (arithmetic-operator $$* 1))
-(define / (inverse-arithmetic-operator $$/ 1))
+(define quotient (inverse-arithmetic-operator $$/ 1))
+(define / quotient)
+
+(define (modulo x y)
+  (let ((q (quotient x y)))
+    (let ((r (- x (* y q))))
+      (if (eqv? r 0)
+        0
+        (if (eqv? (< x 0) (< y 0))
+          r
+          (+ r y))))))
 
 (define (comparison-operator f)
   (lambda xs
@@ -1510,3 +1520,10 @@
 
 (define (exit . rest)
   (unwind (lambda () (apply emergency-exit rest))))
+
+; Compiler utility
+
+; TODO Move those to a compiler when `cond-expand` is implemented.
+
+(define rib-cons cons)
+(define (make-rib tag car cdr) (rib car cdr tag))

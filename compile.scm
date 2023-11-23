@@ -65,11 +65,24 @@
 
 ; Utility
 
+; TODO Can we remove this check?
+; We can make it back to objects on heap.
+; See also a `singleton?` procedure in a prelude library.
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
+(define (non-singleton-rib? value)
+  (and
+    (rib? value)
+    (not (singleton? value))))
+
 (define (make-procedure code environment)
-  (rib procedure-type code environment))
+  (make-rib procedure-type code environment))
 
 (define (stak-procedure? value)
-  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
+  (and (non-singleton-rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
@@ -654,10 +667,10 @@
 ;; Procedures
 
 (define (compile-constant constant continuation)
-  (rib constant-instruction constant continuation))
+  (make-rib constant-instruction constant continuation))
 
 (define (compile-primitive-call name continuation)
-  (rib
+  (make-rib
     call-instruction
     (rib-cons
       (case name
@@ -677,7 +690,7 @@
 
 (define (drop? codes)
   (and
-    (rib? codes)
+    (non-singleton-rib? codes)
     (eqv? (rib-tag codes) set-instruction)
     (eqv? (rib-car codes) 0)))
 
@@ -690,7 +703,7 @@
 (define (compile-drop continuation)
   (if (null? continuation)
     continuation
-    (rib set-instruction 0 continuation)))
+    (make-rib set-instruction 0 continuation)))
 
 (define (compile-sequence context expressions continuation)
   (compile-expression
@@ -702,7 +715,7 @@
 
 (define (compile-raw-call context function arguments argument-count continuation)
   (if (null? arguments)
-    (rib
+    (make-rib
       call-instruction
       (rib-cons
         argument-count
@@ -743,12 +756,12 @@
 (define (compile-unbind continuation)
   (if (null? continuation)
     continuation
-    (rib set-instruction 1 continuation)))
+    (make-rib set-instruction 1 continuation)))
 
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
-      (rib
+      (make-rib
         get-instruction
         (compilation-context-resolve context expression)
         continuation))
@@ -765,19 +778,19 @@
           (compile-expression
             context
             (cadr expression)
-            (rib
+            (make-rib
               if-instruction
               (compile-expression
                 context
                 (caddr expression)
-                (if (null? continuation) '() (rib nop-instruction 0 continuation)))
+                (if (null? continuation) '() (make-rib nop-instruction 0 continuation)))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
           (let ((parameters (cadr expression)))
             (compile-constant
               (make-procedure
-                (rib
+                (make-rib
                   pair-type
                   (+
                     (* 2 (count-parameters parameters))
@@ -799,7 +812,7 @@
           (compile-expression
             context
             (caddr expression)
-            (rib
+            (make-rib
               set-instruction
               (compilation-context-resolve
                 (compilation-context-push-local context #f)
@@ -864,7 +877,7 @@
         (lambda ()
           (if (eqv? tag pair-type)
             (compile-primitive-call '$$cons (continue))
-            (rib
+            (make-rib
               constant-instruction
               tag
               (compile-primitive-call rib-symbol (continue)))))))))
@@ -876,10 +889,10 @@
         (lambda (car cdr tag)
           (build-rib-constant-codes context car cdr tag continue))))
     (if symbol
-      (rib get-instruction symbol (continue))
+      (make-rib get-instruction symbol (continue))
       (cond
         ((constant-normal? constant)
-          (rib constant-instruction constant (continue)))
+          (make-rib constant-instruction constant (continue)))
 
         ((bytevector? constant)
           (build-rib
@@ -891,10 +904,10 @@
           (build-rib (char->integer constant) '() char-type))
 
         ((and (number? constant) (> 0 constant))
-          (rib
+          (make-rib
             constant-instruction
             0
-            (rib
+            (make-rib
               constant-instruction
               (abs constant)
               (compile-primitive-call '$$- (continue)))))
@@ -926,7 +939,7 @@
         constant
         (lambda ()
           (constant-context-add-constant! context constant id)
-          (rib set-instruction id (continue)))))))
+          (make-rib set-instruction id (continue)))))))
 
 (define (build-constants context codes)
   (let loop ((codes codes) (continue (lambda () codes)))
@@ -988,7 +1001,7 @@
             symbols))))))
 
 (define (nop-codes? codes)
-  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+  (and (non-singleton-rib? codes) (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1032,7 +1045,10 @@
   (encode-string (string->list (symbol->string symbol)) target))
 
 (define (empty-symbol? symbol)
-  (eqv? (string-ref (symbol->string symbol) 0) #\$))
+  ; TODO Check empty symbols reliably.
+  ; This doesn't work when compiling this compiler itself.
+  ; (eqv? (string-ref (symbol->string symbol) 0) #\$)
+  #f)
 
 (define (count-empty-symbols symbols)
   (let loop ((symbols symbols) (count 0))
@@ -1185,15 +1201,15 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (rib constant-instruction
+  (make-rib constant-instruction
     (cadr primitive)
-    (rib constant-instruction
+    (make-rib constant-instruction
       '()
-      (rib constant-instruction
+      (make-rib constant-instruction
         procedure-type
         (compile-primitive-call
           rib-symbol
-          (rib set-instruction (car primitive) continuation))))))
+          (make-rib set-instruction (car primitive) continuation))))))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)

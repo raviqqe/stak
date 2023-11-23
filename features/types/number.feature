@@ -64,18 +64,25 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | expression | value |
-      | (+)        | 0     |
-      | (+ 1)      | 1     |
-      | (+ 1 2)    | 3     |
-      | (- 1)      | -1    |
-      | (- 0 1)    | -1    |
-      | (- 0 1 2)  | -3    |
-      | (*)        | 1     |
-      | (* 2)      | 2     |
-      | (* 2 3)    | 6     |
-      | (/ 6 2)    | 3     |
-      | (/ 6 2 3)  | 1     |
+      | expression     | value |
+      | (+)            | 0     |
+      | (+ 1)          | 1     |
+      | (+ 1 2)        | 3     |
+      | (- 1)          | -1    |
+      | (- 0 1)        | -1    |
+      | (- 0 1 2)      | -3    |
+      | (*)            | 1     |
+      | (* 2)          | 2     |
+      | (* 2 3)        | 6     |
+      | (/ 6 2)        | 3     |
+      | (/ 6 2 3)      | 1     |
+      | (quotient 6 2) | 3     |
+      | (quotient 6 3) | 2     |
+      | (modulo 5 1)   | 0     |
+      | (modulo 5 2)   | 1     |
+      | (modulo 5 3)   | 2     |
+      | (modulo -5 2)  | 1     |
+      | (modulo -5 -2) | -1    |
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
