@@ -14,7 +14,7 @@ Feature: Quasi-quote
     """scheme
     (import (scheme base))
 
-    (map write-u8 `(65 66 67))
+    (for-each write-u8 `(65 66 67))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
@@ -28,7 +28,7 @@ Feature: Quasi-quote
     (define y 66)
     (define z 67)
 
-    (map write-u8 `(,x ,y ,z))
+    (for-each write-u8 `(,x ,y ,z))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
@@ -42,7 +42,7 @@ Feature: Quasi-quote
     (define y 66)
     (define z '(67))
 
-    (map write-u8 `(,x ,y . ,z))
+    (for-each write-u8 `(,x ,y . ,z))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
@@ -54,7 +54,7 @@ Feature: Quasi-quote
 
     (define x '(65))
 
-    (map write-u8 `(,@x))
+    (for-each write-u8 `(,@x))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
@@ -67,7 +67,7 @@ Feature: Quasi-quote
     (define x '(65))
     (define y '(66))
 
-    (map write-u8 `(,@x ,@y))
+    (for-each write-u8 `(,@x ,@y))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
@@ -79,7 +79,7 @@ Feature: Quasi-quote
 
     (define (f x) (list x))
 
-    (map write-u8 `(,@(f 65)))
+    (for-each write-u8 `(,@(f 65)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
@@ -92,7 +92,7 @@ Feature: Quasi-quote
     (define (foo x)
       `(,x))
 
-    (map write-u8 (foo 65))
+    (for-each write-u8 (foo 65))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"

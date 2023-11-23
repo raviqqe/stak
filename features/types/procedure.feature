@@ -109,7 +109,7 @@ Feature: Procedure
     """scheme
     (import (scheme base))
 
-    (define (f . xs) (map write-u8 xs))
+    (define (f . xs) (for-each write-u8 xs))
     (f 65 66 67)
     """
     When I successfully run `scheme main.scm`
@@ -165,7 +165,7 @@ Feature: Procedure
     """scheme
     (import (scheme base))
 
-    (map write-u8 (apply append '(<values>)))
+    (for-each write-u8 (apply append '(<values>)))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
