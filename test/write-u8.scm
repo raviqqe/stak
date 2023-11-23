@@ -14,6 +14,8 @@
     ((_ name value)
       ($$define name value))))
 
+(define procedure-type 1)
 (define (primitive id) ($$rib id '() procedure-type))
-
 (define write-u8 (primitive 17))
+
+(write-u8 65)
