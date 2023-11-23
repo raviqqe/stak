@@ -222,8 +222,10 @@ Feature: Number
 
     Examples:
       | value |
+      |       |
       | x     |
       | foo   |
+      | -     |
       | 2x    |
       | -x    |
       | -2x   |
