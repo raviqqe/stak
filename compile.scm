@@ -65,11 +65,24 @@
 
 ; Utility
 
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
+(define (non-singleton-rib? value)
+  ; TODO Can we remove this check?
+  ; We can make it back to objects on heap.
+  ; See also a `singleton?` procedure in a prelude library.
+  (and
+    (rib? value)
+    (not (singleton? value))))
+
 (define (make-procedure code environment)
   (make-rib procedure-type code environment))
 
 (define (stak-procedure? value)
-  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
+  (and (non-singleton-rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
@@ -216,19 +229,6 @@
 
     (else
       (error "invalid variadic parameter" parameters))))
-
-(define (singleton? x)
-  (or
-    (null? x)
-    (boolean? x)))
-
-(define (non-singleton-rib? value)
-  ; TODO Can we remove this check?
-  ; We can make it back to objects on heap.
-  ; See also a `singleton?` procedure in a prelude library.
-  (and
-    (rib? value)
-    (not (singleton? value))))
 
 ; Source code reading
 
