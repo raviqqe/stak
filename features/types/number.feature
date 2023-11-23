@@ -224,6 +224,7 @@ Feature: Number
       | value |
       | x     |
       | foo   |
+      | -     |
       | 2x    |
       | -x    |
       | -2x   |
