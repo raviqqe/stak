@@ -32,10 +32,10 @@
     (#t . $$true)
     (() . $$null)))
 
+(define rib-symbol '$$rib)
+
 (define default-symbols
   (append (map cdr default-constants) (list rib-symbol)))
-
-(define rib-symbol '$$rib)
 
 ; Instructions
 
