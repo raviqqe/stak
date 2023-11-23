@@ -32,6 +32,9 @@
     (#t . $$true)
     (() . $$null)))
 
+(define default-symbols
+  (append (map cdr default-constants) (list rib-symbol)))
+
 (define rib-symbol '$$rib)
 
 ; Instructions
@@ -993,8 +996,7 @@
 
           ((and
               (symbol? operand)
-              (not (memv operand (map cdr default-constants)))
-              (not (eqv? operand rib-symbol))
+              (not (memv operand default-symbols))
               (not (memq operand symbols)))
             (cons operand symbols))
 
@@ -1234,7 +1236,7 @@
       symbols
       (encode-codes
         (make-encode-context
-          (append (map cdr default-constants) (list rib-symbol) symbols)
+          (append default-symbols symbols)
           constant-context)
         codes
         '()))))
