@@ -398,6 +398,9 @@
 (define $$write-error-u8 (primitive 18))
 (define $$halt (primitive 19))
 
+; TODO Move this definition to a compiler when `cond-expand` is implemented
+(define rib-cons cons)
+
 (define (apply f xs)
   ($$apply f xs))
 
