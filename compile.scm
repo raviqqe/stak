@@ -1044,10 +1044,8 @@
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
-  (encode-string
-    ; Internal symbols may not have string representations.
-    (string->list (or (symbol->string symbol) ""))
-    target))
+  ; Internal symbols may not have string representations.
+  (encode-string (string->list (or (symbol->string symbol) "")) target))
 
 (define (empty-symbol? symbol)
   ; TODO Check empty symbols reliably.
