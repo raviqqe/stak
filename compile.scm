@@ -1046,7 +1046,7 @@
 (define (encode-symbol symbol target)
   (encode-string
     ; Internal symbols may not have string representations.
-    (string->list (if (symbol->string symbol) (symbol->string symbol) ""))
+    (string->list (or (symbol->string symbol) ""))
     target))
 
 (define (empty-symbol? symbol)
