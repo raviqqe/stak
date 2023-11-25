@@ -3,23 +3,24 @@
 set -e
 
 run_stage1() {
-  gosh ./compile.scm <$1 >$2
-  stak-decode $2 >$3
+  gosh ./compile.scm
 }
 
 run_stage2() {
-  stak stage2.out <$1 >$2
-  stak-decode $2 >$3
+  stak stage2.out
 }
 
 run_stage3() {
-  stak stage3.out <$1 >$2
-  stak-decode $2 >$3
+  stak stage3.out
+}
+
+artifact_path() {
+  echo tmp/stage$1.$2
 }
 
 diff_artifacts() {
   for extension in txt out; do
-    diff tmp/stage$1.$extension tmp/stage$2.$extension
+    diff $(artifact_path $1 $extension) $(artifact_path $2 $extension)
   done
 }
 
@@ -37,7 +38,10 @@ set -x
 
 for file in test/self_host/*.scm; do
   for stage in $(seq 3); do
-    run_stage$stage $file tmp/stage$stage.out tmp/stage$stage.txt
+    out_file=$(artifact_path $stage out)
+
+    run_stage$stage <$file >$out_file
+    stak-decode $out_file >${out_file%.*}.txt
   done
 
   diff_artifacts 1 2
