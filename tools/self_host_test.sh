@@ -14,6 +14,6 @@ brew install gauche
 
 set -x
 
-for file in test/*.scm; do
+for file in test/self_host/*.scm; do
   run $file
 done
