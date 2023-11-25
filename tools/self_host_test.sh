@@ -7,7 +7,7 @@ directory=$(dirname $0)/..
 alias stak=$directory/target/release/stak
 alias decode=$directory/target/release/stak-decode
 
-run() {
+run_other() {
   gosh ./compile.scm <$1 >$2
   decode $2 >$3
 }
@@ -26,7 +26,7 @@ tools/compile.sh ./compile.scm >compile.out
 set -x
 
 for file in test/self_host/*.scm; do
-  run $file tmp/other.out tmp/other.txt
+  run_other $file tmp/other.out tmp/other.txt
   run_self $file tmp/self.out tmp/self.txt
 
   diff tmp/other.txt tmp/self.txt
