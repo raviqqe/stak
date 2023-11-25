@@ -68,7 +68,7 @@
 ; Utility
 
 ; TODO Can we remove this check?
-; We can make it back to objects on heap.
+; We can make them back to objects on heap.
 ; See also a `singleton?` procedure in a prelude library.
 (define (singleton? x)
   (or
