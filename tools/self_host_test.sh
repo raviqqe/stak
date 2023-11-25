@@ -2,6 +2,11 @@
 
 set -e
 
+log() {
+  echo "$@" >&2
+  "$@"
+}
+
 run_stage1() {
   gosh ./compile.scm
 }
@@ -34,16 +39,16 @@ brew install gauche
 tools/compile.sh ./compile.scm >stage2.out
 cat prelude.scm compile.scm | stak stage2.out >stage3.out
 
-set -x
-
 for file in test/self_host/*.scm; do
+  echo '>>>' $file
+
   for stage in $(seq 3); do
     out_file=$(artifact_path $stage out)
 
-    run_stage$stage <$file >$out_file
+    log run_stage$stage <$file >$out_file
     stak-decode $out_file >${out_file%.*}.txt
   done
 
-  diff_artifacts 1 2
-  diff_artifacts 2 3
+  log diff_artifacts 1 2
+  log diff_artifacts 2 3
 done
