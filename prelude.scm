@@ -488,6 +488,7 @@
 
 ;; Boolean
 
+; TODO Consider making boolean values singleton heap objects again.
 (define (boolean? x)
   (or
     (eq? x #f)
@@ -594,6 +595,7 @@
 
 (define pair? (instance? pair-type))
 
+; TODO Consider making a null value a singleton heap object again.
 (define (null? x)
   (eq? x '()))
 
