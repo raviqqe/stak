@@ -2,33 +2,44 @@
 
 set -e
 
-directory=$(dirname $0)/..
-
-alias stak=$directory/target/release/stak
-alias decode=$directory/target/release/stak-decode
-
-run_other() {
+run_stage1() {
   gosh ./compile.scm <$1 >$2
-  decode $2 >$3
+  stak-decode $2 >$3
 }
 
-run_self() {
-  stak compile.out <$1 >$2
-  decode $2 >$3
+run_stage2() {
+  stak stage2.out <$1 >$2
+  stak-decode $2 >$3
+}
+
+run_stage3() {
+  stak stage3.out <$1 >$2
+  stak-decode $2 >$3
+}
+
+diff_artifacts() {
+  for extension in txt out; do
+    diff tmp/stage$1.$extension tmp/stage$2.$extension
+  done
 }
 
 cd $(dirname $0)/..
 
+export PATH=$(dirname $0)/../target/release:$PATH
+
 mkdir -p tmp
 brew install gauche
-tools/compile.sh ./compile.scm >compile.out
+
+tools/compile.sh ./compile.scm >stage2.out
+cat prelude.scm compile.scm | stak stage2.out >stage3.out
 
 set -x
 
 for file in test/self_host/*.scm; do
-  run_other $file tmp/other.out tmp/other.txt
-  run_self $file tmp/self.out tmp/self.txt
+  for stage in $(seq 3); do
+    run_stage$stage $file tmp/stage$stage.out tmp/stage$stage.txt
+  done
 
-  diff tmp/other.txt tmp/self.txt
-  diff tmp/other.out tmp/self.out
+  diff_artifacts 1 2
+  diff_artifacts 2 3
 done
