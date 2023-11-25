@@ -864,12 +864,15 @@
 (define symbol->string rib-cdr)
 
 (define (string->symbol x)
-  (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
-    (if pair
-      (car pair)
-      (let ((x (rib #f (string-append x) symbol-type)))
-        (set! symbol-table (cons x symbol-table))
-        x))))
+  ; TODO Remove this hack.
+  (if (equal? x "$$rib")
+    '$$rib
+    (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
+      (if pair
+        (car pair)
+        (let ((x (rib #f (string-append x) symbol-type)))
+          (set! symbol-table (cons x symbol-table))
+          x)))))
 
 ;; Vector
 
