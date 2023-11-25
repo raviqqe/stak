@@ -5,6 +5,7 @@
     "arity",
     "assq",
     "assv",
+    "astro",
     "bytevector",
     "chibi",
     "codecov",
