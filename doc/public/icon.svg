@@ -1,6 +1,6 @@
 <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&amp;display=swap');
 
     text {
       font-family: 'Noto Color Emoji', sans-serif;
