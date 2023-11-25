@@ -68,7 +68,7 @@
 ; Utility
 
 ; TODO Can we remove this check?
-; We can make it back to objects on heap.
+; We can make them back to objects on heap.
 ; See also a `singleton?` procedure in a prelude library.
 (define (singleton? x)
   (or
@@ -1044,7 +1044,9 @@
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
+  ; TODO Remove this hack.
+  ; Internal symbols may not have string representations.
+  (encode-string (string->list (or (symbol->string symbol) "")) target))
 
 (define (empty-symbol? symbol)
   ; TODO Check empty symbols reliably.
