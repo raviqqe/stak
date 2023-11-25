@@ -35,6 +35,7 @@ export PATH=$(dirname $0)/../target/release:$PATH
 
 mkdir -p tmp
 brew install gauche
+cargo build --release
 
 tools/compile.sh ./compile.scm >stage2.out
 cat prelude.scm compile.scm | stak stage2.out >stage3.out
