@@ -865,6 +865,7 @@
 
 (define (string->symbol x)
   ; TODO Remove this hack.
+  ; Currently, internal symbols do not have any string representation.
   (if (equal? x "$$rib")
     '$$rib
     (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
