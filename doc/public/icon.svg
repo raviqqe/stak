@@ -1,3 +1,9 @@
 <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&family=Noto+Emoji:wght@500&display=swap');
+    text {
+      font-family: 'Noto Color Emoji', sans-serif;
+    }
+  </style>
   <text style="font-size: 17px;" x="50%" y="58%" dominant-baseline="middle" text-anchor="middle">📚</text>
 </svg>
