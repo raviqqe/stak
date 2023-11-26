@@ -25,12 +25,6 @@ artifact_path() {
   echo tmp/stage$1.$2
 }
 
-diff_artifacts() {
-  for extension in txt out; do
-    diff $(artifact_path $1 $extension) $(artifact_path $2 $extension)
-  done
-}
-
 cd $(dirname $0)/..
 
 export PATH=$(dirname $0)/../target/release:$PATH
@@ -54,6 +48,8 @@ for file in test/self_host/*.scm; do
   done
 
   for stage in $(seq $(expr $stage_count - 1)); do
-    log diff_artifacts $stage $(expr $stage + 1)
+    for extension in txt out; do
+      log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
+    done
   done
 done
