@@ -56,6 +56,12 @@ impl Value {
     }
 }
 
+impl Default for Value {
+    fn default() -> Self {
+        Number::default().into()
+    }
+}
+
 impl PartialEq for Value {
     fn eq(&self, other: &Self) -> bool {
         self.is_cons() && self.to_cons() == other.to_cons()
