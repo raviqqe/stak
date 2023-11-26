@@ -8,7 +8,7 @@ log() {
 }
 
 run_stage1() {
-  gosh ./compile.scm
+  stak-compile
 }
 
 run_stage2() {
@@ -37,8 +37,9 @@ mkdir -p tmp
 brew install gauche
 cargo build --release
 
-tools/compile.sh ./compile.scm >stage2.out
-cat prelude.scm compile.scm | stak stage2.out >stage3.out
+for stage in 1 2; do
+  cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
+done
 
 for file in test/self_host/*.scm; do
   echo '>>>' $file
