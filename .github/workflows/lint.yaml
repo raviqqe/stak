@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
       - uses: Homebrew/actions/setup-homebrew@master
-      - run: brew install gosh
+      - run: brew install gauche
       - run: cargo clippy -- -D warnings
       - run: cargo clippy -p stak-code -- -D warnings
   format:
@@ -32,6 +32,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: rustup install nightly
       - uses: Swatinem/rust-cache@v2
+      - uses: Homebrew/actions/setup-homebrew@master
+      - run: brew install gauche
       - run: |
           rustup run nightly cargo install cargo-udeps
           cargo +nightly udeps
