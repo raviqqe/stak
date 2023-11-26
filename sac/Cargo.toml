@@ -1,0 +1,15 @@
+[package]
+name = "stak-sac"
+description = "Stak Stand-Alone Complex"
+version = "0.1.3"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+code = { package = "stak-code", version = "0.1", path = "../code", features = [
+  "alloc",
+  "std",
+] }
