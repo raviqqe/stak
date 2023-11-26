@@ -61,7 +61,7 @@ jobs:
           - name: stak
             host: gosh
           - name: stak
-            host: guile --no-auto-compile
+            host: guile
           - name: stak
             features: [gc_always]
             tags: not @long
