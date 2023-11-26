@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
+      - uses: Homebrew/actions/setup-homebrew@master
+      - run: brew install gauche
       - run: cargo build
   unit_test:
     strategy:
@@ -32,12 +34,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
+      - uses: Homebrew/actions/setup-homebrew@master
+      - run: brew install gauche
       - run: tools/unit_test.sh
   coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
+      - uses: Homebrew/actions/setup-homebrew@master
+      - run: brew install gauche
       - run: tools/coverage.sh
       - uses: codecov/codecov-action@v3
         with:
