@@ -37,7 +37,7 @@ mkdir -p tmp
 brew install gauche
 cargo build --release
 
-for stage in 1 2; do
+for stage in $(seq 2); do
   cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
 done
 
@@ -51,7 +51,7 @@ for file in test/self_host/*.scm; do
     stak-decode <$out_file >${out_file%.*}.txt
   done
 
-  for stage in 1 2; do
+  for stage in $(seq 2); do
     log diff_artifacts $stage $(expr $stage + 1)
   done
 done
