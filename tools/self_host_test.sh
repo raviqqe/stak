@@ -51,6 +51,7 @@ for file in test/self_host/*.scm; do
     stak-decode <$out_file >${out_file%.*}.txt
   done
 
-  log diff_artifacts 1 2
-  log diff_artifacts 2 3
+  for stage in 1 2; do
+    log diff_artifacts $stage $(expr $stage + 1)
+  done
 done
