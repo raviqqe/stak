@@ -1,5 +1,8 @@
-use code::decode;
-use std::{env::args, error::Error, fs::read, process::exit};
+use device::StdioDevice;
+use std::{env, error::Error, process::exit};
+use vm::{Number, Vm};
+
+const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
 fn main() {
     if let Err(error) = run() {
@@ -9,13 +12,15 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    println!(
-        "{}",
-        decode(&read(args().nth(1).ok_or(format!(
-            "Usage: {} <bytecode_file>",
-            args().next().expect("command name")
-        ))?)?)?
-    );
+    let size = env::var("STAK_HEAP_SIZE")
+        .ok()
+        .map(|string| string.parse())
+        .transpose()?
+        .unwrap_or(DEFAULT_HEAP_SIZE);
+    let mut heap = vec![Number::new(0).into(); size];
+    let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default());
 
-    Ok(())
+    vm.initialize(include_bytes!(env!("STAK_BYTECODE_FILE")).iter().copied())?;
+
+    Ok(vm.run()?)
 }
