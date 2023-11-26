@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!("cargo:rerun-if-changed={path}");
     } else {
         let source_file = format!("../{COMPILER_SOURCE_FILE}");
-        let mut command = Command::new("gosh")
+        let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("gosh"))
             .arg(&source_file)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
