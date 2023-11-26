@@ -48,7 +48,7 @@ for file in test/self_host/*.scm; do
     out_file=$(artifact_path $stage out)
 
     log run_stage$stage <$file >$out_file
-    stak-decode $out_file >${out_file%.*}.txt
+    stak-decode <$out_file >${out_file%.*}.txt
   done
 
   log diff_artifacts 1 2

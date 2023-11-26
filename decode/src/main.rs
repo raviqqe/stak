@@ -1,5 +1,9 @@
 use code::decode;
-use std::{env::args, error::Error, fs::read, process::exit};
+use std::{
+    error::Error,
+    io::{stdin, Read},
+    process::exit,
+};
 
 fn main() {
     if let Err(error) = run() {
@@ -9,13 +13,10 @@ fn main() {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    println!(
-        "{}",
-        decode(&read(args().nth(1).ok_or(format!(
-            "Usage: {} <bytecode_file>",
-            args().next().expect("command name")
-        ))?)?)?
-    );
+    let mut buffer = vec![];
+    stdin().read_to_end(&mut buffer)?;
+
+    println!("{}", decode(&buffer)?);
 
     Ok(())
 }
