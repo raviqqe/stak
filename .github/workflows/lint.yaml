@@ -10,6 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
+      - uses: Homebrew/actions/setup-homebrew@master
+      - run: brew install gosh
       - run: cargo clippy -- -D warnings
       - run: cargo clippy -p stak-code -- -D warnings
   format:
