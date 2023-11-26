@@ -2,6 +2,8 @@
 
 set -e
 
+stage_count=3
+
 log() {
   echo "$@" >&2
   "$@"
@@ -37,21 +39,21 @@ mkdir -p tmp
 brew install gauche
 cargo build --release
 
-for stage in $(seq 2); do
+for stage in $(seq $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
 done
 
 for file in test/self_host/*.scm; do
   echo '>>>' $file
 
-  for stage in $(seq 3); do
+  for stage in $(seq $stage_count); do
     out_file=$(artifact_path $stage out)
 
     log run_stage$stage <$file >$out_file
     stak-decode <$out_file >${out_file%.*}.txt
   done
 
-  for stage in $(seq 2); do
+  for stage in $(seq $(expr $stage_count - 1)); do
     log diff_artifacts $stage $(expr $stage + 1)
   done
 done
