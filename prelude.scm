@@ -1256,6 +1256,7 @@
 
           ((#\u)
             (read-char)
+            (read-char)
             (list->bytevector (read-list)))
 
           (else
