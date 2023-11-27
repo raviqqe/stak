@@ -210,6 +210,23 @@ Feature: Write
       | #(1 2 3)             |
       | #(1 #(1 2) #(3 4 5)) |
 
+  Scenario Outline: Write a bytevector
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write <value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value      |
+      | #u8()      |
+      | #u8(1)     |
+      | #u8(1 2)   |
+      | #u8(1 2 3) |
+
   Scenario: Write to a port
     Given a file named "main.scm" with:
     """scheme
