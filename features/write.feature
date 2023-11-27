@@ -227,6 +227,7 @@ Feature: Write
       | #u8(1 2)   |
       | #u8(1 2 3) |
 
+  @stak @gauche @guile
   Scenario: Write to a port
     Given a file named "main.scm" with:
     """scheme
