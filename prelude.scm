@@ -570,6 +570,9 @@
 (define (bytevector-u8-ref vector index)
   (list-ref (rib-cdr vector) index))
 
+(define (list->bytevector x)
+  (rib (length x) x bytevector-type))
+
 ;; Character
 
 (define char? (instance? char-type))
@@ -1250,6 +1253,10 @@
 
                     (else
                       (cdr (assoc (list->string x) special-chars))))))))
+
+          ((#\u)
+            (read-char)
+            (list->bytevector (read-list)))
 
           (else
             (list->vector (read-list)))))
