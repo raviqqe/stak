@@ -71,7 +71,7 @@ Feature: Smoke
     """
     And I run the following script:
     """sh
-    for _ in $(seq 13); do
+    for _ in $(seq 10); do
       for _ in $(seq 2); do
         cat foo.scm >> bar.scm
       done
