@@ -570,6 +570,11 @@
 (define (bytevector-u8-ref vector index)
   (list-ref (rib-cdr vector) index))
 
+(define (list->bytevector x)
+  (rib (length x) x bytevector-type))
+
+(define bytevector->list rib-cdr)
+
 ;; Character
 
 (define char? (instance? char-type))
@@ -1251,6 +1256,11 @@
                     (else
                       (cdr (assoc (list->string x) special-chars))))))))
 
+          ((#\u)
+            (read-char)
+            (read-char)
+            (list->bytevector (read-list)))
+
           (else
             (list->vector (read-list)))))
 
@@ -1419,6 +1429,9 @@
 (define (write x . rest)
   (parameterize ((current-output-port (get-output-port rest)))
     (cond
+      ((bytevector? x)
+        (write-formatted-bytevector x write))
+
       ((char? x)
         (write-char #\#)
         (write-char #\\)
@@ -1449,6 +1462,9 @@
 
       ((eqv? x #t)
         (write-string "#t"))
+
+      ((bytevector? x)
+        (write-formatted-bytevector x display))
 
       ((char? x)
         (write-char x))
@@ -1522,6 +1538,10 @@
 (define (write-quote char value write)
   (write-char char)
   (write value))
+
+(define (write-formatted-bytevector xs write)
+  (write-string "#u8")
+  (write-sequence (bytevector->list xs) write))
 
 (define (write-vector xs write)
   (write-char #\#)

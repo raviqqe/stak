@@ -207,6 +207,10 @@ Feature: Read
       | #(foo)          |
       | #(foo bar)      |
       | #(foo bar baz)  |
+      | #u8()           |
+      | #u8(1)          |
+      | #u8(1 2)        |
+      | #u8(1 2 3)      |
 
   Scenario: Read from a port
     Given a file named "main.scm" with:
