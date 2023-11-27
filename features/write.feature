@@ -244,13 +244,13 @@ Feature: Write
     """scheme
     (import (scheme base) (scheme write))
 
-    (write <value>)
+    (write '<value>)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value  | output |
-      | ''()   | '()    |
-      | '`()   | `()    |
-      | '`(,1) | `(,1)  |
+      | value |
+      | '()   |
+      | `()   |
+      | `(,1) |
