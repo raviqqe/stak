@@ -52,10 +52,10 @@ export default defineConfig({
       favicon: "/icon.svg",
       head: [
         {
-          tag: "meta",
+          tag: "link",
           attrs: {
-            name: "manifest",
-            content: "/manifest.json",
+            rel: "manifest",
+            href: "/manifest.json",
           },
         },
       ],
