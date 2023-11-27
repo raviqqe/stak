@@ -50,6 +50,15 @@ export default defineConfig({
     starlight({
       title: "Stak",
       favicon: "/icon.svg",
+      head: [
+        {
+          tag: "link",
+          attrs: {
+            rel: "manifest",
+            href: "/stak/manifest.json",
+          },
+        },
+      ],
       logo: {
         src: "./public/icon.svg",
       },
