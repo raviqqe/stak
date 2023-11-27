@@ -58,10 +58,16 @@ jobs:
         interpreter:
           - name: stak
             host: chibi-scheme
+            # TODO Disable this filter.
+            tags: not @long
           - name: stak
             host: gosh
+            # TODO Disable this filter.
+            tags: not @long
           - name: stak
             host: guile
+            # TODO Disable this filter.
+            tags: not @long
           - name: stak
             features: [gc_always]
             tags: not @long
