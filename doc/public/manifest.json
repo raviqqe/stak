@@ -1,0 +1,9 @@
+{
+  "short_name": "Stak",
+  "name": "Stak Scheme",
+  "icons": [{ "src": "icon.svg", "sizes": "any" }],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "steelblue",
+  "background_color": "snow"
+}
