@@ -71,7 +71,6 @@ jobs:
             tags: not @stak or @gauche
           - name: guile
             tags: not @stak or @guile
-    if: github.ref == 'refs/heads/main' || ${{ matrix.os }} == 'ubuntu-latest'
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
@@ -83,6 +82,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
       - run: brew install chibi-scheme gauche guile
       - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @none' }}'
+        if: github.ref == 'refs/heads/main' || matrix.os == 'ubuntu-latest'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
