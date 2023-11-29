@@ -23,7 +23,7 @@ fn run() -> Result<(), Box<dyn Error>> {
         .transpose()?
         .unwrap_or(DEFAULT_HEAP_SIZE);
     let mut heap = vec![Default::default(); size];
-    let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default());
+    let mut vm = Vm::new(&mut heap, StdioDevice::new());
 
     vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",
