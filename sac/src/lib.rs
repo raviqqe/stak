@@ -1,9 +1,16 @@
+#[doc(hidden)]
+pub mod __private {
+    pub extern crate device;
+    pub extern crate std;
+    pub extern crate vm;
+}
+
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
-        use ::device::StdioDevice;
-        use ::vm::Vm;
-        use std::{env, error::Error, process::exit};
+        use $crate::__private::device::StdioDevice;
+        use $crate::__private::std::{env, error::Error, process::exit};
+        use $crate::__private::vm::Vm;
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
@@ -23,7 +30,7 @@ macro_rules! main {
             let mut heap = vec![Default::default(); size];
             let mut vm = Vm::<StdioDevice>::new(&mut heap, Default::default());
 
-            vm.initialize(include_bytes!(env!("STAK_BYTECODE_FILE")).iter().copied())?;
+            vm.initialize(include_bytes!($path).iter().copied())?;
 
             Ok(vm.run()?)
         }
