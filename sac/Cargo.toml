@@ -8,16 +8,6 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[features]
-gc_always = ["vm/gc_always"]
-no_inline = ["vm/no_inline"]
-trace = ["vm/trace"]
-trace_heap = ["vm/trace_heap"]
-
 [dependencies]
-device = { package = "stak-device", version = "0.1", path = "../device", features = [
-  "std",
-] }
-vm = { package = "stak-vm", version = "0.2", path = "../vm", features = [
-  "std",
-] }
+device = { package = "stak-device", version = "0.1", path = "../device", features = ["std"] }
+vm = { package = "stak-vm", version = "0.2", path = "../vm", features = ["std"] }
