@@ -10,7 +10,7 @@ log() {
 }
 
 run_stage1() {
-  stak-sac
+  stak-compile
 }
 
 run_stage2() {

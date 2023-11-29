@@ -6,6 +6,6 @@ directory=$(dirname $0)/../../..
 
 export PATH=$directory/target/release:$PATH
 
-cat $directory/prelude.scm "$@" | stak-sac >main.out
+cat $directory/prelude.scm "$@" | stak-compile >main.out
 stak-decode <main.out >/dev/null
 stak main.out
