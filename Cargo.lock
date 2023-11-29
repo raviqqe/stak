@@ -90,6 +90,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-compile"
+version = "0.1.0"
+dependencies = [
+ "stak-sac",
+]
+
+[[package]]
 name = "stak-decode"
 version = "0.1.3"
 dependencies = [
