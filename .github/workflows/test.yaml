@@ -65,6 +65,8 @@ jobs:
           - name: stak
             features: [gc_always]
             tags: not @long
+          - name: stak
+            host: stak
           - name: chibi
             tags: not @stak or @chibi
           - name: gauche
@@ -72,7 +74,8 @@ jobs:
           - name: guile
             tags: not @stak or @guile
         exclude:
-          - os: ${{ github.ref != 'refs/heads/main' && 'macos-latest' }}
+          - interpreter:
+              host: ${{ github.ref != 'refs/heads/main' && 'macos-latest' }}
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
