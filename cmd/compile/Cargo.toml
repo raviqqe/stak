@@ -9,4 +9,4 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-sac = { package = "stak-sac", version = "0.1", path = "../sac" }
+sac = { package = "stak-sac", version = "0.1", path = "../../sac" }
