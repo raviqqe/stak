@@ -10,7 +10,7 @@ brew install gauche
 bundler install
 
 cargo build --release
-cargo build --release --bin stak $(feature_flags)
+cargo build --release --bin stak-interpret $(feature_flags)
 
 export PATH=$PWD/tools/scheme/${SCHEME_INTERPRETER:-stak}:$PATH
 
