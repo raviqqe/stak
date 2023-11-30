@@ -14,11 +14,11 @@ run_stage1() {
 }
 
 run_stage2() {
-  stak stage2.out
+  stak-interpret stage2.out
 }
 
 run_stage3() {
-  stak stage3.out
+  stak-interpret stage3.out
 }
 
 artifact_path() {
