@@ -6,7 +6,7 @@ directory=$(dirname $0)/../../..
 
 compile() {
   if [ $STAK_HOST_INTERPRETER = stak ]; then
-    stak-interpret
+    stak-interpret compile.scm
   else
     ${STAK_HOST_INTERPRETER:-gosh} $directory/compile.scm
   fi
