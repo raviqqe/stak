@@ -8,9 +8,11 @@ pub mod __private {
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
-        use $crate::__private::device::StdioDevice;
-        use $crate::__private::std::{env, error::Error, process::exit};
-        use $crate::__private::vm::Vm;
+        use $crate::__private::{
+            device::StdioDevice,
+            std::{env, error::Error, process::exit},
+            vm::Vm,
+        };
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
