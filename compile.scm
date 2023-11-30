@@ -62,10 +62,11 @@
 (define boolean-type 1)
 (define pair-type 2)
 (define procedure-type 3)
-(define string-type 4)
-(define char-type 5)
-(define vector-type 6)
-(define bytevector-type 7)
+(define symbol-type 4)
+(define string-type 5)
+(define char-type 6)
+(define vector-type 7)
+(define bytevector-type 8)
 
 ; Utility
 
