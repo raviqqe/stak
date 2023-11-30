@@ -364,14 +364,16 @@
 
 ; Type IDs
 
-(define pair-type 0)
-(define procedure-type 1)
-(define symbol-type 2)
-(define string-type 3)
-(define char-type 4)
-(define vector-type 5)
-(define bytevector-type 6)
-(define record-type 7)
+(define null-type 0)
+(define boolean-type 1)
+(define pair-type 2)
+(define procedure-type 3)
+(define symbol-type 4)
+(define string-type 5)
+(define char-type 6)
+(define vector-type 7)
+(define bytevector-type 8)
+(define record-type 9)
 
 ; Primitives
 
