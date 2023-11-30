@@ -9,10 +9,9 @@ use std::{
 
 const PRELUDE_SOURCE_FILE: &str = "../../prelude.scm";
 const COMPILER_SOURCE_FILE: &str = "../../compile.scm";
-const COMPILER_TARGET_FILE: &str = "main.bc";
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let target_file = Path::new(&env::var("OUT_DIR").unwrap()).join(COMPILER_TARGET_FILE);
+    let target_file = Path::new(&env::var("OUT_DIR").unwrap()).join("main.bc");
 
     println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
     println!(
