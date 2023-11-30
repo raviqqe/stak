@@ -5,10 +5,10 @@ set -e
 directory=$(dirname $0)/../../..
 
 compile() {
-  if [ $STAK_HOST_INTERPRETER = stak ]; then
-    stak-compile
+  if [ -n "$STAK_HOST_INTERPRETER" ]; then
+    $STAK_HOST_INTERPRETER $directory/compile.scm
   else
-    ${STAK_HOST_INTERPRETER:-gosh} $directory/compile.scm
+    stak-compile
   fi
 }
 
