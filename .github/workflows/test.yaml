@@ -103,6 +103,8 @@ jobs:
       - uses: ruby/setup-ruby@v1
       - run: brew install chibi-scheme gauche guile
       - run: tools/integration_test.sh
+        env:
+          STAK_HOST_INTERPRETER:
   self_host_test:
     runs-on: ubuntu-latest
     steps:
