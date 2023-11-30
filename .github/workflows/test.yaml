@@ -90,21 +90,13 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-        host:
-          - chibi-scheme
-          - gosh
-          - guile
     runs-on: ${{ matrix.os }}
-    env:
-      STAK_HOST_INTERPRETER: ${{ matrix.host }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
-      - run: brew install chibi-scheme gauche guile
+      - run: brew install gauche
       - run: tools/integration_test.sh
-        env:
-          STAK_HOST_INTERPRETER:
   self_host_test:
     runs-on: ubuntu-latest
     steps:
