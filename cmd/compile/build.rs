@@ -1,17 +1,24 @@
 use std::{
+    env,
     error::Error,
     fs::{self, File},
     io::{self, Write},
+    path::Path,
     process::{Command, Stdio},
 };
 
-const PRELUDE_SOURCE_FILE: &str = "../prelude.scm";
-const COMPILER_SOURCE_FILE: &str = "../compile.scm";
-const COMPILER_OUT_FILE: &str = "main.out";
+const PRELUDE_SOURCE_FILE: &str = "../../prelude.scm";
+const COMPILER_SOURCE_FILE: &str = "../../compile.scm";
+const COMPILER_TARGET_FILE: &str = "main.bc";
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let target_file = Path::new(&env::var("OUT_DIR").unwrap()).join(COMPILER_TARGET_FILE);
+
     println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
-    println!("cargo:rustc-env=STAK_BYTECODE_FILE=../{COMPILER_OUT_FILE}");
+    println!(
+        "cargo:rustc-env=STAK_BYTECODE_FILE={}",
+        target_file.display()
+    );
 
     let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("gosh"))
         .arg(COMPILER_SOURCE_FILE)
@@ -31,7 +38,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .create(true)
             .write(true)
             .truncate(true)
-            .open(COMPILER_OUT_FILE)?,
+            .open(target_file)?,
     )?;
 
     Ok(())
