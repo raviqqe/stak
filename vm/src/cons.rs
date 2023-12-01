@@ -1,7 +1,7 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
-pub const NEVER: Cons = Cons::dummy(0);
+pub const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
@@ -12,10 +12,6 @@ pub struct Cons(u64);
 impl Cons {
     pub const fn new(index: u64) -> Self {
         Self(index << (TAG_SIZE + 1))
-    }
-
-    pub(crate) const fn dummy(index: u64) -> Self {
-        Self::new(u64::MAX - index)
     }
 
     pub const fn index(self) -> usize {
