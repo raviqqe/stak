@@ -13,6 +13,7 @@ const COMPILER_SOURCE_FILE: &str = "../../compile.scm";
 fn main() -> Result<(), Box<dyn Error>> {
     let target_file = Path::new(&env::var("OUT_DIR").unwrap()).join("main.bc");
 
+    println!("cargo:rerun-if-changed={PRELUDE_SOURCE_FILE}");
     println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
     println!(
         "cargo:rustc-env=STAK_BYTECODE_FILE={}",
