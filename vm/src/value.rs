@@ -122,23 +122,6 @@ mod tests {
         assert_eq!(Value::from(number).to_number().unwrap(), number);
     }
 
-    // #[test]
-    // fn convert_false() {
-    //     assert_eq!(Value::from(FALSE).to_cons().unwrap(), FALSE);
-    // }
-
-    // TODO Migrate a test.
-    // #[test]
-    // fn convert_true() {
-    //     assert_eq!(Value::from(TRUE).to_cons().unwrap(), TRUE);
-    // }
-
-    // TODO Migrate a test.
-    // #[test]
-    // fn convert_null() {
-    //     assert_eq!(Value::from(NULL).to_cons().unwrap(), NULL);
-    // }
-
     #[test]
     fn convert_moved() {
         assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);

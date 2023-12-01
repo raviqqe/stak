@@ -75,8 +75,10 @@ impl<'a, T: Device> Vm<'a, T> {
         };
 
         let null = vm.allocate_raw(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
-        let r#true =
-            vm.allocate_raw(Default::default(), NEVER.set_tag(Type::Boolean as u8).into())?;
+        let r#true = vm.allocate_raw(
+            Default::default(),
+            NEVER.set_tag(Type::Boolean as u8).into(),
+        )?;
         vm.r#false = vm.allocate_raw(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
 
         Ok(vm)
@@ -989,6 +991,36 @@ mod tests {
         vm.cons(Number::new(3).into(), list).unwrap();
 
         assert_snapshot!(vm);
+    }
+
+    #[test]
+    fn convert_false() {
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
+
+        assert_eq!(
+            Value::from(vm.boolean(false)).to_cons().unwrap(),
+            vm.boolean(false)
+        );
+    }
+
+    #[test]
+    fn convert_true() {
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
+
+        assert_eq!(
+            Value::from(vm.boolean(true)).to_cons().unwrap(),
+            vm.boolean(true)
+        );
+    }
+
+    #[test]
+    fn convert_null() {
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
+
+        assert_eq!(Value::from(vm.null()).to_cons().unwrap(), vm.null());
     }
 
     mod stack {
