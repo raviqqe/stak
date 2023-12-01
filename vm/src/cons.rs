@@ -6,7 +6,7 @@ use core::fmt::{self, Display, Formatter};
 ///
 /// This value means:
 ///
-/// - in car, its cons is moved on garbage collection.
+/// - in car, its cons is moved already on garbage collection.
 /// - in cdr, nothing.
 pub const NEVER: Cons = Cons::new(u64::MAX);
 
