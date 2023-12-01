@@ -405,9 +405,15 @@
 
 ; Basic types
 
+(define (singleton? x)
+  (or
+    (null? x)
+    (boolean? x)))
+
 (define (instance? type)
   (lambda (x)
     (and
+      (not (singleton? x))
       (rib? x)
       (eqv? (rib-tag x) type))))
 
@@ -420,6 +426,8 @@
   (or
     (eq? x y)
     (and
+      (not (singleton? x))
+      (not (singleton? y))
       (rib? x)
       (rib? y)
       (eq? (rib-tag x) (rib-tag y))
@@ -482,7 +490,11 @@
 
 ;; Boolean
 
-(define boolean? (instance? boolean-type))
+; TODO Consider making boolean values singleton heap objects again.
+(define (boolean? x)
+  (or
+    (eq? x #f)
+    (eq? x #t)))
 
 (define (not x)
   (eq? x #f))
@@ -588,8 +600,11 @@
 
 ;; List
 
-(define null? (instance? null-type))
 (define pair? (instance? pair-type))
+
+; TODO Consider making a null value a singleton heap object again.
+(define (null? x)
+  (eq? x '()))
 
 (define (list? x)
   (or
