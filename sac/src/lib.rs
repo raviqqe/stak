@@ -30,7 +30,7 @@ macro_rules! main {
                 .transpose()?
                 .unwrap_or(DEFAULT_HEAP_SIZE);
             let mut heap = vec![Default::default(); size];
-            let mut vm = Vm::new(&mut heap, StdioDevice::new());
+            let mut vm = Vm::new(&mut heap, StdioDevice::new())?;
 
             vm.initialize(include_bytes!($path).iter().copied())?;
 

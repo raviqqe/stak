@@ -60,8 +60,8 @@ pub struct Vm<'a, T: Device> {
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
 impl<'a, T: Device> Vm<'a, T> {
-    pub fn new(heap: &'a mut [Value], device: T) -> Self {
-        Self {
+    pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
+        let mut vm = Self {
             device,
             program_counter: MOVED,
             stack: MOVED,
@@ -70,7 +70,16 @@ impl<'a, T: Device> Vm<'a, T> {
             allocation_index: 0,
             space: false,
             heap,
-        }
+        };
+
+        let null = vm.allocate_raw(Default::default(), MOVED.set_tag(Type::Null as u8).into())?;
+        let r#true = vm.allocate_raw(
+            Default::default(),
+            MOVED.set_tag(Type::Boolean as u8).into(),
+        )?;
+        vm.r#false = vm.allocate_raw(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
+
+        Ok(vm)
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
@@ -602,6 +611,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
+        self.r#false = self.copy_cons(self.r#false)?;
         self.temporary = self.copy_cons(self.temporary)?;
 
         if let Some(cons) = cons {
@@ -710,17 +720,9 @@ impl<'a, T: Device> Vm<'a, T> {
         )?;
 
         self.initialize_symbol(rib.into())?;
-
-        let null = self.allocate(Default::default(), MOVED.set_tag(Type::Null as u8).into())?;
-        let r#true = self.allocate(
-            Default::default(),
-            MOVED.set_tag(Type::Boolean as u8).into(),
-        )?;
-        self.r#false = self.allocate(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
-
-        self.initialize_symbol(null.into())?;
-        self.initialize_symbol(r#true.into())?;
-        self.initialize_symbol(self.r#false.into())?;
+        self.initialize_symbol(self.null().into())?;
+        self.initialize_symbol(self.boolean(true).into())?;
+        self.initialize_symbol(self.boolean(false).into())?;
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
@@ -946,7 +948,7 @@ mod tests {
     }
 
     fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
-        Vm::<_>::new(heap, FakeDevice::new())
+        Vm::<_>::new(heap, FakeDevice::new()).unwrap()
     }
 
     macro_rules! assert_snapshot {

@@ -2,7 +2,10 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-program counter: ():0
-stack: ():0
-00: n1 ():0
+program counter: moved:0
+stack: moved:0
+00: c0:0 moved:1
+02: c0:0 moved:2
+04: c0:0 c2:2
+06: n1 c0:0
 
