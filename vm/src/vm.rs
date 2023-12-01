@@ -345,6 +345,7 @@ impl<'a, T: Device> Vm<'a, T> {
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_raw(car, cdr)?;
 
+        debug_assert_eq!(cons.tag(), Type::default() as u8);
         assert_index_range!(self, cons);
 
         if let Some(cons) = car.to_cons() {
@@ -980,16 +981,21 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
 
+        assert_eq!(vm.cdr(vm.null()).to_cons().unwrap().tag(), Type::Null as u8);
+
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
+        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(2).into(), list).unwrap();
 
+        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
-        vm.cons(Number::new(3).into(), list).unwrap();
+        let list = vm.cons(Number::new(3).into(), list).unwrap();
 
+        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
         assert_snapshot!(vm);
     }
 
