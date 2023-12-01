@@ -1,7 +1,7 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
-pub const MOVED: Cons = Cons::dummy(0);
+pub const NEVER: Cons = Cons::dummy(0);
 
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
@@ -57,8 +57,8 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self == &MOVED {
-            write!(formatter, "moved")?;
+        if self == &NEVER {
+            write!(formatter, "!")?;
         } else {
             write!(formatter, "c{:x}", self.index())?;
         }

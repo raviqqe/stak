@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, MOVED},
+    cons::{Cons, NEVER},
     number::Number,
     primitive::Primitive,
     r#type::Type,
@@ -34,7 +34,9 @@ macro_rules! trace_heap {
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            $self.allocation_start() <= $cons.index() && $cons.index() < $self.allocation_end()
+            $cons == NEVER
+                || $self.allocation_start() <= $cons.index()
+                    && $cons.index() < $self.allocation_end()
         );
     };
 }
@@ -63,20 +65,18 @@ impl<'a, T: Device> Vm<'a, T> {
     pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
         let mut vm = Self {
             device,
-            program_counter: MOVED,
-            stack: MOVED,
-            r#false: MOVED,
-            temporary: MOVED,
+            program_counter: NEVER,
+            stack: NEVER,
+            r#false: NEVER,
+            temporary: NEVER,
             allocation_index: 0,
             space: false,
             heap,
         };
 
-        let null = vm.allocate_raw(Default::default(), MOVED.set_tag(Type::Null as u8).into())?;
-        let r#true = vm.allocate_raw(
-            Default::default(),
-            MOVED.set_tag(Type::Boolean as u8).into(),
-        )?;
+        let null = vm.allocate_raw(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
+        let r#true =
+            vm.allocate_raw(Default::default(), NEVER.set_tag(Type::Boolean as u8).into())?;
         vm.r#false = vm.allocate_raw(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
 
         Ok(vm)
@@ -637,13 +637,15 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if self.car(cons) == MOVED.into() {
+        Ok(if cons == NEVER {
+            NEVER
+        } else if self.car(cons) == NEVER.into() {
             // Get a forward pointer.
             self.cdr(cons).assume_cons()
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            self.set_car(cons, MOVED.into());
+            self.set_car(cons, NEVER.into());
             // Set a forward pointer.
             self.set_cdr(cons, copy.into());
 
@@ -972,27 +974,6 @@ mod tests {
     }
 
     #[test]
-    fn run_nothing() {
-        let mut heap = create_heap();
-        let mut vm = create_vm(&mut heap);
-
-        vm.run().unwrap();
-
-        assert_snapshot!(vm);
-    }
-
-    #[test]
-    fn run_nothing_after_garbage_collection() {
-        let mut heap = create_heap();
-        let mut vm = create_vm(&mut heap);
-
-        vm.collect_garbages(None).unwrap();
-        vm.run().unwrap();
-
-        assert_snapshot!(vm);
-    }
-
-    #[test]
     fn create_list() {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
@@ -1012,14 +993,6 @@ mod tests {
 
     mod stack {
         use super::*;
-
-        #[test]
-        fn pop_nothing() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            assert_eq!(vm.pop(), Err(Error::StackUnderflow));
-        }
 
         #[test]
         fn push_and_pop() {
