@@ -58,9 +58,9 @@
 
 ; Types
 
-(define null-type 0)
-(define boolean-type 1)
-(define pair-type 2)
+(define pair-type 0)
+(define null-type 1)
+(define boolean-type 2)
 (define procedure-type 3)
 (define symbol-type 4)
 (define string-type 5)
