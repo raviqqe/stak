@@ -1,6 +1,13 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
+/// An unreachable cons. In other words, it is a "null" pointer but not `null`
+/// in Scheme.
+///
+/// This value means:
+///
+/// - in car, its cons is moved on garbage collection.
+/// - in cdr, nothing.
 pub const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_MASK: u64 = 0b1111;
