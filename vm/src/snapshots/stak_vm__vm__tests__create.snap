@@ -2,6 +2,6 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-program counter: ():0
-stack: ():0
+program counter: moved:0
+stack: moved:0
 

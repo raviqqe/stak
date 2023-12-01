@@ -1,10 +1,7 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
-pub const FALSE: Cons = Cons::dummy(0);
-pub const TRUE: Cons = Cons::dummy(1);
-pub const NULL: Cons = Cons::dummy(2);
-pub const MOVED: Cons = Cons::dummy(3);
+pub const MOVED: Cons = Cons::dummy(0);
 
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
@@ -40,10 +37,6 @@ impl Cons {
     pub(crate) const fn to_raw(self) -> u64 {
         self.0
     }
-
-    pub(crate) const fn is_singleton(self) -> bool {
-        self.index() > MOVED.index()
-    }
 }
 
 impl PartialEq for Cons {
@@ -64,13 +57,7 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self == &FALSE {
-            write!(formatter, "#f")?;
-        } else if self == &TRUE {
-            write!(formatter, "#t")?;
-        } else if self == &NULL {
-            write!(formatter, "()")?;
-        } else if self == &MOVED {
+        if self == &MOVED {
             write!(formatter, "moved")?;
         } else {
             write!(formatter, "c{:x}", self.index())?;
@@ -113,15 +100,5 @@ mod tests {
 
         assert_eq!(cons.index(), 0);
         assert_eq!(cons.tag(), TAG_MASK as u8);
-    }
-
-    #[test]
-    fn is_singleton() {
-        assert!(!Cons::new(0).is_singleton());
-        assert!(!Cons::new(42).is_singleton());
-        assert!(FALSE.is_singleton());
-        assert!(TRUE.is_singleton());
-        assert!(NULL.is_singleton());
-        assert!(!MOVED.is_singleton());
     }
 }
