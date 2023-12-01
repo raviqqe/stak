@@ -413,9 +413,8 @@
 (define (instance? type)
   (lambda (x)
     (and
-      (not (singleton? x))
       (rib? x)
-      (eqv? (rib-tag x) type))))
+      (eq? (rib-tag x) type))))
 
 (define (eqv? x y)
   (if (and (char? x) (char? y))
@@ -490,11 +489,7 @@
 
 ;; Boolean
 
-; TODO Consider making boolean values singleton heap objects again.
-(define (boolean? x)
-  (or
-    (eq? x #f)
-    (eq? x #t)))
+(define boolean? (instance? boolean-type))
 
 (define (not x)
   (eq? x #f))
