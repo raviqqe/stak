@@ -10,7 +10,7 @@ brew install gauche
 bundler install
 
 if [ -z "$STAK_DEBUG" ]; then
-  flags=---release
+  flags=--release
 fi
 
 cargo build $flags
