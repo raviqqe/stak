@@ -95,7 +95,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cons::{FALSE, MOVED, NULL, TRUE};
+    use crate::cons::NEVER;
 
     #[test]
     fn convert_cons() {
@@ -123,22 +123,7 @@ mod tests {
     }
 
     #[test]
-    fn convert_false() {
-        assert_eq!(Value::from(FALSE).to_cons().unwrap(), FALSE);
-    }
-
-    #[test]
-    fn convert_true() {
-        assert_eq!(Value::from(TRUE).to_cons().unwrap(), TRUE);
-    }
-
-    #[test]
-    fn convert_null() {
-        assert_eq!(Value::from(NULL).to_cons().unwrap(), NULL);
-    }
-
-    #[test]
     fn convert_moved() {
-        assert_eq!(Value::from(MOVED).to_cons().unwrap(), MOVED);
+        assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);
     }
 }

@@ -59,11 +59,14 @@
 ; Types
 
 (define pair-type 0)
-(define procedure-type 1)
-(define string-type 3)
-(define char-type 4)
-(define vector-type 5)
-(define bytevector-type 6)
+(define null-type 1)
+(define boolean-type 2)
+(define procedure-type 3)
+(define symbol-type 4)
+(define string-type 5)
+(define char-type 6)
+(define vector-type 7)
+(define bytevector-type 8)
 
 ; Utility
 
