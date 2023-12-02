@@ -9,7 +9,7 @@ cd $(dirname $0)/..
 brew install gauche
 bundler install
 
-if [ -z "STAK_DEBUG" ]; then
+if [ -z "$STAK_DEBUG" ]; then
   flags=---release
 fi
 
