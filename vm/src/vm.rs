@@ -40,13 +40,10 @@ macro_rules! debug_assert {
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
-        #[cfg(feature = "debug")]
-        let cons = Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64);
-
-        assert_heap_cons!($self, cons);
-        debug_assert!(cons != $self.boolean(false));
-        debug_assert!(cons != $self.boolean(true));
-        debug_assert!(cons != $self.null());
+        assert_heap_cons!(
+            $self,
+            Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
+        );
     };
 }
 
