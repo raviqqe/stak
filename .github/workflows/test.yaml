@@ -64,6 +64,9 @@ jobs:
             host: guile
           - name: stak
             host: gosh
+            debug: true
+          - name: stak
+            host: gosh
             features: [gc_always]
             tags: not @long
           - name: chibi
@@ -75,6 +78,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
+      STAK_DEBUG: ${{ matrix.interpreter.debug || '' }}
       STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
       SCHEME_INTERPRETER: ${{ matrix.interpreter.name }}
     steps:
@@ -92,7 +96,15 @@ jobs:
       - run: brew install gauche
       - run: tools/integration_test.sh
   self_host_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        debug:
+          - true
+          - false
     runs-on: ubuntu-latest
+    env:
+      STAK_DEBUG: ${{ matrix.interpreter.debug || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
