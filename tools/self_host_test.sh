@@ -37,13 +37,13 @@ for stage in $(seq $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
 done
 
-for file in test/self_host/*.scm; do
+for file in bench/*/main.scm compile.scm; do
   echo '>>>' $file
 
   for stage in $(seq $stage_count); do
     out_file=$(artifact_path $stage out)
 
-    log run_stage$stage <$file >$out_file
+    cat prelude.scm $file | log run_stage$stage >$out_file
     stak-decode <$out_file >${out_file%.*}.txt
   done
 
