@@ -37,8 +37,8 @@ for stage in $(seq $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
 done
 
-for files in prelude.scm 'prelude.scm compile.scm'; do
-  echo '>>>' $file
+for files in bench/*/main.scm prelude.scm 'prelude.scm compile.scm'; do
+  echo '>>>' $files
 
   for stage in $(seq $stage_count); do
     out_file=$(artifact_path $stage out)

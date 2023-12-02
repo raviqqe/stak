@@ -873,14 +873,26 @@
 (define (string->symbol x)
   ; TODO Remove this hack.
   ; Currently, internal symbols do not have any string representation.
-  (if (equal? x "$$rib")
-    '$$rib
-    (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
-      (if pair
-        (car pair)
-        (let ((x (rib #f (string-append x) symbol-type)))
-          (set! symbol-table (cons x symbol-table))
-          x)))))
+  (cond
+    ((equal? x "$$false")
+      '$$false)
+
+    ((equal? x "$$true")
+      '$$true)
+
+    ((equal? x "$$null")
+      '$$null)
+
+    ((equal? x "$$rib")
+      '$$rib)
+
+    (else
+      (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
+        (if pair
+          (car pair)
+          (let ((x (rib #f (string-append x) symbol-type)))
+            (set! symbol-table (cons x symbol-table))
+            x))))))
 
 ;; Vector
 
