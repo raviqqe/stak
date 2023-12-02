@@ -413,7 +413,7 @@
     (and
       (not (singleton? x))
       (rib? x)
-      (eqv? (rib-tag x) type))))
+      (eq? (rib-tag x) type))))
 
 (define (eqv? x y)
   (if (and (char? x) (char? y))
