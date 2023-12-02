@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+debug = []
 gc_always = []
 no_inline = []
 std = []
