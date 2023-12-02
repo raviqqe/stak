@@ -40,7 +40,12 @@ macro_rules! debug_assert {
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
-        assert_heap_index!($self, Cons::new($index as u64));
+        let cons = Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64);
+
+        assert_heap_index!($self, cons);
+        debug_assert!(cons != $self.r#false());
+        debug_assert!(cons != $self.r#true());
+        debug_assert!(cons != $self.null());
     };
 }
 
