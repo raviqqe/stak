@@ -38,13 +38,13 @@ macro_rules! debug_assert {
     };
 }
 
-macro_rules! assert_heap {
+macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
-        assert_index_range!($self, Cons::new($index as u64));
+        assert_heap_index!($self, Cons::new($index as u64));
     };
 }
 
-macro_rules! assert_index_range {
+macro_rules! assert_heap_index {
     ($self:expr, $cons:expr) => {
         debug_assert!(
             $cons == NEVER
@@ -361,14 +361,14 @@ impl<'a, T: Device> Vm<'a, T> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
         debug_assert_eq!(cons.tag(), Type::default() as u8);
-        assert_index_range!(self, cons);
+        assert_heap_index!(self, cons);
 
         if let Some(cons) = car.to_cons() {
-            assert_index_range!(self, cons);
+            assert_heap_index!(self, cons);
         }
 
         if let Some(cons) = cdr.to_cons() {
-            assert_index_range!(self, cons);
+            assert_heap_index!(self, cons);
         }
 
         if self.is_out_of_memory() || cfg!(feature = "gc_always") {
@@ -387,7 +387,7 @@ impl<'a, T: Device> Vm<'a, T> {
         let cons = Cons::new(self.allocation_end() as u64);
         self.allocation_index += CONS_FIELD_COUNT;
 
-        assert_index_range!(self, cons);
+        assert_heap_index!(self, cons);
 
         self.set_car(cons, car);
         self.set_cdr(cons, cdr);
@@ -418,12 +418,12 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn heap(&self, index: usize) -> Value {
-        assert_heap!(self, index);
+        assert_heap_access!(self, index);
         self.heap[index]
     }
 
     fn heap_mut(&mut self, index: usize) -> &mut Value {
-        assert_heap!(self, index);
+        assert_heap_access!(self, index);
         &mut self.heap[index]
     }
 
