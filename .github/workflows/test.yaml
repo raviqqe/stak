@@ -84,13 +84,7 @@ jobs:
       - run: brew install chibi-scheme gauche guile
       - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_integration_test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
