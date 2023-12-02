@@ -12,7 +12,13 @@ compile() {
   fi
 }
 
-export PATH=$directory/target/release:$PATH
+profile=debug
+
+if [ -z "$STAK_DEBUG" ]; then
+  profile=release
+fi
+
+export PATH=$directory/target/$profile:$PATH
 
 cat $directory/prelude.scm "$@" | compile >main.out
 stak-decode <main.out >/dev/null
