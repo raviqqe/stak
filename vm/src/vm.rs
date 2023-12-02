@@ -40,22 +40,32 @@ macro_rules! debug_assert {
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
+        #[cfg(feature = "debug")]
         let cons = Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64);
 
-        assert_heap_index!($self, cons);
-        debug_assert!(cons != $self.r#false());
-        debug_assert!(cons != $self.r#true());
+        assert_heap_cons!($self, cons);
+        debug_assert!(cons != $self.boolean(false));
+        debug_assert!(cons != $self.boolean(true));
         debug_assert!(cons != $self.null());
     };
 }
 
-macro_rules! assert_heap_index {
+macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
         debug_assert!(
             $cons == NEVER
                 || $self.allocation_start() <= $cons.index()
                     && $cons.index() < $self.allocation_end()
         );
+    };
+}
+
+macro_rules! assert_heap_value {
+    ($self:expr, $cons:expr) => {
+        #[cfg(feature = "debug")]
+        if let Some(cons) = $cons.to_cons() {
+            assert_heap_cons!($self, cons);
+        }
     };
 }
 
@@ -366,15 +376,9 @@ impl<'a, T: Device> Vm<'a, T> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
         debug_assert_eq!(cons.tag(), Type::default() as u8);
-        assert_heap_index!(self, cons);
-
-        if let Some(cons) = car.to_cons() {
-            assert_heap_index!(self, cons);
-        }
-
-        if let Some(cons) = cdr.to_cons() {
-            assert_heap_index!(self, cons);
-        }
+        assert_heap_cons!(self, cons);
+        assert_heap_value!(self, car);
+        assert_heap_value!(self, cdr);
 
         if self.is_out_of_memory() || cfg!(feature = "gc_always") {
             self.collect_garbages(Some(&mut cons))?;
@@ -392,7 +396,7 @@ impl<'a, T: Device> Vm<'a, T> {
         let cons = Cons::new(self.allocation_end() as u64);
         self.allocation_index += CONS_FIELD_COUNT;
 
-        assert_heap_index!(self, cons);
+        assert_heap_cons!(self, cons);
 
         self.set_car(cons, car);
         self.set_cdr(cons, cdr);
