@@ -80,12 +80,14 @@ impl<'a, T: Device> Vm<'a, T> {
             heap,
         };
 
-        let null = vm.allocate_raw(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
-        let r#true = vm.allocate_raw(
+        let null =
+            vm.allocate_unchecked(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
+        let r#true = vm.allocate_unchecked(
             Default::default(),
             NEVER.set_tag(Type::Boolean as u8).into(),
         )?;
-        vm.r#false = vm.allocate_raw(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
+        vm.r#false =
+            vm.allocate_unchecked(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
 
         Ok(vm)
     }
@@ -349,7 +351,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
-        let mut cons = self.allocate_raw(car, cdr)?;
+        let mut cons = self.allocate_unchecked(car, cdr)?;
 
         debug_assert_eq!(cons.tag(), Type::default() as u8);
         assert_index_range!(self, cons);
@@ -370,7 +372,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn allocate_raw(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+    fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
         }
@@ -426,6 +428,14 @@ impl<'a, T: Device> Vm<'a, T> {
         self.heap(cons.index() + 1)
     }
 
+    fn unchecked_car(&self, cons: Cons) -> Value {
+        self.heap[cons.index()]
+    }
+
+    fn unchecked_cdr(&self, cons: Cons) -> Value {
+        self.heap[cons.index() + 1]
+    }
+
     fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
@@ -440,6 +450,14 @@ impl<'a, T: Device> Vm<'a, T> {
 
     fn set_cdr(&mut self, cons: Cons, value: Value) {
         *self.heap_mut(cons.index() + 1) = value;
+    }
+
+    fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index()] = value
+    }
+
+    fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
+        self.heap[cons.index() + 1] = value;
     }
 
     fn set_car_value(&mut self, cons: Value, value: Value) {
@@ -658,15 +676,16 @@ impl<'a, T: Device> Vm<'a, T> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if cons == NEVER {
             NEVER
-        } else if self.car(cons) == NEVER.into() {
+        } else if self.unchecked_car(cons) == NEVER.into() {
             // Get a forward pointer.
-            self.cdr(cons).assume_cons()
+            self.unchecked_cdr(cons).assume_cons()
         } else {
-            let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
+            let copy =
+                self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
-            self.set_car(cons, NEVER.into());
+            self.set_unchecked_car(cons, NEVER.into());
             // Set a forward pointer.
-            self.set_cdr(cons, copy.into());
+            self.set_unchecked_cdr(cons, copy.into());
 
             copy
         }
