@@ -679,7 +679,7 @@ impl<'a, T: Device> Vm<'a, T> {
             .into();
         self.stack = self.allocate(continuation, self.null().set_tag(FRAME_TAG).into())?;
 
-        self.temporary = self.null();
+        self.temporary = NEVER;
 
         Ok(())
     }
@@ -800,10 +800,8 @@ impl<'a, T: Device> Vm<'a, T> {
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
                     )?;
-                    let procedure = self.allocate(
-                        code.into(),
-                        self.null().set_tag(Type::Procedure as u8).into(),
-                    )?;
+                    let procedure =
+                        self.allocate(code.into(), NEVER.set_tag(Type::Procedure as u8).into())?;
 
                     self.program_counter = self.pop()?.assume_cons();
 

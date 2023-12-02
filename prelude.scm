@@ -598,6 +598,7 @@
 (define pair? (instance? pair-type))
 
 ; TODO Consider making a null value a singleton heap object again.
+; We might need to allow tags on `car`s.
 (define (null? x)
   (eq? x '()))
 
