@@ -31,6 +31,13 @@ macro_rules! trace_heap {
     };
 }
 
+macro_rules! debug_assert {
+    ($condition:expr) => {
+        #[cfg(feature = "debug")]
+        assert!($condition);
+    };
+}
+
 macro_rules! assert_heap {
     ($self:expr, $index:expr) => {
         assert_index_range!($self, Cons::new($index as u64));
