@@ -38,6 +38,13 @@ macro_rules! debug_assert {
     };
 }
 
+macro_rules! debug_assert_eq {
+    ($lhs:expr, $rhs:expr) => {
+        #[cfg(feature = "debug")]
+        assert_eq!($lhs, $rhs);
+    };
+}
+
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
         assert_heap_cons!(
