@@ -9,7 +9,9 @@ cd $(dirname $0)/..
 brew install gauche
 bundler install
 
-flags=${STAK_DEBUG:---release}
+if [ -z "STAK_DEBUG" ]; then
+  flags=---release
+fi
 
 cargo build $flags
 cargo build $flags --bin stak-interpret $(feature_flags)
