@@ -365,13 +365,15 @@
 ; Type IDs
 
 (define pair-type 0)
-(define procedure-type 1)
-(define symbol-type 2)
-(define string-type 3)
-(define char-type 4)
-(define vector-type 5)
-(define bytevector-type 6)
-(define record-type 7)
+(define null-type 1)
+(define boolean-type 2)
+(define procedure-type 3)
+(define symbol-type 4)
+(define string-type 5)
+(define char-type 6)
+(define vector-type 7)
+(define bytevector-type 8)
+(define record-type 9)
 
 ; Primitives
 
@@ -411,7 +413,6 @@
 (define (instance? type)
   (lambda (x)
     (and
-      (not (singleton? x))
       (rib? x)
       (eq? (rib-tag x) type))))
 
@@ -488,11 +489,7 @@
 
 ;; Boolean
 
-; TODO Consider making boolean values singleton heap objects again.
-(define (boolean? x)
-  (or
-    (eq? x #f)
-    (eq? x #t)))
+(define boolean? (instance? boolean-type))
 
 (define (not x)
   (eq? x #f))
@@ -601,6 +598,7 @@
 (define pair? (instance? pair-type))
 
 ; TODO Consider making a null value a singleton heap object again.
+; We might need to allow tags on `car`s.
 (define (null? x)
   (eq? x '()))
 

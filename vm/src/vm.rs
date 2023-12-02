@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, FALSE, MOVED, NULL, TRUE},
+    cons::{Cons, NEVER},
     number::Number,
     primitive::Primitive,
     r#type::Type,
@@ -34,7 +34,7 @@ macro_rules! trace_heap {
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
-            $cons.is_singleton()
+            $cons == NEVER
                 || $self.allocation_start() <= $cons.index()
                     && $cons.index() < $self.allocation_end()
         );
@@ -52,6 +52,7 @@ pub struct Vm<'a, T: Device> {
     device: T,
     program_counter: Cons,
     stack: Cons,
+    r#false: Cons,
     temporary: Cons,
     allocation_index: usize,
     space: bool,
@@ -61,21 +62,31 @@ pub struct Vm<'a, T: Device> {
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
 impl<'a, T: Device> Vm<'a, T> {
-    pub fn new(heap: &'a mut [Value], device: T) -> Self {
-        Self {
+    pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
+        let mut vm = Self {
             device,
-            program_counter: NULL,
-            stack: NULL,
-            temporary: NULL,
+            program_counter: NEVER,
+            stack: NEVER,
+            r#false: NEVER,
+            temporary: NEVER,
             allocation_index: 0,
             space: false,
             heap,
-        }
+        };
+
+        let null = vm.allocate_raw(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
+        let r#true = vm.allocate_raw(
+            Default::default(),
+            NEVER.set_tag(Type::Boolean as u8).into(),
+        )?;
+        vm.r#false = vm.allocate_raw(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
+
+        Ok(vm)
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn run(&mut self) -> Result<(), Error> {
-        while self.program_counter != NULL {
+        while self.program_counter != self.null() {
             let instruction = self.cdr(self.program_counter).assume_cons();
 
             trace!("instruction", instruction.tag());
@@ -98,7 +109,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn call(&mut self, instruction: Cons) -> Result<(), Error> {
-        let r#return = instruction == NULL;
+        let r#return = instruction == self.null();
         let procedure = self.procedure();
 
         trace!("procedure", procedure);
@@ -123,7 +134,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 let mut list = if arguments.variadic {
                     self.pop()?.assume_cons()
                 } else {
-                    NULL
+                    self.null()
                 };
 
                 for _ in 0..arguments.count.to_i64() {
@@ -152,7 +163,7 @@ impl<'a, T: Device> Vm<'a, T> {
                     .assume_cons();
 
                 for _ in 0..parameters.count.to_i64() {
-                    if self.temporary == NULL {
+                    if self.temporary == self.null() {
                         return Err(Error::ArgumentCount);
                     }
 
@@ -162,7 +173,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
                 if parameters.variadic {
                     self.push(self.temporary.into())?;
-                } else if self.temporary != NULL {
+                } else if self.temporary != self.null() {
                     return Err(Error::ArgumentCount);
                 }
             }
@@ -216,7 +227,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn r#if(&mut self) -> Result<(), Error> {
-        self.program_counter = (if self.pop()? == FALSE.into() {
+        self.program_counter = (if self.pop()? == self.boolean(false).into() {
             self.cdr(self.program_counter)
         } else {
             self.operand()
@@ -239,7 +250,7 @@ impl<'a, T: Device> Vm<'a, T> {
     fn advance_program_counter(&mut self) {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
-        if self.program_counter == NULL {
+        if self.program_counter == self.null() {
             let continuation = self.continuation();
 
             self.program_counter = self.car(continuation).assume_cons();
@@ -313,7 +324,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn pop(&mut self) -> Result<Value, Error> {
-        if self.stack == NULL {
+        if self.stack == self.null() {
             return Err(Error::StackUnderflow);
         }
 
@@ -334,6 +345,7 @@ impl<'a, T: Device> Vm<'a, T> {
     fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_raw(car, cdr)?;
 
+        debug_assert_eq!(cons.tag(), Type::default() as u8);
         assert_index_range!(self, cons);
 
         if let Some(cons) = car.to_cons() {
@@ -422,8 +434,16 @@ impl<'a, T: Device> Vm<'a, T> {
         self.set_cdr(cons.assume_cons(), value);
     }
 
-    fn boolean(&self, value: bool) -> Value {
-        if value { TRUE } else { FALSE }.into()
+    fn boolean(&self, value: bool) -> Cons {
+        if value {
+            self.cdr(self.r#false).assume_cons()
+        } else {
+            self.r#false
+        }
+    }
+
+    fn null(&self) -> Cons {
+        self.car(self.r#false).assume_cons()
     }
 
     // Primitive operations
@@ -465,7 +485,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 self.set_top(cons.into());
             }
             Primitive::IS_CONS => {
-                self.set_top(self.boolean(self.top().is_cons()));
+                self.set_top(self.boolean(self.top().is_cons()).into());
             }
             Primitive::CAR => {
                 self.set_top(self.car_value(self.top()));
@@ -516,7 +536,7 @@ impl<'a, T: Device> Vm<'a, T> {
             }
             Primitive::EQUAL => {
                 let [x, y] = self.pop_arguments::<2>()?;
-                self.set_top(self.boolean(x == y));
+                self.set_top(self.boolean(x == y).into());
             }
             Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
             Primitive::ADD => self.operate_binary(Add::add)?,
@@ -529,7 +549,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 self.push(if let Some(byte) = byte {
                     Number::new(byte as i64).into()
                 } else {
-                    FALSE.into()
+                    self.boolean(false).into()
                 })?;
             }
             Primitive::WRITE => self
@@ -558,7 +578,7 @@ impl<'a, T: Device> Vm<'a, T> {
     fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
         let [x, y] = self.pop_number_arguments::<2>()?;
 
-        self.set_top(self.boolean(operate(x.to_i64(), y.to_i64())));
+        self.set_top(self.boolean(operate(x.to_i64(), y.to_i64())).into());
 
         Ok(())
     }
@@ -594,6 +614,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
+        self.r#false = self.copy_cons(self.r#false)?;
         self.temporary = self.copy_cons(self.temporary)?;
 
         if let Some(cons) = cons {
@@ -619,15 +640,15 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons.is_singleton() {
-            cons
-        } else if self.car(cons) == MOVED.into() {
+        Ok(if cons == NEVER {
+            NEVER
+        } else if self.car(cons) == NEVER.into() {
             // Get a forward pointer.
             self.cdr(cons).assume_cons()
         } else {
             let copy = self.allocate_raw(self.car(cons), self.cdr(cons))?;
 
-            self.set_car(cons, MOVED.into());
+            self.set_car(cons, NEVER.into());
             // Set a forward pointer.
             self.set_cdr(cons, copy.into());
 
@@ -642,8 +663,8 @@ impl<'a, T: Device> Vm<'a, T> {
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
 
-        self.program_counter = NULL;
-        self.stack = NULL;
+        self.program_counter = self.null();
+        self.stack = self.null();
 
         trace!("decode", "start");
 
@@ -653,10 +674,12 @@ impl<'a, T: Device> Vm<'a, T> {
         trace!("decode", "end");
 
         // Initialize an implicit top-level frame.
-        let continuation = self.allocate(NULL.into(), NULL.into())?.into();
-        self.stack = self.allocate(continuation, NULL.set_tag(FRAME_TAG).into())?;
+        let continuation = self
+            .allocate(self.null().into(), self.null().into())?
+            .into();
+        self.stack = self.allocate(continuation, self.null().set_tag(FRAME_TAG).into())?;
 
-        self.temporary = NULL;
+        self.temporary = NEVER;
 
         Ok(())
     }
@@ -664,12 +687,12 @@ impl<'a, T: Device> Vm<'a, T> {
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            let symbol = self.create_symbol(NULL, 0)?;
+            let symbol = self.create_symbol(self.null(), 0)?;
             self.push(symbol.into())?;
         }
 
         let mut length = 0;
-        let mut name = NULL;
+        let mut name = self.null();
         let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
         if byte != b';' {
@@ -680,7 +703,7 @@ impl<'a, T: Device> Vm<'a, T> {
                         self.push(symbol.into())?;
 
                         length = 0;
-                        name = NULL;
+                        name = self.null();
 
                         if character == b';' {
                             break;
@@ -696,12 +719,15 @@ impl<'a, T: Device> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(Number::new(Primitive::Rib as i64).into(), FALSE.into())?;
+        let rib = self.allocate(
+            Number::new(Primitive::Rib as i64).into(),
+            self.boolean(false).into(),
+        )?;
 
         self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(NULL.into())?;
-        self.initialize_symbol(TRUE.into())?;
-        self.initialize_symbol(FALSE.into())?;
+        self.initialize_symbol(self.null().into())?;
+        self.initialize_symbol(self.boolean(true).into())?;
+        self.initialize_symbol(self.boolean(false).into())?;
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
@@ -712,7 +738,7 @@ impl<'a, T: Device> Vm<'a, T> {
 
         // Allow access to a symbol table during decoding.
         self.temporary = self.stack;
-        self.stack = NULL;
+        self.stack = self.null();
 
         Ok(())
     }
@@ -723,11 +749,17 @@ impl<'a, T: Device> Vm<'a, T> {
             name.set_tag(Type::String as u8).into(),
         )?;
 
-        self.allocate(FALSE.into(), string.set_tag(Type::Symbol as u8).into())
+        self.allocate(
+            self.boolean(false).into(),
+            string.set_tag(Type::Symbol as u8).into(),
+        )
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), Error> {
-        let symbol = self.allocate(value, FALSE.set_tag(Type::Symbol as u8).into())?;
+        let symbol = self.allocate(
+            value,
+            self.boolean(false).set_tag(Type::Symbol as u8).into(),
+        )?;
 
         self.push(symbol.into())
     }
@@ -769,7 +801,7 @@ impl<'a, T: Device> Vm<'a, T> {
                         self.program_counter.into(),
                     )?;
                     let procedure =
-                        self.allocate(code.into(), NULL.set_tag(Type::Procedure as u8).into())?;
+                        self.allocate(code.into(), NEVER.set_tag(Type::Procedure as u8).into())?;
 
                     self.program_counter = self.pop()?.assume_cons();
 
@@ -803,7 +835,12 @@ impl<'a, T: Device> Vm<'a, T> {
     ) -> Result<Cons, Error> {
         self.cons(
             operand,
-            (if r#return { NULL } else { self.program_counter }).set_tag(instruction),
+            (if r#return {
+                self.null()
+            } else {
+                self.program_counter
+            })
+            .set_tag(instruction),
         )
     }
 
@@ -914,7 +951,7 @@ mod tests {
     }
 
     fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
-        Vm::<_>::new(heap, FakeDevice::new())
+        Vm::<_>::new(heap, FakeDevice::new()).unwrap()
     }
 
     macro_rules! assert_snapshot {
@@ -938,54 +975,60 @@ mod tests {
     }
 
     #[test]
-    fn run_nothing() {
-        let mut heap = create_heap();
-        let mut vm = create_vm(&mut heap);
-
-        vm.run().unwrap();
-
-        assert_snapshot!(vm);
-    }
-
-    #[test]
-    fn run_nothing_after_garbage_collection() {
-        let mut heap = create_heap();
-        let mut vm = create_vm(&mut heap);
-
-        vm.collect_garbages(None).unwrap();
-        vm.run().unwrap();
-
-        assert_snapshot!(vm);
-    }
-
-    #[test]
     fn create_list() {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
 
-        let list = vm.cons(Number::new(1).into(), NULL).unwrap();
+        assert_eq!(vm.cdr(vm.null()).to_cons().unwrap().tag(), Type::Null as u8);
 
+        let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
+
+        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(2).into(), list).unwrap();
 
+        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
-        vm.cons(Number::new(3).into(), list).unwrap();
+        let list = vm.cons(Number::new(3).into(), list).unwrap();
 
+        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
         assert_snapshot!(vm);
+    }
+
+    #[test]
+    fn convert_false() {
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
+
+        assert_eq!(
+            Value::from(vm.boolean(false)).to_cons().unwrap(),
+            vm.boolean(false)
+        );
+    }
+
+    #[test]
+    fn convert_true() {
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
+
+        assert_eq!(
+            Value::from(vm.boolean(true)).to_cons().unwrap(),
+            vm.boolean(true)
+        );
+    }
+
+    #[test]
+    fn convert_null() {
+        let mut heap = create_heap();
+        let vm = create_vm(&mut heap);
+
+        assert_eq!(Value::from(vm.null()).to_cons().unwrap(), vm.null());
     }
 
     mod stack {
         use super::*;
-
-        #[test]
-        fn pop_nothing() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            assert_eq!(vm.pop(), Err(Error::StackUnderflow));
-        }
 
         #[test]
         fn push_and_pop() {

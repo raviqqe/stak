@@ -2,8 +2,11 @@
 source: vm/src/vm.rs
 expression: vm
 ---
-program counter: ():0
+program counter: !:0
 stack: c100:0
-100: n2 c102:0 <- stack
-102: n1 ():0
+100: n2 c104:0 <- stack
+102: c106:0 c108:2
+104: n1 !:0
+106: c106:0 !:1
+108: c106:0 !:2
 
