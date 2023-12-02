@@ -31,6 +31,12 @@ macro_rules! trace_heap {
     };
 }
 
+macro_rules! assert_heap {
+    ($self:expr, $index:expr) => {
+        assert_index_range!($self, Cons::new($index as u64));
+    };
+}
+
 macro_rules! assert_index_range {
     ($self:expr, $cons:expr) => {
         debug_assert!(
@@ -402,12 +408,22 @@ impl<'a, T: Device> Vm<'a, T> {
         self.allocation_start() + self.allocation_index
     }
 
+    fn heap(&self, index: usize) -> Value {
+        assert_heap!(self, index);
+        self.heap[index]
+    }
+
+    fn heap_mut(&mut self, index: usize) -> &mut Value {
+        assert_heap!(self, index);
+        &mut self.heap[index]
+    }
+
     fn car(&self, cons: Cons) -> Value {
-        self.heap[cons.index()]
+        self.heap(cons.index())
     }
 
     fn cdr(&self, cons: Cons) -> Value {
-        self.heap[cons.index() + 1]
+        self.heap(cons.index() + 1)
     }
 
     fn car_value(&self, cons: Value) -> Value {
@@ -419,11 +435,11 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn set_car(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index()] = value
+        *self.heap_mut(cons.index()) = value
     }
 
     fn set_cdr(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index() + 1] = value;
+        *self.heap_mut(cons.index() + 1) = value;
     }
 
     fn set_car_value(&mut self, cons: Value, value: Value) {
@@ -624,7 +640,7 @@ impl<'a, T: Device> Vm<'a, T> {
         let mut index = self.allocation_start();
 
         while index < self.allocation_end() {
-            self.heap[index] = self.copy_value(self.heap[index])?;
+            *self.heap_mut(index) = self.copy_value(self.heap(index))?;
             index += 1;
         }
 
