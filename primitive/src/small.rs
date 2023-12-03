@@ -54,7 +54,10 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(values)
     }
 
-    fn tag(vm: &mut Vm<Self>, field: impl Fn(&Vm<Self>, Value) -> Value) -> Result<(), Error> {
+    fn tag<'a>(
+        vm: &mut Vm<'a, Self>,
+        field: impl Fn(&Vm<'a, Self>, Value) -> Value,
+    ) -> Result<(), Error> {
         vm.set_top(
             Number::new(
                 field(vm, vm.top())
@@ -68,10 +71,10 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(())
     }
 
-    fn set_tag(
-        vm: &mut Vm<Self>,
-        field: impl Fn(&Vm<Self>, Value) -> Value,
-        set_field: impl Fn(&mut Vm<Self>, Value, Value),
+    fn set_tag<'a>(
+        vm: &mut Vm<'a, Self>,
+        field: fn(&Vm<'a, Self>, Value) -> Value,
+        set_field: fn(&mut Vm<'a, Self>, Value, Value),
     ) -> Result<(), Error> {
         let [x, tag] = Self::pop_arguments::<2>(vm)?;
         set_field(
