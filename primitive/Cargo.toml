@@ -1,0 +1,13 @@
+[package]
+name = "stak-primitive"
+description = "Stak primitives"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+device = { package = "stak-device", version = "0.1", path = "../device" }
+vm = { package = "stak-vm", version = "0.2", path = "../vm" }

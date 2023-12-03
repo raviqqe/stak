@@ -1,6 +1,7 @@
 #[doc(hidden)]
 pub mod __private {
     pub extern crate device;
+    pub extern crate primitive;
     pub extern crate std;
     pub extern crate vm;
 }
@@ -10,8 +11,9 @@ macro_rules! main {
     ($path:expr) => {
         use $crate::__private::{
             device::StdioDevice,
+            primitive::SmallPrimitiveSet,
             std::{env, error::Error, process::exit},
-            vm::{SmallPrimitiveSet, Vm},
+            vm::Vm,
         };
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;

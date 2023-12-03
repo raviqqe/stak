@@ -1,11 +1,12 @@
 use device::StdioDevice;
+use primitive::SmallPrimitiveSet;
 use std::{
     env::{self, args},
     error::Error,
     fs::read,
     process::exit,
 };
-use vm::{SmallPrimitiveSet, Vm};
+use vm::Vm;
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 

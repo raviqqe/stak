@@ -1,7 +1,6 @@
 use crate::{
     cons::{Cons, NEVER},
     number::Number,
-    primitive::Primitive,
     primitive_set::PrimitiveSet,
     r#type::Type,
     value::{TypedValue, Value},
@@ -617,10 +616,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(
-            Number::new(Primitive::Rib as i64).into(),
-            self.boolean(false).into(),
-        )?;
+        let rib = self.allocate(Number::default().into(), self.boolean(false).into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
@@ -846,20 +842,26 @@ impl<'a, T: PrimitiveSet> Display for Vm<'a, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{symbol_index, FixedBufferDevice, SmallPrimitiveSet};
+    use crate::symbol_index;
     use alloc::vec;
     use code::{encode, Instruction, Operand, Program};
 
     const HEAP_SIZE: usize = 1 << 9;
 
-    type FakeDevice = FixedBufferDevice<16, 16, 16>;
-
     fn create_heap() -> [Value; HEAP_SIZE] {
         [Default::default(); HEAP_SIZE]
     }
 
-    fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FakeDevice>> {
-        Vm::<_>::new(heap, SmallPrimitiveSet::new(FakeDevice::new())).unwrap()
+    struct FakePrimitiveSet;
+
+    impl PrimitiveSet for FakePrimitiveSet {
+        fn operate(_vm: &mut Vm<Self>, _operation: u8) -> Result<(), Error> {
+            return Err(Error::IllegalPrimitive);
+        }
+    }
+
+    fn create_vm(heap: &mut [Value]) -> Vm<FakePrimitiveSet> {
+        Vm::new(heap, FakePrimitiveSet).unwrap()
     }
 
     macro_rules! assert_snapshot {
