@@ -180,6 +180,23 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .map_err(|_| Error::WriteError)?
             }
             Primitive::HALT => return Err(Error::Halt),
+            Primitive::TAG2 => {
+                let [value, tag] = Self::pop_arguments::<2>(vm)?;
+
+                vm.set_top(
+                    if let Some(cons) = vm.top().to_cons() {
+                        Number::new(cons.tag() as i64)
+                    } else {
+                        Default::default()
+                    }
+                    .into(),
+                );
+            }
+            Primitive::SET_TAG2 => {
+                let [value, tag] = Self::pop_arguments::<2>(vm)?;
+
+                vm.set_top(Self::set_tag(value, tag));
+            }
             _ => return Err(Error::Illegal),
         }
 
