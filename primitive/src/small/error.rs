@@ -10,7 +10,7 @@ pub enum SmallPrimitiveError {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl std::error::Error for SmallPrimitiveError {}
 
 impl Display for SmallPrimitiveError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
@@ -24,8 +24,8 @@ impl Display for SmallPrimitiveError {
     }
 }
 
-impl Into<vm::Error> for SmallPrimitiveError {
-    fn into(self) -> vm::Error {
-        vm::Error::Primitive(self)
+impl From<SmallPrimitiveError> for vm::Error<SmallPrimitiveError> {
+    fn from(error: SmallPrimitiveError) -> Self {
+        vm::Error::Primitive(error)
     }
 }

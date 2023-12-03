@@ -6,6 +6,8 @@ use core::ops::{Add, Div, Mul, Sub};
 use device::Device;
 use vm::{Error, Number, PrimitiveSet, Type, Value, Vm};
 
+type Result<T, S> = core::result::Result<T, Error<<S as PrimitiveSet>::Error>>;
+
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<T: Device> {
     device: T,
@@ -16,7 +18,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Self { device }
     }
 
-    fn operate_binary(vm: &mut Vm<Self>, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
+    fn operate_binary(vm: &mut Vm<Self>, operate: fn(i64, i64) -> i64) -> Result<(), Self> {
         let [x, y] = Self::pop_number_arguments::<2>(vm)?;
 
         vm.set_top(Number::new(operate(x.to_i64(), y.to_i64())).into());
@@ -24,7 +26,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(())
     }
 
-    fn operate_comparison(vm: &mut Vm<Self>, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
+    fn operate_comparison(vm: &mut Vm<Self>, operate: fn(i64, i64) -> bool) -> Result<(), Self> {
         let [x, y] = Self::pop_number_arguments::<2>(vm)?;
 
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
@@ -32,7 +34,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(())
     }
 
-    fn pop_number_arguments<const M: usize>(vm: &mut Vm<Self>) -> Result<[Number; M], Error> {
+    fn pop_number_arguments<const M: usize>(vm: &mut Vm<Self>) -> Result<[Number; M], Self> {
         let mut numbers = [Default::default(); M];
 
         for (index, value) in Self::pop_arguments::<M>(vm)?.into_iter().enumerate() {
@@ -42,7 +44,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(numbers)
     }
 
-    fn pop_arguments<const M: usize>(vm: &mut Vm<Self>) -> Result<[Value; M], Error> {
+    fn pop_arguments<const M: usize>(vm: &mut Vm<Self>) -> Result<[Value; M], Self> {
         let mut values = [Default::default(); M];
 
         for index in 0..M - 1 {
@@ -56,7 +58,9 @@ impl<T: Device> SmallPrimitiveSet<T> {
 }
 
 impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
+    type Error = SmallPrimitiveError;
+
+    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Self> {
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = Self::pop_arguments::<3>(vm)?;
@@ -153,7 +157,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .primitive_set_mut()
                     .device
                     .read()
-                    .map_err(|_| Error::ReadInput)?;
+                    .map_err(|_| SmallPrimitiveError::ReadInput)?;
 
                 vm.push(if let Some(byte) = byte {
                     Number::new(byte as i64).into()
@@ -167,7 +171,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 vm.primitive_set_mut()
                     .device
                     .write(byte)
-                    .map_err(|_| Error::WriteOutput)?
+                    .map_err(|_| SmallPrimitiveError::WriteOutput)?
             }
             Primitive::WRITE_ERROR => {
                 let byte = vm.top().assume_number().to_i64() as u8;
@@ -175,7 +179,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 vm.primitive_set_mut()
                     .device
                     .write_error(byte)
-                    .map_err(|_| Error::WriteError)?
+                    .map_err(|_| SmallPrimitiveError::WriteError)?
             }
             Primitive::HALT => return Err(SmallPrimitiveError::Halt.into()),
             _ => return Err(SmallPrimitiveError::Illegal.into()),
