@@ -11,6 +11,10 @@ pub struct DefaultOperationSet<T: Device> {
 }
 
 impl<T: Device> DefaultOperationSet<T> {
+    pub fn new(device: T) -> Self {
+        Self { device }
+    }
+
     fn operate_binary(vm: &mut Vm<Self>, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = Self::pop_number_arguments::<2>(vm)?;
 
