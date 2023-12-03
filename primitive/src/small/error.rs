@@ -5,6 +5,7 @@ pub enum SmallPrimitiveError {
     Halt,
     Illegal,
     ReadInput,
+    Vm(vm::Error),
     WriteError,
     WriteOutput,
 }
@@ -18,14 +19,15 @@ impl Display for SmallPrimitiveError {
             Self::Halt => write!(formatter, "halt"),
             Self::Illegal => write!(formatter, "illegal primitive"),
             Self::ReadInput => write!(formatter, "failed to read input"),
+            Self::Vm(error) => write!(formatter, "{}", error),
             Self::WriteError => write!(formatter, "failed to write error"),
             Self::WriteOutput => write!(formatter, "failed to write output"),
         }
     }
 }
 
-impl From<SmallPrimitiveError> for vm::Error<SmallPrimitiveError> {
-    fn from(error: SmallPrimitiveError) -> Self {
-        vm::Error::Primitive(error)
+impl From<vm::Error> for SmallPrimitiveError {
+    fn from(error: vm::Error) -> SmallPrimitiveError {
+        SmallPrimitiveError::Vm(error)
     }
 }

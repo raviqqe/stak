@@ -70,8 +70,6 @@ macro_rules! assert_heap_value {
     };
 }
 
-type Result<T, P> = core::result::Result<T, Error<<P as PrimitiveSet>::Error>>;
-
 struct ArgumentInfo {
     // A count does not include a variadic argument.
     count: Number,
@@ -93,7 +91,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
 impl<'a, T: PrimitiveSet> Vm<'a, T> {
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, T> {
+    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, T::Error> {
         let mut vm = Self {
             primitive_set,
             program_counter: NEVER,
@@ -118,7 +116,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    pub fn run(&mut self) -> Result<(), T> {
+    pub fn run(&mut self) -> Result<(), T::Error> {
         while self.program_counter != self.null() {
             let instruction = self.cdr(self.program_counter).assume_cons();
 
@@ -131,7 +129,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code::Instruction::CONSTANT => self.constant()?,
                 code::Instruction::IF => self.r#if()?,
                 code::Instruction::NOP => self.advance_program_counter(),
-                _ => return Err(Error::IllegalInstruction),
+                _ => return Err(Error::IllegalInstruction.into()),
             }
 
             trace_heap!(self);
@@ -141,7 +139,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn call(&mut self, instruction: Cons) -> Result<(), T> {
+    fn call(&mut self, instruction: Cons) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
@@ -149,7 +147,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("return", r#return);
 
         if self.environment(procedure).tag() != Type::Procedure as u8 {
-            return Err(Error::ProcedureExpected);
+            return Err(Error::ProcedureExpected.into());
         }
 
         match self.code(procedure).to_typed() {
@@ -197,7 +195,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 for _ in 0..parameters.count.to_i64() {
                     if self.temporary == self.null() {
-                        return Err(Error::ArgumentCount);
+                        return Err(Error::ArgumentCount.into());
                     }
 
                     self.push(self.car(self.temporary))?;
@@ -207,7 +205,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 if parameters.variadic {
                     self.push(self.temporary.into())?;
                 } else if self.temporary != self.null() {
-                    return Err(Error::ArgumentCount);
+                    return Err(Error::ArgumentCount.into());
                 }
             }
             TypedValue::Number(primitive) => {
@@ -220,7 +218,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn set(&mut self) -> Result<(), T> {
+    fn set(&mut self) -> Result<(), T::Error> {
         let operand = self.operand_variable();
         let value = self.pop()?;
 
@@ -231,7 +229,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn get(&mut self) -> Result<(), T> {
+    fn get(&mut self) -> Result<(), T::Error> {
         let operand = self.operand_variable();
 
         trace!("operand", operand);
@@ -247,7 +245,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn constant(&mut self) -> Result<(), T> {
+    fn constant(&mut self) -> Result<(), T::Error> {
         let constant = self.operand();
 
         trace!("constant", constant);
@@ -259,7 +257,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn r#if(&mut self) -> Result<(), T> {
+    fn r#if(&mut self) -> Result<(), T::Error> {
         self.program_counter = (if self.pop()? == self.boolean(false).into() {
             self.cdr(self.program_counter)
         } else {
@@ -346,7 +344,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         list
     }
 
-    fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T> {
+    fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T::Error> {
         self.allocate(car, cdr.into())
     }
 
@@ -354,15 +352,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.stack
     }
 
-    pub fn push(&mut self, value: Value) -> Result<(), T> {
+    pub fn push(&mut self, value: Value) -> Result<(), T::Error> {
         self.stack = self.cons(value, self.stack)?;
 
         Ok(())
     }
 
-    pub fn pop(&mut self) -> Result<Value, T> {
+    pub fn pop(&mut self) -> Result<Value, T::Error> {
         if self.stack == self.null() {
-            return Err(Error::StackUnderflow);
+            return Err(Error::StackUnderflow.into());
         }
 
         let value = self.car(self.stack);
@@ -379,7 +377,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T> {
+    pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
         debug_assert_eq!(cons.tag(), Type::default() as u8);
@@ -395,9 +393,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, T> {
+    fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         if self.is_out_of_memory() {
-            return Err(Error::OutOfMemory);
+            return Err(Error::OutOfMemory.into());
         }
 
         let cons = Cons::new(self.allocation_end() as u64);
@@ -506,7 +504,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // Garbage collection
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), T> {
+    fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), T::Error> {
         self.allocation_index = 0;
         self.space = !self.space;
 
@@ -529,7 +527,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn copy_value(&mut self, value: Value) -> Result<Value, T> {
+    fn copy_value(&mut self, value: Value) -> Result<Value, T::Error> {
         Ok(if let Some(cons) = value.to_cons() {
             self.copy_cons(cons)?.into()
         } else {
@@ -537,7 +535,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         })
     }
 
-    fn copy_cons(&mut self, cons: Cons) -> Result<Cons, T> {
+    fn copy_cons(&mut self, cons: Cons) -> Result<Cons, T::Error> {
         Ok(if cons == NEVER {
             NEVER
         } else if self.unchecked_car(cons) == NEVER.into() {
@@ -559,7 +557,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // Initialization
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T> {
+    pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T::Error> {
         let mut input = input.into_iter();
 
         self.program_counter = self.null();
@@ -584,7 +582,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T> {
+    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             let symbol = self.create_symbol(self.null(), 0)?;
             self.push(symbol.into())?;
@@ -639,7 +637,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, T> {
+    fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
         let string = self.allocate(
             Number::new(length).into(),
             name.set_tag(Type::String as u8).into(),
@@ -651,7 +649,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         )
     }
 
-    fn initialize_symbol(&mut self, value: Value) -> Result<(), T> {
+    fn initialize_symbol(&mut self, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
             value,
             self.boolean(false).set_tag(Type::Symbol as u8).into(),
@@ -661,7 +659,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T> {
+    fn decode_instructions(
+        &mut self,
+        input: &mut impl Iterator<Item = u8>,
+    ) -> Result<(), T::Error> {
         while let Some((instruction, r#return, integer)) = self.decode_instruction(input)? {
             trace!("instruction", instruction);
             trace!("return", r#return);
@@ -710,7 +711,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code::Instruction::SKIP => {
                     self.tail(self.program_counter, Number::new(integer as i64))
                 }
-                _ => return Err(Error::IllegalInstruction),
+                _ => return Err(Error::IllegalInstruction.into()),
             };
 
             let program_counter = replace(&mut self.program_counter, program_counter);
@@ -728,7 +729,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         instruction: u8,
         operand: Value,
         r#return: bool,
-    ) -> Result<Cons, T> {
+    ) -> Result<Cons, T::Error> {
         self.cons(
             operand,
             (if r#return {
@@ -743,7 +744,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn decode_instruction(
         &mut self,
         input: &mut impl Iterator<Item = u8>,
-    ) -> Result<Option<(u8, bool, u64)>, T> {
+    ) -> Result<Option<(u8, bool, u64)>, T::Error> {
         let Some(byte) = input.next() else {
             return Ok(None);
         };
@@ -857,9 +858,9 @@ mod tests {
     struct FakePrimitiveSet;
 
     impl PrimitiveSet for FakePrimitiveSet {
-        type Error = ();
+        type Error = Error;
 
-        fn operate(_vm: &mut Vm<Self>, _primitive: u8) -> Result<(), Self> {
+        fn operate(_vm: &mut Vm<Self>, _primitive: u8) -> Result<(), Error> {
             return Err(Error::IllegalInstruction);
         }
     }

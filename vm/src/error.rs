@@ -1,7 +1,7 @@
 use core::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Error<E> {
+pub enum Error {
     ArgumentCount,
     ConsExpected,
     EndOfInput,
@@ -10,15 +10,14 @@ pub enum Error<E> {
     MissingOperand,
     NumberExpected,
     OutOfMemory,
-    Primitive(E),
     ProcedureExpected,
     StackUnderflow,
 }
 
 #[cfg(feature = "std")]
-impl<E: std::error::Error> std::error::Error for Error<E> {}
+impl std::error::Error for Error {}
 
-impl<E: Display> Display for Error<E> {
+impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
@@ -29,7 +28,6 @@ impl<E: Display> Display for Error<E> {
             Self::MissingOperand => write!(formatter, "missing operand"),
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
-            Self::Primitive(error) => write!(formatter, "{}", { error }),
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
             Self::StackUnderflow => write!(formatter, "stack underflow"),
         }
