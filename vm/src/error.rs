@@ -1,28 +1,24 @@
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Error {
+pub enum Error<E> {
     ArgumentCount,
     ConsExpected,
     EndOfInput,
-    Halt,
     IllegalInstruction,
-    IllegalPrimitive,
     MissingInteger,
     MissingOperand,
     NumberExpected,
     OutOfMemory,
+    Primitive(E),
     ProcedureExpected,
-    ReadInput,
     StackUnderflow,
-    WriteError,
-    WriteOutput,
 }
 
 #[cfg(feature = "std")]
 impl std::error::Error for Error {}
 
-impl Display for Error {
+impl<E: Display> Display for Error<E> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),

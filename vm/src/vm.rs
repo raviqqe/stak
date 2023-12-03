@@ -855,7 +855,7 @@ mod tests {
     struct FakePrimitiveSet;
 
     impl PrimitiveSet for FakePrimitiveSet {
-        fn operate(_vm: &mut Vm<Self>, _operation: u8) -> Result<(), Error> {
+        fn operate(_vm: &mut Vm<Self>, _primitive: u8) -> Result<(), Error> {
             return Err(Error::IllegalPrimitive);
         }
     }
