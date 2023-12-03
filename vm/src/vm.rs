@@ -1,8 +1,8 @@
 use crate::{
     cons::{Cons, NEVER},
     number::Number,
-    operation_set::OperationSet,
     primitive::Primitive,
+    primitive_set::PrimitiveSet,
     r#type::Type,
     value::{TypedValue, Value},
     Error,
@@ -78,8 +78,8 @@ struct ArgumentInfo {
 }
 
 #[derive(Debug)]
-pub struct Vm<'a, T: OperationSet> {
-    operation_set: T,
+pub struct Vm<'a, T: PrimitiveSet> {
+    primitive_set: T,
     program_counter: Cons,
     stack: Cons,
     r#false: Cons,
@@ -91,10 +91,10 @@ pub struct Vm<'a, T: OperationSet> {
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<'a, T: OperationSet> Vm<'a, T> {
-    pub fn new(heap: &'a mut [Value], operation_set: T) -> Result<Self, Error> {
+impl<'a, T: PrimitiveSet> Vm<'a, T> {
+    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
         let mut vm = Self {
-            operation_set,
+            primitive_set,
             program_counter: NEVER,
             stack: NEVER,
             r#false: NEVER,
@@ -800,18 +800,18 @@ impl<'a, T: OperationSet> Vm<'a, T> {
         Some(y * base + (rest >> 1) as u64)
     }
 
-    // For operation sets.
+    // For primitive sets.
 
-    pub fn operation_set(&self) -> &T {
-        &self.operation_set
+    pub fn primitive_set(&self) -> &T {
+        &self.primitive_set
     }
 
-    pub fn operation_set_mut(&mut self) -> &mut T {
-        &mut self.operation_set
+    pub fn primitive_set_mut(&mut self) -> &mut T {
+        &mut self.primitive_set
     }
 }
 
-impl<'a, T: OperationSet> Display for Vm<'a, T> {
+impl<'a, T: PrimitiveSet> Display for Vm<'a, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "program counter: {}", self.program_counter)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -846,7 +846,7 @@ impl<'a, T: OperationSet> Display for Vm<'a, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{symbol_index, FixedBufferDevice, SmallOperationSet};
+    use crate::{symbol_index, FixedBufferDevice, SmallPrimitiveSet};
     use alloc::vec;
     use code::{encode, Instruction, Operand, Program};
 
@@ -858,8 +858,8 @@ mod tests {
         [Default::default(); HEAP_SIZE]
     }
 
-    fn create_vm(heap: &mut [Value]) -> Vm<SmallOperationSet<FakeDevice>> {
-        Vm::<_>::new(heap, SmallOperationSet::new(FakeDevice::new())).unwrap()
+    fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FakeDevice>> {
+        Vm::<_>::new(heap, SmallPrimitiveSet::new(FakeDevice::new())).unwrap()
     }
 
     macro_rules! assert_snapshot {

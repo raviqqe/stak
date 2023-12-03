@@ -2,15 +2,15 @@ use crate::{primitive::Primitive, r#type::Type, Error, Number, Value, Vm};
 use core::ops::{Add, Div, Mul, Sub};
 use device::Device;
 
-pub trait OperationSet: Sized {
+pub trait PrimitiveSet: Sized {
     fn operate(vm: &mut Vm<Self>, operation: u8) -> Result<(), Error>;
 }
 
-pub struct SmallOperationSet<T: Device> {
+pub struct SmallPrimitiveSet<T: Device> {
     device: T,
 }
 
-impl<T: Device> SmallOperationSet<T> {
+impl<T: Device> SmallPrimitiveSet<T> {
     pub fn new(device: T) -> Self {
         Self { device }
     }
@@ -54,7 +54,7 @@ impl<T: Device> SmallOperationSet<T> {
     }
 }
 
-impl<T: Device> OperationSet for SmallOperationSet<T> {
+impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
@@ -149,7 +149,7 @@ impl<T: Device> OperationSet for SmallOperationSet<T> {
             Primitive::DIVIDE => Self::operate_binary(vm, Div::div)?,
             Primitive::READ => {
                 let byte = vm
-                    .operation_set_mut()
+                    .primitive_set_mut()
                     .device
                     .read()
                     .map_err(|_| Error::ReadInput)?;
@@ -163,7 +163,7 @@ impl<T: Device> OperationSet for SmallOperationSet<T> {
             Primitive::WRITE => {
                 let byte = vm.top().assume_number().to_i64() as u8;
 
-                vm.operation_set_mut()
+                vm.primitive_set_mut()
                     .device
                     .write(byte)
                     .map_err(|_| Error::WriteOutput)?
@@ -171,7 +171,7 @@ impl<T: Device> OperationSet for SmallOperationSet<T> {
             Primitive::WRITE_ERROR => {
                 let byte = vm.top().assume_number().to_i64() as u8;
 
-                vm.operation_set_mut()
+                vm.primitive_set_mut()
                     .device
                     .write_error(byte)
                     .map_err(|_| Error::WriteError)?

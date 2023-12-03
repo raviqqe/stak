@@ -11,7 +11,7 @@ macro_rules! main {
         use $crate::__private::{
             device::StdioDevice,
             std::{env, error::Error, process::exit},
-            vm::{SmallOperationSet, Vm},
+            vm::{SmallPrimitiveSet, Vm},
         };
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;
@@ -30,7 +30,7 @@ macro_rules! main {
                 .transpose()?
                 .unwrap_or(DEFAULT_HEAP_SIZE);
             let mut heap = vec![Default::default(); size];
-            let mut vm = Vm::new(&mut heap, SmallOperationSet::new(StdioDevice::new()))?;
+            let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
             vm.initialize(include_bytes!($path).iter().copied())?;
 
