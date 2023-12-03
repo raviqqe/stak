@@ -5,7 +5,7 @@ use std::{
     fs::read,
     process::exit,
 };
-use vm::{DefaultOperationSet, Vm};
+use vm::{SmallOperationSet, Vm};
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
@@ -23,7 +23,7 @@ fn run() -> Result<(), Box<dyn Error>> {
         .transpose()?
         .unwrap_or(DEFAULT_HEAP_SIZE);
     let mut heap = vec![Default::default(); size];
-    let mut vm = Vm::new(&mut heap, DefaultOperationSet::new(StdioDevice::new()))?;
+    let mut vm = Vm::new(&mut heap, SmallOperationSet::new(StdioDevice::new()))?;
 
     vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",

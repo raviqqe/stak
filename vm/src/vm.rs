@@ -846,7 +846,7 @@ impl<'a, T: OperationSet> Display for Vm<'a, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{symbol_index, DefaultOperationSet, FixedBufferDevice};
+    use crate::{symbol_index, FixedBufferDevice, SmallOperationSet};
     use alloc::vec;
     use code::{encode, Instruction, Operand, Program};
 
@@ -858,8 +858,8 @@ mod tests {
         [Default::default(); HEAP_SIZE]
     }
 
-    fn create_vm(heap: &mut [Value]) -> Vm<DefaultOperationSet<FakeDevice>> {
-        Vm::<_>::new(heap, DefaultOperationSet::new(FakeDevice::new())).unwrap()
+    fn create_vm(heap: &mut [Value]) -> Vm<SmallOperationSet<FakeDevice>> {
+        Vm::<_>::new(heap, SmallOperationSet::new(FakeDevice::new())).unwrap()
     }
 
     macro_rules! assert_snapshot {

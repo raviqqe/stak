@@ -20,6 +20,6 @@ pub use cons::Cons;
 pub use device::{Device, FixedBufferDevice};
 pub use error::Error;
 pub use number::Number;
-pub use operation_set::{DefaultOperationSet, OperationSet};
+pub use operation_set::{OperationSet, SmallOperationSet};
 pub use value::Value;
 pub use vm::Vm;

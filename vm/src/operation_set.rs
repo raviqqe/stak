@@ -6,11 +6,11 @@ pub trait OperationSet: Sized {
     fn operate(vm: &mut Vm<Self>, operation: u8) -> Result<(), Error>;
 }
 
-pub struct DefaultOperationSet<T: Device> {
+pub struct SmallOperationSet<T: Device> {
     device: T,
 }
 
-impl<T: Device> DefaultOperationSet<T> {
+impl<T: Device> SmallOperationSet<T> {
     pub fn new(device: T) -> Self {
         Self { device }
     }
@@ -54,7 +54,7 @@ impl<T: Device> DefaultOperationSet<T> {
     }
 }
 
-impl<T: Device> OperationSet for DefaultOperationSet<T> {
+impl<T: Device> OperationSet for SmallOperationSet<T> {
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
