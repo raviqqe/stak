@@ -5,6 +5,7 @@ use core::ops::{Add, Div, Mul, Sub};
 use device::Device;
 use vm::{Error, Number, PrimitiveSet, Type, Value, Vm};
 
+/// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<T: Device> {
     device: T,
 }
