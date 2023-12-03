@@ -22,6 +22,16 @@ pub use error::Error;
 pub use ir::*;
 
 pub const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
-pub const INSTRUCTION_MASK: u8 = 0b1111;
-pub const INSTRUCTION_BITS: u64 = INSTRUCTION_MASK.count_ones() as u64;
+pub const INSTRUCTION_BITS: u64 = 4;
+pub const INSTRUCTION_MASK: u8 = (1 << INSTRUCTION_BITS) - 1;
 pub const SHORT_INTEGER_BASE: u64 = 1 << (8 - INSTRUCTION_BITS - 1);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn mask() {
+        assert_eq!(INSTRUCTION_MASK, 0b1111);
+    }
+}
