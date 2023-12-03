@@ -48,6 +48,11 @@ mod tests {
     use std::format;
 
     #[test]
+    fn default() {
+        assert_eq!(Number::default(), Number::new(0));
+    }
+
+    #[test]
     fn to_i64() {
         assert_eq!(Number::new(0).to_i64(), 0);
         assert_eq!(Number::new(42).to_i64(), 42);
