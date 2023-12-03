@@ -1,6 +1,7 @@
 use crate::{
     cons::{Cons, NEVER},
     number::Number,
+    operation_set::OperationSet,
     primitive::Primitive,
     r#type::Type,
     value::{TypedValue, Value},
@@ -9,12 +10,9 @@ use crate::{
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
-    ops::{Add, Div, Mul, Sub},
 };
-use device::Device;
 
 const CONS_FIELD_COUNT: usize = 2;
-const ZERO: Number = Number::new(0);
 const FRAME_TAG: u8 = 1;
 
 macro_rules! trace {
@@ -80,8 +78,8 @@ struct ArgumentInfo {
 }
 
 #[derive(Debug)]
-pub struct Vm<'a, T: Device> {
-    device: T,
+pub struct Vm<'a, T: OperationSet> {
+    operation_set: T,
     program_counter: Cons,
     stack: Cons,
     r#false: Cons,
@@ -93,10 +91,10 @@ pub struct Vm<'a, T: Device> {
 
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
-impl<'a, T: Device> Vm<'a, T> {
+impl<'a, T: OperationSet> Vm<'a, T> {
     pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
         let mut vm = Self {
-            device,
+            operation_set: device,
             program_counter: NEVER,
             stack: NEVER,
             r#false: NEVER,
@@ -212,7 +210,7 @@ impl<'a, T: Device> Vm<'a, T> {
                 }
             }
             TypedValue::Number(primitive) => {
-                self.operate_primitive(primitive.to_i64() as u8)?;
+                T::operate(self, primitive.to_i64() as u8)?;
                 self.advance_program_counter();
             }
         }
@@ -339,7 +337,7 @@ impl<'a, T: Device> Vm<'a, T> {
     }
 
     fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
-        while index != ZERO {
+        while index != Number::default() {
             list = self.cdr(list).assume_cons();
             index = Number::new(index.to_i64() - 1);
         }
@@ -351,13 +349,17 @@ impl<'a, T: Device> Vm<'a, T> {
         self.allocate(car, cdr.into())
     }
 
-    fn push(&mut self, value: Value) -> Result<(), Error> {
+    pub fn stack(&self) -> Cons {
+        self.stack
+    }
+
+    pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
         Ok(())
     }
 
-    fn pop(&mut self) -> Result<Value, Error> {
+    pub fn pop(&mut self) -> Result<Value, Error> {
         if self.stack == self.null() {
             return Err(Error::StackUnderflow);
         }
@@ -367,16 +369,16 @@ impl<'a, T: Device> Vm<'a, T> {
         Ok(value)
     }
 
-    fn top(&self) -> Value {
+    pub fn top(&self) -> Value {
         self.car(self.stack)
     }
 
-    fn set_top(&mut self, value: Value) {
+    pub fn set_top(&mut self, value: Value) {
         self.set_car(self.stack, value);
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
+    pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
         debug_assert_eq!(cons.tag(), Type::default() as u8);
@@ -440,11 +442,11 @@ impl<'a, T: Device> Vm<'a, T> {
         &mut self.heap[index]
     }
 
-    fn car(&self, cons: Cons) -> Value {
+    pub fn car(&self, cons: Cons) -> Value {
         self.heap(cons.index())
     }
 
-    fn cdr(&self, cons: Cons) -> Value {
+    pub fn cdr(&self, cons: Cons) -> Value {
         self.heap(cons.index() + 1)
     }
 
@@ -456,19 +458,19 @@ impl<'a, T: Device> Vm<'a, T> {
         self.heap[cons.index() + 1]
     }
 
-    fn car_value(&self, cons: Value) -> Value {
+    pub fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
 
-    fn cdr_value(&self, cons: Value) -> Value {
+    pub fn cdr_value(&self, cons: Value) -> Value {
         self.cdr(cons.assume_cons())
     }
 
-    fn set_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_car(&mut self, cons: Cons, value: Value) {
         *self.heap_mut(cons.index()) = value
     }
 
-    fn set_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_cdr(&mut self, cons: Cons, value: Value) {
         *self.heap_mut(cons.index() + 1) = value;
     }
 
@@ -480,15 +482,15 @@ impl<'a, T: Device> Vm<'a, T> {
         self.heap[cons.index() + 1] = value;
     }
 
-    fn set_car_value(&mut self, cons: Value, value: Value) {
+    pub fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
-    fn set_cdr_value(&mut self, cons: Value, value: Value) {
+    pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
 
-    fn boolean(&self, value: bool) -> Cons {
+    pub fn boolean(&self, value: bool) -> Cons {
         if value {
             self.cdr(self.r#false).assume_cons()
         } else {
@@ -496,167 +498,8 @@ impl<'a, T: Device> Vm<'a, T> {
         }
     }
 
-    fn null(&self) -> Cons {
+    pub fn null(&self) -> Cons {
         self.car(self.r#false).assume_cons()
-    }
-
-    // Primitive operations
-
-    #[cfg_attr(feature = "no_inline", inline(never))]
-    fn operate_primitive(&mut self, primitive: u8) -> Result<(), Error> {
-        trace!("primitive", primitive);
-
-        match primitive {
-            Primitive::RIB => {
-                let [car, cdr, tag] = self.pop_arguments::<3>()?;
-                let rib = self.allocate(
-                    car,
-                    cdr.assume_cons()
-                        .set_tag(tag.assume_number().to_i64() as u8)
-                        .into(),
-                )?;
-                self.set_top(rib.into());
-            }
-            Primitive::CONS => {
-                let [car, cdr] = self.pop_arguments::<2>()?;
-                let cons = self.allocate(
-                    car,
-                    cdr.to_cons()
-                        .map(|cons| cons.set_tag(Type::Pair as u8).into())
-                        .unwrap_or(cdr),
-                )?;
-                self.set_top(cons.into());
-            }
-            Primitive::CLOSE => {
-                let cons = self.allocate(
-                    self.car_value(self.top()),
-                    self.cdr(self.stack)
-                        .assume_cons()
-                        .set_tag(Type::Procedure as u8)
-                        .into(),
-                )?;
-
-                self.set_top(cons.into());
-            }
-            Primitive::IS_CONS => {
-                self.set_top(self.boolean(self.top().is_cons()).into());
-            }
-            Primitive::CAR => {
-                self.set_top(self.car_value(self.top()));
-            }
-            Primitive::CDR => {
-                self.set_top(self.cdr_value(self.top()));
-            }
-            Primitive::TAG => {
-                self.set_top(
-                    Number::new(
-                        self.cdr_value(self.top())
-                            .to_cons()
-                            .map(|cons| cons.tag() as i64)
-                            .unwrap_or(Type::Pair as _),
-                    )
-                    .into(),
-                );
-            }
-            Primitive::SET_CAR => {
-                let [x, y] = self.pop_arguments::<2>()?;
-                self.set_car_value(x, y);
-                self.set_top(y);
-            }
-            Primitive::SET_CDR => {
-                let [x, y] = self.pop_arguments::<2>()?;
-                // Preserve a tag.
-                self.set_cdr_value(
-                    x,
-                    y.to_cons()
-                        .map(|cons| {
-                            cons.set_tag(self.cdr(x.assume_cons()).assume_cons().tag())
-                                .into()
-                        })
-                        .unwrap_or(y),
-                );
-                self.set_top(y);
-            }
-            Primitive::SET_TAG => {
-                let [x, y] = self.pop_arguments::<2>()?;
-                self.set_cdr_value(
-                    x,
-                    self.cdr_value(x)
-                        .assume_cons()
-                        .set_tag(y.assume_number().to_i64() as u8)
-                        .into(),
-                );
-                self.set_top(y);
-            }
-            Primitive::EQUAL => {
-                let [x, y] = self.pop_arguments::<2>()?;
-                self.set_top(self.boolean(x == y).into());
-            }
-            Primitive::LESS_THAN => self.operate_comparison(|x, y| x < y)?,
-            Primitive::ADD => self.operate_binary(Add::add)?,
-            Primitive::SUBTRACT => self.operate_binary(Sub::sub)?,
-            Primitive::MULTIPLY => self.operate_binary(Mul::mul)?,
-            Primitive::DIVIDE => self.operate_binary(Div::div)?,
-            Primitive::READ => {
-                let byte = self.device.read().map_err(|_| Error::ReadInput)?;
-
-                self.push(if let Some(byte) = byte {
-                    Number::new(byte as i64).into()
-                } else {
-                    self.boolean(false).into()
-                })?;
-            }
-            Primitive::WRITE => self
-                .device
-                .write(self.top().assume_number().to_i64() as u8)
-                .map_err(|_| Error::WriteOutput)?,
-            Primitive::WRITE_ERROR => self
-                .device
-                .write_error(self.top().assume_number().to_i64() as u8)
-                .map_err(|_| Error::WriteError)?,
-            Primitive::HALT => return Err(Error::Halt),
-            _ => return Err(Error::IllegalPrimitive),
-        }
-
-        Ok(())
-    }
-
-    fn operate_binary(&mut self, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
-        let [x, y] = self.pop_number_arguments::<2>()?;
-
-        self.set_top(Number::new(operate(x.to_i64(), y.to_i64())).into());
-
-        Ok(())
-    }
-
-    fn operate_comparison(&mut self, operate: fn(i64, i64) -> bool) -> Result<(), Error> {
-        let [x, y] = self.pop_number_arguments::<2>()?;
-
-        self.set_top(self.boolean(operate(x.to_i64(), y.to_i64())).into());
-
-        Ok(())
-    }
-
-    fn pop_number_arguments<const M: usize>(&mut self) -> Result<[Number; M], Error> {
-        let mut numbers = [ZERO; M];
-
-        for (index, value) in self.pop_arguments::<M>()?.into_iter().enumerate() {
-            numbers[index] = value.assume_number();
-        }
-
-        Ok(numbers)
-    }
-
-    fn pop_arguments<const M: usize>(&mut self) -> Result<[Value; M], Error> {
-        let mut values = [ZERO.into(); M];
-
-        for index in 0..M - 1 {
-            values[M - 1 - index] = self.pop()?;
-        }
-
-        values[0] = self.top();
-
-        Ok(values)
     }
 
     // Garbage collection
@@ -956,9 +799,19 @@ impl<'a, T: Device> Vm<'a, T> {
 
         Some(y * base + (rest >> 1) as u64)
     }
+
+    // For operation sets.
+
+    pub fn operation_set(&self) -> &T {
+        &self.operation_set
+    }
+
+    pub fn operation_set_mut(&mut self) -> &mut T {
+        &mut self.operation_set
+    }
 }
 
-impl<'a, T: Device> Display for Vm<'a, T> {
+impl<'a, T: OperationSet> Display for Vm<'a, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "program counter: {}", self.program_counter)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -1002,7 +855,7 @@ mod tests {
     type FakeDevice = FixedBufferDevice<16, 16, 16>;
 
     fn create_heap() -> [Value; HEAP_SIZE] {
-        [ZERO.into(); HEAP_SIZE]
+        [Default::default(); HEAP_SIZE]
     }
 
     fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
