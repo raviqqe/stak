@@ -187,8 +187,8 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .write_error(byte)
                     .map_err(|_| SmallPrimitiveError::WriteError)?
             }
-            Primitive::HALT => return Err(SmallPrimitiveError::Halt.into()),
-            _ => return Err(SmallPrimitiveError::Illegal.into()),
+            Primitive::HALT => return Err(SmallPrimitiveError::Halt),
+            _ => return Err(SmallPrimitiveError::Illegal),
         }
 
         Ok(())

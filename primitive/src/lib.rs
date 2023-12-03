@@ -1,6 +1,6 @@
 #![no_std]
 
-#[cfg(any(feature = "std"))]
+#[cfg(feature = "std")]
 extern crate std;
 
 mod small;

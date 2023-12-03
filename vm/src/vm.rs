@@ -861,7 +861,7 @@ mod tests {
         type Error = Error;
 
         fn operate(_vm: &mut Vm<Self>, _primitive: u8) -> Result<(), Error> {
-            return Err(Error::IllegalInstruction);
+            Err(Error::IllegalInstruction)
         }
     }
 
