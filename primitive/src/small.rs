@@ -54,7 +54,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(values)
     }
 
-    fn set_tag(value: Value, tag: u8) -> Value {
+    fn attach_tag(value: Value, tag: u8) -> Value {
         if let Some(value) = value.to_cons() {
             value.set_tag(tag).into()
         } else {
@@ -71,12 +71,12 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::RIB => {
                 let [car, cdr, tag] = Self::pop_arguments::<3>(vm)?;
                 let rib =
-                    vm.allocate(car, Self::set_tag(cdr, tag.assume_number().to_i64() as u8))?;
+                    vm.allocate(car, Self::attach_tag(cdr, tag.assume_number().to_i64() as u8))?;
                 vm.set_top(rib.into());
             }
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments::<2>(vm)?;
-                let cons = vm.allocate(car, Self::set_tag(cdr, Type::Pair as u8))?;
+                let cons = vm.allocate(car, Self::attach_tag(cdr, Type::Pair as u8))?;
                 vm.set_top(cons.into());
             }
             Primitive::CLOSE => {
@@ -193,7 +193,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::SET_TYPE => {
                 let [value, tag] = Self::pop_arguments::<2>(vm)?;
 
-                vm.set_top(Self::set_tag(value, tag));
+                vm.set_top(Self::attach_tag(value, tag));
             }
             _ => return Err(Error::Illegal),
         }
