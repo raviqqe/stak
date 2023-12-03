@@ -1,4 +1,5 @@
 use device::StdioDevice;
+use primitive::SmallPrimitiveSet;
 use std::{
     env::{self, args},
     error::Error,
@@ -23,7 +24,7 @@ fn run() -> Result<(), Box<dyn Error>> {
         .transpose()?
         .unwrap_or(DEFAULT_HEAP_SIZE);
     let mut heap = vec![Default::default(); size];
-    let mut vm = Vm::new(&mut heap, StdioDevice::new())?;
+    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
     vm.initialize(read(args().nth(1).ok_or(format!(
         "Usage: {} <bytecode_file>",
