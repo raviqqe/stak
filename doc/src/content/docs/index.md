@@ -14,7 +14,7 @@ hero:
       variant: primary
     - text: Rust integration
       link: rust
-      icon: right-arrow
+      icon: document
       variant: secondary
 ---
 
