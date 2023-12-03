@@ -45,13 +45,13 @@ impl<const I: usize, const O: usize, const E: usize> Device for FixedBufferDevic
     type Error = ();
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        if let Some(&byte) = self.input.get(self.input_index) {
+        Ok(if let Some(&byte) = self.input.get(self.input_index) {
             self.input_index += 1;
 
-            Ok(Some(byte))
+            Some(byte)
         } else {
-            Ok(None)
-        }
+            None
+        })
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
