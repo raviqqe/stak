@@ -26,3 +26,4 @@ jobs:
         with:
           path: doc/dist
       - uses: actions/deploy-pages@v2
+        if: github.ref == 'refs/heads/main'
