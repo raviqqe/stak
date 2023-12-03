@@ -12,7 +12,6 @@ hero:
       link: examples/continuation
       icon: right-arrow
       variant: primary
-  actions:
     - text: Rust integration
       link: rust
       icon: right-arrow
