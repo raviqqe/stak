@@ -12,6 +12,10 @@ hero:
       link: examples/continuation
       icon: right-arrow
       variant: primary
+    - text: Rust integration
+      link: rust/stak_vm
+      icon: document
+      variant: secondary
 ---
 
 # Stak
