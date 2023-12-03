@@ -1,7 +1,7 @@
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum SmallPrimitiveError {
+pub enum Error {
     Halt,
     Illegal,
     ReadInput,
@@ -11,9 +11,9 @@ pub enum SmallPrimitiveError {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for SmallPrimitiveError {}
+impl std::error::Error for Error {}
 
-impl Display for SmallPrimitiveError {
+impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Halt => write!(formatter, "halt"),
@@ -26,8 +26,8 @@ impl Display for SmallPrimitiveError {
     }
 }
 
-impl From<vm::Error> for SmallPrimitiveError {
-    fn from(error: vm::Error) -> SmallPrimitiveError {
-        SmallPrimitiveError::Vm(error)
+impl From<vm::Error> for Error {
+    fn from(error: vm::Error) -> Error {
+        Error::Vm(error)
     }
 }
