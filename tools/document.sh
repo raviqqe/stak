@@ -25,6 +25,6 @@ done
 
 cd doc
 
+cargo doc --no-deps --all-features
 npm install
 npm run build
-cargo doc --no-deps --all-features
