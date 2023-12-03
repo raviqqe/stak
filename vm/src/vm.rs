@@ -92,9 +92,9 @@ pub struct Vm<'a, T: OperationSet> {
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
 impl<'a, T: OperationSet> Vm<'a, T> {
-    pub fn new(heap: &'a mut [Value], device: T) -> Result<Self, Error> {
+    pub fn new(heap: &'a mut [Value], operation_set: T) -> Result<Self, Error> {
         let mut vm = Self {
-            operation_set: device,
+            operation_set,
             program_counter: NEVER,
             stack: NEVER,
             r#false: NEVER,
