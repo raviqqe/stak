@@ -16,7 +16,7 @@ pub enum Error<E> {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl<E> std::error::Error for Error<E> {}
 
 impl<E: Display> Display for Error<E> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
