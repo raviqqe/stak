@@ -4,8 +4,8 @@ expression: vm
 ---
 program counter: !:0
 stack: !:0
-00: c0:0 !:1
-02: c0:0 !:2
+00: n0 !:1
+02: n0 !:2
 04: c0:0 c2:2
 06: n1 c0:0
 08: n2 c6:0

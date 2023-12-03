@@ -8,7 +8,7 @@ extern crate std;
 mod cons;
 mod error;
 mod number;
-mod primitive;
+mod primitive_set;
 #[cfg(test)]
 mod symbol_index;
 mod r#type;
@@ -16,8 +16,9 @@ mod value;
 mod vm;
 
 pub use cons::Cons;
-pub use device::{Device, FixedBufferDevice};
 pub use error::Error;
 pub use number::Number;
+pub use primitive_set::PrimitiveSet;
+pub use r#type::Type;
 pub use value::Value;
 pub use vm::Vm;

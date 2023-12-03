@@ -1,6 +1,6 @@
 #[repr(u8)]
 #[derive(Clone, Copy)]
-pub enum Primitive {
+pub(super) enum Primitive {
     Rib,
     Cons,
     Close,

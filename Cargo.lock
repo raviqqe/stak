@@ -104,6 +104,15 @@ name = "stak-interpret"
 version = "0.1.0"
 dependencies = [
  "stak-device",
+ "stak-primitive",
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-primitive"
+version = "0.1.0"
+dependencies = [
+ "stak-device",
  "stak-vm",
 ]
 
@@ -112,6 +121,7 @@ name = "stak-sac"
 version = "0.1.0"
 dependencies = [
  "stak-device",
+ "stak-primitive",
  "stak-vm",
 ]
 
@@ -121,7 +131,6 @@ version = "0.2.0"
 dependencies = [
  "insta",
  "stak-code",
- "stak-device",
 ]
 
 [[package]]

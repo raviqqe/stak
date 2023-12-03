@@ -1,6 +1,7 @@
 #[doc(hidden)]
 pub mod __private {
     pub extern crate device;
+    pub extern crate primitive;
     pub extern crate std;
     pub extern crate vm;
 }
@@ -10,6 +11,7 @@ macro_rules! main {
     ($path:expr) => {
         use $crate::__private::{
             device::StdioDevice,
+            primitive::SmallPrimitiveSet,
             std::{env, error::Error, process::exit},
             vm::Vm,
         };
@@ -30,7 +32,7 @@ macro_rules! main {
                 .transpose()?
                 .unwrap_or(DEFAULT_HEAP_SIZE);
             let mut heap = vec![Default::default(); size];
-            let mut vm = Vm::new(&mut heap, StdioDevice::new())?;
+            let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
             vm.initialize(include_bytes!($path).iter().copied())?;
 

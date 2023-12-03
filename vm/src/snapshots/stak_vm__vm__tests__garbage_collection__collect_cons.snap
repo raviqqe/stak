@@ -5,6 +5,6 @@ expression: vm
 program counter: !:0
 stack: !:0
 100: c102:0 c104:2
-102: c102:0 !:1
-104: c102:0 !:2
+102: n0 !:1
+104: n0 !:2
 

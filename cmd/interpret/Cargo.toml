@@ -17,4 +17,5 @@ trace_heap = ["vm/trace_heap"]
 
 [dependencies]
 device = { package = "stak-device", version = "0.1", path = "../../device", features = ["std"] }
+primitive = { package = "stak-primitive", version = "0.1", path = "../../primitive" }
 vm = { package = "stak-vm", version = "0.2", path = "../../vm", features = ["std"] }

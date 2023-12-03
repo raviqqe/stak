@@ -1,7 +1,7 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
-#[derive(Clone, Copy, Debug, Default, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub struct Number(i64);
 
 impl Number {
@@ -19,6 +19,12 @@ impl Number {
 
     pub(crate) const fn to_raw(self) -> u64 {
         self.0 as u64
+    }
+}
+
+impl Default for Number {
+    fn default() -> Self {
+        Self::new(0)
     }
 }
 
@@ -40,6 +46,11 @@ impl Display for Number {
 mod tests {
     use super::*;
     use std::format;
+
+    #[test]
+    fn default() {
+        assert_eq!(Number::default(), Number::new(0));
+    }
 
     #[test]
     fn to_i64() {
