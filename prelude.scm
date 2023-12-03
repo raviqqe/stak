@@ -399,6 +399,8 @@
 (define $$write-u8 (primitive 17))
 (define $$write-error-u8 (primitive 18))
 (define $$halt (primitive 19))
+(define rib-type (primitive 20))
+(define rib-set-type! (primitive 21))
 
 (define (apply f xs)
   ($$apply f xs))
@@ -414,7 +416,7 @@
   (lambda (x)
     (and
       (rib? x)
-      (eq? (rib-tag x) type))))
+      (eq? (rib-type x) type))))
 
 (define (eqv? x y)
   (if (and (char? x) (char? y))
@@ -429,7 +431,7 @@
       (not (singleton? y))
       (rib? x)
       (rib? y)
-      (eq? (rib-tag x) (rib-tag y))
+      (eq? (rib-type x) (rib-type y))
       (equal? (rib-car x) (rib-car y))
       (equal? (rib-cdr x) (rib-cdr y)))))
 
