@@ -11,7 +11,7 @@ macro_rules! main {
         use $crate::__private::{
             device::StdioDevice,
             std::{env, error::Error, process::exit},
-            vm::Vm,
+            vm::{DefaultOperationSet, Vm},
         };
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;
