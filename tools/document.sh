@@ -6,6 +6,8 @@ cd $(dirname $0)/..
 
 directory=doc/src/content/docs/examples
 
+brew install gauche
+
 rm -rf $directory/*
 go run github.com/raviqqe/gherkin2markdown@latest features $directory
 
