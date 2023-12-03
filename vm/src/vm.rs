@@ -969,7 +969,7 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
-            vm.allocate(Number::new(0).into(), Number::new(0).into())
+            vm.allocate(Number::default().into(), Number::default().into())
                 .unwrap();
             vm.collect_garbages(None).unwrap();
 
@@ -1005,7 +1005,7 @@ mod tests {
             let mut vm = create_vm(&mut heap);
 
             let cons = vm
-                .allocate(Number::new(0).into(), Number::new(0).into())
+                .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
             vm.set_cdr(cons, cons.into());
 
