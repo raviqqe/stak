@@ -1,9 +1,10 @@
+mod error;
 mod primitive;
 
-use self::primitive::Primitive;
+use self::{error::Error, primitive::Primitive};
 use core::ops::{Add, Div, Mul, Sub};
 use device::Device;
-use vm::{Error, Number, PrimitiveSet, Type, Value, Vm};
+use vm::{Number, PrimitiveSet, Type, Value, Vm};
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<T: Device> {
@@ -55,6 +56,8 @@ impl<T: Device> SmallPrimitiveSet<T> {
 }
 
 impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
+    type Error = Error;
+
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
@@ -177,7 +180,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .map_err(|_| Error::WriteError)?
             }
             Primitive::HALT => return Err(Error::Halt),
-            _ => return Err(Error::IllegalPrimitive),
+            _ => return Err(Error::Illegal),
         }
 
         Ok(())

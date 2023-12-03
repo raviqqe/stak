@@ -1,22 +1,17 @@
-use core::fmt::{self, Display, Formatter};
+use core::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     ArgumentCount,
     ConsExpected,
     EndOfInput,
-    Halt,
     IllegalInstruction,
-    IllegalPrimitive,
     MissingInteger,
     MissingOperand,
     NumberExpected,
     OutOfMemory,
     ProcedureExpected,
-    ReadInput,
     StackUnderflow,
-    WriteError,
-    WriteOutput,
 }
 
 #[cfg(feature = "std")]
@@ -28,18 +23,13 @@ impl Display for Error {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
             Self::ConsExpected => write!(formatter, "cons expected"),
             Self::EndOfInput => write!(formatter, "unexpected end of input"),
-            Self::Halt => write!(formatter, "halt"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),
-            Self::IllegalPrimitive => write!(formatter, "illegal primitive"),
             Self::MissingInteger => write!(formatter, "missing integer"),
             Self::MissingOperand => write!(formatter, "missing operand"),
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
-            Self::ReadInput => write!(formatter, "failed to read input"),
             Self::StackUnderflow => write!(formatter, "stack underflow"),
-            Self::WriteError => write!(formatter, "failed to write error"),
-            Self::WriteOutput => write!(formatter, "failed to write output"),
         }
     }
 }
