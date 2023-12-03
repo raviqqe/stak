@@ -21,8 +21,8 @@ jobs:
       - uses: Homebrew/actions/setup-homebrew@master
       - run: tools/ci/setup.sh
       - run: tools/document.sh
+      - run: rm doc/dist/rust/.lock
       - uses: actions/upload-pages-artifact@v2
         with:
           path: doc/dist
-      - run: chmod -R +r doc/dist
       - uses: actions/deploy-pages@v2
