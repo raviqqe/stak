@@ -575,7 +575,7 @@ impl<'a, T: OperationSet> Vm<'a, T> {
         let continuation = self
             .allocate(self.null().into(), self.null().into())?
             .into();
-        self.stack = self.allocate(continuation, self.null().set_tag(FRAME_TAG).into())?;
+        self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
 
         self.temporary = NEVER;
 
@@ -846,7 +846,7 @@ impl<'a, T: OperationSet> Display for Vm<'a, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{symbol_index, FixedBufferDevice};
+    use crate::{symbol_index, DefaultOperationSet, FixedBufferDevice};
     use alloc::vec;
     use code::{encode, Instruction, Operand, Program};
 
@@ -858,8 +858,8 @@ mod tests {
         [Default::default(); HEAP_SIZE]
     }
 
-    fn create_vm(heap: &mut [Value]) -> Vm<FakeDevice> {
-        Vm::<_>::new(heap, FakeDevice::new()).unwrap()
+    fn create_vm(heap: &mut [Value]) -> Vm<DefaultOperationSet<FakeDevice>> {
+        Vm::<_>::new(heap, DefaultOperationSet::new(FakeDevice::new())).unwrap()
     }
 
     macro_rules! assert_snapshot {
@@ -969,7 +969,8 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
-            vm.allocate(ZERO.into(), ZERO.into()).unwrap();
+            vm.allocate(Number::new(0).into(), Number::new(0).into())
+                .unwrap();
             vm.collect_garbages(None).unwrap();
 
             assert_snapshot!(vm);
@@ -1003,7 +1004,9 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
-            let cons = vm.allocate(ZERO.into(), ZERO.into()).unwrap();
+            let cons = vm
+                .allocate(Number::new(0).into(), Number::new(0).into())
+                .unwrap();
             vm.set_cdr(cons, cons.into());
 
             vm.collect_garbages(None).unwrap();
