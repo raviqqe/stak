@@ -1,6 +1,7 @@
+mod error;
 mod primitive;
 
-use self::primitive::Primitive;
+use self::{error::SmallPrimitiveError, primitive::Primitive};
 use core::ops::{Add, Div, Mul, Sub};
 use device::Device;
 use vm::{Error, Number, PrimitiveSet, Type, Value, Vm};
@@ -176,8 +177,8 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .write_error(byte)
                     .map_err(|_| Error::WriteError)?
             }
-            Primitive::HALT => return Err(Error::Halt),
-            _ => return Err(Error::IllegalPrimitive),
+            Primitive::HALT => return Err(SmallPrimitiveError::Halt.into()),
+            _ => return Err(SmallPrimitiveError::Illegal.into()),
         }
 
         Ok(())

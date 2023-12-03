@@ -1,4 +1,4 @@
-use core::fmt::{self, Display, Formatter};
+use core::fmt::{self, Debug, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error<E> {
@@ -16,7 +16,7 @@ pub enum Error<E> {
 }
 
 #[cfg(feature = "std")]
-impl<E> std::error::Error for Error<E> {}
+impl<E: std::error::Error> std::error::Error for Error<E> {}
 
 impl<E: Display> Display for Error<E> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
