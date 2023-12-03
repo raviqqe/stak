@@ -56,6 +56,7 @@ impl<T: Device> DefaultOperationSet<T> {
 
 impl<T: Device> OperationSet for DefaultOperationSet<T> {
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
+        panic!();
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = Self::pop_arguments::<3>(vm)?;
