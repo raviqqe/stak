@@ -7,8 +7,8 @@ use std::{
     process::{Command, Stdio},
 };
 
-const PRELUDE_SOURCE_FILE: &str = "../../prelude.scm";
-const COMPILER_SOURCE_FILE: &str = "../../compile.scm";
+const PRELUDE_SOURCE_FILE: &str = "prelude.scm";
+const COMPILER_SOURCE_FILE: &str = "compile.scm";
 
 fn main() -> Result<(), Box<dyn Error>> {
     let target_file = Path::new(&env::var("OUT_DIR").unwrap()).join("main.bc");
