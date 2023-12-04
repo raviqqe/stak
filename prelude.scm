@@ -399,6 +399,8 @@
 (define $$write-u8 (primitive 17))
 (define $$write-error-u8 (primitive 18))
 (define $$halt (primitive 19))
+(define rib-type (primitive 20))
+(define rib-set-type! (primitive 21))
 
 (define (apply f xs)
   ($$apply f xs))
