@@ -416,7 +416,7 @@
   (lambda (x)
     (and
       (rib? x)
-      (eq? (rib-type x) type))))
+      (eq? (rib-tag x) type))))
 
 (define (eqv? x y)
   (if (and (char? x) (char? y))
@@ -431,7 +431,7 @@
       (not (singleton? y))
       (rib? x)
       (rib? y)
-      (eq? (rib-type x) (rib-type y))
+      (eq? (rib-tag x) (rib-tag y))
       (equal? (rib-car x) (rib-car y))
       (equal? (rib-cdr x) (rib-cdr y)))))
 
