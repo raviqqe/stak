@@ -12,7 +12,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.0.3",
     "@astrojs/starlight": "^0.15.0",
-    "@raviqqe/loscore": "^0.1.9",
+    "@raviqqe/loscore": "^0.1.11",
     "astro": "^4.0.3"
   },
   "devDependencies": {
