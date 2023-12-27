@@ -1574,6 +1574,6 @@
 ; Compiler utility
 
 ; TODO Move those to a compiler when `cond-expand` is implemented.
-
-(define rib-cons cons)
-(define (make-rib tag car cdr) (rib car cdr tag))
+(define (code-rib tag car cdr) (rib car cdr tag))
+(define (data-rib tag car cdr) (rib car cdr tag))
+(define cons-rib cons)

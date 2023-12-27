@@ -85,7 +85,7 @@
     (not (singleton? value))))
 
 (define (make-procedure code environment)
-  (make-rib procedure-type code environment))
+  (data-rib procedure-type code environment))
 
 (define (stak-procedure? value)
   (and (non-singleton-rib? value) (eqv? (rib-tag value) procedure-type)))
@@ -673,10 +673,10 @@
 ;; Procedures
 
 (define (compile-constant constant continuation)
-  (make-rib constant-instruction constant continuation))
+  (code-rib constant-instruction constant continuation))
 
 (define (compile-primitive-call name continuation)
-  (make-rib
+  (code-rib
     call-instruction
     (cons-rib
       (case name
@@ -709,7 +709,7 @@
 (define (compile-drop continuation)
   (if (null? continuation)
     continuation
-    (make-rib set-instruction 0 continuation)))
+    (code-rib set-instruction 0 continuation)))
 
 (define (compile-sequence context expressions continuation)
   (compile-expression
@@ -721,7 +721,7 @@
 
 (define (compile-raw-call context function arguments argument-count continuation)
   (if (null? arguments)
-    (make-rib
+    (code-rib
       call-instruction
       (cons-rib
         argument-count
@@ -762,12 +762,12 @@
 (define (compile-unbind continuation)
   (if (null? continuation)
     continuation
-    (make-rib set-instruction 1 continuation)))
+    (code-rib set-instruction 1 continuation)))
 
 (define (compile-expression context expression continuation)
   (cond
     ((symbol? expression)
-      (make-rib
+      (code-rib
         get-instruction
         (compilation-context-resolve context expression)
         continuation))
@@ -784,20 +784,19 @@
           (compile-expression
             context
             (cadr expression)
-            (make-rib
+            (code-rib
               if-instruction
               (compile-expression
                 context
                 (caddr expression)
-                (if (null? continuation) '() (make-rib nop-instruction 0 continuation)))
+                (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
               (compile-expression context (cadddr expression) continuation))))
 
         (($$lambda)
           (let ((parameters (cadr expression)))
             (compile-constant
               (make-procedure
-                (make-rib
-                  pair-type
+                (cons-rib
                   (+
                     (* 2 (count-parameters parameters))
                     (if (symbol? (last-cdr parameters)) 1 0))
@@ -818,7 +817,7 @@
           (compile-expression
             context
             (caddr expression)
-            (make-rib
+            (code-rib
               set-instruction
               (compilation-context-resolve
                 (compilation-context-push-local context #f)
@@ -883,7 +882,7 @@
         (lambda ()
           (if (eqv? tag pair-type)
             (compile-primitive-call '$$cons (continue))
-            (make-rib
+            (code-rib
               constant-instruction
               tag
               (compile-primitive-call '$$rib (continue)))))))))
@@ -895,10 +894,10 @@
         (lambda (car cdr tag)
           (build-rib-constant-codes context car cdr tag continue))))
     (if symbol
-      (make-rib get-instruction symbol (continue))
+      (code-rib get-instruction symbol (continue))
       (cond
         ((constant-normal? constant)
-          (make-rib constant-instruction constant (continue)))
+          (code-rib constant-instruction constant (continue)))
 
         ((bytevector? constant)
           (build-rib
@@ -910,10 +909,10 @@
           (build-rib (char->integer constant) '() char-type))
 
         ((and (number? constant) (> 0 constant))
-          (make-rib
+          (code-rib
             constant-instruction
             0
-            (make-rib
+            (code-rib
               constant-instruction
               (abs constant)
               (compile-primitive-call '$$- (continue)))))
@@ -945,7 +944,7 @@
         constant
         (lambda ()
           (constant-context-add-constant! context constant id)
-          (make-rib set-instruction id (continue)))))))
+          (code-rib set-instruction id (continue)))))))
 
 (define (build-constants context codes)
   (let loop ((codes codes) (continue (lambda () codes)))
@@ -1209,15 +1208,17 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (make-rib constant-instruction
+  (code-rib constant-instruction
     (cadr primitive)
-    (make-rib constant-instruction
+    (code-rib
+      constant-instruction
       '()
-      (make-rib constant-instruction
+      (code-rib
+        constant-instruction
         procedure-type
         (compile-primitive-call
           '$$rib
-          (make-rib set-instruction (car primitive) continuation))))))
+          (code-rib set-instruction (car primitive) continuation))))))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)
