@@ -84,8 +84,8 @@
     (rib? value)
     (not (singleton? value))))
 
-(define (call-rib operand continuation)
-  (code-rib call-instruction operand continuation))
+(define (call-rib arity function continuation)
+  (code-rib call-instruction (cons-rib arity function) continuation))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type (cons-rib arity code) environment))
@@ -680,20 +680,19 @@
 
 (define (compile-primitive-call name continuation)
   (call-rib
-    (cons-rib
-      (case name
-        (($$close)
-          1)
+    (case name
+      (($$close)
+        1)
 
-        (($$cons $$-)
-          2)
+      (($$cons $$-)
+        2)
 
-        (($$rib)
-          3)
+      (($$rib)
+        3)
 
-        (else
-          (error "unknown primitive" name)))
-      name)
+      (else
+        (error "unknown primitive" name)))
+    name
     continuation))
 
 (define (drop? codes)
@@ -724,9 +723,8 @@
 (define (compile-raw-call context function arguments argument-count continuation)
   (if (null? arguments)
     (call-rib
-      (cons-rib
-        argument-count
-        (compilation-context-resolve context function))
+      argument-count
+      (compilation-context-resolve context function)
       continuation)
     (compile-expression
       context
