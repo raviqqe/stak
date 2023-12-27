@@ -84,8 +84,11 @@
     (rib? value)
     (not (singleton? value))))
 
-(define (make-procedure code environment)
-  (data-rib procedure-type code environment))
+(define (call-rib operand continuation)
+  (code-rib call-instruction operand continuation))
+
+(define (make-procedure arity code environment)
+  (data-rib procedure-type (cons-rib arity code) environment))
 
 (define (stak-procedure? value)
   (and (non-singleton-rib? value) (eqv? (rib-tag value) procedure-type)))
@@ -676,8 +679,7 @@
   (code-rib constant-instruction constant continuation))
 
 (define (compile-primitive-call name continuation)
-  (code-rib
-    call-instruction
+  (call-rib
     (cons-rib
       (case name
         (($$close)
@@ -721,8 +723,7 @@
 
 (define (compile-raw-call context function arguments argument-count continuation)
   (if (null? arguments)
-    (code-rib
-      call-instruction
+    (call-rib
       (cons-rib
         argument-count
         (compilation-context-resolve context function))
@@ -796,17 +797,16 @@
           (let ((parameters (cadr expression)))
             (compile-constant
               (make-procedure
-                (cons-rib
-                  (+
-                    (* 2 (count-parameters parameters))
-                    (if (symbol? (last-cdr parameters)) 1 0))
-                  (compile-sequence
-                    (compilation-context-append-locals
-                      context
-                      ; #f is for a frame.
-                      (reverse (cons #f (parameter-names parameters))))
-                    (cddr expression)
-                    '()))
+                (+
+                  (* 2 (count-parameters parameters))
+                  (if (symbol? (last-cdr parameters)) 1 0))
+                (compile-sequence
+                  (compilation-context-append-locals
+                    context
+                    ; #f is for a frame.
+                    (reverse (cons #f (parameter-names parameters))))
+                  (cddr expression)
+                  '())
                 '())
               (compile-primitive-call '$$close continuation))))
 
