@@ -17,10 +17,11 @@
       (car rib-car rib-set-car!)
       (cdr rib-cdr rib-set-cdr!))
 
-    (define rib make-rib)
+    (define code-rib make-rib)
+    (define data-rib make-rib)
 
-    (define (rib-cons car cdr)
-      (rib 0 car cdr)))
+    (define (cons-rib car cdr)
+      (data-rib pair-type car cdr)))
 
   (else))
 
@@ -677,7 +678,7 @@
 (define (compile-primitive-call name continuation)
   (make-rib
     call-instruction
-    (rib-cons
+    (cons-rib
       (case name
         (($$close)
           1)
@@ -722,7 +723,7 @@
   (if (null? arguments)
     (make-rib
       call-instruction
-      (rib-cons
+      (cons-rib
         argument-count
         (compilation-context-resolve context function))
       continuation)
