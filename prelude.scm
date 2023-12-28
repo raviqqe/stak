@@ -1569,3 +1569,4 @@
 (define (code-rib tag car cdr) (rib car cdr tag))
 (define (data-rib tag car cdr) (rib car cdr tag))
 (define cons-rib cons)
+(define rib-type rib-tag)

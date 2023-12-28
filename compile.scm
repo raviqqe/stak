@@ -11,14 +11,18 @@
 (cond-expand
   ((or chibi gauche guile)
     (define-record-type rib*
-      (make-rib tag car cdr)
+      (make-rib type car cdr tag)
       rib?
-      (tag rib-tag)
+      (type rib-type)
       (car rib-car)
-      (cdr rib-cdr))
+      (cdr rib-cdr)
+      (tag rib-tag))
 
-    (define code-rib make-rib)
-    (define data-rib make-rib)
+    (define (code-rib tag car cdr)
+      (make-rib pair-type car cdr tag))
+
+    (define (data-rib type car cdr)
+      (make-rib type car cdr 0))
 
     (define (cons-rib car cdr)
       (data-rib pair-type car cdr)))
