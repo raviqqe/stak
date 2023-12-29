@@ -81,7 +81,7 @@
 (define (make-procedure arity code environment)
   (data-rib procedure-type (cons-rib arity code) environment))
 
-(define (stak-procedure? value)
+(define (target-procedure? value)
   (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
@@ -859,7 +859,7 @@
   (or
     (symbol? constant)
     (and (number? constant) (>= constant 0))
-    (stak-procedure? constant)))
+    (target-procedure? constant)))
 
 (define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
@@ -959,7 +959,7 @@
             (build-constant
               context
               operand
-              (if (stak-procedure? operand)
+              (if (target-procedure? operand)
                 (lambda () (loop (procedure-code operand) continue))
                 continue)))
 
@@ -989,7 +989,7 @@
         (cond
           ((and
               (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
+              (target-procedure? operand))
             (find-symbols (procedure-code operand) symbols))
 
           ((eqv? instruction if-instruction)
@@ -1177,7 +1177,7 @@
 
           ((and
               (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
+              (target-procedure? operand))
             (encode-procedure context operand return target))
 
           ((eqv? instruction constant-instruction)
