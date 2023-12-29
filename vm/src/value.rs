@@ -111,7 +111,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cons::NEVER;
+    use crate::{cons::NEVER, Type};
 
     #[test]
     fn convert_cons() {
@@ -141,5 +141,10 @@ mod tests {
     #[test]
     fn convert_moved() {
         assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);
+    }
+
+    #[test]
+    fn get_default_tag() {
+        assert_eq!(Value::from(Number::new(42)).tag(), Type::Pair as u8);
     }
 }
