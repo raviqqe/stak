@@ -377,7 +377,8 @@
 
 ; Primitives
 
-(define (primitive id) ($$rib procedure-type id '() 0))
+; TODO Remove a tag.
+(define (primitive id) ($$rib procedure-type id '() procedure-type))
 
 (define rib $$rib)
 (define cons (primitive 1))
