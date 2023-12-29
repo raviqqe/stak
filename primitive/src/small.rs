@@ -94,8 +94,11 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
-                let [car, cdr, tag] = Self::pop_arguments::<3>(vm)?;
-                let rib = vm.allocate(car, cdr.set_tag(tag.assume_number().to_i64() as u8))?;
+                let [r#type, car, cdr, tag] = Self::pop_arguments::<4>(vm)?;
+                let rib = vm.allocate(
+                    car.set_tag(r#type.assume_number().to_i64() as u8),
+                    cdr.set_tag(tag.assume_number().to_i64() as u8),
+                )?;
                 vm.set_top(rib.into());
             }
             Primitive::CONS => {
