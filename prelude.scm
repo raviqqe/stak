@@ -407,11 +407,6 @@
 
 ; Basic types
 
-(define (singleton? x)
-  (or
-    (null? x)
-    (boolean? x)))
-
 (define (instance? type)
   (lambda (x)
     (and
@@ -427,8 +422,6 @@
   (or
     (eq? x y)
     (and
-      (not (singleton? x))
-      (not (singleton? y))
       (rib? x)
       (rib? y)
       (eq? (rib-tag x) (rib-tag y))
@@ -597,12 +590,8 @@
 
 ;; List
 
+(define null? (instance? null-type))
 (define pair? (instance? pair-type))
-
-; TODO Consider making a null value a singleton heap object again.
-; We might need to allow tags on `car`s.
-(define (null? x)
-  (eq? x '()))
 
 (define (list? x)
   (or
