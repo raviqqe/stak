@@ -616,7 +616,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(Number::default().into(), self.boolean(false).into())?;
+        // TODO Use `NEVER` for `car`?
+        let rib = self.allocate(self.boolean(false).into(), Number::default().into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
@@ -626,7 +627,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
         self.set_car_value(
-            self.car_value(self.car(self.tail(self.stack, Number::new(3)))),
+            self.cdr_value(self.car(self.tail(self.stack, Number::new(3)))),
             self.stack.set_tag(Type::Procedure as u8).into(),
         );
 
