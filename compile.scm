@@ -25,7 +25,10 @@
       (make-rib type car cdr 0))
 
     (define (cons-rib car cdr)
-      (data-rib pair-type car cdr)))
+      (data-rib pair-type car cdr))
+
+    (define (target-procedure? value)
+      (and (rib? value) (eqv? (rib-type value) procedure-type))))
 
   (else))
 
@@ -80,9 +83,6 @@
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type (cons-rib arity code) environment))
-
-(define (target-procedure? value)
-  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))

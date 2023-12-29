@@ -1570,3 +1570,4 @@
 (define (data-rib tag car cdr) (rib car cdr tag))
 (define cons-rib cons)
 (define rib-type rib-tag)
+(define target-procedure? procedure?)
