@@ -926,8 +926,8 @@
         ((pair? constant)
           (build-child-constants
             context
-            car
-            cdr
+            (car constant)
+            (cdr constant)
             (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
