@@ -868,26 +868,37 @@
     (and (number? constant) (>= constant 0))
     (stak-procedure? constant)))
 
-(define (build-child-constant context constant continue)
-  (build-constant
-    context
-    constant
-    (lambda () (build-constant-codes context constant continue))))
-
-(define (build-rib-constant-codes context type car cdr continue)
+(define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
-    (build-child-constant context constant continue))
+    (build-constant
+      context
+      constant
+      (lambda () (build-constant-codes context constant continue))))
 
   (build-child
     car
     (lambda ()
       (build-child
         cdr
-        (lambda ()
-          (code-rib
-            constant-instruction
-            type
-            (compile-primitive-call '$$rib (continue))))))))
+        continue))))
+
+(define (build-rib-constant-codes context type car cdr continue)
+  (build-child-constants
+    context
+    car
+    cdr
+    (lambda ()
+      (code-rib
+        constant-instruction
+        type
+        (compile-primitive-call '$$rib (continue))))))
+
+(define (build-cons-constant-codes context car cdr continue)
+  (build-child-constants
+    context
+    car
+    cdr
+    (lambda () (compile-primitive-call '$$cons (continue)))))
 
 (define (build-constant-codes context constant continue)
   (let (
@@ -920,7 +931,11 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          (build-rib pair-type (car constant) (cdr constant)))
+          (build-cons-constant-codes
+            context
+            (car constant)
+            (cdr constant)
+            continue))
 
         ((string? constant)
           (build-rib
