@@ -54,6 +54,14 @@ impl Value {
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
+
+    pub const fn tag(self) -> u8 {
+        if let Some(cons) = self.to_cons() {
+            cons.tag()
+        } else {
+            0
+        }
+    }
 }
 
 impl Default for Value {
