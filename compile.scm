@@ -71,19 +71,6 @@
 
 ; Utility
 
-; TODO Can we remove this check?
-; We can make them back to objects on heap.
-; See also a `singleton?` procedure in a prelude library.
-(define (singleton? x)
-  (or
-    (null? x)
-    (boolean? x)))
-
-(define (non-singleton-rib? value)
-  (and
-    (rib? value)
-    (not (singleton? value))))
-
 (define (call-rib arity function continuation)
   (code-rib call-instruction (cons-rib arity function) continuation))
 
@@ -91,7 +78,7 @@
   (data-rib procedure-type (cons-rib arity code) environment))
 
 (define (stak-procedure? value)
-  (and (non-singleton-rib? value) (eqv? (rib-tag value) procedure-type)))
+  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
@@ -697,7 +684,9 @@
 
 (define (drop? codes)
   (and
-    (non-singleton-rib? codes)
+    ; TODO Use `pair?`.
+    (rib? codes)
+    (not (null? codes))
     (eqv? (rib-tag codes) set-instruction)
     (eqv? (rib-car codes) 0)))
 
@@ -1012,7 +1001,8 @@
             symbols))))))
 
 (define (nop-codes? codes)
-  (and (non-singleton-rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+  ; TODO Use `pair?`.
+  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
