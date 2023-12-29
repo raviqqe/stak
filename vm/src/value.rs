@@ -144,7 +144,7 @@ mod tests {
     }
 
     #[test]
-    fn get_default_tag() {
+    fn get_tag_from_number() {
         let tag = Value::from(Number::new(42)).tag();
 
         assert_eq!(tag, Default::default());
