@@ -377,7 +377,7 @@
 
 ; Primitives
 
-(define (primitive id) ($$rib '() id procedure-type))
+(define (primitive id) ($$rib procedure-type '() id 0))
 
 (define rib $$rib)
 (define cons (primitive 1))
@@ -406,9 +406,7 @@
   ($$apply f xs))
 
 (define (data-rib type car cdr)
-  (let ((rib (cons car cdr)))
-    (rib-set-type! type)
-    rib))
+  (rib type car cdr 0))
 
 ; Basic types
 
@@ -1580,5 +1578,5 @@
 
 ; TODO Move those to a compiler when `cond-expand` is implemented.
 (define (code-rib tag car cdr)
-  (rib car cdr tag))
+  (rib 0 car cdr tag))
 (define cons-rib cons)

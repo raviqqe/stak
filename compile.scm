@@ -692,7 +692,7 @@
         2)
 
       (($$rib)
-        3)
+        4)
 
       (else
         (error "unknown primitive" name)))
@@ -872,29 +872,34 @@
     (and (number? constant) (>= constant 0))
     (stak-procedure? constant)))
 
-(define (build-rib-constant-codes context car cdr tag continue)
+(define (build-rib-constant-codes context type car cdr continue)
   (define (build-child constant continue)
     (build-constant context constant (lambda () (build-constant-codes context constant continue))))
 
-  (build-child
-    car
-    (lambda ()
-      (build-child
-        cdr
-        (lambda ()
-          (if (eqv? tag pair-type)
-            (compile-primitive-call '$$cons (continue))
-            (code-rib
-              constant-instruction
-              tag
-              (compile-primitive-call '$$rib (continue)))))))))
+  (let (
+      (continuation
+        (build-child
+          car
+          (lambda ()
+            (build-child
+              cdr
+              (lambda ()
+                (if (eqv? type pair-type)
+                  (compile-primitive-call '$$cons (continue))
+                  (code-rib
+                    constant-instruction
+                    0
+                    (compile-primitive-call '$$rib (continue))))))))))
+    (if (eqv? type pair-type)
+      continuation
+      (code-rib constant-instruction type continuation))))
 
 (define (build-constant-codes context constant continue)
   (let (
       (symbol (constant-context-constant context constant))
       (build-rib
-        (lambda (car cdr tag)
-          (build-rib-constant-codes context car cdr tag continue))))
+        (lambda (type car cdr)
+          (build-rib-constant-codes context type car cdr continue))))
     (if symbol
       (code-rib get-instruction symbol (continue))
       (cond
@@ -903,12 +908,12 @@
 
         ((bytevector? constant)
           (build-rib
+            bytevector-type
             (bytevector->list constant)
-            (bytevector-length constant)
-            bytevector-type))
+            (bytevector-length constant)))
 
         ((char? constant)
-          (build-rib '() (char->integer constant) char-type))
+          (build-rib char-type '() (char->integer constant)))
 
         ((and (number? constant) (> 0 constant))
           (code-rib
@@ -920,20 +925,20 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          ; TODO Call `cons`.
-          (build-rib (car constant) (cdr constant) pair-type))
+          ; TODO Call `cons` directly.
+          (build-rib pair-type (car constant) (cdr constant)))
 
         ((string? constant)
           (build-rib
+            string-type
             (map char->integer (string->list constant))
-            (string-length constant)
-            string-type))
+            (string-length constant)))
 
         ((vector? constant)
           (build-rib
+            vector-type
             (vector->list constant)
-            (vector-length constant)
-            vector-type))
+            (vector-length constant)))
 
         (else
           (error "invalid constant" constant))))))
@@ -1213,16 +1218,19 @@
 (define (build-primitive primitive continuation)
   (code-rib
     constant-instruction
-    '()
+    procedure-type
     (code-rib
       constant-instruction
-      (cadr primitive)
+      '()
       (code-rib
         constant-instruction
-        procedure-type
-        (compile-primitive-call
-          '$$rib
-          (code-rib set-instruction (car primitive) continuation))))))
+        (cadr primitive)
+        (code-rib
+          constant-instruction
+          0
+          (compile-primitive-call
+            '$$rib
+            (code-rib set-instruction (car primitive) continuation)))))))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)
