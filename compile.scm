@@ -11,17 +11,24 @@
 (cond-expand
   ((or chibi gauche guile)
     (define-record-type rib*
-      (make-rib tag car cdr)
+      (make-rib type car cdr tag)
       rib?
-      (tag rib-tag)
+      (type rib-type)
       (car rib-car)
-      (cdr rib-cdr))
+      (cdr rib-cdr)
+      (tag rib-tag))
 
-    (define code-rib make-rib)
-    (define data-rib make-rib)
+    (define (code-rib tag car cdr)
+      (make-rib pair-type car cdr tag))
+
+    (define (data-rib type car cdr)
+      (make-rib type car cdr 0))
 
     (define (cons-rib car cdr)
-      (data-rib pair-type car cdr)))
+      (data-rib pair-type car cdr))
+
+    (define (target-procedure? value)
+      (and (rib? value) (eqv? (rib-type value) procedure-type))))
 
   (else))
 
@@ -76,9 +83,6 @@
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type (cons-rib arity code) environment))
-
-(define (stak-procedure? value)
-  (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-car procedure)))
@@ -855,7 +859,7 @@
   (or
     (symbol? constant)
     (and (number? constant) (>= constant 0))
-    (stak-procedure? constant)))
+    (target-procedure? constant)))
 
 (define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
@@ -955,7 +959,7 @@
             (build-constant
               context
               operand
-              (if (stak-procedure? operand)
+              (if (target-procedure? operand)
                 (lambda () (loop (procedure-code operand) continue))
                 continue)))
 
@@ -985,7 +989,7 @@
         (cond
           ((and
               (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
+              (target-procedure? operand))
             (find-symbols (procedure-code operand) symbols))
 
           ((eqv? instruction if-instruction)
@@ -1173,7 +1177,7 @@
 
           ((and
               (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
+              (target-procedure? operand))
             (encode-procedure context operand return target))
 
           ((eqv? instruction constant-instruction)
