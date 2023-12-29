@@ -1215,7 +1215,8 @@
   (code-rib
     constant-instruction
     procedure-type
-    (code-rib constant-instruction
+    (code-rib
+      constant-instruction
       (cadr primitive)
       (code-rib
         constant-instruction
