@@ -405,9 +405,10 @@
 (define (apply f xs)
   ($$apply f xs))
 
-; TODO Use a type field.
 (define (data-rib type car cdr)
-  (rib car cdr type))
+  (let ((rib (cons car cdr)))
+    (rib-set-type! type)
+    rib))
 
 ; Basic types
 

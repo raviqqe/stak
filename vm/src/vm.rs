@@ -219,10 +219,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn set(&mut self) -> Result<(), T::Error> {
-        let operand = self.operand_variable();
-        let value = self.pop()?;
+        match self.operand().to_typed() {
+            TypedValue::Cons(cons) => {
+                // Direct reference to a symbol
+                let value = self.pop()?;
+                self.set_cdr(cons, value);
+            }
+            TypedValue::Number(index) => {
+                let cons = self.tail(self.stack, index);
+                let value = self.pop()?;
+                self.set_car(cons, value)
+            }
+        }
 
-        self.set_car(operand, value);
         self.advance_program_counter();
 
         Ok(())
@@ -230,15 +239,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn get(&mut self) -> Result<(), T::Error> {
-        let operand = self.operand_variable();
+        let operand = self.resolve_operand(self.operand());
 
         trace!("operand", operand);
 
-        let value = self.car(operand);
-
-        trace!("value", value);
-
-        self.push(value)?;
+        self.push(operand)?;
         self.advance_program_counter();
 
         Ok(())
@@ -294,20 +299,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.car(self.program_counter)
     }
 
-    fn operand_variable(&self) -> Cons {
-        self.resolve_variable(self.operand())
-    }
-
-    fn resolve_variable(&self, operand: Value) -> Cons {
+    fn resolve_operand(&self, operand: Value) -> Value {
         match operand.to_typed() {
-            TypedValue::Cons(cons) => cons, // Direct reference to a symbol
-            TypedValue::Number(index) => self.tail(self.stack, index),
+            TypedValue::Cons(cons) => self.cdr(cons), // Direct reference to a symbol
+            TypedValue::Number(index) => self.car(self.tail(self.stack, index)),
         }
     }
 
     // (environment . code)
     fn procedure(&self) -> Cons {
-        self.car(self.resolve_variable(self.cdr_value(self.operand())))
+        self.resolve_operand(self.cdr_value(self.operand()))
             .assume_cons()
     }
 
