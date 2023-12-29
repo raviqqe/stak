@@ -86,14 +86,6 @@ impl<T: Device> SmallPrimitiveSet<T> {
 
         Ok(())
     }
-
-    fn attach_tag(value: Value, tag: u8) -> Value {
-        if let Some(value) = value.to_cons() {
-            value.set_tag(tag).into()
-        } else {
-            value
-        }
-    }
 }
 
 impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {

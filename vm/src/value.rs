@@ -62,6 +62,14 @@ impl Value {
             0
         }
     }
+
+    pub fn set_tag(self, tag: u8) -> Self {
+        if let Some(cons) = self.to_cons() {
+            cons.set_tag(tag).into()
+        } else {
+            self
+        }
+    }
 }
 
 impl Default for Value {
