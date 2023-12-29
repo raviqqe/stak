@@ -903,12 +903,12 @@
 
         ((bytevector? constant)
           (build-rib
-            (bytevector-length constant)
             (bytevector->list constant)
+            (bytevector-length constant)
             bytevector-type))
 
         ((char? constant)
-          (build-rib (char->integer constant) '() char-type))
+          (build-rib '() (char->integer constant) char-type))
 
         ((and (number? constant) (> 0 constant))
           (code-rib
@@ -920,18 +920,19 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
+          ; TODO Call `cons`.
           (build-rib (car constant) (cdr constant) pair-type))
 
         ((string? constant)
           (build-rib
-            (string-length constant)
             (map char->integer (string->list constant))
+            (string-length constant)
             string-type))
 
         ((vector? constant)
           (build-rib
-            (vector-length constant)
             (vector->list constant)
+            (vector-length constant)
             vector-type))
 
         (else
@@ -1210,11 +1211,12 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (code-rib constant-instruction
-    (cadr primitive)
+  (code-rib
+    constant-instruction
+    '()
     (code-rib
       constant-instruction
-      '()
+      (cadr primitive)
       (code-rib
         constant-instruction
         procedure-type
