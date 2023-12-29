@@ -893,13 +893,6 @@
         type
         (compile-primitive-call '$$rib (continue))))))
 
-(define (build-cons-constant-codes context car cdr continue)
-  (build-child-constants
-    context
-    car
-    cdr
-    (lambda () (compile-primitive-call '$$cons (continue)))))
-
 (define (build-constant-codes context constant continue)
   (let (
       (symbol (constant-context-constant context constant))
@@ -931,11 +924,11 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          (build-cons-constant-codes
+          (build-child-constants
             context
-            (car constant)
-            (cdr constant)
-            continue))
+            car
+            cdr
+            (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
           (build-rib
