@@ -104,13 +104,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         };
 
         let null =
-            vm.allocate_unchecked(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
+            vm.allocate_unchecked(NEVER.set_tag(Type::Null as u8).into(), Default::default())?;
         let r#true = vm.allocate_unchecked(
-            Default::default(),
             NEVER.set_tag(Type::Boolean as u8).into(),
+            Default::default(),
         )?;
         vm.r#false =
-            vm.allocate_unchecked(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
+            vm.allocate_unchecked(r#true.set_tag(Type::Boolean as u8).into(), null.into())?;
 
         Ok(vm)
     }
@@ -315,13 +315,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.car_value(self.operand()).assume_number()
     }
 
-    // (parameter-count . instruction-list) | primitive
-    fn code(&self, procedure: Cons) -> Value {
-        self.car(procedure)
+    fn environment(&self, procedure: Cons) -> Cons {
+        self.car(procedure).assume_cons()
     }
 
-    fn environment(&self, procedure: Cons) -> Cons {
-        self.cdr(procedure).assume_cons()
+    // (parameter-count . instruction-list) | primitive
+    fn code(&self, procedure: Cons) -> Value {
+        self.cdr(procedure)
     }
 
     // (program-counter . stack)
@@ -491,14 +491,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.cdr(self.r#false).assume_cons()
+            self.car(self.r#false).assume_cons()
         } else {
             self.r#false
         }
     }
 
     pub fn null(&self) -> Cons {
-        self.car(self.r#false).assume_cons()
+        self.cdr(self.r#false).assume_cons()
     }
 
     // Garbage collection
@@ -538,16 +538,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, T::Error> {
         Ok(if cons == NEVER {
             NEVER
-        } else if self.unchecked_car(cons) == NEVER.into() {
+        } else if self.unchecked_cdr(cons) == NEVER.into() {
             // Get a forward pointer.
-            self.unchecked_cdr(cons).assume_cons()
+            self.unchecked_car(cons).assume_cons()
         } else {
             let copy =
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
-            self.set_unchecked_car(cons, NEVER.into());
             // Set a forward pointer.
-            self.set_unchecked_cdr(cons, copy.into());
+            self.set_unchecked_car(cons, copy.into());
+            self.set_unchecked_cdr(cons, NEVER.into());
 
             copy
         }
@@ -625,7 +625,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.set_cdr_value(
+        self.set_car_value(
             self.car_value(self.car(self.tail(self.stack, Number::new(3)))),
             self.stack.set_tag(Type::Procedure as u8).into(),
         );
@@ -639,20 +639,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
         let string = self.allocate(
-            Number::new(length).into(),
             name.set_tag(Type::String as u8).into(),
+            Number::new(length).into(),
         )?;
 
         self.allocate(
-            self.boolean(false).into(),
             string.set_tag(Type::Symbol as u8).into(),
+            self.boolean(false).into(),
         )
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
-            value,
             self.boolean(false).set_tag(Type::Symbol as u8).into(),
+            value,
         )?;
 
         self.push(symbol.into())
@@ -698,7 +698,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         self.program_counter.into(),
                     )?;
                     let procedure =
-                        self.allocate(code.into(), NEVER.set_tag(Type::Procedure as u8).into())?;
+                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
 
                     self.program_counter = self.pop()?.assume_cons();
 
@@ -894,21 +894,21 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
 
-        assert_eq!(vm.cdr(vm.null()).to_cons().unwrap().tag(), Type::Null as u8);
+        assert_eq!(vm.car(vm.null()).to_cons().unwrap().tag(), Type::Null as u8);
 
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
-        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
+        assert!(vm.car(list).is_number());
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(2).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
+        assert!(vm.car(list).is_number());
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(3).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
+        assert!(vm.car(list).is_number());
         assert_snapshot!(vm);
     }
 

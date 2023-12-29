@@ -377,7 +377,7 @@
 
 ; Primitives
 
-(define (primitive id) ($$rib id '() procedure-type))
+(define (primitive id) ($$rib '() id procedure-type))
 
 (define rib $$rib)
 (define cons (primitive 1))
@@ -404,6 +404,10 @@
 
 (define (apply f xs)
   ($$apply f xs))
+
+; TODO Use a type field.
+(define (data-rib type car cdr)
+  (rib car cdr type))
 
 ; Basic types
 
@@ -468,7 +472,7 @@
 
 (define (record-constructor type)
   (lambda xs
-    (rib (list->vector xs) type record-type)))
+    (data-rib record-type (list->vector xs) type)))
 
 (define (record-predicate type)
   (lambda (x)
@@ -564,15 +568,15 @@
 
 (define bytevector? (instance? bytevector-type))
 
-(define bytevector-length rib-car)
+(define bytevector-length rib-cdr)
 
 (define (bytevector-u8-ref vector index)
-  (list-ref (rib-cdr vector) index))
+  (list-ref (bytevector->list vector) index))
 
 (define (list->bytevector x)
-  (rib (length x) x bytevector-type))
+  (data-rib bytevector-type x (length x)))
 
-(define bytevector->list rib-cdr)
+(define bytevector->list rib-car)
 
 ;; Character
 
@@ -582,9 +586,9 @@
   (pair? (memv x '(#\newline #\return #\space #\tab))))
 
 (define (integer->char x)
-  (rib x '() char-type))
+  (data-rib char-type '() x))
 
-(define char->integer rib-car)
+(define char->integer rib-cdr)
 
 (define (char-compare compare)
   (lambda xs (apply compare (map char->integer xs))))
@@ -779,10 +783,10 @@
 (define string? (instance? string-type))
 
 (define (list->string x)
-  (rib (length x) (map char->integer x) string-type))
+  (data-rib string-type (map char->integer x) (length x)))
 
 (define (string->list x)
-  (map integer->char (rib-cdr x)))
+  (map integer->char (rib-car x)))
 
 (define (string-append . xs)
   (list->string (apply append (map string->list xs))))
@@ -791,7 +795,7 @@
   (length (rib-cdr x)))
 
 (define (string-ref x index)
-  (integer->char (list-ref (rib-cdr x) index)))
+  (integer->char (list-ref (rib-car x) index)))
 
 (define (number->string x . rest)
   (let ((radix (if (null? rest) 10 (car rest))))
@@ -868,7 +872,7 @@
 ; Allow garbage collection for a symbol table.
 (rib-set-cdr! $$rib #f)
 
-(define symbol->string rib-cdr)
+(define symbol->string rib-car)
 
 (define (string->symbol x)
   ; TODO Remove this hack.
@@ -890,7 +894,7 @@
       (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
         (if pair
           (car pair)
-          (let ((x (rib #f (string-append x) symbol-type)))
+          (let ((x (data-rib symbol-type (string-append x) #f)))
             (set! symbol-table (cons x symbol-table))
             x))))))
 
@@ -899,23 +903,23 @@
 (define vector? (instance? vector-type))
 
 (define (vector . rest)
-  (rib (length rest) rest vector-type))
+  (data-rib vector-type rest (length rest)))
 
 (define (make-vector length . rest)
-  (rib length (apply make-list (cons length rest)) vector-type))
+  (data-rib vector-type (apply make-list (cons length rest)) length))
 
-(define vector-length rib-car)
+(define vector-length rib-cdr)
 
 (define (vector-ref vector index)
-  (list-ref (rib-cdr vector) index))
+  (list-ref (vector->list vector) index))
 
 (define (vector-set! vector index value)
-  (list-set! (rib-cdr vector) index value))
+  (list-set! (vector->list vector) index value))
 
 (define (list->vector x)
-  (rib (length x) x vector-type))
+  (data-rib vector-type x (length x)))
 
-(define vector->list rib-cdr)
+(define vector->list rib-car)
 
 ; Control
 
@@ -1561,7 +1565,7 @@
 
 ; Process context
 
-(define exit-success (rib (cons 0 '()) '() procedure-type))
+(define exit-success (data-rib procedure-type '() (cons 0 '())))
 
 (define (emergency-exit . rest)
   (if (or (null? rest) (eqv? (car rest) #t))
@@ -1574,7 +1578,6 @@
 ; Compiler utility
 
 ; TODO Move those to a compiler when `cond-expand` is implemented.
-(define (code-rib tag car cdr) (rib car cdr tag))
-(define (data-rib tag car cdr) (rib car cdr tag))
+(define (code-rib tag car cdr)
+  (rib car cdr tag))
 (define cons-rib cons)
-(define rib-type rib-tag)
