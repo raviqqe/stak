@@ -14,8 +14,8 @@
       (make-rib tag car cdr)
       rib?
       (tag rib-tag)
-      (car rib-car rib-set-car!)
-      (cdr rib-cdr rib-set-cdr!))
+      (car rib-car)
+      (cdr rib-cdr))
 
     (define code-rib make-rib)
     (define data-rib make-rib)
