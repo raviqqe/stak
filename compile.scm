@@ -868,29 +868,33 @@
     (and (number? constant) (>= constant 0))
     (stak-procedure? constant)))
 
-(define (build-rib-constant-codes context car cdr tag continue)
+(define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
-    (build-constant context constant (lambda () (build-constant-codes context constant continue))))
+    (build-constant
+      context
+      constant
+      (lambda () (build-constant-codes context constant continue))))
 
   (build-child
     car
     (lambda ()
       (build-child
         cdr
-        (lambda ()
-          (if (eqv? tag pair-type)
-            (compile-primitive-call '$$cons (continue))
-            (code-rib
-              constant-instruction
-              tag
-              (compile-primitive-call '$$rib (continue)))))))))
+        continue))))
 
 (define (build-constant-codes context constant continue)
-  (let (
-      (symbol (constant-context-constant context constant))
-      (build-rib
-        (lambda (car cdr tag)
-          (build-rib-constant-codes context car cdr tag continue))))
+  (define (build-rib type car cdr)
+    (build-child-constants
+      context
+      car
+      cdr
+      (lambda ()
+        (code-rib
+          constant-instruction
+          type
+          (compile-primitive-call '$$rib (continue))))))
+
+  (let ((symbol (constant-context-constant context constant)))
     (if symbol
       (code-rib get-instruction symbol (continue))
       (cond
@@ -899,12 +903,12 @@
 
         ((bytevector? constant)
           (build-rib
+            bytevector-type
             (bytevector-length constant)
-            (bytevector->list constant)
-            bytevector-type))
+            (bytevector->list constant)))
 
         ((char? constant)
-          (build-rib (char->integer constant) '() char-type))
+          (build-rib char-type (char->integer constant) '()))
 
         ((and (number? constant) (> 0 constant))
           (code-rib
@@ -916,19 +920,23 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          (build-rib (car constant) (cdr constant) pair-type))
+          (build-child-constants
+            context
+            (car constant)
+            (cdr constant)
+            (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
           (build-rib
+            string-type
             (string-length constant)
-            (map char->integer (string->list constant))
-            string-type))
+            (map char->integer (string->list constant))))
 
         ((vector? constant)
           (build-rib
+            vector-type
             (vector-length constant)
-            (vector->list constant)
-            vector-type))
+            (vector->list constant)))
 
         (else
           (error "invalid constant" constant))))))
