@@ -1573,6 +1573,6 @@
 
 ; TODO Move those to a compiler when `cond-expand` is implemented.
 (define (code-rib tag car cdr)
-  (rib 0 car cdr tag))
+  (rib pair-type car cdr tag))
 (define cons-rib cons)
 (define target-procedure? procedure?)
