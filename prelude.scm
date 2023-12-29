@@ -592,8 +592,9 @@
 
 (define pair? (instance? pair-type))
 
-; TODO Consider putting type tags on `car`s.
-(define null? (instance? null-type))
+; TODO Put type tags on `car`s.
+(define (null? x)
+  (eq? x '()))
 
 (define (list? x)
   (or
