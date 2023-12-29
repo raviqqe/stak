@@ -54,6 +54,22 @@ impl Value {
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
+
+    pub const fn tag(self) -> u8 {
+        if let Some(cons) = self.to_cons() {
+            cons.tag()
+        } else {
+            0
+        }
+    }
+
+    pub fn set_tag(self, tag: u8) -> Self {
+        if let Some(cons) = self.to_cons() {
+            cons.set_tag(tag).into()
+        } else {
+            self
+        }
+    }
 }
 
 impl Default for Value {
@@ -95,7 +111,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cons::NEVER;
+    use crate::{cons::NEVER, Type};
 
     #[test]
     fn convert_cons() {
@@ -125,5 +141,21 @@ mod tests {
     #[test]
     fn convert_moved() {
         assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);
+    }
+
+    #[test]
+    fn get_tag_from_number() {
+        let tag = Value::from(Number::new(42)).tag();
+
+        assert_eq!(tag, Default::default());
+        assert_eq!(tag, Type::default() as u8);
+    }
+
+    #[test]
+    fn set_tag_to_number() {
+        let value = Value::from(Number::new(42)).set_tag(0b111);
+
+        assert_eq!(value.tag(), Default::default());
+        assert_eq!(value.to_number(), Some(Number::new(42)));
     }
 }

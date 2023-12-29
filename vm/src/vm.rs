@@ -898,17 +898,17 @@ mod tests {
 
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
-        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(2).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(3).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).to_cons().unwrap().tag(), Type::Pair as u8);
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
         assert_snapshot!(vm);
     }
 
