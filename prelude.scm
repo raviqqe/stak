@@ -590,8 +590,10 @@
 
 ;; List
 
-(define null? (instance? null-type))
 (define pair? (instance? pair-type))
+
+; TODO Consider putting type tags on `car`s.
+(define null? (instance? null-type))
 
 (define (list? x)
   (or
