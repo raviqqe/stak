@@ -305,7 +305,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
-    // (code . environment)
+    // (environment . code)
     fn procedure(&self) -> Cons {
         self.car(self.resolve_variable(self.cdr_value(self.operand())))
             .assume_cons()
