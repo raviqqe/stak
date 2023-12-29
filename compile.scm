@@ -882,23 +882,19 @@
         cdr
         continue))))
 
-(define (build-rib-constant-codes context type car cdr continue)
-  (build-child-constants
-    context
-    car
-    cdr
-    (lambda ()
-      (code-rib
-        constant-instruction
-        type
-        (compile-primitive-call '$$rib (continue))))))
-
 (define (build-constant-codes context constant continue)
-  (let (
-      (symbol (constant-context-constant context constant))
-      (build-rib
-        (lambda (type car cdr)
-          (build-rib-constant-codes context type car cdr continue))))
+  (define (build-rib type car cdr)
+    (build-child-constants
+      context
+      car
+      cdr
+      (lambda ()
+        (code-rib
+          constant-instruction
+          type
+          (compile-primitive-call '$$rib (continue))))))
+
+  (let ((symbol (constant-context-constant context constant)))
     (if symbol
       (code-rib get-instruction symbol (continue))
       (cond
