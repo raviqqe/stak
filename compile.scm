@@ -92,7 +92,7 @@
   (code-rib call-instruction (cons-rib arity function) continuation))
 
 (define (make-procedure arity code environment)
-  (data-rib procedure-type (cons-rib arity code) environment))
+  (data-rib procedure-type environment (cons-rib arity code)))
 
 (define (stak-procedure? value)
   (and (non-singleton-rib? value) (eqv? (rib-type value) procedure-type)))
