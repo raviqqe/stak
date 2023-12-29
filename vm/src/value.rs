@@ -147,4 +147,12 @@ mod tests {
     fn get_default_tag() {
         assert_eq!(Value::from(Number::new(42)).tag(), Type::Pair as u8);
     }
+
+    #[test]
+    fn set_tag_to_number() {
+        let value = Value::from(Number::new(42)).set_tag(0b111);
+
+        assert_eq!(value.tag(), 0b111);
+        assert_eq!(value.to_number(), Some(Number::new(42)));
+    }
 }
