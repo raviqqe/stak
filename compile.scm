@@ -98,7 +98,7 @@
   (and (non-singleton-rib? value) (eqv? (rib-type value) procedure-type)))
 
 (define (procedure-code procedure)
-  (rib-cdr (rib-car procedure)))
+  (rib-cdr (rib-cdr procedure)))
 
 (define (bytevector->list xs)
   (let loop ((index 0) (result '()))
@@ -1125,7 +1125,7 @@
     (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
 
 (define (encode-procedure context procedure return target)
-  (let ((code (rib-car procedure)))
+  (let ((code (rib-cdr procedure)))
     (encode-codes
       context
       (rib-cdr code)
