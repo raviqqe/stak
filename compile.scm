@@ -684,7 +684,9 @@
 
 (define (drop? codes)
   (and
+    ; TODO Use `pair?`.
     (rib? codes)
+    (not (null? codes))
     (eqv? (rib-tag codes) set-instruction)
     (eqv? (rib-car codes) 0)))
 
@@ -999,6 +1001,7 @@
             symbols))))))
 
 (define (nop-codes? codes)
+  ; TODO Use `pair?`.
   (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
