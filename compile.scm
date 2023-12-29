@@ -679,7 +679,7 @@
         2)
 
       (($$rib)
-        3)
+        4)
 
       (else
         (error "unknown primitive" name)))
@@ -877,15 +877,19 @@
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
-    (build-child-constants
-      context
-      car
-      cdr
-      (lambda ()
-        (code-rib
-          constant-instruction
-          type
-          (compile-primitive-call '$$rib (continue))))))
+    (code-rib
+      constant-instruction
+      type
+      (build-child-constants
+        context
+        car
+        cdr
+        (lambda ()
+          (code-rib
+            constant-instruction
+            ; TODO Remove a tag.
+            type
+            (compile-primitive-call '$$rib (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
@@ -1208,17 +1212,22 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (code-rib constant-instruction
-    (cadr primitive)
+  (code-rib
+    constant-instruction
+    procedure-type
     (code-rib
       constant-instruction
-      '()
+      (cadr primitive)
       (code-rib
         constant-instruction
-        procedure-type
-        (compile-primitive-call
-          '$$rib
-          (code-rib set-instruction (car primitive) continuation))))))
+        '()
+        (code-rib
+          constant-instruction
+          ; TODO Remove a tag.
+          procedure-type
+          (compile-primitive-call
+            '$$rib
+            (code-rib set-instruction (car primitive) continuation)))))))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)

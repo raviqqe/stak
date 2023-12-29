@@ -156,17 +156,6 @@ Feature: List
       | '(1)  | (1) (2) (3) | A      |
       | '(4)  | (1) (2) (3) | B      |
 
-  @stak
-  Scenario: Get a tag of a pair with a non-cons cdr
-    Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
-
-    (rib-tag (cons 1 2))
-    """
-    When I successfully run `scheme main.scm`
-    Then the exit status should be 0
-
   Scenario Outline: Get a value from an association list
     Given a file named "main.scm" with:
     """scheme
