@@ -12,8 +12,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: Homebrew/actions/setup-homebrew@master
       - run: brew install gauche
-      - run: cargo clippy -- -D warnings
-      - run: cargo clippy -p stak-code -- -D warnings
+      - run: tools/lint.sh
+      - run: tools/lint.sh -p stak-code
   format:
     runs-on: ubuntu-latest
     steps:

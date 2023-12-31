@@ -27,7 +27,7 @@ impl Display for Error {
 }
 
 impl From<vm::Error> for Error {
-    fn from(error: vm::Error) -> Error {
-        Error::Vm(error)
+    fn from(error: vm::Error) -> Self {
+        Self::Vm(error)
     }
 }
