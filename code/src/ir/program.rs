@@ -31,7 +31,7 @@ impl Display for Program {
 
         for symbol in &self.symbols {
             write!(formatter, "- ")?;
-            if symbol.contains("*") {
+            if symbol.contains('*') {
                 write!(formatter, "\"{}\"", symbol)?;
             } else {
                 write!(formatter, "{}", symbol)?;
