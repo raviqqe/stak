@@ -239,11 +239,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn get(&mut self) -> Result<(), T::Error> {
-        let operand = self.resolve_operand(self.operand());
+        let value = self.resolve_operand(self.operand());
 
         trace!("operand", operand);
 
-        self.push(operand)?;
+        self.push(value)?;
         self.advance_program_counter();
 
         Ok(())
