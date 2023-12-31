@@ -418,8 +418,6 @@
   ; TODO Remove a tag.
   (rib type car cdr type))
 
-(define rib-type rib-tag)
-
 (define (apply f xs)
   ($$apply f xs))
 
