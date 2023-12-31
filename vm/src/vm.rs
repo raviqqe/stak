@@ -241,7 +241,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn get(&mut self) -> Result<(), T::Error> {
         let value = self.resolve_operand(self.operand());
 
-        trace!("operand", operand);
+        trace!("operand", value);
 
         self.push(value)?;
         self.advance_program_counter();
