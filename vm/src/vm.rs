@@ -105,10 +105,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         let null =
             vm.allocate_unchecked(NEVER.set_tag(Type::Null as u8).into(), Default::default())?;
-        let r#true = vm.allocate_unchecked(
-            NEVER.set_tag(Type::Boolean as u8).into(),
-            Default::default(),
-        )?;
+        // Do not use `NEVER` for `car` for an `equal?` procedure.
+        let r#true =
+            vm.allocate_unchecked(null.set_tag(Type::Boolean as u8).into(), Default::default())?;
         vm.r#false =
             vm.allocate_unchecked(r#true.set_tag(Type::Boolean as u8).into(), null.into())?;
 
