@@ -698,8 +698,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
                     )?;
-                    let procedure =
-                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
+                    let procedure = self.allocate(
+                        self.null().set_tag(Type::Procedure as u8).into(),
+                        code.into(),
+                    )?;
 
                     self.program_counter = self.pop()?.assume_cons();
 
