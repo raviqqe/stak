@@ -44,11 +44,11 @@ for file in bench/*/main.scm compile.scm; do
     out_file=$(artifact_path $stage out)
 
     cat prelude.scm $file | log run_stage$stage >$out_file
-    stak-decode <$out_file >${out_file%.*}.txt
+    stak-decode <$out_file >${out_file%.*}.yaml
   done
 
   for stage in $(seq $(expr $stage_count - 1)); do
-    for extension in txt out; do
+    for extension in yaml out; do
       log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
     done
   done
