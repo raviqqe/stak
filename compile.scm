@@ -630,7 +630,7 @@
             (expand-expression context (expand-quasiquote (cadr expression))))
 
           (($$quote)
-            (cons '$$quote (cdr expression)))
+            expression)
 
           (else =>
             (lambda (value)
