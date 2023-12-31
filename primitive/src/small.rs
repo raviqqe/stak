@@ -140,11 +140,11 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             }
             Primitive::CLOSE => {
                 let cons = vm.allocate(
-                    vm.car_value(vm.top()),
                     vm.cdr(vm.stack())
                         .assume_cons()
                         .set_tag(Type::Procedure as u8)
                         .into(),
+                    vm.cdr_value(vm.top()),
                 )?;
 
                 vm.set_top(cons.into());
