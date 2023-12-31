@@ -39,7 +39,7 @@ struct DisplayInstruction<'a> {
 }
 
 impl<'a> DisplayInstruction<'a> {
-    pub fn new(instruction: &'a Instruction, indent: usize) -> Self {
+    fn new(instruction: &'a Instruction, indent: usize) -> Self {
         Self {
             instruction,
             indent,
@@ -90,7 +90,7 @@ struct DisplayInstructionList<'a> {
 
 impl<'a> DisplayInstructionList<'a> {
     #[cfg(feature = "alloc")]
-    pub fn new(instructions: &'a [Instruction], indent: usize) -> Self {
+    fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
             indent,
