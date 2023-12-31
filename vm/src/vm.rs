@@ -578,7 +578,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         self.temporary = NEVER;
 
-
         Ok(())
     }
 
