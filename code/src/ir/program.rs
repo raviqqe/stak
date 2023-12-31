@@ -1,5 +1,5 @@
 use super::instruction::{DisplayInstructionList, Instruction};
-use alloc::{string::String, vec::Vec};
+use alloc::{borrow::ToOwned, string::String, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
 #[derive(Debug, Eq, PartialEq)]
@@ -30,6 +30,12 @@ impl Display for Program {
         writeln!(formatter, "# symbols")?;
 
         for symbol in &self.symbols {
+            let mut symbol = symbol.clone();
+
+            for sign in ["+", "*", "<", ">"] {
+                symbol = symbol.replace(sign, &("\\".to_owned() + sign));
+            }
+
             writeln!(formatter, "- {}", symbol)?;
         }
 
@@ -52,6 +58,14 @@ mod tests {
     #[test]
     fn display_symbols() {
         assert_display_snapshot!(Program::new(vec!["foo".into(), "bar".into()], vec![],));
+    }
+
+    #[test]
+    fn display_symbols_with_special_signs() {
+        assert_display_snapshot!(Program::new(
+            vec!["+".into(), "*".into(), "<".into(), ">".into()],
+            vec![],
+        ));
     }
 
     #[test]
