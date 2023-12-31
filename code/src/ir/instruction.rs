@@ -28,7 +28,7 @@ impl Instruction {
     pub const SKIP: u8 = 7;
 }
 
-pub(crate) struct DisplayInstruction<'a> {
+struct DisplayInstruction<'a> {
     instruction: &'a Instruction,
     #[allow(unused)]
     indent: usize,
@@ -48,6 +48,8 @@ impl<'a> Display for DisplayInstruction<'a> {
         #[cfg(feature = "alloc")]
         let indent = self.indent + 1;
 
+        write!(formatter, "- ")?;
+
         match self.instruction {
             Instruction::Call(count, operand) => write!(formatter, "call {} {}", count, operand),
             Instruction::Set(operand) => write!(formatter, "set {}", operand),
@@ -55,7 +57,7 @@ impl<'a> Display for DisplayInstruction<'a> {
             Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
             #[cfg(feature = "alloc")]
             Instruction::If(instructions) => {
-                write!(formatter, "if")?;
+                write!(formatter, "if:")?;
                 write!(
                     formatter,
                     "{}",
