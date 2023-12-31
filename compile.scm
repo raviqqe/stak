@@ -25,7 +25,10 @@
       (make-rib type car cdr 0))
 
     (define (cons-rib car cdr)
-      (data-rib pair-type car cdr)))
+      (data-rib pair-type car cdr))
+
+    (define (target-procedure? value)
+      (and (rib? value) (eqv? (rib-type value) procedure-type))))
 
   (else))
 
@@ -75,27 +78,11 @@
 
 ; Utility
 
-; TODO Can we remove this check?
-; We can make them back to objects on heap.
-; See also a `singleton?` procedure in a prelude library.
-(define (singleton? x)
-  (or
-    (null? x)
-    (boolean? x)))
-
-(define (non-singleton-rib? value)
-  (and
-    (rib? value)
-    (not (singleton? value))))
-
 (define (call-rib arity function continuation)
   (code-rib call-instruction (cons-rib arity function) continuation))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))
-
-(define (stak-procedure? value)
-  (and (non-singleton-rib? value) (eqv? (rib-type value) procedure-type)))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-cdr procedure)))
@@ -543,26 +530,6 @@
         (car pattern)
         (cons '$$lambda (cons (cdr pattern) body))))))
 
-(define (expand-quasiquote expression)
-  (cond
-    ((not (pair? expression))
-      `($$quote ,expression))
-
-    ((eqv? (car expression) 'unquote)
-      (cadr expression))
-
-    ((and
-        (pair? (car expression))
-        (eqv? (caar expression) 'unquote-splicing))
-      `(append
-        ,(cadar expression)
-        ,(expand-quasiquote (cdr expression))))
-
-    (else
-      `(cons
-        ,(expand-quasiquote (car expression))
-        ,(expand-quasiquote (cdr expression))))))
-
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-expression context expression)
   (define (expand expression)
@@ -639,9 +606,6 @@
                 bindings)
               (expand-expression context (caddr expression))))
 
-          (($$quasiquote)
-            (expand-expression context (expand-quasiquote (cadr expression))))
-
           (($$quote)
             (cons '$$quote (cdr expression)))
 
@@ -701,7 +665,9 @@
 
 (define (drop? codes)
   (and
-    (non-singleton-rib? codes)
+    ; TODO Use `pair?`.
+    (rib? codes)
+    (not (null? codes))
     (eqv? (rib-tag codes) set-instruction)
     (eqv? (rib-car codes) 0)))
 
@@ -870,36 +836,39 @@
   (or
     (symbol? constant)
     (and (number? constant) (>= constant 0))
-    (stak-procedure? constant)))
+    (target-procedure? constant)))
 
-(define (build-rib-constant-codes context type car cdr continue)
+(define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
-    (build-constant context constant (lambda () (build-constant-codes context constant continue))))
+    (build-constant
+      context
+      constant
+      (lambda () (build-constant-codes context constant continue))))
 
-  (let (
-      (continuation
-        (build-child
-          car
-          (lambda ()
-            (build-child
-              cdr
-              (lambda ()
-                (if (eqv? type pair-type)
-                  (compile-primitive-call '$$cons (continue))
-                  (code-rib
-                    constant-instruction
-                    0
-                    (compile-primitive-call '$$rib (continue))))))))))
-    (if (eqv? type pair-type)
-      continuation
-      (code-rib constant-instruction type continuation))))
+  (build-child
+    car
+    (lambda ()
+      (build-child
+        cdr
+        continue))))
 
 (define (build-constant-codes context constant continue)
-  (let (
-      (symbol (constant-context-constant context constant))
-      (build-rib
-        (lambda (type car cdr)
-          (build-rib-constant-codes context type car cdr continue))))
+  (define (build-rib type car cdr)
+    (code-rib
+      constant-instruction
+      type
+      (build-child-constants
+        context
+        car
+        cdr
+        (lambda ()
+          (code-rib
+            constant-instruction
+            ; TODO Remove a tag.
+            type
+            (compile-primitive-call '$$rib (continue)))))))
+
+  (let ((symbol (constant-context-constant context constant)))
     (if symbol
       (code-rib get-instruction symbol (continue))
       (cond
@@ -925,8 +894,11 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          ; TODO Call `cons` directly.
-          (build-rib pair-type (car constant) (cdr constant)))
+          (build-child-constants
+            context
+            (car constant)
+            (cdr constant)
+            (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
           (build-rib
@@ -968,7 +940,7 @@
             (build-constant
               context
               operand
-              (if (stak-procedure? operand)
+              (if (target-procedure? operand)
                 (lambda () (loop (procedure-code operand) continue))
                 continue)))
 
@@ -998,7 +970,7 @@
         (cond
           ((and
               (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
+              (target-procedure? operand))
             (find-symbols (procedure-code operand) symbols))
 
           ((eqv? instruction if-instruction)
@@ -1014,7 +986,8 @@
             symbols))))))
 
 (define (nop-codes? codes)
-  (and (non-singleton-rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+  ; TODO Use `pair?`.
+  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1185,7 +1158,7 @@
 
           ((and
               (eqv? instruction constant-instruction)
-              (stak-procedure? operand))
+              (target-procedure? operand))
             (encode-procedure context operand return target))
 
           ((eqv? instruction constant-instruction)
@@ -1227,7 +1200,8 @@
         (cadr primitive)
         (code-rib
           constant-instruction
-          0
+          ; TODO Remove a tag.
+          procedure-type
           (compile-primitive-call
             '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))

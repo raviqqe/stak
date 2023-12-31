@@ -59,7 +59,7 @@ Feature: Quasi-quote
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Unquote and splice multiple lists
+  Scenario: Unquote and splice two lists
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
@@ -71,6 +71,20 @@ Feature: Quasi-quote
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Unquote and splice three lists
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (define x '(65))
+    (define y '(66))
+    (define z '(67))
+
+    (for-each write-u8 `(,@x ,@y ,@z))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote and splice an expression
     Given a file named "main.scm" with:

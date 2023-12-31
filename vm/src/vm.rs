@@ -617,8 +617,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        // TODO Use `NEVER` for `car`?
-        let rib = self.allocate(self.boolean(false).into(), Number::default().into())?;
+        let rib = self.allocate(self.boolean(false).into(), NEVER.into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
@@ -900,17 +899,17 @@ mod tests {
 
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
-        assert!(vm.car(list).is_number());
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(2).into(), list).unwrap();
 
-        assert!(vm.car(list).is_number());
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(3).into(), list).unwrap();
 
-        assert!(vm.car(list).is_number());
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
         assert_snapshot!(vm);
     }
 

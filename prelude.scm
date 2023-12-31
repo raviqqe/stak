@@ -84,9 +84,20 @@
       ($$begin value1 value2 ...))))
 
 (define-syntax quasiquote
-  (syntax-rules ()
+  (syntax-rules (unquote unquote-splicing)
+    ((_ (unquote value))
+      value)
+
+    ((_ ((unquote-splicing value1) value2 ...))
+      (append value1 (quasiquote (value2 ...))))
+
+    ((_ (value1 value2 ...))
+      (cons
+        (quasiquote value1)
+        (quasiquote (value2 ...))))
+
     ((_ value)
-      ($$quasiquote value))))
+      (quote value))))
 
 (define-syntax quote
   (syntax-rules ()
@@ -377,7 +388,8 @@
 
 ; Primitives
 
-(define (primitive id) ($$rib procedure-type '() id 0))
+; TODO Remove a tag.
+(define (primitive id) ($$rib procedure-type '() id procedure-type))
 
 (define rib $$rib)
 (define cons (primitive 1))
@@ -402,6 +414,12 @@
 (define rib-type (primitive 20))
 (define rib-set-type! (primitive 21))
 
+(define (data-rib type car cdr)
+  ; TODO Remove a tag.
+  (rib type car cdr type))
+
+(define rib-type rib-tag)
+
 (define (apply f xs)
   ($$apply f xs))
 
@@ -410,16 +428,11 @@
 
 ; Basic types
 
-(define (singleton? x)
-  (or
-    (null? x)
-    (boolean? x)))
-
 (define (instance? type)
   (lambda (x)
     (and
       (rib? x)
-      (eq? (rib-tag x) type))))
+      (eq? (rib-type x) type))))
 
 (define (eqv? x y)
   (if (and (char? x) (char? y))
@@ -430,11 +443,9 @@
   (or
     (eq? x y)
     (and
-      (not (singleton? x))
-      (not (singleton? y))
       (rib? x)
       (rib? y)
-      (eq? (rib-tag x) (rib-tag y))
+      (eq? (rib-type x) (rib-type y))
       (equal? (rib-car x) (rib-car y))
       (equal? (rib-cdr x) (rib-cdr y)))))
 
@@ -602,8 +613,7 @@
 
 (define pair? (instance? pair-type))
 
-; TODO Consider making a null value a singleton heap object again.
-; We might need to allow tags on `car`s.
+; TODO Put type tags on `car`s.
 (define (null? x)
   (eq? x '()))
 
@@ -1578,5 +1588,6 @@
 
 ; TODO Move those to a compiler when `cond-expand` is implemented.
 (define (code-rib tag car cdr)
-  (rib 0 car cdr tag))
+  (rib pair-type car cdr tag))
 (define cons-rib cons)
+(define target-procedure? procedure?)
