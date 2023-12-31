@@ -872,9 +872,9 @@
 
 (define symbol? (instance? symbol-type))
 
-(define symbol-table (rib-cdr $$rib))
+(define symbol-table (rib-car $$rib))
 ; Allow garbage collection for a symbol table.
-(rib-set-cdr! $$rib #f)
+(rib-set-car! $$rib '())
 
 (define symbol->string rib-car)
 
