@@ -30,7 +30,13 @@ impl Display for Program {
         writeln!(formatter, "symbols:")?;
 
         for symbol in &self.symbols {
-            writeln!(formatter, "- {}", symbol)?;
+            write!(formatter, "- ")?;
+            if symbol.contains("*") {
+                write!(formatter, "{}", symbol)?;
+            } else {
+                write!(formatter, "\"{}\"", symbol)?;
+            }
+            writeln!(formatter)?;
         }
 
         write!(formatter, "instructions:")?;
