@@ -16,6 +16,15 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Self { device }
     }
 
+    fn operate_top<'a>(
+        vm: &mut Vm<'a, Self>,
+        operate: impl Fn(&Vm<'a, Self>, Value) -> Value,
+    ) -> Result<(), Error> {
+        vm.set_top(operate(vm, vm.top()));
+
+        Ok(())
+    }
+
     fn operate_binary(vm: &mut Vm<Self>, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = Self::pop_number_arguments::<2>(vm)?;
 
@@ -54,21 +63,40 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Ok(values)
     }
 
+    fn set_field<'a>(
+        vm: &mut Vm<'a, Self>,
+        field: fn(&Vm<'a, Self>, Value) -> Value,
+        set_field: fn(&mut Vm<'a, Self>, Value, Value),
+    ) -> Result<(), Error> {
+        let [x, y] = Self::pop_arguments::<2>(vm)?;
+        // Preserve a tag.
+        set_field(
+            vm,
+            x,
+            if let (Some(x), Some(y)) = (field(vm, x).to_cons(), y.to_cons()) {
+                y.set_tag(x.tag()).into()
+            } else {
+                y
+            },
+        );
+        vm.set_top(y);
+
+        Ok(())
+    }
+
     fn tag<'a>(
         vm: &mut Vm<'a, Self>,
         field: impl Fn(&Vm<'a, Self>, Value) -> Value,
     ) -> Result<(), Error> {
-        vm.set_top(
+        Self::operate_top(vm, |vm, value| {
             Number::new(
-                field(vm, vm.top())
+                field(vm, value)
                     .to_cons()
                     .map(|cons| cons.tag() as _)
-                    .unwrap_or(Type::Pair as _),
+                    .unwrap_or(Type::default() as _),
             )
-            .into(),
-        );
-
-        Ok(())
+            .into()
+        })
     }
 
     fn set_tag<'a>(
@@ -104,8 +132,10 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments::<2>(vm)?;
                 // TODO Do not tag `cdr`.
-                let cons =
-                    vm.allocate(car.set_tag(Type::Pair as u8), cdr.set_tag(Type::Pair as u8))?;
+                let cons = vm.allocate(
+                    car.set_tag(Type::default() as u8),
+                    cdr.set_tag(Type::default() as u8),
+                )?;
                 vm.set_top(cons.into());
             }
             Primitive::CLOSE => {
@@ -120,34 +150,13 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 vm.set_top(cons.into());
             }
             Primitive::IS_CONS => {
-                vm.set_top(vm.boolean(vm.top().is_cons()).into());
+                Self::operate_top(vm, |vm, value| vm.boolean(value.is_cons()).into())?
             }
-            Primitive::CAR => {
-                vm.set_top(vm.car_value(vm.top()));
-            }
-            Primitive::CDR => {
-                vm.set_top(vm.cdr_value(vm.top()));
-            }
+            Primitive::CAR => Self::operate_top(vm, Vm::car_value)?,
+            Primitive::CDR => Self::operate_top(vm, Vm::cdr_value)?,
             Primitive::TAG => Self::tag(vm, Vm::cdr_value)?,
-            Primitive::SET_CAR => {
-                let [x, y] = Self::pop_arguments::<2>(vm)?;
-                vm.set_car_value(x, y);
-                vm.set_top(y);
-            }
-            Primitive::SET_CDR => {
-                let [x, y] = Self::pop_arguments::<2>(vm)?;
-                // Preserve a tag.
-                vm.set_cdr_value(
-                    x,
-                    y.to_cons()
-                        .map(|cons| {
-                            cons.set_tag(vm.cdr(x.assume_cons()).assume_cons().tag())
-                                .into()
-                        })
-                        .unwrap_or(y),
-                );
-                vm.set_top(y);
-            }
+            Primitive::SET_CAR => Self::set_field(vm, Vm::car_value, Vm::set_car_value)?,
+            Primitive::SET_CDR => Self::set_field(vm, Vm::cdr_value, Vm::set_cdr_value)?,
             Primitive::SET_TAG => Self::set_tag(vm, Vm::cdr_value, Vm::set_cdr_value)?,
             Primitive::EQUAL => {
                 let [x, y] = Self::pop_arguments::<2>(vm)?;
