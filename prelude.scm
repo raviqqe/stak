@@ -84,9 +84,20 @@
       ($$begin value1 value2 ...))))
 
 (define-syntax quasiquote
-  (syntax-rules ()
+  (syntax-rules (unquote unquote-splicing)
+    ((_ (unquote value))
+      value)
+
+    ((_ ((unquote-splicing value1) value2 ...))
+      (append value1 (quasiquote (value2 ...))))
+
+    ((_ (value1 value2 ...))
+      (cons
+        (quasiquote value1)
+        (quasiquote (value2 ...))))
+
     ((_ value)
-      ($$quasiquote value))))
+      (quote value))))
 
 (define-syntax quote
   (syntax-rules ()
