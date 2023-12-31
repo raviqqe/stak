@@ -897,7 +897,7 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
 
-        assert_eq!(vm.car(vm.null()).to_cons().unwrap().tag(), Type::Null as u8);
+        assert_eq!(vm.car(vm.null()).tag(), Type::Null as u8);
 
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
