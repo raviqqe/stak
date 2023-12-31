@@ -617,7 +617,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(self.boolean(false).into(), NEVER.into())?;
+        let rib = self.allocate(self.boolean(false).into(), Number::default().into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
