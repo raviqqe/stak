@@ -1,6 +1,6 @@
 Feature: Intrinsics
   @stak
-  Scenario: Get a tag of a pair with a non-cons cdr
+  Scenario: Get a tag of a pair with a non-cons `cdr`
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
