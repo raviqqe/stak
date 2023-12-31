@@ -2,4 +2,4 @@
 
 set -e
 
-cargo clippy "$@" -- -D warn -D clippy::use_self
+cargo clippy "$@" -- -D warnings -D clippy::use_self
