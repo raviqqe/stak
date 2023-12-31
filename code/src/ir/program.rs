@@ -1,4 +1,4 @@
-use super::instruction::{DisplayInstructionList, Instruction};
+use super::instruction::Instruction;
 use alloc::{borrow::ToOwned, string::String, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
@@ -43,7 +43,7 @@ impl Display for Program {
         write!(
             formatter,
             "{}",
-            DisplayInstructionList::new(&self.instructions, 0)
+            Instruction::display_slice(&self.instructions)
         )
     }
 }

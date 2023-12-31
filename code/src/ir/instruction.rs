@@ -26,6 +26,10 @@ impl Instruction {
     pub const NOP: u8 = 5;
     pub const CLOSE: u8 = 6;
     pub const SKIP: u8 = 7;
+
+    pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
+        DisplayInstructionList::new(instructions, 0)
+    }
 }
 
 struct DisplayInstruction<'a> {
@@ -79,7 +83,7 @@ impl<'a> Display for DisplayInstruction<'a> {
     }
 }
 
-pub(crate) struct DisplayInstructionList<'a> {
+struct DisplayInstructionList<'a> {
     instructions: &'a [Instruction],
     indent: usize,
 }
