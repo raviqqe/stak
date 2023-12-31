@@ -6,7 +6,7 @@ expression: "Program::new(vec![],\n    vec![Instruction :: Constant(Operand :: I
 # instructions
 - constant i0
 - constant i1
-- closure 42
+- close 42
   - constant i2
   - if
     - constant i3

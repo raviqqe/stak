@@ -67,7 +67,7 @@ impl<'a> Display for DisplayInstruction<'a> {
             Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
             #[cfg(feature = "alloc")]
             Instruction::Close(arity, instructions) => {
-                write!(formatter, "closure {}", arity)?;
+                write!(formatter, "close {}", arity)?;
                 write!(
                     formatter,
                     "{}",
