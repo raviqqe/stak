@@ -6,6 +6,7 @@ pub enum Error {
     Illegal,
     ReadInput,
     Vm(vm::Error),
+    #[allow(clippy::enum_variant_names)]
     WriteError,
     WriteOutput,
 }
