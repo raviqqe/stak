@@ -26,16 +26,21 @@ impl Instruction {
     pub const NOP: u8 = 5;
     pub const CLOSE: u8 = 6;
     pub const SKIP: u8 = 7;
+
+    #[cfg(feature = "alloc")]
+    pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
+        DisplayInstructionList::new(instructions, 0)
+    }
 }
 
-pub(crate) struct DisplayInstruction<'a> {
+struct DisplayInstruction<'a> {
     instruction: &'a Instruction,
     #[allow(unused)]
     indent: usize,
 }
 
 impl<'a> DisplayInstruction<'a> {
-    pub fn new(instruction: &'a Instruction, indent: usize) -> Self {
+    fn new(instruction: &'a Instruction, indent: usize) -> Self {
         Self {
             instruction,
             indent,
@@ -47,6 +52,8 @@ impl<'a> Display for DisplayInstruction<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         #[cfg(feature = "alloc")]
         let indent = self.indent + 1;
+
+        write!(formatter, "- ")?;
 
         match self.instruction {
             Instruction::Call(count, operand) => write!(formatter, "call {} {}", count, operand),
@@ -65,7 +72,7 @@ impl<'a> Display for DisplayInstruction<'a> {
             Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
             #[cfg(feature = "alloc")]
             Instruction::Close(arity, instructions) => {
-                write!(formatter, "closure {}", arity)?;
+                write!(formatter, "close {}", arity)?;
                 write!(
                     formatter,
                     "{}",
@@ -77,14 +84,14 @@ impl<'a> Display for DisplayInstruction<'a> {
     }
 }
 
-pub(crate) struct DisplayInstructionList<'a> {
+struct DisplayInstructionList<'a> {
     instructions: &'a [Instruction],
     indent: usize,
 }
 
 impl<'a> DisplayInstructionList<'a> {
     #[cfg(feature = "alloc")]
-    pub fn new(instructions: &'a [Instruction], indent: usize) -> Self {
+    fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
             indent,

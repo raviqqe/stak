@@ -4,5 +4,5 @@ expression: "Program::new(vec![],\n    vec![Instruction ::\n        Close(42, ve
 ---
 # symbols
 # instructions
-closure 42
-  constant i2045
+- close 42
+  - constant i2045
