@@ -530,26 +530,6 @@
         (car pattern)
         (cons '$$lambda (cons (cdr pattern) body))))))
 
-(define (expand-quasiquote expression)
-  (cond
-    ((not (pair? expression))
-      `($$quote ,expression))
-
-    ((eqv? (car expression) 'unquote)
-      (cadr expression))
-
-    ((and
-        (pair? (car expression))
-        (eqv? (caar expression) 'unquote-splicing))
-      `(append
-        ,(cadar expression)
-        ,(expand-quasiquote (cdr expression))))
-
-    (else
-      `(cons
-        ,(expand-quasiquote (car expression))
-        ,(expand-quasiquote (cdr expression))))))
-
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-expression context expression)
   (define (expand expression)
@@ -625,9 +605,6 @@
                     (make-transformer context (cadr pair))))
                 bindings)
               (expand-expression context (caddr expression))))
-
-          (($$quasiquote)
-            (expand-expression context (expand-quasiquote (cadr expression))))
 
           (($$quote)
             (cons '$$quote (cdr expression)))
