@@ -421,9 +421,6 @@
 (define (apply f xs)
   ($$apply f xs))
 
-(define (data-rib type car cdr)
-  (rib type car cdr 0))
-
 ; Basic types
 
 (define (instance? type)
