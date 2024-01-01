@@ -27,8 +27,14 @@
     (define (cons-rib car cdr)
       (data-rib pair-type car cdr))
 
+    (define (instance? value type)
+      (and (rib? value) (eqv? (rib-type value) type)))
+
+    (define (target-pair? value)
+      (instance? value pair-type))
+
     (define (target-procedure? value)
-      (and (rib? value) (eqv? (rib-type value) procedure-type))))
+      (instance? value procedure-type)))
 
   (else))
 
@@ -665,9 +671,7 @@
 
 (define (drop? codes)
   (and
-    ; TODO Use `pair?`.
-    (rib? codes)
-    (not (null? codes))
+    (target-pair? codes)
     (eqv? (rib-tag codes) set-instruction)
     (eqv? (rib-car codes) 0)))
 
@@ -864,8 +868,7 @@
         (lambda ()
           (code-rib
             constant-instruction
-            ; TODO Remove a tag.
-            type
+            0
             (compile-primitive-call '$$rib (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
@@ -986,8 +989,9 @@
             symbols))))))
 
 (define (nop-codes? codes)
-  ; TODO Use `pair?`.
-  (and (rib? codes) (eqv? (rib-tag codes) nop-instruction)))
+  (and
+    (target-pair? codes)
+    (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1200,8 +1204,7 @@
         (cadr primitive)
         (code-rib
           constant-instruction
-          ; TODO Remove a tag.
-          procedure-type
+          0
           (compile-primitive-call
             '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))
