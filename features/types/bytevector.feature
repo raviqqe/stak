@@ -20,7 +20,7 @@ Feature: Bytevector
     Then the stdout should contain exactly "A"
 
     Examples:
-      | value      | output |
+      | value      | length |
       | #u8()      | 0      |
       | #u8(0)     | 1      |
       | #u8(0 0)   | 2      |
