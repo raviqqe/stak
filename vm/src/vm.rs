@@ -220,7 +220,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn set(&mut self) -> Result<(), T::Error> {
         match self.operand().to_typed() {
             TypedValue::Cons(cons) => {
-                // Direct reference to a symbol
                 let value = self.pop()?;
                 self.set_cdr(cons, value);
             }
@@ -300,7 +299,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn resolve_operand(&self, operand: Value) -> Value {
         match operand.to_typed() {
-            TypedValue::Cons(cons) => self.cdr(cons), // Direct reference to a symbol
+            TypedValue::Cons(cons) => self.cdr(cons),
             TypedValue::Number(index) => self.car(self.tail(self.stack, index)),
         }
     }
@@ -319,7 +318,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.car(procedure).assume_cons()
     }
 
-    // (parameter-count . instruction-list) | primitive
+    // (parameter-count . instruction-list) | primitive-id
     fn code(&self, procedure: Cons) -> Value {
         self.cdr(procedure)
     }
@@ -622,7 +621,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(self.null().into(), Number::default().into())?;
+        let rib = self.allocate(NEVER.into(), Number::default().into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
@@ -703,10 +702,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
                     )?;
-                    let procedure = self.allocate(
-                        self.boolean(false).set_tag(Type::Procedure as u8).into(),
-                        code.into(),
-                    )?;
+                    let procedure =
+                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
 
                     self.program_counter = self.pop()?.assume_cons();
 
