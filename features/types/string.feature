@@ -74,7 +74,7 @@ Feature: String
     (write-u8 (if (= (string-length <value>) <length>) 65 66))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "A"
 
     Examples:
       | value | length |
