@@ -27,11 +27,14 @@
     (define (cons-rib car cdr)
       (data-rib pair-type car cdr))
 
+    (define (instance? value type)
+      (and (rib? value) (eqv? (rib-type value) type)))
+
     (define (target-pair? value)
-      (and (rib? value) (eqv? (rib-type value) pair-type)))
+      (instance? value pair-type))
 
     (define (target-procedure? value)
-      (and (rib? value) (eqv? (rib-type value) procedure-type))))
+      (instance? value procedure-type)))
 
   (else))
 
