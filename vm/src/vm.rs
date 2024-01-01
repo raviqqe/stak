@@ -704,7 +704,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         self.program_counter.into(),
                     )?;
                     let procedure = self.allocate(
-                        self.null().set_tag(Type::Procedure as u8).into(),
+                        self.boolean(false).set_tag(Type::Procedure as u8).into(),
                         code.into(),
                     )?;
 

@@ -576,7 +576,9 @@
 (define bytevector-length rib-cdr)
 
 (define (bytevector-u8-ref vector index)
-  ; We need to use `rib-car` because we re-define this function in a compiler.
+  ; TODO Do not export `byte-vector-u8-ref`.
+  ; We need to use `rib-car` instead of `bytevector->list` because we re-define
+  ; the function in a compiler.
   (list-ref (rib-car vector) index))
 
 (define (list->bytevector x)
@@ -874,7 +876,7 @@
 
 (define symbol-table (rib-car $$rib))
 ; Allow garbage collection for a symbol table.
-(rib-set-car! $$rib '())
+(rib-set-car! $$rib #f)
 
 (define symbol->string rib-car)
 
@@ -907,10 +909,10 @@
 (define vector? (instance? vector-type))
 
 (define (vector . rest)
-  (data-rib vector-type rest (length rest)))
+  (list->vector rest))
 
 (define (make-vector length . rest)
-  (data-rib vector-type (apply make-list (cons length rest)) length))
+  (list->vector (apply make-list (cons length rest))))
 
 (define vector-length rib-cdr)
 
@@ -1569,7 +1571,7 @@
 
 ; Process context
 
-(define exit-success (data-rib procedure-type '() (cons 0 '())))
+(define exit-success (data-rib procedure-type #f (cons 0 '())))
 
 (define (emergency-exit . rest)
   (if (or (null? rest) (eqv? (car rest) #t))
