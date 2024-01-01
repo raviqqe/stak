@@ -65,3 +65,20 @@ Feature: String
       | abc    | 0     | a      |
       | abc    | 1     | b      |
       | abc    | 2     | c      |
+
+  Scenario Outline: Get a length of a string
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (write-u8 (+ 65 (string-length <value>)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values | output |
+      | ""     | A      |
+      | "a"    | B      |
+      | "aa"   | C      |
+      | "aaa"  | D      |
