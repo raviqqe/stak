@@ -414,7 +414,7 @@
 (define rib-set-type! (primitive 21))
 
 (define (data-rib type car cdr)
-  (rib type car cdr 0))]
+  (rib type car cdr 0))
 
 (define (apply f xs)
   ($$apply f xs))
