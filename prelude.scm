@@ -1582,4 +1582,5 @@
 (define (code-rib tag car cdr)
   (rib pair-type car cdr tag))
 (define cons-rib cons)
+(define target-pair? pair?)
 (define target-procedure? procedure?)
