@@ -4,14 +4,14 @@ expression: "Program::new(vec![],\n    vec![Instruction :: Constant(Operand :: I
 ---
 # symbols
 # instructions
-constant i0
-constant i1
-closure 42
-  constant i2
-  if
-    constant i3
-    constant i4
-  constant i5
-  constant i6
-constant i7
-constant i8
+- constant i0
+- constant i1
+- close 42
+  - constant i2
+  - if
+    - constant i3
+    - constant i4
+  - constant i5
+  - constant i6
+- constant i7
+- constant i8

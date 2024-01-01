@@ -27,11 +27,11 @@ artifact_path() {
 
 cd $(dirname $0)/..
 
-export PATH=$(dirname $0)/../target/release:$PATH
+export PATH=$(dirname $0)/../target/debug:$PATH
 
 mkdir -p tmp
 brew install gauche
-cargo build --release
+cargo build
 
 for stage in $(seq $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
@@ -44,11 +44,11 @@ for file in bench/*/main.scm compile.scm; do
     out_file=$(artifact_path $stage out)
 
     cat prelude.scm $file | log run_stage$stage >$out_file
-    stak-decode <$out_file >${out_file%.*}.txt
+    stak-decode <$out_file >${out_file%.*}.md
   done
 
   for stage in $(seq $(expr $stage_count - 1)); do
-    for extension in txt out; do
+    for extension in md out; do
       log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
     done
   done

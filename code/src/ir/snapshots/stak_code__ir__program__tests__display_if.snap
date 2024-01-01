@@ -4,5 +4,5 @@ expression: "Program::new(vec![],\n    vec![Instruction ::\n        If(vec! [Ins
 ---
 # symbols
 # instructions
-if
-  constant i42
+- if
+  - constant i42

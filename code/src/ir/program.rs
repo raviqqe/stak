@@ -1,6 +1,8 @@
-use super::instruction::{DisplayInstructionList, Instruction};
-use alloc::{string::String, vec::Vec};
+use super::instruction::Instruction;
+use alloc::{borrow::ToOwned, string::String, vec::Vec};
 use core::fmt::{self, Display, Formatter};
+
+const ESCAPED_SIGNS: &[&str] = &["\\", "+", "-", "*", "!", "#", "_", "<", ">"];
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Program {
@@ -30,14 +32,20 @@ impl Display for Program {
         writeln!(formatter, "# symbols")?;
 
         for symbol in &self.symbols {
-            writeln!(formatter, "{}", symbol)?;
+            let mut symbol = symbol.clone();
+
+            for sign in ESCAPED_SIGNS {
+                symbol = symbol.replace(sign, &("\\".to_owned() + sign));
+            }
+
+            writeln!(formatter, "- {}", symbol)?;
         }
 
         write!(formatter, "# instructions")?;
         write!(
             formatter,
             "{}",
-            DisplayInstructionList::new(&self.instructions, 0)
+            Instruction::display_slice(&self.instructions)
         )
     }
 }
@@ -52,6 +60,13 @@ mod tests {
     #[test]
     fn display_symbols() {
         assert_display_snapshot!(Program::new(vec!["foo".into(), "bar".into()], vec![],));
+    }
+
+    #[test]
+    fn display_symbols_with_special_signs() {
+        for &sign in ESCAPED_SIGNS {
+            assert_display_snapshot!(sign, Program::new(vec![format!("{}", sign)], vec![]));
+        }
     }
 
     #[test]
