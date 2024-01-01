@@ -64,8 +64,8 @@ mod tests {
 
     #[test]
     fn display_symbols_with_special_signs() {
-        for sign in ESCAPED_SIGNS {
-            assert_display_snapshot!(Program::new(vec![format!("{}", sign)], vec![],));
+        for &sign in ESCAPED_SIGNS {
+            assert_display_snapshot!(sign, Program::new(vec![format!("{}", sign)], vec![]));
         }
     }
 
