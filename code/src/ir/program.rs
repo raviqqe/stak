@@ -64,10 +64,9 @@ mod tests {
 
     #[test]
     fn display_symbols_with_special_signs() {
-        assert_display_snapshot!(Program::new(
-            vec!["+".into(), "*".into(), "<".into(), ">".into()],
-            vec![],
-        ));
+        for sign in ESCAPED_SIGNS {
+            assert_display_snapshot!(Program::new(vec![format!("{}", sign)], vec![],));
+        }
     }
 
     #[test]
