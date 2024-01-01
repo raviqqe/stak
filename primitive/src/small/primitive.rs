@@ -22,7 +22,6 @@ pub(super) enum Primitive {
     WriteError,
     Halt,
     Type,
-    SetType,
 }
 
 impl Primitive {
@@ -47,5 +46,4 @@ impl Primitive {
     pub const WRITE_ERROR: u8 = Self::WriteError as _;
     pub const HALT: u8 = Self::Halt as _;
     pub const TYPE: u8 = Self::Type as _;
-    pub const SET_TYPE: u8 = Self::SetType as _;
 }

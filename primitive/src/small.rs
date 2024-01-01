@@ -194,7 +194,6 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             }
             Primitive::HALT => return Err(Error::Halt),
             Primitive::TYPE => Self::tag(vm, Vm::car_value)?,
-            Primitive::SET_TYPE => Self::set_tag(vm, Vm::car_value, Vm::set_car_value)?,
             _ => return Err(Error::Illegal),
         }
 
