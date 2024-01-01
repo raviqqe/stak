@@ -388,8 +388,7 @@
 
 ; Primitives
 
-; TODO Remove a tag.
-(define (primitive id) ($$rib procedure-type '() id procedure-type))
+(define (primitive id) ($$rib procedure-type '() id 0))
 
 (define rib $$rib)
 (define cons (primitive 1))
@@ -415,8 +414,7 @@
 (define rib-set-type! (primitive 21))
 
 (define (data-rib type car cdr)
-  ; TODO Remove a tag.
-  (rib type car cdr type))
+  (rib type car cdr 0))
 
 (define (apply f xs)
   ($$apply f xs))
@@ -609,11 +607,8 @@
 
 ;; List
 
+(define null? (instance? null-type))
 (define pair? (instance? pair-type))
-
-; TODO Put type tags on `car`s.
-(define (null? x)
-  (eq? x '()))
 
 (define (list? x)
   (or

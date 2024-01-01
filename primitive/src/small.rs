@@ -131,11 +131,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             }
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments::<2>(vm)?;
-                // TODO Do not tag `cdr`.
-                let cons = vm.allocate(
-                    car.set_tag(Type::default() as u8),
-                    cdr.set_tag(Type::default() as u8),
-                )?;
+                let cons = vm.allocate(car.set_tag(Type::default() as u8), cdr)?;
                 vm.set_top(cons.into());
             }
             Primitive::CLOSE => {

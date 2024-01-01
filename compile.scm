@@ -864,8 +864,7 @@
         (lambda ()
           (code-rib
             constant-instruction
-            ; TODO Remove a tag.
-            type
+            0
             (compile-primitive-call '$$rib (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
@@ -1200,8 +1199,7 @@
         (cadr primitive)
         (code-rib
           constant-instruction
-          ; TODO Remove a tag.
-          procedure-type
+          0
           (compile-primitive-call
             '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))
