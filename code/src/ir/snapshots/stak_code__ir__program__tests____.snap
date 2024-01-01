@@ -1,0 +1,7 @@
+---
+source: code/src/ir/program.rs
+expression: "Program::new(vec![format! (\"{}\", sign)], vec![])"
+---
+# symbols
+- \\
+# instructions
