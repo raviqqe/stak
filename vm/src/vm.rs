@@ -489,16 +489,22 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.set_cdr(cons.assume_cons(), value);
     }
 
+    // TODO Omit untagging somehow.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.car(self.r#false).assume_cons()
+            self.car(self.r#false)
+                .assume_cons()
+                .set_tag(Default::default())
         } else {
             self.r#false
         }
     }
 
+    // TODO Omit untagging somehow.
     pub fn null(&self) -> Cons {
-        self.cdr(self.r#false).assume_cons()
+        self.cdr(self.r#false)
+            .assume_cons()
+            .set_tag(Default::default())
     }
 
     // Garbage collection
