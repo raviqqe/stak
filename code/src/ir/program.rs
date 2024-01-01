@@ -32,7 +32,7 @@ impl Display for Program {
         for symbol in &self.symbols {
             let mut symbol = symbol.clone();
 
-            for sign in ["\\", "+", "*", "!", "#", "_", "<", ">"] {
+            for sign in ["\\", "+", "-", "*", "!", "#", "_", "<", ">"] {
                 symbol = symbol.replace(sign, &("\\".to_owned() + sign));
             }
 
