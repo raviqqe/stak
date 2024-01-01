@@ -1,13 +1,28 @@
 Feature: Quote
-  Scenario: Quote a number
+  Scenario Outline: Quote a scalar value
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
 
-    (write-u8 '65)
+    (write-u8 (if (eq? <value> '<value>) 65 66))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      | #f    |
+      | #t    |
+      | 0     |
+      | 1     |
+      | 2     |
+      | 42    |
+      | -1    |
+      | -2    |
+      | -42   |
+      | a     |
+      | x     |
+      | foo   |
 
   Scenario: Quote a list
     Given a file named "main.scm" with:
