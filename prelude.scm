@@ -389,7 +389,7 @@
 ; Primitives
 
 ; TODO Remove a tag.
-(define (primitive id) ($$rib procedure-type id '() procedure-type))
+(define (primitive id) ($$rib procedure-type '() id procedure-type))
 
 (define rib $$rib)
 (define cons (primitive 1))
@@ -417,8 +417,6 @@
 (define (data-rib type car cdr)
   ; TODO Remove a tag.
   (rib type car cdr type))
-
-(define rib-type rib-tag)
 
 (define (apply f xs)
   ($$apply f xs))
@@ -575,15 +573,18 @@
 
 (define bytevector? (instance? bytevector-type))
 
-(define bytevector-length rib-car)
+(define bytevector-length rib-cdr)
 
 (define (bytevector-u8-ref vector index)
-  (list-ref (rib-cdr vector) index))
+  ; TODO Do not export `byte-vector-u8-ref`.
+  ; We need to use `rib-car` instead of `bytevector->list` because we re-define
+  ; the function in a compiler.
+  (list-ref (rib-car vector) index))
 
 (define (list->bytevector x)
-  (data-rib bytevector-type (length x) x))
+  (data-rib bytevector-type x (length x)))
 
-(define bytevector->list rib-cdr)
+(define bytevector->list rib-car)
 
 ;; Character
 
@@ -593,9 +594,9 @@
   (pair? (memv x '(#\newline #\return #\space #\tab))))
 
 (define (integer->char x)
-  (data-rib char-type x '()))
+  (data-rib char-type '() x))
 
-(define char->integer rib-car)
+(define char->integer rib-cdr)
 
 (define (char-compare compare)
   (lambda xs (apply compare (map char->integer xs))))
@@ -789,18 +790,18 @@
 (define string? (instance? string-type))
 
 (define (list->string x)
-  (data-rib string-type (length x) (map char->integer x)))
+  (data-rib string-type (map char->integer x) (length x)))
 
 (define (string->list x)
-  (map integer->char (rib-cdr x)))
+  (map integer->char (rib-car x)))
 
 (define (string-append . xs)
   (list->string (apply append (map string->list xs))))
 
-(define string-length rib-car)
+(define string-length rib-cdr)
 
 (define (string-ref x index)
-  (integer->char (list-ref (rib-cdr x) index)))
+  (integer->char (list-ref (rib-car x) index)))
 
 (define (number->string x . rest)
   (let ((radix (if (null? rest) 10 (car rest))))
@@ -873,11 +874,11 @@
 
 (define symbol? (instance? symbol-type))
 
-(define symbol-table (rib-cdr $$rib))
+(define symbol-table (rib-car $$rib))
 ; Allow garbage collection for a symbol table.
-(rib-set-cdr! $$rib #f)
+(rib-set-car! $$rib #f)
 
-(define symbol->string rib-cdr)
+(define symbol->string rib-car)
 
 (define (string->symbol x)
   ; TODO Remove this hack.
@@ -899,7 +900,7 @@
       (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
         (if pair
           (car pair)
-          (let ((x (data-rib symbol-type #f (string-append x))))
+          (let ((x (data-rib symbol-type (string-append x) #f)))
             (set! symbol-table (cons x symbol-table))
             x))))))
 
@@ -908,12 +909,12 @@
 (define vector? (instance? vector-type))
 
 (define (vector . rest)
-  (data-rib vector-type (length rest) rest))
+  (list->vector rest))
 
 (define (make-vector length . rest)
-  (data-rib vector-type length (apply make-list (cons length rest))))
+  (list->vector (apply make-list (cons length rest))))
 
-(define vector-length rib-car)
+(define vector-length rib-cdr)
 
 (define (vector-ref vector index)
   (list-ref (vector->list vector) index))
@@ -922,9 +923,9 @@
   (list-set! (vector->list vector) index value))
 
 (define (list->vector x)
-  (data-rib vector-type (length x) x))
+  (data-rib vector-type x (length x)))
 
-(define vector->list rib-cdr)
+(define vector->list rib-car)
 
 ; Control
 
@@ -945,14 +946,14 @@
 
 (define (call/cc receiver)
   (let (
-      (continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-function))))))
+      (continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
       (point current-point))
     (receiver
       (lambda (argument)
         (travel-to-point! current-point point)
         (set-current-point! point)
         (rib-set-car!
-          (rib-cdr (rib-cdr (close dummy-function))) ; frame
+          (rib-cdr (rib-car (close dummy-function))) ; frame
           continuation)
         argument))))
 
@@ -1570,7 +1571,7 @@
 
 ; Process context
 
-(define exit-success (data-rib procedure-type (cons 0 '()) '()))
+(define exit-success (data-rib procedure-type #f (cons 0 '())))
 
 (define (emergency-exit . rest)
   (if (or (null? rest) (eqv? (car rest) #t))

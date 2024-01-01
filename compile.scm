@@ -82,10 +82,10 @@
   (code-rib call-instruction (cons-rib arity function) continuation))
 
 (define (make-procedure arity code environment)
-  (data-rib procedure-type (cons-rib arity code) environment))
+  (data-rib procedure-type environment (cons-rib arity code)))
 
 (define (procedure-code procedure)
-  (rib-cdr (rib-car procedure)))
+  (rib-cdr (rib-cdr procedure)))
 
 (define (bytevector->list xs)
   (let loop ((index 0) (result '()))
@@ -878,11 +878,11 @@
         ((bytevector? constant)
           (build-rib
             bytevector-type
-            (bytevector-length constant)
-            (bytevector->list constant)))
+            (bytevector->list constant)
+            (bytevector-length constant)))
 
         ((char? constant)
-          (build-rib char-type (char->integer constant) '()))
+          (build-rib char-type '() (char->integer constant)))
 
         ((and (number? constant) (> 0 constant))
           (code-rib
@@ -903,14 +903,14 @@
         ((string? constant)
           (build-rib
             string-type
-            (string-length constant)
-            (map char->integer (string->list constant))))
+            (map char->integer (string->list constant))
+            (string-length constant)))
 
         ((vector? constant)
           (build-rib
             vector-type
-            (vector-length constant)
-            (vector->list constant)))
+            (vector->list constant)
+            (vector-length constant)))
 
         (else
           (error "invalid constant" constant))))))
@@ -1103,7 +1103,7 @@
     (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
 
 (define (encode-procedure context procedure return target)
-  (let ((code (rib-car procedure)))
+  (let ((code (rib-cdr procedure)))
     (encode-codes
       context
       (rib-cdr code)
@@ -1194,10 +1194,10 @@
     procedure-type
     (code-rib
       constant-instruction
-      (cadr primitive)
+      '()
       (code-rib
         constant-instruction
-        '()
+        (cadr primitive)
         (code-rib
           constant-instruction
           ; TODO Remove a tag.

@@ -104,13 +104,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         };
 
         let null =
-            vm.allocate_unchecked(Default::default(), NEVER.set_tag(Type::Null as u8).into())?;
-        let r#true = vm.allocate_unchecked(
-            Default::default(),
-            NEVER.set_tag(Type::Boolean as u8).into(),
-        )?;
+            vm.allocate_unchecked(NEVER.set_tag(Type::Null as u8).into(), Default::default())?;
+        // Do not use `NEVER` for `car` for an `equal?` procedure.
+        let r#true =
+            vm.allocate_unchecked(null.set_tag(Type::Boolean as u8).into(), Default::default())?;
         vm.r#false =
-            vm.allocate_unchecked(null.into(), r#true.set_tag(Type::Boolean as u8).into())?;
+            vm.allocate_unchecked(r#true.set_tag(Type::Boolean as u8).into(), null.into())?;
 
         Ok(vm)
     }
@@ -219,10 +218,18 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn set(&mut self) -> Result<(), T::Error> {
-        let operand = self.operand_variable();
-        let value = self.pop()?;
+        match self.operand().to_typed() {
+            TypedValue::Cons(cons) => {
+                let value = self.pop()?;
+                self.set_cdr(cons, value);
+            }
+            TypedValue::Number(index) => {
+                let cons = self.tail(self.stack, index);
+                let value = self.pop()?;
+                self.set_car(cons, value)
+            }
+        }
 
-        self.set_car(operand, value);
         self.advance_program_counter();
 
         Ok(())
@@ -230,13 +237,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn get(&mut self) -> Result<(), T::Error> {
-        let operand = self.operand_variable();
+        let value = self.resolve_operand(self.operand());
 
-        trace!("operand", operand);
-
-        let value = self.car(operand);
-
-        trace!("value", value);
+        trace!("operand", value);
 
         self.push(value)?;
         self.advance_program_counter();
@@ -294,20 +297,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.car(self.program_counter)
     }
 
-    fn operand_variable(&self) -> Cons {
-        self.resolve_variable(self.operand())
-    }
-
-    fn resolve_variable(&self, operand: Value) -> Cons {
+    fn resolve_operand(&self, operand: Value) -> Value {
         match operand.to_typed() {
-            TypedValue::Cons(cons) => cons, // Direct reference to a symbol
-            TypedValue::Number(index) => self.tail(self.stack, index),
+            TypedValue::Cons(cons) => self.cdr(cons),
+            TypedValue::Number(index) => self.car(self.tail(self.stack, index)),
         }
     }
 
-    // (code . environment)
+    // (environment . code)
     fn procedure(&self) -> Cons {
-        self.car(self.resolve_variable(self.cdr_value(self.operand())))
+        self.resolve_operand(self.cdr_value(self.operand()))
             .assume_cons()
     }
 
@@ -315,13 +314,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.car_value(self.operand()).assume_number()
     }
 
-    // (parameter-count . instruction-list) | primitive
-    fn code(&self, procedure: Cons) -> Value {
-        self.car(procedure)
+    fn environment(&self, procedure: Cons) -> Cons {
+        self.car(procedure).assume_cons()
     }
 
-    fn environment(&self, procedure: Cons) -> Cons {
-        self.cdr(procedure).assume_cons()
+    // (parameter-count . instruction-list) | primitive-id
+    fn code(&self, procedure: Cons) -> Value {
+        self.cdr(procedure)
     }
 
     // (program-counter . stack)
@@ -489,16 +488,22 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.set_cdr(cons.assume_cons(), value);
     }
 
+    // TODO Omit a tag reset somehow.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.cdr(self.r#false).assume_cons()
+            self.car(self.r#false)
+                .assume_cons()
+                .set_tag(Default::default())
         } else {
             self.r#false
         }
     }
 
+    // TODO Omit a tag reset somehow.
     pub fn null(&self) -> Cons {
-        self.car(self.r#false).assume_cons()
+        self.cdr(self.r#false)
+            .assume_cons()
+            .set_tag(Default::default())
     }
 
     // Garbage collection
@@ -538,16 +543,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, T::Error> {
         Ok(if cons == NEVER {
             NEVER
-        } else if self.unchecked_car(cons) == NEVER.into() {
+        } else if self.unchecked_cdr(cons) == NEVER.into() {
             // Get a forward pointer.
-            self.unchecked_cdr(cons).assume_cons()
+            self.unchecked_car(cons).assume_cons()
         } else {
             let copy =
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
-            self.set_unchecked_car(cons, NEVER.into());
             // Set a forward pointer.
-            self.set_unchecked_cdr(cons, copy.into());
+            self.set_unchecked_car(cons, copy.into());
+            self.set_unchecked_cdr(cons, NEVER.into());
 
             copy
         }
@@ -616,7 +621,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(Number::default().into(), NEVER.into())?;
+        let rib = self.allocate(NEVER.into(), Number::default().into())?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
@@ -625,8 +630,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.set_cdr_value(
-            self.car_value(self.car(self.tail(self.stack, Number::new(3)))),
+        self.set_car_value(
+            self.cdr_value(self.car(self.tail(self.stack, Number::new(3)))),
             self.stack.set_tag(Type::Procedure as u8).into(),
         );
 
@@ -639,20 +644,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
         let string = self.allocate(
-            Number::new(length).into(),
             name.set_tag(Type::String as u8).into(),
+            Number::new(length).into(),
         )?;
 
         self.allocate(
-            self.boolean(false).into(),
             string.set_tag(Type::Symbol as u8).into(),
+            self.boolean(false).into(),
         )
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
-            value,
             self.boolean(false).set_tag(Type::Symbol as u8).into(),
+            value,
         )?;
 
         self.push(symbol.into())
@@ -698,7 +703,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         self.program_counter.into(),
                     )?;
                     let procedure =
-                        self.allocate(code.into(), NEVER.set_tag(Type::Procedure as u8).into())?;
+                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
 
                     self.program_counter = self.pop()?.assume_cons();
 
@@ -894,7 +899,7 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
 
-        assert_eq!(vm.cdr(vm.null()).to_cons().unwrap().tag(), Type::Null as u8);
+        assert_eq!(vm.car(vm.null()).tag(), Type::Null as u8);
 
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
@@ -950,6 +955,7 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
+            vm.stack = vm.null();
             vm.push(Number::new(42).into()).unwrap();
 
             assert_eq!(vm.pop(), Ok(Number::new(42).into()));
@@ -960,6 +966,7 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
+            vm.stack = vm.null();
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
 
@@ -988,6 +995,7 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
+            vm.stack = vm.null();
             vm.push(Number::new(42).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
@@ -999,6 +1007,7 @@ mod tests {
             let mut heap = create_heap();
             let mut vm = create_vm(&mut heap);
 
+            vm.stack = vm.null();
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
             vm.collect_garbages(None).unwrap();
