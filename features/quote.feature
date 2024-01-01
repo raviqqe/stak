@@ -20,9 +20,9 @@ Feature: Quote
       | -1    |
       | -2    |
       | -42   |
-      | a     |
-      | x     |
-      | foo   |
+      | 'a    |
+      | 'x    |
+      | 'foo  |
 
   Scenario: Quote a list
     Given a file named "main.scm" with:
