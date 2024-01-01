@@ -2,6 +2,8 @@ use super::instruction::Instruction;
 use alloc::{borrow::ToOwned, string::String, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
+const ESCAPED_SIGNS: &[&str] = &["\\", "+", "-", "*", "!", "#", "_", "<", ">"];
+
 #[derive(Debug, Eq, PartialEq)]
 pub struct Program {
     symbols: Vec<String>,
@@ -32,7 +34,7 @@ impl Display for Program {
         for symbol in &self.symbols {
             let mut symbol = symbol.clone();
 
-            for sign in ["\\", "+", "-", "*", "!", "#", "_", "<", ">"] {
+            for sign in ESCAPED_SIGNS {
                 symbol = symbol.replace(sign, &("\\".to_owned() + sign));
             }
 
