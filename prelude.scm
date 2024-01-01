@@ -576,7 +576,8 @@
 (define bytevector-length rib-cdr)
 
 (define (bytevector-u8-ref vector index)
-  (list-ref (bytevector->list vector) index))
+  ; We need to use `rib-car` because we re-define this function in a compiler.
+  (list-ref (rib-car vector) index))
 
 (define (list->bytevector x)
   (data-rib bytevector-type x (length x)))
