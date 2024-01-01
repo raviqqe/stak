@@ -71,14 +71,14 @@ Feature: String
     """scheme
     (import (scheme base))
 
-    (write-u8 (+ 65 (string-length <value>)))
+    (write-u8 (if (= (string-length <value>) <length>) 65 66))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | values | output |
-      | ""     | A      |
-      | "a"    | B      |
-      | "aa"   | C      |
-      | "aaa"  | D      |
+      | value | length |
+      | ""    | 0      |
+      | "a"   | 1      |
+      | "aa"  | 2      |
+      | "aaa" | 3      |
