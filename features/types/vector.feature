@@ -34,16 +34,20 @@ Feature: Vector
     """scheme
     (import (scheme base))
 
-    (write-u8 (if (= (vector-length <value>) 3) 65 66))
+    (write-u8 (if (= (vector-length <value>) <length>) 65 66))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | value              |
-      | (make-vector 3)    |
-      | (make-vector 3 #t) |
-      | (vector 1 2 3)     |
+      | value              | length |
+      | #()                | 0      |
+      | #(1)               | 1      |
+      | #(1 2)             | 2      |
+      | #(1 2 3)           | 3      |
+      | (make-vector 3)    | 3      |
+      | (make-vector 3 #t) | 3      |
+      | (vector 1 2 3)     | 3      |
 
   Scenario Outline: Get an element in a vector
     Given a file named "main.scm" with:

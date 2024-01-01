@@ -797,8 +797,7 @@
 (define (string-append . xs)
   (list->string (apply append (map string->list xs))))
 
-(define (string-length x)
-  (length (rib-cdr x)))
+(define string-length rib-car)
 
 (define (string-ref x index)
   (integer->char (list-ref (rib-cdr x) index)))
