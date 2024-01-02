@@ -2,7 +2,7 @@ use super::instruction::Instruction;
 use alloc::{borrow::ToOwned, string::String, vec::Vec};
 use core::fmt::{self, Display, Formatter};
 
-const ESCAPED_SIGNS: &[&str] = &["\\", "+", "*", "!", "#", "_", "<", ">"];
+const ESCAPED_SIGNS: &[&str] = &["\\", "+", "*", "_"];
 
 #[derive(Debug, Eq, PartialEq)]
 pub struct Program {
