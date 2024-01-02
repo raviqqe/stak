@@ -32,8 +32,8 @@ impl<T: Device> SmallPrimitiveSet<T> {
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
     }
 
-    fn rib(vm: &mut Vm<Self>, r#type: u8, car: Value, cdr: Value, tag: u8) -> Result<(), Error> {
-        let rib = vm.allocate(car.set_tag(r#type), cdr.set_tag(tag))?;
+    fn rib(vm: &mut Vm<Self>, r#type: u8, car: Value, cdr: Value) -> Result<(), Error> {
+        let rib = vm.allocate(car.set_tag(r#type), cdr)?;
         vm.set_top(rib.into());
 
         Ok(())
@@ -103,14 +103,13 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     vm,
                     r#type.assume_number().to_i64() as u8,
                     car,
-                    cdr,
-                    tag.assume_number().to_i64() as u8,
+                    cdr.set_tag(tag.assume_number().to_i64() as u8),
                 )?;
             }
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments::<2>(vm);
 
-                Self::rib(vm, Type::Pair as u8, car, cdr, Default::default())?;
+                Self::rib(vm, Type::Pair as u8, car, cdr)?;
             }
             Primitive::CLOSE => {
                 Self::rib(
@@ -118,7 +117,6 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     Type::Procedure as u8,
                     vm.cdr(vm.stack()),
                     vm.cdr_value(vm.top()),
-                    Default::default(),
                 )?;
             }
             Primitive::IS_RIB => {
