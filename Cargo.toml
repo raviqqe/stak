@@ -13,5 +13,5 @@ repository = "https://github.com/raviqqe/stak"
 lto = true
 
 [profile.integration_test]
-inherits = "dev"
-opt-level = 3
+inherits = "release"
+debug-assertions = true
