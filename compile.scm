@@ -68,7 +68,8 @@
   '(
     ($$cons 1)
     ($$close 2)
-    ($$- 13)))
+    ($$- 13)
+    ($$data 21)))
 
 ; Types
 
@@ -661,6 +662,9 @@
       (($$cons $$-)
         2)
 
+      (($$data)
+        3)
+
       (($$rib)
         4)
 
@@ -866,10 +870,7 @@
         car
         cdr
         (lambda ()
-          (code-rib
-            constant-instruction
-            0
-            (compile-primitive-call '$$rib (continue)))))))
+          (compile-primitive-call '$$data (continue))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
