@@ -32,6 +32,48 @@ impl<T: Device> SmallPrimitiveSet<T> {
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
     }
 
+    fn rib<'a>(
+        vm: &mut Vm<'a, Self>,
+        r#type: u8,
+        car: Value,
+        cdr: Value,
+        tag: u8,
+    ) -> Result<(), Error> {
+        let rib = vm.allocate(car.set_tag(r#type), cdr.set_tag(tag))?;
+        vm.set_top(rib.into());
+
+        Ok(())
+    }
+
+    fn set_field<'a>(vm: &mut Vm<'a, Self>, set_field: fn(&mut Vm<'a, Self>, Value, Value)) {
+        let [x, y] = Self::pop_arguments::<2>(vm);
+
+        set_field(vm, x, y);
+        vm.set_top(y);
+    }
+
+    fn tag<'a>(vm: &mut Vm<'a, Self>, field: impl Fn(&Vm<'a, Self>, Value) -> Value) {
+        Self::operate_top(vm, |vm, value| {
+            Number::new(
+                field(vm, value)
+                    .to_cons()
+                    .map(|cons| cons.tag() as _)
+                    .unwrap_or(Type::default() as _),
+            )
+            .into()
+        })
+    }
+
+    fn write<'a>(
+        vm: &mut Vm<'a, Self>,
+        write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
+        error: Error,
+    ) -> Result<(), Error> {
+        let byte = vm.top().assume_number().to_i64() as u8;
+
+        write(&mut vm.primitive_set_mut().device, byte).map_err(|_| error)
+    }
+
     fn pop_number_arguments<const M: usize>(vm: &mut Vm<Self>) -> [Number; M] {
         let mut numbers = [Default::default(); M];
 
@@ -53,25 +95,6 @@ impl<T: Device> SmallPrimitiveSet<T> {
 
         values
     }
-
-    fn set_field<'a>(vm: &mut Vm<'a, Self>, set_field: fn(&mut Vm<'a, Self>, Value, Value)) {
-        let [x, y] = Self::pop_arguments::<2>(vm);
-
-        set_field(vm, x, y);
-        vm.set_top(y);
-    }
-
-    fn tag<'a>(vm: &mut Vm<'a, Self>, field: impl Fn(&Vm<'a, Self>, Value) -> Value) {
-        Self::operate_top(vm, |vm, value| {
-            Number::new(
-                field(vm, value)
-                    .to_cons()
-                    .map(|cons| cons.tag() as _)
-                    .unwrap_or(Type::default() as _),
-            )
-            .into()
-        })
-    }
 }
 
 impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
@@ -81,27 +104,28 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
         match primitive {
             Primitive::RIB => {
                 let [r#type, car, cdr, tag] = Self::pop_arguments::<4>(vm);
-                let rib = vm.allocate(
-                    car.set_tag(r#type.assume_number().to_i64() as u8),
-                    cdr.set_tag(tag.assume_number().to_i64() as u8),
+
+                Self::rib(
+                    vm,
+                    r#type.assume_number().to_i64() as u8,
+                    car,
+                    cdr,
+                    tag.assume_number().to_i64() as u8,
                 )?;
-                vm.set_top(rib.into());
             }
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments::<2>(vm);
-                let cons = vm.allocate(car.set_tag(Type::Pair as u8), cdr)?;
-                vm.set_top(cons.into());
+
+                Self::rib(vm, Type::Pair as u8, car, cdr, Default::default())?;
             }
             Primitive::CLOSE => {
-                let cons = vm.allocate(
-                    vm.cdr(vm.stack())
-                        .assume_cons()
-                        .set_tag(Type::Procedure as u8)
-                        .into(),
+                Self::rib(
+                    vm,
+                    Type::Procedure as u8,
+                    vm.cdr(vm.stack()),
                     vm.cdr_value(vm.top()),
+                    Default::default(),
                 )?;
-
-                vm.set_top(cons.into());
             }
             Primitive::IS_RIB => {
                 Self::operate_top(vm, |vm, value| vm.boolean(value.is_cons()).into())
@@ -134,22 +158,8 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     vm.boolean(false).into()
                 })?;
             }
-            Primitive::WRITE => {
-                let byte = vm.top().assume_number().to_i64() as u8;
-
-                vm.primitive_set_mut()
-                    .device
-                    .write(byte)
-                    .map_err(|_| Error::WriteOutput)?
-            }
-            Primitive::WRITE_ERROR => {
-                let byte = vm.top().assume_number().to_i64() as u8;
-
-                vm.primitive_set_mut()
-                    .device
-                    .write_error(byte)
-                    .map_err(|_| Error::WriteError)?
-            }
+            Primitive::WRITE => Self::write(vm, Device::write, Error::WriteOutput)?,
+            Primitive::WRITE_ERROR => Self::write(vm, Device::write_error, Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
             _ => return Err(Error::Illegal),
         }
