@@ -354,6 +354,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     pub fn pop(&mut self) -> Value {
+        debug_assert_ne!(self.stack, self.null());
+
         let value = self.car(self.stack);
         self.stack = self.cdr(self.stack).assume_cons();
         value
