@@ -66,7 +66,6 @@
 
 (define primitives
   '(
-    ($$cons 1)
     ($$close 2)
     ($$- 13)))
 
@@ -658,7 +657,7 @@
       (($$close)
         1)
 
-      (($$cons $$-)
+      (($$-)
         2)
 
       (($$rib)
@@ -897,11 +896,10 @@
               (compile-primitive-call '$$- (continue)))))
 
         ((pair? constant)
-          (build-child-constants
-            context
+          (build-rib
+            pair-type
             (car constant)
-            (cdr constant)
-            (lambda () (compile-primitive-call '$$cons (continue)))))
+            (cdr constant)))
 
         ((string? constant)
           (build-rib
