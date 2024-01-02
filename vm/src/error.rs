@@ -11,7 +11,6 @@ pub enum Error {
     NumberExpected,
     OutOfMemory,
     ProcedureExpected,
-    StackUnderflow,
 }
 
 #[cfg(feature = "std")]
@@ -29,7 +28,6 @@ impl Display for Error {
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
-            Self::StackUnderflow => write!(formatter, "stack underflow"),
         }
     }
 }
