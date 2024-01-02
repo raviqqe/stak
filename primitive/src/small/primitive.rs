@@ -4,7 +4,7 @@ pub(super) enum Primitive {
     Rib,
     Cons,
     Close,
-    IsCons,
+    IsRib,
     Type,
     Car,
     Cdr,
@@ -27,7 +27,7 @@ impl Primitive {
     pub const RIB: u8 = Self::Rib as _;
     pub const CONS: u8 = Self::Cons as _;
     pub const CLOSE: u8 = Self::Close as _;
-    pub const IS_CONS: u8 = Self::IsCons as _;
+    pub const IS_RIB: u8 = Self::IsRib as _;
     pub const TYPE: u8 = Self::Type as _;
     pub const CAR: u8 = Self::Car as _;
     pub const CDR: u8 = Self::Cdr as _;
