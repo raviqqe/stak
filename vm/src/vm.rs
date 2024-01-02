@@ -123,10 +123,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             match instruction.tag() {
                 code::Instruction::CALL => self.call(instruction)?,
-                code::Instruction::SET => self.set()?,
+                code::Instruction::SET => self.set(),
                 code::Instruction::GET => self.get()?,
                 code::Instruction::CONSTANT => self.constant()?,
-                code::Instruction::IF => self.r#if()?,
+                code::Instruction::IF => self.r#if(),
                 code::Instruction::NOP => self.advance_program_counter(),
                 _ => return Err(Error::IllegalInstruction.into()),
             }
@@ -217,7 +217,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn set(&mut self) -> Result<(), T::Error> {
+    fn set(&mut self) {
         match self.operand().to_typed() {
             TypedValue::Cons(cons) => {
                 let value = self.pop();
@@ -231,8 +231,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
 
         self.advance_program_counter();
-
-        Ok(())
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
@@ -260,15 +258,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn r#if(&mut self) -> Result<(), T::Error> {
+    fn r#if(&mut self) {
         self.program_counter = (if self.pop() == self.boolean(false).into() {
             self.cdr(self.program_counter)
         } else {
             self.operand()
         })
         .assume_cons();
-
-        Ok(())
     }
 
     fn parse_argument_count(info: Number) -> ArgumentInfo {
