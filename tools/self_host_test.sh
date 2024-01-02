@@ -27,11 +27,11 @@ artifact_path() {
 
 cd $(dirname $0)/..
 
-export PATH=$(dirname $0)/../target/release:$PATH
+export PATH=$(dirname $0)/../target/integration_test:$PATH
 
 mkdir -p tmp
 brew install gauche
-RUSTFLAGS=-g cargo build --release
+cargo build --profile integration_test
 
 for stage in $(seq $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage$stage >stage$(expr $stage + 1).out
