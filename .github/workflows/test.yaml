@@ -64,9 +64,6 @@ jobs:
             host: guile
           - name: stak
             host: gosh
-            features: [debug]
-          - name: stak
-            host: gosh
             features: [gc_always]
             tags: not @long
           - name: chibi

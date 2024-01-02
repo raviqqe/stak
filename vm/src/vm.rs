@@ -28,20 +28,6 @@ macro_rules! trace_heap {
     };
 }
 
-macro_rules! debug_assert {
-    ($condition:expr) => {
-        #[cfg(feature = "debug")]
-        assert!($condition);
-    };
-}
-
-macro_rules! debug_assert_eq {
-    ($lhs:expr, $rhs:expr) => {
-        #[cfg(feature = "debug")]
-        assert_eq!($lhs, $rhs);
-    };
-}
-
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
         assert_heap_cons!(
@@ -63,7 +49,6 @@ macro_rules! assert_heap_cons {
 
 macro_rules! assert_heap_value {
     ($self:expr, $cons:expr) => {
-        #[cfg(feature = "debug")]
         if let Some(cons) = $cons.to_cons() {
             assert_heap_cons!($self, cons);
         }

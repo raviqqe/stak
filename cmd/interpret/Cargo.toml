@@ -9,7 +9,6 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-debug = ["vm/debug"]
 gc_always = ["vm/gc_always"]
 no_inline = ["vm/no_inline"]
 trace = ["vm/trace"]
