@@ -123,10 +123,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             match instruction.tag() {
                 code::Instruction::CALL => self.call(instruction)?,
-                code::Instruction::SET => self.set()?,
+                code::Instruction::SET => self.set(),
                 code::Instruction::GET => self.get()?,
                 code::Instruction::CONSTANT => self.constant()?,
-                code::Instruction::IF => self.r#if()?,
+                code::Instruction::IF => self.r#if(),
                 code::Instruction::NOP => self.advance_program_counter(),
                 _ => return Err(Error::IllegalInstruction.into()),
             }
@@ -162,13 +162,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.temporary = procedure;
 
                 let mut list = if arguments.variadic {
-                    self.pop()?.assume_cons()
+                    self.pop().assume_cons()
                 } else {
                     self.null()
                 };
 
                 for _ in 0..arguments.count.to_i64() {
-                    let value = self.pop()?;
+                    let value = self.pop();
                     list = self.cons(value, list)?;
                 }
 
@@ -217,22 +217,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn set(&mut self) -> Result<(), T::Error> {
+    fn set(&mut self) {
         match self.operand().to_typed() {
             TypedValue::Cons(cons) => {
-                let value = self.pop()?;
+                let value = self.pop();
                 self.set_cdr(cons, value);
             }
             TypedValue::Number(index) => {
                 let cons = self.tail(self.stack, index);
-                let value = self.pop()?;
+                let value = self.pop();
                 self.set_car(cons, value)
             }
         }
 
         self.advance_program_counter();
-
-        Ok(())
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
@@ -260,15 +258,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
-    fn r#if(&mut self) -> Result<(), T::Error> {
-        self.program_counter = (if self.pop()? == self.boolean(false).into() {
+    fn r#if(&mut self) {
+        self.program_counter = (if self.pop() == self.boolean(false).into() {
             self.cdr(self.program_counter)
         } else {
             self.operand()
         })
         .assume_cons();
-
-        Ok(())
     }
 
     fn parse_argument_count(info: Number) -> ArgumentInfo {
@@ -357,14 +353,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    pub fn pop(&mut self) -> Result<Value, T::Error> {
-        if self.stack == self.null() {
-            return Err(Error::StackUnderflow.into());
-        }
+    pub fn pop(&mut self) -> Value {
+        debug_assert_ne!(self.stack, self.null());
 
         let value = self.car(self.stack);
         self.stack = self.cdr(self.stack).assume_cons();
-        Ok(value)
+        value
     }
 
     pub fn top(&self) -> Value {
@@ -710,7 +704,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code::Instruction::IF => {
                     let then = self.program_counter;
 
-                    self.program_counter = self.pop()?.assume_cons();
+                    self.program_counter = self.pop().assume_cons();
 
                     self.append_instruction(instruction, then.into(), false)?
                 }
@@ -722,7 +716,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let procedure =
                         self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
 
-                    self.program_counter = self.pop()?.assume_cons();
+                    self.program_counter = self.pop().assume_cons();
 
                     self.append_instruction(
                         code::Instruction::CONSTANT,
@@ -975,7 +969,7 @@ mod tests {
             vm.stack = vm.null();
             vm.push(Number::new(42).into()).unwrap();
 
-            assert_eq!(vm.pop(), Ok(Number::new(42).into()));
+            assert_eq!(vm.pop(), Number::new(42).into());
         }
 
         #[test]
@@ -987,8 +981,8 @@ mod tests {
             vm.push(Number::new(1).into()).unwrap();
             vm.push(Number::new(2).into()).unwrap();
 
-            assert_eq!(vm.pop(), Ok(Number::new(2).into()));
-            assert_eq!(vm.pop(), Ok(Number::new(1).into()));
+            assert_eq!(vm.pop(), Number::new(2).into());
+            assert_eq!(vm.pop(), Number::new(1).into());
         }
     }
 
