@@ -413,9 +413,6 @@
 (define (data-rib type car cdr)
   (rib type car cdr 0))
 
-(define (cons car cdr)
-  (data-rib pair-type car cdr))
-
 (define (apply f xs)
   ($$apply f xs))
 
@@ -616,6 +613,9 @@
     (and
       (pair? x)
       (list? (cdr x)))))
+
+(define (cons car cdr)
+  (data-rib pair-type car cdr))
 
 (define car rib-car)
 (define cdr rib-cdr)
