@@ -58,8 +58,8 @@ impl<T: Device> SmallPrimitiveSet<T> {
         })
     }
 
-    fn write<'a>(
-        vm: &mut Vm<'a, Self>,
+    fn write(
+        vm: &mut Vm<Self>,
         write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
         error: Error,
     ) -> Result<(), Error> {
