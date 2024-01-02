@@ -390,6 +390,7 @@
 
 (define (primitive id) ($$rib procedure-type '() id 0))
 
+(define rib $$rib)
 (define cons (primitive 1))
 (define close (primitive 2))
 (define rib? (primitive 3))
