@@ -168,6 +168,19 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .map_err(|_| Error::WriteError)?
             }
             Primitive::HALT => return Err(Error::Halt),
+            Primitive::CODE => {
+                let [car, cdr, tag] = Self::pop_arguments::<3>(vm)?;
+                let rib = vm.allocate(
+                    car.set_tag(Type::Pair as u8),
+                    cdr.set_tag(tag.assume_number().to_i64() as u8),
+                )?;
+                vm.set_top(rib.into());
+            }
+            Primitive::DATA => {
+                let [r#type, car, cdr] = Self::pop_arguments::<3>(vm)?;
+                let rib = vm.allocate(car.set_tag(r#type.assume_number().to_i64() as u8), cdr)?;
+                vm.set_top(rib.into());
+            }
             _ => return Err(Error::Illegal),
         }
 

@@ -390,7 +390,6 @@
 
 (define (primitive id) ($$rib procedure-type '() id 0))
 
-(define rib $$rib)
 (define cons (primitive 1))
 (define close (primitive 2))
 (define rib? (primitive 3))
@@ -410,9 +409,8 @@
 (define $$write-u8 (primitive 17))
 (define $$write-error-u8 (primitive 18))
 (define $$halt (primitive 19))
-
-(define (data-rib type car cdr)
-  (rib type car cdr 0))
+(define code-rib (primitive 20))
+(define data-rib (primitive 21))
 
 (define (apply f xs)
   ($$apply f xs))
@@ -1577,8 +1575,6 @@
 ; Compiler utility
 
 ; TODO Move those to a compiler when `cond-expand` is implemented.
-(define (code-rib tag car cdr)
-  (rib pair-type car cdr tag))
 (define cons-rib cons)
 (define target-pair? pair?)
 (define target-procedure? procedure?)
