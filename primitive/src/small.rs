@@ -123,9 +123,9 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::IS_RIB => {
                 Self::operate_top(vm, |vm, value| vm.boolean(value.is_cons()).into())?
             }
-            Primitive::TYPE => Self::tag(vm, Vm::car_value)?,
             Primitive::CAR => Self::operate_top(vm, Vm::car_value)?,
             Primitive::CDR => Self::operate_top(vm, Vm::cdr_value)?,
+            Primitive::TYPE => Self::tag(vm, Vm::car_value)?,
             Primitive::TAG => Self::tag(vm, Vm::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(vm, Vm::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(vm, Vm::set_cdr_value)?,
