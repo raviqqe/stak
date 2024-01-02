@@ -32,13 +32,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
     }
 
-    fn rib<'a>(
-        vm: &mut Vm<'a, Self>,
-        r#type: u8,
-        car: Value,
-        cdr: Value,
-        tag: u8,
-    ) -> Result<(), Error> {
+    fn rib(vm: &mut Vm<Self>, r#type: u8, car: Value, cdr: Value, tag: u8) -> Result<(), Error> {
         let rib = vm.allocate(car.set_tag(r#type), cdr.set_tag(tag))?;
         vm.set_top(rib.into());
 
