@@ -152,7 +152,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             }
             Primitive::HALT => return Err(Error::Halt),
             Primitive::CODE => {
-                let [tag, car, cdr] = Self::pop_arguments::<3>(vm)?;
+                let [tag, car, cdr] = Self::pop_arguments::<3>(vm);
                 let rib = vm.allocate(
                     car.set_tag(Type::Pair as u8),
                     cdr.set_tag(tag.assume_number().to_i64() as u8),
@@ -160,7 +160,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 vm.set_top(rib.into());
             }
             Primitive::DATA => {
-                let [r#type, car, cdr] = Self::pop_arguments::<3>(vm)?;
+                let [r#type, car, cdr] = Self::pop_arguments::<3>(vm);
                 let rib = vm.allocate(car.set_tag(r#type.assume_number().to_i64() as u8), cdr)?;
                 vm.set_top(rib.into());
             }
