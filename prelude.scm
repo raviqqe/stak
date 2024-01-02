@@ -391,7 +391,6 @@
 (define (primitive id) ($$rib procedure-type '() id 0))
 
 (define rib $$rib)
-(define cons (primitive 1))
 (define close (primitive 2))
 (define rib? (primitive 3))
 (define rib-car (primitive 4))
@@ -413,6 +412,9 @@
 
 (define (data-rib type car cdr)
   (rib type car cdr 0))
+
+(define (cons car cdr)
+  (data-rib pair-type car cdr))
 
 (define (apply f xs)
   ($$apply f xs))

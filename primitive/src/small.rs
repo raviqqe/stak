@@ -87,11 +87,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 )?;
                 vm.set_top(rib.into());
             }
-            Primitive::CONS => {
-                let [car, cdr] = Self::pop_arguments::<2>(vm);
-                let cons = vm.allocate(car.set_tag(Type::Pair as u8), cdr)?;
-                vm.set_top(cons.into());
-            }
+            Primitive::CONS => return Err(Error::Illegal),
             Primitive::CLOSE => {
                 let cons = vm.allocate(
                     vm.cdr(vm.stack())
