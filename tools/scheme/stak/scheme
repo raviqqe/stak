@@ -12,7 +12,7 @@ compile() {
   fi
 }
 
-export PATH=$directory/target/release:$PATH
+export PATH=$directory/target/integration_test:$PATH
 
 cat $directory/prelude.scm "$@" | compile >main.out
 stak-decode <main.out >/dev/null
