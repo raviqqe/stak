@@ -344,7 +344,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T::Error> {
-        self.allocate(car, cdr.into())
+        self.allocate(car.set_tag(Type::Pair as u8), cdr.into())
     }
 
     pub fn stack(&self) -> Cons {
@@ -402,8 +402,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         assert_heap_cons!(self, cons);
 
-        self.set_car(cons, car);
-        self.set_cdr(cons, cdr);
+        self.set_raw_car(cons, car);
+        self.set_raw_cdr(cons, cdr);
 
         debug_assert!(self.allocation_index <= self.space_size());
 
@@ -464,12 +464,32 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.cdr(cons.assume_cons())
     }
 
+    fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
+        *self.heap_mut(cons.index() + index) = value;
+    }
+
+    fn set_raw_car(&mut self, cons: Cons, value: Value) {
+        self.set_raw_field(cons, 0, value)
+    }
+
+    fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+        self.set_raw_field(cons, 1, value)
+    }
+
+    fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
+        self.set_raw_field(
+            cons,
+            index,
+            value.set_tag(self.heap(cons.index() + index).tag()),
+        )
+    }
+
     pub fn set_car(&mut self, cons: Cons, value: Value) {
-        *self.heap_mut(cons.index()) = value
+        self.set_field(cons, 0, value)
     }
 
     pub fn set_cdr(&mut self, cons: Cons, value: Value) {
-        *self.heap_mut(cons.index() + 1) = value;
+        self.set_field(cons, 1, value)
     }
 
     fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
@@ -488,22 +508,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.set_cdr(cons.assume_cons(), value);
     }
 
-    // TODO Omit a tag reset somehow.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.car(self.r#false)
-                .assume_cons()
-                .set_tag(Default::default())
+            self.car(self.r#false).assume_cons()
         } else {
             self.r#false
         }
     }
 
-    // TODO Omit a tag reset somehow.
     pub fn null(&self) -> Cons {
-        self.cdr(self.r#false)
-            .assume_cons()
-            .set_tag(Default::default())
+        self.cdr(self.r#false).assume_cons()
     }
 
     // Garbage collection
@@ -621,7 +635,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        let rib = self.allocate(NEVER.into(), Number::default().into())?;
+        let rib = self.allocate(
+            NEVER.set_tag(Type::Procedure as u8).into(),
+            Number::default().into(),
+        )?;
 
         self.initialize_symbol(rib.into())?;
         self.initialize_symbol(self.null().into())?;
@@ -632,7 +649,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // library.
         self.set_car_value(
             self.cdr_value(self.car(self.tail(self.stack, Number::new(3)))),
-            self.stack.set_tag(Type::Procedure as u8).into(),
+            self.stack.into(),
         );
 
         // Allow access to a symbol table during decoding.
