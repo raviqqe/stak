@@ -11,6 +11,58 @@ Feature: cond-expand
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Match an implemented feature
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand
+      (r7rs
+        (write-u8 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a missing feature
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand
+      (r0rs
+        (write-u8 65))
+      (else
+        (write-u8 66)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  Scenario: Match an implemented library
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand
+      ((library (scheme base))
+        (write-u8 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Match a missing library
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand
+      ((library (scheme miracle))
+        (write-u8 65))
+      (else
+        (write-u8 66)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
   Rule: `and`
     Scenario: Expand no requirement
       Given a file named "main.scm" with:

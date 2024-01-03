@@ -134,10 +134,10 @@
         clause
         ...))
 
-    ; ((_ ((not requirement) body ...) clause ...)
-    ;   (cond-expand
-    ;     (requirement (cond-expand clause ...))
-    ;     (else body ...)))
+    ((_ ((not requirement) body ...) clause ...)
+      (cond-expand
+        (requirement (cond-expand clause ...))
+        (else body ...)))
 
     ((_ (r7rs body ...) clause ...)
       (begin body ...))
