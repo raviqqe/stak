@@ -29,7 +29,7 @@ Feature: cond-expand
     (import (scheme base))
 
     (cond-expand
-      (r0rs
+      (foo
         (write-u8 65))
       (else
         (write-u8 66)))
@@ -62,6 +62,18 @@ Feature: cond-expand
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
+
+  Scenario: Use a `not` requirement
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand
+      ((not foo)
+        (write-u8 65)))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
 
   Rule: `and`
     Scenario: Expand no requirement
