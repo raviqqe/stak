@@ -110,9 +110,72 @@
       ($$set! name value))))
 
 (define-syntax cond-expand
-  (syntax-rules ()
-    ((_ clause ...)
-      #f)))
+  (syntax-rules (and or not else r7rs library scheme base)
+    ((cond-expand (else body ...))
+      (begin body ...))
+
+    ((cond-expand ((and) body ...) clause ...)
+      (begin body ...))
+
+    ((cond-expand ((and req1 req2 ...) body ...) clause ...)
+      (cond-expand
+        (req1
+          (cond-expand
+            ((and req2 ...) body ...)
+            clause
+            ...))
+        clause
+        ...))
+
+    ((cond-expand ((or) body ...) clause ...)
+      (cond-expand clause ...))
+
+    ((cond-expand ((or req1 req2 ...) body ...)
+        clause
+        ...)
+      (cond-expand
+        (req1
+          (begin body ...))
+        (else
+          (cond-expand
+            ((or req2 ...) body ...)
+            clause
+            ...))))
+    ((cond-expand ((not req) body ...)
+        clause
+        ...)
+      (cond-expand
+        (req
+          (cond-expand clause ...))
+        (else body ...)))
+    ((cond-expand (r7rs body ...)
+        clause
+        ...)
+      (begin body ...))
+
+    ;; Add clauses here for each
+    ;; supported feature identifier.
+    ;; Samples:
+    ;; ((cond-expand (exact-closed body ...)
+    ;; clause ...)
+    ;; (begin body ...))
+    ;; ((cond-expand (ieee-float body ...)
+    ;; clause ...)
+    ;; (begin body ...))
+
+    ((cond-expand ((library (scheme base))
+          body
+          ...)
+        clause
+        ...)
+      (begin body ...))
+
+    ;; Add clauses here for each library.
+    ((_ (feature-id body ...) clause ...)
+      (cond-expand clause ...))
+
+    ((_ ((library (name ...)) body ...) clause ...)
+      (cond-expand clause ...))))
 
 ;; Library system
 
