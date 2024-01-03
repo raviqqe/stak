@@ -139,6 +139,12 @@
         (requirement (cond-expand clause ...))
         (else body ...)))
 
+    ((_ ((library (scheme base)) body ...) clause ...)
+      (begin body ...))
+
+    ((_ ((library (name ...)) body ...) clause ...)
+      (cond-expand clause ...))
+
     ((_ (r7rs body ...) clause ...)
       (begin body ...))
 
@@ -146,12 +152,6 @@
       (begin body ...))
 
     ((_ (feature body ...) clause ...)
-      (cond-expand clause ...))
-
-    ((_ ((library (scheme base)) body ...) clause ...)
-      (begin body ...))
-
-    ((_ ((library (name ...)) body ...) clause ...)
       (cond-expand clause ...))))
 
 ;; Library system
