@@ -110,69 +110,46 @@
       ($$set! name value))))
 
 (define-syntax cond-expand
-  (syntax-rules (and or not else r7rs library scheme base)
-    ((cond-expand (else body ...))
+  (syntax-rules (and or not else r7rs library scheme base stak)
+    ((_ (else body ...))
       (begin body ...))
 
-    ((cond-expand ((and) body ...) clause ...)
+    ((_ ((and) body ...) clause ...)
       (begin body ...))
 
-    ((cond-expand ((and req1 req2 ...) body ...) clause ...)
+    ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
       (cond-expand
-        (req1
-          (cond-expand
-            ((and req2 ...) body ...)
-            clause
-            ...))
+        (requirement1
+          (cond-expand ((and requirement2 ...) body ...) clause ...))
         clause
         ...))
 
-    ((cond-expand ((or) body ...) clause ...)
+    ((_ ((or) body ...) clause ...)
       (cond-expand clause ...))
 
-    ((cond-expand ((or req1 req2 ...) body ...)
-        clause
-        ...)
+    ((_ ((or requirement1 requirement2 ...) body ...) clause ...)
       (cond-expand
-        (req1
-          (begin body ...))
-        (else
-          (cond-expand
-            ((or req2 ...) body ...)
-            clause
-            ...))))
-    ((cond-expand ((not req) body ...)
+        (requirement1 body ...)
+        ((or requirement2 ...) body ...)
         clause
-        ...)
-      (cond-expand
-        (req
-          (cond-expand clause ...))
-        (else body ...)))
-    ((cond-expand (r7rs body ...)
-        clause
-        ...)
+        ...))
+
+    ; ((_ ((not requirement) body ...) clause ...)
+    ;   (cond-expand
+    ;     (requirement (cond-expand clause ...))
+    ;     (else body ...)))
+
+    ((_ (r7rs body ...) clause ...)
       (begin body ...))
 
-    ;; Add clauses here for each
-    ;; supported feature identifier.
-    ;; Samples:
-    ;; ((cond-expand (exact-closed body ...)
-    ;; clause ...)
-    ;; (begin body ...))
-    ;; ((cond-expand (ieee-float body ...)
-    ;; clause ...)
-    ;; (begin body ...))
-
-    ((cond-expand ((library (scheme base))
-          body
-          ...)
-        clause
-        ...)
+    ((_ (stak body ...) clause ...)
       (begin body ...))
 
-    ;; Add clauses here for each library.
-    ((_ (feature-id body ...) clause ...)
+    ((_ (feature body ...) clause ...)
       (cond-expand clause ...))
+
+    ((_ ((library (scheme base)) body ...) clause ...)
+      (begin body ...))
 
     ((_ ((library (name ...)) body ...) clause ...)
       (cond-expand clause ...))))
