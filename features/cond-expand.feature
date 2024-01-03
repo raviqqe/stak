@@ -63,6 +63,26 @@ Feature: cond-expand
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 
+  Scenario: Expand an empty clause
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand (r7rs))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
+  Scenario: Expand an empty `else` clause
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base))
+
+    (cond-expand (else))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
   Scenario: Use a `not` requirement
     Given a file named "main.scm" with:
     """scheme

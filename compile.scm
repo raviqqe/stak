@@ -36,9 +36,7 @@
     (define (target-procedure? value)
       (instance? value procedure-type)))
 
-  (else
-    ; TODO
-    #f))
+  (else))
 
 ; Constants
 
