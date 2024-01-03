@@ -83,6 +83,14 @@
     ((_ value1 value2 ...)
       ($$begin value1 value2 ...))))
 
+(define-syntax relaxed-begin
+  (syntax-rules ()
+    ((_)
+      #f)
+
+    ((_ body ...)
+      (begin body ...))))
+
 (define-syntax quasiquote
   (syntax-rules (unquote unquote-splicing)
     ((_ (unquote value))
@@ -109,21 +117,13 @@
     ((_ name value)
       ($$set! name value))))
 
-(define-syntax cond-begin
-  (syntax-rules ()
-    ((_)
-      #f)
-
-    ((_ body ...)
-      (begin body ...))))
-
 (define-syntax cond-expand
   (syntax-rules (and or not else r7rs library scheme base stak)
     ((_ (else body ...))
-      (cond-begin body ...))
+      (relaxed-begin body ...))
 
     ((_ ((and) body ...) clause ...)
-      (cond-begin body ...))
+      (relaxed-begin body ...))
 
     ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
       (cond-expand
@@ -154,16 +154,16 @@
         (else body ...)))
 
     ((_ ((library (scheme base)) body ...) clause ...)
-      (cond-begin body ...))
+      (relaxed-begin body ...))
 
     ((_ ((library (name ...)) body ...) clause ...)
       (cond-expand clause ...))
 
     ((_ (r7rs body ...) clause ...)
-      (cond-begin body ...))
+      (relaxed-begin body ...))
 
     ((_ (stak body ...) clause ...)
-      (cond-begin body ...))
+      (relaxed-begin body ...))
 
     ((_ (feature body ...) clause ...)
       (cond-expand clause ...))))
