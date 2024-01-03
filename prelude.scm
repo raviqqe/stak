@@ -120,7 +120,10 @@
     ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
       (cond-expand
         (requirement1
-          (cond-expand ((and requirement2 ...) body ...) clause ...))
+          (cond-expand
+            ((and requirement2 ...) body ...)
+            clause
+            ...))
         clause
         ...))
 
@@ -136,7 +139,10 @@
 
     ((_ ((not requirement) body ...) clause ...)
       (cond-expand
-        (requirement (cond-expand clause ...))
+        (requirement
+          (cond-expand
+            clause
+            ...))
         (else body ...)))
 
     ((_ ((library (scheme base)) body ...) clause ...)
