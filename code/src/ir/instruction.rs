@@ -40,6 +40,7 @@ impl Instruction {
     pub const CLOSE: u8 = 6;
     pub const SKIP: u8 = 7;
 
+    /// Displays instructions in a slice.
     #[cfg(feature = "alloc")]
     pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
         DisplayInstructionList::new(instructions, 0)
