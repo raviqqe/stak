@@ -1626,12 +1626,3 @@
 
 (define (exit . rest)
   (unwind (lambda () (apply emergency-exit rest))))
-
-; Compiler utility
-
-; TODO Move those to a compiler when `cond-expand` is implemented.
-(define (code-rib tag car cdr)
-  (rib pair-type car cdr tag))
-(define cons-rib cons)
-(define target-pair? pair?)
-(define target-procedure? procedure?)
