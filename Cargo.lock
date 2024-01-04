@@ -131,6 +131,8 @@ version = "0.2.1"
 dependencies = [
  "insta",
  "stak-code",
+ "stak-device",
+ "stak-primitive",
 ]
 
 [[package]]

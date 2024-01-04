@@ -10,6 +10,7 @@ use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
 };
+use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: u8 = 1;
@@ -62,6 +63,22 @@ struct ArgumentInfo {
 }
 
 /// A virtual machine.
+///
+/// # Examples
+///
+/// ```rust
+/// use stak_code::{encode, Program};
+/// use stak_device::FixedBufferDevice;
+/// use stak_primitive::SmallPrimitiveSet;
+/// use stak_vm::Vm;
+///
+/// let mut heap = [Default::default(); 1 << 10];
+/// let mut device = FixedBufferDevice::<0, 0, 0>::new();
+/// let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
+///
+/// vm.initialize(encode(&Program::new(vec![], vec![]))).unwrap();
+/// vm.run().unwrap();
+/// ```
 #[derive(Debug)]
 pub struct Vm<'a, T: PrimitiveSet> {
     primitive_set: T,
