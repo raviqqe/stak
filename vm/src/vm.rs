@@ -101,6 +101,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(vm)
     }
 
+    /// Runs a virtual machine.
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.program_counter != self.null() {
@@ -330,16 +331,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.allocate(car.set_tag(Type::Pair as u8), cdr.into())
     }
 
+    /// Returns a current stack.
     pub fn stack(&self) -> Cons {
         self.stack
     }
 
+    /// Pushes a value to a stack.
     pub fn push(&mut self, value: Value) -> Result<(), T::Error> {
         self.stack = self.cons(value, self.stack)?;
 
         Ok(())
     }
 
+    /// Pops a value from a stack.
     pub fn pop(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
@@ -348,14 +352,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         value
     }
 
+    /// Returns a value at the top of a stack.
     pub fn top(&self) -> Value {
         self.car(self.stack)
     }
 
+    /// Sets a value at the top of a stack.
     pub fn set_top(&mut self, value: Value) {
         self.set_car(self.stack, value);
     }
 
+    /// Allocates a cons on heap.
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
@@ -421,10 +428,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self.heap[index]
     }
 
+    /// Returns a value of a `car` field in a cons.
     pub fn car(&self, cons: Cons) -> Value {
         self.heap(cons.index())
     }
 
+    /// Returns a value of a `cdr` field in a cons.
     pub fn cdr(&self, cons: Cons) -> Value {
         self.heap(cons.index() + 1)
     }
@@ -437,10 +446,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.heap[cons.index() + 1]
     }
 
+    /// Returns a value of a `car` field in a value assumed as a cons.
     pub fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
 
+    /// Returns a value of a `cdr` field in a value assumed as a cons.
     pub fn cdr_value(&self, cons: Value) -> Value {
         self.cdr(cons.assume_cons())
     }
@@ -465,10 +476,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         )
     }
 
+    /// Sets a value to a `car` field in a cons.
     pub fn set_car(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 0, value)
     }
 
+    /// Sets a value to a `cdr` field in a cons.
     pub fn set_cdr(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 1, value)
     }
@@ -481,10 +494,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.heap[cons.index() + 1] = value;
     }
 
+    /// Sets a value to a `car` field in a value assumed as a cons.
     pub fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
+    /// Sets a value to a `cdr` field in a value assumed as a cons.
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
