@@ -1172,15 +1172,10 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Get(Operand::Symbol(symbol_index::NULL)),
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(3)),
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::If(vec![Instruction::Call(
-                        0,
-                        Operand::Symbol(symbol_index::RIB),
-                    )]),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                 ],
             ));
         }
