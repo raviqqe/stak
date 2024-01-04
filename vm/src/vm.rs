@@ -504,6 +504,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.set_cdr(cons.assume_cons(), value);
     }
 
+    /// Returns a boolean value.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
             self.car(self.r#false).assume_cons()
@@ -512,6 +513,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
+    /// Returns a null value.
     pub fn null(&self) -> Cons {
         self.cdr(self.r#false).assume_cons()
     }
@@ -571,6 +573,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // Initialization
 
+    /// Initializes a virtual machine with bytecodes of a program.
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T::Error> {
         let mut input = input.into_iter();
@@ -819,10 +822,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // For primitive sets.
 
+    /// Returns a reference to a primitive set.
     pub fn primitive_set(&self) -> &T {
         &self.primitive_set
     }
 
+    /// Returns a mutable reference to a primitive set.
     pub fn primitive_set_mut(&mut self) -> &mut T {
         &mut self.primitive_set
     }
