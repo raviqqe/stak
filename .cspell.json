@@ -6,6 +6,7 @@
     "assq",
     "assv",
     "astro",
+    "bytecodes",
     "bytevector",
     "chibi",
     "clippy",

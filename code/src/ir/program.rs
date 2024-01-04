@@ -4,6 +4,7 @@ use core::fmt::{self, Display, Formatter};
 
 const ESCAPED_SIGNS: &[&str] = &["\\", "+", "*", "_"];
 
+/// A program on Stak VM.
 #[derive(Debug, Eq, PartialEq)]
 pub struct Program {
     symbols: Vec<String>,
@@ -11,6 +12,7 @@ pub struct Program {
 }
 
 impl Program {
+    /// Creates a program.
     pub fn new(symbols: Vec<String>, instructions: Vec<Instruction>) -> Self {
         Self {
             symbols,
@@ -18,10 +20,12 @@ impl Program {
         }
     }
 
+    /// Returns symbols in a program.
     pub fn symbols(&self) -> &[String] {
         &self.symbols
     }
 
+    /// Returns instructions in a program.
     pub fn instructions(&self) -> &[Instruction] {
         &self.instructions
     }

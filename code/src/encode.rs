@@ -1,6 +1,7 @@
 use crate::{Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE};
 use alloc::{string::String, vec, vec::Vec};
 
+/// Encodes a program.
 pub fn encode(program: &Program) -> Vec<u8> {
     let mut codes = vec![];
 

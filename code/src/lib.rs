@@ -21,9 +21,13 @@ pub use encode::encode;
 pub use error::Error;
 pub use ir::*;
 
-pub const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
+/// A number of bits required to encode an instruction in bytecodes.
 pub const INSTRUCTION_BITS: u64 = 4;
+/// A mask for instruction bits in bytecodes.
 pub const INSTRUCTION_MASK: u8 = (1 << INSTRUCTION_BITS) - 1;
+/// A base for integer encoding in bytecodes.
+pub const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
+/// A base for short integer encoding in bytecodes.
 pub const SHORT_INTEGER_BASE: u64 = 1 << (8 - INSTRUCTION_BITS - 1);
 
 #[cfg(test)]
