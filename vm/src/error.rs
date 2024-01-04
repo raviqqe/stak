@@ -1,19 +1,19 @@
 use core::fmt::{self, Debug, Display, Formatter};
 
-/// An error.
+/// An error of a virtual machine.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     /// Mismatched numbers of call arguments and function parameters.
     ArgumentCount,
     /// A cons expected.
     ConsExpected,
-    /// An unexpected end of input.
+    /// An unexpected end of input in bytecodes.
     EndOfInput,
     /// An illegal instruction detected.
     IllegalInstruction,
-    /// A missing integer.
+    /// A missing integer in bytecodes.
     MissingInteger,
-    /// A missing operand.
+    /// A missing operand in bytecodes.
     MissingOperand,
     /// A number expected.
     NumberExpected,

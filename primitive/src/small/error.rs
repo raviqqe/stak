@@ -1,6 +1,6 @@
 use core::fmt::{self, Display, Formatter};
 
-/// An error.
+/// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     /// A halt of a virtual machine.

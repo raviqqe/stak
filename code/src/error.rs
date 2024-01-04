@@ -1,7 +1,7 @@
 use alloc::string::FromUtf8Error;
 use core::fmt::{self, Display, Formatter};
 
-/// An error.
+/// An error of encoding and decoding
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     /// An unexpected end of input.
