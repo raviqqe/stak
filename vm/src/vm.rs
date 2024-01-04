@@ -1234,12 +1234,21 @@ mod tests {
         }
 
         #[test]
-        fn r#if() {
+        fn if_with_false() {
             run_program(&Program::new(
                 vec![],
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                ],
+            ));
+        }
+
+        #[test]
+        fn if_with_true() {
+            run_program(&Program::new(
+                vec![],
+                vec![
                     Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                 ],
@@ -1251,9 +1260,9 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
-                    Instruction::Constant(Operand::Integer(2)),
                 ],
             ));
         }
@@ -1263,13 +1272,13 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![
-                        Instruction::Constant(Operand::Integer(1)),
+                        Instruction::Constant(Operand::Integer(0)),
                         Instruction::Skip(1),
                     ]),
-                    Instruction::Constant(Operand::Integer(2)),
-                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Operand::Integer(0)),
                 ],
             ));
         }
@@ -1279,11 +1288,11 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
-                    Instruction::Constant(Operand::Integer(2)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(3))]),
-                    Instruction::Constant(Operand::Integer(4)),
                 ],
             ));
         }
