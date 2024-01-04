@@ -3,6 +3,7 @@ use crate::{
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
+    symbol_index,
     value::{TypedValue, Value},
     Error,
 };
@@ -63,27 +64,6 @@ struct ArgumentInfo {
 }
 
 /// A virtual machine.
-///
-/// # Examples
-///
-/// ```rust
-/// use stak_code::{encode, Program};
-/// use stak_device::FixedBufferDevice;
-/// use stak_primitive::SmallPrimitiveSet;
-/// use stak_vm::Vm;
-///
-/// const BUFFER_SIZE: usize = 1 << 10;
-///
-/// let mut heap = [Default::default(); 1 << 10];
-/// let device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE, BUFFER_SIZE>::new();
-/// let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
-///
-/// // Replace this with actual bytecodes of your program.
-/// let program = encode(&Program::new(vec![], vec![]));
-///
-/// vm.initialize(program).unwrap();
-/// vm.run().unwrap();
-/// ```
 #[derive(Debug)]
 pub struct Vm<'a, T: PrimitiveSet> {
     primitive_set: T,
@@ -669,7 +649,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
         self.set_car_value(
-            self.cdr_value(self.car(self.tail(self.stack, Number::new(3)))),
+            self.cdr_value(self.car(self.tail(self.stack, Number::new(symbol_index::RIB as i64)))),
             self.stack.into(),
         );
 
