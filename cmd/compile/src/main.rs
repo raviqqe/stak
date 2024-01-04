@@ -1,4 +1,5 @@
-//! A command to compile a source file in Scheme into bytecodes for a virtual machine.
+//! A command to compile a source file in Scheme into bytecodes for a virtual
+//! machine.
 //!
 //! # Usage
 //!
