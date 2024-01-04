@@ -1,14 +1,19 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
+/// A number.
+///
+/// It represents a signed 63-bit integer.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
 pub struct Number(i64);
 
 impl Number {
+    /// Creates a number.
     pub const fn new(number: i64) -> Self {
         Self((number << 1) | 1)
     }
 
+    /// Converts a number to a 64-bit -integer.
     pub const fn to_i64(self) -> i64 {
         self.0 >> 1
     }

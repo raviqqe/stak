@@ -61,6 +61,7 @@ struct ArgumentInfo {
     variadic: bool,
 }
 
+/// A virtual machine.
 #[derive(Debug)]
 pub struct Vm<'a, T: PrimitiveSet> {
     primitive_set: T,
@@ -76,6 +77,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
 // Note that some routines look unnecessarily complicated as we need to mark all
 // volatile variables live across garbage collections.
 impl<'a, T: PrimitiveSet> Vm<'a, T> {
+    /// Creates a virtual machine.
     pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, T::Error> {
         let mut vm = Self {
             primitive_set,

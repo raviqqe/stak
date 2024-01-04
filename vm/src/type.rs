@@ -1,4 +1,4 @@
-#[allow(dead_code)]
+/// A type in Scheme.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum Type {
     #[default]

@@ -58,6 +58,13 @@ export default defineConfig({
             href: "/stak/manifest.json",
           },
         },
+        {
+          tag: "meta",
+          attrs: {
+            property: "og:image",
+            content: "/stak/icon.svg",
+          },
+        },
       ],
       logo: {
         src: "./public/icon.svg",

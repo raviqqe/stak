@@ -4,12 +4,19 @@ use core::fmt::{self, Display, Formatter};
 /// An error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
+    /// An unexpected end of input.
     EndOfInput,
+    /// An illegal instruction found.
     IllegalInstruction,
+    /// A closure missing its body.
     MissingClosureBody,
+    /// A missing integer.
     MissingInteger,
+    /// A missing operand.
     MissingOperand,
+    /// A missing `else` branch.
     MissingElseBranch,
+    /// An invalid UTF-8 string.
     Utf8(FromUtf8Error),
 }
 

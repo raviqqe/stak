@@ -4,7 +4,7 @@ use core::fmt::{self, Display, Formatter};
 
 const ESCAPED_SIGNS: &[&str] = &["\\", "+", "*", "_"];
 
-/// A program on Stak VM.
+/// A program on a virtual machine.
 #[derive(Debug, Eq, PartialEq)]
 pub struct Program {
     symbols: Vec<String>,
