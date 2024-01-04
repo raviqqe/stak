@@ -6,7 +6,7 @@
 //! # Usage
 //!
 //! ```sh
-//! stak-decode foo.bc
+//! stak-decode < foo.bc
 //! ```
 
 use code::decode;

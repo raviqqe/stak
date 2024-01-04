@@ -3,7 +3,7 @@
 //! # Usage
 //!
 //! ```sh
-//! stak-interpret < foo.bc
+//! stak-interpret foo.bc
 //! ```
 
 use device::StdioDevice;
