@@ -1,3 +1,11 @@
+//! A command to interpret a bytecode file.
+//!
+//! # Usage
+//!
+//! ```sh
+//! stak-interpret foo.bc
+//! ```
+
 use device::StdioDevice;
 use primitive::SmallPrimitiveSet;
 use std::{
