@@ -16,14 +16,12 @@
 
   (else
     (define-record-type *rib*
-      (make-rib type car cdr tag)
+      (rib type car cdr tag)
       rib?
       (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
-
-    (define rib make-rib)
 
     (define (cons-rib car cdr)
       (rib pair-type car cdr 0))
