@@ -9,23 +9,22 @@
   (scheme write))
 
 (cond-expand
-  ((or chibi gauche guile)
-    (define-record-type rib*
-      (make-rib type car cdr tag)
+  (stak
+    (define cons-rib cons)
+    (define target-pair? pair?)
+    (define target-procedure? procedure?))
+
+  (else
+    (define-record-type *rib*
+      (rib type car cdr tag)
       rib?
       (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
 
-    (define (code-rib tag car cdr)
-      (make-rib pair-type car cdr tag))
-
-    (define (data-rib type car cdr)
-      (make-rib type car cdr 0))
-
     (define (cons-rib car cdr)
-      (data-rib pair-type car cdr))
+      (rib pair-type car cdr 0))
 
     (define (instance? value type)
       (and (rib? value) (eqv? (rib-type value) type)))
@@ -34,9 +33,7 @@
       (instance? value pair-type))
 
     (define (target-procedure? value)
-      (instance? value procedure-type)))
-
-  (else))
+      (instance? value procedure-type))))
 
 ; Constants
 
@@ -83,6 +80,12 @@
 (define bytevector-type 8)
 
 ; Utility
+
+(define (code-rib tag car cdr)
+  (rib pair-type car cdr tag))
+
+(define (data-rib type car cdr)
+  (rib type car cdr 0))
 
 (define (call-rib arity function continuation)
   (code-rib call-instruction (cons-rib arity function) continuation))
