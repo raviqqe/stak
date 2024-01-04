@@ -1,13 +1,20 @@
 use core::fmt::{self, Display, Formatter};
 
+/// An error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
+    /// A halt of a virtual machine.
     Halt,
+    /// An illegal primitive.
     Illegal,
+    /// A failure to read from standard input.
     ReadInput,
+    /// A virtual machine error.
     Vm(vm::Error),
+    /// A failure to write to standard error.
     #[allow(clippy::enum_variant_names)]
     WriteError,
+    /// A failure to write to standard output.
     WriteOutput,
 }
 

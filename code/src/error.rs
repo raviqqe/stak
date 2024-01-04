@@ -6,7 +6,7 @@ use core::fmt::{self, Display, Formatter};
 pub enum Error {
     /// An unexpected end of input.
     EndOfInput,
-    /// An illegal instruction found.
+    /// An illegal instruction.
     IllegalInstruction,
     /// A closure missing its body.
     MissingClosureBody,
