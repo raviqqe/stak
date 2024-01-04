@@ -17,6 +17,16 @@ impl<T: Device> SmallPrimitiveSet<T> {
         Self { device }
     }
 
+    /// Returns a reference to a device.
+    pub fn device(&self) -> &T {
+        &self.device
+    }
+
+    /// Returns a mutable reference to a device.
+    pub fn device_mut(&mut self) -> &mut T {
+        &mut self.device
+    }
+
     fn operate_top<'a>(vm: &mut Vm<'a, Self>, operate: impl Fn(&Vm<'a, Self>, Value) -> Value) {
         vm.set_top(operate(vm, vm.top()));
     }

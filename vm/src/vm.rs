@@ -3,6 +3,7 @@ use crate::{
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
+    symbol_index,
     value::{TypedValue, Value},
     Error,
 };
@@ -10,6 +11,7 @@ use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
 };
+use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: u8 = 1;
@@ -101,6 +103,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(vm)
     }
 
+    /// Runs a virtual machine.
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.program_counter != self.null() {
@@ -330,16 +333,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.allocate(car.set_tag(Type::Pair as u8), cdr.into())
     }
 
+    /// Returns a current stack.
     pub fn stack(&self) -> Cons {
         self.stack
     }
 
+    /// Pushes a value to a stack.
     pub fn push(&mut self, value: Value) -> Result<(), T::Error> {
         self.stack = self.cons(value, self.stack)?;
 
         Ok(())
     }
 
+    /// Pops a value from a stack.
     pub fn pop(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
@@ -348,14 +354,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         value
     }
 
+    /// Returns a value at the top of a stack.
     pub fn top(&self) -> Value {
         self.car(self.stack)
     }
 
+    /// Sets a value at the top of a stack.
     pub fn set_top(&mut self, value: Value) {
         self.set_car(self.stack, value);
     }
 
+    /// Allocates a cons on heap.
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
@@ -421,10 +430,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self.heap[index]
     }
 
+    /// Returns a value of a `car` field in a cons.
     pub fn car(&self, cons: Cons) -> Value {
         self.heap(cons.index())
     }
 
+    /// Returns a value of a `cdr` field in a cons.
     pub fn cdr(&self, cons: Cons) -> Value {
         self.heap(cons.index() + 1)
     }
@@ -437,10 +448,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.heap[cons.index() + 1]
     }
 
+    /// Returns a value of a `car` field in a value assumed as a cons.
     pub fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
 
+    /// Returns a value of a `cdr` field in a value assumed as a cons.
     pub fn cdr_value(&self, cons: Value) -> Value {
         self.cdr(cons.assume_cons())
     }
@@ -465,10 +478,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         )
     }
 
+    /// Sets a value to a `car` field in a cons.
     pub fn set_car(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 0, value)
     }
 
+    /// Sets a value to a `cdr` field in a cons.
     pub fn set_cdr(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 1, value)
     }
@@ -481,14 +496,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.heap[cons.index() + 1] = value;
     }
 
+    /// Sets a value to a `car` field in a value assumed as a cons.
     pub fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
+    /// Sets a value to a `cdr` field in a value assumed as a cons.
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
 
+    /// Returns a boolean value.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
             self.car(self.r#false).assume_cons()
@@ -497,6 +515,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
+    /// Returns a null value.
     pub fn null(&self) -> Cons {
         self.cdr(self.r#false).assume_cons()
     }
@@ -556,6 +575,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // Initialization
 
+    /// Initializes a virtual machine with bytecodes of a program.
     #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T::Error> {
         let mut input = input.into_iter();
@@ -629,7 +649,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
         self.set_car_value(
-            self.cdr_value(self.car(self.tail(self.stack, Number::new(3)))),
+            self.cdr_value(self.car(self.tail(self.stack, Number::new(symbol_index::RIB as i64)))),
             self.stack.into(),
         );
 
@@ -804,10 +824,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // For primitive sets.
 
+    /// Returns a reference to a primitive set.
     pub fn primitive_set(&self) -> &T {
         &self.primitive_set
     }
 
+    /// Returns a mutable reference to a primitive set.
     pub fn primitive_set_mut(&mut self) -> &mut T {
         &mut self.primitive_set
     }
@@ -1055,12 +1077,23 @@ mod tests {
         }
 
         #[test]
-        fn close() {
+        fn create_closure() {
+            run_program(&Program::new(
+                vec![],
+                vec![Instruction::Close(
+                    0,
+                    vec![Instruction::Constant(Operand::Integer(0))],
+                )],
+            ));
+        }
+
+        #[test]
+        fn get_closure() {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Close(0, vec![Instruction::Call(0, Operand::Integer(1))]),
-                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Close(0, vec![Instruction::Constant(Operand::Integer(0))]),
+                    Instruction::Get(Operand::Integer(0)),
                 ],
             ));
         }
@@ -1088,6 +1121,17 @@ mod tests {
         }
 
         #[test]
+        fn set_second_global() {
+            run_program(&Program::new(
+                vec!["x".into(), "y".into()],
+                vec![
+                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
+                ],
+            ));
+        }
+
+        #[test]
         fn set_second_empty_global() {
             run_program(&Program::new(
                 vec!["".into(), "".into()],
@@ -1104,8 +1148,19 @@ mod tests {
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(42)),
                     Instruction::Set(Operand::Integer(0)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn set_second_local() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Set(Operand::Integer(1)),
                 ],
             ));
         }
@@ -1127,6 +1182,14 @@ mod tests {
         }
 
         #[test]
+        fn get_second_global() {
+            run_program(&Program::new(
+                vec!["x".into(), "y".into()],
+                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
+            ));
+        }
+
+        #[test]
         fn get_second_empty_global() {
             run_program(&Program::new(
                 vec!["".into(), "".into()],
@@ -1135,30 +1198,59 @@ mod tests {
         }
 
         #[test]
+        fn get_built_in_globals() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::Get(Operand::Symbol(symbol_index::NULL)),
+                    Instruction::Get(Operand::Symbol(symbol_index::RIB)),
+                ],
+            ));
+        }
+
+        #[test]
         fn get_local() {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(42)),
+                    Instruction::Constant(Operand::Integer(0)),
                     Instruction::Get(Operand::Integer(0)),
                 ],
             ));
         }
 
         #[test]
-        fn r#if() {
+        fn get_second_local() {
             run_program(&Program::new(
                 vec![],
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Get(Operand::Symbol(symbol_index::NULL)),
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::Get(Operand::Integer(1)),
+                ],
+            ));
+        }
+
+        #[test]
+        fn if_with_false() {
+            run_program(&Program::new(
+                vec![],
+                vec![
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::If(vec![Instruction::Call(
-                        0,
-                        Operand::Symbol(symbol_index::RIB),
-                    )]),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                ],
+            ));
+        }
+
+        #[test]
+        fn if_with_true() {
+            run_program(&Program::new(
+                vec![],
+                vec![
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                 ],
             ));
         }
@@ -1168,9 +1260,9 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
-                    Instruction::Constant(Operand::Integer(2)),
                 ],
             ));
         }
@@ -1180,13 +1272,13 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
-                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![
-                        Instruction::Constant(Operand::Integer(1)),
+                        Instruction::Constant(Operand::Integer(0)),
                         Instruction::Skip(1),
                     ]),
-                    Instruction::Constant(Operand::Integer(2)),
-                    Instruction::Constant(Operand::Integer(3)),
+                    Instruction::Constant(Operand::Integer(0)),
+                    Instruction::Constant(Operand::Integer(0)),
                 ],
             ));
         }
@@ -1196,11 +1288,11 @@ mod tests {
             run_program(&Program::new(
                 vec![],
                 vec![
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(1))]),
-                    Instruction::Constant(Operand::Integer(2)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(3))]),
-                    Instruction::Constant(Operand::Integer(4)),
                 ],
             ));
         }

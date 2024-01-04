@@ -1,3 +1,27 @@
+//! A virtual machine and its runtime values.
+//!
+//! # Examples
+//!
+//! ```rust
+//! use stak_code::{encode, Program};
+//! use stak_device::FixedBufferDevice;
+//! use stak_primitive::SmallPrimitiveSet;
+//! use stak_vm::Vm;
+//!
+//! const HEAP_SIZE: usize = 1 << 10;
+//! const BUFFER_SIZE: usize = 1 << 10;
+//!
+//! let mut heap = [Default::default(); HEAP_SIZE];
+//! let device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE, BUFFER_SIZE>::new();
+//! let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
+//!
+//! // Replace this with actual bytecodes of your program.
+//! let program = encode(&Program::new(vec![], vec![]));
+//!
+//! vm.initialize(program).unwrap();
+//! vm.run().unwrap();
+//! ```
+
 #![no_std]
 
 #[cfg(test)]
@@ -9,7 +33,6 @@ mod cons;
 mod error;
 mod number;
 mod primitive_set;
-#[cfg(test)]
 mod symbol_index;
 mod r#type;
 mod value;

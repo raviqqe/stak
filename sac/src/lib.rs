@@ -1,3 +1,5 @@
+//! Utilities to build executable binaries from bytecode files.
+
 #[doc(hidden)]
 pub mod __private {
     pub extern crate device;
@@ -6,6 +8,9 @@ pub mod __private {
     pub extern crate vm;
 }
 
+/// Defines a `main` function that executes a bytecode file at a given path.
+///
+/// The given bytecode file is bundled into a resulting binary.
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
@@ -18,14 +23,7 @@ macro_rules! main {
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
-        fn main() {
-            if let Err(error) = run() {
-                eprintln!("{}", error);
-                exit(1);
-            }
-        }
-
-        fn run() -> Result<(), Box<dyn Error>> {
+        fn main() -> Result<(), Box<dyn Error>> {
             let size = env::var("STAK_HEAP_SIZE")
                 .ok()
                 .map(|string| string.parse())

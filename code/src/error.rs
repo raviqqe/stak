@@ -1,12 +1,12 @@
 use alloc::string::FromUtf8Error;
 use core::fmt::{self, Display, Formatter};
 
-/// An error.
+/// An error of encoding and decoding bytecodes.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     /// An unexpected end of input.
     EndOfInput,
-    /// An illegal instruction found.
+    /// An illegal instruction.
     IllegalInstruction,
     /// A closure missing its body.
     MissingClosureBody,

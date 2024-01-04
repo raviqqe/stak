@@ -1,9 +1,7 @@
 //! Primitive sets.
 //!
-//! We equip [`vm::Vm`]s with [`vm::PrimitiveSet`]s that provide small functionalities,
-//! such as arithmetic and I/O.
-//!
-//! This crate provides primitive sets necessary to run basic programs in Scheme.
+//! This crate provides [`PrimitiveSet`](vm::PrimitiveSet)s to run basic
+//! programs in Scheme.
 
 #![no_std]
 

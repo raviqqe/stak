@@ -1,3 +1,5 @@
+//! Devices to handle I/O.
+
 #![no_std]
 
 #[cfg(feature = "std")]

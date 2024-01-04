@@ -1,10 +1,12 @@
 use crate::Device;
 use std::io::{stderr, stdin, stdout, Error, Read, Write};
 
+/// A standard I/O device of a current process.
 #[derive(Debug, Default)]
 pub struct StdioDevice {}
 
 impl StdioDevice {
+    /// Creates a device.
     pub fn new() -> Self {
         Self {}
     }

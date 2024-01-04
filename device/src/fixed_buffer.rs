@@ -1,5 +1,6 @@
 use crate::Device;
 
+/// A fixed buffer device.
 #[derive(Debug)]
 pub struct FixedBufferDevice<const I: usize, const O: usize, const E: usize> {
     input: [u8; I],
@@ -11,6 +12,7 @@ pub struct FixedBufferDevice<const I: usize, const O: usize, const E: usize> {
 }
 
 impl<const I: usize, const O: usize, const E: usize> FixedBufferDevice<I, O, E> {
+    /// Creates a device.
     pub fn new() -> Self {
         Self {
             input: [0; I],
@@ -22,14 +24,17 @@ impl<const I: usize, const O: usize, const E: usize> FixedBufferDevice<I, O, E> 
         }
     }
 
+    /// Returns a mutable reference to standard input.
     pub fn input_mut(&mut self) -> &mut [u8] {
         &mut self.input
     }
 
+    /// Returns a reference to standard output.
     pub fn output(&self) -> &[u8] {
         &self.output[..self.output_index]
     }
 
+    /// Returns a reference to standard error.
     pub fn error(&self) -> &[u8] {
         &self.error[..self.error_index]
     }
