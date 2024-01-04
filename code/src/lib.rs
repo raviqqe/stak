@@ -21,7 +21,7 @@ pub use encode::encode;
 pub use error::Error;
 pub use ir::*;
 
-/// A number of bits required for an instruction in bytecodes.
+/// A number of bits required to encode an instruction in bytecodes.
 pub const INSTRUCTION_BITS: u64 = 4;
 /// A mask for instruction bits in bytecodes.
 pub const INSTRUCTION_MASK: u8 = (1 << INSTRUCTION_BITS) - 1;
