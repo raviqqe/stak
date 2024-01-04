@@ -1,4 +1,4 @@
-Feature: cond-expand
+Feature: `cond-expand`
   Scenario: Expand an `else` clause
     Given a file named "main.scm" with:
     """scheme
