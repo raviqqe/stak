@@ -76,7 +76,10 @@ struct ArgumentInfo {
 /// let mut device = FixedBufferDevice::<0, 0, 0>::new();
 /// let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 ///
-/// vm.initialize(encode(&Program::new(vec![], vec![]))).unwrap();
+/// // Replace this with actual bytecodes of your program.
+/// let program = encode(&Program::new(vec![], vec![]));
+///
+/// vm.initialize(program).unwrap();
 /// vm.run().unwrap();
 /// ```
 #[derive(Debug)]
