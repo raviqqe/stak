@@ -8,9 +8,10 @@
 //! use stak_primitive::SmallPrimitiveSet;
 //! use stak_vm::Vm;
 //!
+//! const HEAP_SIZE: usize = 1 << 10;
 //! const BUFFER_SIZE: usize = 1 << 10;
 //!
-//! let mut heap = [Default::default(); 1 << 10];
+//! let mut heap = [Default::default(); HEAP_SIZE];
 //! let device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE, BUFFER_SIZE>::new();
 //! let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 //!
