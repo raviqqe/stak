@@ -1,9 +1,11 @@
 use crate::{cons::Cons, number::Number};
 use core::fmt::{self, Display, Formatter};
 
+/// A value.
 #[derive(Copy, Clone, Debug)]
 pub struct Value(u64);
 
+/// A typed value.
 #[derive(Copy, Clone, Eq, Debug, PartialEq)]
 pub enum TypedValue {
     Cons(Cons),
@@ -11,6 +13,7 @@ pub enum TypedValue {
 }
 
 impl Value {
+    /// Converts a value to a cons.
     pub const fn to_cons(self) -> Option<Cons> {
         if let TypedValue::Cons(cons) = self.to_typed() {
             Some(cons)
@@ -19,6 +22,7 @@ impl Value {
         }
     }
 
+    /// Converts a value to a number.
     pub const fn to_number(self) -> Option<Number> {
         if let TypedValue::Number(number) = self.to_typed() {
             Some(number)
@@ -27,6 +31,7 @@ impl Value {
         }
     }
 
+    /// Converts a value to a typed value.
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
             TypedValue::Cons(self.assume_cons())
@@ -35,26 +40,31 @@ impl Value {
         }
     }
 
+    /// Converts a value to a cons assuming its type.
     pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
         Cons::from_raw(self.0)
     }
 
+    /// Converts a value to a number assuming its type.
     pub const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
         Number::from_raw(self.0)
     }
 
+    /// Checks if it is a cons.
     pub const fn is_cons(&self) -> bool {
         self.0 & 1 == 0
     }
 
+    /// Checks if it is a number.
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
 
+    /// Returns a tag.
     pub const fn tag(self) -> u8 {
         if let Some(cons) = self.to_cons() {
             cons.tag()
@@ -63,6 +73,7 @@ impl Value {
         }
     }
 
+    /// Sets a tag.
     pub fn set_tag(self, tag: u8) -> Self {
         if let Some(cons) = self.to_cons() {
             cons.set_tag(tag).into()

@@ -13,22 +13,27 @@ pub const NEVER: Cons = Cons::new(u64::MAX);
 const TAG_MASK: u64 = 0b1111;
 const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
 
+/// A cons.
 #[derive(Clone, Copy, Debug)]
 pub struct Cons(u64);
 
 impl Cons {
+    /// Creates a cons from a memory address on heap.
     pub const fn new(index: u64) -> Self {
         Self(index << (TAG_SIZE + 1))
     }
 
+    /// Returns a memory address on heap.
     pub const fn index(self) -> usize {
         (self.0 >> (TAG_SIZE + 1)) as usize
     }
 
+    /// Returns a tag.
     pub const fn tag(self) -> u8 {
         ((self.0 >> 1) & TAG_MASK) as u8
     }
 
+    /// Sets a tag.
     pub const fn set_tag(self, tag: u8) -> Self {
         Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
     }
