@@ -16,7 +16,7 @@ pub enum Error {
     MissingOperand,
     /// A missing `else` branch.
     MissingElseBranch,
-    /// Invalid UTF-8 string.
+    /// An invalid UTF-8 string.
     Utf8(FromUtf8Error),
 }
 
