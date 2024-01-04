@@ -3,7 +3,6 @@ use crate::{Error, Vm};
 /// A primitive set.
 ///
 /// [`PrimitiveSet`](PrimitiveSet)s provide primitive functionalities, such as arithmetic and I/O, to [`Vm`](Vm)s.
-/// Each primitive has its own identifier as `u8`.
 pub trait PrimitiveSet: Sized {
     type Error: From<Error>;
 
