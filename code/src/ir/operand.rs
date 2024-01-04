@@ -1,8 +1,11 @@
 use core::fmt::{self, Display, Formatter};
 
+/// An instruction operand.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Operand {
+    /// A symbol operand.
     Symbol(u64),
+    /// An integer operand.
     Integer(u64),
 }
 
