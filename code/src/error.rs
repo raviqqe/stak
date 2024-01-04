@@ -1,6 +1,7 @@
 use alloc::string::FromUtf8Error;
 use core::fmt::{self, Display, Formatter};
 
+/// An error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     EndOfInput,
