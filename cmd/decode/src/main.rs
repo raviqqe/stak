@@ -1,3 +1,13 @@
+//! A command to decode a bytecode file.
+//!
+//! It decodes a program in bytecodes and prints it in Markdown.
+//!
+//! # Usage
+//!
+//! ```sh
+//! stak-decode foo.bc
+//! ```
+
 use code::decode;
 use std::{
     error::Error,
