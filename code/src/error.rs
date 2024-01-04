@@ -8,7 +8,7 @@ pub enum Error {
     EndOfInput,
     /// An illegal instruction found.
     IllegalInstruction,
-    /// A clousure missing its body.
+    /// A closure missing its body.
     MissingClosureBody,
     /// A missing integer.
     MissingInteger,
