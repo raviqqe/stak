@@ -73,7 +73,7 @@ struct ArgumentInfo {
 /// use stak_vm::Vm;
 ///
 /// let mut heap = [Default::default(); 1 << 10];
-/// let mut device = FixedBufferDevice::<0, 0, 0>::new();
+/// let device = FixedBufferDevice::<0, 0, 0>::new();
 /// let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 ///
 /// // Replace this with actual bytecodes of your program.
