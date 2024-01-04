@@ -12,6 +12,7 @@ pub struct SmallPrimitiveSet<T: Device> {
 }
 
 impl<T: Device> SmallPrimitiveSet<T> {
+    /// Creates a primitive set.
     pub fn new(device: T) -> Self {
         Self { device }
     }
