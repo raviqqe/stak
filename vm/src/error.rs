@@ -1,15 +1,25 @@
 use core::fmt::{self, Debug, Display, Formatter};
 
+/// An error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
+    /// Mismatch between numbers call arguments and function parameters.
     ArgumentCount,
+    /// A cons expected.
     ConsExpected,
+    /// An unexpected end of input.
     EndOfInput,
+    /// An illegal instruction detected.
     IllegalInstruction,
+    /// A missing integer.
     MissingInteger,
+    /// A missing operand.
     MissingOperand,
+    /// A number expected.
     NumberExpected,
+    /// Out of memory.
     OutOfMemory,
+    /// A procedure expected.
     ProcedureExpected,
 }
 
