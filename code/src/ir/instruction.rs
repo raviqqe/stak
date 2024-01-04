@@ -3,17 +3,30 @@ use crate::Operand;
 use alloc::vec::Vec;
 use core::fmt::{self, Display, Formatter};
 
+/// An instruction.
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
+    /// A `call` instruction.
     Call(u64, Operand),
+    /// A `set` instruction.
     Set(Operand),
+    /// A `get` instruction.
     Get(Operand),
+    /// A `constant` instruction.
     Constant(Operand),
+    /// An `if` instruction.
     #[cfg(feature = "alloc")]
     If(Vec<Instruction>),
+    /// A `nop` instruction.
     Nop(u64),
+    /// A `close` instruction.
+    ///
+    /// It is used only for encoding.
     #[cfg(feature = "alloc")]
     Close(u64, Vec<Instruction>),
+    /// A `skip` instruction.
+    ///
+    /// It is used only for encoding.
     Skip(u64),
 }
 
