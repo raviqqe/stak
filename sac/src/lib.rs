@@ -18,14 +18,7 @@ macro_rules! main {
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 
-        fn main() {
-            if let Err(error) = run() {
-                eprintln!("{}", error);
-                exit(1);
-            }
-        }
-
-        fn run() -> Result<(), Box<dyn Error>> {
+        fn main() -> Result<(), Box<dyn Error>> {
             let size = env::var("STAK_HEAP_SIZE")
                 .ok()
                 .map(|string| string.parse())
