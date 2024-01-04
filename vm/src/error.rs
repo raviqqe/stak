@@ -3,7 +3,7 @@ use core::fmt::{self, Debug, Display, Formatter};
 /// An error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
-    /// Mismatch between numbers of call arguments and function parameters.
+    /// Mismatched numbers of call arguments and function parameters.
     ArgumentCount,
     /// A cons expected.
     ConsExpected,
