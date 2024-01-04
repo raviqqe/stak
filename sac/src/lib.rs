@@ -1,3 +1,5 @@
+//! Utilities to build executable binaries from bytecode files.
+
 #[doc(hidden)]
 pub mod __private {
     pub extern crate device;
@@ -6,6 +8,9 @@ pub mod __private {
     pub extern crate vm;
 }
 
+/// Defines a `main` function that executes a bytecode file at a given path.
+///
+/// The given bytecode file is bundled into a resulting binary.
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
