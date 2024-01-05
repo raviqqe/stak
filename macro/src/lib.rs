@@ -7,7 +7,7 @@ use std::error::Error;
 use syn::{parse_macro_input, LitStr};
 use vm::Vm;
 
-const HEAP_SIZE: usize = 1 << 18;
+const HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
@@ -27,7 +27,8 @@ pub fn r7rs(input: TokenStream) -> TokenStream {
     ))
 }
 
-/// Compiles a program in Scheme into bytecodes with only built-ins but no standard library.
+/// Compiles a program in Scheme into bytecodes with only built-ins but no
+/// standard library.
 ///
 /// # Examples
 ///
