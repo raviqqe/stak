@@ -248,7 +248,13 @@
       (cons x (read-all)))))
 
 (define (read-source)
-  (cons '$$begin (read-all)))
+  (cons
+    '$$begin
+    ; Keep an invariant that a `begin` body must not be empty.
+    (let ((source (read-all)))
+      (if (null? source)
+        '(#f)
+        source))))
 
 ; Target code writing
 

@@ -1,9 +1,11 @@
+//! Macros to bundle and use Scheme programs.
+
 use device::ReadWriteDevice;
 use primitive::SmallPrimitiveSet;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
-use std::error::Error;
+use std::{env, error::Error, fs::read_to_string, path::Path};
 use syn::{parse_macro_input, LitStr};
 use vm::Vm;
 
@@ -16,10 +18,10 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::r7rs!("(define x 42)");
+/// let bytecodes = stak_macro::compile_r7rs!("(define x 42)");
 /// ```
 #[proc_macro]
-pub fn r7rs(input: TokenStream) -> TokenStream {
+pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(generate_scheme(
@@ -27,19 +29,48 @@ pub fn r7rs(input: TokenStream) -> TokenStream {
     ))
 }
 
-/// Compiles a program in Scheme into bytecodes with only built-ins but no
-/// standard library.
+/// Includes a program in R7RS Scheme as bytecodes.
 ///
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::naked!("($$define x 42)");
+/// let bytecodes = stak_macro::include_r7rs!("foo.scm");
 /// ```
 #[proc_macro]
-pub fn naked(input: TokenStream) -> TokenStream {
+pub fn include_r7rs(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+
+    convert_result((|| {
+        generate_scheme(&(PRELUDE_SOURCE.to_owned() + &read_file(input)?))
+    })())
+}
+
+/// Compiles a program in Scheme into bytecodes with only built-ins.
+///
+/// # Examples
+///
+/// ```rust
+/// let bytecodes = stak_macro::compile_naked!("($$define x 42)");
+/// ```
+#[proc_macro]
+pub fn compile_naked(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(generate_scheme(&input.value()))
+}
+
+/// Includes a program in Scheme as bytecodes with only built-ins.
+///
+/// # Examples
+///
+/// ```rust
+/// let bytecodes = stak_macro::include_naked!("foo.scm");
+/// ```
+#[proc_macro]
+pub fn include_naked(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+
+    convert_result((|| generate_scheme(&read_file(input)?))())
 }
 
 fn generate_scheme(source: &str) -> Result<TokenStream, Box<dyn Error>> {
@@ -54,6 +85,14 @@ fn generate_scheme(source: &str) -> Result<TokenStream, Box<dyn Error>> {
     let bytecodes = Literal::byte_string(vm.primitive_set().device().output());
 
     Ok(quote! { #bytecodes }.into())
+}
+
+fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {
+    Ok(read_to_string(
+        Path::new(&env::var("CARGO_MANIFEST_DIR")?)
+            .join("src")
+            .join(path.value()),
+    )?)
 }
 
 fn convert_result(result: Result<TokenStream, Box<dyn Error>>) -> TokenStream {

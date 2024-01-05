@@ -4,6 +4,7 @@
 pub mod __private {
     pub extern crate device;
     pub extern crate primitive;
+    pub extern crate stak_macro;
     pub extern crate std;
     pub extern crate vm;
 }
@@ -17,6 +18,7 @@ macro_rules! main {
         use $crate::__private::{
             device::StdioDevice,
             primitive::SmallPrimitiveSet,
+            stak_macro::include_r7rs,
             std::{env, error::Error, process::exit},
             vm::Vm,
         };
@@ -32,7 +34,7 @@ macro_rules! main {
             let mut heap = vec![Default::default(); size];
             let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
-            vm.initialize(include_bytes!($path).iter().copied())?;
+            vm.initialize(include_r7rs!($path).iter().copied())?;
 
             Ok(vm.run()?)
         }

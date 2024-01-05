@@ -1,3 +1,4 @@
+*.bc
 *.info
 *.out
 target

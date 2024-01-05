@@ -151,6 +151,7 @@ name = "stak-sac"
 version = "0.1.1"
 dependencies = [
  "stak-device",
+ "stak-macro",
  "stak-primitive",
  "stak-vm",
 ]
