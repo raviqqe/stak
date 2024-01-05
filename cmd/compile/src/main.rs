@@ -7,4 +7,4 @@
 //! stak-compile < foo.scm > foo.bc
 //! ```
 
-sac::main!(std::env!("STAK_BYTECODE_FILE"));
+sac::main!("compile.scm");
