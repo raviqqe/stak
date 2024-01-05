@@ -8,7 +8,7 @@ use std::{
 
 const PRELUDE_SOURCE_FILE: &str = "src/prelude.scm";
 const COMPILER_SOURCE_FILE: &str = "src/compile.scm";
-const COMPILER_TARGET_FILE: &str = "compile.bc";
+const COMPILER_TARGET_FILE: &str = "src/compile.bc";
 
 fn main() -> Result<(), Box<dyn Error>> {
     let target_file = Path::new(COMPILER_TARGET_FILE);
@@ -18,14 +18,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     //
     // - The bytecode file does not exist.
     // - Or, its source files are changed from a previous build.
+    println!("cargo:rerun-if-changed={}", target_file.display());
     println!(
         "cargo:rustc-env=STAK_BYTECODE_FILE={}",
-        target_file.display()
+        target_file.strip_prefix("src")?.display()
     );
-
-    let target_file = Path::new("src").join(target_file);
-
-    println!("cargo:rerun-if-changed={}", target_file.display());
 
     if target_file.exists() {
         return Ok(());
