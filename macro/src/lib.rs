@@ -21,11 +21,10 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 pub fn naked(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(generate_scheme(input))
+    convert_result(generate_scheme(&input.value()))
 }
 
-fn generate_scheme(source: LitStr) -> Result<TokenStream, Box<dyn Error>> {
-    let source = source.value();
+fn generate_scheme(source: &str) -> Result<TokenStream, Box<dyn Error>> {
     let mut heap = vec![Default::default(); HEAP_SIZE];
     let device = ReadWriteDevice::new(source.as_bytes(), vec![], vec![]);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
