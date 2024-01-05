@@ -1,4 +1,4 @@
-use device::FixedBufferDevice;
+use device::ReadWriteDevice;
 use primitive::SmallPrimitiveSet;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
@@ -31,7 +31,7 @@ pub fn scheme(input: TokenStream) -> TokenStream {
 
 fn run(string: LitStr) -> Result<TokenStream, Box<dyn Error>> {
     let mut heap = vec![Default::default(); HEAP_SIZE];
-    let device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE, 0>::new();
+    let device = ReadWriteDevice::new(string.value().as_bytes(), vec![], vec![]);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
