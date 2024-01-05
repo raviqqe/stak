@@ -250,6 +250,7 @@
 (define (read-source)
   (cons
     '$$begin
+    ; Keep an invariant that a `begin` body must not be empty.
     (let ((source (read-all)))
       (if (null? source)
         '(#f)
