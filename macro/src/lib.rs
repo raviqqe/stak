@@ -10,15 +10,15 @@ use vm::Vm;
 const HEAP_SIZE: usize = 1 << 18;
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
-/// Compiles a program in Scheme into bytecodes.
+/// Compiles a program in Scheme into bytecodes with no standard library but only built-ins.
 ///
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::scheme!("($$define x 42)");
+/// let bytecodes = stak_macro::naked!("($$define x 42)");
 /// ```
 #[proc_macro]
-pub fn scheme(input: TokenStream) -> TokenStream {
+pub fn naked(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(generate_scheme(input))
