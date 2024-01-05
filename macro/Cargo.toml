@@ -12,7 +12,7 @@ repository.workspace = true
 proc-macro = true
 
 [dependencies]
-device = { package = "stak-device", version = "0.1", path = "../device" }
+device = { package = "stak-device", version = "0.1", path = "../device", features = ["std"] }
 primitive = { package = "stak-primitive", version = "0.1", path = "../primitive", features = ["std"] }
 proc-macro2 = "1.0.75"
 quote = "1.0.35"
