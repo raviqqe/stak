@@ -87,7 +87,9 @@ fn generate_scheme(source: &str) -> Result<TokenStream, Box<dyn Error>> {
 
 fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {
     Ok(read_to_string(
-        &Path::new(&env::var("CARGO_MANIFEST_DIR")?).join(&path.value()),
+        &Path::new(&env::var("CARGO_MANIFEST_DIR")?)
+            .join("src")
+            .join(&path.value()),
     )?)
 }
 
