@@ -42,3 +42,26 @@ impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::empty;
+
+    #[test]
+    fn read() {
+        let mut device = ReadWriteDevice::new([1, 2, 3].as_slice(), empty(), empty());
+
+        assert_eq!(device.read().unwrap(), Some(1));
+        assert_eq!(device.read().unwrap(), Some(2));
+        assert_eq!(device.read().unwrap(), Some(3));
+        assert_eq!(device.read().unwrap(), None);
+    }
+
+    #[test]
+    fn write() {
+        let mut device = ReadWriteDevice::new([42].as_slice(), empty(), empty());
+
+        assert_eq!(device.read().unwrap(), Some(42));
+    }
+}
