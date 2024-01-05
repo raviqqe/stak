@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         target_file.display()
     );
 
-    let target_file = Path::new("src").join(&target_file);
+    let target_file = Path::new("src").join(target_file);
 
     println!("cargo:rerun-if-changed={}", target_file.display());
 
