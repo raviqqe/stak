@@ -131,6 +131,9 @@ name = "stak-macro"
 version = "0.1.0"
 dependencies = [
  "quote",
+ "stak-device",
+ "stak-primitive",
+ "stak-vm",
  "syn",
 ]
 

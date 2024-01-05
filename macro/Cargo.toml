@@ -12,5 +12,8 @@ repository.workspace = true
 proc-macro = true
 
 [dependencies]
+device = { package = "stak-device", version = "0.1", path = "../device" }
+primitive = { package = "stak-primitive", version = "0.1", path = "../primitive" }
 quote = "1.0.35"
 syn = "2.0.48"
+vm = { package = "stak-vm", version = "0.2", path = "../vm" }
