@@ -1,3 +1,5 @@
+//! Macros to bundle and use Scheme programs.
+
 use device::ReadWriteDevice;
 use primitive::SmallPrimitiveSet;
 use proc_macro::TokenStream;
