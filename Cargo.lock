@@ -130,6 +130,7 @@ dependencies = [
 name = "stak-macro"
 version = "0.1.0"
 dependencies = [
+ "proc-macro2",
  "quote",
  "stak-device",
  "stak-primitive",
