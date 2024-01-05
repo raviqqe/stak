@@ -16,10 +16,10 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::r7rs!("(define x 42)");
+/// let bytecodes = stak_macro::compile_r7rs!("(define x 42)");
 /// ```
 #[proc_macro]
-pub fn r7rs(input: TokenStream) -> TokenStream {
+pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(generate_scheme(
@@ -33,10 +33,10 @@ pub fn r7rs(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::naked!("($$define x 42)");
+/// let bytecodes = stak_macro::compile_naked!("($$define x 42)");
 /// ```
 #[proc_macro]
-pub fn naked(input: TokenStream) -> TokenStream {
+pub fn compile_naked(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(generate_scheme(&input.value()))
