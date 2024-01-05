@@ -27,6 +27,7 @@ jobs:
           - macos-latest
         features:
           - []
+          - [std]
           - [gc_always]
     runs-on: ${{ matrix.os }}
     env:
