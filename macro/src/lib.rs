@@ -7,7 +7,7 @@ use std::error::Error;
 use syn::{parse_macro_input, LitStr};
 use vm::Vm;
 
-const HEAP_SIZE: usize = 1 << 20;
+const HEAP_SIZE: usize = 1 << 14;
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
 /// Compiles a program in Scheme into bytecodes.
