@@ -13,6 +13,11 @@ const COMPILER_TARGET_FILE: &str = "compile.bc";
 fn main() -> Result<(), Box<dyn Error>> {
     let target_file = Path::new(COMPILER_TARGET_FILE);
 
+    // We bundle a compiler bytecode file into a crate.
+    // So we want to re-build  bundle the bytecode file only if:
+    //
+    // - The bytecode file does not exist.
+    // - Or, its source files are changed from a previous build.
     println!(
         "cargo:rustc-env=STAK_BYTECODE_FILE={}",
         target_file.display()
