@@ -1,7 +1,7 @@
 use crate::Device;
 use std::io::{Error, Read, Write};
 
-/// A device based on `Read` and `Write` traits.
+/// A device based on [`Read`](Read) and [`Write`](Write) traits.
 #[derive(Clone, Copy, Debug)]
 pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
     input: I,
