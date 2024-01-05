@@ -8,7 +8,6 @@ use syn::{parse_macro_input, LitStr};
 use vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 20;
-const BUFFER_SIZE: usize = 1 << 20;
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
 /// Compiles a program in Scheme into bytecodes.
@@ -25,9 +24,10 @@ pub fn scheme(input: TokenStream) -> TokenStream {
     convert_result(generate_scheme(input))
 }
 
-fn generate_scheme(string: LitStr) -> Result<TokenStream, Box<dyn Error>> {
+fn generate_scheme(source: LitStr) -> Result<TokenStream, Box<dyn Error>> {
+    let source = source.value();
     let mut heap = vec![Default::default(); HEAP_SIZE];
-    let device = ReadWriteDevice::new(string.value().as_bytes(), vec![], vec![]);
+    let device = ReadWriteDevice::new(source.as_bytes(), vec![], vec![]);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
