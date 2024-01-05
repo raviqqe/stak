@@ -7,7 +7,7 @@ use std::error::Error;
 use syn::{parse_macro_input, LitStr};
 use vm::Vm;
 
-const HEAP_SIZE: usize = 1 << 14;
+const HEAP_SIZE: usize = 1 << 18;
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
 /// Compiles a program in Scheme into bytecodes.
@@ -15,7 +15,7 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 /// # Examples
 ///
 /// ```rust
-/// // TBD
+/// let bytecodes = stak_macro::scheme!("($$define x 42)");
 /// ```
 #[proc_macro]
 pub fn scheme(input: TokenStream) -> TokenStream {
