@@ -1,7 +1,7 @@
 use crate::Device;
 use std::io::{Error, Read, Write};
 
-#[derive(Debug, Default)]
+#[derive(Clone, Copy, Debug)]
 pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
     input: I,
     output: O,
