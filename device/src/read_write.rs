@@ -73,8 +73,21 @@ mod tests {
     fn write() {
         let mut device = ReadWriteDevice::new(empty(), vec![], empty());
 
-        device.write(42).unwrap();
+        device.write(1).unwrap();
+        device.write(2).unwrap();
+        device.write(3).unwrap();
 
-        assert_eq!(device.output().unwrap(), vec![42]);
+        assert_eq!(device.output(), &[1, 2, 3]);
+    }
+
+    #[test]
+    fn write_error() {
+        let mut device = ReadWriteDevice::new(empty(), empty(), vec![]);
+
+        device.write_error(1).unwrap();
+        device.write_error(2).unwrap();
+        device.write_error(3).unwrap();
+
+        assert_eq!(device.error(), &[1, 2, 3]);
     }
 }
