@@ -23,6 +23,7 @@
     "repr",
     "ribbit",
     "rustc",
+    "rustfmt",
     "rustup",
     "stak",
     "unresolve"
