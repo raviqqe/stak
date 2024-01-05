@@ -1,5 +1,5 @@
 [workspace]
-members = ["cmd/compile", "cmd/decode", "cmd/interpret", "code", "device", "primitive", "sac", "vm"]
+members = ["cmd/compile", "cmd/decode", "cmd/interpret", "code", "device", "macro", "primitive", "sac", "vm"]
 resolver = "2"
 
 [workspace.package]
@@ -11,6 +11,16 @@ repository = "https://github.com/raviqqe/stak"
 
 [profile.release]
 lto = true
+
+[profile.dev.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false
+
+[profile.release.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false
 
 [profile.integration_test]
 inherits = "release"

@@ -69,7 +69,10 @@ mod tests {
     #[test]
     fn display_symbols_with_special_signs() {
         for &sign in ESCAPED_SIGNS {
-            assert_display_snapshot!(sign, Program::new(vec![format!("{}", sign)], vec![]));
+            assert_display_snapshot!(
+                sign.replace('*', "star"),
+                Program::new(vec![format!("{}", sign)], vec![])
+            );
         }
     }
 
