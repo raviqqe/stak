@@ -6,10 +6,7 @@ use syn::{parse_macro_input, LitStr};
 /// # Examples
 ///
 /// ```rust
-/// melior::dialect! {
-///     name: "func",
-///     table_gen: r#"include "mlir/Dialect/Func/IR/FuncOps.td""#
-/// }
+/// // TBD
 /// ```
 #[proc_macro]
 pub fn scheme(input: TokenStream) -> TokenStream {
