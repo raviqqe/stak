@@ -1,14 +1,19 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+use proc_macro::TokenStream;
+use syn::{parse_macro_input, LitStr};
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+/// Compiles a program in Scheme into bytecodes.
+///
+/// # Examples
+///
+/// ```rust
+/// melior::dialect! {
+///     name: "func",
+///     table_gen: r#"include "mlir/Dialect/Func/IR/FuncOps.td""#
+/// }
+/// ```
+#[proc_macro]
+pub fn scheme(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+    todo!()
 }
