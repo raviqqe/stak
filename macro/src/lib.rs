@@ -8,6 +8,7 @@ use syn::{parse_macro_input, LitStr};
 use vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 18;
+const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
 /// Compiles a program in R7RS Scheme into bytecodes.
@@ -21,7 +22,9 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 pub fn r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(generate_scheme(&input.value()))
+    convert_result(generate_scheme(
+        &(PRELUDE_SOURCE.to_owned() + &input.value()),
+    ))
 }
 
 /// Compiles a program in Scheme into bytecodes with only built-ins but no standard library.
