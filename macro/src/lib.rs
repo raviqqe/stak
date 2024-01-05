@@ -22,7 +22,11 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 pub fn scheme(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(run(input))
+    run(input).unwrap_or_else(|error| {
+        let message = error.to_string();
+
+        quote! { compile_error!(#message) }.into()
+    })
 }
 
 fn run(string: LitStr) -> Result<TokenStream, Box<dyn Error>> {
@@ -37,12 +41,4 @@ fn run(string: LitStr) -> Result<TokenStream, Box<dyn Error>> {
     let bytecodes = Literal::byte_string(vm.primitive_set().device().output());
 
     Ok(quote! { #bytecodes }.into())
-}
-
-fn convert_result(result: Result<TokenStream, Box<dyn Error>>) -> TokenStream {
-    result.unwrap_or_else(|error| {
-        let message = error.to_string();
-
-        quote! { compile_error!(#message) }.into()
-    })
 }
