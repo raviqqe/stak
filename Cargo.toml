@@ -12,9 +12,15 @@ repository = "https://github.com/raviqqe/stak"
 [profile.release]
 lto = true
 
-[profile.dev]
-lto = true
+[profile.dev.build-override]
 opt-level = 3
+debug-assertions = false
+overflow-checks = false
+
+[profile.release.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false
 
 [profile.integration_test]
 inherits = "release"
