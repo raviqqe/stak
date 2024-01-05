@@ -2,13 +2,13 @@ use crate::Device;
 use std::io::{Error, Read, Write};
 
 #[derive(Debug, Default)]
-pub struct CustomDevice<I: Read, O: Write, E: Write> {
+pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
     input: I,
     output: O,
     error: E,
 }
 
-impl<I: Read, O: Write, E: Write> CustomDevice<I, O, E> {
+impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
     /// Creates a device.
     pub fn new(input: I, output: O, error: E) -> Self {
         Self {
@@ -19,7 +19,7 @@ impl<I: Read, O: Write, E: Write> CustomDevice<I, O, E> {
     }
 }
 
-impl<I: Read, O: Write, E: Write> Device for CustomDevice<I, O, E> {
+impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
     type Error = Error;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
