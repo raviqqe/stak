@@ -17,6 +17,16 @@ impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
             error,
         }
     }
+
+    /// Returns a reference to output.
+    pub fn output(&self) -> &O {
+        &self.output
+    }
+
+    /// Returns a reference to error.
+    pub fn error(&self) -> &E {
+        &self.error
+    }
 }
 
 impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
@@ -46,6 +56,7 @@ impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use alloc::vec;
     use std::io::empty;
 
     #[test]
@@ -60,8 +71,10 @@ mod tests {
 
     #[test]
     fn write() {
-        let mut device = ReadWriteDevice::new([42].as_slice(), empty(), empty());
+        let mut device = ReadWriteDevice::new(empty(), vec![], empty());
 
-        assert_eq!(device.read().unwrap(), Some(42));
+        device.write(42).unwrap();
+
+        assert_eq!(device.output().unwrap(), vec![42]);
     }
 }
