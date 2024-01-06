@@ -29,14 +29,14 @@ jobs:
         options:
           -
           - --features std
-          - --features gc_always --workspace --exclude stak-compile
+          - --features gc_always --exclude stak-compile
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
       - uses: Homebrew/actions/setup-homebrew@master
       - run: tools/ci/setup.sh
-      - run: cargo test ${{ matrix.options }}
+      - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:
