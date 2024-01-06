@@ -12,7 +12,7 @@
 //! const BUFFER_SIZE: usize = 1 << 10;
 //!
 //! let mut heap = [Default::default(); HEAP_SIZE];
-//! let device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE, BUFFER_SIZE>::new();
+//! let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
 //! let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 //!
 //! const PROGRAM: &[u8] = compile_r7rs!(r#"
