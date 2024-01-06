@@ -7,4 +7,4 @@
 //! stak-compile < foo.scm > foo.bc
 //! ```
 
-sac::main!("compile.scm");
+stak_sac::main!("compile.scm");

@@ -1,5 +1,5 @@
 [package]
-name = "stak"
+name = "stak-cli"
 description = "Stak Scheme interpreter"
 version = "0.1.0"
 edition.workspace = true
@@ -7,6 +7,10 @@ keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+
+[[bin]]
+name = "stak"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.4.13", features = ["cargo", "derive"] }

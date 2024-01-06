@@ -10,4 +10,4 @@ extern crate std;
 
 mod small;
 
-pub use small::SmallPrimitiveSet;
+pub use small::{Error as SmallError, SmallPrimitiveSet};

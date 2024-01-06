@@ -16,7 +16,7 @@ trace = []
 trace_heap = []
 
 [dependencies]
-stak_code = { package = "stak-code", version = "0.1", path = "../code" }
+stak-code = { version = "0.1", path = "../code" }
 
 [dev-dependencies]
 insta = "1.34.0"

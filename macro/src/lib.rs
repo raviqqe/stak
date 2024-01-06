@@ -1,17 +1,11 @@
 //! Macros to bundle and use Scheme programs.
 
-use device::ReadWriteDevice;
-use primitive::SmallPrimitiveSet;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
+use stak_compile::CompileError;
 use std::{env, error::Error, fs::read_to_string, path::Path};
 use syn::{parse_macro_input, LitStr};
-use vm::Vm;
-
-const HEAP_SIZE: usize = 1 << 20;
-const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
-const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
 /// Compiles a program in R7RS Scheme into bytecodes.
 ///
@@ -24,9 +18,7 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(generate_scheme(
-        &(PRELUDE_SOURCE.to_owned() + &input.value()),
-    ))
+    convert_result(generate_r7rs(&input.value()))
 }
 
 /// Includes a program in R7RS Scheme as bytecodes.
@@ -40,9 +32,11 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
 pub fn include_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result((|| {
-        generate_scheme(&(PRELUDE_SOURCE.to_owned() + &read_file(input)?))
-    })())
+    convert_result((|| generate_r7rs(&read_file(input)?))())
+}
+
+fn generate_r7rs(source: &str) -> Result<TokenStream, Box<dyn Error>> {
+    generate_scheme(source, stak_compile::compile_r7rs)
 }
 
 /// Compiles a program in Scheme into bytecodes with only built-ins.
@@ -56,7 +50,7 @@ pub fn include_r7rs(input: TokenStream) -> TokenStream {
 pub fn compile_bare(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(generate_scheme(&input.value()))
+    convert_result(generate_bare(&input.value()))
 }
 
 /// Includes a program in Scheme as bytecodes with only built-ins.
@@ -70,21 +64,24 @@ pub fn compile_bare(input: TokenStream) -> TokenStream {
 pub fn include_bare(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result((|| generate_scheme(&read_file(input)?))())
+    convert_result((|| generate_bare(&read_file(input)?))())
 }
 
-fn generate_scheme(source: &str) -> Result<TokenStream, Box<dyn Error>> {
-    let mut heap = vec![Default::default(); HEAP_SIZE];
-    let device = ReadWriteDevice::new(source.as_bytes(), vec![], vec![]);
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
+fn generate_bare(source: &str) -> Result<TokenStream, Box<dyn Error>> {
+    generate_scheme(source, stak_compile::compile_bare)
+}
 
-    vm.initialize(COMPILER_BYTECODES.iter().copied())?;
+fn generate_scheme(
+    source: &str,
+    compile: fn(&str, &mut Vec<u8>) -> Result<(), CompileError>,
+) -> Result<TokenStream, Box<dyn Error>> {
+    let mut target = vec![];
 
-    vm.run()?;
+    compile(source, &mut target)?;
 
-    let bytecodes = Literal::byte_string(vm.primitive_set().device().output());
+    let target = Literal::byte_string(&target);
 
-    Ok(quote! { #bytecodes }.into())
+    Ok(quote! { #target }.into())
 }
 
 fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {

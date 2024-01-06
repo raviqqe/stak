@@ -10,7 +10,7 @@ pub enum Error {
     /// A failure to read from standard input.
     ReadInput,
     /// A virtual machine error.
-    Vm(vm::Error),
+    Vm(stak_vm::Error),
     /// A failure to write to standard error.
     #[allow(clippy::enum_variant_names)]
     WriteError,
@@ -34,8 +34,8 @@ impl Display for Error {
     }
 }
 
-impl From<vm::Error> for Error {
-    fn from(error: vm::Error) -> Self {
+impl From<stak_vm::Error> for Error {
+    fn from(error: stak_vm::Error) -> Self {
         Self::Vm(error)
     }
 }
