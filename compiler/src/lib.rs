@@ -56,12 +56,12 @@ mod tests {
 
         #[test]
         fn compile_nothing() {
-            compile_r7rs(b"", &mut vec![]).unwrap();
+            compile_r7rs(b"".as_slice(), &mut vec![]).unwrap();
         }
 
         #[test]
         fn compile_define() {
-            compile_r7rs(b"(define x 42)", &mut vec![]).unwrap();
+            compile_r7rs(b"(define x 42)".as_slice(), &mut vec![]).unwrap();
         }
     }
 
@@ -70,12 +70,12 @@ mod tests {
 
         #[test]
         fn compile_nothing() {
-            compile_bare(b"", &mut vec![]).unwrap();
+            compile_bare(b"".as_slice(), &mut vec![]).unwrap();
         }
 
         #[test]
         fn compile_define() {
-            compile_bare(b"($$define x 42)", &mut vec![]).unwrap();
+            compile_bare(b"($$define x 42)".as_slice(), &mut vec![]).unwrap();
         }
     }
 }
