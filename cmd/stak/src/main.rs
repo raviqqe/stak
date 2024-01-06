@@ -30,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .unwrap_or(DEFAULT_HEAP_SIZE);
     let mut heap = vec![Default::default(); size];
 
-    let mut source = Default::default();
+    let mut source = String::new();
     let mut target = vec![];
 
     read_source(&mut source)?;
