@@ -47,7 +47,7 @@ pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), CompileErr
     Ok(())
 }
 
-#[cfg(all(test, not(feature = "gc_always")))]
+#[cfg(test)]
 mod tests {
     use super::*;
 
