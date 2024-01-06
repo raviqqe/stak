@@ -19,7 +19,7 @@ macro_rules! main {
             device::StdioDevice,
             primitive::SmallPrimitiveSet,
             stak_macro::include_r7rs,
-            std::{env, error::Error, process::exit},
+            std::{env, error::Error},
             vm::Vm,
         };
 

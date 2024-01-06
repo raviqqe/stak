@@ -14,7 +14,8 @@ use stak_vm::Vm;
 use std::{
     env,
     error::Error,
-    fs::{read_to_string, File},
+    fs::File,
+    io,
     io::{empty, Read},
 };
 
@@ -31,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut source = Default::default();
     let mut program = vec![];
 
-    read_source(source)?;
+    read_source(&mut source)?;
     compile(&source, &mut program, size)?;
 
     let mut heap = vec![Default::default(); size];
