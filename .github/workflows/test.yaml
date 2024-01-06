@@ -21,6 +21,7 @@ jobs:
       - run: cargo build
   unit_test:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
@@ -28,7 +29,7 @@ jobs:
         options:
           -
           - --features std
-          - --features gc_always --exclude stak-compile
+          - --features gc_always --workspace --exclude stak-compile
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
