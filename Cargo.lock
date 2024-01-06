@@ -101,13 +101,6 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.1"
-dependencies = [
- "stak-sac",
-]
-
-[[package]]
-name = "stak-compile-cli"
 version = "0.1.0"
 dependencies = [
  "proc-macro2",
@@ -116,6 +109,13 @@ dependencies = [
  "stak-primitive",
  "stak-vm",
  "syn",
+]
+
+[[package]]
+name = "stak-compile-cli"
+version = "0.1.1"
+dependencies = [
+ "stak-sac",
 ]
 
 [[package]]
