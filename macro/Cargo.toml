@@ -15,4 +15,4 @@ proc-macro = true
 proc-macro2 = "1.0.75"
 quote = "1.0.35"
 syn = "2.0.48"
-stak-compile = { version = "0.1", path = "../compile" }
+stak-compiler = { version = "0.1", path = "../compiler" }

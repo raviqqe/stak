@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["cmd/compile", "cmd/decode", "cmd/interpret", "cmd/stak", "code", "compile", "device", "macro", "primitive", "sac", "vm"]
+members = ["cmd/compile", "cmd/decode", "cmd/interpret", "cmd/stak", "code", "compiler", "device", "macro", "primitive", "sac", "vm"]
 
 [workspace.package]
 edition = "2021"
