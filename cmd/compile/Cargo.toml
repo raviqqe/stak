@@ -1,12 +1,16 @@
 [package]
-name = "stak-compile"
-description = "Stak bytecode compiler"
+name = "stak-compile-cli"
+description = "Stak Scheme bytecode compiler"
 version = "0.1.1"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+
+[[bin]]
+name = "stak-compile"
+path = "src/main.rs"
 
 [dependencies]
 stak-sac = { version = "0.1", path = "../../sac" }

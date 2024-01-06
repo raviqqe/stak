@@ -21,23 +21,22 @@ jobs:
       - run: cargo build
   unit_test:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest
           - macos-latest
-        features:
-          - []
-          - [std]
-          - [gc_always]
+        options:
+          -
+          - --features std
+          - --features gc_always --exclude stak-compile
     runs-on: ${{ matrix.os }}
-    env:
-      STAK_FEATURES: ${{ join(matrix.features, ',') }}
     steps:
       - uses: actions/checkout@v4
       - uses: Swatinem/rust-cache@v2
       - uses: Homebrew/actions/setup-homebrew@master
       - run: tools/ci/setup.sh
-      - run: tools/unit_test.sh
+      - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:

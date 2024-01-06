@@ -1,7 +1,8 @@
 mod error;
 mod primitive;
 
-use self::{error::Error, primitive::Primitive};
+pub use self::error::Error;
+use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Sub};
 use stak_device::Device;
 use stak_vm::{Number, PrimitiveSet, Type, Value, Vm};
