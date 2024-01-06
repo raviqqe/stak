@@ -20,9 +20,9 @@ fi
 for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   base=${file%.scm}
 
-  cat prelude.scm $file | gosh compile.scm >$base.out
+  cat prelude.scm $file | gosh compile.scm >$base.bc
 
-  scripts="stak-interpret $base.out,gsi $file,chibi-scheme $file,gosh $file"
+  scripts="stak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"

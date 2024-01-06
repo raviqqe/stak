@@ -1,5 +1,4 @@
 *.bc
 *.info
-*.out
 target
 tmp

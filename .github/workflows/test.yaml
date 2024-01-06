@@ -56,13 +56,13 @@ jobs:
           - ubuntu-latest
           - macos-latest
         interpreter:
-          - name: stak
+          - name: stak-tools
             host: chibi-scheme
-          - name: stak
+          - name: stak-tools
             host: gosh
-          - name: stak
+          - name: stak-tools
             host: guile
-          - name: stak
+          - name: stak-tools
             host: gosh
             features: [gc_always]
             tags: not @long
@@ -75,22 +75,33 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
-      STAK_FEATURES: ${{ join(matrix.interpreter.features, ',') }}
-      SCHEME_INTERPRETER: ${{ matrix.interpreter.name }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
       - run: brew install chibi-scheme gauche guile
-      - run: tools/integration_test.sh --tags '${{ matrix.interpreter.tags || 'not @none' }}'
+      - run: |
+          tools/integration_test.sh \
+            -i ${{ matrix.interpreter.name }} \
+            -f ${{ join(matrix.interpreter.features, ',') }}, \
+            -- \
+            --tags '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_integration_test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+        interpreter:
+          - stak
+          - stak-tools
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: Homebrew/actions/setup-homebrew@master
       - uses: ruby/setup-ruby@v1
       - run: tools/ci/setup.sh
-      - run: tools/integration_test.sh
+      - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
   self_host_test:
     runs-on: ubuntu-latest
     steps:
