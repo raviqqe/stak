@@ -173,6 +173,7 @@ dependencies = [
  "insta",
  "stak-code",
  "stak-device",
+ "stak-macro",
  "stak-primitive",
 ]
 
