@@ -1,6 +1,6 @@
 [package]
 name = "stak-compile-cli"
-description = "Stak bytecode compiler"
+description = "Stak Scheme bytecode compiler"
 version = "0.1.1"
 edition.workspace = true
 keywords.workspace = true

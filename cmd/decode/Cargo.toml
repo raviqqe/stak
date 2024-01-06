@@ -1,5 +1,5 @@
 [package]
-name = "stak-decode"
+name = "stak-decode-cli"
 description = "Stak Scheme bytecode decoder"
 version = "0.1.4"
 edition.workspace = true
@@ -7,6 +7,10 @@ keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+
+[[bin]]
+name = "stak-decode"
+path = "src/main.rs"
 
 [dependencies]
 code = { package = "stak-code", version = "0.1", path = "../../code", features = ["alloc", "std"] }

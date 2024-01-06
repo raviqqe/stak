@@ -1,5 +1,5 @@
 [package]
-name = "stak-interpret"
+name = "stak-interpret-cli"
 description = "Stak Scheme bytecode interpreter"
 version = "0.1.1"
 edition.workspace = true
@@ -7,6 +7,10 @@ keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+
+[[bin]]
+name = "stak-interpret"
+path = "src/main.rs"
 
 [features]
 gc_always = ["vm/gc_always"]
