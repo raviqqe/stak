@@ -1,5 +1,5 @@
 Feature: Boolean
-  Scenario Outline: Use a not operator
+  Scenario Outline: Use a `not` operator
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base))
