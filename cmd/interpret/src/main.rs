@@ -6,15 +6,15 @@
 //! stak-interpret foo.bc
 //! ```
 
-use device::StdioDevice;
-use primitive::SmallPrimitiveSet;
+use stak_device::StdioDevice;
+use stak_primitive::SmallPrimitiveSet;
+use stak_vm::Vm;
 use std::{
     env::{self, args},
     error::Error,
     fs::read,
     process::exit,
 };
-use vm::Vm;
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 

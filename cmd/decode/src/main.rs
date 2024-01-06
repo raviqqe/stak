@@ -9,7 +9,7 @@
 //! stak-decode < foo.bc
 //! ```
 
-use code::decode;
+use stak_code::decode;
 use std::{
     error::Error,
     io::{stdin, Read},

@@ -3,8 +3,8 @@ mod primitive;
 
 use self::{error::Error, primitive::Primitive};
 use core::ops::{Add, Div, Mul, Sub};
-use device::Device;
-use vm::{Number, PrimitiveSet, Type, Value, Vm};
+use stak_device::Device;
+use stak_vm::{Number, PrimitiveSet, Type, Value, Vm};
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<T: Device> {
