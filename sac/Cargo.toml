@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-device = { package = "stak-device", version = "0.1", path = "../device", features = ["std"] }
-primitive = { package = "stak-primitive", version = "0.1", path = "../primitive", features = ["std"] }
+stak-device = { version = "0.1", path = "../device", features = ["std"] }
 stak-macro = { version = "0.1", path = "../macro" }
-vm = { package = "stak-vm", version = "0.2", path = "../vm", features = ["std"] }
+stak-primitive = { version = "0.1", path = "../primitive", features = ["std"] }
+stak-vm = { version = "0.2", path = "../vm", features = ["std"] }

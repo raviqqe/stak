@@ -1,13 +1,13 @@
 //! Macros to bundle and use Scheme programs.
 
-use device::ReadWriteDevice;
-use primitive::SmallPrimitiveSet;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
+use stak_device::ReadWriteDevice;
+use stak_primitive::SmallPrimitiveSet;
+use stak_vm::Vm;
 use std::{env, error::Error, fs::read_to_string, path::Path};
 use syn::{parse_macro_input, LitStr};
-use vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
