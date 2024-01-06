@@ -14,17 +14,16 @@ const COMPILER_TARGET_FILE: &str = "compile.bc";
 fn main() -> Result<(), Box<dyn Error>> {
     let target_file = Path::new(&env::var("OUT_DIR")?).join(COMPILER_TARGET_FILE);
 
-    println!(
-        "cargo:rustc-env=STAK_BYTECODE_FILE={}",
-        target_file.strip_prefix("src")?.display()
-    );
-
     if target_file.exists() {
         return Ok(());
     }
 
     println!("cargo:rerun-if-changed={PRELUDE_SOURCE_FILE}");
     println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
+    println!(
+        "cargo:rustc-env=STAK_BYTECODE_FILE={}",
+        target_file.display()
+    );
 
     let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("stak"))
         .arg(COMPILER_SOURCE_FILE)
