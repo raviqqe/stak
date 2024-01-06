@@ -3,7 +3,7 @@
 set -ex
 
 features=,
-interpreter=stak-cli
+interpreter=stak
 
 while getopts f:i: option; do
   case $option in

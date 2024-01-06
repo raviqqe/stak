@@ -57,13 +57,13 @@ jobs:
           - ubuntu-latest
           - macos-latest
         interpreter:
-          - name: stak
+          - name: stak-tools
             host: chibi-scheme
-          - name: stak
+          - name: stak-tools
             host: gosh
-          - name: stak
+          - name: stak-tools
             host: guile
-          - name: stak
+          - name: stak-tools
             host: gosh
             features: [gc_always]
             tags: not @long
@@ -94,7 +94,7 @@ jobs:
           - macos-latest
         interpreter:
           - stak
-          - stak-cli
+          - stak-tools
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
