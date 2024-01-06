@@ -107,6 +107,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-compile-cli"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "stak-device",
+ "stak-primitive",
+ "stak-vm",
+ "syn",
+]
+
+[[package]]
 name = "stak-decode"
 version = "0.1.4"
 dependencies = [
