@@ -1,6 +1,6 @@
 //! Primitive sets.
 //!
-//! This crate provides [`PrimitiveSet`](vm::PrimitiveSet)s to run basic
+//! This crate provides [`PrimitiveSet`](stak_vm::PrimitiveSet)s to run basic
 //! programs in Scheme.
 
 #![no_std]
