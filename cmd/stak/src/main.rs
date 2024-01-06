@@ -21,6 +21,7 @@ use std::{
 };
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
+const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 #[derive(Clone, Copy, clap::ValueEnum)]
@@ -46,7 +47,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         .unwrap_or(DEFAULT_HEAP_SIZE);
     let mut heap = vec![Default::default(); size];
 
-    let mut source = String::new();
+    let mut source = match arguments.library {
+        Library::None => Default::default(),
+        Library::R7rs => PRELUDE_SOURCE.into(),
+    };
     let mut target = vec![];
 
     read_source(&mut source)?;
