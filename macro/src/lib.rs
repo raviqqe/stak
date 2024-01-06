@@ -3,7 +3,7 @@
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
-use stak_compile::CompileError;
+use stak_compiler::CompileError;
 use std::{env, error::Error, fs::read_to_string, path::Path};
 use syn::{parse_macro_input, LitStr};
 
@@ -36,7 +36,7 @@ pub fn include_r7rs(input: TokenStream) -> TokenStream {
 }
 
 fn generate_r7rs(source: &str) -> Result<TokenStream, Box<dyn Error>> {
-    generate_scheme(source, stak_compile::compile_r7rs)
+    generate_scheme(source, stak_compiler::compile_r7rs)
 }
 
 /// Compiles a program in Scheme into bytecodes with only built-ins.
@@ -68,7 +68,7 @@ pub fn include_bare(input: TokenStream) -> TokenStream {
 }
 
 fn generate_bare(source: &str) -> Result<TokenStream, Box<dyn Error>> {
-    generate_scheme(source, stak_compile::compile_bare)
+    generate_scheme(source, stak_compiler::compile_bare)
 }
 
 fn generate_scheme(

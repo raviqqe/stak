@@ -20,7 +20,7 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 /// let source = "(define x 42)";
 /// let mut target = vec![];
 ///
-/// stak_compile::compile_r7rs(source, &mut target);
+/// stak_compiler::compile_r7rs(source, &mut target);
 /// ```
 pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), CompileError> {
     compile_bare(&(PRELUDE_SOURCE.to_owned() + source), target)
@@ -34,7 +34,7 @@ pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), CompileErr
 /// let source = "($$define x 42)";
 /// let mut target = vec![];
 ///
-/// stak_compile::compile_bare(source, &mut target);
+/// stak_compiler::compile_bare(source, &mut target);
 /// ```
 pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), CompileError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
