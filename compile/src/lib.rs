@@ -8,7 +8,7 @@ use primitive::SmallPrimitiveSet;
 use std::io::empty;
 use vm::Vm;
 
-const DEFAULT_HEAP_SIZE: usize = 1 << 21;
+const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
