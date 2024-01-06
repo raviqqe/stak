@@ -1,5 +1,5 @@
 use core::fmt::{self, Display, Formatter};
-use primitive::SmallError;
+use stak_primitive::SmallError;
 
 /// A compile error.
 #[derive(Clone, Debug, Eq, PartialEq)]

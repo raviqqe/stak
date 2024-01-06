@@ -3,10 +3,10 @@
 mod error;
 
 use self::error::Error;
-use device::ReadWriteDevice;
-use primitive::SmallPrimitiveSet;
+use stak_device::ReadWriteDevice;
+use stak_primitive::SmallPrimitiveSet;
+use stak_vm::Vm;
 use std::io::empty;
-use vm::Vm;
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
