@@ -2,13 +2,13 @@
 
 set -ex
 
-feature_flags=,
+features=,
 interpreter=stak-cli
 
 while getopts f:i: option; do
   case $option in
   f)
-    feature_flags=$OPTARG
+    features=$OPTARG
     ;;
   i)
     interpreter=$OPTARG
@@ -24,7 +24,7 @@ brew install gauche
 bundler install
 
 cargo build --profile integration_test
-cargo build --profile integration_test --bin stak-interpret --features $feature_flags
+cargo build --profile integration_test --bin stak-interpret --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
