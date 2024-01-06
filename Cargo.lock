@@ -192,7 +192,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
-name = "stak-cli"
+name = "stak"
 version = "0.1.0"
 dependencies = [
  "clap",
@@ -212,6 +212,13 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
+version = "0.1.1"
+dependencies = [
+ "stak-sac",
+]
+
+[[package]]
+name = "stak-compiler"
 version = "0.1.0"
 dependencies = [
  "stak-device",
@@ -220,14 +227,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-compile-cli"
-version = "0.1.1"
-dependencies = [
- "stak-sac",
-]
-
-[[package]]
-name = "stak-decode-cli"
+name = "stak-decode"
 version = "0.1.4"
 dependencies = [
  "stak-code",
@@ -238,7 +238,7 @@ name = "stak-device"
 version = "0.1.5"
 
 [[package]]
-name = "stak-interpret-cli"
+name = "stak-interpret"
 version = "0.1.1"
 dependencies = [
  "stak-device",
@@ -252,7 +252,7 @@ version = "0.1.0"
 dependencies = [
  "proc-macro2",
  "quote",
- "stak-compile",
+ "stak-compiler",
  "syn",
 ]
 

@@ -2,8 +2,8 @@ use crate::Device;
 
 /// A fixed buffer device.
 #[derive(Debug)]
-pub struct FixedBufferDevice<const I: usize, const O: usize, const E: usize> {
-    input: [u8; I],
+pub struct FixedBufferDevice<'a, const O: usize, const E: usize> {
+    input: &'a [u8],
     output: [u8; O],
     error: [u8; E],
     input_index: usize,
@@ -11,22 +11,17 @@ pub struct FixedBufferDevice<const I: usize, const O: usize, const E: usize> {
     error_index: usize,
 }
 
-impl<const I: usize, const O: usize, const E: usize> FixedBufferDevice<I, O, E> {
+impl<'a, const O: usize, const E: usize> FixedBufferDevice<'a, O, E> {
     /// Creates a device.
-    pub fn new() -> Self {
+    pub fn new(input: &'a [u8]) -> Self {
         Self {
-            input: [0; I],
+            input,
             output: [0; O],
             error: [0; E],
             input_index: 0,
             output_index: 0,
             error_index: 0,
         }
-    }
-
-    /// Returns a mutable reference to standard input.
-    pub fn input_mut(&mut self) -> &mut [u8] {
-        &mut self.input
     }
 
     /// Returns a reference to standard output.
@@ -40,13 +35,7 @@ impl<const I: usize, const O: usize, const E: usize> FixedBufferDevice<I, O, E> 
     }
 }
 
-impl<const I: usize, const O: usize, const E: usize> Default for FixedBufferDevice<I, O, E> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl<const I: usize, const O: usize, const E: usize> Device for FixedBufferDevice<I, O, E> {
+impl<'a, const O: usize, const E: usize> Device for FixedBufferDevice<'a, O, E> {
     type Error = ();
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
@@ -88,9 +77,7 @@ mod tests {
 
     #[test]
     fn read() {
-        let mut device = FixedBufferDevice::<1, 0, 0>::new();
-
-        device.input_mut()[0] = 42;
+        let mut device = FixedBufferDevice::<0, 0>::new(&[42]);
 
         assert_eq!(device.read(), Ok(Some(42)));
         assert_eq!(device.read(), Ok(None));
@@ -98,7 +85,7 @@ mod tests {
 
     #[test]
     fn write() {
-        let mut device = FixedBufferDevice::<0, 1, 0>::new();
+        let mut device = FixedBufferDevice::<1, 0>::new(&[]);
 
         assert_eq!(device.write(42), Ok(()));
         assert_eq!(device.write(42), Err(()));
@@ -107,7 +94,7 @@ mod tests {
 
     #[test]
     fn write_error() {
-        let mut device = FixedBufferDevice::<0, 0, 1>::new();
+        let mut device = FixedBufferDevice::<0, 1>::new(&[]);
 
         assert_eq!(device.write_error(42), Ok(()));
         assert_eq!(device.write_error(42), Err(()));

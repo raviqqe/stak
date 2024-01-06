@@ -1,5 +1,4 @@
 //! A Stak Scheme interpreter.
-//! machine.
 //!
 //! # Usage
 //!
