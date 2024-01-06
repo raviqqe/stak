@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 .help("Run with no standard library")
                 .action(clap::ArgAction::SetTrue),
         )
-        .parse()?;
+        .get_matches()?;
 
     let size = env::var("STAK_HEAP_SIZE")
         .ok()
