@@ -2,7 +2,7 @@ use core::fmt::{self, Display, Formatter};
 
 /// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Error {
+pub enum SmallError {
     /// A halt of a virtual machine.
     Halt,
     /// An illegal primitive.
@@ -19,9 +19,9 @@ pub enum Error {
 }
 
 #[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl std::error::Error for SmallError {}
 
-impl Display for Error {
+impl Display for SmallError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Halt => write!(formatter, "halt"),
@@ -34,7 +34,7 @@ impl Display for Error {
     }
 }
 
-impl From<vm::Error> for Error {
+impl From<vm::Error> for SmallError {
     fn from(error: vm::Error) -> Self {
         Self::Vm(error)
     }

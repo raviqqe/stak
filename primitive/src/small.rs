@@ -1,7 +1,8 @@
 mod error;
 mod primitive;
 
-use self::{error::Error, primitive::Primitive};
+pub use self::error::SmallError;
+use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Sub};
 use device::Device;
 use vm::{Number, PrimitiveSet, Type, Value, Vm};
@@ -43,7 +44,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
     }
 
-    fn rib(vm: &mut Vm<Self>, r#type: u8, car: Value, cdr: Value) -> Result<(), Error> {
+    fn rib(vm: &mut Vm<Self>, r#type: u8, car: Value, cdr: Value) -> Result<(), SmallError> {
         let rib = vm.allocate(car.set_tag(r#type), cdr)?;
         vm.set_top(rib.into());
 
@@ -72,8 +73,8 @@ impl<T: Device> SmallPrimitiveSet<T> {
     fn write(
         vm: &mut Vm<Self>,
         write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
-        error: Error,
-    ) -> Result<(), Error> {
+        error: SmallError,
+    ) -> Result<(), SmallError> {
         let byte = vm.top().assume_number().to_i64() as u8;
 
         write(&mut vm.primitive_set_mut().device, byte).map_err(|_| error)
@@ -103,9 +104,9 @@ impl<T: Device> SmallPrimitiveSet<T> {
 }
 
 impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
-    type Error = Error;
+    type Error = SmallError;
 
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
+    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), SmallError> {
         match primitive {
             Primitive::RIB => {
                 let [r#type, car, cdr, tag] = Self::pop_arguments::<4>(vm);
@@ -153,7 +154,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     .primitive_set_mut()
                     .device
                     .read()
-                    .map_err(|_| Error::ReadInput)?;
+                    .map_err(|_| SmallError::ReadInput)?;
 
                 vm.push(if let Some(byte) = byte {
                     Number::new(byte as i64).into()
@@ -161,10 +162,10 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     vm.boolean(false).into()
                 })?;
             }
-            Primitive::WRITE => Self::write(vm, Device::write, Error::WriteOutput)?,
-            Primitive::WRITE_ERROR => Self::write(vm, Device::write_error, Error::WriteError)?,
-            Primitive::HALT => return Err(Error::Halt),
-            _ => return Err(Error::Illegal),
+            Primitive::WRITE => Self::write(vm, Device::write, SmallError::WriteOutput)?,
+            Primitive::WRITE_ERROR => Self::write(vm, Device::write_error, SmallError::WriteError)?,
+            Primitive::HALT => return Err(SmallError::Halt),
+            _ => return Err(SmallError::Illegal),
         }
 
         Ok(())

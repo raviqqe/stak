@@ -103,12 +103,9 @@ dependencies = [
 name = "stak-compile"
 version = "0.1.0"
 dependencies = [
- "proc-macro2",
- "quote",
  "stak-device",
  "stak-primitive",
  "stak-vm",
- "syn",
 ]
 
 [[package]]
