@@ -23,7 +23,7 @@ use std::{
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
-#[derive(clap::ValueEnum)]
+#[derive(Clone, Copy, clap::ValueEnum)]
 enum Library {
     R7rs,
 }
