@@ -14,10 +14,6 @@ const COMPILER_TARGET_FILE: &str = "compile.bc";
 fn main() -> Result<(), Box<dyn Error>> {
     let target_file = Path::new(&env::var("OUT_DIR")?).join(COMPILER_TARGET_FILE);
 
-    if target_file.exists() {
-        return Ok(());
-    }
-
     println!("cargo:rerun-if-changed={PRELUDE_SOURCE_FILE}");
     println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
     println!(
@@ -25,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         target_file.display()
     );
 
-    let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("stak"))
+    let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("gosh"))
         .arg(COMPILER_SOURCE_FILE)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
