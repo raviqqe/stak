@@ -4,6 +4,16 @@ set -e
 
 directory=$(dirname $0)/../../..
 
-export PATH=$directory/target/integration_test
+compile() {
+  if [ -n "$STAK_HOST_INTERPRETER" ]; then
+    $STAK_HOST_INTERPRETER $directory/compile.scm
+  else
+    stak-compile
+  fi
+}
 
-stak $directory/prelude.scm "$@"
+export PATH=$directory/target/integration_test:$PATH
+
+cat $directory/prelude.scm "$@" | compile >main.out
+stak-decode <main.out >/dev/null
+stak-interpret main.out
