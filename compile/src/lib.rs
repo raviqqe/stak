@@ -40,7 +40,6 @@ pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), Error> {
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
-
     vm.run()?;
 
     Ok(())
