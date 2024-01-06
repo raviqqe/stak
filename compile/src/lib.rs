@@ -46,3 +46,36 @@ pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), CompileErr
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    mod r7rs {
+        use super::*;
+
+        #[test]
+        fn compile_nothing() {
+            compile_bare("", &mut vec![]).unwrap();
+        }
+
+        #[test]
+        fn compile_define() {
+            compile_bare("(define x 42)", &mut vec![]).unwrap();
+        }
+    }
+
+    mod bare {
+        use super::*;
+
+        #[test]
+        fn compile_nothing() {
+            compile_bare("", &mut vec![]).unwrap();
+        }
+
+        #[test]
+        fn compile_define() {
+            compile_bare("($$define x 42)", &mut vec![]).unwrap();
+        }
+    }
+}
