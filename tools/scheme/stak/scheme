@@ -14,6 +14,6 @@ compile() {
 
 export PATH=$directory/target/integration_test:$PATH
 
-cat $directory/prelude.scm "$@" | compile >main.out
-stak-decode <main.out >/dev/null
-stak-interpret main.out
+cat $directory/prelude.scm "$@" | compile >main.bc
+stak-decode <main.bc >/dev/null
+stak-interpret main.bc
