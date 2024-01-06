@@ -29,7 +29,7 @@ jobs:
         options:
           -
           - --features std
-          - --features gc_always --exclude stak-compile
+          - --features gc_always --exclude stak-compiler
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
