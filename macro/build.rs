@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn()?;
-    let stdin = command.stdin.as_mut().expect("stdin defined");
+    let stdin = command.stdin.as_mut().expect("stdin");
 
     stdin.write_all(&fs::read(PRELUDE_SOURCE_FILE)?)?;
     stdin.write_all(&fs::read(COMPILER_SOURCE_FILE)?)?;
@@ -34,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     command.wait()?;
 
     io::copy(
-        &mut command.stdout.expect("stdout defined"),
+        &mut command.stdout.expect("stdout"),
         &mut File::options()
             .create(true)
             .write(true)
