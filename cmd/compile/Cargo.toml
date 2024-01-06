@@ -8,9 +8,5 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[[bin]]
-name = "stak-compile"
-path = "src/main.rs"
-
 [dependencies]
 stak-sac = { version = "0.1", path = "../../sac" }

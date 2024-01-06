@@ -8,10 +8,6 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[[bin]]
-name = "stak-interpret"
-path = "src/main.rs"
-
 [features]
 gc_always = ["stak-vm/gc_always"]
 no_inline = ["stak-vm/no_inline"]

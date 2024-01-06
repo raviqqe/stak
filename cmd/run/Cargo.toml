@@ -8,10 +8,6 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[[bin]]
-name = "stak"
-path = "src/main.rs"
-
 [dependencies]
 clap = { version = "4.4.13", features = ["cargo", "derive"] }
 stak-device = { version = "0.1.5", path = "../../device", features = ["std"] }

@@ -8,9 +8,5 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[[bin]]
-name = "stak-decode"
-path = "src/main.rs"
-
 [dependencies]
 stak-code = { version = "0.1", path = "../../code", features = ["alloc", "std"] }
