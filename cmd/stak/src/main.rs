@@ -25,6 +25,7 @@ const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 #[derive(Clone, Copy, clap::ValueEnum)]
 enum Library {
+    None,
     R7rs,
 }
 
@@ -32,7 +33,7 @@ enum Library {
 #[command(about, version)]
 struct Arguments {
     #[arg(short, long, default_value = "r7rs")]
-    library: Option<Library>,
+    library: Library,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
