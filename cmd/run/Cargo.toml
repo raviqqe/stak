@@ -1,5 +1,5 @@
 [package]
-name = "stak-cli"
+name = "stak"
 description = "Stak Scheme interpreter"
 version = "0.1.0"
 edition.workspace = true

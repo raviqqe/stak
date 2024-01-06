@@ -1,5 +1,5 @@
 [package]
-name = "stak-decode-cli"
+name = "stak-decode"
 description = "Stak Scheme bytecode decoder"
 version = "0.1.4"
 edition.workspace = true
