@@ -1,0 +1,15 @@
+[package]
+name = "stak"
+description = "Stak Scheme interpreter"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+stak-device = { version = "0.1.5", path = "../../device", features = ["std"] }
+stak-macro = { version = "0.1", path = "../../macro" }
+stak-primitive = { version = "0.1.1", path = "../../primitive", features = ["std"] }
+stak-vm = { version = "0.2.1", path = "../../vm", features = ["std"] }
