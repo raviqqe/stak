@@ -1,4 +1,5 @@
 use std::{
+    env,
     error::Error,
     fs::{self, File},
     io::{self, Write},
@@ -8,35 +9,24 @@ use std::{
 
 const PRELUDE_SOURCE_FILE: &str = "src/prelude.scm";
 const COMPILER_SOURCE_FILE: &str = "src/compile.scm";
-const COMPILER_TARGET_FILE: &str = "src/compile.bc";
+const COMPILER_TARGET_FILE: &str = "compile.bc";
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let target_file = Path::new(COMPILER_TARGET_FILE);
-
-    // We bundle a compiler bytecode file into a crate.
-    // So we want to re-build the bytecode file only if:
-    //
-    // - The bytecode file does not exist.
-    // - Or, its source files are changed from a previous build.
-    println!("cargo:rerun-if-changed={}", target_file.display());
-    println!(
-        "cargo:rustc-env=STAK_BYTECODE_FILE={}",
-        target_file.strip_prefix("src")?.display()
-    );
-
-    if target_file.exists() {
-        return Ok(());
-    }
+    let target_file = Path::new(&env::var("OUT_DIR")?).join(COMPILER_TARGET_FILE);
 
     println!("cargo:rerun-if-changed={PRELUDE_SOURCE_FILE}");
     println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
+    println!(
+        "cargo:rustc-env=STAK_BYTECODE_FILE={}",
+        target_file.display()
+    );
 
     let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("gosh"))
         .arg(COMPILER_SOURCE_FILE)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .spawn()?;
-    let stdin = command.stdin.as_mut().expect("stdin defined");
+    let stdin = command.stdin.as_mut().expect("stdin");
 
     stdin.write_all(&fs::read(PRELUDE_SOURCE_FILE)?)?;
     stdin.write_all(&fs::read(COMPILER_SOURCE_FILE)?)?;
@@ -44,7 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     command.wait()?;
 
     io::copy(
-        &mut command.stdout.expect("stdout defined"),
+        &mut command.stdout.expect("stdout"),
         &mut File::options()
             .create(true)
             .write(true)
