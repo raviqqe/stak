@@ -50,10 +50,10 @@ pub fn include_r7rs(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_naked!("($$define x 42)");
+/// let bytecodes = stak_macro::compile_bare!("($$define x 42)");
 /// ```
 #[proc_macro]
-pub fn compile_naked(input: TokenStream) -> TokenStream {
+pub fn compile_bare(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(generate_scheme(&input.value()))
@@ -64,10 +64,10 @@ pub fn compile_naked(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::include_naked!("foo.scm");
+/// let bytecodes = stak_macro::include_bare!("foo.scm");
 /// ```
 #[proc_macro]
-pub fn include_naked(input: TokenStream) -> TokenStream {
+pub fn include_bare(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result((|| generate_scheme(&read_file(input)?))())
