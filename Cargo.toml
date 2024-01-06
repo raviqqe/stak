@@ -1,5 +1,5 @@
 [workspace]
-members = ["cmd/compile", "cmd/decode", "cmd/interpret", "code", "device", "macro", "primitive", "sac", "vm"]
+members = ["cmd/compile", "cmd/decode", "cmd/interpret", "code", "compile", "device", "macro", "primitive", "sac", "vm"]
 resolver = "2"
 
 [workspace.package]

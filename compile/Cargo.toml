@@ -1,5 +1,5 @@
 [package]
-name = "stak-compile"
+name = "stak-compile-cli"
 description = "Stak bytecode compiler"
 version = "0.1.0"
 edition.workspace = true
@@ -7,6 +7,9 @@ keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+
+[[bin]]
+name = "stak-compile"
 
 [dependencies]
 device = { package = "stak-device", version = "0.1", path = "../device", features = ["std"] }
