@@ -7,6 +7,7 @@
 //! stak foo.scm
 //! ```
 
+use clap::Parser;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_primitive::SmallPrimitiveSet;
@@ -22,7 +23,7 @@ use std::{
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
-#[derive(Parser)]
+#[derive(clap::ArgEnum)]
 #[clap(rename_all = "kebab_case")]
 enum Library {
     R7rs,
@@ -31,12 +32,12 @@ enum Library {
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
-    #[arg(short, long, default_value_t = Some(Library::R7rs))]
+    #[arg(short, long, default_value = Some(Library::R7rs))]
     library: Option<Library>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let arguments = Arguments::parse()?;
+    let arguments = Arguments::parse();
 
     let size = env::var("STAK_HEAP_SIZE")
         .ok()
