@@ -22,17 +22,21 @@ use std::{
 const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
+#[derive(Parser)]
+#[clap(rename_all = "kebab_case")]
+enum Library {
+    R7rs,
+}
+
+#[derive(clap::Parser)]
+#[command(about, version)]
+struct Arguments {
+    #[arg(short, long, default_value_t = Some(Library::R7rs))]
+    library: Option<Library>,
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
-    let arguments = clap::Command::new("pen")
-        .version(clap::crate_version!())
-        .arg(
-            clap::Arg::new("bare")
-                .short('b')
-                .long("bare")
-                .help("Run with no standard library")
-                .action(clap::ArgAction::SetTrue),
-        )
-        .get_matches()?;
+    let arguments = Arguments::parse()?;
 
     let size = env::var("STAK_HEAP_SIZE")
         .ok()
