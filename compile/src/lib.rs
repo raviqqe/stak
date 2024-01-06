@@ -2,7 +2,7 @@
 
 mod error;
 
-use self::error::Error;
+pub use self::error::CompileError;
 use stak_device::ReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
@@ -22,7 +22,7 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 ///
 /// stak_compile::compile_r7rs(source, &mut target);
 /// ```
-pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), Error> {
+pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), CompileError> {
     compile_bare(&(PRELUDE_SOURCE.to_owned() + source), target)
 }
 
@@ -36,7 +36,7 @@ pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), Error> {
 ///
 /// stak_compile::compile_bare(source, &mut target);
 /// ```
-pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), Error> {
+pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), CompileError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let device = ReadWriteDevice::new(source.as_bytes(), target, empty());
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;

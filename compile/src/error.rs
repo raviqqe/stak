@@ -3,14 +3,14 @@ use stak_primitive::SmallError;
 
 /// A compile error.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Error {
+pub enum CompileError {
     /// A virtual machine error.
     Vm(SmallError),
 }
 
-impl std::error::Error for Error {}
+impl std::error::Error for CompileError {}
 
-impl Display for Error {
+impl Display for CompileError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Vm(error) => write!(formatter, "{}", error),
@@ -18,7 +18,7 @@ impl Display for Error {
     }
 }
 
-impl From<SmallError> for Error {
+impl From<SmallError> for CompileError {
     fn from(error: SmallError) -> Self {
         Self::Vm(error)
     }

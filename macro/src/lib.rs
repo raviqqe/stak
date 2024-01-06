@@ -3,6 +3,7 @@
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
+use stak_compile::CompileError;
 use std::{env, error::Error, fs::read_to_string, path::Path};
 use syn::{parse_macro_input, LitStr};
 
@@ -35,13 +36,7 @@ pub fn include_r7rs(input: TokenStream) -> TokenStream {
 }
 
 fn generate_r7rs(source: &str) -> Result<TokenStream, Box<dyn Error>> {
-    let mut target = vec![];
-
-    stak_compile::compile_r7rs(source, &mut target)?;
-
-    let target = Literal::byte_string(&target);
-
-    Ok(quote! { #target }.into())
+    generate_scheme(source, stak_compile::compile_r7rs)
 }
 
 /// Compiles a program in Scheme into bytecodes with only built-ins.
@@ -73,9 +68,16 @@ pub fn include_bare(input: TokenStream) -> TokenStream {
 }
 
 fn generate_bare(source: &str) -> Result<TokenStream, Box<dyn Error>> {
+    generate_scheme(source, stak_compile::compile_bare)
+}
+
+fn generate_scheme(
+    source: &str,
+    compile: fn(&str, &mut Vec<u8>) -> Result<(), CompileError>,
+) -> Result<TokenStream, Box<dyn Error>> {
     let mut target = vec![];
 
-    stak_compile::compile_bare(source, &mut target)?;
+    compile(source, &mut target)?;
 
     let target = Literal::byte_string(&target);
 
