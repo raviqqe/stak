@@ -8,6 +8,7 @@ use primitive::SmallPrimitiveSet;
 use std::io::empty;
 use vm::Vm;
 
+const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 
@@ -16,10 +17,11 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_r7rs!("(define x 42)");
+/// let mut target = vec![];
+/// stak_compile::compile_bare("($$define x 42)", &mut target);
 /// ```
-pub fn compile_r7rs(source: &str, target: &mut Vec<u8>, heap_size: usize) -> Result<(), Error> {
-    compile_bare(&(PRELUDE_SOURCE.to_owned() + source), target, heap_size)
+pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), Error> {
+    compile_bare(&(PRELUDE_SOURCE.to_owned() + source), target)
 }
 
 /// Compiles a program in Scheme into bytecodes with only built-ins.
@@ -27,10 +29,13 @@ pub fn compile_r7rs(source: &str, target: &mut Vec<u8>, heap_size: usize) -> Res
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_naked!("($$define x 42)");
+/// const HEAP_SIZE: usize = 1 << 20;
+///
+/// let mut target = vec![];
+/// stak_compile::compile_bare("($$define x 42)", &mut target);
 /// ```
-pub fn compile_bare(source: &str, target: &mut Vec<u8>, heap_size: usize) -> Result<(), Error> {
-    let mut heap = vec![Default::default(); heap_size];
+pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), Error> {
+    let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let device = ReadWriteDevice::new(source.as_bytes(), target, empty());
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
