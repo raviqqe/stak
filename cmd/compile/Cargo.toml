@@ -10,7 +10,7 @@ repository.workspace = true
 
 [[bin]]
 name = "stak-compile"
-path = "main.rs"
+path = "src/main.rs"
 
 [dependencies]
 sac = { package = "stak-sac", version = "0.1", path = "../../sac" }
