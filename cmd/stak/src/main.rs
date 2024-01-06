@@ -31,7 +31,7 @@ enum Library {
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
-    #[arg(short, long, default_value_t = Some(Library::R7rs))]
+    #[arg(short, long, default_value = "r7rs"]
     library: Option<Library>,
 }
 
