@@ -6,7 +6,7 @@ pub use self::error::CompileError;
 use stak_device::ReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::io::empty;
+use std::io::{empty, Read, Write};
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
@@ -22,8 +22,8 @@ const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE")
 ///
 /// stak_compiler::compile_r7rs(source, &mut target);
 /// ```
-pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), CompileError> {
-    compile_bare(&(PRELUDE_SOURCE.to_owned() + source), target)
+pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), CompileError> {
+    compile_bare(PRELUDE_SOURCE.as_bytes().chain(source), target)
 }
 
 /// Compiles a program in Scheme into bytecodes with only built-ins.
@@ -36,9 +36,9 @@ pub fn compile_r7rs(source: &str, target: &mut Vec<u8>) -> Result<(), CompileErr
 ///
 /// stak_compiler::compile_bare(source, &mut target);
 /// ```
-pub fn compile_bare(source: &str, target: &mut Vec<u8>) -> Result<(), CompileError> {
+pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), CompileError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
-    let device = ReadWriteDevice::new(source.as_bytes(), target, empty());
+    let device = ReadWriteDevice::new(source, target, empty());
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
@@ -56,12 +56,12 @@ mod tests {
 
         #[test]
         fn compile_nothing() {
-            compile_bare("", &mut vec![]).unwrap();
+            compile_r7rs(b"", &mut vec![]).unwrap();
         }
 
         #[test]
         fn compile_define() {
-            compile_bare("(define x 42)", &mut vec![]).unwrap();
+            compile_r7rs(b"(define x 42)", &mut vec![]).unwrap();
         }
     }
 
@@ -70,12 +70,12 @@ mod tests {
 
         #[test]
         fn compile_nothing() {
-            compile_bare("", &mut vec![]).unwrap();
+            compile_bare(b"", &mut vec![]).unwrap();
         }
 
         #[test]
         fn compile_define() {
-            compile_bare("($$define x 42)", &mut vec![]).unwrap();
+            compile_bare(b"($$define x 42)", &mut vec![]).unwrap();
         }
     }
 }
