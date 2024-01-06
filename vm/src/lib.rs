@@ -3,8 +3,8 @@
 //! # Examples
 //!
 //! ```rust
-//! use stak_code::{encode, Program};
 //! use stak_device::FixedBufferDevice;
+//! use stak_macro::compile_r7rs;
 //! use stak_primitive::SmallPrimitiveSet;
 //! use stak_vm::Vm;
 //!
@@ -15,10 +15,13 @@
 //! let device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE, BUFFER_SIZE>::new();
 //! let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 //!
-//! // Replace this with actual bytecodes of your program.
-//! let program = encode(&Program::new(vec![], vec![]));
+//! const PROGRAM: &[u8] = compile_r7rs!("
+//!     (import (scheme write))
 //!
-//! vm.initialize(program).unwrap();
+//!     (display \"Hello, world!\")
+//! ");
+//!
+//! vm.initialize(PROGRAM.iter().copied()).unwrap();
 //! vm.run().unwrap();
 //! ```
 
