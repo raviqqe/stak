@@ -2,11 +2,11 @@
 
 #[doc(hidden)]
 pub mod __private {
-    pub extern crate device;
-    pub extern crate primitive;
+    pub extern crate stak_device;
     pub extern crate stak_macro;
+    pub extern crate stak_primitive;
+    pub extern crate stak_vm;
     pub extern crate std;
-    pub extern crate vm;
 }
 
 /// Defines a `main` function that executes a bytecode file at a given path.
@@ -16,14 +16,14 @@ pub mod __private {
 macro_rules! main {
     ($path:expr) => {
         use $crate::__private::{
-            device::StdioDevice,
-            primitive::SmallPrimitiveSet,
+            stak_device::StdioDevice,
             stak_macro::include_r7rs,
+            stak_primitive::SmallPrimitiveSet,
+            stak_vm::Vm,
             std::{env, error::Error},
-            vm::Vm,
         };
 
-        const DEFAULT_HEAP_SIZE: usize = 1 << 21;
+        const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 
         fn main() -> Result<(), Box<dyn Error>> {
             let size = env::var("STAK_HEAP_SIZE")

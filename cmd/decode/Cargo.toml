@@ -13,4 +13,4 @@ name = "stak-decode"
 path = "src/main.rs"
 
 [dependencies]
-code = { package = "stak-code", version = "0.1", path = "../../code", features = ["alloc", "std"] }
+stak-code = { version = "0.1", path = "../../code", features = ["alloc", "std"] }
