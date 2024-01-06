@@ -8,7 +8,7 @@
 //! use stak_primitive::SmallPrimitiveSet;
 //! use stak_vm::Vm;
 //!
-//! const HEAP_SIZE: usize = 1 << 10;
+//! const HEAP_SIZE: usize = 1 << 16;
 //! const BUFFER_SIZE: usize = 1 << 10;
 //!
 //! let mut heap = [Default::default(); HEAP_SIZE];
