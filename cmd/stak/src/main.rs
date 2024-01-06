@@ -10,7 +10,7 @@
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_primitive::SmallPrimitiveSet;
-use stak_vm::Vm;
+use stak_vm::{Value, Vm};
 use std::{
     env,
     error::Error,
@@ -28,17 +28,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(|string| string.parse())
         .transpose()?
         .unwrap_or(DEFAULT_HEAP_SIZE);
+    let mut heap = vec![Default::default(); size];
 
     let mut source = Default::default();
-    let mut program = vec![];
+    let mut target = vec![];
 
     read_source(&mut source)?;
-    compile(&source, &mut program, size)?;
+    compile(&source, &mut target, &mut heap)?;
 
-    let mut heap = vec![Default::default(); size];
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
-    vm.initialize(COMPILER_PROGRAM.iter().copied())?;
+    vm.initialize(target)?;
 
     Ok(vm.run()?)
 }
@@ -51,13 +51,13 @@ fn read_source(source: &mut String) -> Result<(), io::Error> {
     Ok(())
 }
 
-fn compile(source: &str, target: &mut Vec<u8>, heap_size: usize) -> Result<(), Box<dyn Error>> {
-    let mut heap = vec![Default::default(); heap_size];
+fn compile(source: &str, target: &mut Vec<u8>, heap: &mut [Value]) -> Result<(), Box<dyn Error>> {
     let mut vm = Vm::new(
-        &mut heap,
+        heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(source.as_bytes(), target, empty())),
     )?;
 
     vm.initialize(COMPILER_PROGRAM.iter().copied())?;
+
     Ok(vm.run()?)
 }
