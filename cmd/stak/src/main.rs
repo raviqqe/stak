@@ -23,6 +23,17 @@ const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let arguments = clap::Command::new("pen")
+        .version(clap::crate_version!())
+        .arg(
+            clap::Arg::new("bare")
+                .short('b')
+                .long("bare")
+                .help("Run with no standard library")
+                .action(clap::ArgAction::SetTrue),
+        )
+        .parse()?;
+
     let size = env::var("STAK_HEAP_SIZE")
         .ok()
         .map(|string| string.parse())

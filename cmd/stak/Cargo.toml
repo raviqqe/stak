@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
+clap = "4.4.13"
 stak-device = { version = "0.1.5", path = "../../device", features = ["std"] }
 stak-macro = { version = "0.1", path = "../../macro" }
 stak-primitive = { version = "0.1.1", path = "../../primitive", features = ["std"] }
