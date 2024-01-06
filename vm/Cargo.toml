@@ -19,7 +19,7 @@ trace_heap = []
 stak_code = { package = "stak-code", version = "0.1", path = "../code" }
 
 [dev-dependencies]
-stak_code = { package = "stak-code", path = "../code", features = ["alloc"] }
-stak_primitive = { package = "stak-primitive", path = "../primitive" }
-stak_device = { package = "stak-device", path = "../device" }
 insta = "1.34.0"
+stak-device = { path = "../device" }
+stak-macro = { path = "../macro" }
+stak-primitive = { path = "../primitive" }
