@@ -35,6 +35,8 @@ enum Library {
 struct Arguments {
     #[arg(short, long, default_value = "r7rs")]
     library: Library,
+    #[arg(required(true))]
+    files: Vec<String>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -53,7 +55,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
     let mut target = vec![];
 
-    read_source(&mut source)?;
+    read_source(&arguments.files, &mut source)?;
     compile(&source, &mut target, &mut heap)?;
 
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
@@ -63,9 +65,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(vm.run()?)
 }
 
-fn read_source(source: &mut String) -> Result<(), io::Error> {
-    for argument in env::args().skip(1) {
-        File::open(argument)?.read_to_string(source)?;
+fn read_source(files: &[String], source: &mut String) -> Result<(), io::Error> {
+    for file in files {
+        File::open(file)?.read_to_string(source)?;
     }
 
     Ok(())
