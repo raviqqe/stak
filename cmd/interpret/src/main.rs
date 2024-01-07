@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut heap = vec![Default::default(); arguments.heap_size];
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
-    vm.initialize(read(arguments.file)?)?;
+    vm.initialize(read(&arguments.file)?)?;
 
     Ok(vm.run()?)
 }
