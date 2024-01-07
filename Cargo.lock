@@ -244,7 +244,7 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.0"
+version = "0.2.1"
 
 [[package]]
 name = "stak-interpret"
@@ -272,7 +272,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -292,7 +292,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "insta",
  "stak-code",
