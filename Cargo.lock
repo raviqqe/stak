@@ -158,6 +158,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0717cef1bc8b636c6e1c1bbdefc09e6322da8a9321966e8928ef80d20f7f770f"
 
 [[package]]
+name = "main_error"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "155db5e86c6e45ee456bf32fad5a290ee1f7151c2faca27ea27097568da67d1a"
+
+[[package]]
 name = "pretty_assertions"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -196,6 +202,7 @@ name = "stak"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "main_error",
  "stak-device",
  "stak-macro",
  "stak-primitive",
@@ -230,6 +237,8 @@ dependencies = [
 name = "stak-decode"
 version = "0.1.4"
 dependencies = [
+ "clap",
+ "main_error",
  "stak-code",
 ]
 
@@ -241,6 +250,8 @@ version = "0.1.5"
 name = "stak-interpret"
 version = "0.1.1"
 dependencies = [
+ "clap",
+ "main_error",
  "stak-device",
  "stak-primitive",
  "stak-vm",
@@ -271,6 +282,8 @@ dependencies = [
 name = "stak-sac"
 version = "0.1.1"
 dependencies = [
+ "clap",
+ "main_error",
  "stak-device",
  "stak-macro",
  "stak-primitive",
