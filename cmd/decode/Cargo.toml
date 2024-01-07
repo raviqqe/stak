@@ -9,5 +9,5 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-clap = { version = "4.4.13", features = ["derive", "cargo"] }
+clap = { version = "4.4.13", features = ["derive"] }
 stak-code = { version = "0.1", path = "../../code", features = ["alloc", "std"] }

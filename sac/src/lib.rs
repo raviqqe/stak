@@ -2,11 +2,12 @@
 
 #[doc(hidden)]
 pub mod __private {
-    pub extern crate stak_device;
-    pub extern crate stak_macro;
-    pub extern crate stak_primitive;
-    pub extern crate stak_vm;
-    pub extern crate std;
+    pub use clap;
+    pub use stak_device;
+    pub use stak_macro;
+    pub use stak_primitive;
+    pub use stak_vm;
+    pub use std;
 }
 
 /// Defines a `main` function that executes a bytecode file at a given path.
@@ -16,6 +17,7 @@ pub mod __private {
 macro_rules! main {
     ($path:expr) => {
         use $crate::__private::{
+            clap,
             stak_device::StdioDevice,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
@@ -25,13 +27,17 @@ macro_rules! main {
 
         const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 
+        #[derive(clap::Parser)]
+        #[command(about, version)]
+        struct Arguments {
+            #[arg(short = 's', long, default_value_t = 1 << 20)]
+            heap_size: usize,
+        }
+
         fn main() -> Result<(), Box<dyn Error>> {
-            let size = env::var("STAK_HEAP_SIZE")
-                .ok()
-                .map(|string| string.parse())
-                .transpose()?
-                .unwrap_or(DEFAULT_HEAP_SIZE);
-            let mut heap = vec![Default::default(); size];
+            let arguments = Arguments::parse();
+
+            let mut heap = vec![Default::default(); arguments.heap_size];
             let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
             vm.initialize(include_r7rs!($path).iter().copied())?;
