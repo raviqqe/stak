@@ -16,6 +16,7 @@ use std::{
     fs::File,
     io,
     io::{empty, Read},
+    path::PathBuf,
 };
 
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
