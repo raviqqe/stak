@@ -42,12 +42,7 @@ struct Arguments {
 fn main() -> Result<(), Box<dyn Error>> {
     let arguments = Arguments::parse();
 
-    let size = env::var("STAK_HEAP_SIZE")
-        .ok()
-        .map(|string| string.parse())
-        .transpose()?
-        .unwrap_or(DEFAULT_HEAP_SIZE);
-    let mut heap = vec![Default::default(); size];
+    let mut heap = vec![Default::default(); arguments.heap_size];
 
     let mut source = match arguments.library {
         Library::None => Default::default(),
