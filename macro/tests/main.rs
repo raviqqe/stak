@@ -8,9 +8,9 @@ use stak_vm::{Value, Vm};
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
 
-fn create_vm(heap: &mut [Value]) -> Vm {
+fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>> {
     Vm::new(
-        &mut heap,
+        heap,
         SmallPrimitiveSet::new(FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[])),
     )
     .unwrap()
