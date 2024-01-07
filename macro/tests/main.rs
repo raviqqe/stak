@@ -3,16 +3,23 @@
 use stak_device::FixedBufferDevice;
 use stak_macro::compile_r7rs;
 use stak_primitive::SmallPrimitiveSet;
-use stak_vm::Vm;
+use stak_vm::{Value, Vm};
+
+const HEAP_SIZE: usize = 1 << 16;
+const BUFFER_SIZE: usize = 1 << 10;
+
+fn create_vm(heap: &mut [Value]) -> Vm {
+    Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[])),
+    )
+    .unwrap()
+}
 
 #[test]
 fn compile_string() {
-    const HEAP_SIZE: usize = 1 << 16;
-    const BUFFER_SIZE: usize = 1 << 10;
-
     let mut heap = [Default::default(); HEAP_SIZE];
-    let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
+    let mut vm = create_vm(&mut heap);
 
     const PROGRAM: &[u8] = compile_r7rs!(
         r#"
@@ -30,12 +37,8 @@ fn compile_string() {
 
 #[test]
 fn compile_identifier_with_hyphen() {
-    const HEAP_SIZE: usize = 1 << 16;
-    const BUFFER_SIZE: usize = 1 << 10;
-
     let mut heap = [Default::default(); HEAP_SIZE];
-    let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
+    let mut vm = create_vm(&mut heap);
 
     const PROGRAM: &[u8] = compile_r7rs!(
         r#"
