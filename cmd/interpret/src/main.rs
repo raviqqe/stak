@@ -6,38 +6,29 @@
 //! stak-interpret foo.bc
 //! ```
 
+use clap::Parser;
+use main_error::MainError;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::{
-    env::{self, args},
-    error::Error,
-    fs::read,
-    process::exit,
-};
+use std::{fs::read, path::PathBuf};
 
-const DEFAULT_HEAP_SIZE: usize = 1 << 21;
-
-fn main() {
-    if let Err(error) = run() {
-        eprintln!("{}", error);
-        exit(1);
-    }
+#[derive(clap::Parser)]
+#[command(about, version)]
+struct Arguments {
+    #[arg(required(true))]
+    file: PathBuf,
+    #[arg(short = 's', long, default_value_t = 1 << 20)]
+    heap_size: usize,
 }
 
-fn run() -> Result<(), Box<dyn Error>> {
-    let size = env::var("STAK_HEAP_SIZE")
-        .ok()
-        .map(|string| string.parse())
-        .transpose()?
-        .unwrap_or(DEFAULT_HEAP_SIZE);
-    let mut heap = vec![Default::default(); size];
+fn main() -> Result<(), MainError> {
+    let arguments = Arguments::parse();
+
+    let mut heap = vec![Default::default(); arguments.heap_size];
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
 
-    vm.initialize(read(args().nth(1).ok_or(format!(
-        "Usage: {} <bytecode_file>",
-        args().next().expect("command name")
-    ))?)?)?;
+    vm.initialize(read(&arguments.file)?)?;
 
     Ok(vm.run()?)
 }
