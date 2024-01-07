@@ -12,7 +12,6 @@ use stak_macro::include_r7rs;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 use std::{
-    env,
     error::Error,
     fs::File,
     io,
@@ -33,7 +32,7 @@ enum Library {
 struct Arguments {
     #[arg(required(true))]
     files: Vec<String>,
-    #[arg(short = "s", long, default_value_t = 1 << 20)]
+    #[arg(short = 's', long, default_value_t = 1 << 20)]
     heap_size: usize,
     #[arg(short, long, default_value = "r7rs")]
     library: Library,
