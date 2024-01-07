@@ -12,13 +12,11 @@ use syn::{parse_macro_input, LitStr};
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_r7rs!("(define x 42)");
+/// let bytecodes = stak_macro::compile_r7rs!((define x 42));
 /// ```
 #[proc_macro]
 pub fn compile_r7rs(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
-
-    convert_result(generate_r7rs(&input.value()))
+    convert_result(generate_r7rs(&input.to_string()))
 }
 
 /// Includes a program in R7RS Scheme as bytecodes.
@@ -46,13 +44,11 @@ fn generate_r7rs(source: &str) -> Result<TokenStream, Box<dyn Error>> {
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_bare!("($$define x 42)");
+/// let bytecodes = stak_macro::compile_bare!(($$define x 42));
 /// ```
 #[proc_macro]
 pub fn compile_bare(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
-
-    convert_result(generate_bare(&input.value()))
+    convert_result(generate_bare(&input.to_string()))
 }
 
 /// Includes a program in Scheme as bytecodes with only built-ins.
