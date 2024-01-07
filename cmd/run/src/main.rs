@@ -31,7 +31,7 @@ enum Library {
 #[command(about, version)]
 struct Arguments {
     #[arg(required(true))]
-    files: Vec<String>,
+    files: Vec<PathBuf>,
     #[arg(short = 's', long, default_value_t = 1 << 20)]
     heap_size: usize,
     #[arg(short, long, default_value = "r7rs")]
@@ -59,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(vm.run()?)
 }
 
-fn read_source(files: &[String], source: &mut String) -> Result<(), io::Error> {
+fn read_source(files: &[PathBuf], source: &mut String) -> Result<(), io::Error> {
     for file in files {
         File::open(file)?.read_to_string(source)?;
     }

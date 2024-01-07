@@ -10,13 +10,13 @@ use clap::Parser;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::{error::Error, fs::read, process::exit};
+use std::{error::Error, fs::read, path::PathBuf, process::exit};
 
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
     #[arg(required(true))]
-    file: String,
+    file: PathBuf,
     #[arg(short = 's', long, default_value_t = 1 << 20)]
     heap_size: usize,
 }
