@@ -36,6 +36,27 @@ fn compile_string() {
 }
 
 #[test]
+fn compile_character() {
+    let mut heap = [Default::default(); HEAP_SIZE];
+    let mut vm = create_vm(&mut heap);
+
+    const PROGRAM: &[u8] = compile_r7rs!(
+        r#"
+        (import (scheme write))
+
+        (display #\A)
+        (display #\,)
+        (display #\space)
+        "#
+    );
+
+    vm.initialize(PROGRAM.iter().copied()).unwrap();
+    vm.run().unwrap();
+
+    assert_eq!(vm.primitive_set().device().output(), b"A, ");
+}
+
+#[test]
 fn compile_identifier_with_hyphen() {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = create_vm(&mut heap);
