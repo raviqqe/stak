@@ -10,7 +10,7 @@ use clap::Parser;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::{error::Error, fs::read, path::PathBuf, process::exit};
+use std::{error::Error, fs::read, path::PathBuf};
 
 #[derive(clap::Parser)]
 #[command(about, version)]
@@ -21,14 +21,7 @@ struct Arguments {
     heap_size: usize,
 }
 
-fn main() {
-    if let Err(error) = run() {
-        eprintln!("{}", error);
-        exit(1);
-    }
-}
-
-fn run() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), Box<dyn Error>> {
     let arguments = Arguments::parse();
 
     let mut heap = vec![Default::default(); arguments.heap_size];
