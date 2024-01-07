@@ -13,5 +13,5 @@ clap = { version = "4.4.13", features = ["derive"] }
 main_error = "0.1.2"
 stak-device = { version = "0.1.5", path = "../../device", features = ["std"] }
 stak-macro = { version = "0.1", path = "../../macro" }
-stak-primitive = { version = "0.1.1", path = "../../primitive", features = ["std"] }
+stak-primitive = { version = "0.2.0", path = "../../primitive", features = ["std"] }
 stak-vm = { version = "0.2.1", path = "../../vm", features = ["std"] }

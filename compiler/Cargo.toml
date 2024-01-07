@@ -10,5 +10,5 @@ repository.workspace = true
 
 [dependencies]
 stak-device = { version = "0.1", path = "../device", features = ["std"] }
-stak-primitive = { version = "0.1", path = "../primitive", features = ["std"] }
+stak-primitive = { version = "0.2", path = "../primitive", features = ["std"] }
 stak-vm = { version = "0.2", path = "../vm", features = ["std"] }
