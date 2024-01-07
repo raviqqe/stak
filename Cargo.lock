@@ -230,6 +230,7 @@ dependencies = [
 name = "stak-decode"
 version = "0.1.4"
 dependencies = [
+ "clap",
  "stak-code",
 ]
 
