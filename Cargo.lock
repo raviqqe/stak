@@ -253,6 +253,9 @@ dependencies = [
  "proc-macro2",
  "quote",
  "stak-compiler",
+ "stak-device",
+ "stak-primitive",
+ "stak-vm",
  "syn",
 ]
 
