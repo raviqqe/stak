@@ -1,0 +1,15 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: swatinem/rust-cache@v2
+      - run: cargo release --unpublished --no-confirm ${{ github.ref == 'refs/heads/main' && '--execute' || '' }}
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ github.ref == 'refs/heads/main' && secrets.CARGO_REGISTRY_TOKEN }}
