@@ -5,7 +5,7 @@ on:
       - main
   pull_request:
 jobs:
-  bench:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
