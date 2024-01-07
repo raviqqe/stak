@@ -17,7 +17,7 @@ pub mod __private {
 macro_rules! main {
     ($path:expr) => {
         use $crate::__private::{
-            clap,
+            clap::{self, Parser},
             stak_device::StdioDevice,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
