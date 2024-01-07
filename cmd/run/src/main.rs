@@ -19,7 +19,6 @@ use std::{
     io::{empty, Read},
 };
 
-const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
@@ -32,10 +31,12 @@ enum Library {
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
-    #[arg(short, long, default_value = "r7rs")]
-    library: Library,
     #[arg(required(true))]
     files: Vec<String>,
+    #[arg(short = "s", long, default_value_t = 1 << 20)]
+    heap_size: usize,
+    #[arg(short, long, default_value = "r7rs")]
+    library: Library,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
