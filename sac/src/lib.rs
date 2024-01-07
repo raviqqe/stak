@@ -3,6 +3,7 @@
 #[doc(hidden)]
 pub mod __private {
     pub use clap;
+    pub use main_error;
     pub use stak_device;
     pub use stak_macro;
     pub use stak_primitive;
@@ -18,6 +19,7 @@ macro_rules! main {
     ($path:expr) => {
         use $crate::__private::{
             clap::{self, Parser},
+            main_error::MainError,
             stak_device::StdioDevice,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
@@ -34,7 +36,7 @@ macro_rules! main {
             heap_size: usize,
         }
 
-        fn main() -> Result<(), Box<dyn Error>> {
+        fn main() -> Result<(), MainError> {
             let arguments = Arguments::parse();
 
             let mut heap = vec![Default::default(); arguments.heap_size];

@@ -7,6 +7,7 @@
 //! ```
 
 use clap::Parser;
+use main_error::MainError;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_primitive::SmallPrimitiveSet;
@@ -39,7 +40,7 @@ struct Arguments {
     library: Library,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
 
     let mut heap = vec![Default::default(); arguments.heap_size];

@@ -7,10 +7,11 @@
 //! ```
 
 use clap::Parser;
+use main_error::MainError;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::{error::Error, fs::read, path::PathBuf};
+use std::{fs::read, path::PathBuf};
 
 #[derive(clap::Parser)]
 #[command(about, version)]
@@ -21,7 +22,7 @@ struct Arguments {
     heap_size: usize,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
 
     let mut heap = vec![Default::default(); arguments.heap_size];

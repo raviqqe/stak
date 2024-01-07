@@ -9,17 +9,15 @@
 //! stak-decode < foo.bc
 //! ```
 
+use main_error::MainError;
 use stak_code::decode;
-use std::{
-    error::Error,
-    io::{stdin, Read},
-};
+use std::io::{stdin, Read};
 
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {}
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), MainError> {
     let mut buffer = vec![];
     stdin().read_to_end(&mut buffer)?;
 
