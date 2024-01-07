@@ -16,3 +16,8 @@ proc-macro2 = "1.0.75"
 quote = "1.0.35"
 syn = "2.0.48"
 stak-compiler = { version = "0.1", path = "../compiler" }
+
+[dev-dependencies]
+stak-device = { path = "../device" }
+stak-primitive = { path = "../primitive" }
+stak-vm = { path = "../vm" }
