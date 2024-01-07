@@ -199,7 +199,7 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
 name = "stak"
-version = "0.1.0"
+version = "0.1.4"
 dependencies = [
  "clap",
  "main_error",
@@ -219,7 +219,7 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "stak-sac",
 ]
@@ -235,7 +235,7 @@ dependencies = [
 
 [[package]]
 name = "stak-decode"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "clap",
  "main_error",
@@ -248,7 +248,7 @@ version = "0.1.5"
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "clap",
  "main_error",
