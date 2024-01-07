@@ -219,7 +219,7 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "stak-sac",
 ]
@@ -235,7 +235,7 @@ dependencies = [
 
 [[package]]
 name = "stak-decode"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "clap",
  "main_error",
@@ -248,7 +248,7 @@ version = "0.2.1"
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "clap",
  "main_error",
