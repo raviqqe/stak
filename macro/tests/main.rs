@@ -14,11 +14,13 @@ fn compile_string() {
     let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 
-    const PROGRAM: &[u8] = compile_r7rs!(r#"
+    const PROGRAM: &[u8] = compile_r7rs!(
+        r#"
         (import (scheme write))
 
         (display "Hello, world!")
-    "#);
+        "#
+    );
 
     vm.initialize(PROGRAM.iter().copied()).unwrap();
     vm.run().unwrap();
@@ -35,13 +37,15 @@ fn compile_identifier_with_hyphen() {
     let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
 
-    const PROGRAM: &[u8] = compile_r7rs!(r#"
+    const PROGRAM: &[u8] = compile_r7rs!(
+        r#"
         (import (scheme write))
 
         (define foo-bar-baz "Hello, world!")
 
         (display foo-bar-baz)
-    "#);
+        "#
+    );
 
     vm.initialize(PROGRAM.iter().copied()).unwrap();
     vm.run().unwrap();
