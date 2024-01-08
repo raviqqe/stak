@@ -1046,10 +1046,7 @@
   (encode-string (string->list (or (symbol->string symbol) "")) target))
 
 (define (empty-symbol? symbol)
-  ; TODO Check empty symbols reliably.
-  ; This doesn't work when compiling this compiler itself.
-  ; (eqv? (string-ref (symbol->string symbol) 0) #\$)
-  #f)
+  (eqv? (string-ref (symbol->string symbol) 0) #\$))
 
 (define (count-empty-symbols symbols)
   (let loop ((symbols symbols) (count 0))
