@@ -1,0 +1,19 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+concurrency:
+  group: release-${{ github.ref }}
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'release' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: homebrew/actions/setup-homebrew@master
+      - run: tools/ci/setup.sh
+      - run: tools/release.sh ${{ github.ref == 'refs/heads/main' && '' || '--dry-run' }}
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

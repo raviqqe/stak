@@ -7,19 +7,19 @@
 //! ```
 
 use clap::Parser;
+use main_error::MainError;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 use std::{
-    env,
     error::Error,
     fs::File,
     io,
     io::{empty, Read},
+    path::PathBuf,
 };
 
-const DEFAULT_HEAP_SIZE: usize = 1 << 21;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
@@ -32,21 +32,18 @@ enum Library {
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
+    #[arg(required(true))]
+    files: Vec<PathBuf>,
+    #[arg(short = 's', long, default_value_t = 1 << 20)]
+    heap_size: usize,
     #[arg(short, long, default_value = "r7rs")]
     library: Library,
-    #[arg(required(true))]
-    files: Vec<String>,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
 
-    let size = env::var("STAK_HEAP_SIZE")
-        .ok()
-        .map(|string| string.parse())
-        .transpose()?
-        .unwrap_or(DEFAULT_HEAP_SIZE);
-    let mut heap = vec![Default::default(); size];
+    let mut heap = vec![Default::default(); arguments.heap_size];
 
     let mut source = match arguments.library {
         Library::None => Default::default(),
@@ -64,7 +61,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(vm.run()?)
 }
 
-fn read_source(files: &[String], source: &mut String) -> Result<(), io::Error> {
+fn read_source(files: &[PathBuf], source: &mut String) -> Result<(), io::Error> {
     for file in files {
         File::open(file)?.read_to_string(source)?;
     }
