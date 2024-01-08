@@ -219,14 +219,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "stak-device",
  "stak-primitive",
