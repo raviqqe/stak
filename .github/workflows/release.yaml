@@ -14,6 +14,6 @@ jobs:
           fetch-tags: true
       - uses: swatinem/rust-cache@v2
       - run: cargo install cargo-release
-      - run: cargo release --unpublished --no-confirm ${{ github.ref == 'refs/heads/main' && '--execute' || '' }}
+      - run: cargo publish ${{ github.ref == 'refs/heads/main' && '' || '--dry-run' }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ github.ref == 'refs/heads/main' && secrets.CARGO_REGISTRY_TOKEN }}
