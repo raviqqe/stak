@@ -9,7 +9,7 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'release' || null }}
+    environment: ${{ github.ref == 'refs/heads/main' && 'release' }}
     steps:
       - uses: actions/checkout@v4
       - uses: homebrew/actions/setup-homebrew@master
