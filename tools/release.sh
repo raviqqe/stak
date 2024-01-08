@@ -3,10 +3,8 @@
 set -e
 
 for path in $(git ls-files '**/Cargo.toml'); do
-  directory=$(dirname $path)
-
   (
-    cd $directory
+    cd $(dirname $path)
 
     if git diff main -- Cargo.toml | grep '^\+version = '; then
       cargo publish "$@"
