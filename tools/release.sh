@@ -19,13 +19,14 @@ for path in $(git ls-files '**/Cargo.toml'); do
     cd $(dirname $path)
 
     if $dry_run; then
+      reference=origin/main
       cargo_options=--dry-run
     else
-
+      reference=HEAD^
     fi
 
-    if git diff origin/main -- Cargo.toml | grep '^\+version = '; then
-      cargo publish "$@"
+    if git diff $reference -- Cargo.toml | grep '^\+version = '; then
+      cargo publish $cargo_options
     fi
   )
 done
