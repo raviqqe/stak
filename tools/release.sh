@@ -7,6 +7,9 @@ for path in $(git ls-files '**/Cargo.toml'); do
 
   (
     cd $directory
-    cargo publish "$@" || :
+
+    if git diff main -- Cargo.toml | grep version; then
+      cargo publish "$@"
+    fi
   )
 done
