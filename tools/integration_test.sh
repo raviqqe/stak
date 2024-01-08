@@ -23,8 +23,7 @@ cd $(dirname $0)/..
 brew install gauche
 bundler install
 
-cargo build --profile integration_test
-cargo build --profile integration_test --bin stak-interpret --features $features
+cargo build --profile release_test --features $features
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 

@@ -22,7 +22,7 @@ opt-level = 3
 debug-assertions = false
 overflow-checks = false
 
-[profile.integration_test]
+[profile.release_test]
 inherits = "release"
 debug-assertions = true
 overflow-checks = true
