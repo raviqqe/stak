@@ -13,6 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: homebrew/actions/setup-homebrew@master
+      - run: echo ${{ github.ref == 'refs/heads/main' && 'hello' }}
       - run: tools/ci/setup.sh
       - run: tools/release.sh ${{ github.ref != 'refs/heads/main' && '--dry-run' || '' }}
         env:
