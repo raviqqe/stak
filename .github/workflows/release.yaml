@@ -6,6 +6,7 @@ on:
   pull_request:
 concurrency:
   group: release-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   release:
     runs-on: ubuntu-latest
