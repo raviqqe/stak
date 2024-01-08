@@ -73,7 +73,7 @@ jobs:
           - name: guile
             tags: not @stak or @guile
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && '' || 'macos-latest' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
