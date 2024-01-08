@@ -24,6 +24,6 @@ overflow-checks = false
 
 [profile.integration_test]
 inherits = "release"
-debug = "line-tables-only"
+debug = "limited"
 debug-assertions = true
 overflow-checks = true
