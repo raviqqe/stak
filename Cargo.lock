@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "stak-device",
  "stak-primitive",
