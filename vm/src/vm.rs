@@ -41,11 +41,9 @@ macro_rules! assert_heap_access {
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        debug_assert!(
-            $cons == NEVER
-                || $self.allocation_start() <= $cons.index()
-                    && $cons.index() < $self.allocation_end()
-        );
+        debug_assert!($cons == NEVER);
+        debug_assert!($self.allocation_start() <= $cons.index());
+        debug_assert!($cons.index() < $self.allocation_end());
     };
 }
 
