@@ -4,6 +4,8 @@ on:
     branches:
       - main
   pull_request:
+concurrency:
+  group: release-${{ github.ref }}
 jobs:
   release:
     runs-on: ubuntu-latest
