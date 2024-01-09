@@ -1046,7 +1046,10 @@
   (encode-string (string->list (or (symbol->string symbol) "")) target))
 
 (define (empty-symbol? symbol)
-  (eqv? (string-ref (symbol->string symbol) 0) #\$))
+  (let ((string (symbol->string symbol)))
+    (or
+      (eqv? (string-length string) 0)
+      (eqv? (string-ref string 0) #\$))))
 
 (define (count-empty-symbols symbols)
   (let loop ((symbols symbols) (count 0))
