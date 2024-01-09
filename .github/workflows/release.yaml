@@ -6,14 +6,17 @@ on:
   pull_request:
 concurrency:
   group: release-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   release:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: homebrew/actions/setup-homebrew@master
       - run: tools/ci/setup.sh
-      - run: tools/release.sh ${{ github.ref != 'refs/heads/main' && '--dry-run' || '' }}
+      - run: tools/release.sh ${{ github.ref != 'refs/heads/main' && '-d' || '' }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
