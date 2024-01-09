@@ -972,13 +972,12 @@
     (let* (
         (instruction (rib-tag codes))
         (operand (rib-car codes))
-        (codes (rib-cdr codes))
         (operand
           (if (eqv? instruction call-instruction)
             (rib-cdr operand)
             operand)))
       (find-symbols
-        codes
+        (rib-cdr codes)
         (cond
           ((and
               (eqv? instruction constant-instruction)
