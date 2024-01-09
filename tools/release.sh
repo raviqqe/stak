@@ -25,7 +25,7 @@ for path in $(git ls-files '**/Cargo.toml'); do
       reference=HEAD^
     fi
 
-    if git diff $reference -- Cargo.toml | grep '^\+version = '; then
+    if git diff $reference -- Cargo.toml | grep '^-version = '; then
       cargo publish $cargo_options
     fi
   )
