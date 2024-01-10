@@ -1536,19 +1536,19 @@
         (write-string "#t"))
 
       ((bytevector? x)
-        (write-formatted-bytevector x display))
+        (write-formatted-bytevector x))
 
       ((char? x)
         (write-char x))
 
       ((null? x)
-        (write-sequence x display))
+        (write-sequence x))
 
       ((number? x)
         (display (number->string x)))
 
       ((pair? x)
-        (write-list x display))
+        (write-list x))
 
       ((procedure? x)
         (write-string "#procedure"))
@@ -1563,7 +1563,7 @@
         (display (symbol->string x)))
 
       ((vector? x)
-        (write-vector x display))
+        (write-vector x))
 
       (else
         (error "unknown type")))))
