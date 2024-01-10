@@ -1495,10 +1495,12 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
+  (parameterize (
+      (current-write write)
+      (current-output-port (get-output-port rest)))
     (cond
       ((bytevector? x)
-        (write-formatted-bytevector x write))
+        (write-formatted-bytevector x))
 
       ((char? x)
         (write-char #\#)
@@ -1509,7 +1511,7 @@
             (write-char x))))
 
       ((pair? x)
-        (write-list x write))
+        (write-list x))
 
       ((string? x)
         (write-char #\")
@@ -1517,13 +1519,15 @@
         (write-char #\"))
 
       ((vector? x)
-        (write-vector x write))
+        (write-vector x))
 
       (else
         (display x)))))
 
 (define (display x . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
+  (parameterize (
+      (current-write display)
+      (current-output-port (get-output-port rest)))
     (cond
       ((not x)
         (write-string "#f"))
@@ -1532,19 +1536,19 @@
         (write-string "#t"))
 
       ((bytevector? x)
-        (write-formatted-bytevector x display))
+        (write-formatted-bytevector x))
 
       ((char? x)
         (write-char x))
 
       ((null? x)
-        (write-sequence x display))
+        (write-sequence x))
 
       ((number? x)
         (display (number->string x)))
 
       ((pair? x)
-        (write-list x display))
+        (write-list x))
 
       ((procedure? x)
         (write-string "#procedure"))
@@ -1559,10 +1563,12 @@
         (display (symbol->string x)))
 
       ((vector? x)
-        (write-vector x display))
+        (write-vector x))
 
       (else
         (error "unknown type")))))
+
+(define current-write (make-parameter write))
 
 (define quotes
   '(
@@ -1570,18 +1576,20 @@
     (quasiquote . #\`)
     (unquote . #\,)))
 
-(define (write-list xs write)
+(define (write-list xs)
   (if (or (null? xs) (null? (cdr xs)))
-    (write-sequence xs write)
+    (write-sequence xs)
     (cond
       ((assoc (car xs) quotes) =>
         (lambda (pair)
-          (write-quote (cdr pair) (cadr xs) write)))
+          (write-quote (cdr pair) (cadr xs))))
 
       (else
-        (write-sequence xs write)))))
+        (write-sequence xs)))))
 
-(define (write-sequence xs write)
+(define (write-sequence xs)
+  (define write (current-write))
+
   (write-char #\()
 
   (when (pair? xs)
@@ -1604,17 +1612,17 @@
 
   (write-char #\)))
 
-(define (write-quote char value write)
+(define (write-quote char value)
   (write-char char)
-  (write value))
+  ((current-write) value))
 
-(define (write-formatted-bytevector xs write)
+(define (write-formatted-bytevector xs)
   (write-string "#u8")
-  (write-sequence (bytevector->list xs) write))
+  (write-sequence (bytevector->list xs)))
 
-(define (write-vector xs write)
+(define (write-vector xs)
   (write-char #\#)
-  (write-sequence (vector->list xs) write))
+  (write-sequence (vector->list xs)))
 
 ; Process context
 
