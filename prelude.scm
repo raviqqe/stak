@@ -1571,11 +1571,14 @@
     (unquote . #\,)))
 
 (define (write-list xs write)
-  (if (null? xs)
+  (if (or (null? xs) (null? (cdr xs)))
     (write-sequence xs write)
-    (let ((pair (assoc (car xs) quotes)))
-      (if (and pair (pair? (cdr xs)))
-        (write-quote (cdr pair) (cadr xs) write)
+    (cond
+      ((assoc (car xs) quotes) =>
+        (lambda (pair)
+          (write-quote (cdr pair) (cadr xs) write)))
+
+      (else
         (write-sequence xs write)))))
 
 (define (write-sequence xs write)
