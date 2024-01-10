@@ -1564,20 +1564,18 @@
       (else
         (error "unknown type")))))
 
+(define quotes
+  '(
+    (quote . #\')
+    (quasiquote . #\`)
+    (unquote . #\,)))
+
 (define (write-list xs write)
   (if (null? xs)
     (write-sequence xs write)
-    (case (car xs)
-      ((quote)
-        (write-quote #\' (cadr xs) write))
-
-      ((quasiquote)
-        (write-quote #\` (cadr xs) write))
-
-      ((unquote)
-        (write-quote #\, (cadr xs) write))
-
-      (else
+    (let ((pair (assoc (car xs) quotes)))
+      (if (and pair (pair? (cdr xs)))
+        (write-quote (cdr pair) (cadr xs) write)
         (write-sequence xs write)))))
 
 (define (write-sequence xs write)
