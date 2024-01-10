@@ -966,35 +966,37 @@
 
 ;; Utility
 
-(define (find-symbols codes symbols)
-  (if (terminal-codes? codes)
-    symbols
-    (let* (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (operand
-          (if (eqv? instruction call-instruction)
-            (rib-cdr operand)
-            operand)))
-      (find-symbols
-        (rib-cdr codes)
-        (cond
-          ((and
-              (eqv? instruction constant-instruction)
-              (target-procedure? operand))
-            (find-symbols (procedure-code operand) symbols))
+(define (find-symbols constant-symbols codes)
+  (let loop ((codes codes) (symbols '()))
+    (if (terminal-codes? codes)
+      symbols
+      (let* (
+          (instruction (rib-tag codes))
+          (operand (rib-car codes))
+          (operand
+            (if (eqv? instruction call-instruction)
+              (rib-cdr operand)
+              operand)))
+        (loop
+          (rib-cdr codes)
+          (cond
+            ((and
+                (eqv? instruction constant-instruction)
+                (target-procedure? operand))
+              (loop (procedure-code operand) symbols))
 
-          ((eqv? instruction if-instruction)
-            (find-symbols operand symbols))
+            ((eqv? instruction if-instruction)
+              (loop operand symbols))
 
-          ((and
-              (symbol? operand)
-              (not (memv operand default-symbols))
-              (not (memv operand symbols)))
-            (cons operand symbols))
+            ((and
+                (symbol? operand)
+                (not (memv operand default-symbols))
+                (not (memv operand constant-symbols))
+                (not (memv operand symbols)))
+              (cons operand symbols))
 
-          (else
-            symbols))))))
+            (else
+              symbols)))))))
 
 (define (nop-codes? codes)
   (and
@@ -1044,44 +1046,20 @@
   ; Internal symbols may not have string representations.
   (encode-string (string->list (or (symbol->string symbol) "")) target))
 
-(define (empty-symbol? symbol)
-  (let ((string (symbol->string symbol)))
-    (or
-      (eqv? (string-length string) 0)
-      (eqv? (string-ref string 0) #\$))))
-
-(define (count-empty-symbols symbols)
-  (let loop ((symbols symbols) (count 0))
-    (if (null? symbols)
-      count
-      (loop
-        (cdr symbols)
-        (if (empty-symbol? (car symbols))
-          (+ count 1)
-          0)))))
-
-(define (encode-symbols* symbols count target)
-  ; We may encounter this only at the first call.
-  (if (= count 0)
-    target
-    (let ((target (encode-symbol (car symbols) target)))
-      (if (= count 1)
-        target
-        (encode-symbols*
-          (cdr symbols)
-          (- count 1)
-          (cons (char->integer #\,) target))))))
-
-; TODO Should we put all empty symbols at the end?
-(define (encode-symbols symbols target)
-  (let (
-      (count (count-empty-symbols symbols))
-      (target (cons (char->integer #\;) target)))
+(define (encode-symbols symbols constant-symbols target)
+  (let ((target (cons (char->integer #\;) target)))
     (encode-integer
-      count
+      (length constant-symbols)
       (if (null? symbols)
         target
-        (encode-symbols* symbols (- (length symbols) count) target)))))
+        (let loop ((symbols symbols) (target target))
+          (if (null? symbols)
+            (cdr target)
+            (loop
+              (cdr symbols)
+              (cons
+                (char->integer #\,)
+                (encode-symbol (car symbols) target)))))))))
 
 ;; Codes
 
@@ -1233,13 +1211,14 @@
         (build-primitives
           primitives
           (build-constants constant-context codes)))
-      ; Put internal symbols for constants at the beginning.
-      (symbols (find-symbols codes (map cdr (constant-context-constants constant-context)))))
+      (constant-symbols (map cdr (constant-context-constants constant-context)))
+      (symbols (find-symbols constant-symbols codes)))
     (encode-symbols
       symbols
+      constant-symbols
       (encode-codes
         (make-encode-context
-          (append default-symbols symbols)
+          (append default-symbols (append symbols constant-symbols))
           constant-context)
         codes
         '()))))
