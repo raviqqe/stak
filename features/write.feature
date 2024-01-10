@@ -250,7 +250,9 @@ Feature: Write
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value |
-      | '()   |
-      | `()   |
-      | `(,1) |
+      | value        |
+      | '()          |
+      | `()          |
+      | `(,1)        |
+      | (quote)      |
+      | (quasiquote) |
