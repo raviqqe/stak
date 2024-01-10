@@ -1042,9 +1042,7 @@
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
-  ; TODO Remove this hack.
-  ; Internal symbols may not have string representations.
-  (encode-string (string->list (or (symbol->string symbol) "")) target))
+  (encode-string (string->list (symbol->string symbol)) target))
 
 (define (encode-symbols symbols constant-symbols target)
   (let ((target (cons (char->integer #\;) target)))
