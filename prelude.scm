@@ -1564,6 +1564,8 @@
       (else
         (error "unknown type")))))
 
+(define current-write (make-parameter write))
+
 (define quotes
   '(
     (quote . #\')
