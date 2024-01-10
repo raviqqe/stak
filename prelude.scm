@@ -1587,7 +1587,7 @@
       (else
         (write-sequence xs write)))))
 
-(define (write-sequence xs write)
+(define (write-sequence xs)
   (define write (current-write))
 
   (write-char #\()
