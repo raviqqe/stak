@@ -1495,7 +1495,9 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
+  (parameterize (
+      (current-write write)
+      (current-output-port (get-output-port rest)))
     (cond
       ((bytevector? x)
         (write-formatted-bytevector x write))
@@ -1523,7 +1525,9 @@
         (display x)))))
 
 (define (display x . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
+  (parameterize (
+      (current-write display)
+      (current-output-port (get-output-port rest)))
     (cond
       ((not x)
         (write-string "#f"))
