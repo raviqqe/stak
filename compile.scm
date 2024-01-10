@@ -1216,7 +1216,7 @@
       constant-symbols
       (encode-codes
         (make-encode-context
-          (append default-symbols (append symbols constant-symbols))
+          (append default-symbols symbols constant-symbols)
           constant-context)
         codes
         '()))))
