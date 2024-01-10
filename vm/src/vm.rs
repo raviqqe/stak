@@ -606,7 +606,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.temporary = self.create_string(self.null(), 0)?;
 
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            self.initialize_symbol(self.boolean(false).into())?;
+            self.initialize_empty_symbol(self.boolean(false).into())?;
         }
 
         let mut length = 0;
@@ -617,8 +617,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             loop {
                 if matches!(byte, b',' | b';') {
                     let string = self.create_string(name, length)?;
-                    let symbol = self.create_symbol(Some(string), self.boolean(false).into())?;
-                    self.push(symbol.into())?;
+                    self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
                     length = 0;
                     name = self.null();
@@ -640,10 +639,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             Number::default().into(),
         )?;
 
-        self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.null().into())?;
-        self.initialize_symbol(self.boolean(true).into())?;
-        self.initialize_symbol(self.boolean(false).into())?;
+        self.initialize_empty_symbol(rib.into())?;
+        self.initialize_empty_symbol(self.null().into())?;
+        self.initialize_empty_symbol(self.boolean(true).into())?;
+        self.initialize_empty_symbol(self.boolean(false).into())?;
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
@@ -659,19 +658,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn initialize_symbol(&mut self, value: Value) -> Result<(), T::Error> {
-        let symbol = self.create_symbol(None, value)?;
-
-        self.push(symbol.into())
+    fn initialize_empty_symbol(&mut self, value: Value) -> Result<(), T::Error> {
+        self.initialize_symbol(None, value)
     }
 
-    fn create_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<Cons, T::Error> {
-        self.allocate(
+    fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
+        let symbol = self.allocate(
             name.unwrap_or(self.temporary)
                 .set_tag(Type::Symbol as u8)
                 .into(),
             value,
-        )
+        )?;
+
+        self.push(symbol.into())
     }
 
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
