@@ -1588,6 +1588,8 @@
         (write-sequence xs write)))))
 
 (define (write-sequence xs write)
+  (define write (current-write))
+
   (write-char #\()
 
   (when (pair? xs)
