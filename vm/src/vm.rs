@@ -603,10 +603,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
         // Initialize a shared empty string.
-        self.temporary = self.allocate(
-            NEVER.set_tag(Type::Symbol as u8).into(),
-            Number::default().into(),
-        )?;
+        self.temporary = self.create_string(self.null(), 0)?;
 
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             let symbol = self.create_symbol(None, self.boolean(false).into())?;
