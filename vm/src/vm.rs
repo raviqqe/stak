@@ -602,9 +602,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
+        // Initialize a shared empty string.
+        self.temporary = self.create_string(self.null(), 0)?;
+
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            let symbol = self.create_symbol(self.null(), 0)?;
-            self.push(symbol.into())?;
+            self.initialize_empty_symbol(self.boolean(false).into())?;
         }
 
         let mut length = 0;
@@ -613,22 +615,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         if byte != b';' {
             loop {
-                match byte {
-                    character @ (b',' | b';') => {
-                        let symbol = self.create_symbol(name, length)?;
-                        self.push(symbol.into())?;
+                if matches!(byte, b',' | b';') {
+                    let string = self.create_string(name, length)?;
+                    self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
-                        length = 0;
-                        name = self.null();
+                    length = 0;
+                    name = self.null();
 
-                        if character == b';' {
-                            break;
-                        }
+                    if byte == b';' {
+                        break;
                     }
-                    character => {
-                        length += 1;
-                        name = self.cons(Number::new(character as i64).into(), name)?;
-                    }
+                } else {
+                    length += 1;
+                    name = self.cons(Number::new(byte as i64).into(), name)?;
                 }
 
                 byte = input.next().ok_or(Error::EndOfInput)?;
@@ -640,10 +639,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             Number::default().into(),
         )?;
 
-        self.initialize_symbol(rib.into())?;
-        self.initialize_symbol(self.null().into())?;
-        self.initialize_symbol(self.boolean(true).into())?;
-        self.initialize_symbol(self.boolean(false).into())?;
+        self.initialize_empty_symbol(rib.into())?;
+        self.initialize_empty_symbol(self.null().into())?;
+        self.initialize_empty_symbol(self.boolean(true).into())?;
+        self.initialize_empty_symbol(self.boolean(false).into())?;
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
@@ -659,25 +658,26 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn create_symbol(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
-        let string = self.allocate(
-            name.set_tag(Type::String as u8).into(),
-            Number::new(length).into(),
-        )?;
-
-        self.allocate(
-            string.set_tag(Type::Symbol as u8).into(),
-            self.boolean(false).into(),
-        )
+    fn initialize_empty_symbol(&mut self, value: Value) -> Result<(), T::Error> {
+        self.initialize_symbol(None, value)
     }
 
-    fn initialize_symbol(&mut self, value: Value) -> Result<(), T::Error> {
+    fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
-            self.boolean(false).set_tag(Type::Symbol as u8).into(),
+            name.unwrap_or(self.temporary)
+                .set_tag(Type::Symbol as u8)
+                .into(),
             value,
         )?;
 
         self.push(symbol.into())
+    }
+
+    fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
+        self.allocate(
+            name.set_tag(Type::String as u8).into(),
+            Number::new(length).into(),
+        )
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
