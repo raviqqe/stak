@@ -1048,7 +1048,12 @@
       (eqv? (string-ref string 0) #\$))))
 
 (define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
+  (encode-string
+    (string->list
+      (if (empty-symbol? symbol)
+        ""
+        (symbol->string symbol)))
+    target))
 
 (define (encode-symbols symbols constant-symbols target)
   (let ((target (cons (char->integer #\;) target)))
