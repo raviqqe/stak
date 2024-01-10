@@ -1041,6 +1041,12 @@
     target
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
+(define (empty-symbol? symbol)
+  (let ((string (symbol->string symbol)))
+    (or
+      (eqv? (string-length string) 0)
+      (eqv? (string-ref string 0) #\$))))
+
 (define (encode-symbol symbol target)
   (encode-string (string->list (symbol->string symbol)) target))
 
