@@ -256,3 +256,22 @@ Feature: Write
       | `(,1)        |
       | (quote)      |
       | (quasiquote) |
+
+  Scenario Outline: Write a value in a collection
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write '<value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<value>"
+
+    Examples:
+      | value        |
+      | (#\\a)       |
+      | (#\\space)   |
+      | (\"foo\")    |
+      | ((#\\a))     |
+      | ((#\\space)) |
+      | ((\"foo\"))  |
