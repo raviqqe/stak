@@ -613,23 +613,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         if byte != b';' {
             loop {
-                match byte {
-                    character @ (b',' | b';') => {
-                        let symbol =
-                            self.create_symbol(name, length, self.boolean(false).into())?;
-                        self.push(symbol.into())?;
+                if matches!(byte, b',' | b';') {
+                    let symbol = self.create_symbol(name, length, self.boolean(false).into())?;
+                    self.push(symbol.into())?;
 
-                        length = 0;
-                        name = self.null();
+                    length = 0;
+                    name = self.null();
 
-                        if character == b';' {
-                            break;
-                        }
+                    if byte == b';' {
+                        break;
                     }
-                    character => {
-                        length += 1;
-                        name = self.cons(Number::new(character as i64).into(), name)?;
-                    }
+                } else {
+                    length += 1;
+                    name = self.cons(Number::new(byte as i64).into(), name)?;
                 }
 
                 byte = input.next().ok_or(Error::EndOfInput)?;
