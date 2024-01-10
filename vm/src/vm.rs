@@ -602,8 +602,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
+        // Initialize a shared empty string.
+        self.temporary = self.allocate(
+            NEVER.set_tag(Type::Symbol as u8).into(),
+            Number::default().into(),
+        )?;
+
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            let symbol = self.create_symbol(self.null(), 0, self.boolean(false).into())?;
+            let symbol = self.create_symbol(None, self.boolean(false).into())?;
             self.push(symbol.into())?;
         }
 
@@ -614,7 +620,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         if byte != b';' {
             loop {
                 if matches!(byte, b',' | b';') {
-                    let symbol = self.create_symbol(name, length, self.boolean(false).into())?;
+                    let string = self.create_string(name, length)?;
+                    let symbol = self.create_symbol(Some(string), self.boolean(false).into())?;
                     self.push(symbol.into())?;
 
                     length = 0;
@@ -657,18 +664,25 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn initialize_symbol(&mut self, value: Value) -> Result<(), T::Error> {
-        let symbol = self.create_symbol(self.null(), 0, value)?;
+        let symbol = self.create_symbol(None, value)?;
 
         self.push(symbol.into())
     }
 
-    fn create_symbol(&mut self, name: Cons, length: i64, value: Value) -> Result<Cons, T::Error> {
-        let string = self.allocate(
+    fn create_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<Cons, T::Error> {
+        self.allocate(
+            name.unwrap_or(self.temporary)
+                .set_tag(Type::Symbol as u8)
+                .into(),
+            value,
+        )
+    }
+
+    fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
+        self.allocate(
             name.set_tag(Type::String as u8).into(),
             Number::new(length).into(),
-        )?;
-
-        self.allocate(string.set_tag(Type::Symbol as u8).into(), value)
+        )
     }
 
     #[cfg_attr(feature = "no_inline", inline(never))]
