@@ -606,8 +606,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.temporary = self.create_string(self.null(), 0)?;
 
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            let symbol = self.create_symbol(None, self.boolean(false).into())?;
-            self.push(symbol.into())?;
+            self.initialize_symbol(self.boolean(false).into())?;
         }
 
         let mut length = 0;
