@@ -1500,7 +1500,7 @@
       (current-output-port (get-output-port rest)))
     (cond
       ((bytevector? x)
-        (write-formatted-bytevector x write))
+        (write-formatted-bytevector x))
 
       ((char? x)
         (write-char #\#)
@@ -1511,7 +1511,7 @@
             (write-char x))))
 
       ((pair? x)
-        (write-list x write))
+        (write-list x))
 
       ((string? x)
         (write-char #\")
@@ -1519,7 +1519,7 @@
         (write-char #\"))
 
       ((vector? x)
-        (write-vector x write))
+        (write-vector x))
 
       (else
         (display x)))))
