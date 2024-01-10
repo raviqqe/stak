@@ -1610,17 +1610,17 @@
 
   (write-char #\)))
 
-(define (write-quote char value write)
+(define (write-quote char value)
   (write-char char)
-  (write value))
+  ((current-write) value))
 
-(define (write-formatted-bytevector xs write)
+(define (write-formatted-bytevector xs)
   (write-string "#u8")
-  (write-sequence (bytevector->list xs) write))
+  (write-sequence (bytevector->list xs)))
 
-(define (write-vector xs write)
+(define (write-vector xs)
   (write-char #\#)
-  (write-sequence (vector->list xs) write))
+  (write-sequence (vector->list xs)))
 
 ; Process context
 
