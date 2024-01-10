@@ -1576,16 +1576,16 @@
     (quasiquote . #\`)
     (unquote . #\,)))
 
-(define (write-list xs write)
+(define (write-list xs)
   (if (or (null? xs) (null? (cdr xs)))
-    (write-sequence xs write)
+    (write-sequence xs)
     (cond
       ((assoc (car xs) quotes) =>
         (lambda (pair)
-          (write-quote (cdr pair) (cadr xs) write)))
+          (write-quote (cdr pair) (cadr xs))))
 
       (else
-        (write-sequence xs write)))))
+        (write-sequence xs)))))
 
 (define (write-sequence xs)
   (define write (current-write))
