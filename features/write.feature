@@ -293,12 +293,18 @@ Feature: Write
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value        | output  |
-      | #\\a         | a       |
-      | \"foo\"      | foo     |
-      | (#\\a)       | (a)     |
-      | (#\\space)   | ( )     |
-      | (\"foo\")    | (foo)   |
-      | ((#\\a))     | ((a))   |
-      | ((#\\space)) | (( ))   |
-      | ((\"foo\"))  | ((foo)) |
+      | value          | output    |
+      | #\\a           | a         |
+      | \"foo\"        | foo       |
+      | (#\\a)         | (a)       |
+      | (#\\space)     | ( )       |
+      | (\"foo\")      | (foo)     |
+      | ((#\\a))       | ((a))     |
+      | ((#\\space))   | (( ))     |
+      | ((\"foo\"))    | ((foo))   |
+      | #(#\\a)        | #(a)      |
+      | #(#\\space)    | #( )      |
+      | #(\"foo\")     | #(foo)    |
+      | #(#(#\\a))     | #(#(a))   |
+      | #(#(#\\space)) | #(#( ))   |
+      | #(#(\"foo\"))  | #(#(foo)) |
