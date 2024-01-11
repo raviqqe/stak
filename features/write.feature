@@ -257,6 +257,7 @@ Feature: Write
       | (quote)      |
       | (quasiquote) |
 
+  @stak @gauche @guile
   Scenario Outline: Write a value in a collection
     Given a file named "main.scm" with:
     """scheme
@@ -282,6 +283,7 @@ Feature: Write
       | #(#(#\\space)) | #(#(#\\space))  |
       | #(#("foo"))    | #(#(\\"foo\\")) |
 
+  @stak @gauche @guile
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
     """scheme
