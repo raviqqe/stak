@@ -265,22 +265,22 @@ Feature: Write
     (write '<value>)
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<value>"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value          |
-      | (#\\a)         |
-      | (#\\space)     |
-      | ("foo")        |
-      | ((#\\a))       |
-      | ((#\\space))   |
-      | (("foo"))      |
-      | #(#\\a)        |
-      | #(#\\space)    |
-      | #("foo")       |
-      | #(#(#\\a))     |
-      | #(#(#\\space)) |
-      | #(#("foo"))    |
+      | value          | output          |
+      | (#\\a)         | (#\\a)          |
+      | (#\\space)     | (#\\space)      |
+      | ("foo")        | (\\"foo\\")     |
+      | ((#\\a))       | ((#\\a))        |
+      | ((#\\space))   | ((#\\space))    |
+      | (("foo"))      | ((\\"foo\\"))   |
+      | #(#\\a)        | #(#\\a)         |
+      | #(#\\space)    | #(#\\space)     |
+      | #("foo")       | #(\\"foo\\")    |
+      | #(#(#\\a))     | #(#(#\\a))      |
+      | #(#(#\\space)) | #(#(#\\space))  |
+      | #(#("foo"))    | #(#(\\"foo\\")) |
 
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
