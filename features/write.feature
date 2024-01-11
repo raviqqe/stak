@@ -271,16 +271,16 @@ Feature: Write
       | value          |
       | (#\\a)         |
       | (#\\space)     |
-      | (\"foo\")      |
+      | ("foo")        |
       | ((#\\a))       |
       | ((#\\space))   |
-      | ((\"foo\"))    |
+      | (("foo"))      |
       | #(#\\a)        |
       | #(#\\space)    |
-      | #(\"foo\")     |
+      | #("foo")       |
       | #(#(#\\a))     |
       | #(#(#\\space)) |
-      | #(#(\"foo\"))  |
+      | #(#("foo"))    |
 
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
@@ -295,16 +295,16 @@ Feature: Write
     Examples:
       | value          | output    |
       | #\\a           | a         |
-      | \"foo\"        | foo       |
+      | "foo"          | foo       |
       | (#\\a)         | (a)       |
       | (#\\space)     | ( )       |
-      | (\"foo\")      | (foo)     |
+      | ("foo")        | (foo)     |
       | ((#\\a))       | ((a))     |
       | ((#\\space))   | (( ))     |
-      | ((\"foo\"))    | ((foo))   |
+      | (("foo"))      | ((foo))   |
       | #(#\\a)        | #(a)      |
       | #(#\\space)    | #( )      |
-      | #(\"foo\")     | #(foo)    |
+      | #("foo")       | #(foo)    |
       | #(#(#\\a))     | #(#(a))   |
       | #(#(#\\space)) | #(#( ))   |
-      | #(#(\"foo\"))  | #(#(foo)) |
+      | #(#("foo"))    | #(#(foo)) |
