@@ -1499,9 +1499,6 @@
       (current-write write)
       (current-output-port (get-output-port rest)))
     (cond
-      ((bytevector? x)
-        (write-formatted-bytevector x))
-
       ((char? x)
         (write-char #\#)
         (write-char #\\)
@@ -1536,7 +1533,8 @@
         (write-string "#t"))
 
       ((bytevector? x)
-        (write-formatted-bytevector x))
+        (write-string "#u8")
+        (write-sequence (bytevector->list x)))
 
       ((char? x)
         (write-char x))
@@ -1615,10 +1613,6 @@
 (define (write-quote char value)
   (write-char char)
   ((current-write) value))
-
-(define (write-formatted-bytevector xs)
-  (write-string "#u8")
-  (write-sequence (bytevector->list xs)))
 
 (define (write-vector xs)
   (write-char #\#)

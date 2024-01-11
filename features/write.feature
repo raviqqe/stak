@@ -256,3 +256,57 @@ Feature: Write
       | `(,1)        |
       | (quote)      |
       | (quasiquote) |
+
+  @stak @gauche @guile
+  Scenario Outline: Write a value in a collection
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (write '<value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value          | output          |
+      | (#\\a)         | (#\\a)          |
+      | (#\\space)     | (#\\space)      |
+      | ("foo")        | (\\"foo\\")     |
+      | ((#\\a))       | ((#\\a))        |
+      | ((#\\space))   | ((#\\space))    |
+      | (("foo"))      | ((\\"foo\\"))   |
+      | #(#\\a)        | #(#\\a)         |
+      | #(#\\space)    | #(#\\space)     |
+      | #("foo")       | #(\\"foo\\")    |
+      | #(#(#\\a))     | #(#(#\\a))      |
+      | #(#(#\\space)) | #(#(#\\space))  |
+      | #(#("foo"))    | #(#(\\"foo\\")) |
+
+  @stak @gauche @guile
+  Scenario Outline: Display a value
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme write))
+
+    (display '<value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value          | output    |
+      | #\\a           | a         |
+      | "foo"          | foo       |
+      | (#\\a)         | (a)       |
+      | (#\\space)     | ( )       |
+      | ("foo")        | (foo)     |
+      | ((#\\a))       | ((a))     |
+      | ((#\\space))   | (( ))     |
+      | (("foo"))      | ((foo))   |
+      | #(#\\a)        | #(a)      |
+      | #(#\\space)    | #( )      |
+      | #("foo")       | #(foo)    |
+      | #(#(#\\a))     | #(#(a))   |
+      | #(#(#\\space)) | #(#( ))   |
+      | #(#("foo"))    | #(#(foo)) |
