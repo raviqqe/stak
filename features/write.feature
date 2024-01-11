@@ -268,15 +268,21 @@ Feature: Write
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value        |
-      | (#\\a)       |
-      | (#\\space)   |
-      | (\"foo\")    |
-      | ((#\\a))     |
-      | ((#\\space)) |
-      | ((\"foo\"))  |
+      | value          |
+      | (#\\a)         |
+      | (#\\space)     |
+      | (\"foo\")      |
+      | ((#\\a))       |
+      | ((#\\space))   |
+      | ((\"foo\"))    |
+      | #(#\\a)        |
+      | #(#\\space)    |
+      | #(\"foo\")     |
+      | #(#(#\\a))     |
+      | #(#(#\\space)) |
+      | #(#(\"foo\"))  |
 
-  Scenario Outline: Display a value in a collection
+  Scenario Outline: Display a value
     Given a file named "main.scm" with:
     """scheme
     (import (scheme base) (scheme display))
@@ -288,6 +294,8 @@ Feature: Write
 
     Examples:
       | value        | output  |
+      | #\\a         | a       |
+      | \"foo\"      | foo     |
       | (#\\a)       | (a)     |
       | (#\\space)   | ( )     |
       | (\"foo\")    | (foo)   |
