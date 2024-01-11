@@ -285,7 +285,7 @@ Feature: Write
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base) (scheme display))
+    (import (scheme base) (scheme write))
 
     (display '<value>)
     """
