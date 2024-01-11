@@ -275,3 +275,22 @@ Feature: Write
       | ((#\\a))     |
       | ((#\\space)) |
       | ((\"foo\"))  |
+
+  Scenario Outline: Display a value in a collection
+    Given a file named "main.scm" with:
+    """scheme
+    (import (scheme base) (scheme display))
+
+    (display '<value>)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value        | output  |
+      | (#\\a)       | (a)     |
+      | (#\\space)   | ( )     |
+      | (\"foo\")    | (foo)   |
+      | ((#\\a))     | ((a))   |
+      | ((#\\space)) | (( ))   |
+      | ((\"foo\"))  | ((foo)) |
