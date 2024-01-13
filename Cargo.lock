@@ -199,7 +199,7 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
 name = "stak"
-version = "0.2.5"
+version = "0.2.6"
 dependencies = [
  "clap",
  "main_error",
@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "stak-device",
  "stak-primitive",
