@@ -1,0 +1,1 @@
+# We need to keep this file to make a symbolic link valid during checkouts of a `stak/setup` GitHub Action somehow.
