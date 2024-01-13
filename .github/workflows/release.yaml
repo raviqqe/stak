@@ -13,6 +13,8 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: git switch dummy
+      - if: github.ref == 'refs/heads/main'
       - run: tools/release.sh ${{ github.ref == 'refs/heads/main' && '-x' || '' }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
