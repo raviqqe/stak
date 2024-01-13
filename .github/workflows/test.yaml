@@ -27,6 +27,8 @@ jobs:
           -
           - --features std
           - --features gc_always --exclude stak-compiler
+        exclude:
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main

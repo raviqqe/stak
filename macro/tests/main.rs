@@ -1,7 +1,7 @@
 #![no_std]
 
 use stak_device::FixedBufferDevice;
-use stak_macro::compile_r7rs;
+use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
@@ -16,63 +16,104 @@ fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFE
     .unwrap()
 }
 
-#[test]
-fn compile_string() {
-    let mut heap = [Default::default(); HEAP_SIZE];
-    let mut vm = create_vm(&mut heap);
+mod bare {
+    use super::*;
 
-    const PROGRAM: &[u8] = compile_r7rs!(
-        r#"
+    #[test]
+    fn compile_define() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = compile_bare!("($$define x 42)");
+
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
+    }
+
+    #[test]
+    fn include() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = include_bare!("../tests/empty.scm");
+
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
+    }
+}
+
+mod r7rs {
+    use super::*;
+
+    #[test]
+    fn compile_string() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = compile_r7rs!(
+            r#"
         (import (scheme write))
 
         (display "Hello, world!")
         "#
-    );
+        );
 
-    vm.initialize(PROGRAM.iter().copied()).unwrap();
-    vm.run().unwrap();
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
 
-    assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
-}
+        assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
+    }
 
-#[test]
-fn compile_character() {
-    let mut heap = [Default::default(); HEAP_SIZE];
-    let mut vm = create_vm(&mut heap);
+    #[test]
+    fn compile_character() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
 
-    const PROGRAM: &[u8] = compile_r7rs!(
-        r#"
+        const PROGRAM: &[u8] = compile_r7rs!(
+            r#"
         (import (scheme write))
 
         (display #\A)
         (display #\,)
         (display #\space)
         "#
-    );
+        );
 
-    vm.initialize(PROGRAM.iter().copied()).unwrap();
-    vm.run().unwrap();
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
 
-    assert_eq!(vm.primitive_set().device().output(), b"A, ");
-}
+        assert_eq!(vm.primitive_set().device().output(), b"A, ");
+    }
 
-#[test]
-fn compile_identifier_with_hyphen() {
-    let mut heap = [Default::default(); HEAP_SIZE];
-    let mut vm = create_vm(&mut heap);
+    #[test]
+    fn compile_identifier_with_hyphen() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
 
-    const PROGRAM: &[u8] = compile_r7rs!(
-        r#"
+        const PROGRAM: &[u8] = compile_r7rs!(
+            r#"
         (import (scheme write))
 
         (define foo-bar-baz "Hello, world!")
 
         (display foo-bar-baz)
         "#
-    );
+        );
 
-    vm.initialize(PROGRAM.iter().copied()).unwrap();
-    vm.run().unwrap();
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
 
-    assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
+        assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
+    }
+
+    #[test]
+    fn include() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = include_r7rs!("../tests/empty.scm");
+
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
+    }
 }
