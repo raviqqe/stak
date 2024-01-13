@@ -31,6 +31,17 @@ mod bare {
 
         assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
     }
+
+    #[test]
+    fn include() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = include_bare!("empty.scm");
+
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
+    }
 }
 
 mod r7rs {
@@ -95,5 +106,16 @@ mod r7rs {
         vm.run().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
+    }
+
+    #[test]
+    fn include() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = include_r7rs!("empty.scm");
+
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
     }
 }
