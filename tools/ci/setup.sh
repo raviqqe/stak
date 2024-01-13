@@ -3,3 +3,4 @@
 set -e
 
 brew install gauche
+cargo install stak

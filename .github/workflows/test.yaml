@@ -30,8 +30,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-      - uses: Homebrew/actions/setup-homebrew@master
+      - uses: swatinem/rust-cache@v2
+      - uses: homebrew/actions/setup-homebrew@master
       - run: tools/ci/setup.sh
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
@@ -99,7 +99,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: Homebrew/actions/setup-homebrew@master
+      - uses: homebrew/actions/setup-homebrew@master
+      - uses: swatinem/rust-cache@v2
       - uses: ruby/setup-ruby@v1
       - run: tools/ci/setup.sh
       - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
@@ -107,8 +108,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: Homebrew/actions/setup-homebrew@master
-      - uses: Swatinem/rust-cache@v2
+      - uses: homebrew/actions/setup-homebrew@master
+      - uses: swatinem/rust-cache@v2
+      - run: tools/ci/setup.sh
       - run: tools/self_host_test.sh
   test:
     needs:
