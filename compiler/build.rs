@@ -18,6 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if target_file.exists() {
         // Use a pre-built bytecode file.
+        println!("cargo:rerun-if-changed={}", target_file.display());
         println!(
             "cargo:rustc-env=STAK_BYTECODE_FILE={}",
             target_file.display()
