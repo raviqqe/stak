@@ -1,0 +1,13 @@
+name: stak/setup
+description: Sets up a build environment for Stak Scheme
+inputs: {}
+outputs: {}
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: swatinem/rust-cache@v2
+    - uses: ruby/setup-ruby@v1
+    - uses: homebrew/actions/setup-homebrew@master
+    - run: tools/ci/setup.sh
+      shell: bash
