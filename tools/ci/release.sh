@@ -12,8 +12,8 @@ bytecode_file=compiler/src/compile.bc
 
 cat prelude.scm compile.scm | stak compile.scm >$bytecode_file
 
-git config user.email raviqqe@example.com
-git config user.name 'Yota Toyama'
+git config user.email action@github.com
+git config user.name 'GitHub Action'
 git add -f $bytecode_file
 git commit -m "Update bytecode file"
 
