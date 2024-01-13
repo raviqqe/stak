@@ -14,6 +14,8 @@ done
 
 shift $(expr $OPTIND - 1)
 
+cat prelude.scm compile.scm | stak compile.scm >compiler/src/compile.bc
+
 for path in $(git ls-files '**/Cargo.toml'); do
   (
     cd $(dirname $path)
