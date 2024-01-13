@@ -14,5 +14,4 @@ jobs:
         with:
           python-version: "3.11"
       - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/setup.sh
       - run: tools/bench.sh

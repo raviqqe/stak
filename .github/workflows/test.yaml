@@ -14,7 +14,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@v4
+      - uses: actions/checkout@v4
+      - uses: swatinem/rust-cache@v2
+      - uses: homebrew/actions/setup-homebrew@master
+      - run: tools/ci/setup.sh
       - run: cargo build
   unit_test:
     strategy:
