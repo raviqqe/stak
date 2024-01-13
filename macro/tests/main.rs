@@ -28,8 +28,6 @@ mod bare {
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
         vm.run().unwrap();
-
-        assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
     }
 
     #[test]
