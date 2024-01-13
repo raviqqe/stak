@@ -37,7 +37,7 @@ mod bare {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = include_bare!("empty.scm");
+        const PROGRAM: &[u8] = include_bare!("../tests/empty.scm");
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
         vm.run().unwrap();
@@ -113,7 +113,7 @@ mod r7rs {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = include_r7rs!("empty.scm");
+        const PROGRAM: &[u8] = include_bare!("../tests/empty.scm");
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
         vm.run().unwrap();
