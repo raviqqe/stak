@@ -17,6 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .join(COMPILER_TARGET_FILE);
 
     if target_file.exists() {
+        // Use a pre-built bytecode file.
         println!(
             "cargo:rustc-env=STAK_BYTECODE_FILE={}",
             target_file.display()
