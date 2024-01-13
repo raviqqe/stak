@@ -69,7 +69,6 @@ jobs:
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
     steps:
-      - run: brew install chibi-scheme gauche guile
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: |
           tools/integration_test.sh \
