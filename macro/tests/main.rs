@@ -24,7 +24,7 @@ mod bare {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = compile_bare!("(define x 42)");
+        const PROGRAM: &[u8] = compile_bare!("($$define x 42)");
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
         vm.run().unwrap();
