@@ -15,11 +15,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v4
-      - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/ci/setup.sh
       - run: tools/document.sh
       - run: rm doc/dist/rust/.lock
       - uses: actions/upload-pages-artifact@v3

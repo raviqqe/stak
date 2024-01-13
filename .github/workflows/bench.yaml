@@ -8,11 +8,8 @@ jobs:
   bench:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/ci/setup.sh
       - run: tools/bench.sh
