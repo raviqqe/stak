@@ -1,7 +1,7 @@
 #![no_std]
 
 use stak_device::FixedBufferDevice;
-use stak_macro::compile_r7rs;
+use stak_macro::{compile_bare, compile_r7rs};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
