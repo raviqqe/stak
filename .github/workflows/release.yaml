@@ -16,5 +16,4 @@ jobs:
       - run: tools/ci/release.sh
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        # TODO
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'

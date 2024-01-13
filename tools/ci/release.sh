@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 if [ $# -ne 0 ]; then
   exit 1
@@ -11,6 +11,9 @@ cargo install cargo-workspaces
 bytecode_file=compiler/src/compile.bc
 
 cat prelude.scm compile.scm | stak compile.scm >$bytecode_file
+
+git config user.email raviqqe@example.com
+git config user.name 'Yota Toyama'
 git add -f $bytecode_file
 git commit -m "Update bytecode file"
 
