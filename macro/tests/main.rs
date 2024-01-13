@@ -76,3 +76,20 @@ fn compile_identifier_with_hyphen() {
 
     assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
 }
+
+mod bare {
+    use super::*;
+
+    #[test]
+    fn compile_define() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut vm = create_vm(&mut heap);
+
+        const PROGRAM: &[u8] = compile_bare!("(define x 42)");
+
+        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.run().unwrap();
+
+        assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
+    }
+}
