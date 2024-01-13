@@ -16,3 +16,4 @@ jobs:
       - run: tools/release.sh
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        if: github.ref != 'refs/heads/main'
