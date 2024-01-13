@@ -27,9 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: |
-          rustup run nightly cargo install cargo-udeps
-          cargo +nightly udeps
+      - run: rustup install nightly
+      - run: rustup run nightly cargo install cargo-udeps
+      - run: cargo +nightly udeps
   readme:
     runs-on: ubuntu-latest
     steps:
