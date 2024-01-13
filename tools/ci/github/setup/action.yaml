@@ -6,8 +6,6 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
     - uses: swatinem/rust-cache@v2
     - uses: ruby/setup-ruby@v1
     - uses: homebrew/actions/setup-homebrew@master
