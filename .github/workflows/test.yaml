@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@chore/setup-action
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: cargo build
   unit_test:
     strategy:
@@ -29,18 +29,12 @@ jobs:
           - --features gc_always --exclude stak-compiler
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: swatinem/rust-cache@v2
-      - uses: homebrew/actions/setup-homebrew@master
-      - run: tools/ci/setup.sh
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-      - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/ci/setup.sh
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/coverage.sh
       - uses: codecov/codecov-action@v3
         with:
@@ -75,9 +69,7 @@ jobs:
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: Homebrew/actions/setup-homebrew@master
-      - uses: ruby/setup-ruby@v1
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: brew install chibi-scheme gauche guile
       - run: |
           tools/integration_test.sh \
@@ -98,19 +90,12 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: homebrew/actions/setup-homebrew@master
-      - uses: swatinem/rust-cache@v2
-      - uses: ruby/setup-ruby@v1
-      - run: tools/ci/setup.sh
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
   self_host_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: homebrew/actions/setup-homebrew@master
-      - uses: swatinem/rust-cache@v2
-      - run: tools/ci/setup.sh
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/self_host_test.sh
   test:
     needs:

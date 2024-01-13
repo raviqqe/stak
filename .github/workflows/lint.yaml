@@ -8,10 +8,7 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: Swatinem/rust-cache@v2
-      - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/ci/setup.sh
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/lint.sh
       - run: tools/lint.sh -p stak-code
   format:
@@ -29,14 +26,10 @@ jobs:
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: rustup install nightly
-      - uses: Swatinem/rust-cache@v2
-      - uses: Homebrew/actions/setup-homebrew@master
-      - run: tools/ci/setup.sh
-      - run: |
-          rustup run nightly cargo install cargo-udeps
-          cargo +nightly udeps
+      - run: rustup run nightly cargo install cargo-udeps
+      - run: cargo +nightly udeps
   readme:
     runs-on: ubuntu-latest
     steps:
