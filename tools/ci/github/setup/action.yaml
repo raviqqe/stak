@@ -7,8 +7,6 @@ runs:
   steps:
     - uses: actions/checkout@v4
     - uses: raviqqe/cargo-cache@v1
-      with:
-        cache-all-crates: true
     - uses: ruby/setup-ruby@v1
     - uses: homebrew/actions/setup-homebrew@master
     - run: tools/ci/setup.sh
