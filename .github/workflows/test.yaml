@@ -74,10 +74,10 @@ jobs:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: >
           tools/integration_test.sh
-            -i ${{ matrix.interpreter.name }}
-            -f ${{ join(matrix.interpreter.features, ',') }},
-            --
-            --tags '${{ matrix.interpreter.tags || 'not @none' }}'
+          -i ${{ matrix.interpreter.name }}
+          -f ${{ join(matrix.interpreter.features, ',') }},
+          --
+          --tags '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_integration_test:
     strategy:
       matrix:
