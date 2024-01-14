@@ -26,10 +26,9 @@ jobs:
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: brew install openssl
       - run: rustup install nightly
       - run: rustup run nightly cargo install cargo-udeps
+      - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: cargo +nightly udeps
   readme:
     runs-on: ubuntu-latest
