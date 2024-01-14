@@ -18,5 +18,7 @@ trace_heap = ["stak-vm/trace_heap"]
 clap = { version = "4.4.16", features = ["derive"] }
 main_error = "0.1.2"
 stak-device = { version = "0.2", path = "../../device", features = ["std"] }
-stak-primitive = { version = "0.2", path = "../../primitive", features = ["std"] }
+stak-primitive = { version = "0.2", path = "../../primitive", features = [
+  "std",
+] }
 stak-vm = { version = "0.3", path = "../../vm", features = ["std"] }
