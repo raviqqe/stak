@@ -28,6 +28,7 @@ jobs:
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: rustup install nightly
+      - run: sudo apt install libssl-dev
       - run: rustup run nightly cargo install cargo-udeps
       - run: cargo +nightly udeps
   readme:
