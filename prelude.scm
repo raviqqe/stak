@@ -176,6 +176,12 @@
     ((_ x ...)
       #f)))
 
+; TODO Implement an import statement.
+(define-syntax define-library
+  (syntax-rules ()
+    ((_ name body ...)
+      (begin body ...))))
+
 ;; Binding
 
 (define-syntax let
