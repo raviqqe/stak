@@ -3,8 +3,6 @@
 //! # Examples
 //!
 //! ```rust
-//! #[no_std]
-//!
 //! use stak_device::FixedBufferDevice;
 //! use stak_macro::compile_r7rs;
 //! use stak_primitive::SmallPrimitiveSet;
