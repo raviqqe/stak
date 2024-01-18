@@ -176,19 +176,6 @@
     ((_ x ...)
       #f)))
 
-<<<<<<<
-Updated
-upstream
-=======
-; TODO Implement an import statement.
-(define-syntax define-library
-  (syntax-rules ()
-    ((_ name body ...)
-      (begin body ...))))
-
->>>>>>>
-Stashed
-changes
 ;; Binding
 
 (define-syntax let
