@@ -1055,8 +1055,7 @@
       (begin body ...))
 
     ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
-      (let* (
-             (parameter parameter1)
+      (let* ((parameter parameter1)
              (old (parameter)))
         (dynamic-wind
           (lambda () (parameter value1))
@@ -1074,8 +1073,7 @@
 
 (define (convert-exception-handler handler)
   (lambda (pair)
-    (let* (
-           (exception (cdr pair))
+    (let* ((exception (cdr pair))
            (value (handler exception)))
       (unless (car pair)
         (error "exception handler returned on a non-continuable exception" exception))
