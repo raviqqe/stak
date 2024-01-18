@@ -115,8 +115,7 @@
 (define (filter f xs)
   (if (null? xs)
     '()
-    (let (
-          (x (car xs))
+    (let ((x (car xs))
           (xs (filter f (cdr xs))))
       (if (f x)
         (cons x xs)
