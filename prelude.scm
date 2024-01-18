@@ -856,8 +856,7 @@
           (list #\-)
           '())
         (let loop ((x (abs x)) (ys '()))
-          (let* (
-                 (q (/ x radix))
+          (let* ((q (/ x radix))
                  (d (- x (* q radix)))
                  (ys
                    (cons
@@ -883,8 +882,7 @@
       ((#\a . #\z) . 10))))
 
 (define (convert-digit x radix)
-  (let* (
-         (x (char->integer x))
+  (let* ((x (char->integer x))
          (y
            (member
              x
@@ -989,8 +987,7 @@
 (define dummy-function (lambda () #f))
 
 (define (call/cc receiver)
-  (let (
-        (continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
         (point current-point))
     (receiver
       (lambda (argument)
@@ -1255,8 +1252,7 @@
   (if (number? x) (integer->char x) x))
 
 (define (read-u8 . rest)
-  (let* (
-         (port (get-input-port rest))
+  (let* ((port (get-input-port rest))
          (x (port-last-byte port)))
     (if x
       (begin
@@ -1265,8 +1261,7 @@
       (or ($$read-u8) eof))))
 
 (define (peek-u8 . rest)
-  (let* (
-         (port (get-input-port rest))
+  (let* ((port (get-input-port rest))
          (x (read-u8 port)))
     (port-set-last-byte! port x)
     x))
