@@ -599,9 +599,8 @@
   (lambda xs
     (if (null? xs)
       #t
-      (let loop (
-          (x (car xs))
-          (xs (cdr xs)))
+      (let loop ((x (car xs))
+                 (xs (cdr xs)))
         (if (null? xs)
           #t
           (let ((y (car xs)))
@@ -857,16 +856,15 @@
           (list #\-)
           '())
         (let loop ((x (abs x)) (ys '()))
-          (let* (
-              (q (/ x radix))
-              (d (- x (* q radix)))
-              (ys
-                (cons
-                  (integer->char
-                    (if (< 9 d)
-                      (+ (char->integer #\a) (- d 10))
-                      (+ (char->integer #\0) d)))
-                  ys)))
+          (let* ((q (/ x radix))
+                 (d (- x (* q radix)))
+                 (ys
+                   (cons
+                     (integer->char
+                       (if (< 9 d)
+                         (+ (char->integer #\a) (- d 10))
+                         (+ (char->integer #\0) d)))
+                     ys)))
             (if (< 0 q)
               (loop q ys)
               ys)))))))
@@ -879,19 +877,17 @@
           (char->integer (caar pair))
           (char->integer (cdar pair)))
         (cdr pair)))
-    '(
-      ((#\0 . #\9) . 0)
+    '(((#\0 . #\9) . 0)
       ((#\A . #\Z) . 10)
       ((#\a . #\z) . 10))))
 
 (define (convert-digit x radix)
-  (let* (
-      (x (char->integer x))
-      (y
-        (member
-          x
-          digit-characters
-          (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+  (let* ((x (char->integer x))
+         (y
+           (member
+             x
+             digit-characters
+             (lambda (x pair) (<= (caar pair) x (cdar pair))))))
     (and
       y
       ; TODO Fix performance.
@@ -991,9 +987,8 @@
 (define dummy-function (lambda () #f))
 
 (define (call/cc receiver)
-  (let (
-      (continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
-      (point current-point))
+  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
+        (point current-point))
     (receiver
       (lambda (argument)
         (travel-to-point! current-point point)
@@ -1057,9 +1052,8 @@
       (begin body ...))
 
     ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
-      (let* (
-          (parameter parameter1)
-          (old (parameter)))
+      (let* ((parameter parameter1)
+             (old (parameter)))
         (dynamic-wind
           (lambda () (parameter value1))
           (lambda () (parameterize ((parameter2 value2) ...) body ...))
@@ -1076,9 +1070,8 @@
 
 (define (convert-exception-handler handler)
   (lambda (pair)
-    (let* (
-        (exception (cdr pair))
-        (value (handler exception)))
+    (let* ((exception (cdr pair))
+           (value (handler exception)))
       (unless (car pair)
         (error "exception handler returned on a non-continuable exception" exception))
       value)))
@@ -1103,14 +1096,12 @@
               ($$halt))))))))
 
 (define (with-exception-handler handler thunk)
-  (let (
-      (new (convert-exception-handler handler))
-      (old (current-exception-handler)))
-    (parameterize (
-        (current-exception-handler
-          (lambda (exception)
-            (parameterize ((current-exception-handler old))
-              (new exception)))))
+  (let ((new (convert-exception-handler handler))
+        (old (current-exception-handler)))
+    (parameterize ((current-exception-handler
+                     (lambda (exception)
+                       (parameterize ((current-exception-handler old))
+                         (new exception)))))
       (thunk))))
 
 (define (raise-value continuable)
@@ -1244,8 +1235,7 @@
 ; Read
 
 (define special-chars
-  '(
-    ("alarm" . #\alarm)
+  '(("alarm" . #\alarm)
     ("backspace" . #\backspace)
     ("delete" . #\delete)
     ("escape" . #\escape)
@@ -1262,9 +1252,8 @@
   (if (number? x) (integer->char x) x))
 
 (define (read-u8 . rest)
-  (let* (
-      (port (get-input-port rest))
-      (x (port-last-byte port)))
+  (let* ((port (get-input-port rest))
+         (x (port-last-byte port)))
     (if x
       (begin
         (port-set-last-byte! port #f)
@@ -1272,9 +1261,8 @@
       (or ($$read-u8) eof))))
 
 (define (peek-u8 . rest)
-  (let* (
-      (port (get-input-port rest))
-      (x (read-u8 port)))
+  (let* ((port (get-input-port rest))
+         (x (read-u8 port)))
     (port-set-last-byte! port x)
     x))
 
@@ -1375,9 +1363,9 @@
 (define (read-symbol-chars)
   (let ((char (peek-char)))
     (if (or
-        (memv char '(#\( #\)))
-        (eof-object? char)
-        (char-whitespace? char))
+         (memv char '(#\( #\)))
+         (eof-object? char)
+         (char-whitespace? char))
       '()
       (cons (read-char) (read-symbol-chars)))))
 
@@ -1451,8 +1439,7 @@
     special-chars))
 
 (define escaped-chars
-  '(
-    (#\newline . #\n)
+  '((#\newline . #\n)
     (#\tab . #\t)
     (#\return . #\r)))
 
@@ -1495,9 +1482,8 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (parameterize (
-      (current-write write)
-      (current-output-port (get-output-port rest)))
+  (parameterize ((current-write write)
+                 (current-output-port (get-output-port rest)))
     (cond
       ((char? x)
         (write-char #\#)
@@ -1522,9 +1508,8 @@
         (display x)))))
 
 (define (display x . rest)
-  (parameterize (
-      (current-write display)
-      (current-output-port (get-output-port rest)))
+  (parameterize ((current-write display)
+                 (current-output-port (get-output-port rest)))
     (cond
       ((not x)
         (write-string "#f"))
@@ -1569,8 +1554,7 @@
 (define current-write (make-parameter write))
 
 (define quotes
-  '(
-    (quote . #\')
+  '((quote . #\')
     (quasiquote . #\`)
     (unquote . #\,)))
 

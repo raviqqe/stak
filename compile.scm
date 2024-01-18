@@ -38,8 +38,7 @@
 ; Constants
 
 (define default-constants
-  '(
-    (#f . $$false)
+  '((#f . $$false)
     (#t . $$true)
     (() . $$null)
     ; It is fine to have a key duplicate with `false`'s because it is never hit.
@@ -62,8 +61,7 @@
 ; Primitives
 
 (define primitives
-  '(
-    ($$cons 1)
+  '(($$cons 1)
     ($$close 2)
     ($$- 13)))
 
@@ -117,9 +115,8 @@
 (define (filter f xs)
   (if (null? xs)
     '()
-    (let (
-        (x (car xs))
-        (xs (filter f (cdr xs))))
+    (let ((x (car xs))
+          (xs (filter f (cdr xs))))
       (if (f x)
         (cons x xs)
         xs))))
@@ -277,17 +274,15 @@
   (expansion-context-append context (list (cons name denotation))))
 
 (define (expansion-context-set! context name denotation)
-  (let* (
-      (environment (expansion-context-environment context))
-      (pair (assv name environment)))
+  (let* ((environment (expansion-context-environment context))
+         (pair (assv name environment)))
     (when pair (set-cdr! pair denotation))
     pair))
 
 (define (expansion-context-set-last! context name denotation)
   (unless (expansion-context-set! context name denotation)
-    (let (
-        (environment (expansion-context-environment context))
-        (tail (list (cons name denotation))))
+    (let ((environment (expansion-context-environment context))
+          (tail (list (cons name denotation))))
       (if (null? environment)
         (expansion-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
@@ -295,8 +290,7 @@
 ;; Procedures
 
 (define primitive-functions
-  '(
-    (+ . $$+)
+  '((+ . $$+)
     (- . $$-)
     (* . $$*)
     (/ . $$/)
@@ -309,9 +303,8 @@
         ; Omit top-level constants.
         (cons '$$begin
           (let loop ((expressions (cdr expression)))
-            (let (
-                (expression (car expressions))
-                (expressions (cdr expressions)))
+            (let ((expression (car expressions))
+                  (expressions (cdr expressions)))
               (cond
                 ((null? expressions)
                   (list expression))
@@ -344,12 +337,11 @@
       expression)))
 
 (define (rename-variable context name)
-  (let* (
-      (denotation (resolve-denotation context name))
-      (count
-        (list-count
-          (lambda (pair) (eqv? (cdr pair) denotation))
-          (expansion-context-environment context))))
+  (let* ((denotation (resolve-denotation context name))
+         (count
+           (list-count
+             (lambda (pair) (eqv? (cdr pair) denotation))
+             (expansion-context-environment context))))
     (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
 
 (define (find-pattern-variables bound-variables pattern)
@@ -377,28 +369,27 @@
   (value ellipsis-match-value))
 
 (define (match-ellipsis-pattern definition-context use-context literals pattern expression)
-  (let (
-      (matches
-        (fold-right
-          (lambda (all ones)
-            (and
-              all
-              ones
-              (map
-                (lambda (pair)
-                  (let ((name (car pair)))
-                    (cons name
-                      (cons
-                        (cdr pair)
-                        (cdr (assv name all))))))
-                ones)))
-          (map
-            (lambda (name) (cons name '()))
-            (find-pattern-variables literals pattern))
-          (map
-            (lambda (expression)
-              (match-pattern definition-context use-context literals pattern expression))
-            expression))))
+  (let ((matches
+          (fold-right
+            (lambda (all ones)
+              (and
+                all
+                ones
+                (map
+                  (lambda (pair)
+                    (let ((name (car pair)))
+                      (cons name
+                        (cons
+                          (cdr pair)
+                          (cdr (assv name all))))))
+                  ones)))
+            (map
+              (lambda (name) (cons name '()))
+              (find-pattern-variables literals pattern))
+            (map
+              (lambda (expression)
+                (match-pattern definition-context use-context literals pattern expression))
+              expression))))
     (and
       matches
       (map
@@ -416,8 +407,8 @@
 
     ((memv pattern literals)
       (if (eqv?
-          (resolve-denotation use-context expression)
-          (resolve-denotation definition-context pattern))
+           (resolve-denotation use-context expression)
+           (resolve-denotation definition-context pattern))
         '()
         #f))
 
@@ -458,11 +449,10 @@
 (define (fill-ellipsis-template definition-context use-context matches template)
   (map
     (lambda (matches) (fill-template definition-context use-context matches template))
-    (let* (
-        (variables (find-pattern-variables '() template))
-        (matches (filter (lambda (pair) (memv (car pair) variables)) matches))
-        (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
-        (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+    (let* ((variables (find-pattern-variables '() template))
+           (matches (filter (lambda (pair) (memv (car pair) variables)) matches))
+           (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
+           (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
       (when (null? ellipsis-matches)
         (error "no ellipsis pattern variables" template))
       (map
@@ -489,8 +479,8 @@
 
     ((pair? template)
       (if (and
-          (pair? (cdr template))
-          (eqv? (cadr template) '...))
+           (pair? (cdr template))
+           (eqv? (cadr template) '...))
         (append
           (fill-ellipsis-template definition-context use-context matches (car template))
           (fill (cddr template)))
@@ -504,41 +494,37 @@
 (define (make-transformer definition-context transformer)
   (unless (eqv? (predicate transformer) 'syntax-rules)
     (error "unsupported macro transformer" transformer))
-  (let (
-      (literals (cadr transformer))
-      (rules (cddr transformer)))
+  (let ((literals (cadr transformer))
+        (rules (cddr transformer)))
     (lambda (use-context expression)
       (let loop ((rules rules))
         (unless (pair? rules)
           (error "invalid syntax" expression))
-        (let* (
-            (rule (car rules))
-            (matches (match-pattern definition-context use-context literals (car rule) expression)))
+        (let* ((rule (car rules))
+               (matches (match-pattern definition-context use-context literals (car rule) expression)))
           (if matches
-            (let* (
-                (template (cadr rule))
-                (names
-                  (map
-                    (lambda (name) (cons name (rename-variable use-context name)))
-                    (find-pattern-variables (append literals (map car matches)) template)))
-                (use-context
-                  (expansion-context-append
-                    use-context
-                    (map
-                      (lambda (pair)
-                        (cons
-                          (cdr pair)
-                          (resolve-denotation definition-context (car pair))))
-                      names))))
+            (let* ((template (cadr rule))
+                   (names
+                     (map
+                       (lambda (name) (cons name (rename-variable use-context name)))
+                       (find-pattern-variables (append literals (map car matches)) template)))
+                   (use-context
+                     (expansion-context-append
+                       use-context
+                       (map
+                         (lambda (pair)
+                           (cons
+                             (cdr pair)
+                             (resolve-denotation definition-context (car pair))))
+                         names))))
               (values
                 (fill-template definition-context use-context (append names matches) template)
                 use-context))
             (loop (cdr rules))))))))
 
 (define (expand-definition definition)
-  (let (
-      (pattern (cadr definition))
-      (body (cddr definition)))
+  (let ((pattern (cadr definition))
+        (body (cddr definition)))
     (if (symbol? pattern)
       (cons pattern body)
       (list
@@ -573,19 +559,18 @@
             #f)
 
           (($$lambda)
-            (let* (
-                (parameters (cadr expression))
-                (context
-                  (expansion-context-append
-                    context
-                    (map
-                      (lambda (name) (cons name (rename-variable context name)))
-                      (parameter-names parameters))))
-                ; We need to resolve parameter denotations before expanding a body.
-                (parameters
-                  (relaxed-deep-map
-                    (lambda (name) (resolve-denotation context name))
-                    parameters)))
+            (let* ((parameters (cadr expression))
+                   (context
+                     (expansion-context-append
+                       context
+                       (map
+                         (lambda (name) (cons name (rename-variable context name)))
+                         (parameter-names parameters))))
+                   ; We need to resolve parameter denotations before expanding a body.
+                   (parameters
+                     (relaxed-deep-map
+                       (lambda (name) (resolve-denotation context name))
+                       parameters)))
               (list
                 '$$lambda
                 parameters
@@ -604,14 +589,13 @@
               (caddr expression)))
 
           (($$letrec-syntax)
-            (let* (
-                (bindings (cadr expression))
-                (context
-                  (fold-left
-                    (lambda (context pair)
-                      (expansion-context-push context (car pair) #f))
-                    context
-                    bindings)))
+            (let* ((bindings (cadr expression))
+                   (context
+                     (fold-left
+                       (lambda (context pair)
+                         (expansion-context-push context (car pair) #f))
+                       context
+                       bindings)))
               (for-each
                 (lambda (pair)
                   (expansion-context-set!
@@ -720,17 +704,16 @@
         continuation))))
 
 (define (compile-call context expression variadic continuation)
-  (let* (
-      (function (car expression))
-      (arguments (cdr expression))
-      (continue
-        (lambda (context function continuation)
-          (compile-raw-call
-            context
-            function
-            arguments
-            (- (* 2 (length arguments)) (if variadic 1 0))
-            continuation))))
+  (let* ((function (car expression))
+         (arguments (cdr expression))
+         (continue
+           (lambda (context function continuation)
+             (compile-raw-call
+               context
+               function
+               arguments
+               (- (* 2 (length arguments)) (if variadic 1 0))
+               continuation))))
     (if (symbol? function)
       (continue context function continuation)
       (compile-expression
@@ -942,11 +925,10 @@
   (let loop ((codes codes) (continue (lambda () codes)))
     (if (terminal-codes? codes)
       (continue)
-      (let* (
-          (instruction (rib-tag codes))
-          (operand (rib-car codes))
-          (codes (rib-cdr codes))
-          (continue (lambda () (loop codes continue))))
+      (let* ((instruction (rib-tag codes))
+             (operand (rib-car codes))
+             (codes (rib-cdr codes))
+             (continue (lambda () (loop codes continue))))
         (cond
           ((eqv? instruction constant-instruction)
             (build-constant
@@ -970,13 +952,12 @@
   (let loop ((codes codes) (symbols '()))
     (if (terminal-codes? codes)
       symbols
-      (let* (
-          (instruction (rib-tag codes))
-          (operand (rib-car codes))
-          (operand
-            (if (eqv? instruction call-instruction)
-              (rib-cdr operand)
-              operand)))
+      (let* ((instruction (rib-tag codes))
+             (operand (rib-car codes))
+             (operand
+               (if (eqv? instruction call-instruction)
+                 (rib-cdr operand)
+                 operand)))
         (loop
           (rib-cdr codes)
           (cond
@@ -1068,10 +1049,9 @@
   (+ bit (* 2 (modulo integer base))))
 
 (define (encode-integer-with-base integer base target)
-  (let loop (
-      (x (quotient integer base))
-      (bit 0)
-      (target target))
+  (let loop ((x (quotient integer base))
+             (bit 0)
+             (target target))
     (if (= x 0)
       (values (encode-integer-part integer base bit) target)
       (loop
@@ -1118,18 +1098,17 @@
 (define (encode-codes context codes target)
   (if (terminal-codes? codes)
     target
-    (let* (
-        (instruction (rib-tag codes))
-        (operand (rib-car codes))
-        (codes (rib-cdr codes))
-        (return (null? codes))
-        (encode-simple
-          (lambda (instruction)
-            (encode-instruction
-              instruction
-              (encode-operand context operand)
-              return
-              target))))
+    (let* ((instruction (rib-tag codes))
+           (operand (rib-car codes))
+           (codes (rib-cdr codes))
+           (return (null? codes))
+           (encode-simple
+             (lambda (instruction)
+               (encode-instruction
+                 instruction
+                 (encode-operand context operand)
+                 return
+                 target))))
       (encode-codes
         context
         codes
@@ -1160,13 +1139,12 @@
                 (encode-simple constant-instruction))))
 
           ((eqv? instruction if-instruction)
-            (let (
-                (continuation (find-continuation operand))
-                (target
-                  (encode-codes
-                    context
-                    operand
-                    (encode-instruction if-instruction 0 #f target))))
+            (let ((continuation (find-continuation operand))
+                  (target
+                    (encode-codes
+                      context
+                      operand
+                      (encode-instruction if-instruction 0 #f target))))
               (if (null? continuation)
                 target
                 (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
@@ -1203,14 +1181,13 @@
 ;; Main
 
 (define (encode codes)
-  (let* (
-      (constant-context (make-constant-context '() 0))
-      (codes
-        (build-primitives
-          primitives
-          (build-constants constant-context codes)))
-      (constant-symbols (map cdr (constant-context-constants constant-context)))
-      (symbols (find-symbols constant-symbols codes)))
+  (let* ((constant-context (make-constant-context '() 0))
+         (codes
+           (build-primitives
+             primitives
+             (build-constants constant-context codes)))
+         (constant-symbols (map cdr (constant-context-constants constant-context)))
+         (symbols (find-symbols constant-symbols codes)))
     (encode-symbols
       symbols
       constant-symbols
