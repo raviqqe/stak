@@ -1103,8 +1103,7 @@
 (define (with-exception-handler handler thunk)
   (let ((new (convert-exception-handler handler))
         (old (current-exception-handler)))
-    (parameterize (
-                   (current-exception-handler
+    (parameterize ((current-exception-handler
                      (lambda (exception)
                        (parameterize ((current-exception-handler old))
                          (new exception)))))
@@ -1490,8 +1489,7 @@
   (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
-  (parameterize (
-                 (current-write write)
+  (parameterize ((current-write write)
                  (current-output-port (get-output-port rest)))
     (cond
       ((char? x)
@@ -1517,8 +1515,7 @@
         (display x)))))
 
 (define (display x . rest)
-  (parameterize (
-                 (current-write display)
+  (parameterize ((current-write display)
                  (current-output-port (get-output-port rest)))
     (cond
       ((not x)
