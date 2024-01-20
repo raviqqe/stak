@@ -178,9 +178,7 @@
 (define-syntax define-library
   (syntax-rules (export)
     ((_ name body ...)
-      ($$define-library
-        body
-        ...))))
+      ($$define-library name body ...))))
 
 ;; Binding
 
