@@ -172,7 +172,7 @@
 
 (define-syntax import
   (syntax-rules (except only prefix rename)
-    ((_ set1 set2...)
+    ((_ set1 set2 ...)
       ($$import set1 set2 ...))))
 
 (define-syntax define-library
