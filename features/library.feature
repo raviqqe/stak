@@ -33,7 +33,7 @@ Feature: Library system
         (define (bar x)
           (write-u8 (+ x 1)))))
 
-    (import (foo bar))
+    (import (foo))
 
     (foo 65)
     (bar 65)
