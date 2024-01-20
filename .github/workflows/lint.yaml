@@ -25,9 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: streetsidesoftware/cspell-action@main
-        with:
-          files: "**/*.{feature,md,rs,scm,sh,toml}"
+      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: cargo +nightly install schemat
+      - run: schemat -c "**/*.scm"
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
