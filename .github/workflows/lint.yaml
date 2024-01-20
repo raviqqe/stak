@@ -11,7 +11,12 @@ jobs:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/lint.sh
       - run: tools/lint.sh -p stak-code
-  format:
+  rust_format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo fmt -- --check
+  scheme_format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +43,8 @@ jobs:
   lint:
     needs:
       - clippy
-      - format
+      - rust_format
+      - scheme_format
       - spell_check
       - readme
     if: always()
