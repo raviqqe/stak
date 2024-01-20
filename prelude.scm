@@ -176,9 +176,11 @@
       ($$import set1 set2 ...))))
 
 (define-syntax define-library
-  (syntax-rules (export begin)
+  (syntax-rules (export)
     ((_ name body ...)
-      (begin body ...))))
+      ($$define-library
+        body
+        ...))))
 
 ;; Binding
 
