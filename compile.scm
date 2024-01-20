@@ -562,6 +562,10 @@
             ; TODO
             #f)
 
+          (($$define-library)
+            ; TODO
+            #f)
+
           (($$lambda)
             (let* ((parameters (cadr expression))
                    (context
