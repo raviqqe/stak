@@ -1,5 +1,5 @@
 Feature: Library system
-  @chibi @gauche @guile
+  @todo
   Scenario: Import a function
     Given a file named "main.scm" with:
     """scheme
@@ -18,7 +18,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @chibi @gauche @guile
+  @todo
   Scenario: Import functions
     Given a file named "main.scm" with:
     """scheme

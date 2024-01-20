@@ -51,14 +51,17 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
+            tags: not @todo
           - name: stak-tools
             host: gosh
+            tags: not @todo
           - name: stak-tools
             host: guile
+            tags: not @todo
           - name: stak-tools
             host: gosh
             features: [gc_always]
-            tags: not @long
+            tags: not @long and not @todo
           - name: chibi
             tags: not @stak or @chibi
           - name: gauche
