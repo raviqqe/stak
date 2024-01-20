@@ -20,14 +20,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: cargo fmt -- --check
+      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: cargo +nightly install schemat
+      - run: schemat -c "**/*.scm"
   spell_check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: cargo +nightly install schemat
-      - run: schemat -c "**/*.scm"
+      - uses: streetsidesoftware/cspell-action@main
+        with:
+          files: "**/*.{feature,md,rs,scm,sh,toml}"
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
