@@ -263,12 +263,15 @@
 ;; Context
 
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment libraries)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (libraries expansion-context-libraries expansion-context-set-libraries!))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-libraries context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -627,7 +630,7 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '()) expression))
+  (expand-expression (make-expansion-context '() '()) expression))
 
 ; Compilation
 
