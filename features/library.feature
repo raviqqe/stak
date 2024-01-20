@@ -40,3 +40,41 @@ Feature: Library system
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
+
+  @todo @stak @gauche
+  Scenario: Import a function with a prefix
+    Given a file named "main.scm" with:
+    """scheme
+    (define-library (foo)
+      (export foo)
+      (import (scheme base))
+
+      (begin
+        (define (foo x)
+          (write-u8 x))))
+
+    (import (prefix (foo) bar-))
+
+    (bar-foo 65)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @todo @stak @gauche
+  Scenario: Import a renamed function
+    Given a file named "main.scm" with:
+    """scheme
+    (define-library (foo)
+      (export foo)
+      (import (scheme base))
+
+      (begin
+        (define (foo x)
+          (write-u8 x))))
+
+    (import (rename (foo) (foo bar)))
+
+    (bar 65)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
