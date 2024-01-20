@@ -170,15 +170,13 @@
 
 ;; Library system
 
-; TODO Implement an import statement.
 (define-syntax import
-  (syntax-rules ()
-    ((_ x ...)
-      #f)))
+  (syntax-rules (except only prefix rename)
+    ((_ set1 set2...)
+      ($$import set1 set2 ...))))
 
-; TODO Implement an import statement.
 (define-syntax define-library
-  (syntax-rules ()
+  (syntax-rules (export begin)
     ((_ name body ...)
       (begin body ...))))
 

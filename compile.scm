@@ -558,6 +558,10 @@
               (make-transformer context (caddr expression)))
             #f)
 
+          (($$import)
+            ; TODO
+            #f)
+
           (($$lambda)
             (let* ((parameters (cadr expression))
                    (context
