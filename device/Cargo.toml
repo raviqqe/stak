@@ -10,7 +10,3 @@ repository.workspace = true
 
 [features]
 std = []
-
-[dependencies]
-
-[dev-dependencies]
