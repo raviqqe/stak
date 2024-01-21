@@ -95,7 +95,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: tools/integration_test.sh -f 'not @todo' -i ${{ matrix.interpreter }}
+      - run: tools/integration_test.sh -i ${{ matrix.interpreter }} -- --tags 'not @todo'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
