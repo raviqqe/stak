@@ -260,6 +260,13 @@
 
 ; Expansion
 
+;; Library
+
+(define-record-type library
+  (make-library codes)
+  library?
+  (codes library-codes))
+
 ;; Context
 
 (define-record-type expansion-context
