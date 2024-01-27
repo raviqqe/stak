@@ -652,12 +652,8 @@
         ; TODO
         #f)
 
-      (else =>
-        (lambda (value)
-          (if (procedure? value)
-            (let-values (((expression context) (value context expression)))
-              (expand-expression context expression))
-            (map expand expression)))))
+      (else
+        expression))
     expression))
 
 (define (expand-libraries codes)
