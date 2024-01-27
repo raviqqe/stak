@@ -645,7 +645,7 @@
   (if (pair? expression)
     (case (car expression)
       (($$begin)
-        `($$begin ,@(map expand (cdr expression))))
+        (cons '$$begin (map expand (cdr expression))))
 
       (($$define-library)
         ; TODO
