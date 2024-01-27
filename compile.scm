@@ -260,20 +260,12 @@
 
 ; Expansion
 
-;; Library
-
-(define-record-type library
-  (make-library codes)
-  library?
-  (codes library-codes))
-
 ;; Context
 
 (define-record-type expansion-context
-  (make-expansion-context environment libraries)
+  (make-expansion-context environment)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!)
-  (libraries expansion-context-libraries expansion-context-set-libraries!))
+  (environment expansion-context-environment expansion-context-set-environment!))
 
 (define (expansion-context-append context pairs)
   (make-expansion-context
@@ -638,6 +630,23 @@
 
 (define (expand expression)
   (expand-expression (make-expansion-context '() '()) expression))
+
+; Library system
+
+(define-record-type library
+  (make-library codes)
+  library?
+  (codes library-codes))
+
+;; Context
+
+(define-record-type library-context
+  (make-library-context libraries)
+  library-context?
+  (libraries library-context-libraries library-context-set-libraries!))
+
+(define (expand-libraries codes)
+  codes)
 
 ; Compilation
 
@@ -1218,4 +1227,4 @@
 
 ; Main
 
-(write-target (encode (compile (expand (read-source)))))
+(write-target (encode (compile (expand-libraries (expand (read-source))))))
