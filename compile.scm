@@ -268,9 +268,7 @@
   (environment expansion-context-environment expansion-context-set-environment!))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context
-    (append pairs (expansion-context-environment context))
-    (expansion-context-libraries context)))
+  (make-expansion-context (append pairs (expansion-context-environment context))))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
