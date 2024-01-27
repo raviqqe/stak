@@ -622,7 +622,7 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '() '()) expression))
+  (expand-expression (make-expansion-context '()) expression))
 
 ; Library system
 
@@ -637,6 +637,27 @@
   (make-library-context libraries)
   library-context?
   (libraries library-context-libraries library-context-set-libraries!))
+
+(define (expand-expression context expression)
+  (define (expand expression)
+    (expand-expression context expression))
+
+  (if (pair? expression)
+    (case (car expression)
+      (($$define-library)
+        `($$define-library ,(cadr expression) ,@(map expand (cddr expression))))
+
+      (($$import)
+        ; TODO
+        #f)
+
+      (else =>
+        (lambda (value)
+          (if (procedure? value)
+            (let-values (((expression context) (value context expression)))
+              (expand-expression context expression))
+            (map expand expression)))))
+    expression))
 
 (define (expand-libraries codes)
   codes)
