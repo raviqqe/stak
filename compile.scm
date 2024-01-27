@@ -558,13 +558,8 @@
               (make-transformer context (caddr expression)))
             #f)
 
-          (($$import)
-            ; TODO
-            #f)
-
           (($$define-library)
-            ; TODO
-            #f)
+            `($$define-library ,(cadr expression) ,@(map expand (cddr expression))))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
