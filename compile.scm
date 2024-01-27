@@ -645,7 +645,8 @@
   (if (pair? expression)
     (case (car expression)
       (($$define-library)
-        `($$define-library ,(cadr expression) ,@(map expand (cddr expression))))
+        ; TODO
+        #f)
 
       (($$import)
         ; TODO
