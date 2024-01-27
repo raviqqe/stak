@@ -639,8 +639,14 @@
   (libraries library-context-libraries library-context-set-libraries!))
 
 (define (expand-library-expression context expression)
+  (define (expand expression)
+    (expand-library-expression context expression))
+
   (if (pair? expression)
     (case (car expression)
+      (($$begin)
+        `($$begin ,@(map expand (cdr expression))))
+
       (($$define-library)
         ; TODO
         #f)
@@ -653,8 +659,8 @@
         expression))
     expression))
 
-(define (expand-libraries codes)
-  codes)
+(define (expand-libraries expression)
+  (expand-library-expression (make-library-context '()) expression))
 
 ; Compilation
 
