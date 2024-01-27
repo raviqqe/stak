@@ -638,10 +638,7 @@
   library-context?
   (libraries library-context-libraries library-context-set-libraries!))
 
-(define (expand-expression context expression)
-  (define (expand expression)
-    (expand-expression context expression))
-
+(define (expand-library-expression context expression)
   (if (pair? expression)
     (case (car expression)
       (($$define-library)
