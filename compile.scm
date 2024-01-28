@@ -261,9 +261,11 @@
 ; Expansion
 
 (define-record-type library
-  (make-library name codes)
+  (make-library name exports imports codes)
   library?
   (name library-name)
+  (exports library-exports)
+  (imports library-imports)
   (codes library-codes))
 
 ;; Context
@@ -575,14 +577,19 @@
             #f)
 
           (($$define-library)
-            (let* ((bodies (map expand (cddr expression))))
+            (let* ((collect-bodies
+                     (lambda (predicate)
+                       (filter
+                         (lambda (body)
+                           (and (pair? body) (eqv? (car body) '$$begin)))
+                         (cddr expression)))))
               (expansion-context-add-library!
                 context
                 (make-library
                   (cadr expression)
-                  (filter
-                    (lambda (body) (and (pair? body) (eqv? (car body) '$$begin)))
-                    bodies)))
+                  (collect-bodies 'export)
+                  (collect-bodies 'import)
+                  ($$begin (map expand (collect-bodies 'begin)))))
               #f))
 
           (($$import)
