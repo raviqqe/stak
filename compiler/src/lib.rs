@@ -6,7 +6,7 @@ pub use self::error::CompileError;
 use stak_device::ReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::io::{empty, Read, Write};
+use std::io::{Read, Write};
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
@@ -38,11 +38,19 @@ pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), Compile
 /// ```
 pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), CompileError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
-    let device = ReadWriteDevice::new(source, target, empty());
+    let mut error_buffer = vec![];
+    let device = ReadWriteDevice::new(source, target, &mut error_buffer);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
-    vm.run()?;
+
+    vm.run().map_err(|error| {
+        if error_buffer.is_empty() {
+            CompileError::User(String::from_utf8_lossy(&error_buffer).to_string())
+        } else {
+            CompileError::Vm(error)
+        }
+    })?;
 
     Ok(())
 }
