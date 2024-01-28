@@ -565,6 +565,9 @@
             (let ((bodies (map expand (cddr expression))))
               #f))
 
+          (($$import)
+            #f)
+
           (($$lambda)
             (let* ((parameters (cadr expression))
                    (context
