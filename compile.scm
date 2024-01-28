@@ -296,8 +296,12 @@
         (expansion-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
 
-(define (expansion-context-add-library context library)
-  (expansion-context-set-libraries! context (append library (expansion-context-libraries context))))
+(define (expansion-context-add-library! context library)
+  (expansion-context-set-libraries!
+    context
+    (cons
+      (cons (library-name library) library)
+      (expansion-context-libraries context))))
 
 ;; Procedures
 
@@ -572,7 +576,6 @@
 
           (($$define-library)
             (let* ((bodies (map expand (cddr expression))))
-              (write bodies)
               (expansion-context-add-library!
                 context
                 (make-library
