@@ -260,6 +260,12 @@
 
 ; Expansion
 
+(define-record-type library
+  (make-library name codes)
+  library?
+  (name library-name)
+  (codes library-codes))
+
 ;; Context
 
 (define-record-type expansion-context
@@ -289,6 +295,9 @@
       (if (null? environment)
         (expansion-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
+
+(define (expansion-context-add-library context library)
+  (expansion-context-set-libraries! context (append library (expansion-context-libraries context))))
 
 ;; Procedures
 
@@ -562,7 +571,12 @@
             #f)
 
           (($$define-library)
-            (let ((bodies (map expand (cddr expression))))
+            (let* ((bodies (map expand (cddr expression)))
+                   (codes (map expand (cddr expression))))
+              (expansion-context-add-library!
+                (make-library
+                  (cadr expression)
+                  (filter (lambda (body) (eqv? (car body) '$$begin)) bodies)))
               #f))
 
           (($$import)
