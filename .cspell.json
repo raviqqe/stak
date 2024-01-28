@@ -13,6 +13,7 @@
     "codecov",
     "cond",
     "embeddable",
+    "indoc",
     "insta",
     "lcov",
     "letrec",
