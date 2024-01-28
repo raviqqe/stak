@@ -572,11 +572,14 @@
 
           (($$define-library)
             (let* ((bodies (map expand (cddr expression))))
+              (write bodies)
               (expansion-context-add-library!
                 context
                 (make-library
                   (cadr expression)
-                  (filter (lambda (body) (eqv? (car body) '$$begin)) bodies)))
+                  (filter
+                    (lambda (body) (and (pair? body) (eqv? (car body) '$$begin)))
+                    bodies)))
               #f))
 
           (($$import)
