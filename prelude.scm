@@ -1625,6 +1625,7 @@
 (cond-expand
   (stak
     (define-library (scheme base))
+    (define-library (scheme cxr))
     (define-library (scheme read))
     (define-library (scheme write))
     (define-library (scheme eval))))
