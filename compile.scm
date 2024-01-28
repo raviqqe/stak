@@ -263,12 +263,15 @@
 ;; Context
 
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment libraries)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (libraries expansion-context-libraries expansion-context-set-libraries!))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-libraries context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -559,7 +562,8 @@
             #f)
 
           (($$define-library)
-            `($$define-library ,(cadr expression) ,@(map expand (cddr expression))))
+            (let ((bodies (map expand (cddr expression))))
+              #f))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
@@ -622,45 +626,7 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '()) expression))
-
-; Library system
-
-(define-record-type library
-  (make-library codes)
-  library?
-  (codes library-codes))
-
-;; Context
-
-(define-record-type library-context
-  (make-library-context libraries)
-  library-context?
-  (libraries library-context-libraries library-context-set-libraries!))
-
-(define (expand-library-expression context expression)
-  (define (expand expression)
-    (expand-library-expression context expression))
-
-  (if (pair? expression)
-    (case (car expression)
-      (($$begin)
-        (cons '$$begin (map expand (cdr expression))))
-
-      (($$define-library)
-        ; TODO
-        #f)
-
-      (($$import)
-        ; TODO
-        #f)
-
-      (else
-        expression))
-    expression))
-
-(define (expand-libraries expression)
-  (expand-library-expression (make-library-context '()) expression))
+  (expand-expression (make-expansion-context '() '()) expression))
 
 ; Compilation
 
@@ -1241,4 +1207,4 @@
 
 ; Main
 
-(write-target (encode (compile (expand-libraries (expand (read-source))))))
+(write-target (encode (compile (expand (read-source)))))
