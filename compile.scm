@@ -579,17 +579,20 @@
           (($$define-library)
             (let* ((collect-bodies
                      (lambda (predicate)
-                       (filter
-                         (lambda (body)
-                           (and (pair? body) (eqv? (car body) '$$begin)))
-                         (cddr expression)))))
+                       (apply append
+                         (map
+                           cdr
+                           (filter
+                             (lambda (body)
+                               (and (pair? body) (eqv? (car body) predicate)))
+                             (cddr expression)))))))
               (expansion-context-add-library!
                 context
                 (make-library
                   (cadr expression)
                   (collect-bodies 'export)
                   (collect-bodies 'import)
-                  ($$begin (map expand (collect-bodies 'begin)))))
+                  (cons '$$begin (map expand (collect-bodies 'begin)))))
               #f))
 
           (($$import)
