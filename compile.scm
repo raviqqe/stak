@@ -298,11 +298,22 @@
         (expansion-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
 
+(define (expansion-context-library-pair context name)
+  (cdr (assv name (expansion-context-libraries context))))
+
+(define (expansion-context-library context name)
+  (car (expansion-context-library-pair context name)))
+
+(define (expansion-context-library-imported? context name)
+  (cdr (expansion-context-library-pair context name)))
+
 (define (expansion-context-add-library! context library)
   (expansion-context-set-libraries!
     context
     (cons
-      (cons (library-name library) library)
+      (cons
+        (library-name library)
+        (cons library #f))
       (expansion-context-libraries context))))
 
 ;; Procedures
@@ -596,7 +607,12 @@
               #f))
 
           (($$import)
-            #f)
+            (map
+              (lambda (name)
+                (if (expansion-context-library-imported? context name)
+                  #f
+                  #f))
+              (cdr expression)))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
