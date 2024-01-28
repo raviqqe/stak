@@ -71,12 +71,12 @@ mod r7rs {
 
         const PROGRAM: &[u8] = compile_r7rs!(
             r#"
-        (import (scheme write))
+            (import (scheme write))
 
-        (display #\A)
-        (display #\,)
-        (display #\space)
-        "#
+            (display #\A)
+            (display #\,)
+            (display #\space)
+            "#
         );
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();

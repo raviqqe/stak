@@ -58,6 +58,21 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
+
+    mod bare {
+        use super::*;
+
+        #[test]
+        fn compile_nothing() {
+            compile_bare(b"".as_slice(), &mut vec![]).unwrap();
+        }
+
+        #[test]
+        fn compile_define() {
+            compile_bare(b"($$define x 42)".as_slice(), &mut vec![]).unwrap();
+        }
+    }
 
     mod r7rs {
         use super::*;
@@ -71,19 +86,29 @@ mod tests {
         fn compile_define() {
             compile_r7rs(b"(define x 42)".as_slice(), &mut vec![]).unwrap();
         }
-    }
-
-    mod bare {
-        use super::*;
 
         #[test]
-        fn compile_nothing() {
-            compile_bare(b"".as_slice(), &mut vec![]).unwrap();
-        }
+        fn compile_invalid_macro_call() {
+            let Err(CompileError::User(message)) = compile_r7rs(
+                indoc!(
+                    r#"
+                    (import (scheme base))
 
-        #[test]
-        fn compile_define() {
-            compile_bare(b"($$define x 42)".as_slice(), &mut vec![]).unwrap();
+                    (define-syntax foo
+                        (syntax-rules ()
+                            ((_)
+                                #f)))
+
+                    (foo 42)
+                    "#
+                )
+                .as_bytes(),
+                &mut vec![],
+            ) else {
+                panic!()
+            };
+
+            assert!(message.contains("invalid syntax"));
         }
     }
 }
