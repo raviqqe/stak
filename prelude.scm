@@ -1617,3 +1617,14 @@
 
 (define (exit . rest)
   (unwind (lambda () (apply emergency-exit rest))))
+
+; Libraries
+
+; Currently those are just stubs.
+
+(cond-expand
+  (stak
+    (define-library (scheme base))
+    (define-library (scheme read))
+    (define-library (scheme write))
+    (define-library (scheme eval))))
