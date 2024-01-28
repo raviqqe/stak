@@ -6,7 +6,7 @@ pub use self::error::CompileError;
 use stak_device::ReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::io::{empty, Read, Write};
+use std::io::{Read, Write};
 
 const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
@@ -38,11 +38,19 @@ pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), Compile
 /// ```
 pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), CompileError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
-    let device = ReadWriteDevice::new(source, target, empty());
+    let mut error_message = vec![];
+    let device = ReadWriteDevice::new(source, target, &mut error_message);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
-    vm.run()?;
+
+    vm.run().map_err(|error| {
+        if error_message.is_empty() {
+            CompileError::Vm(error)
+        } else {
+            CompileError::User(String::from_utf8_lossy(&error_message).into_owned())
+        }
+    })?;
 
     Ok(())
 }
@@ -50,6 +58,21 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
+
+    mod bare {
+        use super::*;
+
+        #[test]
+        fn compile_nothing() {
+            compile_bare(b"".as_slice(), &mut vec![]).unwrap();
+        }
+
+        #[test]
+        fn compile_define() {
+            compile_bare(b"($$define x 42)".as_slice(), &mut vec![]).unwrap();
+        }
+    }
 
     mod r7rs {
         use super::*;
@@ -63,19 +86,29 @@ mod tests {
         fn compile_define() {
             compile_r7rs(b"(define x 42)".as_slice(), &mut vec![]).unwrap();
         }
-    }
-
-    mod bare {
-        use super::*;
 
         #[test]
-        fn compile_nothing() {
-            compile_bare(b"".as_slice(), &mut vec![]).unwrap();
-        }
+        fn compile_invalid_macro_call() {
+            let Err(CompileError::User(message)) = compile_r7rs(
+                indoc!(
+                    r#"
+                    (import (scheme base))
 
-        #[test]
-        fn compile_define() {
-            compile_bare(b"($$define x 42)".as_slice(), &mut vec![]).unwrap();
+                    (define-syntax foo
+                        (syntax-rules ()
+                            ((_)
+                                #f)))
+
+                    (foo 42)
+                    "#
+                )
+                .as_bytes(),
+                &mut vec![],
+            ) else {
+                panic!()
+            };
+
+            assert!(message.contains("invalid syntax"));
         }
     }
 }
