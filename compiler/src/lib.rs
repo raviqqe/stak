@@ -38,17 +38,17 @@ pub fn compile_r7rs(source: impl Read, target: impl Write) -> Result<(), Compile
 /// ```
 pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), CompileError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
-    let mut error_buffer = vec![];
-    let device = ReadWriteDevice::new(source, target, &mut error_buffer);
+    let mut error_message = vec![];
+    let device = ReadWriteDevice::new(source, target, &mut error_message);
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 
     vm.run().map_err(|error| {
-        if error_buffer.is_empty() {
+        if error_message.is_empty() {
             CompileError::Vm(error)
         } else {
-            CompileError::User(String::from_utf8_lossy(&error_buffer).to_string())
+            CompileError::User(String::from_utf8_lossy(&error_message).into_owned())
         }
     })?;
 
