@@ -1,4 +1,19 @@
 Feature: Library system
+  @stak @gauche
+  Scenario: Define a library
+    Given a file named "main.scm" with:
+    """scheme
+    (define-library (foo)
+      (export foo)
+      (import (scheme base))
+
+      (begin
+        (define (foo x)
+          (write-u8 x))))
+    """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
   @todo @stak @gauche
   Scenario: Import a function
     Given a file named "main.scm" with:
