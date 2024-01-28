@@ -617,15 +617,16 @@
               #f))
 
           (($$import)
-            (map
-              (lambda (name)
-                (if (library-context-imported?
-                     (expansion-context-library-context context)
-                     name)
-                  ; TODO
-                  #f
-                  #f))
-              (cdr expression)))
+            (cons '$$begin
+              (map
+                (lambda (name)
+                  (if (library-context-imported?
+                       (expansion-context-library-context context)
+                       name)
+                    ; TODO
+                    #f
+                    #f))
+                (cdr expression))))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
