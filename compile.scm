@@ -299,7 +299,12 @@
         (set-last-cdr! environment tail)))))
 
 (define (expansion-context-library-pair context name)
-  (cdr (assv name (expansion-context-libraries context))))
+  (cond
+    ((assv name (expansion-context-libraries context)) =>
+      cdr)
+
+    (else
+      (error "unknown library" name))))
 
 (define (expansion-context-library context name)
   (car (expansion-context-library-pair context name)))
