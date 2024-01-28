@@ -46,9 +46,9 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 
     vm.run().map_err(|error| {
         if error_buffer.is_empty() {
-            CompileError::User(String::from_utf8_lossy(&error_buffer).to_string())
-        } else {
             CompileError::Vm(error)
+        } else {
+            CompileError::User(String::from_utf8_lossy(&error_buffer).to_string())
         }
     })?;
 
