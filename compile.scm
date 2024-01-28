@@ -577,15 +577,15 @@
             #f)
 
           (($$define-library)
-            (let* ((collect-bodies
-                     (lambda (predicate)
-                       (apply
-                         append
-                         (map
-                           cdr
-                           (filter
-                             (lambda (body) (eqv? (car body) predicate))
-                             (cddr expression)))))))
+            (let ((collect-bodies
+                    (lambda (predicate)
+                      (apply
+                        append
+                        (map
+                          cdr
+                          (filter
+                            (lambda (body) (eqv? (car body) predicate))
+                            (cddr expression)))))))
               (expansion-context-add-library!
                 context
                 (make-library
