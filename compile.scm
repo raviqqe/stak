@@ -571,9 +571,9 @@
             #f)
 
           (($$define-library)
-            (let* ((bodies (map expand (cddr expression)))
-                   (codes (map expand (cddr expression))))
+            (let* ((bodies (map expand (cddr expression))))
               (expansion-context-add-library!
+                context
                 (make-library
                   (cadr expression)
                   (filter (lambda (body) (eqv? (car body) '$$begin)) bodies)))
