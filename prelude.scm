@@ -1620,7 +1620,7 @@
 
 ; Libraries
 
-; Currently those are just stubs.
+; Currently, those are just stubs.
 (define-library (scheme base))
 (define-library (scheme cxr))
 (define-library (scheme eval))
