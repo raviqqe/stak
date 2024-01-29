@@ -52,10 +52,10 @@ mod r7rs {
 
         const PROGRAM: &[u8] = compile_r7rs!(
             r#"
-        (import (scheme write))
+            (import (scheme write))
 
-        (display "Hello, world!")
-        "#
+            (display "Hello, world!")
+            "#
         );
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
@@ -71,12 +71,12 @@ mod r7rs {
 
         const PROGRAM: &[u8] = compile_r7rs!(
             r#"
-        (import (scheme write))
+            (import (scheme write))
 
-        (display #\A)
-        (display #\,)
-        (display #\space)
-        "#
+            (display #\A)
+            (display #\,)
+            (display #\space)
+            "#
         );
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
@@ -92,12 +92,12 @@ mod r7rs {
 
         const PROGRAM: &[u8] = compile_r7rs!(
             r#"
-        (import (scheme write))
+            (import (scheme write))
 
-        (define foo-bar-baz "Hello, world!")
+            (define foo-bar-baz "Hello, world!")
 
-        (display foo-bar-baz)
-        "#
+            (display foo-bar-baz)
+            "#
         );
 
         vm.initialize(PROGRAM.iter().copied()).unwrap();
