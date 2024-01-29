@@ -1621,11 +1621,9 @@
 ; Libraries
 
 ; Currently those are just stubs.
-
-(cond-expand
-  (stak
-    (define-library (scheme base))
-    (define-library (scheme cxr))
-    (define-library (scheme read))
-    (define-library (scheme write))
-    (define-library (scheme eval))))
+(define-library (scheme base))
+(define-library (scheme cxr))
+(define-library (scheme eval))
+(define-library (scheme process-context))
+(define-library (scheme read))
+(define-library (scheme write))
