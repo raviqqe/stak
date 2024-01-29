@@ -270,6 +270,8 @@
 
 ;; Context
 
+;;; Library
+
 (define-record-type library-context
   (make-library-context libraries)
   library-context?
@@ -297,6 +299,11 @@
         (library-name library)
         (cons library #f))
       (library-context-libraries context))))
+
+(define (library-context-import! context name)
+  (set-cdr! (library-context-assoc context name) #t))
+
+;;; Expansion
 
 (define-record-type expansion-context
   (make-expansion-context environment library-context)
@@ -621,19 +628,17 @@
               #f))
 
           (($$import)
-            (cons
-              '$$begin
-              (map
-                (lambda (name)
-                  (if (library-context-imported?
-                       (expansion-context-library-context context)
-                       name)
-                    #f
-                    (library-codes
-                      (library-context-find
-                        (expansion-context-library-context context)
-                        name))))
-                (cdr expression))))
+            (let ((context (expansion-context-library-context context)))
+              (cons
+                '$$begin
+                (map
+                  (lambda (name)
+                    (if (library-context-imported? context name)
+                      #f
+                      (begin
+                        (library-context-import! context name)
+                        (library-codes (library-context-find context name)))))
+                  (cdr expression)))))
 
           (($$lambda)
             (let* ((parameters (cadr expression))

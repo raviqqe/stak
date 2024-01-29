@@ -14,6 +14,22 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
+  @stak @gauche
+  Scenario: Import a library twice
+    Given a file named "main.scm" with:
+    """scheme
+    (define-library (foo)
+      (import (scheme base) (scheme write))
+
+      (begin
+        (display "foo")))
+
+    (import (foo))
+    (import (foo))
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "foo"
+
   @todo @stak @gauche
   Scenario: Import a function
     Given a file named "main.scm" with:
