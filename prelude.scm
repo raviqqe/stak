@@ -170,11 +170,15 @@
 
 ;; Library system
 
-; TODO Implement an import statement.
 (define-syntax import
-  (syntax-rules ()
-    ((_ x ...)
-      #f)))
+  (syntax-rules (except only prefix rename)
+    ((_ set1 set2 ...)
+      ($$import set1 set2 ...))))
+
+(define-syntax define-library
+  (syntax-rules (export import begin)
+    ((_ name body ...)
+      ($$define-library name body ...))))
 
 ;; Binding
 
@@ -1613,3 +1617,13 @@
 
 (define (exit . rest)
   (unwind (lambda () (apply emergency-exit rest))))
+
+; Libraries
+
+; Currently, those are just stubs.
+(define-library (scheme base))
+(define-library (scheme cxr))
+(define-library (scheme eval))
+(define-library (scheme process-context))
+(define-library (scheme read))
+(define-library (scheme write))

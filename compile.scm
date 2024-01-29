@@ -260,15 +260,61 @@
 
 ; Expansion
 
+(define-record-type library
+  (make-library name exports imports codes)
+  library?
+  (name library-name)
+  (exports library-exports)
+  (imports library-imports)
+  (codes library-codes))
+
 ;; Context
 
+;;; Library
+
+(define-record-type library-context
+  (make-library-context libraries)
+  library-context?
+  (libraries library-context-libraries library-context-set-libraries!))
+
+(define (library-context-assoc context name)
+  (cond
+    ((assoc name (library-context-libraries context)) =>
+      cdr)
+
+    (else
+      (error "unknown library" name))))
+
+(define (library-context-find context name)
+  (car (library-context-assoc context name)))
+
+(define (library-context-imported? context name)
+  (cdr (library-context-assoc context name)))
+
+(define (library-context-add! context library)
+  (library-context-set-libraries!
+    context
+    (cons
+      (cons
+        (library-name library)
+        (cons library #f))
+      (library-context-libraries context))))
+
+(define (library-context-import! context name)
+  (set-cdr! (library-context-assoc context name) #t))
+
+;;; Expansion
+
 (define-record-type expansion-context
-  (make-expansion-context environment)
+  (make-expansion-context environment library-context)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+  (environment expansion-context-environment expansion-context-set-environment!)
+  (library-context expansion-context-library-context))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+  (make-expansion-context
+    (append pairs (expansion-context-environment context))
+    (expansion-context-library-context context)))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -558,6 +604,42 @@
               (make-transformer context (caddr expression)))
             #f)
 
+          (($$define-library)
+            (let ((collect-bodies
+                    (lambda (predicate)
+                      (apply
+                        append
+                        (map
+                          cdr
+                          (filter
+                            (lambda (body) (eqv? (car body) predicate))
+                            (cddr expression)))))))
+              (library-context-add!
+                (expansion-context-library-context context)
+                (make-library
+                  (cadr expression)
+                  (collect-bodies 'export)
+                  (collect-bodies 'import)
+                  (let ((bodies (collect-bodies 'begin)))
+                    (expand
+                      (and
+                        (not (null? bodies))
+                        (cons 'begin bodies))))))
+              #f))
+
+          (($$import)
+            (let ((context (expansion-context-library-context context)))
+              (cons
+                '$$begin
+                (map
+                  (lambda (name)
+                    (if (library-context-imported? context name)
+                      #f
+                      (begin
+                        (library-context-import! context name)
+                        (library-codes (library-context-find context name)))))
+                  (cdr expression)))))
+
           (($$lambda)
             (let* ((parameters (cadr expression))
                    (context
@@ -619,7 +701,9 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression (make-expansion-context '()) expression))
+  (expand-expression
+    (make-expansion-context '() (make-library-context '()))
+    expression))
 
 ; Compilation
 
