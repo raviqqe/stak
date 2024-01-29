@@ -275,7 +275,7 @@
   library-context?
   (libraries library-context-libraries library-context-set-libraries!))
 
-(define (library-context-find-pair context name)
+(define (library-context-assoc context name)
   (cond
     ((assoc name (library-context-libraries context)) =>
       cdr)
@@ -284,10 +284,10 @@
       (error "unknown library" name))))
 
 (define (library-context-find context name)
-  (car (library-context-find-pair context name)))
+  (car (library-context-assoc context name)))
 
 (define (library-context-imported? context name)
-  (cdr (library-context-find-pair context name)))
+  (cdr (library-context-assoc context name)))
 
 (define (library-context-add! context library)
   (library-context-set-libraries!
@@ -613,7 +613,11 @@
                   (cadr expression)
                   (collect-bodies 'export)
                   (collect-bodies 'import)
-                  (cons '$$begin (map expand (collect-bodies 'begin)))))
+                  (let ((bodies (collect-bodies 'begin)))
+                    (expand
+                      (and
+                        (not (null? bodies))
+                        (cons 'begin bodies))))))
               #f))
 
           (($$import)
@@ -624,9 +628,11 @@
                   (if (library-context-imported?
                        (expansion-context-library-context context)
                        name)
-                    ; TODO
                     #f
-                    #f))
+                    (library-codes
+                      (library-context-find
+                        (expansion-context-library-context context)
+                        name))))
                 (cdr expression))))
 
           (($$lambda)
