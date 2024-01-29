@@ -617,7 +617,8 @@
               #f))
 
           (($$import)
-            (cons '$$begin
+            (cons
+              '$$begin
               (map
                 (lambda (name)
                   (if (library-context-imported?
