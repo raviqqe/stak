@@ -634,17 +634,19 @@
                   (cadr expression)
                   (collect-bodies 'export)
                   (collect-bodies 'import)
-                  (relaxed-deep-map
-                    (lambda (value)
-                      (if (symbol? value)
-                        (string->symbol
-                          (string-append
-                            "$"
-                            (number->string id 32)
-                            "$"
-                            (symbol->string value)))
-                        value))
-                    (collect-bodies 'begin))))
+                  ; TODO Segregate an environment.
+                  ; (relaxed-deep-map
+                  ;   (lambda (value)
+                  ;     (if (symbol? value)
+                  ;       (string->symbol
+                  ;         (string-append
+                  ;           "$"
+                  ;           (number->string id 32)
+                  ;           "$"
+                  ;           (symbol->string value)))
+                  ;       value))
+                  ;   (collect-bodies 'begin))
+                  (collect-bodies 'begin)))
               #f))
 
           (($$import)
