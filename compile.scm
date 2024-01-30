@@ -639,7 +639,6 @@
           (($$import)
             (let ((context (expansion-context-library-context context)))
               `($$begin
-                #f
                 ,@(apply
                    append
                    (map
@@ -647,7 +646,9 @@
                      (if (library-context-import! context name)
                       '()
                       (map expand (library-codes (library-context-find context name)))))
-                    (cdr expression))))))
+                    (cdr expression)))
+                ; Imported codes can be empty.
+                #f)))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
