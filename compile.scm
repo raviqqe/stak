@@ -310,7 +310,7 @@
 
 (define (library-context-import! context name)
   (let* ((state (library-context-assoc context name))
-         (imported (library-state-imported pair)))
+         (imported (library-state-imported state)))
     (library-state-set-imported! state #t)
     imported))
 
