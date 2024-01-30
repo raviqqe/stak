@@ -640,7 +640,7 @@
                         (string->symbol
                           (string-append
                             "$"
-                            (number->string id 36)
+                            (number->string id 32)
                             "$"
                             (symbol->string value)))
                         value))
