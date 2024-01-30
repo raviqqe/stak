@@ -637,7 +637,12 @@
                   (relaxed-deep-map
                     (lambda (value)
                       (if (symbol? value)
-                        value
+                        (string->symbol
+                          (string-append
+                            "$"
+                            (number->string id 36)
+                            "$"
+                            (symbol->string value)))
                         value))
                     (collect-bodies 'begin))))
               #f))
