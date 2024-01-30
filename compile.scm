@@ -634,7 +634,12 @@
                   (cadr expression)
                   (collect-bodies 'export)
                   (collect-bodies 'import)
-                  (collect-bodies 'begin)))
+                  (relaxed-deep-map
+                    (lambda (value)
+                      (if (symbol? value)
+                        value
+                        value))
+                    (collect-bodies 'begin))))
               #f))
 
           (($$import)
