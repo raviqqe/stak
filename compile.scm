@@ -275,7 +275,7 @@
   library-state?
   (id library-state-id)
   (library library-state-library)
-  (imported library-imported))
+  (imported library-state-imported))
 
 ;; Context
 
