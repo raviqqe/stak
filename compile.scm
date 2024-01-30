@@ -294,24 +294,26 @@
     (else
       (error "unknown library" name))))
 
+(define (library-context-id context)
+  (length (library-context-libraries context)))
+
 (define (library-context-find context name)
   (library-state-library (library-context-assoc context name)))
 
-(define (library-context-imported? context name)
-  (library-state-imported (library-context-assoc context name)))
-
 (define (library-context-add! context library)
-  (let ((libraries (library-context-libraries context)))
-    (library-context-set-libraries!
-      context
+  (library-context-set-libraries!
+    context
+    (cons
       (cons
-        (cons
-          (library-name library)
-          (make-library-state (length libraries) library #f))
-        libraries))))
+        (library-name library)
+        (make-library-state library #f))
+      (library-context-libraries context))))
 
 (define (library-context-import! context name)
-  (library-state-set-imported! (library-context-assoc context name) #t))
+  (let* ((pair (library-context-assoc context name))
+         (imported (library-state-imported pair)))
+    (library-state-set-imported! pair #t)
+    imported))
 
 ;;; Expansion
 
@@ -643,11 +645,9 @@
                 '$$begin
                 (map
                   (lambda (name)
-                    (if (library-context-imported? context name)
+                    (if (library-context-import! context name)
                       #f
-                      (begin
-                        (library-context-import! context name)
-                        (library-codes (library-context-find context name)))))
+                      (library-codes (library-context-find context name))))
                   (cdr expression)))))
 
           (($$lambda)
