@@ -301,13 +301,14 @@
   (cdr (library-context-assoc context name)))
 
 (define (library-context-add! context library)
-  (library-context-set-libraries!
-    context
-    (cons
+  (let ((libraries (library-context-libraries context)))
+    (library-context-set-libraries!
+      context
       (cons
-        (library-name library)
-        (make-library-state 0 library #f))
-      (library-context-libraries context))))
+        (cons
+          (library-name library)
+          (make-library-state (length libraries) library #f))
+        libraries))))
 
 (define (library-context-import! context name)
   (set-cdr! (library-context-assoc context name) #t))
