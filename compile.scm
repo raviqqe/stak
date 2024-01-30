@@ -649,16 +649,18 @@
 
           (($$import)
             (let ((context (expansion-context-library-context context)))
-              ; TODO Handle imports.
               `($$begin
                 ,@(apply
                    append
                    (map
-                    (lambda (name)
-                     (if (library-context-import! context name)
-                      '()
-                      (map expand (library-codes (library-context-find context name)))))
-                    (cdr expression)))
+                     (lambda (name)
+                       (let ((library (library-context-find context name)))
+                         (cons
+                           (expand (cons '$$import (library-imports library)))
+                           (if (library-context-import! context name)
+                             '()
+                             (map expand (library-codes library))))))
+                     (cdr expression)))
                 ; Imported codes can be empty.
                 #f)))
 
