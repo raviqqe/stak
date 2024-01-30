@@ -310,9 +310,9 @@
       (library-context-libraries context))))
 
 (define (library-context-import! context name)
-  (let* ((pair (library-context-assoc context name))
+  (let* ((state (library-context-assoc context name))
          (imported (library-state-imported pair)))
-    (library-state-set-imported! pair #t)
+    (library-state-set-imported! state #t)
     imported))
 
 ;;; Expansion
