@@ -616,17 +616,17 @@
             #f)
 
           (($$define-library)
-            (let ((collect-bodies
-                    (lambda (predicate)
-                      (apply
-                        append
-                        (map
-                          cdr
-                          (filter
-                            (lambda (body) (eqv? (car body) predicate))
-                            (cddr expression))))))
-                  (context (expansion-context-library-context context))
-                  (id (library-context-id context)))
+            (let* ((collect-bodies
+                     (lambda (predicate)
+                       (apply
+                         append
+                         (map
+                           cdr
+                           (filter
+                             (lambda (body) (eqv? (car body) predicate))
+                             (cddr expression))))))
+                   (context (expansion-context-library-context context))
+                   (id (library-context-id context)))
               (library-context-add!
                 context
                 (make-library
@@ -638,17 +638,16 @@
 
           (($$import)
             (let ((context (expansion-context-library-context context)))
-              (cons
-                '$$begin
-                (map
-                  (lambda (name)
-                    (if (library-context-import! context name)
-                      #f
-                      (let ((codes (library-codes (library-context-find context name))))
-                        (and
-                          (pair? codes)
-                          (cons '$$begin (map expand codes))))))
-                  (cdr expression)))))
+              `($$begin
+                #f
+                ,@(apply
+                   append
+                   (map
+                    (lambda (name)
+                     (if (library-context-import! context name)
+                      '()
+                      (map expand (library-codes (library-context-find context name)))))
+                    (cdr expression))))))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
