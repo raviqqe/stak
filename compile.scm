@@ -306,7 +306,7 @@
     (cons
       (cons
         (library-name library)
-        (cons library #f))
+        (make-library-state 0 library #f))
       (library-context-libraries context))))
 
 (define (library-context-import! context name)
