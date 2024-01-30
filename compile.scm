@@ -271,9 +271,8 @@
   (codes library-codes))
 
 (define-record-type library-state
-  (make-library-state id library imported)
+  (make-library-state library imported)
   library-state?
-  (id library-state-id)
   (library library-state-library)
   (imported library-state-imported library-state-set-imported!))
 
