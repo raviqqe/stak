@@ -624,9 +624,11 @@
                           cdr
                           (filter
                             (lambda (body) (eqv? (car body) predicate))
-                            (cddr expression)))))))
+                            (cddr expression))))))
+                  (context (expansion-context-library-context context))
+                  (id (library-context-id context)))
               (library-context-add!
-                (expansion-context-library-context context)
+                context
                 (make-library
                   (cadr expression)
                   (collect-bodies 'export)
