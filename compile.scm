@@ -626,6 +626,7 @@
                              (lambda (body) (eqv? (car body) predicate))
                              (cddr expression))))))
                    (context (expansion-context-library-context context))
+                   ; TODO Apply a library ID to symbols.
                    (id (library-context-id context)))
               (library-context-add!
                 context
