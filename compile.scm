@@ -268,6 +268,14 @@
   (imports library-imports)
   (codes library-codes))
 
+(define-record-type library-state
+  (make-library-state id library imported)
+  library-state?
+  (id library-state-id)
+  (imported library-imported)
+  (imports library-imports)
+  (codes library-codes))
+
 ;; Context
 
 ;;; Library
