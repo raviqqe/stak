@@ -272,9 +272,8 @@
   (make-library-state id library imported)
   library-state?
   (id library-state-id)
-  (imported library-imported)
-  (imports library-imports)
-  (codes library-codes))
+  (library library-state-library)
+  (imported library-imported))
 
 ;; Context
 
