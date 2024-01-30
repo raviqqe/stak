@@ -275,7 +275,7 @@
   library-state?
   (id library-state-id)
   (library library-state-library)
-  (imported library-state-imported))
+  (imported library-state-imported library-state-set-imported!))
 
 ;; Context
 
@@ -295,10 +295,10 @@
       (error "unknown library" name))))
 
 (define (library-context-find context name)
-  (car (library-context-assoc context name)))
+  (library-state-library (library-context-assoc context name)))
 
 (define (library-context-imported? context name)
-  (cdr (library-context-assoc context name)))
+  (library-state-imported (library-context-assoc context name)))
 
 (define (library-context-add! context library)
   (let ((libraries (library-context-libraries context)))
@@ -311,7 +311,7 @@
         libraries))))
 
 (define (library-context-import! context name)
-  (set-cdr! (library-context-assoc context name) #t))
+  (library-state-set-imported! (library-context-assoc context name) #t))
 
 ;;; Expansion
 
