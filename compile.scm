@@ -260,6 +260,8 @@
 
 ; Expansion
 
+;; Types
+
 (define-record-type library
   (make-library name exports imports codes)
   library?
