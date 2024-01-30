@@ -260,6 +260,8 @@
 
 ; Expansion
 
+;; Types
+
 (define-record-type library
   (make-library name exports imports codes)
   library?
@@ -267,6 +269,12 @@
   (exports library-exports)
   (imports library-imports)
   (codes library-codes))
+
+(define-record-type library-state
+  (make-library-state library imported)
+  library-state?
+  (library library-state-library)
+  (imported library-state-imported library-state-set-imported!))
 
 ;; Context
 
@@ -285,11 +293,11 @@
     (else
       (error "unknown library" name))))
 
-(define (library-context-find context name)
-  (car (library-context-assoc context name)))
+(define (library-context-id context)
+  (length (library-context-libraries context)))
 
-(define (library-context-imported? context name)
-  (cdr (library-context-assoc context name)))
+(define (library-context-find context name)
+  (library-state-library (library-context-assoc context name)))
 
 (define (library-context-add! context library)
   (library-context-set-libraries!
@@ -297,11 +305,14 @@
     (cons
       (cons
         (library-name library)
-        (cons library #f))
+        (make-library-state library #f))
       (library-context-libraries context))))
 
 (define (library-context-import! context name)
-  (set-cdr! (library-context-assoc context name) #t))
+  (let* ((state (library-context-assoc context name))
+         (imported (library-state-imported state)))
+    (library-state-set-imported! state #t)
+    imported))
 
 ;;; Expansion
 
@@ -605,40 +616,55 @@
             #f)
 
           (($$define-library)
-            (let ((collect-bodies
-                    (lambda (predicate)
-                      (apply
-                        append
-                        (map
-                          cdr
-                          (filter
-                            (lambda (body) (eqv? (car body) predicate))
-                            (cddr expression)))))))
+            (let* ((collect-bodies
+                     (lambda (predicate)
+                       (apply
+                         append
+                         (map
+                           cdr
+                           (filter
+                             (lambda (body) (eqv? (car body) predicate))
+                             (cddr expression))))))
+                   (context (expansion-context-library-context context))
+                   ; TODO Apply a library ID to symbols.
+                   (id (library-context-id context)))
               (library-context-add!
-                (expansion-context-library-context context)
+                context
                 (make-library
                   (cadr expression)
                   (collect-bodies 'export)
                   (collect-bodies 'import)
-                  (let ((bodies (collect-bodies 'begin)))
-                    (expand
-                      (and
-                        (not (null? bodies))
-                        (cons 'begin bodies))))))
+                  ; TODO Segregate an environment.
+                  ; (relaxed-deep-map
+                  ;   (lambda (value)
+                  ;     (if (symbol? value)
+                  ;       (string->symbol
+                  ;         (string-append
+                  ;           "$"
+                  ;           (number->string id 32)
+                  ;           "$"
+                  ;           (symbol->string value)))
+                  ;       value))
+                  ;   (collect-bodies 'begin))
+                  (collect-bodies 'begin)))
               #f))
 
           (($$import)
             (let ((context (expansion-context-library-context context)))
-              (cons
-                '$$begin
-                (map
-                  (lambda (name)
-                    (if (library-context-imported? context name)
-                      #f
-                      (begin
-                        (library-context-import! context name)
-                        (library-codes (library-context-find context name)))))
-                  (cdr expression)))))
+              `($$begin
+                ,@(apply
+                   append
+                   (map
+                     (lambda (name)
+                       (let ((library (library-context-find context name)))
+                         (cons
+                           (expand (cons '$$import (library-imports library)))
+                           (if (library-context-import! context name)
+                             '()
+                             (map expand (library-codes library))))))
+                     (cdr expression)))
+                ; Imported codes can be empty.
+                #f)))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
