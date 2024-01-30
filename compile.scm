@@ -633,11 +633,7 @@
                   (cadr expression)
                   (collect-bodies 'export)
                   (collect-bodies 'import)
-                  (let ((bodies (collect-bodies 'begin)))
-                    (expand
-                      (and
-                        (not (null? bodies))
-                        (cons 'begin bodies))))))
+                  (collect-bodies 'begin)))
               #f))
 
           (($$import)
@@ -648,7 +644,10 @@
                   (lambda (name)
                     (if (library-context-import! context name)
                       #f
-                      (library-codes (library-context-find context name))))
+                      (let ((codes (library-codes (library-context-find context name))))
+                        (and
+                          (pair? codes)
+                          (cons '$$begin (map expand codes))))))
                   (cdr expression)))))
 
           (($$lambda)
