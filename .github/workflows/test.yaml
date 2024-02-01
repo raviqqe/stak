@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/coverage.sh
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         with:
           files: lcov.info
   integration_test:
