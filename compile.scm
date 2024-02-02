@@ -632,7 +632,9 @@
                 context
                 (make-library
                   (cadr expression)
-                  (collect-bodies 'export)
+                  (map
+                    (collect-bodies 'export)
+                    (lambda (name) (cons name name)))
                   (collect-bodies 'import)
                   ; TODO Segregate an environment.
                   ; (relaxed-deep-map
