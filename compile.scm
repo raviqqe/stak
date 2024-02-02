@@ -667,7 +667,7 @@
                              '()
                              (map expand (library-codes library)))
                            (map
-                             (lambda (names) (expand (cons 'define names)))
+                             (lambda (names) (expand (cons 'define (car names) (cdr names))))
                              (library-exports library)))))
                      (cdr expression)))
                 ; Imported codes can be empty.
