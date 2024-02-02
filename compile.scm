@@ -643,14 +643,12 @@
                     (lambda (name) (cons name (rename name)))
                     (collect-bodies 'export))
                   (collect-bodies 'import)
-                  ; TODO Segregate an environment.
-                  ; (relaxed-deep-map
-                  ;   (lambda (value)
-                  ;     (if (symbol? value)
-                  ;       (rename value)
-                  ;       value))
-                  ;   (collect-bodies 'begin))
-                  (collect-bodies 'begin)))
+                  (relaxed-deep-map
+                    (lambda (value)
+                      (if (symbol? value)
+                        (rename value)
+                        value))
+                    (collect-bodies 'begin))))
               #f))
 
           (($$import)
