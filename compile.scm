@@ -634,7 +634,7 @@
                            "$"
                            (number->string id 32)
                            "$"
-                           (symbol->string value))))))
+                           (symbol->string name))))))
               (library-context-add!
                 context
                 (make-library
@@ -661,11 +661,14 @@
                    (map
                      (lambda (name)
                        (let ((library (library-context-find context name)))
-                         (cons
-                           (expand (cons '$$import (library-imports library)))
+                         (append
+                           (list (expand (cons '$$import (library-imports library))))
                            (if (library-context-import! context name)
                              '()
-                             (map expand (library-codes library))))))
+                             (map expand (library-codes library)))
+                           (map
+                             (lambda (names) (expand (cons 'define names)))
+                             (library-exports library)))))
                      (cdr expression)))
                 ; Imported codes can be empty.
                 #f)))
