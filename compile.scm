@@ -640,8 +640,8 @@
                 (make-library
                   (cadr expression)
                   (map
-                    (collect-bodies 'export)
-                    (lambda (name) (cons name (rename name))))
+                    (lambda (name) (cons name (rename name)))
+                    (collect-bodies 'export))
                   (collect-bodies 'import)
                   ; TODO Segregate an environment.
                   ; (relaxed-deep-map
