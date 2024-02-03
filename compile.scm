@@ -258,7 +258,7 @@
 (define (write-target codes)
   (for-each write-u8 codes))
 
-; Expansion
+; Library system
 
 ;; Types
 
@@ -275,10 +275,6 @@
   library-state?
   (library library-state-library)
   (imported library-state-imported library-state-set-imported!))
-
-;; Context
-
-;;; Library
 
 (define-record-type library-context
   (make-library-context libraries)
@@ -314,18 +310,89 @@
     (library-state-set-imported! state #t)
     imported))
 
-;;; Expansion
+;; Procedures
+
+(define (expand-library-expression context expression)
+  (define (expand expression)
+    (expand-library-expression context expression))
+
+  (if (pair? expression)
+    (case (car expression)
+      (($$define-library)
+        (let* ((collect-bodies
+                 (lambda (predicate)
+                   (apply
+                     append
+                     (map
+                       cdr
+                       (filter
+                         (lambda (body) (eqv? (car body) predicate))
+                         (cddr expression))))))
+               (context (expansion-context-library-context context))
+               ; TODO Apply a library ID to symbols.
+               (id (library-context-id context)))
+          (library-context-add!
+            context
+            (make-library
+              (cadr expression)
+              (collect-bodies 'export)
+              (collect-bodies 'import)
+              ; TODO Segregate an environment.
+              ; (relaxed-deep-map
+              ;   (lambda (value)
+              ;     (if (symbol? value)
+              ;       (string->symbol
+              ;         (string-append
+              ;           "$"
+              ;           (number->string id 32)
+              ;           "$"
+              ;           (symbol->string value)))
+              ;       value))
+              ;   (collect-bodies 'begin))
+              (collect-bodies 'begin)))
+          #f))
+
+      (($$import)
+        (let ((context (expansion-context-library-context context)))
+          `($$begin
+            ,@(apply
+               append
+               (map
+                 (lambda (name)
+                   (let ((library (library-context-find context name)))
+                     (cons
+                       (expand (cons '$$import (library-imports library)))
+                       (if (library-context-import! context name)
+                         '()
+                         (map expand (library-codes library))))))
+                 (cdr expression)))
+            ; Imported codes can be empty.
+            #f)))
+
+      (else
+        expression))
+    expression))
+
+(define (expand-libraries expression)
+  (let ((context (make-library-context '())))
+    (cons (car expression)
+      (apply
+        append
+        (map
+          (lambda (expression) (expand-library-expression context expression))
+          (cdr expression))))))
+
+; Expansion
+
+;; Types
 
 (define-record-type expansion-context
-  (make-expansion-context environment library-context)
+  (make-expansion-context environment)
   expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!)
-  (library-context expansion-context-library-context))
+  (environment expansion-context-environment expansion-context-set-environment!))
 
 (define (expansion-context-append context pairs)
-  (make-expansion-context
-    (append pairs (expansion-context-environment context))
-    (expansion-context-library-context context)))
+  (make-expansion-context (append pairs (expansion-context-environment context))))
 
 (define (expansion-context-push context name denotation)
   (expansion-context-append context (list (cons name denotation))))
@@ -615,57 +682,6 @@
               (make-transformer context (caddr expression)))
             #f)
 
-          (($$define-library)
-            (let* ((collect-bodies
-                     (lambda (predicate)
-                       (apply
-                         append
-                         (map
-                           cdr
-                           (filter
-                             (lambda (body) (eqv? (car body) predicate))
-                             (cddr expression))))))
-                   (context (expansion-context-library-context context))
-                   ; TODO Apply a library ID to symbols.
-                   (id (library-context-id context)))
-              (library-context-add!
-                context
-                (make-library
-                  (cadr expression)
-                  (collect-bodies 'export)
-                  (collect-bodies 'import)
-                  ; TODO Segregate an environment.
-                  ; (relaxed-deep-map
-                  ;   (lambda (value)
-                  ;     (if (symbol? value)
-                  ;       (string->symbol
-                  ;         (string-append
-                  ;           "$"
-                  ;           (number->string id 32)
-                  ;           "$"
-                  ;           (symbol->string value)))
-                  ;       value))
-                  ;   (collect-bodies 'begin))
-                  (collect-bodies 'begin)))
-              #f))
-
-          (($$import)
-            (let ((context (expansion-context-library-context context)))
-              `($$begin
-                ,@(apply
-                   append
-                   (map
-                     (lambda (name)
-                       (let ((library (library-context-find context name)))
-                         (cons
-                           (expand (cons '$$import (library-imports library)))
-                           (if (library-context-import! context name)
-                             '()
-                             (map expand (library-codes library))))))
-                     (cdr expression)))
-                ; Imported codes can be empty.
-                #f)))
-
           (($$lambda)
             (let* ((parameters (cadr expression))
                    (context
@@ -727,9 +743,7 @@
         expression))))
 
 (define (expand expression)
-  (expand-expression
-    (make-expansion-context '() (make-library-context '()))
-    expression))
+  (expand-expression (make-expansion-context '()) expression))
 
 ; Compilation
 
@@ -1310,4 +1324,4 @@
 
 ; Main
 
-(write-target (encode (compile (expand (read-source)))))
+(write-target (encode (compile (expand (expand-libraries (read-source))))))
