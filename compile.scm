@@ -353,25 +353,24 @@
           #f))
 
       (($$import)
-        (let ((context (expansion-context-library-context context)))
-          `($$begin
-            ,@(apply
-               append
-               (map
-                 (lambda (name)
-                   (let ((library (library-context-find context name)))
-                     (cons
-                       (expand (cons '$$import (library-imports library)))
-                       (if (library-context-import! context name)
-                         '()
-                         (map expand (library-codes library))))))
-                 (cdr expression)))
-            ; Imported codes can be empty.
-            #f)))
+        `($$begin
+          ,@(apply
+             append
+             (map
+               (lambda (name)
+                 (let ((library (library-context-find context name)))
+                   (cons
+                     (expand (cons '$$import (library-imports library)))
+                     (if (library-context-import! context name)
+                       '()
+                       (map expand (library-codes library))))))
+               (cdr expression)))
+          ; Imported codes can be empty.
+          #f))
 
       (else
-        expression))
-    expression))
+        (list expression)))
+    (list expression)))
 
 (define (expand-libraries expression)
   (let ((context (make-library-context '())))
