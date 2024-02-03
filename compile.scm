@@ -341,7 +341,15 @@
                        (filter
                          (lambda (body) (eqv? (car body) predicate))
                          (cddr expression))))))
-               (id (library-context-id context)))
+               (id (library-context-id context))
+               (rename
+                 (lambda (name)
+                   (string->symbol
+                     (string-append
+                       "$"
+                       (number->string id 32)
+                       "$"
+                       (symbol->string name))))))
           (library-context-add!
             context
             (make-library
