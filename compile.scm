@@ -341,13 +341,14 @@
                        (filter
                          (lambda (body) (eqv? (car body) predicate))
                          (cddr expression))))))
-               ; TODO Apply a library ID to symbols.
                (id (library-context-id context)))
           (library-context-add!
             context
             (make-library
               (cadr expression)
-              (collect-bodies 'export)
+              (map
+                (lambda (name) (cons name (rename name)))
+                (collect-bodies 'export))
               (collect-bodies 'import)
               ; TODO Segregate an environment.
               ; (relaxed-deep-map
