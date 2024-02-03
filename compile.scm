@@ -318,67 +318,65 @@
     (map
       (lambda (name)
         (let ((library (library-context-find context name)))
-          (cons
+          (append
             (expand-import-sets context (library-imports library))
             (if (library-context-import! context name)
               '()
-              (map expand (library-codes library))))))
+              (library-codes library)))))
       sets)))
 
 (define (expand-library-expression context expression)
   (define (expand expression)
     (expand-library-expression context expression))
 
-  (if (pair? expression)
-    (case (car expression)
-      ((define-library)
-        (let* ((collect-bodies
-                 (lambda (predicate)
-                   (apply
-                     append
-                     (map
-                       cdr
-                       (filter
-                         (lambda (body) (eqv? (car body) predicate))
-                         (cddr expression))))))
-               (id (library-context-id context))
-               (rename
-                 (lambda (name)
-                   (string->symbol
-                     (string-append
-                       "$"
-                       (number->string id 32)
-                       "$"
-                       (symbol->string name))))))
-          (library-context-add!
-            context
-            (make-library
-              (cadr expression)
-              (map
-                (lambda (name) (cons name (rename name)))
-                (collect-bodies 'export))
-              (collect-bodies 'import)
-              ; TODO Segregate an environment.
-              ; (relaxed-deep-map
-              ;   (lambda (value)
-              ;     (if (symbol? value)
-              ;       (string->symbol
-              ;         (string-append
-              ;           "$"
-              ;           (number->string id 32)
-              ;           "$"
-              ;           (symbol->string value)))
-              ;       value))
-              ;   (collect-bodies 'begin))
-              (collect-bodies 'begin)))
-          '()))
+  (case (and (pair? expression) (car expression))
+    ((define-library)
+      (let* ((collect-bodies
+               (lambda (predicate)
+                 (apply
+                   append
+                   (map
+                     cdr
+                     (filter
+                       (lambda (body) (eqv? (car body) predicate))
+                       (cddr expression))))))
+             (id (library-context-id context))
+             (rename
+               (lambda (name)
+                 (string->symbol
+                   (string-append
+                     "$"
+                     (number->string id 32)
+                     "$"
+                     (symbol->string name))))))
+        (library-context-add!
+          context
+          (make-library
+            (cadr expression)
+            (map
+              (lambda (name) (cons name (rename name)))
+              (collect-bodies 'export))
+            (collect-bodies 'import)
+            ; TODO Segregate an environment.
+            ; (relaxed-deep-map
+            ;   (lambda (value)
+            ;     (if (symbol? value)
+            ;       (string->symbol
+            ;         (string-append
+            ;           "$"
+            ;           (number->string id 32)
+            ;           "$"
+            ;           (symbol->string value)))
+            ;       value))
+            ;   (collect-bodies 'begin))
+            (collect-bodies 'begin)))
+        '()))
 
-      ((import)
-        (expand-import-sets context (cdr expression)))
+    ((import)
+      (expand-import-sets context (cdr expression)))
 
-      (else
-        (list expression)))
-    (list expression)))
+    (else
+      (list expression))))
 
 (define (expand-libraries expression)
   (let ((context (make-library-context '())))
