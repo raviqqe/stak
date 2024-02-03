@@ -1,3 +1,13 @@
+; Libraries
+
+; Currently, those are just stubs.
+(define-library (scheme base))
+(define-library (scheme cxr))
+(define-library (scheme eval))
+(define-library (scheme process-context))
+(define-library (scheme read))
+(define-library (scheme write))
+
 ; Syntax
 ;
 ; Those syntax definitions are mostly ported from https://small.r7rs.org/attachment/r7rs.pdf.
@@ -167,18 +177,6 @@
 
     ((_ (feature body ...) clause ...)
       (cond-expand clause ...))))
-
-;; Library system
-
-(define-syntax import
-  (syntax-rules (except only prefix rename)
-    ((_ set1 set2 ...)
-      ($$import set1 set2 ...))))
-
-(define-syntax define-library
-  (syntax-rules (export import begin)
-    ((_ name body ...)
-      ($$define-library name body ...))))
 
 ;; Binding
 
@@ -1617,13 +1615,3 @@
 
 (define (exit . rest)
   (unwind (lambda () (apply emergency-exit rest))))
-
-; Libraries
-
-; Currently, those are just stubs.
-(define-library (scheme base))
-(define-library (scheme cxr))
-(define-library (scheme eval))
-(define-library (scheme process-context))
-(define-library (scheme read))
-(define-library (scheme write))
