@@ -182,6 +182,9 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
+(define (flat-map convert xs)
+  (apply append (map convert xs)))
+
 (define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
     (if (pair? xs)
@@ -313,17 +316,18 @@
 ;; Procedures
 
 (define (expand-import-sets context sets)
-  (apply
-    append
-    (map
-      (lambda (name)
-        (let ((library (library-context-find context name)))
-          (append
-            (expand-import-sets context (library-imports library))
-            (if (library-context-import! context name)
-              '()
-              (library-codes library)))))
-      sets)))
+  (flat-map
+    (lambda (name)
+      (let ((library (library-context-find context name)))
+        (append
+          (expand-import-sets context (library-imports library))
+          (if (library-context-import! context name)
+            '()
+            (library-codes library))
+          (map
+            (lambda (names) (list '$$alias (car names) (cdr names)))
+            (library-exports library)))))
+    sets))
 
 (define (expand-library-expression context expression)
   (define (expand expression)
@@ -333,13 +337,11 @@
     ((define-library)
       (let* ((collect-bodies
                (lambda (predicate)
-                 (apply
-                   append
-                   (map
-                     cdr
-                     (filter
-                       (lambda (body) (eqv? (car body) predicate))
-                       (cddr expression))))))
+                 (flat-map
+                   cdr
+                   (filter
+                     (lambda (body) (eqv? (car body) predicate))
+                     (cddr expression)))))
              (id (library-context-id context))
              (rename
                (lambda (name)
@@ -354,7 +356,8 @@
           (make-library
             (cadr expression)
             (map
-              (lambda (name) (cons name (rename name)))
+              ; TODO Rename an internal name.
+              (lambda (name) (cons name name))
               (collect-bodies 'export))
             (collect-bodies 'import)
             ; TODO Segregate an environment.
@@ -381,11 +384,9 @@
 (define (expand-libraries expression)
   (let ((context (make-library-context '())))
     (cons (car expression)
-      (apply
-        append
-        (map
-          (lambda (expression) (expand-library-expression context expression))
-          (cdr expression))))))
+      (flat-map
+        (lambda (expression) (expand-library-expression context expression))
+        (cdr expression)))))
 
 ; Expansion
 
@@ -621,35 +622,38 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (unless (eqv? (predicate transformer) 'syntax-rules)
-    (error "unsupported macro transformer" transformer))
-  (let ((literals (cadr transformer))
-        (rules (cddr transformer)))
-    (lambda (use-context expression)
-      (let loop ((rules rules))
-        (unless (pair? rules)
-          (error "invalid syntax" expression))
-        (let* ((rule (car rules))
-               (matches (match-pattern definition-context use-context literals (car rule) expression)))
-          (if matches
-            (let* ((template (cadr rule))
-                   (names
-                     (map
-                       (lambda (name) (cons name (rename-variable use-context name)))
-                       (find-pattern-variables (append literals (map car matches)) template)))
-                   (use-context
-                     (expansion-context-append
-                       use-context
-                       (map
-                         (lambda (pair)
-                           (cons
-                             (cdr pair)
-                             (resolve-denotation definition-context (car pair))))
-                         names))))
-              (values
-                (fill-template definition-context use-context (append names matches) template)
-                use-context))
-            (loop (cdr rules))))))))
+  (case (predicate transformer)
+    ((syntax-rules)
+      (let ((literals (cadr transformer))
+            (rules (cddr transformer)))
+        (lambda (use-context expression)
+          (let loop ((rules rules))
+            (unless (pair? rules)
+              (error "invalid syntax" expression))
+            (let* ((rule (car rules))
+                   (matches (match-pattern definition-context use-context literals (car rule) expression)))
+              (if matches
+                (let* ((template (cadr rule))
+                       (names
+                         (map
+                           (lambda (name) (cons name (rename-variable use-context name)))
+                           (find-pattern-variables (append literals (map car matches)) template)))
+                       (use-context
+                         (expansion-context-append
+                           use-context
+                           (map
+                             (lambda (pair)
+                               (cons
+                                 (cdr pair)
+                                 (resolve-denotation definition-context (car pair))))
+                             names))))
+                  (values
+                    (fill-template definition-context use-context (append names matches) template)
+                    use-context))
+                (loop (cdr rules))))))))
+
+    (else
+      (error "unsupported macro transformer" transformer))))
 
 (define (expand-definition definition)
   (let ((pattern (cadr definition))
@@ -675,6 +679,13 @@
 
       ((pair? expression)
         (case (resolve-denotation context (car expression))
+          (($$alias)
+            (expansion-context-set!
+              context
+              (cadr expression)
+              (resolve-denotation context (caddr expression)))
+            #f)
+
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)

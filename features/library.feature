@@ -50,6 +50,27 @@ Feature: Library system
     Then the stdout should contain exactly "A"
 
   @stak @gauche
+  Scenario: Import a macro
+    Given a file named "main.scm" with:
+    """scheme
+    (define-library (foo)
+      (export foo)
+      (import (scheme base))
+
+      (begin
+        (define-syntax foo
+          (syntax-rules ()
+            ((_ x)
+              (write-u8 x))))))
+
+    (import (foo))
+
+    (foo 65)
+    """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @stak @gauche
   Scenario: Import functions
     Given a file named "main.scm" with:
     """scheme
