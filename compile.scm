@@ -329,15 +329,19 @@
 (define (expand-import-sets context importer-id sets)
   (flat-map
     (lambda (name)
-      (let ((library (library-context-find context name))
-            (importee-id (library-id library)))
+      (let* ((library (library-context-find context name))
+             (importee-id (library-id library)))
         (append
           (expand-import-sets context importee-id (library-imports library))
           (if (library-context-import! context name)
             '()
             (library-codes library))
           (map
-            (lambda (names) (list '$$alias (car names) (cdr names)))
+            (lambda (names)
+              (list
+                '$$alias
+                (rename-library-symbol importer-id (car names))
+                (cdr names)))
             (library-exports library)))))
     sets))
 
