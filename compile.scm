@@ -351,26 +351,21 @@
                    (filter
                      (lambda (body) (eqv? (car body) predicate))
                      (cddr expression)))))
-             (id (library-context-id context))
-             (rename
-               (lambda (name)
-                 (string->symbol
-                   (string-append
-                     "$"
-                     (number->string id 32)
-                     "$"
-                     (symbol->string name))))))
+             (id (library-context-id context)))
         (library-context-add!
           context
           (make-library
             id
             (cadr expression)
             (map
-              (lambda (name) (cons name (rename name)))
+              (lambda (name) (cons name (rename-library-symbol id name)))
               (collect-bodies 'export))
             (collect-bodies 'import)
             (relaxed-deep-map
-              (lambda (value) (if (symbol? value) (rename value) value))
+              (lambda (value)
+                (if (symbol? value)
+                  (rename-library-symbol id value)
+                  value))
               (collect-bodies 'begin))))
         '()))
 
