@@ -316,6 +316,16 @@
 
 ;; Procedures
 
+(define (rename-library-symbol id name)
+  (if id
+    (string->symbol
+      (string-append
+        "$"
+        (number->string id 32)
+        "$"
+        (symbol->string name)))
+    name))
+
 (define (expand-import-sets context importer-id sets)
   (flat-map
     (lambda (name)
