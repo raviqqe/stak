@@ -266,8 +266,9 @@
 ;; Types
 
 (define-record-type library
-  (make-library name exports imports codes)
+  (make-library id name exports imports codes)
   library?
+  (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
@@ -354,6 +355,7 @@
         (library-context-add!
           context
           (make-library
+            id
             (cadr expression)
             (map
               ; TODO Rename an internal name.
@@ -654,15 +656,6 @@
 
     (else
       (error "unsupported macro transformer" transformer))))
-
-(define (expand-definition definition)
-  (let ((pattern (cadr definition))
-        (body (cddr definition)))
-    (if (symbol? pattern)
-      (cons pattern body)
-      (list
-        (car pattern)
-        (cons '$$lambda (cons (cdr pattern) body))))))
 
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-expression context expression)
