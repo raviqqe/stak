@@ -692,10 +692,11 @@
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (let ((transformer (make-transformer context (caddr expression))))
-              (when transformer
-                (expansion-context-set-last! context (cadr expression) transformer))
-              #f))
+            (expansion-context-set-last!
+              context
+              (cadr expression)
+              (make-transformer context (caddr expression)))
+            #f)
 
           (($$lambda)
             (let* ((parameters (cadr expression))
