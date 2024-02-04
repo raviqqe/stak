@@ -325,6 +325,9 @@
               (library-codes library))
             (map
               (lambda (names) (list '$$define (car names) (cdr names)))
+              (library-exports library))
+            (map
+              (lambda (names) (list '$$define-syntax (car names) (cdr names)))
               (library-exports library)))))
       sets)))
 
@@ -625,35 +628,46 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (unless (eqv? (predicate transformer) 'syntax-rules)
-    (error "unsupported macro transformer" transformer))
-  (let ((literals (cadr transformer))
-        (rules (cddr transformer)))
-    (lambda (use-context expression)
-      (let loop ((rules rules))
-        (unless (pair? rules)
-          (error "invalid syntax" expression))
-        (let* ((rule (car rules))
-               (matches (match-pattern definition-context use-context literals (car rule) expression)))
-          (if matches
-            (let* ((template (cadr rule))
-                   (names
-                     (map
-                       (lambda (name) (cons name (rename-variable use-context name)))
-                       (find-pattern-variables (append literals (map car matches)) template)))
-                   (use-context
-                     (expansion-context-append
-                       use-context
-                       (map
-                         (lambda (pair)
-                           (cons
-                             (cdr pair)
-                             (resolve-denotation definition-context (car pair))))
-                         names))))
-              (values
-                (fill-template definition-context use-context (append names matches) template)
-                use-context))
-            (loop (cdr rules))))))))
+  (cond
+    ((symbol? transformer)
+      (cond
+        ((assv transformer (expansion-context-environment definition-context)) =>
+          cdr)
+
+        (else
+          #f)))
+
+    ((pair? transformer)
+      (let ((literals (cadr transformer))
+            (rules (cddr transformer)))
+        (lambda (use-context expression)
+          (let loop ((rules rules))
+            (unless (pair? rules)
+              (error "invalid syntax" expression))
+            (let* ((rule (car rules))
+                   (matches (match-pattern definition-context use-context literals (car rule) expression)))
+              (if matches
+                (let* ((template (cadr rule))
+                       (names
+                         (map
+                           (lambda (name) (cons name (rename-variable use-context name)))
+                           (find-pattern-variables (append literals (map car matches)) template)))
+                       (use-context
+                         (expansion-context-append
+                           use-context
+                           (map
+                             (lambda (pair)
+                               (cons
+                                 (cdr pair)
+                                 (resolve-denotation definition-context (car pair))))
+                             names))))
+                  (values
+                    (fill-template definition-context use-context (append names matches) template)
+                    use-context))
+                (loop (cdr rules))))))))
+
+    (else
+      (error "unsupported macro transformer" transformer))))
 
 (define (expand-definition definition)
   (let ((pattern (cadr definition))
@@ -685,11 +699,10 @@
               (expand `($$set! ,@(cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set-last!
-              context
-              (cadr expression)
-              (make-transformer context (caddr expression)))
-            #f)
+            (let ((transformer (make-transformer context (caddr expression))))
+              (when transformer
+                (expansion-context-set-last! context (cadr expression) transformer))
+              #f))
 
           (($$lambda)
             (let* ((parameters (cadr expression))
