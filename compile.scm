@@ -680,7 +680,7 @@
       ((pair? expression)
         (case (resolve-denotation context (car expression))
           (($$alias)
-            (expansion-context-set-last!
+            (expansion-context-set!
               context
               (cadr expression)
               (resolve-denotation context (caddr expression)))
