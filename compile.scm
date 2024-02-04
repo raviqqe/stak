@@ -322,7 +322,10 @@
             (expand-import-sets context (library-imports library))
             (if (library-context-import! context name)
               '()
-              (library-codes library)))))
+              (library-codes library))
+            (map
+              (lambda (names) (list '$$define (car names) (cdr names)))
+              (library-exports library)))))
       sets)))
 
 (define (expand-library-expression context expression)
@@ -354,7 +357,8 @@
           (make-library
             (cadr expression)
             (map
-              (lambda (name) (cons name (rename name)))
+              ; TODO Rename an internal name.
+              (lambda (name) (cons name name))
               (collect-bodies 'export))
             (collect-bodies 'import)
             ; TODO Segregate an environment.
