@@ -266,8 +266,9 @@
 ;; Types
 
 (define-record-type library
-  (make-library name exports imports codes)
+  (make-library id name exports imports codes)
   library?
+  (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
@@ -315,12 +316,13 @@
 
 ;; Procedures
 
-(define (expand-import-sets context sets)
+(define (expand-import-sets context importer-id sets)
   (flat-map
     (lambda (name)
-      (let ((library (library-context-find context name)))
+      (let ((library (library-context-find context name))
+            (importee-id (library-id library)))
         (append
-          (expand-import-sets context (library-imports library))
+          (expand-import-sets context importee-id (library-imports library))
           (if (library-context-import! context name)
             '()
             (library-codes library))
@@ -330,9 +332,6 @@
     sets))
 
 (define (expand-library-expression context expression)
-  (define (expand expression)
-    (expand-library-expression context expression))
-
   (case (and (pair? expression) (car expression))
     ((define-library)
       (let* ((collect-bodies
@@ -354,29 +353,19 @@
         (library-context-add!
           context
           (make-library
+            id
             (cadr expression)
             (map
-              ; TODO Rename an internal name.
-              (lambda (name) (cons name name))
+              (lambda (name) (cons name (rename name)))
               (collect-bodies 'export))
             (collect-bodies 'import)
-            ; TODO Segregate an environment.
-            ; (relaxed-deep-map
-            ;   (lambda (value)
-            ;     (if (symbol? value)
-            ;       (string->symbol
-            ;         (string-append
-            ;           "$"
-            ;           (number->string id 32)
-            ;           "$"
-            ;           (symbol->string value)))
-            ;       value))
-            ;   (collect-bodies 'begin))
-            (collect-bodies 'begin)))
+            (relaxed-deep-map
+              (lambda (value) (if (symbol? value) (rename value) value))
+              (collect-bodies 'begin))))
         '()))
 
     ((import)
-      (expand-import-sets context (cdr expression)))
+      (expand-import-sets context #f (cdr expression)))
 
     (else
       (list expression))))
