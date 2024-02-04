@@ -317,14 +317,14 @@
 ;; Procedures
 
 (define (rename-library-symbol id name)
-  (if id
+  (if (or (eqv? (string-ref (symbol->string name) 0) #\$) (not id))
+    name
     (string->symbol
       (string-append
         "$"
         (number->string id 32)
         "$"
-        (symbol->string name)))
-    name))
+        (symbol->string name)))))
 
 (define (expand-import-sets context importer-id sets)
   (flat-map
