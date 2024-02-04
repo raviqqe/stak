@@ -656,15 +656,6 @@
     (else
       (error "unsupported macro transformer" transformer))))
 
-(define (expand-definition definition)
-  (let ((pattern (cadr definition))
-        (body (cddr definition)))
-    (if (symbol? pattern)
-      (cons pattern body)
-      (list
-        (car pattern)
-        (cons '$$lambda (cons (cdr pattern) body))))))
-
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-expression context expression)
   (define (expand expression)
