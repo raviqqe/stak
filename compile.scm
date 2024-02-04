@@ -317,7 +317,10 @@
 ;; Procedures
 
 (define (rename-library-symbol id name)
-  (if (or (eqv? (string-ref (symbol->string name) 0) #\$) (not id))
+  (if (or
+       (eqv? (string-ref (symbol->string name) 0) #\$)
+       (memv name '(_ ... quasi-quote quote syntax-rules unquote))
+       (not id))
     name
     (string->symbol
       (string-append
@@ -678,11 +681,11 @@
       ((pair? expression)
         (case (resolve-denotation context (car expression))
           (($$alias)
-            (expansion-context-set!
-              context
-              (cadr expression)
-              (resolve-denotation context (caddr expression)))
-            #f)
+            (let ((denotation (resolve-denotation context (caddr expression))))
+              (expansion-context-set-last! context (cadr expression) denotation)
+              (if (procedure? denotation)
+                #f
+                (expand (cons '$$define (cdr expression))))))
 
           (($$define)
             (let ((name (cadr expression)))

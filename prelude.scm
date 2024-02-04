@@ -2,7 +2,56 @@
 
 ; Currently, those are just stubs.
 (define-library (scheme base)
+  (export
+    define-syntax
+    define
+    lambda
+
+    pair-type
+    null-type
+    boolean-type
+    procedure-type
+    symbol-type
+    string-type
+    char-type
+    vector-type
+    bytevector-type
+    record-type
+
+    rib
+    cons
+    close
+    rib?
+    rib-car
+    rib-cdr
+    rib-type
+    rib-tag
+    rib-set-car!
+    rib-set-cdr!
+    eq?
+    $$<
+    $$+
+    $$-
+    $$*
+    $$/
+    $$read-u8
+    $$write-u8
+    $$write-error-u8
+    $$halt
+    $$halt)
+
   (begin
+    ($$define-syntax define-syntax
+      (syntax-rules ()
+        ((_ name value)
+          ($$define-syntax name value))))
+
+    ; Syntax
+    ;
+    ; Those syntax definitions are mostly ported from https://small.r7rs.org/attachment/r7rs.pdf.
+
+    ;; Base
+
     ($$define-syntax define-syntax
       (syntax-rules ()
         ((_ name value)
@@ -17,7 +66,445 @@
           (define name (lambda (argument ... . rest) body1 body2 ...)))
 
         ((_ name value)
-          ($$define name value))))))
+          ($$define name value))))
+
+    (define-syntax lambda
+      (syntax-rules (define define-syntax)
+        ((_ arguments (define content ...) body1 body2 ...)
+          (lambda "value" arguments () (define content ...) body1 body2 ...))
+
+        ((_ "value" arguments ((name value) ...)
+            (define (new-name argument ...) body1 body2 ...)
+            body3
+            body4
+            ...)
+          (lambda "value" arguments ((name value) ...)
+            (define new-name (lambda (argument ...) body1 body2 ...))
+            body3
+            body4
+            ...))
+
+        ((_ "value" arguments ((name value) ...)
+            (define (new-name argument ... . rest) body1 body2 ...)
+            body3
+            body4
+            ...)
+          (lambda "value" arguments ((name value) ...)
+            (define new-name (lambda (argument ... . rest) body1 body2 ...))
+            body3
+            body4
+            ...))
+
+        ((_ "value" arguments ((name value) ...) (define new-name new-value) body1 body2 ...)
+          (lambda "value" arguments ((name value) ... (new-name new-value)) body1 body2 ...))
+
+        ((_ "value" arguments ((name value) ...) body1 body2 ...)
+          (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
+
+        ((_ arguments (define-syntax name value) body1 body2 ...)
+          (lambda "syntax" arguments ((name value)) body1 body2 ...))
+
+        ((_ "syntax" arguments ((name value) ...) (define-syntax new-name new-value) body1 body2 ...)
+          (lambda "syntax" arguments ((name value) ... (new-name new-value)) body1 body2 ...))
+
+        ((_ "syntax" arguments ((name value) ...) body1 body2 ...)
+          (lambda arguments (letrec-syntax ((name value) ...) body1 body2 ...)))
+
+        ((_ arguments body1 body2 ...)
+          ($$lambda arguments (begin body1 body2 ...)))))
+
+    (define-syntax let-syntax
+      (syntax-rules ()
+        ((_ ((name value) ...) body1 body2 ...)
+          ($$let-syntax ((name value) ...) (let () body1 body2 ...)))))
+
+    (define-syntax letrec-syntax
+      (syntax-rules ()
+        ((_ ((name value) ...) body1 body2 ...)
+          ($$letrec-syntax ((name value) ...) (let () body1 body2 ...)))))
+
+    (define-syntax begin
+      (syntax-rules ()
+        ((_ value)
+          value)
+
+        ((_ value1 value2 ...)
+          ($$begin value1 value2 ...))))
+
+    (define-syntax relaxed-begin
+      (syntax-rules ()
+        ((_)
+          #f)
+
+        ((_ body ...)
+          (begin body ...))))
+
+    (define-syntax quasiquote
+      (syntax-rules (unquote unquote-splicing)
+        ((_ (unquote value))
+          value)
+
+        ((_ ((unquote-splicing value1) value2 ...))
+          (append value1 (quasiquote (value2 ...))))
+
+        ((_ (value1 value2 ...))
+          (cons
+            (quasiquote value1)
+            (quasiquote (value2 ...))))
+
+        ((_ value)
+          (quote value))))
+
+    (define-syntax quote
+      (syntax-rules ()
+        ((_ value)
+          ($$quote value))))
+
+    (define-syntax set!
+      (syntax-rules ()
+        ((_ name value)
+          ($$set! name value))))
+
+    (define-syntax cond-expand
+      (syntax-rules (and or not else r7rs library scheme base stak)
+        ((_ (else body ...))
+          (relaxed-begin body ...))
+
+        ((_ ((and) body ...) clause ...)
+          (relaxed-begin body ...))
+
+        ((_ ((and requirement1 requirement2 ...) body ...) clause ...)
+          (cond-expand
+            (requirement1
+              (cond-expand
+                ((and requirement2 ...) body ...)
+                clause
+                ...))
+            clause
+            ...))
+
+        ((_ ((or) body ...) clause ...)
+          (cond-expand clause ...))
+
+        ((_ ((or requirement1 requirement2 ...) body ...) clause ...)
+          (cond-expand
+            (requirement1 body ...)
+            ((or requirement2 ...) body ...)
+            clause
+            ...))
+
+        ((_ ((not requirement) body ...) clause ...)
+          (cond-expand
+            (requirement
+              (cond-expand
+                clause
+                ...))
+            (else body ...)))
+
+        ((_ ((library (scheme base)) body ...) clause ...)
+          (relaxed-begin body ...))
+
+        ((_ ((library (name ...)) body ...) clause ...)
+          (cond-expand clause ...))
+
+        ((_ (r7rs body ...) clause ...)
+          (relaxed-begin body ...))
+
+        ((_ (stak body ...) clause ...)
+          (relaxed-begin body ...))
+
+        ((_ (feature body ...) clause ...)
+          (cond-expand clause ...))))
+
+    ;; Binding
+
+    (define-syntax let
+      (syntax-rules ()
+        ((_ () (define content ...) body1 body2 ...)
+          ((lambda () (define content ...) body1 body2 ...)))
+
+        ((_ () (define-syntax content ...) body1 body2 ...)
+          ((lambda () (define-syntax content ...) body1 body2 ...)))
+
+        ; Optimize a case where no definition is in a body.
+        ((_ () body1 body2 ...)
+          (begin body1 body2 ...))
+
+        ((_ ((name value) ...) body1 body2 ...)
+          ((lambda (name ...) body1 body2 ...) value ...))
+
+        ((_ tag ((name value) ...) body1 body2 ...)
+          ((letrec ((tag (lambda (name ...) body1 body2 ...))) tag)
+            value
+            ...))))
+
+    (define-syntax let*
+      (syntax-rules ()
+        ((_ () body1 body2 ...)
+          (let () body1 body2 ...))
+
+        ((_ ((name1 value1) (name2 value2) ...)
+            body1
+            body2
+            ...)
+          (let ((name1 value1))
+            (let* ((name2 value2) ...)
+              body1
+              body2
+              ...)))))
+
+    (define-syntax letrec
+      (syntax-rules ()
+        ((_ ((name value) ...) body1 body2 ...)
+          (letrec* ((name value) ...) body1 body2 ...))))
+
+    (define-syntax letrec*
+      (syntax-rules ()
+        ((_ ((name value) ...) body1 body2 ...)
+          (let ((name #f) ...)
+            (set! name value)
+            ...
+            body1
+            body2
+            ...))))
+
+    (define-syntax define-values
+      (syntax-rules ()
+        ((_ () value)
+          value)
+
+        ((_ (name) value)
+          (define name (call-with-values (lambda () value) (lambda (x) x))))
+
+        ((_ (name1 name2 ... last-name) value)
+          (begin
+            (define name1 (call-with-values (lambda () value) list))
+            (define name2
+              (let ((x (cadr name1)))
+                (set-cdr! name1 (cddr name1))
+                x))
+            ...
+            (define last-name
+              (let ((x (cadr name1)))
+                (set! name1 (car name1))
+                x))))
+
+        ((_ (name1 name2 ... . last-name) value)
+          (begin
+            (define name1 (call-with-values (lambda () value) list))
+            (define name2
+              (let ((x (cadr name1)))
+                (set-cdr! name1 (cddr name1))
+                x))
+            ...
+            (define last-name
+              (let ((x (cdr name1)))
+                (set! name1 (car name1))
+                x))))
+
+        ((_ name value)
+          (define name (call-with-values (lambda () value) list)))))
+
+    (define-syntax let-values
+      (syntax-rules ()
+        ((_ (binding ...) body1 body2 ...)
+          (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
+
+        ((_ "multiple" () singles body)
+          (let singles body))
+
+        ((_ "multiple" ((names value) binding ...) singles body)
+          (let-values "single" names value () (binding ...) singles body))
+
+        ((_ "single" () value arguments bindings singles body)
+          (call-with-values
+            (lambda () value)
+            (lambda arguments
+              (let-values "multiple" bindings singles body))))
+
+        ((_ "single" (name . names) value (argument ...) bindings (single ...) body)
+          (let-values "single"
+            names
+            value
+            (argument ... x)
+            bindings
+            (single ... (name x))
+            body))
+
+        ((_ "single" name value (argument ...) bindings (single ...) body)
+          (call-with-values
+            (lambda () value)
+            (lambda (argument ... . x)
+              (let-values "multiple" bindings (single ... (name x)) body))))))
+
+    (define-syntax let*-values
+      (syntax-rules ()
+        ((_ () body1 body2 ...)
+          (let () body1 body2 ...))
+
+        ((_ (binding1 binding2 ...) body1 body2 ...)
+          (let-values (binding1)
+            (let*-values (binding2 ...) body1 body2 ...)))))
+
+    ;; Conditional
+
+    (define-syntax if
+      (syntax-rules ()
+        ((_ test clause1 clause2)
+          ($$if test clause1 clause2))
+
+        ((_ test clause)
+          (if test clause #f))))
+
+    (define-syntax cond
+      (syntax-rules (else =>)
+        ((_ (else result1 result2 ...))
+          (begin result1 result2 ...))
+
+        ((_ (test => result))
+          (let ((temp test))
+            (if temp (result temp))))
+
+        ((_ (test => result) clause1 clause2 ...)
+          (let ((temp test))
+            (if temp
+              (result temp)
+              (cond clause1 clause2 ...))))
+
+        ((_ (test))
+          test)
+
+        ((_ (test) clause1 clause2 ...)
+          (let ((temp test))
+            (if temp
+              temp
+              (cond clause1 clause2 ...))))
+
+        ((_ (test result1 result2 ...))
+          (if test (begin result1 result2 ...)))
+
+        ((_ (test result1 result2 ...) clause1 clause2 ...)
+          (if test
+            (begin result1 result2 ...)
+            (cond clause1 clause2 ...)))))
+
+    (define-syntax case
+      (syntax-rules (else =>)
+        ((_ (key ...)
+            clause
+            ...)
+          (let ((atom-key (key ...)))
+            (case atom-key clause ...)))
+
+        ((_ key
+            (else => result))
+          (result key))
+
+        ((_ key
+            (else result1 result2 ...))
+          (begin result1 result2 ...))
+
+        ((_ key
+            ((atoms ...) result1 result2 ...))
+          (if (memv key '(atoms ...))
+            (begin result1 result2 ...)))
+
+        ((_ key
+            ((atoms ...) => result))
+          (if (memv key '(atoms ...))
+            (result key)))
+
+        ((_ key
+            ((atoms ...) => result)
+            clause1
+            clause2
+            ...)
+          (if (memv key '(atoms ...))
+            (result key)
+            (case key clause1 clause2 ...)))
+
+        ((_ key
+            ((atoms ...) result1 result2 ...)
+            clause1
+            clause2
+            ...)
+          (if (memv key '(atoms ...))
+            (begin result1 result2 ...)
+            (case key clause1 clause2 ...)))))
+
+    (define-syntax and
+      (syntax-rules ()
+        ((_)
+          #t)
+
+        ((_ test)
+          test)
+
+        ((_ test1 test2 ...)
+          (if test1 (and test2 ...) #f))))
+
+    (define-syntax or
+      (syntax-rules ()
+        ((_)
+          #f)
+
+        ((_ test)
+          test)
+
+        ((_ test1 test2 ...)
+          (let ((x test1))
+            (if x x (or test2 ...))))))
+
+    (define-syntax when
+      (syntax-rules ()
+        ((_ test result1 result2 ...)
+          (if test
+            (begin result1 result2 ...)))))
+
+    (define-syntax unless
+      (syntax-rules ()
+        ((_ test result1 result2 ...)
+          (when (not test) result1 result2 ...))))
+
+    ; Type IDs
+
+    (define pair-type 0)
+    (define null-type 1)
+    (define boolean-type 2)
+    (define procedure-type 3)
+    (define symbol-type 4)
+    (define string-type 5)
+    (define char-type 6)
+    (define vector-type 7)
+    (define bytevector-type 8)
+    (define record-type 9)
+
+    ; Primitives
+
+    (define (primitive id) ($$rib procedure-type '() id 0))
+
+    (define rib $$rib)
+    (define cons (primitive 1))
+    (define close (primitive 2))
+    (define rib? (primitive 3))
+    (define rib-car (primitive 4))
+    (define rib-cdr (primitive 5))
+    (define rib-type (primitive 6))
+    (define rib-tag (primitive 7))
+    (define rib-set-car! (primitive 8))
+    (define rib-set-cdr! (primitive 9))
+    (define eq? (primitive 10))
+    (define $$< (primitive 11))
+    (define $$+ (primitive 12))
+    (define $$- (primitive 13))
+    (define $$* (primitive 14))
+    (define $$/ (primitive 15))
+    (define $$read-u8 (primitive 16))
+    ; TODO
+    (define write-u8 (primitive 17))
+    (define $$write-error-u8 (primitive 18))
+    (define $$halt (primitive 19))))
+
 (define-library (scheme cxr))
 (define-library (scheme eval))
 (define-library (scheme process-context))
