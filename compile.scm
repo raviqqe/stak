@@ -182,6 +182,9 @@
 (define (maybe-append xs ys)
   (and xs ys (append xs ys)))
 
+(define (flat-map convert xs)
+  (apply append (map convert xs)))
+
 (define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
     (if (pair? xs)
@@ -313,23 +316,21 @@
 ;; Procedures
 
 (define (expand-import-sets context sets)
-  (apply
-    append
-    (map
-      (lambda (name)
-        (let ((library (library-context-find context name)))
-          (append
-            (expand-import-sets context (library-imports library))
-            (if (library-context-import! context name)
-              '()
-              (library-codes library))
-            (map
-              (lambda (names) (list '$$define (car names) (cdr names)))
-              (library-exports library))
-            (map
-              (lambda (names) (list '$$define-syntax (car names) (cdr names)))
-              (library-exports library)))))
-      sets)))
+  (flat-map
+    (lambda (name)
+      (let ((library (library-context-find context name)))
+        (append
+          (expand-import-sets context (library-imports library))
+          (if (library-context-import! context name)
+            '()
+            (library-codes library))
+          (map
+            (lambda (names) (list '$$define (car names) (cdr names)))
+            (library-exports library))
+          (map
+            (lambda (names) (list '$$define-syntax (car names) (cdr names)))
+            (library-exports library)))))
+    sets))
 
 (define (expand-library-expression context expression)
   (define (expand expression)
@@ -339,13 +340,11 @@
     ((define-library)
       (let* ((collect-bodies
                (lambda (predicate)
-                 (apply
-                   append
-                   (map
-                     cdr
-                     (filter
-                       (lambda (body) (eqv? (car body) predicate))
-                       (cddr expression))))))
+                 (flat-map
+                   cdr
+                   (filter
+                     (lambda (body) (eqv? (car body) predicate))
+                     (cddr expression)))))
              (id (library-context-id context))
              (rename
                (lambda (name)
@@ -388,11 +387,9 @@
 (define (expand-libraries expression)
   (let ((context (make-library-context '())))
     (cons (car expression)
-      (apply
-        append
-        (map
-          (lambda (expression) (expand-library-expression context expression))
-          (cdr expression))))))
+      (flat-map
+        (lambda (expression) (expand-library-expression context expression))
+        (cdr expression)))))
 
 ; Expansion
 
