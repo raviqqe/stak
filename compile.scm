@@ -329,13 +329,13 @@
 (define (expand-import-sets context importer-id sets)
   (flat-map
     (lambda (name)
-      (let* ((library (library-context-find context name))
-             (importee-id (library-id library)))
+      (let ((library (library-context-find context name)))
         (append
-          (expand-import-sets context importee-id (library-imports library))
           (if (library-context-import! context name)
             '()
-            (library-codes library))
+            (append
+              (expand-import-sets context (library-id library) (library-imports library))
+              (library-codes library)))
           (map
             (lambda (names)
               (list
