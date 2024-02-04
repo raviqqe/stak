@@ -324,12 +324,8 @@
           (if (library-context-import! context name)
             '()
             (library-codes library))
-          (flat-map
-            (lambda (names)
-              (let ((to (car names))
-                    (from (cdr names)))
-                `(($$define ,to ,from)
-                  ($$define-syntax ,to ,from))))
+          (map
+            (lambda (names) (list '$$alias (car names) (cdr names)))
             (library-exports library)))))
     sets))
 
@@ -626,16 +622,8 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (cond
-    ((symbol? transformer)
-      (cond
-        ((assv transformer (expansion-context-environment definition-context)) =>
-          cdr)
-
-        (else
-          #f)))
-
-    ((pair? transformer)
+  (case (predicate transformer)
+    ((syntax-rules)
       (let ((literals (cadr transformer))
             (rules (cddr transformer)))
         (lambda (use-context expression)
@@ -691,6 +679,12 @@
 
       ((pair? expression)
         (case (resolve-denotation context (car expression))
+          (($$alias)
+            (let ((to (cadr expression))
+                  (from (caddr expression)))
+              (expansion-context-set-last! context to (resolve-denotation context from))
+              #f))
+
           (($$define)
             (let ((name (cadr expression)))
               (expansion-context-set! context name name)
