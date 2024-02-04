@@ -1,7 +1,7 @@
 ; Libraries
 
 ; TODO Rename this to `(scheme base)`.
-(define-library (scheme core)
+(define-library (stak base)
   (export)
 
   (begin))
