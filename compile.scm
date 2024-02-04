@@ -324,11 +324,12 @@
           (if (library-context-import! context name)
             '()
             (library-codes library))
-          (map
-            (lambda (names) (list '$$define (car names) (cdr names)))
-            (library-exports library))
-          (map
-            (lambda (names) (list '$$define-syntax (car names) (cdr names)))
+          (flat-map
+            (lambda (names)
+              (let ((to (car names))
+                    (from (cdr names)))
+                `(($$define ,to ,from)
+                  ($$define-syntax ,to ,from))))
             (library-exports library)))))
     sets))
 
