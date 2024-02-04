@@ -1,6 +1,5 @@
 ; Libraries
 
-; Currently, those are just stubs.
 ; TODO Rename this to `(scheme base)`.
 (define-library (scheme core)
   (export
@@ -505,6 +504,8 @@
     (define $$write-error-u8 (primitive 18))
     (define $$halt (primitive 19))))
 
+; Currently, those are just stubs.
+(define-library (scheme base))
 (define-library (scheme cxr))
 (define-library (scheme eval))
 (define-library (scheme process-context))
