@@ -316,6 +316,19 @@
 
 ;; Procedures
 
+(define (rename-library-symbol id name)
+  (if (or
+       (eqv? (string-ref (symbol->string name) 0) #\$)
+       (memv name '(_ ... quasi-quote quote syntax-rules unquote))
+       (not id))
+    name
+    (string->symbol
+      (string-append
+        "$"
+        (number->string id 32)
+        "$"
+        (symbol->string name)))))
+
 (define (expand-import-sets context sets)
   (flat-map
     (lambda (name)
@@ -343,15 +356,7 @@
                    (filter
                      (lambda (body) (eqv? (car body) predicate))
                      (cddr expression)))))
-             (id (library-context-id context))
-             (rename
-               (lambda (name)
-                 (string->symbol
-                   (string-append
-                     "$"
-                     (number->string id 32)
-                     "$"
-                     (symbol->string name))))))
+             (id (library-context-id context)))
         (library-context-add!
           context
           (make-library
@@ -673,11 +678,11 @@
       ((pair? expression)
         (case (resolve-denotation context (car expression))
           (($$alias)
-            (expansion-context-set!
-              context
-              (cadr expression)
-              (resolve-denotation context (caddr expression)))
-            #f)
+            (let ((denotation (resolve-denotation context (caddr expression))))
+              (expansion-context-set-last! context (cadr expression) denotation)
+              (if (procedure? denotation)
+                #f
+                (expand (cons '$$define (cdr expression))))))
 
           (($$define)
             (let ((name (cadr expression)))
