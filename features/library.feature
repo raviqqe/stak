@@ -22,13 +22,13 @@ Feature: Library system
       (import (scheme base) (scheme write))
 
       (begin
-        (display "foo")))
+        (write-u8 65)))
 
     (import (foo))
     (import (foo))
     """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "foo"
+    Then the stdout should contain exactly "A"
 
   @stak @gauche
   Scenario: Import a function

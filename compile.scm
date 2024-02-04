@@ -266,8 +266,9 @@
 ;; Types
 
 (define-record-type library
-  (make-library name exports imports codes)
+  (make-library id name exports imports codes)
   library?
+  (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
@@ -315,6 +316,19 @@
 
 ;; Procedures
 
+(define (rename-library-symbol id name)
+  (if (or
+       (eqv? (string-ref (symbol->string name) 0) #\$)
+       (memv name '(_ ... quasi-quote quote syntax-rules unquote))
+       (not id))
+    name
+    (string->symbol
+      (string-append
+        "$"
+        (number->string id 32)
+        "$"
+        (symbol->string name)))))
+
 (define (expand-import-sets context sets)
   (flat-map
     (lambda (name)
@@ -342,18 +356,11 @@
                    (filter
                      (lambda (body) (eqv? (car body) predicate))
                      (cddr expression)))))
-             (id (library-context-id context))
-             (rename
-               (lambda (name)
-                 (string->symbol
-                   (string-append
-                     "$"
-                     (number->string id 32)
-                     "$"
-                     (symbol->string name))))))
+             (id (library-context-id context)))
         (library-context-add!
           context
           (make-library
+            id
             (cadr expression)
             (map
               ; TODO Rename an internal name.
@@ -655,15 +662,6 @@
     (else
       (error "unsupported macro transformer" transformer))))
 
-(define (expand-definition definition)
-  (let ((pattern (cadr definition))
-        (body (cddr definition)))
-    (if (symbol? pattern)
-      (cons pattern body)
-      (list
-        (car pattern)
-        (cons '$$lambda (cons (cdr pattern) body))))))
-
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-expression context expression)
   (define (expand expression)
@@ -680,11 +678,11 @@
       ((pair? expression)
         (case (resolve-denotation context (car expression))
           (($$alias)
-            (expansion-context-set!
-              context
-              (cadr expression)
-              (resolve-denotation context (caddr expression)))
-            #f)
+            (let ((denotation (resolve-denotation context (caddr expression))))
+              (expansion-context-set-last! context (cadr expression) denotation)
+              (if (procedure? denotation)
+                #f
+                (expand (cons '$$define (cdr expression))))))
 
           (($$define)
             (let ((name (cadr expression)))
