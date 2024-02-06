@@ -316,10 +316,23 @@
 
 ;; Procedures
 
+(define keywords
+  '(_
+    ...
+    ; TODO
+    define
+    define-syntax
+    lambda
+    quasi-quote
+    quote
+    syntax-rules
+    unquote
+    write-u8))
+
 (define (rename-library-symbol id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memv name '(_ ... quasi-quote quote syntax-rules unquote))
+       (memv name keywords)
        (not id))
     name
     (string->symbol
