@@ -319,13 +319,27 @@
 (define keywords
   '(_
     ...
-    ; TODO
+    ; TODO Remove those keywords by implementing library environment correctly.
     +
+    =>
+    and
+    append
+    base
+    call-with-values
+    cons
     define
     define-syntax
+    else
     lambda
+    library
+    memv
+    not
+    or
     quasi-quote
     quote
+    r7rs
+    scheme
+    stak
     syntax-rules
     unquote
     write-u8))
