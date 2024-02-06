@@ -13,11 +13,11 @@
     "@astrojs/sitemap": "^3.0.5",
     "@astrojs/starlight": "^0.17.2",
     "@raviqqe/loscore": "^0.2.1",
-    "astro": "^4.3.1"
+    "astro": "^4.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.11.16",
-    "prettier": "^3.2.4",
+    "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "typescript": "^5.3.3"
   }
