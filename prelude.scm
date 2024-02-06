@@ -942,9 +942,11 @@
       rib-car)))
 
 (define (string->symbol x)
-  (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
-    (if pair
-      (car pair)
+  (cond
+    ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
+      car)
+
+    (else
       (let ((x (data-rib symbol-type (string-append x) #f)))
         (set! symbol-table (cons x symbol-table))
         x))))
