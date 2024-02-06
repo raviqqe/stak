@@ -922,31 +922,32 @@
 ; Allow garbage collection for a symbol table.
 (rib-set-car! $$rib #f)
 
-(define symbol->string rib-car)
-
-(define (string->symbol x)
+(define (symbol->string x)
   ; TODO Remove this hack.
   ; Currently, internal symbols do not have any string representation.
-  (cond
-    ((equal? x "$$false")
-      '$$false)
+  (case x
+    (($$false)
+      "$$false")
 
-    ((equal? x "$$true")
-      '$$true)
+    (($$true)
+      "$$true")
 
-    ((equal? x "$$null")
-      '$$null)
+    (($$null)
+      "$$null")
 
-    ((equal? x "$$rib")
-      '$$rib)
+    (($$rib)
+      "$$rib")
 
-    (else
-      (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
-        (if pair
-          (car pair)
-          (let ((x (data-rib symbol-type (string-append x) #f)))
-            (set! symbol-table (cons x symbol-table))
-            x))))))
+    (else =>
+      rib-car)))
+
+(define (string->symbol x)
+  (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
+    (if pair
+      (car pair)
+      (let ((x (data-rib symbol-type (string-append x) #f)))
+        (set! symbol-table (cons x symbol-table))
+        x))))
 
 ;; Vector
 
