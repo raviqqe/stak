@@ -344,9 +344,6 @@
     sets))
 
 (define (expand-library-expression context expression)
-  (define (expand expression)
-    (expand-library-expression context expression))
-
   (case (and (pair? expression) (car expression))
     ((define-library)
       (let* ((collect-bodies
