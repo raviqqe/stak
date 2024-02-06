@@ -26,7 +26,42 @@
     and
     or
     when
-    unless)
+    unless
+
+    pair-type
+    null-type
+    boolean-type
+    procedure-type
+    symbol-type
+    string-type
+    char-type
+    vector-type
+    bytevector-type
+    record-type
+
+    rib
+    cons
+    close
+    rib?
+    rib-car
+    rib-cdr
+    rib-type
+    rib-tag
+    rib-set-car!
+    rib-set-cdr!
+    eq?
+    $$<
+    $$+
+    $$-
+    $$*
+    $$/
+    $$read-u8
+    $$write-u8
+    $$write-error-u8
+    $$halt
+
+    apply
+    data-rib)
 
   (begin
     ; Syntax
@@ -447,7 +482,51 @@
     (define-syntax unless
       (syntax-rules ()
         ((_ test result1 result2 ...)
-          (when (not test) result1 result2 ...))))))
+          (when (not test) result1 result2 ...))))
+
+    ; Type IDs
+
+    (define pair-type 0)
+    (define null-type 1)
+    (define boolean-type 2)
+    (define procedure-type 3)
+    (define symbol-type 4)
+    (define string-type 5)
+    (define char-type 6)
+    (define vector-type 7)
+    (define bytevector-type 8)
+    (define record-type 9)
+
+    ; Primitives
+
+    (define (primitive id) ($$rib procedure-type '() id 0))
+
+    (define rib $$rib)
+    (define cons (primitive 1))
+    (define close (primitive 2))
+    (define rib? (primitive 3))
+    (define rib-car (primitive 4))
+    (define rib-cdr (primitive 5))
+    (define rib-type (primitive 6))
+    (define rib-tag (primitive 7))
+    (define rib-set-car! (primitive 8))
+    (define rib-set-cdr! (primitive 9))
+    (define eq? (primitive 10))
+    (define $$< (primitive 11))
+    (define $$+ (primitive 12))
+    (define $$- (primitive 13))
+    (define $$* (primitive 14))
+    (define $$/ (primitive 15))
+    (define $$read-u8 (primitive 16))
+    (define $$write-u8 (primitive 17))
+    (define $$write-error-u8 (primitive 18))
+    (define $$halt (primitive 19))
+
+    (define (data-rib type car cdr)
+      (rib type car cdr 0))
+
+    (define (apply f xs)
+      ($$apply f xs))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -456,50 +535,6 @@
 (define-library (scheme write))
 
 (import (scheme base))
-
-; Type IDs
-
-(define pair-type 0)
-(define null-type 1)
-(define boolean-type 2)
-(define procedure-type 3)
-(define symbol-type 4)
-(define string-type 5)
-(define char-type 6)
-(define vector-type 7)
-(define bytevector-type 8)
-(define record-type 9)
-
-; Primitives
-
-(define (primitive id) ($$rib procedure-type '() id 0))
-
-(define rib $$rib)
-(define cons (primitive 1))
-(define close (primitive 2))
-(define rib? (primitive 3))
-(define rib-car (primitive 4))
-(define rib-cdr (primitive 5))
-(define rib-type (primitive 6))
-(define rib-tag (primitive 7))
-(define rib-set-car! (primitive 8))
-(define rib-set-cdr! (primitive 9))
-(define eq? (primitive 10))
-(define $$< (primitive 11))
-(define $$+ (primitive 12))
-(define $$- (primitive 13))
-(define $$* (primitive 14))
-(define $$/ (primitive 15))
-(define $$read-u8 (primitive 16))
-(define $$write-u8 (primitive 17))
-(define $$write-error-u8 (primitive 18))
-(define $$halt (primitive 19))
-
-(define (data-rib type car cdr)
-  (rib type car cdr 0))
-
-(define (apply f xs)
-  ($$apply f xs))
 
 ; Basic types
 

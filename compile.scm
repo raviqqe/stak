@@ -354,6 +354,8 @@
 
 (define (rename-library-symbol id name)
   (if (or
+       ; TODO Remove this hack.
+       (zero? (string-length (symbol->string name)))
        (eqv? (string-ref (symbol->string name) 0) #\$)
        (memv name keywords)
        (not id))
