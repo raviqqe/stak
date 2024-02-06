@@ -320,6 +320,7 @@
   '(_
     ...
     ; TODO
+    +
     define
     define-syntax
     lambda

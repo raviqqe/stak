@@ -1,11 +1,5 @@
 ; Libraries
 
-; TODO Rename this to `(scheme base)`.
-(define-library (stak base)
-  (export)
-
-  (begin))
-
 ; Currently, those are just stubs.
 (define-library (scheme base))
 (define-library (scheme cxr))
