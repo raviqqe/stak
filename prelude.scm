@@ -1,5 +1,6 @@
 ; Libraries
 
+; TODO Move everything into the base library.
 (define-library (scheme base)
   (export
     define-syntax
