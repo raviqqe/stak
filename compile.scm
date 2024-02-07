@@ -14,6 +14,7 @@
     (define target-pair? pair?)
     (define target-procedure? procedure?)
 
+    ; Internal symbols must be discoverable with its string representation.
     (set-car! '$$false "$$false")
     (set-car! '$$true "$$true")
     (set-car! '$$null "$$null")
