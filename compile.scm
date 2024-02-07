@@ -239,6 +239,9 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
+(define (id->string id)
+  (number->string id 32))
+
 ; Source code reading
 
 (define (read-all)
@@ -325,7 +328,7 @@
     (string->symbol
       (string-append
         "$"
-        (number->string id 32)
+        (id->string id)
         "$"
         (symbol->string name)))))
 
@@ -476,7 +479,7 @@
            (list-count
              (lambda (pair) (eqv? (cdr pair) denotation))
              (expansion-context-environment context))))
-    (string->symbol (string-append (symbol->string name) "$" (number->string count 32)))))
+    (string->symbol (string-append (symbol->string name) "$" (id->string count)))))
 
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
@@ -958,7 +961,7 @@
 (define (constant-context-generate-constant-id! context)
   (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
-    (string->symbol (string-append "$" (number->string id)))))
+    (string->symbol (string-append "$" (id->string id)))))
 
 ;; Main
 
