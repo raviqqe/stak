@@ -940,13 +940,13 @@
     ((equal? x "$$rib")
       '$$rib)
 
+    ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
+      car)
+
     (else
-      (let ((pair (member x symbol-table (lambda (x y) (equal? x (symbol->string y))))))
-        (if pair
-          (car pair)
-          (let ((x (data-rib symbol-type (string-append x) #f)))
-            (set! symbol-table (cons x symbol-table))
-            x))))))
+      (let ((x (data-rib symbol-type (string-append x) #f)))
+        (set! symbol-table (cons x symbol-table))
+        x))))
 
 ;; Vector
 
