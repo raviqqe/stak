@@ -989,21 +989,7 @@
 (define symbol->string rib-car)
 
 (define (string->symbol x)
-  ; TODO Remove this hack.
-  ; Currently, internal symbols do not have any string representation.
   (cond
-    ((equal? x "$$false")
-      '$$false)
-
-    ((equal? x "$$true")
-      '$$true)
-
-    ((equal? x "$$null")
-      '$$null)
-
-    ((equal? x "$$rib")
-      '$$rib)
-
     ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
       car)
 
