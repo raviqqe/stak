@@ -325,10 +325,48 @@
 
 ;; Procedures
 
+(define keywords
+  '(_
+    ...
+    ; TODO Remove those keywords by implementing library environment correctly.
+    +
+    =>
+    and
+    append
+    base
+    cadr
+    call-with-values
+    car
+    cddr
+    cdr
+    cons
+    define
+    define-syntax
+    else
+    lambda
+    library
+    list
+    memv
+    not
+    or
+    quasi-quote
+    quote
+    r7rs
+    scheme
+    set!
+    set-cdr!
+    stak
+    syntax-rules
+    unquote
+    unquote-splicing
+    write-u8))
+
 (define (rename-library-symbol id name)
   (if (or
+       ; TODO Remove this hack.
+       (zero? (string-length (symbol->string name)))
        (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memv name '(_ ... quasi-quote quote syntax-rules unquote))
+       (memv name keywords)
        (not id))
     name
     (string->symbol
@@ -338,17 +376,22 @@
         "$"
         (symbol->string name)))))
 
-(define (expand-import-sets context sets)
+(define (expand-import-sets context importer-id sets)
   (flat-map
     (lambda (name)
       (let ((library (library-context-find context name)))
         (append
-          (expand-import-sets context (library-imports library))
           (if (library-context-import! context name)
             '()
-            (library-codes library))
+            (append
+              (expand-import-sets context (library-id library) (library-imports library))
+              (library-codes library)))
           (map
-            (lambda (names) (list '$$alias (car names) (cdr names)))
+            (lambda (names)
+              (list
+                '$$alias
+                (rename-library-symbol importer-id (car names))
+                (cdr names)))
             (library-exports library)))))
     sets))
 
@@ -369,27 +412,19 @@
             id
             (cadr expression)
             (map
-              ; TODO Rename an internal name.
-              (lambda (name) (cons name name))
+              (lambda (name) (cons name (rename-library-symbol id name)))
               (collect-bodies 'export))
             (collect-bodies 'import)
-            ; TODO Segregate an environment.
-            ; (relaxed-deep-map
-            ;   (lambda (value)
-            ;     (if (symbol? value)
-            ;       (string->symbol
-            ;         (string-append
-            ;           "$"
-            ;           (number->string id 32)
-            ;           "$"
-            ;           (symbol->string value)))
-            ;       value))
-            ;   (collect-bodies 'begin))
-            (collect-bodies 'begin)))
+            (relaxed-deep-map
+              (lambda (value)
+                (if (symbol? value)
+                  (rename-library-symbol id value)
+                  value))
+              (collect-bodies 'begin))))
         '()))
 
     ((import)
-      (expand-import-sets context (cdr expression)))
+      (expand-import-sets context #f (cdr expression)))
 
     (else
       (list expression))))
