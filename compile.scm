@@ -12,7 +12,12 @@
   (stak
     (define cons-rib cons)
     (define target-pair? pair?)
-    (define target-procedure? procedure?))
+    (define target-procedure? procedure?)
+
+    (set-car! '$$false "$$false")
+    (set-car! '$$true "$$true")
+    (set-car! '$$null "$$null")
+    (set-car! '$$rib "$$rib"))
 
   (else
     (define-record-type *rib*
