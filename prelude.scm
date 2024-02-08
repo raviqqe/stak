@@ -84,6 +84,18 @@
     zero?
     positive?
     negative?
+    +
+    -
+    *
+    quotient
+    /
+    modulo
+    =
+    <
+    >
+    <=
+    >=
+    abs
 
     procedure?
 
@@ -122,7 +134,28 @@
     cddadr
     cdddar
     cddddr
-    list)
+    list
+    make-list
+    length
+    map
+    for-each
+    list-ref
+    list-set!
+    list-tail
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    append
+    append-lists
+    reverse
+    fold-left
+    fold-right
+    reduce-right
+    list-position
+    memv-position)
 
   (begin
     ; Syntax
@@ -645,6 +678,52 @@
     (define (positive? x) (> x 0))
     (define (negative? x) (< x 0))
 
+    (define (arithmetic-operator f y)
+      (lambda xs (fold-left f y xs)))
+
+    (define (inverse-arithmetic-operator f y)
+      (lambda (x . xs)
+        (if (null? xs)
+          (f y x)
+          (fold-left f x xs))))
+
+    (define + (arithmetic-operator $$+ 0))
+    (define - (inverse-arithmetic-operator $$- 0))
+    (define * (arithmetic-operator $$* 1))
+    (define quotient (inverse-arithmetic-operator $$/ 1))
+    (define / quotient)
+
+    (define (modulo x y)
+      (let ((q (quotient x y)))
+        (let ((r (- x (* y q))))
+          (if (eqv? r 0)
+            0
+            (if (eqv? (< x 0) (< y 0))
+              r
+              (+ r y))))))
+
+    (define (comparison-operator f)
+      (lambda xs
+        (or
+          (null? xs)
+          (let loop ((x (car xs))
+                     (xs (cdr xs)))
+            (or
+              (null? xs)
+              (let ((y (car xs)))
+                (and (f x y) (loop y (cdr xs)))))))))
+
+    (define = (comparison-operator eqv?))
+    (define < (comparison-operator $$<))
+    (define > (comparison-operator (lambda (x y) ($$< y x))))
+    (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
+    (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
+
+    (define (abs x)
+      (if (< x 0)
+        (- 0 x)
+        x))
+
     ;; Procedure
 
     (define procedure? (instance? procedure-type))
@@ -694,7 +773,131 @@
     (define (cdddar x) (cdr (cddar x)))
     (define (cddddr x) (cdr (cdddr x)))
 
-    (define (list . xs) xs)))
+    (define (list . xs) xs)
+
+    (define (make-list length . rest)
+      (define fill (if (null? rest) #f (car rest)))
+
+      (let loop ((length length))
+        (if (= length 0)
+          '()
+          (cons fill (loop (- length 1))))))
+
+    (define (length xs)
+      (let loop ((xs xs) (y 0))
+        (if (null? xs)
+          y
+          (loop (cdr xs) (+ y 1)))))
+
+    (define (map function list)
+      (if (null? list)
+        list
+        (cons
+          (function (car list))
+          (map function (cdr list)))))
+
+    (define for-each map)
+
+    (define (list-ref list index)
+      (car (list-tail list index)))
+
+    (define (list-set! list index value)
+      (set-car! (list-tail list index) value))
+
+    (define (list-tail list index)
+      (if (zero? index)
+        list
+        (list-tail (cdr list) (- index 1))))
+
+    (define (member x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
+      (let loop ((xs xs))
+        (cond
+          ((null? xs)
+            #f)
+
+          ((eq? x (car xs))
+            xs)
+
+          (else
+            (loop (cdr xs))))))
+
+    (define (memq x xs) (member x xs eq?))
+    (define (memv x xs) (member x xs eqv?))
+
+    (define (assoc x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
+      (let loop ((xs xs))
+        (if (null? xs)
+          #f
+          (let ((pair (car xs)))
+            (if (eq? x (car pair))
+              pair
+              (loop (cdr xs)))))))
+
+    (define (assq x xs) (assoc x xs eq?))
+    (define (assv x xs) (assoc x xs eqv?))
+
+    (define (append . lists)
+      (reduce-right append-lists '() lists))
+
+    (define (append-lists ys xs)
+      (if (null? xs)
+        ys
+        (cons (car xs) (append-lists ys (cdr xs)))))
+
+    (define (reverse xs)
+      (let loop ((xs xs) (ys '()))
+        (if (null? xs)
+          ys
+          (loop (cdr xs) (cons (car xs) ys)))))
+
+    (define (fold-left f y xs)
+      (if (null? xs)
+        y
+        (fold-left
+          f
+          (f y (car xs))
+          (cdr xs))))
+
+    (define (fold-right f y xs)
+      (if (null? xs)
+        y
+        (f (fold-right f y (cdr xs)) (car xs))))
+
+    (define (reduce-right f y xs)
+      (cond
+        ((null? xs)
+          y)
+
+        ((null? (cdr xs))
+          (car xs))
+
+        (else
+          (f (reduce-right f y (cdr xs)) (car xs)))))
+
+    (define (list-position f xs)
+      (let loop ((xs xs) (index 0))
+        (cond
+          ((null? xs)
+            #f)
+
+          ((f (car xs))
+            index)
+
+          (else
+            (loop (cdr xs) (+ index 1))))))
+
+    (define (memv-position one xs)
+      (list-position (lambda (other) (eqv? one other)) xs))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -758,54 +961,6 @@
 (define (field-index type field)
   (memv-position field (cdr type)))
 
-;; Number
-
-(define (arithmetic-operator f y)
-  (lambda xs (fold-left f y xs)))
-
-(define (inverse-arithmetic-operator f y)
-  (lambda (x . xs)
-    (if (null? xs)
-      (f y x)
-      (fold-left f x xs))))
-
-(define + (arithmetic-operator $$+ 0))
-(define - (inverse-arithmetic-operator $$- 0))
-(define * (arithmetic-operator $$* 1))
-(define quotient (inverse-arithmetic-operator $$/ 1))
-(define / quotient)
-
-(define (modulo x y)
-  (let ((q (quotient x y)))
-    (let ((r (- x (* y q))))
-      (if (eqv? r 0)
-        0
-        (if (eqv? (< x 0) (< y 0))
-          r
-          (+ r y))))))
-
-(define (comparison-operator f)
-  (lambda xs
-    (or
-      (null? xs)
-      (let loop ((x (car xs))
-                 (xs (cdr xs)))
-        (or
-          (null? xs)
-          (let ((y (car xs)))
-            (and (f x y) (loop y (cdr xs)))))))))
-
-(define = (comparison-operator eqv?))
-(define < (comparison-operator $$<))
-(define > (comparison-operator (lambda (x y) ($$< y x))))
-(define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
-(define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
-
-(define (abs x)
-  (if (< x 0)
-    (- 0 x)
-    x))
-
 ;; Bytevector
 
 (define bytevector? (instance? bytevector-type))
@@ -836,132 +991,6 @@
 (define char<=? (char-compare <=))
 (define char>? (char-compare >))
 (define char>=? (char-compare >=))
-
-;; List
-
-(define (make-list length . rest)
-  (define fill (if (null? rest) #f (car rest)))
-
-  (let loop ((length length))
-    (if (= length 0)
-      '()
-      (cons fill (loop (- length 1))))))
-
-(define (length xs)
-  (let loop ((xs xs) (y 0))
-    (if (null? xs)
-      y
-      (loop (cdr xs) (+ y 1)))))
-
-(define (map function list)
-  (if (null? list)
-    list
-    (cons
-      (function (car list))
-      (map function (cdr list)))))
-
-(define for-each map)
-
-(define (list-ref list index)
-  (car (list-tail list index)))
-
-(define (list-set! list index value)
-  (set-car! (list-tail list index) value))
-
-(define (list-tail list index)
-  (if (zero? index)
-    list
-    (list-tail (cdr list) (- index 1))))
-
-(define (member x xs . rest)
-  (define eq?
-    (if (null? rest)
-      equal?
-      (car rest)))
-
-  (let loop ((xs xs))
-    (cond
-      ((null? xs)
-        #f)
-
-      ((eq? x (car xs))
-        xs)
-
-      (else
-        (loop (cdr xs))))))
-
-(define (memq x xs) (member x xs eq?))
-(define (memv x xs) (member x xs eqv?))
-
-(define (assoc x xs . rest)
-  (define eq?
-    (if (null? rest)
-      equal?
-      (car rest)))
-
-  (let loop ((xs xs))
-    (if (null? xs)
-      #f
-      (let ((pair (car xs)))
-        (if (eq? x (car pair))
-          pair
-          (loop (cdr xs)))))))
-
-(define (assq x xs) (assoc x xs eq?))
-(define (assv x xs) (assoc x xs eqv?))
-
-(define (append . lists)
-  (reduce-right append-lists '() lists))
-
-(define (append-lists ys xs)
-  (if (null? xs)
-    ys
-    (cons (car xs) (append-lists ys (cdr xs)))))
-
-(define (reverse xs)
-  (let loop ((xs xs) (ys '()))
-    (if (null? xs)
-      ys
-      (loop (cdr xs) (cons (car xs) ys)))))
-
-(define (fold-left f y xs)
-  (if (null? xs)
-    y
-    (fold-left
-      f
-      (f y (car xs))
-      (cdr xs))))
-
-(define (fold-right f y xs)
-  (if (null? xs)
-    y
-    (f (fold-right f y (cdr xs)) (car xs))))
-
-(define (reduce-right f y xs)
-  (cond
-    ((null? xs)
-      y)
-
-    ((null? (cdr xs))
-      (car xs))
-
-    (else
-      (f (reduce-right f y (cdr xs)) (car xs)))))
-
-(define (list-position f xs)
-  (let loop ((xs xs) (index 0))
-    (cond
-      ((null? xs)
-        #f)
-
-      ((f (car xs))
-        index)
-
-      (else
-        (loop (cdr xs) (+ index 1))))))
-
-(define (memv-position one xs)
-  (list-position (lambda (other) (eqv? one other)) xs))
 
 ;; String
 
