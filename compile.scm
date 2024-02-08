@@ -340,10 +340,7 @@
     cddr
     cdr
     cons
-    define
-    define-syntax
     else
-    lambda
     library
     list
     memv
@@ -353,13 +350,11 @@
     quote
     r7rs
     scheme
-    set!
     set-cdr!
     stak
     syntax-rules
     unquote
-    unquote-splicing
-    write-u8))
+    unquote-splicing))
 
 (define (rename-library-symbol id name)
   (if (or
