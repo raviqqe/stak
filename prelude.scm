@@ -66,8 +66,9 @@
     instance?
     eqv?
     equal?
-    define-record-type
-    record?)
+
+    boolean?
+    not)
 
   (begin
     ; Syntax
