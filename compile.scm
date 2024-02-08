@@ -334,11 +334,7 @@
     and
     append
     base
-    cadr
     call-with-values
-    car
-    cddr
-    cdr
     cons
     else
     library

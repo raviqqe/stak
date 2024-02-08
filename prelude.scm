@@ -85,7 +85,44 @@
     positive?
     negative?
 
-    procedure?)
+    procedure?
+
+    null?
+    pair?
+    list?
+    car
+    cdr
+    set-car!
+    set-cdr!
+    caar
+    cadr
+    cdar
+    cddr
+    caaar
+    caadr
+    cadar
+    caddr
+    cdaar
+    cdadr
+    cddar
+    cdddr
+    caaaar
+    caaadr
+    caadar
+    caaddr
+    cadaar
+    cadadr
+    caddar
+    cadddr
+    cdaaar
+    cdaadr
+    cdadar
+    cdaddr
+    cddaar
+    cddadr
+    cdddar
+    cddddr
+    list)
 
   (begin
     ; Syntax
@@ -610,7 +647,54 @@
 
     ;; Procedure
 
-    (define procedure? (instance? procedure-type))))
+    (define procedure? (instance? procedure-type))
+
+    ;; List
+
+    (define null? (instance? null-type))
+    (define pair? (instance? pair-type))
+
+    (define (list? x)
+      (or
+        (null? x)
+        (and
+          (pair? x)
+          (list? (cdr x)))))
+
+    (define car rib-car)
+    (define cdr rib-cdr)
+    (define set-car! rib-set-car!)
+    (define set-cdr! rib-set-cdr!)
+    (define (caar x) (car (car x)))
+    (define (cadr x) (car (cdr x)))
+    (define (cdar x) (cdr (car x)))
+    (define (cddr x) (cdr (cdr x)))
+    (define (caaar x) (car (caar x)))
+    (define (caadr x) (car (cadr x)))
+    (define (cadar x) (car (cdar x)))
+    (define (caddr x) (car (cddr x)))
+    (define (cdaar x) (cdr (caar x)))
+    (define (cdadr x) (cdr (cadr x)))
+    (define (cddar x) (cdr (cdar x)))
+    (define (cdddr x) (cdr (cddr x)))
+    (define (caaaar x) (car (caaar x)))
+    (define (caaadr x) (car (caadr x)))
+    (define (caadar x) (car (cadar x)))
+    (define (caaddr x) (car (caddr x)))
+    (define (cadaar x) (car (cdaar x)))
+    (define (cadadr x) (car (cdadr x)))
+    (define (caddar x) (car (cddar x)))
+    (define (cadddr x) (car (cdddr x)))
+    (define (cdaaar x) (cdr (caaar x)))
+    (define (cdaadr x) (cdr (caadr x)))
+    (define (cdadar x) (cdr (cadar x)))
+    (define (cdaddr x) (cdr (caddr x)))
+    (define (cddaar x) (cdr (cdaar x)))
+    (define (cddadr x) (cdr (cdadr x)))
+    (define (cdddar x) (cdr (cddar x)))
+    (define (cddddr x) (cdr (cdddr x)))
+
+    (define (list . xs) xs)))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -754,51 +838,6 @@
 (define char>=? (char-compare >=))
 
 ;; List
-
-(define null? (instance? null-type))
-(define pair? (instance? pair-type))
-
-(define (list? x)
-  (or
-    (null? x)
-    (and
-      (pair? x)
-      (list? (cdr x)))))
-
-(define car rib-car)
-(define cdr rib-cdr)
-(define set-car! rib-set-car!)
-(define set-cdr! rib-set-cdr!)
-(define (caar x) (car (car x)))
-(define (cadr x) (car (cdr x)))
-(define (cdar x) (cdr (car x)))
-(define (cddr x) (cdr (cdr x)))
-(define (caaar x) (car (caar x)))
-(define (caadr x) (car (cadr x)))
-(define (cadar x) (car (cdar x)))
-(define (caddr x) (car (cddr x)))
-(define (cdaar x) (cdr (caar x)))
-(define (cdadr x) (cdr (cadr x)))
-(define (cddar x) (cdr (cdar x)))
-(define (cdddr x) (cdr (cddr x)))
-(define (caaaar x) (car (caaar x)))
-(define (caaadr x) (car (caadr x)))
-(define (caadar x) (car (cadar x)))
-(define (caaddr x) (car (caddr x)))
-(define (cadaar x) (car (cdaar x)))
-(define (cadadr x) (car (cdadr x)))
-(define (caddar x) (car (cddar x)))
-(define (cadddr x) (car (cdddr x)))
-(define (cdaaar x) (cdr (caaar x)))
-(define (cdaadr x) (cdr (caadr x)))
-(define (cdadar x) (cdr (cadar x)))
-(define (cdaddr x) (cdr (caddr x)))
-(define (cddaar x) (cdr (cdaar x)))
-(define (cddadr x) (cdr (cdadr x)))
-(define (cdddar x) (cdr (cddar x)))
-(define (cddddr x) (cdr (cdddr x)))
-
-(define (list . xs) xs)
 
 (define (make-list length . rest)
   (define fill (if (null? rest) #f (car rest)))
