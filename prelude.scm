@@ -72,7 +72,18 @@
 
     char?
     integer->char
-    char->integer)
+    char->integer
+
+    integer?
+    rational?
+    real?
+    complex?
+    number?
+    exact?
+    inexact?
+    zero?
+    positive?
+    negative?)
 
   (begin
     ; Syntax
@@ -576,7 +587,24 @@
     (define (integer->char x)
       (data-rib char-type '() x))
 
-    (define char->integer rib-cdr)))
+    (define char->integer rib-cdr)
+
+    ;; Number
+
+    (define (integer? x)
+      (not (rib? x)))
+
+    (define rational? integer?)
+    (define real? rational?)
+    (define complex? real?)
+    (define number? complex?)
+
+    (define (exact? x) #t)
+    (define (inexact? x) #f)
+
+    (define (zero? x) (eqv? x 0))
+    (define (positive? x) (> x 0))
+    (define (negative? x) (< x 0))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -641,21 +669,6 @@
   (memv-position field (cdr type)))
 
 ;; Number
-
-(define (integer? x)
-  (not (rib? x)))
-
-(define rational? integer?)
-(define real? rational?)
-(define complex? real?)
-(define number? complex?)
-
-(define (exact? x) #t)
-(define (inexact? x) #f)
-
-(define (zero? x) (eqv? x 0))
-(define (positive? x) (> x 0))
-(define (negative? x) (< x 0))
 
 (define (arithmetic-operator f y)
   (lambda xs (fold-left f y xs)))
