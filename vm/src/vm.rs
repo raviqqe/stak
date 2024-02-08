@@ -103,7 +103,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Runs a virtual machine.
-    #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.program_counter != self.null() {
             let instruction = self.cdr(self.program_counter).assume_cons();
@@ -126,7 +125,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn call(&mut self, instruction: Cons) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
@@ -205,7 +203,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn set(&mut self) {
         match self.operand().to_typed() {
             TypedValue::Cons(cons) => {
@@ -222,7 +219,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.advance_program_counter();
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn get(&mut self) -> Result<(), T::Error> {
         let value = self.resolve_operand(self.operand());
 
@@ -234,7 +230,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn constant(&mut self) -> Result<(), T::Error> {
         let constant = self.operand();
 
@@ -246,7 +241,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn r#if(&mut self) {
         self.program_counter = (if self.pop() == self.boolean(false).into() {
             self.cdr(self.program_counter)
@@ -265,7 +259,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn advance_program_counter(&mut self) {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
@@ -364,7 +357,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Allocates a cons on heap.
-    #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
@@ -380,7 +372,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(cons)
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory.into());
@@ -521,7 +512,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // Garbage collection
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), T::Error> {
         self.allocation_index = 0;
         self.space = !self.space;
@@ -575,7 +565,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // Initialization
 
     /// Initializes a virtual machine with bytecodes of a program.
-    #[cfg_attr(feature = "no_inline", inline(never))]
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), T::Error> {
         let mut input = input.into_iter();
 
@@ -600,7 +589,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
         // Initialize a shared empty string.
         self.temporary = self.create_string(self.null(), 0)?;
@@ -680,7 +668,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         )
     }
 
-    #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_instructions(
         &mut self,
         input: &mut impl Iterator<Item = u8>,
