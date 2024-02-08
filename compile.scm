@@ -329,24 +329,18 @@
   '(_
     ...
     ; TODO Remove those keywords by implementing library environment correctly.
-    +
     =>
     and
-    append
     base
     call-with-values
-    cons
     else
     library
-    list
-    memv
     not
     or
     quasi-quote
     quote
     r7rs
     scheme
-    set-cdr!
     stak
     syntax-rules
     unquote
