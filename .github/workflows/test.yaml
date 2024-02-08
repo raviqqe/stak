@@ -83,6 +83,7 @@ jobs:
           --tags '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_integration_test:
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-latest

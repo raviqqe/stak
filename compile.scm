@@ -335,32 +335,18 @@
   '(_
     ...
     ; TODO Remove those keywords by implementing library environment correctly.
-    +
     =>
     and
-    append
     base
-    cadr
     call-with-values
-    car
-    cddr
-    cdr
-    cons
-    define
-    define-syntax
     else
-    lambda
     library
-    list
-    memv
     not
     or
     quasi-quote
     quote
     r7rs
     scheme
-    set!
-    set-cdr!
     stak
     syntax-rules
     unquote
