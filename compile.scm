@@ -354,7 +354,8 @@
     stak
     syntax-rules
     unquote
-    unquote-splicing))
+    unquote-splicing
+    write-u8))
 
 (define (rename-library-symbol id name)
   (if (or
