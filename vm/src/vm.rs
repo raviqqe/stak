@@ -69,7 +69,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     program_counter: Cons,
     stack: Cons,
     r#false: Cons,
-    temporary: Cons,
+    register: Cons,
     allocation_index: usize,
     space: bool,
     heap: &'a mut [Value],
@@ -85,7 +85,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             program_counter: NEVER,
             stack: NEVER,
             r#false: NEVER,
-            temporary: NEVER,
+            register: NEVER,
             allocation_index: 0,
             space: false,
             heap,
@@ -148,7 +148,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 trace!("parameter count", parameters.count);
                 trace!("parameter variadic", parameters.variadic);
 
-                self.temporary = procedure;
+                self.register = procedure;
 
                 let mut list = if arguments.variadic {
                     self.pop().assume_cons()
@@ -163,8 +163,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 // Use a `program_counter` field as an escape cell for a procedure.
                 let program_counter = self.program_counter;
-                self.program_counter = self.temporary;
-                self.temporary = list;
+                self.program_counter = self.register;
+                self.register = list;
 
                 let continuation = if r#return {
                     self.continuation()
@@ -182,17 +182,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     .assume_cons();
 
                 for _ in 0..parameters.count.to_i64() {
-                    if self.temporary == self.null() {
+                    if self.register == self.null() {
                         return Err(Error::ArgumentCount.into());
                     }
 
-                    self.push(self.car(self.temporary))?;
-                    self.temporary = self.cdr(self.temporary).assume_cons();
+                    self.push(self.car(self.register))?;
+                    self.register = self.cdr(self.register).assume_cons();
                 }
 
                 if parameters.variadic {
-                    self.push(self.temporary.into())?;
-                } else if self.temporary != self.null() {
+                    self.push(self.register.into())?;
+                } else if self.register != self.null() {
                     return Err(Error::ArgumentCount.into());
                 }
             }
@@ -529,7 +529,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.program_counter = self.copy_cons(self.program_counter)?;
         self.stack = self.copy_cons(self.stack)?;
         self.r#false = self.copy_cons(self.r#false)?;
-        self.temporary = self.copy_cons(self.temporary)?;
+        self.register = self.copy_cons(self.register)?;
 
         if let Some(cons) = cons {
             *cons = self.copy_cons(*cons)?;
@@ -595,7 +595,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             .into();
         self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
 
-        self.temporary = NEVER;
+        self.register = NEVER;
 
         Ok(())
     }
@@ -603,7 +603,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     #[cfg_attr(feature = "no_inline", inline(never))]
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
         // Initialize a shared empty string.
-        self.temporary = self.create_string(self.null(), 0)?;
+        self.register = self.create_string(self.null(), 0)?;
 
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             self.initialize_empty_symbol(self.boolean(false).into())?;
@@ -652,7 +652,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         );
 
         // Allow access to a symbol table during decoding.
-        self.temporary = self.stack;
+        self.register = self.stack;
         self.stack = self.null();
 
         Ok(())
@@ -664,7 +664,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
-            name.unwrap_or(self.temporary)
+            name.unwrap_or(self.register)
                 .set_tag(Type::Symbol as u8)
                 .into(),
             value,
@@ -789,7 +789,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("symbol", is_symbol);
 
         if is_symbol {
-            self.car(self.tail(self.temporary, index))
+            self.car(self.tail(self.register, index))
         } else {
             index.into()
         }
@@ -855,7 +855,7 @@ impl<'a, T: PrimitiveSet> Display for Vm<'a, T> {
                 write!(formatter, " <- program counter")?;
             } else if index == self.stack.index() {
                 write!(formatter, " <- stack")?;
-            } else if index == self.temporary.index() {
+            } else if index == self.register.index() {
                 write!(formatter, " <- temporary")?;
             }
 
