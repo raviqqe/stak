@@ -61,7 +61,13 @@
     $$halt
 
     apply
-    data-rib)
+    data-rib
+
+    instance?
+    eqv?
+    equal?
+    define-record-type
+    record?)
 
   (begin
     ; Syntax
@@ -526,7 +532,37 @@
       (rib type car cdr 0))
 
     (define (apply f xs)
-      ($$apply f xs))))
+      ($$apply f xs))
+
+    ; Basic types
+
+    (define (instance? type)
+      (lambda (x)
+        (and
+          (rib? x)
+          (eq? (rib-type x) type))))
+
+    (define (eqv? x y)
+      (if (and (char? x) (char? y))
+        (eqv? (char->integer x) (char->integer y))
+        (eq? x y)))
+
+    (define (equal? x y)
+      (or
+        (eq? x y)
+        (and
+          (rib? x)
+          (rib? y)
+          (eq? (rib-type x) (rib-type y))
+          (equal? (rib-car x) (rib-car y))
+          (equal? (rib-cdr x) (rib-cdr y)))))
+
+    ;; Boolean
+
+    (define boolean? (instance? boolean-type))
+
+    (define (not x)
+      (eq? x #f))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -535,29 +571,6 @@
 (define-library (scheme write))
 
 (import (scheme base))
-
-; Basic types
-
-(define (instance? type)
-  (lambda (x)
-    (and
-      (rib? x)
-      (eq? (rib-type x) type))))
-
-(define (eqv? x y)
-  (if (and (char? x) (char? y))
-    (eqv? (char->integer x) (char->integer y))
-    (eq? x y)))
-
-(define (equal? x y)
-  (or
-    (eq? x y)
-    (and
-      (rib? x)
-      (rib? y)
-      (eq? (rib-type x) (rib-type y))
-      (equal? (rib-car x) (rib-car y))
-      (equal? (rib-cdr x) (rib-cdr y)))))
 
 ;; Record
 
@@ -612,14 +625,6 @@
 
 (define (field-index type field)
   (memv-position field (cdr type)))
-
-;; Boolean
-
-(define boolean? (instance? boolean-type))
-
-(define (not x)
-  (eq? x #f))
-
 ;; Number
 
 (define (integer? x)
