@@ -988,13 +988,16 @@
 
 (define symbol->string rib-car)
 
+(define (string->uninterned-symbol x)
+  (data-rib symbol-type x #f))
+
 (define (string->symbol x)
   (cond
     ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
       car)
 
     (else
-      (let ((x (data-rib symbol-type (string-append x) #f)))
+      (let ((x (string->uninterned-symbol x)))
         (set! symbol-table (cons x symbol-table))
         x))))
 

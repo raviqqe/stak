@@ -27,6 +27,7 @@
     "rustfmt",
     "rustup",
     "stak",
+    "uninterned",
     "unresolve"
   ],
   "patterns": [
