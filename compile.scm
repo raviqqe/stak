@@ -523,7 +523,7 @@
            (list-count
              (lambda (pair) (eqv? (cdr pair) denotation))
              (expansion-context-environment context))))
-    (string->uninterned-symbol (symbol->string name))))
+    (string->uninterned-symbol (string-append (symbol->string name) "$" (id->string count)))))
 
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
@@ -1005,7 +1005,7 @@
 (define (constant-context-generate-constant-id! context)
   (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
-    (string->uninterned-symbol "")))
+    (string->symbol (string-append "$" (id->string id)))))
 
 ;; Main
 
