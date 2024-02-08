@@ -83,7 +83,9 @@
     inexact?
     zero?
     positive?
-    negative?)
+    negative?
+
+    procedure?)
 
   (begin
     ; Syntax
@@ -604,7 +606,11 @@
 
     (define (zero? x) (eqv? x 0))
     (define (positive? x) (> x 0))
-    (define (negative? x) (< x 0))))
+    (define (negative? x) (< x 0))
+
+    ;; Procedure
+
+    (define procedure? (instance? procedure-type))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -917,10 +923,6 @@
 
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
-
-;; Procedure
-
-(define procedure? (instance? procedure-type))
 
 ;; String
 
