@@ -68,7 +68,11 @@
     equal?
 
     boolean?
-    not)
+    not
+
+    char?
+    integer->char
+    char->integer)
 
   (begin
     ; Syntax
@@ -563,7 +567,16 @@
     (define boolean? (instance? boolean-type))
 
     (define (not x)
-      (eq? x #f))))
+      (eq? x #f))
+
+    ;; Character
+
+    (define char? (instance? char-type))
+
+    (define (integer->char x)
+      (data-rib char-type '() x))
+
+    (define char->integer rib-cdr)))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -626,6 +639,7 @@
 
 (define (field-index type field)
   (memv-position field (cdr type)))
+
 ;; Number
 
 (define (integer? x)
@@ -708,15 +722,8 @@
 
 ;; Character
 
-(define char? (instance? char-type))
-
 (define (char-whitespace? x)
   (pair? (memv x '(#\newline #\return #\space #\tab))))
-
-(define (integer->char x)
-  (data-rib char-type '() x))
-
-(define char->integer rib-cdr)
 
 (define (char-compare compare)
   (lambda xs (apply compare (map char->integer xs))))
