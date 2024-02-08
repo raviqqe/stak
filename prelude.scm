@@ -696,12 +696,12 @@
 
 (define (comparison-operator f)
   (lambda xs
-    (if (null? xs)
-      #t
+    (or
+      (null? xs)
       (let loop ((x (car xs))
                  (xs (cdr xs)))
-        (if (null? xs)
-          #t
+        (or
+          (null? xs)
           (let ((y (car xs)))
             (and (f x y) (loop y (cdr xs)))))))))
 
