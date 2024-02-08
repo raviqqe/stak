@@ -874,15 +874,12 @@
         (f (fold-right f y (cdr xs)) (car xs))))
 
     (define (reduce-right f y xs)
-      (cond
-        ((null? xs)
-          y)
-
-        ((null? (cdr xs))
-          (car xs))
-
-        (else
-          (f (reduce-right f y (cdr xs)) (car xs)))))
+      (if (null? xs)
+        y
+        (let loop ((xs xs))
+          (if (null? (cdr xs))
+            (car xs)
+            (f (loop (cdr xs)) (car xs))))))
 
     (define (list-position f xs)
       (let loop ((xs xs) (index 0))
