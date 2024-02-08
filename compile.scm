@@ -14,9 +14,6 @@
     (define target-pair? pair?)
     (define target-procedure? procedure?)
 
-    (define (string->uninterned-symbol string)
-      (data-rib symbol-type string #f))
-
     ; Internal symbols must be discoverable with their string representations.
     (set-car! '$$false "$$false")
     (set-car! '$$true "$$true")
