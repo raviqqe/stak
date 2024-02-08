@@ -14,6 +14,9 @@
     (define target-pair? pair?)
     (define target-procedure? procedure?)
 
+    (define (string->uninterned-symbol string)
+      (data-rib symbol-type string #f))
+
     ; Internal symbols must be discoverable with their string representations.
     (set-car! '$$false "$$false")
     (set-car! '$$true "$$true")
@@ -39,7 +42,9 @@
       (instance? value pair-type))
 
     (define (target-procedure? value)
-      (instance? value procedure-type))))
+      (instance? value procedure-type))
+
+    (define string->uninterned-symbol string->symbol)))
 
 ; Constants
 
@@ -363,8 +368,6 @@
 
 (define (rename-library-symbol id name)
   (if (or
-       ; TODO Remove this hack.
-       (zero? (string-length (symbol->string name)))
        (eqv? (string-ref (symbol->string name) 0) #\$)
        (memv name keywords)
        (not id))
@@ -520,7 +523,7 @@
            (list-count
              (lambda (pair) (eqv? (cdr pair) denotation))
              (expansion-context-environment context))))
-    (string->symbol (string-append (symbol->string name) "$" (id->string count)))))
+    (string->uninterned-symbol (symbol->string name))))
 
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
@@ -1002,7 +1005,7 @@
 (define (constant-context-generate-constant-id! context)
   (let ((id (constant-context-constant-id context)))
     (constant-context-set-constant-id! context (+ id 1))
-    (string->symbol (string-append "$" (id->string id)))))
+    (string->uninterned-symbol "")))
 
 ;; Main
 

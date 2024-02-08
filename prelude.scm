@@ -994,7 +994,7 @@
       car)
 
     (else
-      (let ((x (data-rib symbol-type (string-append x) #f)))
+      (let ((x (data-rib symbol-type x #f)))
         (set! symbol-table (cons x symbol-table))
         x))))
 
