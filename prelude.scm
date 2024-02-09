@@ -176,7 +176,10 @@
     vector-ref
     vector-set!
     list->vector
-    vector->list)
+    vector->list
+
+    define-record-type
+    record?)
 
   (begin
     ; Syntax
@@ -967,7 +970,61 @@
     (define (list->vector x)
       (data-rib vector-type x (length x)))
 
-    (define vector->list rib-car)))
+    (define vector->list rib-car)
+
+    ;; Record
+
+    ; We use record types only for certain built-in types not to degrade space
+    ; efficiency of their values
+    (define-syntax define-record-type
+      (syntax-rules ()
+        ((_ id
+            (constructor field ...)
+            predicate
+            (field getter . rest)
+            ...)
+          (begin
+            (define id (cons 'id '(field ...)))
+            (define constructor (record-constructor id))
+            (define predicate (record-predicate id))
+
+            (define-record-field id field getter . rest)
+            ...))))
+
+    (define-syntax define-record-field
+      (syntax-rules ()
+        ((_ type field getter)
+          (define getter (record-getter type 'field)))
+
+        ((_ type field getter setter)
+          (begin
+            (define-record-field type field getter)
+            (define setter (record-setter type 'field))))))
+
+    (define record? (instance? record-type))
+
+    (define (record-constructor type)
+      (lambda xs
+        (data-rib record-type (list->vector xs) type)))
+
+    (define (record-predicate type)
+      (lambda (x)
+        (and
+          (record? x)
+          (eq? (rib-cdr x) type))))
+
+    (define (record-getter type field)
+      (let ((index (field-index type field)))
+        (lambda (record)
+          (vector-ref (rib-car record) index))))
+
+    (define (record-setter type field)
+      (let ((index (field-index type field)))
+        (lambda (record value)
+          (vector-set! (rib-car record) index value))))
+
+    (define (field-index type field)
+      (memv-position field (cdr type)))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -976,60 +1033,6 @@
 (define-library (scheme write))
 
 (import (scheme base))
-
-;; Record
-
-; We use record types only for certain built-in types not to degrade space
-; efficiency of their values
-(define-syntax define-record-type
-  (syntax-rules ()
-    ((_ id
-        (constructor field ...)
-        predicate
-        (field getter . rest)
-        ...)
-      (begin
-        (define id (cons 'id '(field ...)))
-        (define constructor (record-constructor id))
-        (define predicate (record-predicate id))
-
-        (define-record-field id field getter . rest)
-        ...))))
-
-(define-syntax define-record-field
-  (syntax-rules ()
-    ((_ type field getter)
-      (define getter (record-getter type 'field)))
-
-    ((_ type field getter setter)
-      (begin
-        (define-record-field type field getter)
-        (define setter (record-setter type 'field))))))
-
-(define record? (instance? record-type))
-
-(define (record-constructor type)
-  (lambda xs
-    (data-rib record-type (list->vector xs) type)))
-
-(define (record-predicate type)
-  (lambda (x)
-    (and
-      (record? x)
-      (eq? (rib-cdr x) type))))
-
-(define (record-getter type field)
-  (let ((index (field-index type field)))
-    (lambda (record)
-      (vector-ref (rib-car record) index))))
-
-(define (record-setter type field)
-  (let ((index (field-index type field)))
-    (lambda (record value)
-      (vector-set! (rib-car record) index value))))
-
-(define (field-index type field)
-  (memv-position field (cdr type)))
 
 ;; String
 
