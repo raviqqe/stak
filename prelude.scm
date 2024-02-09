@@ -73,6 +73,12 @@
     char?
     integer->char
     char->integer
+    char-whitespace?
+    char=?
+    char<?
+    char<=?
+    char>?
+    char>=?
 
     integer?
     rational?
@@ -155,7 +161,22 @@
     fold-right
     reduce-right
     list-position
-    memv-position)
+    memv-position
+
+    bytevector?
+    bytevector-length
+    bytevector-u8-ref
+    list->bytevector
+    bytevector->list
+
+    vector?
+    vector
+    make-vector
+    vector-length
+    vector-ref
+    vector-set!
+    list->vector
+    vector->list)
 
   (begin
     ; Syntax
@@ -661,6 +682,18 @@
 
     (define char->integer rib-cdr)
 
+    (define (char-whitespace? x)
+      (pair? (memv x '(#\newline #\return #\space #\tab))))
+
+    (define (char-compare compare)
+      (lambda xs (apply compare (map char->integer xs))))
+
+    (define char=? (char-compare =))
+    (define char<? (char-compare <))
+    (define char<=? (char-compare <=))
+    (define char>? (char-compare >))
+    (define char>=? (char-compare >=))
+
     ;; Number
 
     (define (integer? x)
@@ -894,7 +927,47 @@
             (loop (cdr xs) (+ index 1))))))
 
     (define (memv-position one xs)
-      (list-position (lambda (other) (eqv? one other)) xs))))
+      (list-position (lambda (other) (eqv? one other)) xs))
+
+    ;; Bytevector
+
+    (define bytevector? (instance? bytevector-type))
+
+    (define bytevector-length rib-cdr)
+
+    (define (bytevector-u8-ref vector index)
+      ; TODO Do not export `byte-vector-u8-ref`.
+      ; We need to use `rib-car` instead of `bytevector->list` because we re-define
+      ; the function in a compiler.
+      (list-ref (rib-car vector) index))
+
+    (define (list->bytevector x)
+      (data-rib bytevector-type x (length x)))
+
+    (define bytevector->list rib-car)
+
+    ;; Vector
+
+    (define vector? (instance? vector-type))
+
+    (define (vector . rest)
+      (list->vector rest))
+
+    (define (make-vector length . rest)
+      (list->vector (apply make-list (cons length rest))))
+
+    (define vector-length rib-cdr)
+
+    (define (vector-ref vector index)
+      (list-ref (vector->list vector) index))
+
+    (define (vector-set! vector index value)
+      (list-set! (vector->list vector) index value))
+
+    (define (list->vector x)
+      (data-rib vector-type x (length x)))
+
+    (define vector->list rib-car)))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -957,37 +1030,6 @@
 
 (define (field-index type field)
   (memv-position field (cdr type)))
-
-;; Bytevector
-
-(define bytevector? (instance? bytevector-type))
-
-(define bytevector-length rib-cdr)
-
-(define (bytevector-u8-ref vector index)
-  ; TODO Do not export `byte-vector-u8-ref`.
-  ; We need to use `rib-car` instead of `bytevector->list` because we re-define
-  ; the function in a compiler.
-  (list-ref (rib-car vector) index))
-
-(define (list->bytevector x)
-  (data-rib bytevector-type x (length x)))
-
-(define bytevector->list rib-car)
-
-;; Character
-
-(define (char-whitespace? x)
-  (pair? (memv x '(#\newline #\return #\space #\tab))))
-
-(define (char-compare compare)
-  (lambda xs (apply compare (map char->integer xs))))
-
-(define char=? (char-compare =))
-(define char<? (char-compare <))
-(define char<=? (char-compare <=))
-(define char>? (char-compare >))
-(define char>=? (char-compare >=))
 
 ;; String
 
@@ -1093,29 +1135,6 @@
       (let ((x (string->uninterned-symbol x)))
         (set! symbol-table (cons x symbol-table))
         x))))
-
-;; Vector
-
-(define vector? (instance? vector-type))
-
-(define (vector . rest)
-  (list->vector rest))
-
-(define (make-vector length . rest)
-  (list->vector (apply make-list (cons length rest))))
-
-(define vector-length rib-cdr)
-
-(define (vector-ref vector index)
-  (list-ref (vector->list vector) index))
-
-(define (vector-set! vector index value)
-  (list-set! (vector->list vector) index value))
-
-(define (list->vector x)
-  (data-rib vector-type x (length x)))
-
-(define vector->list rib-car)
 
 ; Control
 
