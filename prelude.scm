@@ -676,27 +676,6 @@
     (define (not x)
       (eq? x #f))
 
-    ;; Character
-
-    (define char? (instance? char-type))
-
-    (define (integer->char x)
-      (data-rib char-type '() x))
-
-    (define char->integer rib-cdr)
-
-    (define (char-whitespace? x)
-      (pair? (memv x '(#\newline #\return #\space #\tab))))
-
-    (define (char-compare compare)
-      (lambda xs (apply compare (map char->integer xs))))
-
-    (define char=? (char-compare =))
-    (define char<? (char-compare <))
-    (define char<=? (char-compare <=))
-    (define char>? (char-compare >))
-    (define char>=? (char-compare >=))
-
     ;; Number
 
     (define (integer? x)
@@ -759,6 +738,27 @@
       (if (< x 0)
         (- 0 x)
         x))
+
+    ;; Character
+
+    (define char? (instance? char-type))
+
+    (define (integer->char x)
+      (data-rib char-type '() x))
+
+    (define char->integer rib-cdr)
+
+    (define (char-whitespace? x)
+      (pair? (memv x '(#\newline #\return #\space #\tab))))
+
+    (define (char-compare compare)
+      (lambda xs (apply compare (map char->integer xs))))
+
+    (define char=? (char-compare =))
+    (define char<? (char-compare <))
+    (define char<=? (char-compare <=))
+    (define char>? (char-compare >))
+    (define char>=? (char-compare >=))
 
     ;; Procedure
 
