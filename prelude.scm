@@ -67,12 +67,10 @@
     eqv?
     equal?
 
+    procedure?
+
     boolean?
     not
-
-    char?
-    integer->char
-    char->integer
 
     integer?
     rational?
@@ -97,7 +95,15 @@
     >=
     abs
 
-    procedure?
+    char?
+    integer->char
+    char->integer
+    char-whitespace?
+    char=?
+    char<?
+    char<=?
+    char>?
+    char>=?
 
     null?
     pair?
@@ -155,7 +161,34 @@
     fold-right
     reduce-right
     list-position
-    memv-position)
+    memv-position
+
+    bytevector?
+    bytevector-length
+    bytevector-u8-ref
+    list->bytevector
+    bytevector->list
+
+    vector?
+    vector
+    make-vector
+    vector-length
+    vector-ref
+    vector-set!
+    list->vector
+    vector->list
+
+    string?
+    list->string
+    string->list
+    string-append
+    string-length
+    string-ref
+    number->string
+    string->number
+
+    define-record-type
+    record?)
 
   (begin
     ; Syntax
@@ -645,21 +678,16 @@
           (equal? (rib-car x) (rib-car y))
           (equal? (rib-cdr x) (rib-cdr y)))))
 
+    ;; Procedure
+
+    (define procedure? (instance? procedure-type))
+
     ;; Boolean
 
     (define boolean? (instance? boolean-type))
 
     (define (not x)
       (eq? x #f))
-
-    ;; Character
-
-    (define char? (instance? char-type))
-
-    (define (integer->char x)
-      (data-rib char-type '() x))
-
-    (define char->integer rib-cdr)
 
     ;; Number
 
@@ -724,9 +752,26 @@
         (- 0 x)
         x))
 
-    ;; Procedure
+    ;; Character
 
-    (define procedure? (instance? procedure-type))
+    (define char? (instance? char-type))
+
+    (define (integer->char x)
+      (data-rib char-type '() x))
+
+    (define char->integer rib-cdr)
+
+    (define (char-whitespace? x)
+      (pair? (memv x '(#\newline #\return #\space #\tab))))
+
+    (define (char-compare compare)
+      (lambda xs (apply compare (map char->integer xs))))
+
+    (define char=? (char-compare =))
+    (define char<? (char-compare <))
+    (define char<=? (char-compare <=))
+    (define char>? (char-compare >))
+    (define char>=? (char-compare >=))
 
     ;; List
 
@@ -894,7 +939,183 @@
             (loop (cdr xs) (+ index 1))))))
 
     (define (memv-position one xs)
-      (list-position (lambda (other) (eqv? one other)) xs))))
+      (list-position (lambda (other) (eqv? one other)) xs))
+
+    ;; Bytevector
+
+    (define bytevector? (instance? bytevector-type))
+
+    (define bytevector-length rib-cdr)
+
+    (define (bytevector-u8-ref vector index)
+      ; TODO Do not export `byte-vector-u8-ref`.
+      ; We need to use `rib-car` instead of `bytevector->list` because we re-define
+      ; the function in a compiler.
+      (list-ref (rib-car vector) index))
+
+    (define (list->bytevector x)
+      (data-rib bytevector-type x (length x)))
+
+    (define bytevector->list rib-car)
+
+    ;; Vector
+
+    (define vector? (instance? vector-type))
+
+    (define (vector . rest)
+      (list->vector rest))
+
+    (define (make-vector length . rest)
+      (list->vector (apply make-list (cons length rest))))
+
+    (define vector-length rib-cdr)
+
+    (define (vector-ref vector index)
+      (list-ref (vector->list vector) index))
+
+    (define (vector-set! vector index value)
+      (list-set! (vector->list vector) index value))
+
+    (define (list->vector x)
+      (data-rib vector-type x (length x)))
+
+    (define vector->list rib-car)
+
+    ;; String
+
+    (define string? (instance? string-type))
+
+    (define (list->string x)
+      (data-rib string-type (map char->integer x) (length x)))
+
+    (define (string->list x)
+      (map integer->char (rib-car x)))
+
+    (define (string-append . xs)
+      (list->string (apply append (map string->list xs))))
+
+    (define string-length rib-cdr)
+
+    (define (string-ref x index)
+      (integer->char (list-ref (rib-car x) index)))
+
+    (define (number->string x . rest)
+      (let ((radix (if (null? rest) 10 (car rest))))
+        (list->string
+          (append
+            (if (< x 0)
+              (list #\-)
+              '())
+            (let loop ((x (abs x)) (ys '()))
+              (let* ((q (/ x radix))
+                     (d (- x (* q radix)))
+                     (ys
+                       (cons
+                         (integer->char
+                           (if (< 9 d)
+                             (+ (char->integer #\a) (- d 10))
+                             (+ (char->integer #\0) d)))
+                         ys)))
+                (if (< 0 q)
+                  (loop q ys)
+                  ys)))))))
+
+    (define digit-characters
+      (map
+        (lambda (pair)
+          (cons
+            (cons
+              (char->integer (caar pair))
+              (char->integer (cdar pair)))
+            (cdr pair)))
+        '(((#\0 . #\9) . 0)
+          ((#\A . #\Z) . 10)
+          ((#\a . #\z) . 10))))
+
+    (define (convert-digit x radix)
+      (let* ((x (char->integer x))
+             (y
+               (member
+                 x
+                 digit-characters
+                 (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+        (and
+          y
+          ; TODO Fix performance.
+          (let ((y (+ (- x (caaar y)) (cdar y))))
+            (and (< y radix) y)))))
+
+    (define (string->number x . rest)
+      (define radix (if (null? rest) 10 (car rest)))
+
+      (define (convert xs)
+        (and
+          (pair? xs)
+          (let loop ((xs xs) (y 0))
+            (if (null? xs)
+              y
+              (let ((x (convert-digit (car xs) radix)))
+                (and x (loop (cdr xs) (+ (* radix y) x))))))))
+
+      (let ((xs (string->list x)))
+        (if (and (pair? xs) (eqv? (car xs) #\-))
+          (let ((x (convert (cdr xs))))
+            (and x (- x)))
+          (convert xs))))
+
+    ;; Record
+
+    ; We use record types only for certain built-in types not to degrade space
+    ; efficiency of their values
+    (define-syntax define-record-type
+      (syntax-rules ()
+        ((_ id
+            (constructor field ...)
+            predicate
+            (field getter . rest)
+            ...)
+          (begin
+            (define id (cons 'id '(field ...)))
+            (define constructor (record-constructor id))
+            (define predicate (record-predicate id))
+
+            (define-record-field id field getter . rest)
+            ...))))
+
+    (define-syntax define-record-field
+      (syntax-rules ()
+        ((_ type field getter)
+          (define getter (record-getter type 'field)))
+
+        ((_ type field getter setter)
+          (begin
+            (define-record-field type field getter)
+            (define setter (record-setter type 'field))))))
+
+    (define record? (instance? record-type))
+
+    (define (record-constructor type)
+      (lambda xs
+        (data-rib record-type (list->vector xs) type)))
+
+    (define (record-predicate type)
+      (lambda (x)
+        (and
+          (record? x)
+          (eq? (rib-cdr x) type))))
+
+    (define (record-getter type field)
+      (let ((index (field-index type field)))
+        (lambda (record)
+          (vector-ref (rib-car record) index))))
+
+    (define (record-setter type field)
+      (let ((index (field-index type field)))
+        (lambda (record value)
+          (vector-set! (rib-car record) index value))))
+
+    (define (field-index type field)
+      (memv-position field (cdr type)))))
 
 (define-library (scheme cxr))
 (define-library (scheme eval))
@@ -903,173 +1124,6 @@
 (define-library (scheme write))
 
 (import (scheme base))
-
-;; Record
-
-; We use record types only for certain built-in types not to degrade space
-; efficiency of their values
-(define-syntax define-record-type
-  (syntax-rules ()
-    ((_ id
-        (constructor field ...)
-        predicate
-        (field getter . rest)
-        ...)
-      (begin
-        (define id (cons 'id '(field ...)))
-        (define constructor (record-constructor id))
-        (define predicate (record-predicate id))
-
-        (define-record-field id field getter . rest)
-        ...))))
-
-(define-syntax define-record-field
-  (syntax-rules ()
-    ((_ type field getter)
-      (define getter (record-getter type 'field)))
-
-    ((_ type field getter setter)
-      (begin
-        (define-record-field type field getter)
-        (define setter (record-setter type 'field))))))
-
-(define record? (instance? record-type))
-
-(define (record-constructor type)
-  (lambda xs
-    (data-rib record-type (list->vector xs) type)))
-
-(define (record-predicate type)
-  (lambda (x)
-    (and
-      (record? x)
-      (eq? (rib-cdr x) type))))
-
-(define (record-getter type field)
-  (let ((index (field-index type field)))
-    (lambda (record)
-      (vector-ref (rib-car record) index))))
-
-(define (record-setter type field)
-  (let ((index (field-index type field)))
-    (lambda (record value)
-      (vector-set! (rib-car record) index value))))
-
-(define (field-index type field)
-  (memv-position field (cdr type)))
-
-;; Bytevector
-
-(define bytevector? (instance? bytevector-type))
-
-(define bytevector-length rib-cdr)
-
-(define (bytevector-u8-ref vector index)
-  ; TODO Do not export `byte-vector-u8-ref`.
-  ; We need to use `rib-car` instead of `bytevector->list` because we re-define
-  ; the function in a compiler.
-  (list-ref (rib-car vector) index))
-
-(define (list->bytevector x)
-  (data-rib bytevector-type x (length x)))
-
-(define bytevector->list rib-car)
-
-;; Character
-
-(define (char-whitespace? x)
-  (pair? (memv x '(#\newline #\return #\space #\tab))))
-
-(define (char-compare compare)
-  (lambda xs (apply compare (map char->integer xs))))
-
-(define char=? (char-compare =))
-(define char<? (char-compare <))
-(define char<=? (char-compare <=))
-(define char>? (char-compare >))
-(define char>=? (char-compare >=))
-
-;; String
-
-(define string? (instance? string-type))
-
-(define (list->string x)
-  (data-rib string-type (map char->integer x) (length x)))
-
-(define (string->list x)
-  (map integer->char (rib-car x)))
-
-(define (string-append . xs)
-  (list->string (apply append (map string->list xs))))
-
-(define string-length rib-cdr)
-
-(define (string-ref x index)
-  (integer->char (list-ref (rib-car x) index)))
-
-(define (number->string x . rest)
-  (let ((radix (if (null? rest) 10 (car rest))))
-    (list->string
-      (append
-        (if (< x 0)
-          (list #\-)
-          '())
-        (let loop ((x (abs x)) (ys '()))
-          (let* ((q (/ x radix))
-                 (d (- x (* q radix)))
-                 (ys
-                   (cons
-                     (integer->char
-                       (if (< 9 d)
-                         (+ (char->integer #\a) (- d 10))
-                         (+ (char->integer #\0) d)))
-                     ys)))
-            (if (< 0 q)
-              (loop q ys)
-              ys)))))))
-
-(define digit-characters
-  (map
-    (lambda (pair)
-      (cons
-        (cons
-          (char->integer (caar pair))
-          (char->integer (cdar pair)))
-        (cdr pair)))
-    '(((#\0 . #\9) . 0)
-      ((#\A . #\Z) . 10)
-      ((#\a . #\z) . 10))))
-
-(define (convert-digit x radix)
-  (let* ((x (char->integer x))
-         (y
-           (member
-             x
-             digit-characters
-             (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-    (and
-      y
-      ; TODO Fix performance.
-      (let ((y (+ (- x (caaar y)) (cdar y))))
-        (and (< y radix) y)))))
-
-(define (string->number x . rest)
-  (define radix (if (null? rest) 10 (car rest)))
-
-  (define (convert xs)
-    (and
-      (pair? xs)
-      (let loop ((xs xs) (y 0))
-        (if (null? xs)
-          y
-          (let ((x (convert-digit (car xs) radix)))
-            (and x (loop (cdr xs) (+ (* radix y) x))))))))
-
-  (let ((xs (string->list x)))
-    (if (and (pair? xs) (eqv? (car xs) #\-))
-      (let ((x (convert (cdr xs))))
-        (and x (- x)))
-      (convert xs))))
 
 ;; Symbol
 
@@ -1093,29 +1147,6 @@
       (let ((x (string->uninterned-symbol x)))
         (set! symbol-table (cons x symbol-table))
         x))))
-
-;; Vector
-
-(define vector? (instance? vector-type))
-
-(define (vector . rest)
-  (list->vector rest))
-
-(define (make-vector length . rest)
-  (list->vector (apply make-list (cons length rest))))
-
-(define vector-length rib-cdr)
-
-(define (vector-ref vector index)
-  (list-ref (vector->list vector) index))
-
-(define (vector-set! vector index value)
-  (list-set! (vector->list vector) index value))
-
-(define (list->vector x)
-  (data-rib vector-type x (length x)))
-
-(define vector->list rib-car)
 
 ; Control
 
