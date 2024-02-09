@@ -67,18 +67,10 @@
     eqv?
     equal?
 
+    procedure?
+
     boolean?
     not
-
-    char?
-    integer->char
-    char->integer
-    char-whitespace?
-    char=?
-    char<?
-    char<=?
-    char>?
-    char>=?
 
     integer?
     rational?
@@ -103,7 +95,15 @@
     >=
     abs
 
-    procedure?
+    char?
+    integer->char
+    char->integer
+    char-whitespace?
+    char=?
+    char<?
+    char<=?
+    char>?
+    char>=?
 
     null?
     pair?
@@ -177,6 +177,15 @@
     vector-set!
     list->vector
     vector->list
+
+    string?
+    list->string
+    string->list
+    string-append
+    string-length
+    string-ref
+    number->string
+    string->number
 
     define-record-type
     record?)
@@ -669,6 +678,10 @@
           (equal? (rib-car x) (rib-car y))
           (equal? (rib-cdr x) (rib-cdr y)))))
 
+    ;; Procedure
+
+    (define procedure? (instance? procedure-type))
+
     ;; Boolean
 
     (define boolean? (instance? boolean-type))
@@ -759,10 +772,6 @@
     (define char<=? (char-compare <=))
     (define char>? (char-compare >))
     (define char>=? (char-compare >=))
-
-    ;; Procedure
-
-    (define procedure? (instance? procedure-type))
 
     ;; List
 
@@ -972,6 +981,88 @@
 
     (define vector->list rib-car)
 
+    ;; String
+
+    (define string? (instance? string-type))
+
+    (define (list->string x)
+      (data-rib string-type (map char->integer x) (length x)))
+
+    (define (string->list x)
+      (map integer->char (rib-car x)))
+
+    (define (string-append . xs)
+      (list->string (apply append (map string->list xs))))
+
+    (define string-length rib-cdr)
+
+    (define (string-ref x index)
+      (integer->char (list-ref (rib-car x) index)))
+
+    (define (number->string x . rest)
+      (let ((radix (if (null? rest) 10 (car rest))))
+        (list->string
+          (append
+            (if (< x 0)
+              (list #\-)
+              '())
+            (let loop ((x (abs x)) (ys '()))
+              (let* ((q (/ x radix))
+                     (d (- x (* q radix)))
+                     (ys
+                       (cons
+                         (integer->char
+                           (if (< 9 d)
+                             (+ (char->integer #\a) (- d 10))
+                             (+ (char->integer #\0) d)))
+                         ys)))
+                (if (< 0 q)
+                  (loop q ys)
+                  ys)))))))
+
+    (define digit-characters
+      (map
+        (lambda (pair)
+          (cons
+            (cons
+              (char->integer (caar pair))
+              (char->integer (cdar pair)))
+            (cdr pair)))
+        '(((#\0 . #\9) . 0)
+          ((#\A . #\Z) . 10)
+          ((#\a . #\z) . 10))))
+
+    (define (convert-digit x radix)
+      (let* ((x (char->integer x))
+             (y
+               (member
+                 x
+                 digit-characters
+                 (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+        (and
+          y
+          ; TODO Fix performance.
+          (let ((y (+ (- x (caaar y)) (cdar y))))
+            (and (< y radix) y)))))
+
+    (define (string->number x . rest)
+      (define radix (if (null? rest) 10 (car rest)))
+
+      (define (convert xs)
+        (and
+          (pair? xs)
+          (let loop ((xs xs) (y 0))
+            (if (null? xs)
+              y
+              (let ((x (convert-digit (car xs) radix)))
+                (and x (loop (cdr xs) (+ (* radix y) x))))))))
+
+      (let ((xs (string->list x)))
+        (if (and (pair? xs) (eqv? (car xs) #\-))
+          (let ((x (convert (cdr xs))))
+            (and x (- x)))
+          (convert xs))))
+
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1033,88 +1124,6 @@
 (define-library (scheme write))
 
 (import (scheme base))
-
-;; String
-
-(define string? (instance? string-type))
-
-(define (list->string x)
-  (data-rib string-type (map char->integer x) (length x)))
-
-(define (string->list x)
-  (map integer->char (rib-car x)))
-
-(define (string-append . xs)
-  (list->string (apply append (map string->list xs))))
-
-(define string-length rib-cdr)
-
-(define (string-ref x index)
-  (integer->char (list-ref (rib-car x) index)))
-
-(define (number->string x . rest)
-  (let ((radix (if (null? rest) 10 (car rest))))
-    (list->string
-      (append
-        (if (< x 0)
-          (list #\-)
-          '())
-        (let loop ((x (abs x)) (ys '()))
-          (let* ((q (/ x radix))
-                 (d (- x (* q radix)))
-                 (ys
-                   (cons
-                     (integer->char
-                       (if (< 9 d)
-                         (+ (char->integer #\a) (- d 10))
-                         (+ (char->integer #\0) d)))
-                     ys)))
-            (if (< 0 q)
-              (loop q ys)
-              ys)))))))
-
-(define digit-characters
-  (map
-    (lambda (pair)
-      (cons
-        (cons
-          (char->integer (caar pair))
-          (char->integer (cdar pair)))
-        (cdr pair)))
-    '(((#\0 . #\9) . 0)
-      ((#\A . #\Z) . 10)
-      ((#\a . #\z) . 10))))
-
-(define (convert-digit x radix)
-  (let* ((x (char->integer x))
-         (y
-           (member
-             x
-             digit-characters
-             (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-    (and
-      y
-      ; TODO Fix performance.
-      (let ((y (+ (- x (caaar y)) (cdar y))))
-        (and (< y radix) y)))))
-
-(define (string->number x . rest)
-  (define radix (if (null? rest) 10 (car rest)))
-
-  (define (convert xs)
-    (and
-      (pair? xs)
-      (let loop ((xs xs) (y 0))
-        (if (null? xs)
-          y
-          (let ((x (convert-digit (car xs) radix)))
-            (and x (loop (cdr xs) (+ (* radix y) x))))))))
-
-  (let ((xs (string->list x)))
-    (if (and (pair? xs) (eqv? (car xs) #\-))
-      (let ((x (convert (cdr xs))))
-        (and x (- x)))
-      (convert xs))))
 
 ;; Symbol
 
