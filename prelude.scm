@@ -1072,7 +1072,8 @@
 (define-library (scheme cxr)
   (import (scheme base))
 
-  (export caaar
+  (export
+    caaar
     caadr
     cadar
     caddr
