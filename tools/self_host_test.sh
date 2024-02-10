@@ -10,19 +10,19 @@ log() {
 }
 
 run_stage0() {
-  gosh compile.scm
+  stak compile.scm
 }
 
 run_stage1() {
-  stak-compile
+  $target/stak-compile
 }
 
 run_stage2() {
-  stak-interpret stage2.bc
+  $target/stak-interpret stage2.bc
 }
 
 run_stage3() {
-  stak-interpret stage3.bc
+  $target/stak-interpret stage3.bc
 }
 
 artifact_path() {
@@ -31,10 +31,9 @@ artifact_path() {
 
 cd $(dirname $0)/..
 
-export PATH=$(dirname $0)/../target/release_test:$PATH
+target=$PWD/target/release_test
 
 mkdir -p tmp
-brew install gauche
 cargo build --profile release_test
 
 for stage in $(seq 0 $(expr $stage_count - 1)); do
@@ -48,7 +47,7 @@ for file in bench/*/main.scm compile.scm; do
     bytecode_file=$(artifact_path $stage bc)
 
     cat prelude.scm $file | log run_stage$stage >$bytecode_file
-    stak-decode <$bytecode_file >${bytecode_file%.*}.md
+    $target/stak-decode <$bytecode_file >${bytecode_file%.*}.md
   done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
