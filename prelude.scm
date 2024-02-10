@@ -1070,9 +1070,7 @@
       (memv-position field (cdr type)))))
 
 (define-library (scheme cxr)
-  (import
-    (scheme base)
-    (scheme cxr))
+  (import (scheme base))
 
   (export caaar
     caadr
