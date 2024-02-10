@@ -10,8 +10,8 @@ use core::fmt::{self, Display, Formatter};
 /// - in cdr, nothing.
 pub const NEVER: Cons = Cons::new(u64::MAX);
 
-const TAG_MASK: u64 = 0b1111;
-const TAG_SIZE: usize = TAG_MASK.count_ones() as usize;
+const TAG_SIZE: usize = 4;
+const TAG_MASK: u64 = (1 << TAG_SIZE) - 1;
 
 /// A cons.
 #[derive(Clone, Copy, Debug)]
