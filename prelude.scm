@@ -195,7 +195,13 @@
     parameterize
 
     eof-object
-    eof-object?)
+    eof-object?
+
+    make-error-object
+    error-object?
+    error-object-type
+    error-object-message
+    error-object-irritants)
 
   (begin
     ; Syntax
@@ -1218,7 +1224,18 @@
 
     (define eof (make-eof-object))
 
-    (define (eof-object) eof)))
+    (define (eof-object) eof)
+
+    ; Control
+
+    ;; Exception
+
+    (define-record-type error-object
+      (make-error-object type message irritants)
+      error-object?
+      (type error-object-type)
+      (message error-object-message)
+      (irritants error-object-irritants))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1301,13 +1318,6 @@
 ; Control
 
 ;; Exception
-
-(define-record-type error-object
-  (make-error-object type message irritants)
-  error-object?
-  (type error-object-type)
-  (message error-object-message)
-  (irritants error-object-irritants))
 
 (define (convert-exception-handler handler)
   (lambda (pair)
