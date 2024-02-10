@@ -23,7 +23,7 @@ artifact_path() {
 
 cd $(dirname $0)/..
 
-target=$PWD/target/release_test
+target=target/release_test
 
 mkdir -p tmp
 cargo build --profile release_test
