@@ -172,7 +172,27 @@
 
     make-tuple
     tuple?
-    tuple-values)
+    tuple-values
+
+    values
+    call-with-values
+
+    call/cc
+
+    make-point
+    point?
+    point-depth
+    point-before
+    point-after
+    point-parent
+    current-point
+    set-current-point!
+
+    dynamic-wind
+    travel-to-point!
+
+    make-parameter
+    parameterize)
 
   (begin
     ; Syntax
@@ -1093,7 +1113,97 @@
     (define-record-type tuple
       (make-tuple values)
       tuple?
-      (values tuple-values))))
+      (values tuple-values))
+
+    ; Control
+
+    ;; Multi-value
+
+    (define (values . xs)
+      (make-tuple xs))
+
+    (define (call-with-values producer consumer)
+      (let ((xs (producer)))
+        (if (tuple? xs)
+          (apply consumer (tuple-values xs))
+          (consumer xs))))
+
+    ;; Continuation
+
+    (define dummy-function (lambda () #f))
+
+    (define (call/cc receiver)
+      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
+            (point current-point))
+        (receiver
+          (lambda (argument)
+            (travel-to-point! current-point point)
+            (set-current-point! point)
+            (rib-set-car!
+              (rib-cdr (rib-car (close dummy-function))) ; frame
+              continuation)
+            argument))))
+
+    ;; Dynamic wind
+
+    (define-record-type point
+      (make-point depth before after parent)
+      point?
+      (depth point-depth)
+      (before point-before)
+      (after point-after)
+      (parent point-parent))
+
+    (define current-point (make-point 0 #f #f #f))
+
+    (define (set-current-point! x)
+      (set! current-point x))
+
+    (define (dynamic-wind before thunk after)
+      (before)
+      (let ((point current-point))
+        (set-current-point! (make-point (+ (point-depth point) 1) before after point))
+        (let ((value (thunk)))
+          (set-current-point! point)
+          (after)
+          value)))
+
+    (define (travel-to-point! from to)
+      (cond
+        ((eq? from to)
+          #f)
+
+        ((< (point-depth from) (point-depth to))
+          (travel-to-point! from (point-parent to))
+          ((point-before to)))
+
+        (else
+          ((point-after from))
+          (travel-to-point! (point-parent from) to))))
+
+    ;; Parameter
+
+    (define (make-parameter x . rest)
+      (define convert (if (pair? rest) (car rest) (lambda (x) x)))
+      (set! x (convert x))
+
+      (lambda rest
+        (if (null? rest)
+          x
+          (set! x (convert (car rest))))))
+
+    (define-syntax parameterize
+      (syntax-rules ()
+        ((_ () body ...)
+          (begin body ...))
+
+        ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
+          (let* ((parameter parameter1)
+                 (old (parameter)))
+            (dynamic-wind
+              (lambda () (parameter value1))
+              (lambda () (parameterize ((parameter2 value2) ...) body ...))
+              (lambda () (parameter old)))))))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1174,94 +1284,6 @@
         x))))
 
 ; Control
-
-;; Multi-value
-
-(define (values . xs)
-  (make-tuple xs))
-
-(define (call-with-values producer consumer)
-  (let ((xs (producer)))
-    (if (tuple? xs)
-      (apply consumer (tuple-values xs))
-      (consumer xs))))
-
-;; Continuation
-
-(define dummy-function (lambda () #f))
-
-(define (call/cc receiver)
-  (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
-        (point current-point))
-    (receiver
-      (lambda (argument)
-        (travel-to-point! current-point point)
-        (set-current-point! point)
-        (rib-set-car!
-          (rib-cdr (rib-car (close dummy-function))) ; frame
-          continuation)
-        argument))))
-
-;; Dynamic wind
-
-(define-record-type point
-  (make-point depth before after parent)
-  point?
-  (depth point-depth)
-  (before point-before)
-  (after point-after)
-  (parent point-parent))
-
-(define current-point (make-point 0 #f #f #f))
-
-(define (set-current-point! x)
-  (set! current-point x))
-
-(define (dynamic-wind before thunk after)
-  (before)
-  (let ((point current-point))
-    (set-current-point! (make-point (+ (point-depth point) 1) before after point))
-    (let ((value (thunk)))
-      (set-current-point! point)
-      (after)
-      value)))
-
-(define (travel-to-point! from to)
-  (cond
-    ((eq? from to)
-      #f)
-
-    ((< (point-depth from) (point-depth to))
-      (travel-to-point! from (point-parent to))
-      ((point-before to)))
-
-    (else
-      ((point-after from))
-      (travel-to-point! (point-parent from) to))))
-
-;; Parameter
-
-(define (make-parameter x . rest)
-  (define convert (if (pair? rest) (car rest) (lambda (x) x)))
-  (set! x (convert x))
-
-  (lambda rest
-    (if (null? rest)
-      x
-      (set! x (convert (car rest))))))
-
-(define-syntax parameterize
-  (syntax-rules ()
-    ((_ () body ...)
-      (begin body ...))
-
-    ((_ ((parameter1 value1) (parameter2 value2) ...) body ...)
-      (let* ((parameter parameter1)
-             (old (parameter)))
-        (dynamic-wind
-          (lambda () (parameter value1))
-          (lambda () (parameterize ((parameter2 value2) ...) body ...))
-          (lambda () (parameter old)))))))
 
 ;; Exception
 
@@ -1398,7 +1420,7 @@
 ((call/cc
     (lambda (continuation)
       (set! unwind continuation)
-      dummy-function)))
+      (lambda () #f))))
 
 ; Derived types
 
