@@ -38,7 +38,7 @@ for file in bench/*/main.scm compile.scm; do
   for stage in $(seq 0 $stage_count); do
     bytecode_file=$(artifact_path $stage bc)
 
-    cat prelude.scm $file | log run_stage $stage >$bytecode_file
+    cat prelude.scm $file | run_stage $stage >$bytecode_file
     $target/stak-decode <$bytecode_file >${bytecode_file%.*}.md
   done
 
