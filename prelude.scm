@@ -168,7 +168,11 @@
     string->uninterned-symbol
 
     define-record-type
-    record?)
+    record?
+
+    make-tuple
+    tuple?
+    tuple-values)
 
   (begin
     ; Syntax
@@ -1081,7 +1085,15 @@
           (vector-set! (rib-car record) index value))))
 
     (define (field-index type field)
-      (memv-position field (cdr type)))))
+      (memv-position field (cdr type)))
+
+    ;; Tuple
+
+    ; A tuple is primarily used to represent multiple values.
+    (define-record-type tuple
+      (make-tuple values)
+      tuple?
+      (values tuple-values))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1415,14 +1427,6 @@
 (define current-input-port (make-parameter (make-port 'stdin)))
 (define current-output-port (make-parameter (make-port 'stdout)))
 (define current-error-port (make-parameter (make-port 'stderr)))
-
-;; Tuple
-
-; A tuple is primarily used to represent multiple values.
-(define-record-type tuple
-  (make-tuple values)
-  tuple?
-  (values tuple-values))
 
 ; Read
 
