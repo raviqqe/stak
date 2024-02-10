@@ -173,14 +173,18 @@
     eof-object
     eof-object?
 
-    port?
     make-port
+    port?
     port-descriptor
     port-last-byte
     port-set-last-byte!
     current-input-port
     current-output-port
-    current-error-port)
+    current-error-port
+
+    make-tuple
+    tuple?
+    tuple-values)
 
   (begin
     ; Syntax
