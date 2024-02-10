@@ -347,6 +347,9 @@
     r7rs
     scheme
     stak
+    stderr
+    stdin
+    stdout
     syntax-rules
     unquote
     unquote-splicing

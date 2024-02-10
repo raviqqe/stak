@@ -131,7 +131,6 @@
     assq
     assv
     append
-    append-lists
     reverse
     fold-left
     fold-right
@@ -196,6 +195,14 @@
 
     eof-object
     eof-object?
+
+    port?
+    port-descriptor
+    port-last-byte
+    port-set-last-byte!
+    current-input-port
+    current-output-port
+    current-error-port
 
     make-error-object
     error-object?
@@ -1226,6 +1233,22 @@
 
     (define (eof-object) eof)
 
+    ;; Port
+
+    ; TODO Support multiple bytes.
+    (define-record-type port
+      (make-port* descriptor last-byte)
+      port?
+      (descriptor port-descriptor)
+      (last-byte port-last-byte port-set-last-byte!))
+
+    (define (make-port descriptor)
+      (make-port* descriptor #f))
+
+    (define current-input-port (make-parameter (make-port 'stdin)))
+    (define current-output-port (make-parameter (make-port 'stdout)))
+    (define current-error-port (make-parameter (make-port 'stderr)))
+
     ; Control
 
     ;; Exception
@@ -1446,24 +1469,6 @@
     (lambda (continuation)
       (set! unwind continuation)
       (lambda () #f))))
-
-; Derived types
-
-;; Port
-
-; TODO Support multiple bytes.
-(define-record-type port
-  (make-port* descriptor last-byte)
-  port?
-  (descriptor port-descriptor)
-  (last-byte port-last-byte port-set-last-byte!))
-
-(define (make-port descriptor)
-  (make-port* descriptor #f))
-
-(define current-input-port (make-parameter (make-port 'stdin)))
-(define current-output-port (make-parameter (make-port 'stdout)))
-(define current-error-port (make-parameter (make-port 'stderr)))
 
 ; Read
 
