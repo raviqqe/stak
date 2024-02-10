@@ -163,6 +163,10 @@
     number->string
     string->number
 
+    symbol?
+    symbol->string
+    string->uninterned-symbol
+
     define-record-type
     record?)
 
@@ -1016,6 +1020,15 @@
             (and x (- x)))
           (convert xs))))
 
+    ;; Symbol
+
+    (define symbol? (instance? symbol-type))
+
+    (define symbol->string rib-car)
+
+    (define (string->uninterned-symbol x)
+      (data-rib symbol-type x #f))
+
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1134,16 +1147,9 @@
 
 ;; Symbol
 
-(define symbol? (instance? symbol-type))
-
 (define symbol-table (rib-car $$rib))
 ; Allow garbage collection for a symbol table.
 (rib-set-car! $$rib #f)
-
-(define symbol->string rib-car)
-
-(define (string->uninterned-symbol x)
-  (data-rib symbol-type x #f))
 
 (define (string->symbol x)
   (cond
