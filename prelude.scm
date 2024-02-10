@@ -994,7 +994,8 @@
         (and
           y
           ; TODO Fix performance.
-          (let ((y (+ (- x (caaar y)) (cdar y))))
+          (let* ((pair (car y))
+                 (y (+ (- x (caar pair)) (cdr pair))))
             (and (< y radix) y)))))
 
     (define (string->number x . rest)
