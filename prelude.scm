@@ -192,7 +192,10 @@
     travel-to-point!
 
     make-parameter
-    parameterize)
+    parameterize
+
+    eof-object
+    eof-object?)
 
   (begin
     ; Syntax
@@ -1203,7 +1206,19 @@
             (dynamic-wind
               (lambda () (parameter value1))
               (lambda () (parameterize ((parameter2 value2) ...) body ...))
-              (lambda () (parameter old)))))))))
+              (lambda () (parameter old)))))))
+
+    ; Derived types
+
+    ;; EOF object
+
+    (define-record-type eof-object
+      (make-eof-object)
+      eof-object?)
+
+    (define eof (make-eof-object))
+
+    (define (eof-object) eof)))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1424,16 +1439,6 @@
 
 ; Derived types
 
-;; EOF object
-
-(define-record-type eof-object
-  (make-eof-object)
-  eof-object?)
-
-(define eof (make-eof-object))
-
-(define (eof-object) eof)
-
 ;; Port
 
 ; TODO Support multiple bytes.
@@ -1476,7 +1481,7 @@
       (begin
         (port-set-last-byte! port #f)
         x)
-      (or ($$read-u8) eof))))
+      (or ($$read-u8) (eof-object)))))
 
 (define (peek-u8 . rest)
   (let* ((port (get-input-port rest))
