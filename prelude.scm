@@ -168,7 +168,19 @@
     string->uninterned-symbol
 
     define-record-type
-    record?)
+    record?
+
+    eof-object
+    eof-object?
+
+    port?
+    make-port
+    port-descriptor
+    port-last-byte
+    port-set-last-byte!
+    current-input-port
+    current-output-port
+    current-error-port)
 
   (begin
     ; Syntax
@@ -1081,7 +1093,41 @@
           (vector-set! (rib-car record) index value))))
 
     (define (field-index type field)
-      (memv-position field (cdr type)))))
+      (memv-position field (cdr type)))
+
+    ;; EOF object
+
+    (define-record-type eof-object
+      (make-eof-object)
+      eof-object?)
+
+    (define eof (make-eof-object))
+
+    (define (eof-object) eof)
+
+    ;; Port
+
+    ; TODO Support multiple bytes.
+    (define-record-type port
+      (make-port* descriptor last-byte)
+      port?
+      (descriptor port-descriptor)
+      (last-byte port-last-byte port-set-last-byte!))
+
+    (define (make-port descriptor)
+      (make-port* descriptor #f))
+
+    (define current-input-port (make-parameter (make-port 'stdin)))
+    (define current-output-port (make-parameter (make-port 'stdout)))
+    (define current-error-port (make-parameter (make-port 'stderr)))
+
+    ;; Tuple
+
+    ; A tuple is primarily used to represent multiple values.
+    (define-record-type tuple
+      (make-tuple values)
+      tuple?
+      (values tuple-values))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1388,42 +1434,6 @@
       (set! unwind continuation)
       dummy-function)))
 
-; Derived types
-
-;; EOF object
-
-(define-record-type eof-object
-  (make-eof-object)
-  eof-object?)
-
-(define eof (make-eof-object))
-
-(define (eof-object) eof)
-
-;; Port
-
-; TODO Support multiple bytes.
-(define-record-type port
-  (make-port* descriptor last-byte)
-  port?
-  (descriptor port-descriptor)
-  (last-byte port-last-byte port-set-last-byte!))
-
-(define (make-port descriptor)
-  (make-port* descriptor #f))
-
-(define current-input-port (make-parameter (make-port 'stdin)))
-(define current-output-port (make-parameter (make-port 'stdout)))
-(define current-error-port (make-parameter (make-port 'stderr)))
-
-;; Tuple
-
-; A tuple is primarily used to represent multiple values.
-(define-record-type tuple
-  (make-tuple values)
-  tuple?
-  (values tuple-values))
-
 ; Read
 
 (define special-chars
@@ -1450,7 +1460,7 @@
       (begin
         (port-set-last-byte! port #f)
         x)
-      (or ($$read-u8) eof))))
+      (or ($$read-u8) (eof-object)))))
 
 (define (peek-u8 . rest)
   (let* ((port (get-input-port rest))
