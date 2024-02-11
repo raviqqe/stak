@@ -1321,6 +1321,8 @@
 (define-library (scheme write))
 
 (define-library (scheme process-context)
+  (import (scheme base))
+
   (export exit emergency-exit)
 
   (begin
