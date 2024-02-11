@@ -56,9 +56,6 @@
     $$*
     $$/
     $$read-u8
-    $$write-u8
-    $$write-error-u8
-    $$halt
 
     apply
     data-rib
