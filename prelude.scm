@@ -216,6 +216,11 @@
     current-output-port
     current-error-port
 
+    read-u8
+    peek-u8
+    read-char
+    peek-char
+
     write-u8
     write-char
     write-string
@@ -1378,9 +1383,9 @@
       (make-eof-object)
       eof-object?)
 
-    (define eof (make-eof-object))
-
-    (define (eof-object) eof)
+    (define eof-object
+      (let ((eof (make-eof-object)))
+        (lambda () eof)))
 
     ;; Port
 
@@ -1397,6 +1402,35 @@
     (define current-input-port (make-parameter (make-port 'stdin)))
     (define current-output-port (make-parameter (make-port 'stdout)))
     (define current-error-port (make-parameter (make-port 'stderr)))
+
+    ; Read
+
+    (define (get-input-port rest)
+      (if (null? rest) (current-input-port) (car rest)))
+
+    (define (input-byte->char x)
+      (if (number? x) (integer->char x) x))
+
+    (define (read-u8 . rest)
+      (let* ((port (get-input-port rest))
+             (x (port-last-byte port)))
+        (if x
+          (begin
+            (port-set-last-byte! port #f)
+            x)
+          (or ($$read-u8) (eof-object)))))
+
+    (define (peek-u8 . rest)
+      (let* ((port (get-input-port rest))
+             (x (read-u8 port)))
+        (port-set-last-byte! port x)
+        x))
+
+    (define (read-char . rest)
+      (input-byte->char (read-u8 (get-input-port rest))))
+
+    (define (peek-char . rest)
+      (input-byte->char (peek-u8 (get-input-port rest))))
 
     ; Write
 
@@ -1494,8 +1528,172 @@
 
 (define-library (scheme eval))
 
+(define-library (stak char)
+  (import (scheme base))
+
+  (export special-chars)
+
+  (begin
+    (define special-chars
+      '(("alarm" . #\alarm)
+        ("backspace" . #\backspace)
+        ("delete" . #\delete)
+        ("escape" . #\escape)
+        ("newline" . #\newline)
+        ("null" . #\null)
+        ("return" . #\return)
+        ("space" . #\space)
+        ("tab" . #\tab)))))
+
 (define-library (scheme read))
-(define-library (scheme write))
+
+(define-library (scheme write)
+  (import (scheme base) (stak char))
+
+  (export display write)
+
+  (begin
+    (define (get-output-port rest)
+      (if (null? rest) (current-output-port) (car rest)))
+
+    (define special-char-names
+      (map
+        (lambda (pair) (cons (cdr pair) (car pair)))
+        special-chars))
+
+    (define escaped-chars
+      '((#\newline . #\n)
+        (#\tab . #\t)
+        (#\return . #\r)))
+
+    (define (write-escaped-char x)
+      (let ((pair (assoc x escaped-chars)))
+        (if pair
+          (begin
+            (write-char #\\)
+            (write-char (cdr pair)))
+          (write-char x))))
+
+    (define (write x . rest)
+      (parameterize ((current-write write)
+                     (current-output-port (get-output-port rest)))
+        (cond
+          ((char? x)
+            (write-char #\#)
+            (write-char #\\)
+            (let ((pair (assoc x special-char-names)))
+              (if pair
+                (display (cdr pair))
+                (write-char x))))
+
+          ((pair? x)
+            (write-list x))
+
+          ((string? x)
+            (write-char #\")
+            (for-each write-escaped-char (string->list x))
+            (write-char #\"))
+
+          ((vector? x)
+            (write-vector x))
+
+          (else
+            (display x)))))
+
+    (define (display x . rest)
+      (parameterize ((current-write display)
+                     (current-output-port (get-output-port rest)))
+        (cond
+          ((not x)
+            (write-string "#f"))
+
+          ((eqv? x #t)
+            (write-string "#t"))
+
+          ((bytevector? x)
+            (write-string "#u8")
+            (write-sequence (bytevector->list x)))
+
+          ((char? x)
+            (write-char x))
+
+          ((null? x)
+            (write-sequence x))
+
+          ((number? x)
+            (display (number->string x)))
+
+          ((pair? x)
+            (write-list x))
+
+          ((procedure? x)
+            (write-string "#procedure"))
+
+          ((record? x)
+            (write-string "#record"))
+
+          ((string? x)
+            (write-string x))
+
+          ((symbol? x)
+            (display (symbol->string x)))
+
+          ((vector? x)
+            (write-vector x))
+
+          (else
+            (error "unknown type")))))
+
+    (define current-write (make-parameter write))
+
+    (define quotes
+      '((quote . #\')
+        (quasiquote . #\`)
+        (unquote . #\,)))
+
+    (define (write-list xs)
+      (if (or (null? xs) (null? (cdr xs)))
+        (write-sequence xs)
+        (cond
+          ((assoc (car xs) quotes) =>
+            (lambda (pair)
+              (write-quote (cdr pair) (cadr xs))))
+
+          (else
+            (write-sequence xs)))))
+
+    (define (write-sequence xs)
+      (define write (current-write))
+
+      (write-char #\()
+
+      (when (pair? xs)
+        (write (car xs))
+        (let loop ((xs (cdr xs)))
+          (cond
+            ((pair? xs)
+              (write-char #\space)
+              (write (car xs))
+              (loop (cdr xs)))
+
+            ((null? xs)
+              #f)
+
+            (else
+              (write-char #\space)
+              (write-char #\.)
+              (write-char #\space)
+              (write xs)))))
+
+      (write-char #\)))
+
+    (define (write-quote char value)
+      (write-char char)
+      ((current-write) value))
+
+    (define (write-vector xs)
+      (write-char #\#)
+      (write-sequence (vector->list xs)))))
 
 (define-library (scheme process-context)
   (import (scheme base))
@@ -1513,7 +1711,7 @@
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
 
-(import (scheme base))
+(import (scheme base) (stak char))
 
 ;; Symbol
 
@@ -1533,43 +1731,8 @@
 
 ; Read
 
-(define special-chars
-  '(("alarm" . #\alarm)
-    ("backspace" . #\backspace)
-    ("delete" . #\delete)
-    ("escape" . #\escape)
-    ("newline" . #\newline)
-    ("null" . #\null)
-    ("return" . #\return)
-    ("space" . #\space)
-    ("tab" . #\tab)))
-
 (define (get-input-port rest)
   (if (null? rest) (current-input-port) (car rest)))
-
-(define (input-byte->char x)
-  (if (number? x) (integer->char x) x))
-
-(define (read-u8 . rest)
-  (let* ((port (get-input-port rest))
-         (x (port-last-byte port)))
-    (if x
-      (begin
-        (port-set-last-byte! port #f)
-        x)
-      (or ($$read-u8) (eof-object)))))
-
-(define (peek-u8 . rest)
-  (let* ((port (get-input-port rest))
-         (x (read-u8 port)))
-    (port-set-last-byte! port x)
-    x))
-
-(define (read-char . rest)
-  (input-byte->char (read-u8 (get-input-port rest))))
-
-(define (peek-char . rest)
-  (input-byte->char (peek-u8 (get-input-port rest))))
 
 (define (read . rest)
   (parameterize ((current-input-port (get-input-port rest)))
@@ -1726,147 +1889,3 @@
 
       (else
         (skip-comment)))))
-
-; Write
-
-(define (get-output-port rest)
-  (if (null? rest) (current-output-port) (car rest)))
-
-(define special-char-names
-  (map
-    (lambda (pair) (cons (cdr pair) (car pair)))
-    special-chars))
-
-(define escaped-chars
-  '((#\newline . #\n)
-    (#\tab . #\t)
-    (#\return . #\r)))
-
-(define (write-escaped-char x)
-  (let ((pair (assoc x escaped-chars)))
-    (if pair
-      (begin
-        (write-char #\\)
-        (write-char (cdr pair)))
-      (write-char x))))
-
-(define (write x . rest)
-  (parameterize ((current-write write)
-                 (current-output-port (get-output-port rest)))
-    (cond
-      ((char? x)
-        (write-char #\#)
-        (write-char #\\)
-        (let ((pair (assoc x special-char-names)))
-          (if pair
-            (display (cdr pair))
-            (write-char x))))
-
-      ((pair? x)
-        (write-list x))
-
-      ((string? x)
-        (write-char #\")
-        (for-each write-escaped-char (string->list x))
-        (write-char #\"))
-
-      ((vector? x)
-        (write-vector x))
-
-      (else
-        (display x)))))
-
-(define (display x . rest)
-  (parameterize ((current-write display)
-                 (current-output-port (get-output-port rest)))
-    (cond
-      ((not x)
-        (write-string "#f"))
-
-      ((eqv? x #t)
-        (write-string "#t"))
-
-      ((bytevector? x)
-        (write-string "#u8")
-        (write-sequence (bytevector->list x)))
-
-      ((char? x)
-        (write-char x))
-
-      ((null? x)
-        (write-sequence x))
-
-      ((number? x)
-        (display (number->string x)))
-
-      ((pair? x)
-        (write-list x))
-
-      ((procedure? x)
-        (write-string "#procedure"))
-
-      ((record? x)
-        (write-string "#record"))
-
-      ((string? x)
-        (write-string x))
-
-      ((symbol? x)
-        (display (symbol->string x)))
-
-      ((vector? x)
-        (write-vector x))
-
-      (else
-        (error "unknown type")))))
-
-(define current-write (make-parameter write))
-
-(define quotes
-  '((quote . #\')
-    (quasiquote . #\`)
-    (unquote . #\,)))
-
-(define (write-list xs)
-  (if (or (null? xs) (null? (cdr xs)))
-    (write-sequence xs)
-    (cond
-      ((assoc (car xs) quotes) =>
-        (lambda (pair)
-          (write-quote (cdr pair) (cadr xs))))
-
-      (else
-        (write-sequence xs)))))
-
-(define (write-sequence xs)
-  (define write (current-write))
-
-  (write-char #\()
-
-  (when (pair? xs)
-    (write (car xs))
-    (let loop ((xs (cdr xs)))
-      (cond
-        ((pair? xs)
-          (write-char #\space)
-          (write (car xs))
-          (loop (cdr xs)))
-
-        ((null? xs)
-          #f)
-
-        (else
-          (write-char #\space)
-          (write-char #\.)
-          (write-char #\space)
-          (write xs)))))
-
-  (write-char #\)))
-
-(define (write-quote char value)
-  (write-char char)
-  ((current-write) value))
-
-(define (write-vector xs)
-  (write-char #\#)
-  (write-sequence (vector->list xs)))
