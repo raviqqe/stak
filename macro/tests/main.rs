@@ -5,7 +5,7 @@ use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-const HEAP_SIZE: usize = 1 << 18;
+const HEAP_SIZE: usize = 1 << 17;
 const BUFFER_SIZE: usize = 1 << 10;
 
 fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>> {
