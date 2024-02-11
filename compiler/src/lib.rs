@@ -110,5 +110,10 @@ mod tests {
 
             assert!(message.contains("invalid syntax"));
         }
+
+        #[test]
+        fn compile_write_library() {
+            compile_r7rs(b"(import (scheme write))".as_slice(), &mut vec![]).unwrap();
+        }
     }
 }

@@ -5,7 +5,7 @@ use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-const HEAP_SIZE: usize = 1 << 16;
+const HEAP_SIZE: usize = 1 << 18;
 const BUFFER_SIZE: usize = 1 << 10;
 
 fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>> {
@@ -92,7 +92,7 @@ mod r7rs {
 
         const PROGRAM: &[u8] = compile_r7rs!(
             r#"
-            (import (scheme write))
+            (import (scheme base) (scheme write))
 
             (define foo-bar-baz "Hello, world!")
 
