@@ -843,7 +843,7 @@ impl<'a, T: PrimitiveSet> Display for Vm<'a, T> {
             } else if index == self.stack.index() {
                 write!(formatter, " <- stack")?;
             } else if index == self.register.index() {
-                write!(formatter, " <- temporary")?;
+                write!(formatter, " <- register")?;
             }
 
             writeln!(formatter)?;
