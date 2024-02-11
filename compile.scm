@@ -342,6 +342,7 @@
     library
     not
     or
+    quasiquote
     quote
     r7rs
     scheme
