@@ -1728,6 +1728,9 @@
 
 ; Write
 
+(define (get-output-port rest)
+  (if (null? rest) (current-output-port) (car rest)))
+
 (define special-char-names
   (map
     (lambda (pair) (cons (cdr pair) (car pair)))
