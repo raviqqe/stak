@@ -353,6 +353,7 @@
     syntax-rules
     unquote
     unquote-splicing
+    unwind
     write-u8))
 
 (define (rename-library-symbol id name)

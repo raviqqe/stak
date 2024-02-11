@@ -1495,9 +1495,25 @@
     (define (cddddr x) (cdr (cdddr x)))))
 
 (define-library (scheme eval))
-(define-library (scheme process-context))
+
 (define-library (scheme read))
 (define-library (scheme write))
+
+(define-library (scheme process-context)
+  (import (scheme base))
+
+  (export exit emergency-exit)
+
+  (begin
+    (define exit-success (data-rib procedure-type #f (cons 0 '())))
+
+    (define (emergency-exit . rest)
+      (if (or (null? rest) (eqv? (car rest) #t))
+        (exit-success)
+        ($$halt)))
+
+    (define (exit . rest)
+      (unwind (lambda () (apply emergency-exit rest))))))
 
 (import (scheme base))
 
@@ -1853,15 +1869,3 @@
 (define (write-vector xs)
   (write-char #\#)
   (write-sequence (vector->list xs)))
-
-; Process context
-
-(define exit-success (data-rib procedure-type #f (cons 0 '())))
-
-(define (emergency-exit . rest)
-  (if (or (null? rest) (eqv? (car rest) #t))
-    (exit-success)
-    ($$halt)))
-
-(define (exit . rest)
-  (unwind (lambda () (apply emergency-exit rest))))
