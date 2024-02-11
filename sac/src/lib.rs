@@ -32,7 +32,7 @@ macro_rules! main {
         #[derive(clap::Parser)]
         #[command(about, version)]
         struct Arguments {
-            #[arg(short = 's', long, default_value_t = 1 << 20)]
+            #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
             heap_size: usize,
         }
 
