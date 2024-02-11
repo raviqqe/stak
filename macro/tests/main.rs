@@ -5,7 +5,7 @@ use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-const HEAP_SIZE: usize = 1 << 17;
+const HEAP_SIZE: usize = 1 << 18;
 const BUFFER_SIZE: usize = 1 << 10;
 
 fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>> {
@@ -21,7 +21,7 @@ mod bare {
 
     #[test]
     fn compile_define() {
-        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut heap = vec![Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
         const PROGRAM: &[u8] = compile_bare!("($$define x 42)");
@@ -32,7 +32,7 @@ mod bare {
 
     #[test]
     fn include() {
-        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut heap = vec![Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
         const PROGRAM: &[u8] = include_bare!("../tests/empty.scm");
@@ -47,7 +47,7 @@ mod r7rs {
 
     #[test]
     fn compile_string() {
-        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut heap = vec![Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
         const PROGRAM: &[u8] = compile_r7rs!(
@@ -66,7 +66,7 @@ mod r7rs {
 
     #[test]
     fn compile_character() {
-        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut heap = vec![Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
         const PROGRAM: &[u8] = compile_r7rs!(
@@ -87,7 +87,7 @@ mod r7rs {
 
     #[test]
     fn compile_identifier_with_hyphen() {
-        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut heap = vec![Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
         const PROGRAM: &[u8] = compile_r7rs!(
@@ -108,7 +108,7 @@ mod r7rs {
 
     #[test]
     fn include() {
-        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut heap = vec![Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
         const PROGRAM: &[u8] = include_r7rs!("../tests/empty.scm");
