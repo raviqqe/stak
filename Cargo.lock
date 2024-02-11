@@ -209,6 +209,7 @@ version = "0.2.7"
 dependencies = [
  "clap",
  "main_error",
+ "stak-configuration",
  "stak-device",
  "stak-macro",
  "stak-primitive",
@@ -235,6 +236,7 @@ name = "stak-compiler"
 version = "0.1.7"
 dependencies = [
  "indoc",
+ "stak-configuration",
  "stak-device",
  "stak-primitive",
  "stak-vm",
