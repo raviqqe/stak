@@ -216,6 +216,11 @@
     current-output-port
     current-error-port
 
+    read-u8
+    peek-u8
+    read-char
+    peek-char
+
     write-u8
     write-char
     write-string
@@ -1398,6 +1403,35 @@
     (define current-output-port (make-parameter (make-port 'stdout)))
     (define current-error-port (make-parameter (make-port 'stderr)))
 
+    ; Read
+
+    (define (get-input-port rest)
+      (if (null? rest) (current-input-port) (car rest)))
+
+    (define (input-byte->char x)
+      (if (number? x) (integer->char x) x))
+
+    (define (read-u8 . rest)
+      (let* ((port (get-input-port rest))
+             (x (port-last-byte port)))
+        (if x
+          (begin
+            (port-set-last-byte! port #f)
+            x)
+          (or ($$read-u8) (eof-object)))))
+
+    (define (peek-u8 . rest)
+      (let* ((port (get-input-port rest))
+             (x (read-u8 port)))
+        (port-set-last-byte! port x)
+        x))
+
+    (define (read-char . rest)
+      (input-byte->char (read-u8 (get-input-port rest))))
+
+    (define (peek-char . rest)
+      (input-byte->char (peek-u8 (get-input-port rest))))
+
     ; Write
 
     (define (get-output-port rest)
@@ -1699,30 +1733,6 @@
 
 (define (get-input-port rest)
   (if (null? rest) (current-input-port) (car rest)))
-
-(define (input-byte->char x)
-  (if (number? x) (integer->char x) x))
-
-(define (read-u8 . rest)
-  (let* ((port (get-input-port rest))
-         (x (port-last-byte port)))
-    (if x
-      (begin
-        (port-set-last-byte! port #f)
-        x)
-      (or ($$read-u8) (eof-object)))))
-
-(define (peek-u8 . rest)
-  (let* ((port (get-input-port rest))
-         (x (read-u8 port)))
-    (port-set-last-byte! port x)
-    x))
-
-(define (read-char . rest)
-  (input-byte->char (read-u8 (get-input-port rest))))
-
-(define (peek-char . rest)
-  (input-byte->char (peek-u8 (get-input-port rest))))
 
 (define (read . rest)
   (parameterize ((current-input-port (get-input-port rest)))
