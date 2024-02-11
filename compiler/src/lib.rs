@@ -3,12 +3,12 @@
 mod error;
 
 pub use self::error::CompileError;
+use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
 use std::io::{Read, Write};
 
-const DEFAULT_HEAP_SIZE: usize = 1 << 20;
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
 

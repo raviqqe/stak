@@ -8,6 +8,7 @@
 
 use clap::Parser;
 use main_error::MainError;
+use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_primitive::SmallPrimitiveSet;
@@ -34,7 +35,7 @@ enum Library {
 struct Arguments {
     #[arg(required(true))]
     files: Vec<PathBuf>,
-    #[arg(short = 's', long, default_value_t = 1 << 20)]
+    #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
     #[arg(short, long, default_value = "r7rs")]
     library: Library,

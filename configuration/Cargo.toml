@@ -1,0 +1,8 @@
+[package]
+name = "stak-configuration"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
