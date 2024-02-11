@@ -59,6 +59,9 @@ jobs:
             host: guile
             tags: not @todo
           - name: stak-tools
+            host: petite
+            tags: not @todo
+          - name: stak-tools
             host: gosh
             features: [gc_always]
             tags: not @long and not @todo
@@ -68,6 +71,8 @@ jobs:
             tags: not @stak or @gauche
           - name: guile
             tags: not @stak or @guile
+          - name: petite
+            tags: not @stak or @petite
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
     runs-on: ${{ matrix.os }}
