@@ -56,9 +56,6 @@
     $$*
     $$/
     $$read-u8
-    $$write-u8
-    $$write-error-u8
-    $$halt
 
     apply
     data-rib
@@ -193,6 +190,21 @@
     make-parameter
     parameterize
 
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    error
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
     eof-object
     eof-object?
 
@@ -204,11 +216,11 @@
     current-output-port
     current-error-port
 
-    make-error-object
-    error-object?
-    error-object-type
-    error-object-message
-    error-object-irritants)
+    write-u8
+    write-char
+    write-string
+    write-bytevector
+    newline)
 
   (begin
     ; Syntax
@@ -1221,6 +1233,143 @@
               (lambda () (parameterize ((parameter2 value2) ...) body ...))
               (lambda () (parameter old)))))))
 
+    ;; Exception
+
+    (define-record-type error-object
+      (make-error-object type message irritants)
+      error-object?
+      (type error-object-type)
+      (message error-object-message)
+      (irritants error-object-irritants))
+
+    (define (convert-exception-handler handler)
+      (lambda (pair)
+        (let* ((exception (cdr pair))
+               (value (handler exception)))
+          (unless (car pair)
+            (error "exception handler returned on a non-continuable exception" exception))
+          value)))
+
+    (define current-exception-handler
+      (make-parameter
+        (convert-exception-handler
+          (lambda (exception)
+            (unwind
+              (lambda ()
+                (parameterize ((current-output-port (current-error-port)))
+                  (if (error-object? exception)
+                    (begin
+                      (write-string (error-object-message exception))
+                      (for-each
+                        (lambda (value)
+                          (write-char #\space)
+                          (write value))
+                        (error-object-irritants exception)))
+                    (write exception))
+                  (newline)
+                  ($$halt))))))))
+
+    (define (with-exception-handler handler thunk)
+      (let ((new (convert-exception-handler handler))
+            (old (current-exception-handler)))
+        (parameterize ((current-exception-handler
+                         (lambda (exception)
+                           (parameterize ((current-exception-handler old))
+                             (new exception)))))
+          (thunk))))
+
+    (define (raise-value continuable)
+      (lambda (value)
+        ((current-exception-handler) (cons continuable value))))
+
+    (define raise (raise-value #f))
+    (define raise-continuable (raise-value #t))
+
+    (define (error-type type)
+      (lambda (message . rest)
+        (raise (make-error-object type message rest))))
+
+    (define (error-type? type)
+      (lambda (error)
+        (eqv? (error-object-type error) type)))
+
+    (define error (error-type #f))
+    (define read-error (error-type 'read))
+    (define file-error (error-type 'file))
+
+    (define read-error? (error-type? 'read))
+    (define file-error? (error-type? 'file))
+
+    (define-syntax guard
+      (syntax-rules ()
+        ((_ (name clause ...) body1 body2 ...)
+          ((call/cc
+              (lambda (guard-continuation)
+                (with-exception-handler
+                  (lambda (exception)
+                    ((call/cc
+                        (lambda (handler-continuation)
+                          (guard-continuation
+                            (lambda ()
+                              (let ((name exception))
+                                (guard*
+                                  (handler-continuation
+                                    (lambda () (raise-continuable name)))
+                                  clause
+                                  ...))))))))
+                  (lambda ()
+                    (call-with-values
+                      (lambda () body1 body2 ...)
+                      (lambda arguments
+                        (guard-continuation
+                          (lambda ()
+                            (apply values arguments)))))))))))))
+
+    (define-syntax guard*
+      (syntax-rules (else =>)
+        ((_ re-raise (else result1 result2 ...))
+          (begin result1 result2 ...))
+
+        ((_ re-raise (test => result))
+          (let ((temp test))
+            (if temp
+              (result temp)
+              re-raise)))
+
+        ((_ re-raise (test => result) clause1 clause2 ...)
+          (let ((temp test))
+            (if temp
+              (result temp)
+              (guard* re-raise clause1 clause2 ...))))
+
+        ((_ re-raise (test))
+          (or test re-raise))
+
+        ((_ re-raise (test) clause1 clause2 ...)
+          (let ((temp test))
+            (if temp
+              temp
+              (guard* re-raise clause1 clause2 ...))))
+
+        ((_ re-raise (test result1 result2 ...))
+          (if test
+            (begin result1 result2 ...)
+            re-raise))
+
+        ((_ re-raise (test result1 result2 ...) clause1 clause2 ...)
+          (if test
+            (begin result1 result2 ...)
+            (guard* re-raise clause1 clause2 ...)))))
+
+    ;; Unwind
+
+    (define unwind #f)
+
+    ((call/cc
+        (lambda (continuation)
+          (set! unwind continuation)
+          (lambda () #f))))
+
     ; Derived types
 
     ;; EOF object
@@ -1249,16 +1398,44 @@
     (define current-output-port (make-parameter (make-port 'stdout)))
     (define current-error-port (make-parameter (make-port 'stderr)))
 
-    ; Control
+    ; Write
 
-    ;; Exception
+    (define (get-output-port rest)
+      (if (null? rest) (current-output-port) (car rest)))
 
-    (define-record-type error-object
-      (make-error-object type message irritants)
-      error-object?
-      (type error-object-type)
-      (message error-object-message)
-      (irritants error-object-irritants))))
+    (define (write-u8 byte . rest)
+      (case (port-descriptor (get-output-port rest))
+        ((stdout)
+          ($$write-u8 byte))
+
+        ((stderr)
+          ($$write-error-u8 byte))
+
+        (else
+          (error "invalid port"))))
+
+    (define (write-char x . rest)
+      (write-u8 (char->integer x) (get-output-port rest)))
+
+    (define (write-string x . rest)
+      (parameterize ((current-output-port (get-output-port rest)))
+        (for-each write-char (string->list x))))
+
+    (define (write-bytevector xs . rest)
+      (parameterize ((current-output-port (get-output-port rest)))
+        (let loop ((xs xs) (index 0))
+          (if (< index (bytevector-length xs))
+            (begin
+              (write-u8 (bytevector-u8-ref xs index))
+              (loop xs (+ index 1)))
+            #f))))
+
+    (define (newline . rest)
+      (write-char #\newline (get-output-port rest)))
+
+    ; Dummy implementation
+    (define (write . rest)
+      (write-string "<value>" (get-output-port rest)))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1353,138 +1530,6 @@
       (let ((x (string->uninterned-symbol x)))
         (set! symbol-table (cons x symbol-table))
         x))))
-
-; Control
-
-;; Exception
-
-(define (convert-exception-handler handler)
-  (lambda (pair)
-    (let* ((exception (cdr pair))
-           (value (handler exception)))
-      (unless (car pair)
-        (error "exception handler returned on a non-continuable exception" exception))
-      value)))
-
-(define current-exception-handler
-  (make-parameter
-    (convert-exception-handler
-      (lambda (exception)
-        (unwind
-          (lambda ()
-            (parameterize ((current-output-port (current-error-port)))
-              (if (error-object? exception)
-                (begin
-                  (write-string (error-object-message exception))
-                  (for-each
-                    (lambda (value)
-                      (write-char #\space)
-                      (write value))
-                    (error-object-irritants exception)))
-                (write exception))
-              (newline)
-              ($$halt))))))))
-
-(define (with-exception-handler handler thunk)
-  (let ((new (convert-exception-handler handler))
-        (old (current-exception-handler)))
-    (parameterize ((current-exception-handler
-                     (lambda (exception)
-                       (parameterize ((current-exception-handler old))
-                         (new exception)))))
-      (thunk))))
-
-(define (raise-value continuable)
-  (lambda (value)
-    ((current-exception-handler) (cons continuable value))))
-
-(define raise (raise-value #f))
-(define raise-continuable (raise-value #t))
-
-(define (error-type type)
-  (lambda (message . rest)
-    (raise (make-error-object type message rest))))
-
-(define (error-type? type)
-  (lambda (error)
-    (eqv? (error-object-type error) type)))
-
-(define error (error-type #f))
-(define read-error (error-type 'read))
-(define file-error (error-type 'file))
-
-(define read-error? (error-type? 'read))
-(define file-error? (error-type? 'file))
-
-(define-syntax guard
-  (syntax-rules ()
-    ((_ (name clause ...) body1 body2 ...)
-      ((call/cc
-          (lambda (guard-continuation)
-            (with-exception-handler
-              (lambda (exception)
-                ((call/cc
-                    (lambda (handler-continuation)
-                      (guard-continuation
-                        (lambda ()
-                          (let ((name exception))
-                            (guard*
-                              (handler-continuation
-                                (lambda () (raise-continuable name)))
-                              clause
-                              ...))))))))
-              (lambda ()
-                (call-with-values
-                  (lambda () body1 body2 ...)
-                  (lambda arguments
-                    (guard-continuation
-                      (lambda ()
-                        (apply values arguments)))))))))))))
-
-(define-syntax guard*
-  (syntax-rules (else =>)
-    ((_ re-raise (else result1 result2 ...))
-      (begin result1 result2 ...))
-
-    ((_ re-raise (test => result))
-      (let ((temp test))
-        (if temp
-          (result temp)
-          re-raise)))
-
-    ((_ re-raise (test => result) clause1 clause2 ...)
-      (let ((temp test))
-        (if temp
-          (result temp)
-          (guard* re-raise clause1 clause2 ...))))
-
-    ((_ re-raise (test))
-      (or test re-raise))
-
-    ((_ re-raise (test) clause1 clause2 ...)
-      (let ((temp test))
-        (if temp
-          temp
-          (guard* re-raise clause1 clause2 ...))))
-
-    ((_ re-raise (test result1 result2 ...))
-      (if test
-        (begin result1 result2 ...)
-        re-raise))
-
-    ((_ re-raise (test result1 result2 ...) clause1 clause2 ...)
-      (if test
-        (begin result1 result2 ...)
-        (guard* re-raise clause1 clause2 ...)))))
-
-;; Unwind
-
-(define unwind #f)
-
-((call/cc
-    (lambda (continuation)
-      (set! unwind continuation)
-      (lambda () #f))))
 
 ; Read
 
@@ -1697,20 +1742,6 @@
     (#\tab . #\t)
     (#\return . #\r)))
 
-(define (write-u8 byte . rest)
-  (case (port-descriptor (get-output-port rest))
-    ((stdout)
-      ($$write-u8 byte))
-
-    ((stderr)
-      ($$write-error-u8 byte))
-
-    (else
-      (error "invalid port"))))
-
-(define (write-char x . rest)
-  (write-u8 (char->integer x) (get-output-port rest)))
-
 (define (write-escaped-char x)
   (let ((pair (assoc x escaped-chars)))
     (if pair
@@ -1718,22 +1749,6 @@
         (write-char #\\)
         (write-char (cdr pair)))
       (write-char x))))
-
-(define (write-string x . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
-    (for-each write-char (string->list x))))
-
-(define (write-bytevector xs . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
-    (let loop ((xs xs) (index 0))
-      (if (< index (bytevector-length xs))
-        (begin
-          (write-u8 (bytevector-u8-ref xs index))
-          (loop xs (+ index 1)))
-        #f))))
-
-(define (newline . rest)
-  (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
   (parameterize ((current-write write)
