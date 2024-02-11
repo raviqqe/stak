@@ -80,6 +80,8 @@ jobs:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
+      # TODO Remove this.
+      - run: brew install chezscheme
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
