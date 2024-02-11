@@ -4,6 +4,7 @@
 pub mod __private {
     pub use clap;
     pub use main_error;
+    pub use stak_configuration;
     pub use stak_device;
     pub use stak_macro;
     pub use stak_primitive;
@@ -20,6 +21,7 @@ macro_rules! main {
         use $crate::__private::{
             clap::{self, Parser},
             main_error::MainError,
+            stak_configuration::DEFAULT_HEAP_SIZE,
             stak_device::StdioDevice,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
@@ -27,12 +29,10 @@ macro_rules! main {
             std::{env, error::Error},
         };
 
-        const DEFAULT_HEAP_SIZE: usize = 1 << 20;
-
         #[derive(clap::Parser)]
         #[command(about, version)]
         struct Arguments {
-            #[arg(short = 's', long, default_value_t = 1 << 20)]
+            #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
             heap_size: usize,
         }
 

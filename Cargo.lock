@@ -205,10 +205,11 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
 name = "stak"
-version = "0.2.7"
+version = "0.2.8"
 dependencies = [
  "clap",
  "main_error",
+ "stak-configuration",
  "stak-device",
  "stak-macro",
  "stak-primitive",
@@ -217,7 +218,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -225,24 +226,29 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "indoc",
+ "stak-configuration",
  "stak-device",
  "stak-primitive",
  "stak-vm",
 ]
 
 [[package]]
+name = "stak-configuration"
+version = "0.1.0"
+
+[[package]]
 name = "stak-decode"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "clap",
  "main_error",
@@ -251,14 +257,15 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.3"
+version = "0.2.4"
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "clap",
  "main_error",
+ "stak-configuration",
  "stak-device",
  "stak-primitive",
  "stak-vm",
@@ -266,7 +273,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -279,7 +286,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -287,10 +294,11 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "clap",
  "main_error",
+ "stak-configuration",
  "stak-device",
  "stak-macro",
  "stak-primitive",
@@ -299,7 +307,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "insta",
  "stak-code",
