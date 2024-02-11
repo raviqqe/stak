@@ -1434,7 +1434,8 @@
       (write-char #\newline (get-output-port rest)))
 
     ; Dummy implementation
-    (define (write . rest) #f)))
+    (define (write . rest)
+      (write-string "<value>" (get-output-port rest)))))
 
 (define-library (scheme cxr)
   (import (scheme base))
