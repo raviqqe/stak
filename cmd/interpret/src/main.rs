@@ -8,6 +8,7 @@
 
 use clap::Parser;
 use main_error::MainError;
+use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
@@ -18,7 +19,7 @@ use std::{fs::read, path::PathBuf};
 struct Arguments {
     #[arg(required(true))]
     file: PathBuf,
-    #[arg(short = 's', long, default_value_t = 1 << 20)]
+    #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
 }
 
