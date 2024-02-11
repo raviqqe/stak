@@ -1383,9 +1383,9 @@
       (make-eof-object)
       eof-object?)
 
-    (define eof (make-eof-object))
-
-    (define (eof-object) eof)
+    (define eof-object
+      (let ((eof (make-eof-object)))
+        (lambda () eof)))
 
     ;; Port
 
