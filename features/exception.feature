@@ -64,11 +64,10 @@ Feature: Exception
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  @stak @guile
   Scenario: Raise an exception in nested handlers
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (with-exception-handler
       (lambda (value) (error "foo"))
@@ -84,11 +83,10 @@ Feature: Exception
     And the stderr should contain "foo"
     And the stdout should contain "bar"
 
-  @stak @guile
   Scenario: Raise an exception in deeply nested handlers
     Given a file named "main.scm" with:
     """scheme
-    (import (scheme base))
+    (import (scheme base) (scheme write))
 
     (with-exception-handler
       (lambda (value) (error "foo"))
