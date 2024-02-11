@@ -193,6 +193,21 @@
     make-parameter
     parameterize
 
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    error
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
     eof-object
     eof-object?
 
@@ -204,11 +219,11 @@
     current-output-port
     current-error-port
 
-    make-error-object
-    error-object?
-    error-object-type
-    error-object-message
-    error-object-irritants)
+    write-u8
+    write-char
+    write-string
+    write-bytevector
+    newline)
 
   (begin
     ; Syntax
@@ -1384,7 +1399,45 @@
 
     (define current-input-port (make-parameter (make-port 'stdin)))
     (define current-output-port (make-parameter (make-port 'stdout)))
-    (define current-error-port (make-parameter (make-port 'stderr)))))
+    (define current-error-port (make-parameter (make-port 'stderr)))
+
+    ; Write
+
+    (define (get-output-port rest)
+      (if (null? rest) (current-output-port) (car rest)))
+
+    (define (write-u8 byte . rest)
+      (case (port-descriptor (get-output-port rest))
+        ((stdout)
+          ($$write-u8 byte))
+
+        ((stderr)
+          ($$write-error-u8 byte))
+
+        (else
+          (error "invalid port"))))
+
+    (define (write-char x . rest)
+      (write-u8 (char->integer x) (get-output-port rest)))
+
+    (define (write-string x . rest)
+      (parameterize ((current-output-port (get-output-port rest)))
+        (for-each write-char (string->list x))))
+
+    (define (write-bytevector xs . rest)
+      (parameterize ((current-output-port (get-output-port rest)))
+        (let loop ((xs xs) (index 0))
+          (if (< index (bytevector-length xs))
+            (begin
+              (write-u8 (bytevector-u8-ref xs index))
+              (loop xs (+ index 1)))
+            #f))))
+
+    (define (newline . rest)
+      (write-char #\newline (get-output-port rest)))
+
+    ; Dummy implementation
+    (define (write . rest) #f)))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1662,9 +1715,6 @@
 
 ; Write
 
-(define (get-output-port rest)
-  (if (null? rest) (current-output-port) (car rest)))
-
 (define special-char-names
   (map
     (lambda (pair) (cons (cdr pair) (car pair)))
@@ -1675,20 +1725,6 @@
     (#\tab . #\t)
     (#\return . #\r)))
 
-(define (write-u8 byte . rest)
-  (case (port-descriptor (get-output-port rest))
-    ((stdout)
-      ($$write-u8 byte))
-
-    ((stderr)
-      ($$write-error-u8 byte))
-
-    (else
-      (error "invalid port"))))
-
-(define (write-char x . rest)
-  (write-u8 (char->integer x) (get-output-port rest)))
-
 (define (write-escaped-char x)
   (let ((pair (assoc x escaped-chars)))
     (if pair
@@ -1696,22 +1732,6 @@
         (write-char #\\)
         (write-char (cdr pair)))
       (write-char x))))
-
-(define (write-string x . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
-    (for-each write-char (string->list x))))
-
-(define (write-bytevector xs . rest)
-  (parameterize ((current-output-port (get-output-port rest)))
-    (let loop ((xs xs) (index 0))
-      (if (< index (bytevector-length xs))
-        (begin
-          (write-u8 (bytevector-u8-ref xs index))
-          (loop xs (+ index 1)))
-        #f))))
-
-(define (newline . rest)
-  (write-char #\newline (get-output-port rest)))
 
 (define (write x . rest)
   (parameterize ((current-write write)
