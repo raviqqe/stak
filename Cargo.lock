@@ -241,6 +241,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-configuration"
+version = "0.1.0"
+
+[[package]]
 name = "stak-decode"
 version = "0.1.8"
 dependencies = [
