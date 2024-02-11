@@ -149,3 +149,33 @@ Feature: Library system
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @stak @gauche
+  Scenario: Modify a library environment
+    Given a file named "main.scm" with:
+    """scheme
+    (define-library (foo)
+      (export foo bar)
+
+      (import (scheme base))
+
+      (begin
+        (define (foo x)
+          (write-u8 x))
+
+        (define (bar x)
+          (foo x))))
+
+    (import (scheme base) (scheme write) (foo))
+
+    (foo 65)
+    (bar 65)
+
+    (set! foo (lambda (x) (write-u8 66)))
+
+    (foo 65)
+    (bar 65)
+    """
+    When I successfully run `scheme main.scm`
+    # spell-checker: disable-next-line
+    Then the stdout should contain exactly "AABB"
