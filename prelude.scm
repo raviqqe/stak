@@ -1517,19 +1517,27 @@
 
 ;; Symbol
 
-(define symbol-table (rib-car $$rib))
+(define-record-type symbol-table
+  (make-symbol-table symbols)
+  symbol-table?
+  (symbols symbol-table-symbols symbol-table-set-symbols!))
+
+(define global-table (make-symbol-table (rib-car $$rib)))
 ; Allow garbage collection for a symbol table.
 (rib-set-car! $$rib #f)
 
-(define (string->symbol x)
-  (cond
-    ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
-      car)
+(define (string->symbol x . rest)
+  (define table (if (null? rest) global-table (car rest)))
 
-    (else
-      (let ((x (string->uninterned-symbol x)))
-        (set! symbol-table (cons x symbol-table))
-        x))))
+  (let ((symbols (symbol-table-symbols table)))
+    (cond
+      ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
+        car)
+
+      (else
+        (let ((symbol (string->uninterned-symbol x)))
+          (symbol-table-set-symbols! table (cons symbol symbols))
+          symbol)))))
 
 ; Read
 
