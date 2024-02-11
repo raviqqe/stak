@@ -1,5 +1,6 @@
 #![no_std]
 
+use alloc::vec;
 use stak_device::FixedBufferDevice;
 use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_primitive::SmallPrimitiveSet;
