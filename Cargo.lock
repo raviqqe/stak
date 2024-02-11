@@ -265,6 +265,7 @@ version = "0.1.5"
 dependencies = [
  "clap",
  "main_error",
+ "stak-configuration",
  "stak-device",
  "stak-primitive",
  "stak-vm",
@@ -297,6 +298,7 @@ version = "0.1.5"
 dependencies = [
  "clap",
  "main_error",
+ "stak-configuration",
  "stak-device",
  "stak-macro",
  "stak-primitive",
