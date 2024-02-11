@@ -714,9 +714,7 @@
           (($$alias)
             (let ((denotation (resolve-denotation context (caddr expression))))
               (expansion-context-set-last! context (cadr expression) denotation)
-              (if (procedure? denotation)
-                #f
-                (expand (cons '$$define (cdr expression))))))
+              #f))
 
           (($$define)
             (let ((name (cadr expression)))
