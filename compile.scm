@@ -338,7 +338,6 @@
     =>
     and
     base
-    call-with-values
     else
     library
     not
@@ -352,9 +351,7 @@
     stdout
     syntax-rules
     unquote
-    unquote-splicing
-    unwind
-    write-u8))
+    unquote-splicing))
 
 (define (rename-library-symbol id name)
   (if (or
