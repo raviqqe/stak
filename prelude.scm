@@ -1,6 +1,5 @@
 ; Libraries
 
-; TODO Move everything into the base library.
 (define-library (scheme base)
   (export
     define-syntax
@@ -962,9 +961,6 @@
     (define bytevector-length rib-cdr)
 
     (define (bytevector-u8-ref vector index)
-      ; TODO Do not export `byte-vector-u8-ref`.
-      ; We need to use `rib-car` instead of `bytevector->list` because we re-define
-      ; the function in a compiler.
       (list-ref (rib-car vector) index))
 
     (define (list->bytevector x)
