@@ -712,7 +712,7 @@
           (rib? x)
           (rib? y)
           (eq? (rib-type x) (rib-type y))
-          ; Optimize for the cases of strings and vectors.
+          ; Optimize for the cases of strings and vectors where `cdr`s are integers.
           (or
             (rib? (rib-cdr x))
             (eq? (rib-cdr x) (rib-cdr y)))
