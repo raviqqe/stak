@@ -1086,6 +1086,20 @@
     (define (string->uninterned-symbol x)
       (data-rib symbol-type x #f))
 
+    (define symbol-table (rib-car $$rib))
+    ; Allow garbage collection for a symbol table.
+    (rib-set-car! $$rib #f)
+
+    (define (string->symbol x)
+      (cond
+        ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
+          car)
+
+        (else
+          (let ((x (string->uninterned-symbol x)))
+            (set! symbol-table (cons x symbol-table))
+            x))))
+
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1875,19 +1889,3 @@
       (unwind (lambda () (apply emergency-exit rest))))))
 
 (import (scheme base) (stak char))
-
-;; Symbol
-
-(define symbol-table (rib-car $$rib))
-; Allow garbage collection for a symbol table.
-(rib-set-car! $$rib #f)
-
-(define (string->symbol x)
-  (cond
-    ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
-      car)
-
-    (else
-      (let ((x (string->uninterned-symbol x)))
-        (set! symbol-table (cons x symbol-table))
-        x))))
