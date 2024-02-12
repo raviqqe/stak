@@ -14,10 +14,6 @@
     (define target-pair? pair?)
     (define target-procedure? procedure?)
 
-    ; TODO Remove this when a new version with this in a base library is released.
-    (define (string->uninterned-symbol x)
-      (data-rib symbol-type x #f))
-
     ; Internal symbols must be discoverable with their string representations.
     (set-car! '$$false "$$false")
     (set-car! '$$true "$$true")
