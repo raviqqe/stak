@@ -1545,7 +1545,170 @@
         ("space" . #\space)
         ("tab" . #\tab)))))
 
-(define-library (scheme read))
+(define-library (scheme read)
+  (export read)
+
+  (import (scheme base) (stak char))
+
+  (begin
+    (define (get-input-port rest)
+      (if (null? rest) (current-input-port) (car rest)))
+
+    (define (read . rest)
+      (parameterize ((current-input-port (get-input-port rest)))
+        (read-raw)))
+
+    (define (read-raw)
+      (let ((char (peek-non-whitespace-char)))
+        (cond
+          ((eof-object? char)
+            char)
+
+          ((eqv? char #\()
+            (read-list))
+
+          ((eqv? char #\#)
+            (read-char)
+            (case (peek-char)
+              ((#\f)
+                (read-char)
+                #f)
+
+              ((#\t)
+                (read-char)
+                #t)
+
+              ((#\\)
+                (read-char)
+                (let ((char (peek-char)))
+                  (if (char-whitespace? char)
+                    (read-char)
+                    (let ((x (read-symbol-chars)))
+                      (cond
+                        ((null? x)
+                          (read-char))
+
+                        ((eqv? (length x) 1)
+                          (car x))
+
+                        (else
+                          (cdr (assoc (list->string x) special-chars))))))))
+
+              ((#\u)
+                (read-char)
+                (read-char)
+                (list->bytevector (read-list)))
+
+              (else
+                (list->vector (read-list)))))
+
+          ((eqv? char #\')
+            (read-char)
+            (list 'quote (read-raw)))
+
+          ((eqv? char #\`)
+            (read-char)
+            (list 'quasiquote (read-raw)))
+
+          ((eqv? char #\,)
+            (read-char)
+            (if (eqv? (peek-char) #\@)
+              (begin
+                (read-char)
+                (list 'unquote-splicing (read-raw)))
+              (list 'unquote (read-raw))))
+
+          ((eqv? char #\")
+            (read-string))
+
+          (else
+            (let ((x (list->string (read-symbol-chars))))
+              (or (string->number x) (string->symbol x)))))))
+
+    (define (read-list)
+      (define (read-tail)
+        (if (eqv? (peek-non-whitespace-char) #\))
+          (begin
+            (read-char)
+            '())
+          (let ((x (read-raw)))
+            (if (and (symbol? x) (equal? (symbol->string x) "."))
+              (let ((x (read-raw)))
+                (read-char)
+                x)
+              (cons x (read-tail))))))
+
+      (unless (eqv? (read-char) #\()
+        (error "( expected"))
+      (read-tail))
+
+    (define (read-symbol-chars)
+      (let ((char (peek-char)))
+        (if (or
+             (memv char '(#\( #\)))
+             (eof-object? char)
+             (char-whitespace? char))
+          '()
+          (cons (read-char) (read-symbol-chars)))))
+
+    (define (read-string)
+      (unless (eqv? (read-char) #\")
+        (error "\" expected"))
+      (let loop ((xs '()))
+        (let ((char (read-char)))
+          (cond
+            ((eof-object? char)
+              (error "unexpected end of input"))
+
+            ((eqv? char #\")
+              (list->string (reverse xs)))
+
+            ((eqv? char #\\)
+              (let ((char (read-char)))
+                (loop
+                  (cons
+                    (case char
+                      ((#\n)
+                        #\newline)
+
+                      ((#\r)
+                        #\return)
+
+                      ((#\t)
+                        #\tab)
+
+                      (else
+                        char))
+                    xs))))
+
+            (else
+              (loop (cons char xs)))))))
+
+    (define (peek-non-whitespace-char)
+      (let ((char (peek-char)))
+        (cond
+          ((char-whitespace? char)
+            (begin
+              (read-char)
+              (peek-non-whitespace-char)))
+
+          ((eqv? char #\;)
+            (skip-comment))
+
+          (else
+            char))))
+
+    (define (skip-comment)
+      (let ((char (read-char)))
+        (cond
+          ((eof-object? char)
+            char)
+
+          ((eqv? char #\newline)
+            (peek-non-whitespace-char))
+
+          (else
+            (skip-comment)))))))
 
 (define-library (scheme write)
   (import (scheme base) (stak char))
@@ -1728,164 +1891,3 @@
       (let ((x (string->uninterned-symbol x)))
         (set! symbol-table (cons x symbol-table))
         x))))
-
-; Read
-
-(define (get-input-port rest)
-  (if (null? rest) (current-input-port) (car rest)))
-
-(define (read . rest)
-  (parameterize ((current-input-port (get-input-port rest)))
-    (read-raw)))
-
-(define (read-raw)
-  (let ((char (peek-non-whitespace-char)))
-    (cond
-      ((eof-object? char)
-        char)
-
-      ((eqv? char #\()
-        (read-list))
-
-      ((eqv? char #\#)
-        (read-char)
-        (case (peek-char)
-          ((#\f)
-            (read-char)
-            #f)
-
-          ((#\t)
-            (read-char)
-            #t)
-
-          ((#\\)
-            (read-char)
-            (let ((char (peek-char)))
-              (if (char-whitespace? char)
-                (read-char)
-                (let ((x (read-symbol-chars)))
-                  (cond
-                    ((null? x)
-                      (read-char))
-
-                    ((eqv? (length x) 1)
-                      (car x))
-
-                    (else
-                      (cdr (assoc (list->string x) special-chars))))))))
-
-          ((#\u)
-            (read-char)
-            (read-char)
-            (list->bytevector (read-list)))
-
-          (else
-            (list->vector (read-list)))))
-
-      ((eqv? char #\')
-        (read-char)
-        (list 'quote (read-raw)))
-
-      ((eqv? char #\`)
-        (read-char)
-        (list 'quasiquote (read-raw)))
-
-      ((eqv? char #\,)
-        (read-char)
-        (if (eqv? (peek-char) #\@)
-          (begin
-            (read-char)
-            (list 'unquote-splicing (read-raw)))
-          (list 'unquote (read-raw))))
-
-      ((eqv? char #\")
-        (read-string))
-
-      (else
-        (let ((x (list->string (read-symbol-chars))))
-          (or (string->number x) (string->symbol x)))))))
-
-(define (read-list)
-  (define (read-tail)
-    (if (eqv? (peek-non-whitespace-char) #\))
-      (begin
-        (read-char)
-        '())
-      (let ((x (read-raw)))
-        (if (and (symbol? x) (equal? (symbol->string x) "."))
-          (let ((x (read-raw)))
-            (read-char)
-            x)
-          (cons x (read-tail))))))
-
-  (unless (eqv? (read-char) #\()
-    (error "( expected"))
-  (read-tail))
-
-(define (read-symbol-chars)
-  (let ((char (peek-char)))
-    (if (or
-         (memv char '(#\( #\)))
-         (eof-object? char)
-         (char-whitespace? char))
-      '()
-      (cons (read-char) (read-symbol-chars)))))
-
-(define (read-string)
-  (unless (eqv? (read-char) #\")
-    (error "\" expected"))
-  (let loop ((xs '()))
-    (let ((char (read-char)))
-      (cond
-        ((eof-object? char)
-          (error "unexpected end of input"))
-
-        ((eqv? char #\")
-          (list->string (reverse xs)))
-
-        ((eqv? char #\\)
-          (let ((char (read-char)))
-            (loop
-              (cons
-                (case char
-                  ((#\n)
-                    #\newline)
-
-                  ((#\r)
-                    #\return)
-
-                  ((#\t)
-                    #\tab)
-
-                  (else
-                    char))
-                xs))))
-
-        (else
-          (loop (cons char xs)))))))
-
-(define (peek-non-whitespace-char)
-  (let ((char (peek-char)))
-    (cond
-      ((char-whitespace? char)
-        (begin
-          (read-char)
-          (peek-non-whitespace-char)))
-
-      ((eqv? char #\;)
-        (skip-comment))
-
-      (else
-        char))))
-
-(define (skip-comment)
-  (let ((char (read-char)))
-    (cond
-      ((eof-object? char)
-        char)
-
-      ((eqv? char #\newline)
-        (peek-non-whitespace-char))
-
-      (else
-        (skip-comment)))))
