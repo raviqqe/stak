@@ -266,10 +266,7 @@
   (cons
     '$$begin
     ; Keep an invariant that a `begin` body must not be empty.
-    (let ((source (read-all)))
-      (if (null? source)
-        '(#f)
-        source))))
+    (cons #f (read-all))))
 
 ; Target code writing
 
