@@ -713,6 +713,7 @@
           (rib? x)
           (rib? y)
           (eq? (rib-type x) (rib-type y))
+          ; Check `cdr` first for performance because they have scalars more likely.
           (equal? (rib-cdr x) (rib-cdr y))
           (equal? (rib-car x) (rib-car y)))))
 
