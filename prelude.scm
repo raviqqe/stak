@@ -713,8 +713,8 @@
           (rib? x)
           (rib? y)
           (eq? (rib-type x) (rib-type y))
-          (equal? (rib-car x) (rib-car y))
-          (equal? (rib-cdr x) (rib-cdr y)))))
+          (equal? (rib-cdr x) (rib-cdr y))
+          (equal? (rib-car x) (rib-car y)))))
 
     ;; Procedure
 
