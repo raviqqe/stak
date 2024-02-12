@@ -162,6 +162,7 @@
     symbol?
     symbol->string
     string->uninterned-symbol
+    string->symbol
 
     define-record-type
     record?
