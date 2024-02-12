@@ -713,13 +713,11 @@
           (rib? y)
           (eq? (rib-type x) (rib-type y))
           ; Optimize for the cases of strings and vectors.
-          (if (integer? (rib-cdr x))
-            (and
-              (equal? (rib-cdr x) (rib-cdr y))
-              (equal? (rib-car x) (rib-car y)))
-            (and
-              (equal? (rib-car x) (rib-car y))
-              (equal? (rib-cdr x) (rib-cdr y)))))))
+          (or
+            (rib? (rib-cdr x))
+            (eq? (rib-cdr x) (rib-cdr y)))
+          (equal? (rib-car x) (rib-car y))
+          (equal? (rib-cdr x) (rib-cdr y)))))
 
     ;; Procedure
 
