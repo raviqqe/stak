@@ -1888,5 +1888,3 @@
 
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
-
-(import (scheme base) (stak char))
