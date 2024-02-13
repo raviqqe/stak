@@ -457,7 +457,7 @@
       (let ((string (symbol->string x)))
         (cons
           (rename-library-symbol 0 x))
-          (string->symbol (string-append "$$" x)))))
+        (string->symbol (string-append "$$" (symbol->string x))))))
     '(+ - * / <)))
 
 (define (optimize expression)
