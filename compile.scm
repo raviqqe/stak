@@ -452,11 +452,13 @@
 ;; Procedures
 
 (define primitive-functions
-  '((+ . $$+)
-    (- . $$-)
-    (* . $$*)
-    (/ . $$/)
-    (< . $$<)))
+  (map
+    (lambda (x)
+      (let ((string (symbol->string x)))
+        (cons
+          (rename-library-symbol 0 x))
+          (string->symbol (string-append "$$" x)))))
+    '(+ - * / <)))
 
 (define (optimize expression)
   (let ((predicate (predicate expression)))
