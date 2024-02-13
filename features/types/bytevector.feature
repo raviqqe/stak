@@ -31,7 +31,7 @@ Feature: Bytevector
     """scheme
     (import (scheme base))
 
-    (write-u8 (bytevector-length <vector> <index>))
+    (write-u8 (bytevector-u8-ref <vector> <index>))
     """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
