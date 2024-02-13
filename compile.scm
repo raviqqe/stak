@@ -688,9 +688,9 @@
       (error "unsupported macro transformer" transformer))))
 
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
-(define (expand-expression context expression)
+(define (expand-macro-expression context expression)
   (define (expand expression)
-    (expand-expression context expression))
+    (expand-macro-expression context expression))
 
   (optimize
     (cond
@@ -735,10 +735,10 @@
               (list
                 '$$lambda
                 parameters
-                (expand-expression context (caddr expression)))))
+                (expand-macro-expression context (caddr expression)))))
 
           (($$let-syntax)
-            (expand-expression
+            (expand-macro-expression
               (fold-left
                 (lambda (context pair)
                   (expansion-context-push
@@ -764,7 +764,7 @@
                     (car pair)
                     (make-transformer context (cadr pair))))
                 bindings)
-              (expand-expression context (caddr expression))))
+              (expand-macro-expression context (caddr expression))))
 
           (($$quote)
             (cons '$$quote (cdr expression)))
@@ -773,14 +773,14 @@
             (lambda (value)
               (if (procedure? value)
                 (let-values (((expression context) (value context expression)))
-                  (expand-expression context expression))
+                  (expand-macro-expression context expression))
                 (map expand expression))))))
 
       (else
         expression))))
 
-(define (expand expression)
-  (expand-expression (make-expansion-context '()) expression))
+(define (expand-macros expression)
+  (expand-macro-expression (make-expansion-context '()) expression))
 
 ; Compilation
 
@@ -1361,4 +1361,4 @@
 
 ; Main
 
-(write-target (encode (compile (expand (expand-libraries (read-source))))))
+(write-target (encode (compile (expand-macros (expand-libraries (read-source))))))
