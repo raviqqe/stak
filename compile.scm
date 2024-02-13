@@ -455,6 +455,7 @@
   (map
     (lambda (x)
       (cons
+        ; `0` is always the library ID of `(scheme base)`.
         (rename-library-symbol 0 x)
         (string->symbol (string-append "$$" (symbol->string x)))))
     '(+ - * / <)))
