@@ -479,8 +479,6 @@
                 (else
                   (loop expressions)))))))
 
-      ; TODO Check if those primitive functions are from the `scheme base` library
-      ; before applying optimization.
       ((and
           (list? expression)
           (= (length expression) 3)
