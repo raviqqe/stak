@@ -1,31 +1,31 @@
 Feature: Write
   Scenario: Write a byte
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 65)
-    """
+      (write-u8 65)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Write a character
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-char #\A)
-    """
+      (write-char #\A)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Write an escaped character
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write <value>)
-    """
+      (write <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -39,11 +39,11 @@ Feature: Write
   @stak @gauche
   Scenario Outline: Write an escaped special character
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write <value>)
-    """
+      (write <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -61,35 +61,35 @@ Feature: Write
 
   Scenario: Write a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string "Hello, world!")
-    """
+      (write-string "Hello, world!")
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Write a special character in a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string "foo\nbar")
-    """
+      (write-string "foo\nbar")
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly:
-    """
-    foo
-    bar
-    """
+      """
+      foo
+      bar
+      """
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write <value>)
-    """
+      (write <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -100,11 +100,11 @@ Feature: Write
 
   Scenario Outline: Write a list
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write '<value>)
-    """
+      (write '<value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -120,11 +120,11 @@ Feature: Write
 
   Scenario Outline: Write a number
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write <value>)
-    """
+      (write <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -139,36 +139,36 @@ Feature: Write
   @stak
   Scenario: Write a procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write (lambda () #f))
-    """
+      (write (lambda () #f))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#procedure"
 
   @stak
   Scenario: Write a record
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (define-record-type foo
-      (make-foo)
-      foo?)
+      (define-record-type foo
+        (make-foo)
+        foo?)
 
-    (write (make-foo))
-    """
+      (write (make-foo))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "#record"
 
   Scenario Outline: Write a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write "<value>")
-    """
+      (write "<value>")
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "\"<value>\""
 
@@ -184,21 +184,21 @@ Feature: Write
 
   Scenario: Write a symbol
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write 'foo)
-    """
+      (write 'foo)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
 
   Scenario Outline: Write a vector
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write <value>)
-    """
+      (write <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -213,11 +213,11 @@ Feature: Write
   @stak @gauche @guile
   Scenario Outline: Write a bytevector
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write <value>)
-    """
+      (write <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -230,22 +230,22 @@ Feature: Write
 
   Scenario: Write to a port
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write '(42 foo #f) (current-output-port))
-    """
+      (write '(42 foo #f) (current-output-port))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "(42 foo #f)"
 
   @stak @gauche
   Scenario Outline: Write a quote
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write '<value>)
-    """
+      (write '<value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<value>"
 
@@ -260,11 +260,11 @@ Feature: Write
   @stak @gauche @guile
   Scenario Outline: Write a value in a collection
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (write '<value>)
-    """
+      (write '<value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -286,11 +286,11 @@ Feature: Write
   @stak @gauche @guile
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme write))
+      """scheme
+      (import (scheme base) (scheme write))
 
-    (display '<value>)
-    """
+      (display '<value>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
