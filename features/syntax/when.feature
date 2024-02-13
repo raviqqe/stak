@@ -1,20 +1,20 @@
 Feature: when
   Scenario: Evaluate a clause
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (when #t (write-u8 65))
-    """
+      (when #t (write-u8 65))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Do not evaluate a clause
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (when #f (write-u8 65))
-    """
+      (when #f (write-u8 65))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly ""

@@ -1,11 +1,11 @@
 Feature: or
   Scenario Outline: Use an `or` operator
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (or <values>) 65 66))
-    """
+      (write-u8 (if (or <values>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -19,11 +19,11 @@ Feature: or
 
   Scenario Outline: Return the first true value
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (or <values>))
-    """
+      (write-u8 (or <values>))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 

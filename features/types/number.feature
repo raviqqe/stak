@@ -1,11 +1,11 @@
 Feature: Number
   Scenario Outline: Use literals
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (define x <value>)
-    """
+      (define x <value>)
+      """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
@@ -19,31 +19,31 @@ Feature: Number
 
   Scenario: Use a negative integer
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (+ 66 -1))
-    """
+      (write-u8 (+ 66 -1))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use large (but not big) integers
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (- 1065 1000))
-    """
+      (write-u8 (- 1065 1000))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Use integers around the encoding base
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (- <value> 60))
-    """
+      (write-u8 (- <value> 60))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -55,11 +55,11 @@ Feature: Number
 
   Scenario Outline: Use arithmetic operators
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (= <expression> <value>) 65 66))
-    """
+      (write-u8 (if (= <expression> <value>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
@@ -86,24 +86,24 @@ Feature: Number
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (define (test x y)
-      (write-u8 (if (= x y) 65 66)))
+      (define (test x y)
+        (write-u8 (if (= x y) 65 66)))
 
-    (test (/ 2) (/ 1 2))
-    """
+      (test (/ 2) (/ 1 2))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Use a comparison operator
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if <expression> 65 66))
-    """
+      (write-u8 (if <expression> 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
@@ -120,11 +120,11 @@ Feature: Number
   @stak @guile
   Scenario Outline: Use comparison operators with an insufficient number of arguments
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (< <values>) 65 66))
-    """
+      (write-u8 (if (< <values>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
@@ -135,11 +135,11 @@ Feature: Number
 
   Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string (number->string <value> <radix>))
-    """
+      (write-string (number->string <value> <radix>))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -172,11 +172,11 @@ Feature: Number
   @stak @gauche @guile
   Scenario Outline: Convert a string to a number
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string (number->string (string->number "<value>" <radix>)))
-    """
+      (write-string (number->string (string->number "<value>" <radix>)))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -212,11 +212,11 @@ Feature: Number
 
   Scenario Outline: Convert an invalid string to a number
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (string->number "<value>") 65 66))
-    """
+      (write-u8 (if (string->number "<value>") 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
 

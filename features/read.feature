@@ -2,15 +2,15 @@ Feature: Read
   @stak @chibi @gauche
   Scenario: Read a byte
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (read-u8))
-    """
+      (write-u8 (read-u8))
+      """
     And a file named "input.txt" with:
-    """text
-    A
-    """
+      """text
+      A
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -19,17 +19,17 @@ Feature: Read
   @stak @chibi @gauche
   Scenario: Read bytes
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (read-u8))
-    (write-u8 (read-u8))
-    (write-u8 (read-u8))
-    """
+      (write-u8 (read-u8))
+      (write-u8 (read-u8))
+      (write-u8 (read-u8))
+      """
     And a file named "input.txt" with:
-    """text
-    ABC
-    """
+      """text
+      ABC
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -38,15 +38,15 @@ Feature: Read
   @stak @chibi @gauche
   Scenario: Peek a byte
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (peek-u8))
-    """
+      (write-u8 (peek-u8))
+      """
     And a file named "input.txt" with:
-    """text
-    A
-    """
+      """text
+      A
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -55,16 +55,16 @@ Feature: Read
   @stak @chibi @gauche
   Scenario: Peek a byte multiple times
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (peek-u8))
-    (write-u8 (peek-u8))
-    """
+      (write-u8 (peek-u8))
+      (write-u8 (peek-u8))
+      """
     And a file named "input.txt" with:
-    """text
-    A
-    """
+      """text
+      A
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -73,17 +73,17 @@ Feature: Read
   @stak @chibi @gauche
   Scenario: Peek and read bytes
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (peek-u8))
-    (write-u8 (read-u8))
-    (write-u8 (read-u8))
-    """
+      (write-u8 (peek-u8))
+      (write-u8 (read-u8))
+      (write-u8 (read-u8))
+      """
     And a file named "input.txt" with:
-    """text
-    AB
-    """
+      """text
+      AB
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -91,15 +91,15 @@ Feature: Read
 
   Scenario: Read a character
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-char (read-char))
-    """
+      (write-char (read-char))
+      """
     And a file named "input.txt" with:
-    """text
-    A
-    """
+      """text
+      A
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -107,15 +107,15 @@ Feature: Read
 
   Scenario: Peek a character
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-char (peek-char))
-    """
+      (write-char (peek-char))
+      """
     And a file named "input.txt" with:
-    """text
-    A
-    """
+      """text
+      A
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -123,16 +123,16 @@ Feature: Read
 
   Scenario: Peek a character multiple times
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-char (peek-char))
-    (write-char (peek-char))
-    """
+      (write-char (peek-char))
+      (write-char (peek-char))
+      """
     And a file named "input.txt" with:
-    """text
-    A
-    """
+      """text
+      A
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -140,17 +140,17 @@ Feature: Read
 
   Scenario: Peek and read characters
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-char (peek-char))
-    (write-char (read-char))
-    (write-char (read-char))
-    """
+      (write-char (peek-char))
+      (write-char (read-char))
+      (write-char (read-char))
+      """
     And a file named "input.txt" with:
-    """text
-    AB
-    """
+      """text
+      AB
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -159,15 +159,15 @@ Feature: Read
   @long
   Scenario Outline: Read a value
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme read))
+      """scheme
+      (import (scheme base) (scheme read))
 
-    (write-u8 (if (equal? (read) '<value>) 65 66))
-    """
+      (write-u8 (if (equal? (read) '<value>) 65 66))
+      """
     And a file named "input.txt" with:
-    """text
-    <value>
-    """
+      """text
+      <value>
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
@@ -214,15 +214,15 @@ Feature: Read
 
   Scenario: Read from a port
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme read))
+      """scheme
+      (import (scheme base) (scheme read))
 
-    (write-u8 (if (equal? (read (current-input-port)) 'foo) 65 66))
-    """
+      (write-u8 (if (equal? (read (current-input-port)) 'foo) 65 66))
+      """
     And a file named "input.txt" with:
-    """text
-    foo
-    """
+      """text
+      foo
+      """
     When I run `scheme main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
