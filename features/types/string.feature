@@ -1,41 +1,41 @@
 Feature: String
   Scenario: Write a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string "Hello, world!")
-    """
+      (write-string "Hello, world!")
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Convert a string to a list
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (for-each write-char (string->list "Hello, world!"))
-    """
+      (for-each write-char (string->list "Hello, world!"))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Convert a list to a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string (list->string (string->list "Hello, world!")))
-    """
+      (write-string (list->string (string->list "Hello, world!")))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario Outline: Append strings
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-string (string-append <values>))
-    """
+      (write-string (string-append <values>))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -49,11 +49,11 @@ Feature: String
 
   Scenario Outline: Get a character in a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-char (string-ref "<string>" <index>))
-    """
+      (write-char (string-ref "<string>" <index>))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -68,11 +68,11 @@ Feature: String
 
   Scenario Outline: Get a length of a string
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (= (string-length <value>) <length>) 65 66))
-    """
+      (write-u8 (if (= (string-length <value>) <length>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 

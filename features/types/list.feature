@@ -1,11 +1,11 @@
 Feature: List
   Scenario Outline: Use literals
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (define x '<value>)
-    """
+      (define x '<value>)
+      """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
@@ -19,51 +19,51 @@ Feature: List
 
   Scenario: Create a pair
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (cons 42 '())
-    """
+      (cons 42 '())
+      """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
   Scenario: Create a pair with a non-cons cdr
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (cons 1 2)
-    """
+      (cons 1 2)
+      """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
   Scenario: Create a list
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (list 1 2 3)
-    """
+      (list 1 2 3)
+      """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
   Scenario: Use a `map` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (for-each write-u8 '(65 66 67))
-    """
+      (for-each write-u8 '(65 66 67))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario Outline: Use an `append` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (for-each write-u8 (append <values>))
-    """
+      (for-each write-u8 (append <values>))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -77,29 +77,29 @@ Feature: List
 
   Scenario: Share the last argument in an `append` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (define x (list 65))
-    (define y (append '(65) x))
+      (define x (list 65))
+      (define y (append '(65) x))
 
-    (for-each write-u8 y)
+      (for-each write-u8 y)
 
-    (set-car! x 66)
+      (set-car! x 66)
 
-    (for-each write-u8 y)
-    """
+      (for-each write-u8 y)
+      """
     When I successfully run `scheme main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AAAB"
 
   Scenario Outline: Use a `memq` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (memq <value> '(<values>)) 65 66))
-    """
+      (write-u8 (if (memq <value> '(<values>)) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -116,11 +116,11 @@ Feature: List
 
   Scenario Outline: Use a `memv` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (memv <value> '(<values>)) 65 66))
-    """
+      (write-u8 (if (memv <value> '(<values>)) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -137,11 +137,11 @@ Feature: List
 
   Scenario Outline: Use a `member` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (member <value> '(<values>)) 65 66))
-    """
+      (write-u8 (if (member <value> '(<values>)) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -158,11 +158,11 @@ Feature: List
 
   Scenario Outline: Get a value from an association list
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (cdr (<procedure> 42 '((1 . 1) (42 . 65) (3 . 3)))))
-    """
+      (write-u8 (cdr (<procedure> 42 '((1 . 1) (42 . 65) (3 . 3)))))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
@@ -174,11 +174,11 @@ Feature: List
 
   Scenario Outline: Get a value from an association list of characters
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (cdr (<procedure> #\B '((#\A . 1) (#\B . 65) (#\C . 3)))))
-    """
+      (write-u8 (cdr (<procedure> #\B '((#\A . 1) (#\B . 65) (#\C . 3)))))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
@@ -190,11 +190,11 @@ Feature: List
 
   Scenario Outline: Check if a value is a pair
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (pair? <value>) 65 66))
-    """
+      (write-u8 (if (pair? <value>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -208,11 +208,11 @@ Feature: List
 
   Scenario Outline: Check if a value is null
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (null? <value>) 65 66))
-    """
+      (write-u8 (if (null? <value>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -226,11 +226,11 @@ Feature: List
 
   Scenario Outline: Check if a value is a list
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (list? <value>) 65 66))
-    """
+      (write-u8 (if (list? <value>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -244,11 +244,11 @@ Feature: List
 
   Scenario Outline: Apply a cxr procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base) (scheme cxr))
+      """scheme
+      (import (scheme base) (scheme cxr))
 
-    (write-u8 (<procedure> '<value>))
-    """
+      (write-u8 (<procedure> '<value>))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 

@@ -1,11 +1,11 @@
 Feature: if
   Scenario Outline: Use `if` expressions
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if <value> 65 66))
-    """
+      (write-u8 (if <value> 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -16,11 +16,11 @@ Feature: if
 
   Scenario Outline: Use nested `if` expressions
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 <expression>)
-    """
+      (write-u8 <expression>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -31,11 +31,11 @@ Feature: if
 
   Scenario Outline: Use deeply nested `if` expressions
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 <expression>)
-    """
+      (write-u8 <expression>)
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -46,11 +46,11 @@ Feature: if
 
   Scenario Outline: Use a one-sided `if` expression
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (if <value> (write-u8 65))
-    """
+      (if <value> (write-u8 65))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -61,19 +61,19 @@ Feature: if
 
   Scenario Outline: Use sequenced `if` expressions
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (if <value1>
-      (write-u8 65)
-      (write-u8 66))
-    (if <value2>
-      (write-u8 65)
-      (write-u8 66))
-    (if <value3>
-      (write-u8 65)
-      (write-u8 66))
-    """
+      (if <value1>
+        (write-u8 65)
+        (write-u8 66))
+      (if <value2>
+        (write-u8 65)
+        (write-u8 66))
+      (if <value3>
+        (write-u8 65)
+        (write-u8 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -90,37 +90,37 @@ Feature: if
 
   Scenario Outline: Use deeply nested `if` expressions
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (if <value1>
-      (begin
-        (write-u8 65)
-          (if <value2>
-            (begin
-              (write-u8 65)
-              (if <value3>
+      (if <value1>
+        (begin
+          (write-u8 65)
+            (if <value2>
+              (begin
                 (write-u8 65)
-                (write-u8 66)))
-            (begin
-              (write-u8 66)
-              (if <value3>
+                (if <value3>
+                  (write-u8 65)
+                  (write-u8 66)))
+              (begin
+                (write-u8 66)
+                (if <value3>
+                  (write-u8 65)
+                  (write-u8 66)))))
+        (begin
+          (write-u8 66)
+            (if <value2>
+              (begin
                 (write-u8 65)
-                (write-u8 66)))))
-      (begin
-        (write-u8 66)
-          (if <value2>
-            (begin
-              (write-u8 65)
-              (if <value3>
-                (write-u8 65)
-                (write-u8 66)))
-            (begin
-              (write-u8 66)
-              (if <value3>
-                (write-u8 65)
-                (write-u8 66))))))
-    """
+                (if <value3>
+                  (write-u8 65)
+                  (write-u8 66)))
+              (begin
+                (write-u8 66)
+                (if <value3>
+                  (write-u8 65)
+                  (write-u8 66))))))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -137,27 +137,27 @@ Feature: if
 
   Scenario Outline: Use sequenced `if` expressions in a nested `if` expression
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (if <value1>
-      (begin
-        (write-u8 65)
-        (if <value2>
+      (if <value1>
+        (begin
           (write-u8 65)
-          (write-u8 66))
-        (if <value3>
-          (write-u8 65)
-          (write-u8 66)))
-      (begin
-        (write-u8 66)
-        (if <value2>
-          (write-u8 65)
-          (write-u8 66))
-        (if <value3>
-          (write-u8 65)
-          (write-u8 66))))
-    """
+          (if <value2>
+            (write-u8 65)
+            (write-u8 66))
+          (if <value3>
+            (write-u8 65)
+            (write-u8 66)))
+        (begin
+          (write-u8 66)
+          (if <value2>
+            (write-u8 65)
+            (write-u8 66))
+          (if <value3>
+            (write-u8 65)
+            (write-u8 66))))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 

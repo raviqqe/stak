@@ -1,11 +1,11 @@
 Feature: Equality
   Scenario Outline: Use an `eq?` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (eq? <lhs> <rhs>) 65 66))
-    """
+      (write-u8 (if (eq? <lhs> <rhs>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -22,11 +22,11 @@ Feature: Equality
 
   Scenario Outline: Use an `eqv?` procedure
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (eqv? <lhs> <rhs>) 65 66))
-    """
+      (write-u8 (if (eqv? <lhs> <rhs>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -45,11 +45,11 @@ Feature: Equality
 
   Scenario Outline: Use an `equal?` procedure with scalar values
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (equal? <lhs> <rhs>) 65 66))
-    """
+      (write-u8 (if (equal? <lhs> <rhs>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
@@ -68,11 +68,11 @@ Feature: Equality
 
   Scenario Outline: Use an `equal?` procedure with collections
     Given a file named "main.scm" with:
-    """scheme
-    (import (scheme base))
+      """scheme
+      (import (scheme base))
 
-    (write-u8 (if (equal? <lhs> <rhs>) 65 66))
-    """
+      (write-u8 (if (equal? <lhs> <rhs>) 65 66))
+      """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
