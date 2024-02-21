@@ -13,7 +13,7 @@
     "@astrojs/sitemap": "^3.1.0",
     "@astrojs/starlight": "^0.19.1",
     "@raviqqe/loscore": "^0.2.1",
-    "astro": "^4.4.0"
+    "astro": "^4.4.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.19",
