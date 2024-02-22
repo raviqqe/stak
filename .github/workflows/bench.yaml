@@ -8,11 +8,24 @@ concurrency:
   group: bench-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  bench:
-    runs-on: ubuntu-latest
+  os_bench:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-14
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
       - run: tools/bench.sh
+  bench:
+    needs:
+      - os_bench
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: for result in ${{ join(needs.*.result, ' ') }}; do [ $result = success ]; done
