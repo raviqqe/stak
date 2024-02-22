@@ -24,7 +24,7 @@ jobs:
       - run: tools/bench.sh
   bench:
     needs:
-      - test
+      - os_bench
     if: always()
     runs-on: ubuntu-latest
     steps:
