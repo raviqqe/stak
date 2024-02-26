@@ -5,6 +5,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
+
         (import (scheme base))
 
         (begin
@@ -36,6 +37,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
+
         (import (scheme base))
 
         (begin
@@ -55,6 +57,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
+
         (import (scheme base))
 
         (begin
@@ -76,6 +79,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo bar)
+
         (import (scheme base))
 
         (begin
@@ -99,6 +103,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
+
         (import (scheme base))
 
         (begin
@@ -118,6 +123,7 @@ Feature: Library system
       """scheme
       (define-library (foo)
         (export foo)
+
         (import (scheme base))
 
         (begin
@@ -131,12 +137,13 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @todo @stak @gauche
+  @stak @gauche
   Scenario: Export a renamed function
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
         (export (rename foo bar))
+
         (import (scheme base))
 
         (begin
