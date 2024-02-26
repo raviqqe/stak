@@ -137,26 +137,6 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @todo @stak @gauche
-  Scenario: Export a renamed function
-    Given a file named "main.scm" with:
-      """scheme
-      (define-library (foo)
-        (export (rename foo bar))
-
-        (import (scheme base))
-
-        (begin
-          (define (foo x)
-            (write-u8 x))))
-
-      (import (foo))
-
-      (bar 65)
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
-
   @stak @gauche
   Scenario: Export a renamed function
     Given a file named "main.scm" with:
