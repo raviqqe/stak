@@ -158,7 +158,7 @@ Feature: Library system
     Then the stdout should contain exactly "A"
 
   @stak @gauche
-  Scenario: Import a function with a prefix
+  Scenario: Export a renamed function
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
