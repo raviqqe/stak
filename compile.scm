@@ -396,7 +396,10 @@
             id
             (cadr expression)
             (map
-              (lambda (name) (cons name (rename-library-symbol id name)))
+              (lambda (name)
+                (if (eq? (predicate name) 'rename)
+                  (cons (caddr name) (rename-library-symbol id (cadr name)))
+                  (cons name (rename-library-symbol id name))))
               (collect-bodies 'export))
             (collect-bodies 'import)
             (relaxed-deep-map
