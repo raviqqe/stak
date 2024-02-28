@@ -97,7 +97,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @todo @stak @gauche
+  @stak @gauche
   Scenario: Import a function with a prefix
     Given a file named "main.scm" with:
       """scheme
@@ -117,7 +117,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @todo @stak @gauche
+  @stak @gauche
   Scenario: Import a renamed function
     Given a file named "main.scm" with:
       """scheme
