@@ -23,10 +23,17 @@
     cond
     case
     else
+    =>
     and
     or
     when
     unless
+
+    base
+    cxr
+    library
+    r7rs
+    stak
 
     pair-type
     null-type

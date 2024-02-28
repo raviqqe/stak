@@ -331,17 +331,8 @@
   '(_
     ...
     ; TODO Remove those keywords by implementing library environment correctly.
-    =>
-    and
-    base
-    library
-    not
-    or
     quasiquote
     quote
-    r7rs
-    scheme
-    stak
     stderr
     stdin
     stdout
