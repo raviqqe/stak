@@ -247,6 +247,9 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
+(define (symbol-append . xs)
+  (string->symbol (apply string-append (map symbol->string xs))))
+
 (define (id->string id)
   (number->string id 32))
 
@@ -366,7 +369,11 @@
       (error "not implemented"))
 
     ((prefix)
-      (error "not implemented"))
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name) (symbol-append (caddr set) (qualify name)))
+        (cadr set)))
 
     (else
       (let ((library (library-context-find context set)))
@@ -470,7 +477,7 @@
       (cons
         ; `0` is always the library ID of `(scheme base)`.
         (rename-library-symbol 0 x)
-        (string->symbol (string-append "$$" (symbol->string x)))))
+        (symbol-append '$$ x)))
     '(+ - * / <)))
 
 (define (optimize expression)
