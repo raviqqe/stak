@@ -22,6 +22,7 @@
     if
     cond
     case
+    else
     and
     or
     when
