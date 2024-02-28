@@ -22,13 +22,13 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-14
         options:
           -
           - --features std
           - --features gc_always --exclude stak-compiler
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
@@ -47,7 +47,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-14
         interpreter:
           - name: stak-tools
             host: chibi-scheme
@@ -69,7 +69,7 @@ jobs:
           - name: guile
             tags: not @stak or @guile
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
@@ -87,12 +87,12 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-14
         interpreter:
           - stak
           - stak-tools
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-latest' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
