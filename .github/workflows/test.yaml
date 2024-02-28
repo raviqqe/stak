@@ -51,17 +51,14 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
-            tags: not @todo
           - name: stak-tools
             host: gosh
-            tags: not @todo
           - name: stak-tools
             host: guile
-            tags: not @todo
           - name: stak-tools
             host: gosh
             features: [gc_always]
-            tags: not @long and not @todo
+            tags: not @long
           - name: chibi
             tags: not @stak or @chibi
           - name: gauche
@@ -96,7 +93,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: tools/integration_test.sh -i ${{ matrix.interpreter }} -- --tags 'not @todo'
+      - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
   self_host_test:
     runs-on: ubuntu-latest
     steps:
