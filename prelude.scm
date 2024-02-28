@@ -33,6 +33,7 @@
     cxr
     library
     r7rs
+    scheme
     stak
 
     pair-type
