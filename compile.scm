@@ -366,7 +366,18 @@
 (define (expand-import-set context importer-id qualify set)
   (case (predicate set)
     ((rename)
-      (error "not implemented"))
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name)
+          (let ((name (qualify name)))
+            (cond
+              ((assq name (cddr set)) =>
+                cadr)
+
+              (else
+                name))))
+        (cadr set)))
 
     ((prefix)
       (expand-import-set
