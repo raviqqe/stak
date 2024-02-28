@@ -247,6 +247,9 @@
     (else
       (error "invalid variadic parameter" parameters))))
 
+(define (symbol-append . xs)
+  (string->symbol (apply string-append (map symbol->string xs))))
+
 (define (id->string id)
   (number->string id 32))
 
@@ -360,12 +363,33 @@
         "$"
         (symbol->string name)))))
 
-(define (expand-import-sets context importer-id sets)
-  (flat-map
-    (lambda (name)
-      (let ((library (library-context-find context name)))
+(define (expand-import-set context importer-id qualify set)
+  (case (predicate set)
+    ((rename)
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name)
+          (let ((name (qualify name)))
+            (cond
+              ((assq name (cddr set)) =>
+                cadr)
+
+              (else
+                name))))
+        (cadr set)))
+
+    ((prefix)
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name) (symbol-append (caddr set) (qualify name)))
+        (cadr set)))
+
+    (else
+      (let ((library (library-context-find context set)))
         (append
-          (if (library-context-import! context name)
+          (if (library-context-import! context set)
             '()
             (append
               (expand-import-sets context (library-id library) (library-imports library))
@@ -374,9 +398,13 @@
             (lambda (names)
               (list
                 '$$alias
-                (rename-library-symbol importer-id (car names))
+                (rename-library-symbol importer-id (qualify (car names)))
                 (cdr names)))
-            (library-exports library)))))
+            (library-exports library)))))))
+
+(define (expand-import-sets context importer-id sets)
+  (flat-map
+    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
     sets))
 
 (define (expand-library-expression context expression)
@@ -460,7 +488,7 @@
       (cons
         ; `0` is always the library ID of `(scheme base)`.
         (rename-library-symbol 0 x)
-        (string->symbol (string-append "$$" (symbol->string x)))))
+        (symbol-append '$$ x)))
     '(+ - * / <)))
 
 (define (optimize expression)
