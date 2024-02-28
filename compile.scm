@@ -360,23 +360,25 @@
         "$"
         (symbol->string name)))))
 
+(define (expand-import-set context importer-id qualify set)
+  (let ((library (library-context-find context name)))
+    (append
+      (if (library-context-import! context name)
+        '()
+        (append
+          (expand-import-sets context (library-id library) (library-imports library))
+          (library-codes library)))
+      (map
+        (lambda (names)
+          (list
+            '$$alias
+            (rename-library-symbol importer-id (qualify (car names)))
+            (cdr names)))
+        (library-exports library)))))
+
 (define (expand-import-sets context importer-id sets)
   (flat-map
-    (lambda (name)
-      (let ((library (library-context-find context name)))
-        (append
-          (if (library-context-import! context name)
-            '()
-            (append
-              (expand-import-sets context (library-id library) (library-imports library))
-              (library-codes library)))
-          (map
-            (lambda (names)
-              (list
-                '$$alias
-                (rename-library-symbol importer-id (car names))
-                (cdr names)))
-            (library-exports library)))))
+    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
     sets))
 
 (define (expand-library-expression context expression)
