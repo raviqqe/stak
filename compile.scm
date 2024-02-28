@@ -327,9 +327,9 @@
 
 ;; Procedures
 
+; TODO Remove those keywords by implementing library environment correctly.
 (define keywords
   '(...
-    ; TODO Remove those keywords by implementing library environment correctly.
     quasiquote
     quote
     stderr
