@@ -2,6 +2,9 @@
 
 (define-library (scheme base)
   (export
+    _
+    ...
+
     define-syntax
     define
     lambda

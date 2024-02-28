@@ -328,8 +328,7 @@
 ;; Procedures
 
 (define keywords
-  '(_
-    ...
+  '(...
     ; TODO Remove those keywords by implementing library environment correctly.
     quasiquote
     quote
