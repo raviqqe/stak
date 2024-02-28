@@ -336,9 +336,7 @@
     stderr
     stdin
     stdout
-    syntax-rules
-    unquote
-    unquote-splicing))
+    syntax-rules))
 
 (define (rename-library-symbol id name)
   (if (or

@@ -9,6 +9,8 @@
     letrec-syntax
     begin
     quasiquote
+    unquote
+    unquote-splicing
     quote
     set!
     cond-expand
