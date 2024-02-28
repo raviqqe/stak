@@ -361,9 +361,9 @@
         (symbol->string name)))))
 
 (define (expand-import-set context importer-id qualify set)
-  (let ((library (library-context-find context name)))
+  (let ((library (library-context-find context set)))
     (append
-      (if (library-context-import! context name)
+      (if (library-context-import! context set)
         '()
         (append
           (expand-import-sets context (library-id library) (library-imports library))
