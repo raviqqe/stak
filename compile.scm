@@ -362,10 +362,10 @@
 
 (define (expand-import-set context importer-id qualify set)
   (case (predicate set)
-    ((prefix)
+    ((rename)
       (error "not implemented"))
 
-    ((rename)
+    ((prefix)
       (error "not implemented"))
 
     (else
