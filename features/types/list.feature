@@ -269,3 +269,22 @@ Feature: List
       | cddar     | ((66 66 . 65))  |
       | cdddr     | (66 66 66 . 65) |
       | cadddr    | (66 66 66 65)   |
+
+  Scenario Outline: Copy a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (equal? (list-copy <value>) <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value      |
+      | #f         |
+      | '()        |
+      | '(1)       |
+      | '(1 . 2)   |
+      | '(1 2)     |
+      | '(1 2 . 3) |

@@ -147,6 +147,7 @@
     reduce-right
     list-position
     memv-position
+    list-copy
 
     bytevector?
     bytevector-length
@@ -171,6 +172,8 @@
     string-ref
     number->string
     string->number
+    string-copy
+    substring
 
     symbol?
     symbol->string
@@ -874,16 +877,23 @@
 
     (define for-each map)
 
-    (define (list-ref list index)
-      (car (list-tail list index)))
+    (define (list-ref xs index)
+      (car (list-tail xs index)))
 
-    (define (list-set! list index value)
-      (set-car! (list-tail list index) value))
+    (define (list-set! xs index value)
+      (set-car! (list-tail xs index) value))
 
-    (define (list-tail list index)
+    (define (list-head xs index)
       (if (zero? index)
-        list
-        (list-tail (cdr list) (- index 1))))
+        '()
+        (cons
+          (car xs)
+          (list-head (cdr xs) (- index 1)))))
+
+    (define (list-tail xs index)
+      (if (or (zero? index) (not (pair? xs)))
+        xs
+        (list-tail (cdr xs) (- index 1))))
 
     (define (member x xs . rest)
       (define eq?
@@ -971,6 +981,15 @@
 
     (define (memv-position one xs)
       (list-position (lambda (other) (eqv? one other)) xs))
+
+    (define (list-copy xs . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end (if (or (null? rest) (null? (cdr rest))) #f (cadr rest)))
+
+      (let ((xs (list-tail xs start)))
+        (if end
+          (list-head xs (- end start))
+          xs)))
 
     ;; Bytevector
 
@@ -1091,6 +1110,11 @@
           (let ((x (convert (cdr xs))))
             (and x (- x)))
           (convert xs))))
+
+    (define (string-copy x . rest)
+      (list->string (apply list-copy (cons (string->list x) rest))))
+
+    (define substring string-copy)
 
     ;; Symbol
 
