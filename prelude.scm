@@ -970,7 +970,7 @@
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
-      (define end (if (null? (cdr rest)) #f (cadr rest)))
+      (define end (if (and (pair? rest) (null? (cdr rest))) #f (cadr rest)))
 
       (let ((xs (list-tail xs start)))
         (if end
