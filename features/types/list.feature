@@ -281,8 +281,10 @@ Feature: List
     Then the stdout should contain exactly "A"
 
     Examples:
-      | value  |
-      | #f     |
-      | '()    |
-      | '(1)   |
-      | '(1 2) |
+      | value      |
+      | #f         |
+      | '()        |
+      | '(1)       |
+      | '(1 . 2)   |
+      | '(1 2)     |
+      | '(1 2 . 3) |
