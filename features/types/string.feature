@@ -107,3 +107,5 @@ Feature: String
       | abc   | 1     | 2   | b      |
       | abc   | 2     | 3   | c      |
       | abc   | 0     | 2   | ab     |
+      | abc   | 1     | 3   | bc     |
+      | abc   | 0     | 2   | ab     |
