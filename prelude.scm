@@ -1098,10 +1098,7 @@
           (convert xs))))
 
     (define (string-copy x . rest)
-      (define start (if (null? rest) 0 (car rest)))
-      (define end (if (null? (cdr rest)) (string-length x) (cadr rest)))
-
-      (list->string (list-copy (string->list x) start end)))
+      (list->string (apply list-copy (cons (string->list x) rest))))
 
     (define substring string-copy)
 
