@@ -876,10 +876,10 @@
           (car xs)
           (list-head (cdr xs) (- index 1)))))
 
-    (define (list-tail list index)
+    (define (list-tail xs index)
       (if (zero? index)
-        list
-        (list-tail (cdr list) (- index 1))))
+        xs
+        (list-tail (cdr xs) (- index 1))))
 
     (define (member x xs . rest)
       (define eq?
