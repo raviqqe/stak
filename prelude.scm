@@ -877,7 +877,7 @@
           (list-head (cdr xs) (- index 1)))))
 
     (define (list-tail xs index)
-      (if (zero? index)
+      (if (or (zero? index) (not (pair? xs)))
         xs
         (list-tail (cdr xs) (- index 1))))
 
