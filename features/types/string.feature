@@ -82,3 +82,28 @@ Feature: String
       | "a"   | 1      |
       | "aa"  | 2      |
       | "aaa" | 3      |
+
+  Scenario Outline: Get a sub-string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (substring "<value>" <start> <end>) "<output>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value | start | end | output |
+      |       | 0     | 0   |        |
+      | a     | 0     | 0   |        |
+      | a     | 0     | 1   | a      |
+      | ab    | 0     | 0   |        |
+      | ab    | 0     | 1   | a      |
+      | ab    | 1     | 2   | b      |
+      | ab    | 0     | 2   | ab     |
+      | abc   | 0     | 0   |        |
+      | abc   | 0     | 1   | a      |
+      | abc   | 1     | 2   | b      |
+      | abc   | 2     | 3   | c      |
+      | abc   | 0     | 2   | ab     |

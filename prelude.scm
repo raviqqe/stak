@@ -1079,8 +1079,10 @@
             (and x (- x)))
           (convert xs))))
 
-    (define (substring string start end)
+    (define (string-copy string . rest)
       #f)
+
+    (define substring string-copy)
 
     ;; Symbol
 
