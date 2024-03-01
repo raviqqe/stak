@@ -870,8 +870,8 @@
       (set-car! (list-tail xs index) value))
 
     (define (list-head xs index)
-      (if (zero? index)
-        '()
+      (if (or (zero? index) (not (pair? xs)))
+        xs
         (cons
           (car xs)
           (list-head (cdr xs) (- index 1)))))
