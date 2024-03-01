@@ -968,15 +968,14 @@
     (define (memv-position one xs)
       (list-position (lambda (other) (eqv? one other)) xs))
 
-    (define (list-copy x . rest)
+    (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end (if (null? (cdr rest)) #f (cadr rest)))
-      (define x (list-tail x start))
 
-      (if end
-        (let loop ((x x) (end end))
-          (list-copy xs))
-        x))
+      (let ((xs (list-tail xs start)))
+        (if end
+          (list-head xs (- end start))
+          xs)))
 
     ;; Bytevector
 
