@@ -874,7 +874,7 @@
         '()
         (cons
           (car xs)
-          (list-head (cdr list) (- index 1)))))
+          (list-head (cdr xs) (- index 1)))))
 
     (define (list-tail list index)
       (if (zero? index)
