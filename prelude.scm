@@ -133,6 +133,7 @@
     reduce-right
     list-position
     memv-position
+    list-copy
 
     bytevector?
     bytevector-length
@@ -862,11 +863,18 @@
 
     (define for-each map)
 
-    (define (list-ref list index)
-      (car (list-tail list index)))
+    (define (list-ref xs index)
+      (car (list-tail xs index)))
 
-    (define (list-set! list index value)
-      (set-car! (list-tail list index) value))
+    (define (list-set! xs index value)
+      (set-car! (list-tail xs index) value))
+
+    (define (list-head xs index)
+      (if (zero? index)
+        '()
+        (cons
+          (car xs)
+          (list-head (cdr list) (- index 1)))))
 
     (define (list-tail list index)
       (if (zero? index)
@@ -959,6 +967,16 @@
 
     (define (memv-position one xs)
       (list-position (lambda (other) (eqv? one other)) xs))
+
+    (define (list-copy x . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end (if (null? (cdr rest)) #f (cadr rest)))
+      (define x (list-tail x start))
+
+      (if end
+        (let loop ((x x) (end end))
+          (list-copy xs))
+        x))
 
     ;; Bytevector
 
