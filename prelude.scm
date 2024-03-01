@@ -157,6 +157,7 @@
     string-ref
     number->string
     string->number
+    substring
 
     symbol?
     symbol->string
@@ -1077,6 +1078,9 @@
           (let ((x (convert (cdr xs))))
             (and x (- x)))
           (convert xs))))
+
+    (define (substring string start end)
+      #f)
 
     ;; Symbol
 
