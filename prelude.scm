@@ -157,6 +157,7 @@
     string-ref
     number->string
     string->number
+    string-copy
     substring
 
     symbol?
@@ -1079,8 +1080,11 @@
             (and x (- x)))
           (convert xs))))
 
-    (define (string-copy string . rest)
-      #f)
+    (define (string-copy x . rest)
+      (define start (if (null? rest) 0 (car rest)))
+      (define end (if (null? (cdr rest)) (string-length x) (cadr rest)))
+
+      (list->string (list-copy (string->list x) start end)))
 
     (define substring string-copy)
 
