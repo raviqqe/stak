@@ -336,7 +336,7 @@
 
 (define (resolve-library-symbol name)
   (let ((string (symbol->string name)))
-    (if (eq? (string-ref string 0) #\$)
+    (if (eqv? (string-ref string 0) #\$)
       (let ((position (memv-position #\$ (cdr (string->list string)))))
         (if position
           (string->symbol (string-copy string (+ position 2)))
