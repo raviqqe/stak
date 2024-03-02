@@ -70,6 +70,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
+      GUILE_AUTO_COMPILE: 0
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: >
