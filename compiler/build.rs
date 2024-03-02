@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         target_file.display()
     );
 
-    let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("stak"))
+    let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("gosh"))
         .arg(COMPILER_SOURCE_FILE)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
