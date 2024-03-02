@@ -342,7 +342,7 @@
     (if (eq? (string-ref string 0) #\$)
       (let ((position (memv-position #\$ (cdr (string->list string)))))
         (if position
-          (string-copy string (+ position 1))
+          (string->symbol (string-copy string (+ position 2)))
           name))
       name)))
 
