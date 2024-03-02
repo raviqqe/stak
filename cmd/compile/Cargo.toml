@@ -1,7 +1,7 @@
 [package]
 name = "stak-compile"
 description = "Stak Scheme bytecode compiler"
-version = "0.1.9"
+version = "0.1.10"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
