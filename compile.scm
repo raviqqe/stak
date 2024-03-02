@@ -340,7 +340,7 @@
 (define (resolve-library-symbol name)
   (let ((string (symbol->string name)))
     (if (eq? (string-ref string 0) #\$)
-      (let ((position (memv-position #\$ (string->list string))))
+      (let ((position (memv-position #\$ (cdr (string->list string)))))
         (if position
           (string-copy string (+ position 1))
           name))
