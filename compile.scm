@@ -337,6 +337,15 @@
     stdout
     syntax-rules))
 
+(define (resolve-library-symbol name)
+  (let ((string (symbol->string name)))
+    (if (eq? (string-ref string 0) #\$)
+      (let ((position (memv-position #\$ (string->list string))))
+        (if position
+          (string-copy string (+ position 1))
+          name))
+      name)))
+
 (define (rename-library-symbol id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
@@ -785,7 +794,14 @@
               (expand-macro-expression context (caddr expression))))
 
           (($$quote)
-            (cons '$$quote (cdr expression)))
+            (cons
+              '$$quote
+              (relaxed-deep-map
+                (lambda (value)
+                  (if (symbol? value)
+                    (resolve-library-symbol value)
+                    value))
+                (cdr expression))))
 
           (else =>
             (lambda (value)
