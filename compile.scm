@@ -334,9 +334,13 @@
     quote
     syntax-rules))
 
+(define library-symbol-prefix "$%")
+
 (define (resolve-library-symbol name)
   (let ((string (symbol->string name)))
-    (if (eqv? (string-ref string 0) #\$)
+    (if (and
+         (> (string-length string) 4)
+         (equal? (substring string 0 2) library-symbol-prefix))
       (let ((position (memv-position #\$ (cdr (string->list string)))))
         (if position
           (string->symbol (string-copy string (+ position 2)))
@@ -351,7 +355,7 @@
     name
     (string->symbol
       (string-append
-        "$"
+        library-symbol-prefix
         (id->string id)
         "$"
         (symbol->string name)))))
