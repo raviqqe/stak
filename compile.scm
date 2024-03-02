@@ -327,28 +327,24 @@
 
 ;; Procedures
 
+; TODO Remove those keywords by implementing library environment correctly.
 (define keywords
-  '(_
-    ...
-    ; TODO Remove those keywords by implementing library environment correctly.
-    =>
-    and
-    base
-    else
-    library
-    not
-    or
+  '(...
     quasiquote
     quote
-    r7rs
-    scheme
-    stak
     stderr
     stdin
     stdout
-    syntax-rules
-    unquote
-    unquote-splicing))
+    syntax-rules))
+
+(define (resolve-library-symbol name)
+  (let ((string (symbol->string name)))
+    (if (eq? (string-ref string 0) #\$)
+      (let ((position (memv-position #\$ (cdr (string->list string)))))
+        (if position
+          (string->symbol (string-copy string (+ position 2)))
+          name))
+      name)))
 
 (define (rename-library-symbol id name)
   (if (or
@@ -798,7 +794,14 @@
               (expand-macro-expression context (caddr expression))))
 
           (($$quote)
-            (cons '$$quote (cdr expression)))
+            (cons
+              '$$quote
+              (relaxed-deep-map
+                (lambda (value)
+                  (if (symbol? value)
+                    (resolve-library-symbol value)
+                    value))
+                (cdr expression))))
 
           (else =>
             (lambda (value)

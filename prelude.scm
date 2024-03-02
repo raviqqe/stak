@@ -2,6 +2,9 @@
 
 (define-library (scheme base)
   (export
+    _
+    ...
+
     define-syntax
     define
     lambda
@@ -9,6 +12,8 @@
     letrec-syntax
     begin
     quasiquote
+    unquote
+    unquote-splicing
     quote
     set!
     cond-expand
@@ -22,10 +27,19 @@
     if
     cond
     case
+    else
+    =>
     and
     or
     when
     unless
+
+    base
+    cxr
+    library
+    r7rs
+    scheme
+    stak
 
     pair-type
     null-type
