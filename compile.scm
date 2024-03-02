@@ -332,9 +332,6 @@
   '(...
     quasiquote
     quote
-    stderr
-    stdin
-    stdout
     syntax-rules))
 
 (define (resolve-library-symbol name)
