@@ -573,7 +573,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         trace!("decode", "start");
 
-        self.decode_symbols(&mut input)?;
+        self.register = self.decode_symbols(&mut input)?;
+        self.stack = self.null();
         self.decode_instructions(&mut input)?;
 
         trace!("decode", "end");
@@ -589,7 +590,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
+    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, T::Error> {
         // Initialize a shared empty string.
         self.register = self.create_string(self.null(), 0)?;
 
@@ -639,11 +640,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.stack.into(),
         );
 
-        // Allow access to a symbol table during decoding.
-        self.register = self.stack;
-        self.stack = self.null();
-
-        Ok(())
+        Ok(self.stack)
     }
 
     fn initialize_empty_symbol(&mut self, value: Value) -> Result<(), T::Error> {
