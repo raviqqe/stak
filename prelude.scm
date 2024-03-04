@@ -2,10 +2,10 @@
 
 (define-library (scheme base)
   (export
+    define-syntax
+    syntax-rules
     _
     ...
-
-    define-syntax
     define
     lambda
     let-syntax
@@ -252,9 +252,9 @@
     ;; Base
 
     ($$define-syntax define-syntax
-      (syntax-rules ()
-        ((_ name value)
-          ($$define-syntax name value))))
+      ($$syntax-rules (syntax-rules)
+        ((_ name (syntax-rules (literal ...) body ...))
+          ($$define-syntax name (syntax-rules (literal ...) body ...)))))
 
     (define-syntax define
       (syntax-rules ()
