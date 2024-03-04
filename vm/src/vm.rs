@@ -885,7 +885,7 @@ mod tests {
             #[cfg(not(feature = "gc_always"))]
             {
                 use std::format;
-                insta::assert_display_snapshot!($vm);
+                insta::assert_snapshot!($vm);
             }
 
             let _ = $vm;
