@@ -577,6 +577,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.register = self.decode_symbols(&mut input)?;
         self.stack = self.null();
         self.decode_instructions(&mut input)?;
+        self.build_symbol_table(self.register)?;
 
         trace!("decode", "end");
 
@@ -634,14 +635,34 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.initialize_empty_symbol(self.boolean(true).into())?;
         self.initialize_empty_symbol(self.boolean(false).into())?;
 
+        Ok(self.stack)
+    }
+
+    fn build_symbol_table(&mut self, symbols: Cons) -> Result<(), T::Error> {
+        self.stack = self
+            .car(self.tail(symbols, Number::new(symbol_index::RIB as i64)))
+            .assume_cons();
+        self.register = self.cons(self.r#false.into(), symbols)?;
+
+        let mut current = self.register;
+
+        while self.cdr_value(self.cdr(current)) != self.null().into() {
+            if self.is_empty_symbol(self.car_value(self.cdr_value(self.cdr(current)))) {
+                current = self.cdr(current).assume_cons()
+            } else {
+                self.set_cdr(current, self.cdr_value(self.cdr(current)));
+            }
+        }
+
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.set_car_value(
-            self.cdr_value(self.car(self.tail(self.stack, Number::new(symbol_index::RIB as i64)))),
-            self.stack.into(),
-        );
+        self.set_car_value(self.cdr(self.stack), self.cdr(self.register).into());
 
-        Ok(self.stack)
+        Ok(())
+    }
+
+    fn is_empty_symbol(&self, symbol: Value) -> bool {
+        self.cdr_value(self.car_value(symbol)) == Number::new(0).into()
     }
 
     fn initialize_empty_symbol(&mut self, value: Value) -> Result<(), T::Error> {
