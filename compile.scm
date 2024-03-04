@@ -681,7 +681,7 @@
 
 (define (make-transformer definition-context transformer)
   (case (predicate transformer)
-    ((syntax-rules)
+    (($$syntax-rules)
       (let ((literals (cadr transformer))
             (rules (cddr transformer)))
         (lambda (use-context expression)
