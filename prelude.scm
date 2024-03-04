@@ -257,7 +257,7 @@
           ($$syntax-rules (literal ...) (pattern body) ...))))
 
     ($$define-syntax define-syntax
-      ($$syntax-rules ()
+      (syntax-rules ()
         ((_ name value)
           ($$define-syntax name value))))
 
