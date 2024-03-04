@@ -680,7 +680,7 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (case (predicate transformer)
+  (case (resolve-denotation definition-context (predicate transformer))
     (($$syntax-rules)
       (let ((literals (cadr transformer))
             (rules (cddr transformer)))
