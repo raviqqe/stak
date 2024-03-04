@@ -254,7 +254,7 @@
     ($$define-syntax define-syntax
       ($$syntax-rules (syntax-rules)
         ((_ name (syntax-rules (literal ...) body ...))
-          ($$define-syntax name (syntax-rules (literal ...) body ...)))))
+          ($$define-syntax name ($$syntax-rules (literal ...) body ...)))))
 
     (define-syntax define
       (syntax-rules ()
