@@ -329,8 +329,7 @@
 
 ; TODO Remove those keywords by implementing library environment correctly.
 (define keywords
-  '(...
-    syntax-rules))
+  '(...))
 
 (define library-symbol-prefix "$%")
 
