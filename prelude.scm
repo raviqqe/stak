@@ -2,10 +2,10 @@
 
 (define-library (scheme base)
   (export
+    define-syntax
+    syntax-rules
     _
     ...
-
-    define-syntax
     define
     lambda
     let-syntax
@@ -250,6 +250,11 @@
     ; Those syntax definitions are mostly ported from https://small.r7rs.org/attachment/r7rs.pdf.
 
     ;; Base
+
+    ($$define-syntax syntax-rules
+      ($$syntax-rules ()
+        ((_ (literal ...) (pattern body) ...)
+          ($$syntax-rules (literal ...) (pattern body) ...))))
 
     ($$define-syntax define-syntax
       (syntax-rules ()
