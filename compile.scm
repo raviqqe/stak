@@ -42,12 +42,16 @@
 (define rib-symbol (string->symbol "$$rib"))
 
 (define default-constants
-  (list
-    (cons #f (string->symbol "$$false"))
-    (cons #t (string->symbol "$$true"))
-    (cons '() (string->symbol "$$null"))
-    ; It is fine to have a key duplicate with `false`'s because it is never hit.
-    (cons #f rib-symbol)))
+  (map
+    (lambda (pair)
+      (cons
+        (car pair)
+        (string->symbol (cdr pair))))
+    '((#f . "$$false")
+      (#t . "$$true")
+      (() . "$$null")
+      ; It is fine to have a key duplicate with `false`'s because it is never hit.
+      (#f . "$$rib"))))
 
 (define default-symbols (map cdr default-constants))
 
