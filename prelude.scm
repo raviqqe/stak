@@ -253,8 +253,8 @@
 
     ($$define-syntax define-syntax
       ($$syntax-rules (syntax-rules)
-        ((_ name (syntax-rules (literal ...) body ...))
-          ($$define-syntax name ($$syntax-rules (literal ...) body ...)))))
+        ((_ name (syntax-rules (literal ...) (pattern body) ...))
+          ($$define-syntax name ($$syntax-rules (literal ...) (pattern body) ...)))))
 
     (define-syntax define
       (syntax-rules ()
