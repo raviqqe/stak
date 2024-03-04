@@ -573,6 +573,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         trace!("decode", "start");
 
+        // Allow access to a symbol table during instruction decoding.
         self.register = self.decode_symbols(&mut input)?;
         self.stack = self.null();
         self.decode_instructions(&mut input)?;
