@@ -46,11 +46,12 @@
 ; Constants
 
 (define default-constants
-  '((#f . $$false)
-    (#t . $$true)
-    (() . $$null)
+  (list
+    (cons #f (string->symbol "$$false"))
+    (cons #t (string->symbol "$$true"))
+    (cons '() (string->symbol "$$null"))
     ; It is fine to have a key duplicate with `false`'s because it is never hit.
-    (#f . $$rib)))
+    (cons #f (string->symbol "$$rib"))))
 
 (define default-symbols (map cdr default-constants))
 
