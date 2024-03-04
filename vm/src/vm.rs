@@ -646,11 +646,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         let mut current = self.register;
 
-        while self.cdr_value(self.cdr(current)) != self.null().into() {
-            if self.is_empty_symbol(self.car_value(self.cdr_value(self.cdr(current)))) {
-                current = self.cdr(current).assume_cons()
-            } else {
+        while self.cdr(current) != self.null().into() {
+            if self.is_empty_symbol(self.car_value(self.cdr(current))) {
                 self.set_cdr(current, self.cdr_value(self.cdr(current)));
+            } else {
+                current = self.cdr(current).assume_cons()
             }
         }
 
