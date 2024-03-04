@@ -251,10 +251,15 @@
 
     ;; Base
 
+    ($$define-syntax syntax-rules
+      ($$syntax-rules ()
+        ((_ (literal ...) (pattern body) ...)
+          ($$syntax-rules (literal ...) (pattern body) ...))))
+
     ($$define-syntax define-syntax
-      ($$syntax-rules (syntax-rules)
-        ((_ name (syntax-rules (literal ...) (pattern body) ...))
-          ($$define-syntax name ($$syntax-rules (literal ...) (pattern body) ...)))))
+      ($$syntax-rules ()
+        ((_ name value)
+          ($$define-syntax name value))))
 
     (define-syntax define
       (syntax-rules ()

@@ -712,6 +712,15 @@
     (else
       (error "unsupported macro transformer" transformer))))
 
+(define (expand-outer context expression)
+  (if (pair? expression)
+    (let ((value (resolve-denotation context (car expression))))
+      (if (procedure? value)
+        (let-values (((expression context) (value context expression)))
+          (expand-outer context expression))
+        (cons value (cdr expression))))
+    expression))
+
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-macro-expression context expression)
   (define (expand expression)
@@ -741,7 +750,7 @@
             (expansion-context-set-last!
               context
               (cadr expression)
-              (make-transformer context (caddr expression)))
+              (make-transformer context (expand-outer context (caddr expression))))
             #f)
 
           (($$lambda)
@@ -769,7 +778,7 @@
                   (expansion-context-push
                     context
                     (car pair)
-                    (make-transformer context (cadr pair))))
+                    (make-transformer context (expand-outer context (cadr pair)))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -787,7 +796,7 @@
                   (expansion-context-set!
                     context
                     (car pair)
-                    (make-transformer context (cadr pair))))
+                    (make-transformer context (expand-outer context (cadr pair)))))
                 bindings)
               (expand-macro-expression context (caddr expression))))
 
