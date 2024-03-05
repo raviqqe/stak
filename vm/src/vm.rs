@@ -573,8 +573,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         trace!("decode", "start");
 
-        self.decode_symbols(&mut input)?;
+        // Allow access to a symbol table during instruction decoding.
+        self.register = self.decode_symbols(&mut input)?;
+        self.stack = self.null();
         self.decode_instructions(&mut input)?;
+        self.build_symbol_table(self.register)?;
 
         trace!("decode", "end");
 
@@ -589,10 +592,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), T::Error> {
-        // Initialize a shared empty string.
-        self.register = self.create_string(self.null(), 0)?;
-
+    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, T::Error> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             self.initialize_empty_symbol(self.boolean(false).into())?;
         }
@@ -632,16 +632,28 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.initialize_empty_symbol(self.boolean(true).into())?;
         self.initialize_empty_symbol(self.boolean(false).into())?;
 
+        Ok(self.stack)
+    }
+
+    fn build_symbol_table(&mut self, symbols: Cons) -> Result<(), T::Error> {
+        self.stack = self
+            .car(self.tail(symbols, Number::new(symbol_index::RIB as i64)))
+            .assume_cons();
+        self.register = self.cons(self.r#false.into(), symbols)?;
+
+        let mut current = self.register;
+
+        while self.cdr(current) != self.null().into() {
+            if self.car_value(self.car_value(self.cdr(current))) == self.r#false.into() {
+                self.set_cdr(current, self.cdr_value(self.cdr(current)));
+            } else {
+                current = self.cdr(current).assume_cons()
+            }
+        }
+
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.set_car_value(
-            self.cdr_value(self.car(self.tail(self.stack, Number::new(symbol_index::RIB as i64)))),
-            self.stack.into(),
-        );
-
-        // Allow access to a symbol table during decoding.
-        self.register = self.stack;
-        self.stack = self.null();
+        self.set_car_value(self.cdr(self.stack), self.cdr(self.register));
 
         Ok(())
     }
@@ -652,7 +664,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
-            name.unwrap_or(self.register)
+            name.unwrap_or(self.r#false)
                 .set_tag(Type::Symbol as u8)
                 .into(),
             value,
