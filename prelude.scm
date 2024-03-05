@@ -1136,9 +1136,6 @@
         (rib-set-car! $$rib #f)
 
         (lambda (x . rest)
-          ; TODO
-          ; (define symbol-table (if (null? rest) symbol-table (car rest)))
-
           (cond
             ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
               car)
