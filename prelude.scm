@@ -1646,7 +1646,7 @@
                         ((null? x)
                           (read-char))
 
-                        ((eqv? (length x) 1)
+                        ((eq? (length x) 1)
                           (car x))
 
                         (else
@@ -1828,7 +1828,7 @@
           ((not x)
             (write-string "#f"))
 
-          ((eqv? x #t)
+          ((eq? x #t)
             (write-string "#t"))
 
           ((bytevector? x)
@@ -1925,7 +1925,7 @@
     (define exit-success (data-rib procedure-type #f (cons 0 '())))
 
     (define (emergency-exit . rest)
-      (if (or (null? rest) (eqv? (car rest) #t))
+      (if (or (null? rest) (eq? (car rest) #t))
         (exit-success)
         ($$halt)))
 
