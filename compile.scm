@@ -39,6 +39,8 @@
 
 ; Constants
 
+; We need to generate those symbols from strings to match them with the ones
+; from a `read` procedure.
 (define rib-symbol (string->symbol "$$rib"))
 
 (define default-constants
