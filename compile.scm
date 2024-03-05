@@ -1235,7 +1235,7 @@
 (define (encode-symbol symbol target)
   (encode-string
     (if (empty-symbol? symbol)
-      (string->list (symbol->string symbol))
+      '()
       (string->list (symbol->string symbol)))
     target))
 
