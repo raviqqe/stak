@@ -164,7 +164,7 @@
       (loop
         (cdr xs)
         (let ((x (car xs)))
-          (if (memv x ys)
+          (if (memq x ys)
             ys
             (cons x ys)))))))
 
@@ -350,7 +350,7 @@
 (define (rename-library-symbol id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memv name keywords)
+       (memq name keywords)
        (not id))
     name
     (string->symbol
@@ -465,7 +465,7 @@
 
 (define (expansion-context-set! context name denotation)
   (let* ((environment (expansion-context-environment context))
-         (pair (assv name environment)))
+         (pair (assq name environment)))
     (when pair (set-cdr! pair denotation))
     pair))
 
@@ -510,7 +510,7 @@
       ((and
           (list? expression)
           (= (length expression) 3)
-          (assv predicate primitive-functions))
+          (assq predicate primitive-functions))
         =>
         (lambda (pair)
           (cons (cdr pair) (cdr expression))))
@@ -520,7 +520,7 @@
 
 (define (resolve-denotation context expression)
   (cond
-    ((assv expression (expansion-context-environment context)) =>
+    ((assq expression (expansion-context-environment context)) =>
       cdr)
 
     (else
@@ -537,7 +537,7 @@
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
     (cond
-      ((memv pattern (append '(_ ...) bound-variables))
+      ((memq pattern (append '(_ ...) bound-variables))
         '())
 
       ((symbol? pattern)
@@ -571,7 +571,7 @@
                       (cons name
                         (cons
                           (cdr pair)
-                          (cdr (assv name all))))))
+                          (cdr (assq name all))))))
                   ones)))
             (map
               (lambda (name) (cons name '()))
@@ -595,7 +595,7 @@
     ((eq? pattern '_)
       '())
 
-    ((memv pattern literals)
+    ((memq pattern literals)
       (if (eq?
            (resolve-denotation use-context expression)
            (resolve-denotation definition-context pattern))
@@ -640,7 +640,7 @@
   (map
     (lambda (matches) (fill-template definition-context use-context matches template))
     (let* ((variables (find-pattern-variables '() template))
-           (matches (filter (lambda (pair) (memv (car pair) variables)) matches))
+           (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
            (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
            (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
       (when (null? ellipsis-matches)
@@ -660,7 +660,7 @@
   (cond
     ((symbol? template)
       (cond
-        ((assv template matches) =>
+        ((assq template matches) =>
           cdr)
 
         ; Skip a literal.
@@ -1175,9 +1175,9 @@
 
             ((and
                 (symbol? operand)
-                (not (memv operand default-symbols))
-                (not (memv operand constant-symbols))
-                (not (memv operand symbols)))
+                (not (memq operand default-symbols))
+                (not (memq operand constant-symbols))
+                (not (memq operand symbols)))
               (cons operand symbols))
 
             (else
@@ -1317,7 +1317,7 @@
         context
         codes
         (cond
-          ((memv instruction (list set-instruction get-instruction))
+          ((memq instruction (list set-instruction get-instruction))
             (encode-simple instruction))
 
           ((eq? instruction call-instruction)
