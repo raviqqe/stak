@@ -653,7 +653,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.set_car_value(self.cdr(self.stack), self.cdr(self.register).into());
+        self.set_car_value(self.cdr(self.stack), self.cdr(self.register));
 
         Ok(())
     }
