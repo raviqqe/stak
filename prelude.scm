@@ -724,7 +724,7 @@
 
     (define (eqv? x y)
       (if (and (char? x) (char? y))
-        (eqv? (char->integer x) (char->integer y))
+        (eq? (char->integer x) (char->integer y))
         (eq? x y)))
 
     (define (equal? x y)
@@ -765,7 +765,7 @@
     (define (exact? x) #t)
     (define (inexact? x) #f)
 
-    (define (zero? x) (eqv? x 0))
+    (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
     (define (negative? x) (< x 0))
 
@@ -787,9 +787,9 @@
     (define (modulo x y)
       (let ((q (quotient x y)))
         (let ((r (- x (* y q))))
-          (if (eqv? r 0)
+          (if (eq? r 0)
             0
-            (if (eqv? (< x 0) (< y 0))
+            (if (eq? (< x 0) (< y 0))
               r
               (+ r y))))))
 
@@ -804,7 +804,7 @@
               (let ((y (car xs)))
                 (and (f x y) (loop y (cdr xs)))))))))
 
-    (define = (comparison-operator eqv?))
+    (define = (comparison-operator eq?))
     (define < (comparison-operator $$<))
     (define > (comparison-operator (lambda (x y) ($$< y x))))
     (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
