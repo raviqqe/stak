@@ -12,13 +12,7 @@
   (stak
     (define cons-rib cons)
     (define target-pair? pair?)
-    (define target-procedure? procedure?)
-
-    ; Internal symbols must be discoverable with their string representations.
-    (set-car! '$$false "$$false")
-    (set-car! '$$true "$$true")
-    (set-car! '$$null "$$null")
-    (set-car! '$$rib "$$rib"))
+    (define target-procedure? procedure?))
 
   (else
     (define-record-type *rib*
@@ -45,12 +39,21 @@
 
 ; Constants
 
+; We need to generate those symbols from strings to match them with the ones
+; from a `read` procedure.
+(define rib-symbol (string->symbol "$$rib"))
+
 (define default-constants
-  '((#f . $$false)
-    (#t . $$true)
-    (() . $$null)
-    ; It is fine to have a key duplicate with `false`'s because it is never hit.
-    (#f . $$rib)))
+  (map
+    (lambda (pair)
+      (cons
+        (car pair)
+        (string->symbol (cdr pair))))
+    '((#f . "$$false")
+      (#t . "$$true")
+      (() . "$$null")
+      ; It is fine to have a key duplicate with `false`'s because it is never hit.
+      (#f . "$$rib"))))
 
 (define default-symbols (map cdr default-constants))
 
@@ -856,11 +859,10 @@
       (($$cons $$-)
         2)
 
-      (($$rib)
-        4)
-
       (else
-        (error "unknown primitive" name)))
+        (if (eq? name rib-symbol)
+          4
+          (error "unknown primitive" name))))
     name
     continuation))
 
@@ -1063,7 +1065,7 @@
           (code-rib
             constant-instruction
             0
-            (compile-primitive-call '$$rib (continue)))))))
+            (compile-primitive-call rib-symbol (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
@@ -1370,7 +1372,7 @@
           constant-instruction
           0
           (compile-primitive-call
-            '$$rib
+            rib-symbol
             (code-rib set-instruction (car primitive) continuation)))))))
 
 (define (build-primitives primitives continuation)
