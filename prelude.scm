@@ -1354,7 +1354,7 @@
 
     (define (error-type? type)
       (lambda (error)
-        (eqv? (error-object-type error) type)))
+        (eq? (error-object-type error) type)))
 
     (define error (error-type #f))
     (define read-error (error-type 'read))
