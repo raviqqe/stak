@@ -1130,21 +1130,23 @@
     (define (string->uninterned-symbol x)
       (data-rib symbol-type x #f))
 
-    (define symbol-table (rib-car $$rib))
-    ; Allow garbage collection for a symbol table.
-    (rib-set-car! $$rib #f)
+    (define string->symbol
+      (let ((symbol-table (rib-car $$rib)))
+        ; Allow garbage collection for a symbol table.
+        (rib-set-car! $$rib #f)
 
-    (define (string->symbol x . rest)
-      (define symbol-table (if (null? rest) symbol-table (car rest)))
+        (lambda (x . rest)
+          ; TODO
+          ; (define symbol-table (if (null? rest) symbol-table (car rest)))
 
-      (cond
-        ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
-          car)
+          (cond
+            ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
+              car)
 
-        (else
-          (let ((x (string->uninterned-symbol x)))
-            (set! symbol-table (cons x symbol-table))
-            x))))
+            (else
+              (let ((x (string->uninterned-symbol x)))
+                (set! symbol-table (cons x symbol-table))
+                x))))))
 
     ;; Record
 
