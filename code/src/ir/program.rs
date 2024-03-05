@@ -58,18 +58,18 @@ impl Display for Program {
 mod tests {
     use super::*;
     use crate::Operand;
-    use insta::assert_display_snapshot;
+    use insta::assert_snapshot;
     use std::{format, vec};
 
     #[test]
     fn display_symbols() {
-        assert_display_snapshot!(Program::new(vec!["foo".into(), "bar".into()], vec![],));
+        assert_snapshot!(Program::new(vec!["foo".into(), "bar".into()], vec![],));
     }
 
     #[test]
     fn display_symbols_with_special_signs() {
         for &sign in ESCAPED_SIGNS {
-            assert_display_snapshot!(
+            assert_snapshot!(
                 sign.replace('*', "star"),
                 Program::new(vec![format!("{}", sign)], vec![])
             );
@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn display_if() {
-        assert_display_snapshot!(Program::new(
+        assert_snapshot!(Program::new(
             vec![],
             vec![Instruction::If(vec![Instruction::Constant(
                 Operand::Integer(42)
@@ -88,7 +88,7 @@ mod tests {
 
     #[test]
     fn display_closure() {
-        assert_display_snapshot!(Program::new(
+        assert_snapshot!(Program::new(
             vec![],
             vec![Instruction::Close(
                 42,
@@ -99,7 +99,7 @@ mod tests {
 
     #[test]
     fn display_closure_with_if() {
-        assert_display_snapshot!(Program::new(
+        assert_snapshot!(Program::new(
             vec![],
             vec![
                 Instruction::Constant(Operand::Integer(0)),
