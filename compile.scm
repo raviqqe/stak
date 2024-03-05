@@ -1221,6 +1221,12 @@
 
 ;; Symbols
 
+(define (is-empty-symbol symbol)
+  (let ((string (symbol->string symbol)))
+    (or
+      (= (string-length string) 0)
+      (eqv? (string-ref string 0) #\$))))
+
 (define (encode-string string target)
   (if (null? string)
     target
