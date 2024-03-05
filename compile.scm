@@ -27,7 +27,7 @@
       (rib pair-type car cdr 0))
 
     (define (instance? value type)
-      (and (rib? value) (eqv? (rib-type value) type)))
+      (and (rib? value) (eq? (rib-type value) type)))
 
     (define (target-pair? value)
       (instance? value pair-type))
@@ -164,7 +164,7 @@
       (loop
         (cdr xs)
         (let ((x (car xs)))
-          (if (memv x ys)
+          (if (memq x ys)
             ys
             (cons x ys)))))))
 
@@ -350,7 +350,7 @@
 (define (rename-library-symbol id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memv name keywords)
+       (memq name keywords)
        (not id))
     name
     (string->symbol
@@ -412,7 +412,7 @@
                  (flat-map
                    cdr
                    (filter
-                     (lambda (body) (eqv? (car body) predicate))
+                     (lambda (body) (eq? (car body) predicate))
                      (cddr expression)))))
              (id (library-context-id context)))
         (library-context-add!
@@ -465,7 +465,7 @@
 
 (define (expansion-context-set! context name denotation)
   (let* ((environment (expansion-context-environment context))
-         (pair (assv name environment)))
+         (pair (assq name environment)))
     (when pair (set-cdr! pair denotation))
     pair))
 
@@ -491,7 +491,7 @@
 (define (optimize expression)
   (let ((predicate (predicate expression)))
     (cond
-      ((eqv? predicate '$$begin)
+      ((eq? predicate '$$begin)
         ; Omit top-level constants.
         (cons '$$begin
           (let loop ((expressions (cdr expression)))
@@ -510,7 +510,7 @@
       ((and
           (list? expression)
           (= (length expression) 3)
-          (assv predicate primitive-functions))
+          (assq predicate primitive-functions))
         =>
         (lambda (pair)
           (cons (cdr pair) (cdr expression))))
@@ -520,7 +520,7 @@
 
 (define (resolve-denotation context expression)
   (cond
-    ((assv expression (expansion-context-environment context)) =>
+    ((assq expression (expansion-context-environment context)) =>
       cdr)
 
     (else
@@ -530,14 +530,14 @@
   (let* ((denotation (resolve-denotation context name))
          (count
            (list-count
-             (lambda (pair) (eqv? (cdr pair) denotation))
+             (lambda (pair) (eq? (cdr pair) denotation))
              (expansion-context-environment context))))
     (string->uninterned-symbol (string-append (symbol->string name) "$" (id->string count)))))
 
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
     (cond
-      ((memv pattern (append '(_ ...) bound-variables))
+      ((memq pattern (append '(_ ...) bound-variables))
         '())
 
       ((symbol? pattern)
@@ -571,7 +571,7 @@
                       (cons name
                         (cons
                           (cdr pair)
-                          (cdr (assv name all))))))
+                          (cdr (assq name all))))))
                   ones)))
             (map
               (lambda (name) (cons name '()))
@@ -592,11 +592,11 @@
     (match-pattern definition-context use-context literals pattern expression))
 
   (cond
-    ((eqv? pattern '_)
+    ((eq? pattern '_)
       '())
 
-    ((memv pattern literals)
-      (if (eqv?
+    ((memq pattern literals)
+      (if (eq?
            (resolve-denotation use-context expression)
            (resolve-denotation definition-context pattern))
         '()
@@ -609,7 +609,7 @@
       (cond
         ((and
             (pair? (cdr pattern))
-            (eqv? (cadr pattern) '...))
+            (eq? (cadr pattern) '...))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (and
               (>= length 0)
@@ -640,7 +640,7 @@
   (map
     (lambda (matches) (fill-template definition-context use-context matches template))
     (let* ((variables (find-pattern-variables '() template))
-           (matches (filter (lambda (pair) (memv (car pair) variables)) matches))
+           (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
            (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
            (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
       (when (null? ellipsis-matches)
@@ -660,7 +660,7 @@
   (cond
     ((symbol? template)
       (cond
-        ((assv template matches) =>
+        ((assq template matches) =>
           cdr)
 
         ; Skip a literal.
@@ -670,7 +670,7 @@
     ((pair? template)
       (if (and
            (pair? (cdr template))
-           (eqv? (cadr template) '...))
+           (eq? (cadr template) '...))
         (append
           (fill-ellipsis-template definition-context use-context matches (car template))
           (fill (cddr template)))
@@ -869,8 +869,8 @@
 (define (drop? codes)
   (and
     (target-pair? codes)
-    (eqv? (rib-tag codes) set-instruction)
-    (eqv? (rib-car codes) 0)))
+    (eq? (rib-tag codes) set-instruction)
+    (eq? (rib-car codes) 0)))
 
 (define (compile-unspecified continuation)
   (if (drop? continuation)
@@ -1134,7 +1134,7 @@
              (codes (rib-cdr codes))
              (continue (lambda () (loop codes continue))))
         (cond
-          ((eqv? instruction constant-instruction)
+          ((eq? instruction constant-instruction)
             (build-constant
               context
               operand
@@ -1142,7 +1142,7 @@
                 (lambda () (loop (procedure-code operand) continue))
                 continue)))
 
-          ((eqv? instruction if-instruction)
+          ((eq? instruction if-instruction)
             (loop operand continue))
 
           (else
@@ -1159,25 +1159,25 @@
       (let* ((instruction (rib-tag codes))
              (operand (rib-car codes))
              (operand
-               (if (eqv? instruction call-instruction)
+               (if (eq? instruction call-instruction)
                  (rib-cdr operand)
                  operand)))
         (loop
           (rib-cdr codes)
           (cond
             ((and
-                (eqv? instruction constant-instruction)
+                (eq? instruction constant-instruction)
                 (target-procedure? operand))
               (loop (procedure-code operand) symbols))
 
-            ((eqv? instruction if-instruction)
+            ((eq? instruction if-instruction)
               (loop operand symbols))
 
             ((and
                 (symbol? operand)
-                (not (memv operand default-symbols))
-                (not (memv operand constant-symbols))
-                (not (memv operand symbols)))
+                (not (memq operand default-symbols))
+                (not (memq operand constant-symbols))
+                (not (memq operand symbols)))
               (cons operand symbols))
 
             (else
@@ -1186,7 +1186,7 @@
 (define (nop-codes? codes)
   (and
     (target-pair? codes)
-    (eqv? (rib-tag codes) nop-instruction)))
+    (eq? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1317,10 +1317,10 @@
         context
         codes
         (cond
-          ((memv instruction (list set-instruction get-instruction))
+          ((memq instruction (list set-instruction get-instruction))
             (encode-simple instruction))
 
-          ((eqv? instruction call-instruction)
+          ((eq? instruction call-instruction)
             (encode-instruction
               instruction
               (rib-car operand)
@@ -1328,11 +1328,11 @@
               (encode-integer (encode-operand context (rib-cdr operand)) target)))
 
           ((and
-              (eqv? instruction constant-instruction)
+              (eq? instruction constant-instruction)
               (target-procedure? operand))
             (encode-procedure context operand return target))
 
-          ((eqv? instruction constant-instruction)
+          ((eq? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))
               (if symbol
                 (encode-instruction
@@ -1342,7 +1342,7 @@
                   target)
                 (encode-simple constant-instruction))))
 
-          ((eqv? instruction if-instruction)
+          ((eq? instruction if-instruction)
             (let ((continuation (find-continuation operand))
                   (target
                     (encode-codes
