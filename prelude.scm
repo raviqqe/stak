@@ -1134,7 +1134,9 @@
     ; Allow garbage collection for a symbol table.
     (rib-set-car! $$rib #f)
 
-    (define (string->symbol x)
+    (define (string->symbol x . rest)
+      (define symbol-table (if (null? rest) symbol-table (car rest)))
+
       (cond
         ((member x symbol-table (lambda (x y) (equal? x (symbol->string y)))) =>
           car)
