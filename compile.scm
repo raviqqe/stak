@@ -1221,7 +1221,7 @@
 
 ;; Symbols
 
-(define (is-empty-symbol symbol)
+(define (empty-symbol? symbol)
   (let ((string (symbol->string symbol)))
     (or
       (= (string-length string) 0)
@@ -1233,7 +1233,11 @@
     (encode-string (cdr string) (cons (char->integer (car string)) target))))
 
 (define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
+  (encode-string
+    (if (empty-symbol? symbol)
+      (string->list (symbol->string symbol))
+      (string->list (symbol->string symbol)))
+    target))
 
 (define (encode-symbols symbols constant-symbols target)
   (let ((target (cons (char->integer #\;) target)))
