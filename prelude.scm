@@ -1042,6 +1042,8 @@
 
     (define string->code-points rib-car)
 
+    (define string-length rib-cdr)
+
     (define (list->string x)
       (data-rib string-type (map char->integer x) (length x)))
 
@@ -1050,8 +1052,6 @@
 
     (define (string-append . xs)
       (list->string (apply append (map string->list xs))))
-
-    (define string-length rib-cdr)
 
     (define (string-ref x index)
       (integer->char (list-ref (string->code-points x) index)))
