@@ -1050,11 +1050,11 @@
     (define (string->list x)
       (map integer->char (string->code-points x)))
 
-    (define (string-append . xs)
-      (list->string (apply append (map string->list xs))))
-
     (define (string-ref x index)
       (integer->char (list-ref (string->code-points x) index)))
+
+    (define (string-append . xs)
+      (code-points->string (apply append (map string->code-points xs))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
