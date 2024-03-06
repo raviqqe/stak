@@ -1122,7 +1122,7 @@
           (convert xs))))
 
     (define (string-copy x . rest)
-      (list->string (apply list-copy (cons (string->list x) rest))))
+      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
 
     (define substring string-copy)
 
