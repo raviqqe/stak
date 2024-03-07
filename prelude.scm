@@ -1328,9 +1328,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write value))
+                          (write-value value))
                         (error-object-irritants exception)))
-                    (write exception))
+                    (write-value exception))
                   (newline)
                   ($$halt))))))))
 
@@ -1529,7 +1529,7 @@
 
     ; Dummy implementation
     (define (write-value value . rest)
-      (write-string "<value>" (get-output-port rest)))))
+      (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme cxr)
   (import (scheme base))
