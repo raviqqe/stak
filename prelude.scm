@@ -242,7 +242,9 @@
     write-char
     write-string
     write-bytevector
-    newline)
+    newline
+
+    write-value)
 
   (begin
     ; Syntax
@@ -1526,7 +1528,7 @@
       (write-char #\newline (get-output-port rest)))
 
     ; Dummy implementation
-    (define (write . rest)
+    (define (write-value value . rest)
       (write-string "<value>" (get-output-port rest)))))
 
 (define-library (scheme cxr)
