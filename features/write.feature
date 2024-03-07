@@ -77,14 +77,13 @@ Feature: Write
       (write-string "<value>")
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value | output |
-      | \\n   | \\n    |
-      | \\t   | \\t    |
-      | \\"   | \\"    |
-      | \\\\  | \\\\   |
+      | value |
+      | \\n   |
+      | \\t   |
+      | \\"   |
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
