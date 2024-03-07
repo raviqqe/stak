@@ -84,6 +84,7 @@ Feature: Write
       | \\n   | \\n    |
       | \\t   | \\t    |
       | \\"   | \\"    |
+      | \\\\  | \\\\   |
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
