@@ -69,19 +69,21 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
-  Scenario: Write a special character in a string
+  Scenario Outline: Write a special character in a string
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (write-string "foo\nbar")
+      (write-string "<input>")
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly:
-      """
-      foo
-      bar
-      """
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | input | output |
+      | \\n   | \\n    |
+      | \\t   | \\t    |
+      | \\r   | \\r    |
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
