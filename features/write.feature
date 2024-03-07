@@ -74,13 +74,13 @@ Feature: Write
       """scheme
       (import (scheme base))
 
-      (write-string "<input>")
+      (write-string "<value>")
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | input | output |
+      | value | output |
       | \\n   | \\n    |
       | \\t   | \\t    |
       | \\"   | \\"    |
