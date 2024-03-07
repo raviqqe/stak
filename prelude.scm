@@ -1785,7 +1785,9 @@
     (define escaped-chars
       '((#\newline . #\n)
         (#\tab . #\t)
-        (#\return . #\r)))
+        (#\return . #\r)
+        (#\" . #\")
+        (#\\ . #\\)))
 
     (define (write-escaped-char x)
       (let ((pair (assoc x escaped-chars)))
