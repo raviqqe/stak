@@ -1,7 +1,7 @@
 [package]
 name = "stak-sac"
 description = "Stak Stand-Alone Complex"
-version = "0.1.12"
+version = "0.1.14"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,9 +9,9 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-clap = { version = "4.5.1", features = ["derive"] }
+clap = { version = "4.5.2", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.6", path = "../configuration" }
+stak-configuration = { version = "0.1.8", path = "../configuration" }
 stak-device = { version = "0.2", path = "../device", features = ["std"] }
 stak-macro = { version = "0.1", path = "../macro" }
 stak-primitive = { version = "0.2", path = "../primitive", features = ["std"] }

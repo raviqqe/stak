@@ -52,9 +52,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.5.1"
+version = "4.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c918d541ef2913577a0f9566e9ce27cb35b6df072075769e0b26cb5a554520da"
+checksum = "b230ab84b0ffdf890d5a10abdbc8b83ae1c4918275daea1ab8801f71536b2651"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -62,9 +62,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.5.1"
+version = "4.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f3e7391dad68afb0c2ede1bf619f579a3dc9c2ec67f089baa397123a2f3d1eb"
+checksum = "ae129e2e766ae0ec03484e609954119f123cc1fe650337e155d03b022f24f7b4"
 dependencies = [
  "anstream",
  "anstyle",
@@ -205,7 +205,7 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
 name = "stak"
-version = "0.2.14"
+version = "0.2.16"
 dependencies = [
  "clap",
  "main_error",
@@ -218,7 +218,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.9"
+version = "0.2.11"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -226,14 +226,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.14"
+version = "0.1.16"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.14"
+version = "0.1.16"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -244,11 +244,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.6"
+version = "0.1.8"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.15"
+version = "0.1.17"
 dependencies = [
  "clap",
  "main_error",
@@ -257,11 +257,11 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.10"
+version = "0.2.12"
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.12"
+version = "0.1.14"
 dependencies = [
  "clap",
  "main_error",
@@ -273,7 +273,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.11"
+version = "0.1.13"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -286,7 +286,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.2.11"
+version = "0.2.13"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -294,7 +294,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.12"
+version = "0.1.14"
 dependencies = [
  "clap",
  "main_error",
@@ -307,7 +307,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.3.11"
+version = "0.3.13"
 dependencies = [
  "insta",
  "stak-code",
