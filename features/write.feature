@@ -83,7 +83,7 @@ Feature: Write
       | input | output |
       | \\n   | \\n    |
       | \\t   | \\t    |
-      | \\r   | \\r    |
+      | \\"   | \\"    |
 
   Scenario Outline: Write a boolean
     Given a file named "main.scm" with:
