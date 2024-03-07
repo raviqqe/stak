@@ -22,6 +22,7 @@ Feature: Exception
     Then the stderr should contain "Oh, no! <unknown>"
     And the exit status should not be 0
 
+  @stak @gauche
   Scenario: Raise an error with a value
     Given a file named "main.scm" with:
       """scheme
