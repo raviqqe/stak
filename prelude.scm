@@ -1918,7 +1918,9 @@
 
     (define (write-vector xs)
       (write-char #\#)
-      (write-sequence (vector->list xs)))))
+      (write-sequence (vector->list xs)))
+
+    (set! write-value write)))
 
 (define-library (scheme process-context)
   (import (scheme base))
