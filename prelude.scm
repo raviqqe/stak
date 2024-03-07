@@ -611,30 +611,30 @@
           (begin result1 result2 ...))
 
         ((_ key
-            ((atoms ...) result1 result2 ...))
-          (if (memv key '(atoms ...))
+            ((atom ...) result1 result2 ...))
+          (if (memv key '(atom ...))
             (begin result1 result2 ...)))
 
         ((_ key
-            ((atoms ...) => result))
-          (if (memv key '(atoms ...))
+            ((atom ...) => result))
+          (if (memv key '(atom ...))
             (result key)))
 
         ((_ key
-            ((atoms ...) => result)
+            ((atom ...) => result)
             clause1
             clause2
             ...)
-          (if (memv key '(atoms ...))
+          (if (memv key '(atom ...))
             (result key)
             (case key clause1 clause2 ...)))
 
         ((_ key
-            ((atoms ...) result1 result2 ...)
+            ((atom ...) result1 result2 ...)
             clause1
             clause2
             ...)
-          (if (memv key '(atoms ...))
+          (if (memv key '(atom ...))
             (begin result1 result2 ...)
             (case key clause1 clause2 ...)))))
 
