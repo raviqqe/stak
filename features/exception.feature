@@ -11,7 +11,7 @@ Feature: Exception
     And the exit status should not be 0
 
   @stak
-  Scenario: Raise an error with a unknown value
+  Scenario: Raise an error with an unknown value
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
