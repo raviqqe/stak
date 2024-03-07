@@ -242,7 +242,9 @@
     write-char
     write-string
     write-bytevector
-    newline)
+    newline
+
+    write-value)
 
   (begin
     ; Syntax
@@ -1326,9 +1328,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write value))
+                          (write-value value))
                         (error-object-irritants exception)))
-                    (write exception))
+                    (write-value exception))
                   (newline)
                   ($$halt))))))))
 
@@ -1526,8 +1528,8 @@
       (write-char #\newline (get-output-port rest)))
 
     ; Dummy implementation
-    (define (write . rest)
-      (write-string "<value>" (get-output-port rest)))))
+    (define (write-value value . rest)
+      (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1916,7 +1918,9 @@
 
     (define (write-vector xs)
       (write-char #\#)
-      (write-sequence (vector->list xs)))))
+      (write-sequence (vector->list xs)))
+
+    (set! write-value write)))
 
 (define-library (scheme process-context)
   (import (scheme base))

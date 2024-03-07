@@ -10,6 +10,30 @@ Feature: Exception
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
 
+  @stak
+  Scenario: Raise an error with an unknown value
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (error "Oh, no!" 42)
+      """
+    When I run `scheme main.scm`
+    Then the stderr should contain "Oh, no! <unknown>"
+    And the exit status should not be 0
+
+  @stak @gauche
+  Scenario: Raise an error with a value
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme write))
+
+      (error "Oh, no!" 42)
+      """
+    When I run `scheme main.scm`
+    Then the stderr should contain "Oh, no! 42"
+    And the exit status should not be 0
+
   Scenario: Halt execution on an exception
     Given a file named "main.scm" with:
       """scheme
