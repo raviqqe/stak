@@ -907,7 +907,7 @@ mod tests {
     }
 
     fn default_symbols() -> Vec<String> {
-        vec!["".into(), "".into(), "".into(), "".into()]
+        vec![Default::default(); symbol_index::OTHER as usize]
     }
 
     #[test]
