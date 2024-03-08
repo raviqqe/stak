@@ -1069,13 +1069,13 @@ mod tests {
 
         #[test]
         fn run_nothing() {
-            run_program(&Program::new(default_symbols().clone(), vec![]));
+            run_program(&Program::new(default_symbols(), vec![]));
         }
 
         #[test]
         fn constant() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![Instruction::Constant(Operand::Integer(42))],
             ));
         }
@@ -1083,7 +1083,7 @@ mod tests {
         #[test]
         fn create_closure() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![Instruction::Close(
                     0,
                     vec![Instruction::Constant(Operand::Integer(0))],
@@ -1094,7 +1094,7 @@ mod tests {
         #[test]
         fn get_closure() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Close(0, vec![Instruction::Constant(Operand::Integer(0))]),
                     Instruction::Get(Operand::Integer(0)),
@@ -1155,7 +1155,7 @@ mod tests {
         #[test]
         fn set_local() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Set(Operand::Integer(0)),
@@ -1166,7 +1166,7 @@ mod tests {
         #[test]
         fn set_second_local() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Constant(Operand::Integer(0)),
@@ -1178,11 +1178,7 @@ mod tests {
         #[test]
         fn get_global() {
             run_program(&Program::new(
-                default_symbols()
-                    .iter()
-                    .cloned()
-                    .chain(["x".into()])
-                    .collect(),
+                default_symbols().into_iter().chain(["x".into()]).collect(),
                 vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
             ));
         }
@@ -1190,11 +1186,7 @@ mod tests {
         #[test]
         fn get_empty_global() {
             run_program(&Program::new(
-                default_symbols()
-                    .iter()
-                    .cloned()
-                    .chain(["".into()])
-                    .collect(),
+                default_symbols().into_iter().chain(["".into()]).collect(),
                 vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
             ));
         }
@@ -1203,8 +1195,7 @@ mod tests {
         fn get_second_global() {
             run_program(&Program::new(
                 default_symbols()
-                    .iter()
-                    .cloned()
+                    .into_iter()
                     .chain(["x".into(), "y".into()])
                     .collect(),
                 vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
@@ -1215,8 +1206,7 @@ mod tests {
         fn get_second_empty_global() {
             run_program(&Program::new(
                 default_symbols()
-                    .iter()
-                    .cloned()
+                    .into_iter()
                     .chain(["".into(), "".into()])
                     .collect(),
                 vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
@@ -1226,7 +1216,7 @@ mod tests {
         #[test]
         fn get_built_in_globals() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
@@ -1239,7 +1229,7 @@ mod tests {
         #[test]
         fn get_local() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Get(Operand::Integer(0)),
@@ -1250,7 +1240,7 @@ mod tests {
         #[test]
         fn get_second_local() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Constant(Operand::Integer(0)),
                     Instruction::Constant(Operand::Integer(0)),
@@ -1262,7 +1252,7 @@ mod tests {
         #[test]
         fn if_with_false() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
@@ -1273,7 +1263,7 @@ mod tests {
         #[test]
         fn if_with_true() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
@@ -1284,7 +1274,7 @@ mod tests {
         #[test]
         fn if_with_continuation() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
@@ -1296,7 +1286,7 @@ mod tests {
         #[test]
         fn if_with_skip_instruction() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![
@@ -1312,7 +1302,7 @@ mod tests {
         #[test]
         fn multiple_if() {
             run_program(&Program::new(
-                default_symbols().clone(),
+                default_symbols(),
                 vec![
                     Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
                     Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
