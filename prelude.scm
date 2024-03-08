@@ -242,7 +242,9 @@
     write-char
     write-string
     write-bytevector
-    newline)
+    newline
+
+    write-value)
 
   (begin
     ; Syntax
@@ -609,30 +611,30 @@
           (begin result1 result2 ...))
 
         ((_ key
-            ((atoms ...) result1 result2 ...))
-          (if (memv key '(atoms ...))
+            ((atom ...) result1 result2 ...))
+          (if (memv key '(atom ...))
             (begin result1 result2 ...)))
 
         ((_ key
-            ((atoms ...) => result))
-          (if (memv key '(atoms ...))
+            ((atom ...) => result))
+          (if (memv key '(atom ...))
             (result key)))
 
         ((_ key
-            ((atoms ...) => result)
+            ((atom ...) => result)
             clause1
             clause2
             ...)
-          (if (memv key '(atoms ...))
+          (if (memv key '(atom ...))
             (result key)
             (case key clause1 clause2 ...)))
 
         ((_ key
-            ((atoms ...) result1 result2 ...)
+            ((atom ...) result1 result2 ...)
             clause1
             clause2
             ...)
-          (if (memv key '(atoms ...))
+          (if (memv key '(atom ...))
             (begin result1 result2 ...)
             (case key clause1 clause2 ...)))))
 
@@ -1331,9 +1333,9 @@
                       (for-each
                         (lambda (value)
                           (write-char #\space)
-                          (write value))
+                          (write-value value))
                         (error-object-irritants exception)))
-                    (write exception))
+                    (write-value exception))
                   (newline)
                   ($$halt))))))))
 
@@ -1531,8 +1533,8 @@
       (write-char #\newline (get-output-port rest)))
 
     ; Dummy implementation
-    (define (write . rest)
-      (write-string "<value>" (get-output-port rest)))))
+    (define (write-value value . rest)
+      (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme cxr)
   (import (scheme base))
@@ -1921,7 +1923,9 @@
 
     (define (write-vector xs)
       (write-char #\#)
-      (write-sequence (vector->list xs)))))
+      (write-sequence (vector->list xs)))
+
+    (set! write-value write)))
 
 (define-library (scheme process-context)
   (import (scheme base))
