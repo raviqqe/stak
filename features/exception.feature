@@ -19,7 +19,7 @@ Feature: Exception
       (error "Oh, no!" 42)
       """
     When I run `scheme main.scm`
-    Then the stderr should contain "Oh, no! <unknown>"
+    Then the stderr should contain "Oh, no! \<unknown\>"
     And the exit status should not be 0
 
   @stak @gauche
