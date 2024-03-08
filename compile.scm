@@ -1392,13 +1392,13 @@
              primitives
              (build-constants constant-context codes)))
          (constant-symbols (map cdr (constant-context-constants constant-context)))
-         (symbols (find-symbols constant-symbols codes)))
+         (symbols (append default-symbols (find-symbols constant-symbols codes))))
     (encode-symbols
       symbols
       constant-symbols
       (encode-codes
         (make-encode-context
-          (append default-symbols symbols constant-symbols)
+          (append symbols constant-symbols)
           constant-context)
         codes
         '()))))
