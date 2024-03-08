@@ -1101,10 +1101,10 @@
             (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
-          (build-rib
-            string-type
-            (map char->integer (string->list constant))
-            (string-length constant)))
+          (code-rib
+            constant-instruction
+            (string->symbol constant)
+            (compile-primitive-call '$$car (continue))))
 
         ((vector? constant)
           (build-rib
