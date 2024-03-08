@@ -627,10 +627,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             Number::default().into(),
         )?;
 
-        self.initialize_empty_symbol(rib.into())?;
-        self.initialize_empty_symbol(self.null().into())?;
-        self.initialize_empty_symbol(self.boolean(true).into())?;
-        self.initialize_empty_symbol(self.boolean(false).into())?;
+        let mut cons = self.stack;
+
+        for value in [self.boolean(false), self.boolean(true), self.null(), rib] {
+            self.set_cdr_value(self.car(cons), value.into());
+            cons = self.cdr(cons).assume_cons();
+        }
 
         Ok(self.stack)
     }
