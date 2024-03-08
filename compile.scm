@@ -39,21 +39,12 @@
 
 ; Constants
 
-; We need to generate those symbols from strings to match them with the ones
-; from a `read` procedure.
-(define rib-symbol (string->symbol "$$rib"))
-
 (define default-constants
-  (map
-    (lambda (pair)
-      (cons
-        (car pair)
-        (string->symbol (cdr pair))))
-    '((#f . "$$false")
-      (#t . "$$true")
-      (() . "$$null")
-      ; It is fine to have a key duplicate with `false`'s because it is never hit.
-      (#f . "$$rib"))))
+  '((#f . $$false)
+    (#t . $$true)
+    (() . $$null)
+    ; It is fine to have a key duplicate with `false`'s because it is never hit.
+    (#f . $$rib)))
 
 (define default-symbols (map cdr default-constants))
 
@@ -860,7 +851,7 @@
         2)
 
       (else
-        (if (eq? name rib-symbol)
+        (if (eq? name '$$rib)
           4
           (error "unknown primitive" name))))
     name
@@ -1065,7 +1056,7 @@
           (code-rib
             constant-instruction
             0
-            (compile-primitive-call rib-symbol (continue)))))))
+            (compile-primitive-call '$$rib (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
@@ -1372,7 +1363,7 @@
           constant-instruction
           0
           (compile-primitive-call
-            rib-symbol
+            '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))
 
 (define (build-primitives primitives continuation)
