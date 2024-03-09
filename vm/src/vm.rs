@@ -7,6 +7,7 @@ use crate::{
     value::{TypedValue, Value},
     Error,
 };
+use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
@@ -594,33 +595,29 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, T::Error> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            self.initialize_empty_symbol(self.boolean(false).into())?;
+            self.initialize_symbol(None, self.boolean(false).into())?;
         }
 
         let mut length = 0;
         let mut name = self.null();
-        let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
-        if byte != b';' {
-            loop {
-                if matches!(byte, b',' | b';') {
-                    let string = self.create_string(name, length)?;
-                    self.initialize_symbol(Some(string), self.boolean(false).into())?;
+        while {
+            let byte = input.next().ok_or(Error::EndOfInput)?;
 
-                    length = 0;
-                    name = self.null();
+            (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
+                let string = self.create_string(name, length)?;
+                self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
-                    if byte == b';' {
-                        break;
-                    }
-                } else {
-                    length += 1;
-                    name = self.cons(Number::new(byte as i64).into(), name)?;
-                }
+                (0, self.null())
+            } else {
+                (
+                    length + 1,
+                    self.cons(Number::new(byte as i64).into(), name)?,
+                )
+            };
 
-                byte = input.next().ok_or(Error::EndOfInput)?;
-            }
-        }
+            byte != SYMBOL_TERMINATOR
+        } {}
 
         let rib = self.allocate(
             NEVER.set_tag(Type::Procedure as u8).into(),
@@ -658,10 +655,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.set_car_value(self.cdr(self.stack), self.cdr(self.register));
 
         Ok(())
-    }
-
-    fn initialize_empty_symbol(&mut self, value: Value) -> Result<(), T::Error> {
-        self.initialize_symbol(None, value)
     }
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {

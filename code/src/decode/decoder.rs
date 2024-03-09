@@ -1,6 +1,6 @@
 use crate::{
     Error, Instruction, Operand, Program, INSTRUCTION_BITS, INSTRUCTION_MASK, INTEGER_BASE,
-    SHORT_INTEGER_BASE,
+    SHORT_INTEGER_BASE, SYMBOL_SEPARATOR, SYMBOL_TERMINATOR,
 };
 use alloc::{string::String, vec, vec::Vec};
 use core::mem::{replace, take};
@@ -23,32 +23,29 @@ impl<'a> Decoder<'a> {
     }
 
     fn decode_symbols(&mut self) -> Result<Vec<String>, Error> {
-        let mut symbols = (0..self.decode_integer().ok_or(Error::MissingInteger)?)
-            .map(|_| Default::default())
-            .collect();
+        let mut symbols =
+            vec![Default::default(); self.decode_integer().ok_or(Error::MissingInteger)? as usize];
         let mut symbol = vec![];
         let mut byte = self.decode_byte().ok_or(Error::EndOfInput)?;
 
-        if byte == b';' {
-            return Ok(symbols);
-        }
-
-        loop {
-            match byte {
-                character @ (b',' | b';') => {
+        if byte != SYMBOL_TERMINATOR {
+            while {
+                if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                     symbol.reverse();
                     symbols.push(String::from_utf8(take(&mut symbol))?);
-
-                    if character == b';' {
-                        symbols.reverse();
-                        return Ok(symbols);
-                    }
+                } else {
+                    symbol.push(byte)
                 }
-                character => symbol.push(character),
-            }
 
-            byte = self.decode_byte().ok_or(Error::EndOfInput)?;
+                byte != SYMBOL_TERMINATOR
+            } {
+                byte = self.decode_byte().ok_or(Error::EndOfInput)?;
+            }
         }
+
+        symbols.reverse();
+
+        Ok(symbols)
     }
 
     fn decode_instructions(&mut self) -> Result<Vec<Instruction>, Error> {
