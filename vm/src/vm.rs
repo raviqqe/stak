@@ -604,23 +604,21 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut name = self.null();
         let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
-        if byte != SYMBOL_TERMINATOR {
-            while {
-                if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
-                    let string = self.create_string(name, length)?;
-                    self.initialize_symbol(Some(string), self.boolean(false).into())?;
+        while {
+            if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
+                let string = self.create_string(name, length)?;
+                self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
-                    length = 0;
-                    name = self.null();
-                } else {
-                    length += 1;
-                    name = self.cons(Number::new(byte as i64).into(), name)?;
-                }
-
-                byte != SYMBOL_TERMINATOR
-            } {
-                byte = input.next().ok_or(Error::EndOfInput)?;
+                length = 0;
+                name = self.null();
+            } else {
+                length += 1;
+                name = self.cons(Number::new(byte as i64).into(), name)?;
             }
+
+            byte != SYMBOL_TERMINATOR
+        } {
+            byte = input.next().ok_or(Error::EndOfInput)?;
         }
 
         let rib = self.allocate(

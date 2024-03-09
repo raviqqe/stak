@@ -1227,16 +1227,14 @@
   (let ((target (cons symbol-terminator target)))
     (encode-integer
       (length constant-symbols)
-      (if (null? symbols)
-        target
-        (let loop ((symbols symbols) (target target))
-          (if (null? symbols)
-            (cdr target)
-            (loop
-              (cdr symbols)
-              (cons
-                symbol-separator
-                (encode-symbol (car symbols) target)))))))))
+      (let loop ((symbols symbols) (target target))
+        (if (null? symbols)
+          (cdr target)
+          (loop
+            (cdr symbols)
+            (cons
+              symbol-separator
+              (encode-symbol (car symbols) target))))))))
 
 ;; Codes
 
