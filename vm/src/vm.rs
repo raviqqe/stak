@@ -16,6 +16,9 @@ use stak_code as code;
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: u8 = 1;
 
+const SYMBOL_SEPARATER: u8 = 0xFE;
+const SYMBOL_TERMINATOR: u8 = 0xFF;
+
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
         #[cfg(feature = "trace")]
@@ -596,9 +599,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             self.initialize_empty_symbol(self.boolean(false).into())?;
         }
-
-        const SYMBOL_SEPARATER: u8 = 0xFE;
-        const SYMBOL_TERMINATOR: u8 = 0xFF;
 
         let mut length = 0;
         let mut name = self.null();
