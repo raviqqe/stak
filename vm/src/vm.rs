@@ -602,9 +602,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         let mut length = 0;
         let mut name = self.null();
-        let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
         while {
+            let byte = input.next().ok_or(Error::EndOfInput)?;
+
             if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                 let string = self.create_string(name, length)?;
                 self.initialize_symbol(Some(string), self.boolean(false).into())?;
@@ -617,9 +618,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
 
             byte != SYMBOL_TERMINATOR
-        } {
-            byte = input.next().ok_or(Error::EndOfInput)?;
-        }
+        } {}
 
         let rib = self.allocate(
             NEVER.set_tag(Type::Procedure as u8).into(),
