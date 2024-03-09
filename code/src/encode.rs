@@ -155,6 +155,7 @@ mod tests {
                 vec!["foo".into(), "bar".into(), "baz".into()],
                 vec![]
             )),
+            // spell-checker: disable-next-line
             b"\x00zab\xFErab\xFEoof\xFF"
         );
     }
