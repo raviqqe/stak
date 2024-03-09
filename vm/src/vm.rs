@@ -594,6 +594,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, T::Error> {
+        // Initialize a shared empty string.
+        self.register = self.create_string(self.null(), 0)?;
+
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
             self.initialize_symbol(None, self.boolean(false).into())?;
         }
@@ -643,7 +646,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut current = self.register;
 
         while self.cdr(current) != self.null().into() {
-            if self.car_value(self.car_value(self.cdr(current))) == self.r#false.into() {
+            if self.cdr_value(self.car_value(self.car_value(self.cdr(current))))
+                == Number::new(0).into()
+            {
                 self.set_cdr(current, self.cdr_value(self.cdr(current)));
             } else {
                 current = self.cdr(current).assume_cons()
@@ -659,7 +664,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
-            name.unwrap_or(self.r#false)
+            name.unwrap_or(self.register)
                 .set_tag(Type::Symbol as u8)
                 .into(),
             value,
