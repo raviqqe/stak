@@ -29,7 +29,7 @@ impl<'a> Decoder<'a> {
         let mut symbol = vec![];
         let mut byte = self.decode_byte().ok_or(Error::EndOfInput)?;
 
-        if byte == b';' {
+        if byte == SYMBOL_TERMINATOR {
             return Ok(symbols);
         }
 
