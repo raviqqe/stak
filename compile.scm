@@ -1224,7 +1224,7 @@
   (encode-string (string->list (symbol->string symbol)) target))
 
 (define (encode-symbols symbols constant-symbols target)
-  (let ((target (cons (char->integer #\;) target)))
+  (let ((target (cons symbol-terminator target)))
     (encode-integer
       (length constant-symbols)
       (if (null? symbols)
@@ -1235,7 +1235,7 @@
             (loop
               (cdr symbols)
               (cons
-                (char->integer #\,)
+                symbol-separator
                 (encode-symbol (car symbols) target)))))))))
 
 ;; Codes
