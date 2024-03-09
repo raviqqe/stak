@@ -1212,6 +1212,9 @@
 
 ;; Symbols
 
+(define symbol-separator (- 256 2))
+(define symbol-terminator (- 256 1))
+
 (define (encode-string string target)
   (if (null? string)
     target
