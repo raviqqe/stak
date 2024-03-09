@@ -606,16 +606,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         while {
             let byte = input.next().ok_or(Error::EndOfInput)?;
 
-            if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
+            (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                 let string = self.create_string(name, length)?;
                 self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
-                length = 0;
-                name = self.null();
+                (0, self.null())
             } else {
-                length += 1;
-                name = self.cons(Number::new(byte as i64).into(), name)?;
-            }
+                (
+                    length + 1,
+                    self.cons(Number::new(byte as i64).into(), name)?,
+                )
+            };
 
             byte != SYMBOL_TERMINATOR
         } {}
