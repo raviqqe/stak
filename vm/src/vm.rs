@@ -900,10 +900,7 @@ mod tests {
     }
 
     fn default_symbols() -> Vec<String> {
-        ["false", "true", "null", "rib"]
-            .into_iter()
-            .map(Into::into)
-            .collect()
+        vec![Default::default(); symbol_index::OTHER as usize]
     }
 
     #[test]
