@@ -597,7 +597,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, T::Error> {
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            self.initialize_empty_symbol(self.boolean(false).into())?;
+            self.initialize_symbol(None, self.boolean(false).into())?;
         }
 
         let mut length = 0;
@@ -656,10 +656,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.set_car_value(self.cdr(self.stack), self.cdr(self.register));
 
         Ok(())
-    }
-
-    fn initialize_empty_symbol(&mut self, value: Value) -> Result<(), T::Error> {
-        self.initialize_symbol(None, value)
     }
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
