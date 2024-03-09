@@ -605,22 +605,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
         if byte != SYMBOL_TERMINATOR {
-            loop {
+            while {
                 if matches!(byte, SYMBOL_SEPARATER | SYMBOL_TERMINATOR) {
                     let string = self.create_string(name, length)?;
                     self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
                     length = 0;
                     name = self.null();
-
-                    if byte == SYMBOL_TERMINATOR {
-                        break;
-                    }
                 } else {
                     length += 1;
                     name = self.cons(Number::new(byte as i64).into(), name)?;
                 }
 
+                byte != SYMBOL_TERMINATOR
+            } {
                 byte = input.next().ok_or(Error::EndOfInput)?;
             }
         }
