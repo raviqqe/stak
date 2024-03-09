@@ -65,6 +65,7 @@
 (define primitives
   '(($$cons 1)
     ($$close 2)
+    ($$car 4)
     ($$- 13)))
 
 ; Types
@@ -844,7 +845,7 @@
 (define (compile-primitive-call name continuation)
   (call-rib
     (case name
-      (($$close)
+      (($$close $$car)
         1)
 
       (($$cons $$-)
@@ -1091,10 +1092,10 @@
             (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
-          (build-rib
-            string-type
-            (map char->integer (string->list constant))
-            (string-length constant)))
+          (code-rib
+            constant-instruction
+            (string->symbol constant)
+            (compile-primitive-call '$$car (continue))))
 
         ((vector? constant)
           (build-rib
