@@ -1212,6 +1212,9 @@
 
 ;; Symbols
 
+(define symbol-separator (- 256 2))
+(define symbol-terminator (- 256 1))
+
 (define (encode-string string target)
   (if (null? string)
     target
@@ -1221,19 +1224,17 @@
   (encode-string (string->list (symbol->string symbol)) target))
 
 (define (encode-symbols symbols constant-symbols target)
-  (let ((target (cons (char->integer #\;) target)))
+  (let ((target (cons symbol-terminator target)))
     (encode-integer
       (length constant-symbols)
-      (if (null? symbols)
-        target
-        (let loop ((symbols symbols) (target target))
-          (if (null? symbols)
-            (cdr target)
-            (loop
-              (cdr symbols)
-              (cons
-                (char->integer #\,)
-                (encode-symbol (car symbols) target)))))))))
+      (let loop ((symbols symbols) (target target))
+        (if (null? symbols)
+          (cdr target)
+          (loop
+            (cdr symbols)
+            (cons
+              symbol-separator
+              (encode-symbol (car symbols) target))))))))
 
 ;; Codes
 
