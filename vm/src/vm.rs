@@ -646,7 +646,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut current = self.register;
 
         while self.cdr(current) != self.null().into() {
-            if self.car_value(self.car_value(self.cdr(current))) == self.r#false.into() {
+            if self.cdr_value(self.car_value(self.car_value(self.cdr(current))))
+                == Number::new(0).into()
+            {
                 self.set_cdr(current, self.cdr_value(self.cdr(current)));
             } else {
                 current = self.cdr(current).assume_cons()
