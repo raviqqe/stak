@@ -1039,15 +1039,18 @@
 
     (define string? (instance? string-type))
 
+    (define (string-rib codes length)
+      (data-rib string-type codes length))
+
     (define (code-points->string x)
-      (data-rib string-type x (length x)))
+      (string-rib x (length x)))
 
     (define string->code-points rib-car)
 
     (define string-length rib-cdr)
 
     (define (list->string x)
-      (data-rib string-type (map char->integer x) (length x)))
+      (string-rib (map char->integer x) (length x)))
 
     (define (string->list x)
       (map integer->char (string->code-points x)))
