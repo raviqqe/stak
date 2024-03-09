@@ -597,20 +597,23 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.initialize_empty_symbol(self.boolean(false).into())?;
         }
 
+        const SYMBOL_SEPARATER: u8 = 0xFE;
+        const SYMBOL_TERMINATOR: u8 = 0xFF;
+
         let mut length = 0;
         let mut name = self.null();
         let mut byte = input.next().ok_or(Error::EndOfInput)?;
 
-        if byte != b';' {
+        if byte != SYMBOL_TERMINATOR {
             loop {
-                if matches!(byte, b',' | b';') {
+                if matches!(byte, SYMBOL_SEPARATER | SYMBOL_TERMINATOR) {
                     let string = self.create_string(name, length)?;
                     self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
                     length = 0;
                     name = self.null();
 
-                    if byte == b';' {
+                    if byte == SYMBOL_TERMINATOR {
                         break;
                     }
                 } else {
