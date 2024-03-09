@@ -16,7 +16,7 @@ use stak_code as code;
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: u8 = 1;
 
-const SYMBOL_SEPARATER: u8 = 0xFE;
+const SYMBOL_SEPARATOR: u8 = 0xFE;
 const SYMBOL_TERMINATOR: u8 = 0xFF;
 
 macro_rules! trace {
@@ -606,7 +606,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         if byte != SYMBOL_TERMINATOR {
             while {
-                if matches!(byte, SYMBOL_SEPARATER | SYMBOL_TERMINATOR) {
+                if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                     let string = self.create_string(name, length)?;
                     self.initialize_symbol(Some(string), self.boolean(false).into())?;
 
