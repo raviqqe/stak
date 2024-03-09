@@ -155,7 +155,7 @@ mod tests {
                 vec!["foo".into(), "bar".into(), "baz".into()],
                 vec![]
             )),
-            b"\x00zab,rab,oof;"
+            b"\x00zab\xFErab\xFEoof\xFF"
         );
     }
 
