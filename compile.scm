@@ -524,7 +524,7 @@
            (list-count
              (lambda (pair) (eq? (cdr pair) denotation))
              (expansion-context-environment context))))
-    (string->uninterned-symbol (string-append (symbol->string name) "$" (id->string count)))))
+    (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
 (define (find-pattern-variables bound-variables pattern)
   (define (find pattern)
