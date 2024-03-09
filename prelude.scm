@@ -1039,19 +1039,27 @@
 
     (define string? (instance? string-type))
 
-    (define (list->string x)
-      (data-rib string-type (map char->integer x) (length x)))
+    (define (string-rib codes length)
+      (data-rib string-type codes length))
 
-    (define (string->list x)
-      (map integer->char (rib-car x)))
+    (define (code-points->string x)
+      (string-rib x (length x)))
 
-    (define (string-append . xs)
-      (list->string (apply append (map string->list xs))))
+    (define string->code-points rib-car)
 
     (define string-length rib-cdr)
 
+    (define (list->string x)
+      (string-rib (map char->integer x) (length x)))
+
+    (define (string->list x)
+      (map integer->char (string->code-points x)))
+
     (define (string-ref x index)
-      (integer->char (list-ref (rib-car x) index)))
+      (integer->char (list-ref (string->code-points x) index)))
+
+    (define (string-append . xs)
+      (code-points->string (apply append (map string->code-points xs))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
@@ -1119,7 +1127,7 @@
           (convert xs))))
 
     (define (string-copy x . rest)
-      (list->string (apply list-copy (cons (string->list x) rest))))
+      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
 
     (define substring string-copy)
 
