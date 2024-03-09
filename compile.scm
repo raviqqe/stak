@@ -524,6 +524,7 @@
            (list-count
              (lambda (pair) (eq? (cdr pair) denotation))
              (expansion-context-environment context))))
+    ; Share tails when appending strings.
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
 (define (find-pattern-variables bound-variables pattern)
