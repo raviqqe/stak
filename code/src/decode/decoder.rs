@@ -1,6 +1,6 @@
 use crate::{
     Error, Instruction, Operand, Program, INSTRUCTION_BITS, INSTRUCTION_MASK, INTEGER_BASE,
-    SHORT_INTEGER_BASE,
+    SHORT_INTEGER_BASE, SYMBOL_SEPARATOR, SYMBOL_TERMINATOR,
 };
 use alloc::{string::String, vec, vec::Vec};
 use core::mem::{replace, take};
@@ -34,17 +34,16 @@ impl<'a> Decoder<'a> {
         }
 
         loop {
-            match byte {
-                character @ (b',' | b';') => {
-                    symbol.reverse();
-                    symbols.push(String::from_utf8(take(&mut symbol))?);
+            if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
+                symbol.reverse();
+                symbols.push(String::from_utf8(take(&mut symbol))?);
 
-                    if character == b';' {
-                        symbols.reverse();
-                        return Ok(symbols);
-                    }
+                if byte == SYMBOL_TERMINATOR {
+                    symbols.reverse();
+                    return Ok(symbols);
                 }
-                character => symbol.push(character),
+            } else {
+                symbol.push(byte)
             }
 
             byte = self.decode_byte().ok_or(Error::EndOfInput)?;

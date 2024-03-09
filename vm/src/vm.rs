@@ -7,6 +7,7 @@ use crate::{
     value::{TypedValue, Value},
     Error,
 };
+use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
@@ -15,10 +16,6 @@ use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: u8 = 1;
-
-// Those bytes are not used in UTF-8.
-const SYMBOL_SEPARATOR: u8 = 0xFE;
-const SYMBOL_TERMINATOR: u8 = 0xFF;
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {

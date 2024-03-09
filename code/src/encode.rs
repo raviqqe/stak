@@ -1,4 +1,7 @@
-use crate::{Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE};
+use crate::{
+    Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE,
+    SYMBOL_SEPARATOR, SYMBOL_TERMINATOR,
+};
 use alloc::{string::String, vec, vec::Vec};
 
 /// Encodes a program.
@@ -25,7 +28,7 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
         },
     );
 
-    codes.push(b';');
+    codes.push(SYMBOL_TERMINATOR);
 
     for (index, symbol) in symbols.iter().enumerate() {
         for &character in symbol.as_bytes() {
@@ -36,7 +39,7 @@ fn encode_symbols(codes: &mut Vec<u8>, symbols: &[String]) {
             break;
         }
 
-        codes.push(b',');
+        codes.push(SYMBOL_SEPARATOR);
     }
 
     encode_integer(codes, empty_count as u64);
