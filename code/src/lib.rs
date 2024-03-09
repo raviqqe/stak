@@ -30,6 +30,10 @@ pub const INTEGER_BASE: u64 = i8::MAX as u64 + 1;
 /// A base for short integer encoding in bytecodes.
 pub const SHORT_INTEGER_BASE: u64 = 1 << (8 - INSTRUCTION_BITS - 1);
 
+// Those bytes are not used in UTF-8.
+pub const SYMBOL_SEPARATOR: u8 = 0xFE;
+pub const SYMBOL_TERMINATOR: u8 = 0xFF;
+
 #[cfg(test)]
 mod tests {
     use super::*;

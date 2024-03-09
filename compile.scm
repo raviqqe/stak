@@ -39,21 +39,12 @@
 
 ; Constants
 
-; We need to generate those symbols from strings to match them with the ones
-; from a `read` procedure.
-(define rib-symbol (string->symbol "$$rib"))
-
 (define default-constants
-  (map
-    (lambda (pair)
-      (cons
-        (car pair)
-        (string->symbol (cdr pair))))
-    '((#f . "$$false")
-      (#t . "$$true")
-      (() . "$$null")
-      ; It is fine to have a key duplicate with `false`'s because it is never hit.
-      (#f . "$$rib"))))
+  '((#f . $$false)
+    (#t . $$true)
+    (() . $$null)
+    ; It is fine to have a key duplicate with `false`'s because it is never hit.
+    (#f . $$rib)))
 
 (define default-symbols (map cdr default-constants))
 
@@ -861,7 +852,7 @@
         2)
 
       (else
-        (if (eq? name rib-symbol)
+        (if (eq? name '$$rib)
           4
           (error "unknown primitive" name))))
     name
@@ -1066,7 +1057,7 @@
           (code-rib
             constant-instruction
             0
-            (compile-primitive-call rib-symbol (continue)))))))
+            (compile-primitive-call '$$rib (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
@@ -1222,6 +1213,9 @@
 
 ;; Symbols
 
+(define symbol-separator (- 256 2))
+(define symbol-terminator (- 256 1))
+
 (define (encode-string string target)
   (if (null? string)
     target
@@ -1231,19 +1225,17 @@
   (encode-string (string->list (symbol->string symbol)) target))
 
 (define (encode-symbols symbols constant-symbols target)
-  (let ((target (cons (char->integer #\;) target)))
+  (let ((target (cons symbol-terminator target)))
     (encode-integer
       (length constant-symbols)
-      (if (null? symbols)
-        target
-        (let loop ((symbols symbols) (target target))
-          (if (null? symbols)
-            (cdr target)
-            (loop
-              (cdr symbols)
-              (cons
-                (char->integer #\,)
-                (encode-symbol (car symbols) target)))))))))
+      (let loop ((symbols symbols) (target target))
+        (if (null? symbols)
+          (cdr target)
+          (loop
+            (cdr symbols)
+            (cons
+              symbol-separator
+              (encode-symbol (car symbols) target))))))))
 
 ;; Codes
 
@@ -1373,7 +1365,7 @@
           constant-instruction
           0
           (compile-primitive-call
-            rib-symbol
+            '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))
 
 (define (build-primitives primitives continuation)
