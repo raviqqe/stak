@@ -339,18 +339,21 @@
           name))
       name)))
 
+(define (build-library-symbol id name)
+  (string->symbol
+    (string-append
+      library-symbol-prefix
+      (id->string id)
+      "$"
+      (symbol->string name))))
+
 (define (rename-library-symbol id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
        (memq name keywords)
        (not id))
     name
-    (string->symbol
-      (string-append
-        library-symbol-prefix
-        (id->string id)
-        "$"
-        (symbol->string name)))))
+    (build-library-symbol id name)))
 
 (define (expand-import-set context importer-id qualify set)
   (case (predicate set)
@@ -476,7 +479,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(scheme base)`.
-        (rename-library-symbol 0 x)
+        (build-library-symbol 0 x)
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
