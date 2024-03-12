@@ -366,7 +366,7 @@
 
           (else
             (let ((renamed (build-library-symbol id name)))
-              (set-cdr! pair (cons (cons name renamed) namees))
+              (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
 (define (expand-import-set context importer-id qualify set)
