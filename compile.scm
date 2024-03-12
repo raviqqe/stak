@@ -281,10 +281,11 @@
   (codes library-codes))
 
 (define-record-type library-state
-  (make-library-state library imported)
+  (make-library-state library imported symbols)
   library-state?
   (library library-state-library)
-  (imported library-state-imported library-state-set-imported!))
+  (imported library-state-imported library-state-set-imported!)
+  (symbols library-state-symbols library-state-set-symbols!))
 
 (define-record-type library-context
   (make-library-context libraries)
@@ -311,7 +312,7 @@
     (cons
       (cons
         (library-name library)
-        (make-library-state library #f))
+        (make-library-state library #f '()))
       (library-context-libraries context))))
 
 (define (library-context-import! context name)
