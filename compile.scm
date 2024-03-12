@@ -348,7 +348,7 @@
       "$"
       (symbol->string name))))
 
-(define (rename-library-symbol id name)
+(define (rename-library-symbol context id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
        (memq name keywords)
@@ -391,7 +391,7 @@
             (lambda (names)
               (list
                 '$$alias
-                (rename-library-symbol importer-id (qualify (car names)))
+                (rename-library-symbol context importer-id (qualify (car names)))
                 (cdr names)))
             (library-exports library)))))))
 
@@ -419,7 +419,7 @@
             (map
               (lambda (name)
                 (if (eq? (predicate name) 'rename)
-                  (cons (caddr name) (rename-library-symbol id (cadr name)))
+                  (cons (caddr name) (rename-library-symbol context id (cadr name)))
                   (cons name (rename-library-symbol id name))))
               (collect-bodies 'export))
             (collect-bodies 'import)
