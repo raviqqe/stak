@@ -341,7 +341,7 @@
       name)))
 
 (define (build-library-symbol id name)
-  (string->symbol
+  (string->uninterned-symbol
     (string-append
       library-symbol-prefix
       (id->string id)
