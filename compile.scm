@@ -320,11 +320,6 @@
     (library-state-set-imported! state #t)
     imported))
 
-(define-record-type library-rename-context
-  (make-library-rename-context symbols)
-  library-rename-context?
-  (symbols library-rename-context-symbols library-rename-context-set-symbols!))
-
 ;; Procedures
 
 ; TODO Remove those keywords by implementing library environment correctly.
@@ -352,7 +347,7 @@
       "$"
       (symbol->string name))))
 
-(define (rename-library-symbol context id name)
+(define (rename-library-symbol id name)
   (if (or
        (eqv? (string-ref (symbol->string name) 0) #\$)
        (memq name keywords)
@@ -360,12 +355,11 @@
     name
     (build-library-symbol id name)))
 
-(define (expand-import-set context rename-context importer-id qualify set)
+(define (expand-import-set context importer-id qualify set)
   (case (predicate set)
     ((rename)
       (expand-import-set
         context
-        rename-context
         importer-id
         (lambda (name)
           (let ((name (qualify name)))
@@ -380,7 +374,6 @@
     ((prefix)
       (expand-import-set
         context
-        rename-context
         importer-id
         (lambda (name) (symbol-append (caddr set) (qualify name)))
         (cadr set)))
@@ -391,23 +384,19 @@
           (if (library-context-import! context set)
             '()
             (append
-              (expand-import-sets
-                context
-                rename-context
-                (library-id library)
-                (library-imports library))
+              (expand-import-sets context (library-id library) (library-imports library))
               (library-codes library)))
           (map
             (lambda (names)
               (list
                 '$$alias
-                (rename-library-symbol rename-context importer-id (qualify (car names)))
+                (rename-library-symbol importer-id (qualify (car names)))
                 (cdr names)))
             (library-exports library)))))))
 
-(define (expand-import-sets context rename-context importer-id sets)
+(define (expand-import-sets context importer-id sets)
   (flat-map
-    (lambda (set) (expand-import-set context rename-context importer-id (lambda (x) x) set))
+    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
     sets))
 
 (define (expand-library-expression context expression)
@@ -420,8 +409,7 @@
                   (filter
                     (lambda (body) (eq? (car body) predicate))
                     (cddr expression)))))
-            (id (library-context-id context))
-            (rename-context (make-library-rename-context '())))
+            (id (library-context-id context)))
         (library-context-add!
           context
           (make-library
@@ -430,20 +418,20 @@
             (map
               (lambda (name)
                 (if (eq? (predicate name) 'rename)
-                  (cons (caddr name) (rename-library-symbol rename-context id (cadr name)))
-                  (cons name (rename-library-symbol rename-context id name))))
+                  (cons (caddr name) (rename-library-symbol id (cadr name)))
+                  (cons name (rename-library-symbol id name))))
               (collect-bodies 'export))
             (collect-bodies 'import)
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
-                  (rename-library-symbol rename-context id value)
+                  (rename-library-symbol id value)
                   value))
               (collect-bodies 'begin))))
         '()))
 
     ((import)
-      (expand-import-sets context (make-library-rename-context '()) #f (cdr expression)))
+      (expand-import-sets context #f (cdr expression)))
 
     (else
       (list expression))))
