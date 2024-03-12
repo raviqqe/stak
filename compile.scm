@@ -287,10 +287,10 @@
   (imported library-state-imported library-state-set-imported!))
 
 (define-record-type library-context
-  (make-library-context libraries symbols)
+  (make-library-context libraries name-maps)
   library-context?
   (libraries library-context-libraries library-context-set-libraries!)
-  (symbols library-context-symbols library-context-set-symbols!))
+  (name-maps library-context-name-maps library-context-set-name-maps!))
 
 (define (library-context-assoc context name)
   (cond
@@ -354,11 +354,11 @@
        (eqv? (string-ref (symbol->string name) 0) #\$)
        (memq name keywords))
     name
-    (let* ((symbols (library-context-symbols context))
-           (pair (assq id symbols)))
-      (when (not pair)
-        (set! pair (cons id '()))
-        (library-context-set-symbols! context (cons pair symbols)))
+    (let* ((maps (library-context-name-maps context))
+           (pair (or (assq id maps) (cons id '())))
+           (names (cdr pair)))
+      (when (null? names)
+        (library-context-set-name-maps! context (cons pair maps)))
       (let ((names (cdr pair)))
         (cond
           ((assq name names) =>
