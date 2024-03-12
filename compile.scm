@@ -281,16 +281,16 @@
   (codes library-codes))
 
 (define-record-type library-state
-  (make-library-state library imported symbols)
+  (make-library-state library imported)
   library-state?
   (library library-state-library)
-  (imported library-state-imported library-state-set-imported!)
-  (symbols library-state-symbols library-state-set-symbols!))
+  (imported library-state-imported library-state-set-imported!))
 
 (define-record-type library-context
-  (make-library-context libraries)
+  (make-library-context libraries symbols)
   library-context?
-  (libraries library-context-libraries library-context-set-libraries!))
+  (libraries library-context-libraries library-context-set-libraries!)
+  (symbols library-context-symbols library-context-set-symbols!))
 
 (define (library-context-assoc context name)
   (cond
@@ -312,7 +312,7 @@
     (cons
       (cons
         (library-name library)
-        (make-library-state library #f '()))
+        (make-library-state library #f))
       (library-context-libraries context))))
 
 (define (library-context-import! context name)
@@ -420,13 +420,13 @@
               (lambda (name)
                 (if (eq? (predicate name) 'rename)
                   (cons (caddr name) (rename-library-symbol context id (cadr name)))
-                  (cons name (rename-library-symbol id name))))
+                  (cons name (rename-library-symbol context id name))))
               (collect-bodies 'export))
             (collect-bodies 'import)
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
-                  (rename-library-symbol id value)
+                  (rename-library-symbol context id value)
                   value))
               (collect-bodies 'begin))))
         '()))
@@ -438,7 +438,7 @@
       (list expression))))
 
 (define (expand-libraries expression)
-  (let ((context (make-library-context '())))
+  (let ((context (make-library-context '() '())))
     (cons (car expression)
       (flat-map
         (lambda (expression) (expand-library-expression context expression))
