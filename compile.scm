@@ -519,6 +519,7 @@
       ((and
           (list? expression)
           (= (length expression) 3)
+          (symbol? predicate)
           (assoc (symbol->string predicate) primitive-functions))
         =>
         (lambda (pair)
