@@ -287,9 +287,10 @@
   (imported library-state-imported library-state-set-imported!))
 
 (define-record-type library-context
-  (make-library-context libraries)
+  (make-library-context libraries name-maps)
   library-context?
-  (libraries library-context-libraries library-context-set-libraries!))
+  (libraries library-context-libraries library-context-set-libraries!)
+  (name-maps library-context-name-maps library-context-set-name-maps!))
 
 (define (library-context-assoc context name)
   (cond
@@ -340,20 +341,33 @@
       name)))
 
 (define (build-library-symbol id name)
-  (string->symbol
+  (string->uninterned-symbol
     (string-append
       library-symbol-prefix
       (id->string id)
       "$"
       (symbol->string name))))
 
-(define (rename-library-symbol id name)
+(define (rename-library-symbol context id name)
   (if (or
+       (not id)
        (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memq name keywords)
-       (not id))
+       (memq name keywords))
     name
-    (build-library-symbol id name)))
+    (let* ((maps (library-context-name-maps context))
+           (pair (or (assq id maps) (cons id '())))
+           (names (cdr pair)))
+      (when (null? names)
+        (library-context-set-name-maps! context (cons pair maps)))
+      (let ((names (cdr pair)))
+        (cond
+          ((assq name names) =>
+            cdr)
+
+          (else
+            (let ((renamed (build-library-symbol id name)))
+              (set-cdr! pair (cons (cons name renamed) names))
+              renamed)))))))
 
 (define (expand-import-set context importer-id qualify set)
   (case (predicate set)
@@ -390,7 +404,7 @@
             (lambda (names)
               (list
                 '$$alias
-                (rename-library-symbol importer-id (qualify (car names)))
+                (rename-library-symbol context importer-id (qualify (car names)))
                 (cdr names)))
             (library-exports library)))))))
 
@@ -402,14 +416,14 @@
 (define (expand-library-expression context expression)
   (case (and (pair? expression) (car expression))
     ((define-library)
-      (let* ((collect-bodies
-               (lambda (predicate)
-                 (flat-map
-                   cdr
-                   (filter
-                     (lambda (body) (eq? (car body) predicate))
-                     (cddr expression)))))
-             (id (library-context-id context)))
+      (let ((collect-bodies
+              (lambda (predicate)
+                (flat-map
+                  cdr
+                  (filter
+                    (lambda (body) (eq? (car body) predicate))
+                    (cddr expression)))))
+            (id (library-context-id context)))
         (library-context-add!
           context
           (make-library
@@ -418,14 +432,14 @@
             (map
               (lambda (name)
                 (if (eq? (predicate name) 'rename)
-                  (cons (caddr name) (rename-library-symbol id (cadr name)))
-                  (cons name (rename-library-symbol id name))))
+                  (cons (caddr name) (rename-library-symbol context id (cadr name)))
+                  (cons name (rename-library-symbol context id name))))
               (collect-bodies 'export))
             (collect-bodies 'import)
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
-                  (rename-library-symbol id value)
+                  (rename-library-symbol context id value)
                   value))
               (collect-bodies 'begin))))
         '()))
@@ -437,7 +451,7 @@
       (list expression))))
 
 (define (expand-libraries expression)
-  (let ((context (make-library-context '())))
+  (let ((context (make-library-context '() '())))
     (cons (car expression)
       (flat-map
         (lambda (expression) (expand-library-expression context expression))
@@ -479,7 +493,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(scheme base)`.
-        (build-library-symbol 0 x)
+        (symbol->string (build-library-symbol 0 x))
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
@@ -505,7 +519,8 @@
       ((and
           (list? expression)
           (= (length expression) 3)
-          (assq predicate primitive-functions))
+          (symbol? predicate)
+          (assoc (symbol->string predicate) primitive-functions))
         =>
         (lambda (pair)
           (cons (cdr pair) (cdr expression))))

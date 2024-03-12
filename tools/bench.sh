@@ -20,7 +20,7 @@ fi
 for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   base=${file%.scm}
 
-  cat prelude.scm $file | gosh compile.scm >$base.bc
+  cat prelude.scm $file | stak-compile >$base.bc
 
   scripts="stak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
