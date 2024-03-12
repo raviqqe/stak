@@ -493,7 +493,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(scheme base)`.
-        (build-library-symbol 0 x)
+        (symbol->string (build-library-symbol 0 x))
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
@@ -519,7 +519,7 @@
       ((and
           (list? expression)
           (= (length expression) 3)
-          (assq predicate primitive-functions))
+          (assoc (symbol->string predicate) primitive-functions))
         =>
         (lambda (pair)
           (cons (cdr pair) (cdr expression))))
