@@ -350,11 +350,24 @@
 
 (define (rename-library-symbol context id name)
   (if (or
+       (not id)
        (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memq name keywords)
-       (not id))
+       (memq name keywords))
     name
-    (build-library-symbol id name)))
+    (let* ((symbols (library-context-symbols context))
+           (pair (assq id symbols)))
+      (when (not pair)
+        (set! pair (cons id '()))
+        (library-context-set-symbols! context (cons pair symbols)))
+      (let ((names (cdr pair)))
+        (cond
+          ((assq name names) =>
+            cdr)
+
+          (else
+            (let ((renamed (build-library-symbol id name)))
+              (set-cdr! pair (cons (cons name renamed) namees))
+              renamed)))))))
 
 (define (expand-import-set context importer-id qualify set)
   (case (predicate set)
