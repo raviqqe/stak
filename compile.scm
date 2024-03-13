@@ -564,6 +564,11 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
+(define (ellipsis-pattern? context ellipsis expression)
+  (and
+    (pair? (cdr expression))
+    (eq? (resolve-denotation context (cadr expression)) ellipsis)))
+
 (define (match-ellipsis-pattern definition-context use-context ellipsis literals pattern expression)
   (let ((matches
           (fold-right
@@ -613,9 +618,7 @@
 
     ((pair? pattern)
       (cond
-        ((and
-            (pair? (cdr pattern))
-            (eq? (resolve-denotation definition-context (cadr pattern)) ellipsis))
+        ((ellipsis-pattern? definition-context ellipsis pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (and
               (>= length 0)
@@ -675,9 +678,7 @@
           template)))
 
     ((pair? template)
-      (if (and
-           (pair? (cdr template))
-           (eq? (resolve-denotation definition-context (cadr template)) ellipsis))
+      (if (ellipsis-pattern? definition-context ellipsis template)
         (append
           (fill-ellipsis-template definition-context use-context ellipsis matches (car template))
           (fill (cddr template)))
