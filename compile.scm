@@ -615,7 +615,7 @@
       (cond
         ((and
             (pair? (cdr pattern))
-            (eq? (cadr pattern) ellipsis))
+            (eq? (resolve-denotation definition-context (cadr pattern)) ellipsis))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (and
               (>= length 0)
@@ -677,7 +677,7 @@
     ((pair? template)
       (if (and
            (pair? (cdr template))
-           (eq? (cadr template) ellipsis))
+           (eq? (resolve-denotation definition-context (cadr template)) ellipsis))
         (append
           (fill-ellipsis-template definition-context use-context ellipsis matches (car template))
           (fill (cddr template)))
