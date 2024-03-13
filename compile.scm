@@ -323,10 +323,6 @@
 
 ;; Procedures
 
-; TODO Remove those keywords by implementing library environment correctly.
-(define keywords
-  '(...))
-
 (define library-symbol-prefix "$%")
 
 (define (resolve-library-symbol name)
@@ -351,8 +347,7 @@
 (define (rename-library-symbol context id name)
   (if (or
        (not id)
-       (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memq name keywords))
+       (eqv? (string-ref (symbol->string name) 0) #\$))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
