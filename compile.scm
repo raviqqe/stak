@@ -689,9 +689,9 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (case (predicate transformer)
+  (case (resolve-denotation definition-context (predicate transformer))
     (($$syntax-rules)
-      (let ((ellipsis (cadr transformer))
+      (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
             (literals (caddr transformer))
             (rules (cdddr transformer)))
         (lambda (use-context expression)
@@ -729,13 +729,8 @@
       (if (procedure? value)
         (let-values (((expression context) (value context expression)))
           (expand-outer context expression))
-        (relaxed-deep-map
-          (lambda (value)
-            (if (symbol? value)
-              (resolve-denotation context value)
-              value))
-          expression)))
-    expression))
+        (values expression context)))
+    (values expression context)))
 
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-macro-expression context expression)
@@ -766,7 +761,8 @@
             (expansion-context-set-last!
               context
               (cadr expression)
-              (make-transformer context (expand-outer context (caddr expression))))
+              (let-values (((expression context) (expand-outer context (caddr expression))))
+                (make-transformer context expression)))
             #f)
 
           (($$lambda)
