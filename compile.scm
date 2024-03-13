@@ -729,7 +729,12 @@
       (if (procedure? value)
         (let-values (((expression context) (value context expression)))
           (expand-outer context expression))
-        (cons value (cdr expression))))
+        (relaxed-deep-map
+          (lambda (value)
+            (if (symbol? value)
+              (resolve-denotation context value)
+              value))
+          expression)))
     expression))
 
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
