@@ -690,39 +690,40 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (case (resolve-denotation definition-context (predicate transformer))
-    (($$syntax-rules)
-      (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-            (literals (caddr transformer))
-            (rules (cdddr transformer)))
-        (lambda (use-context expression)
-          (let loop ((rules rules))
-            (unless (pair? rules)
-              (error "invalid syntax" expression))
-            (let* ((rule (car rules))
-                   (matches (match-pattern definition-context use-context ellipsis literals (car rule) expression)))
-              (if matches
-                (let* ((template (cadr rule))
-                       (names
-                         (map
-                           (lambda (name) (cons name (rename-variable use-context name)))
-                           (find-pattern-variables ellipsis (append literals (map car matches)) template)))
-                       (use-context
-                         (expansion-context-append
-                           use-context
+  (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
+    (case (resolve-denotation definition-context (predicate transformer))
+      (($$syntax-rules)
+        (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
+              (literals (caddr transformer))
+              (rules (cdddr transformer)))
+          (lambda (use-context expression)
+            (let loop ((rules rules))
+              (unless (pair? rules)
+                (error "invalid syntax" expression))
+              (let* ((rule (car rules))
+                     (matches (match-pattern definition-context use-context ellipsis literals (car rule) expression)))
+                (if matches
+                  (let* ((template (cadr rule))
+                         (names
                            (map
-                             (lambda (pair)
-                               (cons
-                                 (cdr pair)
-                                 (resolve-denotation definition-context (car pair))))
-                             names))))
-                  (values
-                    (fill-template definition-context use-context ellipsis (append names matches) template)
-                    use-context))
-                (loop (cdr rules))))))))
+                             (lambda (name) (cons name (rename-variable use-context name)))
+                             (find-pattern-variables ellipsis (append literals (map car matches)) template)))
+                         (use-context
+                           (expansion-context-append
+                             use-context
+                             (map
+                               (lambda (pair)
+                                 (cons
+                                   (cdr pair)
+                                   (resolve-denotation definition-context (car pair))))
+                               names))))
+                    (values
+                      (fill-template definition-context use-context ellipsis (append names matches) template)
+                      use-context))
+                  (loop (cdr rules))))))))
 
-    (else
-      (error "unsupported macro transformer" transformer))))
+      (else
+        (error "unsupported macro transformer" transformer)))))
 
 (define (expand-outer-macro context expression)
   (if (pair? expression)
@@ -762,8 +763,7 @@
             (expansion-context-set-last!
               context
               (cadr expression)
-              (let-values (((expression context) (expand-outer-macro context (caddr expression))))
-                (make-transformer context expression)))
+              (make-transformer context (caddr expression)))
             #f)
 
           (($$lambda)
@@ -791,8 +791,7 @@
                   (expansion-context-push
                     context
                     (car pair)
-                    (let-values (((expression context) (expand-outer-macro context (cadr pair))))
-                      (make-transformer context expression))))
+                    (make-transformer context (cadr pair))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -810,8 +809,7 @@
                   (expansion-context-set!
                     context
                     (car pair)
-                    (let-values (((expression context) (expand-outer-macro context (cadr pair))))
-                      (make-transformer context expression))))
+                    (make-transformer context (cadr pair))))
                 bindings)
               (expand-macro context (caddr expression))))
 
