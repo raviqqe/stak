@@ -256,7 +256,16 @@
     ($$define-syntax syntax-rules
       ($$syntax-rules ()
         ((_ (literal ...) (pattern body) ...)
-          ($$syntax-rules (literal ...) (pattern body) ...))))
+          ($$syntax-rules (literal ...)
+            ((syntax-rules "pattern" pattern)
+              (syntax-rules "pattern" body))
+            ...))
+
+        ((_ "pattern" value)
+          value)
+
+        ((_ "pattern" ...)
+          $$...)))
 
     ($$define-syntax define-syntax
       (syntax-rules ()
