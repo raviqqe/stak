@@ -724,19 +724,19 @@
     (else
       (error "unsupported macro transformer" transformer))))
 
-(define (expand-outer context expression)
+(define (expand-outer-macro context expression)
   (if (pair? expression)
     (let ((value (resolve-denotation context (car expression))))
       (if (procedure? value)
         (let-values (((expression context) (value context expression)))
-          (expand-outer context expression))
+          (expand-outer-macro context expression))
         (values expression context)))
     (values expression context)))
 
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
-(define (expand-macro-expression context expression)
+(define (expand-macro context expression)
   (define (expand expression)
-    (expand-macro-expression context expression))
+    (expand-macro context expression))
 
   (optimize
     (cond
@@ -762,7 +762,7 @@
             (expansion-context-set-last!
               context
               (cadr expression)
-              (let-values (((expression context) (expand-outer context (caddr expression))))
+              (let-values (((expression context) (expand-outer-macro context (caddr expression))))
                 (make-transformer context expression)))
             #f)
 
@@ -782,16 +782,16 @@
               (list
                 '$$lambda
                 parameters
-                (expand-macro-expression context (caddr expression)))))
+                (expand-macro context (caddr expression)))))
 
           (($$let-syntax)
-            (expand-macro-expression
+            (expand-macro
               (fold-left
                 (lambda (context pair)
                   (expansion-context-push
                     context
                     (car pair)
-                    (let-values (((expression context) (expand-outer context (cadr pair))))
+                    (let-values (((expression context) (expand-outer-macro context (cadr pair))))
                       (make-transformer context expression))))
                 context
                 (cadr expression))
@@ -810,10 +810,10 @@
                   (expansion-context-set!
                     context
                     (car pair)
-                    (let-values (((expression context) (expand-outer context (cadr pair))))
+                    (let-values (((expression context) (expand-outer-macro context (cadr pair))))
                       (make-transformer context expression))))
                 bindings)
-              (expand-macro-expression context (caddr expression))))
+              (expand-macro context (caddr expression))))
 
           (($$quote)
             (cons
@@ -829,14 +829,14 @@
             (lambda (value)
               (if (procedure? value)
                 (let-values (((expression context) (value context expression)))
-                  (expand-macro-expression context expression))
+                  (expand-macro context expression))
                 (map expand expression))))))
 
       (else
         expression))))
 
 (define (expand-macros expression)
-  (expand-macro-expression (make-expansion-context '()) expression))
+  (expand-macro (make-expansion-context '()) expression))
 
 ; Compilation
 
