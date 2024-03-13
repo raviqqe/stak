@@ -645,7 +645,7 @@
 
 (define (fill-ellipsis-template definition-context use-context ellipsis matches template)
   (map
-    (lambda (matches) (fill-template definition-context use-context matches template))
+    (lambda (matches) (fill-template definition-context use-context ellipsis matches template))
     (let* ((variables (find-pattern-variables ellipsis '() template))
            (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
            (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
