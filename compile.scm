@@ -323,10 +323,6 @@
 
 ;; Procedures
 
-; TODO Remove those keywords by implementing library environment correctly.
-(define keywords
-  '(...))
-
 (define library-symbol-prefix "$%")
 
 (define (resolve-library-symbol name)
@@ -351,8 +347,7 @@
 (define (rename-library-symbol context id name)
   (if (or
        (not id)
-       (eqv? (string-ref (symbol->string name) 0) #\$)
-       (memq name keywords))
+       (eqv? (string-ref (symbol->string name) 0) #\$))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
@@ -545,10 +540,10 @@
     ; Share tails when appending strings.
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
-(define (find-pattern-variables bound-variables pattern)
+(define (find-pattern-variables ellipsis bound-variables pattern)
   (define (find pattern)
     (cond
-      ((memq pattern (append '(_ ...) bound-variables))
+      ((memq pattern (append (list '_ ellipsis) bound-variables))
         '())
 
       ((symbol? pattern)
@@ -569,7 +564,7 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
-(define (match-ellipsis-pattern definition-context use-context literals pattern expression)
+(define (match-ellipsis-pattern definition-context use-context ellipsis literals pattern expression)
   (let ((matches
           (fold-right
             (lambda (all ones)
@@ -586,10 +581,10 @@
                   ones)))
             (map
               (lambda (name) (cons name '()))
-              (find-pattern-variables literals pattern))
+              (find-pattern-variables ellipsis literals pattern))
             (map
               (lambda (expression)
-                (match-pattern definition-context use-context literals pattern expression))
+                (match-pattern definition-context use-context ellipsis literals pattern expression))
               expression))))
     (and
       matches
@@ -598,9 +593,9 @@
           (cons (car pair) (make-ellipsis-match (cdr pair))))
         matches))))
 
-(define (match-pattern definition-context use-context literals pattern expression)
+(define (match-pattern definition-context use-context ellipsis literals pattern expression)
   (define (match pattern expression)
-    (match-pattern definition-context use-context literals pattern expression))
+    (match-pattern definition-context use-context ellipsis literals pattern expression))
 
   (cond
     ((eq? pattern '_)
@@ -620,7 +615,7 @@
       (cond
         ((and
             (pair? (cdr pattern))
-            (eq? (cadr pattern) '...))
+            (eq? (resolve-denotation definition-context (cadr pattern)) ellipsis))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (and
               (>= length 0)
@@ -628,6 +623,7 @@
                 (match-ellipsis-pattern
                   definition-context
                   use-context
+                  ellipsis
                   literals
                   (car pattern)
                   (take length expression))
@@ -647,10 +643,10 @@
     (else
       #f)))
 
-(define (fill-ellipsis-template definition-context use-context matches template)
+(define (fill-ellipsis-template definition-context use-context ellipsis matches template)
   (map
-    (lambda (matches) (fill-template definition-context use-context matches template))
-    (let* ((variables (find-pattern-variables '() template))
+    (lambda (matches) (fill-template definition-context use-context ellipsis matches template))
+    (let* ((variables (find-pattern-variables ellipsis '() template))
            (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
            (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
            (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
@@ -664,9 +660,9 @@
               (cons (car pair) (ellipsis-match-value (cdr pair))))
             ellipsis-matches))))))
 
-(define (fill-template definition-context use-context matches template)
+(define (fill-template definition-context use-context ellipsis matches template)
   (define (fill template)
-    (fill-template definition-context use-context matches template))
+    (fill-template definition-context use-context ellipsis matches template))
 
   (cond
     ((symbol? template)
@@ -681,9 +677,9 @@
     ((pair? template)
       (if (and
            (pair? (cdr template))
-           (eq? (cadr template) '...))
+           (eq? (resolve-denotation definition-context (cadr template)) ellipsis))
         (append
-          (fill-ellipsis-template definition-context use-context matches (car template))
+          (fill-ellipsis-template definition-context use-context ellipsis matches (car template))
           (fill (cddr template)))
         (cons
           (fill (car template))
@@ -693,22 +689,23 @@
       template)))
 
 (define (make-transformer definition-context transformer)
-  (case (predicate transformer)
+  (case (resolve-denotation definition-context (predicate transformer))
     (($$syntax-rules)
-      (let ((literals (cadr transformer))
-            (rules (cddr transformer)))
+      (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
+            (literals (caddr transformer))
+            (rules (cdddr transformer)))
         (lambda (use-context expression)
           (let loop ((rules rules))
             (unless (pair? rules)
               (error "invalid syntax" expression))
             (let* ((rule (car rules))
-                   (matches (match-pattern definition-context use-context literals (car rule) expression)))
+                   (matches (match-pattern definition-context use-context ellipsis literals (car rule) expression)))
               (if matches
                 (let* ((template (cadr rule))
                        (names
                          (map
                            (lambda (name) (cons name (rename-variable use-context name)))
-                           (find-pattern-variables (append literals (map car matches)) template)))
+                           (find-pattern-variables ellipsis (append literals (map car matches)) template)))
                        (use-context
                          (expansion-context-append
                            use-context
@@ -719,7 +716,7 @@
                                  (resolve-denotation definition-context (car pair))))
                              names))))
                   (values
-                    (fill-template definition-context use-context (append names matches) template)
+                    (fill-template definition-context use-context ellipsis (append names matches) template)
                     use-context))
                 (loop (cdr rules))))))))
 
@@ -732,8 +729,8 @@
       (if (procedure? value)
         (let-values (((expression context) (value context expression)))
           (expand-outer context expression))
-        (cons value (cdr expression))))
-    expression))
+        (values expression context)))
+    (values expression context)))
 
 ; https://www.researchgate.net/publication/220997237_Macros_That_Work
 (define (expand-macro-expression context expression)
@@ -764,7 +761,8 @@
             (expansion-context-set-last!
               context
               (cadr expression)
-              (make-transformer context (expand-outer context (caddr expression))))
+              (let-values (((expression context) (expand-outer context (caddr expression))))
+                (make-transformer context expression)))
             #f)
 
           (($$lambda)
@@ -792,7 +790,8 @@
                   (expansion-context-push
                     context
                     (car pair)
-                    (make-transformer context (expand-outer context (cadr pair)))))
+                    (let-values (((expression context) (expand-outer context (cadr pair))))
+                      (make-transformer context expression))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -810,7 +809,8 @@
                   (expansion-context-set!
                     context
                     (car pair)
-                    (make-transformer context (expand-outer context (cadr pair)))))
+                    (let-values (((expression context) (expand-outer context (cadr pair))))
+                      (make-transformer context expression))))
                 bindings)
               (expand-macro-expression context (caddr expression))))
 

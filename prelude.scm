@@ -254,9 +254,9 @@
     ;; Base
 
     ($$define-syntax syntax-rules
-      ($$syntax-rules ()
-        ((_ (literal ...) (pattern body) ...)
-          ($$syntax-rules (literal ...) (pattern body) ...))))
+      ($$syntax-rules $$... ()
+        ((_ (literal $$...) (pattern body) $$...)
+          ($$syntax-rules ... (literal $$...) (pattern body) $$...))))
 
     ($$define-syntax define-syntax
       (syntax-rules ()
