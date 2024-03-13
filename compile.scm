@@ -790,7 +790,8 @@
                   (expansion-context-push
                     context
                     (car pair)
-                    (make-transformer context (expand-outer context (cadr pair)))))
+                    (let-values (((expression context) (expand-outer context (cadr pair))))
+                      (make-transformer context expression))))
                 context
                 (cadr expression))
               (caddr expression)))
@@ -808,7 +809,8 @@
                   (expansion-context-set!
                     context
                     (car pair)
-                    (make-transformer context (expand-outer context (cadr pair)))))
+                    (let-values (((expression context) (expand-outer context (cadr pair))))
+                      (make-transformer context expression))))
                 bindings)
               (expand-macro-expression context (caddr expression))))
 
