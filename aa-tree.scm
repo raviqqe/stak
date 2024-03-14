@@ -1,38 +1,42 @@
-(import (scheme base) (scheme write))
+(define-library (stak aa-tree)
+  (export
+    aa-tree-empty
+    aa-tree?)
 
-(define-record-type aa-tree
-  (make-aa-tree root size)
-  aa-tree?
-  (root aa-tree-root aa-tree-set-root!)
-  (size aa-tree-size aa-tree-set-size!))
+  (import (scheme base) (scheme write))
 
-(define-record-type aa-tree-node
-  (make-aa-tree-node value level left right)
-  aa-tree-node?
-  (value aa-tree-node-value aa-tree-node-set-value!)
-  (level aa-tree-node-level aa-tree-node-set-level!)
-  (left aa-tree-node-left aa-tree-node-set-left!)
-  (right aa-tree-node-right aa-tree-node-set-right!))
+  (begin
+    (define-record-type aa-tree
+      (make-aa-tree root size)
+      aa-tree?
+      (root aa-tree-root aa-tree-set-root!)
+      (size aa-tree-size aa-tree-set-size!))
 
-(define level aa-tree-node-level)
-(define left aa-tree-node-left)
-(define right aa-tree-node-right)
+    (define-record-type aa-tree-node
+      (make-aa-tree-node value level left right)
+      aa-tree-node?
+      (value aa-tree-node-value aa-tree-node-set-value!)
+      (level aa-tree-node-level aa-tree-node-set-level!)
+      (left aa-tree-node-left aa-tree-node-set-left!)
+      (right aa-tree-node-right aa-tree-node-set-right!))
 
-(define (empty)
-  (make-aa-tree #f 0))
+    (define level aa-tree-node-level)
+    (define left aa-tree-node-left)
+    (define right aa-tree-node-right)
 
-(define (skew tree)
-  (let ((node (aa-tree-node tree)))
-    (and
-      node
-      (let ((left-node (left node)))
-        (if (and
-             (not left-node)
-             (eq? (level node) (level left-node)))
-          (begin
-            (aa-tree-node-set-left! tree (right left-node))
-            (aa-tree-node-set-right! left-node tree)
-            left-node)
-          node)))))
+    (define (aa-tree-empty)
+      (make-aa-tree #f 0))
 
-(write (empty))
+    (define (skew tree)
+      (let ((node (aa-tree-node tree)))
+        (and
+          node
+          (let ((left-node (left node)))
+            (if (and
+                 (not left-node)
+                 (eq? (level node) (level left-node)))
+              (begin
+                (aa-tree-node-set-left! tree (right left-node))
+                (aa-tree-node-set-right! left-node tree)
+                left-node)
+              node)))))))
