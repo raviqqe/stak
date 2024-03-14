@@ -9,4 +9,10 @@
 (define (empty)
   (make-aa-tree #f 0))
 
+(define (skew tree)
+  (let ((node (aa-tree-node tree)))
+    (and
+      node
+      foo)))
+
 (write (empty))
