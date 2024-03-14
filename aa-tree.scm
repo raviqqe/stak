@@ -25,18 +25,13 @@
   (let ((node (aa-tree-node tree)))
     (if node
       (let ((left-node (left node)))
-        (cond
-          ((not left-node)
-            node)
-
+        (if left-node
           ((eq? (level node) (level left-node))
             (begin
               (aa-tree-node-set-left! tree (right left-node))
               (aa-tree-node-set-right! left-node tree)
               left-node))
-
-          (else
-            node)))
+          node))
       #f)))
 
 (write (empty))
