@@ -23,7 +23,8 @@
 
 (define (skew tree)
   (let ((node (aa-tree-node tree)))
-    (if node
+    (and
+      node
       (let ((left-node (left node)))
         (if left-node
           ((eq? (level node) (level left-node))
@@ -31,7 +32,6 @@
               (aa-tree-node-set-left! tree (right left-node))
               (aa-tree-node-set-right! left-node tree)
               left-node))
-          node))
-      #f)))
+          node)))))
 
 (write (empty))
