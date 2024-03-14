@@ -24,16 +24,16 @@
 (define (skew tree)
   (let ((node (aa-tree-node tree)))
     (if node
-      (let ((l (left node)))
+      (let ((left-node (left node)))
         (cond
-          ((not l)
+          ((not left-node)
             node)
 
-          ((eq? (level node) (level (left node)))
+          ((eq? (level node) (level left-node))
             (begin
-              (aa-tree-node-set-left! tree (right l))
-              (aa-tree-node-set-right! l tree)
-              l))
+              (aa-tree-node-set-left! tree (right left-node))
+              (aa-tree-node-set-right! left-node tree)
+              left-node))
 
           (else
             node)))
