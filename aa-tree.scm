@@ -10,15 +10,14 @@
   (make-aa-tree-node value left right)
   aa-tree-node?
   (value aa-tree-node-value aa-tree-node-set-value!)
-  (left aa-tree-left-left aa-tree-left-set-left!)
-  (right aa-tree-right-right aa-tree-right-set-right!))
+  (left aa-tree-node-left aa-tree-node-set-left!)
+  (right aa-tree-node-right aa-tree-node-set-right!))
+
+(define left aa-tree-node-left)
+(define right aa-tree-node-right)
 
 (define (empty)
   (make-aa-tree #f 0))
-
-(define (left node)
-  ; TODO
-  node)
 
 (define (skew tree)
   (let ((node (aa-tree-node tree)))
