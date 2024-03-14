@@ -23,16 +23,15 @@
     (define (aa-tree-empty)
       (make-aa-tree #f 0))
 
-    (define (aa-tree-skew tree)
-      (let ((node (aa-tree-node tree)))
-        (and
-          node
-          (let ((left (aa-tree-node-left node)))
-            (if (and
-                 (not left)
-                 (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
-              (begin
-                (aa-tree-node-set-left! tree (right left))
-                (aa-tree-node-set-right! left tree)
-                left)
-              node)))))))
+    (define (aa-tree-node-skew node)
+      (and
+        node
+        (let ((left (aa-tree-node-left node)))
+          (if (and
+               (not left)
+               (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
+            (begin
+              (aa-tree-node-set-left! tree (right left))
+              (aa-tree-node-set-right! left tree)
+              left)
+            node))))))
