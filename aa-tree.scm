@@ -8,10 +8,10 @@
 
   (begin
     (define-record-type aa-tree
-      (make-aa-tree root size)
+      (make-aa-tree root compare)
       aa-tree?
       (root aa-tree-root aa-tree-set-root!)
-      (size aa-tree-size aa-tree-set-size!))
+      (compare aa-tree-compare aa-tree-set-compare!))
 
     (define-record-type aa-tree-node
       (make-aa-tree-node value level left right)
@@ -21,11 +21,19 @@
       (left aa-tree-node-left aa-tree-node-set-left!)
       (right aa-tree-node-right aa-tree-node-set-right!))
 
-    (define (aa-tree-empty)
-      (make-aa-tree #f 0))
+    (define (aa-tree-empty compare)
+      (make-aa-tree #f compare))
 
     (define (aa-tree-insert! tree value)
-      #f)
+      (aa-tree-set-root! (aa-tree-node-insert! (aa-tree-root tree))))
+
+    (define (aa-tree-node-insert! node value)
+      (cond
+        ((not node)
+          (make-aa-tree-node value 0 #f #f))
+
+        (else
+          (aa-tree-set-root! foo))))
 
     (define (aa-tree-node-skew! node)
       (let ((left (and node (aa-tree-node-left node))))
