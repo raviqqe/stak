@@ -71,17 +71,17 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (= (string-length <value>) <length>) 65 66))
+      (write-u8 (if (= (string-length "<value>") <length>) 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
       | value | length |
-      | ""    | 0      |
-      | "a"   | 1      |
-      | "aa"  | 2      |
-      | "aaa" | 3      |
+      |       | 0      |
+      | a     | 1      |
+      | aa    | 2      |
+      | aaa   | 3      |
 
   Scenario Outline: Get a sub-string
     Given a file named "main.scm" with:
@@ -109,3 +109,84 @@ Feature: String
       | abc   | 0     | 2   | ab     |
       | abc   | 1     | 3   | bc     |
       | abc   | 0     | 3   | abc    |
+
+  Scenario Outline: Check string equality
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (string=? "<value>" "<value>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value |
+      |       |
+      | a     |
+      | ab    |
+      | abc   |
+
+  Scenario Outline: Check string inequality
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (string=? "<left>" "<right>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+    Examples:
+      | left | right |
+      |      | a     |
+      | a    |       |
+      | a    | b     |
+      | a    | ab    |
+      | ab   | a     |
+      | aa   | ab    |
+      | aa   | aaa   |
+      | aaa  | aa    |
+      | aaa  | aab   |
+      | aab  | aaa   |
+
+  Scenario Outline: Check a string order
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (string<? "<left>" "<right>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | left | right |
+      |      | a     |
+      | a    | b     |
+      | a    | aa    |
+      | aa   | ab    |
+      | aa   | aaa   |
+      | aaa  | aab   |
+
+  Scenario Outline: Check a string order inverse
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (not (string<? "<left>" "<right>")) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | left | right |
+      |      |       |
+      | a    |       |
+      | a    | a     |
+      | b    | a     |
+      | aa   | a     |
+      | aa   | aa    |
+      | ab   | aa    |
+      | ba   | aa    |
+      | ba   | ab    |

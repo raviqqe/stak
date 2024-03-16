@@ -174,6 +174,9 @@
     string->number
     string-copy
     substring
+    string=?
+    string<?
+    string>?
 
     symbol?
     symbol->string
@@ -1130,6 +1133,27 @@
       (code-points->string (apply list-copy (cons (string->code-points x) rest))))
 
     (define substring string-copy)
+
+    (define string=? (comparison-operator equal?))
+
+    (define string<?
+      (comparison-operator
+        (lambda (x y)
+          (integer-list<?
+            (string->code-points x)
+            (string->code-points y)))))
+
+    (define (integer-list<? x y)
+      (and
+        (not (null? y))
+        (or
+          (null? x)
+          (< (car x) (car y))
+          (and
+            (= (car x) (car y))
+            (integer-list<? (cdr x) (cdr y))))))
+
+    (define (string>? x y) (string<? y x))
 
     ;; Symbol
 
