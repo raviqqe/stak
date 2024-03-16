@@ -28,29 +28,25 @@
       #f)
 
     (define (aa-tree-node-skew! node)
-      (and
-        node
-        (let ((left (aa-tree-node-left node)))
-          (if (and
-               (not left)
-               (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
-            (begin
-              (aa-tree-node-set-left! tree (aa-tree-node-right left))
-              (aa-tree-node-set-right! left tree)
-              left)
-            node))))
+      (let ((left (and node (aa-tree-node-left node))))
+        (if (and
+             left
+             (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
+          (begin
+            (aa-tree-node-set-left! tree (aa-tree-node-right left))
+            (aa-tree-node-set-right! left tree)
+            left)
+          node)))
 
     (define (aa-tree-node-split! node)
-      (and
-        node
-        (let* ((right (aa-tree-node-right node))
-               (right-right (and right (aa-tree-node-right right))))
-          (if (and
-               right-right
-               (eq? (aa-tree-node-level node) (aa-tree-node-level right-right)))
-            (begin
-              (aa-tree-node-set-right! tree (aa-tree-node-left right))
-              (aa-tree-node-set-left! right tree)
-              (aa-tree-node-set-level! right (+ (aa-tree-node-level right) 1))
-              right)
-            node))))))
+      (let* ((right (and node (aa-tree-node-right node)))
+             (right-right (and right (aa-tree-node-right right))))
+        (if (and
+             right-right
+             (eq? (aa-tree-node-level node) (aa-tree-node-level right-right)))
+          (begin
+            (aa-tree-node-set-right! tree (aa-tree-node-left right))
+            (aa-tree-node-set-left! right tree)
+            (aa-tree-node-set-level! right (+ (aa-tree-node-level right) 1))
+            right)
+          node)))))
