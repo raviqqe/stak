@@ -164,7 +164,7 @@ Feature: String
       | left | right |
       |      | a     |
       | a    | b     |
-      | a    | ab    |
+      | a    | aa    |
       | aa   | ab    |
       | aab  | aab   |
 
