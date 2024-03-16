@@ -38,10 +38,10 @@
             (aa-tree-node-skew
               (cond
                 ((< order 0)
-                  #f)
+                  (aa-tree-node-insert! (aa-tree-node-left node) value compare))
 
                 ((> order 0)
-                  #f)
+                  (aa-tree-node-insert! (aa-tree-node-right node) value compare))
 
                 (else
                   (aa-tree-set-root! foo))))))
