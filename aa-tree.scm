@@ -36,8 +36,8 @@
         (let ((order (compare value (aa-tree-node-value node))))
           (if (= order 0)
             node
-            (aa-tree-node-split
-              (aa-tree-node-skew
+            (aa-tree-node-split!
+              (aa-tree-node-skew!
                 (if (< order 0)
                   (aa-tree-node-insert! (aa-tree-node-left node) value compare)
 
