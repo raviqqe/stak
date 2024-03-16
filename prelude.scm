@@ -1131,6 +1131,15 @@
 
     (define substring string-copy)
 
+    (define string=?
+      (comparison-operator
+        (lambda (x y)
+          (and
+            (string-length))
+          (equal?
+            (string->code-points x)
+            (string->code-points y)))))
+
     ;; Symbol
 
     (define symbol? (instance? symbol-type))
