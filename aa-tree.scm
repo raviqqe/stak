@@ -39,10 +39,10 @@
     (define (aa-tree-node-split node)
       (and
         node
-        (let ((left (aa-tree-node-left node)))
-          (if (and
-               (not left)
-               (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
+        (let ((right (aa-tree-node-right node)))
+          (if (or
+               (not right)
+               (not (aa-tree-node-right right)))
             (begin
               (aa-tree-node-set-left! tree (right left))
               (aa-tree-node-set-right! left tree)
