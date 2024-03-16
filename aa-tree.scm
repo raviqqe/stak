@@ -28,15 +28,19 @@
       (aa-tree-set-root!
         (aa-tree-node-insert!
           (aa-tree-root tree)
+          value
           (aa-tree-compare tree))))
 
     (define (aa-tree-node-insert! node value compare)
-      (cond
-        ((not node)
-          (make-aa-tree-node value 0 #f #f))
+      (if node
+        (let ((order (compare value (aa-tree-node-value node))))
+          (cond
+            ((< order 0)
+              #f)
 
-        (else
-          (aa-tree-set-root! foo))))
+            (else
+              (aa-tree-set-root! foo))))
+        (make-aa-tree-node value 0 #f #f)))
 
     (define (aa-tree-node-skew! node)
       (let ((left (and node (aa-tree-node-left node))))
