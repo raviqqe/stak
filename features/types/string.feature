@@ -166,3 +166,25 @@ Feature: String
       | a    | ab    |
       | ab   | ac    |
       | abc  | abd   |
+
+  Scenario Outline: Check a string order inverse
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (not (string<? "<left>" "<right>")) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | left | right |
+      |      |       |
+      | a    |       |
+      | a    | a     |
+      | b    | a     |
+      | a    | a     |
+      | aa   | a     |
+      | ab   | aa    |
+      | ba   | aa    |
+      | ba   | ab    |
