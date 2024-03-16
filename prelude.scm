@@ -1146,12 +1146,12 @@
       (comparison-operator
         (lambda (x y)
           (or
-            (=
-              (string-length x)
-              (string-length y)))
-          (equal?
-            (string->code-points x)
-            (string->code-points y)))))
+            (= (string-length x) 0)
+            (equal?
+              (string->code-points x)
+              (string->code-points y))))))
+
+    (define (string>? x y) (string<? y x))
 
     ;; Symbol
 
