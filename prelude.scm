@@ -1145,13 +1145,16 @@
     (define string<?
       (comparison-operator
         (lambda (x y)
-          (or
-            (and
-              (zero? (string-length x))
-              (not (zero? (string-length x))))
-            (equal?
-              (string->code-points x)
-              (string->code-points y))))))
+          (integer-list<?
+            (string->code-points x)
+            (string->code-points y)))))
+
+    (define (integer-list<? x y)
+      (or
+        (and
+          (null? x)
+          (not (null? y)))
+        foo))
 
     (define (string>? x y) (string<? y x))
 
