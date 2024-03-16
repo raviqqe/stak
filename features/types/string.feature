@@ -144,10 +144,11 @@ Feature: String
       | a    | b     |
       | a    | ab    |
       | ab   | a     |
-      | ab   | ac    |
-      | ab   | abc   |
-      | abc  | ab    |
-      | abc  | abd   |
+      | aa   | ab    |
+      | aa   | aaa   |
+      | aaa  | aa    |
+      | aaa  | aab   |
+      | aab  | aaa   |
 
   Scenario Outline: Check a string order
     Given a file named "main.scm" with:
@@ -164,8 +165,8 @@ Feature: String
       |      | a     |
       | a    | b     |
       | a    | ab    |
-      | ab   | ac    |
-      | abc  | abd   |
+      | aa   | ab    |
+      | aab  | aab   |
 
   Scenario Outline: Check a string order inverse
     Given a file named "main.scm" with:
