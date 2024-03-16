@@ -1,7 +1,8 @@
 (define-library (stak aa-tree)
   (export
     aa-tree-empty
-    aa-tree?)
+    aa-tree?
+    aa-tree-insert!)
 
   (import (scheme base) (scheme write))
 
