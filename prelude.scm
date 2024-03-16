@@ -174,6 +174,9 @@
     string->number
     string-copy
     substring
+    string=?
+    string<?
+    string>?
 
     symbol?
     symbol->string
