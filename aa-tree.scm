@@ -51,4 +51,5 @@
             (begin
               (aa-tree-node-set-right! tree (aa-tree-node-left right))
               (aa-tree-node-set-left right tree)
-              left)))))))
+              (aa-tree-node-set-left right tree)
+              right)))))))
