@@ -1147,8 +1147,8 @@
         (lambda (x y)
           (or
             (and
-              (= (string-length x) 0)
-              (not (= (string-length x) 0)))
+              (zero? (string-length x))
+              (not (zero? (string-length x))))
             (equal?
               (string->code-points x)
               (string->code-points y))))))
