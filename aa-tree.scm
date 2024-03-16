@@ -33,18 +33,15 @@
 
     (define (aa-tree-node-insert! node value compare)
       (if node
-        (aa-tree-node-split
-          (aa-tree-node-skew
-            (let ((order (compare value (aa-tree-node-value node))))
-              (cond
-                ((< order 0)
-                  (aa-tree-node-insert! (aa-tree-node-left node) value compare))
+        (let ((order (compare value (aa-tree-node-value node))))
+          (if (= order? 0)
+            node
+            (aa-tree-node-split
+              (aa-tree-node-skew
+                (if (< order 0)
+                  (aa-tree-node-insert! (aa-tree-node-left node) value compare)
 
-                ((> order 0)
-                  (aa-tree-node-insert! (aa-tree-node-right node) value compare))
-
-                (else
-                  node)))))
+                  (aa-tree-node-insert! (aa-tree-node-right node) value compare))))))
         (make-aa-tree-node value 0 #f #f)))
 
     (define (aa-tree-node-skew! node)
