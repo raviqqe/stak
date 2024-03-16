@@ -1146,7 +1146,9 @@
       (comparison-operator
         (lambda (x y)
           (or
-            (= (string-length x) 0)
+            (and
+              (= (string-length x) 0)
+              (not (= (string-length x) 0)))
             (equal?
               (string->code-points x)
               (string->code-points y))))))
