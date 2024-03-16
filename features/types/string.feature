@@ -154,7 +154,7 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (equal? (string=? "<value>" <start> <end>) "<output>") 65 66))
+      (write-u8 (if (string<? "<value>" <start> <end>) 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
