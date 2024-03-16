@@ -1148,13 +1148,9 @@
         (not (null? y))
         (or
           (null? x)
-          (<
-            (car x)
-            (car y))
+          (< (car x) (car y))
           (and
-            (=
-              (car x)
-              (car y))
+            (= (car x) (car y))
             (integer-list<? (cdr x) (cdr y))))))
 
     (define (string>? x y) (string<? y x))
