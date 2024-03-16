@@ -33,9 +33,9 @@
 
     (define (aa-tree-node-insert! node value compare)
       (if node
-        (let ((order (compare value (aa-tree-node-value node))))
-          (aa-tree-node-split
-            (aa-tree-node-skew
+        (aa-tree-node-split
+          (aa-tree-node-skew
+            (let ((order (compare value (aa-tree-node-value node))))
               (cond
                 ((< order 0)
                   (aa-tree-node-insert! (aa-tree-node-left node) value compare))
