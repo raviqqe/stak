@@ -47,7 +47,7 @@
                (right-right (and right (aa-tree-node-right right))))
           (if (and
                right-right
-               (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
+               (eq? (aa-tree-node-level node) (aa-tree-node-level right-right)))
             (begin
               (aa-tree-node-set-right! tree (aa-tree-node-left right))
               (aa-tree-node-set-left! right tree)
