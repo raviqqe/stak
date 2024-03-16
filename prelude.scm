@@ -1150,11 +1150,13 @@
             (string->code-points y)))))
 
     (define (integer-list<? x y)
-      (or
-        (and
+      (and
+        (not (null? y))
+        (or
           (null? x)
-          (not (null? y)))
-        ()))
+          (<
+            (car x)
+            (car y)))))
 
     (define (string>? x y) (string<? y x))
 
