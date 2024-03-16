@@ -1131,16 +1131,7 @@
 
     (define substring string-copy)
 
-    (define string=?
-      (comparison-operator
-        (lambda (x y)
-          (and
-            (=
-              (string-length x)
-              (string-length y))
-            (equal?
-              (string->code-points x)
-              (string->code-points y))))))
+    (define string=? (comparison-operator equal?))
 
     (define string<?
       (comparison-operator
