@@ -166,7 +166,8 @@ Feature: String
       | a    | b     |
       | a    | aa    |
       | aa   | ab    |
-      | aab  | aab   |
+      | aa   | aaa   |
+      | aaa  | aab   |
 
   Scenario Outline: Check a string order inverse
     Given a file named "main.scm" with:
