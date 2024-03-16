@@ -44,7 +44,7 @@
                   (aa-tree-node-insert! (aa-tree-node-right node) value compare))
 
                 (else
-                  (aa-tree-set-root! foo))))))
+                  node)))))
         (make-aa-tree-node value 0 #f #f)))
 
     (define (aa-tree-node-skew! node)
