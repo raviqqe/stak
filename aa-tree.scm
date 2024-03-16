@@ -39,9 +39,18 @@
             (aa-tree-node-split!
               (aa-tree-node-skew!
                 (if (< order 0)
-                  (aa-tree-node-insert! (aa-tree-node-left node) value compare)
-
-                  (aa-tree-node-insert! (aa-tree-node-right node) value compare))))))
+                  (aa-tree-node-set-left!
+                    node
+                    (aa-tree-node-insert!
+                      (aa-tree-node-left node)
+                      value
+                      compare))
+                  (aa-tree-node-set-right!
+                    node
+                    (aa-tree-node-insert!
+                      (aa-tree-node-right node)
+                      value
+                      compare)))))))
         (make-aa-tree-node value 0 #f #f)))
 
     (define (aa-tree-node-skew! node)
