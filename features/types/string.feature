@@ -185,7 +185,6 @@ Feature: String
       | a    |       |
       | a    | a     |
       | b    | a     |
-      | a    | a     |
       | aa   | a     |
       | aa   | aa    |
       | ab   | aa    |
