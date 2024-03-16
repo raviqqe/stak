@@ -115,17 +115,17 @@ Feature: String
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (string=? "<left>" "<right>") 65 66))
+      (write-u8 (if (string=? "<value>" "<value>") 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
-      | left | right |
-      |      |       |
-      | a    | a     |
-      | ab   | ab    |
-      | abc  | abc   |
+      | value |
+      |       |
+      | a     |
+      | ab    |
+      | abc   |
 
   Scenario Outline: Check string inequality
     Given a file named "main.scm" with:
