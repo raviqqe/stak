@@ -109,3 +109,69 @@ Feature: String
       | abc   | 0     | 2   | ab     |
       | abc   | 1     | 3   | bc     |
       | abc   | 0     | 3   | abc    |
+
+  Scenario Outline: Check string equality
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (string=? "<left>" <right>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | left | right |
+      |      |       |
+      | a    | a     |
+      | ab   | ab    |
+      | abc  | abc   |
+
+  Scenario Outline: Check string inequality
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (string=? "<left>" <right>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+    Examples:
+      | left | right |
+      |      | a     |
+      | a    |       |
+      | a    | b     |
+      | a    | ab    |
+      | ab   | a     |
+      | ab   | ac    |
+      | ab   | abc   |
+      | abc  | ab    |
+      | abc  | abd   |
+
+  Scenario Outline: Check a string order
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (equal? (string=? "<value>" <start> <end>) "<output>") 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | value | start | end | output |
+      |       | 0     | 0   |        |
+      | a     | 0     | 0   |        |
+      | a     | 0     | 1   | a      |
+      | ab    | 0     | 0   |        |
+      | ab    | 0     | 1   | a      |
+      | ab    | 1     | 2   | b      |
+      | ab    | 0     | 2   | ab     |
+      | abc   | 0     | 0   |        |
+      | abc   | 0     | 1   | a      |
+      | abc   | 1     | 2   | b      |
+      | abc   | 2     | 3   | c      |
+      | abc   | 0     | 2   | ab     |
+      | abc   | 1     | 3   | bc     |
+      | abc   | 0     | 3   | abc    |
