@@ -1154,7 +1154,7 @@
         (and
           (null? x)
           (not (null? y)))
-        foo))
+        ()))
 
     (define (string>? x y) (string<? y x))
 
