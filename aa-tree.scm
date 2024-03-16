@@ -25,9 +25,12 @@
       (make-aa-tree #f compare))
 
     (define (aa-tree-insert! tree value)
-      (aa-tree-set-root! (aa-tree-node-insert! (aa-tree-root tree))))
+      (aa-tree-set-root!
+        (aa-tree-node-insert!
+          (aa-tree-root tree)
+          (aa-tree-compare tree))))
 
-    (define (aa-tree-node-insert! node value)
+    (define (aa-tree-node-insert! node value compare)
       (cond
         ((not node)
           (make-aa-tree-node value 0 #f #f))
