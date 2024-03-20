@@ -1568,7 +1568,9 @@
     aa-tree-empty
     aa-tree?
     aa-tree-find
-    aa-tree-insert!)
+    aa-tree-insert!
+    aa-tree->list
+    list->aa-tree)
 
   (import (scheme base))
 
