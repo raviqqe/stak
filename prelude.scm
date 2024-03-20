@@ -68,7 +68,6 @@
     $$-
     $$*
     $$/
-    $$read-u8
 
     apply
     data-rib
