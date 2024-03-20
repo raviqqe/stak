@@ -1559,14 +1559,11 @@
     (rib-set-car! $$rib #f)
 
     (define (string->symbol x)
-      (cond
-        ((aa-tree-find symbols x) =>
-          (lambda (x) x))
-
-        (else
-          (let ((x (string->uninterned-symbol x)))
-            (aa-tree-insert! symbols x)
-            x))))
+      (or
+        (aa-tree-find symbols x)
+        (let ((x (string->uninterned-symbol x)))
+          (aa-tree-insert! symbols x)
+          x)))
 
     ; Control
 
