@@ -154,8 +154,6 @@ Feature: AA tree
       """scheme
       (import (scheme base) (stak aa-tree))
 
-      (define tree (aa-tree-empty <))
-
       (write-u8 (if (equal? (aa-tree->list (list->-aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
     When I successfully run `scheme main.scm`
