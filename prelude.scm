@@ -1589,6 +1589,23 @@
     (define (aa-tree-empty less)
       (make-aa-tree #f less))
 
+    (define (aa-tree-find tree value)
+      (aa-node-find (aa-tree-root tree)))
+
+    (define (aa-node-find node value)
+      (and
+        node
+        (let ((node-value (aa-node-value node)))
+          (cond
+            ((less? value node-value)
+              (aa-node-find (aa-node-left node)))
+
+            ((less? node-value value)
+              (aa-node-find (aa-node-right node)))
+
+            (else
+              node-value)))))
+
     (define (aa-tree-insert! tree value)
       (aa-tree-set-root!
         tree
