@@ -33,7 +33,8 @@ This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS im
 ## Limitations
 
 - Numbers are 63-bit integers.
-- Some runtime errors are not raised.
+- Only ASCII characters are supported.
+- Certain runtime errors are not raised.
   - e.g. argument count and out-of-memory errors
 
 ## References
