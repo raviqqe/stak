@@ -5,7 +5,7 @@ Feature: AA tree
       """scheme
       (import (aa-tree))
 
-      (aa-tree-empty)
+      (aa-tree-empty <)
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
