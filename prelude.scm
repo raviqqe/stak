@@ -1599,10 +1599,10 @@
         (let ((node-value (aa-node-value node)))
           (cond
             ((less? value node-value)
-              (aa-node-find (aa-node-left node)))
+              (aa-node-find (aa-node-left node) value less?))
 
             ((less? node-value value)
-              (aa-node-find (aa-node-right node)))
+              (aa-node-find (aa-node-right node) value less?))
 
             (else
               node-value)))))

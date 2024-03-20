@@ -59,9 +59,13 @@ Feature: AA tree
 
       (aa-tree-insert! tree 2)
       (aa-tree-insert! tree 1)
+
+      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (= (aa-tree-find tree 2) 2) 65 66))
+      (write-u8 (if (= (aa-tree-find tree 3) 3) 65 66))
       """
     When I successfully run `scheme main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "AAB"
 
   @stak
   Scenario: Insert a value into a right of a tree
@@ -73,9 +77,13 @@ Feature: AA tree
 
       (aa-tree-insert! tree 1)
       (aa-tree-insert! tree 2)
+
+      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (= (aa-tree-find tree 2) 2) 65 66))
+      (write-u8 (if (= (aa-tree-find tree 3) 3) 65 66))
       """
     When I successfully run `scheme main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "A"
 
   @stak
   Scenario: Insert a value into the same node of a tree
@@ -87,6 +95,8 @@ Feature: AA tree
 
       (aa-tree-insert! tree 1)
       (aa-tree-insert! tree 1)
+
+      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
     When I successfully run `scheme main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "A"
