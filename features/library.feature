@@ -158,6 +158,33 @@ Feature: Library system
     Then the stdout should contain exactly "A"
 
   @stak @gauche
+  Scenario: Do not modify a library environment
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))
+
+          (define (bar x)
+            (foo x))))
+
+      (import (scheme base) (scheme write) (foo))
+
+      (set! foo (lambda (x) (write-u8 66)))
+
+      (foo 65)
+      (bar 65)
+      """
+    When I successfully run `scheme main.scm`
+    # spell-checker: disable-next-line
+    Then the stdout should contain exactly "AB"
+
+  @stak @gauche
   Scenario: Modify a library environment
     Given a file named "main.scm" with:
       """scheme
