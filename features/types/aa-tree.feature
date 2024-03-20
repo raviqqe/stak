@@ -3,7 +3,7 @@ Feature: AA tree
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (aa-tree))
+      (import (scheme base) (stak aa-tree))
 
       (aa-tree-empty <)
       """
