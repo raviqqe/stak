@@ -1617,6 +1617,14 @@
           value
           (aa-tree-less tree))))
 
+    (define (list->aa-tree xs compare)
+      (define tree (aa-tree-empty compare))
+      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
+      tree)
+
+    (define (aa-tree->list tree)
+      #f)
+
     (define (aa-node-insert! node value less?)
       (if node
         (let ((node-value (aa-node-value node)))
