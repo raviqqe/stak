@@ -1625,7 +1625,7 @@
     (define (aa-tree->list tree)
       (aa-node->list (aa-tree-root tree) '()))
 
-    (define (aa-node->list tree xs)
+    (define (aa-node->list node xs)
       (if node
         (aa-node->list
           (aa-node-left node)
