@@ -38,7 +38,10 @@ Feature: AA tree
       """scheme
       (import (scheme base) (stak aa-tree))
 
-      (aa-tree-insert! (aa-tree-insert! (aa-tree-empty <) 2) 1)
+      (define tree (aa-tree-empty <))
+
+      (aa-tree-insert! tree 2)
+      (aa-tree-insert! tree 1)
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
@@ -49,7 +52,10 @@ Feature: AA tree
       """scheme
       (import (scheme base) (stak aa-tree))
 
-      (aa-tree-insert! (aa-tree-insert! (aa-tree-empty <) 2) 3)
+      (define tree (aa-tree-empty <))
+
+      (aa-tree-insert! tree 1)
+      (aa-tree-insert! tree 2)
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
@@ -60,7 +66,10 @@ Feature: AA tree
       """scheme
       (import (scheme base) (stak aa-tree))
 
-      (aa-tree-insert! (aa-tree-insert! (aa-tree-empty <) 1) 1)
+      (define tree (aa-tree-empty <))
+
+      (aa-tree-insert! tree 1)
+      (aa-tree-insert! tree 1)
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
