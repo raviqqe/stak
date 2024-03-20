@@ -1,6 +1,6 @@
 ; Libraries
 
-(define-library (scheme base)
+(define-library (stak base)
   (export
     define-syntax
     syntax-rules
@@ -21,9 +21,6 @@
     let*
     letrec
     letrec*
-    define-values
-    let-values
-    let*-values
     if
     cond
     case
@@ -68,7 +65,6 @@
     $$-
     $$*
     $$/
-    $$read-u8
 
     apply
     data-rib
@@ -190,64 +186,11 @@
     tuple?
     tuple-values
 
+    define-values
+    let-values
+    let*-values
     values
-    call-with-values
-
-    call/cc
-
-    make-point
-    point?
-    point-depth
-    point-before
-    point-after
-    point-parent
-    current-point
-    set-current-point!
-
-    dynamic-wind
-    travel-to-point!
-
-    make-parameter
-    parameterize
-
-    error-object?
-    error-object-message
-    error-object-irritants
-    with-exception-handler
-    raise
-    raise-continuable
-    error
-    read-error
-    file-error
-    read-error?
-    file-error?
-    guard
-
-    unwind
-
-    eof-object
-    eof-object?
-
-    port?
-    port-descriptor
-    port-last-byte
-    port-set-last-byte!
-    current-input-port
-    current-output-port
-    current-error-port
-
-    read-u8
-    peek-u8
-    read-char
-    peek-char
-
-    write-u8
-    write-char
-    write-string
-    write-bytevector
-    newline
-
-    write-value)
+    call-with-values)
 
   (begin
     ; Syntax
@@ -476,84 +419,6 @@
             body1
             body2
             ...))))
-
-    (define-syntax define-values
-      (syntax-rules ()
-        ((_ () value)
-          value)
-
-        ((_ (name) value)
-          (define name (call-with-values (lambda () value) (lambda (x) x))))
-
-        ((_ (name1 name2 ... last-name) value)
-          (begin
-            (define name1 (call-with-values (lambda () value) list))
-            (define name2
-              (let ((x (cadr name1)))
-                (set-cdr! name1 (cddr name1))
-                x))
-            ...
-            (define last-name
-              (let ((x (cadr name1)))
-                (set! name1 (car name1))
-                x))))
-
-        ((_ (name1 name2 ... . last-name) value)
-          (begin
-            (define name1 (call-with-values (lambda () value) list))
-            (define name2
-              (let ((x (cadr name1)))
-                (set-cdr! name1 (cddr name1))
-                x))
-            ...
-            (define last-name
-              (let ((x (cdr name1)))
-                (set! name1 (car name1))
-                x))))
-
-        ((_ name value)
-          (define name (call-with-values (lambda () value) list)))))
-
-    (define-syntax let-values
-      (syntax-rules ()
-        ((_ (binding ...) body1 body2 ...)
-          (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
-
-        ((_ "multiple" () singles body)
-          (let singles body))
-
-        ((_ "multiple" ((names value) binding ...) singles body)
-          (let-values "single" names value () (binding ...) singles body))
-
-        ((_ "single" () value arguments bindings singles body)
-          (call-with-values
-            (lambda () value)
-            (lambda arguments
-              (let-values "multiple" bindings singles body))))
-
-        ((_ "single" (name . names) value (argument ...) bindings (single ...) body)
-          (let-values "single"
-            names
-            value
-            (argument ... x)
-            bindings
-            (single ... (name x))
-            body))
-
-        ((_ "single" name value (argument ...) bindings (single ...) body)
-          (call-with-values
-            (lambda () value)
-            (lambda (argument ... . x)
-              (let-values "multiple" bindings (single ... (name x)) body))))))
-
-    (define-syntax let*-values
-      (syntax-rules ()
-        ((_ () body1 body2 ...)
-          (let () body1 body2 ...))
-
-        ((_ (binding1 binding2 ...) body1 body2 ...)
-          (let-values (binding1)
-            (let*-values (binding2 ...) body1 body2 ...)))))
 
     ;; Conditional
 
@@ -1244,6 +1109,84 @@
 
     ;; Multi-value
 
+    (define-syntax define-values
+      (syntax-rules ()
+        ((_ () value)
+          value)
+
+        ((_ (name) value)
+          (define name (call-with-values (lambda () value) (lambda (x) x))))
+
+        ((_ (name1 name2 ... last-name) value)
+          (begin
+            (define name1 (call-with-values (lambda () value) list))
+            (define name2
+              (let ((x (cadr name1)))
+                (set-cdr! name1 (cddr name1))
+                x))
+            ...
+            (define last-name
+              (let ((x (cadr name1)))
+                (set! name1 (car name1))
+                x))))
+
+        ((_ (name1 name2 ... . last-name) value)
+          (begin
+            (define name1 (call-with-values (lambda () value) list))
+            (define name2
+              (let ((x (cadr name1)))
+                (set-cdr! name1 (cddr name1))
+                x))
+            ...
+            (define last-name
+              (let ((x (cdr name1)))
+                (set! name1 (car name1))
+                x))))
+
+        ((_ name value)
+          (define name (call-with-values (lambda () value) list)))))
+
+    (define-syntax let-values
+      (syntax-rules ()
+        ((_ (binding ...) body1 body2 ...)
+          (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
+
+        ((_ "multiple" () singles body)
+          (let singles body))
+
+        ((_ "multiple" ((names value) binding ...) singles body)
+          (let-values "single" names value () (binding ...) singles body))
+
+        ((_ "single" () value arguments bindings singles body)
+          (call-with-values
+            (lambda () value)
+            (lambda arguments
+              (let-values "multiple" bindings singles body))))
+
+        ((_ "single" (name . names) value (argument ...) bindings (single ...) body)
+          (let-values "single"
+            names
+            value
+            (argument ... x)
+            bindings
+            (single ... (name x))
+            body))
+
+        ((_ "single" name value (argument ...) bindings (single ...) body)
+          (call-with-values
+            (lambda () value)
+            (lambda (argument ... . x)
+              (let-values "multiple" bindings (single ... (name x)) body))))))
+
+    (define-syntax let*-values
+      (syntax-rules ()
+        ((_ () body1 body2 ...)
+          (let () body1 body2 ...))
+
+        ((_ (binding1 binding2 ...) body1 body2 ...)
+          (let-values (binding1)
+            (let*-values (binding2 ...) body1 body2 ...)))))
+
     (define (values . xs)
       (make-tuple xs))
 
@@ -1251,7 +1194,379 @@
       (let ((xs (producer)))
         (if (tuple? xs)
           (apply consumer (tuple-values xs))
-          (consumer xs))))
+          (consumer xs))))))
+
+(define-library (stak aa-tree)
+  (export
+    aa-tree-empty
+    aa-tree?
+    aa-tree-find
+    aa-tree-insert!
+    aa-tree->list
+    list->aa-tree)
+
+  (import (stak base))
+
+  (begin
+    (define-record-type aa-tree
+      (make-aa-tree root less)
+      aa-tree?
+      (root aa-tree-root aa-tree-set-root!)
+      (less aa-tree-less aa-tree-set-less!))
+
+    (define-record-type aa-node
+      (make-aa-node value level left right)
+      aa-node?
+      (value aa-node-value aa-node-set-value!)
+      (level aa-node-level aa-node-set-level!)
+      (left aa-node-left aa-node-set-left!)
+      (right aa-node-right aa-node-set-right!))
+
+    (define (aa-tree-empty less)
+      (make-aa-tree #f less))
+
+    (define (aa-tree-find tree value)
+      (aa-node-find (aa-tree-root tree) value (aa-tree-less tree)))
+
+    (define (aa-node-find node value less?)
+      (and
+        node
+        (let ((node-value (aa-node-value node)))
+          (cond
+            ((less? value node-value)
+              (aa-node-find (aa-node-left node) value less?))
+
+            ((less? node-value value)
+              (aa-node-find (aa-node-right node) value less?))
+
+            (else
+              node-value)))))
+
+    (define (aa-tree-insert! tree value)
+      (aa-tree-set-root!
+        tree
+        (aa-node-insert!
+          (aa-tree-root tree)
+          value
+          (aa-tree-less tree))))
+
+    (define (list->aa-tree xs less?)
+      (define tree (aa-tree-empty less?))
+      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
+      tree)
+
+    (define (aa-tree->list tree)
+      (aa-node->list (aa-tree-root tree) '()))
+
+    (define (aa-node->list node xs)
+      (if node
+        (aa-node->list
+          (aa-node-left node)
+          (cons
+            (aa-node-value node)
+            (aa-node->list (aa-node-right node) xs)))
+        xs))
+
+    (define (aa-node-insert! node value less?)
+      (if node
+        (let ((node-value (aa-node-value node)))
+          (cond
+            ((less? value node-value)
+              (aa-node-set-left!
+                node
+                (aa-node-insert! (aa-node-left node) value less?))
+              (aa-node-balance! node))
+
+            ((less? node-value value)
+              (aa-node-set-right!
+                node
+                (aa-node-insert! (aa-node-right node) value less?))
+              (aa-node-balance! node))
+
+            (else
+              node)))
+        (make-aa-node value 0 #f #f)))
+
+    (define (aa-node-balance! node)
+      (aa-node-split! (aa-node-skew! node)))
+
+    (define (aa-node-skew! node)
+      (let ((left (and node (aa-node-left node))))
+        (if (and
+             left
+             (= (aa-node-level node) (aa-node-level left)))
+          (begin
+            (aa-node-set-left! node (aa-node-right left))
+            (aa-node-set-right! left node)
+            left)
+          node)))
+
+    (define (aa-node-split! node)
+      (let* ((right (and node (aa-node-right node)))
+             (right-right (and right (aa-node-right right))))
+        (if (and
+             right-right
+             (= (aa-node-level node) (aa-node-level right-right)))
+          (begin
+            (aa-node-set-right! node (aa-node-left right))
+            (aa-node-set-left! right node)
+            (aa-node-set-level! right (+ (aa-node-level right) 1))
+            right)
+          node)))))
+
+(define-library (scheme base)
+  (export
+    define-syntax
+    syntax-rules
+    _
+    ...
+    define
+    lambda
+    let-syntax
+    letrec-syntax
+    begin
+    quasiquote
+    unquote
+    unquote-splicing
+    quote
+    set!
+    cond-expand
+    let
+    let*
+    letrec
+    letrec*
+    define-values
+    let-values
+    let*-values
+    if
+    cond
+    case
+    else
+    =>
+    and
+    or
+    when
+    unless
+
+    base
+    cxr
+    library
+    r7rs
+    scheme
+    stak
+
+    pair-type
+    null-type
+    boolean-type
+    procedure-type
+    symbol-type
+    string-type
+    char-type
+    vector-type
+    bytevector-type
+    record-type
+
+    rib
+    cons
+    close
+    rib?
+    rib-car
+    rib-cdr
+    rib-type
+    rib-tag
+    rib-set-car!
+    rib-set-cdr!
+    eq?
+    $$<
+    $$+
+    $$-
+    $$*
+    $$/
+    $$read-u8
+
+    apply
+    data-rib
+
+    instance?
+    eqv?
+    equal?
+
+    procedure?
+
+    boolean?
+    not
+
+    integer?
+    rational?
+    real?
+    complex?
+    number?
+    exact?
+    inexact?
+    zero?
+    positive?
+    negative?
+    +
+    -
+    *
+    quotient
+    /
+    modulo
+    =
+    <
+    >
+    <=
+    >=
+    abs
+
+    char?
+    integer->char
+    char->integer
+    char-whitespace?
+    char=?
+    char<?
+    char<=?
+    char>?
+    char>=?
+
+    null?
+    pair?
+    list?
+    car
+    cdr
+    set-car!
+    set-cdr!
+    caar
+    cadr
+    cdar
+    cddr
+    list
+    make-list
+    length
+    map
+    for-each
+    list-ref
+    list-set!
+    list-tail
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    append
+    reverse
+    fold-left
+    fold-right
+    reduce-right
+    list-position
+    memv-position
+    list-copy
+
+    bytevector?
+    bytevector-length
+    bytevector-u8-ref
+    list->bytevector
+    bytevector->list
+
+    vector?
+    vector
+    make-vector
+    vector-length
+    vector-ref
+    vector-set!
+    list->vector
+    vector->list
+
+    string?
+    list->string
+    string->list
+    string-append
+    string-length
+    string-ref
+    number->string
+    string->number
+    string-copy
+    substring
+    string=?
+    string<?
+    string>?
+
+    symbol?
+    symbol->string
+    string->uninterned-symbol
+    string->symbol
+
+    define-record-type
+    record?
+
+    make-tuple
+    tuple?
+    tuple-values
+
+    values
+    call-with-values
+
+    call/cc
+
+    make-point
+    point?
+    point-depth
+    point-before
+    point-after
+    point-parent
+    current-point
+    set-current-point!
+
+    dynamic-wind
+    travel-to-point!
+
+    make-parameter
+    parameterize
+
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    error
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
+    eof-object
+    eof-object?
+
+    port?
+    port-descriptor
+    port-last-byte
+    port-set-last-byte!
+    current-input-port
+    current-output-port
+    current-error-port
+
+    read-u8
+    peek-u8
+    read-char
+    peek-char
+
+    write-u8
+    write-char
+    write-string
+    write-bytevector
+    newline
+
+    write-value)
+
+  (import (stak base))
+
+  (begin
+    ; Control
 
     ;; Continuation
 
@@ -1562,124 +1877,6 @@
     ; Dummy implementation
     (define (write-value value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
-
-(define-library (stak aa-tree)
-  (export
-    aa-tree-empty
-    aa-tree?
-    aa-tree-find
-    aa-tree-insert!
-    aa-tree->list
-    list->aa-tree)
-
-  (import (scheme base))
-
-  (begin
-    (define-record-type aa-tree
-      (make-aa-tree root less)
-      aa-tree?
-      (root aa-tree-root aa-tree-set-root!)
-      (less aa-tree-less aa-tree-set-less!))
-
-    (define-record-type aa-node
-      (make-aa-node value level left right)
-      aa-node?
-      (value aa-node-value aa-node-set-value!)
-      (level aa-node-level aa-node-set-level!)
-      (left aa-node-left aa-node-set-left!)
-      (right aa-node-right aa-node-set-right!))
-
-    (define (aa-tree-empty less)
-      (make-aa-tree #f less))
-
-    (define (aa-tree-find tree value)
-      (aa-node-find (aa-tree-root tree) value (aa-tree-less tree)))
-
-    (define (aa-node-find node value less?)
-      (and
-        node
-        (let ((node-value (aa-node-value node)))
-          (cond
-            ((less? value node-value)
-              (aa-node-find (aa-node-left node) value less?))
-
-            ((less? node-value value)
-              (aa-node-find (aa-node-right node) value less?))
-
-            (else
-              node-value)))))
-
-    (define (aa-tree-insert! tree value)
-      (aa-tree-set-root!
-        tree
-        (aa-node-insert!
-          (aa-tree-root tree)
-          value
-          (aa-tree-less tree))))
-
-    (define (list->aa-tree xs less?)
-      (define tree (aa-tree-empty less?))
-      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
-      tree)
-
-    (define (aa-tree->list tree)
-      (aa-node->list (aa-tree-root tree) '()))
-
-    (define (aa-node->list node xs)
-      (if node
-        (aa-node->list
-          (aa-node-left node)
-          (cons
-            (aa-node-value node)
-            (aa-node->list (aa-node-right node) xs)))
-        xs))
-
-    (define (aa-node-insert! node value less?)
-      (if node
-        (let ((node-value (aa-node-value node)))
-          (cond
-            ((less? value node-value)
-              (aa-node-set-left!
-                node
-                (aa-node-insert! (aa-node-left node) value less?))
-              (aa-node-balance! node))
-
-            ((less? node-value value)
-              (aa-node-set-right!
-                node
-                (aa-node-insert! (aa-node-right node) value less?))
-              (aa-node-balance! node))
-
-            (else
-              node)))
-        (make-aa-node value 0 #f #f)))
-
-    (define (aa-node-balance! node)
-      (aa-node-split! (aa-node-skew! node)))
-
-    (define (aa-node-skew! node)
-      (let ((left (and node (aa-node-left node))))
-        (if (and
-             left
-             (= (aa-node-level node) (aa-node-level left)))
-          (begin
-            (aa-node-set-left! node (aa-node-right left))
-            (aa-node-set-right! left node)
-            left)
-          node)))
-
-    (define (aa-node-split! node)
-      (let* ((right (and node (aa-node-right node)))
-             (right-right (and right (aa-node-right right))))
-        (if (and
-             right-right
-             (= (aa-node-level node) (aa-node-level right-right)))
-          (begin
-            (aa-node-set-right! node (aa-node-left right))
-            (aa-node-set-left! right node)
-            (aa-node-set-level! right (+ (aa-node-level right) 1))
-            right)
-          node)))))
 
 (define-library (scheme cxr)
   (import (scheme base))

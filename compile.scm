@@ -487,7 +487,7 @@
   (map
     (lambda (x)
       (cons
-        ; `0` is always the library ID of `(scheme base)`.
+        ; `0` is always the library ID of `(stak base)`.
         (symbol->string (build-library-symbol 0 x))
         (symbol-append '$$ x)))
     '(+ - * / <)))

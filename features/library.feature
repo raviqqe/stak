@@ -138,6 +138,31 @@ Feature: Library system
     Then the stdout should contain exactly "A"
 
   @stak @gauche
+  Scenario: Export an imported function
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+
+      (define-library (bar)
+        (export foo)
+
+        (import (foo)))
+
+      (import (bar))
+
+      (foo 65)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @stak @gauche
   Scenario: Export a renamed function
     Given a file named "main.scm" with:
       """scheme
@@ -156,6 +181,32 @@ Feature: Library system
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @stak @gauche
+  Scenario: Do not modify a library environment
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))
+
+          (define (bar x)
+            (foo x))))
+
+      (import (scheme base) (scheme write) (foo))
+
+      (define (foo x) (write-u8 66))
+
+      (foo 65)
+      (bar 65)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "BA"
 
   @stak @gauche
   Scenario: Modify a library environment
