@@ -46,7 +46,7 @@
                   value
                   less-than)))
 
-            ((less-than value node-value)
+            ((less-than node-value value)
               (aa-node-set-right!
                 node
                 (aa-node-insert!
