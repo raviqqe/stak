@@ -8,73 +8,76 @@
 
   (begin
     (define-record-type aa-tree
-      (make-aa-tree root compare)
+      (make-aa-tree root less-than)
       aa-tree?
       (root aa-tree-root aa-tree-set-root!)
-      (compare aa-tree-compare aa-tree-set-compare!))
+      (less-than aa-tree-less-than aa-tree-set-less-than!))
 
-    (define-record-type aa-tree-node
-      (make-aa-tree-node value level left right)
-      aa-tree-node?
-      (value aa-tree-node-value aa-tree-node-set-value!)
-      (level aa-tree-node-level aa-tree-node-set-level!)
-      (left aa-tree-node-left aa-tree-node-set-left!)
-      (right aa-tree-node-right aa-tree-node-set-right!))
+    (define-record-type aa-node
+      (make-aa-node value level left right)
+      aa-node?
+      (value aa-node-value aa-node-set-value!)
+      (level aa-node-level aa-node-set-level!)
+      (left aa-node-left aa-node-set-left!)
+      (right aa-node-right aa-node-set-right!))
 
-    (define (aa-tree-empty compare)
-      (make-aa-tree #f compare))
+    (define (aa-tree-empty less-than)
+      (make-aa-tree #f less-than))
 
     (define (aa-tree-insert! tree value)
       (aa-tree-set-root!
-        (aa-tree-node-insert!
+        (aa-node-insert!
           (aa-tree-root tree)
           value
-          (aa-tree-compare tree))))
+          (aa-tree-less-than tree))))
 
-    (define (aa-tree-node-insert! node value compare)
+    (define (aa-node-blance node)
+      (aa-node-split! (aa-node-skew! node)))
+
+    (define (aa-node-insert! node value less-than)
       (if node
-        (let ((order (compare value (aa-tree-node-value node))))
-          (if (= order 0)
-            node
-            (begin
-              (if (< order 0)
-                (aa-tree-node-set-left!
-                  node
-                  (aa-tree-node-insert!
-                    (aa-tree-node-left node)
-                    value
-                    compare))
-                (aa-tree-node-set-right!
-                  node
-                  (aa-tree-node-insert!
-                    (aa-tree-node-right node)
-                    value
-                    compare)))
-              (aa-tree-node-split!
-                (aa-tree-node-skew!
-                  node)))))
-        (make-aa-tree-node value 0 #f #f)))
+        (let ((node-value ((aa-node-value node))))
+          (cond
+            ((less-than value node-value)
+              (aa-node-set-left!
+                node
+                (aa-node-insert!
+                  (aa-node-left node)
+                  value
+                  less-than)))
 
-    (define (aa-tree-node-skew! node)
-      (let ((left (and node (aa-tree-node-left node))))
+            ((less-than value node-value)
+              (aa-node-set-right!
+                node
+                (aa-node-insert!
+                  (aa-node-right node)
+                  value
+                  less-than)))
+
+            (else
+              node)))
+        (make-aa-node value 0 #f #f)))
+
+    (define (aa-node-skew! node)
+      (let ((left (and node (aa-node-left node))))
         (if (and
              left
-             (eq? (aa-tree-node-level node) (aa-tree-node-level left)))
+             (eq? (aa-node-level node) (aa-node-level left)))
           (begin
-            (aa-tree-node-set-left! tree (aa-tree-node-right left))
-            (aa-tree-node-set-right! left tree)
+            (aa-node-set-left! tree (aa-node-right left))
+            (aa-node-set-right! left tree)
             left)
           node)))
 
-    (define (aa-tree-node-split! node)
-      (let* ((right (and node (aa-tree-node-right node)))
-             (right-right (and right (aa-tree-node-right right))))
+    (define (aa-node-split! node)
+      (let* ((right (and node (aa-node-right node)))
+             (right-right (and right (aa-node-right right))))
         (if (and
              right-right
-             (eq? (aa-tree-node-level node) (aa-tree-node-level right-right)))
+             (eq? (aa-node-level node) (aa-node-level right-right)))
           (begin
-            (aa-tree-node-set-right! tree (aa-tree-node-left right))
-            (aa-tree-node-set-left! right tree)
-            (aa-tree-node-set-level! right (+ (aa-tree-node-level right) 1))
+            (aa-node-set-right! tree (aa-node-left right))
+            (aa-node-set-left! right tree)
+            (aa-node-set-level! right (+ (aa-node-level right) 1))
             right)
           node)))))
