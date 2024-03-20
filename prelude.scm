@@ -177,7 +177,6 @@
     symbol?
     symbol->string
     string->uninterned-symbol
-    string->symbol
 
     define-record-type
     record?
@@ -1029,20 +1028,6 @@
     (define (string->uninterned-symbol x)
       (data-rib symbol-type x #f))
 
-    (define symbols (rib-car $$rib))
-    ; Allow garbage collection for a symbol table.
-    (rib-set-car! $$rib #f)
-
-    (define (string->symbol x)
-      (cond
-        ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
-          car)
-
-        (else
-          (let ((x (string->uninterned-symbol x)))
-            (set! symbols (cons x symbols))
-            x))))
-
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
@@ -1566,6 +1551,20 @@
   (import (stak base))
 
   (begin
+    (define symbols (rib-car $$rib))
+    ; Allow garbage collection for a symbol table.
+    (rib-set-car! $$rib #f)
+
+    (define (string->symbol x)
+      (cond
+        ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
+          car)
+
+        (else
+          (let ((x (string->uninterned-symbol x)))
+            (set! symbols (cons x symbols))
+            x))))
+
     ; Control
 
     ;; Continuation
