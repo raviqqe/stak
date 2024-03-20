@@ -31,7 +31,7 @@
           value
           (aa-tree-less-than tree))))
 
-    (define (aa-node-balance node)
+    (define (aa-node-balance! node)
       (aa-node-split! (aa-node-skew! node)))
 
     (define (aa-node-insert! node value less-than)
@@ -39,7 +39,7 @@
         (let ((node-value ((aa-node-value node))))
           (cond
             ((less-than value node-value)
-              (aa-node-balance
+              (aa-node-balance!
                 (aa-node-set-left!
                   node
                   (aa-node-insert!
@@ -48,7 +48,7 @@
                     less-than))))
 
             ((less-than node-value value)
-              (aa-node-balance
+              (aa-node-balance!
                 (aa-node-set-right!
                   node
                   (aa-node-insert!
