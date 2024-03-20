@@ -83,7 +83,7 @@ Feature: AA tree
       (write-u8 (if (= (aa-tree-find tree 3) 3) 65 66))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "AAB"
 
   @stak
   Scenario: Insert a value into the same node of a tree
