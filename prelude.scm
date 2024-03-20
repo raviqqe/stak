@@ -1642,7 +1642,7 @@
       (let ((left (and node (aa-node-left node))))
         (if (and
              left
-             (eq? (aa-node-level node) (aa-node-level left)))
+             (= (aa-node-level node) (aa-node-level left)))
           (begin
             (aa-node-set-left! node (aa-node-right left))
             (aa-node-set-right! left node)
@@ -1654,7 +1654,7 @@
              (right-right (and right (aa-node-right right))))
         (if (and
              right-right
-             (eq? (aa-node-level node) (aa-node-level right-right)))
+             (= (aa-node-level node) (aa-node-level right-right)))
           (begin
             (aa-node-set-right! node (aa-node-left right))
             (aa-node-set-left! right node)
