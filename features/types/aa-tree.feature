@@ -126,6 +126,7 @@ Feature: AA tree
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "<output>"
 
+    # spell-checker: disable
     Examples:
       | values  | output       |
       | 1 2 3   | BABABAAAA    |
