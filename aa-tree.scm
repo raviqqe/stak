@@ -31,7 +31,7 @@
           value
           (aa-tree-less-than tree))))
 
-    (define (aa-node-blance node)
+    (define (aa-node-balance node)
       (aa-node-split! (aa-node-skew! node)))
 
     (define (aa-node-insert! node value less-than)
