@@ -1615,9 +1615,6 @@
           value
           (aa-tree-less tree))))
 
-    (define (aa-node-balance! node)
-      (aa-node-split! (aa-node-skew! node)))
-
     (define (aa-node-insert! node value less?)
       (if node
         (let ((node-value (aa-node-value node)))
@@ -1638,14 +1635,17 @@
               node)))
         (make-aa-node value 0 #f #f)))
 
+    (define (aa-node-balance! node)
+      (aa-node-split! (aa-node-skew! node)))
+
     (define (aa-node-skew! node)
       (let ((left (and node (aa-node-left node))))
         (if (and
              left
              (eq? (aa-node-level node) (aa-node-level left)))
           (begin
-            (aa-node-set-left! tree (aa-node-right left))
-            (aa-node-set-right! left tree)
+            (aa-node-set-left! node (aa-node-right left))
+            (aa-node-set-right! left node)
             left)
           node)))
 
@@ -1656,8 +1656,8 @@
              right-right
              (eq? (aa-node-level node) (aa-node-level right-right)))
           (begin
-            (aa-node-set-right! tree (aa-node-left right))
-            (aa-node-set-left! right tree)
+            (aa-node-set-right! node (aa-node-left right))
+            (aa-node-set-left! right node)
             (aa-node-set-level! right (+ (aa-node-level right) 1))
             right)
           node)))))
