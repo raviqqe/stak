@@ -1617,7 +1617,7 @@
           value
           (aa-tree-less tree))))
 
-    (define (list->aa-tree xs compare)
+    (define (list->aa-tree compare xs)
       (define tree (aa-tree-empty compare))
       (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
       tree)
