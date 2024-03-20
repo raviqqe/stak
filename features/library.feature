@@ -175,14 +175,14 @@ Feature: Library system
 
       (import (scheme base) (scheme write) (foo))
 
-      (set! foo (lambda (x) (write-u8 66)))
+      (define (foo x) (write-u8 66))
 
       (foo 65)
       (bar 65)
       """
     When I successfully run `scheme main.scm`
     # spell-checker: disable-next-line
-    Then the stdout should contain exactly "AB"
+    Then the stdout should contain exactly "BA"
 
   @stak @gauche
   Scenario: Modify a library environment
