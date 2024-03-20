@@ -1570,7 +1570,7 @@
     aa-tree-find
     aa-tree-insert!)
 
-  (import (scheme base) (scheme write))
+  (import (scheme base))
 
   (begin
     (define-record-type aa-tree
@@ -1623,22 +1623,22 @@
         (let ((node-value (aa-node-value node)))
           (cond
             ((less? value node-value)
-              (aa-node-balance!
-                (aa-node-set-left!
-                  node
-                  (aa-node-insert!
-                    (aa-node-left node)
-                    value
-                    less?))))
+              (aa-node-set-left!
+                node
+                (aa-node-insert!
+                  (aa-node-left node)
+                  value
+                  less?))
+              (aa-node-balance! node))
 
             ((less? node-value value)
-              (aa-node-balance!
-                (aa-node-set-right!
-                  node
-                  (aa-node-insert!
-                    (aa-node-right node)
-                    value
-                    less?))))
+              (aa-node-set-right!
+                node
+                (aa-node-insert!
+                  (aa-node-right node)
+                  value
+                  less?))
+              (aa-node-balance! node))
 
             (else
               node)))
