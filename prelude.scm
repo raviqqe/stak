@@ -1548,7 +1548,7 @@
 
     write-value)
 
-  (import (stak base))
+  (import (stak base) (stak aa-tree))
 
   (begin
     (define symbols (rib-car $$rib))
