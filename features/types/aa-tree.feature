@@ -127,10 +127,22 @@ Feature: AA tree
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | values | output    |
-      | 1 2 3  | BABABAAAA |
-      | 1 3 2  | BABABAAAA |
-      | 2 1 3  | BABABAAAA |
-      | 2 3 1  | BABABAAAA |
-      | 3 1 2  | BABABAAAA |
-      | 3 2 1  | BABABAAAA |
+      | values  | output       |
+      | 1 2 3   | BABABAAAA    |
+      | 1 3 2   | BABABAAAA    |
+      | 2 1 3   | BABABAAAA    |
+      | 2 3 1   | BABABAAAA    |
+      | 3 1 2   | BABABAAAA    |
+      | 3 2 1   | BABABAAAA    |
+      | 1 2 3 4 | BABABBAAAAAA |
+      | 1 2 4 3 | BABABBAAAAAA |
+      | 1 3 2 4 | BABABBAAAAAA |
+      | 1 3 4 2 | BABABBAAAAAA |
+      | 1 4 2 3 | BABABBAAAAAA |
+      | 1 4 3 2 | BABABBAAAAAA |
+      | 2 1 3 4 | BABABBAAAAAA |
+      | 2 1 4 3 | BABABBAAAAAA |
+      | 2 3 1 4 | BABABBAAAAAA |
+      | 2 3 4 1 | BABABBAAAAAA |
+      | 2 4 1 3 | BABABBAAAAAA |
+      | 2 4 3 1 | BABABBAAAAAA |
