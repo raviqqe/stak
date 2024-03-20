@@ -1568,7 +1568,9 @@
     aa-tree-empty
     aa-tree?
     aa-tree-find
-    aa-tree-insert!)
+    aa-tree-insert!
+    aa-tree->list
+    list->aa-tree)
 
   (import (scheme base))
 
@@ -1614,6 +1616,23 @@
           (aa-tree-root tree)
           value
           (aa-tree-less tree))))
+
+    (define (list->aa-tree xs less?)
+      (define tree (aa-tree-empty less?))
+      (for-each (lambda (x) (aa-tree-insert! tree x)) xs)
+      tree)
+
+    (define (aa-tree->list tree)
+      (aa-node->list (aa-tree-root tree) '()))
+
+    (define (aa-node->list node xs)
+      (if node
+        (aa-node->list
+          (aa-node-left node)
+          (cons
+            (aa-node-value node)
+            (aa-node->list (aa-node-right node) xs)))
+        xs))
 
     (define (aa-node-insert! node value less?)
       (if node

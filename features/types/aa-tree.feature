@@ -147,3 +147,40 @@ Feature: AA tree
       | 2 3 4 1 | BABABABAAAAA |
       | 2 4 1 3 | BABABABAAAAA |
       | 2 4 3 1 | BABABABAAAAA |
+
+  @stak
+  Scenario Outline: Convert a list into a tree
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    # spell-checker: disable
+    Examples:
+      | values  | output  |
+      |         |         |
+      | 1       | 1       |
+      | 1 2     | 1 2     |
+      | 2 1     | 1 2     |
+      | 1 2 3   | 1 2 3   |
+      | 1 3 2   | 1 2 3   |
+      | 2 1 3   | 1 2 3   |
+      | 2 3 1   | 1 2 3   |
+      | 3 1 2   | 1 2 3   |
+      | 3 2 1   | 1 2 3   |
+      | 1 2 3 4 | 1 2 3 4 |
+      | 1 2 4 3 | 1 2 3 4 |
+      | 1 3 2 4 | 1 2 3 4 |
+      | 1 3 4 2 | 1 2 3 4 |
+      | 1 4 2 3 | 1 2 3 4 |
+      | 1 4 3 2 | 1 2 3 4 |
+      | 2 1 3 4 | 1 2 3 4 |
+      | 2 1 4 3 | 1 2 3 4 |
+      | 2 3 1 4 | 1 2 3 4 |
+      | 2 3 4 1 | 1 2 3 4 |
+      | 2 4 1 3 | 1 2 3 4 |
+      | 2 4 3 1 | 1 2 3 4 |
