@@ -1551,18 +1551,21 @@
   (import (stak base) (stak aa-tree))
 
   (begin
-    (define symbols (rib-car $$rib))
+    (define symbols
+      (list->aa-tree
+        (rib-car $$rib)
+        (lambda (x y) (string<? (symbol->string x) (symbol->string y)))))
     ; Allow garbage collection for a symbol table.
     (rib-set-car! $$rib #f)
 
     (define (string->symbol x)
       (cond
-        ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
-          car)
+        ((aa-tree-find symbols x) =>
+          (lambda (x) x))
 
         (else
           (let ((x (string->uninterned-symbol x)))
-            (set! symbols (cons x symbols))
+            (aa-tree-insert! symbols x)
             x))))
 
     ; Control
