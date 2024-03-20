@@ -1567,6 +1567,7 @@
   (export
     aa-tree-empty
     aa-tree?
+    aa-tree-find
     aa-tree-insert!)
 
   (import (scheme base) (scheme write))
@@ -1590,9 +1591,9 @@
       (make-aa-tree #f less))
 
     (define (aa-tree-find tree value)
-      (aa-node-find (aa-tree-root tree)))
+      (aa-node-find (aa-tree-root tree) value (aa-tree-less tree)))
 
-    (define (aa-node-find node value)
+    (define (aa-node-find node value less?)
       (and
         node
         (let ((node-value (aa-node-value node)))

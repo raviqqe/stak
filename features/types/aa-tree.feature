@@ -22,15 +22,32 @@ Feature: AA tree
     Then the stdout should contain exactly "A"
 
   @stak
+  Scenario: Find no value
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (define tree (aa-tree-empty <))
+
+      (write-u8 (if (aa-tree-find tree 1) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  @stak
   Scenario: Insert a value into a tree
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (stak aa-tree))
 
-      (aa-tree-insert! (aa-tree-empty <) 1)
+      (define tree (aa-tree-empty <))
+
+      (aa-tree-insert! tree 1)
+
+      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
     When I successfully run `scheme main.scm`
-    Then the exit status should be 0
+    Then the stdout should contain exactly "A"
 
   @stak
   Scenario: Insert a value into a left of a tree
