@@ -60,9 +60,10 @@ Feature: AA tree
       (aa-tree-insert! tree 2)
       (aa-tree-insert! tree 1)
 
-      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
-      (write-u8 (if (= (aa-tree-find tree 2) 2) 65 66))
-      (write-u8 (if (= (aa-tree-find tree 3) 3) 65 66))
+      (for-each
+        (lambda (x)
+          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+        '(1 2 3))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAB"
@@ -78,9 +79,10 @@ Feature: AA tree
       (aa-tree-insert! tree 1)
       (aa-tree-insert! tree 2)
 
-      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
-      (write-u8 (if (= (aa-tree-find tree 2) 2) 65 66))
-      (write-u8 (if (= (aa-tree-find tree 3) 3) 65 66))
+      (for-each
+        (lambda (x)
+          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+        '(1 2 3))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AAB"
@@ -100,3 +102,35 @@ Feature: AA tree
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario Outline: Insert values into a tree
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (define tree (aa-tree-empty <))
+
+      (define (check x)
+        (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+
+      (for-each
+        (lambda (x)
+          (check x)
+          (aa-tree-insert! tree x)
+          (check x))
+        '(<values>))
+
+      (for-each check '(<values>))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | values | output    |
+      | 1 2 3  | BABABAAAA |
+      | 1 3 2  | BABABAAAA |
+      | 2 1 3  | BABABAAAA |
+      | 2 3 1  | BABABAAAA |
+      | 3 1 2  | BABABAAAA |
+      | 3 2 1  | BABABAAAA |
