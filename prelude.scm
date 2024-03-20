@@ -1,6 +1,6 @@
 ; Libraries
 
-(define-library (scheme base)
+(define-library (stak base)
   (export
     define-syntax
     syntax-rules
@@ -223,31 +223,7 @@
     file-error?
     guard
 
-    unwind
-
-    eof-object
-    eof-object?
-
-    port?
-    port-descriptor
-    port-last-byte
-    port-set-last-byte!
-    current-input-port
-    current-output-port
-    current-error-port
-
-    read-u8
-    peek-u8
-    read-char
-    peek-char
-
-    write-u8
-    write-char
-    write-string
-    write-bytevector
-    newline
-
-    write-value)
+    unwind)
 
   (begin
     ; Syntax
@@ -1465,8 +1441,260 @@
     ((call/cc
         (lambda (continuation)
           (set! unwind continuation)
-          (lambda () #f))))
+          (lambda () #f))))))
 
+(define-library (scheme base)
+  (export
+    define-syntax
+    syntax-rules
+    _
+    ...
+    define
+    lambda
+    let-syntax
+    letrec-syntax
+    begin
+    quasiquote
+    unquote
+    unquote-splicing
+    quote
+    set!
+    cond-expand
+    let
+    let*
+    letrec
+    letrec*
+    define-values
+    let-values
+    let*-values
+    if
+    cond
+    case
+    else
+    =>
+    and
+    or
+    when
+    unless
+
+    base
+    cxr
+    library
+    r7rs
+    scheme
+    stak
+
+    pair-type
+    null-type
+    boolean-type
+    procedure-type
+    symbol-type
+    string-type
+    char-type
+    vector-type
+    bytevector-type
+    record-type
+
+    rib
+    cons
+    close
+    rib?
+    rib-car
+    rib-cdr
+    rib-type
+    rib-tag
+    rib-set-car!
+    rib-set-cdr!
+    eq?
+    $$<
+    $$+
+    $$-
+    $$*
+    $$/
+    $$read-u8
+
+    apply
+    data-rib
+
+    instance?
+    eqv?
+    equal?
+
+    procedure?
+
+    boolean?
+    not
+
+    integer?
+    rational?
+    real?
+    complex?
+    number?
+    exact?
+    inexact?
+    zero?
+    positive?
+    negative?
+    +
+    -
+    *
+    quotient
+    /
+    modulo
+    =
+    <
+    >
+    <=
+    >=
+    abs
+
+    char?
+    integer->char
+    char->integer
+    char-whitespace?
+    char=?
+    char<?
+    char<=?
+    char>?
+    char>=?
+
+    null?
+    pair?
+    list?
+    car
+    cdr
+    set-car!
+    set-cdr!
+    caar
+    cadr
+    cdar
+    cddr
+    list
+    make-list
+    length
+    map
+    for-each
+    list-ref
+    list-set!
+    list-tail
+    member
+    memq
+    memv
+    assoc
+    assq
+    assv
+    append
+    reverse
+    fold-left
+    fold-right
+    reduce-right
+    list-position
+    memv-position
+    list-copy
+
+    bytevector?
+    bytevector-length
+    bytevector-u8-ref
+    list->bytevector
+    bytevector->list
+
+    vector?
+    vector
+    make-vector
+    vector-length
+    vector-ref
+    vector-set!
+    list->vector
+    vector->list
+
+    string?
+    list->string
+    string->list
+    string-append
+    string-length
+    string-ref
+    number->string
+    string->number
+    string-copy
+    substring
+    string=?
+    string<?
+    string>?
+
+    symbol?
+    symbol->string
+    string->uninterned-symbol
+    string->symbol
+
+    define-record-type
+    record?
+
+    make-tuple
+    tuple?
+    tuple-values
+
+    values
+    call-with-values
+
+    call/cc
+
+    make-point
+    point?
+    point-depth
+    point-before
+    point-after
+    point-parent
+    current-point
+    set-current-point!
+
+    dynamic-wind
+    travel-to-point!
+
+    make-parameter
+    parameterize
+
+    error-object?
+    error-object-message
+    error-object-irritants
+    with-exception-handler
+    raise
+    raise-continuable
+    error
+    read-error
+    file-error
+    read-error?
+    file-error?
+    guard
+
+    unwind
+
+    eof-object
+    eof-object?
+
+    port?
+    port-descriptor
+    port-last-byte
+    port-set-last-byte!
+    current-input-port
+    current-output-port
+    current-error-port
+
+    read-u8
+    peek-u8
+    read-char
+    peek-char
+
+    write-u8
+    write-char
+    write-string
+    write-bytevector
+    newline
+
+    write-value)
+
+  (import (stak base))
+
+  (begin
     ; Derived types
 
     ;; EOF object
