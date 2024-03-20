@@ -1573,10 +1573,10 @@
 
   (begin
     (define-record-type aa-tree
-      (make-aa-tree root less-than)
+      (make-aa-tree root less)
       aa-tree?
       (root aa-tree-root aa-tree-set-root!)
-      (less-than aa-tree-less-than aa-tree-set-less-than!))
+      (less aa-tree-less aa-tree-set-less!))
 
     (define-record-type aa-node
       (make-aa-node value level left right)
@@ -1586,41 +1586,42 @@
       (left aa-node-left aa-node-set-left!)
       (right aa-node-right aa-node-set-right!))
 
-    (define (aa-tree-empty less-than)
-      (make-aa-tree #f less-than))
+    (define (aa-tree-empty less)
+      (make-aa-tree #f less))
 
     (define (aa-tree-insert! tree value)
+      (write-u8 65)
       (aa-tree-set-root!
         tree
         (aa-node-insert!
           (aa-tree-root tree)
           value
-          (aa-tree-less-than tree))))
+          (aa-tree-less tree))))
 
     (define (aa-node-balance! node)
       (aa-node-split! (aa-node-skew! node)))
 
-    (define (aa-node-insert! node value less-than)
+    (define (aa-node-insert! node value less?)
       (if node
         (let ((node-value ((aa-node-value node))))
           (cond
-            ((less-than value node-value)
+            ((less? value node-value)
               (aa-node-balance!
                 (aa-node-set-left!
                   node
                   (aa-node-insert!
                     (aa-node-left node)
                     value
-                    less-than))))
+                    less?))))
 
-            ((less-than node-value value)
+            ((less? node-value value)
               (aa-node-balance!
                 (aa-node-set-right!
                   node
                   (aa-node-insert!
                     (aa-node-right node)
                     value
-                    less-than))))
+                    less?))))
 
             (else
               node)))
