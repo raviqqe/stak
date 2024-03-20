@@ -1590,7 +1590,6 @@
       (make-aa-tree #f less))
 
     (define (aa-tree-insert! tree value)
-      (write-u8 65)
       (aa-tree-set-root!
         tree
         (aa-node-insert!
@@ -1603,7 +1602,7 @@
 
     (define (aa-node-insert! node value less?)
       (if node
-        (let ((node-value ((aa-node-value node))))
+        (let ((node-value (aa-node-value node)))
           (cond
             ((less? value node-value)
               (aa-node-balance!
