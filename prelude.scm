@@ -1591,6 +1591,7 @@
 
     (define (aa-tree-insert! tree value)
       (aa-tree-set-root!
+        tree
         (aa-node-insert!
           (aa-tree-root tree)
           value

@@ -11,7 +11,7 @@ Feature: AA tree
     Then the exit status should be 0
 
   @stak
-  Scenario: Check if a value is an AA tree
+  Scenario: Check if a value is a tree
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (stak aa-tree))
@@ -20,3 +20,14 @@ Feature: AA tree
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario: Insert a value into a tree
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (aa-tree-insert! (aa-tree-empty <) 1)
+      """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
