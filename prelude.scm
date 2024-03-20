@@ -1595,8 +1595,7 @@
         (aa-node-insert!
           (aa-tree-root tree)
           value
-          (aa-tree-less-than tree)))
-      tree)
+          (aa-tree-less-than tree))))
 
     (define (aa-node-balance! node)
       (aa-node-split! (aa-node-skew! node)))
