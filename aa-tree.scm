@@ -39,20 +39,22 @@
         (let ((node-value ((aa-node-value node))))
           (cond
             ((less-than value node-value)
-              (aa-node-set-left!
-                node
-                (aa-node-insert!
-                  (aa-node-left node)
-                  value
-                  less-than)))
+              (aa-node-balance
+                (aa-node-set-left!
+                  node
+                  (aa-node-insert!
+                    (aa-node-left node)
+                    value
+                    less-than))))
 
             ((less-than node-value value)
-              (aa-node-set-right!
-                node
-                (aa-node-insert!
-                  (aa-node-right node)
-                  value
-                  less-than)))
+              (aa-node-balance
+                (aa-node-set-right!
+                  node
+                  (aa-node-insert!
+                    (aa-node-right node)
+                    value
+                    less-than))))
 
             (else
               node)))
