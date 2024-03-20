@@ -1625,19 +1625,13 @@
             ((less? value node-value)
               (aa-node-set-left!
                 node
-                (aa-node-insert!
-                  (aa-node-left node)
-                  value
-                  less?))
+                (aa-node-insert! (aa-node-left node) value less?))
               (aa-node-balance! node))
 
             ((less? node-value value)
               (aa-node-set-right!
                 node
-                (aa-node-insert!
-                  (aa-node-right node)
-                  value
-                  less?))
+                (aa-node-insert! (aa-node-right node) value less?))
               (aa-node-balance! node))
 
             (else
