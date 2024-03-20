@@ -190,9 +190,7 @@
     let-values
     let*-values
     values
-    call-with-values
-
-    call/cc)
+    call-with-values)
 
   (begin
     ; Syntax
@@ -1196,23 +1194,7 @@
       (let ((xs (producer)))
         (if (tuple? xs)
           (apply consumer (tuple-values xs))
-          (consumer xs))))
-
-    ;; Continuation
-
-    (define dummy-function (lambda () #f))
-
-    (define (call/cc receiver)
-      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
-            (point current-point))
-        (receiver
-          (lambda (argument)
-            (travel-to-point! current-point point)
-            (set-current-point! point)
-            (rib-set-car!
-              (rib-cdr (rib-car (close dummy-function))) ; frame
-              continuation)
-            argument))))))
+          (consumer xs))))))
 
 (define-library (stak aa-tree)
   (export
@@ -1585,6 +1567,22 @@
 
   (begin
     ; Control
+
+    ;; Continuation
+
+    (define dummy-function (lambda () #f))
+
+    (define (call/cc receiver)
+      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
+            (point current-point))
+        (receiver
+          (lambda (argument)
+            (travel-to-point! current-point point)
+            (set-current-point! point)
+            (rib-set-car!
+              (rib-cdr (rib-car (close dummy-function))) ; frame
+              continuation)
+            argument))))
 
     ;; Dynamic wind
 
