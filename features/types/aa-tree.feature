@@ -31,3 +31,36 @@ Feature: AA tree
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+  @stak
+  Scenario: Insert a value into a left of a tree
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (aa-tree-insert! (aa-tree-insert! (aa-tree-empty <) 2) 1)
+      """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
+  @stak
+  Scenario: Insert a value into a right of a tree
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (aa-tree-insert! (aa-tree-insert! (aa-tree-empty <) 2) 3)
+      """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
+  @stak
+  Scenario: Insert a value into the same node of a tree
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (stak aa-tree))
+
+      (aa-tree-insert! (aa-tree-insert! (aa-tree-empty <) 1) 1)
+      """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
