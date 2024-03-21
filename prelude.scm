@@ -173,6 +173,7 @@
     string=?
     string<?
     string>?
+    $$string<?
 
     symbol?
     symbol->string
@@ -1000,12 +1001,12 @@
 
     (define string=? (comparison-operator equal?))
 
-    (define string<?
-      (comparison-operator
-        (lambda (x y)
-          (integer-list<?
-            (string->code-points x)
-            (string->code-points y)))))
+    (define string<? (comparison-operator $$string<?))
+
+    (define ($$string<? x y)
+      (integer-list<?
+        (string->code-points x)
+        (string->code-points y)))
 
     (define (integer-list<? x y)
       (and
@@ -1554,7 +1555,7 @@
     (define symbols
       (list->aa-tree
         (rib-car $$rib)
-        (lambda (x y) (string<? (symbol->string x) (symbol->string y)))))
+        (lambda (x y) ($$string<? (symbol->string x) (symbol->string y)))))
     ; Allow garbage collection for a symbol table.
     (rib-set-car! $$rib #f)
 
