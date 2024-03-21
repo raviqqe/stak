@@ -22,7 +22,7 @@ cd $(dirname $0)/..
 
 bundler install
 
-if ! echo $interpreter | grep stak; then
+if [ $interpret = stak-tools ]; then
   options='--package stak-decode --package stak-interpret'
 fi
 
