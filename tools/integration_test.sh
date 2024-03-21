@@ -26,7 +26,7 @@ if ! echo $interpreter | grep stak; then
   options='--exclude stak --exclude stak-compile'
 fi
 
-cargo build --profile release_test --features $featuresa $options
+cargo build --profile release_test --features $features $options
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
