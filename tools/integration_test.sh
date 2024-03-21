@@ -22,7 +22,11 @@ cd $(dirname $0)/..
 
 bundler install
 
-cargo build --profile release_test --features $features
+if [ $interpreter = stak-tools ]; then
+  options='--package stak-decode --package stak-interpret'
+fi
+
+cargo build --profile release_test --features $features $options
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
