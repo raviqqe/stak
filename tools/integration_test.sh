@@ -23,7 +23,7 @@ cd $(dirname $0)/..
 bundler install
 
 if ! echo $interpreter | grep stak; then
-  options='--exclude stak --exclude stak-compile'
+  options='--package stak-decode --package stak-interpret'
 fi
 
 cargo build --profile release_test --features $features $options
