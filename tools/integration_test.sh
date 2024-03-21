@@ -22,7 +22,11 @@ cd $(dirname $0)/..
 
 bundler install
 
-cargo build --profile release_test --features $features
+if ! echo $interpreter | grep stak; then
+  options='--exclude stak --exclude stak-compile'
+fi
+
+cargo build --profile release_test --features $featuresa $options
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
