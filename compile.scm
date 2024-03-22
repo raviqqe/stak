@@ -456,29 +456,29 @@
 
 ;; Types
 
-(define-record-type expansion-context
-  (make-expansion-context environment)
-  expansion-context?
-  (environment expansion-context-environment expansion-context-set-environment!))
+(define-record-type macro-context
+  (make-macro-context environment)
+  macro-context?
+  (environment macro-context-environment macro-context-set-environment!))
 
-(define (expansion-context-append context pairs)
-  (make-expansion-context (append pairs (expansion-context-environment context))))
+(define (macro-context-append context pairs)
+  (make-macro-context (append pairs (macro-context-environment context))))
 
-(define (expansion-context-push context name denotation)
-  (expansion-context-append context (list (cons name denotation))))
+(define (macro-context-push context name denotation)
+  (macro-context-append context (list (cons name denotation))))
 
-(define (expansion-context-set! context name denotation)
-  (let* ((environment (expansion-context-environment context))
+(define (macro-context-set! context name denotation)
+  (let* ((environment (macro-context-environment context))
          (pair (assq name environment)))
     (when pair (set-cdr! pair denotation))
     pair))
 
-(define (expansion-context-set-last! context name denotation)
-  (unless (expansion-context-set! context name denotation)
-    (let ((environment (expansion-context-environment context))
+(define (macro-context-set-last! context name denotation)
+  (unless (macro-context-set! context name denotation)
+    (let ((environment (macro-context-environment context))
           (tail (list (cons name denotation))))
       (if (null? environment)
-        (expansion-context-set-environment! context tail)
+        (macro-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
 
 ;; Procedures
@@ -525,7 +525,7 @@
 
 (define (resolve-denotation context expression)
   (cond
-    ((assq expression (expansion-context-environment context)) =>
+    ((assq expression (macro-context-environment context)) =>
       cdr)
 
     (else
@@ -536,7 +536,7 @@
          (count
            (list-count
              (lambda (pair) (eq? (cdr pair) denotation))
-             (expansion-context-environment context))))
+             (macro-context-environment context))))
     ; Share tails when appending strings.
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
@@ -709,7 +709,7 @@
                              (lambda (name) (cons name (rename-variable use-context name)))
                              (find-pattern-variables ellipsis (append literals (map car matches)) template)))
                          (use-context
-                           (expansion-context-append
+                           (macro-context-append
                              use-context
                              (map
                                (lambda (pair)
@@ -751,16 +751,16 @@
         (case (resolve-denotation context (car expression))
           (($$alias)
             (let ((denotation (resolve-denotation context (caddr expression))))
-              (expansion-context-set-last! context (cadr expression) denotation)
+              (macro-context-set-last! context (cadr expression) denotation)
               #f))
 
           (($$define)
             (let ((name (cadr expression)))
-              (expansion-context-set! context name name)
+              (macro-context-set! context name name)
               (expand (cons '$$set! (cdr expression)))))
 
           (($$define-syntax)
-            (expansion-context-set-last!
+            (macro-context-set-last!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
@@ -769,7 +769,7 @@
           (($$lambda)
             (let* ((parameters (cadr expression))
                    (context
-                     (expansion-context-append
+                     (macro-context-append
                        context
                        (map
                          (lambda (name) (cons name (rename-variable context name)))
@@ -788,7 +788,7 @@
             (expand-macro
               (fold-left
                 (lambda (context pair)
-                  (expansion-context-push
+                  (macro-context-push
                     context
                     (car pair)
                     (make-transformer context (cadr pair))))
@@ -801,12 +801,12 @@
                    (context
                      (fold-left
                        (lambda (context pair)
-                         (expansion-context-push context (car pair) #f))
+                         (macro-context-push context (car pair) #f))
                        context
                        bindings)))
               (for-each
                 (lambda (pair)
-                  (expansion-context-set!
+                  (macro-context-set!
                     context
                     (car pair)
                     (make-transformer context (cadr pair))))
@@ -834,7 +834,7 @@
         expression))))
 
 (define (expand-macros expression)
-  (expand-macro (make-expansion-context '()) expression))
+  (expand-macro (make-macro-context '()) expression))
 
 ; Compilation
 
