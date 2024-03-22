@@ -1001,8 +1001,6 @@
 
     (define string=? (comparison-operator equal?))
 
-    (define string<? (comparison-operator $$string<?))
-
     (define ($$string<? x y)
       (integer-list<?
         (string->code-points x)
@@ -1017,6 +1015,8 @@
           (and
             (= (car x) (car y))
             (integer-list<? (cdr x) (cdr y))))))
+
+    (define string<? (comparison-operator $$string<?))
 
     (define (string>? x y) (string<? y x))
 
