@@ -181,10 +181,6 @@
       count
       (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
-; Note that the original `append` function works in this way natively on some Scheme implementations.
-(define (maybe-append xs ys)
-  (and xs ys (append xs ys)))
-
 (define (flat-map convert xs)
   (apply append (map convert xs)))
 
@@ -579,7 +575,7 @@
       (resolve-denotation (rule-context-definition-context context) (cadr expression))
       (rule-context-ellipsis context))))
 
-(define (match-ellipsis-pattern context pattern expression)
+(define (match-ellipsis-pattern context pattern expression fail)
   (let ((matches
           (fold-right
             (lambda (all ones)
@@ -599,26 +595,26 @@
               (find-pattern-variables context (rule-context-literals context) pattern))
             (map
               (lambda (expression)
-                (match-pattern context pattern expression))
+                (match-pattern context pattern expression fail))
               expression))))
-    (and
-      matches
-      (map
-        (lambda (pair)
-          (cons (car pair) (make-ellipsis-match (cdr pair))))
-        matches))))
+    (unless matches
+      (fail))
+    (map
+      (lambda (pair)
+        (cons (car pair) (make-ellipsis-match (cdr pair))))
+      matches)))
 
-(define (match-pattern context pattern expression)
+(define (match-pattern context pattern expression fail)
   (define (match pattern expression)
-    (match-pattern context pattern expression))
+    (match-pattern context pattern expression fail))
 
   (cond
     ((memq pattern (rule-context-literals context))
-      (if (eq?
-           (resolve-denotation (rule-context-use-context context) expression)
-           (resolve-denotation (rule-context-definition-context context) pattern))
-        '()
-        #f))
+      (unless (eq?
+               (resolve-denotation (rule-context-use-context context) expression)
+               (resolve-denotation (rule-context-definition-context context) pattern))
+        (fail))
+      '())
 
     ((symbol? pattern)
       (list (cons pattern expression)))
@@ -627,25 +623,25 @@
       (cond
         ((ellipsis-pattern? context pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
-            (and
-              (>= length 0)
-              (maybe-append
-                (match-ellipsis-pattern context (car pattern) (take length expression))
-                (match (cddr pattern) (skip length expression))))))
+            (when (< length 0)
+              (fail))
+            (append
+              (match-ellipsis-pattern context (car pattern) (take length expression) fail)
+              (match (cddr pattern) (skip length expression)))))
 
         ((pair? expression)
-          (maybe-append
+          (append
             (match (car pattern) (car expression))
             (match (cdr pattern) (cdr expression))))
 
         (else
-          #f)))
+          (fail))))
 
     ((equal? pattern expression)
       '())
 
     (else
-      #f)))
+      (fail))))
 
 (define (fill-ellipsis-template context matches template)
   (map
@@ -703,7 +699,14 @@
                 (error "invalid syntax" expression))
               (let* ((rule (car rules))
                      (rule-context (make-rule-context definition-context use-context ellipsis literals))
-                     (matches (match-pattern rule-context (car rule) expression)))
+                     (matches
+                       (call/cc
+                         (lambda (continue)
+                           (match-pattern
+                             rule-context
+                             (car rule)
+                             expression
+                             (lambda () (continue #f)))))))
                 (if matches
                   (let* ((template (cadr rule))
                          (names
