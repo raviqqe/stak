@@ -39,6 +39,8 @@
     scheme
     stak
 
+    procedure-type
+
     rib
     cons
     close
@@ -2260,7 +2262,7 @@
     (set! write-value write)))
 
 (define-library (scheme process-context)
-  (import (scheme base))
+  (import (scheme base) (stak base))
 
   (export exit emergency-exit)
 
