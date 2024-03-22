@@ -1950,9 +1950,9 @@
 (define-library (scheme eval))
 
 (define-library (stak char)
-  (import (scheme base))
-
   (export special-chars)
+
+  (import (scheme base))
 
   (begin
     (define special-chars
@@ -1969,7 +1969,7 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (stak char))
+  (import (scheme base) (stak base) (stak char))
 
   (begin
     (define (get-input-port rest)
