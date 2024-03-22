@@ -548,10 +548,10 @@
     ; Share tails when appending strings.
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
-(define (find-pattern-variables ellipsis bound-variables pattern)
+(define (find-pattern-variables context bound-variables pattern)
   (define (find pattern)
     (cond
-      ((memq pattern (append (list '_ ellipsis) bound-variables))
+      ((memq pattern (cons (rule-context-ellipsis context) bound-variables))
         '())
 
       ((symbol? pattern)
@@ -596,10 +596,7 @@
                   ones)))
             (map
               (lambda (name) (cons name '()))
-              (find-pattern-variables
-                (rule-context-ellipsis context)
-                (rule-context-literals context)
-                pattern))
+              (find-pattern-variables context (rule-context-literals context) pattern))
             (map
               (lambda (expression)
                 (match-pattern context pattern expression))
@@ -653,7 +650,7 @@
 (define (fill-ellipsis-template context matches template)
   (map
     (lambda (matches) (fill-template context matches template))
-    (let* ((variables (find-pattern-variables (rule-context-ellipsis context) '() template))
+    (let* ((variables (find-pattern-variables context '() template))
            (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
            (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
            (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
@@ -712,7 +709,7 @@
                          (names
                            (map
                              (lambda (name) (cons name (rename-variable use-context name)))
-                             (find-pattern-variables ellipsis (append literals (map car matches)) template)))
+                             (find-pattern-variables rule-context (append literals (map car matches)) template)))
                          (use-context
                            (macro-context-append
                              use-context
