@@ -167,7 +167,7 @@ Feature: Exception
   Scenario: Leave a dynamic extent
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme process-context))
+      (import (scheme base))
 
       (dynamic-wind
         (lambda () (write-u8 65))

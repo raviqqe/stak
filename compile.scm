@@ -603,9 +603,6 @@
     (match-pattern definition-context use-context ellipsis literals pattern expression))
 
   (cond
-    ((eq? pattern '_)
-      '())
-
     ((memq pattern literals)
       (if (eq?
            (resolve-denotation use-context expression)

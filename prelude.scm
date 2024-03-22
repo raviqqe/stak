@@ -28,6 +28,7 @@
     =>
     and
     or
+    boolean-or
     when
     unless
 
@@ -38,16 +39,7 @@
     scheme
     stak
 
-    pair-type
-    null-type
-    boolean-type
     procedure-type
-    symbol-type
-    string-type
-    char-type
-    vector-type
-    bytevector-type
-    record-type
 
     rib
     cons
@@ -69,7 +61,6 @@
     apply
     data-rib
 
-    instance?
     eqv?
     equal?
 
@@ -528,6 +519,17 @@
           (let ((x test1))
             (if x x (or test2 ...))))))
 
+    (define-syntax boolean-or
+      (syntax-rules ()
+        ((_)
+          #f)
+
+        ((_ test)
+          test)
+
+        ((_ test1 test2 ...)
+          (if test1 #t (boolean-or test2 ...)))))
+
     (define-syntax when
       (syntax-rules ()
         ((_ test result1 result2 ...)
@@ -592,19 +594,22 @@
           (eq? (rib-type x) type))))
 
     (define (eqv? x y)
-      (if (and (char? x) (char? y))
-        (eq? (char->integer x) (char->integer y))
-        (eq? x y)))
+      (boolean-or
+        (eq? x y)
+        (and
+          (char? x)
+          (char? y)
+          (eq? (char->integer x) (char->integer y)))))
 
     (define (equal? x y)
-      (or
+      (boolean-or
         (eq? x y)
         (and
           (rib? x)
           (rib? y)
           (eq? (rib-type x) (rib-type y))
           ; Optimize for the cases of strings and vectors where `cdr`s are integers.
-          (or
+          (boolean-or
             (rib? (rib-cdr x))
             (eq? (rib-cdr x) (rib-cdr y)))
           (equal? (rib-car x) (rib-car y))
@@ -654,21 +659,20 @@
     (define / quotient)
 
     (define (modulo x y)
-      (let ((q (quotient x y)))
-        (let ((r (- x (* y q))))
-          (if (eq? r 0)
-            0
-            (if (eq? (< x 0) (< y 0))
-              r
-              (+ r y))))))
+      (let ((r (- x (* y (quotient x y)))))
+        (if (eq? r 0)
+          0
+          (if (eq? (< x 0) (< y 0))
+            r
+            (+ r y)))))
 
     (define (comparison-operator f)
       (lambda xs
-        (or
+        (boolean-or
           (null? xs)
           (let loop ((x (car xs))
                      (xs (cdr xs)))
-            (or
+            (boolean-or
               (null? xs)
               (let ((y (car xs)))
                 (and (f x y) (loop y (cdr xs)))))))))
@@ -681,7 +685,7 @@
 
     (define (abs x)
       (if (< x 0)
-        (- 0 x)
+        (- x)
         x))
 
     ;; Character
@@ -694,7 +698,7 @@
     (define char->integer rib-cdr)
 
     (define (char-whitespace? x)
-      (pair? (memv x '(#\newline #\return #\space #\tab))))
+      (memv x '(#\newline #\return #\space #\tab)))
 
     (define (char-compare compare)
       (lambda xs (apply compare (map char->integer xs))))
@@ -711,7 +715,7 @@
     (define pair? (instance? pair-type))
 
     (define (list? x)
-      (or
+      (boolean-or
         (null? x)
         (and
           (pair? x)
@@ -765,7 +769,7 @@
           (list-head (cdr xs) (- index 1)))))
 
     (define (list-tail xs index)
-      (if (or (zero? index) (not (pair? xs)))
+      (if (boolean-or (zero? index) (not (pair? xs)))
         xs
         (list-tail (cdr xs) (- index 1))))
 
@@ -853,8 +857,8 @@
           (else
             (loop (cdr xs) (+ index 1))))))
 
-    (define (memv-position one xs)
-      (list-position (lambda (other) (eqv? one other)) xs))
+    (define (memv-position x xs)
+      (list-position (lambda (y) (eqv? x y)) xs))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1010,7 +1014,7 @@
     (define (integer-list<? x y)
       (and
         (not (null? y))
-        (or
+        (boolean-or
           (null? x)
           (< (car x) (car y))
           (and
@@ -1031,7 +1035,7 @@
     ;; Record
 
     ; We use record types only for certain built-in types not to degrade space
-    ; efficiency of their values
+    ; efficiency of their values.
     (define-syntax define-record-type
       (syntax-rules ()
         ((_ id
@@ -1340,17 +1344,6 @@
     scheme
     stak
 
-    pair-type
-    null-type
-    boolean-type
-    procedure-type
-    symbol-type
-    string-type
-    char-type
-    vector-type
-    bytevector-type
-    record-type
-
     rib
     cons
     close
@@ -1372,7 +1365,6 @@
     apply
     data-rib
 
-    instance?
     eqv?
     equal?
 
@@ -1935,9 +1927,9 @@
 (define-library (scheme eval))
 
 (define-library (stak char)
-  (import (scheme base))
-
   (export special-chars)
+
+  (import (scheme base))
 
   (begin
     (define special-chars
@@ -1954,7 +1946,7 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (stak char))
+  (import (scheme base) (stak base) (stak char))
 
   (begin
     (define (get-input-port rest)
@@ -2050,7 +2042,7 @@
 
     (define (read-symbol-chars)
       (let ((char (peek-char)))
-        (if (or
+        (if (boolean-or
              (memv char '(#\( #\)))
              (eof-object? char)
              (char-whitespace? char))
@@ -2269,7 +2261,7 @@
     (set! write-value write)))
 
 (define-library (scheme process-context)
-  (import (scheme base))
+  (import (scheme base) (stak base))
 
   (export exit emergency-exit)
 
