@@ -59,7 +59,6 @@
     apply
     data-rib
 
-    instance?
     eqv?
     equal?
 
@@ -1365,7 +1364,6 @@
     apply
     data-rib
 
-    instance?
     eqv?
     equal?
 
