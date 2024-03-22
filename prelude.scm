@@ -779,7 +779,7 @@
           (list-head (cdr xs) (- index 1)))))
 
     (define (list-tail xs index)
-      (if (or (zero? index) (not (pair? xs)))
+      (if (boolean-or (zero? index) (not (pair? xs)))
         xs
         (list-tail (cdr xs) (- index 1))))
 
@@ -1024,7 +1024,7 @@
     (define (integer-list<? x y)
       (and
         (not (null? y))
-        (or
+        (boolean-or
           (null? x)
           (< (car x) (car y))
           (and
@@ -2064,7 +2064,7 @@
 
     (define (read-symbol-chars)
       (let ((char (peek-char)))
-        (if (or
+        (if (boolean-or
              (memv char '(#\( #\)))
              (eof-object? char)
              (char-whitespace? char))
