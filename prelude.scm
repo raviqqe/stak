@@ -659,13 +659,12 @@
     (define / quotient)
 
     (define (modulo x y)
-      (let ((q (quotient x y)))
-        (let ((r (- x (* y q))))
-          (if (eq? r 0)
-            0
-            (if (eq? (< x 0) (< y 0))
-              r
-              (+ r y))))))
+      (let ((r (- x (* y (quotient x y)))))
+        (if (eq? r 0)
+          0
+          (if (eq? (< x 0) (< y 0))
+            r
+            (+ r y)))))
 
     (define (comparison-operator f)
       (lambda xs
@@ -686,7 +685,7 @@
 
     (define (abs x)
       (if (< x 0)
-        (- 0 x)
+        (- x)
         x))
 
     ;; Character
