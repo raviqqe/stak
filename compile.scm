@@ -572,12 +572,14 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
-(define (ellipsis-pattern? context ellipsis expression)
+(define (ellipsis-pattern? context expression)
   (and
     (pair? (cdr expression))
-    (eq? (resolve-denotation context (cadr expression)) ellipsis)))
+    (eq?
+      (resolve-denotation (rule-context-definition-context context) (cadr expression))
+      (rule-context-ellipsis context))))
 
-(define (match-ellipsis-pattern definition-context use-context ellipsis literals pattern expression)
+(define (match-ellipsis-pattern context pattern expression)
   (let ((matches
           (fold-right
             (lambda (all ones)
@@ -594,10 +596,13 @@
                   ones)))
             (map
               (lambda (name) (cons name '()))
-              (find-pattern-variables ellipsis literals pattern))
+              (find-pattern-variables
+                (rule-context-ellipsis context)
+                (rule-context-literals context)
+                pattern))
             (map
               (lambda (expression)
-                (match-pattern definition-context use-context ellipsis literals pattern expression))
+                (match-pattern context pattern expression))
               expression))))
     (and
       matches
@@ -606,15 +611,15 @@
           (cons (car pair) (make-ellipsis-match (cdr pair))))
         matches))))
 
-(define (match-pattern definition-context use-context ellipsis literals pattern expression)
+(define (match-pattern context pattern expression)
   (define (match pattern expression)
-    (match-pattern definition-context use-context ellipsis literals pattern expression))
+    (match-pattern context pattern expression))
 
   (cond
-    ((memq pattern literals)
+    ((memq pattern (rule-context-literals context))
       (if (eq?
-           (resolve-denotation use-context expression)
-           (resolve-denotation definition-context pattern))
+           (resolve-denotation (rule-context-use-context context) expression)
+           (resolve-denotation (rule-context-definition-context context) pattern))
         '()
         #f))
 
@@ -623,18 +628,12 @@
 
     ((pair? pattern)
       (cond
-        ((ellipsis-pattern? definition-context ellipsis pattern)
+        ((ellipsis-pattern? context pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (and
               (>= length 0)
               (maybe-append
-                (match-ellipsis-pattern
-                  definition-context
-                  use-context
-                  ellipsis
-                  literals
-                  (car pattern)
-                  (take length expression))
+                (match-ellipsis-pattern context (car pattern) (take length expression))
                 (match (cddr pattern) (skip length expression))))))
 
         ((pair? expression)
@@ -651,10 +650,10 @@
     (else
       #f)))
 
-(define (fill-ellipsis-template definition-context use-context ellipsis matches template)
+(define (fill-ellipsis-template context matches template)
   (map
-    (lambda (matches) (fill-template definition-context use-context ellipsis matches template))
-    (let* ((variables (find-pattern-variables ellipsis '() template))
+    (lambda (matches) (fill-template context matches template))
+    (let* ((variables (find-pattern-variables (rule-context-ellipsis context) '() template))
            (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
            (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
            (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
@@ -668,9 +667,9 @@
               (cons (car pair) (ellipsis-match-value (cdr pair))))
             ellipsis-matches))))))
 
-(define (fill-template definition-context use-context ellipsis matches template)
+(define (fill-template context matches template)
   (define (fill template)
-    (fill-template definition-context use-context ellipsis matches template))
+    (fill-template context matches template))
 
   (cond
     ((symbol? template)
@@ -683,9 +682,9 @@
           template)))
 
     ((pair? template)
-      (if (ellipsis-pattern? definition-context ellipsis template)
+      (if (ellipsis-pattern? context template)
         (append
-          (fill-ellipsis-template definition-context use-context ellipsis matches (car template))
+          (fill-ellipsis-template context matches (car template))
           (fill (cddr template)))
         (cons
           (fill (car template))
@@ -706,7 +705,8 @@
               (unless (pair? rules)
                 (error "invalid syntax" expression))
               (let* ((rule (car rules))
-                     (matches (match-pattern definition-context use-context ellipsis literals (car rule) expression)))
+                     (rule-context (make-rule-context definition-context use-context ellipsis literals))
+                     (matches (match-pattern rule-context (car rule) expression)))
                 (if matches
                   (let* ((template (cadr rule))
                          (names
@@ -723,7 +723,7 @@
                                    (resolve-denotation definition-context (car pair))))
                                names))))
                     (values
-                      (fill-template definition-context use-context ellipsis (append names matches) template)
+                      (fill-template rule-context (append names matches) template)
                       use-context))
                   (loop (cdr rules))))))))
 
