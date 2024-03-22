@@ -481,6 +481,14 @@
         (macro-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
 
+(define-record-type rule-context
+  (make-rule-context definition-context)
+  rule-context?
+  (definition-context rule-context-definition-context)
+  (use-context rule-context-use-context)
+  (ellipsis rule-context-ellipsis)
+  (literals rule-context-literals))
+
 ;; Procedures
 
 (define primitive-functions
