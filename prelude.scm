@@ -698,7 +698,7 @@
     (define char->integer rib-cdr)
 
     (define (char-whitespace? x)
-      (pair? (memv x '(#\newline #\return #\space #\tab))))
+      (memv x '(#\newline #\return #\space #\tab)))
 
     (define (char-compare compare)
       (lambda xs (apply compare (map char->integer xs))))
