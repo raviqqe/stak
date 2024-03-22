@@ -28,6 +28,7 @@
     =>
     and
     or
+    boolean-or
     when
     unless
 
