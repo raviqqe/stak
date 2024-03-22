@@ -857,8 +857,8 @@
           (else
             (loop (cdr xs) (+ index 1))))))
 
-    (define (memv-position one xs)
-      (list-position (lambda (other) (eqv? one other)) xs))
+    (define (memv-position x xs)
+      (list-position (lambda (y) (eqv? x y)) xs))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
