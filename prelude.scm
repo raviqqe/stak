@@ -528,6 +528,17 @@
           (let ((x test1))
             (if x x (or test2 ...))))))
 
+    (define-syntax boolean-or
+      (syntax-rules ()
+        ((_)
+          #f)
+
+        ((_ test)
+          test)
+
+        ((_ test1 test2 ...)
+          (if test1 #t (boolean-or test2 ...)))))
+
     (define-syntax when
       (syntax-rules ()
         ((_ test result1 result2 ...)
@@ -592,19 +603,22 @@
           (eq? (rib-type x) type))))
 
     (define (eqv? x y)
-      (if (and (char? x) (char? y))
-        (eq? (char->integer x) (char->integer y))
-        (eq? x y)))
+      (boolean-or
+        (eq? x y)
+        (and
+          (char? x)
+          (char? y)
+          (eq? (char->integer x) (char->integer y)))))
 
     (define (equal? x y)
-      (or
+      (boolean-or
         (eq? x y)
         (and
           (rib? x)
           (rib? y)
           (eq? (rib-type x) (rib-type y))
           ; Optimize for the cases of strings and vectors where `cdr`s are integers.
-          (or
+          (boolean-or
             (rib? (rib-cdr x))
             (eq? (rib-cdr x) (rib-cdr y)))
           (equal? (rib-car x) (rib-car y))
@@ -664,11 +678,11 @@
 
     (define (comparison-operator f)
       (lambda xs
-        (or
+        (boolean-or
           (null? xs)
           (let loop ((x (car xs))
                      (xs (cdr xs)))
-            (or
+            (boolean-or
               (null? xs)
               (let ((y (car xs)))
                 (and (f x y) (loop y (cdr xs)))))))))
@@ -711,7 +725,7 @@
     (define pair? (instance? pair-type))
 
     (define (list? x)
-      (or
+      (boolean-or
         (null? x)
         (and
           (pair? x)
