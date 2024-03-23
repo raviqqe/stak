@@ -213,8 +213,7 @@
             body3
             body4
             ...)
-          (lambda "value" arguments ((name value) ...)
-            (define new-name (lambda (argument ... . rest) body1 body2 ...))
+          (lambda "value" arguments ((name value) ... (new-name (lambda (argument ... . rest) body1 body2 ...)))
             body3
             body4
             ...))
