@@ -644,9 +644,8 @@
       (map
         (lambda (matches) (append singleton-matches matches))
         (zip-alist
-          (map
-            (lambda (pair)
-              (cons (car pair) (ellipsis-match-value (cdr pair))))
+          (map-values
+            ellipsis-match-value
             ellipsis-matches))))))
 
 (define (fill-template context matches template)
