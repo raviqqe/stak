@@ -438,17 +438,25 @@
           (begin result1 result2 ...))
 
         ((_ key ((atom ...) => result) clause ...)
-          (if (memv key '(atom ...))
+          (if (case-match key (atom ...))
             (result key)
             (case key clause ...)))
 
         ((_ key ((atom ...) result1 result2 ...) clause ...)
-          (if (memv key '(atom ...))
+          (if (case-match key (atom ...))
             (begin result1 result2 ...)
             (case key clause ...)))
 
         ((_ key)
           #f)))
+
+    (define-syntax case-match
+      (syntax-rules (else =>)
+        ((_ key (atom))
+          (eqv? key 'atom))
+
+        ((_ key (atom ...))
+          (memv key '(atom ...)))))
 
     (define-syntax and
       (syntax-rules ()
