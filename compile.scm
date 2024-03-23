@@ -633,34 +633,23 @@
       (raise #f))))
 
 (define (fill-ellipsis-template context matches template)
-  (map
-    (lambda (matches) (fill-template context matches template))
-    (let* ((variables (find-pattern-variables context '() template))
-           (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
-           (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
-           (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
-      (when (null? ellipsis-matches)
-        (error "no ellipsis pattern variables" template))
-      (map
-        (lambda (matches) (append singleton-matches matches))
-        (zip-alist
-          (map-values
-            ellipsis-match-value
-            ellipsis-matches))))))
+  (let* ((variables (find-pattern-variables context '() template))
+         (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
+         (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
+         (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+    (when (null? ellipsis-matches)
+      (error "no ellipsis pattern variables" template))
+    (map
+      (lambda (matches) (fill-template context (append singleton-matches matches) template))
+      (zip-alist (map-values ellipsis-match-value ellipsis-matches)))))
 
 (define (fill-template context matches template)
   (define (fill template)
     (fill-template context matches template))
 
   (cond
-    ((symbol? template)
-      (cond
-        ((assq template matches) =>
-          cdr)
-
-        ; Skip a literal.
-        (else
-          template)))
+    ((and (symbol? template) (assq template matches)) =>
+      cdr)
 
     ((pair? template)
       (if (ellipsis-pattern? context template)
