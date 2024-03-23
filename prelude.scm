@@ -1164,8 +1164,7 @@
           (let-values (binding1)
             (let*-values (binding2 ...) body1 body2 ...)))))
 
-    (define (values . xs)
-      xs)
+    (define values list)
 
     (define (call-with-values producer consumer)
       (apply consumer (producer)))))
@@ -1524,6 +1523,8 @@
   (import (stak base))
 
   (begin
+    ; Symbol table
+
     (define symbols (rib-car $$rib))
     ; Allow garbage collection for a symbol table.
     (rib-set-car! $$rib #f)
