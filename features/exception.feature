@@ -278,7 +278,7 @@ Feature: Exception
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Return from a `guard` expression
+  Scenario: Return from a body in a `guard` expression
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
