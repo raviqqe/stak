@@ -277,3 +277,31 @@ Feature: Exception
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Return from a body in a `guard` expression
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (guard
+          (value
+            (else 66))
+          65))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Return from an `else` clause in a `guard` expression
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8
+        (guard
+          (value
+            (else 65))
+          (raise #f)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
