@@ -579,17 +579,16 @@
   (let ((matches
           (fold-right
             (lambda (all ones)
-              (and
-                all
-                ones
-                (map
-                  (lambda (pair)
-                    (let ((name (car pair)))
-                      (cons name
-                        (cons
-                          (cdr pair)
-                          (cdr (assq name all))))))
-                  ones)))
+              (unless ones
+                (raise #f))
+              (map
+                (lambda (pair)
+                  (let ((name (car pair)))
+                    (cons name
+                      (cons
+                        (cdr pair)
+                        (cdr (assq name all))))))
+                ones))
             (map
               (lambda (name) (cons name '()))
               (find-pattern-variables context (rule-context-literals context) pattern))
