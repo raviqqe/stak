@@ -200,7 +200,8 @@ Feature: Library system
 
       (import (scheme base) (scheme write) (foo))
 
-      (define (foo x) (write-u8 66))
+      (define (foo x)
+        (write-u8 66))
 
       (foo 65)
       (bar 65)
