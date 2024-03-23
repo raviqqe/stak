@@ -2252,9 +2252,9 @@
     (set! write-value write)))
 
 (define-library (scheme process-context)
-  (import (scheme base) (stak base))
-
   (export exit emergency-exit)
+
+  (import (scheme base) (stak base))
 
   (begin
     (define exit-success (data-rib procedure-type #f (cons 0 '())))
