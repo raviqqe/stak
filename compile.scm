@@ -448,7 +448,7 @@
         (lambda (expression) (expand-library-expression context expression))
         (cdr expression)))))
 
-; Expansion
+; Macro system
 
 ;; Types
 
