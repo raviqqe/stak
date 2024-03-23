@@ -579,8 +579,6 @@
   (let ((matches
           (fold-right
             (lambda (all ones)
-              (unless ones
-                (raise #f))
               (map
                 (lambda (pair)
                   (let ((name (car pair)))
