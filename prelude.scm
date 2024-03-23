@@ -357,9 +357,8 @@
           ((lambda (name ...) body1 body2 ...) value ...))
 
         ((_ tag ((name value) ...) body1 body2 ...)
-          ((letrec ((tag (lambda (name ...) body1 body2 ...))) tag)
-            value
-            ...))))
+          (letrec ((tag (lambda (name ...) body1 body2 ...)))
+            (tag value ...)))))
 
     (define-syntax let*
       (syntax-rules ()
