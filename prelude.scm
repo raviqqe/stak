@@ -173,10 +173,6 @@
     define-record-type
     record?
 
-    make-tuple
-    tuple?
-    tuple-values
-
     define-values
     let-values
     let*-values
@@ -1177,6 +1173,7 @@
           (let-values (binding1)
             (let*-values (binding2 ...) body1 body2 ...)))))
 
+    ; TODO Implement multiple values based on continuations as described in R7RS.
     (define (values . xs)
       (make-tuple xs))
 
@@ -1478,10 +1475,6 @@
     define-record-type
     record?
 
-    make-tuple
-    tuple?
-    tuple-values
-
     values
     call-with-values
 
@@ -1544,6 +1537,8 @@
   (import (stak base) (stak aa-tree))
 
   (begin
+    ; Symbol table
+
     (define symbols
       (list->aa-tree
         (rib-car $$rib)
@@ -1723,14 +1718,8 @@
                                   clause
                                   ...))))))))
                   (lambda ()
-                    (call-with-values
-                      (lambda () body1 body2 ...)
-                      (lambda arguments
-                        (continue-guard
-                          (lambda ()
-                            (if (null? (cdr arguments))
-                              (car arguments)
-                              (apply values arguments))))))))))))))
+                    (let ((x (begin body1 body2 ...)))
+                      (continue-guard (lambda () x)))))))))))
 
     (define-syntax guard*
       (syntax-rules (else =>)
