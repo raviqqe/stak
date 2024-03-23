@@ -694,30 +694,27 @@
             (let loop ((rules rules))
               (unless (pair? rules)
                 (error "invalid syntax" expression))
-              (let* ((rule (car rules))
-                     (rule-context (make-rule-context definition-context use-context ellipsis literals))
-                     (matches
-                       (guard (value ((not value) #f))
-                         (match-pattern rule-context (car rule) expression))))
-                (if matches
-                  (let* ((template (cadr rule))
+              (let ((rule (car rules))
+                    (rule-context (make-rule-context definition-context use-context ellipsis literals)))
+                (guard (value
+                        ((not value)
+                          (loop (cdr rules))))
+                  (let* ((matches (match-pattern rule-context (car rule) expression))
+                         (template (cadr rule))
                          (names
                            (map
                              (lambda (name) (cons name (rename-variable use-context name)))
-                             (find-pattern-variables rule-context (append literals (map car matches)) template)))
-                         (use-context
-                           (macro-context-append
-                             use-context
-                             (map
-                               (lambda (pair)
-                                 (cons
-                                   (cdr pair)
-                                   (resolve-denotation definition-context (car pair))))
-                               names))))
+                             (find-pattern-variables rule-context (append literals (map car matches)) template))))
                     (values
                       (fill-template rule-context (append names matches) template)
-                      use-context))
-                  (loop (cdr rules))))))))
+                      (macro-context-append
+                        use-context
+                        (map
+                          (lambda (pair)
+                            (cons
+                              (cdr pair)
+                              (resolve-denotation definition-context (car pair))))
+                          names))))))))))
 
       (else
         (error "unsupported macro transformer" transformer)))))
