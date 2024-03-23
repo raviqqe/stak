@@ -545,18 +545,17 @@
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
 (define (find-pattern-variables context bound-variables pattern)
+  (define variables (cons (rule-context-ellipsis context) bound-variables))
+
   (define (find pattern)
     (cond
-      ((memq pattern (cons (rule-context-ellipsis context) bound-variables))
-        '())
-
-      ((symbol? pattern)
-        (list pattern))
-
       ((pair? pattern)
         (append
           (find (car pattern))
           (find (cdr pattern))))
+
+      ((and (symbol? pattern) (not (memq pattern variables)))
+        (list pattern))
 
       (else
         '())))
