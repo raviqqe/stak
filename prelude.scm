@@ -451,7 +451,7 @@
           #f)))
 
     (define-syntax case-match
-      (syntax-rules (else =>)
+      (syntax-rules ()
         ((_ key (atom))
           (eqv? key 'atom))
 
