@@ -1172,7 +1172,7 @@
           (let-values (binding1)
             (let*-values (binding2 ...) body1 body2 ...)))))
 
-    ; TODO Implement multi-values based on continuations as described in R7RS.
+    ; TODO Implement multiple values based on continuations as described in R7RS.
     (define (values . xs)
       (make-tuple xs))
 
