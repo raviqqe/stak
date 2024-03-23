@@ -300,7 +300,7 @@ Feature: Exception
       (write-u8
         (guard
           (value
-            (else 66))
+            (else 65))
           (raise #f)))
       """
     When I successfully run `scheme main.scm`
