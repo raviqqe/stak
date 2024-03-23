@@ -1702,14 +1702,8 @@
                                   clause
                                   ...))))))))
                   (lambda ()
-                    (call-with-values
-                      (lambda () body1 body2 ...)
-                      (lambda arguments
-                        (continue-guard
-                          (lambda ()
-                            (if (null? (cdr arguments))
-                              (car arguments)
-                              (apply values arguments))))))))))))))
+                    (let ((x (begin body1 body2 ...)))
+                      (continue-guard (lambda () x)))))))))))
 
     (define-syntax guard*
       (syntax-rules (else =>)
