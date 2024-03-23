@@ -1726,7 +1726,9 @@
                       (lambda arguments
                         (guard-continuation
                           (lambda ()
-                            (apply values arguments)))))))))))))
+                            (if (null? (cdr arguments))
+                              (car arguments)
+                              (apply values arguments))))))))))))))
 
     (define-syntax guard*
       (syntax-rules (else =>)
