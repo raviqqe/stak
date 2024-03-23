@@ -1707,16 +1707,16 @@
       (syntax-rules ()
         ((_ (name clause ...) body1 body2 ...)
           ((call/cc
-              (lambda (guard-continuation)
+              (lambda (continue-guard)
                 (with-exception-handler
                   (lambda (exception)
                     ((call/cc
-                        (lambda (handler-continuation)
-                          (guard-continuation
+                        (lambda (continue-handler)
+                          (continue-guard
                             (lambda ()
                               (let ((name exception))
                                 (guard*
-                                  (handler-continuation
+                                  (continue-handler
                                     (lambda () (raise-continuable name)))
                                   clause
                                   ...))))))))
@@ -1724,7 +1724,7 @@
                     (call-with-values
                       (lambda () body1 body2 ...)
                       (lambda arguments
-                        (guard-continuation
+                        (continue-guard
                           (lambda ()
                             (if (null? (cdr arguments))
                               (car arguments)
