@@ -172,10 +172,6 @@
     define-record-type
     record?
 
-    make-tuple
-    tuple?
-    tuple-values
-
     define-values
     let-values
     let*-values
@@ -1086,14 +1082,6 @@
     (define (field-index type field)
       (memv-position field (cdr type)))
 
-    ;; Tuple
-
-    ; A tuple is primarily used to represent multiple values.
-    (define-record-type tuple
-      (make-tuple values)
-      tuple?
-      (values tuple-values))
-
     ; Control
 
     ;; Multi-value
@@ -1177,13 +1165,10 @@
             (let*-values (binding2 ...) body1 body2 ...)))))
 
     (define (values . xs)
-      (make-tuple xs))
+      xs)
 
     (define (call-with-values producer consumer)
-      (let ((xs (producer)))
-        (if (tuple? xs)
-          (apply consumer (tuple-values xs))
-          (consumer xs))))))
+      (apply consumer (producer)))))
 
 (define-library (stak aa-tree)
   (export
@@ -1476,10 +1461,6 @@
 
     define-record-type
     record?
-
-    make-tuple
-    tuple?
-    tuple-values
 
     values
     call-with-values
