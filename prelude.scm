@@ -197,9 +197,6 @@
 
     (define-syntax define
       (syntax-rules ()
-        ((_ (name argument ...) body1 body2 ...)
-          (define name (lambda (argument ...) body1 body2 ...)))
-
         ((_ (name argument ... . rest) body1 body2 ...)
           (define name (lambda (argument ... . rest) body1 body2 ...)))
 
@@ -210,17 +207,6 @@
       (syntax-rules (define define-syntax)
         ((_ arguments (define content ...) body1 body2 ...)
           (lambda "value" arguments () (define content ...) body1 body2 ...))
-
-        ((_ "value" arguments ((name value) ...)
-            (define (new-name argument ...) body1 body2 ...)
-            body3
-            body4
-            ...)
-          (lambda "value" arguments ((name value) ...)
-            (define new-name (lambda (argument ...) body1 body2 ...))
-            body3
-            body4
-            ...))
 
         ((_ "value" arguments ((name value) ...)
             (define (new-name argument ... . rest) body1 body2 ...)
