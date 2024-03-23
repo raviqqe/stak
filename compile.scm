@@ -575,7 +575,7 @@
       (resolve-denotation (rule-context-definition-context context) (cadr expression))
       (rule-context-ellipsis context))))
 
-(define (match-ellipsis-pattern context pattern expression fail)
+(define (match-ellipsis-pattern context pattern expression)
   (let ((matches
           (fold-right
             (lambda (all ones)
@@ -595,25 +595,25 @@
               (find-pattern-variables context (rule-context-literals context) pattern))
             (map
               (lambda (expression)
-                (match-pattern context pattern expression fail))
+                (match-pattern context pattern expression))
               expression))))
     (unless matches
-      (fail))
+      (raise #f))
     (map
       (lambda (pair)
         (cons (car pair) (make-ellipsis-match (cdr pair))))
       matches)))
 
-(define (match-pattern context pattern expression fail)
+(define (match-pattern context pattern expression)
   (define (match pattern expression)
-    (match-pattern context pattern expression fail))
+    (match-pattern context pattern expression))
 
   (cond
     ((memq pattern (rule-context-literals context))
       (unless (eq?
                (resolve-denotation (rule-context-use-context context) expression)
                (resolve-denotation (rule-context-definition-context context) pattern))
-        (fail))
+        (raise #f))
       '())
 
     ((symbol? pattern)
@@ -624,9 +624,9 @@
         ((ellipsis-pattern? context pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (when (< length 0)
-              (fail))
+              (raise #f))
             (append
-              (match-ellipsis-pattern context (car pattern) (take length expression) fail)
+              (match-ellipsis-pattern context (car pattern) (take length expression))
               (match (cddr pattern) (skip length expression)))))
 
         ((pair? expression)
@@ -635,13 +635,13 @@
             (match (cdr pattern) (cdr expression))))
 
         (else
-          (fail))))
+          (raise #f))))
 
     ((equal? pattern expression)
       '())
 
     (else
-      (fail))))
+      (raise #f))))
 
 (define (fill-ellipsis-template context matches template)
   (map
@@ -700,13 +700,8 @@
               (let* ((rule (car rules))
                      (rule-context (make-rule-context definition-context use-context ellipsis literals))
                      (matches
-                       (call/cc
-                         (lambda (continue)
-                           (match-pattern
-                             rule-context
-                             (car rule)
-                             expression
-                             (lambda () (continue #f)))))))
+                       (guard (value ((not value) #f))
+                         (match-pattern rule-context (car rule) expression))))
                 (if matches
                   (let* ((template (cadr rule))
                          (names
