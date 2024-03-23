@@ -448,7 +448,7 @@
         (lambda (expression) (expand-library-expression context expression))
         (cdr expression)))))
 
-; Expansion
+; Macro system
 
 ;; Types
 
@@ -579,8 +579,6 @@
   (let ((matches
           (fold-right
             (lambda (all ones)
-              (unless ones
-                (raise #f))
               (map
                 (lambda (pair)
                   (let ((name (car pair)))
