@@ -545,18 +545,17 @@
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
 (define (find-pattern-variables context bound-variables pattern)
+  (define variables (cons (rule-context-ellipsis context) bound-variables))
+
   (define (find pattern)
     (cond
-      ((memq pattern (cons (rule-context-ellipsis context) bound-variables))
-        '())
-
-      ((symbol? pattern)
-        (list pattern))
-
       ((pair? pattern)
         (append
           (find (car pattern))
           (find (cdr pattern))))
+
+      ((and (symbol? pattern) (not (memq pattern variables)))
+        (list pattern))
 
       (else
         '())))
@@ -576,32 +575,23 @@
       (rule-context-ellipsis context))))
 
 (define (match-ellipsis-pattern context pattern expression)
-  (let ((matches
-          (fold-right
-            (lambda (all ones)
-              (unless ones
-                (raise #f))
-              (map
-                (lambda (pair)
-                  (let ((name (car pair)))
-                    (cons name
-                      (cons
-                        (cdr pair)
-                        (cdr (assq name all))))))
-                ones))
-            (map
-              (lambda (name) (cons name '()))
-              (find-pattern-variables context (rule-context-literals context) pattern))
-            (map
-              (lambda (expression)
-                (match-pattern context pattern expression))
-              expression))))
-    (unless matches
-      (raise #f))
-    (map
-      (lambda (pair)
-        (cons (car pair) (make-ellipsis-match (cdr pair))))
-      matches)))
+  (map-values
+    make-ellipsis-match
+    (fold-right
+      (lambda (all expression)
+        (map
+          (lambda (pair)
+            (let ((name (car pair)))
+              (cons
+                name
+                (cons
+                  (cdr pair)
+                  (cdr (assq name all))))))
+          (match-pattern context pattern expression)))
+      (map
+        (lambda (name) (cons name '()))
+        (find-pattern-variables context (rule-context-literals context) pattern))
+      expression)))
 
 (define (match-pattern context pattern expression)
   (define (match pattern expression)
@@ -643,35 +633,23 @@
       (raise #f))))
 
 (define (fill-ellipsis-template context matches template)
-  (map
-    (lambda (matches) (fill-template context matches template))
-    (let* ((variables (find-pattern-variables context '() template))
-           (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
-           (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
-           (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
-      (when (null? ellipsis-matches)
-        (error "no ellipsis pattern variables" template))
-      (map
-        (lambda (matches) (append singleton-matches matches))
-        (zip-alist
-          (map
-            (lambda (pair)
-              (cons (car pair) (ellipsis-match-value (cdr pair))))
-            ellipsis-matches))))))
+  (let* ((variables (find-pattern-variables context '() template))
+         (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
+         (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
+         (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+    (when (null? ellipsis-matches)
+      (error "no ellipsis pattern variables" template))
+    (map
+      (lambda (matches) (fill-template context (append singleton-matches matches) template))
+      (zip-alist (map-values ellipsis-match-value ellipsis-matches)))))
 
 (define (fill-template context matches template)
   (define (fill template)
     (fill-template context matches template))
 
   (cond
-    ((symbol? template)
-      (cond
-        ((assq template matches) =>
-          cdr)
-
-        ; Skip a literal.
-        (else
-          template)))
+    ((and (symbol? template) (assq template matches)) =>
+      cdr)
 
     ((pair? template)
       (if (ellipsis-pattern? context template)
@@ -696,30 +674,27 @@
             (let loop ((rules rules))
               (unless (pair? rules)
                 (error "invalid syntax" expression))
-              (let* ((rule (car rules))
-                     (rule-context (make-rule-context definition-context use-context ellipsis literals))
-                     (matches
-                       (guard (value ((not value) #f))
-                         (match-pattern rule-context (car rule) expression))))
-                (if matches
-                  (let* ((template (cadr rule))
+              (let ((rule (car rules))
+                    (rule-context (make-rule-context definition-context use-context ellipsis literals)))
+                (guard (value
+                        ((not value)
+                          (loop (cdr rules))))
+                  (let* ((matches (match-pattern rule-context (car rule) expression))
+                         (template (cadr rule))
                          (names
                            (map
                              (lambda (name) (cons name (rename-variable use-context name)))
-                             (find-pattern-variables rule-context (append literals (map car matches)) template)))
-                         (use-context
-                           (macro-context-append
-                             use-context
-                             (map
-                               (lambda (pair)
-                                 (cons
-                                   (cdr pair)
-                                   (resolve-denotation definition-context (car pair))))
-                               names))))
+                             (find-pattern-variables rule-context (append literals (map car matches)) template))))
                     (values
                       (fill-template rule-context (append names matches) template)
-                      use-context))
-                  (loop (cdr rules))))))))
+                      (macro-context-append
+                        use-context
+                        (map
+                          (lambda (pair)
+                            (cons
+                              (cdr pair)
+                              (resolve-denotation definition-context (car pair))))
+                          names))))))))))
 
       (else
         (error "unsupported macro transformer" transformer)))))
