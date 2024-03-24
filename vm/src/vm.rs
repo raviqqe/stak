@@ -93,12 +93,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         };
 
         let null =
-            vm.allocate_unchecked(NEVER.set_tag(Type::Null as u8).into(), Default::default())?;
+            vm.allocate_unchecked(NEVER.set_tag(Type::Null as u8).into(), Default::default());
         // Do not use `NEVER` for `car` for an `equal?` procedure.
         let r#true =
-            vm.allocate_unchecked(null.set_tag(Type::Boolean as u8).into(), Default::default())?;
-        vm.r#false =
-            vm.allocate_unchecked(r#true.set_tag(Type::Boolean as u8).into(), null.into())?;
+            vm.allocate_unchecked(null.set_tag(Type::Boolean as u8).into(), Default::default());
+        vm.r#false = vm.allocate_unchecked(r#true.set_tag(Type::Boolean as u8).into(), null.into());
 
         Ok(vm)
     }
@@ -157,7 +156,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 for _ in 0..arguments.count.to_i64() {
                     let value = self.pop();
-                    list = self.cons(value, list)?;
+                    list = self.cons(value, list);
                 }
 
                 // Use a `program_counter` field as an escape cell for a procedure.
@@ -168,14 +167,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let continuation = if r#return {
                     self.continuation()
                 } else {
-                    self.allocate(self.cdr(program_counter), self.stack.into())?
+                    self.allocate(self.cdr(program_counter), self.stack.into())
                 };
                 self.stack = self.allocate(
                     continuation.into(),
                     self.environment(self.program_counter)
                         .set_tag(FRAME_TAG)
                         .into(),
-                )?;
+                );
                 self.program_counter = self
                     .cdr(self.code(self.program_counter).assume_cons())
                     .assume_cons();
@@ -185,12 +184,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         return Err(Error::ArgumentCount.into());
                     }
 
-                    self.push(self.car(self.register))?;
+                    self.push(self.car(self.register));
                     self.register = self.cdr(self.register).assume_cons();
                 }
 
                 if parameters.variadic {
-                    self.push(self.register.into())?;
+                    self.push(self.register.into());
                 } else if self.register != self.null() {
                     return Err(Error::ArgumentCount.into());
                 }
@@ -225,7 +224,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         trace!("operand", value);
 
-        self.push(value)?;
+        self.push(value);
         self.advance_program_counter();
 
         Ok(())
@@ -236,7 +235,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         trace!("constant", constant);
 
-        self.push(constant)?;
+        self.push(constant);
         self.advance_program_counter();
 
         Ok(())
@@ -322,7 +321,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         list
     }
 
-    fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T::Error> {
+    fn cons(&mut self, car: Value, cdr: Cons) -> Cons {
         self.allocate(car.set_tag(Type::Pair as u8), cdr.into())
     }
 
@@ -332,10 +331,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Pushes a value to a stack.
-    pub fn push(&mut self, value: Value) -> Result<(), T::Error> {
-        self.stack = self.cons(value, self.stack)?;
-
-        Ok(())
+    pub fn push(&mut self, value: Value) {
+        self.stack = self.cons(value, self.stack)
     }
 
     /// Pops a value from a stack.
@@ -358,8 +355,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Allocates a cons on heap.
-    pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
-        let mut cons = self.allocate_unchecked(car, cdr)?;
+    pub fn allocate(&mut self, car: Value, cdr: Value) -> Cons {
+        let mut cons = self.allocate_unchecked(car, cdr);
 
         debug_assert_eq!(cons.tag(), Type::default() as u8);
         assert_heap_cons!(self, cons);
@@ -367,15 +364,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         assert_heap_value!(self, cdr);
 
         if self.is_out_of_memory() || cfg!(feature = "gc_always") {
-            self.collect_garbages(Some(&mut cons))?;
+            self.collect_garbages(Some(&mut cons));
         }
 
-        Ok(cons)
+        cons
     }
 
-    fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
+    fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Cons {
         if self.is_out_of_memory() {
-            return Err(Error::OutOfMemory.into());
+            panic!("out of memory");
         }
 
         let cons = Cons::new(self.allocation_end() as u64);
@@ -388,7 +385,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         debug_assert!(self.allocation_index <= self.space_size());
 
-        Ok(cons)
+        cons
     }
 
     fn is_out_of_memory(&self) -> bool {
@@ -513,46 +510,43 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // Garbage collection
 
-    fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), T::Error> {
+    fn collect_garbages(&mut self, cons: Option<&mut Cons>) {
         self.allocation_index = 0;
         self.space = !self.space;
 
-        self.program_counter = self.copy_cons(self.program_counter)?;
-        self.stack = self.copy_cons(self.stack)?;
-        self.r#false = self.copy_cons(self.r#false)?;
-        self.register = self.copy_cons(self.register)?;
+        self.program_counter = self.copy_cons(self.program_counter);
+        self.stack = self.copy_cons(self.stack);
+        self.r#false = self.copy_cons(self.r#false);
+        self.register = self.copy_cons(self.register);
 
         if let Some(cons) = cons {
-            *cons = self.copy_cons(*cons)?;
+            *cons = self.copy_cons(*cons);
         }
 
         let mut index = self.allocation_start();
 
         while index < self.allocation_end() {
-            *self.heap_mut(index) = self.copy_value(self.heap(index))?;
+            *self.heap_mut(index) = self.copy_value(self.heap(index));
             index += 1;
         }
-
-        Ok(())
     }
 
-    fn copy_value(&mut self, value: Value) -> Result<Value, T::Error> {
-        Ok(if let Some(cons) = value.to_cons() {
-            self.copy_cons(cons)?.into()
+    fn copy_value(&mut self, value: Value) -> Value {
+        if let Some(cons) = value.to_cons() {
+            self.copy_cons(cons).into()
         } else {
             value
-        })
+        }
     }
 
-    fn copy_cons(&mut self, cons: Cons) -> Result<Cons, T::Error> {
-        Ok(if cons == NEVER {
+    fn copy_cons(&mut self, cons: Cons) -> Cons {
+        if cons == NEVER {
             NEVER
         } else if self.unchecked_cdr(cons) == NEVER.into() {
             // Get a forward pointer.
             self.unchecked_car(cons).assume_cons()
         } else {
-            let copy =
-                self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
+            let copy = self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons));
 
             // Set a forward pointer.
             self.set_unchecked_car(cons, copy.into());
@@ -560,7 +554,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             copy
         }
-        .set_tag(cons.tag()))
+        .set_tag(cons.tag())
     }
 
     // Initialization
@@ -583,10 +577,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("decode", "end");
 
         // Initialize an implicit top-level frame.
-        let continuation = self
-            .allocate(self.null().into(), self.null().into())?
-            .into();
-        self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
+        let continuation = self.allocate(self.null().into(), self.null().into()).into();
+        self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG));
 
         self.register = NEVER;
 
@@ -595,10 +587,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, T::Error> {
         // Initialize a shared empty string.
-        self.register = self.create_string(self.null(), 0)?;
+        self.register = self.create_string(self.null(), 0);
 
         for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
-            self.initialize_symbol(None, self.boolean(false).into())?;
+            self.initialize_symbol(None, self.boolean(false).into());
         }
 
         let mut length = 0;
@@ -608,15 +600,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             let byte = input.next().ok_or(Error::EndOfInput)?;
 
             (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
-                let string = self.create_string(name, length)?;
-                self.initialize_symbol(Some(string), self.boolean(false).into())?;
+                let string = self.create_string(name, length);
+                self.initialize_symbol(Some(string), self.boolean(false).into());
 
                 (0, self.null())
             } else {
-                (
-                    length + 1,
-                    self.cons(Number::new(byte as i64).into(), name)?,
-                )
+                (length + 1, self.cons(Number::new(byte as i64).into(), name))
             };
 
             byte != SYMBOL_TERMINATOR
@@ -625,7 +614,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let rib = self.allocate(
             NEVER.set_tag(Type::Procedure as u8).into(),
             Number::default().into(),
-        )?;
+        );
 
         let mut cons = self.stack;
 
@@ -641,7 +630,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.stack = self
             .car(self.tail(symbols, Number::new(symbol_index::RIB as i64)))
             .assume_cons();
-        self.register = self.cons(self.r#false.into(), symbols)?;
+        self.register = self.cons(self.r#false.into(), symbols);
 
         let mut current = self.register;
 
@@ -662,18 +651,18 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
+    fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) {
         let symbol = self.allocate(
             name.unwrap_or(self.register)
                 .set_tag(Type::Symbol as u8)
                 .into(),
             value,
-        )?;
+        );
 
         self.push(symbol.into())
     }
 
-    fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
+    fn create_string(&mut self, name: Cons, length: i64) -> Cons {
         self.allocate(
             name.set_tag(Type::String as u8).into(),
             Number::new(length).into(),
@@ -697,37 +686,33 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         self.decode_operand(
                             Self::decode_integer(input).ok_or(Error::MissingOperand)?,
                         ),
-                    )?;
-                    self.append_instruction(instruction, operand.into(), r#return)?
+                    );
+                    self.append_instruction(instruction, operand.into(), r#return)
                 }
                 code::Instruction::SET
                 | code::Instruction::GET
                 | code::Instruction::CONSTANT
                 | code::Instruction::NOP => {
-                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
+                    self.append_instruction(instruction, self.decode_operand(integer), r#return)
                 }
                 code::Instruction::IF => {
                     let then = self.program_counter;
 
                     self.program_counter = self.pop().assume_cons();
 
-                    self.append_instruction(instruction, then.into(), false)?
+                    self.append_instruction(instruction, then.into(), false)
                 }
                 code::Instruction::CLOSE => {
                     let code = self.allocate(
                         Number::new(integer as i64).into(),
                         self.program_counter.into(),
-                    )?;
+                    );
                     let procedure =
-                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
+                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into());
 
                     self.program_counter = self.pop().assume_cons();
 
-                    self.append_instruction(
-                        code::Instruction::CONSTANT,
-                        procedure.into(),
-                        r#return,
-                    )?
+                    self.append_instruction(code::Instruction::CONSTANT, procedure.into(), r#return)
                 }
                 code::Instruction::SKIP => {
                     self.tail(self.program_counter, Number::new(integer as i64))
@@ -738,19 +723,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             let program_counter = replace(&mut self.program_counter, program_counter);
 
             if r#return {
-                self.push(program_counter.into())?;
+                self.push(program_counter.into());
             }
         }
 
         Ok(())
     }
 
-    fn append_instruction(
-        &mut self,
-        instruction: u8,
-        operand: Value,
-        r#return: bool,
-    ) -> Result<Cons, T::Error> {
+    fn append_instruction(&mut self, instruction: u8, operand: Value, r#return: bool) -> Cons {
         self.cons(
             operand,
             (if r#return {
