@@ -197,9 +197,6 @@
 
     (define-syntax define
       (syntax-rules ()
-        ((_ (name argument ...) body1 body2 ...)
-          (define name (lambda (argument ...) body1 body2 ...)))
-
         ((_ (name argument ... . rest) body1 body2 ...)
           (define name (lambda (argument ... . rest) body1 body2 ...)))
 
@@ -212,23 +209,11 @@
           (lambda "value" arguments () (define content ...) body1 body2 ...))
 
         ((_ "value" arguments ((name value) ...)
-            (define (new-name argument ...) body1 body2 ...)
-            body3
-            body4
-            ...)
-          (lambda "value" arguments ((name value) ...)
-            (define new-name (lambda (argument ...) body1 body2 ...))
-            body3
-            body4
-            ...))
-
-        ((_ "value" arguments ((name value) ...)
             (define (new-name argument ... . rest) body1 body2 ...)
             body3
             body4
             ...)
-          (lambda "value" arguments ((name value) ...)
-            (define new-name (lambda (argument ... . rest) body1 body2 ...))
+          (lambda "value" arguments ((name value) ... (new-name (lambda (argument ... . rest) body1 body2 ...)))
             body3
             body4
             ...))
@@ -372,9 +357,8 @@
           ((lambda (name ...) body1 body2 ...) value ...))
 
         ((_ tag ((name value) ...) body1 body2 ...)
-          ((letrec ((tag (lambda (name ...) body1 body2 ...))) tag)
-            value
-            ...))))
+          (letrec ((tag (lambda (name ...) body1 body2 ...)))
+            (tag value ...)))))
 
     (define-syntax let*
       (syntax-rules ()
@@ -421,76 +405,57 @@
         ((_ (else result1 result2 ...))
           (begin result1 result2 ...))
 
-        ((_ (test => result))
-          (let ((temp test))
-            (if temp (result temp))))
-
-        ((_ (test => result) clause1 clause2 ...)
+        ((_ (test => result) clause ...)
           (let ((temp test))
             (if temp
               (result temp)
-              (cond clause1 clause2 ...))))
+              (cond clause ...))))
 
-        ((_ (test))
-          test)
+        ((_ (test) clause ...)
+          (or
+            test
+            (cond clause ...)))
 
-        ((_ (test) clause1 clause2 ...)
-          (let ((temp test))
-            (if temp
-              temp
-              (cond clause1 clause2 ...))))
-
-        ((_ (test result1 result2 ...))
-          (if test (begin result1 result2 ...)))
-
-        ((_ (test result1 result2 ...) clause1 clause2 ...)
+        ((_ (test result1 result2 ...) clause ...)
           (if test
             (begin result1 result2 ...)
-            (cond clause1 clause2 ...)))))
+            (cond clause ...)))
+
+        ((_)
+          #f)))
 
     (define-syntax case
       (syntax-rules (else =>)
-        ((_ (key ...)
-            clause
-            ...)
-          (let ((atom-key (key ...)))
-            (case atom-key clause ...)))
+        ((_ (key ...) clause ...)
+          (let ((value (key ...)))
+            (case value clause ...)))
 
-        ((_ key
-            (else => result))
+        ((_ key (else => result))
           (result key))
 
-        ((_ key
-            (else result1 result2 ...))
+        ((_ key (else result1 result2 ...))
           (begin result1 result2 ...))
 
-        ((_ key
-            ((atom ...) result1 result2 ...))
-          (if (memv key '(atom ...))
-            (begin result1 result2 ...)))
-
-        ((_ key
-            ((atom ...) => result))
-          (if (memv key '(atom ...))
-            (result key)))
-
-        ((_ key
-            ((atom ...) => result)
-            clause1
-            clause2
-            ...)
-          (if (memv key '(atom ...))
+        ((_ key ((atom ...) => result) clause ...)
+          (if (case-match key (atom ...))
             (result key)
-            (case key clause1 clause2 ...)))
+            (case key clause ...)))
 
-        ((_ key
-            ((atom ...) result1 result2 ...)
-            clause1
-            clause2
-            ...)
-          (if (memv key '(atom ...))
+        ((_ key ((atom ...) result1 result2 ...) clause ...)
+          (if (case-match key (atom ...))
             (begin result1 result2 ...)
-            (case key clause1 clause2 ...)))))
+            (case key clause ...)))
+
+        ((_ key)
+          #f)))
+
+    (define-syntax case-match
+      (syntax-rules ()
+        ((_ key (atom))
+          (eqv? key 'atom))
+
+        ((_ key (atom ...))
+          (memv key '(atom ...)))))
 
     (define-syntax and
       (syntax-rules ()
