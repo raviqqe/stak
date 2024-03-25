@@ -1,7 +1,6 @@
 use crate::Operand;
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
-use core::fmt::{self, Display, Formatter};
 
 /// An instruction.
 #[derive(Debug, Eq, PartialEq)]
@@ -39,96 +38,101 @@ impl Instruction {
     pub const NOP: u8 = 5;
     pub const CLOSE: u8 = 6;
     pub const SKIP: u8 = 7;
+}
+
+#[cfg(feature = "alloc")]
+mod display {
+    use super::*;
+    use core::fmt::{self, Display, Formatter};
 
     /// Displays instructions in a slice.
-    #[cfg(feature = "alloc")]
-    pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
-        DisplayInstructionList::new(instructions, 0)
-    }
-}
-
-struct DisplayInstruction<'a> {
-    instruction: &'a Instruction,
-    #[allow(unused)]
-    indent: usize,
-}
-
-impl<'a> DisplayInstruction<'a> {
-    fn new(instruction: &'a Instruction, indent: usize) -> Self {
-        Self {
-            instruction,
-            indent,
+    impl Instruction {
+        pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
+            DisplayInstructionList::new(instructions, 0)
         }
     }
-}
 
-impl<'a> Display for DisplayInstruction<'a> {
-    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        #[cfg(feature = "alloc")]
-        let indent = self.indent + 1;
+    struct DisplayInstruction<'a> {
+        instruction: &'a Instruction,
+        #[allow(unused)]
+        indent: usize,
+    }
 
-        write!(formatter, "- ")?;
+    impl<'a> DisplayInstruction<'a> {
+        fn new(instruction: &'a Instruction, indent: usize) -> Self {
+            Self {
+                instruction,
+                indent,
+            }
+        }
+    }
 
-        match self.instruction {
-            Instruction::Call(count, operand) => write!(formatter, "call {} {}", count, operand),
-            Instruction::Set(operand) => write!(formatter, "set {}", operand),
-            Instruction::Get(operand) => write!(formatter, "get {}", operand),
-            Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
-            #[cfg(feature = "alloc")]
-            Instruction::If(instructions) => {
-                write!(formatter, "if")?;
+    impl<'a> Display for DisplayInstruction<'a> {
+        fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+            let indent = self.indent + 1;
+
+            write!(formatter, "- ")?;
+
+            match self.instruction {
+                Instruction::Call(count, operand) => {
+                    write!(formatter, "call {} {}", count, operand)
+                }
+                Instruction::Set(operand) => write!(formatter, "set {}", operand),
+                Instruction::Get(operand) => write!(formatter, "get {}", operand),
+                Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
+                Instruction::If(instructions) => {
+                    write!(formatter, "if")?;
+                    write!(
+                        formatter,
+                        "{}",
+                        DisplayInstructionList::new(instructions, indent)
+                    )
+                }
+                Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
+                Instruction::Close(arity, instructions) => {
+                    write!(formatter, "close {}", arity)?;
+                    write!(
+                        formatter,
+                        "{}",
+                        DisplayInstructionList::new(instructions, indent)
+                    )
+                }
+                Instruction::Skip(count) => write!(formatter, "skip {}", count),
+            }
+        }
+    }
+
+    struct DisplayInstructionList<'a> {
+        instructions: &'a [Instruction],
+        indent: usize,
+    }
+
+    impl<'a> DisplayInstructionList<'a> {
+        fn new(instructions: &'a [Instruction], indent: usize) -> Self {
+            Self {
+                instructions,
+                indent,
+            }
+        }
+    }
+
+    impl<'a> Display for DisplayInstructionList<'a> {
+        fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+            for instruction in self.instructions {
+                writeln!(formatter)?;
+
+                for _ in 0..self.indent {
+                    write!(formatter, "  ")?
+                }
+
                 write!(
                     formatter,
                     "{}",
-                    DisplayInstructionList::new(instructions, indent)
-                )
-            }
-            Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
-            #[cfg(feature = "alloc")]
-            Instruction::Close(arity, instructions) => {
-                write!(formatter, "close {}", arity)?;
-                write!(
-                    formatter,
-                    "{}",
-                    DisplayInstructionList::new(instructions, indent)
-                )
-            }
-            Instruction::Skip(count) => write!(formatter, "skip {}", count),
-        }
-    }
-}
-
-struct DisplayInstructionList<'a> {
-    instructions: &'a [Instruction],
-    indent: usize,
-}
-
-impl<'a> DisplayInstructionList<'a> {
-    #[cfg(feature = "alloc")]
-    fn new(instructions: &'a [Instruction], indent: usize) -> Self {
-        Self {
-            instructions,
-            indent,
-        }
-    }
-}
-
-impl<'a> Display for DisplayInstructionList<'a> {
-    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        for instruction in self.instructions {
-            writeln!(formatter)?;
-
-            for _ in 0..self.indent {
-                write!(formatter, "  ")?
+                    DisplayInstruction::new(instruction, self.indent)
+                )?;
             }
 
-            write!(
-                formatter,
-                "{}",
-                DisplayInstruction::new(instruction, self.indent)
-            )?;
+            Ok(())
         }
-
-        Ok(())
     }
 }
