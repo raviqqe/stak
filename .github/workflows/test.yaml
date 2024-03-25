@@ -50,6 +50,8 @@ jobs:
         working-directory: wasm
       - run: wasm-pack test --chrome --headless
         working-directory: wasm
+      - run: wasm-pack pack
+        working-directory: wasm
   integration_test:
     strategy:
       fail-fast: false
