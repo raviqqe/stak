@@ -24,6 +24,8 @@ jobs:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/ci/release.sh
       - run: wasm-pack build wasm
+      - run: cat pkg/package.json | jq '. + { "name": "@raviqqe/stak", "license": "MIT" }'
+        working-directory: wasm
       - run: wasm-pack pack wasm
       - run: wasm-pack publish wasm
   release:
