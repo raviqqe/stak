@@ -31,5 +31,5 @@ fn run_bytecodes() {
     .ok()
     .unwrap();
 
-    run(bytecodes, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
+    run(&bytecodes, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
 }
