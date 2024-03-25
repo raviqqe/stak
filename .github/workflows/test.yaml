@@ -41,17 +41,6 @@ jobs:
       - uses: codecov/codecov-action@v4
         with:
           files: lcov.info
-  wasm:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: cargo install wasm-pack
-      - run: wasm-pack build
-        working-directory: wasm
-      - run: wasm-pack test --chrome --headless
-        working-directory: wasm
-      - run: wasm-pack pack
-        working-directory: wasm
   integration_test:
     strategy:
       fail-fast: false
@@ -111,12 +100,24 @@ jobs:
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/self_host_test.sh
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: cargo install wasm-pack
+      - run: wasm-pack build
+        working-directory: wasm
+      - run: wasm-pack test --chrome --headless
+        working-directory: wasm
+      - run: wasm-pack pack
+        working-directory: wasm
   test:
     needs:
       - build
       - unit_test
       - integration_test
       - self_host_test
+      - wasm
     if: always()
     runs-on: ubuntu-latest
     steps:
