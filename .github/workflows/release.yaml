@@ -23,9 +23,9 @@ jobs:
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: tools/ci/release.sh
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        if: github.ref == 'refs/heads/main'
+      - run: wasm-pack build wasm
+      - run: wasm-pack pack wasm
+      - run: wasm-pack publish wasm
   release:
     needs:
       - cargo
