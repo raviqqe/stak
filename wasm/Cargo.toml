@@ -1,8 +1,12 @@
 [package]
 name = "stak-wasm"
+description = "Stak Scheme VM in WebAssembly"
 version = "0.1.0"
-authors = ["Yota Toyama <raviqqe@gmail.com>"]
-edition = "2021"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]
