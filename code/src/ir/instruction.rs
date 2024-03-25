@@ -1,5 +1,4 @@
 use crate::Operand;
-#[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use core::fmt::{self, Display, Formatter};
 
@@ -15,14 +14,12 @@ pub enum Instruction {
     /// A `constant` instruction.
     Constant(Operand),
     /// An `if` instruction.
-    #[cfg(feature = "alloc")]
     If(Vec<Instruction>),
     /// A `nop` instruction.
     Nop(u64),
     /// A `close` instruction.
     ///
     /// It is used only for encoding.
-    #[cfg(feature = "alloc")]
     Close(u64, Vec<Instruction>),
     /// A `skip` instruction.
     ///
@@ -41,7 +38,6 @@ impl Instruction {
     pub const SKIP: u8 = 7;
 
     /// Displays instructions in a slice.
-    #[cfg(feature = "alloc")]
     pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
         DisplayInstructionList::new(instructions, 0)
     }
@@ -64,17 +60,17 @@ impl<'a> DisplayInstruction<'a> {
 
 impl<'a> Display for DisplayInstruction<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        #[cfg(feature = "alloc")]
         let indent = self.indent + 1;
 
         write!(formatter, "- ")?;
 
         match self.instruction {
-            Instruction::Call(count, operand) => write!(formatter, "call {} {}", count, operand),
+            Instruction::Call(count, operand) => {
+                write!(formatter, "call {} {}", count, operand)
+            }
             Instruction::Set(operand) => write!(formatter, "set {}", operand),
             Instruction::Get(operand) => write!(formatter, "get {}", operand),
             Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
-            #[cfg(feature = "alloc")]
             Instruction::If(instructions) => {
                 write!(formatter, "if")?;
                 write!(
@@ -84,7 +80,6 @@ impl<'a> Display for DisplayInstruction<'a> {
                 )
             }
             Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
-            #[cfg(feature = "alloc")]
             Instruction::Close(arity, instructions) => {
                 write!(formatter, "close {}", arity)?;
                 write!(
@@ -104,7 +99,6 @@ struct DisplayInstructionList<'a> {
 }
 
 impl<'a> DisplayInstructionList<'a> {
-    #[cfg(feature = "alloc")]
     fn new(instructions: &'a [Instruction], indent: usize) -> Self {
         Self {
             instructions,
