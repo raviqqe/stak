@@ -23,7 +23,6 @@ pub fn run(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, 
     )?;
 
     vm.initialize(bytecodes.iter().copied())?;
-
     vm.run()?;
 
     Ok(output)
