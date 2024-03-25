@@ -41,11 +41,11 @@ jobs:
       - uses: codecov/codecov-action@v4
         with:
           files: lcov.info
-  wasm_test:
+  wasm:
     runs-on: ubuntu-latest
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: cargo install
+      - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
       - run: wasm-pack test --node
