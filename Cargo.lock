@@ -128,9 +128,9 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "indoc"
-version = "2.0.4"
+version = "2.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e186cfbae8084e513daff4240b4797e342f988cecda4fb6c939150f96315fd8"
+checksum = "b248f5224d1d606005e02c97f5aa4e88eeb230488bcc03bc9ca4d7991399f2b5"
 
 [[package]]
 name = "insta"
@@ -205,7 +205,7 @@ checksum = "420acb44afdae038210c99e69aae24109f32f15500aa708e81d46c9f29d55fcf"
 
 [[package]]
 name = "stak"
-version = "0.2.23"
+version = "0.2.24"
 dependencies = [
  "clap",
  "main_error",
@@ -218,7 +218,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.18"
+version = "0.2.19"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -226,14 +226,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.23"
+version = "0.1.24"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.23"
+version = "0.1.24"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -244,11 +244,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.15"
+version = "0.1.16"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "clap",
  "main_error",
@@ -257,11 +257,11 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.19"
+version = "0.2.20"
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.21"
+version = "0.1.22"
 dependencies = [
  "clap",
  "main_error",
@@ -273,7 +273,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.20"
+version = "0.1.21"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -286,7 +286,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.2.20"
+version = "0.2.21"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -294,7 +294,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.21"
+version = "0.1.22"
 dependencies = [
  "clap",
  "main_error",
@@ -307,7 +307,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.3.20"
+version = "0.3.21"
 dependencies = [
  "insta",
  "stak-code",
@@ -324,9 +324,9 @@ checksum = "5ee073c9e4cd00e28217186dbe12796d692868f432bf2e97ee73bed0c56dfa01"
 
 [[package]]
 name = "syn"
-version = "2.0.53"
+version = "2.0.55"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7383cd0e49fff4b6b90ca5670bfd3e9d6a733b3f90c686605aa7eec8c4996032"
+checksum = "002a1b3dbf967edfafc32655d0f377ab0bb7b994aa1d32c8cc7e9b8bf3ebb8f0"
 dependencies = [
  "proc-macro2",
  "quote",
