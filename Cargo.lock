@@ -369,6 +369,10 @@ dependencies = [
 name = "stak-wasm"
 version = "0.1.0"
 dependencies = [
+ "stak-device",
+ "stak-macro",
+ "stak-primitive",
+ "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
 ]
