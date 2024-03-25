@@ -370,6 +370,7 @@ name = "stak-wasm"
 version = "0.1.0"
 dependencies = [
  "stak-compiler",
+ "stak-configuration",
  "stak-device",
  "stak-macro",
  "stak-primitive",

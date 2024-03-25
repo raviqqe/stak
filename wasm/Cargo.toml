@@ -13,6 +13,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 stak-compiler = { version = "0.1", path = "../compiler" }
+stak-configuration = { version = "0.1.16", path = "../configuration" }
 stak-device = { version = "0.2", path = "../device", features = ["std"] }
 stak-macro = { version = "0.1", path = "../macro" }
 stak-primitive = { version = "0.2", path = "../primitive", features = ["std"] }
@@ -20,4 +21,5 @@ stak-vm = { version = "0.3", path = "../vm", features = ["std"] }
 wasm-bindgen = "0.2.84"
 
 [dev-dependencies]
+stak-configuration = { version = "0.1.16", path = "../configuration" }
 wasm-bindgen-test = "0.3.34"
