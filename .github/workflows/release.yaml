@@ -8,7 +8,16 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
-  release:
+  cargo:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
+    steps:
+      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: tools/ci/release.sh
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        if: github.ref == 'refs/heads/main'
+  wasm:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
