@@ -73,7 +73,7 @@ const output = computed(source, (source) =>
         resize: none;
       }
     </style>
-    <DemoForm source={source} />
-    <DemoOutput output={output} />
+    <DemoForm client:load source={source} />
+    <DemoOutput client:load output={output} />
   </body>
 </html>

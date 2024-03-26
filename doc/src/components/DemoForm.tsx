@@ -13,7 +13,8 @@ export const DemoForm = ({ source }: Props): JSX.Element => {
   return (
     <form
       class={styles.container}
-      onSubmit={() => {
+      onSubmit={(event) => {
+        event.preventDefault();
         source.set("foo");
       }}
     >
@@ -21,7 +22,7 @@ export const DemoForm = ({ source }: Props): JSX.Element => {
         {$source}
       </textarea>
       <div>
-        <button>Run</button>
+        <button type="submit">Run</button>
       </div>
     </form>
   );
