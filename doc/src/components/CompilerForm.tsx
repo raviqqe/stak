@@ -1,3 +1,5 @@
+import preact from "preact";
+
 interface Props {}
 
 export const DemoForm = ({}: Props) => (
