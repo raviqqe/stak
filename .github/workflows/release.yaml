@@ -23,7 +23,9 @@ jobs:
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: wasm-pack build --target web wasm
-      - run: cat pkg/package.json | jq '.name = "@raviqqe/stak"'
+      - run: |
+          jq '. + input' pkg/package.json package.json > /tmp/package.json
+          cp /tmp/package.json pkg
         working-directory: wasm
       - run: wasm-pack pack wasm
       - uses: JS-DevTools/npm-publish@v3
