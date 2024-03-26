@@ -20,7 +20,7 @@ export const DemoForm = ({ source }: Props): JSX.Element => {
       <textarea onChange={(event) => source.set(event.currentTarget.value)}>
         {$source}
       </textarea>
-      <div class={styles.buttonGroup}>
+      <div>
         <button>Run</button>
       </div>
     </form>
