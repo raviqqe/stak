@@ -9,8 +9,8 @@
   flex-direction: column;
   gap: 1rem;
   align-items: stretch;
+}
 
-  textarea {
-    flex: 1;
-  }
+.source {
+  flex: 1;
 }
