@@ -1,22 +1,6 @@
 ---
-import { compile, run } from "@raviqqe/stak";
-import { atom, computed } from "nanostores";
 import { DemoForm } from "../components/DemoForm";
 import { DemoOutput } from "../components/DemoOutput";
-
-const source = atom(
-  `
-(import (scheme write))
-
-(display "Hello, world!")
-  `.trim(),
-);
-
-const output = computed(source, (source) =>
-  new TextDecoder().decode(
-    run(compile(source), new Uint8Array(0), Math.pow(2, 20)),
-  ),
-);
 ---
 
 <html lang="en">
@@ -73,7 +57,7 @@ const output = computed(source, (source) =>
         resize: none;
       }
     </style>
-    <DemoForm client:load source={source} />
-    <DemoOutput client:load output={output} />
+    <DemoForm client:load />
+    <DemoOutput client:load />
   </body>
 </html>
