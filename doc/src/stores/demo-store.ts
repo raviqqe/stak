@@ -1,4 +1,5 @@
 import { atom } from "nanostores";
+import Worker from "./demo-worker.js?worker";
 
 export const $source = atom(
   `
@@ -11,7 +12,7 @@ export const $source = atom(
 export const $output = atom("");
 
 export const initializeWorker = (): Worker => {
-  const worker = new Worker("./demo-worker.ts", { type: "module" });
+  const worker = new Worker();
 
   $source.subscribe((source) => worker.postMessage(source));
   worker.addEventListener("message", (event) => $output.set(event.data));

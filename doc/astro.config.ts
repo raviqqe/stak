@@ -2,7 +2,6 @@ import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
-import worker from "@astropub/worker";
 import { sortBy, capitalize } from "@raviqqe/loscore";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
@@ -53,7 +52,6 @@ export default defineConfig({
   integrations: [
     preact(),
     sitemap(),
-    worker(),
     starlight({
       title: "Stak",
       favicon: "/icon.svg",
