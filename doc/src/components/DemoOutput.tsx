@@ -7,8 +7,10 @@ export const DemoOutput = (): JSX.Element => {
   const output = useStore($output);
 
   return (
-    <pre class={styles.container}>
-      <code>{output}</code>
-    </pre>
+    <div class={styles.container}>
+      <pre class={styles.container}>
+        <code>{output}</code>
+      </pre>
+    </div>
   );
 };
