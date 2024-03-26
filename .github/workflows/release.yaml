@@ -22,12 +22,16 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: tools/ci/release.sh
       - run: wasm-pack build wasm
       - run: cat pkg/package.json | jq '.name = "@raviqqe/stak"'
         working-directory: wasm
       - run: wasm-pack pack wasm
-      - run: wasm-pack publish wasm
+      - uses: JS-DevTools/npm-publish@v3
+        with:
+          access: public
+          provenance: true
+          token: ${{ secrets.NPM_TOKEN }}
+        if: github.ref == 'refs/heads/main'
   release:
     needs:
       - cargo
