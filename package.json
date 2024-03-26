@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@nanostores/preact": "^0.5.1",
-    "nanostores": "^0.10.0"
-  }
-}
