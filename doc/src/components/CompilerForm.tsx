@@ -1,12 +1,16 @@
-import preact from "preact";
+interface Props {
+  source: string;
+  onSubmit: () => void;
+}
 
-interface Props {}
-
-export const DemoForm = ({}: Props) => (
-  <form class="container" onsubmit="submit()">
-    <textarea>{source}</textarea>
-    <div>
-      <button>Run</button>
-    </div>
-  </form>
-);
+export const DemoForm = ({ source, onSubmit }: Props) => {
+  const foo = useState();
+  return (
+    <form class="container" onSubmit={onSubmit}>
+      <textarea>{source}</textarea>
+      <div>
+        <button>Run</button>
+      </div>
+    </form>
+  );
+};
