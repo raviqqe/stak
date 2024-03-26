@@ -9,7 +9,7 @@ export const $source = atom(
   `.trim(),
 );
 
-export const $output = atom("");
+export const $output = atom<string | null>(null);
 
 export const initializeWorker = (): Worker => {
   const worker = new Worker();
