@@ -1,9 +1,13 @@
 ---
+import { compile, run } from "@raviqqe/stak";
+
 const source = `
 (import (scheme write))
 
 (display "Hello, world!")
 `.trim();
+
+const output = "";
 ---
 
 <html lang="en">
@@ -53,9 +57,15 @@ const source = `
       }
     </style>
     <form>
-      <textarea>{source}</textarea>
+      <div>
+        <textarea>{source}</textarea>
+        <div>
+          <button>Run</button>
+        </div>
+      </div>
       <pre>
         <code>
+          {output}
         </code>
       </pre>
     </form>
