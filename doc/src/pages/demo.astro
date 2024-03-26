@@ -1,11 +1,14 @@
 ---
 import { compile, run } from "@raviqqe/stak";
+import { atom } from "nanostores";
 
-const source = `
-(import (scheme write))
+const source = atom(
+  `
+    (import (scheme write))
 
-(display "Hello, world!")
-`.trim();
+    (display "Hello, world!")
+  `.trim(),
+);
 
 let output = "";
 
