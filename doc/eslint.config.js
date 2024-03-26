@@ -1,1 +1,10 @@
-export { default } from "@raviqqe/eslint-config";
+import configurations from "@raviqqe/eslint-config";
+
+export default [
+  ...configurations,
+  {
+    rules: {
+      "@typescript-eslint/triple-slash-reference": "off",
+    },
+  },
+];
