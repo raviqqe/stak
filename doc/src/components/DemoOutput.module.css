@@ -1,8 +1,13 @@
 .container {
+  flex: 1;
 }
 
 .output {
+  height: 100%;
   padding: 1rem;
+  margin: 0;
+  box-sizing: border-box;
+  overflow: auto;
   border: 1px solid gray;
   border-radius: 0.5rem;
 }

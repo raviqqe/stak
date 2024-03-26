@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/preact";
-import styles from "./DemoForm.module.css";
+import { useEffect } from "preact/hooks";
 import type { JSX } from "preact/jsx-runtime";
 import { $source, initializeWorker } from "../stores/demo-store";
-import { useEffect } from "preact/hooks";
+import styles from "./DemoForm.module.css";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
@@ -13,9 +13,9 @@ export const DemoForm = (): JSX.Element => {
   }, []);
 
   return (
-    <form class={styles.container}>
+    <form className={styles.container}>
       <textarea
-        class={styles.source}
+        className={styles.source}
         onInput={(event) => $source.set(event.currentTarget.value)}
       >
         {source}

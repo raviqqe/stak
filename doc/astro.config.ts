@@ -48,6 +48,9 @@ export default defineConfig({
   },
   vite: {
     plugins: [wasm()],
+    worker: {
+      format: "es",
+    },
   },
   integrations: [
     preact(),
