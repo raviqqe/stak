@@ -16,7 +16,7 @@
     "@astrojs/starlight": "^0.21.2",
     "@nanostores/preact": "^0.5.1",
     "@raviqqe/loscore": "^0.2.2",
-    "@raviqqe/stak": "../wasm/pkg",
+    "@raviqqe/stak": "^0.2.0",
     "astro": "^4.5.9",
     "nanostores": "^0.10.0",
     "preact": "^10.20.1",
