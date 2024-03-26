@@ -31,9 +31,9 @@ jobs:
       - uses: JS-DevTools/npm-publish@v3
         with:
           access: public
+          package: wasm/pkg
           provenance: true
           token: ${{ secrets.NPM_TOKEN }}
-        working-directory: wasm/pkg
         # TODO
         # if: github.ref == 'refs/heads/main'
   release:
