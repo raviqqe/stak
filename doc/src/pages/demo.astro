@@ -1,7 +1,9 @@
 ---
-import { compile, run } from "@raviqqe/stak";
+import init, { compile, run } from "@raviqqe/stak";
 import { atom, computed } from "nanostores";
 import { DemoForm } from "../components/DemoForm";
+
+await init();
 
 const source = atom(
   `
