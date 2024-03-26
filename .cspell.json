@@ -6,8 +6,10 @@
     "assq",
     "assv",
     "astro",
+    "bindgen",
     "bytecodes",
     "bytevector",
+    "cdylib",
     "chibi",
     "clippy",
     "codecov",
@@ -23,12 +25,14 @@
     "raviqqe",
     "repr",
     "ribbit",
+    "rlib",
     "rustc",
     "rustfmt",
     "rustup",
     "stak",
     "uninterned",
-    "unresolve"
+    "unresolve",
+    "yota",
   ],
   "patterns": [
     {
