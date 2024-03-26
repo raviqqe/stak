@@ -8,7 +8,7 @@ export const DemoOutput = (): JSX.Element => {
 
   return (
     <div class={styles.container}>
-      <pre class={styles.container}>
+      <pre class={styles.output}>
         <code>{output}</code>
       </pre>
     </div>

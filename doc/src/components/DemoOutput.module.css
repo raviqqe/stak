@@ -1,3 +1,9 @@
 .container {
   padding: 1rem;
 }
+
+.output {
+  padding: 1rem;
+  border: 1px solid gray;
+  border-radius: 0.5rem;
+}
