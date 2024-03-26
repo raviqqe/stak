@@ -23,13 +23,10 @@ for file in $(find $directory -name '*.md'); do
   mv $new_file $file
 done
 
-cargo doc --all-features
+cargo install wasm-pack
+wasm-pack build wasm
 
-(
-  cd wasm
-  cargo install wasm-pack
-  wasm-pack build
-)
+cargo doc --all-features
 
 cd doc
 
