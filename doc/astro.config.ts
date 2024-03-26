@@ -1,4 +1,5 @@
 import { defineConfig } from "astro/config";
+import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { sortBy, capitalize } from "@raviqqe/loscore";
@@ -46,6 +47,7 @@ export default defineConfig({
     remotePatterns: [{ protocol: "https" }],
   },
   integrations: [
+    preact(),
     sitemap(),
     starlight({
       title: "Stak",
