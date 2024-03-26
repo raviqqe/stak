@@ -8,7 +8,7 @@ concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
-  release:
+  cargo:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
@@ -17,3 +17,29 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         if: github.ref == 'refs/heads/main'
+  wasm:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
+    steps:
+      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: wasm-pack build --target web wasm
+      - run: |
+          jq '. + input' pkg/package.json package.json > /tmp/package.json
+          mv /tmp/package.json pkg
+        working-directory: wasm
+      - run: wasm-pack pack wasm
+      - uses: JS-DevTools/npm-publish@v3
+        with:
+          access: public
+          package: wasm/pkg
+          provenance: true
+          token: ${{ secrets.NPM_TOKEN }}
+        if: github.ref == 'refs/heads/main'
+  release:
+    needs:
+      - cargo
+      - wasm
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: for result in ${{ join(needs.*.result, ' ') }}; do [ $result = success ]; done
