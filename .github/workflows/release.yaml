@@ -33,6 +33,7 @@ jobs:
           access: public
           provenance: true
           token: ${{ secrets.NPM_TOKEN }}
+        working-directory: wasm/pkg
         # TODO
         # if: github.ref == 'refs/heads/main'
   release:
