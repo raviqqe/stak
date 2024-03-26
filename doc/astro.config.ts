@@ -47,10 +47,12 @@ export default defineConfig({
     service: { entrypoint: "astro/assets/services/sharp" },
     remotePatterns: [{ protocol: "https" }],
   },
+  vite: {
+    plugins: [wasm()],
+  },
   integrations: [
     preact(),
     sitemap(),
-    wasm(),
     starlight({
       title: "Stak",
       favicon: "/icon.svg",
