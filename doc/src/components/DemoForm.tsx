@@ -8,7 +8,7 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <form class={styles.container}>
-      <textarea onChange={(event) => $source.set(event.currentTarget.value)}>
+      <textarea onInput={(event) => $source.set(event.currentTarget.value)}>
         {source}
       </textarea>
       <div>

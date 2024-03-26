@@ -1,5 +1,8 @@
-import { compile, run } from "@raviqqe/stak";
 import { atom, computed } from "nanostores";
+
+const worker = new Worker("./demo-worker.ts", { type: "module" });
+
+worker.postMessage("Hello");
 
 export const $source = atom(
   `
@@ -9,8 +12,6 @@ export const $source = atom(
   `.trim(),
 );
 
-export const $output = computed($source, (source) =>
-  new TextDecoder().decode(
-    run(compile(source), new Uint8Array(0), Math.pow(2, 20)),
-  ),
-);
+export const $output = atom("");
+
+worker.addEventListener("message", (event) => $output.set(event.data));
