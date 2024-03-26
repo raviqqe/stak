@@ -15,7 +15,9 @@ export const initializeWorker = (): Worker => {
   const worker = new Worker();
 
   $source.subscribe((source) => worker.postMessage(source));
-  worker.addEventListener("message", (event) => $output.set(event.data));
+  worker.addEventListener("message", (event: MessageEvent<string>) =>
+    $output.set(event.data),
+  );
 
   return worker;
 };
