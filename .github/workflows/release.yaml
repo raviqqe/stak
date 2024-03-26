@@ -25,7 +25,7 @@ jobs:
       - run: wasm-pack build --target web wasm
       - run: |
           jq '. + input' pkg/package.json package.json > /tmp/package.json
-          cp /tmp/package.json pkg
+          mv /tmp/package.json pkg
         working-directory: wasm
       - run: wasm-pack pack wasm
       - uses: JS-DevTools/npm-publish@v3
