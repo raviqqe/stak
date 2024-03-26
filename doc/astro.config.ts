@@ -1,16 +1,18 @@
 import { defineConfig } from "astro/config";
+import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { sortBy, capitalize } from "@raviqqe/loscore";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
+import wasm from "vite-plugin-wasm";
 
 type Item = { label: string; link: string } | { label: string; items: Item[] };
 
 const documentDirectory = "src/content/docs";
 
-const listItems = async (directory: string): Promise<Item[]> => {
-  return sortBy(
+const listItems = async (directory: string): Promise<Item[]> =>
+  sortBy(
     await Promise.all(
       (await readdir(join(documentDirectory, directory)))
         .filter((path) => !path.startsWith("."))
@@ -37,7 +39,6 @@ const listItems = async (directory: string): Promise<Item[]> => {
     ),
     ({ label, link }) => [!link, label],
   );
-};
 
 export default defineConfig({
   base: "/stak",
@@ -45,7 +46,11 @@ export default defineConfig({
     service: { entrypoint: "astro/assets/services/sharp" },
     remotePatterns: [{ protocol: "https" }],
   },
+  vite: {
+    plugins: [wasm()],
+  },
   integrations: [
+    preact(),
     sitemap(),
     starlight({
       title: "Stak",

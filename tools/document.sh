@@ -23,8 +23,12 @@ for file in $(find $directory -name '*.md'); do
   mv $new_file $file
 done
 
-cd doc
+cargo install wasm-pack
+wasm-pack build --target web wasm
 
 cargo doc --all-features
+
+cd doc
+
 npm install
 npm run build
