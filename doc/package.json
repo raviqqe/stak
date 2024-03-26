@@ -7,6 +7,7 @@
     "start": "astro dev",
     "build": "tools/build.sh",
     "preview": "astro preview",
+    "lint": "eslint --cache src",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -22,7 +23,9 @@
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
+    "@raviqqe/eslint-config": "^2.0.11",
     "@types/node": "^20.11.30",
+    "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "typescript": "^5.4.3"
