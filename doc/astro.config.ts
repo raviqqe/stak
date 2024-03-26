@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
+import worker from "@astropub/worker";
 import { sortBy, capitalize } from "@raviqqe/loscore";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
@@ -11,8 +12,8 @@ type Item = { label: string; link: string } | { label: string; items: Item[] };
 
 const documentDirectory = "src/content/docs";
 
-const listItems = async (directory: string): Promise<Item[]> => {
-  return sortBy(
+const listItems = async (directory: string): Promise<Item[]> =>
+  sortBy(
     await Promise.all(
       (await readdir(join(documentDirectory, directory)))
         .filter((path) => !path.startsWith("."))
@@ -39,7 +40,6 @@ const listItems = async (directory: string): Promise<Item[]> => {
     ),
     ({ label, link }) => [!link, label],
   );
-};
 
 export default defineConfig({
   base: "/stak",
@@ -53,6 +53,7 @@ export default defineConfig({
   integrations: [
     preact(),
     sitemap(),
+    worker(),
     starlight({
       title: "Stak",
       favicon: "/icon.svg",
