@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
       - run: cargo install wasm-pack
-      - run: wasm-pack build wasm
+      - run: wasm-pack build --target web wasm
       - run: |
           jq '. + input' pkg/package.json package.json > /tmp/package.json
           mv /tmp/package.json pkg
