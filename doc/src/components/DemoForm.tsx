@@ -1,10 +1,15 @@
 import { useStore } from "@nanostores/preact";
 import styles from "./DemoForm.module.css";
 import type { JSX } from "preact/jsx-runtime";
-import { $source } from "../stores/demo-store";
+import { $source, initializeWorker } from "../stores/demo-store";
+import { useEffect } from "preact/hooks";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
+
+  useEffect(() => {
+    initializeWorker();
+  }, []);
 
   return (
     <form class={styles.container}>
