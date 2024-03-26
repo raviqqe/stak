@@ -32,14 +32,13 @@ const output = "";
         margin: 0;
       }
 
-      form {
+      form,
+      .input {
         width: 100%;
         height: 100%;
         box-sizing: border-box;
         overflow: hidden;
 
-        font-size: 16px;
-        font-famili: sans-serif;
         padding: 1rem;
         display: flex;
         flex-direction: column;
@@ -57,17 +56,15 @@ const output = "";
       }
     </style>
     <form>
+      <textarea>{source}</textarea>
       <div>
-        <textarea>{source}</textarea>
-        <div>
-          <button>Run</button>
-        </div>
+        <button>Run</button>
       </div>
-      <pre>
-        <code>
-          {output}
-        </code>
-      </pre>
     </form>
+    <pre>
+      <code>
+        {output}
+      </code>
+    </pre>
   </body>
 </html>
