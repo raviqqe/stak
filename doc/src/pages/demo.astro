@@ -1,5 +1,9 @@
 ---
+const initialSource = `
+(import (scheme write))
 
+(display "Hello, world!")
+`.trim();
 ---
 
 <html lang="en">
@@ -19,7 +23,7 @@
       }
     </style>
     <form>
-      <textarea>(import (scheme write)) (display "Hello, world!")</textarea>
+      <textarea>{initialSource}</textarea>
       <pre>
         <code>
           </code>
