@@ -1,4 +1,6 @@
-import { compile, interpret } from "@raviqqe/stak";
+import init, { compile, interpret } from "@raviqqe/stak";
+
+await init();
 
 addEventListener("message", (event: MessageEvent<string>) => {
   postMessage(
