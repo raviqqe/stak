@@ -25,6 +25,7 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
+      - run: cargo install wasm-pack
       - run: wasm-pack build wasm
       - run: |
           jq '. + input' pkg/package.json package.json > /tmp/package.json
