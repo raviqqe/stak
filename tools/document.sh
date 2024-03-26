@@ -24,7 +24,7 @@ for file in $(find $directory -name '*.md'); do
 done
 
 cargo install wasm-pack
-wasm-pack build wasm
+wasm-pack build --target web wasm
 
 cargo doc --all-features
 
