@@ -1,4 +1,4 @@
-import { atom, computed } from "nanostores";
+import { atom } from "nanostores";
 
 const worker = new Worker("./demo-worker.ts", { type: "module" });
 
