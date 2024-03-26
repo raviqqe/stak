@@ -8,7 +8,8 @@ export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
 
   useEffect(() => {
-    initializeWorker();
+    const worker = initializeWorker();
+    return () => worker.terminate();
   }, []);
 
   return (
