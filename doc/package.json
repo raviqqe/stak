@@ -7,7 +7,6 @@
     "start": "astro dev",
     "build": "tools/build.sh",
     "preview": "astro preview",
-    "astro": "astro",
     "format": "prettier --write ."
   },
   "dependencies": {
