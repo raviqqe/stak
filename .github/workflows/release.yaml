@@ -22,7 +22,7 @@ jobs:
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
       - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: wasm-pack build wasm
+      - run: wasm-pack build --target web wasm
       - run: cat pkg/package.json | jq '.name = "@raviqqe/stak"'
         working-directory: wasm
       - run: wasm-pack pack wasm
