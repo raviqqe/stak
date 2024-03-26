@@ -7,7 +7,11 @@ const source = `
 (display "Hello, world!")
 `.trim();
 
-const output = "";
+let output = "";
+
+const submit = () => {
+  output = "ok";
+};
 ---
 
 <html lang="en">
@@ -64,7 +68,7 @@ const output = "";
         resize: none;
       }
     </style>
-    <form class="container">
+    <form class="container" onsubmit="submit()">
       <textarea>{source}</textarea>
       <div>
         <button>Run</button>
