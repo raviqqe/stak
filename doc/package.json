@@ -18,7 +18,8 @@
     "@raviqqe/stak": "^0.1.1",
     "astro": "^4.5.9",
     "nanostores": "^0.10.0",
-    "preact": "^10.20.1"
+    "preact": "^10.20.1",
+    "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",

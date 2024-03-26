@@ -5,6 +5,7 @@ import starlight from "@astrojs/starlight";
 import { sortBy, capitalize } from "@raviqqe/loscore";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
+import wasm from "vite-plugin-wasm";
 
 type Item = { label: string; link: string } | { label: string; items: Item[] };
 
@@ -49,6 +50,7 @@ export default defineConfig({
   integrations: [
     preact(),
     sitemap(),
+    wasm(),
     starlight({
       title: "Stak",
       favicon: "/icon.svg",
