@@ -1,6 +1,7 @@
 ---
 import { compile, run } from "@raviqqe/stak";
 import { atom } from "nanostores";
+import { DemoForm } from "../components/DemoForm";
 
 const source = atom(
   `
@@ -71,6 +72,7 @@ const submit = () => {
         resize: none;
       }
     </style>
+    <DemoForm source={source} />
     <pre>
       <code>
         {output}
