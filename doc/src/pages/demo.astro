@@ -1,21 +1,21 @@
 ---
 import { compile, run } from "@raviqqe/stak";
-import { atom } from "nanostores";
+import { atom, computed } from "nanostores";
 import { DemoForm } from "../components/DemoForm";
 
 const source = atom(
   `
-    (import (scheme write))
+(import (scheme write))
 
-    (display "Hello, world!")
+(display "Hello, world!")
   `.trim(),
 );
 
-let output = "";
-
-const submit = () => {
-  output = "ok";
-};
+const output = computed(source, (source) =>
+  new TextDecoder().decode(
+    run(compile(source), new Uint8Array(0), Math.pow(2, 20)),
+  ),
+);
 ---
 
 <html lang="en">
@@ -75,7 +75,7 @@ const submit = () => {
     <DemoForm source={source} />
     <pre>
       <code>
-        {output}
+        {output.get()}
       </code>
     </pre>
   </body>

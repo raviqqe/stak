@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import type { WritableAtom } from "nanostores";
+import styles from "./DemoForm.module.css";
 
 interface Props {
   source: WritableAtom<string>;
@@ -10,7 +11,7 @@ export const DemoForm = ({ source }: Props) => {
 
   return (
     <form
-      class="container"
+      class={styles.container}
       onSubmit={() => {
         source.set("foo");
       }}
@@ -18,7 +19,9 @@ export const DemoForm = ({ source }: Props) => {
       <textarea onChange={(event) => source.set(event.currentTarget.value)}>
         {$source}
       </textarea>
-      <button>Run</button>
+      <div class={styles.buttonGroup}>
+        <button>Run</button>
+      </div>
     </form>
   );
 };
