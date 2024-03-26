@@ -28,5 +28,5 @@ fn run_bytecodes() {
         "#
     );
 
-    run(PROGRAM, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
+    interpret(PROGRAM, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
 }
