@@ -2,6 +2,7 @@
 import init, { compile, run } from "@raviqqe/stak";
 import { atom, computed } from "nanostores";
 import { DemoForm } from "../components/DemoForm";
+import { DemoOutput } from "../components/DemoOutput";
 
 await init();
 
@@ -75,10 +76,6 @@ const output = computed(source, (source) =>
       }
     </style>
     <DemoForm source={source} />
-    <pre>
-      <code>
-        {output.get()}
-      </code>
-    </pre>
+    <DemoOutput output={output} />
   </body>
 </html>
