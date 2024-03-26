@@ -1,5 +1,5 @@
 import { atom } from "nanostores";
-import Worker from "./demo-worker?worker";
+import Worker from "./demo-worker.js?worker";
 
 export const $source = atom(
   `
