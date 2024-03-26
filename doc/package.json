@@ -7,7 +7,8 @@
     "start": "astro dev",
     "build": "tools/build.sh",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.1.1",
