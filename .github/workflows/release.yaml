@@ -34,8 +34,7 @@ jobs:
           package: wasm/pkg
           provenance: true
           token: ${{ secrets.NPM_TOKEN }}
-        # TODO
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
   release:
     needs:
       - cargo
