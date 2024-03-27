@@ -3,8 +3,7 @@ import { type JSX } from "preact";
 import {
   sourceStore,
   compilingStore,
-  $interpreting,
-  initializeInterpreterWorker,
+  interpretingStore,
   compile,
   interpret,
 } from "../stores/demo-store";
@@ -12,16 +11,11 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Message } from "./Message";
-import { useEffect } from "preact/hooks";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
   const compiling = useStore(compilingStore);
-  const interpreting = useStore($interpreting);
-
-  useEffect(() => {
-    initializeInterpreterWorker();
-  });
+  const interpreting = useStore(interpretingStore);
 
   return (
     <form class={styles.container}>

@@ -16,27 +16,11 @@ export const sourceStore = atom(
 const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
 export const compilingStore = computed(bytecodeStore, (output) => !output);
 
-const $interpreterInput = atom<Uint8Array | null>(null);
 export const outputStore = atom<string | null>("");
-export const $interpreting = computed(outputStore, (output) => output === null);
-
-export const initializeCompilerWorker = () => {};
-
-export const initializeInterpreterWorker = (): Worker => {
-  const worker = new InterpreterWorker();
-
-  $interpreterInput.subscribe((bytecodes) => {
-    if (bytecodes) {
-      worker.postMessage(bytecodes);
-      $interpreterInput.set(null);
-    }
-  });
-  worker.addEventListener("message", (event: MessageEvent<string>) =>
-    outputStore.set(event.data),
-  );
-
-  return worker;
-};
+export const interpretingStore = computed(
+  outputStore,
+  (output) => output === null,
+);
 
 export const compile = async (): Promise<void> => {
   const source = sourceStore.get();
