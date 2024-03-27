@@ -7,7 +7,13 @@ interface Props {
 }
 
 export const Button = ({ children, onClick }: Props): JSX.Element => (
-  <button class={styles.container} onClick={onClick}>
+  <button
+    class={styles.container}
+    onClick={(event) => {
+      event.preventDefault();
+      onClick();
+    }}
+  >
     {children}
   </button>
 );
