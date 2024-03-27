@@ -1,8 +1,10 @@
 import { useStore } from "@nanostores/solid";
 import { createSignal, onCleanup, onMount } from "solid-js";
-import type { JSX } from "solid-js/jsx-runtime";
+import type { JSX } from "solid-js";
 import {
   $source,
+  $compiling,
+  $interpreting,
   initializeCompilerWorker,
   initializeInterpreterWorker,
   compile,
@@ -11,9 +13,12 @@ import {
 import styles from "./DemoForm.module.css";
 import { ButtonGroup } from "./ButtonGroup";
 import { Button } from "./Button";
+import { Message } from "./Message";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
+  const compiling = useStore($compiling);
+  const interpreting = useStore($interpreting);
   const [workers, setWorkers] = createSignal<Worker[]>([]);
 
   onMount(() =>
@@ -37,6 +42,13 @@ export const DemoForm = (): JSX.Element => {
       <ButtonGroup>
         <Button onClick={() => compile()}>Compile</Button>
         <Button onClick={() => interpret()}>Run</Button>
+        <Message>
+          {compiling()
+            ? "Compiling..."
+            : interpreting()
+              ? "Interpreting..."
+              : null}
+        </Message>
       </ButtonGroup>
     </form>
   );

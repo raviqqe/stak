@@ -1,4 +1,4 @@
-import { atom } from "nanostores";
+import { atom, computed } from "nanostores";
 import CompilerWorker from "./compiler-worker.js?worker";
 import InterpreterWorker from "./interpreter-worker.js?worker";
 
@@ -12,9 +12,11 @@ export const $source = atom(
 
 const $compilerInput = atom("");
 const $compilerOutput = atom<Uint8Array | null>(null);
+export const $compiling = computed($compilerOutput, (output) => !!output);
 
-export const $interpreterInput = atom<Uint8Array | null>(null);
+const $interpreterInput = atom<Uint8Array | null>(null);
 export const $interpreterOutput = atom("");
+export const $interpreting = computed($interpreterOutput, (output) => !!output);
 
 export const initializeCompilerWorker = (): Worker => {
   const worker = new CompilerWorker();
