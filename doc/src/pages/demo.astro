@@ -1,6 +1,5 @@
 ---
-import { DemoForm } from "../components/DemoForm";
-import { DemoOutput } from "../components/DemoOutput";
+import { Demo } from "../components/Demo.jsx";
 ---
 
 <html lang="en">
@@ -17,10 +16,8 @@ import { DemoOutput } from "../components/DemoOutput";
       }
 
       html {
-        width: 100vw;
-        height: 100vh;
-        overflow: hidden;
-
+        width: 100dvw;
+        height: 100dvh;
         font-size: 16px;
         font-family: sans-serif;
       }
@@ -30,18 +27,8 @@ import { DemoOutput } from "../components/DemoOutput";
         height: 100%;
         padding: 1.5rem;
         margin: 0;
-
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-        align-items: stretch;
-
-        & > * {
-          flex: 1;
-        }
       }
     </style>
-    <DemoForm client:load />
-    <DemoOutput client:load />
+    <Demo client:load />
   </body>
 </html>
