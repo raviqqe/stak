@@ -8,13 +8,9 @@ export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
   const [worker, setWorker] = createSignal<Worker>();
 
-  onMount(() => {
-    setWorker(initializeWorker());
-  });
+  onMount(() => setWorker(initializeWorker()));
 
-  onCleanup(() => {
-    worker()?.terminate();
-  });
+  onCleanup(() => worker()?.terminate());
 
   return (
     <form class={styles.container}>
