@@ -10,9 +10,9 @@ import {
   compile,
   interpret,
 } from "../stores/demo-store";
-import styles from "./DemoForm.module.css";
-import { ButtonGroup } from "./ButtonGroup";
 import { Button } from "./Button";
+import { ButtonGroup } from "./ButtonGroup";
+import styles from "./DemoForm.module.css";
 import { Message } from "./Message";
 
 export const DemoForm = (): JSX.Element => {
