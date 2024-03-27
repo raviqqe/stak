@@ -10,23 +10,21 @@ export const $source = atom(
   `.trim(),
 );
 
-const $compilerSource = atom("");
-const $compilerBytecodes = atom<Uint8Array | null>(null);
+const $compilerInput = atom("");
+const $compilerOutput = atom<Uint8Array | null>(null);
 
-export const $compiling = atom(false);
-
-export const $interpreting = atom(false);
-
-export const $bytecodes = atom<Uint8Array | null>(null);
-
-export const $output = atom("");
+export const $interpreterInput = atom<Uint8Array | null>(null);
+export const $interpreterOutput = atom("");
 
 export const initializeCompilerWorker = (): Worker => {
   const worker = new CompilerWorker();
 
-  $compilerSource.subscribe((source) => worker.postMessage(source));
+  $compilerInput.subscribe((source) => {
+    worker.postMessage(source);
+    $compilerOutput.set(null);
+  });
   worker.addEventListener("message", (event: MessageEvent<Uint8Array>) =>
-    $compilerBytecodes.set(event.data),
+    $compilerOutput.set(event.data),
   );
 
   return worker;
@@ -35,14 +33,19 @@ export const initializeCompilerWorker = (): Worker => {
 export const initializeInterpreterWorker = (): Worker => {
   const worker = new InterpreterWorker();
 
-  $bytecodes.subscribe((bytecodes) => worker.postMessage(bytecodes));
+  $interpreterInput.subscribe((bytecodes) => {
+    if (bytecodes) {
+      worker.postMessage(bytecodes);
+      $interpreterOutput.set("");
+    }
+  });
   worker.addEventListener("message", (event: MessageEvent<string>) =>
-    $output.set(event.data),
+    $interpreterOutput.set(event.data),
   );
 
   return worker;
 };
 
-export const compile = () => $compilerSource.set($source.get());
+export const compile = () => $compilerInput.set($source.get());
 
-export const interpret = () => $bytecodes.set($compilerBytecodes.get());
+export const interpret = () => $interpreterInput.set($compilerOutput.get());
