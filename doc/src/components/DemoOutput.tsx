@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/solid";
+import type { JSX } from "solid-js/jsx-runtime";
 import { $output } from "../stores/demo-store";
 import styles from "./DemoOutput.module.css";
-import type { JSX } from "solid-js/jsx-runtime";
 
 export const DemoOutput = (): JSX.Element => {
   const output = useStore($output);

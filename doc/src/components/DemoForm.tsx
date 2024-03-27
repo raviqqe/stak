@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/solid";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
 import { $source, initializeWorker } from "../stores/demo-store";
 import styles from "./DemoForm.module.css";
-import { createSignal, onCleanup, onMount } from "solid-js";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
