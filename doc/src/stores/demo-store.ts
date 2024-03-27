@@ -10,7 +10,7 @@ export const $source = atom(
   `.trim(),
 );
 
-const $compilerInput = atom("");
+const $compilerInput = atom<string | null>(null);
 const $compilerOutput = atom<Uint8Array | null>(new Uint8Array());
 export const $compiling = computed($compilerOutput, (output) => !output);
 
@@ -24,7 +24,12 @@ export const $interpreting = computed(
 export const initializeCompilerWorker = (): Worker => {
   const worker = new CompilerWorker();
 
-  $compilerInput.subscribe((source) => worker.postMessage(source));
+  $compilerInput.subscribe((source) => {
+    if (source !== null) {
+      worker.postMessage(source);
+      $compilerInput.set(null);
+    }
+  });
   worker.addEventListener("message", (event: MessageEvent<Uint8Array>) =>
     $compilerOutput.set(event.data),
   );
@@ -38,6 +43,7 @@ export const initializeInterpreterWorker = (): Worker => {
   $interpreterInput.subscribe((bytecodes) => {
     if (bytecodes) {
       worker.postMessage(bytecodes);
+      $interpreterInput.set(null);
     }
   });
   worker.addEventListener("message", (event: MessageEvent<string>) =>
