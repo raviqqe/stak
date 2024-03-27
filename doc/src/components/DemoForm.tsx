@@ -27,7 +27,7 @@ export const DemoForm = (): JSX.Element => {
       </textarea>
       <ButtonGroup>
         <Button onClick={compile}>Compile</Button>
-        <Button onClick={interpret}>Run</Button>
+        <Button onClick={interpret}>Interpret</Button>
       </ButtonGroup>
       <Message>
         {compiling ? "Compiling..." : interpreting ? "Interpreting..." : ""}
