@@ -42,3 +42,7 @@ export const initializeInterpreterWorker = (): Worker => {
 
   return worker;
 };
+
+export const compile = () => $compilerSource.set($source.get());
+
+export const interpret = () => $bytecodes.set($compilerBytecodes.get());

@@ -5,6 +5,8 @@ import {
   $source,
   initializeCompilerWorker,
   initializeInterpreterWorker,
+  compile,
+  interpret,
 } from "../stores/demo-store";
 import styles from "./DemoForm.module.css";
 
@@ -31,7 +33,8 @@ export const DemoForm = (): JSX.Element => {
         {source()}
       </textarea>
       <div>
-        <button type="submit">Run</button>
+        <button onChange={() => compile()}>Compile</button>
+        <button onChange={() => interpret()}>Run</button>
       </div>
     </form>
   );
