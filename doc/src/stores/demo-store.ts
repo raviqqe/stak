@@ -11,7 +11,7 @@ export const $source = atom(
 );
 
 const $compilerInput = atom("");
-const $compilerOutput = atom<Uint8Array | null>(null);
+const $compilerOutput = atom<Uint8Array | null>(new Uint8Array());
 export const $compiling = computed($compilerOutput, (output) => !output);
 
 const $interpreterInput = atom<Uint8Array | null>(null);
