@@ -12,11 +12,11 @@ export const $source = atom(
 
 const $compilerInput = atom("");
 const $compilerOutput = atom<Uint8Array | null>(null);
-export const $compiling = computed($compilerOutput, (output) => !!output);
+export const $compiling = computed($compilerOutput, (output) => !output);
 
 const $interpreterInput = atom<Uint8Array | null>(null);
 export const $interpreterOutput = atom("");
-export const $interpreting = computed($interpreterOutput, (output) => !!output);
+export const $interpreting = computed($interpreterOutput, (output) => !output);
 
 export const initializeCompilerWorker = (): Worker => {
   const worker = new CompilerWorker();
