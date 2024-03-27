@@ -1,16 +1,26 @@
 import { useStore } from "@nanostores/solid";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import type { JSX } from "solid-js/jsx-runtime";
-import { $source, initializeWorker } from "../stores/demo-store";
+import {
+  $source,
+  initializeCompilerWorker,
+  initializeInterpreterWorker,
+} from "../stores/demo-store";
 import styles from "./DemoForm.module.css";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
-  const [worker, setWorker] = createSignal<Worker>();
+  const [workers, setWorkers] = createSignal<Worker[]>([]);
 
-  onMount(() => setWorker(initializeWorker()));
+  onMount(() =>
+    setWorkers([initializeCompilerWorker(), initializeInterpreterWorker()]),
+  );
 
-  onCleanup(() => worker()?.terminate());
+  onCleanup(() => {
+    for (const worker of workers()) {
+      worker.terminate();
+    }
+  });
 
   return (
     <form class={styles.container}>
