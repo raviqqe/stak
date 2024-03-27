@@ -1,10 +1,9 @@
 import { useStore } from "@nanostores/preact";
 import { type JSX } from "preact";
 import {
-  $source,
-  $compiling,
+  sourceStore,
+  compilingStore,
   $interpreting,
-  initializeCompilerWorker,
   initializeInterpreterWorker,
   compile,
   interpret,
@@ -16,19 +15,19 @@ import { Message } from "./Message";
 import { useEffect } from "preact/hooks";
 
 export const DemoForm = (): JSX.Element => {
-  const source = useStore($source);
-  const compiling = useStore($compiling);
+  const source = useStore(sourceStore);
+  const compiling = useStore(compilingStore);
   const interpreting = useStore($interpreting);
 
   useEffect(() => {
-    const workers = [initializeCompilerWorker(), initializeInterpreterWorker()];
+    initializeInterpreterWorker();
   });
 
   return (
     <form class={styles.container}>
       <textarea
         class={styles.source}
-        onInput={(event) => $source.set(event.currentTarget.value)}
+        onInput={(event) => sourceStore.set(event.currentTarget.value)}
       >
         {source}
       </textarea>
