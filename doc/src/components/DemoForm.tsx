@@ -1,6 +1,5 @@
-import { useStore } from "@nanostores/preact";
-import { useEffect } from "preact/hooks";
-import type { JSX } from "preact/jsx-runtime";
+import { useStore } from "@nanostores/solid";
+import type { JSX } from "solid-js/jsx-runtime";
 import { $source, initializeWorker } from "../stores/demo-store";
 import styles from "./DemoForm.module.css";
 
@@ -13,12 +12,12 @@ export const DemoForm = (): JSX.Element => {
   }, []);
 
   return (
-    <form className={styles.container}>
+    <form class={styles.container}>
       <textarea
-        className={styles.source}
+        class={styles.source}
         onInput={(event) => $source.set(event.currentTarget.value)}
       >
-        {source}
+        {source()}
       </textarea>
       <div>
         <button type="submit">Run</button>
