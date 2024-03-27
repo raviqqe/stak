@@ -1,24 +1,34 @@
-import { useStore } from "@nanostores/preact";
-import { useEffect } from "preact/hooks";
-import type { JSX } from "preact/jsx-runtime";
-import { $source, initializeWorker } from "../stores/demo-store";
+import { useStore } from "@nanostores/solid";
+import { createSignal, onCleanup, onMount } from "solid-js";
+import type { JSX } from "solid-js/jsx-runtime";
+import {
+  $source,
+  initializeCompilerWorker,
+  initializeInterpreterWorker,
+} from "../stores/demo-store";
 import styles from "./DemoForm.module.css";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
+  const [workers, setWorkers] = createSignal<Worker[]>([]);
 
-  useEffect(() => {
-    const worker = initializeWorker();
-    return () => worker.terminate();
-  }, []);
+  onMount(() =>
+    setWorkers([initializeCompilerWorker(), initializeInterpreterWorker()]),
+  );
+
+  onCleanup(() => {
+    for (const worker of workers()) {
+      worker.terminate();
+    }
+  });
 
   return (
-    <form className={styles.container}>
+    <form class={styles.container}>
       <textarea
-        className={styles.source}
+        class={styles.source}
         onInput={(event) => $source.set(event.currentTarget.value)}
       >
-        {source}
+        {source()}
       </textarea>
       <div>
         <button type="submit">Run</button>
