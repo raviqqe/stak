@@ -10,6 +10,10 @@ export const $source = atom(
   `.trim(),
 );
 
+export const $compiling = atom(false);
+
+export const $interpreting = atom(false);
+
 export const $bytecodes = atom<Uint8Array | null>(null);
 
 export const $output = atom("");
