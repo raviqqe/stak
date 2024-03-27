@@ -1,8 +1,9 @@
 .boxShadow {
-  box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.2);
 }
 
 .textArea {
+  composes: boxShadow;
   padding: 1rem;
   box-sizing: border-box;
   overflow: auto;
