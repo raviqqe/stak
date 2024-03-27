@@ -30,5 +30,5 @@ cargo doc --all-features
 
 cd doc
 
-npm install
+npm ci
 npm run build
