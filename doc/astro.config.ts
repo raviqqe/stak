@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import solid from "@astrojs/solid";
+import solid from "@astrojs/solid-js";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { sortBy, capitalize } from "@raviqqe/loscore";
