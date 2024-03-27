@@ -11,6 +11,7 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Message } from "./Message";
+import { Label } from "./Label";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
@@ -19,9 +20,10 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <form class={styles.container}>
-      <Label for="cheese">Source</Label>
+      <Label for="source">Source</Label>
       <textarea
         class={styles.source}
+        id="source"
         onInput={(event) => sourceStore.set(event.currentTarget.value)}
       >
         {source}
