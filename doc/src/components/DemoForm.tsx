@@ -9,6 +9,8 @@ import {
   interpret,
 } from "../stores/demo-store";
 import styles from "./DemoForm.module.css";
+import { ButtonGroup } from "./ButtonGroup";
+import { Button } from "./Button";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
@@ -32,10 +34,10 @@ export const DemoForm = (): JSX.Element => {
       >
         {source()}
       </textarea>
-      <div>
-        <button onChange={() => compile()}>Compile</button>
-        <button onChange={() => interpret()}>Run</button>
-      </div>
+      <ButtonGroup>
+        <Button onClick={() => compile()}>Compile</Button>
+        <Button onClick={() => interpret()}>Run</Button>
+      </ButtonGroup>
     </form>
   );
 };
