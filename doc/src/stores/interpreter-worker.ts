@@ -1,11 +1,14 @@
 import init, { interpret } from "@raviqqe/stak";
 
-await init();
+const promise = init();
 
-addEventListener("message", (event: MessageEvent<Uint8Array>) =>
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+addEventListener("message", async (event: MessageEvent<Uint8Array>) => {
+  await promise;
+
   postMessage(
     new TextDecoder().decode(
-      interpret(event.data, new Uint8Array(0), Math.pow(2, 20)),
+      interpret(event.data, new Uint8Array(0), Math.pow(2, 22)),
     ),
-  ),
-);
+  );
+});

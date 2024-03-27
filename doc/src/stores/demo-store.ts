@@ -1,8 +1,8 @@
-import { atom } from "nanostores";
+import { atom, computed } from "nanostores";
 import CompilerWorker from "./compiler-worker.js?worker";
 import InterpreterWorker from "./interpreter-worker.js?worker";
 
-export const $source = atom(
+export const sourceStore = atom(
   `
 (import (scheme write))
 
@@ -10,28 +10,44 @@ export const $source = atom(
   `.trim(),
 );
 
-export const $bytecodes = atom<Uint8Array | null>(null);
+const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
+export const compilingStore = computed(bytecodeStore, (output) => !output);
 
-export const $output = atom("");
+export const outputStore = atom<string | null>("");
+export const interpretingStore = computed(
+  outputStore,
+  (output) => output === null,
+);
 
-export const initializeCompilerWorker = (): Worker => {
-  const worker = new CompilerWorker();
-
-  $source.subscribe((source) => worker.postMessage(source));
-  worker.addEventListener("message", (event: MessageEvent<Uint8Array>) =>
-    $bytecodes.set(event.data),
+export const compile = async (): Promise<void> => {
+  bytecodeStore.set(null);
+  bytecodeStore.set(
+    await runWorker(() => new CompilerWorker(), sourceStore.get()),
   );
-
-  return worker;
 };
 
-export const initializeInterpreterWorker = (): Worker => {
-  const worker = new InterpreterWorker();
+export const interpret = async (): Promise<void> => {
+  outputStore.set(null);
+  outputStore.set(
+    await runWorker(() => new InterpreterWorker(), bytecodeStore.get()),
+  );
+};
 
-  $bytecodes.subscribe((bytecodes) => worker.postMessage(bytecodes));
-  worker.addEventListener("message", (event: MessageEvent<string>) =>
-    $output.set(event.data),
+const runWorker = async <T, S>(
+  createWorker: () => Worker,
+  input: T,
+): Promise<S> => {
+  const worker = createWorker();
+
+  const promise = new Promise<S>((resolve) =>
+    worker.addEventListener("message", (event: MessageEvent<S>) =>
+      resolve(event.data),
+    ),
   );
 
-  return worker;
+  worker.postMessage(input);
+  const value = await promise;
+  worker.terminate();
+
+  return value;
 };

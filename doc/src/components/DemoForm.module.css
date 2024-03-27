@@ -1,7 +1,6 @@
 .container {
   width: 100%;
   height: 100%;
-  overflow: hidden;
   box-sizing: border-box;
   flex: 1;
 
@@ -12,6 +11,7 @@
 }
 
 .source {
+  composes: textArea from "../system.css";
   overflow: auto;
   resize: none;
   flex: 1;
