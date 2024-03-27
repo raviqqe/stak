@@ -2,9 +2,11 @@
   display: flex;
   gap: 1.5rem;
   align-items: stretch;
+  flex-wrap: wrap;
   height: 100%;
 
   > * {
-    flex: 1;
+    height: 100%;
+    min-width: 20rem;
   }
 }
