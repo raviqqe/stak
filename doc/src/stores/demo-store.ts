@@ -48,6 +48,7 @@ export const initializeInterpreterWorker = (): Worker => {
   return worker;
 };
 
-export const compile = () => $compilerInput.set($source.get());
+export const compile = (): void => $compilerInput.set($source.get());
 
-export const interpret = () => $interpreterInput.set($compilerOutput.get());
+export const interpret = (): void =>
+  $interpreterInput.set($compilerOutput.get());
