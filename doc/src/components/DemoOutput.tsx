@@ -1,5 +1,5 @@
-import { useStore } from "@nanostores/solid";
-import type { JSX } from "solid-js";
+import { useStore } from "@nanostores/preact";
+import type { JSX } from "preact";
 import { $interpreterOutput } from "../stores/demo-store";
 import styles from "./DemoOutput.module.css";
 
@@ -9,7 +9,7 @@ export const DemoOutput = (): JSX.Element => {
   return (
     <div class={styles.container}>
       <pre class={styles.output}>
-        <code>{output()}</code>
+        <code>{output}</code>
       </pre>
     </div>
   );

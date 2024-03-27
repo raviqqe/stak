@@ -1,5 +1,5 @@
 import { defineConfig } from "astro/config";
-import solid from "@astrojs/solid-js";
+import preact from "@astrojs/preact";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { sortBy, capitalize } from "@raviqqe/loscore";
@@ -54,7 +54,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap(),
-    solid(),
+    preact(),
     starlight({
       title: "Stak",
       favicon: "/icon.svg",

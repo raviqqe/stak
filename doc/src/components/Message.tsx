@@ -1,8 +1,8 @@
-import { type JSX } from "solid-js";
+import { type ComponentChildren, type JSX } from "preact";
 import styles from "./Message.module.css";
 
 interface Props {
-  children?: JSX.Element;
+  children: ComponentChildren;
 }
 
 export const Message = ({ children }: Props): JSX.Element => (

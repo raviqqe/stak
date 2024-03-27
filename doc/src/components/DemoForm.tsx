@@ -1,5 +1,5 @@
-import { useStore } from "@nanostores/solid";
-import { createSignal, onCleanup, onMount, type JSX } from "solid-js";
+import { useStore } from "@nanostores/preact";
+import { type JSX } from "preact";
 import {
   $source,
   $compiling,
@@ -13,21 +13,15 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Message } from "./Message";
+import { useEffect } from "preact/hooks";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore($source);
   const compiling = useStore($compiling);
   const interpreting = useStore($interpreting);
-  const [workers, setWorkers] = createSignal<Worker[]>([]);
 
-  onMount(() =>
-    setWorkers([initializeCompilerWorker(), initializeInterpreterWorker()]),
-  );
-
-  onCleanup(() => {
-    for (const worker of workers()) {
-      worker.terminate();
-    }
+  useEffect(() => {
+    const workers = [initializeCompilerWorker(), initializeInterpreterWorker()];
   });
 
   return (
@@ -36,14 +30,14 @@ export const DemoForm = (): JSX.Element => {
         class={styles.source}
         onInput={(event) => $source.set(event.currentTarget.value)}
       >
-        {source()}
+        {source}
       </textarea>
       <ButtonGroup>
-        <Button onClick={() => compile()}>Compile</Button>
-        <Button onClick={() => interpret()}>Run</Button>
+        <Button onClick={compile}>Compile</Button>
+        <Button onClick={interpret}>Run</Button>
       </ButtonGroup>
       <Message>
-        {compiling() ? "Compiling..." : interpreting() ? "Interpreting..." : ""}
+        {compiling ? "Compiling..." : interpreting ? "Interpreting..." : ""}
       </Message>
     </form>
   );

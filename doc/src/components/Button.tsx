@@ -1,8 +1,8 @@
-import type { JSX } from "solid-js";
+import type { ComponentChildren, JSX } from "preact";
 import styles from "./Button.module.css";
 
 interface Props {
-  children: JSX.Element;
+  children: ComponentChildren;
   onClick: () => void;
 }
 
