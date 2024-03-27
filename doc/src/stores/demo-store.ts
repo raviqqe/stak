@@ -1,9 +1,6 @@
 import { atom, computed } from "nanostores";
 import CompilerWorker from "./compiler-worker.js?worker";
 import InterpreterWorker from "./interpreter-worker.js?worker";
-import { sleep } from "@raviqqe/loscore/async";
-
-const workerInitializationDelay = 500;
 
 export const sourceStore = atom(
   `
@@ -41,7 +38,6 @@ const runWorker = async <T, S>(
   input: T,
 ): Promise<S> => {
   const worker = createWorker();
-  await sleep(workerInitializationDelay);
 
   const promise = new Promise<S>((resolve) =>
     worker.addEventListener("message", (event: MessageEvent<S>) =>

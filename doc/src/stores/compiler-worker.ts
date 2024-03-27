@@ -1,7 +1,9 @@
 import init, { compile } from "@raviqqe/stak";
 
-await init();
+const promise = init();
 
-addEventListener("message", (event: MessageEvent<string>) =>
-  postMessage(compile(event.data)),
-);
+addEventListener("message", async (event: MessageEvent<string>) => {
+  await promise;
+
+  postMessage(compile(event.data));
+});
