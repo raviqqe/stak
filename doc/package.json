@@ -18,7 +18,6 @@
     "@raviqqe/stak": "../wasm/pkg",
     "astro": "^4.5.9",
     "nanostores": "^0.10.0",
-    "solid": "^0.2.1",
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
