@@ -23,39 +23,34 @@ export const interpretingStore = computed(
 );
 
 export const compile = async (): Promise<void> => {
-  const source = sourceStore.get();
   bytecodeStore.set(null);
-
-  const worker = new CompilerWorker();
-  await sleep(workerInitializationDelay);
-
-  const promise = new Promise<Uint8Array>((resolve) =>
-    worker.addEventListener("message", (event: MessageEvent<Uint8Array>) =>
-      resolve(event.data),
-    ),
+  bytecodeStore.set(
+    await runWorker(() => new CompilerWorker(), sourceStore.get()),
   );
-  worker.postMessage(source);
-  bytecodeStore.set(await promise);
-
-  worker.terminate();
 };
 
 export const interpret = async (): Promise<void> => {
-  const bytecodes = bytecodeStore.get();
-
   outputStore.set(null);
+  outputStore.set(
+    await runWorker(() => new InterpreterWorker(), bytecodeStore.get()),
+  );
+};
 
-  const worker = new InterpreterWorker();
+const runWorker = async <T, S>(
+  createWorker: () => Worker,
+  input: T,
+): Promise<S> => {
+  const worker = createWorker();
   await sleep(workerInitializationDelay);
 
-  const promise = new Promise<string>((resolve) =>
-    worker.addEventListener("message", (event: MessageEvent<string>) =>
+  const promise = new Promise<S>((resolve) =>
+    worker.addEventListener("message", (event: MessageEvent<S>) =>
       resolve(event.data),
     ),
   );
 
-  worker.postMessage(bytecodes);
-  outputStore.set(await promise);
-
+  worker.postMessage(input);
   worker.terminate();
+
+  return promise;
 };
