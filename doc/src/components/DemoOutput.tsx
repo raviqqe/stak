@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/solid";
-import type { JSX } from "solid-js/jsx-runtime";
+import type { JSX } from "solid-js";
 import { $interpreterOutput } from "../stores/demo-store";
 import styles from "./DemoOutput.module.css";
 
