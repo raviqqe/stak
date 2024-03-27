@@ -19,6 +19,7 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <form class={styles.container}>
+      <Label for="cheese">Source</Label>
       <textarea
         class={styles.source}
         onInput={(event) => sourceStore.set(event.currentTarget.value)}
