@@ -10,6 +10,9 @@ export const $source = atom(
   `.trim(),
 );
 
+const $compilerSource = atom("");
+const $compilerBytecodes = atom<Uint8Array | null>(null);
+
 export const $compiling = atom(false);
 
 export const $interpreting = atom(false);
@@ -21,9 +24,9 @@ export const $output = atom("");
 export const initializeCompilerWorker = (): Worker => {
   const worker = new CompilerWorker();
 
-  $source.subscribe((source) => worker.postMessage(source));
+  $compilerSource.subscribe((source) => worker.postMessage(source));
   worker.addEventListener("message", (event: MessageEvent<Uint8Array>) =>
-    $bytecodes.set(event.data),
+    $compilerBytecodes.set(event.data),
   );
 
   return worker;
