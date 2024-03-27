@@ -50,7 +50,8 @@ const runWorker = async <T, S>(
   );
 
   worker.postMessage(input);
+  const value = await promise;
   worker.terminate();
 
-  return promise;
+  return value;
 };
