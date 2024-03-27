@@ -1,8 +1,11 @@
 import { atom, computed } from "nanostores";
+import {
+  notify,
+  requestNotificationPermission,
+} from "../application/notify.js";
+import { runWorker } from "../application/run-worker.js";
 import CompilerWorker from "./compiler-worker.js?worker";
 import InterpreterWorker from "./interpreter-worker.js?worker";
-import { runWorker } from "../application/run-worker.js";
-import { notify } from "../application/notify.js";
 
 export const sourceStore = atom(
   `
@@ -22,10 +25,13 @@ export const interpretingStore = computed(
 );
 
 export const compile = async (): Promise<void> => {
+  await requestNotificationPermission();
+
   bytecodeStore.set(null);
   bytecodeStore.set(
     await runWorker(() => new CompilerWorker(), sourceStore.get()),
   );
+
   await notify("Program compiled!");
 };
 
