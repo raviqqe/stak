@@ -25,3 +25,20 @@ jobs:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/setup-node@v4
+      - run: npm ci
+        working-directory: doc
+      - run: npm run lint
+        working-directory: doc
+  document:
+    needs:
+      - build
+      - lint
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: for result in ${{ join(needs.*.result, ' ') }}; do [ $result = success ]; done
