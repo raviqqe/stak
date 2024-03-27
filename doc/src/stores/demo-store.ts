@@ -1,6 +1,7 @@
 import { atom, computed } from "nanostores";
 import CompilerWorker from "./compiler-worker.js?worker";
 import InterpreterWorker from "./interpreter-worker.js?worker";
+import { runWorker } from "../application/run-worker.js";
 
 export const sourceStore = atom(
   `
@@ -31,23 +32,4 @@ export const interpret = async (): Promise<void> => {
   outputStore.set(
     await runWorker(() => new InterpreterWorker(), bytecodeStore.get()),
   );
-};
-
-const runWorker = async <T, S>(
-  createWorker: () => Worker,
-  input: T,
-): Promise<S> => {
-  const worker = createWorker();
-
-  const promise = new Promise<S>((resolve) =>
-    worker.addEventListener("message", (event: MessageEvent<S>) =>
-      resolve(event.data),
-    ),
-  );
-
-  worker.postMessage(input);
-  const value = await promise;
-  worker.terminate();
-
-  return value;
 };
