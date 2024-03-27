@@ -31,9 +31,6 @@ export const DemoForm = (): JSX.Element => {
     }
   });
 
-  const message = () =>
-    compiling() ? "Compiling..." : interpreting() ? "Interpreting..." : null;
-
   return (
     <form class={styles.container}>
       <textarea
@@ -46,7 +43,9 @@ export const DemoForm = (): JSX.Element => {
         <Button onClick={() => compile()}>Compile</Button>
         <Button onClick={() => interpret()}>Run</Button>
       </ButtonGroup>
-      <Message>{message()}</Message>
+      <Message>
+        {compiling() ? "Compiling..." : interpreting() ? "Interpreting..." : ""}
+      </Message>
     </form>
   );
 };
