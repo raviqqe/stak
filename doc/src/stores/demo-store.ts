@@ -2,6 +2,7 @@ import { atom, computed } from "nanostores";
 import CompilerWorker from "./compiler-worker.js?worker";
 import InterpreterWorker from "./interpreter-worker.js?worker";
 import { runWorker } from "../application/run-worker.js";
+import { notify } from "../application/notify.js";
 
 export const sourceStore = atom(
   `
@@ -25,6 +26,7 @@ export const compile = async (): Promise<void> => {
   bytecodeStore.set(
     await runWorker(() => new CompilerWorker(), sourceStore.get()),
   );
+  await notify("Program compiled!");
 };
 
 export const interpret = async (): Promise<void> => {
