@@ -1,3 +1,9 @@
 .container {
   font-size: inherit;
+  background-color: teal;
+  color: white;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 0.2rem 0.2rem rgba(0, 0, 0, 0.5);
 }
