@@ -12,6 +12,7 @@ import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
+import { useEffect } from "preact/hooks";
 
 const defaultSource = `
 (import (scheme write))
@@ -20,16 +21,21 @@ const defaultSource = `
 `.trim();
 
 export const DemoForm = (): JSX.Element => {
+  const source = useStore(sourceStore);
   const compiling = useStore(compilingStore);
   const interpreting = useStore(interpretingStore);
+
+  useEffect(() => {
+    sourceStore.set(defaultSource);
+  }, []);
 
   return (
     <form class={styles.container}>
       <Label for="source">Source</Label>
       <TextArea
-        defaultValue={defaultSource}
         id="source"
         onChange={(source) => sourceStore.set(source)}
+        value={source}
       />
       <ButtonGroup>
         <Button disabled={compiling} onClick={compile}>

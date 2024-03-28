@@ -7,13 +7,18 @@ import { Link } from "./Link";
 import { TextArea } from "./TextArea";
 
 export const DemoIo = (): JSX.Element => {
+  const input = useStore(inputStore);
   const output = useStore(outputStore);
   const outputUrl = useStore(outputUrlStore);
 
   return (
     <div class={styles.container}>
       <Label for="input">stdin</Label>
-      <TextArea id="input" onChange={(input) => inputStore.set(input)} />
+      <TextArea
+        id="input"
+        onChange={(input) => inputStore.set(input)}
+        value={input}
+      />
       <Label for="output">stdout</Label>
       <pre class={styles.output} id="output">
         <code>{output}</code>
