@@ -16,12 +16,13 @@ export const compilingStore = computed(bytecodeStore, (output) => !output);
 
 const binaryOutputStore = atom<Uint8Array | null>(new Uint8Array());
 
+export const inputStore = atom("");
 export const outputStore = computed(binaryOutputStore, (output) =>
   output === null ? null : new TextDecoder().decode(output),
 );
 
 export const outputUrlStore = computed(binaryOutputStore, (output) =>
-  output === null ? null : URL.createObjectURL(new Blob([output])),
+  output?.length ? URL.createObjectURL(new Blob([output])) : null,
 );
 
 export const interpretingStore = computed(
@@ -43,7 +44,10 @@ export const interpret = async (): Promise<void> => {
 
   binaryOutputStore.set(null);
 
-  const output = await interpretProgram(bytecodes);
+  const output = await interpretProgram(
+    bytecodes,
+    new TextEncoder().encode(inputStore.get()),
+  );
 
   binaryOutputStore.set(output);
 };
