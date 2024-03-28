@@ -1,12 +1,13 @@
 .container {
   display: flex;
-  flex-direction: row;
   gap: 1.5rem;
-  flex-wrap: wrap;
   height: 100%;
 
+  @media (max-width: 40rem) {
+    flex-direction: row;
+  }
+
   > * {
-    min-width: 20rem;
     flex: 1;
   }
 }
