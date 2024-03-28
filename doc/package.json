@@ -18,6 +18,7 @@
     "@raviqqe/loscore": "^0.2.2",
     "@raviqqe/stak": "^0.2.0",
     "astro": "^4.5.10",
+    "classnames": "^2.5.1",
     "nanostores": "^0.10.0",
     "preact": "^10.20.1",
     "vite-plugin-wasm": "^3.3.0"

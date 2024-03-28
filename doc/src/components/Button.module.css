@@ -6,4 +6,8 @@
   border-radius: 0.5rem;
   border: none;
   padding: 0.5rem 1rem;
+
+  &.disabled {
+    foo
+  }
 }
