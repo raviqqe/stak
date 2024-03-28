@@ -20,13 +20,9 @@ export const DemoForm = (): JSX.Element => {
   return (
     <form class={styles.container}>
       <Label for="source">Source</Label>
-      <textarea
-        class={styles.source}
-        id="source"
-        onInput={(event) => sourceStore.set(event.currentTarget.value)}
-      >
+      <TextArea id="source" onChange={(source) => sourceStore.set(source)}>
         {source}
-      </textarea>
+      </TextArea>
       <ButtonGroup>
         <Button disabled={compiling} onClick={compile}>
           {compiling ? "Compiling..." : "Compile"}
