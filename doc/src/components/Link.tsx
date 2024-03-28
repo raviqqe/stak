@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Link = ({ href, children }: Props): JSX.Element => (
-  <a class={styles.container} href={href}>
+  <a class={styles.container} href={href} target="_blank">
     {children}
   </a>
 );
