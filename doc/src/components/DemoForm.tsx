@@ -17,7 +17,7 @@ const defaultSource = `
 (import (scheme write))
 
 (display "Hello, world!")
-`;
+`.trim();
 
 export const DemoForm = (): JSX.Element => {
   const compiling = useStore(compilingStore);
