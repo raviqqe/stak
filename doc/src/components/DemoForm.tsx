@@ -11,7 +11,6 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
-import { Message } from "./Message";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
@@ -36,9 +35,6 @@ export const DemoForm = (): JSX.Element => {
           {interpreting ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
-      <Message>
-        {compiling ? "Compiling..." : interpreting ? "Interpreting..." : ""}
-      </Message>
     </form>
   );
 };
