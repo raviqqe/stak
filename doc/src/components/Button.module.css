@@ -6,8 +6,13 @@
   border-radius: 0.5rem;
   border: none;
   padding: 0.5rem 1rem;
+  transition: transform 0.1s;
 
   &.disabled {
     background-color: dimgrey;
+  }
+
+  &:active {
+    transform: translateY(0.1rem);
   }
 }
