@@ -15,7 +15,7 @@ export const DemoIo = (): JSX.Element => {
       <pre class={styles.output} id="output">
         <code>{output}</code>
       </pre>
-      {output && <Link href={outputUrl}>Download</Link>}
+      {outputUrl && <Link href={outputUrl}>Download</Link>}
     </div>
   );
 };
