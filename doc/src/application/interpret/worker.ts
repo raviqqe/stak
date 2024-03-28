@@ -2,9 +2,9 @@ import init, { interpret } from "@raviqqe/stak";
 
 const promise = init();
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 addEventListener(
   "message",
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   async (event: MessageEvent<{ program: Uint8Array; input: Uint8Array }>) => {
     await promise;
 
