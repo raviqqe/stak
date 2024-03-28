@@ -1,5 +1,7 @@
 import { useStore } from "@nanostores/preact";
+import { Boxes, CirclePlay } from "lucide-preact";
 import { type JSX } from "preact";
+import { useEffect } from "preact/hooks";
 import {
   sourceStore,
   compilingStore,
@@ -12,8 +14,6 @@ import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
-import { useEffect } from "preact/hooks";
-import { Boxes, CirclePlay } from "lucide-preact";
 
 const defaultSource = `
 (import (scheme write))
