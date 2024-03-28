@@ -1,11 +1,11 @@
 import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
 import { outputStore, outputUrlStore } from "../stores/demo-store";
-import styles from "./DemoOutput.module.css";
+import styles from "./DemoIo.module.css";
 import { Label } from "./Label";
 import { Link } from "./Link";
 
-export const DemoOutput = (): JSX.Element => {
+export const DemoIo = (): JSX.Element => {
   const output = useStore(outputStore);
   const outputUrl = useStore(outputUrlStore);
 
