@@ -1,11 +1,11 @@
 import type { JSX } from "preact";
 import styles from "./Demo.module.css";
 import { DemoForm } from "./DemoForm";
-import { DemoOutput } from "./DemoOutput";
+import { DemoIo } from "./DemoIo";
 
 export const Demo = (): JSX.Element => (
   <div class={styles.container}>
     <DemoForm />
-    <DemoOutput />
+    <DemoIo />
   </div>
 );

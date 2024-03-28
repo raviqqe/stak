@@ -1,11 +1,6 @@
 import { atom, computed } from "nanostores";
-import {
-  notify,
-  requestNotificationPermission,
-} from "../application/notify.js";
-import { runWorker } from "../application/run-worker.js";
-import CompilerWorker from "./compiler-worker.js?worker";
-import InterpreterWorker from "./interpreter-worker.js?worker";
+import { compile as compileProgram } from "../application/compile.js";
+import { interpret as interpretProgram } from "../application/interpret.js";
 
 export const sourceStore = atom(
   `
@@ -16,28 +11,39 @@ export const sourceStore = atom(
 );
 
 const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
+
 export const compilingStore = computed(bytecodeStore, (output) => !output);
 
-export const outputStore = atom<string | null>("");
+const binaryOutputStore = atom<Uint8Array | null>(new Uint8Array());
+
+export const outputStore = computed(binaryOutputStore, (output) =>
+  output === null ? null : new TextDecoder().decode(output),
+);
+
+export const outputUrlStore = computed(binaryOutputStore, (output) =>
+  output === null ? null : URL.createObjectURL(new Blob([output])),
+);
+
 export const interpretingStore = computed(
   outputStore,
   (output) => output === null,
 );
 
 export const compile = async (): Promise<void> => {
-  await requestNotificationPermission();
-
   bytecodeStore.set(null);
-  bytecodeStore.set(
-    await runWorker(() => new CompilerWorker(), sourceStore.get()),
-  );
-
-  await notify("Program compiled!");
+  bytecodeStore.set(await compileProgram(sourceStore.get()));
 };
 
 export const interpret = async (): Promise<void> => {
-  outputStore.set(null);
-  outputStore.set(
-    await runWorker(() => new InterpreterWorker(), bytecodeStore.get()),
-  );
+  const bytecodes = bytecodeStore.get();
+
+  if (!bytecodes) {
+    return;
+  }
+
+  binaryOutputStore.set(null);
+
+  const output = await interpretProgram(bytecodes);
+
+  binaryOutputStore.set(output);
 };

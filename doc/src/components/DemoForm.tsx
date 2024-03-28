@@ -11,7 +11,6 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
-import { Message } from "./Message";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
@@ -29,12 +28,13 @@ export const DemoForm = (): JSX.Element => {
         {source}
       </textarea>
       <ButtonGroup>
-        <Button onClick={compile}>Compile</Button>
-        <Button onClick={interpret}>Interpret</Button>
+        <Button disabled={compiling} onClick={compile}>
+          {compiling ? "Compiling..." : "Compile"}
+        </Button>
+        <Button disabled={interpreting} onClick={interpret}>
+          {interpreting ? "Interpreting..." : "Interpret"}
+        </Button>
       </ButtonGroup>
-      <Message>
-        {compiling ? "Compiling..." : interpreting ? "Interpreting..." : ""}
-      </Message>
     </form>
   );
 };
