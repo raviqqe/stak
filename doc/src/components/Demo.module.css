@@ -3,7 +3,7 @@
   gap: 1.5rem;
   height: 100%;
 
-  @media (max-width: 40rem) {
+  @media (max-width: 42rem) {
     flex-direction: column;
   }
 
