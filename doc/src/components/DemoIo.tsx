@@ -25,9 +25,9 @@ export const DemoIo = ({ style }: Props): JSX.Element => {
         value={input}
       />
       <Label for="output">stdout</Label>
-      <pre class={styles.output} id="output">
-        <code>{output}</code>
-      </pre>
+      <p class={styles.output} id="output">
+        {output}
+      </p>
       {outputUrl && <Link href={outputUrl}>Download</Link>}
     </div>
   );
