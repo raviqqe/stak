@@ -1,7 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import { Boxes, CirclePlay } from "lucide-preact";
 import { type JSX } from "preact";
-import { useEffect } from "preact/hooks";
 import {
   sourceStore,
   compilingStore,
@@ -15,20 +14,10 @@ import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
 
-const defaultSource = `
-(import (scheme write))
-
-(display "Hello, world!")
-`.trim();
-
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
   const compiling = useStore(compilingStore);
   const interpreting = useStore(interpretingStore);
-
-  useEffect(() => {
-    sourceStore.set(defaultSource);
-  }, []);
 
   return (
     <form class={styles.container}>
