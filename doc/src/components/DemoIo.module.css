@@ -1,12 +1,11 @@
 .container {
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
   gap: 1rem;
 }
 
 .output {
   composes: textArea from "../system.css";
-  height: 100%;
+  flex: 1;
   margin: 0;
 }

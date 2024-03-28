@@ -4,6 +4,7 @@ import { inputStore, outputStore, outputUrlStore } from "../stores/demo-store";
 import styles from "./DemoIo.module.css";
 import { Label } from "./Label";
 import { Link } from "./Link";
+import { TextArea } from "./TextArea";
 
 export const DemoIo = (): JSX.Element => {
   const input = useStore(inputStore);
@@ -13,17 +14,15 @@ export const DemoIo = (): JSX.Element => {
   return (
     <div class={styles.container}>
       <Label for="input">stdin</Label>
-      <textarea
-        class={styles.output}
+      <TextArea
         id="input"
-        onInput={(event) => inputStore.set(event.currentTarget.value)}
-      >
-        {input}
-      </textarea>
+        onChange={(input) => inputStore.set(input)}
+        value={input}
+      />
       <Label for="output">stdout</Label>
-      <pre class={styles.output} id="output">
-        <code>{output}</code>
-      </pre>
+      <p class={styles.output} id="output">
+        {output}
+      </p>
       {outputUrl && <Link href={outputUrl}>Download</Link>}
     </div>
   );

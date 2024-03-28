@@ -1,4 +1,5 @@
 import { useStore } from "@nanostores/preact";
+import { Boxes, CirclePlay } from "lucide-preact";
 import { type JSX } from "preact";
 import {
   sourceStore,
@@ -11,6 +12,7 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
+import { TextArea } from "./TextArea";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
@@ -19,19 +21,21 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <form class={styles.container}>
-      <Label for="source">Source</Label>
-      <textarea
-        class={styles.source}
+      <Label for="source">Program</Label>
+      <TextArea
         id="source"
-        onInput={(event) => sourceStore.set(event.currentTarget.value)}
-      >
-        {source}
-      </textarea>
+        onChange={(source) => sourceStore.set(source)}
+        value={source}
+      />
       <ButtonGroup>
-        <Button disabled={compiling} onClick={compile}>
+        <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
           {compiling ? "Compiling..." : "Compile"}
         </Button>
-        <Button disabled={interpreting} onClick={interpret}>
+        <Button
+          disabled={interpreting}
+          icon={<CirclePlay />}
+          onClick={interpret}
+        >
           {interpreting ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>

@@ -4,7 +4,7 @@ import { interpret as interpretProgram } from "../application/interpret.js";
 
 export const sourceStore = atom(
   `
-(import (scheme write))
+(import (scheme base) (scheme read) (scheme write))
 
 (display "Hello, world!")
   `.trim(),
