@@ -20,7 +20,6 @@ const defaultSource = `
 `;
 
 export const DemoForm = (): JSX.Element => {
-  const source = useStore(sourceStore);
   const compiling = useStore(compilingStore);
   const interpreting = useStore(interpretingStore);
 
