@@ -1,7 +1,7 @@
 .container {
   composes: boxShadow from "../system.css";
   font-size: inherit;
-  background-color: tomato;
+  background-color: teal;
   color: white;
   border-radius: 0.5rem;
   border: none;
