@@ -11,9 +11,19 @@ export const sourceStore = atom(
 );
 
 const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
+
 export const compilingStore = computed(bytecodeStore, (output) => !output);
 
-export const outputStore = atom<string | null>("");
+const binaryOutputStore = atom<Uint8Array | null>(new Uint8Array());
+
+export const outputStore = computed(binaryOutputStore, (output) =>
+  output === null ? null : new TextDecoder().decode(output),
+);
+
+export const outputUrlStore = computed(binaryOutputStore, (output) =>
+  output === null ? null : URL.createObjectURL(new Blob([output])),
+);
+
 export const interpretingStore = computed(
   outputStore,
   (output) => output === null,
@@ -31,9 +41,9 @@ export const interpret = async (): Promise<void> => {
     return;
   }
 
-  outputStore.set(null);
+  binaryOutputStore.set(null);
 
   const output = await interpretProgram(bytecodes);
 
-  outputStore.set(new TextDecoder().decode(output));
+  binaryOutputStore.set(output);
 };
