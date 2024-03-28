@@ -10,8 +10,8 @@ import {
 import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
-import { Message } from "./Message";
 import { Label } from "./Label";
+import { Message } from "./Message";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
