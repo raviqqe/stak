@@ -2,13 +2,7 @@ import { atom, computed } from "nanostores";
 import { compile as compileProgram } from "../application/compile.js";
 import { interpret as interpretProgram } from "../application/interpret.js";
 
-export const sourceStore = atom(
-  `
-(import (scheme write))
-
-(display "Hello, world!")
-  `.trim(),
-);
+export const sourceStore = atom("");
 
 const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
 

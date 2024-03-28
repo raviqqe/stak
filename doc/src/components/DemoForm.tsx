@@ -11,6 +11,13 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
+import { TextArea } from "./TextArea";
+
+const defaultSource = `
+(import (scheme write))
+
+(display "Hello, world!")
+`;
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
@@ -20,9 +27,11 @@ export const DemoForm = (): JSX.Element => {
   return (
     <form class={styles.container}>
       <Label for="source">Source</Label>
-      <TextArea id="source" onChange={(source) => sourceStore.set(source)}>
-        {source}
-      </TextArea>
+      <TextArea
+        defaultValue={defaultSource}
+        id="source"
+        onChange={(source) => sourceStore.set(source)}
+      />
       <ButtonGroup>
         <Button disabled={compiling} onClick={compile}>
           {compiling ? "Compiling..." : "Compile"}
