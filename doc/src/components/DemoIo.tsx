@@ -5,14 +5,19 @@ import styles from "./DemoIo.module.css";
 import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
+import type { CSSProperties } from "preact/compat";
 
-export const DemoIo = (): JSX.Element => {
+interface Props {
+  style?: CSSProperties;
+}
+
+export const DemoIo = ({ style }: Props): JSX.Element => {
   const input = useStore(inputStore);
   const output = useStore(outputStore);
   const outputUrl = useStore(outputUrlStore);
 
   return (
-    <div class={styles.container}>
+    <div class={styles.container} style={style}>
       <Label for="input">stdin</Label>
       <TextArea
         id="input"
