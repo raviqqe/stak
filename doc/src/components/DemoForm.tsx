@@ -13,6 +13,7 @@ import styles from "./DemoForm.module.css";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
 import { useEffect } from "preact/hooks";
+import { Boxes, CirclePlay } from "lucide-preact";
 
 const defaultSource = `
 (import (scheme write))
@@ -38,10 +39,14 @@ export const DemoForm = (): JSX.Element => {
         value={source}
       />
       <ButtonGroup>
-        <Button disabled={compiling} onClick={compile}>
+        <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
           {compiling ? "Compiling..." : "Compile"}
         </Button>
-        <Button disabled={interpreting} onClick={interpret}>
+        <Button
+          disabled={interpreting}
+          icon={<CirclePlay />}
+          onClick={interpret}
+        >
           {interpreting ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>

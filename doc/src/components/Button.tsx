@@ -5,12 +5,18 @@ import styles from "./Button.module.css";
 const classes = classNames.bind(styles);
 
 interface Props {
+  icon?: ComponentChildren;
   children: ComponentChildren;
   disabled?: boolean;
   onClick: () => void;
 }
 
-export const Button = ({ children, disabled, onClick }: Props): JSX.Element => (
+export const Button = ({
+  icon,
+  children,
+  disabled,
+  onClick,
+}: Props): JSX.Element => (
   <button
     class={classes(styles.container, { disabled })}
     onClick={(event) => {
@@ -18,6 +24,7 @@ export const Button = ({ children, disabled, onClick }: Props): JSX.Element => (
       onClick();
     }}
   >
+    {icon}
     {children}
   </button>
 );
