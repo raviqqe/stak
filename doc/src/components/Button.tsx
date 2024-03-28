@@ -1,6 +1,6 @@
+import classNames from "classnames/bind";
 import type { ComponentChildren, JSX } from "preact";
 import styles from "./Button.module.css";
-import classNames from "classnames/bind";
 
 const classes = classNames.bind(styles);
 
