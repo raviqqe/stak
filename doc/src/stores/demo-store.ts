@@ -30,6 +30,8 @@ export const interpretingStore = computed(
   (output) => output === null,
 );
 
+export const errorStore = atom("");
+
 export const compile = async (): Promise<void> => {
   bytecodeStore.set(null);
 
@@ -38,7 +40,7 @@ export const compile = async (): Promise<void> => {
   try {
     bytecodes = await compileProgram(sourceStore.get());
   } catch (error) {
-    window.alert(error);
+    errorStore.set((error as Error).message);
   }
 
   bytecodeStore.set(bytecodes);
@@ -61,7 +63,7 @@ export const interpret = async (): Promise<void> => {
       new TextEncoder().encode(inputStore.get()),
     );
   } catch (error) {
-    window.alert(error);
+    errorStore.set((error as Error).message);
   }
 
   binaryOutputStore.set(output);
