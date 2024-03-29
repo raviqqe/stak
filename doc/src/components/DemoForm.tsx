@@ -8,7 +8,7 @@ import {
   interpretingStore,
   compile,
   interpret,
-} from "../stores/demo-store";
+} from "../stores/demo";
 import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";

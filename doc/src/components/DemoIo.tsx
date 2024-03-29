@@ -5,7 +5,7 @@ import {
   interpreterErrorStore,
   outputStore,
   outputUrlStore,
-} from "../stores/demo-store";
+} from "../stores/demo";
 import styles from "./DemoIo.module.css";
 import { ErrorMessage } from "./ErrorMessage";
 import { Label } from "./Label";
