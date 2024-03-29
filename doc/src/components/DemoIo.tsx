@@ -28,7 +28,7 @@ export const DemoIo = (): JSX.Element => {
       />
       <Label for="output">stdout</Label>
       <p class={styles.output} id="output">
-        {output}
+        <pre>{output}</pre>
       </p>
       {outputUrl && <Link href={outputUrl}>Download</Link>}
       <ErrorMessage>{error}</ErrorMessage>
