@@ -7,18 +7,14 @@ import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
 
-interface Props {
-  style?: JSX.CSSProperties;
-}
-
-export const DemoIo = (props: Props): JSX.Element => {
+export const DemoIo = (): JSX.Element => {
   const input = useStore(store.input);
   const output = useStore(store.textOutput);
   const outputUrl = useStore(store.outputUrlStore);
   const error = useStore(store.interpreterError);
 
   return (
-    <div class={styles.container} style={props.style}>
+    <div class={styles.container}>
       <Label for="input">stdin</Label>
       <TextArea
         id="input"
