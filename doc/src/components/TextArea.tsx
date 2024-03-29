@@ -1,27 +1,21 @@
-import type { JSX } from "preact";
-import type { CSSProperties } from "preact/compat";
+import type { JSX } from "solid-js";
 import styles from "./TextArea.module.css";
 
 interface Props {
   id?: string;
   onChange: (value: string) => void;
-  style?: CSSProperties;
-  value: string;
+  style?: JSX.CSSProperties;
+  value?: string;
 }
 
-export const TextArea = ({
-  id,
-  onChange,
-  style,
-  value,
-}: Props): JSX.Element => (
+export const TextArea = (props: Props): JSX.Element => (
   <textarea
     class={styles.container}
-    id={id}
-    onChange={(event) => onChange(event.currentTarget.value)}
-    style={style}
-    value={value}
+    id={props.id}
+    onChange={(event) => props.onChange(event.currentTarget.value)}
+    style={props.style}
+    value={props.value}
   >
-    {value}
+    {props.value}
   </textarea>
 );

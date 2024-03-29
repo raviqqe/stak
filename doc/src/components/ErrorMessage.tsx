@@ -1,15 +1,12 @@
-import { type ComponentChildren, type JSX } from "preact";
+import { Show, type JSX } from "solid-js";
 import styles from "./ErrorMessage.module.css";
 
 interface Props {
-  children: ComponentChildren;
+  children: JSX.Element;
 }
 
-export const ErrorMessage = ({ children }: Props): JSX.Element => (
-  <p
-    class={styles.container}
-    style={{ display: children ? undefined : "none" }}
-  >
-    {children}
-  </p>
+export const ErrorMessage = (props: Props): JSX.Element => (
+  <Show when={props.children}>
+    <p class={styles.container}>{props.children}</p>
+  </Show>
 );

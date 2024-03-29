@@ -1,30 +1,25 @@
 import classNames from "classnames/bind";
-import type { ComponentChildren, JSX } from "preact";
+import type { JSX } from "solid-js";
 import styles from "./Button.module.css";
 
 const classes = classNames.bind(styles);
 
 interface Props {
-  icon?: ComponentChildren;
-  children: ComponentChildren;
+  icon?: JSX.Element;
+  children: JSX.Element;
   disabled?: boolean;
   onClick: () => void;
 }
 
-export const Button = ({
-  icon,
-  children,
-  disabled,
-  onClick,
-}: Props): JSX.Element => (
+export const Button = (props: Props): JSX.Element => (
   <button
-    class={classes(styles.container, { disabled })}
+    class={classes(styles.container, { disabled: props.disabled })}
     onClick={(event) => {
       event.preventDefault();
-      onClick();
+      props.onClick();
     }}
   >
-    {icon}
-    {children}
+    {props.icon}
+    {props.children}
   </button>
 );

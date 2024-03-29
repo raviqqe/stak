@@ -1,14 +1,7 @@
-import { useStore } from "@nanostores/preact";
-import { Boxes, CirclePlay } from "lucide-preact";
-import { type JSX } from "preact";
-import {
-  compilerErrorStore,
-  sourceStore,
-  compilingStore,
-  interpretingStore,
-  compile,
-  interpret,
-} from "../stores/demo-store";
+import { useStore } from "@nanostores/solid";
+import { Boxes, CirclePlay } from "lucide-solid";
+import { type JSX } from "solid-js";
+import * as store from "../stores/demo";
 import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
@@ -17,31 +10,31 @@ import { Label } from "./Label";
 import { TextArea } from "./TextArea";
 
 export const DemoForm = (): JSX.Element => {
-  const source = useStore(sourceStore);
-  const compiling = useStore(compilingStore);
-  const interpreting = useStore(interpretingStore);
-  const error = useStore(compilerErrorStore);
+  const source = useStore(store.source);
+  const compiling = useStore(store.compiling);
+  const interpreting = useStore(store.interpretingStore);
+  const error = useStore(store.compilerError);
 
   return (
     <form class={styles.container}>
       <Label for="source">Program</Label>
       <TextArea
         id="source"
-        onChange={(source) => sourceStore.set(source)}
+        onChange={(source) => store.source.set(source)}
         style={{ flex: 1 }}
-        value={source}
+        value={source()}
       />
-      <ErrorMessage>{error}</ErrorMessage>
+      <ErrorMessage>{error()}</ErrorMessage>
       <ButtonGroup>
-        <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
-          {compiling ? "Compiling..." : "Compile"}
+        <Button disabled={compiling()} icon={<Boxes />} onClick={store.compile}>
+          {compiling() ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={interpreting}
+          disabled={interpreting()}
           icon={<CirclePlay />}
-          onClick={interpret}
+          onClick={store.interpret}
         >
-          {interpreting ? "Interpreting..." : "Interpret"}
+          {interpreting() ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
     </form>

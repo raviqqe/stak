@@ -1,13 +1,13 @@
-import { type ComponentChildren, type JSX } from "preact";
+import { type JSX } from "solid-js";
 import styles from "./Link.module.css";
 
 interface Props {
   href: string;
-  children: ComponentChildren;
+  children: JSX.Element;
 }
 
-export const Link = ({ href, children }: Props): JSX.Element => (
-  <a class={styles.container} href={href} rel="noreferrer" target="_blank">
-    {children}
+export const Link = (props: Props): JSX.Element => (
+  <a class={styles.container} href={props.href} rel="noreferrer" target="_blank">
+    {props.children}
   </a>
 );

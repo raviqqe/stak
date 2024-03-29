@@ -11,23 +11,24 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/preact": "^3.1.1",
     "@astrojs/sitemap": "^3.1.2",
+    "@astrojs/solid-js": "^4.0.1",
     "@astrojs/starlight": "^0.21.2",
-    "@nanostores/preact": "^0.5.1",
+    "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.2",
     "@raviqqe/stak": "^0.2.0",
     "astro": "^4.5.12",
     "classnames": "^2.5.1",
-    "lucide-preact": "^0.363.0",
+    "lucide-solid": "^0.363.0",
     "nanostores": "^0.10.0",
-    "preact": "^10.20.1",
+    "solid-js": "^1.8.16",
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
     "@raviqqe/eslint-config": "^2.0.11",
     "@types/node": "^20.11.30",
     "eslint": "^8.57.0",
+    "eslint-plugin-solid": "^0.13.2",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "typescript": "^5.4.3"
