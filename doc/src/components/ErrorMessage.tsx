@@ -1,4 +1,4 @@
-import { Show, type JSX } from "solid-js";
+import { type JSX } from "solid-js";
 import styles from "./ErrorMessage.module.css";
 
 interface Props {
@@ -6,7 +6,5 @@ interface Props {
 }
 
 export const ErrorMessage = (props: Props): JSX.Element => (
-  <Show when={props.children}>
-    <p class={styles.container}>{props.children}</p>
-  </Show>
+  <>{props.children && <p class={styles.container}>{props.children}</p>}</>
 );

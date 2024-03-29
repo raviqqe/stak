@@ -14,21 +14,18 @@ const bytecodes = atom<Uint8Array | null>(new Uint8Array());
 
 export const compiling = computed(bytecodes, (output) => output === null);
 
-const binaryOutput = atom<Uint8Array | null>(new Uint8Array());
+const output = atom<Uint8Array | null>(new Uint8Array());
 
 export const input = atom("");
-export const textOutput = computed(binaryOutput, (output) =>
+export const textOutput = computed(output, (output) =>
   output === null ? null : new TextDecoder().decode(output),
 );
 
-export const outputUrlStore = computed(binaryOutput, (output) =>
+export const outputUrlStore = computed(output, (output) =>
   output?.length ? URL.createObjectURL(new Blob([output])) : null,
 );
 
-export const interpretingStore = computed(
-  binaryOutput,
-  (output) => output === null,
-);
+export const interpretingStore = computed(output, (output) => output === null);
 
 export const compilerError = atom("");
 
@@ -50,25 +47,25 @@ export const compile = async (): Promise<void> => {
 };
 
 export const interpret = async (): Promise<void> => {
-  const value = bytecodes.get();
+  const bytecodeValue = bytecodes.get();
 
-  if (!value) {
+  if (!bytecodeValue) {
     return;
   }
 
-  binaryOutput.set(null);
+  output.set(null);
   interpreterError.set("");
 
-  let output = new Uint8Array();
+  let outputValue = new Uint8Array();
 
   try {
-    output = await interpretProgram(
-      value,
+    outputValue = await interpretProgram(
+      bytecodeValue,
       new TextEncoder().encode(input.get()),
     );
   } catch (error) {
     interpreterError.set((error as Error).message);
   }
 
-  binaryOutput.set(output);
+  output.set(outputValue);
 };
