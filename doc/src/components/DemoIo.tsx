@@ -1,7 +1,13 @@
 import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
-import { inputStore, outputStore, outputUrlStore } from "../stores/demo-store";
+import {
+  inputStore,
+  interpreterErrorStore,
+  outputStore,
+  outputUrlStore,
+} from "../stores/demo-store";
 import styles from "./DemoIo.module.css";
+import { ErrorMessage } from "./ErrorMessage";
 import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
@@ -10,6 +16,7 @@ export const DemoIo = (): JSX.Element => {
   const input = useStore(inputStore);
   const output = useStore(outputStore);
   const outputUrl = useStore(outputUrlStore);
+  const error = useStore(interpreterErrorStore);
 
   return (
     <div class={styles.container}>
@@ -24,6 +31,7 @@ export const DemoIo = (): JSX.Element => {
         {output}
       </p>
       {outputUrl && <Link href={outputUrl}>Download</Link>}
+      <ErrorMessage>{error}</ErrorMessage>
     </div>
   );
 };

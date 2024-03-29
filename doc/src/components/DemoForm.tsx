@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/preact";
 import { Boxes, CirclePlay } from "lucide-preact";
 import { type JSX } from "preact";
 import {
-  errorStore,
+  compilerErrorStore,
   sourceStore,
   compilingStore,
   interpretingStore,
@@ -12,15 +12,15 @@ import {
 import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
+import { ErrorMessage } from "./ErrorMessage";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
-import { ErrorMessage } from "./ErrorMessage";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(sourceStore);
   const compiling = useStore(compilingStore);
   const interpreting = useStore(interpretingStore);
-  const error = useStore(errorStore);
+  const error = useStore(compilerErrorStore);
 
   return (
     <form class={styles.container}>
