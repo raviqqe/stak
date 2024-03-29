@@ -14,7 +14,7 @@ import { TextArea } from "./TextArea";
 import type { CSSProperties } from "preact/compat";
 
 interface Props {
-  style: CSSProperties;
+  style?: CSSProperties;
 }
 
 export const DemoIo = ({ style }: Props): JSX.Element => {
