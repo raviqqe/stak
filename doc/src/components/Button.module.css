@@ -17,5 +17,9 @@
 
   &:active {
     transform: translateY(0.1rem);
+
+    &[disabled] {
+      transform: none;
+    }
   }
 }
