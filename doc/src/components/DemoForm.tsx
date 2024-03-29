@@ -31,7 +31,7 @@ export const DemoForm = (): JSX.Element => {
         style={{ flex: 1 }}
         value={source()}
       />
-      <ErrorMessage>{error()}</ErrorMessage>
+      <ErrorMessage>{error}</ErrorMessage>
       <ButtonGroup>
         <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
           <Show when={!compiling()} fallback="Compiling...">

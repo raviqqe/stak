@@ -1,15 +1,12 @@
-import { type JSX } from "solid-js";
+import { Show, type Accessor, type JSX } from "solid-js";
 import styles from "./ErrorMessage.module.css";
 
 interface Props {
-  children: JSX.Element;
+  children: Accessor<JSX.Element>;
 }
 
 export const ErrorMessage = ({ children }: Props): JSX.Element => (
-  <p
-    class={styles.container}
-    style={{ display: children ? undefined : "none" }}
-  >
-    {children}
-  </p>
+  <Show when={children()}>
+    <p class={styles.container}>{children()}</p>
+  </Show>
 );

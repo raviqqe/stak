@@ -5,7 +5,7 @@ interface Props {
   id?: string;
   onChange: (value: string) => void;
   style?: JSX.CSSProperties;
-  value: string;
+  value?: string;
 }
 
 export const TextArea = ({

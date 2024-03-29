@@ -36,7 +36,7 @@ export const DemoIo = ({ style }: Props): JSX.Element => {
         {output()}
       </pre>
       {outputUrl() && <Link href={outputUrl() ?? ""}>Download</Link>}
-      <ErrorMessage>{error()}</ErrorMessage>
+      <ErrorMessage>{error}</ErrorMessage>
     </div>
   );
 };
