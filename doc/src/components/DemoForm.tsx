@@ -33,11 +33,11 @@ export const DemoForm = (): JSX.Element => {
       />
       <ErrorMessage>{error()}</ErrorMessage>
       <ButtonGroup>
-        <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
+        <Button disabled={compiling()} icon={<Boxes />} onClick={compile}>
           {compiling() ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={interpreting}
+          disabled={interpreting()}
           icon={<CirclePlay />}
           onClick={interpret}
         >
