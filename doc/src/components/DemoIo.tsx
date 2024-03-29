@@ -1,6 +1,5 @@
-import { useStore } from "@nanostores/preact";
-import type { JSX } from "solid-js";
-import type { CSSProperties } from "preact/compat";
+import { useStore } from "@nanostores/solid";
+import { type JSX } from "solid-js";
 import {
   inputStore,
   interpreterErrorStore,
@@ -14,7 +13,7 @@ import { Link } from "./Link";
 import { TextArea } from "./TextArea";
 
 interface Props {
-  style?: CSSProperties;
+  style?: JSX.CSSProperties;
 }
 
 export const DemoIo = ({ style }: Props): JSX.Element => {
@@ -30,14 +29,14 @@ export const DemoIo = ({ style }: Props): JSX.Element => {
         id="input"
         onChange={(input) => inputStore.set(input)}
         style={{ flex: 1 }}
-        value={input}
+        value={input()}
       />
       <Label for="output">stdout</Label>
       <pre class={styles.output} id="output">
-        {output}
+        {output()}
       </pre>
-      {outputUrl && <Link href={outputUrl}>Download</Link>}
-      <ErrorMessage>{error}</ErrorMessage>
+      {outputUrl() && <Link href={outputUrl() ?? ""}>Download</Link>}
+      <ErrorMessage>{error()}</ErrorMessage>
     </div>
   );
 };

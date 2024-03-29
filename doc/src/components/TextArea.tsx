@@ -1,11 +1,10 @@
 import type { JSX } from "solid-js";
-import type { CSSProperties } from "preact/compat";
 import styles from "./TextArea.module.css";
 
 interface Props {
   id?: string;
   onChange: (value: string) => void;
-  style?: CSSProperties;
+  style?: JSX.CSSProperties;
   value: string;
 }
 

@@ -6,6 +6,6 @@ import { DemoIo } from "./DemoIo";
 export const Demo = (): JSX.Element => (
   <div class={styles.container}>
     <DemoForm />
-    <DemoIo style={{ maxWidth: "50%" }} />
+    <DemoIo style={{ "max-width": "50%" }} />
   </div>
 );

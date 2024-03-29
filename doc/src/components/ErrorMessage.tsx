@@ -1,8 +1,8 @@
-import { type ComponentChildren, type JSX } from "solid-js";
+import { type JSX } from "solid-js";
 import styles from "./ErrorMessage.module.css";
 
 interface Props {
-  children: ComponentChildren;
+  children: JSX.Element;
 }
 
 export const ErrorMessage = ({ children }: Props): JSX.Element => (

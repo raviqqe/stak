@@ -1,5 +1,5 @@
-import { useStore } from "@nanostores/preact";
-import { Boxes, CirclePlay } from "lucide-preact";
+import { useStore } from "@nanostores/solid";
+import { Boxes, CirclePlay } from "lucide-solid";
 import { type JSX } from "solid-js";
 import {
   compilerErrorStore,
@@ -29,19 +29,19 @@ export const DemoForm = (): JSX.Element => {
         id="source"
         onChange={(source) => sourceStore.set(source)}
         style={{ flex: 1 }}
-        value={source}
+        value={source()}
       />
-      <ErrorMessage>{error}</ErrorMessage>
+      <ErrorMessage>{error()}</ErrorMessage>
       <ButtonGroup>
-        <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
-          {compiling ? "Compiling..." : "Compile"}
+        <Button disabled={compiling()} icon={<Boxes />} onClick={compile}>
+          {compiling() ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={interpreting}
+          disabled={interpreting()}
           icon={<CirclePlay />}
           onClick={interpret}
         >
-          {interpreting ? "Interpreting..." : "Interpret"}
+          {interpreting() ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
     </form>
