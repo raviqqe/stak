@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
+import type { CSSProperties } from "preact/compat";
 import {
   inputStore,
   interpreterErrorStore,
@@ -11,7 +12,6 @@ import { ErrorMessage } from "./ErrorMessage";
 import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
-import type { CSSProperties } from "preact/compat";
 
 interface Props {
   style?: CSSProperties;

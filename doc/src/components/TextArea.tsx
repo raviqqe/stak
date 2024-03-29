@@ -1,6 +1,6 @@
 import type { JSX } from "preact";
-import styles from "./TextArea.module.css";
 import type { CSSProperties } from "preact/compat";
+import styles from "./TextArea.module.css";
 
 interface Props {
   id?: string;
