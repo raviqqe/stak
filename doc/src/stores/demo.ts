@@ -12,7 +12,10 @@ export const sourceStore = atom(
 
 const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
 
-export const compilingStore = computed(bytecodeStore, (output) => !output);
+export const compilingStore = computed(
+  bytecodeStore,
+  (output) => output === null,
+);
 
 const binaryOutputStore = atom<Uint8Array | null>(new Uint8Array());
 
