@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/solid";
-import { Show, type JSX } from "solid-js";
+import { type JSX } from "solid-js";
 import * as store from "../stores/demo";
 import styles from "./DemoIo.module.css";
 import { ErrorMessage } from "./ErrorMessage";
@@ -30,9 +30,7 @@ export const DemoIo = (props: Props): JSX.Element => {
       <pre class={styles.output} id="output">
         {output()}
       </pre>
-      <Show when={outputUrl()}>
-        <Link href={outputUrl() ?? ""}>Download</Link>
-      </Show>
+      {outputUrl() && <Link href={outputUrl() ?? ""}>Download</Link>}
       <ErrorMessage>{error()}</ErrorMessage>
     </div>
   );
