@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import type { JSX } from "preact";
+import type { CSSProperties } from "preact/compat";
 import {
   inputStore,
   interpreterErrorStore,
@@ -12,24 +13,29 @@ import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
 
-export const DemoIo = (): JSX.Element => {
+interface Props {
+  style?: CSSProperties;
+}
+
+export const DemoIo = ({ style }: Props): JSX.Element => {
   const input = useStore(inputStore);
   const output = useStore(outputStore);
   const outputUrl = useStore(outputUrlStore);
   const error = useStore(interpreterErrorStore);
 
   return (
-    <div class={styles.container}>
+    <div class={styles.container} style={style}>
       <Label for="input">stdin</Label>
       <TextArea
         id="input"
         onChange={(input) => inputStore.set(input)}
+        style={{ flex: 1 }}
         value={input}
       />
       <Label for="output">stdout</Label>
-      <p class={styles.output} id="output">
-        <pre>{output}</pre>
-      </p>
+      <pre class={styles.output} id="output">
+        {output}
+      </pre>
       {outputUrl && <Link href={outputUrl}>Download</Link>}
       <ErrorMessage>{error}</ErrorMessage>
     </div>

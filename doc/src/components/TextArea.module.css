@@ -2,6 +2,5 @@
   composes: textArea from "../system.css";
   overflow: auto;
   resize: none;
-  flex: 1;
   font-size: inherit;
 }

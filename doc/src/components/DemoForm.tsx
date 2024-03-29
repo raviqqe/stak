@@ -28,6 +28,7 @@ export const DemoForm = (): JSX.Element => {
       <TextArea
         id="source"
         onChange={(source) => sourceStore.set(source)}
+        style={{ flex: 1 }}
         value={source}
       />
       <ErrorMessage>{error}</ErrorMessage>
