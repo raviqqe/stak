@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-import type { JSX } from "solid-js";
+import type { Accessor, JSX } from "solid-js";
 import styles from "./Button.module.css";
 
 const classes = classNames.bind(styles);
@@ -7,7 +7,7 @@ const classes = classNames.bind(styles);
 interface Props {
   icon?: JSX.Element;
   children: JSX.Element;
-  disabled?: boolean;
+  disabled?: Accessor<boolean>;
   onClick: () => void;
 }
 
@@ -18,7 +18,7 @@ export const Button = ({
   onClick,
 }: Props): JSX.Element => (
   <button
-    class={classes(styles.container, { disabled })}
+    class={classes(styles.container, { disabled: disabled?.() })}
     onClick={(event) => {
       event.preventDefault();
       onClick();

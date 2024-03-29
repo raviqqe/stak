@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/solid";
 import { Boxes, CirclePlay } from "lucide-solid";
-import { type JSX } from "solid-js";
+import { Show, type JSX } from "solid-js";
 import {
   compilerErrorStore,
   sourceStore,
@@ -33,15 +33,19 @@ export const DemoForm = (): JSX.Element => {
       />
       <ErrorMessage>{error()}</ErrorMessage>
       <ButtonGroup>
-        <Button disabled={compiling()} icon={<Boxes />} onClick={compile}>
-          {compiling() ? "Compiling..." : "Compile"}
+        <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
+          <Show when={!compiling()} fallback="Compiling...">
+            Compile
+          </Show>
         </Button>
         <Button
-          disabled={interpreting()}
+          disabled={interpreting}
           icon={<CirclePlay />}
           onClick={interpret}
         >
-          {interpreting() ? "Interpreting..." : "Interpret"}
+          <Show when={!interpreting()} fallback="Interpreting...">
+            Interpret
+          </Show>
         </Button>
       </ButtonGroup>
     </form>
