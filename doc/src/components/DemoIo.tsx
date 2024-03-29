@@ -29,6 +29,7 @@ export const DemoIo = ({ style }: Props): JSX.Element => {
       <TextArea
         id="input"
         onChange={(input) => inputStore.set(input)}
+        style={{ flex: 1 }}
         value={input}
       />
       <Label for="output">stdout</Label>
