@@ -12,10 +12,7 @@ export const Button = (props: Props): JSX.Element => (
   <button
     class={styles.container}
     disabled={props.disabled}
-    onClick={(event) => {
-      event.preventDefault();
-      props.onClick();
-    }}
+    onClick={props.onClick}
   >
     {props.icon}
     {props.children}
