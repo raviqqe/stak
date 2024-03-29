@@ -12,8 +12,8 @@ interface Props {
 }
 
 export const DemoIo = (props: Props): JSX.Element => {
-  const input = useStore(store.inputStore);
-  const output = useStore(store.outputStore);
+  const input = useStore(store.input);
+  const output = useStore(store.textOutput);
   const outputUrl = useStore(store.outputUrlStore);
   const error = useStore(store.interpreterErrorStore);
 
@@ -22,7 +22,7 @@ export const DemoIo = (props: Props): JSX.Element => {
       <Label for="input">stdin</Label>
       <TextArea
         id="input"
-        onChange={(input) => store.inputStore.set(input)}
+        onChange={(input) => store.input.set(input)}
         style={{ flex: 1 }}
         value={input()}
       />

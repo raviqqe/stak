@@ -2,7 +2,7 @@ import { atom, computed } from "nanostores";
 import { compile as compileProgram } from "../application/compile.js";
 import { interpret as interpretProgram } from "../application/interpret.js";
 
-export const sourceStore = atom(
+export const source = atom(
   `
 (import (scheme base) (scheme read) (scheme write))
 
@@ -10,68 +10,65 @@ export const sourceStore = atom(
   `.trim(),
 );
 
-const bytecodeStore = atom<Uint8Array | null>(new Uint8Array());
+const bytecodes = atom<Uint8Array | null>(new Uint8Array());
 
-export const compilingStore = computed(
-  bytecodeStore,
-  (output) => output === null,
-);
+export const compiling = computed(bytecodes, (output) => output === null);
 
-const binaryOutputStore = atom<Uint8Array | null>(new Uint8Array());
+const binaryOutput = atom<Uint8Array | null>(new Uint8Array());
 
-export const inputStore = atom("");
-export const outputStore = computed(binaryOutputStore, (output) =>
+export const input = atom("");
+export const textOutput = computed(binaryOutput, (output) =>
   output === null ? null : new TextDecoder().decode(output),
 );
 
-export const outputUrlStore = computed(binaryOutputStore, (output) =>
+export const outputUrlStore = computed(binaryOutput, (output) =>
   output?.length ? URL.createObjectURL(new Blob([output])) : null,
 );
 
 export const interpretingStore = computed(
-  outputStore,
+  binaryOutput,
   (output) => output === null,
 );
 
-export const compilerErrorStore = atom("");
+export const compilerError = atom("");
 
-export const interpreterErrorStore = atom("");
+export const interpreterError = atom("");
 
 export const compile = async (): Promise<void> => {
-  bytecodeStore.set(null);
-  compilerErrorStore.set("");
+  bytecodes.set(null);
+  compilerError.set("");
 
-  let bytecodes = new Uint8Array();
+  let value = new Uint8Array();
 
   try {
-    bytecodes = await compileProgram(sourceStore.get());
+    value = await compileProgram(source.get());
   } catch (error) {
-    compilerErrorStore.set((error as Error).message);
+    compilerError.set((error as Error).message);
   }
 
-  bytecodeStore.set(bytecodes);
+  bytecodes.set(value);
 };
 
 export const interpret = async (): Promise<void> => {
-  const bytecodes = bytecodeStore.get();
+  const value = bytecodes.get();
 
-  if (!bytecodes) {
+  if (!value) {
     return;
   }
 
-  binaryOutputStore.set(null);
-  interpreterErrorStore.set("");
+  binaryOutput.set(null);
+  interpreterError.set("");
 
   let output = new Uint8Array();
 
   try {
     output = await interpretProgram(
-      bytecodes,
-      new TextEncoder().encode(inputStore.get()),
+      value,
+      new TextEncoder().encode(input.get()),
     );
   } catch (error) {
-    interpreterErrorStore.set((error as Error).message);
+    interpreterError.set((error as Error).message);
   }
 
-  binaryOutputStore.set(output);
+  binaryOutput.set(output);
 };
