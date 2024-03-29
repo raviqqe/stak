@@ -34,7 +34,7 @@ export const DemoForm = (): JSX.Element => {
       <ErrorMessage>{error}</ErrorMessage>
       <ButtonGroup>
         <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
-          <Show when={!compiling()} fallback="Compiling...">
+          <Show fallback="Compiling..." when={!compiling()}>
             Compile
           </Show>
         </Button>
@@ -43,7 +43,7 @@ export const DemoForm = (): JSX.Element => {
           icon={<CirclePlay />}
           onClick={interpret}
         >
-          <Show when={!interpreting()} fallback="Interpreting...">
+          <Show fallback="Interpreting..." when={!interpreting()}>
             Interpret
           </Show>
         </Button>
