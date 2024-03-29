@@ -24,8 +24,6 @@ export const Demo = (): JSX.Element => {
   return (
     <div class={styles.container}>
       <DemoForm
-        bytecodes={bytecodes}
-        compilerError={compilerError}
         onCompile={async () => {
           setBytecodes(null);
           setCompilerError("");
@@ -33,7 +31,7 @@ export const Demo = (): JSX.Element => {
           let bytecodes = new Uint8Array();
 
           try {
-            bytecodes = await compileProgram(source());
+            bytecodes = await compileProgram(sourceStore.get());
           } catch (error) {
             setCompilerError((error as Error).message);
           }
@@ -48,14 +46,14 @@ export const Demo = (): JSX.Element => {
           }
 
           setOutput(null);
-          setInterpreterError("");
+          interpreterErrorStore.set("");
 
           let output = new Uint8Array();
 
           try {
             output = await interpretProgram(
               value,
-              new TextEncoder().encode(input()),
+              new TextEncoder().encode(inputStore.get()),
             );
           } catch (error) {
             setInterpreterError((error as Error).message);
@@ -63,15 +61,8 @@ export const Demo = (): JSX.Element => {
 
           setOutput(output);
         }}
-        onSourceChange={setSource}
-        output={output}
-        source={source}
       />
       <DemoIo
-        input={input}
-        interpreterError={interpreterError}
-        onInputChange={setInput}
-        output={output}
         style={{
           // eslint-disable-next-line @typescript-eslint/naming-convention
           "max-width": "50%",
