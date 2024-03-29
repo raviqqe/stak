@@ -8,7 +8,6 @@ import { TextArea } from "./TextArea";
 interface Props {
   input: Accessor<string>;
   output: Accessor<Uint8Array | null>;
-  outputUrl: Accessor<string | null>;
   interpreterError: Accessor<string>;
   onInputChange: (input: string) => void;
   style?: JSX.CSSProperties;
@@ -18,7 +17,6 @@ export const DemoIo = ({
   input,
   interpreterError,
   output,
-  outputUrl,
   onInputChange,
   style,
 }: Props): JSX.Element => {
@@ -26,6 +24,10 @@ export const DemoIo = ({
   const textOutput = createMemo(() => {
     const value = output();
     return value ? decoder.decode(value) : "";
+  });
+  const outputUrl = createMemo(() => {
+    const value = output();
+    return value ? URL.createObjectURL(new Blob([value])) : null;
   });
 
   return (
