@@ -11,15 +11,11 @@
   padding: 0.7rem 1rem;
   transition: transform 0.1s;
 
-  &.disabled {
+  &[disabled] {
     background-color: dimgrey;
   }
 
   &:active {
     transform: translateY(0.1rem);
-
-    &.disabled {
-      transform: none;
-    }
   }
 }
