@@ -16,14 +16,14 @@ interface Props {
   style?: JSX.CSSProperties;
 }
 
-export const DemoIo = ({ style }: Props): JSX.Element => {
+export const DemoIo = (props: Props): JSX.Element => {
   const input = useStore(inputStore);
   const output = useStore(outputStore);
   const outputUrl = useStore(outputUrlStore);
   const error = useStore(interpreterErrorStore);
 
   return (
-    <div class={styles.container} style={style}>
+    <div class={styles.container} style={props.style}>
       <Label for="input">stdin</Label>
       <TextArea
         id="input"
@@ -36,7 +36,7 @@ export const DemoIo = ({ style }: Props): JSX.Element => {
         {output()}
       </pre>
       {outputUrl() && <Link href={outputUrl() ?? ""}>Download</Link>}
-      <ErrorMessage>{error}</ErrorMessage>
+      <ErrorMessage>{error()}</ErrorMessage>
     </div>
   );
 };

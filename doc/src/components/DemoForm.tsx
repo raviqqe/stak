@@ -31,21 +31,17 @@ export const DemoForm = (): JSX.Element => {
         style={{ flex: 1 }}
         value={source()}
       />
-      <ErrorMessage>{error}</ErrorMessage>
+      <ErrorMessage>{error()}</ErrorMessage>
       <ButtonGroup>
         <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
-          <Show fallback="Compiling..." when={!compiling()}>
-            Compile
-          </Show>
+          {compiling() ? "Compiling..." : "Compile"}
         </Button>
         <Button
           disabled={interpreting}
           icon={<CirclePlay />}
           onClick={interpret}
         >
-          <Show fallback="Interpreting..." when={!interpreting()}>
-            Interpret
-          </Show>
+          {interpreting() ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
     </form>

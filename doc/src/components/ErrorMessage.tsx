@@ -1,12 +1,12 @@
-import { Show, type Accessor, type JSX } from "solid-js";
+import { Show, type JSX } from "solid-js";
 import styles from "./ErrorMessage.module.css";
 
 interface Props {
-  children: Accessor<JSX.Element>;
+  children: JSX.Element;
 }
 
-export const ErrorMessage = ({ children }: Props): JSX.Element => (
-  <Show when={children()}>
-    <p class={styles.container}>{children()}</p>
+export const ErrorMessage = (props: Props): JSX.Element => (
+  <Show when={props.children}>
+    <p class={styles.container}>{props.children}</p>
   </Show>
 );

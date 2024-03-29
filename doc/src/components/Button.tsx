@@ -11,20 +11,15 @@ interface Props {
   onClick: () => void;
 }
 
-export const Button = ({
-  icon,
-  children,
-  disabled,
-  onClick,
-}: Props): JSX.Element => (
+export const Button = (props: Props): JSX.Element => (
   <button
-    class={classes(styles.container, { disabled: disabled?.() })}
+    class={classes(styles.container, { disabled: props.disabled?.() })}
     onClick={(event) => {
       event.preventDefault();
-      onClick();
+      props.onClick();
     }}
   >
-    {icon}
-    {children}
+    {props.icon}
+    {props.children}
   </button>
 );

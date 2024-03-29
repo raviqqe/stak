@@ -8,19 +8,14 @@ interface Props {
   value?: string;
 }
 
-export const TextArea = ({
-  id,
-  onChange,
-  style,
-  value,
-}: Props): JSX.Element => (
+export const TextArea = (props: Props): JSX.Element => (
   <textarea
     class={styles.container}
-    id={id}
-    onChange={(event) => onChange(event.currentTarget.value)}
-    style={style}
-    value={value}
+    id={props.id}
+    onChange={(event) => props.onChange(event.currentTarget.value)}
+    style={props.style}
+    value={props.value}
   >
-    {value}
+    {props.value}
   </textarea>
 );
