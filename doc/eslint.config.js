@@ -1,4 +1,5 @@
 import configurations from "@raviqqe/eslint-config";
+import solid from "eslint-plugin-solid/configs/typescript.js";
 
 export default [
   ...configurations,
@@ -8,4 +9,5 @@ export default [
       "react/no-unknown-property": "off",
     },
   },
+  solid,
 ];
