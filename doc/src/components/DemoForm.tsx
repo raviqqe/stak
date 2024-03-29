@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/preact";
 import { Boxes, CirclePlay } from "lucide-preact";
-import { type JSX } from "preact";
+import { type JSX } from "solid-js";
 import {
   compilerErrorStore,
   sourceStore,

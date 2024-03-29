@@ -1,4 +1,4 @@
-import type { JSX } from "preact";
+import type { JSX } from "solid-js";
 import type { CSSProperties } from "preact/compat";
 import styles from "./TextArea.module.css";
 

@@ -1,4 +1,4 @@
-import { type ComponentChildren, type JSX } from "preact";
+import { type ComponentChildren, type JSX } from "solid-js";
 import styles from "./ErrorMessage.module.css";
 
 interface Props {
