@@ -7,6 +7,7 @@ export default [
     rules: {
       "@typescript-eslint/triple-slash-reference": "off",
       "react/no-unknown-property": "off",
+      "react/jsx-no-useless-fragment": "off",
     },
   },
   solid,
