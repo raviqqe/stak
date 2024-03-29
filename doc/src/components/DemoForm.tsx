@@ -30,6 +30,7 @@ export const DemoForm = (): JSX.Element => {
         onChange={(source) => sourceStore.set(source)}
         value={source}
       />
+      <ErrorMessage>{error}</ErrorMessage>
       <ButtonGroup>
         <Button disabled={compiling} icon={<Boxes />} onClick={compile}>
           {compiling ? "Compiling..." : "Compile"}
@@ -42,7 +43,6 @@ export const DemoForm = (): JSX.Element => {
           {interpreting ? "Interpreting..." : "Interpret"}
         </Button>
       </ButtonGroup>
-      <ErrorMessage>{error}</ErrorMessage>
     </form>
   );
 };
