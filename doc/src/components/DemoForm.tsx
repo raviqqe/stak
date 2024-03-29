@@ -13,7 +13,7 @@ export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);
   const compiling = useStore(store.compiling);
   const interpreting = useStore(store.interpretingStore);
-  const error = useStore(store.compilerErrorStore);
+  const error = useStore(store.compilerError);
 
   return (
     <form class={styles.container}>

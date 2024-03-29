@@ -15,7 +15,7 @@ export const DemoIo = (props: Props): JSX.Element => {
   const input = useStore(store.input);
   const output = useStore(store.textOutput);
   const outputUrl = useStore(store.outputUrlStore);
-  const error = useStore(store.interpreterErrorStore);
+  const error = useStore(store.interpreterError);
 
   return (
     <div class={styles.container} style={props.style}>
