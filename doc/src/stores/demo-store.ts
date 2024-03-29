@@ -32,7 +32,16 @@ export const interpretingStore = computed(
 
 export const compile = async (): Promise<void> => {
   bytecodeStore.set(null);
-  bytecodeStore.set(await compileProgram(sourceStore.get()));
+
+  let bytecodes = new Uint8Array();
+
+  try {
+    bytecodes = await compileProgram(sourceStore.get());
+  } catch (error) {
+    window.alert(error);
+  }
+
+  bytecodeStore.set(bytecodes);
 };
 
 export const interpret = async (): Promise<void> => {
@@ -44,10 +53,16 @@ export const interpret = async (): Promise<void> => {
 
   binaryOutputStore.set(null);
 
-  const output = await interpretProgram(
-    bytecodes,
-    new TextEncoder().encode(inputStore.get()),
-  );
+  let output = new Uint8Array();
+
+  try {
+    output = await interpretProgram(
+      bytecodes,
+      new TextEncoder().encode(inputStore.get()),
+    );
+  } catch (error) {
+    window.alert(error);
+  }
 
   binaryOutputStore.set(output);
 };
