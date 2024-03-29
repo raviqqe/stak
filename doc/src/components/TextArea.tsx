@@ -13,5 +13,7 @@ export const TextArea = ({ id, onChange, value }: Props): JSX.Element => (
     id={id}
     onChange={(event) => onChange(event.currentTarget.value)}
     value={value}
-  />
+  >
+    {value}
+  </textarea>
 );
