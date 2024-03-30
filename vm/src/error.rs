@@ -8,13 +8,13 @@ pub enum Error {
     /// A cons expected.
     ConsExpected,
     /// An unexpected end of bytecodes.
-    EndOfBytecodes,
+    BytecodeEnd,
+    /// A missing integer in bytecodes.
+    BytecodeIntegerMissing,
+    /// A missing operand in bytecodes.
+    BytecodeOperandMissing,
     /// An illegal instruction detected.
     IllegalInstruction,
-    /// A missing integer in bytecodes.
-    MissingInteger,
-    /// A missing operand in bytecodes.
-    MissingOperand,
     /// A number expected.
     NumberExpected,
     /// Out of memory.
@@ -30,11 +30,11 @@ impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
+            Self::BytecodeEnd => write!(formatter, "unexpected end of bytecodes"),
+            Self::BytecodeIntegerMissing => write!(formatter, "integer missing in bytecodes"),
+            Self::BytecodeOperandMissing => write!(formatter, "operand missing in bytecodes"),
             Self::ConsExpected => write!(formatter, "cons expected"),
-            Self::EndOfBytecodes => write!(formatter, "unexpected end of bytecodes"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),
-            Self::MissingInteger => write!(formatter, "integer missing in bytecodes"),
-            Self::MissingOperand => write!(formatter, "operand missing in bytecodes"),
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
