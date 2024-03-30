@@ -11,6 +11,7 @@ import { TextArea } from "./TextArea";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);
+  const bytecodesReady = useStore(store.bytecodesReady);
   const compiling = useStore(store.compiling);
   const interpreting = useStore(store.interpretingStore);
   const error = useStore(store.compilerError);
@@ -30,7 +31,7 @@ export const DemoForm = (): JSX.Element => {
           {compiling() ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={interpreting()}
+          disabled={!bytecodesReady() || interpreting()}
           icon={<CirclePlay />}
           onClick={store.interpret}
         >

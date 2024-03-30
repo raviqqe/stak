@@ -597,7 +597,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Initialize a shared empty string.
         self.register = self.create_string(self.null(), 0)?;
 
-        for _ in 0..Self::decode_integer(input).ok_or(Error::MissingInteger)? {
+        for _ in 0..Self::decode_integer(input).ok_or(Error::BytecodeIntegerMissing)? {
             self.initialize_symbol(None, self.boolean(false).into())?;
         }
 
@@ -605,7 +605,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut name = self.null();
 
         while {
-            let byte = input.next().ok_or(Error::EndOfInput)?;
+            let byte = input.next().ok_or(Error::BytecodeEnd)?;
 
             (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                 let string = self.create_string(name, length)?;
@@ -695,7 +695,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let operand = self.allocate(
                         Number::new(integer as i64).into(),
                         self.decode_operand(
-                            Self::decode_integer(input).ok_or(Error::MissingOperand)?,
+                            Self::decode_integer(input).ok_or(Error::BytecodeOperandMissing)?,
                         ),
                     )?;
                     self.append_instruction(instruction, operand.into(), r#return)?
@@ -776,7 +776,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             instruction >> 1,
             instruction & 1 != 0,
             Self::decode_short_integer(input, byte >> code::INSTRUCTION_BITS)
-                .ok_or(Error::MissingOperand)?,
+                .ok_or(Error::BytecodeOperandMissing)?,
         )))
     }
 
