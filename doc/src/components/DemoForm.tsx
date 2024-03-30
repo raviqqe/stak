@@ -31,7 +31,7 @@ export const DemoForm = (): JSX.Element => {
           {compiling() ? "Compiling..." : "Compile"}
         </Button>
         <Button
-          disabled={interpreting() || !bytecodesReady()}
+          disabled={!bytecodesReady() || interpreting()}
           icon={<CirclePlay />}
           onClick={store.interpret}
         >
