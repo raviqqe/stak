@@ -14,7 +14,7 @@ const bytecodes = atom<Uint8Array | null>(new Uint8Array());
 
 export const bytecodesReady = computed(
   bytecodes,
-  (bytecodes) => !bytecodes?.length,
+  (bytecodes) => bytecodes?.length,
 );
 
 export const compiling = computed(bytecodes, (output) => output === null);
