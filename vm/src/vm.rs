@@ -605,7 +605,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut name = self.null();
 
         while {
-            let byte = input.next().ok_or(Error::EndOfInput)?;
+            let byte = input.next().ok_or(Error::EndOfBytecodes)?;
 
             (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                 let string = self.create_string(name, length)?;

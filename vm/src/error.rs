@@ -7,8 +7,8 @@ pub enum Error {
     ArgumentCount,
     /// A cons expected.
     ConsExpected,
-    /// An unexpected end of input in bytecodes.
-    EndOfInput,
+    /// An unexpected end of bytecodes.
+    EndOfBytecodes,
     /// An illegal instruction detected.
     IllegalInstruction,
     /// A missing integer in bytecodes.
@@ -31,7 +31,7 @@ impl Display for Error {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
             Self::ConsExpected => write!(formatter, "cons expected"),
-            Self::EndOfInput => write!(formatter, "unexpected end of input"),
+            Self::EndOfBytecodes => write!(formatter, "unexpected end of bytecodes"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),
             Self::MissingInteger => write!(formatter, "integer missing in bytecodes"),
             Self::MissingOperand => write!(formatter, "operand missing in bytecodes"),
