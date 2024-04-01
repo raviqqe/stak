@@ -38,10 +38,14 @@ pub fn include_minified(input: TokenStream) -> TokenStream {
     convert_result((|| minify_source(&read_file(input)?))())
 }
 
-fn minify_source(source: &str) -> Result<String, Box<dyn Error>> {
+fn minify_source(source: &str) -> Result<TokenStream, Box<dyn Error>> {
     let mut buffer = vec![];
+
     stak_minifier::minify(source, &mut buffer)?;
-    Ok(String::from_utf8(buffer)?)
+
+    let target = Literal::string(String::from_utf8(buffer)?);
+
+    Ok(quote! { #target }.into())
 }
 
 fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {
