@@ -895,10 +895,7 @@ mod tests {
     macro_rules! assert_snapshot {
         ($vm:expr) => {
             #[cfg(not(feature = "gc_always"))]
-            {
-                use std::format;
-                insta::assert_snapshot!($vm);
-            }
+            insta::assert_snapshot!($vm);
 
             let _ = $vm;
         };

@@ -345,6 +345,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-minifier-macro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "stak-minifier",
+ "syn",
+]
+
+[[package]]
 name = "stak-primitive"
 version = "0.2.23"
 dependencies = [

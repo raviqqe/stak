@@ -1,0 +1,18 @@
+[package]
+name = "stak-minifier-macro"
+description = "Macros to minify Scheme source codes"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.79"
+quote = "1.0.35"
+syn = "2.0.57"
+stak-minifier = { version = "0.1.0", path = "../minifier" }
