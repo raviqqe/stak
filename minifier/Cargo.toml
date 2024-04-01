@@ -1,5 +1,6 @@
 [package]
 name = "stak-minifier"
+description = "Stak Scheme source code minifier"
 version = "0.1.0"
 edition.workspace = true
 keywords.workspace = true

@@ -27,7 +27,7 @@ pub fn minify(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// cosnt PROGRAM = stak_macro::include_r7rs!("foo.scm");
+/// const PROGRAM = stak_macro::include_r7rs!("foo.scm");
 ///
 /// assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
 /// ```
