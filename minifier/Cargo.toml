@@ -8,5 +8,8 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
+stak-configuration = { version = "0.1.18", path = "../configuration" }
+stak-device = { version = "0.2.22", path = "../device" }
 stak-macro = { version = "0.1.23", path = "../macro" }
+stak-primitive = { version = "0.2.23", path = "../primitive" }
 stak-vm = { version = "0.3.23", path = "../vm" }
