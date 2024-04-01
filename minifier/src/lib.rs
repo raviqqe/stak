@@ -2,9 +2,8 @@
 
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
-use stak_primitive::{SmallPrimitiveSet, SmallError};
+use stak_primitive::{SmallError, SmallPrimitiveSet};
 use stak_vm::Vm;
-use std::error::Error;
 use std::io::{empty, Read, Write};
 
 /// Minifies given source codes.
@@ -19,4 +18,19 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     vm.run()?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn minify_source() {
+        let source = "(foo  bar)";
+        let mut target = vec![];
+
+        minify(source.as_bytes(), &mut target).unwrap();
+
+        assert_eq!(target, b"(foo bar)");
+    }
 }
