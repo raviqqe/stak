@@ -26,7 +26,9 @@ readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [profile.release]
+codegen-units = 1
 lto = true
+panic = "abort"
 
 [profile.dev.build-override]
 opt-level = 3
