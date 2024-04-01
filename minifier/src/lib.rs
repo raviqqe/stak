@@ -11,8 +11,11 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     const PROGRAM: &[u8] = stak_macro::include_r7rs!("minify.scm");
 
     let mut heap = [Default::default(); DEFAULT_HEAP_SIZE];
-    let device = ReadWriteDevice::new(reader, writer, empty());
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device)).unwrap();
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(ReadWriteDevice::new(reader, writer, empty())),
+    )
+    .unwrap();
 
     vm.initialize(PROGRAM.iter().copied())?;
     vm.run()?;
