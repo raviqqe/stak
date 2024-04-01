@@ -16,7 +16,7 @@
     "@astrojs/starlight": "^0.21.2",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.2",
-    "@raviqqe/stak": "^0.2.0",
+    "@raviqqe/stak": "^0.2.1",
     "astro": "^4.5.12",
     "classnames": "^2.5.1",
     "lucide-solid": "^0.363.0",
