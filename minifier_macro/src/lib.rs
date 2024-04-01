@@ -3,7 +3,7 @@
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
-use std::{env, error::Error, fs::read_to_string, path::Path};
+use std::{env, error::Error, fs::read_to_string, path::Path, str};
 use syn::{parse_macro_input, LitStr};
 
 /// Minifies source codes in Scheme.
@@ -41,7 +41,7 @@ pub fn include_minified(input: TokenStream) -> TokenStream {
 fn minify_source(source: &str) -> Result<TokenStream, Box<dyn Error>> {
     let mut buffer = vec![];
 
-    stak_minifier::minify(source, &mut buffer)?;
+    stak_minifier::minify(source.as_bytes(), &mut buffer)?;
 
     let target = Literal::string(str::from_utf8(buffer)?);
 
