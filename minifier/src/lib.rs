@@ -14,8 +14,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(reader, writer, empty())),
-    )
-    .unwrap();
+    )?;
 
     vm.initialize(PROGRAM.iter().copied())?;
     vm.run()?;
