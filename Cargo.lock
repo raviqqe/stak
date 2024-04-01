@@ -333,6 +333,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-minifier"
+version = "0.1.0"
+dependencies = [
+ "stak-macro",
+]
+
+[[package]]
 name = "stak-primitive"
 version = "0.2.23"
 dependencies = [

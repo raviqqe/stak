@@ -9,7 +9,7 @@ members = [
   "compiler",
   "configuration",
   "device",
-  "macro",
+  "macro", "minifier",
   "primitive",
   "sac",
   "vm",
