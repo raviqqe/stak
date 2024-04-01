@@ -10,6 +10,8 @@ members = [
   "configuration",
   "device",
   "macro",
+  "minifier",
+  "minifier_macro",
   "primitive",
   "sac",
   "vm",

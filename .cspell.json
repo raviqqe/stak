@@ -21,6 +21,7 @@
     "letrec",
     "memq",
     "memv",
+    "minifier",
     "quasiquote",
     "raviqqe",
     "repr",
@@ -32,7 +33,7 @@
     "stak",
     "uninterned",
     "unresolve",
-    "yota",
+    "yota"
   ],
   "patterns": [
     {
