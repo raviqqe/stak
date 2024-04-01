@@ -1,13 +1,17 @@
 #![no_std]
 
-use stak_device::FixedBufferDevice;
-use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
-use stak_primitive::SmallPrimitiveSet;
-use stak_vm::{Value, Vm};
+use stak_minifier_macro::{include_minified, minify};
 
 #[test]
 fn minify_expressions() {
-    const PROGRAM: &str = include!("( foo  bar )\n\n(baz)");
+    const PROGRAM: &str = minify!("( foo  bar )\n\n(baz)");
 
-    assert_eq!(PROGRAM, "(foo bar)\n(baz)");
+    assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
+}
+
+#[test]
+fn include_minified_expressions() {
+    const PROGRAM: &str = include_minified!("../tests/foo.scm");
+
+    assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
 }
