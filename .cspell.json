@@ -3,6 +3,7 @@
     "alist",
     "alloc",
     "arity",
+    "minifier",
     "assq",
     "assv",
     "astro",
@@ -32,7 +33,7 @@
     "stak",
     "uninterned",
     "unresolve",
-    "yota",
+    "yota"
   ],
   "patterns": [
     {
