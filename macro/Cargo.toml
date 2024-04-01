@@ -14,7 +14,7 @@ proc-macro = true
 [dependencies]
 proc-macro2 = "1.0.79"
 quote = "1.0.35"
-syn = "2.0.55"
+syn = "2.0.57"
 stak-compiler = { version = "0.1", path = "../compiler" }
 
 [dev-dependencies]
