@@ -27,12 +27,22 @@ mod tests {
     use super::*;
 
     #[test]
-    fn minify_source() {
+    fn minify_expression() {
         let source = "(foo  bar)";
         let mut target = vec![];
 
         minify(source.as_bytes(), &mut target).unwrap();
 
         assert_eq!(target, b"(foo bar)");
+    }
+
+    #[test]
+    fn minify_expressions() {
+        let source = "(foo  bar)\n\n(  baz   blah  )";
+        let mut target = vec![];
+
+        minify(source.as_bytes(), &mut target).unwrap();
+
+        assert_eq!(target, b"(foo bar)\n(baz blah)");
     }
 }
