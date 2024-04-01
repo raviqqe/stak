@@ -1,7 +1,7 @@
 //! Scheme source code minifier.
 
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::ReadWriteDevice;
+use stak_device::reaReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
 use std::error::Error;
