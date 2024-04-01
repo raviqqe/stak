@@ -11,7 +11,7 @@ use syn::{parse_macro_input, LitStr};
 /// # Examples
 ///
 /// ```rust
-/// const PROGRAM = stak_minifier_macro::minify!("( foo  bar )\n\n(baz)");
+/// const PROGRAM: &str = stak_minifier_macro::minify!("( foo  bar )\n\n(baz)");
 ///
 /// assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
 /// ```
@@ -27,7 +27,7 @@ pub fn minify(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// const PROGRAM = stak_macro::include_r7rs!("foo.scm");
+/// const PROGRAM: &str = stak_minifier_macro::include_r7rs!("foo.scm");
 ///
 /// assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
 /// ```
