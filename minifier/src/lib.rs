@@ -34,7 +34,7 @@ mod tests {
 
         minify(source.as_bytes(), &mut target).unwrap();
 
-        assert_eq!(target, b"(foo bar)");
+        assert_eq!(target, b"(foo bar)\n");
     }
 
     #[test]
@@ -44,6 +44,6 @@ mod tests {
 
         minify(source.as_bytes(), &mut target).unwrap();
 
-        assert_eq!(target, b"(foo bar)\n(baz blah)");
+        assert_eq!(target, b"(foo bar)\n(baz blah)\n");
     }
 }
