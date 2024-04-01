@@ -5,10 +5,11 @@ use stak_device::ReadWriteDevice;
 use stak_primitive::{SmallError, SmallPrimitiveSet};
 use stak_vm::Vm;
 use std::io::{empty, Read, Write};
+use stak_macro::include_r7rs;
 
 /// Minifies given source codes.
 pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
-    const PROGRAM: &[u8] = stak_macro::include_r7rs!("minify.scm");
+    const PROGRAM: &[u8] = include_r7rs!("minify.scm");
 
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut vm = Vm::new(
