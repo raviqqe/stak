@@ -9,3 +9,4 @@ repository.workspace = true
 
 [dependencies]
 stak-macro = { version = "0.1.23", path = "../macro" }
+stak-vm = { version = "0.3.23", path = "../vm" }

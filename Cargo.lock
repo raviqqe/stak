@@ -337,6 +337,7 @@ name = "stak-minifier"
 version = "0.1.0"
 dependencies = [
  "stak-macro",
+ "stak-vm",
 ]
 
 [[package]]

@@ -3,5 +3,5 @@
 pub fn minify() {
     const PROGRAM: &[u8] = stak_macro::include_r7rs!("minify.scm");
 
-    foo;
+    Vm::new().run(PROGRAM);
 }
