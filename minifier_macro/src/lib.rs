@@ -11,7 +11,7 @@ use syn::{parse_macro_input, LitStr};
 /// # Examples
 ///
 /// ```rust
-/// cosnt PROGRAM = stak_minifier_macro::minify!("( foo  bar )\n\n(baz)");
+/// const PROGRAM = stak_minifier_macro::minify!("( foo  bar )\n\n(baz)");
 ///
 /// assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
 /// ```
