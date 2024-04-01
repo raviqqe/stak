@@ -260,6 +260,7 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-macro",
+ "stak-minifier-macro",
  "stak-primitive",
  "stak-vm",
 ]
