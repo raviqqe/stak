@@ -10,7 +10,7 @@ use std::io::{empty, Read, Write};
 pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     const PROGRAM: &[u8] = stak_macro::include_r7rs!("minify.scm");
 
-    let mut heap = [Default::default(); DEFAULT_HEAP_SIZE];
+    let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(reader, writer, empty())),
