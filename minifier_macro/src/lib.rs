@@ -43,7 +43,7 @@ fn minify_source(source: &str) -> Result<TokenStream, Box<dyn Error>> {
 
     stak_minifier::minify(source.as_bytes(), &mut buffer)?;
 
-    let target = Literal::string(str::from_utf8(buffer)?);
+    let target = Literal::string(str::from_utf8(&buffer)?);
 
     Ok(quote! { #target }.into())
 }
