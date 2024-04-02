@@ -31,7 +31,7 @@ extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 
 #[panic_handler]
 fn handle_panic(_info: &core::panic::PanicInfo) -> ! {
-    loop {}
+    libc::exit(1);
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
