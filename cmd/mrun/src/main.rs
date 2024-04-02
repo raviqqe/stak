@@ -48,17 +48,14 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
     let source = libc::malloc(size + 1);
     libc::fread(source, size, 1, file);
     libc::fclose(file);
+    let source = ReadBuffer::new(slice::from_raw_parts(source as _, size));
 
     let mut target = WriteBuffer::new(slice::from_raw_parts_mut(
         libc::malloc(DEFAULT_BUFFER_SIZE) as _,
         DEFAULT_BUFFER_SIZE,
     ));
 
-    compile(
-        ReadBuffer::new(slice::from_raw_parts(source as _, size)),
-        &mut target,
-        heap,
-    );
+    compile(source, &mut target, heap);
 
     let mut vm = Vm::new(
         heap,
