@@ -20,7 +20,6 @@ use stak_vm::{Value, Vm};
 const PRELUDE_SOURCE: &str = "";
 const COMPILER_PROGRAM: &[u8] = &[];
 
-extern crate alloc;
 extern crate libc;
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
@@ -64,15 +63,10 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 fn compile(source: &[u8], target: &mut [u8], heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(source, target, (&mut []) as &mut [u8])),
+        SmallPrimitiveSet::new(MemoryDevice::new(source, target, (&mut []) as &mut [u8])),
     )
     .unwrap();
 
     vm.initialize(COMPILER_PROGRAM.iter().copied()).unwrap();
     vm.run().unwrap()
 }
-
-// #[panic_handler]
-// fn handle_panic(_info: &core::panic::PanicInfo) -> ! {
-//     libc::exit(1);
-// }

@@ -1,9 +1,14 @@
 use crate::Device;
 use core::fmt::{self, Debug, Formatter};
 
+#[derive(Clone, Copy, Debug, Default)]
 pub struct StdioDevice;
 
 impl StdioDevice {
+    pub fn new() -> Self {
+        Self
+    }
+
     fn write(fd: i32, byte: u8, error: StdioError) -> Result<(), StdioError> {
         let bytes = [byte];
 
@@ -50,5 +55,20 @@ impl Debug for StdioError {
             Self::Stdout => write!(formatter, "failed to write stdout"),
             Self::Stderr => write!(formatter, "failed to write stderr"),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn write_to_stdout() {
+        StdioDevice::new().write(42).unwrap();
+    }
+
+    #[test]
+    fn write_to_stderr() {
+        StdioDevice::new().write_error(42).unwrap();
     }
 }
