@@ -320,6 +320,9 @@ dependencies = [
 [[package]]
 name = "stak-device"
 version = "0.2.22"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "stak-interpret"
