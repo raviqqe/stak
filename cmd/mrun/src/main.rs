@@ -67,11 +67,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
 fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(
-            source,
-            target,
-            WriteBuffer::new(&mut []),
-        )),
+        SmallPrimitiveSet::new(ReadWriteDevice::new(source, target, Stderr::new())),
     )
     .unwrap();
 
