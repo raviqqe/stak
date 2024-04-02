@@ -11,7 +11,7 @@
 
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::libc::{MemoryDevice, ReadBuffer, StdioDevice, WriteBuffer};
+use stak_device::libc::{ReadBuffer, ReadWriteDevice, StdioDevice, WriteBuffer};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
@@ -64,7 +64,7 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
 fn compile(source: &[u8], target: WriteBuffer, heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(MemoryDevice::new(
+        SmallPrimitiveSet::new(ReadWriteDevice::new(
             ReadBuffer::new(source),
             target,
             WriteBuffer::new(&mut []),

@@ -16,15 +16,11 @@ impl Write for WriteBuffer<'_> {
     type Error = ();
 
     fn write(&mut self, byte: u8) -> Result<(), ()> {
-        if let Some(pointer) = self.data.get_mut(self.index) {
-            *pointer = byte;
+        *self.data.get_mut(self.index).ok_or(())? = byte;
 
-            self.index += 1;
+        self.index += 1;
 
-            Ok(())
-        } else {
-            Err(())
-        }
+        Ok(())
     }
 }
 

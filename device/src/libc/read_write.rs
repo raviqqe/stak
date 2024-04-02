@@ -1,14 +1,14 @@
-use super::{error::Error, Read, ReadBuffer, Write, WriteBuffer};
+use super::{error::Error, Read, Write};
 use crate::Device;
 
-pub struct MemoryDevice<'a> {
-    stdin: ReadBuffer<'a>,
-    stdout: WriteBuffer<'a>,
-    stderr: WriteBuffer<'a>,
+pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
+    stdin: I,
+    stdout: O,
+    stderr: E,
 }
 
-impl<'a> MemoryDevice<'a> {
-    pub fn new(stdin: ReadBuffer<'a>, stdout: WriteBuffer<'a>, stderr: WriteBuffer<'a>) -> Self {
+impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
+    pub fn new(stdin: I, stdout: O, stderr: E) -> Self {
         Self {
             stdin,
             stdout,
@@ -16,24 +16,24 @@ impl<'a> MemoryDevice<'a> {
         }
     }
 
-    pub fn stdin(&self) -> &ReadBuffer {
+    pub fn stdin(&self) -> &I {
         &self.stdin
     }
 
-    pub fn stdout(&self) -> &WriteBuffer {
+    pub fn stdout(&self) -> &O {
         &self.stdout
     }
 
-    pub fn stderr(&self) -> &WriteBuffer {
+    pub fn stderr(&self) -> &E {
         &self.stderr
     }
 }
 
-impl<'a> Device for MemoryDevice<'a> {
+impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
     type Error = Error;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        self.stdin.read()
+        self.stdin.read().map_err(|_| Error::Stdin)
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
