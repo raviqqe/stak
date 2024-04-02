@@ -23,6 +23,8 @@
     "memq",
     "memv",
     "minifier",
+    "mrun",
+    "mstak",
     "quasiquote",
     "raviqqe",
     "repr",
