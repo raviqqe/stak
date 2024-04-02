@@ -1,4 +1,4 @@
-//! A Stak Scheme interpreter.
+//! A minimal Stak Scheme interpreter.
 //!
 //! # Usage
 //!
