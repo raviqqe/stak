@@ -206,6 +206,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "155db5e86c6e45ee456bf32fad5a290ee1f7151c2faca27ea27097568da67d1a"
 
 [[package]]
+name = "mstak"
+version = "0.1.0"
+dependencies = [
+ "stak-configuration",
+ "stak-device",
+ "stak-macro",
+ "stak-minifier-macro",
+ "stak-primitive",
+ "stak-vm",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
