@@ -50,14 +50,6 @@ fn run() -> Result<(), Box<dyn Error>> {
     Ok(vm.run()?)
 }
 
-fn read_source(files: &[PathBuf], source: &mut String) -> Result<(), io::Error> {
-    for file in files {
-        File::open(file)?.read_to_string(source)?;
-    }
-
-    Ok(())
-}
-
 fn compile(source: &str, target: &mut Vec<u8>, heap: &mut [Value]) -> Result<(), SmallError> {
     let mut vm = Vm::new(
         heap,
