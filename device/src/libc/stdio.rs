@@ -21,7 +21,7 @@ impl Device for StdioDevice {
         let bytes = [0];
 
         Ok(
-            if unsafe { libc::read(0, &bytes as *const _ as _, 1) } == 1 {
+            if unsafe { libc::read(libc::STDIN_FILENO, &bytes as *const _ as _, 1) } == 1 {
                 Some(bytes[0])
             } else {
                 None
@@ -30,10 +30,10 @@ impl Device for StdioDevice {
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        Self::write(1, byte)
+        Self::write(libc::STDOUT_FILENO, byte)
     }
 
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        Self::write(2, byte)
+        Self::write(libc::STDERR_FILENO, byte)
     }
 }

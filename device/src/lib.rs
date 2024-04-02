@@ -10,7 +10,7 @@ extern crate std;
 mod device;
 mod fixed_buffer;
 #[cfg(feature = "libc")]
-mod libc;
+pub mod libc;
 #[cfg(feature = "std")]
 mod read_write;
 #[cfg(feature = "std")]
