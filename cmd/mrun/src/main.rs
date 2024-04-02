@@ -13,9 +13,8 @@ extern crate libc;
 
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::{
-    libc::{Read, ReadBuffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, WriteBuffer},
-    ReadWriteDevice as Foo,
+use stak_device::libc::{
+    Read, ReadBuffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, WriteBuffer,
 };
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
