@@ -1,3 +1,5 @@
+use super::Write;
+
 #[derive(Debug)]
 pub struct WriteBuffer<'a> {
     data: &'a mut [u8],
@@ -8,16 +10,20 @@ impl<'a> WriteBuffer<'a> {
     pub fn new(data: &'a mut [u8]) -> Self {
         Self { data, index: 0 }
     }
+}
 
-    pub fn write(&mut self, byte: u8) -> bool {
+impl Write for WriteBuffer<'_> {
+    type Error = ();
+
+    fn write(&mut self, byte: u8) -> Result<(), ()> {
         if let Some(pointer) = self.data.get_mut(self.index) {
             *pointer = byte;
 
             self.index += 1;
 
-            false
+            Ok(())
         } else {
-            true
+            Err(())
         }
     }
 }
@@ -31,11 +37,11 @@ mod tests {
         let mut array = [0; 3];
         let mut buffer = WriteBuffer::new(&mut array);
 
-        assert_eq!(buffer.write(1), false);
-        assert_eq!(buffer.write(2), false);
-        assert_eq!(buffer.write(3), false);
-        assert_eq!(buffer.write(4), true);
-        assert_eq!(buffer.write(5), true);
+        assert_eq!(buffer.write(1), Ok(()));
+        assert_eq!(buffer.write(2), Ok(()));
+        assert_eq!(buffer.write(3), Ok(()));
+        assert_eq!(buffer.write(4), Err(()));
+        assert_eq!(buffer.write(5), Err(()));
         assert_eq!(array, [1, 2, 3]);
     }
 }

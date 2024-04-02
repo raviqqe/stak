@@ -1,3 +1,5 @@
+use super::Read;
+
 #[derive(Debug)]
 pub struct ReadBuffer<'a> {
     data: &'a [u8],
@@ -8,15 +10,19 @@ impl<'a> ReadBuffer<'a> {
     pub fn new(data: &'a [u8]) -> Self {
         Self { data, index: 0 }
     }
+}
 
-    pub fn read(&mut self) -> Option<u8> {
-        if let Some(&byte) = self.data.get(self.index) {
+impl Read for ReadBuffer<'_> {
+    type Error = ();
+
+    fn read(&mut self) -> Result<Option<u8>, Self::Error> {
+        Ok(if let Some(&byte) = self.data.get(self.index) {
             self.index += 1;
 
             Some(byte)
         } else {
             None
-        }
+        })
     }
 }
 
@@ -28,10 +34,10 @@ mod tests {
     fn read() {
         let mut buffer = ReadBuffer::new(&[1, 2, 3]);
 
-        assert_eq!(buffer.read(), Some(1));
-        assert_eq!(buffer.read(), Some(2));
-        assert_eq!(buffer.read(), Some(3));
-        assert_eq!(buffer.read(), None);
-        assert_eq!(buffer.read(), None);
+        assert_eq!(buffer.read().unwrap(), Some(1));
+        assert_eq!(buffer.read().unwrap(), Some(2));
+        assert_eq!(buffer.read().unwrap(), Some(3));
+        assert_eq!(buffer.read().unwrap(), None);
+        assert_eq!(buffer.read().unwrap(), None);
     }
 }

@@ -1,4 +1,4 @@
-use super::{error::Error, ReadBuffer, WriteBuffer};
+use super::{error::Error, Read, ReadBuffer, Write, WriteBuffer};
 use crate::Device;
 
 pub struct MemoryDevice<'a> {
@@ -33,22 +33,14 @@ impl<'a> Device for MemoryDevice<'a> {
     type Error = Error;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        Ok(self.stdin.read())
+        self.stdin.read()
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        if self.stdout.write(byte) {
-            Err(Error::Stdout)
-        } else {
-            Ok(())
-        }
+        self.stdout.write(byte).map_err(|_| Error::Stdout)
     }
 
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        if self.stderr.write(byte) {
-            Err(Error::Stderr)
-        } else {
-            Ok(())
-        }
+        self.stderr.write(byte).map_err(|_| Error::Stderr)
     }
 }
