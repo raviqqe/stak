@@ -35,20 +35,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
         return 1;
     }
 
-    let source = {
-        let file = libc::fopen(arguments[1] as *const i8, "rb" as *const _ as _);
-        let size = {
-            let mut stat = Default::default();
-            libc::fstat(file, &mut stat);
-            stat.st_size as usize
-        };
-
-        let source = libc::malloc(size + 1);
-        libc::fread(source, size, 1, file);
-        libc::fclose(file);
-
-        ReadBuffer::new(slice::from_raw_parts(source as _, size))
-    };
+    let source = read_file(arguments[1] as *const i8);
 
     let mut target = WriteBuffer::new(slice::from_raw_parts_mut(
         libc::malloc(DEFAULT_BUFFER_SIZE) as _,
@@ -91,4 +78,19 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
 
     vm.initialize(COMPILER_PROGRAM.iter().copied()).unwrap();
     vm.run().unwrap()
+}
+
+fn read_file(path: *const i8) -> ReadBuffer {
+    unsafe {
+        let file = libc::fopen(path, "rb" as *const _ as _);
+        libc::fseek(file, 0, libc::SEEK_END);
+        let size = libc::ftell(file);
+        libc::rewind(file);
+
+        let source = libc::malloc(size + 1);
+        libc::fread(source, size, 1, file);
+        libc::fclose(file);
+
+        ReadBuffer::new(slice::from_raw_parts(source as _, size))
+    }
 }
