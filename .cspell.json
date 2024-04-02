@@ -20,6 +20,7 @@
     "insta",
     "lcov",
     "letrec",
+    "libc",
     "memq",
     "memv",
     "minifier",

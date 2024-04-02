@@ -209,6 +209,7 @@ checksum = "155db5e86c6e45ee456bf32fad5a290ee1f7151c2faca27ea27097568da67d1a"
 name = "mstak"
 version = "0.1.0"
 dependencies = [
+ "libc",
  "stak-configuration",
  "stak-device",
  "stak-macro",
