@@ -2174,7 +2174,10 @@
       (if (or (null? xs) (null? (cdr xs)))
         (write-sequence xs)
         (cond
-          ((assoc (car xs) quotes) =>
+          ((and
+            (pair? (cdr xs))
+            (null? (cddr xs))
+            (assq (car xs) quotes)) =>
             (lambda (pair)
               (write-quote (cdr pair) (cadr xs))))
 
