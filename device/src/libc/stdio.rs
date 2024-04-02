@@ -1,21 +1,22 @@
 use crate::Device;
+use core::fmt::{self, Debug, Formatter};
 
 pub struct StdioDevice;
 
 impl StdioDevice {
-    fn write(fd: i32, byte: u8) -> Result<(), ()> {
+    fn write(fd: i32, byte: u8, error: StdioError) -> Result<(), StdioError> {
         let bytes = [byte];
 
         if unsafe { libc::write(fd, &bytes as *const _ as _, 1) } == 1 {
             Ok(())
         } else {
-            Err(())
+            Err(error)
         }
     }
 }
 
 impl Device for StdioDevice {
-    type Error = ();
+    type Error = StdioError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         let bytes = [0];
@@ -30,10 +31,24 @@ impl Device for StdioDevice {
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        Self::write(libc::STDOUT_FILENO, byte)
+        Self::write(libc::STDOUT_FILENO, byte, StdioError::Stdout)
     }
 
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        Self::write(libc::STDERR_FILENO, byte)
+        Self::write(libc::STDERR_FILENO, byte, StdioError::Stderr)
+    }
+}
+
+pub enum StdioError {
+    Stdout,
+    Stderr,
+}
+
+impl Debug for StdioError {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        match self {
+            Self::Stdout => write!(formatter, "failed to write stdout"),
+            Self::Stderr => write!(formatter, "failed to write stderr"),
+        }
     }
 }
