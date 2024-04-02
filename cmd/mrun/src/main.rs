@@ -35,9 +35,7 @@ fn handle_panic(_info: &core::panic::PanicInfo) -> ! {
 }
 
 fn run() -> Result<(), Box<dyn Error>> {
-    let arguments = Arguments::parse();
-
-    let mut heap = vec![Default::default(); arguments.heap_size];
+    let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
 
     let mut source = PRELUDE_SOURCE.into();
     let mut target = vec![];
