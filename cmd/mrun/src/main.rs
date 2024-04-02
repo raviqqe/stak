@@ -9,7 +9,6 @@
 #![no_std]
 #![no_main]
 
-use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
