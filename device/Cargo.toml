@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-c = ["libc"]
+libc = ["dep:libc"]
 std = []
 
 [dependencies]

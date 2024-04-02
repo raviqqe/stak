@@ -8,12 +8,24 @@ pub struct MemoryDevice<'a> {
 }
 
 impl<'a> MemoryDevice<'a> {
-    pub fn new(stdin: &'a [u8], stdout: &'a mut [u8], stderr: &'a mut [u8]) -> Self {
+    pub fn new(stdin: ReadBuffer<'a>, stdout: WriteBuffer<'a>, stderr: WriteBuffer<'a>) -> Self {
         Self {
-            stdin: ReadBuffer::new(stdin),
-            stdout: WriteBuffer::new(stdout),
-            stderr: WriteBuffer::new(stderr),
+            stdin,
+            stdout,
+            stderr,
         }
+    }
+
+    pub fn stdin(&self) -> &ReadBuffer {
+        &self.stdin
+    }
+
+    pub fn stdout(&self) -> &WriteBuffer {
+        &self.stdout
+    }
+
+    pub fn stderr(&self) -> &WriteBuffer {
+        &self.stderr
     }
 }
 

@@ -11,7 +11,7 @@
 
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::libc::{MemoryDevice, StdioDevice};
+use stak_device::libc::{MemoryDevice, ReadBuffer, StdioDevice, WriteBuffer};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
@@ -39,7 +39,8 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     libc::fread(source, size, 1, file);
     libc::fclose(file);
 
-    let target_buffer = slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE);
+    let target_buffer =
+        WriteBuffer::new(slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE));
 
     compile(
         slice::from_raw_parts(source as _, size),
@@ -60,10 +61,14 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     0
 }
 
-fn compile(source: &[u8], target: &mut [u8], heap: &mut [Value]) {
+fn compile(source: &[u8], target: WriteBuffer, heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(MemoryDevice::new(source, target, (&mut []) as &mut [u8])),
+        SmallPrimitiveSet::new(MemoryDevice::new(
+            ReadBuffer::new(source),
+            target,
+            WriteBuffer::new(&mut []),
+        )),
     )
     .unwrap();
 
