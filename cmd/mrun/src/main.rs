@@ -9,10 +9,8 @@
 #![no_std]
 #![no_main]
 
-use core::slice;
-
+use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
@@ -27,22 +25,12 @@ extern crate libc;
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
 #[no_mangle]
-extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
-    run();
-
-    0
-}
-
-// #[panic_handler]
-// fn handle_panic(_info: &core::panic::PanicInfo) -> ! {
-//     libc::exit(1);
-// }
-
-unsafe fn run() {
-    let mut heap = libc::malloc(DEFAULT_HEAP_SIZE);
+unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
+    let size = DEFAULT_HEAP_SIZE * size_of::<Value>();
+    let mut heap = slice::from_raw_parts_mut::<Value>(libc::malloc(size) as _, size);
     let mut target = libc::malloc(DEFAULT_BUFFER_SIZE);
 
-    let file = libc::fopen("main.scm" as _ as _, "rb" as _ as _);
+    let file = libc::fopen("main.scm" as *const _ as _, "rb" as *const _ as _);
     libc::fseek(file, 0, libc::SEEK_END);
     let size = libc::ftell(file) as usize;
     libc::rewind(file);
@@ -51,16 +39,25 @@ unsafe fn run() {
     libc::fread(source, size, 1, file);
     libc::fclose(file);
 
+    let target_buffer = slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE);
+
     compile(
-        &source,
-        slice::from_raw_parts_mut(target, DEFAULT_BUFFER_SIZE),
+        slice::from_raw_parts(source as _, size),
+        target_buffer,
         &mut heap,
     );
 
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new())).unwrap();
 
-    vm.initialize(target).unwrap();
-    vm.run().unwrap()
+    vm.initialize(
+        slice::from_raw_parts(target as _, DEFAULT_BUFFER_SIZE)
+            .iter()
+            .copied(),
+    )
+    .unwrap();
+    vm.run().unwrap();
+
+    0
 }
 
 fn compile(source: &[u8], target: &mut [u8], heap: &mut [Value]) {
@@ -73,3 +70,8 @@ fn compile(source: &[u8], target: &mut [u8], heap: &mut [Value]) {
     vm.initialize(COMPILER_PROGRAM.iter().copied()).unwrap();
     vm.run().unwrap()
 }
+
+// #[panic_handler]
+// fn handle_panic(_info: &core::panic::PanicInfo) -> ! {
+//     libc::exit(1);
+// }
