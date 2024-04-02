@@ -2,7 +2,6 @@ mod error;
 mod read;
 mod read_buffer;
 mod read_write;
-mod stdin;
 mod stdio;
 mod write;
 mod write_buffer;
