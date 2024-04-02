@@ -19,3 +19,19 @@ impl<'a> ReadBuffer<'a> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn read() {
+        let mut buffer = ReadBuffer::new(&[1, 2, 3]);
+
+        assert_eq!(buffer.read(), Some(1));
+        assert_eq!(buffer.read(), Some(2));
+        assert_eq!(buffer.read(), Some(3));
+        assert_eq!(buffer.read(), None);
+        assert_eq!(buffer.read(), None);
+    }
+}
