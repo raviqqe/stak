@@ -84,7 +84,7 @@ fn read_file(path: *const i8) -> ReadBuffer {
     unsafe {
         let file = libc::fopen(path, "rb" as *const _ as _);
         libc::fseek(file, 0, libc::SEEK_END);
-        let size = libc::ftell(file);
+        let size = libc::ftell(file) as usize;
         libc::rewind(file);
 
         let source = libc::malloc(size + 1);
