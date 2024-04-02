@@ -9,6 +9,8 @@
 #![no_std]
 #![no_main]
 
+extern crate libc;
+
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{
@@ -22,8 +24,6 @@ use stak_vm::{Value, Vm};
 
 const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
-
-extern crate libc;
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
