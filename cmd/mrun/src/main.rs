@@ -32,9 +32,7 @@ extern crate libc;
 
 #[no_mangle]
 extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
-    unsafe {
-        run().unwrap();
-    }
+    run().unwrap();
 
     0
 }
