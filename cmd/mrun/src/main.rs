@@ -27,12 +27,6 @@ use std::{
 const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
-#[derive(Clone, Copy, clap::ValueEnum)]
-enum Library {
-    None,
-    R7rs,
-}
-
 extern crate alloc;
 extern crate libc;
 
@@ -55,10 +49,7 @@ fn run() -> Result<(), Box<dyn Error>> {
 
     let mut heap = vec![Default::default(); arguments.heap_size];
 
-    let mut source = match arguments.library {
-        Library::None => Default::default(),
-        Library::R7rs => PRELUDE_SOURCE.into(),
-    };
+    let mut source = PRELUDE_SOURCE.into();
     let mut target = vec![];
 
     read_source(&arguments.files, &mut source)?;
