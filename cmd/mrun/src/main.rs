@@ -80,7 +80,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     vm.run().unwrap()
 }
 
-fn read_file(path: *const i8) -> ReadBuffer {
+fn read_file(path: *const i8) -> ReadBuffer<'static> {
     unsafe {
         let file = libc::fopen(path, "rb" as *const _ as _);
         libc::fseek(file, 0, libc::SEEK_END);
