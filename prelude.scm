@@ -2178,7 +2178,7 @@
             (pair? (cdr xs))
             (null? (cddr xs))
             (assq (car xs) quotes))
-           =>
+            =>
             (lambda (pair)
               (write-quote (cdr pair) (cadr xs))))
 
