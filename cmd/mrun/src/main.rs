@@ -41,9 +41,12 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
     );
 
     let file = libc::fopen(arguments[1] as *const i8, "rb" as *const _ as _);
-    libc::fseek(file, 0, libc::SEEK_END);
-    let size = libc::ftell(file) as usize;
-    libc::rewind(file);
+
+    let size = {
+        let mut stat = Default::default();
+        libc::fstat(file, &mut stat);
+        stat.st_size as usize
+    };
 
     let source = libc::malloc(size + 1);
     libc::fread(source, size, 1, file);
