@@ -252,12 +252,16 @@ Feature: Write
     Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value        |
-      | '()          |
-      | `()          |
-      | `(,1)        |
-      | (quote)      |
-      | (quasiquote) |
+      | value             |
+      | '()               |
+      | `()               |
+      | `(,1)             |
+      | (quote)           |
+      | (quasiquote)      |
+      | (unquote)         |
+      | (quote . 42)      |
+      | (quasiquote . 42) |
+      | (unquote . 42)    |
 
   @stak @gauche @guile
   Scenario Outline: Write a value in a collection
