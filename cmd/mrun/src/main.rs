@@ -20,8 +20,8 @@ use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-const PRELUDE_SOURCE: &str = "";
-const COMPILER_PROGRAM: &[u8] = &[];
+const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
+const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 extern crate libc;
 
@@ -42,11 +42,11 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     libc::fread(source, size, 1, file);
     libc::fclose(file);
 
-    let target = WriteBuffer::new(slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE));
+    let mut target = WriteBuffer::new(slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE));
 
     compile(
         ReadBuffer::new(slice::from_raw_parts(source as _, size)),
-        target,
+        &mut target,
         &mut heap,
     );
 
