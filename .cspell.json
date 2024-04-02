@@ -50,5 +50,6 @@
       "pattern": "/c[ad]+r/"
     }
   ],
-  "ignoreRegExpList": ["cxr"]
+  "ignoreRegExpList": ["cxr"],
+  "useGitignore": true
 }
