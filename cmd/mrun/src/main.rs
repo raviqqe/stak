@@ -11,6 +11,7 @@
 
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
+use stak_device::libc::{MemoryDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
