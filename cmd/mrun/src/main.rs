@@ -33,6 +33,7 @@ enum Library {
     R7rs,
 }
 
+extern crate alloc;
 extern crate libc;
 
 #[no_mangle]
