@@ -10,6 +10,10 @@ impl<'a> WriteBuffer<'a> {
     pub fn new(data: &'a mut [u8]) -> Self {
         Self { data, index: 0 }
     }
+
+    pub fn as_bytes(&self) -> &[u8] {
+        &self.data[..self.index]
+    }
 }
 
 impl Write for WriteBuffer<'_> {

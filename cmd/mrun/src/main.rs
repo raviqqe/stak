@@ -11,7 +11,10 @@
 
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::libc::{ReadBuffer, ReadWriteDevice, StdioDevice, WriteBuffer};
+use stak_device::{
+    libc::{Read, ReadBuffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, WriteBuffer},
+    ReadWriteDevice as Foo,
+};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
@@ -39,33 +42,35 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     libc::fread(source, size, 1, file);
     libc::fclose(file);
 
-    let target_buffer =
-        WriteBuffer::new(slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE));
+    let target = WriteBuffer::new(slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE));
 
     compile(
-        slice::from_raw_parts(source as _, size),
-        target_buffer,
+        ReadBuffer::new(slice::from_raw_parts(source as _, size)),
+        target,
         &mut heap,
     );
 
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new())).unwrap();
-
-    vm.initialize(
-        slice::from_raw_parts(target as _, DEFAULT_BUFFER_SIZE)
-            .iter()
-            .copied(),
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(ReadWriteDevice::new(
+            Stdin::new(),
+            Stdout::new(),
+            Stderr::new(),
+        )),
     )
     .unwrap();
+
+    vm.initialize(target.as_bytes().iter().copied()).unwrap();
     vm.run().unwrap();
 
     0
 }
 
-fn compile(source: &[u8], target: WriteBuffer, heap: &mut [Value]) {
+fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(
-            ReadBuffer::new(source),
+            source,
             target,
             WriteBuffer::new(&mut []),
         )),
