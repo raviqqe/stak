@@ -3,7 +3,7 @@
 //! # Usage
 //!
 //! ```sh
-//! stak foo.scm
+//! mstak foo.scm
 //! ```
 
 #![no_std]
