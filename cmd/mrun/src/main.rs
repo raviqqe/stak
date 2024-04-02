@@ -14,7 +14,7 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
-use stak_primitive::SmallPrimitiveSet;
+use stak_primitive::{SmallError, SmallPrimitiveSet};
 use stak_vm::{Value, Vm};
 use std::{
     error::Error,
@@ -31,16 +31,16 @@ extern crate alloc;
 extern crate libc;
 
 #[no_mangle]
-pub extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
-    const HELLO: &'static str = "Hello, world!\n\0";
+extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     unsafe {
-        libc::printf(HELLO.as_ptr() as *const _);
+        run().unwrap();
     }
+
     0
 }
 
 #[panic_handler]
-fn my_panic(_info: &core::panic::PanicInfo) -> ! {
+fn handle_panic(_info: &core::panic::PanicInfo) -> ! {
     loop {}
 }
 
@@ -70,7 +70,7 @@ fn read_source(files: &[PathBuf], source: &mut String) -> Result<(), io::Error> 
     Ok(())
 }
 
-fn compile(source: &str, target: &mut Vec<u8>, heap: &mut [Value]) -> Result<(), Box<dyn Error>> {
+fn compile(source: &str, target: &mut Vec<u8>, heap: &mut [Value]) -> Result<(), SmallError> {
     let mut vm = Vm::new(
         heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(source.as_bytes(), target, empty())),
