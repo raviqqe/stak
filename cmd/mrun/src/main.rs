@@ -15,13 +15,6 @@ use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::{SmallError, SmallPrimitiveSet};
 use stak_vm::{Value, Vm};
-use std::{
-    error::Error,
-    fs::File,
-    io,
-    io::{empty, Read},
-    path::PathBuf,
-};
 
 const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
