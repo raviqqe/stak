@@ -28,12 +28,19 @@ const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
 #[no_mangle]
-unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
-    let size = DEFAULT_HEAP_SIZE * size_of::<Value>();
-    let mut heap = slice::from_raw_parts_mut::<Value>(libc::malloc(size) as _, size);
-    let mut target = libc::malloc(DEFAULT_BUFFER_SIZE);
+unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
+    let arguments = slice::from_raw_parts(argv, argc as _);
 
-    let file = libc::fopen("main.scm" as *const _ as _, "rb" as *const _ as _);
+    if arguments.len() != 2 {
+        return 1;
+    }
+
+    let heap = slice::from_raw_parts_mut::<Value>(
+        libc::malloc(DEFAULT_HEAP_SIZE * size_of::<Value>()) as _,
+        DEFAULT_HEAP_SIZE,
+    );
+
+    let file = libc::fopen(arguments[1] as *const i8, "rb" as *const _ as _);
     libc::fseek(file, 0, libc::SEEK_END);
     let size = libc::ftell(file) as usize;
     libc::rewind(file);
@@ -42,16 +49,19 @@ unsafe extern "C" fn main(_argc: isize, _argv: *const *const u8) -> isize {
     libc::fread(source, size, 1, file);
     libc::fclose(file);
 
-    let mut target = WriteBuffer::new(slice::from_raw_parts_mut(target as _, DEFAULT_BUFFER_SIZE));
+    let mut target = WriteBuffer::new(slice::from_raw_parts_mut(
+        libc::malloc(DEFAULT_BUFFER_SIZE) as _,
+        DEFAULT_BUFFER_SIZE,
+    ));
 
     compile(
         ReadBuffer::new(slice::from_raw_parts(source as _, size)),
         &mut target,
-        &mut heap,
+        heap,
     );
 
     let mut vm = Vm::new(
-        &mut heap,
+        heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(
             Stdin::new(),
             Stdout::new(),
