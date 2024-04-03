@@ -17,8 +17,11 @@ use stak_device::libc::{
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
-const COMPILER_PROGRAM: &[u8] = &[]; // TODO
+// TODO Use this.
+// TODO Minify this.
+const _PRELUDE_SOURCE: &str = include_str!("prelude.scm");
+// TODO
+const COMPILER_PROGRAM: &[u8] = &[];
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
