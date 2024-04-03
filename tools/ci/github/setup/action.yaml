@@ -5,7 +5,6 @@ outputs: {}
 runs:
   using: composite
   steps:
-    - uses: actions/checkout@v4
     - uses: raviqqe/cargo-cache@v1
     - uses: ruby/setup-ruby@v1
     - uses: homebrew/actions/setup-homebrew@master
