@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses:
+      - uses: ./tools/ci/github/setup
       - run: cargo +nightly install schemat
       - run: schemat -cv "**/*.scm"
   spell_check:
