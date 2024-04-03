@@ -13,4 +13,4 @@ libc = ["dep:libc"]
 std = []
 
 [dependencies]
-libc = { version = "0.2.153", optional = true }
+libc = { version = "0.2.153", default-features = false, optional = true }
