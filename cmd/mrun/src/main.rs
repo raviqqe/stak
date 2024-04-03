@@ -7,7 +7,7 @@
 //! ```
 
 #![no_std]
-#![no_main]
+#![cfg_attr(not(test), no_main)]
 
 extern crate libc;
 
@@ -26,7 +26,7 @@ const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
-#[no_mangle]
+#![cfg_attr(not(test), no_mangle)]
 unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
     let arguments = slice::from_raw_parts(argv, argc as _);
 
