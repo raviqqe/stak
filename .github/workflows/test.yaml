@@ -118,6 +118,21 @@ jobs:
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
+  minimal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
+      - run: cargo build
+        working-directory: cmd/mrun
+      - run: cargo build --release
+        working-directory: cmd/mrun
+      - run: cargo fmt --check
+        working-directory: cmd/mrun
+      - run: cargo clippy
+        working-directory: cmd/mrun
+      - run: cargo test
+        working-directory: cmd/mrun
   test:
     needs:
       - build
@@ -125,6 +140,7 @@ jobs:
       - integration_test
       - self_host_test
       - wasm
+      - minimal
     if: always()
     runs-on: ubuntu-latest
     steps:
