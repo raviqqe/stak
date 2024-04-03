@@ -17,7 +17,7 @@ jobs:
           - macos-14
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"

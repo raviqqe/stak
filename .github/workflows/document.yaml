@@ -15,7 +15,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
@@ -28,7 +28,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - uses: actions/setup-node@v4
       - run: npm ci
         working-directory: doc

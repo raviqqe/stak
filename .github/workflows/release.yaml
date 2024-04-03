@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: tools/ci/release.sh
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: cargo install wasm-pack
       - run: wasm-pack build --target web wasm
       - run: |

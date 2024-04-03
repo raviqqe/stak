@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: cargo build --locked
   unit_test:
     strategy:
@@ -31,12 +31,12 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: tools/coverage.sh
       - uses: codecov/codecov-action@v4
         with:
@@ -72,7 +72,7 @@ jobs:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
       GUILE_AUTO_COMPILE: 0
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -93,17 +93,17 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
   self_host_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: tools/self_host_test.sh
   wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: ./tools/ci/github/setup
       - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
