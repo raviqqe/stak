@@ -9,8 +9,6 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-extern crate libc;
-
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{
@@ -25,6 +23,12 @@ const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
+
+#[cfg(not(test))]
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+    unsafe { libc::exit(1) }
+}
 
 #[cfg_attr(not(test), no_mangle)]
 unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
