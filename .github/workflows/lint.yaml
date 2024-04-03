@@ -8,7 +8,7 @@ jobs:
   clippy:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses:
       - run: tools/lint.sh
       - run: tools/lint.sh -p stak-code
   rust_format:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses:
       - run: cargo +nightly install schemat
       - run: schemat -cv "**/*.scm"
   spell_check:
@@ -33,10 +33,7 @@ jobs:
   unused_dependencies:
     runs-on: ubuntu-latest
     steps:
-      - run: rustup install nightly
-      - run: rustup run nightly cargo install cargo-udeps
-      - uses: raviqqe/stak/tools/ci/github/setup@main
-      - run: cargo +nightly udeps
+      - uses: bnjbvr/cargo-machete@main
   readme:
     runs-on: ubuntu-latest
     steps:
