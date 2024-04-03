@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
+      - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
       - run: tools/ci/release.sh
         env:
@@ -24,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'release' || 'test' }}
     steps:
+      - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
       - run: cargo install wasm-pack
       - run: wasm-pack build --target web wasm

@@ -17,6 +17,7 @@ jobs:
           - macos-14
     runs-on: ${{ matrix.os }}
     steps:
+      - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
       - uses: actions/setup-python@v5
         with:
