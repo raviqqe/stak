@@ -14,13 +14,11 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{
     Read, ReadBuffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, WriteBuffer,
 };
-use stak_macro::include_r7rs;
-use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
-const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
+const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
+const COMPILER_PROGRAM: &[u8] = &[]; // TODO
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
