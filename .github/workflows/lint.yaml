@@ -45,10 +45,11 @@ jobs:
   lint:
     needs:
       - clippy
+      - readme
       - rust_format
       - scheme_format
       - spell_check
-      - readme
+      - unused_dependencies
     if: always()
     runs-on: ubuntu-latest
     steps:
