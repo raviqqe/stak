@@ -331,6 +331,7 @@ dependencies = [
  "quote",
  "stak-compiler",
  "stak-device",
+ "stak-macro-util",
  "stak-primitive",
  "stak-vm",
  "syn",

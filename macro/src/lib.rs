@@ -4,7 +4,8 @@ use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
 use stak_compiler::CompileError;
-use std::{env, error::Error, fs::read_to_string, path::Path};
+use stak_macro_util::{convert_result, read_source_file};
+use std::error::Error;
 use syn::{parse_macro_input, LitStr};
 
 /// Compiles a program in R7RS Scheme into bytecodes.
@@ -18,7 +19,7 @@ use syn::{parse_macro_input, LitStr};
 pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(generate_r7rs(&input.value()))
+    convert_result(generate_r7rs(&input.value())).into()
 }
 
 /// Includes a program in R7RS Scheme as bytecodes.
@@ -32,10 +33,10 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
 pub fn include_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result((|| generate_r7rs(&read_file(input)?))())
+    convert_result((|| generate_r7rs(&read_source_file(input)?))()).into()
 }
 
-fn generate_r7rs(source: &str) -> Result<TokenStream, Box<dyn Error>> {
+fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     generate_scheme(source, |source, target| {
         stak_compiler::compile_r7rs(source, target)
     })
@@ -52,7 +53,7 @@ fn generate_r7rs(source: &str) -> Result<TokenStream, Box<dyn Error>> {
 pub fn compile_bare(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(generate_bare(&input.value()))
+    convert_result(generate_bare(&input.value())).into()
 }
 
 /// Includes a program in Scheme as bytecodes with only built-ins.
@@ -66,10 +67,10 @@ pub fn compile_bare(input: TokenStream) -> TokenStream {
 pub fn include_bare(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result((|| generate_bare(&read_file(input)?))())
+    convert_result((|| generate_bare(&read_source_file(input)?))()).into()
 }
 
-fn generate_bare(source: &str) -> Result<TokenStream, Box<dyn Error>> {
+fn generate_bare(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     generate_scheme(source, |source, target| {
         stak_compiler::compile_bare(source, target)
     })
@@ -78,7 +79,7 @@ fn generate_bare(source: &str) -> Result<TokenStream, Box<dyn Error>> {
 fn generate_scheme(
     source: &str,
     compile: fn(&[u8], &mut Vec<u8>) -> Result<(), CompileError>,
-) -> Result<TokenStream, Box<dyn Error>> {
+) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     let mut target = vec![];
 
     compile(source.as_bytes(), &mut target)?;
@@ -86,20 +87,4 @@ fn generate_scheme(
     let target = Literal::byte_string(&target);
 
     Ok(quote! { #target }.into())
-}
-
-fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {
-    Ok(read_to_string(
-        Path::new(&env::var("CARGO_MANIFEST_DIR")?)
-            .join("src")
-            .join(path.value()),
-    )?)
-}
-
-fn convert_result(result: Result<TokenStream, Box<dyn Error>>) -> TokenStream {
-    result.unwrap_or_else(|error| {
-        let message = error.to_string();
-
-        quote! { compile_error!(#message) }.into()
-    })
 }
