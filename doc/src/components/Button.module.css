@@ -1,0 +1,25 @@
+.container {
+  composes: boxShadow from "../system.css";
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: inherit;
+  background-color: teal;
+  color: white;
+  border-radius: 0.5rem;
+  border: none;
+  padding: 0.7rem 1rem;
+  transition: transform 0.1s;
+
+  &[disabled] {
+    background-color: dimgrey;
+  }
+
+  &:active {
+    transform: translateY(0.1rem);
+
+    &[disabled] {
+      transform: none;
+    }
+  }
+}

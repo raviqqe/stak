@@ -4,17 +4,21 @@ members = [
   "cmd/compile",
   "cmd/decode",
   "cmd/interpret",
+  "cmd/minify",
   "cmd/run",
   "code",
   "compiler",
   "configuration",
   "device",
   "macro",
+  "minifier",
+  "minifier_macro",
   "primitive",
   "sac",
   "vm",
   "wasm",
 ]
+exclude = ["cmd/mrun"]
 
 [workspace.package]
 edition = "2021"
@@ -24,7 +28,9 @@ readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [profile.release]
+codegen-units = 1
 lto = true
+panic = "abort"
 
 [profile.dev.build-override]
 opt-level = 3

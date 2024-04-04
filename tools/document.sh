@@ -23,8 +23,9 @@ for file in $(find $directory -name '*.md'); do
   mv $new_file $file
 done
 
+cargo doc --all-features
+
 cd doc
 
-cargo doc --all-features
-npm install
+npm ci
 npm run build

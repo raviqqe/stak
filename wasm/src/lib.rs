@@ -12,7 +12,7 @@ pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
 }
 
 #[wasm_bindgen]
-pub fn run(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
+pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
@@ -26,4 +26,9 @@ pub fn run(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, 
     vm.run()?;
 
     Ok(output)
+}
+
+#[wasm_bindgen]
+pub fn decode(bytecodes: &[u8]) -> Result<String, JsError> {
+    Ok(stak_code::decode(bytecodes)?.to_string())
 }

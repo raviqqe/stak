@@ -7,10 +7,13 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
-use std::io::{Read, Write};
+use std::{
+    env,
+    io::{Read, Write},
+};
 
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
-const COMPILER_BYTECODES: &[u8] = include_bytes!(std::env!("STAK_BYTECODE_FILE"));
+const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_BYTECODE_FILE"));
 
 /// Compiles a program in R7RS Scheme into bytecodes.
 ///

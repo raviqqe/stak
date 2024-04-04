@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.output {
+  composes: textArea from "../system.css";
+  overflow: auto;
+  flex: 1;
+  margin: 0;
+
+  & > pre {
+    margin: 0;
+  }
+}

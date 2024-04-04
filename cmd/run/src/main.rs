@@ -11,6 +11,7 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{ReadWriteDevice, StdioDevice};
 use stak_macro::include_r7rs;
+use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 use std::{
@@ -21,7 +22,7 @@ use std::{
     path::PathBuf,
 };
 
-const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
+const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
 
 #[derive(Clone, Copy, clap::ValueEnum)]

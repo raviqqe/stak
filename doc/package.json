@@ -7,16 +7,28 @@
     "start": "astro dev",
     "build": "tools/build.sh",
     "preview": "astro preview",
-    "astro": "astro"
+    "lint": "eslint --cache src",
+    "format": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.1.1",
-    "@astrojs/starlight": "^0.21.2",
+    "@astrojs/sitemap": "^3.1.2",
+    "@astrojs/solid-js": "^4.0.1",
+    "@astrojs/starlight": "^0.21.3",
+    "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.2",
-    "astro": "^4.5.9"
+    "@raviqqe/stak": "^0.2.1",
+    "astro": "^4.5.15",
+    "classnames": "^2.5.1",
+    "lucide-solid": "^0.364.0",
+    "nanostores": "^0.10.2",
+    "solid-js": "^1.8.16",
+    "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.30",
+    "@raviqqe/eslint-config": "^2.0.11",
+    "@types/node": "^20.12.4",
+    "eslint": "^8.57.0",
+    "eslint-plugin-solid": "^0.13.2",
     "prettier": "^3.2.5",
     "prettier-plugin-astro": "^0.13.0",
     "typescript": "^5.4.3"

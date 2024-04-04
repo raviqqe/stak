@@ -14,7 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: cargo build --locked
   unit_test:
     strategy:
@@ -31,12 +32,14 @@ jobs:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: cargo test --workspace ${{ matrix.options }}
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: tools/coverage.sh
       - uses: codecov/codecov-action@v4
         with:
@@ -72,7 +75,8 @@ jobs:
       STAK_HOST_INTERPRETER: ${{ matrix.interpreter.host || 'gosh' }}
       GUILE_AUTO_COMPILE: 0
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -89,21 +93,25 @@ jobs:
         interpreter:
           - stak
           - stak-tools
+          - mstak
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
   self_host_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: tools/self_host_test.sh
   wasm:
     runs-on: ubuntu-latest
     steps:
-      - uses: raviqqe/stak/tools/ci/github/setup@main
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
       - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
@@ -111,6 +119,21 @@ jobs:
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
+  minimal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
+      - run: cargo build
+        working-directory: cmd/mrun
+      - run: cargo build --release
+        working-directory: cmd/mrun
+      - run: cargo fmt --check
+        working-directory: cmd/mrun
+      - run: cargo clippy
+        working-directory: cmd/mrun
+      - run: cargo test
+        working-directory: cmd/mrun
   test:
     needs:
       - build
@@ -118,6 +141,7 @@ jobs:
       - integration_test
       - self_host_test
       - wasm
+      - minimal
     if: always()
     runs-on: ubuntu-latest
     steps:

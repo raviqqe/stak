@@ -64,9 +64,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "clap"
-version = "4.5.3"
+version = "4.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "949626d00e063efc93b6dca932419ceb5432f99769911c0b995f7e884c778813"
+checksum = "90bc066a67923782aa8515dbaea16946c5bcc5addbd668bb80af688e53e548a0"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -86,9 +86,9 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "4.5.3"
+version = "4.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90239a040c80f5e14809ca132ddc4176ab33d5e17e49691793296e3fcb34d72f"
+checksum = "528131438037fd55894f62d6e9f068b8f45ac57ffa77517819645d10aed04f64"
 dependencies = [
  "heck",
  "proc-macro2",
@@ -156,15 +156,14 @@ checksum = "b248f5224d1d606005e02c97f5aa4e88eeb230488bcc03bc9ca4d7991399f2b5"
 
 [[package]]
 name = "insta"
-version = "1.36.1"
+version = "1.38.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a7c22c4d34ef4788c351e971c52bfdfe7ea2766f8c5466bc175dd46e52ac22e"
+checksum = "3eab73f58e59ca6526037208f0e98851159ec1633cf17b6cd2e1f2c3fd5d53cc"
 dependencies = [
  "console",
  "lazy_static",
  "linked-hash-map",
  "similar",
- "yaml-rust",
 ]
 
 [[package]]
@@ -254,20 +253,21 @@ checksum = "32fea41aca09ee824cc9724996433064c89f7777e60762749a4170a14abbfa21"
 
 [[package]]
 name = "stak"
-version = "0.2.24"
+version = "0.2.27"
 dependencies = [
  "clap",
  "main_error",
  "stak-configuration",
  "stak-device",
  "stak-macro",
+ "stak-minifier-macro",
  "stak-primitive",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-code"
-version = "0.2.19"
+version = "0.2.22"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -275,14 +275,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.24"
+version = "0.1.27"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.24"
+version = "0.1.27"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -293,11 +293,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.16"
+version = "0.1.19"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.25"
+version = "0.1.28"
 dependencies = [
  "clap",
  "main_error",
@@ -306,11 +306,14 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.20"
+version = "0.2.23"
+dependencies = [
+ "libc",
+]
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.22"
+version = "0.1.25"
 dependencies = [
  "clap",
  "main_error",
@@ -322,7 +325,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.21"
+version = "0.1.24"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -334,8 +337,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-minifier"
+version = "0.1.1"
+dependencies = [
+ "pretty_assertions",
+ "stak-configuration",
+ "stak-device",
+ "stak-macro",
+ "stak-primitive",
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-minifier-macro"
+version = "0.1.1"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "stak-minifier",
+ "syn",
+]
+
+[[package]]
+name = "stak-minify"
+version = "0.1.1"
+dependencies = [
+ "stak-sac",
+]
+
+[[package]]
 name = "stak-primitive"
-version = "0.2.21"
+version = "0.2.24"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -343,7 +375,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.22"
+version = "0.1.25"
 dependencies = [
  "clap",
  "main_error",
@@ -356,7 +388,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.3.21"
+version = "0.3.24"
 dependencies = [
  "insta",
  "stak-code",
@@ -367,8 +399,9 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.1.0"
+version = "0.2.2"
 dependencies = [
+ "stak-code",
  "stak-compiler",
  "stak-configuration",
  "stak-device",
@@ -387,9 +420,9 @@ checksum = "5ee073c9e4cd00e28217186dbe12796d692868f432bf2e97ee73bed0c56dfa01"
 
 [[package]]
 name = "syn"
-version = "2.0.55"
+version = "2.0.58"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "002a1b3dbf967edfafc32655d0f377ab0bb7b994aa1d32c8cc7e9b8bf3ebb8f0"
+checksum = "44cfb93f38070beee36b3fef7d4f5a16f27751d94b187b666a5cc5e9b0d30687"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -574,15 +607,6 @@ name = "windows_x86_64_msvc"
 version = "0.52.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32b752e52a2da0ddfbdbcc6fceadfeede4c939ed16d13e648833a61dfb611ed8"
-
-[[package]]
-name = "yaml-rust"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56c1936c4cc7a1c9ab21a1ebb602eb942ba868cbd44a99cb7cdc5892335e1c85"
-dependencies = [
- "linked-hash-map",
-]
 
 [[package]]
 name = "yansi"

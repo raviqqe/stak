@@ -1,0 +1,6 @@
+.container {
+  composes: textArea from "../system.css";
+  overflow: auto;
+  resize: none;
+  font-size: inherit;
+}

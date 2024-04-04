@@ -1,7 +1,7 @@
 [package]
 name = "stak-decode"
 description = "Stak Scheme bytecode decoder"
-version = "0.1.25"
+version = "0.1.28"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-clap = { version = "4.5.3", features = ["derive"] }
+clap = { version = "4.5.4", features = ["derive"] }
 main_error = "0.1.2"
 stak-code = { version = "0.2", path = "../../code", features = [
   "alloc",
