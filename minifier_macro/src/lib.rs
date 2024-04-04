@@ -3,6 +3,7 @@
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
+use stak_macro_util::convert_result;
 use std::{env, error::Error, fs::read_to_string, path::Path, str};
 use syn::{parse_macro_input, LitStr};
 
@@ -19,7 +20,7 @@ use syn::{parse_macro_input, LitStr};
 pub fn minify(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result(minify_source(&input.value()))
+    convert_result(minify_source(&input.value())).into()
 }
 
 /// Includes and minifies source codes in Scheme in a file.
@@ -35,10 +36,10 @@ pub fn minify(input: TokenStream) -> TokenStream {
 pub fn include_minified(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result((|| minify_source(&read_file(input)?))())
+    convert_result((|| minify_source(&read_file(input)?))()).into()
 }
 
-fn minify_source(source: &str) -> Result<TokenStream, Box<dyn Error>> {
+fn minify_source(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     let mut buffer = vec![];
 
     stak_minifier::minify(source.as_bytes(), &mut buffer)?;
@@ -54,12 +55,4 @@ fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {
             .join("src")
             .join(path.value()),
     )?)
-}
-
-fn convert_result(result: Result<TokenStream, Box<dyn Error>>) -> TokenStream {
-    result.unwrap_or_else(|error| {
-        let message = error.to_string();
-
-        quote! { compile_error!(#message) }.into()
-    })
 }
