@@ -21,22 +21,22 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.21"
+version = "0.2.22"
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.18"
+version = "0.1.19"
 
 [[package]]
 name = "stak-device"
-version = "0.2.22"
+version = "0.2.23"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-primitive"
-version = "0.2.23"
+version = "0.2.24"
 dependencies = [
  "stak-device",
  "stak-vm",
@@ -44,7 +44,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.3.23"
+version = "0.3.24"
 dependencies = [
  "stak-code",
 ]
