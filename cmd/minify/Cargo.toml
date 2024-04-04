@@ -1,7 +1,7 @@
 [package]
 name = "stak-minify"
 description = "Stak Scheme source code minifier"
-version = "0.1.0"
+version = "0.1.1"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,4 +9,4 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-sac = { version = "0.1.24", path = "../../sac" }
+stak-sac = { version = "0.1.25", path = "../../sac" }
