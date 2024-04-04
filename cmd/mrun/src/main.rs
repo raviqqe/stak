@@ -75,17 +75,15 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     vm.run().unwrap()
 }
 
-fn read_file(path: *const i8) -> &'static [u8] {
-    unsafe {
-        let file = libc::fopen(path, "rb" as *const _ as _);
-        libc::fseek(file, 0, libc::SEEK_END);
-        let size = libc::ftell(file) as usize;
-        libc::rewind(file);
+unsafe fn read_file(path: *const i8) -> &'static [u8] {
+    let file = libc::fopen(path, "rb" as *const _ as _);
+    libc::fseek(file, 0, libc::SEEK_END);
+    let size = libc::ftell(file) as usize;
+    libc::rewind(file);
 
-        let source = libc::malloc(size + 1);
-        libc::fread(source, size, 1, file);
-        libc::fclose(file);
+    let source = libc::malloc(size + 1);
+    libc::fread(source, size, 1, file);
+    libc::fclose(file);
 
-        slice::from_raw_parts(source as _, size)
-    }
+    slice::from_raw_parts(source as _, size)
 }
