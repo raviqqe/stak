@@ -1,5 +1,5 @@
 use super::{Read, Write};
-use core::fmt::{self, Display};
+use core::fmt::{self, Display, Formatter};
 
 #[derive(Debug)]
 pub struct Buffer<'a> {
@@ -55,17 +55,17 @@ impl Write for BufferMut<'_> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum BufferError {
     Read,
     Write,
 }
 
 impl Display for BufferError {
-    fn fmt(&self, _: &mut Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Self::Read => write!(f, "failed to read buffer"),
-            Self::Write => write!(f, "failed to write buffer"),
+            Self::Read => write!(formatter, "failed to read buffer"),
+            Self::Write => write!(formatter, "failed to write buffer"),
         }
     }
 }
@@ -93,8 +93,8 @@ mod tests {
         assert_eq!(buffer.write(1), Ok(()));
         assert_eq!(buffer.write(2), Ok(()));
         assert_eq!(buffer.write(3), Ok(()));
-        assert_eq!(buffer.write(4), Err(()));
-        assert_eq!(buffer.write(5), Err(()));
+        assert_eq!(buffer.write(4), Err(BufferError::Write));
+        assert_eq!(buffer.write(5), Err(BufferError::Write));
         assert_eq!(array, [1, 2, 3]);
     }
 }
