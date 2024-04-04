@@ -12,7 +12,7 @@
 use core::{mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{
-    Read, ReadBuffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, WriteBuffer,
+    Read, Buffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, BufferMut,
 };
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
@@ -41,7 +41,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
 
     let source = read_file(arguments[1] as *const i8);
 
-    let mut target = WriteBuffer::new(slice::from_raw_parts_mut(
+    let mut target = BufferMut::new(slice::from_raw_parts_mut(
         libc::malloc(DEFAULT_BUFFER_SIZE) as _,
         DEFAULT_BUFFER_SIZE,
     ));
@@ -80,7 +80,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     vm.run().unwrap()
 }
 
-fn read_file(path: *const i8) -> ReadBuffer<'static> {
+fn read_file(path: *const i8) -> Buffer<'static> {
     unsafe {
         let file = libc::fopen(path, "rb" as *const _ as _);
         libc::fseek(file, 0, libc::SEEK_END);
@@ -91,6 +91,6 @@ fn read_file(path: *const i8) -> ReadBuffer<'static> {
         libc::fread(source, size, 1, file);
         libc::fclose(file);
 
-        ReadBuffer::new(slice::from_raw_parts(source as _, size))
+        Buffer::new(slice::from_raw_parts(source as _, size))
     }
 }

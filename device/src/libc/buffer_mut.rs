@@ -1,12 +1,12 @@
 use super::Write;
 
 #[derive(Debug)]
-pub struct WriteBuffer<'a> {
+pub struct BufferMut<'a> {
     data: &'a mut [u8],
     index: usize,
 }
 
-impl<'a> WriteBuffer<'a> {
+impl<'a> BufferMut<'a> {
     pub fn new(data: &'a mut [u8]) -> Self {
         Self { data, index: 0 }
     }
@@ -16,7 +16,7 @@ impl<'a> WriteBuffer<'a> {
     }
 }
 
-impl Write for WriteBuffer<'_> {
+impl Write for BufferMut<'_> {
     type Error = ();
 
     fn write(&mut self, byte: u8) -> Result<(), ()> {
@@ -29,14 +29,14 @@ impl Write for WriteBuffer<'_> {
 }
 
 #[derive(Clone, Debug)]
-pub enum WriteBufferError {
+pub enum BufferMutError {
     Write,
 }
 
-impl Display for WriteBufferError {
+impl Display for BufferMutError {
     fn fmt(&self, _: &mut Formatter) -> fmt::Result {
         match self {
-            WriteBufferError::Write => write!(f, "failed to write buffer"),
+            BufferMutError::Write => write!(f, "failed to buffer mut"),
         }
     }
 }
@@ -46,9 +46,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_write_buffer() {
+    fn test_buffer_mut() {
         let mut array = [0; 3];
-        let mut buffer = WriteBuffer::new(&mut array);
+        let mut buffer = BufferMut::new(&mut array);
 
         assert_eq!(buffer.write(1), Ok(()));
         assert_eq!(buffer.write(2), Ok(()));
