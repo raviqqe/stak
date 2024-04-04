@@ -1,4 +1,4 @@
-use core::fmt::Display;
+use core::fmt::{self, Display, Formatter};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum BufferError {
