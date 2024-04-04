@@ -46,5 +46,5 @@ fn minify_source(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error
 
     let target = Literal::string(str::from_utf8(&buffer)?);
 
-    Ok(quote! { #target }.into())
+    Ok(quote! { #target })
 }
