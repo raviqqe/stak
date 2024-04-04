@@ -23,6 +23,7 @@ cd $(dirname $0)/..
 bundler install
 
 cargo build --profile release_test --features $features
+(cd cmd/mrun && cargo bulid --release)
 
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
