@@ -16,13 +16,22 @@
     "codegen",
     "cond",
     "embeddable",
+    "fclose",
+    "fopen",
+    "fread",
+    "fseek",
+    "fstat",
+    "ftell",
     "indoc",
     "insta",
     "lcov",
     "letrec",
+    "libc",
     "memq",
     "memv",
     "minifier",
+    "mrun",
+    "mstak",
     "quasiquote",
     "raviqqe",
     "repr",
@@ -42,5 +51,6 @@
       "pattern": "/c[ad]+r/"
     }
   ],
-  "ignoreRegExpList": ["cxr"]
+  "ignoreRegExpList": ["cxr"],
+  "useGitignore": true
 }
