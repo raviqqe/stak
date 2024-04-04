@@ -93,6 +93,7 @@ jobs:
         interpreter:
           - stak
           - stak-tools
+          - mstak
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
