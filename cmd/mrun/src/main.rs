@@ -73,7 +73,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
 }
 
 unsafe fn read_file(path: *const i8) -> &'static [u8] {
-    let file = libc::fopen(path, "rb" as *const _ as _);
+    let file = libc::fopen(path, c"rb" as *const _ as _);
     libc::fseek(file, 0, libc::SEEK_END);
     let size = libc::ftell(file) as usize;
     libc::rewind(file);
