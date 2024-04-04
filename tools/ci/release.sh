@@ -17,9 +17,9 @@ git config user.name 'GitHub Action'
 git add -f $bytecode_file
 git commit -m "Update bytecode file"
 
-cargo workspaces publish -y --from-git
-
-(
-  cd cmd/mrun
-  cargo publish
-)
+for path in $(find Cargo.lock); do
+  (
+    cd $(dirname $path)
+    cargo workspaces publish -y --from-git
+  )
+done
