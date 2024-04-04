@@ -19,7 +19,7 @@ use stak_vm::{Value, Vm};
 const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_BYTECODE_FILE"));
 
-const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
+const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(18);
 
 #[cfg(not(test))]
 #[panic_handler]
