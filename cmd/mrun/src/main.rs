@@ -39,16 +39,8 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
         PRELUDE_SOURCE.as_bytes(),
         read_file(arguments[1] as *const i8),
     ];
-
-    let mut target = BufferMut::new(slice::from_raw_parts_mut(
-        libc::malloc(DEFAULT_BUFFER_SIZE) as _,
-        DEFAULT_BUFFER_SIZE,
-    ));
-
-    let heap = slice::from_raw_parts_mut::<Value>(
-        libc::malloc(DEFAULT_HEAP_SIZE * size_of::<Value>()) as _,
-        DEFAULT_HEAP_SIZE,
-    );
+    let mut target = BufferMut::new(allocate_memory::<u8>(DEFAULT_BUFFER_SIZE));
+    let heap = allocate_memory::<Value>(DEFAULT_HEAP_SIZE);
 
     compile(Buffer::new(&sources), &mut target, heap);
 
@@ -66,6 +58,10 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
     vm.run().unwrap();
 
     0
+}
+
+unsafe fn allocate_memory<'a, T>(size: usize) -> &'a mut [T] {
+    slice::from_raw_parts_mut::<T>(libc::malloc(size * size_of::<Value>()) as _, size)
 }
 
 fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
