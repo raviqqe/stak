@@ -11,6 +11,7 @@ members = [
   "configuration",
   "device",
   "macro",
+  "macro-util",
   "minifier",
   "minifier_macro",
   "primitive",
