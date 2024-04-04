@@ -18,3 +18,8 @@ git add -f $bytecode_file
 git commit -m "Update bytecode file"
 
 cargo workspaces publish -y --from-git
+
+(
+  cd cmd/mrun
+  cargo publish
+)
