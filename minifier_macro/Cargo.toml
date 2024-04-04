@@ -16,3 +16,4 @@ proc-macro2 = "1.0.79"
 quote = "1.0.35"
 syn = "2.0.58"
 stak-minifier = { version = "0.1.0", path = "../minifier" }
+stak-macro-util = { version = "0.1.0", path = "../macro-util" }
