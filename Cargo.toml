@@ -4,6 +4,7 @@ members = [
   "cmd/compile",
   "cmd/decode",
   "cmd/interpret",
+  "cmd/mrun",
   "cmd/run",
   "code",
   "compiler",
@@ -17,7 +18,6 @@ members = [
   "vm",
   "wasm",
 ]
-exclude = ["cmd/mrun"]
 
 [workspace.package]
 edition = "2021"
@@ -30,6 +30,7 @@ repository = "https://github.com/raviqqe/stak"
 codegen-units = 1
 lto = true
 panic = "abort"
+strip = true
 
 [profile.dev.build-override]
 opt-level = 3
