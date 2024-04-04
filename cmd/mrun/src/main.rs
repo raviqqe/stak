@@ -15,9 +15,8 @@ use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin,
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
-// TODO Use this.
 // TODO Minify this.
-const _PRELUDE_SOURCE: &str = include_str!("prelude.scm");
+const PRELUDE_SOURCE: &str = include_str!("prelude.scm");
 const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_BYTECODE_FILE"));
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
@@ -36,7 +35,10 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
         return 1;
     }
 
-    let source = read_file(arguments[1] as *const i8);
+    let sources = [
+        PRELUDE_SOURCE.as_bytes(),
+        read_file(arguments[1] as *const i8),
+    ];
 
     let mut target = BufferMut::new(slice::from_raw_parts_mut(
         libc::malloc(DEFAULT_BUFFER_SIZE) as _,
@@ -48,7 +50,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const u8) -> isize {
         DEFAULT_HEAP_SIZE,
     );
 
-    compile(source, &mut target, heap);
+    compile(Buffer::new(&sources), &mut target, heap);
 
     let mut vm = Vm::new(
         heap,
@@ -77,7 +79,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     vm.run().unwrap()
 }
 
-fn read_file(path: *const i8) -> Buffer<'static> {
+fn read_file(path: *const i8) -> &'static [u8] {
     unsafe {
         let file = libc::fopen(path, "rb" as *const _ as _);
         libc::fseek(file, 0, libc::SEEK_END);
@@ -88,6 +90,6 @@ fn read_file(path: *const i8) -> Buffer<'static> {
         libc::fread(source, size, 1, file);
         libc::fclose(file);
 
-        Buffer::new(slice::from_raw_parts(source as _, size))
+        slice::from_raw_parts(source as _, size)
     }
 }
