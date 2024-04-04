@@ -86,5 +86,5 @@ fn generate_scheme(
 
     let target = Literal::byte_string(&target);
 
-    Ok(quote! { #target }.into())
+    Ok(quote! { #target })
 }
