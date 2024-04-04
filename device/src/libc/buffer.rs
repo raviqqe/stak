@@ -1,18 +1,36 @@
 mod error;
 
 use super::{Read, Write};
-use core::fmt::{self, Display, Formatter};
 pub use error::BufferError;
 
 #[derive(Debug)]
 pub struct Buffer<'a> {
-    data: &'a [u8],
-    index: usize,
+    data: &'a [&'a [u8]],
+    buffer_index: usize,
+    byte_index: usize,
 }
 
 impl<'a> Buffer<'a> {
-    pub fn new(data: &'a [u8]) -> Self {
-        Self { data, index: 0 }
+    pub fn new(data: &'a [&'a [u8]]) -> Self {
+        Self {
+            data,
+            buffer_index: 0,
+            byte_index: 0,
+        }
+    }
+
+    fn read_raw(&mut self) -> Option<u8> {
+        let data = self.data.get(self.buffer_index)?;
+        let Some(&byte) = data.get(self.byte_index) else {
+            self.buffer_index += 1;
+            self.byte_index = 0;
+
+            return self.read_raw();
+        };
+
+        self.byte_index += 1;
+
+        Some(byte)
     }
 }
 
@@ -20,13 +38,7 @@ impl Read for Buffer<'_> {
     type Error = BufferError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        Ok(if let Some(&byte) = self.data.get(self.index) {
-            self.index += 1;
-
-            Some(byte)
-        } else {
-            None
-        })
+        Ok(self.read_raw())
     }
 }
 
@@ -64,11 +76,25 @@ mod tests {
 
     #[test]
     fn read() {
-        let mut buffer = Buffer::new(&[1, 2, 3]);
+        let mut buffer = Buffer::new(&[&[1, 2, 3]]);
 
         assert_eq!(buffer.read().unwrap(), Some(1));
         assert_eq!(buffer.read().unwrap(), Some(2));
         assert_eq!(buffer.read().unwrap(), Some(3));
+        assert_eq!(buffer.read().unwrap(), None);
+        assert_eq!(buffer.read().unwrap(), None);
+    }
+
+    #[test]
+    fn read_many() {
+        let mut buffer = Buffer::new(&[&[], &[1], &[2, 3], &[], &[4], &[5, 6]]);
+
+        assert_eq!(buffer.read().unwrap(), Some(1));
+        assert_eq!(buffer.read().unwrap(), Some(2));
+        assert_eq!(buffer.read().unwrap(), Some(3));
+        assert_eq!(buffer.read().unwrap(), Some(4));
+        assert_eq!(buffer.read().unwrap(), Some(5));
+        assert_eq!(buffer.read().unwrap(), Some(6));
         assert_eq!(buffer.read().unwrap(), None);
         assert_eq!(buffer.read().unwrap(), None);
     }
