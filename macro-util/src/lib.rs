@@ -1,11 +1,11 @@
 //! Macro utilities.
 
-use proc_macro::TokenStream;
+use proc_macro2::TokenStream;
 use quote::quote;
 use std::{env, error::Error, fs::read_to_string, path::Path};
 use syn::LitStr;
 
-pub fn read_file(path: LitStr) -> Result<String, Box<dyn Error>> {
+pub fn read_source_file(path: LitStr) -> Result<String, Box<dyn Error>> {
     Ok(read_to_string(
         Path::new(&env::var("CARGO_MANIFEST_DIR")?)
             .join("src")
