@@ -28,6 +28,19 @@ impl Write for WriteBuffer<'_> {
     }
 }
 
+#[derive(Clone, Debug)]
+pub enum WriteBufferError {
+    Write,
+}
+
+impl Display for WriteBufferError {
+    fn fmt(&self, _: &mut Formatter) -> fmt::Result {
+        match self {
+            WriteBufferError::Write => write!(f, "failed to write buffer"),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

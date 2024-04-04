@@ -1,7 +1,7 @@
-use core::fmt::Debug;
+use core::fmt::Display;
 
 pub trait Write {
-    type Error: Debug;
+    type Error: Display;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error>;
 }

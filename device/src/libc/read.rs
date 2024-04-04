@@ -1,7 +1,7 @@
-use core::fmt::Debug;
+use core::fmt::Display;
 
 pub trait Read {
-    type Error: Debug;
+    type Error: Display;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error>;
 }

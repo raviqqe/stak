@@ -1,4 +1,5 @@
 use super::Read;
+use core::fmt::{self, Display};
 
 #[derive(Debug)]
 pub struct ReadBuffer<'a> {
@@ -13,7 +14,7 @@ impl<'a> ReadBuffer<'a> {
 }
 
 impl Read for ReadBuffer<'_> {
-    type Error = ();
+    type Error = ReadBufferError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         Ok(if let Some(&byte) = self.data.get(self.index) {
@@ -23,6 +24,19 @@ impl Read for ReadBuffer<'_> {
         } else {
             None
         })
+    }
+}
+
+#[derive(Clone, Debug)]
+pub enum ReadBufferError {
+    Read,
+}
+
+impl Display for ReadBufferError {
+    fn fmt(&self, _: &mut Formatter) -> fmt::Result {
+        match self {
+            ReadBufferError::Read => write!(f, "failed to read buffer"),
+        }
     }
 }
 

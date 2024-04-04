@@ -1,12 +1,13 @@
-use core::fmt::{self, Debug, Formatter};
+use core::fmt::{self, Display, Formatter};
 
+#[derive(Debug)]
 pub enum Error {
     Stdin,
     Stdout,
     Stderr,
 }
 
-impl Debug for Error {
+impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Stdin => write!(formatter, "failed to read stdin"),
