@@ -1,10 +1,9 @@
-//! A command to compile source codes in Scheme into bytecodes for a virtual
-//! machine.
+//! A command to minify source codes in Scheme.
 //!
 //! # Usage
 //!
 //! ```sh
-//! stak-compile < foo.scm > foo.bc
+//! stak-minify < foo.scm > bar.scm
 //! ```
 
-stak_sac::main!("compile.scm");
+stak_sac::main!("minify.scm");
