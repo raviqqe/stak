@@ -9,19 +9,16 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{mem::size_of, slice};
+use core::{env, mem::size_of, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
-use stak_device::libc::{
-    Read, Buffer, ReadWriteDevice, Stderr, Stdin, Stdout, Write, BufferMut,
-};
+use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
 // TODO Use this.
 // TODO Minify this.
 const _PRELUDE_SOURCE: &str = include_str!("prelude.scm");
-// TODO
-const COMPILER_PROGRAM: &[u8] = &[];
+const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_BYTECODE_FILE"));
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(20);
 
@@ -76,7 +73,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     )
     .unwrap();
 
-    vm.initialize(COMPILER_PROGRAM.iter().copied()).unwrap();
+    vm.initialize(COMPILER_BYTECODES.iter().copied()).unwrap();
     vm.run().unwrap()
 }
 
