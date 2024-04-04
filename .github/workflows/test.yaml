@@ -128,6 +128,8 @@ jobs:
         working-directory: cmd/mrun
       - run: cargo build --release
         working-directory: cmd/mrun
+      - run: ls -lB target/release
+        working-directory: cmd/mrun
       - run: cargo fmt --check
         working-directory: cmd/mrun
       - run: cargo clippy
