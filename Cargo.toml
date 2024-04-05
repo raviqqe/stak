@@ -28,6 +28,9 @@ license-file = "LICENSE"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
+[workspace.lints.clippy]
+uninlined_format_args = "deny"
+
 [profile.release]
 codegen-units = 1
 lto = true

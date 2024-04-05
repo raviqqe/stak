@@ -74,8 +74,8 @@ mod display {
             write!(formatter, "- ")?;
 
             match self.instruction {
-                Instruction::Call(count, operand) => {
-                    write!(formatter, "call {} {}", count, operand)
+                Instruction::Call(arity, operand) => {
+                    write!(formatter, "call {arity} {operand}")
                 }
                 Instruction::Set(operand) => write!(formatter, "set {}", operand),
                 Instruction::Get(operand) => write!(formatter, "get {}", operand),
