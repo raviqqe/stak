@@ -12,3 +12,6 @@ repository.workspace = true
 proc-macro2 = "1.0.79"
 quote = "1.0.35"
 syn = "2.0.58"
+
+[lints]
+workspace = true

@@ -15,3 +15,6 @@ stak-code = { version = "0.2", path = "../../code", features = [
   "alloc",
   "std",
 ] }
+
+[lints]
+workspace = true

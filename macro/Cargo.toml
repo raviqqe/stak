@@ -22,3 +22,6 @@ stak-macro-util = { version = "0.1.0", path = "../macro-util" }
 stak-device = { path = "../device" }
 stak-primitive = { path = "../primitive" }
 stak-vm = { path = "../vm" }
+
+[lints]
+workspace = true

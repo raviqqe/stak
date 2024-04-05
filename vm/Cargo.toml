@@ -23,3 +23,6 @@ stak-code = { path = "../code", features = ["alloc"] }
 stak-device = { path = "../device" }
 stak-macro = { path = "../macro" }
 stak-primitive = { path = "../primitive" }
+
+[lints]
+workspace = true

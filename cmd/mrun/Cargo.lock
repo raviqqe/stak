@@ -12,11 +12,11 @@ checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
 name = "mstak"
 version = "0.1.0"
 dependencies = [
- "libc",
- "stak-configuration",
- "stak-device",
- "stak-primitive",
- "stak-vm",
+  "libc",
+  "stak-configuration",
+  "stak-device",
+  "stak-primitive",
+  "stak-vm",
 ]
 
 [[package]]
@@ -30,21 +30,14 @@ version = "0.1.19"
 [[package]]
 name = "stak-device"
 version = "0.2.23"
-dependencies = [
- "libc",
-]
+dependencies = ["libc"]
 
 [[package]]
 name = "stak-primitive"
 version = "0.2.24"
-dependencies = [
- "stak-device",
- "stak-vm",
-]
+dependencies = ["stak-device", "stak-vm"]
 
 [[package]]
 name = "stak-vm"
 version = "0.3.24"
-dependencies = [
- "stak-code",
-]
+dependencies = ["stak-code"]
