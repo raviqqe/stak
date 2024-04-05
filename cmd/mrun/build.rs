@@ -12,13 +12,13 @@ const COMPILER_SOURCE_FILE: &str = "src/compile.scm";
 const MINIFIER_SOURCE_FILE: &str = "src/minify.scm";
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(
+    build(
         MINIFIER_SOURCE_FILE,
         &[PRELUDE_SOURCE_FILE],
         "prelude.scm",
         "STAK_PRELUDE_FILE",
     )?;
-    run(
+    build(
         COMPILER_SOURCE_FILE,
         &[PRELUDE_SOURCE_FILE, COMPILER_SOURCE_FILE],
         "compile.bc",
@@ -28,7 +28,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run(
+fn build(
     script_file: &str,
     input_files: &[&str],
     output_file: &str,
