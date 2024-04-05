@@ -41,6 +41,7 @@
     "rustfmt",
     "rustup",
     "stak",
+    "uninlined",
     "uninterned",
     "unresolve",
     "yota"

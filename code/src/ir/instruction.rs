@@ -74,12 +74,12 @@ mod display {
             write!(formatter, "- ")?;
 
             match self.instruction {
-                Instruction::Call(count, operand) => {
-                    write!(formatter, "call {} {}", count, operand)
+                Instruction::Call(arity, operand) => {
+                    write!(formatter, "call {arity} {operand}")
                 }
-                Instruction::Set(operand) => write!(formatter, "set {}", operand),
-                Instruction::Get(operand) => write!(formatter, "get {}", operand),
-                Instruction::Constant(operand) => write!(formatter, "constant {}", operand),
+                Instruction::Set(operand) => write!(formatter, "set {operand}"),
+                Instruction::Get(operand) => write!(formatter, "get {operand}"),
+                Instruction::Constant(operand) => write!(formatter, "constant {operand}"),
                 Instruction::If(instructions) => {
                     write!(formatter, "if")?;
                     write!(
@@ -88,16 +88,16 @@ mod display {
                         DisplayInstructionList::new(instructions, indent)
                     )
                 }
-                Instruction::Nop(operand) => write!(formatter, "nop {}", operand),
+                Instruction::Nop(operand) => write!(formatter, "nop {operand}"),
                 Instruction::Close(arity, instructions) => {
-                    write!(formatter, "close {}", arity)?;
+                    write!(formatter, "close {arity}")?;
                     write!(
                         formatter,
                         "{}",
                         DisplayInstructionList::new(instructions, indent)
                     )
                 }
-                Instruction::Skip(count) => write!(formatter, "skip {}", count),
+                Instruction::Skip(count) => write!(formatter, "skip {count}"),
             }
         }
     }

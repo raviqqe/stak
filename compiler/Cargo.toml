@@ -16,3 +16,6 @@ stak-vm = { version = "0.3", path = "../vm", features = ["std"] }
 
 [dev-dependencies]
 indoc = "2.0.5"
+
+[lints]
+workspace = true

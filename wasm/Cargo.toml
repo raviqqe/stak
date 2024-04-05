@@ -24,3 +24,6 @@ wasm-bindgen = "0.2.84"
 stak-configuration = { path = "../configuration" }
 stak-macro = { path = "../macro" }
 wasm-bindgen-test = "0.3.34"
+
+[lints]
+workspace = true

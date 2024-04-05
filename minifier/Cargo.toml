@@ -17,3 +17,6 @@ stak-vm = { version = "0.3.24", path = "../vm" }
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"
+
+[lints]
+workspace = true

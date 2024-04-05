@@ -15,8 +15,8 @@ impl std::error::Error for CompileError {}
 impl Display for CompileError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Self::User(error) => write!(formatter, "{}", error),
-            Self::Vm(error) => write!(formatter, "{}", error),
+            Self::User(error) => write!(formatter, "{error}"),
+            Self::Vm(error) => write!(formatter, "{error}"),
         }
     }
 }

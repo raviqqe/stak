@@ -50,9 +50,9 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
         let r#return = index == instructions.len() - 1;
 
         match instruction {
-            Instruction::Call(count, operand) => {
+            Instruction::Call(arity, operand) => {
                 encode_integer(codes, encode_operand(*operand));
-                encode_instruction(codes, Instruction::CALL, *count, r#return)
+                encode_instruction(codes, Instruction::CALL, *arity, r#return)
             }
             Instruction::Set(operand) => {
                 encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return)

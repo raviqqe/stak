@@ -42,7 +42,7 @@ impl Display for Program {
                 symbol = symbol.replace(sign, &("\\".to_owned() + sign));
             }
 
-            writeln!(formatter, "- {}", symbol)?;
+            writeln!(formatter, "- {symbol}")?;
         }
 
         write!(formatter, "# instructions")?;
