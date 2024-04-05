@@ -113,8 +113,8 @@ impl From<Number> for Value {
 impl Display for Value {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self.to_typed() {
-            TypedValue::Cons(cons) => write!(formatter, "{}", cons),
-            TypedValue::Number(number) => write!(formatter, "{}", number),
+            TypedValue::Cons(cons) => write!(formatter, "{cons}"),
+            TypedValue::Number(number) => write!(formatter, "{number}"),
         }
     }
 }

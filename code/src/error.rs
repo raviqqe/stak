@@ -38,7 +38,7 @@ impl Display for Error {
             Self::MissingInteger => write!(formatter, "missing integer"),
             Self::MissingOperand => write!(formatter, "missing operand"),
             Self::MissingElseBranch => write!(formatter, "missing else branch"),
-            Self::Utf8(error) => write!(formatter, "{}", error),
+            Self::Utf8(error) => write!(formatter, "{error}"),
         }
     }
 }

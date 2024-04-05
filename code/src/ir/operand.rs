@@ -12,8 +12,8 @@ pub enum Operand {
 impl Display for Operand {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Self::Symbol(index) => write!(formatter, "s{}", index),
-            Self::Integer(integer) => write!(formatter, "i{}", integer),
+            Self::Symbol(index) => write!(formatter, "s{index}"),
+            Self::Integer(integer) => write!(formatter, "i{integer}"),
         }
     }
 }
