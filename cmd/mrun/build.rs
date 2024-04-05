@@ -14,7 +14,7 @@ const MINIFIER_SOURCE_FILE: &str = "src/minify.scm";
 fn main() -> Result<(), Box<dyn Error>> {
     run(
         MINIFIER_SOURCE_FILE,
-        &[PRELUDE_SOURCE_FILE] as &[&str],
+        &[PRELUDE_SOURCE_FILE],
         "prelude.scm",
         "STAK_PRELUDE_FILE",
     )?;
