@@ -9,39 +9,53 @@ use std::{
 
 const PRELUDE_SOURCE_FILE: &str = "src/prelude.scm";
 const COMPILER_SOURCE_FILE: &str = "src/compile.scm";
-const COMPILER_TARGET_FILE: &str = "compile.bc";
+const MINIFIER_SOURCE_FILE: &str = "src/minify.scm";
 
-// TODO Share logic in build scripts with `stak-compiler`.
 fn main() -> Result<(), Box<dyn Error>> {
-    let target_file = Path::new(&env::var("OUT_DIR")?).join(COMPILER_TARGET_FILE);
+    for (script_file, source_files, target_file, environment_variable) in [
+        (
+            MINIFIER_SOURCE_FILE,
+            &[PRELUDE_SOURCE_FILE] as &[&str],
+            "prelude.scm",
+            "STAK_PRELUDE_FILE",
+        ),
+        (
+            COMPILER_SOURCE_FILE,
+            &[PRELUDE_SOURCE_FILE, COMPILER_SOURCE_FILE],
+            "compile.bc",
+            "STAK_COMPILER_FILE",
+        ),
+    ] {
+        let target_file = Path::new(&env::var("OUT_DIR")?).join(target_file);
 
-    println!("cargo:rerun-if-changed={PRELUDE_SOURCE_FILE}");
-    println!("cargo:rerun-if-changed={COMPILER_SOURCE_FILE}");
-    println!(
-        "cargo:rustc-env=STAK_BYTECODE_FILE={}",
-        target_file.display()
-    );
+        println!(
+            "cargo:rustc-env={environment_variable}={}",
+            target_file.display()
+        );
 
-    let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("stak"))
-        .arg(COMPILER_SOURCE_FILE)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .spawn()?;
-    let stdin = command.stdin.as_mut().expect("stdin");
+        let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("stak"))
+            .arg(script_file)
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .spawn()?;
+        let stdin = command.stdin.as_mut().expect("stdin");
 
-    stdin.write_all(&fs::read(PRELUDE_SOURCE_FILE)?)?;
-    stdin.write_all(&fs::read(COMPILER_SOURCE_FILE)?)?;
+        for file in source_files {
+            println!("cargo:rerun-if-changed={file}");
+            stdin.write_all(&fs::read(file)?)?;
+        }
 
-    command.wait()?;
+        command.wait()?;
 
-    io::copy(
-        &mut command.stdout.expect("stdout"),
-        &mut File::options()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(target_file)?,
-    )?;
+        io::copy(
+            &mut command.stdout.expect("stdout"),
+            &mut File::options()
+                .create(true)
+                .write(true)
+                .truncate(true)
+                .open(target_file)?,
+        )?;
+    }
 
     Ok(())
 }

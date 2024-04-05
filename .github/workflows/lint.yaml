@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
       - run: cargo +nightly install schemat
-      - run: schemat -cv "**/*.scm"
+      - run: schemat -cv $(git ls-files '**.scm')
   spell_check:
     runs-on: ubuntu-latest
     steps:
