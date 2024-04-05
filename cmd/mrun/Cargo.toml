@@ -23,6 +23,3 @@ strip = true
 
 [profile.dev]
 panic = "abort"
-
-[lints]
-workspace = true
