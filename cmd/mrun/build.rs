@@ -30,11 +30,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 fn run(
     script_file: &str,
-    source_files: &[&str],
-    target_file: &str,
+    input_files: &[&str],
+    output_file: &str,
     environment_variable: &str,
 ) -> Result<(), Box<dyn Error>> {
-    let target_file = Path::new(&env::var("OUT_DIR")?).join(target_file);
+    let target_file = Path::new(&env::var("OUT_DIR")?).join(output_file);
 
     println!(
         "cargo:rustc-env={environment_variable}={}",
@@ -48,7 +48,7 @@ fn run(
         .spawn()?;
     let stdin = command.stdin.as_mut().expect("stdin");
 
-    for file in source_files {
+    for file in input_files {
         println!("cargo:rerun-if-changed={file}");
         stdin.write_all(&fs::read(file)?)?;
     }
