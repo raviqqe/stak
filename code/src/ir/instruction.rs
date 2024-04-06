@@ -74,12 +74,9 @@ mod display {
             write!(formatter, "- ")?;
 
             match self.instruction {
-                Instruction::Call(arity, operand) => {
-                    write!(formatter, "call {arity} {operand}")
-                }
-                Instruction::Set(operand) => write!(formatter, "set {operand}"),
-                Instruction::Get(operand) => write!(formatter, "get {operand}"),
                 Instruction::Constant(operand) => write!(formatter, "constant {operand}"),
+                Instruction::Get(operand) => write!(formatter, "get {operand}"),
+                Instruction::Set(operand) => write!(formatter, "set {operand}"),
                 Instruction::If(instructions) => {
                     write!(formatter, "if")?;
                     write!(
@@ -89,6 +86,9 @@ mod display {
                     )
                 }
                 Instruction::Nop(operand) => write!(formatter, "nop {operand}"),
+                Instruction::Call(arity, operand) => {
+                    write!(formatter, "call {arity} {operand}")
+                }
                 Instruction::Close(arity, instructions) => {
                     write!(formatter, "close {arity}")?;
                     write!(
