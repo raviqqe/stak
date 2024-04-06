@@ -675,8 +675,9 @@
 
     ;; List
 
-    (define (null? x) (eq? x '()))
     (define pair? (instance? pair-type))
+    (define (null? x)
+      (eq? x '()))
 
     (define (list? x)
       (boolean-or
