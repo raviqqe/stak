@@ -3,10 +3,10 @@ import { type JSX } from "solid-js";
 import * as store from "../stores/demo";
 import styles from "./DemoIo.module.css";
 import { ErrorMessage } from "./ErrorMessage";
+import { Field } from "./Field";
 import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
-import { Field } from "./Field";
 
 export const DemoIo = (): JSX.Element => {
   const input = useStore(store.input);

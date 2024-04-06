@@ -6,9 +6,9 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { ErrorMessage } from "./ErrorMessage";
+import { Field } from "./Field";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
-import { Field } from "./Field";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);
