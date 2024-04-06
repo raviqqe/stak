@@ -16,18 +16,18 @@
 
   (else
     (define-record-type *rib*
-      (rib type car cdr tag)
+      (rib ctr car cdr tag)
       rib?
-      (type rib-type)
+      (type rib-ctr)
       (car rib-car)
       (cdr rib-cdr)
-      (tag rib-tag))
+      (tag rib-cmr))
 
     (define (cons-rib car cdr)
       (rib pair-type car cdr 0))
 
     (define (instance? value type)
-      (and (rib? value) (eq? (rib-type value) type)))
+      (and (rib? value) (eq? (rib-ctr value) type)))
 
     (define (target-pair? value)
       (instance? value pair-type))
@@ -82,11 +82,11 @@
 
 ; Utility
 
-(define (code-rib tag car cdr)
+(define (code-rib cmr car cdr)
   (rib pair-type car cdr tag))
 
-(define (data-rib type car cdr)
-  (rib type car cdr 0))
+(define (data-rib ctr car cdr)
+  (rib ctr car cdr 0))
 
 (define (call-rib arity function continuation)
   (code-rib call-instruction (cons-rib arity function) continuation))
@@ -853,7 +853,7 @@
 (define (drop? codes)
   (and
     (target-pair? codes)
-    (eq? (rib-tag codes) set-instruction)
+    (eq? (rib-cmr codes) set-instruction)
     (eq? (rib-car codes) 0)))
 
 (define (compile-unspecified continuation)
@@ -1037,7 +1037,7 @@
         continue))))
 
 (define (build-constant-codes context constant continue)
-  (define (build-rib type car cdr)
+  (define (build-rib ctr car cdr)
     (code-rib
       constant-instruction
       type
@@ -1113,7 +1113,7 @@
   (let loop ((codes codes) (continue (lambda () codes)))
     (if (terminal-codes? codes)
       (continue)
-      (let* ((instruction (rib-tag codes))
+      (let* ((instruction (rib-cmr codes))
              (operand (rib-car codes))
              (codes (rib-cdr codes))
              (continue (lambda () (loop codes continue))))
@@ -1140,7 +1140,7 @@
   (let loop ((codes codes) (symbols '()))
     (if (terminal-codes? codes)
       symbols
-      (let* ((instruction (rib-tag codes))
+      (let* ((instruction (rib-cmr codes))
              (operand (rib-car codes))
              (operand
                (if (eq? instruction call-instruction)
@@ -1170,7 +1170,7 @@
 (define (nop-codes? codes)
   (and
     (target-pair? codes)
-    (eq? (rib-tag codes) nop-instruction)))
+    (eq? (rib-cmr codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1287,7 +1287,7 @@
 (define (encode-codes context codes target)
   (if (terminal-codes? codes)
     target
-    (let* ((instruction (rib-tag codes))
+    (let* ((instruction (rib-cmr codes))
            (operand (rib-car codes))
            (codes (rib-cdr codes))
            (return (null? codes))
