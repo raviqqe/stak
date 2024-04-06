@@ -29,6 +29,8 @@ readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [workspace.lints.clippy]
+manual_let_else = "deny"
+option_if_let_else = "deny"
 uninlined_format_args = "deny"
 
 [profile.release]
