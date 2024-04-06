@@ -4,10 +4,8 @@ pub enum Type {
     /// A pair.
     #[default]
     Pair,
-    /// A null.
-    Null,
-    /// A boolean.
-    Boolean,
+    /// A singleton.
+    Singleton,
     /// A procedure.
     Procedure,
     /// A symbol.
