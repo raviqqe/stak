@@ -6,6 +6,7 @@ import { Button } from "./Button";
 import { ButtonGroup } from "./ButtonGroup";
 import styles from "./DemoForm.module.css";
 import { ErrorMessage } from "./ErrorMessage";
+import { Field } from "./Field";
 import { Label } from "./Label";
 import { TextArea } from "./TextArea";
 
@@ -18,14 +19,16 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <form class={styles.container}>
-      <Label for="source">Program</Label>
-      <TextArea
-        id="source"
-        onChange={(source) => store.source.set(source)}
-        style={{ flex: 1 }}
-        value={source()}
-      />
-      <ErrorMessage>{error()}</ErrorMessage>
+      <Field style={{ flex: 1 }}>
+        <Label for="source">Program</Label>
+        <TextArea
+          id="source"
+          onChange={(source) => store.source.set(source)}
+          style={{ flex: 1 }}
+          value={source()}
+        />
+        <ErrorMessage>{error()}</ErrorMessage>
+      </Field>
       <ButtonGroup>
         <Button disabled={compiling()} icon={<Boxes />} onClick={store.compile}>
           {compiling() ? "Compiling..." : "Compile"}
