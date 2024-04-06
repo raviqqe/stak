@@ -48,7 +48,7 @@ impl Cons {
     }
 
     /// Sets metadata.
-    pub const fn set_meta(self, meta: u8) -> Self {
+    pub const fn set_meta(self, meta: u16) -> Self {
         Self(
             self.0 & (u64::MAX - (META_MASK << META_OFFSET))
                 | ((meta as u64 & META_MASK) << META_OFFSET),
@@ -96,35 +96,44 @@ impl Display for Cons {
 mod tests {
     use super::*;
 
-    #[test]
-    fn tag() {
-        let cons = Cons::new(42);
+    mod tag {
+        use super::*;
+        use pretty_assertions::assert_eq;
 
-        assert_eq!(cons.index(), 42);
-        assert_eq!(cons.tag(), 0);
+        #[test]
+        fn get_and_set() {
+            const META: u16 = 5;
+            let cons = Cons::new(42).set_meta(META);
 
-        let cons = cons.set_tag(1);
+            assert_eq!(cons.index(), 42);
+            assert_eq!(cons.tag(), 0);
+            assert_eq!(cons.meta(), META);
 
-        assert_eq!(cons.index(), 42);
-        assert_eq!(cons.tag(), 1);
+            let cons = cons.set_tag(1);
 
-        let cons = cons.set_tag(3);
+            assert_eq!(cons.index(), 42);
+            assert_eq!(cons.tag(), 1);
+            assert_eq!(cons.meta(), META);
 
-        assert_eq!(cons.index(), 42);
-        assert_eq!(cons.tag(), 3);
-    }
+            let cons = cons.set_tag(3);
 
-    #[test]
-    fn reset_tag() {
-        assert_eq!(Cons::new(42).set_tag(2).set_tag(1).tag(), 1);
-    }
+            assert_eq!(cons.index(), 42);
+            assert_eq!(cons.tag(), 3);
+            assert_eq!(cons.meta(), META);
+        }
 
-    #[test]
-    fn set_too_large_tag() {
-        let cons = Cons::new(0).set_tag(u8::MAX);
+        #[test]
+        fn reset() {
+            assert_eq!(Cons::new(42).set_tag(2).set_tag(1).tag(), 1);
+        }
 
-        assert_eq!(cons.index(), 0);
-        assert_eq!(cons.tag(), TAG_MASK as u8);
+        #[test]
+        fn set_too_large() {
+            let cons = Cons::new(0).set_tag(u8::MAX);
+
+            assert_eq!(cons.index(), 0);
+            assert_eq!(cons.tag(), TAG_MASK as u8);
+        }
     }
 
     mod meta {
@@ -132,21 +141,39 @@ mod tests {
         use pretty_assertions::assert_eq;
 
         #[test]
-        fn meta() {
-            let cons = Cons::new(42);
+        fn get_and_set() {
+            const TAG: u8 = 5;
+
+            let cons = Cons::new(42).set_tag(TAG);
 
             assert_eq!(cons.index(), 42);
+            assert_eq!(cons.tag(), TAG);
             assert_eq!(cons.meta(), 0);
 
             let cons = cons.set_meta(1);
 
             assert_eq!(cons.index(), 42);
+            assert_eq!(cons.tag(), TAG);
             assert_eq!(cons.meta(), 1);
 
             let cons = cons.set_meta(3);
 
             assert_eq!(cons.index(), 42);
+            assert_eq!(cons.tag(), TAG);
             assert_eq!(cons.meta(), 3);
+        }
+
+        #[test]
+        fn reset() {
+            assert_eq!(Cons::new(42).set_meta(2).set_meta(1).meta(), 1);
+        }
+
+        #[test]
+        fn set_too_large() {
+            let cons = Cons::new(0).set_meta(u16::MAX);
+
+            assert_eq!(cons.index(), 0);
+            assert_eq!(cons.meta(), META_MASK as u16);
         }
     }
 }
