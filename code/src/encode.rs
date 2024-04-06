@@ -50,16 +50,6 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
         let r#return = index == instructions.len() - 1;
 
         match instruction {
-            Instruction::Call(arity, operand) => {
-                encode_integer(codes, encode_operand(*operand));
-                encode_instruction(codes, Instruction::CALL, *arity, r#return)
-            }
-            Instruction::Set(operand) => {
-                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return)
-            }
-            Instruction::Get(operand) => {
-                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return)
-            }
             Instruction::Constant(operand) => {
                 encode_instruction(
                     codes,
@@ -68,18 +58,28 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
                     r#return,
                 );
             }
+            Instruction::Get(operand) => {
+                encode_instruction(codes, Instruction::GET, encode_operand(*operand), r#return)
+            }
+            Instruction::Set(operand) => {
+                encode_instruction(codes, Instruction::SET, encode_operand(*operand), r#return)
+            }
             Instruction::If(then) => {
                 encode_instruction(codes, Instruction::IF, Default::default(), false);
                 encode_instructions(codes, then);
+            }
+            Instruction::Nop(operand) => {
+                encode_instruction(codes, Instruction::NOP, *operand, r#return)
+            }
+            Instruction::Call(arity, operand) => {
+                encode_integer(codes, encode_operand(*operand));
+                encode_instruction(codes, Instruction::CALL, *arity, r#return)
             }
             Instruction::Close(arity, body) => {
                 encode_instruction(codes, Instruction::CLOSE, *arity, r#return);
                 encode_instructions(codes, body);
             }
             Instruction::Skip(count) => encode_instruction(codes, Instruction::SKIP, *count, true),
-            Instruction::Nop(operand) => {
-                encode_instruction(codes, Instruction::NOP, *operand, r#return)
-            }
         }
     }
 }
