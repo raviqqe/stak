@@ -691,6 +691,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             debug_assert!(instruction != code::Instruction::IF || !r#return);
 
             let program_counter = match instruction {
+                code::Instruction::CONSTANT
+                | code::Instruction::GET
+                | code::Instruction::SET
+                | code::Instruction::NOP => {
+                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
+                }
                 code::Instruction::CALL => {
                     let operand = self.allocate(
                         Number::new(integer as i64).into(),
@@ -699,12 +705,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         ),
                     )?;
                     self.append_instruction(instruction, operand.into(), r#return)?
-                }
-                code::Instruction::SET
-                | code::Instruction::GET
-                | code::Instruction::CONSTANT
-                | code::Instruction::NOP => {
-                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {
                     let then = self.program_counter;
