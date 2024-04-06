@@ -50,12 +50,12 @@
 
 ; Instructions
 
-(define call-instruction 0)
-(define set-instruction 1)
-(define get-instruction 2)
-(define constant-instruction 3)
-(define if-instruction 4)
-(define nop-instruction 5)
+(define constant-instruction 0)
+(define get-instruction 1)
+(define set-instruction 2)
+(define if-instruction 3)
+(define nop-instruction 4)
+(define call-instruction 5)
 ; Only for encoding
 (define close-instruction 6)
 (define skip-instruction 7)
