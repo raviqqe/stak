@@ -18,7 +18,7 @@
     (define-record-type *rib*
       (rib ctr car cdr cmr)
       rib?
-      (type rib-ctr)
+      (ctr rib-ctr)
       (car rib-car)
       (cdr rib-cdr)
       (cmr rib-cmr))
@@ -85,8 +85,8 @@
 (define (code-rib cmr car cdr)
   (rib pair-type car cdr cmr))
 
-(define (data-rib ctr car cdr)
-  (rib ctr car cdr 0))
+(define (data-rib type car cdr)
+  (rib type car cdr 0))
 
 (define (call-rib arity function continuation)
   (code-rib call-instruction (cons-rib arity function) continuation))
@@ -1037,7 +1037,7 @@
         continue))))
 
 (define (build-constant-codes context constant continue)
-  (define (build-rib ctr car cdr)
+  (define (build-rib type car cdr)
     (code-rib
       constant-instruction
       type
