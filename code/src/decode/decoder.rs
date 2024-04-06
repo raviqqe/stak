@@ -56,13 +56,9 @@ impl<'a> Decoder<'a> {
             let operand = Self::decode_operand(integer);
 
             let instruction = match instruction {
-                Instruction::CALL => Instruction::Call(
-                    integer,
-                    Self::decode_operand(self.decode_integer().ok_or(Error::MissingOperand)?),
-                ),
-                Instruction::SET => Instruction::Set(operand),
-                Instruction::GET => Instruction::Get(operand),
                 Instruction::CONSTANT => Instruction::Constant(operand),
+                Instruction::GET => Instruction::Get(operand),
+                Instruction::SET => Instruction::Set(operand),
                 Instruction::IF => {
                     let instruction = Instruction::If(take({
                         instructions.reverse();
@@ -73,6 +69,11 @@ impl<'a> Decoder<'a> {
 
                     instruction
                 }
+                Instruction::NOP => Instruction::Nop(integer),
+                Instruction::CALL => Instruction::Call(
+                    integer,
+                    Self::decode_operand(self.decode_integer().ok_or(Error::MissingOperand)?),
+                ),
                 Instruction::CLOSE => Instruction::Close(
                     integer,
                     replace(
@@ -84,7 +85,6 @@ impl<'a> Decoder<'a> {
                     ),
                 ),
                 Instruction::SKIP => Instruction::Skip(integer),
-                Instruction::NOP => Instruction::Nop(integer),
                 _ => return Err(Error::IllegalInstruction),
             };
 
