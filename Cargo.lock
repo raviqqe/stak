@@ -402,6 +402,7 @@ name = "stak-vm"
 version = "0.3.25"
 dependencies = [
  "insta",
+ "pretty_assertions",
  "stak-code",
  "stak-device",
  "stak-macro",

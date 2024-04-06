@@ -10,8 +10,12 @@ use core::fmt::{self, Display, Formatter};
 /// - in cdr, nothing.
 pub const NEVER: Cons = Cons::new(u64::MAX);
 
-const TAG_SIZE: usize = 16;
+const TAG_SIZE: usize = 4;
 const TAG_MASK: u64 = (1 << TAG_SIZE) - 1;
+const META_SIZE: usize = 12;
+const META_MASK: u64 = (1 << META_SIZE) - 1;
+const META_OFFSET: usize = TAG_SIZE + 1;
+const INDEX_OFFSET: usize = META_OFFSET + META_SIZE;
 
 /// A cons.
 #[derive(Clone, Copy, Debug)]
@@ -20,12 +24,12 @@ pub struct Cons(u64);
 impl Cons {
     /// Creates a cons from a memory address on heap.
     pub const fn new(index: u64) -> Self {
-        Self(index << (TAG_SIZE + 1))
+        Self(index << INDEX_OFFSET)
     }
 
     /// Returns a memory address on heap.
     pub const fn index(self) -> usize {
-        (self.0 >> (TAG_SIZE + 1)) as usize
+        (self.0 >> INDEX_OFFSET) as usize
     }
 
     /// Returns a tag.
@@ -36,6 +40,19 @@ impl Cons {
     /// Sets a tag.
     pub const fn set_tag(self, tag: u8) -> Self {
         Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
+    }
+
+    /// Returns metadata.
+    pub const fn meta(self) -> u16 {
+        ((self.0 >> META_OFFSET) & META_MASK) as u16
+    }
+
+    /// Sets metadata.
+    pub const fn set_meta(self, meta: u8) -> Self {
+        Self(
+            self.0 & (u64::MAX - (META_MASK << META_OFFSET))
+                | ((meta as u64 & META_MASK) << META_OFFSET),
+        )
     }
 
     pub(crate) const fn from_raw(raw: u64) -> Self {
@@ -108,5 +125,28 @@ mod tests {
 
         assert_eq!(cons.index(), 0);
         assert_eq!(cons.tag(), TAG_MASK as u8);
+    }
+
+    mod meta {
+        use super::*;
+        use pretty_assertions::assert_eq;
+
+        #[test]
+        fn meta() {
+            let cons = Cons::new(42);
+
+            assert_eq!(cons.index(), 42);
+            assert_eq!(cons.meta(), 0);
+
+            let cons = cons.set_meta(1);
+
+            assert_eq!(cons.index(), 42);
+            assert_eq!(cons.meta(), 1);
+
+            let cons = cons.set_meta(3);
+
+            assert_eq!(cons.index(), 42);
+            assert_eq!(cons.meta(), 3);
+        }
     }
 }
