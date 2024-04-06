@@ -82,8 +82,8 @@
 
 ; Utility
 
-(define (code-rib cmr car cdr)
-  (rib pair-type car cdr cmr))
+(define (code-rib instruction car cdr)
+  (rib pair-type car cdr instruction))
 
 (define (data-rib type car cdr)
   (rib type car cdr 0))
