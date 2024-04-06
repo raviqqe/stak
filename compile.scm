@@ -16,12 +16,12 @@
 
   (else
     (define-record-type *rib*
-      (rib ctr car cdr tag)
+      (rib ctr car cdr cmr)
       rib?
       (type rib-ctr)
       (car rib-car)
       (cdr rib-cdr)
-      (tag rib-cmr))
+      (cmr rib-cmr))
 
     (define (cons-rib car cdr)
       (rib pair-type car cdr 0))
@@ -83,7 +83,7 @@
 ; Utility
 
 (define (code-rib cmr car cdr)
-  (rib pair-type car cdr tag))
+  (rib pair-type car cdr cmr))
 
 (define (data-rib ctr car cdr)
   (rib ctr car cdr 0))
