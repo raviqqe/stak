@@ -2,11 +2,12 @@
 
 extern crate alloc;
 
-use alloc::{error::Error, str};
+use alloc::str;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
 use stak_macro_util::{convert_result, read_source_file};
+use std::error::Error;
 use syn::{parse_macro_input, LitStr};
 
 /// Minifies source codes in Scheme.
