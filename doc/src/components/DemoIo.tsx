@@ -6,6 +6,7 @@ import { ErrorMessage } from "./ErrorMessage";
 import { Label } from "./Label";
 import { Link } from "./Link";
 import { TextArea } from "./TextArea";
+import { Field } from "./Field";
 
 export const DemoIo = (): JSX.Element => {
   const input = useStore(store.input);
@@ -15,19 +16,23 @@ export const DemoIo = (): JSX.Element => {
 
   return (
     <div class={styles.container}>
-      <Label for="input">stdin</Label>
-      <TextArea
-        id="input"
-        onChange={(input) => store.input.set(input)}
-        style={{ flex: 1 }}
-        value={input()}
-      />
-      <Label for="output">stdout</Label>
-      <pre class={styles.output} id="output">
-        {output()}
-      </pre>
-      {outputUrl() && <Link href={outputUrl() ?? ""}>Download</Link>}
-      <ErrorMessage>{error()}</ErrorMessage>
+      <Field>
+        <Label for="input">stdin</Label>
+        <TextArea
+          id="input"
+          onChange={(input) => store.input.set(input)}
+          style={{ flex: 1 }}
+          value={input()}
+        />
+      </Field>
+      <Field>
+        <Label for="output">stdout</Label>
+        <pre class={styles.output} id="output">
+          {output()}
+        </pre>
+        {outputUrl() && <Link href={outputUrl() ?? ""}>Download</Link>}
+        <ErrorMessage>{error()}</ErrorMessage>
+      </Field>
     </div>
   );
 };
