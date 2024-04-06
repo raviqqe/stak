@@ -65,21 +65,13 @@ impl Value {
     }
 
     /// Returns a tag.
-    pub const fn tag(self) -> u8 {
-        if let Some(cons) = self.to_cons() {
-            cons.tag()
-        } else {
-            0
-        }
+    pub fn tag(self) -> u8 {
+        self.to_cons().map_or(0, Cons::tag)
     }
 
     /// Sets a tag.
     pub fn set_tag(self, tag: u8) -> Self {
-        if let Some(cons) = self.to_cons() {
-            cons.set_tag(tag).into()
-        } else {
-            self
-        }
+        self.to_cons().map_or(self, |cons| cons.set_tag(tag).into())
     }
 }
 
