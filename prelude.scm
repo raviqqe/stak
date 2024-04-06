@@ -540,8 +540,8 @@
     (define $$write-error-u8 (primitive 18))
     (define $$halt (primitive 19))
 
-    (define (data-rib ctr car cdr)
-      (rib ctr car cdr 0))
+    (define (data-rib type car cdr)
+      (rib type car cdr 0))
 
     (define (apply f xs)
       ($$apply f xs))
