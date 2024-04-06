@@ -19,7 +19,7 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <form class={styles.container}>
-      <Field>
+      <Field style={{ flex: 1 }}>
         <Label for="source">Program</Label>
         <TextArea
           id="source"

@@ -16,7 +16,7 @@ export const DemoIo = (): JSX.Element => {
 
   return (
     <div class={styles.container}>
-      <Field>
+      <Field style={{ flex: 1 }}>
         <Label for="input">stdin</Label>
         <TextArea
           id="input"
@@ -25,7 +25,7 @@ export const DemoIo = (): JSX.Element => {
           value={input()}
         />
       </Field>
-      <Field>
+      <Field style={{ flex: 1 }}>
         <Label for="output">stdout</Label>
         <pre class={styles.output} id="output">
           {output()}
