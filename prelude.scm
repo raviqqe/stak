@@ -582,7 +582,10 @@
 
     ;; Boolean
 
-    (define boolean? (instance? boolean-type))
+    (define (boolean? x)
+      (boolean-or
+        (eq? x #f)
+        (eq? x #t)))
 
     (define (not x)
       (eq? x #f))
@@ -672,7 +675,7 @@
 
     ;; List
 
-    (define null? (instance? null-type))
+    (define (null? x) (eq? x '()))
     (define pair? (instance? pair-type))
 
     (define (list? x)
