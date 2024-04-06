@@ -50,7 +50,7 @@ impl Display for Number {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::format;
+    use alloc::format;
 
     #[test]
     fn default() {
