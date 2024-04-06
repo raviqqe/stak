@@ -505,14 +505,15 @@
     ; Type IDs
 
     (define pair-type 0)
-    (define singleton-type 1)
-    (define procedure-type 2)
-    (define symbol-type 3)
-    (define string-type 4)
-    (define char-type 5)
-    (define vector-type 6)
-    (define bytevector-type 7)
-    (define record-type 8)
+    (define null-type 1)
+    (define boolean-type 2)
+    (define procedure-type 3)
+    (define symbol-type 4)
+    (define string-type 5)
+    (define char-type 6)
+    (define vector-type 7)
+    (define bytevector-type 8)
+    (define record-type 9)
 
     ; Primitives
 
@@ -581,10 +582,7 @@
 
     ;; Boolean
 
-    (define (boolean? x)
-      (boolean-or
-        (eq? x #f)
-        (eq? x #t)))
+    (define boolean? (instance? boolean-type))
 
     (define (not x)
       (eq? x #f))
@@ -674,7 +672,7 @@
 
     ;; List
 
-    (define (null? x) (eq? x '()))
+    (define null? (instance? null-type))
     (define pair? (instance? pair-type))
 
     (define (list? x)
