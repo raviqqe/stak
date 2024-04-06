@@ -59,7 +59,7 @@ mod tests {
     use super::*;
     use crate::Operand;
     use insta::assert_snapshot;
-    use std::{format, vec};
+    use alloc::{format, vec};
 
     #[test]
     fn display_symbols() {
