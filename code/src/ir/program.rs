@@ -58,8 +58,8 @@ impl Display for Program {
 mod tests {
     use super::*;
     use crate::Operand;
-    use insta::assert_snapshot;
     use alloc::{format, vec};
+    use insta::assert_snapshot;
 
     #[test]
     fn display_symbols() {
