@@ -29,6 +29,13 @@ readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [workspace.lints.clippy]
+alloc_instead_of_core = "deny"
+manual_let_else = "deny"
+option_if_let_else = "deny"
+std_instead_of_alloc = "deny"
+std_instead_of_core = "deny"
+todo = "deny"
+unimplemented = "deny"
 uninlined_format_args = "deny"
 
 [profile.release]
