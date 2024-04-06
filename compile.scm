@@ -9,7 +9,7 @@
   (scheme write))
 
 (cond-expand
-  (stak
+  (stak2
     (define cons-rib cons)
     (define target-pair? pair?)
     (define target-procedure? procedure?))

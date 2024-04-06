@@ -37,7 +37,7 @@
     library
     r7rs
     scheme
-    stak
+    stak2
 
     procedure-type
 
@@ -289,7 +289,7 @@
           ($$set! name value))))
 
     (define-syntax cond-expand
-      (syntax-rules (and or not else r7rs library scheme base stak)
+      (syntax-rules (and or not else r7rs library scheme base stak2)
         ((_ (else body ...))
           (relaxed-begin body ...))
 
@@ -333,7 +333,7 @@
         ((_ (r7rs body ...) clause ...)
           (relaxed-begin body ...))
 
-        ((_ (stak body ...) clause ...)
+        ((_ (stak2 body ...) clause ...)
           (relaxed-begin body ...))
 
         ((_ (feature body ...) clause ...)
