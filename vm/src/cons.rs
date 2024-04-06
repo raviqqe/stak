@@ -103,6 +103,7 @@ mod tests {
         #[test]
         fn get_and_set() {
             const META: u16 = 5;
+
             let cons = Cons::new(42).set_meta(META);
 
             assert_eq!(cons.index(), 42);
