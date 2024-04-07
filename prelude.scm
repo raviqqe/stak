@@ -582,10 +582,7 @@
 
     ;; Boolean
 
-    (define (boolean? x)
-      (boolean-or
-        (eq? x #f)
-        (eq? x #t)))
+    (define boolean? (instance? boolean-type))
 
     (define (not x)
       (eq? x #f))
