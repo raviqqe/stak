@@ -50,12 +50,12 @@
 
 ; Instructions
 
-(define call-instruction 0)
-(define set-instruction 1)
-(define get-instruction 2)
-(define constant-instruction 3)
-(define if-instruction 4)
-(define nop-instruction 5)
+(define constant-instruction 0)
+(define get-instruction 1)
+(define set-instruction 2)
+(define if-instruction 3)
+(define nop-instruction 4)
+(define call-instruction 5)
 ; Only for encoding
 (define close-instruction 6)
 (define skip-instruction 7)
@@ -1302,20 +1302,13 @@
         context
         codes
         (cond
-          ((memq instruction (list set-instruction get-instruction))
-            (encode-simple instruction))
-
-          ((eq? instruction call-instruction)
-            (encode-instruction
-              instruction
-              (rib-car operand)
-              return
-              (encode-integer (encode-operand context (rib-cdr operand)) target)))
-
           ((and
               (eq? instruction constant-instruction)
               (target-procedure? operand))
             (encode-procedure context operand return target))
+
+          ((memq instruction (list get-instruction set-instruction))
+            (encode-simple instruction))
 
           ((eq? instruction constant-instruction)
             (let ((symbol (encode-context-constant context operand)))
@@ -1337,6 +1330,13 @@
               (if (null? continuation)
                 target
                 (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
+
+          ((eq? instruction call-instruction)
+            (encode-instruction
+              instruction
+              (rib-car operand)
+              return
+              (encode-integer (encode-operand context (rib-cdr operand)) target)))
 
           (else
             (error "invalid instruction" instruction)))))))

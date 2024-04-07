@@ -126,6 +126,53 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    fn constant(&mut self) -> Result<(), T::Error> {
+        let constant = self.operand();
+
+        trace!("constant", constant);
+
+        self.push(constant)?;
+        self.advance_program_counter();
+
+        Ok(())
+    }
+
+    fn get(&mut self) -> Result<(), T::Error> {
+        let value = self.resolve_operand(self.operand());
+
+        trace!("operand", value);
+
+        self.push(value)?;
+        self.advance_program_counter();
+
+        Ok(())
+    }
+
+    fn set(&mut self) {
+        match self.operand().to_typed() {
+            TypedValue::Cons(cons) => {
+                let value = self.pop();
+                self.set_cdr(cons, value);
+            }
+            TypedValue::Number(index) => {
+                let cons = self.tail(self.stack, index);
+                let value = self.pop();
+                self.set_car(cons, value)
+            }
+        }
+
+        self.advance_program_counter();
+    }
+
+    fn r#if(&mut self) {
+        self.program_counter = (if self.pop() == self.boolean(false).into() {
+            self.cdr(self.program_counter)
+        } else {
+            self.operand()
+        })
+        .assume_cons();
+    }
+
     fn call(&mut self, instruction: Cons) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
@@ -202,53 +249,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
 
         Ok(())
-    }
-
-    fn set(&mut self) {
-        match self.operand().to_typed() {
-            TypedValue::Cons(cons) => {
-                let value = self.pop();
-                self.set_cdr(cons, value);
-            }
-            TypedValue::Number(index) => {
-                let cons = self.tail(self.stack, index);
-                let value = self.pop();
-                self.set_car(cons, value)
-            }
-        }
-
-        self.advance_program_counter();
-    }
-
-    fn get(&mut self) -> Result<(), T::Error> {
-        let value = self.resolve_operand(self.operand());
-
-        trace!("operand", value);
-
-        self.push(value)?;
-        self.advance_program_counter();
-
-        Ok(())
-    }
-
-    fn constant(&mut self) -> Result<(), T::Error> {
-        let constant = self.operand();
-
-        trace!("constant", constant);
-
-        self.push(constant)?;
-        self.advance_program_counter();
-
-        Ok(())
-    }
-
-    fn r#if(&mut self) {
-        self.program_counter = (if self.pop() == self.boolean(false).into() {
-            self.cdr(self.program_counter)
-        } else {
-            self.operand()
-        })
-        .assume_cons();
     }
 
     fn parse_argument_count(info: Number) -> ArgumentInfo {
@@ -691,6 +691,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             debug_assert!(instruction != code::Instruction::IF || !r#return);
 
             let program_counter = match instruction {
+                code::Instruction::CONSTANT
+                | code::Instruction::GET
+                | code::Instruction::SET
+                | code::Instruction::NOP => {
+                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
+                }
                 code::Instruction::CALL => {
                     let operand = self.allocate(
                         Number::new(integer as i64).into(),
@@ -699,12 +705,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         ),
                     )?;
                     self.append_instruction(instruction, operand.into(), r#return)?
-                }
-                code::Instruction::SET
-                | code::Instruction::GET
-                | code::Instruction::CONSTANT
-                | code::Instruction::NOP => {
-                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
                 }
                 code::Instruction::IF => {
                     let then = self.program_counter;

@@ -5,19 +5,19 @@ use alloc::vec::Vec;
 /// An instruction.
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
-    /// A `call` instruction.
-    Call(u64, Operand),
-    /// A `set` instruction.
-    Set(Operand),
-    /// A `get` instruction.
-    Get(Operand),
     /// A `constant` instruction.
     Constant(Operand),
+    /// A `get` instruction.
+    Get(Operand),
+    /// A `set` instruction.
+    Set(Operand),
     /// An `if` instruction.
     #[cfg(feature = "alloc")]
     If(Vec<Instruction>),
     /// A `nop` instruction.
     Nop(u64),
+    /// A `call` instruction.
+    Call(u64, Operand),
     /// A `close` instruction.
     ///
     /// It is used only for encoding.
@@ -30,12 +30,12 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const CALL: u8 = 0;
-    pub const SET: u8 = 1;
-    pub const GET: u8 = 2;
-    pub const CONSTANT: u8 = 3;
-    pub const IF: u8 = 4;
-    pub const NOP: u8 = 5;
+    pub const CONSTANT: u8 = 0;
+    pub const GET: u8 = 1;
+    pub const SET: u8 = 2;
+    pub const IF: u8 = 3;
+    pub const NOP: u8 = 4;
+    pub const CALL: u8 = 5;
     pub const CLOSE: u8 = 6;
     pub const SKIP: u8 = 7;
 }
@@ -74,12 +74,9 @@ mod display {
             write!(formatter, "- ")?;
 
             match self.instruction {
-                Instruction::Call(arity, operand) => {
-                    write!(formatter, "call {arity} {operand}")
-                }
-                Instruction::Set(operand) => write!(formatter, "set {operand}"),
-                Instruction::Get(operand) => write!(formatter, "get {operand}"),
                 Instruction::Constant(operand) => write!(formatter, "constant {operand}"),
+                Instruction::Get(operand) => write!(formatter, "get {operand}"),
+                Instruction::Set(operand) => write!(formatter, "set {operand}"),
                 Instruction::If(instructions) => {
                     write!(formatter, "if")?;
                     write!(
@@ -89,6 +86,9 @@ mod display {
                     )
                 }
                 Instruction::Nop(operand) => write!(formatter, "nop {operand}"),
+                Instruction::Call(arity, operand) => {
+                    write!(formatter, "call {arity} {operand}")
+                }
                 Instruction::Close(arity, instructions) => {
                     write!(formatter, "close {arity}")?;
                     write!(
