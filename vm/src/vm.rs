@@ -111,12 +111,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
-                code::Instruction::CALL => self.call(instruction)?,
-                code::Instruction::SET => self.set(),
-                code::Instruction::GET => self.get()?,
                 code::Instruction::CONSTANT => self.constant()?,
+                code::Instruction::GET => self.get()?,
+                code::Instruction::SET => self.set(),
                 code::Instruction::IF => self.r#if(),
                 code::Instruction::NOP => self.advance_program_counter(),
+                code::Instruction::CALL => self.call(instruction)?,
                 _ => return Err(Error::IllegalInstruction.into()),
             }
 
