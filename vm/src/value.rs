@@ -1,4 +1,7 @@
-use crate::{cons::Cons, number::Number};
+use crate::{
+    cons::{Cons, Tag},
+    number::Number,
+};
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -65,12 +68,12 @@ impl Value {
     }
 
     /// Returns a tag.
-    pub fn tag(self) -> u8 {
+    pub fn tag(self) -> Tag {
         self.to_cons().map_or(0, Cons::tag)
     }
 
     /// Sets a tag.
-    pub fn set_tag(self, tag: u8) -> Self {
+    pub fn set_tag(self, tag: Tag) -> Self {
         self.to_cons().map_or(self, |cons| cons.set_tag(tag).into())
     }
 }

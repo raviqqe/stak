@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, NEVER},
+    cons::{Cons, Tag, NEVER},
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
@@ -15,7 +15,7 @@ use core::{
 use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
-const FRAME_TAG: u8 = 1;
+const FRAME_TAG: Tag = 1;
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -93,12 +93,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         };
 
         let null =
-            vm.allocate_unchecked(NEVER.set_tag(Type::Null as u8).into(), Default::default())?;
+            vm.allocate_unchecked(NEVER.set_tag(Type::Null as Tag).into(), Default::default())?;
         // Do not use `NEVER` for `car` for an `equal?` procedure.
-        let r#true =
-            vm.allocate_unchecked(null.set_tag(Type::Boolean as u8).into(), Default::default())?;
+        let r#true = vm.allocate_unchecked(
+            null.set_tag(Type::Boolean as Tag).into(),
+            Default::default(),
+        )?;
         vm.r#false =
-            vm.allocate_unchecked(r#true.set_tag(Type::Boolean as u8).into(), null.into())?;
+            vm.allocate_unchecked(r#true.set_tag(Type::Boolean as Tag).into(), null.into())?;
 
         Ok(vm)
     }
@@ -110,14 +112,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             trace!("instruction", instruction.tag());
 
-            match instruction.tag() {
+            match instruction.tag() as u8 {
                 code::Instruction::CONSTANT => self.constant()?,
                 code::Instruction::GET => self.get()?,
                 code::Instruction::SET => self.set(),
                 code::Instruction::IF => self.r#if(),
                 code::Instruction::NOP => self.advance_program_counter(),
-                code::Instruction::CALL => self.call(instruction)?,
-                _ => return Err(Error::IllegalInstruction.into()),
+                code => self.call(
+                    instruction,
+                    instruction.tag() as usize - code::Instruction::CALL as usize,
+                )?,
             }
 
             trace_heap!(self);
@@ -173,21 +177,22 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         .assume_cons();
     }
 
-    fn call(&mut self, instruction: Cons) -> Result<(), T::Error> {
+    fn call(&mut self, instruction: Cons, argument_info: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
         trace!("procedure", procedure);
         trace!("return", r#return);
 
-        if self.environment(procedure).tag() != Type::Procedure as u8 {
+        if self.environment(procedure).tag() != Type::Procedure as u16 {
             return Err(Error::ProcedureExpected.into());
         }
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
-                let arguments = Self::parse_argument_count(self.argument_count());
-                let parameters = Self::parse_argument_count(self.car(code).assume_number());
+                let arguments = Self::parse_argument_info(argument_info);
+                let parameters =
+                    Self::parse_argument_info(self.car(code).assume_number().to_i64() as usize);
 
                 trace!("argument count", arguments.count);
                 trace!("argument variadic", arguments.variadic);
@@ -251,12 +256,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn parse_argument_count(info: Number) -> ArgumentInfo {
-        let info = info.to_i64();
-
+    fn parse_argument_info(info: usize) -> ArgumentInfo {
         ArgumentInfo {
-            count: Number::new(info / 2),
-            variadic: info & 1 == 1,
+            count: Number::new((info / 2) as i64),
+            variadic: info % 2 == 1,
         }
     }
 
@@ -289,10 +292,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             .assume_cons()
     }
 
-    fn argument_count(&self) -> Number {
-        self.car_value(self.operand()).assume_number()
-    }
-
     fn environment(&self, procedure: Cons) -> Cons {
         self.car(procedure).assume_cons()
     }
@@ -323,7 +322,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T::Error> {
-        self.allocate(car.set_tag(Type::Pair as u8), cdr.into())
+        self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
     }
 
     /// Returns a current stack.
@@ -361,7 +360,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
-        debug_assert_eq!(cons.tag(), Type::default() as u8);
+        debug_assert_eq!(cons.tag(), Type::default() as Tag);
         assert_heap_cons!(self, cons);
         assert_heap_value!(self, car);
         assert_heap_value!(self, cdr);
@@ -623,7 +622,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         } {}
 
         let rib = self.allocate(
-            NEVER.set_tag(Type::Procedure as u8).into(),
+            NEVER.set_tag(Type::Procedure as Tag).into(),
             Number::default().into(),
         )?;
 
@@ -665,7 +664,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), T::Error> {
         let symbol = self.allocate(
             name.unwrap_or(self.register)
-                .set_tag(Type::Symbol as u8)
+                .set_tag(Type::Symbol as Tag)
                 .into(),
             value,
         )?;
@@ -675,7 +674,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, T::Error> {
         self.allocate(
-            name.set_tag(Type::String as u8).into(),
+            name.set_tag(Type::String as Tag).into(),
             Number::new(length).into(),
         )
     }
@@ -694,24 +693,24 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code::Instruction::CONSTANT
                 | code::Instruction::GET
                 | code::Instruction::SET
-                | code::Instruction::NOP => {
-                    self.append_instruction(instruction, self.decode_operand(integer), r#return)?
-                }
-                code::Instruction::CALL => {
-                    let operand = self.allocate(
-                        Number::new(integer as i64).into(),
-                        self.decode_operand(
-                            Self::decode_integer(input).ok_or(Error::BytecodeOperandMissing)?,
-                        ),
-                    )?;
-                    self.append_instruction(instruction, operand.into(), r#return)?
-                }
+                | code::Instruction::NOP => self.append_instruction(
+                    instruction as Tag,
+                    self.decode_operand(integer),
+                    r#return,
+                )?,
+                code::Instruction::CALL => self.append_instruction(
+                    instruction as Tag + integer as Tag,
+                    self.decode_operand(
+                        Self::decode_integer(input).ok_or(Error::BytecodeOperandMissing)?,
+                    ),
+                    r#return,
+                )?,
                 code::Instruction::IF => {
                     let then = self.program_counter;
 
                     self.program_counter = self.pop().assume_cons();
 
-                    self.append_instruction(instruction, then.into(), false)?
+                    self.append_instruction(instruction as Tag, then.into(), false)?
                 }
                 code::Instruction::CLOSE => {
                     let code = self.allocate(
@@ -719,12 +718,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         self.program_counter.into(),
                     )?;
                     let procedure =
-                        self.allocate(NEVER.set_tag(Type::Procedure as u8).into(), code.into())?;
+                        self.allocate(NEVER.set_tag(Type::Procedure as Tag).into(), code.into())?;
 
                     self.program_counter = self.pop().assume_cons();
 
                     self.append_instruction(
-                        code::Instruction::CONSTANT,
+                        code::Instruction::CONSTANT as Tag,
                         procedure.into(),
                         r#return,
                     )?
@@ -747,7 +746,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn append_instruction(
         &mut self,
-        instruction: u8,
+        instruction: Tag,
         operand: Value,
         r#return: bool,
     ) -> Result<Cons, T::Error> {
