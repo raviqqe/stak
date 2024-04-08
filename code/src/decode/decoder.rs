@@ -11,7 +11,7 @@ pub struct Decoder<'a> {
 }
 
 impl<'a> Decoder<'a> {
-    pub fn new(codes: &'a [u8]) -> Self {
+    pub const fn new(codes: &'a [u8]) -> Self {
         Self { codes, index: 0 }
     }
 
@@ -115,7 +115,7 @@ impl<'a> Decoder<'a> {
         )))
     }
 
-    fn decode_operand(integer: u64) -> Operand {
+    const fn decode_operand(integer: u64) -> Operand {
         let index = integer >> 1;
 
         if integer & 1 == 0 {

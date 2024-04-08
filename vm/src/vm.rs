@@ -266,7 +266,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn parse_argument_info(info: usize) -> ArgumentInfo {
+    const fn parse_argument_info(info: usize) -> ArgumentInfo {
         ArgumentInfo {
             count: Number::new((info / 2) as i64),
             variadic: info % 2 == 1,
@@ -335,7 +335,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Returns a current stack.
-    pub fn stack(&self) -> Cons {
+    pub const fn stack(&self) -> Cons {
         self.stack
     }
 
@@ -692,7 +692,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self,
         input: &mut impl Iterator<Item = u8>,
     ) -> Result<(), T::Error> {
-        while let Some((instruction, r#return, integer)) = self.decode_instruction(input)? {
+        while let Some((instruction, r#return, integer)) = Self::decode_instruction(input)? {
             trace!("instruction", instruction);
             trace!("return", r#return);
 
@@ -770,7 +770,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn decode_instruction(
-        &mut self,
         input: &mut impl Iterator<Item = u8>,
     ) -> Result<Option<(u8, bool, u64)>, T::Error> {
         let Some(byte) = input.next() else {
@@ -830,7 +829,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // For primitive sets.
 
     /// Returns a reference to a primitive set.
-    pub fn primitive_set(&self) -> &T {
+    pub const fn primitive_set(&self) -> &T {
         &self.primitive_set
     }
 

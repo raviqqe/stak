@@ -30,13 +30,21 @@ repository = "https://github.com/raviqqe/stak"
 
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
+dbg_macro = "deny"
+derive_partial_eq_without_eq = "deny"
+equatable_if_let = "deny"
+explicit_deref_methods = "deny"
+if_not_else = "deny"
 manual_let_else = "deny"
+missing_const_for_fn = "deny"
 option_if_let_else = "deny"
 std_instead_of_alloc = "deny"
 std_instead_of_core = "deny"
 todo = "deny"
 unimplemented = "deny"
 uninlined_format_args = "deny"
+unused_self = "deny"
+use_self = "deny"
 
 [profile.release]
 codegen-units = 1
