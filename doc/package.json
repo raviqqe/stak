@@ -20,7 +20,7 @@
     "astro": "^4.5.16",
     "classnames": "^2.5.1",
     "lucide-solid": "^0.365.0",
-    "nanostores": "^0.10.2",
+    "nanostores": "^0.10.3",
     "solid-js": "^1.8.16",
     "vite-plugin-wasm": "^3.3.0"
   },
