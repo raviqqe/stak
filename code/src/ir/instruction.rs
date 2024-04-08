@@ -108,7 +108,7 @@ mod display {
     }
 
     impl<'a> DisplayInstructionList<'a> {
-        fn new(instructions: &'a [Instruction], indent: usize) -> Self {
+        const fn new(instructions: &'a [Instruction], indent: usize) -> Self {
             Self {
                 instructions,
                 indent,

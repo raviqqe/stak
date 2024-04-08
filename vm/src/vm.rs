@@ -251,7 +251,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn parse_argument_count(info: Number) -> ArgumentInfo {
+    const fn parse_argument_count(info: Number) -> ArgumentInfo {
         let info = info.to_i64();
 
         ArgumentInfo {
