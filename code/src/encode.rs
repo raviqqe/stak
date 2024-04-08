@@ -1,5 +1,5 @@
 use crate::{
-    Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE,
+    Code, Instruction, Operand, Program, INSTRUCTION_BITS, INTEGER_BASE, SHORT_INTEGER_BASE,
     SYMBOL_SEPARATOR, SYMBOL_TERMINATOR,
 };
 use alloc::{string::String, vec, vec::Vec};
@@ -84,7 +84,7 @@ fn encode_instructions(codes: &mut Vec<u8>, instructions: &[Instruction]) {
     }
 }
 
-fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64, r#return: bool) {
+fn encode_instruction(codes: &mut Vec<u8>, instruction: Code, integer: u64, r#return: bool) {
     let integer = encode_short_integer(codes, integer);
 
     codes.push((integer << INSTRUCTION_BITS) | (instruction << 1) | if r#return { 1 } else { 0 })

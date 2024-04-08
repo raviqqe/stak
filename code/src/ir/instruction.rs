@@ -2,6 +2,8 @@ use crate::Operand;
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 
+pub type Code = u16;
+
 /// An instruction.
 #[derive(Debug, Eq, PartialEq)]
 pub enum Instruction {
@@ -30,14 +32,14 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const CONSTANT: u16 = 0;
-    pub const GET: u16 = 1;
-    pub const SET: u16 = 2;
-    pub const IF: u16 = 3;
-    pub const NOP: u16 = 4;
-    pub const CALL: u16 = 5;
-    pub const CLOSE: u16 = 6;
-    pub const SKIP: u16 = 7;
+    pub const CONSTANT: Code = 0;
+    pub const GET: Code = 1;
+    pub const SET: Code = 2;
+    pub const IF: Code = 3;
+    pub const NOP: Code = 4;
+    pub const CALL: Code = 5;
+    pub const CLOSE: Code = 6;
+    pub const SKIP: Code = 7;
 }
 
 #[cfg(feature = "alloc")]

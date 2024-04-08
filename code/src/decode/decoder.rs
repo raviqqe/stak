@@ -1,5 +1,5 @@
 use crate::{
-    Error, Instruction, Operand, Program, INSTRUCTION_BITS, INSTRUCTION_MASK, INTEGER_BASE,
+    Code, Error, Instruction, Operand, Program, INSTRUCTION_BITS, INSTRUCTION_MASK, INTEGER_BASE,
     SHORT_INTEGER_BASE, SYMBOL_SEPARATOR, SYMBOL_TERMINATOR,
 };
 use alloc::{string::String, vec, vec::Vec};
@@ -100,7 +100,7 @@ impl<'a> Decoder<'a> {
         Ok(instructions)
     }
 
-    fn decode_instruction(&mut self) -> Result<Option<(u8, bool, u64)>, Error> {
+    fn decode_instruction(&mut self) -> Result<Option<(Code, bool, u64)>, Error> {
         let Some(byte) = self.decode_byte() else {
             return Ok(None);
         };
