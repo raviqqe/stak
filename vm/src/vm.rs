@@ -17,6 +17,16 @@ use stak_code as code;
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: Tag = 1;
 
+mod instruction {
+    use super::*;
+
+    pub const CONSTANT: Tag = code::Instruction::CONSTANT as _;
+    pub const GET: Tag = code::Instruction::GET as _;
+    pub const SET: Tag = code::Instruction::SET as _;
+    pub const IF: Tag = code::Instruction::IF as _;
+    pub const NOP: Tag = code::Instruction::NOP as _;
+}
+
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
         #[cfg(feature = "trace")]
@@ -112,16 +122,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             trace!("instruction", instruction.tag());
 
-            // TODO Fix this.
-            match instruction.tag() as u8 {
-                code::Instruction::CONSTANT => self.constant()?,
-                code::Instruction::GET => self.get()?,
-                code::Instruction::SET => self.set(),
-                code::Instruction::IF => self.r#if(),
-                code::Instruction::NOP => self.advance_program_counter(),
+            match instruction.tag() {
+                instruction::CONSTANT => self.constant()?,
+                instruction::GET => self.get()?,
+                instruction::SET => self.set(),
+                instruction::IF => self.r#if(),
+                instruction::NOP => self.advance_program_counter(),
                 code => self.call(
                     instruction,
-                    instruction.tag() as usize - code::Instruction::CALL as usize,
+                    code as usize - code::Instruction::CALL as usize,
                 )?,
             }
 
