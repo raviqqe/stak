@@ -43,6 +43,7 @@ std_instead_of_core = "deny"
 todo = "deny"
 unimplemented = "deny"
 uninlined_format_args = "deny"
+use_self = "deny"
 
 [profile.release]
 codegen-units = 1
