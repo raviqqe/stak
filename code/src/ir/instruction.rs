@@ -30,14 +30,14 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    pub const CONSTANT: u8 = 0;
-    pub const GET: u8 = 1;
-    pub const SET: u8 = 2;
-    pub const IF: u8 = 3;
-    pub const NOP: u8 = 4;
-    pub const CALL: u8 = 5;
-    pub const CLOSE: u8 = 6;
-    pub const SKIP: u8 = 7;
+    pub const CONSTANT: u16 = 0;
+    pub const GET: u16 = 1;
+    pub const SET: u16 = 2;
+    pub const IF: u16 = 3;
+    pub const NOP: u16 = 4;
+    pub const CALL: u16 = 5;
+    pub const CLOSE: u16 = 6;
+    pub const SKIP: u16 = 7;
 }
 
 #[cfg(feature = "alloc")]

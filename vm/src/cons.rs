@@ -29,12 +29,12 @@ impl Cons {
     }
 
     /// Returns a tag.
-    pub const fn tag(self) -> u8 {
+    pub const fn tag(self) -> u16 {
         ((self.0 >> 1) & TAG_MASK) as u8
     }
 
     /// Sets a tag.
-    pub const fn set_tag(self, tag: u8) -> Self {
+    pub const fn set_tag(self, tag: u16) -> Self {
         Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
     }
 
