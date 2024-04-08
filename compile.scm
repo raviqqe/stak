@@ -208,7 +208,7 @@
 
 (define (zip-alist xs)
   (define (zip xs)
-    (if (memv #f (map (lambda (pair) (pair? (cdr pair))) xs))
+    (if (memq #f (map (lambda (pair) (pair? (cdr pair))) xs))
       '()
       (cons
         (map-values car xs)
