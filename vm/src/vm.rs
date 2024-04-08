@@ -112,6 +112,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             trace!("instruction", instruction.tag());
 
+            // TODO Fix this.
             match instruction.tag() as u8 {
                 code::Instruction::CONSTANT => self.constant()?,
                 code::Instruction::GET => self.get()?,
