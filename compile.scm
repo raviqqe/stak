@@ -1331,7 +1331,6 @@
             (error "unexpected nop instruction"))
 
           (else
-            ; A call instruction
             (encode-instruction
               call-instruction
               (- instruction call-instruction)
