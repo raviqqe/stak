@@ -59,7 +59,7 @@ mod display {
     }
 
     impl<'a> DisplayInstruction<'a> {
-        fn new(instruction: &'a Instruction, indent: usize) -> Self {
+        const fn new(instruction: &'a Instruction, indent: usize) -> Self {
             Self {
                 instruction,
                 indent,
@@ -108,7 +108,7 @@ mod display {
     }
 
     impl<'a> DisplayInstructionList<'a> {
-        fn new(instructions: &'a [Instruction], indent: usize) -> Self {
+        const fn new(instructions: &'a [Instruction], indent: usize) -> Self {
             Self {
                 instructions,
                 indent,

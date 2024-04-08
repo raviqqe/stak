@@ -90,7 +90,7 @@ fn encode_instruction(codes: &mut Vec<u8>, instruction: u8, integer: u64, r#retu
     codes.push((integer << INSTRUCTION_BITS) | (instruction << 1) | if r#return { 1 } else { 0 })
 }
 
-fn encode_operand(operand: Operand) -> u64 {
+const fn encode_operand(operand: Operand) -> u64 {
     match operand {
         Operand::Symbol(number) => number << 1,
         Operand::Integer(number) => (number << 1) + 1,
@@ -119,7 +119,7 @@ fn encode_integer_with_base(codes: &mut Vec<u8>, integer: u64, base: u64) -> u8 
     encode_integer_part(integer, base, bit)
 }
 
-fn encode_integer_part(integer: u64, base: u64, bit: u64) -> u8 {
+const fn encode_integer_part(integer: u64, base: u64, bit: u64) -> u8 {
     (((integer % base) << 1) | bit) as u8
 }
 
