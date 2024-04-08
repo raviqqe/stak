@@ -925,21 +925,21 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = create_vm(&mut heap);
 
-        assert_eq!(vm.car(vm.null()).tag(), Type::Null as u8);
+        assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
 
         let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(2).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
 
         let list = vm.cons(Number::new(3).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as u8);
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
     }
 

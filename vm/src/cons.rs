@@ -106,9 +106,9 @@ mod tests {
 
     #[test]
     fn set_too_large_tag() {
-        let cons = Cons::new(0).set_tag(u8::MAX);
+        let cons = Cons::new(0).set_tag(Tag::MAX);
 
         assert_eq!(cons.index(), 0);
-        assert_eq!(cons.tag(), TAG_MASK as u8);
+        assert_eq!(cons.tag(), TAG_MASK as Tag);
     }
 }
