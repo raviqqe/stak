@@ -707,18 +707,18 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.decode_operand(integer),
                     r#return,
                 )?,
-                code::Instruction::CALL => {
-                    let operand = self.decode_operand(
-                        Self::decode_integer(input).ok_or(Error::BytecodeOperandMissing)?,
-                    );
-                    self.append_instruction(instruction as Tag + integer as Tag, operand, r#return)?
-                }
                 code::Instruction::IF => {
                     let then = self.program_counter;
 
                     self.program_counter = self.pop().assume_cons();
 
                     self.append_instruction(instruction as Tag, then.into(), false)?
+                }
+                code::Instruction::CALL => {
+                    let operand = self.decode_operand(
+                        Self::decode_integer(input).ok_or(Error::BytecodeOperandMissing)?,
+                    );
+                    self.append_instruction(instruction as Tag + integer as Tag, operand, r#return)?
                 }
                 code::Instruction::CLOSE => {
                     let code = self.allocate(
