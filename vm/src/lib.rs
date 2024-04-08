@@ -43,7 +43,7 @@ mod r#type;
 mod value;
 mod vm;
 
-pub use cons::Cons;
+pub use cons::{Cons, Tag};
 pub use error::Error;
 pub use number::Number;
 pub use primitive_set::PrimitiveSet;

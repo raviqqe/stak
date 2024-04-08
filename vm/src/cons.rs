@@ -1,6 +1,8 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
+pub type Tag = u16;
+
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
@@ -10,8 +12,8 @@ use core::fmt::{self, Display, Formatter};
 /// - in cdr, nothing.
 pub const NEVER: Cons = Cons::new(u64::MAX);
 
-const TAG_SIZE: usize = 16;
-const TAG_MASK: u64 = (1 << TAG_SIZE) - 1;
+const TAG_SIZE: usize = Tag::BITS as usize;
+const TAG_MASK: u64 = Tag::MAX as u64;
 
 /// A cons.
 #[derive(Clone, Copy, Debug)]
@@ -29,12 +31,12 @@ impl Cons {
     }
 
     /// Returns a tag.
-    pub const fn tag(self) -> u8 {
-        ((self.0 >> 1) & TAG_MASK) as u8
+    pub const fn tag(self) -> Tag {
+        ((self.0 >> 1) & TAG_MASK) as Tag
     }
 
     /// Sets a tag.
-    pub const fn set_tag(self, tag: u8) -> Self {
+    pub const fn set_tag(self, tag: Tag) -> Self {
         Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
     }
 
@@ -104,9 +106,9 @@ mod tests {
 
     #[test]
     fn set_too_large_tag() {
-        let cons = Cons::new(0).set_tag(u8::MAX);
+        let cons = Cons::new(0).set_tag(Tag::MAX);
 
         assert_eq!(cons.index(), 0);
-        assert_eq!(cons.tag(), TAG_MASK as u8);
+        assert_eq!(cons.tag(), TAG_MASK as Tag);
     }
 }

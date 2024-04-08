@@ -1,4 +1,7 @@
-use crate::{cons::Cons, number::Number};
+use crate::{
+    cons::{Cons, Tag},
+    number::Number,
+};
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -65,12 +68,12 @@ impl Value {
     }
 
     /// Returns a tag.
-    pub fn tag(self) -> u8 {
+    pub fn tag(self) -> Tag {
         self.to_cons().map_or(0, Cons::tag)
     }
 
     /// Sets a tag.
-    pub fn set_tag(self, tag: u8) -> Self {
+    pub fn set_tag(self, tag: Tag) -> Self {
         self.to_cons().map_or(self, |cons| cons.set_tag(tag).into())
     }
 }
@@ -125,7 +128,7 @@ mod tests {
 
     #[test]
     fn convert_tagged_cons() {
-        const TAG: u8 = 0b111;
+        const TAG: Tag = 0b111;
 
         let cons = Cons::new(42).set_tag(TAG);
         let converted = Value::from(cons).to_cons().unwrap();
@@ -151,7 +154,7 @@ mod tests {
         let tag = Value::from(Number::new(42)).tag();
 
         assert_eq!(tag, Default::default());
-        assert_eq!(tag, Type::default() as u8);
+        assert_eq!(tag, Type::default() as Tag);
     }
 
     #[test]

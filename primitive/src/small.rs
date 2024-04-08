@@ -5,7 +5,7 @@ pub use self::error::Error;
 use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Sub};
 use stak_device::Device;
-use stak_vm::{Number, PrimitiveSet, Type, Value, Vm};
+use stak_vm::{Number, PrimitiveSet, Tag, Type, Value, Vm};
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<T: Device> {
@@ -44,7 +44,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
     }
 
-    fn rib(vm: &mut Vm<Self>, r#type: u8, car: Value, cdr: Value) -> Result<(), Error> {
+    fn rib(vm: &mut Vm<Self>, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
         let rib = vm.allocate(car.set_tag(r#type), cdr)?;
         vm.set_top(rib.into());
 
@@ -113,20 +113,20 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
 
                 Self::rib(
                     vm,
-                    r#type.assume_number().to_i64() as u8,
+                    r#type.assume_number().to_i64() as Tag,
                     car,
-                    cdr.set_tag(tag.assume_number().to_i64() as u8),
+                    cdr.set_tag(tag.assume_number().to_i64() as Tag),
                 )?;
             }
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments::<2>(vm);
 
-                Self::rib(vm, Type::Pair as u8, car, cdr)?;
+                Self::rib(vm, Type::Pair as Tag, car, cdr)?;
             }
             Primitive::CLOSE => {
                 Self::rib(
                     vm,
-                    Type::Procedure as u8,
+                    Type::Procedure as Tag,
                     vm.cdr(vm.stack()),
                     vm.cdr_value(vm.top()),
                 )?;
