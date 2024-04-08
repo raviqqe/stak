@@ -288,8 +288,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // (environment . code)
     fn procedure(&self) -> Cons {
-        self.resolve_operand(self.cdr_value(self.operand()))
-            .assume_cons()
+        self.resolve_operand(self.operand()).assume_cons()
     }
 
     fn environment(&self, procedure: Cons) -> Cons {
