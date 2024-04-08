@@ -89,7 +89,7 @@
   (rib type car cdr 0))
 
 (define (call-rib arity function continuation)
-  (code-rib call-instruction (cons-rib arity function) continuation))
+  (code-rib (+ call-instruction arity) function continuation))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))
@@ -1140,12 +1140,8 @@
   (let loop ((codes codes) (symbols '()))
     (if (terminal-codes? codes)
       symbols
-      (let* ((instruction (rib-tag codes))
-             (operand (rib-car codes))
-             (operand
-               (if (eq? instruction call-instruction)
-                 (rib-cdr operand)
-                 operand)))
+      (let ((instruction (rib-tag codes))
+            (operand (rib-car codes)))
         (loop
           (rib-cdr codes)
           (cond
@@ -1331,15 +1327,16 @@
                 target
                 (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
 
-          ((eq? instruction call-instruction)
-            (encode-instruction
-              instruction
-              (rib-car operand)
-              return
-              (encode-integer (encode-operand context (rib-cdr operand)) target)))
+          ((eq? instruction nop-instruction)
+            (error "unexpected nop instruction"))
 
           (else
-            (error "invalid instruction" instruction)))))))
+            ; A call instruction
+            (encode-instruction
+              call-instruction
+              (- instruction call-instruction)
+              return
+              (encode-integer (encode-operand context operand) target))))))))
 
 ;; Primitives
 
