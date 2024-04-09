@@ -516,10 +516,9 @@
                   (loop expressions)))))))
 
       ((and
-          (list? expression)
-          (= (length expression) 3)
           (symbol? predicate)
-          (assoc (symbol->string predicate) primitive-functions))
+          (assoc (symbol->string predicate) primitive-functions)
+          (= (length expression) 3))
         =>
         (lambda (pair)
           (cons (cdr pair) (cdr expression))))
