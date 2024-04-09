@@ -843,10 +843,11 @@
       (($$cons $$-)
         2)
 
+      (($$rib)
+        4)
+
       (else
-        (if (eq? name '$$rib)
-          4
-          (error "unknown primitive" name))))
+        (error "unknown primitive" name))))
     name
     continuation))
 
