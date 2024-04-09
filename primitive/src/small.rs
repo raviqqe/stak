@@ -82,8 +82,13 @@ impl<T: Device> SmallPrimitiveSet<T> {
 
     fn check_type(vm: &mut Vm<Self>, r#type: Type) {
         Self::operate_top(vm, |vm, value| {
-            vm.boolean(Vm::car_value(vm, value).tag() == r#type as Tag)
-                .into()
+            vm.boolean(
+                value
+                    .to_cons()
+                    .map(|cons| vm.car(cons).tag() == r#type as Tag)
+                    .unwrap_or_default(),
+            )
+            .into()
         })
     }
 
