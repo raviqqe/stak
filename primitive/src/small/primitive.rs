@@ -21,6 +21,8 @@ pub(super) enum Primitive {
     Write,
     WriteError,
     Halt,
+    Null,
+    Pair,
 }
 
 impl Primitive {
@@ -44,4 +46,6 @@ impl Primitive {
     pub const WRITE: u8 = Self::Write as _;
     pub const WRITE_ERROR: u8 = Self::WriteError as _;
     pub const HALT: u8 = Self::Halt as _;
+    pub const NULL: u8 = Self::Null as _;
+    pub const PAIR: u8 = Self::Pair as _;
 }
