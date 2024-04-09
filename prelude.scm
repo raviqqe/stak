@@ -540,7 +540,7 @@
     (define $$write-error-u8 (primitive 18))
     (define $$halt (primitive 19))
     (define null? (primitive 20))
-    (define pair?? (primitive 21))
+    (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -673,10 +673,6 @@
     (define char>=? (char-compare >=))
 
     ;; List
-
-    (define pair? (instance? pair-type))
-    (define (null? x)
-      (eq? x '()))
 
     (define (list? x)
       (boolean-or
