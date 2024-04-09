@@ -517,7 +517,7 @@
 
       ((and
           (symbol? predicate)
-          (assoc predicate primitive-functions)
+          (assq predicate primitive-functions)
           (= (length expression) 3))
         =>
         (lambda (pair)
