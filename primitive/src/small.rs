@@ -80,6 +80,13 @@ impl<T: Device> SmallPrimitiveSet<T> {
         write(&mut vm.primitive_set_mut().device, byte).map_err(|_| error)
     }
 
+    fn check_type(vm: &mut Vm<Self>, r#type: Type) {
+        Self::operate_top(vm, |vm, value| {
+            vm.boolean(Vm::car_value(vm, value).assume_cons().tag() == r#type as Tag)
+                .into()
+        })
+    }
+
     fn pop_number_arguments<const M: usize>(vm: &mut Vm<Self>) -> [Number; M] {
         let mut numbers = [Default::default(); M];
 
@@ -165,8 +172,8 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::WRITE => Self::write(vm, Device::write, Error::WriteOutput)?,
             Primitive::WRITE_ERROR => Self::write(vm, Device::write_error, Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
-            Primitive::NULL => Self::operate_top(vm, |vm, value| Vm::car_value(vm, value)),
-            Primitive::PAIR => Self::operate_top(vm, |vm, value| Vm::car_value(vm, value)),
+            Primitive::NULL => Self::check_type(vm, Type::Null),
+            Primitive::PAIR => Self::check_type(vm, Type::Pair),
             _ => return Err(Error::Illegal),
         }
 
