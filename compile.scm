@@ -847,7 +847,7 @@
         4)
 
       (else
-        (error "unknown primitive" name))))
+        (error "unknown primitive" name)))
     name
     continuation))
 
