@@ -33,13 +33,13 @@ impl<T: Device> SmallPrimitiveSet<T> {
     }
 
     fn operate_binary(vm: &mut Vm<Self>, operate: fn(i64, i64) -> i64) {
-        let [x, y] = Self::pop_number_arguments::<2>(vm);
+        let [x, y] = Self::pop_number_arguments(vm);
 
         vm.set_top(Number::new(operate(x.to_i64(), y.to_i64())).into());
     }
 
     fn operate_comparison(vm: &mut Vm<Self>, operate: fn(i64, i64) -> bool) {
-        let [x, y] = Self::pop_number_arguments::<2>(vm);
+        let [x, y] = Self::pop_number_arguments(vm);
 
         vm.set_top(vm.boolean(operate(x.to_i64(), y.to_i64())).into());
     }
@@ -52,7 +52,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
     }
 
     fn set_field<'a>(vm: &mut Vm<'a, Self>, set_field: fn(&mut Vm<'a, Self>, Value, Value)) {
-        let [x, y] = Self::pop_arguments::<2>(vm);
+        let [x, y] = Self::pop_arguments(vm);
 
         set_field(vm, x, y);
         vm.set_top(y);
@@ -109,7 +109,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
         match primitive {
             Primitive::RIB => {
-                let [r#type, car, cdr, tag] = Self::pop_arguments::<4>(vm);
+                let [r#type, car, cdr, tag] = Self::pop_arguments(vm);
 
                 Self::rib(
                     vm,
@@ -119,7 +119,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 )?;
             }
             Primitive::CONS => {
-                let [car, cdr] = Self::pop_arguments::<2>(vm);
+                let [car, cdr] = Self::pop_arguments(vm);
 
                 Self::rib(vm, Type::Pair as Tag, car, cdr)?;
             }
@@ -141,7 +141,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::SET_CAR => Self::set_field(vm, Vm::set_car_value),
             Primitive::SET_CDR => Self::set_field(vm, Vm::set_cdr_value),
             Primitive::EQUAL => {
-                let [x, y] = Self::pop_arguments::<2>(vm);
+                let [x, y] = Self::pop_arguments(vm);
                 vm.set_top(vm.boolean(x == y).into());
             }
             Primitive::LESS_THAN => Self::operate_comparison(vm, |x, y| x < y),
@@ -165,6 +165,8 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::WRITE => Self::write(vm, Device::write, Error::WriteOutput)?,
             Primitive::WRITE_ERROR => Self::write(vm, Device::write_error, Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
+            Primitive::NULL => Self::operate_top(vm, |vm, value| Vm::car_value(vm, value)),
+            Primitive::PAIR => Self::operate_top(vm, |vm, value| Vm::car_value(vm, value)),
             _ => return Err(Error::Illegal),
         }
 
