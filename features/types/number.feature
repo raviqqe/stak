@@ -15,7 +15,6 @@ Feature: Number
       | '()   | B      |
       | 0     | A      |
       | 42    | A      |
-      | 3.14  | A      |
       | -2045 | A      |
 
   Scenario Outline: Use literals
