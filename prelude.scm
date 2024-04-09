@@ -539,6 +539,8 @@
     (define $$write-u8 (primitive 17))
     (define $$write-error-u8 (primitive 18))
     (define $$halt (primitive 19))
+    (define null? (primitive 20))
+    (define pair?? (primitive 21))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
