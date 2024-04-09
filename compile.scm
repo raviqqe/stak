@@ -492,7 +492,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(stak base)`.
-        (symbol->string (build-library-symbol 0 x))
+        (build-library-symbol 0 x)
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
@@ -517,7 +517,7 @@
 
       ((and
           (symbol? predicate)
-          (assoc (symbol->string predicate) primitive-functions)
+          (assoc predicate primitive-functions)
           (= (length expression) 3))
         =>
         (lambda (pair)
