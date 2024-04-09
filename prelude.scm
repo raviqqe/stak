@@ -1027,7 +1027,7 @@
 
     (define (record-constructor type)
       (lambda xs
-        (data-rib record-type (list->vector xs) type)))
+        (data-rib record-type xs type)))
 
     (define (record-predicate type)
       (lambda (x)
@@ -1038,12 +1038,12 @@
     (define (record-getter type field)
       (let ((index (field-index type field)))
         (lambda (record)
-          (vector-ref (rib-car record) index))))
+          (list-ref (rib-car record) index))))
 
     (define (record-setter type field)
       (let ((index (field-index type field)))
         (lambda (record value)
-          (vector-set! (rib-car record) index value))))
+          (list-set! (rib-car record) index value))))
 
     (define (field-index type field)
       (memv-position field (cdr type)))
