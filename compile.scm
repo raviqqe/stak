@@ -518,11 +518,12 @@
       ((and
           (pair? expression)
           (symbol? predicate)
-          (assoc (symbol->string predicate) primitive-functions)
-          (= (length expression) 3))
+          (assoc (symbol->string predicate) primitive-functions))
         =>
         (lambda (pair)
-          (cons (cdr pair) (cdr expression))))
+          (if (= (length expression) 3)
+            (cons (cdr pair) (cdr expression))
+            expression)))
 
       (else
         expression))))
