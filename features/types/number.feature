@@ -1,4 +1,22 @@
 Feature: Number
+  Scenario Outline: Check if a value is a number
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (number? <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | #f    | B      |
+      | '()   | B      |
+      | 0     | A      |
+      | 42    | A      |
+      | -2045 | A      |
+
   Scenario Outline: Use literals
     Given a file named "main.scm" with:
       """scheme
