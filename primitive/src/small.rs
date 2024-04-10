@@ -130,6 +130,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     cdr.set_tag(tag.assume_number().to_i64() as Tag),
                 )?;
             }
+            // Optimize a cons.
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments(vm);
 
