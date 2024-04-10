@@ -22,11 +22,9 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 
 #[cfg_attr(not(test), no_mangle)]
 unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-    let arguments = slice::from_raw_parts(argv, argc as _);
-
-    if arguments.len() != 2 {
+    let [_, file] = slice::from_raw_parts(argv, argc as _) else {
         return 1;
-    }
+    };
 
     let mut heap = [Default::default(); 1 << 18];
 
@@ -40,8 +38,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     )
     .unwrap();
 
-    vm.initialize(read_file(arguments[1]).iter().copied())
-        .unwrap();
+    vm.initialize(read_file(*file).iter().copied()).unwrap();
     vm.run().unwrap();
 
     0
