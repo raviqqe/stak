@@ -16,3 +16,6 @@ stak-device = { version = "0.2.24", path = "../../../device", features = [
 ] }
 stak-primitive = { version = "0.2.25", path = "../../../primitive" }
 stak-vm = { version = "0.3.25", path = "../../../vm" }
+
+[lints]
+workspace = true
