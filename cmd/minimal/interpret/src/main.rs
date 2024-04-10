@@ -1,9 +1,9 @@
-//! A command to interpret a bytecode file.
+//! A minimal command to interpret a bytecode file.
 //!
 //! # Usage
 //!
 //! ```sh
-//! stak-interpret foo.bc
+//! mstak-interpret foo.bc
 //! ```
 
 use clap::Parser;
