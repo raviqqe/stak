@@ -28,9 +28,9 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 
 #[cfg_attr(not(test), no_mangle)]
 unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-    let arguments = slice::from_raw_parts(argv, argc as _);
+    let arguments = &slice::from_raw_parts(argv, argc as _)[1..];
 
-    if arguments.len() != 2 {
+    if arguments.is_empty() {
         return 1;
     }
 
