@@ -19,3 +19,9 @@ stak-vm = { version = "0.3.25", path = "../../../vm" }
 
 [lints]
 workspace = true
+
+[profile.release]
+workspace = true
+
+[profile.dev]
+workspace = true
