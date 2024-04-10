@@ -20,6 +20,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "mstak-interpret"
+version = "0.1.0"
+dependencies = [
+ "stak-configuration",
+ "stak-device",
+ "stak-primitive",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-code"
 version = "0.2.23"
 
