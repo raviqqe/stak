@@ -80,10 +80,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
 }
 
 unsafe fn read_file(path: *const i8) -> &'static [u8] {
-    let file = libc::fopen(path, c"rb" as *const _ as _);
-    libc::fseek(file, 0, libc::SEEK_END);
-    let size = libc::ftell(file) as _;
-    libc::fclose(file);
+    let size = read_file_size(path);
 
     slice::from_raw_parts(
         libc::mmap(
@@ -97,4 +94,12 @@ unsafe fn read_file(path: *const i8) -> &'static [u8] {
         ) as _,
         size,
     )
+}
+
+unsafe fn read_file_size(path: *const i8) -> usize {
+    let file = libc::fopen(path, c"rb" as *const _ as _);
+    libc::fseek(file, 0, libc::SEEK_END);
+    let size = libc::ftell(file) as _;
+    libc::fclose(file);
+    size
 }
