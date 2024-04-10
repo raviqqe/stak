@@ -78,7 +78,14 @@ unsafe fn read_file(path: *const i8) -> &'static [u8] {
     libc::fclose(file);
 
     slice::from_raw_parts(
-        libc::mmap(null_mut(), 0, 0, 0, libc::open(path, libc::O_RDONLY), 0) as *const u8,
+        libc::mmap(
+            null_mut(),
+            size,
+            libc::PROT_READ,
+            libc::MAP_PRIVATE,
+            libc::open(path, libc::O_RDONLY),
+            0,
+        ) as *const u8,
         size,
     )
 }
