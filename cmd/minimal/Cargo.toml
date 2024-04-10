@@ -5,8 +5,8 @@ members = ["run"]
 [workspace.package]
 edition = "2021"
 keywords = ["interpreter", "language", "scheme"]
-license-file = "LICENSE"
-readme = "README.md"
+license-file = "../LICENSE"
+readme = "../README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [profile.release]
