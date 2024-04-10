@@ -43,7 +43,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         sources[index + 1] = read_file(path);
     }
 
-    let mut target = BufferMut::new(allocate_memory::<u8>(DEFAULT_BUFFER_SIZE));
+    let mut target = BufferMut::new(allocate_memory(DEFAULT_BUFFER_SIZE));
     let heap = allocate_memory::<Value>(DEFAULT_HEAP_SIZE);
 
     compile(Buffer::new(&sources), &mut target, heap);
