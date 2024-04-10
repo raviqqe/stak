@@ -9,7 +9,7 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{env, mem::size_of, slice};
+use core::{env, mem::size_of, ptr::null_mut, slice};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
 use stak_primitive::SmallPrimitiveSet;
@@ -75,11 +75,10 @@ unsafe fn read_file(path: *const i8) -> &'static [u8] {
     let file = libc::fopen(path, c"rb" as *const _ as _);
     libc::fseek(file, 0, libc::SEEK_END);
     let size = libc::ftell(file) as usize;
-    libc::rewind(file);
-
-    let source = libc::malloc(size + 1);
-    libc::fread(source, size, 1, file);
     libc::fclose(file);
 
-    slice::from_raw_parts(source as _, size)
+    slice::from_raw_parts(
+        libc::mmap(null_mut(), 0, 0, 0, libc::open(path, libc::O_RDONLY), 0) as *const u8,
+        size,
+    )
 }
