@@ -179,6 +179,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL => Self::check_type(vm, Type::Null),
             Primitive::PAIR => Self::check_type(vm, Type::Pair),
+            Primitive::SYMBOL => Self::check_type(vm, Type::Symbol),
             _ => return Err(Error::Illegal),
         }
 
