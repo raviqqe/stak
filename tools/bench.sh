@@ -14,6 +14,10 @@ done
 
 shift $(expr $OPTIND - 1)
 
+if [ $# -ne 0 ]; then
+  exit 1
+fi
+
 brew install chibi-scheme gambit-scheme gauche
 
 cargo install hyperfine
