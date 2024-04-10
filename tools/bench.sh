@@ -24,8 +24,12 @@ cargo install hyperfine
 
 cd $(dirname $0)/..
 
-cargo build --release
-(cd cmd/minimal && cargo build --release)
+for directory in . cmd/minimal; do
+  (
+    cd $directory
+    cargo build --release
+  )
+done
 
 export PATH=$PWD/target/release:$PATH
 
