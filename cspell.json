@@ -30,6 +30,7 @@
     "memq",
     "memv",
     "minifier",
+    "mmap",
     "mrun",
     "mstak",
     "quasiquote",
