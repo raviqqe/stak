@@ -31,7 +31,7 @@ for directory in . cmd/minimal; do
   )
 done
 
-export PATH=$PWD/target/release:$PATH
+export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
 filter=.
 
@@ -44,7 +44,7 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
 
   cat prelude.scm $file | stak-compile >$base.bc
 
-  scripts="stak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
+  scripts="$interpreter $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"

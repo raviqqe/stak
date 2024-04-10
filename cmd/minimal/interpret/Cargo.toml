@@ -18,3 +18,11 @@ stak-vm = { version = "0.3.25", path = "../../../vm" }
 
 [lints]
 workspace = true
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
+
+[profile.dev]
+panic = "abort"
