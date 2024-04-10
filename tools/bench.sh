@@ -5,9 +5,11 @@ set -ex
 brew install chibi-scheme gambit-scheme gauche
 
 cargo install hyperfine
-cargo build --release
 
 cd $(dirname $0)/..
+
+cargo build --release
+(cd cmd/minimal && cargo build --release)
 
 export PATH=$PWD/target/release:$PATH
 
