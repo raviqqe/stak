@@ -82,7 +82,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
 unsafe fn read_file(path: *const i8) -> &'static [u8] {
     let file = libc::fopen(path, c"rb" as *const _ as _);
     libc::fseek(file, 0, libc::SEEK_END);
-    let size = libc::ftell(file) as usize;
+    let size = libc::ftell(file) as _;
     libc::fclose(file);
 
     slice::from_raw_parts(
@@ -94,7 +94,7 @@ unsafe fn read_file(path: *const i8) -> &'static [u8] {
             // spell-checker: disable-next-line
             libc::open(path, libc::O_RDONLY),
             0,
-        ) as *const u8,
+        ) as _,
         size,
     )
 }
