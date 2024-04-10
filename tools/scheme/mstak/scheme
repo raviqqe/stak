@@ -2,6 +2,6 @@
 
 set -e
 
-export PATH=$(dirname $0)/../../../cmd/mrun/target/release
+export PATH=$(dirname $0)/../../../cmd/minimal/run/target/release
 
 mstak "$@"
