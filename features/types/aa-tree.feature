@@ -7,7 +7,7 @@ Feature: AA tree
 
       (aa-tree-empty <)
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the exit status should be 0
 
   @stak
@@ -18,7 +18,7 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "A"
 
   @stak
@@ -31,7 +31,7 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree-find tree 1) 65 66))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "B"
 
   @stak
@@ -46,7 +46,7 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "A"
 
   @stak
@@ -65,7 +65,7 @@ Feature: AA tree
           (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "AAB"
 
   @stak
@@ -84,7 +84,7 @@ Feature: AA tree
           (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "AAB"
 
   @stak
@@ -100,7 +100,7 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "A"
 
   @stak
@@ -123,7 +123,7 @@ Feature: AA tree
 
       (for-each check '(<values>))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "<output>"
 
     # spell-checker: disable
@@ -156,7 +156,7 @@ Feature: AA tree
 
       (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
-    When I successfully run `scheme aa-tree.scm main.scm`
+    When I successfully run `scheme $STAK_ROOT/aa-tree.scm main.scm`
     Then the stdout should contain exactly "A"
 
     # spell-checker: disable
