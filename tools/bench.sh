@@ -2,6 +2,18 @@
 
 set -ex
 
+interpreter=stak-interpret
+
+while getopts i: option; do
+  case $option in
+  i)
+    interpreter=$OPTARG
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
 brew install chibi-scheme gambit-scheme gauche
 
 cargo install hyperfine
