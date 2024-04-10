@@ -13,7 +13,7 @@ updates:
     schedule:
       interval: daily
   - package-ecosystem: cargo
-    directory: /cmd/mrun
+    directory: /cmd/minimal/run
     schedule:
       interval: daily
   - package-ecosystem: npm
