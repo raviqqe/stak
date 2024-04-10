@@ -31,7 +31,7 @@ for directory in . cmd/minimal; do
   )
 done
 
-export PATH=$PWD/target/release:$PATH
+export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
 filter=.
 
