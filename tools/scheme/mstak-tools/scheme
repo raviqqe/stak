@@ -4,15 +4,7 @@ set -e
 
 directory=$(dirname $0)/../../..
 
-compile() {
-  if [ -n "$STAK_HOST_INTERPRETER" ]; then
-    $STAK_HOST_INTERPRETER $directory/compile.scm
-  else
-    stak-compile
-  fi
-}
+export PATH=$directory/target/release_test:$directory/cmd/minimal/target/release:$PATH
 
-export PATH=$directory/target/release_test:$(dirname $0)/../../../cmd/minimal/target/release:$PATH
-
-cat $directory/prelude.scm "$@" | compile >main.bc
+cat $directory/prelude.scm "$@" | stak-compile >main.bc
 mstak-interpret main.bc
