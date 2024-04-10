@@ -65,7 +65,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
 }
 
 unsafe fn allocate_memory<'a, T>(size: usize) -> &'a mut [T] {
-    slice::from_raw_parts_mut::<T>(libc::malloc(size * size_of::<T>()) as _, size)
+    slice::from_raw_parts_mut(libc::malloc(size * size_of::<T>()) as _, size)
 }
 
 fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
