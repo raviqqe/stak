@@ -130,6 +130,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                     cdr.set_tag(tag.assume_number().to_i64() as Tag),
                 )?;
             }
+            // Optimize a cons.
             Primitive::CONS => {
                 let [car, cdr] = Self::pop_arguments(vm);
 
@@ -177,6 +178,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::WRITE => Self::write(vm, Device::write, Error::WriteOutput)?,
             Primitive::WRITE_ERROR => Self::write(vm, Device::write_error, Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
+            // Optimize type checks.
             Primitive::NULL => Self::check_type(vm, Type::Null),
             Primitive::PAIR => Self::check_type(vm, Type::Pair),
             _ => return Err(Error::Illegal),

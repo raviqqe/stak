@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+directory=$(dirname $0)/../../..
+
+export PATH=$directory/target/release_test:$directory/cmd/minimal/target/release:$PATH
+
+cat $directory/prelude.scm "$@" | stak-compile >main.bc
+mstak-interpret main.bc
