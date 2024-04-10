@@ -83,6 +83,7 @@ unsafe fn read_file(path: *const i8) -> &'static [u8] {
             size,
             libc::PROT_READ,
             libc::MAP_PRIVATE,
+            // spell-checker: disable-next-line
             libc::open(path, libc::O_RDONLY),
             0,
         ) as *const u8,
