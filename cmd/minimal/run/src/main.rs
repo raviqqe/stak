@@ -35,7 +35,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         return 1;
     }
 
-    let mut sources = [&[] as &[u8]; MAX_SOURCE_FILE_COUNT];
+    let mut sources = [Default::default(); MAX_SOURCE_FILE_COUNT];
 
     sources[0] = PRELUDE_SOURCE.as_bytes();
 
