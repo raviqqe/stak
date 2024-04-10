@@ -9,10 +9,10 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{mem::size_of, slice};
+use core::slice;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_primitive::SmallPrimitiveSet;
-use stak_vm::{Value, Vm};
+use stak_vm::Vm;
 
 #[cfg(not(test))]
 #[panic_handler]

@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+export PATH=$(dirname $0)/../../../cmd/minimal/target/release
+
+directory=$(dirname $0)/../../..
+
+compile() {
+  if [ -n "$STAK_HOST_INTERPRETER" ]; then
+    $STAK_HOST_INTERPRETER $directory/compile.scm
+  else
+    stak-compile
+  fi
+}
+
+export PATH=$directory/target/release_test:$PATH
+
+cat $directory/prelude.scm "$@" | compile >main.bc
+mstak-interpret main.bc
