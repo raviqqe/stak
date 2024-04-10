@@ -13,7 +13,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.1.2",
     "@astrojs/solid-js": "^4.0.1",
-    "@astrojs/starlight": "^0.21.4",
+    "@astrojs/starlight": "^0.21.5",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.3",
     "@raviqqe/stak": "^0.2.3",
