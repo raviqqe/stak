@@ -15,6 +15,9 @@ jobs:
         os:
           - ubuntu-latest
           - macos-14
+        interpreter:
+          - stak-interpret
+          - mstak-interpret
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
@@ -24,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: tools/bench.sh
+      - run: tools/bench.sh -i ${{ matrix.interpreter }}
   bench:
     needs:
       - os_bench
