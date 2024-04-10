@@ -13,3 +13,6 @@ repository = "https://github.com/raviqqe/stak"
 codegen-units = 1
 lto = true
 panic = "abort"
+
+[profile.dev]
+panic = "abort"

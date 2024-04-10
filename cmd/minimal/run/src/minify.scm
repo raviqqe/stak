@@ -1,1 +1,1 @@
-../../../minify.scm
+../../../../minify.scm

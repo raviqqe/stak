@@ -4,22 +4,13 @@ description = "Minimal Stak Scheme interpreter"
 version = "0.1.1"
 edition = "2021"
 keywords = ["interpreter", "language", "scheme"]
-license-file = "../../LICENSE"
-readme = "../../README.md"
+license-file = "../../../LICENSE"
+readme = "../../../README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [dependencies]
 libc = { version = "0.2.153", default-features = false }
-stak-configuration = { version = "0.1.18", path = "../../configuration" }
-stak-device = { version = "0.2", path = "../../device", features = ["libc"] }
-stak-primitive = { version = "0.2", path = "../../primitive" }
-stak-vm = { version = "0.3", path = "../../vm" }
-
-[profile.release]
-codegen-units = 1
-lto = true
-panic = "abort"
-strip = true
-
-[profile.dev]
-panic = "abort"
+stak-configuration = { version = "0.1.18", path = "../../../configuration" }
+stak-device = { version = "0.2", path = "../../../device", features = ["libc"] }
+stak-primitive = { version = "0.2", path = "../../../primitive" }
+stak-vm = { version = "0.3", path = "../../../vm" }
