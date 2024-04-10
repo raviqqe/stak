@@ -23,7 +23,6 @@ pub(super) enum Primitive {
     Halt,
     Null,
     Pair,
-    Symbol,
 }
 
 impl Primitive {
@@ -49,5 +48,4 @@ impl Primitive {
     pub const HALT: u8 = Self::Halt as _;
     pub const NULL: u8 = Self::Null as _;
     pub const PAIR: u8 = Self::Pair as _;
-    pub const SYMBOL: u8 = Self::Symbol as _;
 }

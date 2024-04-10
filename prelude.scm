@@ -541,7 +541,6 @@
     (define $$halt (primitive 19))
     (define null? (primitive 20))
     (define pair? (primitive 21))
-    (define symbol? (primitive 22))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -985,6 +984,8 @@
     (define (string>? x y) (string<? y x))
 
     ;; Symbol
+
+    (define symbol? (instance? symbol-type))
 
     (define symbol->string rib-car)
 
