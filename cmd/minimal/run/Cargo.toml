@@ -10,7 +10,9 @@ repository = "https://github.com/raviqqe/stak"
 
 [dependencies]
 libc = { version = "0.2.153", default-features = false }
-stak-configuration = { version = "0.1.18", path = "../../../configuration" }
-stak-device = { version = "0.2", path = "../../../device", features = ["libc"] }
-stak-primitive = { version = "0.2", path = "../../../primitive" }
-stak-vm = { version = "0.3", path = "../../../vm" }
+stak-configuration = { version = "0.1.20", path = "../../../configuration" }
+stak-device = { version = "0.2.24", path = "../../../device", features = [
+  "libc",
+] }
+stak-primitive = { version = "0.2.25", path = "../../../primitive" }
+stak-vm = { version = "0.3.25", path = "../../../vm" }
