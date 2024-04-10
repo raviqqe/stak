@@ -34,7 +34,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         return 1;
     }
 
-    let sources = [PRELUDE_SOURCE.as_bytes(), read_file(arguments[1])];
+    let sources = [PRELUDE_SOURCE.as_bytes(), read_file(arguments[0])];
     let mut target = BufferMut::new(allocate_memory::<u8>(DEFAULT_BUFFER_SIZE));
     let heap = allocate_memory::<Value>(DEFAULT_HEAP_SIZE);
 
