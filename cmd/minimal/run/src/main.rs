@@ -43,8 +43,8 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         sources[index + 1] = read_file(path);
     }
 
-    let mut target = BufferMut::new(allocate_memory(DEFAULT_BUFFER_SIZE));
-    let heap = allocate_memory(DEFAULT_HEAP_SIZE);
+    let mut target = BufferMut::new(allocate_heap(DEFAULT_BUFFER_SIZE));
+    let heap = allocate_heap(DEFAULT_HEAP_SIZE);
 
     compile(Buffer::new(&sources), &mut target, heap);
 
@@ -64,7 +64,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     0
 }
 
-unsafe fn allocate_memory<'a, T>(size: usize) -> &'a mut [T] {
+unsafe fn allocate_heap<'a, T>(size: usize) -> &'a mut [T] {
     slice::from_raw_parts_mut(libc::malloc(size * size_of::<T>()) as _, size)
 }
 
