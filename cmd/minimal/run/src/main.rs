@@ -19,6 +19,7 @@ const PRELUDE_SOURCE: &str = include_str!(env!("STAK_PRELUDE_FILE"));
 const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_COMPILER_FILE"));
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(18);
+const MAX_SOURCE_FILE_COUNT: usize = 8;
 
 #[cfg(not(test))]
 #[panic_handler]
@@ -34,7 +35,14 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         return 1;
     }
 
-    let sources = [PRELUDE_SOURCE.as_bytes(), read_file(arguments[0])];
+    let mut sources = [&[] as &[u8]; MAX_SOURCE_FILE_COUNT];
+
+    sources[0] = PRELUDE_SOURCE.as_bytes();
+
+    for (index, &path) in arguments.iter().enumerate() {
+        sources[index + 1] = read_file(path);
+    }
+
     let mut target = BufferMut::new(allocate_memory::<u8>(DEFAULT_BUFFER_SIZE));
     let heap = allocate_memory::<Value>(DEFAULT_HEAP_SIZE);
 
