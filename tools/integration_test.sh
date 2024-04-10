@@ -28,6 +28,7 @@ cargo build --profile release_test --features $features
   cargo build --release
 )
 
+export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 cucumber --publish-quiet --strict-undefined "$@"
