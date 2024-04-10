@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-configuration = { version = "0.1.20", path = "../../../configuration" }
+libc = { version = "0.2.153", default-features = false }
 stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }
