@@ -30,7 +30,7 @@ jobs:
       - run: tools/bench.sh -i ${{ matrix.interpreter }}
   bench:
     needs:
-      - os_bench
+      - interpret
     if: always()
     runs-on: ubuntu-latest
     steps:
