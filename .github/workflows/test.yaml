@@ -94,6 +94,7 @@ jobs:
           - stak
           - stak-tools
           - mstak
+          - mstak-tools
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
@@ -113,17 +114,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
       - run: cargo build
-        working-directory: cmd/mrun
+        working-directory: cmd/minimal
       - run: cargo build --release
-        working-directory: cmd/mrun
+        working-directory: cmd/minimal
       - run: ls -lB target/release
-        working-directory: cmd/mrun
+        working-directory: cmd/minimal
       - run: cargo fmt --check
-        working-directory: cmd/mrun
+        working-directory: cmd/minimal
       - run: cargo clippy
-        working-directory: cmd/mrun
+        working-directory: cmd/minimal
       - run: cargo test
-        working-directory: cmd/mrun
+        working-directory: cmd/minimal
   wasm:
     runs-on: ubuntu-latest
     steps:

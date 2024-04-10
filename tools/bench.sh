@@ -2,12 +2,34 @@
 
 set -ex
 
+interpreter=stak-interpret
+
+while getopts i: option; do
+  case $option in
+  i)
+    interpreter=$OPTARG
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
+if [ $# -ne 0 ]; then
+  exit 1
+fi
+
 brew install chibi-scheme gambit-scheme gauche
 
 cargo install hyperfine
-cargo build --release
 
 cd $(dirname $0)/..
+
+for directory in . cmd/minimal; do
+  (
+    cd $directory
+    cargo build --release
+  )
+done
 
 export PATH=$PWD/target/release:$PATH
 

@@ -19,7 +19,6 @@ members = [
   "vm",
   "wasm",
 ]
-exclude = ["cmd/mrun"]
 
 [workspace.package]
 edition = "2021"

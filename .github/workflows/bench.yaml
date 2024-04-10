@@ -8,24 +8,29 @@ concurrency:
   group: bench-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  os_bench:
+  interpret:
     strategy:
       fail-fast: false
       matrix:
         os:
           - ubuntu-latest
           - macos-14
+        interpreter:
+          - stak-interpret
+          - mstak-interpret
+        exclude:
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - run: tools/bench.sh
+          python-version: "3.12"
+      - run: tools/bench.sh -i ${{ matrix.interpreter }}
   bench:
     needs:
-      - os_bench
+      - interpret
     if: always()
     runs-on: ubuntu-latest
     steps:
