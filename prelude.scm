@@ -628,10 +628,14 @@
 
     (define (modulo x y)
       (let ((r (- x (* y (quotient x y)))))
-        (if (eq? r 0)
-          0
-          (if (eq? (< x 0) (< y 0))
-            r
+        (cond
+          ((zero? r)
+            0)
+
+          ((eq? (negative? x) (negative? y))
+            r)
+
+          (else
             (+ r y)))))
 
     (define (comparison-operator f)
@@ -652,7 +656,7 @@
     (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
     (define (abs x)
-      (if (< x 0)
+      (if (negative? x)
         (- x)
         x))
 
@@ -901,7 +905,7 @@
       (let ((radix (if (null? rest) 10 (car rest))))
         (list->string
           (append
-            (if (< x 0)
+            (if (negative? x)
               (list #\-)
               '())
             (let loop ((x (abs x)) (ys '()))
@@ -914,7 +918,7 @@
                              (+ (char->integer #\a) (- d 10))
                              (+ (char->integer #\0) d)))
                          ys)))
-                (if (< 0 q)
+                (if (positive? q)
                   (loop q ys)
                   ys)))))))
 
