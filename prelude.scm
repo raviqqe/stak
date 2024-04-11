@@ -701,7 +701,7 @@
       (define fill (if (null? rest) #f (car rest)))
 
       (let loop ((length length))
-        (if (= length 0)
+        (if (zero? length)
           '()
           (cons fill (loop (- length 1))))))
 
