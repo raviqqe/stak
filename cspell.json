@@ -33,6 +33,7 @@
     "mmap",
     "mrun",
     "mstak",
+    "munmap",
     "quasiquote",
     "raviqqe",
     "repr",
