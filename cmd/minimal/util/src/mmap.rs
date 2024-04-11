@@ -49,7 +49,7 @@ mod tests {
     #[test]
     fn read_file() {
         unsafe {
-            Mmap::new(c"src/lib.rs" as *const _ as *const i8);
+            Mmap::new(c"src/lib.rs" as *const _ as _);
         }
     }
 }
