@@ -138,14 +138,14 @@
     (f (fold-right f y (cdr xs)) (car xs))))
 
 (define (take n xs)
-  (if (= n 0)
+  (if (zero? n)
     '()
     (cons
       (car xs)
       (take (- n 1) (cdr xs)))))
 
 (define (skip n xs)
-  (if (= n 0)
+  (if (zero? n)
     xs
     (skip (- n 1) (cdr xs))))
 

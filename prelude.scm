@@ -837,7 +837,7 @@
           xs)))
 
     (define (take n xs)
-      (if (= n 0)
+      (if (zero? n)
         '()
         (cons
           (car xs)
