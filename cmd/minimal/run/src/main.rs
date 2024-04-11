@@ -10,7 +10,7 @@
 #![cfg_attr(not(test), no_main)]
 
 use core::{array, env, ffi::CStr, slice};
-use mstak_util::{allocate_heap, Mmap};
+use mstak_util::{Heap, Mmap};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
 use stak_primitive::SmallPrimitiveSet;
@@ -52,13 +52,14 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         }
     }
 
-    let mut target = BufferMut::new(allocate_heap(DEFAULT_BUFFER_SIZE));
-    let heap = allocate_heap(DEFAULT_HEAP_SIZE);
+    let mut buffer = Heap::new(DEFAULT_BUFFER_SIZE, Default::default);
+    let mut target = BufferMut::new(buffer.as_slice_mut());
+    let mut heap = Heap::new(DEFAULT_HEAP_SIZE, Default::default);
 
-    compile(Buffer::new(&sources), &mut target, heap);
+    compile(Buffer::new(&sources), &mut target, heap.as_slice_mut());
 
     let mut vm = Vm::new(
-        heap,
+        heap.as_slice_mut(),
         SmallPrimitiveSet::new(ReadWriteDevice::new(
             Stdin::new(),
             Stdout::new(),
