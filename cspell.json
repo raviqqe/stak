@@ -31,6 +31,7 @@
     "memv",
     "minifier",
     "mmap",
+    "mmaps",
     "mrun",
     "mstak",
     "munmap",
