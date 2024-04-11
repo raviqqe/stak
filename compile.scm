@@ -612,7 +612,7 @@
       (cond
         ((ellipsis-pattern? context pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
-            (when (< length 0)
+            (when (negative? length)
               (raise #f))
             (append
               (match-ellipsis-pattern context (car pattern) (take length expression))

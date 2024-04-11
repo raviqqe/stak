@@ -656,7 +656,7 @@
     (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
     (define (abs x)
-      (if (< x 0)
+      (if (negative? x 0)
         (- x)
         x))
 
