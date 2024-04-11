@@ -905,7 +905,7 @@
       (let ((radix (if (null? rest) 10 (car rest))))
         (list->string
           (append
-            (if (< x 0)
+            (if (negative? x)
               (list #\-)
               '())
             (let loop ((x (abs x)) (ys '()))
