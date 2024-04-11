@@ -43,7 +43,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn file_size() {
+    fn new() {
         Heap::<usize>::new(42, || 42);
+    }
+
+    #[test]
+    fn new_zero_sized() {
+        Heap::<usize>::new(0, || 42);
     }
 }
