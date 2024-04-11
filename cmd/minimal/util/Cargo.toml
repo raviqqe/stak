@@ -1,6 +1,6 @@
 [package]
-name = "mstak"
-description = "Minimal Stak Scheme interpreter"
+name = "mstak-util"
+description = "Minimal Stak Scheme utilities"
 version = "0.1.1"
 edition.workspace = true
 keywords.workspace = true
@@ -19,11 +19,3 @@ stak-vm = { version = "0.3.25", path = "../../../vm" }
 
 [lints]
 workspace = true
-
-[profile.release]
-codegen-units = 1
-lto = true
-panic = "abort"
-
-[profile.dev]
-panic = "abort"

@@ -30,6 +30,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "mstak-util"
+version = "0.1.1"
+dependencies = [
+ "libc",
+ "stak-configuration",
+ "stak-device",
+ "stak-primitive",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-code"
 version = "0.2.23"
 
