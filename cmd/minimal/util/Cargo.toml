@@ -1,0 +1,15 @@
+[package]
+name = "mstak-util"
+description = "Minimal Stak Scheme utilities"
+version = "0.1.1"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+libc = { version = "0.2.153", default-features = false }
+
+[lints]
+workspace = true

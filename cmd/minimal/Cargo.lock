@@ -13,6 +13,7 @@ name = "mstak"
 version = "0.1.1"
 dependencies = [
  "libc",
+ "mstak-util",
  "stak-configuration",
  "stak-device",
  "stak-primitive",
@@ -24,9 +25,17 @@ name = "mstak-interpret"
 version = "0.1.0"
 dependencies = [
  "libc",
+ "mstak-util",
  "stak-device",
  "stak-primitive",
  "stak-vm",
+]
+
+[[package]]
+name = "mstak-util"
+version = "0.1.1"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
