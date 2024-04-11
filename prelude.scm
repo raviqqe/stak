@@ -545,8 +545,15 @@
     (define (data-rib type car cdr)
       (rib type car cdr 0))
 
-    (define (apply f xs)
-      ($$apply f xs))
+    (define (apply f x . xs)
+      (if (null? xs)
+        ($$apply f x)
+        ($$apply
+          f
+          (append
+            (list x)
+            (take (- (length xs) 1) xs)
+            (last xs)))))
 
     ; Basic types
 
@@ -828,6 +835,24 @@
         (if end
           (list-head xs (- end start))
           xs)))
+
+    (define (take n xs)
+      (if (= n 0)
+        '()
+        (cons
+          (car xs)
+          (take (- n 1) (cdr xs)))))
+
+    (define (last xs)
+      (cond
+        ((null? xs)
+          #f)
+
+        ((null? (cdr xs))
+          (car xs))
+
+        (else
+          (last (cdr xs)))))
 
     ;; Bytevector
 
