@@ -92,6 +92,21 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "FIL"
 
+  Scenario: Use a `map` procedure with uneven lists
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each
+        write-u8
+        (map
+          (lambda (x y) (+ x y))
+          '(65 66 67 68)
+          '(1 2 3)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "BDF"
+
   Scenario Outline: Use an `append` procedure
     Given a file named "main.scm" with:
       """scheme
