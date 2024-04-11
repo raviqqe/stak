@@ -722,12 +722,15 @@
           (f (car xs))
           (map* f (cdr xs)))))
 
-    (define (map f . xs)
-      (if (memq #t (map* null? xs))
-        '()
-        (cons
-          (apply f (map* car xs))
-          (apply map f (map* cdr xs)))))
+    (define (map f x . xs)
+      (if (null? xs)
+        (map* f x)
+        (let loop ((xs (cons x xs)))
+          (if (memq #t (map* null? xs))
+            '()
+            (cons
+              (apply f (map* car xs))
+              (loop (map* cdr xs)))))))
 
     (define for-each map)
 
