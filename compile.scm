@@ -1238,7 +1238,7 @@
   (let loop ((x (quotient integer base))
              (bit 0)
              (target target))
-    (if (= x 0)
+    (if (zero? x)
       (values (encode-integer-part integer base bit) target)
       (loop
         (quotient x integer-base)
