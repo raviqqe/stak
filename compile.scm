@@ -206,11 +206,23 @@
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
+(define (any f xs)
+  (let loop ((xs xs))
+    (cond
+      ((null? xs)
+        #f)
+
+      ((f (car xs))
+        #t)
+
+      (else
+        (loop (cdr xs))))))
+
 (define (zip-alist xs)
   (if (null? xs)
     '()
     (let loop ((xs xs))
-      (if (memq #f (map (lambda (pair) (pair? (cdr pair))) xs))
+      (if (any (lambda (pair) (null? (cdr pair))) xs)
         '()
         (cons
           (map-values car xs)
