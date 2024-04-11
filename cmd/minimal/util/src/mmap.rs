@@ -1,4 +1,4 @@
-use crate::read_file_size;
+use crate::{read_file_size, validate};
 use core::{ptr::null_mut, slice};
 
 pub struct Mmap {
@@ -37,7 +37,7 @@ impl Mmap {
 impl Drop for Mmap {
     fn drop(&mut self) {
         unsafe {
-            libc::munmap(self.ptr as _, self.len);
+            validate(libc::munmap(self.ptr as _, self.len));
         }
     }
 }
