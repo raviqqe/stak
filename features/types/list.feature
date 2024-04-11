@@ -52,10 +52,29 @@ Feature: List
       """scheme
       (import (scheme base))
 
-      (for-each write-u8 '(65 66 67))
+      (for-each
+        write-u8
+        (map
+          (lambda (x) (+ 60 x))
+          '(5 6 7)))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
+
+  Scenario: Use a `map` procedure with multiple lists
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each
+        write-u8
+        (map
+          (lambda (x y) (+ x y))
+          '(65 66 67)
+          '(1 2 3)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "BDF"
 
   Scenario Outline: Use an `append` procedure
     Given a file named "main.scm" with:
