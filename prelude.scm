@@ -628,10 +628,14 @@
 
     (define (modulo x y)
       (let ((r (- x (* y (quotient x y)))))
-        (if (zero? r)
-          0
-          (if (eq? (< x 0) (< y 0))
-            r
+        (cond
+          ((zero? r)
+            0)
+
+          ((eq? (< x 0) (< y 0))
+            r)
+
+          (else
             (+ r y)))))
 
     (define (comparison-operator f)
