@@ -632,7 +632,7 @@
           ((zero? r)
             0)
 
-          ((eq? (< x 0) (< y 0))
+          ((eq? (negative? x) (negative? y))
             r)
 
           (else
@@ -918,7 +918,7 @@
                              (+ (char->integer #\a) (- d 10))
                              (+ (char->integer #\0) d)))
                          ys)))
-                (if (< 0 q)
+                (if (positive? q)
                   (loop q ys)
                   ys)))))))
 
