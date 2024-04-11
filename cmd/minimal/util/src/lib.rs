@@ -10,6 +10,7 @@ pub use mmap::Mmap;
 pub use validate::validate;
 
 /// Allocates a memory block on heap.
+// TODO Return a heap object.
 pub fn allocate_heap<T>(size: usize) -> &'static mut [T] {
     unsafe { slice::from_raw_parts_mut(libc::malloc(size * size_of::<T>()) as _, size) }
 }
