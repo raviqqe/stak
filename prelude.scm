@@ -628,7 +628,7 @@
 
     (define (modulo x y)
       (let ((r (- x (* y (quotient x y)))))
-        (if (eq? r 0)
+        (if (zero? r)
           0
           (if (eq? (< x 0) (< y 0))
             r
