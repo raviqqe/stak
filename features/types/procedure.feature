@@ -210,6 +210,16 @@ Feature: Procedure
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AA"
 
+  Scenario: Call an `apply` procedure with extra arguments
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (apply + 1 2 '(60 5)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "D"
+
   Scenario: Call immediate procedures capturing a local variable
     Given a file named "main.scm" with:
       """scheme

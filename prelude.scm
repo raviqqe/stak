@@ -545,8 +545,13 @@
     (define (data-rib type car cdr)
       (rib type car cdr 0))
 
-    (define (apply f xs)
-      ($$apply f xs))
+    (define (apply f x . xs)
+      ($$apply
+        f
+        (let loop ((x x) (xs xs))
+          (if (null? xs)
+            x
+            (cons x (loop (car xs) (cdr xs)))))))
 
     ; Basic types
 
@@ -696,7 +701,7 @@
       (define fill (if (null? rest) #f (car rest)))
 
       (let loop ((length length))
-        (if (= length 0)
+        (if (zero? length)
           '()
           (cons fill (loop (- length 1))))))
 
@@ -706,12 +711,12 @@
           y
           (loop (cdr xs) (+ y 1)))))
 
-    (define (map function list)
-      (if (null? list)
-        list
+    (define (map f xs)
+      (if (null? xs)
+        xs
         (cons
-          (function (car list))
-          (map function (cdr list)))))
+          (f (car xs))
+          (map f (cdr xs)))))
 
     (define for-each map)
 
@@ -1402,17 +1407,17 @@
 
     ;; Continuation
 
-    (define dummy-function (lambda () #f))
+    (define dummy-procedure (lambda () #f))
 
     (define (call/cc receiver)
-      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-function))))))
+      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-procedure))))))
             (point current-point))
         (receiver
           (lambda (argument)
             (travel-to-point! current-point point)
             (set-current-point! point)
             (rib-set-car!
-              (rib-cdr (rib-car (close dummy-function))) ; frame
+              (rib-cdr (rib-car (close dummy-procedure))) ; frame
               continuation)
             argument))))
 
