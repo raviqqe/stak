@@ -1,5 +1,5 @@
 use crate::{read_file_size, validate};
-use core::{ptr::null_mut, slice};
+use core::{ffi::CStr, ptr::null_mut, slice};
 
 pub struct Mmap {
     ptr: *mut u8,
@@ -8,23 +8,21 @@ pub struct Mmap {
 
 impl Mmap {
     /// Creates a new mmap opening a file at a path.
-    ///
-    /// # Safety
-    ///
-    /// A given path must be a valid path of a C string.
-    pub unsafe fn new(path: *const i8) -> Self {
+    pub fn new(path: &CStr) -> Self {
         let len = read_file_size(path);
 
         Self {
-            ptr: libc::mmap(
-                null_mut(),
-                len,
-                libc::PROT_READ,
-                libc::MAP_PRIVATE,
-                // spell-checker: disable-next-line
-                libc::open(path, libc::O_RDONLY),
-                0,
-            ) as _,
+            ptr: unsafe {
+                libc::mmap(
+                    null_mut(),
+                    len,
+                    libc::PROT_READ,
+                    libc::MAP_PRIVATE,
+                    // spell-checker: disable-next-line
+                    libc::open(path.as_ptr(), libc::O_RDONLY),
+                    0,
+                )
+            } as _,
             len,
         }
     }
@@ -48,8 +46,6 @@ mod tests {
 
     #[test]
     fn read_file() {
-        unsafe {
-            Mmap::new(c"src/lib.rs" as *const _ as _);
-        }
+        Mmap::new(c"src/lib.rs");
     }
 }

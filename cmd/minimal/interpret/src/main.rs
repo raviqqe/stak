@@ -9,7 +9,7 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::slice;
+use core::{ffi::CStr, slice};
 use mstak_util::Mmap;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_primitive::SmallPrimitiveSet;
@@ -39,7 +39,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     )
     .unwrap();
 
-    let mmap = Mmap::new(*file);
+    let mmap = Mmap::new(CStr::from_ptr(*file));
 
     vm.initialize(mmap.as_slice().iter().copied()).unwrap();
     vm.run().unwrap();

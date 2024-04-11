@@ -9,7 +9,7 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{array, env, slice};
+use core::{array, env, ffi::CStr, slice};
 use mstak_util::{allocate_heap, Mmap};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
@@ -39,7 +39,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     let mut mmaps = array::from_fn::<_, MAX_SOURCE_FILE_COUNT, _>(|_| None);
 
     for (index, &path) in arguments.iter().enumerate() {
-        mmaps[index] = Some(Mmap::new(path));
+        mmaps[index] = Some(Mmap::new(CStr::from_ptr(path)));
     }
 
     let mut sources = [Default::default(); MAX_SOURCE_FILE_COUNT + 1];
