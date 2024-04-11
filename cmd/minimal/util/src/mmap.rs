@@ -25,7 +25,7 @@ impl Mmap {
     }
 
     pub fn as_slice(&self) -> &[u8] {
-        slice::from_raw_parts(self.ptr, self.len)
+        unsafe { slice::from_raw_parts(self.ptr, self.len) }
     }
 }
 
