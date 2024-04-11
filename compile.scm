@@ -640,7 +640,7 @@
     (when (null? ellipsis-matches)
       (error "no ellipsis pattern variables" template))
     (map
-      (lambda (matches) (fill-template context (append singleton-matches matches) template))
+      (lambda (matches) (fill-template context (append matches singleton-matches) template))
       (zip-alist (map-values ellipsis-match-value ellipsis-matches)))))
 
 (define (fill-template context matches template)
