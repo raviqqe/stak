@@ -10,6 +10,7 @@ repository.workspace = true
 
 [dependencies]
 libc = { version = "0.2.153", default-features = false }
+mstak-util = { version = "0.1.1", path = "../util" }
 stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }

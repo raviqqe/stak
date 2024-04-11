@@ -25,6 +25,7 @@ name = "mstak-interpret"
 version = "0.1.0"
 dependencies = [
  "libc",
+ "mstak-util",
  "stak-device",
  "stak-primitive",
  "stak-vm",

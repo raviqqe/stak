@@ -10,6 +10,7 @@
 #![cfg_attr(not(test), no_main)]
 
 use core::slice;
+use mstak_util::Mmap;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
@@ -38,21 +39,10 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     )
     .unwrap();
 
-    vm.initialize(read_file(*file).iter().copied()).unwrap();
+    let mmap = Mmap::new(*file);
+
+    vm.initialize(mmap.as_slice().iter().copied()).unwrap();
     vm.run().unwrap();
 
     0
-}
-
-unsafe fn read_file(path: *const i8) -> &'static [u8] {
-    let file = libc::fopen(path, c"rb" as *const _ as _);
-    libc::fseek(file, 0, libc::SEEK_END);
-    let size = libc::ftell(file) as usize;
-    libc::rewind(file);
-
-    let source = libc::malloc(size + 1);
-    libc::fread(source, size, 1, file);
-    libc::fclose(file);
-
-    slice::from_raw_parts(source as _, size)
 }
