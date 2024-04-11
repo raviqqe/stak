@@ -15,6 +15,8 @@ use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
 
+const HEAP_SIZE: usize = 1 << 18;
+
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
@@ -27,7 +29,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         return 1;
     };
 
-    let mut heap = [Default::default(); 1 << 18];
+    let mut heap = [Default::default(); HEAP_SIZE];
 
     let mut vm = Vm::new(
         &mut heap,
