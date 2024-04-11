@@ -88,8 +88,8 @@
 (define (data-rib type car cdr)
   (rib type car cdr 0))
 
-(define (call-rib arity function continuation)
-  (code-rib (+ call-instruction arity) function continuation))
+(define (call-rib arity procedure continuation)
+  (code-rib (+ call-instruction arity) procedure continuation))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))
@@ -138,14 +138,14 @@
     (f (fold-right f y (cdr xs)) (car xs))))
 
 (define (take n xs)
-  (if (= n 0)
+  (if (zero? n)
     '()
     (cons
       (car xs)
       (take (- n 1) (cdr xs)))))
 
 (define (skip n xs)
-  (if (= n 0)
+  (if (zero? n)
     xs
     (skip (- n 1) (cdr xs))))
 
@@ -487,7 +487,7 @@
 
 ;; Procedures
 
-(define primitive-functions
+(define primitive-procedures
   (map
     (lambda (x)
       (cons
@@ -519,7 +519,7 @@
           (list? expression)
           (= (length expression) 3)
           (symbol? predicate)
-          (assoc (symbol->string predicate) primitive-functions))
+          (assoc (symbol->string predicate) primitive-procedures))
         =>
         (lambda (pair)
           (cons (cdr pair) (cdr expression))))
@@ -876,41 +876,41 @@
       continuation
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-(define (compile-raw-call context function arguments argument-count continuation)
+(define (compile-raw-call context procedure arguments argument-count continuation)
   (if (null? arguments)
     (call-rib
       argument-count
-      (compilation-context-resolve context function)
+      (compilation-context-resolve context procedure)
       continuation)
     (compile-expression
       context
       (car arguments)
       (compile-raw-call
         (compilation-context-push-local context #f)
-        function
+        procedure
         (cdr arguments)
         argument-count
         continuation))))
 
 (define (compile-call context expression variadic continuation)
-  (let* ((function (car expression))
+  (let* ((procedure (car expression))
          (arguments (cdr expression))
          (continue
-           (lambda (context function continuation)
+           (lambda (context procedure continuation)
              (compile-raw-call
                context
-               function
+               procedure
                arguments
                (- (* 2 (length arguments)) (if variadic 1 0))
                continuation))))
-    (if (symbol? function)
-      (continue context function continuation)
+    (if (symbol? procedure)
+      (continue context procedure continuation)
       (compile-expression
         context
-        function
+        procedure
         (continue
-          (compilation-context-push-local context '$function)
-          '$function
+          (compilation-context-push-local context '$procedure)
+          '$procedure
           (compile-unbind continuation))))))
 
 (define (compile-unbind continuation)
