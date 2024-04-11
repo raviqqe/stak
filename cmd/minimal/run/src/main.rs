@@ -9,7 +9,8 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{env, mem::size_of, ptr::null_mut, slice};
+use core::{array, env, slice};
+use mstak_util::{allocate_heap, Mmap};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
 use stak_primitive::SmallPrimitiveSet;
@@ -19,7 +20,7 @@ const PRELUDE_SOURCE: &str = include_str!(env!("STAK_PRELUDE_FILE"));
 const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_COMPILER_FILE"));
 
 const DEFAULT_BUFFER_SIZE: usize = 2usize.pow(18);
-const MAX_SOURCE_FILE_COUNT: usize = 8;
+const MAX_SOURCE_FILE_COUNT: usize = 4;
 
 #[cfg(not(test))]
 #[panic_handler]
@@ -35,12 +36,20 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         return 1;
     }
 
-    let mut sources = [Default::default(); MAX_SOURCE_FILE_COUNT];
+    let mut mmaps = array::from_fn::<_, MAX_SOURCE_FILE_COUNT, _>(|_| None);
+
+    for (index, &path) in arguments.iter().enumerate() {
+        mmaps[index] = Some(Mmap::new(path));
+    }
+
+    let mut sources = [Default::default(); MAX_SOURCE_FILE_COUNT + 1];
 
     sources[0] = PRELUDE_SOURCE.as_bytes();
 
-    for (index, &path) in arguments.iter().enumerate() {
-        sources[index + 1] = read_file(path);
+    for (index, mmap) in mmaps.iter().enumerate() {
+        if let Some(mmap) = mmap {
+            sources[index + 1] = mmap.as_slice();
+        }
     }
 
     let mut target = BufferMut::new(allocate_heap(DEFAULT_BUFFER_SIZE));
@@ -64,10 +73,6 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     0
 }
 
-unsafe fn allocate_heap<'a, T>(size: usize) -> &'a mut [T] {
-    slice::from_raw_parts_mut(libc::malloc(size * size_of::<T>()) as _, size)
-}
-
 fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
@@ -77,29 +82,4 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
 
     vm.initialize(COMPILER_BYTECODES.iter().copied()).unwrap();
     vm.run().unwrap()
-}
-
-unsafe fn read_file(path: *const i8) -> &'static [u8] {
-    let size = read_file_size(path);
-
-    slice::from_raw_parts(
-        libc::mmap(
-            null_mut(),
-            size,
-            libc::PROT_READ,
-            libc::MAP_PRIVATE,
-            // spell-checker: disable-next-line
-            libc::open(path, libc::O_RDONLY),
-            0,
-        ) as _,
-        size,
-    )
-}
-
-unsafe fn read_file_size(path: *const i8) -> usize {
-    let file = libc::fopen(path, c"rb" as *const _ as _);
-    libc::fseek(file, 0, libc::SEEK_END);
-    let size = libc::ftell(file) as _;
-    libc::fclose(file);
-    size
 }
