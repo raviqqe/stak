@@ -7,7 +7,10 @@ Feature: AA tree
 
       (aa-tree-empty <)
       """
-    When I successfully run `scheme main.scm`
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
     Then the exit status should be 0
 
   @stak
@@ -18,8 +21,12 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree? (aa-tree-empty <)) 65 66))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
 
   @stak
   Scenario: Find no value
@@ -31,8 +38,12 @@ Feature: AA tree
 
       (write-u8 (if (aa-tree-find tree 1) 65 66))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "B"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "B"
 
   @stak
   Scenario: Insert a value into a tree
@@ -46,8 +57,12 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
 
   @stak
   Scenario: Insert a value into a left of a tree
@@ -65,8 +80,12 @@ Feature: AA tree
           (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AAB"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "AAB"
 
   @stak
   Scenario: Insert a value into a right of a tree
@@ -84,8 +103,12 @@ Feature: AA tree
           (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "AAB"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "AAB"
 
   @stak
   Scenario: Insert a value into the same node of a tree
@@ -100,8 +123,12 @@ Feature: AA tree
 
       (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
 
   @stak
   Scenario Outline: Insert values into a tree
@@ -123,8 +150,12 @@ Feature: AA tree
 
       (for-each check '(<values>))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "<output>"
 
     # spell-checker: disable
     Examples:
@@ -156,8 +187,12 @@ Feature: AA tree
 
       (write-u8 (if (equal? (aa-tree->list (list->aa-tree '(<values>) <)) '(<output>)) 65 66))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    When I run the following script:
+      """sh
+      scheme $STAK_ROOT/aa-tree.scm main.scm
+      """
+    Then the exit status should be 0
+    And the stdout should contain exactly "A"
 
     # spell-checker: disable
     Examples:
