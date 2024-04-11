@@ -550,10 +550,11 @@
         ($$apply f x)
         ($$apply
           f
-          (append
-            (list x)
-            (take (- (length xs) 1) xs)
-            (last xs)))))
+          (cons
+            x
+            (append
+              (take (- (length xs) 1) xs)
+              (last xs))))))
 
     ; Basic types
 
