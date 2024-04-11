@@ -701,7 +701,7 @@
       (define fill (if (null? rest) #f (car rest)))
 
       (let loop ((length length))
-        (if (zero? length)
+        (if (= 0 length)
           '()
           (cons fill (loop (- length 1))))))
 
@@ -727,14 +727,14 @@
       (set-car! (list-tail xs index) value))
 
     (define (list-head xs index)
-      (if (zero? index)
+      (if (= 0 index)
         '()
         (cons
           (car xs)
           (list-head (cdr xs) (- index 1)))))
 
     (define (list-tail xs index)
-      (if (boolean-or (zero? index) (not (pair? xs)))
+      (if (boolean-or (= 0 index) (not (pair? xs)))
         xs
         (list-tail (cdr xs) (- index 1))))
 
