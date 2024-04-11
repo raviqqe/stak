@@ -1068,7 +1068,7 @@
         ((char? constant)
           (build-rib char-type '() (char->integer constant)))
 
-        ((and (number? constant) (> 0 constant))
+        ((and (number? constant) (negative? constant))
           (code-rib
             constant-instruction
             0
