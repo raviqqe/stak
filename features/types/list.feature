@@ -61,7 +61,7 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "ABC"
 
-  Scenario: Use a `map` procedure with multiple lists
+  Scenario: Use a `map` procedure with two lists
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -75,6 +75,22 @@ Feature: List
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "BDF"
+
+  Scenario: Use a `map` procedure with three lists
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each
+        write-u8
+        (map
+          (lambda (x y z) (+ x y z))
+          '(65 66 67)
+          '(1 2 3)
+          '(4 5 6)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "FIL"
 
   Scenario Outline: Use an `append` procedure
     Given a file named "main.scm" with:
