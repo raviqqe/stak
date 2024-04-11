@@ -546,15 +546,12 @@
       (rib type car cdr 0))
 
     (define (apply f x . xs)
-      (if (null? xs)
-        ($$apply f x)
-        ($$apply
-          f
-          (cons
+      ($$apply
+        f
+        (let loop ((x x) (xs xs))
+          (if (null? xs)
             x
-            (append
-              (take (- (length xs) 1) xs)
-              (last xs))))))
+            (cons x (loop (car xs) (cdr xs)))))))
 
     ; Basic types
 
@@ -714,12 +711,12 @@
           y
           (loop (cdr xs) (+ y 1)))))
 
-    (define (map function list)
-      (if (null? list)
-        list
+    (define (map function xs)
+      (if (null? xs)
+        xs
         (cons
-          (function (car list))
-          (map function (cdr list)))))
+          (function (car xs))
+          (map function (cdr xs)))))
 
     (define for-each map)
 
@@ -836,24 +833,6 @@
         (if end
           (list-head xs (- end start))
           xs)))
-
-    (define (take n xs)
-      (if (zero? n)
-        '()
-        (cons
-          (car xs)
-          (take (- n 1) (cdr xs)))))
-
-    (define (last xs)
-      (cond
-        ((null? xs)
-          #f)
-
-        ((null? (cdr xs))
-          (car xs))
-
-        (else
-          (last (cdr xs)))))
 
     ;; Bytevector
 
