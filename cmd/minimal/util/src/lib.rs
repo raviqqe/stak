@@ -9,10 +9,16 @@ use core::{mem::size_of, slice};
 pub use mmap::Mmap;
 pub use validate::validate;
 
-pub unsafe fn allocate_heap<'a, T>(size: usize) -> &'a mut [T] {
-    slice::from_raw_parts_mut(libc::malloc(size * size_of::<T>()) as _, size)
+/// Allocates a memory block on heap.
+pub fn allocate_heap<T>(size: usize) -> &'static mut [T] {
+    unsafe { slice::from_raw_parts_mut(libc::malloc(size * size_of::<T>()) as _, size) }
 }
 
+/// Reads a file size at a path.
+///
+/// # Safety
+///
+/// A given path must be a valid path of a C string.
 pub unsafe fn read_file_size(path: *const i8) -> usize {
     let file = libc::fopen(path, c"rb" as *const _ as _);
     libc::fseek(file, 0, libc::SEEK_END);

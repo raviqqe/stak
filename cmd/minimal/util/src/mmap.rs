@@ -7,6 +7,11 @@ pub struct Mmap {
 }
 
 impl Mmap {
+    /// Creates a new mmap opening a file at a path.
+    ///
+    /// # Safety
+    ///
+    /// A given path must be a valid path of a C string.
     pub unsafe fn new(path: *const i8) -> Self {
         let len = read_file_size(path);
 
