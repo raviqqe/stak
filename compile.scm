@@ -608,7 +608,7 @@
       (cond
         ((ellipsis-pattern? context pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
-            (when (< length 0)
+            (when (negative? length)
               (raise #f))
             (append
               (match-ellipsis-pattern context (car pattern) (take length expression))
@@ -1064,7 +1064,7 @@
         ((char? constant)
           (build-rib char-type '() (char->integer constant)))
 
-        ((and (number? constant) (> 0 constant))
+        ((and (number? constant) (negative? constant))
           (code-rib
             constant-instruction
             0
@@ -1234,7 +1234,7 @@
   (let loop ((x (quotient integer base))
              (bit 0)
              (target target))
-    (if (= x 0)
+    (if (zero? x)
       (values (encode-integer-part integer base bit) target)
       (loop
         (quotient x integer-base)
