@@ -1,7 +1,7 @@
 [package]
 name = "stak"
 description = "Stak Scheme interpreter"
-version = "0.2.29"
+version = "0.2.30"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -11,14 +11,14 @@ repository.workspace = true
 [dependencies]
 clap = { version = "4.5.4", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.21", path = "../../configuration" }
-stak-device = { version = "0.2.25", path = "../../device", features = ["std"] }
-stak-macro = { version = "0.1.26", path = "../../macro" }
-stak-minifier-macro = { version = "0.1.3", path = "../../minifier_macro" }
-stak-primitive = { version = "0.2.26", path = "../../primitive", features = [
+stak-configuration = { version = "0.1.22", path = "../../configuration" }
+stak-device = { version = "0.2.26", path = "../../device", features = ["std"] }
+stak-macro = { version = "0.1.27", path = "../../macro" }
+stak-minifier-macro = { version = "0.1.4", path = "../../minifier_macro" }
+stak-primitive = { version = "0.2.27", path = "../../primitive", features = [
   "std",
 ] }
-stak-vm = { version = "0.3.26", path = "../../vm", features = ["std"] }
+stak-vm = { version = "0.3.27", path = "../../vm", features = ["std"] }
 
 [lints]
 workspace = true
