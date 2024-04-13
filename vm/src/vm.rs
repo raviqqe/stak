@@ -187,7 +187,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         .assume_cons();
     }
 
-    fn call(&mut self, instruction: Cons, argument_info: usize) -> Result<(), T::Error> {
+    fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
@@ -200,7 +200,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
-                let arguments = Self::parse_arity(argument_info);
+                let arguments = Self::parse_arity(arity);
                 let parameters =
                     Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
 
