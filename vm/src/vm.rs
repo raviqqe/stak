@@ -258,6 +258,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
             }
             TypedValue::Number(primitive) => {
+                if Self::parse_arity(arity).variadic {
+                    self.register = self.pop().assume_cons();
+
+                    while self.register != self.null() {
+                        self.push(self.car(self.register))?;
+                        self.register = self.cdr(self.register).assume_cons();
+                    }
+                }
+
                 T::operate(self, primitive.to_i64() as u8)?;
                 self.advance_program_counter();
             }
