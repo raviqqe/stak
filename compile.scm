@@ -207,14 +207,10 @@
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
 (define (zip-alist xs)
-  (define (zip xs)
-    (if (memq #f (map (lambda (pair) (pair? (cdr pair))) xs))
-      '()
-      (cons
-        (map-values car xs)
-        (zip (map-values cdr xs)))))
-
-  (if (null? xs) '() (zip xs)))
+  (if (null? xs)
+    '()
+    (let ((ks (map car xs)))
+      (apply map (lambda vs (map cons ks vs)) (map cdr xs)))))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
