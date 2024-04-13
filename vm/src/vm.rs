@@ -67,7 +67,7 @@ macro_rules! assert_heap_value {
     };
 }
 
-struct ArgumentInfo {
+struct Arity {
     // A count does not include a variadic argument.
     count: Number,
     variadic: bool,
@@ -200,9 +200,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
-                let arguments = Self::parse_argument_info(argument_info);
+                let arguments = Self::parse_arity(argument_info);
                 let parameters =
-                    Self::parse_argument_info(self.car(code).assume_number().to_i64() as usize);
+                    Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
 
                 trace!("argument count", arguments.count);
                 trace!("argument variadic", arguments.variadic);
@@ -266,8 +266,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    const fn parse_argument_info(info: usize) -> ArgumentInfo {
-        ArgumentInfo {
+    const fn parse_arity(info: usize) -> Arity {
+        Arity {
             count: Number::new((info / 2) as i64),
             variadic: info % 2 == 1,
         }
