@@ -592,15 +592,17 @@
     (match-pattern context pattern expression))
 
   (cond
+    ((and
+        (symbol? pattern)
+        (memq pattern (rule-context-literals context)))
+      (unless (eq?
+               (resolve-denotation (rule-context-use-context context) expression)
+               (resolve-denotation (rule-context-definition-context context) pattern))
+        (raise #f))
+      '())
+
     ((symbol? pattern)
-      (if (memq pattern (rule-context-literals context))
-        (begin
-          (unless (eq?
-                   (resolve-denotation (rule-context-use-context context) expression)
-                   (resolve-denotation (rule-context-definition-context context) pattern))
-            (raise #f))
-          '())
-        (list (cons pattern expression))))
+      (list (cons pattern expression)))
 
     ((pair? pattern)
       (cond
