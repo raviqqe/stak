@@ -67,7 +67,7 @@ macro_rules! assert_heap_value {
     };
 }
 
-struct ArgumentInfo {
+struct Arity {
     // A count does not include a variadic argument.
     count: Number,
     variadic: bool,
@@ -187,7 +187,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         .assume_cons();
     }
 
-    fn call(&mut self, instruction: Cons, argument_info: usize) -> Result<(), T::Error> {
+    fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
@@ -200,9 +200,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
-                let arguments = Self::parse_argument_info(argument_info);
+                let arguments = Self::parse_arity(arity);
                 let parameters =
-                    Self::parse_argument_info(self.car(code).assume_number().to_i64() as usize);
+                    Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
 
                 trace!("argument count", arguments.count);
                 trace!("argument variadic", arguments.variadic);
@@ -258,6 +258,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
             }
             TypedValue::Number(primitive) => {
+                if Self::parse_arity(arity).variadic {
+                    self.register = self.pop().assume_cons();
+
+                    while self.register != self.null() {
+                        self.push(self.car(self.register))?;
+                        self.register = self.cdr(self.register).assume_cons();
+                    }
+                }
+
                 T::operate(self, primitive.to_i64() as u8)?;
                 self.advance_program_counter();
             }
@@ -266,8 +275,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    const fn parse_argument_info(info: usize) -> ArgumentInfo {
-        ArgumentInfo {
+    const fn parse_arity(info: usize) -> Arity {
+        Arity {
             count: Number::new((info / 2) as i64),
             variadic: info % 2 == 1,
         }

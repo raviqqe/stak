@@ -1,7 +1,7 @@
 [package]
 name = "mstak-interpret"
 description = "Minimal Stak Scheme bytecode interpreter"
-version = "0.1.2"
+version = "0.1.3"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -10,7 +10,7 @@ repository.workspace = true
 
 [dependencies]
 libc = { version = "0.2.153", default-features = false }
-mstak-util = { version = "0.1.3", path = "../util" }
+mstak-util = { version = "0.1.4", path = "../util" }
 stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }
