@@ -220,6 +220,16 @@ Feature: Procedure
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "D"
 
+  Scenario: Call an `apply` procedure with a primitive procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (cdr (apply cons '(66 65))))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Call immediate procedures capturing a local variable
     Given a file named "main.scm" with:
       """scheme
