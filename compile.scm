@@ -598,9 +598,9 @@
           (unless (eq?
                    (resolve-denotation (rule-context-use-context context) expression)
                    (resolve-denotation (rule-context-definition-context context) pattern))
-            (raise #f)))
-        '())
-      (list (cons pattern expression)))
+            (raise #f))
+          '())
+        (list (cons pattern expression))))
 
     ((pair? pattern)
       (cond
