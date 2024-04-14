@@ -832,18 +832,20 @@
 
 (define (compile-primitive-call name continuation)
   (call-rib
-    (case name
-      (($$close $$car)
-        1)
+    (*
+      2
+      (case name
+        (($$close $$car)
+          1)
 
-      (($$cons $$-)
-        2)
+        (($$cons $$-)
+          2)
 
-      (($$rib)
-        4)
+        (($$rib)
+          4)
 
-      (else
-        (error "unknown primitive" name)))
+        (else
+          (error "unknown primitive" name))))
     name
     continuation))
 
@@ -872,10 +874,10 @@
       continuation
       (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-(define (compile-raw-call context procedure arguments argument-count continuation)
+(define (compile-raw-call context procedure arguments arity continuation)
   (if (null? arguments)
     (call-rib
-      argument-count
+      arity
       (compilation-context-resolve context procedure)
       continuation)
     (compile-expression
@@ -885,7 +887,7 @@
         (compilation-context-push-local context #f)
         procedure
         (cdr arguments)
-        argument-count
+        arity
         continuation))))
 
 (define (compile-call context expression variadic continuation)
