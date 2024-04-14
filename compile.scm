@@ -836,18 +836,20 @@
 
 (define (compile-primitive-call name continuation)
   (call-rib
-    (case name
-      (($$close $$car)
-        1)
+    (*
+      2
+      (case name
+        (($$close $$car)
+          1)
 
-      (($$cons $$-)
-        2)
+        (($$cons $$-)
+          2)
 
-      (($$rib)
-        4)
+        (($$rib)
+          4)
 
-      (else
-        (error "unknown primitive" name)))
+        (else
+          (error "unknown primitive" name))))
     name
     continuation))
 
