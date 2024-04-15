@@ -205,7 +205,7 @@
 
     (define-syntax lambda
       (syntax-rules (define define-syntax)
-        ; Optimize a case where thre is only a body of a expression.
+        ; Optimize a case where there is only a body of a expression.
         ((_ arguments body)
           ($$lambda arguments body))
 
