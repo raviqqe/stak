@@ -195,10 +195,6 @@
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
-(define (zip-alist xs)
-  (let ((ks (map car xs)))
-    (apply map (lambda vs (map cons ks vs)) (map cdr xs))))
-
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
@@ -559,7 +555,7 @@
 
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
-    (lambda (values) (make-ellipsis-match (map cdr values)))
+    make-ellipsis-match
     (apply
       map
       list
@@ -618,7 +614,7 @@
       (error "no ellipsis pattern variables" template))
     (map
       (lambda (matches) (fill-template context (append matches singleton-matches) template))
-      (zip-alist (map-values ellipsis-match-value ellipsis-matches)))))
+      (apply map list (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches)))))
 
 (define (fill-template context matches template)
   (define (fill template)
