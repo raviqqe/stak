@@ -132,12 +132,12 @@
       (f y (car xs))
       (cdr xs))))
 
-(define (take n xs)
+(define (list-head n xs)
   (if (zero? n)
     '()
     (cons
       (car xs)
-      (take (- n 1) (cdr xs)))))
+      (list-head (- n 1) (cdr xs)))))
 
 (define (skip n xs)
   (if (zero? n)
@@ -158,12 +158,6 @@
 
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
-
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
 
 (define (flat-map convert xs)
   (apply append (map convert xs)))
@@ -427,12 +421,15 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment)
+  (make-macro-context environment id)
   macro-context?
-  (environment macro-context-environment macro-context-set-environment!))
+  (environment macro-context-environment macro-context-set-environment!)
+  (id macro-context-id macro-context-set-id!))
 
 (define (macro-context-append context pairs)
-  (make-macro-context (append pairs (macro-context-environment context))))
+  (make-macro-context
+    (append pairs (macro-context-environment context))
+    (macro-context-id context)))
 
 (define (macro-context-push context name denotation)
   (macro-context-append context (list (cons name denotation))))
@@ -450,6 +447,11 @@
       (if (null? environment)
         (macro-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
+
+(define (macro-context-generate-id! context)
+  (let ((id (macro-context-id context)))
+    (macro-context-set-id! context (+ id 1))
+    id))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -510,13 +512,10 @@
       expression)))
 
 (define (rename-variable context name)
-  (let* ((denotation (resolve-denotation context name))
-         (count
-           (list-count
-             (lambda (pair) (eq? (cdr pair) denotation))
-             (macro-context-environment context))))
+  (let ((denotation (resolve-denotation context name))
+        (id (macro-context-generate-id! context)))
     ; Share tails when appending strings.
-    (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
+    (string->uninterned-symbol (string-append (id->string id) "$" (symbol->string name)))))
 
 (define (find-pattern-variables context bound-variables pattern)
   (define excluded-variables (cons (rule-context-ellipsis context) bound-variables))
@@ -583,8 +582,8 @@
             (when (negative? length)
               (raise #f))
             (append
-              (match-ellipsis-pattern context (car pattern) (take length expression))
-              (match (cddr pattern) (skip length expression)))))
+              (match-ellipsis-pattern context (car pattern) (list-head length expression))
+              (match (cddr pattern) (list-tail expression length)))))
 
         ((pair? expression)
           (append
@@ -776,7 +775,7 @@
         expression))))
 
 (define (expand-macros expression)
-  (expand-macro (make-macro-context '()) expression))
+  (expand-macro (make-macro-context '() 0) expression))
 
 ; Compilation
 
