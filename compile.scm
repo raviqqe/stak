@@ -601,9 +601,10 @@
          (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
     (when (null? ellipsis-matches)
       (error "no ellipsis pattern variables" template))
-    (map
-      (lambda (matches) (fill-template context (append matches singleton-matches) template))
-      (apply map list (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches)))))
+    (apply
+      map
+      (lambda matches (fill-template context (append matches singleton-matches) template))
+      (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
 
 (define (fill-template context matches template)
   (define (fill template)
