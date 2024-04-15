@@ -132,17 +132,12 @@
       (f y (car xs))
       (cdr xs))))
 
-(define (list-head n xs)
+(define (list-head xs n)
   (if (zero? n)
     '()
     (cons
       (car xs)
-      (list-head (- n 1) (cdr xs)))))
-
-(define (skip n xs)
-  (if (zero? n)
-    xs
-    (skip (- n 1) (cdr xs))))
+      (list-head (cdr xs) (- n 1)))))
 
 (define (list-position f xs)
   (let loop ((xs xs) (index 0))
@@ -582,7 +577,7 @@
             (when (negative? length)
               (raise #f))
             (append
-              (match-ellipsis-pattern context (car pattern) (list-head length expression))
+              (match-ellipsis-pattern context (car pattern) (list-head expression length))
               (match (cddr pattern) (list-tail expression length)))))
 
         ((pair? expression)
