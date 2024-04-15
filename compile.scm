@@ -154,8 +154,8 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-(define (flat-map convert xs)
-  (apply append (map convert xs)))
+(define (flat-map f xs)
+  (apply append (map f xs)))
 
 (define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
