@@ -347,10 +347,6 @@
 
     (define-syntax let
       (syntax-rules (define define-syntax)
-        ; Optimize a case where thre is only a body of a expression.
-        ((_ ((name value) ...) body)
-          ((lambda (name ...) body) value ...))
-
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
