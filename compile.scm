@@ -794,6 +794,11 @@
 
 ;; Procedures
 
+(define (compile-arity argument-count variadic)
+  (+
+    (* 2 argument-count)
+    (if variadic 1 0)))
+
 (define (compile-constant constant continuation)
   (code-rib constant-instruction constant continuation))
 
@@ -866,7 +871,9 @@
                context
                procedure
                arguments
-               (- (* 2 (length arguments)) (if variadic 1 0))
+               (compile-arity
+                 (- (length arguments) (if variadic 1 0))
+                 variadic)
                continuation))))
     (if (symbol? procedure)
       (continue context procedure continuation)
@@ -915,9 +922,9 @@
           (let ((parameters (cadr expression)))
             (compile-constant
               (make-procedure
-                (+
-                  (* 2 (count-parameters parameters))
-                  (if (symbol? (last-cdr parameters)) 1 0))
+                (compile-arity
+                  (count-parameters parameters)
+                  (symbol? (last-cdr parameters)))
                 (compile-sequence
                   (compilation-context-append-locals
                     context
