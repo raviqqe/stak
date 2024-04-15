@@ -149,17 +149,6 @@
     xs
     (skip (- n 1) (cdr xs))))
 
-(define (list-unique xs)
-  (let loop ((xs xs) (ys '()))
-    (if (null? xs)
-      (reverse ys)
-      (loop
-        (cdr xs)
-        (let ((x (car xs)))
-          (if (memq x ys)
-            ys
-            (cons x ys)))))))
-
 (define (list-position f xs)
   (let loop ((xs xs) (index 0))
     (cond
@@ -541,20 +530,18 @@
 (define (find-pattern-variables context bound-variables pattern)
   (define variables (cons (rule-context-ellipsis context) bound-variables))
 
-  (define (find pattern)
+  (let loop ((pattern pattern))
     (cond
       ((pair? pattern)
         (append
-          (find (car pattern))
-          (find (cdr pattern))))
+          (loop (car pattern))
+          (loop (cdr pattern))))
 
       ((and (symbol? pattern) (not (memq pattern variables)))
         (list pattern))
 
       (else
-        '())))
-
-  (list-unique (find pattern)))
+        '()))))
 
 (define-record-type ellipsis-match
   (make-ellipsis-match value)
