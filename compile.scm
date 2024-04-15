@@ -207,10 +207,8 @@
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
 (define (zip-alist xs)
-  (if (null? xs)
-    '()
-    (let ((ks (map car xs)))
-      (apply map (lambda vs (map cons ks vs)) (map cdr xs)))))
+  (let ((ks (map car xs)))
+    (apply map (lambda vs (map cons ks vs)) (map cdr xs))))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -594,7 +592,9 @@
     (match-pattern context pattern expression))
 
   (cond
-    ((memq pattern (rule-context-literals context))
+    ((and
+        (symbol? pattern)
+        (memq pattern (rule-context-literals context)))
       (unless (eq?
                (resolve-denotation (rule-context-use-context context) expression)
                (resolve-denotation (rule-context-definition-context context) pattern))
@@ -636,7 +636,7 @@
     (when (null? ellipsis-matches)
       (error "no ellipsis pattern variables" template))
     (map
-      (lambda (matches) (fill-template context (append singleton-matches matches) template))
+      (lambda (matches) (fill-template context (append matches singleton-matches) template))
       (zip-alist (map-values ellipsis-match-value ellipsis-matches)))))
 
 (define (fill-template context matches template)
