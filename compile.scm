@@ -152,7 +152,7 @@
 (define (list-unique xs)
   (let loop ((xs xs) (ys '()))
     (if (null? xs)
-      ys
+      (reverse ys)
       (loop
         (cdr xs)
         (let ((x (car xs)))
