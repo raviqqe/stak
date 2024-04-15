@@ -575,8 +575,9 @@
       map
       list
       (find-pattern-variables context (rule-context-literals context) pattern)
-      (lambda (expression) (match-pattern context pattern expression))
-      expression)))
+      (map
+        (lambda (expression) (match-pattern context pattern expression))
+        expression))))
 
 (define (match-pattern context pattern expression)
   (define (match pattern expression)
