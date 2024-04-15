@@ -530,18 +530,20 @@
 (define (find-pattern-variables context bound-variables pattern)
   (define variables (cons (rule-context-ellipsis context) bound-variables))
 
-  (let loop ((pattern pattern))
+  (let loop ((pattern pattern) (variables '()))
     (cond
       ((pair? pattern)
-        (append
-          (loop (car pattern))
-          (loop (cdr pattern))))
+        (loop
+          (car pattern)
+          (loop
+            (cdr pattern)
+            variables)))
 
       ((and (symbol? pattern) (not (memq pattern variables)))
-        (list pattern))
+        (cons pattern variables))
 
       (else
-        '()))))
+        variables))))
 
 (define-record-type ellipsis-match
   (make-ellipsis-match value)
