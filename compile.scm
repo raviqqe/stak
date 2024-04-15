@@ -132,11 +132,6 @@
       (f y (car xs))
       (cdr xs))))
 
-(define (fold-right f y xs)
-  (if (null? xs)
-    y
-    (f (fold-right f y (cdr xs)) (car xs))))
-
 (define (take n xs)
   (if (zero? n)
     '()
