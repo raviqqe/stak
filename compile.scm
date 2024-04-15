@@ -132,33 +132,12 @@
       (f y (car xs))
       (cdr xs))))
 
-(define (fold-right f y xs)
-  (if (null? xs)
-    y
-    (f (fold-right f y (cdr xs)) (car xs))))
-
-(define (take n xs)
+(define (list-head xs n)
   (if (zero? n)
     '()
     (cons
       (car xs)
-      (take (- n 1) (cdr xs)))))
-
-(define (skip n xs)
-  (if (zero? n)
-    xs
-    (skip (- n 1) (cdr xs))))
-
-(define (list-unique xs)
-  (let loop ((xs xs) (ys '()))
-    (if (null? xs)
-      ys
-      (loop
-        (cdr xs)
-        (let ((x (car xs)))
-          (if (memq x ys)
-            ys
-            (cons x ys)))))))
+      (list-head (cdr xs) (- n 1)))))
 
 (define (list-position f xs)
   (let loop ((xs xs) (index 0))
@@ -175,14 +154,8 @@
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
-(define (list-count f xs)
-  (let loop ((xs xs) (count 0))
-    (if (null? xs)
-      count
-      (loop (cdr xs) (+ count (if (f (car xs)) 1 0))))))
-
-(define (flat-map convert xs)
-  (apply append (map convert xs)))
+(define (flat-map f xs)
+  (apply append (map f xs)))
 
 (define (relaxed-length xs)
   (let loop ((xs xs) (y 0))
@@ -205,10 +178,6 @@
 
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
-
-(define (zip-alist xs)
-  (let ((ks (map car xs)))
-    (apply map (lambda vs (map cons ks vs)) (map cdr xs))))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -447,12 +416,15 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment)
+  (make-macro-context environment id)
   macro-context?
-  (environment macro-context-environment macro-context-set-environment!))
+  (environment macro-context-environment macro-context-set-environment!)
+  (id macro-context-id macro-context-set-id!))
 
 (define (macro-context-append context pairs)
-  (make-macro-context (append pairs (macro-context-environment context))))
+  (make-macro-context
+    (append pairs (macro-context-environment context))
+    (macro-context-id context)))
 
 (define (macro-context-push context name denotation)
   (macro-context-append context (list (cons name denotation))))
@@ -470,6 +442,11 @@
       (if (null? environment)
         (macro-context-set-environment! context tail)
         (set-last-cdr! environment tail)))))
+
+(define (macro-context-generate-id! context)
+  (let ((id (macro-context-id context)))
+    (macro-context-set-id! context (+ id 1))
+    id))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -530,31 +507,28 @@
       expression)))
 
 (define (rename-variable context name)
-  (let* ((denotation (resolve-denotation context name))
-         (count
-           (list-count
-             (lambda (pair) (eq? (cdr pair) denotation))
-             (macro-context-environment context))))
+  (let ((denotation (resolve-denotation context name))
+        (id (macro-context-generate-id! context)))
     ; Share tails when appending strings.
-    (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
+    (string->uninterned-symbol (string-append (id->string id) "$" (symbol->string name)))))
 
 (define (find-pattern-variables context bound-variables pattern)
-  (define variables (cons (rule-context-ellipsis context) bound-variables))
+  (define excluded-variables (cons (rule-context-ellipsis context) bound-variables))
 
-  (define (find pattern)
+  (let loop ((pattern pattern) (variables '()))
     (cond
       ((pair? pattern)
-        (append
-          (find (car pattern))
-          (find (cdr pattern))))
+        (loop
+          (car pattern)
+          (loop
+            (cdr pattern)
+            variables)))
 
-      ((and (symbol? pattern) (not (memq pattern variables)))
-        (list pattern))
+      ((and (symbol? pattern) (not (memq pattern excluded-variables)))
+        (cons pattern variables))
 
       (else
-        '())))
-
-  (list-unique (find pattern)))
+        variables))))
 
 (define-record-type ellipsis-match
   (make-ellipsis-match value)
@@ -571,21 +545,13 @@
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
     make-ellipsis-match
-    (fold-right
-      (lambda (all expression)
-        (map
-          (lambda (pair)
-            (let ((name (car pair)))
-              (cons
-                name
-                (cons
-                  (cdr pair)
-                  (cdr (assq name all))))))
-          (match-pattern context pattern expression)))
+    (apply
+      map
+      list
+      (find-pattern-variables context (rule-context-literals context) pattern)
       (map
-        (lambda (name) (cons name '()))
-        (find-pattern-variables context (rule-context-literals context) pattern))
-      expression)))
+        (lambda (expression) (match-pattern context pattern expression))
+        expression))))
 
 (define (match-pattern context pattern expression)
   (define (match pattern expression)
@@ -611,8 +577,8 @@
             (when (negative? length)
               (raise #f))
             (append
-              (match-ellipsis-pattern context (car pattern) (take length expression))
-              (match (cddr pattern) (skip length expression)))))
+              (match-ellipsis-pattern context (car pattern) (list-head expression length))
+              (match (cddr pattern) (list-tail expression length)))))
 
         ((pair? expression)
           (append
@@ -635,9 +601,10 @@
          (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
     (when (null? ellipsis-matches)
       (error "no ellipsis pattern variables" template))
-    (map
-      (lambda (matches) (fill-template context (append matches singleton-matches) template))
-      (zip-alist (map-values ellipsis-match-value ellipsis-matches)))))
+    (apply
+      map
+      (lambda matches (fill-template context (append matches singleton-matches) template))
+      (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
 
 (define (fill-template context matches template)
   (define (fill template)
@@ -804,7 +771,7 @@
         expression))))
 
 (define (expand-macros expression)
-  (expand-macro (make-macro-context '()) expression))
+  (expand-macro (make-macro-context '() 0) expression))
 
 ; Compilation
 
@@ -1215,14 +1182,14 @@
   (let ((target (cons symbol-terminator target)))
     (encode-integer
       (length constant-symbols)
-      (let loop ((symbols symbols) (target target))
-        (if (null? symbols)
-          (cdr target)
-          (loop
-            (cdr symbols)
+      (cdr
+        (fold-left
+          (lambda (target symbol)
             (cons
               symbol-separator
-              (encode-symbol (car symbols) target))))))))
+              (encode-symbol symbol target)))
+          target
+          symbols)))))
 
 ;; Codes
 
