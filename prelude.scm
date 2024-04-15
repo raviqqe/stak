@@ -205,6 +205,10 @@
 
     (define-syntax lambda
       (syntax-rules (define define-syntax)
+        ; Optimize a case where thre is only a body of a expression.
+        ((_ arguments body)
+          ($$lambda arguments body))
+
         ((_ arguments (define content ...) body1 body2 ...)
           (lambda "value" arguments () (define content ...) body1 body2 ...))
 
@@ -342,7 +346,11 @@
     ;; Binding
 
     (define-syntax let
-      (syntax-rules ()
+      (syntax-rules (define define-syntax)
+        ; Optimize a case where thre is only a body of a expression.
+        ((_ ((name value) ...) body)
+          ((lambda (name ...) body) value ...))
+
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
