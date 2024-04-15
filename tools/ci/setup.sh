@@ -2,5 +2,5 @@
 
 set -e
 
-brew install chibi-scheme gauche guile
+brew install chibi-scheme gambit-scheme gauche guile
 cargo install stak
