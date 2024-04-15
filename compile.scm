@@ -570,7 +570,7 @@
 
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
-    make-ellipsis-match
+    (lambda (values) (make-ellipsis-match (map cdr values)))
     (apply
       map
       list
