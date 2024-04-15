@@ -64,6 +64,8 @@ jobs:
             tags: not @long
           - name: chibi
             tags: not @stak or @chibi
+          - name: gambit
+            tags: not @stak or @gambit
           - name: gauche
             tags: not @stak or @gauche
           - name: guile
