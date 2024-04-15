@@ -3,7 +3,7 @@
 set -e
 
 if [ $(uname) = Linux ]; then
-  sudo mkdir -p /usr/lib/x86_64-linux-gnu/libfakeroot
+  sudo apt -y remove libfakeroot
 fi
 
 brew install chibi-scheme gambit-scheme gauche guile
