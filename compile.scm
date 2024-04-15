@@ -528,7 +528,7 @@
     (string->uninterned-symbol (string-append (id->string count) "$" (symbol->string name)))))
 
 (define (find-pattern-variables context bound-variables pattern)
-  (define variables (cons (rule-context-ellipsis context) bound-variables))
+  (define excluded-variables (cons (rule-context-ellipsis context) bound-variables))
 
   (let loop ((pattern pattern) (variables '()))
     (cond
@@ -539,7 +539,7 @@
             (cdr pattern)
             variables)))
 
-      ((and (symbol? pattern) (not (memq pattern variables)))
+      ((and (symbol? pattern) (not (memq pattern excluded-variables)))
         (cons pattern variables))
 
       (else
