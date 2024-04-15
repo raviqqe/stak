@@ -1182,14 +1182,14 @@
   (let ((target (cons symbol-terminator target)))
     (encode-integer
       (length constant-symbols)
-      (let loop ((symbols symbols) (target target))
-        (if (null? symbols)
-          (cdr target)
-          (loop
-            (cdr symbols)
+      (cdr
+        (fold-left
+          (lambda (target symbol)
             (cons
               symbol-separator
-              (encode-symbol (car symbols) target))))))))
+              (encode-symbol symbol target)))
+          target
+          symbols)))))
 
 ;; Codes
 
