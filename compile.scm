@@ -571,20 +571,11 @@
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
     make-ellipsis-match
-    (fold-right
-      (lambda (all expression)
-        (map
-          (lambda (pair)
-            (let ((name (car pair)))
-              (cons
-                name
-                (cons
-                  (cdr pair)
-                  (cdr (assq name all))))))
-          (match-pattern context pattern expression)))
-      (map
-        (lambda (name) (cons name '()))
-        (find-pattern-variables context (rule-context-literals context) pattern))
+    (apply
+      map
+      list
+      (find-pattern-variables context (rule-context-literals context) pattern)
+      (lambda (expression) (match-pattern context pattern expression))
       expression)))
 
 (define (match-pattern context pattern expression)
