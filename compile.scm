@@ -794,9 +794,9 @@
 
 ;; Procedures
 
-(define (compile-arity arguments variadic)
+(define (compile-arity argument-count variadic)
   (+
-    (* 2 (length arguments))
+    (* 2 argument-count)
     (if variadic 1 0)))
 
 (define (compile-constant constant continuation)
