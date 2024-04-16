@@ -5,8 +5,7 @@
 (import
   (scheme base)
   (scheme cxr)
-  (scheme read)
-  (scheme write))
+  (scheme read))
 
 (cond-expand
   (stak
