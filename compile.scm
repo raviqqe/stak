@@ -542,20 +542,22 @@
       (resolve-denotation (rule-context-definition-context context) (cadr expression))
       (rule-context-ellipsis context))))
 
-(define (match-ellipsis-pattern context pattern expression)
-  (map-values
-    make-ellipsis-match
-    (apply
-      map
-      list
-      (find-pattern-variables context (rule-context-literals context) pattern)
-      (map
-        (lambda (expression) (match-pattern context pattern expression))
-        expression))))
+(define (match-ellipsis-pattern context pattern expression matches)
+  (append
+    (map-values
+      make-ellipsis-match
+      (apply
+        map
+        list
+        (find-pattern-variables context (rule-context-literals context) pattern)
+        (map
+          (lambda (expression) (match-pattern context pattern expression '()))
+          expression)))
+    matches))
 
-(define (match-pattern context pattern expression)
-  (define (match pattern expression)
-    (match-pattern context pattern expression))
+(define (match-pattern context pattern expression matches)
+  (define (match pattern expression matches)
+    (match-pattern context pattern expression matches))
 
   (cond
     ((and
@@ -576,14 +578,14 @@
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (when (negative? length)
               (raise #f))
-            (append
-              (match-ellipsis-pattern context (car pattern) (list-head expression length))
-              (match (cddr pattern) (list-tail expression length)))))
+            (match-ellipsis-pattern
+              context
+              (car pattern)
+              (list-head expression length)
+              (match (cddr pattern) (list-tail expression length) matches))))
 
         ((pair? expression)
-          (append
-            (match (car pattern) (car expression))
-            (match (cdr pattern) (cdr expression))))
+          (match (car pattern) (car expression) (match (cdr pattern) (cdr expression) matches)))
 
         (else
           (raise #f))))
@@ -642,7 +644,7 @@
                 (guard (value
                         ((not value)
                           (loop (cdr rules))))
-                  (let* ((matches (match-pattern rule-context (car rule) expression))
+                  (let* ((matches (match-pattern rule-context (car rule) expression '()))
                          (template (cadr rule))
                          (names
                            (map
