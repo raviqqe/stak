@@ -585,7 +585,13 @@
               (match (cddr pattern) (list-tail expression length) matches))))
 
         ((pair? expression)
-          (match (car pattern) (car expression) (match (cdr pattern) (cdr expression) matches)))
+          (match
+            (car pattern)
+            (car expression)
+            (match
+              (cdr pattern)
+              (cdr expression)
+              matches)))
 
         (else
           (raise #f))))
