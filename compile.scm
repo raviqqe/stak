@@ -570,7 +570,7 @@
       matches)
 
     ((symbol? pattern)
-      (list (cons pattern expression)))
+      (cons (cons pattern expression) matches))
 
     ((pair? pattern)
       (cond
