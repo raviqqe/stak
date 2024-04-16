@@ -567,7 +567,7 @@
                (resolve-denotation (rule-context-use-context context) expression)
                (resolve-denotation (rule-context-definition-context context) pattern))
         (raise #f))
-      '())
+      matches)
 
     ((symbol? pattern)
       (list (cons pattern expression)))
