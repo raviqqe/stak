@@ -597,7 +597,7 @@
           (raise #f))))
 
     ((equal? pattern expression)
-      '())
+      matches)
 
     (else
       (raise #f))))
