@@ -426,9 +426,6 @@
     (append pairs (macro-context-environment context))
     (macro-context-id context)))
 
-(define (macro-context-push context name denotation)
-  (macro-context-append context (list (cons name denotation))))
-
 (define (macro-context-set! context name denotation)
   (let* ((environment (macro-context-environment context))
          (pair (assq name environment)))
