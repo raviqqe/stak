@@ -723,14 +723,12 @@
 
           (($$let-syntax)
             (expand-macro
-              (fold-left
-                (lambda (context pair)
-                  (macro-context-push
-                    context
-                    (car pair)
-                    (make-transformer context (cadr pair))))
+              (macro-context-append
                 context
-                (cadr expression))
+                (map-values
+                  (lambda (transformer)
+                    (make-transformer context transformer))
+                  (cadr expression)))
               (caddr expression)))
 
           (($$letrec-syntax)
@@ -738,8 +736,8 @@
                    (context
                      (macro-context-append
                        context
-                       (map
-                         (lambda (pair) (cons (car pair) #f))
+                       (map-values
+                         (lambda (value) #f)
                          bindings))))
               (for-each
                 (lambda (pair)
