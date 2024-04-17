@@ -422,17 +422,26 @@
   (id macro-context-id macro-context-set-id!))
 
 (define (macro-context-append context pairs)
+  (display "macro-context-append" (current-error-port))
+  (newline (current-error-port))
+
   (make-macro-context
     (append pairs (macro-context-environment context))
     (macro-context-id context)))
 
 (define (macro-context-set! context name denotation)
+  (display "macro-context-set!" (current-error-port))
+  (newline (current-error-port))
+
   (let* ((environment (macro-context-environment context))
          (pair (assq name environment)))
     (when pair (set-cdr! pair denotation))
     pair))
 
 (define (macro-context-set-last! context name denotation)
+  (display "macro-context-set-last!" (current-error-port))
+  (newline (current-error-port))
+
   (unless (macro-context-set! context name denotation)
     (let ((environment (macro-context-environment context))
           (tail (list (cons name denotation))))
@@ -441,6 +450,9 @@
         (set-last-cdr! environment tail)))))
 
 (define (macro-context-generate-id! context)
+  (display "generate-id" (current-error-port))
+  (newline (current-error-port))
+
   (let ((id (macro-context-id context)))
     (macro-context-set-id! context (+ id 1))
     id))
@@ -496,6 +508,9 @@
         expression))))
 
 (define (resolve-denotation context expression)
+  (display "resolve-denotation" (current-error-port))
+  (newline (current-error-port))
+
   (cond
     ((assq expression (macro-context-environment context)) =>
       cdr)
@@ -504,6 +519,9 @@
       expression)))
 
 (define (rename-variable context name)
+  (display "rename-variable" (current-error-port))
+  (newline (current-error-port))
+
   ; Share tails when appending strings.
   (string->uninterned-symbol
     (string-append
@@ -513,6 +531,9 @@
 
 (define (find-pattern-variables context bound-variables pattern)
   (define excluded-variables (cons (rule-context-ellipsis context) bound-variables))
+
+  (display "find-pattern-variables" (current-error-port))
+  (newline (current-error-port))
 
   (let loop ((pattern pattern) (variables '()))
     (cond
@@ -555,6 +576,9 @@
 (define (match-pattern context pattern expression)
   (define (match pattern expression)
     (match-pattern context pattern expression))
+
+  (display "match-pattern" (current-error-port))
+  (newline (current-error-port))
 
   (cond
     ((and
@@ -608,6 +632,9 @@
 (define (fill-template context matches template)
   (define (fill template)
     (fill-template context matches template))
+
+  (display "fill-template" (current-error-port))
+  (newline (current-error-port))
 
   (cond
     ((and (symbol? template) (assq template matches)) =>
