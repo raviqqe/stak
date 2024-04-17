@@ -504,10 +504,12 @@
       expression)))
 
 (define (rename-variable context name)
-  (let ((denotation (resolve-denotation context name))
-        (id (macro-context-generate-id! context)))
-    ; Share tails when appending strings.
-    (string->uninterned-symbol (string-append (id->string id) "$" (symbol->string name)))))
+  ; Share tails when appending strings.
+  (string->uninterned-symbol
+    (string-append
+      (id->string (macro-context-generate-id! context))
+      "$"
+      (symbol->string name))))
 
 (define (find-pattern-variables context bound-variables pattern)
   (define excluded-variables (cons (rule-context-ellipsis context) bound-variables))
