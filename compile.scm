@@ -724,7 +724,7 @@
                 context
                 (map-values
                   (lambda (transformer)
-                    (make-transformer context transformer))
+                    (make-transformer context (car transformer)))
                   (cadr expression)))
               (caddr expression)))
 
