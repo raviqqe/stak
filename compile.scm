@@ -736,11 +736,11 @@
           (($$letrec-syntax)
             (let* ((bindings (cadr expression))
                    (context
-                     (fold-left
-                       (lambda (context pair)
-                         (macro-context-push context (car pair) #f))
+                     (macro-context-append
                        context
-                       bindings)))
+                       (map
+                         (lambda (pair) (cons (car pair) #f))
+                         bindings))))
               (for-each
                 (lambda (pair)
                   (macro-context-set!
