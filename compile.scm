@@ -426,9 +426,6 @@
     (append pairs (macro-context-environment context))
     (macro-context-id context)))
 
-(define (macro-context-push context name denotation)
-  (macro-context-append context (list (cons name denotation))))
-
 (define (macro-context-set! context name denotation)
   (let* ((environment (macro-context-environment context))
          (pair (assq name environment)))
@@ -507,10 +504,12 @@
       expression)))
 
 (define (rename-variable context name)
-  (let ((denotation (resolve-denotation context name))
-        (id (macro-context-generate-id! context)))
-    ; Share tails when appending strings.
-    (string->uninterned-symbol (string-append (id->string id) "$" (symbol->string name)))))
+  ; Share tails when appending strings.
+  (string->uninterned-symbol
+    (string-append
+      (id->string (macro-context-generate-id! context))
+      "$"
+      (symbol->string name))))
 
 (define (find-pattern-variables context bound-variables pattern)
   (define excluded-variables (cons (rule-context-ellipsis context) bound-variables))
@@ -723,24 +722,22 @@
 
           (($$let-syntax)
             (expand-macro
-              (fold-left
-                (lambda (context pair)
-                  (macro-context-push
-                    context
-                    (car pair)
-                    (make-transformer context (cadr pair))))
+              (macro-context-append
                 context
-                (cadr expression))
+                (map-values
+                  (lambda (transformer)
+                    (make-transformer context (car transformer)))
+                  (cadr expression)))
               (caddr expression)))
 
           (($$letrec-syntax)
             (let* ((bindings (cadr expression))
                    (context
-                     (fold-left
-                       (lambda (context pair)
-                         (macro-context-push context (car pair) #f))
+                     (macro-context-append
                        context
-                       bindings)))
+                       (map-values
+                         (lambda (value) #f)
+                         bindings))))
               (for-each
                 (lambda (pair)
                   (macro-context-set!
