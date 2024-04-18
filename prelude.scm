@@ -2124,6 +2124,40 @@
 
     (set! write-value write)))
 
+(define-library (scheme lazy)
+  (export delay delay-force force promise? make-promise)
+
+  (import (scheme base))
+
+  (begin
+    (define-syntax delay
+      (syntax-rules ()
+        ((_ body)
+          (let ((done #f)
+                (value #f))
+            (lambda ()
+              (if done
+                value
+                (begin
+                  (set! value body)
+                  (set! done #t)
+                  value)))))))
+
+    (define-syntax delay-force
+      (syntax-rules ()
+        ((_ promise)
+          (lambda () (force promise)))))
+
+    (define (force x)
+      (x))
+
+    (define promise? procedure?)
+
+    (define (make-promise x)
+      (if (promise? x)
+        x
+        (lambda () x)))))
+
 (define-library (scheme process-context)
   (export exit emergency-exit)
 
