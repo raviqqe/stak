@@ -2148,6 +2148,8 @@
         (x)
         x))
 
+    (define promise? procedure?)
+
     #f))
 
 (define-library (scheme process-context)
