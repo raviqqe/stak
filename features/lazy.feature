@@ -29,7 +29,7 @@ Feature: Lazy
       """scheme
       (import (scheme base) (scheme lazy))
 
-      (delay (write-u8 65))
+      (force (delay (write-u8 65)))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly ""
+    Then the stdout should contain exactly "A"
