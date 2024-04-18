@@ -20,9 +20,10 @@ Feature: Lazy
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value      | output |
-      | #f         | B      |
-      | (delay #f) | A      |
+      | value             | output |
+      | #f                | B      |
+      | (delay #f)        | A      |
+      | (make-promise #f) | A      |
 
   Scenario: Force a promise
     Given a file named "main.scm" with:
