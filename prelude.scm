@@ -2145,8 +2145,8 @@
 
     (define-syntax delay-force
       (syntax-rules ()
-        ((_ body)
-          (lambda () (force body)))))
+        ((_ promise)
+          (lambda () (force promise)))))
 
     (define (force x)
       (x))
