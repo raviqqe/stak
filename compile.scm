@@ -547,7 +547,7 @@
     (apply
       map
       list
-      (find-pattern-variables context (rule-context-literals context) pattern)
+      (find-pattern-variables context (map car (rule-context-literals context)) pattern)
       (map
         (lambda (expression) (match-pattern context pattern expression))
         expression))))
@@ -559,12 +559,14 @@
   (cond
     ((and
         (symbol? pattern)
-        (memq pattern (rule-context-literals context)))
-      (unless (eq?
-               (resolve-denotation (rule-context-use-context context) expression)
-               (resolve-denotation (rule-context-definition-context context) pattern))
-        (raise #f))
-      '())
+        (assq pattern (rule-context-literals context)))
+      =>
+      (lambda (pair)
+        (unless (eq?
+                 (resolve-denotation (rule-context-use-context context) expression)
+                 (cdr pair))
+          (raise #f))
+        '()))
 
     ((symbol? pattern)
       (list (cons pattern expression)))
@@ -631,13 +633,18 @@
       (($$syntax-rules)
         (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
               (literals (caddr transformer))
+              (literal-denotations
+                (map
+                  (lambda (literal)
+                    (cons literal (resolve-denotation definition-context literal)))
+                  literals))
               (rules (cdddr transformer)))
           (lambda (use-context expression)
             (let loop ((rules rules))
               (unless (pair? rules)
                 (error "invalid syntax" expression))
               (let ((rule (car rules))
-                    (rule-context (make-rule-context definition-context use-context ellipsis literals)))
+                    (rule-context (make-rule-context definition-context use-context ellipsis literal-denotations)))
                 (guard (value
                         ((not value)
                           (loop (cdr rules))))
