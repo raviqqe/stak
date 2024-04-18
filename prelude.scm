@@ -2130,9 +2130,12 @@
   (import (scheme base))
 
   (begin
-    (define exit-success (data-rib procedure-type #f (cons 0 '())))
+    (define-syntax delay
+      (syntax-rules ()
+        ((_ x)
+          (foo))))
 
-    (define (emergency-exit . rest)
+    (define (force . rest)
       (if (or (null? rest) (eq? (car rest) #t))
         (exit-success)
         ($$halt)))
