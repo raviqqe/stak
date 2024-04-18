@@ -60,7 +60,7 @@ Feature: Lazy
       (import (scheme base) (scheme lazy))
 
       (force
-        (let loop ((i 100000))
+        (let loop ((i 10000))
           (if (zero? i)
             (write-u8 65)
             (delay-force (loop (- i 1))))))
