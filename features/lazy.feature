@@ -20,9 +20,10 @@ Feature: Lazy
     Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value      | output |
-      | #f         | B      |
-      | (delay #f) | A      |
+      | value             | output |
+      | #f                | B      |
+      | (delay #f)        | A      |
+      | (make-promise #f) | A      |
 
   Scenario: Force a promise
     Given a file named "main.scm" with:
@@ -30,6 +31,19 @@ Feature: Lazy
       (import (scheme base) (scheme lazy))
 
       (force (delay (write-u8 65)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Force a promise twice
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme lazy))
+
+      (define x (delay (write-u8 65)))
+
+      (force x)
+      (force x)
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
