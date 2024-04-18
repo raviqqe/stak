@@ -34,6 +34,19 @@ Feature: Lazy
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Force a promise twice
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme lazy))
+
+      (define x (delay (write-u8 65)))
+
+      (force x)
+      (force x)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Force and delay an expression
     Given a file named "main.scm" with:
       """scheme
