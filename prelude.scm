@@ -2144,10 +2144,11 @@
                   value)))))))
 
     (define (force x)
-      foo)
+      (if (promise? x)
+        (x)
+        x))
 
-    (define (exit . rest)
-      (unwind (lambda () (apply emergency-exit rest))))))
+    #f))
 
 (define-library (scheme process-context)
   (export exit emergency-exit)
