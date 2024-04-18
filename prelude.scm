@@ -2140,7 +2140,7 @@
                 value
                 (begin
                   (set! value body)
-                  (set! done)
+                  (set! done #t)
                   value)))))))
 
     (define-syntax delay-force
