@@ -1,5 +1,5 @@
 Feature: Lazy
-  Scenario: Delay evaluation of an expression
+  Scenario: Delay an expression
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme lazy))
@@ -30,6 +30,40 @@ Feature: Lazy
       (import (scheme base) (scheme lazy))
 
       (force (delay (write-u8 65)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Force and delay an expression
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme lazy))
+
+      (delay-force (write-u8 65))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly ""
+
+  Scenario: Force, delay, and force an expression
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme lazy))
+
+      (force (delay-force (write-u8 65)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Force and delay expressions in a loop
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme lazy))
+
+      (force
+        (let loop ((i 10000))
+          (if (zero? i)
+            #f
+            (delay-force (loop (- i 1))))))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
