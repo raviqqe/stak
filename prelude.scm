@@ -2132,7 +2132,7 @@
   (begin
     (define-syntax delay
       (syntax-rules ()
-        ((_ x)
+        ((_ body)
           (foo))))
 
     (define (force . rest)
