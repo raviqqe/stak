@@ -631,14 +631,14 @@
   (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
     (case (resolve-denotation definition-context (predicate transformer))
       (($$syntax-rules)
-        (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-              (literals (caddr transformer))
-              (literal-denotations
-                (map
-                  (lambda (literal)
-                    (cons literal (resolve-denotation definition-context literal)))
-                  literals))
-              (rules (cdddr transformer)))
+        (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
+               (literals (caddr transformer))
+               (literal-denotations
+                 (map
+                   (lambda (literal)
+                     (cons literal (resolve-denotation definition-context literal)))
+                   literals))
+               (rules (cdddr transformer)))
           (lambda (use-context expression)
             (let loop ((rules rules))
               (unless (pair? rules)
