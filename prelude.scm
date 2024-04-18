@@ -2149,9 +2149,7 @@
           (lambda () (force body)))))
 
     (define (force x)
-      (if (promise? x)
-        (x)
-        x))
+      (x))
 
     (define promise? procedure?)
 
