@@ -2124,6 +2124,22 @@
 
     (set! write-value write)))
 
+(define-library (scheme lazy)
+  (export delay)
+
+  (import (scheme base))
+
+  (begin
+    (define exit-success (data-rib procedure-type #f (cons 0 '())))
+
+    (define (emergency-exit . rest)
+      (if (or (null? rest) (eq? (car rest) #t))
+        (exit-success)
+        ($$halt)))
+
+    (define (exit . rest)
+      (unwind (lambda () (apply emergency-exit rest))))))
+
 (define-library (scheme process-context)
   (export exit emergency-exit)
 
