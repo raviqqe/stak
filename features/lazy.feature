@@ -62,7 +62,7 @@ Feature: Lazy
       (force
         (let loop ((i 10000))
           (if (zero? i)
-            #f
+            (write-u8 65)
             (delay-force (loop (- i 1))))))
       """
     When I successfully run `scheme main.scm`
