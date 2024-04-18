@@ -2133,7 +2133,14 @@
     (define-syntax delay
       (syntax-rules ()
         ((_ body)
-          (foo))))
+          (let ((done #f) (value #f))
+            (lambda ()
+              (if done
+                value
+                (begin
+                  (set! value body)
+                  (set! done)
+                  value)))))))
 
     (define (force . rest)
       (if (or (null? rest) (eq? (car rest) #t))
