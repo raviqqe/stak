@@ -2143,6 +2143,11 @@
                   (set! done)
                   value)))))))
 
+    (define-syntax delay-force
+      (syntax-rules ()
+        ((_ body)
+          (lambda () (force body)))))
+
     (define (force x)
       (if (promise? x)
         (x)
