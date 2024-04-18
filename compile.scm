@@ -686,9 +686,11 @@
       ((pair? expression)
         (case (resolve-denotation context (car expression))
           (($$alias)
-            (let ((denotation (resolve-denotation context (caddr expression))))
-              (macro-context-set-last! context (cadr expression) denotation)
-              #f))
+            (macro-context-set-last!
+              context
+              (cadr expression)
+              (resolve-denotation context (caddr expression)))
+            #f)
 
           (($$define)
             (let ((name (cadr expression)))
