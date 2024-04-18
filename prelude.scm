@@ -2150,7 +2150,10 @@
 
     (define promise? procedure?)
 
-    (define (make-promise x) (lambda () x))))
+    (define (make-promise x)
+      (if (promise? x)
+        x
+        (lambda () x)))))
 
 (define-library (scheme process-context)
   (export exit emergency-exit)
