@@ -2125,7 +2125,7 @@
     (set! write-value write)))
 
 (define-library (scheme lazy)
-  (export delay)
+  (export delay delay-force force promise? make-promise)
 
   (import (scheme base))
 
