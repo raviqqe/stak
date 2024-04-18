@@ -49,7 +49,7 @@ Feature: Lazy
       """scheme
       (import (scheme base) (scheme lazy))
 
-      (force (delay-force (write-u8 65)))
+      (write-u8 (force (delay-force (make-promise (+ 60 5)))))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
@@ -59,11 +59,12 @@ Feature: Lazy
       """scheme
       (import (scheme base) (scheme lazy))
 
-      (force
-        (let loop ((i 10000))
-          (if (zero? i)
-            (write-u8 65)
-            (delay-force (loop (- i 1))))))
+      (write-u8
+        (force
+          (let loop ((i 10000))
+            (if (zero? i)
+              (make-promise 65)
+              (delay-force (loop (- i 1)))))))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
