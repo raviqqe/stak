@@ -2133,7 +2133,8 @@
     (define-syntax delay
       (syntax-rules ()
         ((_ body)
-          (let ((done #f) (value #f))
+          (let ((done #f)
+                (value #f))
             (lambda ()
               (if done
                 value
@@ -2142,10 +2143,8 @@
                   (set! done)
                   value)))))))
 
-    (define (force . rest)
-      (if (or (null? rest) (eq? (car rest) #t))
-        (exit-success)
-        ($$halt)))
+    (define (force x)
+      foo)
 
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
