@@ -67,3 +67,13 @@ Feature: Lazy
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Make a promise
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme lazy))
+
+      (write-u8 (force (make-promise 65)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
