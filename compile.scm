@@ -547,7 +547,42 @@
       (rule-context-ellipsis context))))
 
 (define (compile-pattern pattern)
-  fo)
+  (cond
+    ((and
+        (symbol? pattern)
+        (memq pattern (rule-context-literals context)))
+      (unless (eq?
+               (resolve-denotation (rule-context-use-context context) expression)
+               (resolve-denotation (rule-context-definition-context context) pattern))
+        (raise #f))
+      '())
+
+    ((symbol? pattern)
+      (list (cons pattern expression)))
+
+    ((pair? pattern)
+      (cond
+        ((ellipsis-pattern? context pattern)
+          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
+            (when (negative? length)
+              (raise #f))
+            (append
+              (match-ellipsis-pattern context (car pattern) (list-head expression length))
+              (match (cddr pattern) (list-tail expression length)))))
+
+        ((pair? expression)
+          (append
+            (match (car pattern) (car expression))
+            (match (cdr pattern) (cdr expression))))
+
+        (else
+          (raise #f))))
+
+    ((equal? pattern expression)
+      '())
+
+    (else
+      (raise #f))))
 
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
