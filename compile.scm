@@ -534,10 +534,10 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
-(define-record-type ellipsis-pattern
-  (make-ellipsis-pattern value)
-  ellipsis-pattern?
-  (value ellipsis-pattern-value))
+(define-record-type ellipsis
+  (make-ellipsis value)
+  ellipsis?
+  (value ellipsis-value))
 
 (define (ellipsis-pattern? context expression)
   (and
@@ -556,7 +556,7 @@
 
     ((ellipsis-pattern? context pattern)
       (cons
-        (make-ellipsis-pattern (car pattern))
+        (make-ellipsis (car pattern))
         (compile (cddr pattern))))
 
     (else
