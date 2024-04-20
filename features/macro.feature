@@ -857,7 +857,7 @@ Feature: Macro
 
       (define _ 65)
 
-      (write-u8 _
+      (write-u8 _)
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
