@@ -831,16 +831,21 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (let-syntax (
-          (x
-            (syntax-rules ()
-              ((_) 42))))
-        (let-syntax (
-            (foo
-              (syntax-rules ()
-                ((_ y)
-                  (let ((x y)) x)))))
-          (write-u8 (foo 65))))
+      (define define-syntax 65)
+
+      (write-u8 define-syntax)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Re-define `...`
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define define-syntax 65)
+
+      (write-u8 define-syntax)
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
