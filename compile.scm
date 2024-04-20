@@ -534,11 +534,6 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
-(define-record-type ellipsis-thing
-  (make-ellipsis-thing value)
-  ellipsis-thing?
-  (value ellipsis-thing-value))
-
 (define (ellipsis-pattern? context ellipsis expression)
   (and
     (pair? (cdr expression))
@@ -554,9 +549,11 @@
     ((not (pair? pattern))
       pattern)
 
-    ((ellipsis-pattern? context ellipsis pattern)
+    ((and
+        (pair? (cdr pattern))
+        (eq? ellipsis (resolve-denotation context (cadr pattern))))
       (cons
-        (make-ellipsis-thing (compile (car pattern)))
+        (make-ellipsis-match (compile (car pattern)))
         (compile (cddr pattern))))
 
     (else
@@ -594,12 +591,12 @@
 
     ((pair? pattern)
       (cond
-        ((ellipsis-thing? (car pattern))
+        ((ellipsis-match? (car pattern))
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 1))))
             (when (negative? length)
               (raise #f))
             (append
-              (match-ellipsis-pattern context (ellipsis-thing-value (car pattern)) (list-head expression length))
+              (match-ellipsis-pattern context (ellipsis-match-value (car pattern)) (list-head expression length))
               (match (cdr pattern) (list-tail expression length)))))
 
         ((pair? expression)
@@ -638,9 +635,9 @@
 
     ((pair? template)
       (let ((first (car template)))
-        (if (ellipsis-thing? first)
+        (if (ellipsis-match? first)
           (append
-            (fill-ellipsis-template context matches (ellipsis-thing-value first))
+            (fill-ellipsis-template context matches (ellipsis-match-value first))
             (fill (cdr template)))
           (cons
             (fill first)
