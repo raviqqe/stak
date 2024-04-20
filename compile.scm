@@ -539,22 +539,22 @@
   ellipsis?
   (value ellipsis-value))
 
-(define (ellipsis-pattern? context expression)
+(define (ellipsis-pattern? context ellipsis expression)
   (and
     (pair? (cdr expression))
     (eq?
-      (resolve-denotation (rule-context-definition-context context) (cadr expression))
-      (rule-context-ellipsis context))))
+      (resolve-denotation context (cadr expression))
+      ellipsis)))
 
-(define (compile-pattern context pattern)
+(define (compile-pattern context ellipsis pattern)
   (define (compile pattern)
-    (compile-pattern context pattern))
+    (compile-pattern context ellipsis pattern))
 
   (cond
     ((not (pair? pattern))
       pattern)
 
-    ((ellipsis-pattern? context pattern)
+    ((ellipsis-pattern? context ellipsis pattern)
       (cons
         (make-ellipsis (car pattern))
         (compile (cddr pattern))))
@@ -594,7 +594,7 @@
 
     ((pair? pattern)
       (cond
-        ((ellipsis-pattern? context pattern)
+        ((ellipsis-pattern? (rule-context-definition-context context) (rule-context-ellipsis context) pattern)
           (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
             (when (negative? length)
               (raise #f))
@@ -637,7 +637,7 @@
       cdr)
 
     ((pair? template)
-      (if (ellipsis-pattern? context template)
+      (if (ellipsis-pattern? (rule-context-definition-context context) (rule-context-ellipsis context) template)
         (append
           (fill-ellipsis-template context matches (car template))
           (fill (cddr template)))
@@ -659,8 +659,8 @@
                 (map
                   (lambda (rule)
                     (list
-                      (compile-pattern definition-context (car rule))
-                      (compile-pattern definition-context (cadr rule))))
+                      (compile-pattern definition-context ellipsis (car rule))
+                      (compile-pattern definition-context ellipsis (cadr rule))))
                   (cdddr transformer))))
           (lambda (use-context expression)
             (let loop ((rules rules))
