@@ -146,7 +146,7 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             }
             Primitive::CLOSE => {
                 let stack = vm.stack();
-                let x = vm.pop();
+                let closure = vm.pop();
 
                 Self::rib(vm, Type::Procedure as Tag, vm.cdr(stack), vm.cdr_value(x))?;
             }
