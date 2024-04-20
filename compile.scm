@@ -654,7 +654,12 @@
       (($$syntax-rules)
         (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
               (literals (caddr transformer))
-              (rules (cdddr transformer)))
+              (rules (cdddr transformer))
+              (compiled-rules
+                (map
+                  (lambda (rule)
+                    (list (car rule) (cadr rule)))
+                  (cdddr transformer))))
           (lambda (use-context expression)
             (let loop ((rules rules))
               (unless (pair? rules)
