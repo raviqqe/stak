@@ -534,13 +534,6 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
-(define (ellipsis-pattern? context ellipsis expression)
-  (and
-    (pair? (cdr expression))
-    (eq?
-      (resolve-denotation context (cadr expression))
-      ellipsis)))
-
 (define (compile-pattern context ellipsis pattern)
   (define (compile pattern)
     (compile-pattern context ellipsis pattern))
