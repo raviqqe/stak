@@ -589,7 +589,10 @@
             (when (negative? length)
               (raise #f))
             (append
-              (match-ellipsis-pattern context (ellipsis-match-value (car pattern)) (list-head expression length))
+              (match-ellipsis-pattern
+                context
+                (ellipsis-match-value (car pattern))
+                (list-head expression length))
               (match (cdr pattern) (list-tail expression length)))))
 
         ((pair? expression)
@@ -627,14 +630,12 @@
       cdr)
 
     ((pair? template)
-      (let ((first (car template)))
-        (if (ellipsis-match? first)
-          (append
+      (append
+        (let ((first (car template)))
+          (if (ellipsis-match? first)
             (fill-ellipsis-template context matches (ellipsis-match-value first))
-            (fill (cdr template)))
-          (cons
-            (fill first)
-            (fill (cdr template))))))
+            (list (fill first))))
+        (fill (cdr template))))
 
     (else
       template)))
@@ -648,9 +649,10 @@
                (rules
                  (map
                    (lambda (rule)
-                     (list
-                       (compile-pattern definition-context ellipsis (car rule))
-                       (compile-pattern definition-context ellipsis (cadr rule))))
+                     (map
+                       (lambda (pattern)
+                         (compile-pattern definition-context ellipsis pattern))
+                       rule))
                    (cdddr transformer))))
           (lambda (use-context expression)
             (let loop ((rules rules))
