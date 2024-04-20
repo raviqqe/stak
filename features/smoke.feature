@@ -66,3 +66,22 @@ Feature: Smoke
     And the exit status should be 0
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+  Scenario: Compile symbols in an if expression in a procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs
+        (map
+          (lambda (x)
+            (cons #f (lambda () (+ 65 x))))
+        '(0 1 2)))
+
+      (for-each
+        (lambda (x)
+          (write-u8 ((cdr x))))
+        xs)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "bar"
