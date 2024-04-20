@@ -551,17 +551,18 @@
     (compile-pattern context pattern))
 
   (cond
-    ((pair? pattern)
-      (if (ellipsis-pattern? context pattern)
-        (append
-          (match-ellipsis-pattern context (car pattern) (list-head expression length))
-          (match (cddr pattern) (list-tail expression length)))
-        (append
-          (compile-pattern (car pattern) (car expression))
-          (match (cdr pattern) (cdr expression)))))
+    ((not (pair? pattern))
+      pattern)
+
+    ((ellipsis-pattern? context pattern)
+      (append
+        (match-ellipsis-pattern context (car pattern) (list-head expression length))
+        (match (cddr pattern) (list-tail expression length))))
 
     (else
-      pattern)))
+      (cons
+        (compile (car pattern))
+        (compile (cdr pattern))))))
 
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
