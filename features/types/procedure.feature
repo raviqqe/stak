@@ -273,7 +273,7 @@ Feature: Procedure
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Do not modify environment of a reused closure
+  Scenario: Do not modify environment of a reused closure with a primitive procedure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
