@@ -272,3 +272,18 @@ Feature: Procedure
       """
     When I run `scheme main.scm`
     Then the exit status should not be 0
+
+  Scenario: Do not modify environment of a reused closure with a primitive procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define (f x)
+        (cons #f (lambda () x)))
+
+      (write-u8 ((cdr (f 65))))
+      (write-u8 ((cdr (f 66))))
+      (write-u8 ((cdr (f 67))))
+      """
+    When I run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
