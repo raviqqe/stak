@@ -526,6 +526,9 @@
       ((and (symbol? pattern) (not (memq pattern excluded-variables)))
         (cons pattern variables))
 
+      ((ellipsis-match? pattern)
+        (loop (ellipsis-match-value pattern) variables))
+
       (else
         variables))))
 
