@@ -148,7 +148,12 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
                 let stack = vm.stack();
                 let closure = vm.pop();
 
-                Self::rib(vm, Type::Procedure as Tag, vm.cdr(stack), vm.cdr_value(x))?;
+                Self::rib(
+                    vm,
+                    Type::Procedure as Tag,
+                    vm.cdr(stack),
+                    vm.cdr_value(closure),
+                )?;
             }
             Primitive::IS_RIB => {
                 Self::operate_top(vm, |vm, value| vm.boolean(value.is_cons()).into())?
