@@ -567,7 +567,7 @@
           (raise #f))))
 
     (else
-      (raise #f))))
+      pattern)))
 
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
