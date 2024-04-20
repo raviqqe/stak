@@ -658,7 +658,9 @@
               (compiled-rules
                 (map
                   (lambda (rule)
-                    (list (car rule) (cadr rule)))
+                    (list
+                      (compile-pattern definition-context (car rule))
+                      (compile-pattern definition-context (cadr rule))))
                   (cdddr transformer))))
           (lambda (use-context expression)
             (let loop ((rules rules))
