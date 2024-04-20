@@ -364,16 +364,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         value
     }
 
-    /// Returns a value at the top of a stack.
-    pub fn top(&self) -> Value {
-        self.car(self.stack)
-    }
-
-    /// Sets a value at the top of a stack.
-    pub fn set_top(&mut self, value: Value) {
-        self.set_car(self.stack, value);
-    }
-
     /// Allocates a cons on heap.
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
