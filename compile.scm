@@ -555,9 +555,9 @@
       pattern)
 
     ((ellipsis-pattern? context pattern)
-      (append
-        (match-ellipsis-pattern context (car pattern) (list-head expression length))
-        (match (cddr pattern) (list-tail expression length))))
+      (cons
+        (make-ellipsis-pattern (car pattern))
+        (compile (cddr pattern))))
 
     (else
       (cons
