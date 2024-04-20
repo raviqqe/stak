@@ -556,7 +556,7 @@
 
     ((ellipsis-pattern? context ellipsis pattern)
       (cons
-        (make-ellipsis (car pattern))
+        (make-ellipsis (compile (car pattern)))
         (compile (cddr pattern))))
 
     (else
