@@ -534,10 +534,10 @@
   ellipsis-match?
   (value ellipsis-match-value))
 
-(define-record-type ellipsis
-  (make-ellipsis value)
-  ellipsis?
-  (value ellipsis-value))
+(define-record-type ellipsis-thing
+  (make-ellipsis-thing value)
+  ellipsis-thing?
+  (value ellipsis-thing-value))
 
 (define (ellipsis-pattern? context ellipsis expression)
   (and
@@ -556,7 +556,7 @@
 
     ((ellipsis-pattern? context ellipsis pattern)
       (cons
-        (make-ellipsis (compile (car pattern)))
+        (make-ellipsis-thing (compile (car pattern)))
         (compile (cddr pattern))))
 
     (else
@@ -594,13 +594,13 @@
 
     ((pair? pattern)
       (cond
-        ((ellipsis-pattern? (rule-context-definition-context context) (rule-context-ellipsis context) pattern)
-          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
+        ((ellipsis-thing? (car pattern))
+          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 1))))
             (when (negative? length)
               (raise #f))
             (append
-              (match-ellipsis-pattern context (car pattern) (list-head expression length))
-              (match (cddr pattern) (list-tail expression length)))))
+              (match-ellipsis-pattern context (ellipsis-thing-value (car pattern)) (list-head expression length))
+              (match (cdr pattern) (list-tail expression length)))))
 
         ((pair? expression)
           (append
@@ -637,13 +637,14 @@
       cdr)
 
     ((pair? template)
-      (if (ellipsis-pattern? (rule-context-definition-context context) (rule-context-ellipsis context) template)
-        (append
-          (fill-ellipsis-template context matches (car template))
-          (fill (cddr template)))
-        (cons
-          (fill (car template))
-          (fill (cdr template)))))
+      (let ((first (car template)))
+        (if (ellipsis-thing? first)
+          (append
+            (fill-ellipsis-template context matches (ellipsis-thing-value first))
+            (fill (cdr template)))
+          (cons
+            (fill first)
+            (fill (cdr template))))))
 
     (else
       template)))
@@ -652,16 +653,15 @@
   (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
     (case (resolve-denotation definition-context (predicate transformer))
       (($$syntax-rules)
-        (let ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-              (literals (caddr transformer))
-              (rules (cdddr transformer))
-              (compiled-rules
-                (map
-                  (lambda (rule)
-                    (list
-                      (compile-pattern definition-context ellipsis (car rule))
-                      (compile-pattern definition-context ellipsis (cadr rule))))
-                  (cdddr transformer))))
+        (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
+               (literals (caddr transformer))
+               (rules
+                 (map
+                   (lambda (rule)
+                     (list
+                       (compile-pattern definition-context ellipsis (car rule))
+                       (compile-pattern definition-context ellipsis (cadr rule))))
+                   (cdddr transformer))))
           (lambda (use-context expression)
             (let loop ((rules rules))
               (unless (pair? rules)
