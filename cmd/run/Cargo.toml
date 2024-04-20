@@ -18,7 +18,7 @@ stak-minifier-macro = { version = "0.1.8", path = "../../minifier_macro" }
 stak-primitive = { version = "0.2.31", path = "../../primitive", features = [
   "std",
 ] }
-stak-vm = { version = "0.3.31", path = "../../vm", features = ["std"] }
+stak-vm = { version = "0.4.0", path = "../../vm", features = ["std"] }
 
 [lints]
 workspace = true
