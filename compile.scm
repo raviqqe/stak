@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (scheme cxr)
+  (scheme lazy)
   (scheme read)
   (scheme write))
 
@@ -498,7 +499,8 @@
 (define (resolve-denotation context expression)
   (cond
     ((assq expression (macro-context-environment context)) =>
-      cdr)
+      (lambda (pair)
+        (force (cdr pair))))
 
     (else
       expression)))
@@ -684,7 +686,7 @@
                           (lambda (pair)
                             (cons
                               (cdr pair)
-                              (resolve-denotation definition-context (car pair))))
+                              (delay (resolve-denotation definition-context (car pair)))))
                           names))))))))))
 
       (else
@@ -718,19 +720,19 @@
             (macro-context-set-last!
               context
               (cadr expression)
-              (resolve-denotation context (caddr expression)))
+              (delay (resolve-denotation context (caddr expression))))
             #f)
 
           (($$define)
             (let ((name (cadr expression)))
-              (macro-context-set! context name name)
+              (macro-context-set! context name (make-promise name))
               (expand (cons '$$set! (cdr expression)))))
 
           (($$define-syntax)
             (macro-context-set-last!
               context
               (cadr expression)
-              (make-transformer context (caddr expression)))
+              (delay (make-transformer context (caddr expression))))
             #f)
 
           (($$lambda)
@@ -739,7 +741,7 @@
                      (macro-context-append
                        context
                        (map
-                         (lambda (name) (cons name (rename-variable context name)))
+                         (lambda (name) (cons name (delay (rename-variable context name))))
                          (parameter-names parameters))))
                    ; We need to resolve parameter denotations before expanding a body.
                    (parameters
@@ -757,7 +759,7 @@
                 context
                 (map-values
                   (lambda (transformer)
-                    (make-transformer context (car transformer)))
+                    (delay (make-transformer context (car transformer))))
                   (cadr expression)))
               (caddr expression)))
 
@@ -774,7 +776,7 @@
                   (macro-context-set!
                     context
                     (car pair)
-                    (make-transformer context (cadr pair))))
+                    (delay (make-transformer context (cadr pair)))))
                 bindings)
               (expand-macro context (caddr expression))))
 
