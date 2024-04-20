@@ -546,6 +546,9 @@
       (resolve-denotation (rule-context-definition-context context) (cadr expression))
       (rule-context-ellipsis context))))
 
+(define (compile-pattern pattern)
+  fo)
+
 (define (match-ellipsis-pattern context pattern expression)
   (map-values
     make-ellipsis-match
