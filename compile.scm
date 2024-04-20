@@ -546,21 +546,21 @@
       (resolve-denotation (rule-context-definition-context context) (cadr expression))
       (rule-context-ellipsis context))))
 
-(define (compile-pattern pattern)
+(define (compile-pattern context pattern)
+  (define (compile pattern)
+    (compile-pattern context pattern))
+
   (cond
     ((pair? pattern)
       (cond
         ((ellipsis-pattern? context pattern)
-          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 2))))
-            (when (negative? length)
-              (raise #f))
-            (append
-              (match-ellipsis-pattern context (car pattern) (list-head expression length))
-              (match (cddr pattern) (list-tail expression length)))))
+          (append
+            (match-ellipsis-pattern context (car pattern) (list-head expression length))
+            (match (cddr pattern) (list-tail expression length))))
 
         ((pair? expression)
           (append
-            (match (car pattern) (car expression))
+            (compile-pattern (car pattern) (car expression))
             (match (cdr pattern) (cdr expression))))
 
         (else
