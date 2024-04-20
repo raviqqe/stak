@@ -548,18 +548,6 @@
 
 (define (compile-pattern pattern)
   (cond
-    ((and
-        (symbol? pattern)
-        (memq pattern (rule-context-literals context)))
-      (unless (eq?
-               (resolve-denotation (rule-context-use-context context) expression)
-               (resolve-denotation (rule-context-definition-context context) pattern))
-        (raise #f))
-      '())
-
-    ((symbol? pattern)
-      (list (cons pattern expression)))
-
     ((pair? pattern)
       (cond
         ((ellipsis-pattern? context pattern)
@@ -577,9 +565,6 @@
 
         (else
           (raise #f))))
-
-    ((equal? pattern expression)
-      '())
 
     (else
       (raise #f))))
