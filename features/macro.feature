@@ -843,9 +843,21 @@ Feature: Macro
       """scheme
       (import (scheme base))
 
-      (define define-syntax 65)
+      (define ... 65)
 
-      (write-u8 define-syntax)
+      (write-u8 ...)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Define `_`
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define _ 65)
+
+      (write-u8 _
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
