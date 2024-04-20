@@ -67,7 +67,7 @@ Feature: Smoke
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Compile symbols in an if expression in a procedure
+  Scenario: Do not modify environment of a reused closure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -84,4 +84,4 @@ Feature: Smoke
         xs)
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "bar"
+    Then the stdout should contain exactly "ABC"
