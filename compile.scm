@@ -594,7 +594,7 @@
     ((pair? pattern)
       (cond
         ((ellipsis-pattern? (car pattern))
-          (let ((length (- (relaxed-length expression) (- (relaxed-length pattern) 1))))
+          (let ((length (- (relaxed-length expression) (relaxed-length (cdr pattern)))))
             (when (negative? length)
               (raise #f))
             (append
