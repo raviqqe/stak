@@ -385,6 +385,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-profile"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "main_error",
+ "stak-configuration",
+ "stak-device",
+ "stak-primitive",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-sac"
 version = "0.1.32"
 dependencies = [
