@@ -11,7 +11,7 @@ repository.workspace = true
 [features]
 gc_always = []
 std = []
-trace = []
+trace_instruction = []
 trace_heap = []
 
 [dependencies]

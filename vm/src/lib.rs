@@ -31,7 +31,7 @@
 
 #[cfg(test)]
 extern crate alloc;
-#[cfg(any(feature = "std", feature = "trace", test))]
+#[cfg(any(feature = "std", feature = "trace_instruction", test))]
 extern crate std;
 
 mod cons;

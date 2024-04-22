@@ -10,7 +10,7 @@ repository.workspace = true
 
 [features]
 gc_always = ["stak-vm/gc_always"]
-trace = ["stak-vm/trace"]
+trace_instruction = ["stak-vm/trace_instruction"]
 trace_heap = ["stak-vm/trace_heap"]
 
 [dependencies]
