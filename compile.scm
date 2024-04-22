@@ -110,11 +110,6 @@
     (last-cdr (cdr xs))
     xs))
 
-(define (set-last-cdr! xs x)
-  (if (pair? (cdr xs))
-    (set-last-cdr! (cdr xs) x)
-    (set-cdr! xs x)))
-
 (define (filter f xs)
   (if (null? xs)
     '()
@@ -438,18 +433,19 @@
       (macro-context-set-global! context name denotation))))
 
 (define (macro-context-set-global! context name denotation)
-  (cond
-    ((assq name (macro-context-globals context)) =>
-      (lambda (pair)
-        (set-cdr! pair denotation)))
+  (let ((globals (macro-context-globals context)))
+    (cond
+      ((assq name globals) =>
+        (lambda (pair)
+          (set-cdr! pair denotation)))
 
-    ((null? (macro-context-globals context))
-      (macro-context-set-globals! context (list (cons name denotation))))
+      ((null? globals)
+        (macro-context-set-globals! context (list (cons name denotation))))
 
-    (else
-      (set-last-cdr!
-        (macro-context-globals context)
-        (list (cons name denotation))))))
+      (else
+        (set-cdr!
+          globals
+          (cons (cons name denotation) (cdr globals)))))))
 
 (define (macro-context-generate-id! context)
   (let ((id (macro-context-id context)))
