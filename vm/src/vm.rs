@@ -13,6 +13,8 @@ use core::{
     mem::replace,
 };
 use stak_code as code;
+#[cfg(feature = "profile")]
+use std::time::Instant;
 
 const CONS_FIELD_COUNT: usize = 2;
 const FRAME_TAG: Tag = 1;
@@ -74,7 +76,6 @@ struct Arity {
 }
 
 /// A virtual machine.
-#[derive(Debug)]
 pub struct Vm<'a, T: PrimitiveSet> {
     primitive_set: T,
     program_counter: Cons,
@@ -84,6 +85,10 @@ pub struct Vm<'a, T: PrimitiveSet> {
     allocation_index: usize,
     space: bool,
     heap: &'a mut [Value],
+    #[cfg(feature = "profile")]
+    profiler: Option<&'a mut dyn FnMut(&str, u64)>,
+    #[cfg(feature = "profile")]
+    start_time: Instant,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -100,6 +105,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             allocation_index: 0,
             space: false,
             heap,
+            #[cfg(feature = "profile")]
+            profiler: None,
+            #[cfg(feature = "profile")]
+            start_time: Instant::now(),
         };
 
         let null =
@@ -113,6 +122,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             vm.allocate_unchecked(r#true.set_tag(Type::Boolean as Tag).into(), null.into())?;
 
         Ok(vm)
+    }
+
+    #[cfg(feature = "profile")]
+    pub fn with_timing(self, callback: &'a mut dyn FnMut(&str, u64)) -> Self {
+        Self {
+            profiler: Some(callback),
+            ..self
+        }
     }
 
     /// Runs a virtual machine.
@@ -188,6 +205,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
+        #[cfg(feature = "profile")]
+        if let Some(profiler) = self.profiler {
+            profiler();
+        }
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
