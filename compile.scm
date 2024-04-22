@@ -419,7 +419,7 @@
   (make-macro-context globals locals id)
   macro-context?
   (globals macro-context-globals macro-context-set-globals!)
-  (locals macro-context-locals macro-context-set-locals!)
+  (locals macro-context-locals)
   (id macro-context-id macro-context-set-id!))
 
 (define (macro-context-append context pairs)
