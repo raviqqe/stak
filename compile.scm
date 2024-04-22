@@ -425,12 +425,15 @@
 
 (define (macro-context-set! context name denotation)
   (cond
-    ((assq name (macro-context-locals context)) =>
+    ((or
+        (assq name (macro-context-locals context))
+        (assq name (macro-context-globals context)))
+      =>
       (lambda (pair)
         (set-cdr! pair denotation)))
 
     (else
-      (macro-context-set-global! context name denotation))))
+      #f)))
 
 (define (macro-context-set-global! context name denotation)
   (let ((globals (macro-context-globals context)))
