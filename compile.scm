@@ -416,29 +416,39 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment id)
+  (make-macro-context globals locals id)
   macro-context?
-  (environment macro-context-environment macro-context-set-environment!)
+  (globals macro-context-globals macro-context-set-globals!)
+  (locals macro-context-locals macro-context-set-locals!)
   (id macro-context-id macro-context-set-id!))
 
 (define (macro-context-append context pairs)
   (make-macro-context
-    (append pairs (macro-context-environment context))
+    (macro-context-globals context)
+    (append pairs (macro-context-locals context))
     (macro-context-id context)))
 
 (define (macro-context-set! context name denotation)
-  (let* ((environment (macro-context-environment context))
-         (pair (assq name environment)))
-    (when pair (set-cdr! pair denotation))
-    pair))
+  (cond
+    ((assq name (macro-context-locals context)) =>
+      (lambda (pair)
+        (set-cdr! pair denotation)))
 
-(define (macro-context-set-last! context name denotation)
-  (unless (macro-context-set! context name denotation)
-    (let ((environment (macro-context-environment context))
-          (tail (list (cons name denotation))))
-      (if (null? environment)
-        (macro-context-set-environment! context tail)
-        (set-last-cdr! environment tail)))))
+    (else
+      (macro-context-set-global! context name denotation))))
+
+(define (macro-context-set-global! context name denotation)
+  (cond
+    ((assq name (macro-context-globals context)) =>
+      (lambda (pair)
+        (set-cdr! pair denotation)))
+
+    (else
+      (macro-context-set-globals!
+        context
+        (cons
+          (cons name denotation)
+          (macro-context-globals context))))))
 
 (define (macro-context-generate-id! context)
   (let ((id (macro-context-id context)))
@@ -497,7 +507,10 @@
 
 (define (resolve-denotation context expression)
   (cond
-    ((assq expression (macro-context-environment context)) =>
+    ((or
+        (assq expression (macro-context-locals context))
+        (assq expression (macro-context-globals context)))
+      =>
       cdr)
 
     (else
@@ -715,7 +728,7 @@
       ((pair? expression)
         (case (resolve-denotation context (car expression))
           (($$alias)
-            (macro-context-set-last!
+            (macro-context-set-global!
               context
               (cadr expression)
               (resolve-denotation context (caddr expression)))
@@ -723,11 +736,11 @@
 
           (($$define)
             (let ((name (cadr expression)))
-              (macro-context-set! context name name)
+              (macro-context-set-global! context name name)
               (expand (cons '$$set! (cdr expression)))))
 
           (($$define-syntax)
-            (macro-context-set-last!
+            (macro-context-set-global!
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
@@ -799,7 +812,7 @@
         expression))))
 
 (define (expand-macros expression)
-  (expand-macro (make-macro-context '() 0) expression))
+  (expand-macro (make-macro-context '() '() 0) expression))
 
 ; Compilation
 
