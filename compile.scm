@@ -443,12 +443,13 @@
       (lambda (pair)
         (set-cdr! pair denotation)))
 
+    ((null? (macro-context-globals context))
+      (macro-context-set-globals! context (list (cons name denotation))))
+
     (else
-      (macro-context-set-globals!
-        context
-        (cons
-          (cons name denotation)
-          (macro-context-globals context))))))
+      (set-last-cdr!
+        (macro-context-globals context)
+        (list (cons name denotation))))))
 
 (define (macro-context-generate-id! context)
   (let ((id (macro-context-id context)))
