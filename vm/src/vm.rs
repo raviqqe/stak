@@ -207,7 +207,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         #[cfg(feature = "profile")]
         if let Some(profiler) = self.profiler {
-            profiler();
+            profiler(
+                "foo",
+                Instant::now().duration_since(self.start_time()) as u64,
+            );
         }
         let r#return = instruction == self.null();
         let procedure = self.procedure();
