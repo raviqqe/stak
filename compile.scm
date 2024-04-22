@@ -733,7 +733,7 @@
 
           (($$define)
             (let ((name (cadr expression)))
-              (macro-context-set-global! context name name)
+              (macro-context-set! context name name)
               (expand (cons '$$set! (cdr expression)))))
 
           (($$define-syntax)
