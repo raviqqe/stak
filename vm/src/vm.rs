@@ -29,7 +29,7 @@ mod instruction {
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
-        #[cfg(feature = "trace")]
+        #[cfg(feature = "trace_instruction")]
         std::eprintln!("{}: {}", $prefix, $data);
     };
 }
