@@ -1,0 +1,25 @@
+[package]
+name = "stak-profile"
+description = "Stak Scheme profiler"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[features]
+profile = ["stak-vm/profile"]
+
+[dependencies]
+clap = { version = "4.5.4", features = ["derive"] }
+main_error = "0.1.2"
+stak-configuration = { version = "0.1.26", path = "../../configuration" }
+stak-device = { version = "0.2", path = "../../device", features = ["std"] }
+stak-primitive = { version = "0.2", path = "../../primitive", features = [
+  "std",
+] }
+stak-vm = { version = "0.4", path = "../../vm", features = ["std"] }
+
+[lints]
+workspace = true

@@ -5,6 +5,7 @@ members = [
   "cmd/decode",
   "cmd/interpret",
   "cmd/minify",
+  "cmd/profile",
   "cmd/run",
   "code",
   "compiler",
