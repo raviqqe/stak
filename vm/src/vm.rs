@@ -212,6 +212,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         #[cfg(feature = "profile")]
         if let Some(profiler) = &mut self.profiler {
+            // TODO
             profiler(
                 "foo",
                 Instant::now().duration_since(self.start_time).as_nanos(),
