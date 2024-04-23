@@ -214,7 +214,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         if let Some(profiler) = self.profiler {
             profiler(
                 "foo",
-                Instant::now().duration_since(self.start_time()).as_nanos(),
+                Instant::now().duration_since(self.start_time).as_nanos(),
             );
         }
 
