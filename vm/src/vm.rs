@@ -230,7 +230,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let continuation = if r#return {
                     self.continuation()
                 } else {
-                    self.allocate(program_counter.into(), self.stack.into())?
+                    self.allocate(self.cdr(program_counter), self.stack.into())?
                 };
                 self.stack = self.allocate(
                     continuation.into(),
@@ -288,7 +288,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         if self.program_counter == self.null() {
             let continuation = self.continuation();
 
-            self.program_counter = self.cdr(self.car(continuation).assume_cons()).assume_cons();
+            self.program_counter = self.car(continuation).assume_cons();
             // Keep a value at the top of a stack.
             self.set_cdr(self.stack, self.cdr(continuation));
         }
@@ -590,8 +590,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("decode", "end");
 
         // Initialize an implicit top-level frame.
-        let codes = self.allocate(NEVER.into(), self.null().into())?.into();
-        let continuation = self.allocate(codes, self.null().into())?.into();
+        let continuation = self
+            .allocate(self.null().into(), self.null().into())?
+            .into();
         self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
 
         self.register = NEVER;
