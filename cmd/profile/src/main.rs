@@ -37,8 +37,8 @@ fn main() -> Result<(), MainError> {
         .truncate(true)
         .open(&arguments.profile_file)?;
 
-    let mut profiler = |_| {
-        writeln!(profile_file, "{id} {time}").unwrap();
+    let mut profiler = |this: &Vm<_>| {
+        writeln!(profile_file, "{:?}", this.stack()).unwrap();
     };
 
     let mut heap = vec![Default::default(); arguments.heap_size];
