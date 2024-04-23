@@ -125,9 +125,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_timing(self, callback: &'a mut dyn FnMut(&str, u128)) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn FnMut(&str, u128)) -> Self {
         Self {
-            profiler: Some(callback),
+            profiler: Some(profiler),
             ..self
         }
     }
