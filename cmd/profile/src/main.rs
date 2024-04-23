@@ -19,6 +19,8 @@ use std::{
     time::Instant,
 };
 
+const SEPARATOR: char = '\t';
+
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
@@ -39,7 +41,15 @@ fn main() -> Result<(), MainError> {
         .open(&arguments.profile_file)?;
     let start_time = Instant::now();
 
-    let mut profiler = |vm: &Vm<_>| {
+    let mut profiler = |vm: &Vm<_>, r#return| {
+        write!(
+            profile_file,
+            "{}{}",
+            if r#return { "return" } else { "call" },
+            SEPARATOR,
+        )
+        .unwrap();
+
         let mut stack = vm.stack();
 
         while stack != vm.null() {
@@ -79,7 +89,8 @@ fn main() -> Result<(), MainError> {
 
         writeln!(
             profile_file,
-            " {}",
+            "{}{}",
+            SEPARATOR,
             Instant::now().duration_since(start_time).as_nanos()
         )
         .unwrap();

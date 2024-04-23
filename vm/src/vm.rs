@@ -88,7 +88,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     space: bool,
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
-    profiler: Option<RefCell<&'a mut dyn FnMut(&Self)>>,
+    profiler: Option<RefCell<&'a mut dyn FnMut(&Self, bool)>>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -123,7 +123,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn FnMut(&Self)) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn FnMut(&Self, bool)) -> Self {
         Self {
             profiler: Some(profiler.into()),
             ..self
@@ -203,10 +203,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
-        #[cfg(feature = "profile")]
-        if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut()(&self);
-        }
+        self.profile(false);
 
         let r#return = instruction == self.null();
         let procedure = self.procedure();
@@ -276,6 +273,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 } else if self.register != self.null() {
                     return Err(Error::ArgumentCount.into());
                 }
+
+                if r#return {
+                    self.profile(true);
+                }
             }
             TypedValue::Number(primitive) => {
                 if Self::parse_arity(arity).variadic {
@@ -306,6 +307,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == self.null() {
+            self.profile(true);
+
             let continuation = self.continuation();
 
             self.program_counter = self.cdr(self.car(continuation).assume_cons()).assume_cons();
@@ -536,6 +539,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Returns a null value.
     pub fn null(&self) -> Cons {
         self.cdr(self.r#false).assume_cons()
+    }
+
+    fn profile(&mut self, r#return: bool) {
+        #[cfg(feature = "profile")]
+        if let Some(profiler) = &self.profiler {
+            profiler.borrow_mut()(&self, r#return);
+        }
     }
 
     // Garbage collection
