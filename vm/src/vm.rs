@@ -8,6 +8,8 @@ use crate::{
     Error,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
+#[cfg(feature = "profile")]
+use core::cell::RefCell;
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
@@ -69,9 +71,6 @@ macro_rules! assert_heap_value {
     };
 }
 
-#[cfg(feature = "profile")]
-pub type Profiler<'a> = dyn FnMut(&str, u128) + 'a;
-
 struct Arity {
     // A count does not include a variadic argument.
     count: Number,
@@ -89,7 +88,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     space: bool,
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
-    profiler: Option<&'a mut Profiler<'a>>,
+    profiler: Option<RefCell<&'a mut dyn FnMut(&Self)>>,
     #[cfg(feature = "profile")]
     start_time: Instant,
 }
@@ -128,9 +127,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut Profiler<'a>) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn FnMut(&Self)) -> Self {
         Self {
-            profiler: Some(profiler),
+            profiler: Some(profiler.into()),
             ..self
         }
     }
@@ -214,11 +213,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         #[cfg(feature = "profile")]
-        if let Some(profiler) = &mut self.profiler {
-            profiler(
-                &self.trace_stack(),
-                Instant::now().duration_since(self.start_time).as_nanos(),
-            );
+        if let Some(profiler) = &self.profiler {
+            profiler.borrow_mut()(&self);
         }
 
         let r#return = instruction == self.null();
@@ -601,24 +597,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             copy
         }
         .set_tag(cons.tag()))
-    }
-
-    // Stack trace
-
-    #[cfg(feature = "profile")]
-    fn trace_stack(&self) -> std::string::String {
-        let mut strings = std::vec![];
-        let mut stack = self.stack;
-
-        while stack != self.null() {
-            if stack.tag() == FRAME_TAG {
-                strings.push()
-            }
-
-            stack = self.cdr(stack).assume_cons();
-        }
-
-        strings.join(";")
     }
 
     // Initialization

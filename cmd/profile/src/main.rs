@@ -37,7 +37,7 @@ fn main() -> Result<(), MainError> {
         .truncate(true)
         .open(&arguments.profile_file)?;
 
-    let mut profiler = |id: &str, time| {
+    let mut profiler = |_| {
         writeln!(profile_file, "{id} {time}").unwrap();
     };
 
