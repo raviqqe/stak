@@ -48,6 +48,7 @@ fn main() -> Result<(), MainError> {
 
                 if let Some(symbol) = operand.to_cons() {
                     if vm.car(symbol).tag() != Type::Symbol as _ {
+                        // TODO Remove this hack.
                         write!(profile_file, "<top>").unwrap();
                         break;
                     } else {
