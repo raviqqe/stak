@@ -590,9 +590,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("decode", "end");
 
         // Initialize an implicit top-level frame.
-        let continuation = self
-            .allocate(self.null().into(), self.null().into())?
-            .into();
+        let codes = self.allocate(NEVER.into(), self.null().into())?.into();
+        let continuation = self.allocate(codes, self.null().into())?.into();
         self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
 
         self.register = NEVER;
