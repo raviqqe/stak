@@ -215,8 +215,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
-                self.profile(false);
-
                 let arguments = Self::parse_arity(arity);
                 let parameters =
                     Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
@@ -277,6 +275,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 if r#return {
                     self.profile(true);
                 }
+
+                self.profile(false);
             }
             TypedValue::Number(primitive) => {
                 if Self::parse_arity(arity).variadic {
