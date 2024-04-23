@@ -203,8 +203,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
-        self.profile(false);
-
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
@@ -217,6 +215,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
+                self.profile(false);
+
                 let arguments = Self::parse_arity(arity);
                 let parameters =
                     Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
