@@ -215,9 +215,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         #[cfg(feature = "profile")]
         if let Some(profiler) = &mut self.profiler {
-            // TODO
             profiler(
-                "foo",
+                &self.trace_stack(),
                 Instant::now().duration_since(self.start_time).as_nanos(),
             );
         }
@@ -602,6 +601,24 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             copy
         }
         .set_tag(cons.tag()))
+    }
+
+    // Stack trace
+
+    #[cfg(feature = "profile")]
+    fn trace_stack(&self) -> std::string::String {
+        let mut strings = std::vec![];
+        let mut stack = self.stack;
+
+        while stack != self.null() {
+            if stack.tag() == FRAME_TAG {
+                strings.push()
+            }
+
+            stack = self.cdr(stack).assume_cons();
+        }
+
+        strings.join(";")
     }
 
     // Initialization
