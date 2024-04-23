@@ -15,11 +15,11 @@ use core::{
     mem::replace,
 };
 use stak_code as code;
-#[cfg(feature = "profile")]
-use std::time::Instant;
 
 const CONS_FIELD_COUNT: usize = 2;
-const FRAME_TAG: Tag = 1;
+
+/// A tag for a procedure frame.
+pub const FRAME_TAG: Tag = 1;
 
 mod instruction {
     use super::*;
@@ -89,8 +89,6 @@ pub struct Vm<'a, T: PrimitiveSet> {
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
     profiler: Option<RefCell<&'a mut dyn FnMut(&Self)>>,
-    #[cfg(feature = "profile")]
-    start_time: Instant,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -109,8 +107,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             heap,
             #[cfg(feature = "profile")]
             profiler: None,
-            #[cfg(feature = "profile")]
-            start_time: Instant::now(),
         };
 
         let null =
@@ -136,11 +132,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
-        #[cfg(feature = "profile")]
-        {
-            self.start_time = Instant::now();
-        }
-
         while self.program_counter != self.null() {
             let instruction = self.cdr(self.program_counter).assume_cons();
 

@@ -16,6 +16,7 @@ use std::{
     fs::{read, OpenOptions},
     io::Write,
     path::PathBuf,
+    time::Instant,
 };
 
 #[derive(clap::Parser)]
@@ -36,9 +37,25 @@ fn main() -> Result<(), MainError> {
         .create(true)
         .truncate(true)
         .open(&arguments.profile_file)?;
+    let start_time = Instant::now();
 
     let mut profiler = |vm: &Vm<_>| {
-        writeln!(profile_file, "{:?}", vm.stack()).unwrap();
+        let mut stack = vm.stack();
+
+        while stack != vm.null() {
+            if stack.tag() == stak_vm::FRAME_TAG {
+                write!(profile_file, "{}", char::from_u32(42).unwrap_or('�')).unwrap();
+            }
+
+            stack = vm.cdr(stack).assume_cons();
+        }
+
+        writeln!(
+            profile_file,
+            "{}",
+            Instant::now().duration_since(start_time).as_nanos()
+        )
+        .unwrap();
     };
 
     let mut heap = vec![Default::default(); arguments.heap_size];

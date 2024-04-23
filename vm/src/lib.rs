@@ -49,4 +49,4 @@ pub use number::Number;
 pub use primitive_set::PrimitiveSet;
 pub use r#type::Type;
 pub use value::Value;
-pub use vm::Vm;
+pub use vm::{Vm, FRAME_TAG};
