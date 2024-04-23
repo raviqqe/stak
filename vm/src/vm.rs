@@ -86,7 +86,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     space: bool,
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
-    profiler: Option<&'a mut dyn FnMut(&str, u64)>,
+    profiler: Option<&'a mut dyn FnMut(&str, u128)>,
     #[cfg(feature = "profile")]
     start_time: Instant,
 }
@@ -125,7 +125,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_timing(self, callback: &'a mut dyn FnMut(&str, u64)) -> Self {
+    pub fn with_timing(self, callback: &'a mut dyn FnMut(&str, u128)) -> Self {
         Self {
             profiler: Some(callback),
             ..self
@@ -209,7 +209,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         if let Some(profiler) = self.profiler {
             profiler(
                 "foo",
-                Instant::now().duration_since(self.start_time()) as u64,
+                Instant::now().duration_since(self.start_time()).as_nanos(),
             );
         }
         let r#return = instruction == self.null();
