@@ -69,6 +69,9 @@ macro_rules! assert_heap_value {
     };
 }
 
+#[cfg(feature = "profile")]
+pub type Profiler<'a> = dyn FnMut(&str, u128) + 'a;
+
 struct Arity {
     // A count does not include a variadic argument.
     count: Number,
@@ -86,7 +89,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     space: bool,
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
-    profiler: Option<&'a mut dyn FnMut(&str, u128)>,
+    profiler: Option<&'a mut Profiler<'a>>,
     #[cfg(feature = "profile")]
     start_time: Instant,
 }
@@ -125,7 +128,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn FnMut(&str, u128)) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut Profiler<'a>) -> Self {
         Self {
             profiler: Some(profiler),
             ..self
