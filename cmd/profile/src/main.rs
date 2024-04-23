@@ -64,7 +64,7 @@ fn main() -> Result<(), MainError> {
 
         writeln!(
             profile_file,
-            "{}",
+            " {}",
             Instant::now().duration_since(start_time).as_nanos()
         )
         .unwrap();
