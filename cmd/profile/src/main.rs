@@ -3,7 +3,7 @@
 //! # Usage
 //!
 //! ```sh
-//! stak-profile foo.bc
+//! stak-profile --profile profile.txt foo.bc
 //! ```
 
 use clap::Parser;
