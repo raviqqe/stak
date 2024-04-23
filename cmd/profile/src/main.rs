@@ -11,7 +11,7 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_vm::Vm;
+use stak_vm::{Type, Vm, FRAME_TAG};
 use std::{
     fs::{read, OpenOptions},
     io::Write,
@@ -43,23 +43,37 @@ fn main() -> Result<(), MainError> {
         let mut stack = vm.stack();
 
         while stack != vm.null() {
-            if stack.tag() == stak_vm::FRAME_TAG {
-                let mut string = vm.car_value(vm.car_value(vm.car(stack))).assume_cons();
+            if vm.cdr(stack).tag() == FRAME_TAG {
+                let operand = vm.car_value(vm.car_value(vm.car(stack)));
 
-                while string != vm.null() {
-                    write!(
-                        profile_file,
-                        "{}",
-                        char::from_u32(vm.car(string).assume_number().to_i64() as _).unwrap_or('�')
-                    )
-                    .unwrap();
-                    string = vm.cdr(string).assume_cons();
+                if let Some(symbol) = operand.to_cons() {
+                    if vm.car(symbol).tag() != Type::Symbol as _ {
+                        write!(profile_file, "<top>").unwrap();
+                        break;
+                    } else {
+                        let mut string = vm.car_value(vm.car(symbol)).assume_cons();
+
+                        while string != vm.null() {
+                            write!(
+                                profile_file,
+                                "{}",
+                                char::from_u32(vm.car(string).assume_number().to_i64() as _)
+                                    .unwrap_or('�')
+                            )
+                            .unwrap();
+                            string = vm.cdr(string).assume_cons();
+                        }
+                    }
+                } else {
+                    write!(profile_file, "<closure>").unwrap();
                 }
 
-                stack = vm.car_value(vm.cdr(stack)).assume_cons();
-            }
+                write!(profile_file, ";").unwrap();
 
-            stack = vm.cdr(stack).assume_cons();
+                stack = vm.cdr_value(vm.car(stack)).assume_cons();
+            } else {
+                stack = vm.cdr(stack).assume_cons();
+            }
         }
 
         writeln!(
