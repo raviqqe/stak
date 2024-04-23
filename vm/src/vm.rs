@@ -134,6 +134,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
+        #[cfg(feature = "profile")]
+        {
+            self.start_time = Instant::now();
+        }
+
         while self.program_counter != self.null() {
             let instruction = self.cdr(self.program_counter).assume_cons();
 
@@ -212,6 +217,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instant::now().duration_since(self.start_time()).as_nanos(),
             );
         }
+
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
