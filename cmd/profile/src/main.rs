@@ -44,7 +44,13 @@ fn main() -> Result<(), MainError> {
 
         while stack != vm.null() {
             if stack.tag() == stak_vm::FRAME_TAG {
-                write!(profile_file, "{}", char::from_u32(42).unwrap_or('�')).unwrap();
+                let mut string = vm.car_value(vm.car_value(vm.car(stack))).assume_cons();
+
+                while stack != vm.null() {
+                    write!(profile_file, "{}", char::from_u32(65).unwrap_or('�')).unwrap();
+                }
+
+                stack = vm.car_value(vm.cdr(stack)).assume_cons();
             }
 
             stack = vm.cdr(stack).assume_cons();
