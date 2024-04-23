@@ -28,6 +28,9 @@ license-file = "LICENSE"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
+[workspace.lints.rust]
+warnings = "deny"
+
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
 dbg_macro = "deny"
