@@ -1,9 +1,9 @@
-//! A command to interpret a bytecode file.
+//! A command to profile a bytecode file.
 //!
 //! # Usage
 //!
 //! ```sh
-//! stak-interpret foo.bc
+//! stak-profile foo.bc
 //! ```
 
 use clap::Parser;
@@ -18,7 +18,9 @@ use std::{fs::read, path::PathBuf};
 #[command(about, version)]
 struct Arguments {
     #[arg(required(true))]
-    file: PathBuf,
+    bytecode_file: PathBuf,
+    #[arg(short = 'p', long = "profile", required(true))]
+    profile_file: PathBuf,
     #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
 }
@@ -26,10 +28,14 @@ struct Arguments {
 fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
 
-    let mut heap = vec![Default::default(); arguments.heap_size];
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
+    // TODO
+    let mut profiler = |_: &str, _| {};
 
-    vm.initialize(read(&arguments.file)?)?;
+    let mut heap = vec![Default::default(); arguments.heap_size];
+    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
+        .with_profiler(&mut profiler);
+
+    vm.initialize(read(&arguments.bytecode_file)?)?;
 
     Ok(vm.run()?)
 }
