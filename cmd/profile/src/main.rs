@@ -66,7 +66,7 @@ fn main() -> Result<(), MainError> {
                         }
                     }
                 } else {
-                    write!(profile_file, "<closure>").unwrap();
+                    write!(profile_file, "<local>").unwrap();
                 }
 
                 write!(profile_file, ";").unwrap();
