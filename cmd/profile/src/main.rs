@@ -34,6 +34,7 @@ fn main() -> Result<(), MainError> {
     let mut profile_file = OpenOptions::new()
         .write(true)
         .create(true)
+        .truncate(true)
         .open(&arguments.profile_file)?;
 
     let mut profiler = |id: &str, time| {
