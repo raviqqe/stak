@@ -259,7 +259,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .set_tag(FRAME_TAG)
                         .into(),
                 )?;
-
                 self.program_counter = self
                     .cdr(self.code(self.program_counter).assume_cons())
                     .assume_cons();
