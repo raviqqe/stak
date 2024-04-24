@@ -90,7 +90,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     space: bool,
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
-    profiler: Option<RefCell<&'a mut dyn Profiler>>,
+    profiler: Option<RefCell<&'a mut dyn Profiler<T>>>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -125,7 +125,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn Profiler) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn Profiler<T>) -> Self {
         Self {
             profiler: Some(profiler.into()),
             ..self
@@ -548,14 +548,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn profile_call(&mut self, _call_code: Cons) {
         #[cfg(feature = "profile")]
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_call(_call_code);
+            profiler.borrow_mut().profile_call(&self, _call_code);
         }
     }
 
     fn profile_return(&mut self) {
         #[cfg(feature = "profile")]
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_return();
+            profiler.borrow_mut().profile_return(&self);
         }
     }
 

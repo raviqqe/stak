@@ -11,7 +11,7 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_vm::{Type, Vm, FRAME_TAG};
+use stak_vm::{Cons, PrimitiveSet, Profiler, Type, Vm, FRAME_TAG};
 use std::{
     fs::{read, OpenOptions},
     io::Write,
@@ -39,11 +39,33 @@ fn main() -> Result<(), MainError> {
         .create(true)
         .truncate(true)
         .open(&arguments.profile_file)?;
-    let start_time = Instant::now();
 
-    let mut profiler = |vm: &Vm<_>, r#return| {
+    let mut profiler = WriteProfiler::new(profile_file);
+    let mut heap = vec![Default::default(); arguments.heap_size];
+    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
+        .with_profiler(&mut profiler);
+
+    vm.initialize(read(&arguments.bytecode_file)?)?;
+
+    Ok(vm.run()?)
+}
+
+struct WriteProfiler<T: Write> {
+    writer: T,
+    start_time: Instant,
+}
+
+impl<T: Write> WriteProfiler<T> {
+    pub fn new(writer: T) -> Self {
+        Self {
+            writer,
+            start_time: Instant::now(),
+        }
+    }
+
+    fn write(&mut self) {
         write!(
-            profile_file,
+            &mut self.writer,
             "{}{}",
             if r#return { "return" } else { "call" },
             SEPARATOR,
@@ -79,7 +101,7 @@ fn main() -> Result<(), MainError> {
                     write!(profile_file, "<local>").unwrap();
                 }
 
-                write!(profile_file, ";").unwrap();
+                write!(&mut self.writer, ";").unwrap();
 
                 stack = vm.cdr_value(vm.car(stack)).assume_cons();
             } else {
@@ -88,19 +110,17 @@ fn main() -> Result<(), MainError> {
         }
 
         writeln!(
-            profile_file,
+            &mut self.writer,
             "{}{}",
             SEPARATOR,
-            Instant::now().duration_since(start_time).as_nanos()
+            Instant::now().duration_since(self.start_time).as_nanos()
         )
         .unwrap();
-    };
+    }
+}
 
-    let mut heap = vec![Default::default(); arguments.heap_size];
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
-        .with_profiler(&mut profiler);
+impl<T: Write, P: PrimitiveSet> Profiler for WriteProfiler<T, P> {
+    fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons) {}
 
-    vm.initialize(read(&arguments.bytecode_file)?)?;
-
-    Ok(vm.run()?)
+    fn profile_return(&mut self, vm: &Vm<P>) {}
 }
