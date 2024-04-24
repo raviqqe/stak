@@ -247,12 +247,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 } else {
                     self.allocate(program_counter.into(), self.stack.into())?
                 };
-                self.stack = self.allocate(
+                let stack = self.allocate(
                     continuation.into(),
                     self.environment(self.program_counter)
                         .set_tag(FRAME_TAG)
                         .into(),
                 )?;
+
+                if r#return {
+                    self.profile(true);
+                }
+                self.stack = stack;
+                self.profile(false);
+
                 self.program_counter = self
                     .cdr(self.code(self.program_counter).assume_cons())
                     .assume_cons();
@@ -271,12 +278,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 } else if self.register != self.null() {
                     return Err(Error::ArgumentCount.into());
                 }
-
-                if r#return {
-                    self.profile(true);
-                }
-
-                self.profile(false);
             }
             TypedValue::Number(primitive) => {
                 if Self::parse_arity(arity).variadic {
