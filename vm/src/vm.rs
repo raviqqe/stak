@@ -541,10 +541,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.cdr(self.r#false).assume_cons()
     }
 
-    fn profile(&mut self, r#return: bool) {
+    fn profile(&mut self, _return: bool) {
         #[cfg(feature = "profile")]
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut()(&self, r#return);
+            profiler.borrow_mut()(&self, _return);
         }
     }
 
