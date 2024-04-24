@@ -1,14 +1,14 @@
 import { useStore } from "@nanostores/solid";
 import { Boxes, CirclePlay } from "lucide-solid";
 import { type JSX } from "solid-js";
-import * as store from "../stores/demo";
-import { Button } from "./Button";
-import { ButtonGroup } from "./ButtonGroup";
+import * as store from "../stores/demo.js";
+import { Button } from "./Button.jsx";
+import { ButtonGroup } from "./ButtonGroup.jsx";
 import styles from "./DemoForm.module.css";
-import { ErrorMessage } from "./ErrorMessage";
-import { Field } from "./Field";
-import { Label } from "./Label";
-import { TextArea } from "./TextArea";
+import { ErrorMessage } from "./ErrorMessage.jsx";
+import { Field } from "./Field.jsx";
+import { Label } from "./Label.jsx";
+import { TextArea } from "./TextArea.jsx";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);

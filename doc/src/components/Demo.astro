@@ -1,0 +1,10 @@
+---
+import styles from "./Demo.module.css";
+import { DemoForm } from "./DemoForm.jsx";
+import { DemoIo } from "./DemoIo.jsx";
+---
+
+<div class={styles.container}>
+  <DemoForm client:visible />
+  <DemoIo client:visible />
+</div>

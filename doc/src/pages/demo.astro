@@ -1,5 +1,5 @@
 ---
-import { Demo } from "../components/Demo.jsx";
+import DemoComponent from "../components/Demo.astro";
 ---
 
 <html lang="en">
@@ -29,6 +29,6 @@ import { Demo } from "../components/Demo.jsx";
         margin: 0;
       }
     </style>
-    <Demo client:load />
+    <DemoComponent />
   </body>
 </html>
