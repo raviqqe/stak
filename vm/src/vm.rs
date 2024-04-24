@@ -247,18 +247,18 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 } else {
                     self.allocate(program_counter.into(), self.stack.into())?
                 };
-                let stack = self.allocate(
+
+                if r#return {
+                    self.profile(true);
+                }
+                self.profile(false);
+
+                self.stack = self.allocate(
                     continuation.into(),
                     self.environment(self.program_counter)
                         .set_tag(FRAME_TAG)
                         .into(),
                 )?;
-
-                if r#return {
-                    self.profile(true);
-                }
-                self.stack = stack;
-                self.profile(false);
 
                 self.program_counter = self
                     .cdr(self.code(self.program_counter).assume_cons())
