@@ -1,3 +1,5 @@
+#[cfg(feature = "profile")]
+use crate::profiler::Profiler;
 use crate::{
     cons::{Cons, Tag, NEVER},
     number::Number,
@@ -88,7 +90,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     space: bool,
     heap: &'a mut [Value],
     #[cfg(feature = "profile")]
-    profiler: Option<RefCell<&'a mut dyn FnMut(&Self, bool)>>,
+    profiler: Option<RefCell<&'a mut dyn Profiler>>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -123,7 +125,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn FnMut(&Self, bool)) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn Profiler) -> Self {
         Self {
             profiler: Some(profiler.into()),
             ..self
@@ -249,9 +251,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 };
 
                 if r#return {
-                    self.profile(true);
+                    self.profile_return();
                 }
-                self.profile(false);
+                self.profile_call(self.program_counter);
 
                 self.stack = self.allocate(
                     continuation.into(),
@@ -307,7 +309,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == self.null() {
-            self.profile(true);
+            self.profile_return();
 
             let continuation = self.continuation();
 
@@ -541,10 +543,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.cdr(self.r#false).assume_cons()
     }
 
-    fn profile(&mut self, _return: bool) {
+    // Profiling
+
+    fn profile_call(&mut self, _call_code: Cons) {
         #[cfg(feature = "profile")]
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut()(&self, _return);
+            profiler.borrow_mut().profile_call(_call_code);
+        }
+    }
+
+    fn profile_return(&mut self) {
+        #[cfg(feature = "profile")]
+        if let Some(profiler) = &self.profiler {
+            profiler.borrow_mut().profile_return();
         }
     }
 

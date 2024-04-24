@@ -38,6 +38,7 @@ mod cons;
 mod error;
 mod number;
 mod primitive_set;
+mod profiler;
 mod symbol_index;
 mod r#type;
 mod value;
