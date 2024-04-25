@@ -22,11 +22,11 @@ impl<T: Write> WriteProfiler<T> {
     }
 
     fn write_column_separator(&mut self) {
-        write!(self.writer, "{}", COLUMN_SEPARATOR).unwrap();
+        write!(self.writer, "{COLUMN_SEPARATOR}").unwrap();
     }
 
     fn write_frame_separator(&mut self) {
-        write!(self.writer, "{}", FRAME_SEPARATOR).unwrap();
+        write!(self.writer, "{FRAME_SEPARATOR}").unwrap();
     }
 
     fn write_time(&mut self) {
@@ -42,10 +42,7 @@ impl<T: Write> WriteProfiler<T> {
         let operand = vm.car(code);
 
         if let Some(symbol) = operand.to_cons() {
-            if vm.car(symbol).tag() != Type::Symbol as _ {
-                // TODO Remove this hack.
-                write!(self.writer, "<top>").unwrap();
-            } else {
+            if vm.car(symbol).tag() == Type::Symbol as _ {
                 let mut string = vm.car_value(vm.car(symbol)).assume_cons();
 
                 while string != vm.null() {
@@ -57,6 +54,9 @@ impl<T: Write> WriteProfiler<T> {
                     .unwrap();
                     string = vm.cdr(string).assume_cons();
                 }
+            } else {
+                // TODO Remove this hack.
+                write!(self.writer, "<top>").unwrap();
             }
         } else {
             write!(self.writer, "<local>").unwrap();
