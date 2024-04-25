@@ -7,7 +7,7 @@
     flex-direction: column;
   }
 
-  > * {
+  > astro-island > * {
     flex: 1;
   }
 }
