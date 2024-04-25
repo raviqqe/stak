@@ -7,7 +7,8 @@
   padding: 1rem;
   box-sizing: border-box;
   overflow: auto;
-  background-color: var(--secondary-background-color);
   border: 0.1rem solid gray;
   border-radius: 0.5rem;
+  color: var(--primary-text-color);
+  background-color: var(--secondary-background-color);
 }
