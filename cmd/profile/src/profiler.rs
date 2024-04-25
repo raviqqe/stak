@@ -33,7 +33,7 @@ impl<T: Write> WriteProfiler<T> {
         .unwrap();
     }
 
-    fn write<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
+    fn write_stack<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
         let mut stack = vm.stack();
 
         while stack != vm.null() {
@@ -77,7 +77,7 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     fn profile_call(&mut self, vm: &Vm<P>, _call_code: Cons) {
         self.write_type(false);
         self.write_column_separator();
-        self.write(vm);
+        self.write_stack(vm);
         self.write_column_separator();
         self.write_time();
     }
@@ -85,7 +85,7 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     fn profile_return(&mut self, vm: &Vm<P>) {
         self.write_type(true);
         self.write_column_separator();
-        self.write(vm);
+        self.write_stack(vm);
         self.write_column_separator();
         self.write_time();
     }
