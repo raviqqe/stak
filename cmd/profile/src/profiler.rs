@@ -17,10 +17,6 @@ impl<T: Write> WriteProfiler<T> {
         }
     }
 
-    fn write_type(&mut self, r#return: bool) {
-        write!(self.writer, "{}", if r#return { "return" } else { "call" },).unwrap();
-    }
-
     fn write_column_separator(&mut self) {
         write!(self.writer, "{COLUMN_SEPARATOR}").unwrap();
     }
@@ -82,7 +78,7 @@ impl<T: Write> WriteProfiler<T> {
 
 impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons) {
-        self.write_type(false);
+        write!(self.writer, "call",).unwrap();
         self.write_column_separator();
         self.write_procedure(vm, call_code);
         self.write_frame_separator();
@@ -92,7 +88,7 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     }
 
     fn profile_return(&mut self, vm: &Vm<P>) {
-        self.write_type(true);
+        write!(self.writer, "return",).unwrap();
         self.write_column_separator();
         self.write_stack(vm);
         self.write_column_separator();
