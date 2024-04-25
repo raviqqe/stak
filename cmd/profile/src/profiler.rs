@@ -69,7 +69,7 @@ impl<T: Write> WriteProfiler<T> {
         while stack != vm.null() {
             if vm.cdr(stack).tag() == FRAME_TAG {
                 self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
-                write!(self.writer, ";").unwrap();
+                self.write_frame_separator();
 
                 stack = vm.cdr_value(vm.car(stack)).assume_cons();
             } else {
