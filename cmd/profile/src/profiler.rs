@@ -1,4 +1,4 @@
-use stak_vm::{Cons, PrimitiveSet, Profiler, Vm, FRAME_TAG};
+use stak_vm::{Cons, PrimitiveSet, Profiler, StackSlot, Vm};
 use std::{io::Write, time::Instant};
 
 const COLUMN_SEPARATOR: char = '\t';
@@ -63,7 +63,7 @@ impl<T: Write> WriteProfiler<T> {
         let mut first = true;
 
         while stack != vm.null() {
-            stack = if vm.cdr(stack).tag() == FRAME_TAG {
+            stack = if vm.cdr(stack).tag() == StackSlot::Frame as _ {
                 if !first {
                     self.write_frame_separator();
                 }

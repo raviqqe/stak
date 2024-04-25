@@ -7,7 +7,7 @@ use crate::{
     r#type::Type,
     symbol_index,
     value::{TypedValue, Value},
-    Error,
+    Error, StackSlot,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 #[cfg(feature = "profile")]
@@ -19,9 +19,6 @@ use core::{
 use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
-
-/// A tag for a procedure frame.
-pub const FRAME_TAG: Tag = 1;
 
 mod instruction {
     use super::*;
@@ -259,7 +256,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.stack = self.allocate(
                     continuation.into(),
                     self.environment(self.program_counter)
-                        .set_tag(FRAME_TAG)
+                        .set_tag(StackSlot::Frame as _)
                         .into(),
                 )?;
                 self.program_counter = self
@@ -350,7 +347,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn continuation(&self) -> Cons {
         let mut stack = self.stack;
 
-        while self.cdr(stack).assume_cons().tag() != FRAME_TAG {
+        while self.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
             stack = self.cdr(stack).assume_cons();
         }
 
@@ -637,7 +634,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             .allocate(Number::new(0).into(), self.null().into())?
             .into();
         let continuation = self.allocate(codes, self.null().into())?.into();
-        self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
+        self.stack = self.cons(continuation, self.null().set_tag(StackSlot::Frame as _))?;
 
         self.register = NEVER;
 
