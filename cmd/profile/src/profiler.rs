@@ -16,9 +16,9 @@ impl<T: Write> WriteProfiler<T> {
         }
     }
 
-    fn write_type(&self, r#return: bool) {
+    fn write_type(&mut self, r#return: bool) {
         write!(
-            &mut self.writer,
+            self.writer,
             "{}{}",
             if r#return { "return" } else { "call" },
             SEPARATOR,
@@ -36,14 +36,14 @@ impl<T: Write> WriteProfiler<T> {
                 if let Some(symbol) = operand.to_cons() {
                     if vm.car(symbol).tag() != Type::Symbol as _ {
                         // TODO Remove this hack.
-                        write!(&mut self.writer, "<top>").unwrap();
+                        write!(self.writer, "<top>").unwrap();
                         break;
                     } else {
                         let mut string = vm.car_value(vm.car(symbol)).assume_cons();
 
                         while string != vm.null() {
                             write!(
-                                &mut self.writer,
+                                self.writer,
                                 "{}",
                                 char::from_u32(vm.car(string).assume_number().to_i64() as _)
                                     .unwrap_or('�')
@@ -53,10 +53,10 @@ impl<T: Write> WriteProfiler<T> {
                         }
                     }
                 } else {
-                    write!(&mut self.writer, "<local>").unwrap();
+                    write!(self.writer, "<local>").unwrap();
                 }
 
-                write!(&mut self.writer, ";").unwrap();
+                write!(self.writer, ";").unwrap();
 
                 stack = vm.cdr_value(vm.car(stack)).assume_cons();
             } else {

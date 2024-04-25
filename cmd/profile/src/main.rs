@@ -33,13 +33,13 @@ struct Arguments {
 
 fn main() -> Result<(), MainError> {
     let arguments = Arguments::parse();
-    let mut profile_file = OpenOptions::new()
+    let profile_file = OpenOptions::new()
         .write(true)
         .create(true)
         .truncate(true)
         .open(&arguments.profile_file)?;
 
-    let mut profiler = WriteProfiler::new(&mut profile_file);
+    let mut profiler = WriteProfiler::new(profile_file);
     let mut heap = vec![Default::default(); arguments.heap_size];
     let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
         .with_profiler(&mut profiler);
