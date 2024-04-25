@@ -214,12 +214,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
-                if r#return {
-                    #[cfg(feature = "profile")]
-                    self.profile_return();
-                }
                 #[cfg(feature = "profile")]
-                self.profile_call(self.program_counter);
+                self.profile_call(self.program_counter, r#return);
 
                 let arguments = Self::parse_arity(arity);
                 let parameters =
@@ -545,9 +541,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // Profiling
 
     #[cfg(feature = "profile")]
-    fn profile_call(&self, call_code: Cons) {
+    fn profile_call(&self, call_code: Cons, r#return: bool) {
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_call(self, call_code);
+            profiler
+                .borrow_mut()
+                .profile_call(self, call_code, r#return);
         }
     }
 

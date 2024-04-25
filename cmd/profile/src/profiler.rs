@@ -77,8 +77,13 @@ impl<T: Write> WriteProfiler<T> {
 }
 
 impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
-    fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons) {
-        write!(self.writer, "call",).unwrap();
+    fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons, r#return: bool) {
+        write!(
+            self.writer,
+            "{}",
+            if r#return { "return_call" } else { "call" }
+        )
+        .unwrap();
         self.write_column_separator();
         self.write_procedure(vm, call_code);
         self.write_frame_separator();
