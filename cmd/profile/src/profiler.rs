@@ -1,4 +1,4 @@
-use stak_vm::{Cons, PrimitiveSet, Profiler, Type, Vm, FRAME_TAG};
+use stak_vm::{Cons, PrimitiveSet, Profiler, Vm, FRAME_TAG};
 use std::{io::Write, time::Instant};
 
 const COLUMN_SEPARATOR: char = '\t';
@@ -42,21 +42,16 @@ impl<T: Write> WriteProfiler<T> {
         let operand = vm.car(code);
 
         if let Some(symbol) = operand.to_cons() {
-            if vm.car(symbol).tag() == Type::Symbol as _ {
-                let mut string = vm.car_value(vm.car(symbol)).assume_cons();
+            let mut string = vm.car_value(vm.car(symbol)).assume_cons();
 
-                while string != vm.null() {
-                    write!(
-                        self.writer,
-                        "{}",
-                        char::from_u32(vm.car(string).assume_number().to_i64() as _).unwrap_or('�')
-                    )
-                    .unwrap();
-                    string = vm.cdr(string).assume_cons();
-                }
-            } else {
-                // TODO Remove this hack.
-                write!(self.writer, "<top>").unwrap();
+            while string != vm.null() {
+                write!(
+                    self.writer,
+                    "{}",
+                    char::from_u32(vm.car(string).assume_number().to_i64() as _).unwrap_or('�')
+                )
+                .unwrap();
+                string = vm.cdr(string).assume_cons();
             }
         } else {
             write!(self.writer, "<local>").unwrap();
