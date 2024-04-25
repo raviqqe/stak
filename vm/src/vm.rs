@@ -1,3 +1,5 @@
+#[cfg(feature = "profile")]
+use crate::profiler::Profiler;
 use crate::{
     cons::{Cons, Tag, NEVER},
     number::Number,
@@ -8,6 +10,8 @@ use crate::{
     Error,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
+#[cfg(feature = "profile")]
+use core::cell::RefCell;
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
@@ -15,7 +19,9 @@ use core::{
 use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
-const FRAME_TAG: Tag = 1;
+
+/// A tag for a procedure frame.
+pub const FRAME_TAG: Tag = 1;
 
 mod instruction {
     use super::*;
@@ -74,7 +80,6 @@ struct Arity {
 }
 
 /// A virtual machine.
-#[derive(Debug)]
 pub struct Vm<'a, T: PrimitiveSet> {
     primitive_set: T,
     program_counter: Cons,
@@ -84,6 +89,8 @@ pub struct Vm<'a, T: PrimitiveSet> {
     allocation_index: usize,
     space: bool,
     heap: &'a mut [Value],
+    #[cfg(feature = "profile")]
+    profiler: Option<RefCell<&'a mut dyn Profiler<T>>>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -100,6 +107,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             allocation_index: 0,
             space: false,
             heap,
+            #[cfg(feature = "profile")]
+            profiler: None,
         };
 
         let null =
@@ -113,6 +122,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             vm.allocate_unchecked(r#true.set_tag(Type::Boolean as Tag).into(), null.into())?;
 
         Ok(vm)
+    }
+
+    #[cfg(feature = "profile")]
+    pub fn with_profiler(self, profiler: &'a mut dyn Profiler<T>) -> Self {
+        Self {
+            profiler: Some(profiler.into()),
+            ..self
+        }
     }
 
     /// Runs a virtual machine.
@@ -190,6 +207,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
+
+        if r#return {
+            #[cfg(feature = "profile")]
+            self.profile_return();
+        }
+        #[cfg(feature = "profile")]
+        self.profile_call(self.program_counter);
 
         trace!("procedure", procedure);
         trace!("return", r#return);
@@ -286,6 +310,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == self.null() {
+            #[cfg(feature = "profile")]
+            self.profile_return();
+
             let continuation = self.continuation();
 
             self.program_counter = self.cdr(self.car(continuation).assume_cons()).assume_cons();
@@ -518,6 +545,22 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.cdr(self.r#false).assume_cons()
     }
 
+    // Profiling
+
+    #[cfg(feature = "profile")]
+    fn profile_call(&self, call_code: Cons) {
+        if let Some(profiler) = &self.profiler {
+            profiler.borrow_mut().profile_call(self, call_code);
+        }
+    }
+
+    #[cfg(feature = "profile")]
+    fn profile_return(&self) {
+        if let Some(profiler) = &self.profiler {
+            profiler.borrow_mut().profile_return(self);
+        }
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), T::Error> {
@@ -590,7 +633,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("decode", "end");
 
         // Initialize an implicit top-level frame.
-        let codes = self.allocate(NEVER.into(), self.null().into())?.into();
+        let codes = self
+            .allocate(self.boolean(false).into(), self.null().into())?
+            .into();
         let continuation = self.allocate(codes, self.null().into())?.into();
         self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
 
