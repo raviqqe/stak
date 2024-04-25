@@ -205,13 +205,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
-        if r#return {
-            #[cfg(feature = "profile")]
-            self.profile_return();
-        }
-        #[cfg(feature = "profile")]
-        self.profile_call(self.program_counter);
-
         trace!("procedure", procedure);
         trace!("return", r#return);
 
@@ -221,6 +214,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
+                if r#return {
+                    #[cfg(feature = "profile")]
+                    self.profile_return();
+                }
+                #[cfg(feature = "profile")]
+                self.profile_call(self.program_counter);
+
                 let arguments = Self::parse_arity(arity);
                 let parameters =
                     Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
