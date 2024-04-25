@@ -209,8 +209,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let procedure = self.procedure();
 
         if r#return {
+            #[cfg(feature = "profile")]
             self.profile_return();
         }
+        #[cfg(feature = "profile")]
         self.profile_call(self.program_counter);
 
         trace!("procedure", procedure);
@@ -308,6 +310,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.program_counter = self.cdr(self.program_counter).assume_cons();
 
         if self.program_counter == self.null() {
+            #[cfg(feature = "profile")]
             self.profile_return();
 
             let continuation = self.continuation();
@@ -544,15 +547,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // Profiling
 
-    fn profile_call(&self, _call_code: Cons) {
-        #[cfg(feature = "profile")]
+    fn profile_call(&self, call_code: Cons) {
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_call(self, _call_code);
+            profiler.borrow_mut().profile_call(self, call_code);
         }
     }
 
     fn profile_return(&self) {
-        #[cfg(feature = "profile")]
         if let Some(profiler) = &self.profiler {
             profiler.borrow_mut().profile_return(self);
         }
