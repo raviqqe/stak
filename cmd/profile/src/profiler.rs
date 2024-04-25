@@ -60,16 +60,22 @@ impl<T: Write> WriteProfiler<T> {
 
     fn write_stack<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
         let mut stack = vm.stack();
+        let mut first = true;
 
         while stack != vm.null() {
-            if vm.cdr(stack).tag() == FRAME_TAG {
-                self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
-                self.write_frame_separator();
+            stack = if vm.cdr(stack).tag() == FRAME_TAG {
+                if !first {
+                    self.write_frame_separator();
+                }
 
-                stack = vm.cdr_value(vm.car(stack)).assume_cons();
+                first = false;
+
+                self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
+
+                vm.cdr_value(vm.car(stack)).assume_cons()
             } else {
-                stack = vm.cdr(stack).assume_cons();
-            }
+                vm.cdr(stack).assume_cons()
+            };
         }
     }
 }
