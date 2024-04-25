@@ -6,7 +6,10 @@ export const source = atom(
   `
 (import (scheme base) (scheme read) (scheme write))
 
-(display "Hello, world!")
+(write
+  (apply
+    string-append
+    (map symbol->string (read))))
   `.trim(),
 );
 
@@ -21,7 +24,7 @@ export const compiling = computed(bytecodes, (output) => output === null);
 
 const output = atom<Uint8Array | null>(new Uint8Array());
 
-export const input = atom("");
+export const input = atom("(hello world)");
 export const textOutput = computed(output, (output) =>
   output === null ? null : new TextDecoder().decode(output),
 );
