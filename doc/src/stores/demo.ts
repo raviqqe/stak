@@ -4,12 +4,19 @@ import { interpret as interpretProgram } from "../application/interpret.js";
 
 export const source = atom(
   `
-(import (scheme base) (scheme read) (scheme write))
+(import
+  (scheme base)
+  (scheme read)
+  (scheme write))
 
-(write
-  (apply
-    string-append
-    (map symbol->string (read))))
+(write-string
+  (apply string-append
+    (apply
+      append
+      (map
+        list
+        (map symbol->string (read))
+        '(" " "!")))))
   `.trim(),
 );
 
