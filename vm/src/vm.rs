@@ -547,12 +547,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // Profiling
 
+    #[cfg(feature = "profile")]
     fn profile_call(&self, call_code: Cons) {
         if let Some(profiler) = &self.profiler {
             profiler.borrow_mut().profile_call(self, call_code);
         }
     }
 
+    #[cfg(feature = "profile")]
     fn profile_return(&self) {
         if let Some(profiler) = &self.profiler {
             profiler.borrow_mut().profile_return(self);
