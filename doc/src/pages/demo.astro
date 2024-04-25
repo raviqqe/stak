@@ -15,6 +15,18 @@ import DemoComponent from "../components/Demo.astro";
         box-sizing: border-box;
       }
 
+      :root {
+        color-scheme: light dark;
+
+        --primary-text-color: light-dark(black, white);
+        --secondary-text-color: light-dark(dimgray, lightgray);
+        --link-text-color: light-dark(teal, mediumturquoise);
+        --error-text-color: light-dark(crimson, pink);
+
+        --primary-background-color: light-dark(white, #222);
+        --secondary-background-color: light-dark(#fcfcfc, #282828);
+      }
+
       html {
         width: 100dvw;
         height: 100dvh;
@@ -27,6 +39,7 @@ import DemoComponent from "../components/Demo.astro";
         height: 100%;
         padding: 1.5rem;
         margin: 0;
+        background-color: var(--primary-background-color);
       }
     </style>
     <DemoComponent />

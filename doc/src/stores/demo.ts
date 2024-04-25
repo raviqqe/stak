@@ -4,9 +4,19 @@ import { interpret as interpretProgram } from "../application/interpret.js";
 
 export const source = atom(
   `
-(import (scheme base) (scheme read) (scheme write))
+(import
+  (scheme base)
+  (scheme read)
+  (scheme write))
 
-(display "Hello, world!")
+(write-string
+  (apply string-append
+    (apply
+      append
+      (map
+        list
+        (map symbol->string (read))
+        '(" " "!")))))
   `.trim(),
 );
 
@@ -21,7 +31,7 @@ export const compiling = computed(bytecodes, (output) => output === null);
 
 const output = atom<Uint8Array | null>(new Uint8Array());
 
-export const input = atom("");
+export const input = atom("(hello world)");
 export const textOutput = computed(output, (output) =>
   output === null ? null : new TextDecoder().decode(output),
 );
