@@ -1,4 +1,4 @@
-use stak_vm::{Cons, PrimitiveSet, Profiler, Type, Vm, FRAME_TAG};
+use stak_vm::{Cons, PrimitiveSet, Profiler, StackSlot, Vm};
 use std::{io::Write, time::Instant};
 
 const COLUMN_SEPARATOR: char = '\t';
@@ -15,10 +15,6 @@ impl<T: Write> WriteProfiler<T> {
             writer,
             start_time: Instant::now(),
         }
-    }
-
-    fn write_type(&mut self, r#return: bool) {
-        write!(self.writer, "{}", if r#return { "return" } else { "call" },).unwrap();
     }
 
     fn write_column_separator(&mut self) {
@@ -42,21 +38,16 @@ impl<T: Write> WriteProfiler<T> {
         let operand = vm.car(code);
 
         if let Some(symbol) = operand.to_cons() {
-            if vm.car(symbol).tag() == Type::Symbol as _ {
-                let mut string = vm.car_value(vm.car(symbol)).assume_cons();
+            let mut string = vm.car_value(vm.car(symbol)).assume_cons();
 
-                while string != vm.null() {
-                    write!(
-                        self.writer,
-                        "{}",
-                        char::from_u32(vm.car(string).assume_number().to_i64() as _).unwrap_or('�')
-                    )
-                    .unwrap();
-                    string = vm.cdr(string).assume_cons();
-                }
-            } else {
-                // TODO Remove this hack.
-                write!(self.writer, "<top>").unwrap();
+            while string != vm.null() {
+                write!(
+                    self.writer,
+                    "{}",
+                    char::from_u32(vm.car(string).assume_number().to_i64() as _).unwrap_or('�')
+                )
+                .unwrap();
+                string = vm.cdr(string).assume_cons();
             }
         } else {
             write!(self.writer, "<local>").unwrap();
@@ -65,23 +56,34 @@ impl<T: Write> WriteProfiler<T> {
 
     fn write_stack<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
         let mut stack = vm.stack();
+        let mut first = true;
 
         while stack != vm.null() {
-            if vm.cdr(stack).tag() == FRAME_TAG {
-                self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
-                write!(self.writer, ";").unwrap();
+            stack = if vm.cdr(stack).tag() == StackSlot::Frame as _ {
+                if !first {
+                    self.write_frame_separator();
+                }
 
-                stack = vm.cdr_value(vm.car(stack)).assume_cons();
+                first = false;
+
+                self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
+
+                vm.cdr_value(vm.car(stack)).assume_cons()
             } else {
-                stack = vm.cdr(stack).assume_cons();
-            }
+                vm.cdr(stack).assume_cons()
+            };
         }
     }
 }
 
 impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
-    fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons) {
-        self.write_type(false);
+    fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons, r#return: bool) {
+        write!(
+            self.writer,
+            "{}",
+            if r#return { "return_call" } else { "call" }
+        )
+        .unwrap();
         self.write_column_separator();
         self.write_procedure(vm, call_code);
         self.write_frame_separator();
@@ -91,7 +93,7 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     }
 
     fn profile_return(&mut self, vm: &Vm<P>) {
-        self.write_type(true);
+        write!(self.writer, "return",).unwrap();
         self.write_column_separator();
         self.write_stack(vm);
         self.write_column_separator();

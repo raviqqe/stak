@@ -7,7 +7,7 @@ use crate::{
     r#type::Type,
     symbol_index,
     value::{TypedValue, Value},
-    Error,
+    Error, StackSlot,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 #[cfg(feature = "profile")]
@@ -19,9 +19,6 @@ use core::{
 use stak_code as code;
 
 const CONS_FIELD_COUNT: usize = 2;
-
-/// A tag for a procedure frame.
-pub const FRAME_TAG: Tag = 1;
 
 mod instruction {
     use super::*;
@@ -208,13 +205,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
-        if r#return {
-            #[cfg(feature = "profile")]
-            self.profile_return();
-        }
-        #[cfg(feature = "profile")]
-        self.profile_call(self.program_counter);
-
         trace!("procedure", procedure);
         trace!("return", r#return);
 
@@ -224,6 +214,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
+                #[cfg(feature = "profile")]
+                self.profile_call(self.program_counter, r#return);
+
                 let arguments = Self::parse_arity(arity);
                 let parameters =
                     Self::parse_arity(self.car(code).assume_number().to_i64() as usize);
@@ -259,7 +252,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.stack = self.allocate(
                     continuation.into(),
                     self.environment(self.program_counter)
-                        .set_tag(FRAME_TAG)
+                        .set_tag(StackSlot::Frame as _)
                         .into(),
                 )?;
                 self.program_counter = self
@@ -350,7 +343,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn continuation(&self) -> Cons {
         let mut stack = self.stack;
 
-        while self.cdr(stack).assume_cons().tag() != FRAME_TAG {
+        while self.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
             stack = self.cdr(stack).assume_cons();
         }
 
@@ -548,9 +541,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     // Profiling
 
     #[cfg(feature = "profile")]
-    fn profile_call(&self, call_code: Cons) {
+    fn profile_call(&self, call_code: Cons, r#return: bool) {
         if let Some(profiler) = &self.profiler {
-            profiler.borrow_mut().profile_call(self, call_code);
+            profiler
+                .borrow_mut()
+                .profile_call(self, call_code, r#return);
         }
     }
 
@@ -634,10 +629,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         // Initialize an implicit top-level frame.
         let codes = self
-            .allocate(self.boolean(false).into(), self.null().into())?
+            .allocate(Number::new(0).into(), self.null().into())?
             .into();
         let continuation = self.allocate(codes, self.null().into())?.into();
-        self.stack = self.cons(continuation, self.null().set_tag(FRAME_TAG))?;
+        self.stack = self.cons(continuation, self.null().set_tag(StackSlot::Frame as _))?;
 
         self.register = NEVER;
 
