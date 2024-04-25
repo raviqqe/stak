@@ -24,6 +24,15 @@ impl<T: Write> WriteProfiler<T> {
         write!(self.writer, "{}", COLUMN_SEPARATOR).unwrap();
     }
 
+    fn write_time(&mut self) {
+        writeln!(
+            &mut self.writer,
+            "{}",
+            Instant::now().duration_since(self.start_time).as_nanos()
+        )
+        .unwrap();
+    }
+
     fn write<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
         let mut stack = vm.stack();
 
@@ -61,14 +70,6 @@ impl<T: Write> WriteProfiler<T> {
                 stack = vm.cdr(stack).assume_cons();
             }
         }
-
-        writeln!(
-            &mut self.writer,
-            "{}{}",
-            COLUMN_SEPARATOR,
-            Instant::now().duration_since(self.start_time).as_nanos()
-        )
-        .unwrap();
     }
 }
 
@@ -76,12 +77,16 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     fn profile_call(&mut self, vm: &Vm<P>, _call_code: Cons) {
         self.write_type(false);
         self.write_column_separator();
-        self.write(vm)
+        self.write(vm);
+        self.write_column_separator();
+        self.write_time();
     }
 
     fn profile_return(&mut self, vm: &Vm<P>) {
         self.write_type(true);
         self.write_column_separator();
-        self.write(vm)
+        self.write(vm);
+        self.write_column_separator();
+        self.write_time();
     }
 }
