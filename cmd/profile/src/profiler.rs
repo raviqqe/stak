@@ -2,6 +2,7 @@ use stak_vm::{Cons, PrimitiveSet, Profiler, Type, Vm, FRAME_TAG};
 use std::{io::Write, time::Instant};
 
 const COLUMN_SEPARATOR: char = '\t';
+const FRAME_SEPARATOR: char = ';';
 
 pub struct WriteProfiler<T: Write> {
     writer: T,
@@ -24,6 +25,10 @@ impl<T: Write> WriteProfiler<T> {
         write!(self.writer, "{}", COLUMN_SEPARATOR).unwrap();
     }
 
+    fn write_frame_separator(&mut self) {
+        write!(self.writer, "{}", FRAME_SEPARATOR).unwrap();
+    }
+
     fn write_time(&mut self) {
         writeln!(
             &mut self.writer,
@@ -33,36 +38,37 @@ impl<T: Write> WriteProfiler<T> {
         .unwrap();
     }
 
+    fn write_procedure<P: PrimitiveSet>(&mut self, vm: &Vm<P>, code: Cons) {
+        let operand = vm.car(code);
+
+        if let Some(symbol) = operand.to_cons() {
+            if vm.car(symbol).tag() != Type::Symbol as _ {
+                // TODO Remove this hack.
+                write!(self.writer, "<top>").unwrap();
+            } else {
+                let mut string = vm.car_value(vm.car(symbol)).assume_cons();
+
+                while string != vm.null() {
+                    write!(
+                        self.writer,
+                        "{}",
+                        char::from_u32(vm.car(string).assume_number().to_i64() as _).unwrap_or('�')
+                    )
+                    .unwrap();
+                    string = vm.cdr(string).assume_cons();
+                }
+            }
+        } else {
+            write!(self.writer, "<local>").unwrap();
+        }
+    }
+
     fn write_stack<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
         let mut stack = vm.stack();
 
         while stack != vm.null() {
             if vm.cdr(stack).tag() == FRAME_TAG {
-                let operand = vm.car_value(vm.car_value(vm.car(stack)));
-
-                if let Some(symbol) = operand.to_cons() {
-                    if vm.car(symbol).tag() != Type::Symbol as _ {
-                        // TODO Remove this hack.
-                        write!(self.writer, "<top>").unwrap();
-                        break;
-                    } else {
-                        let mut string = vm.car_value(vm.car(symbol)).assume_cons();
-
-                        while string != vm.null() {
-                            write!(
-                                self.writer,
-                                "{}",
-                                char::from_u32(vm.car(string).assume_number().to_i64() as _)
-                                    .unwrap_or('�')
-                            )
-                            .unwrap();
-                            string = vm.cdr(string).assume_cons();
-                        }
-                    }
-                } else {
-                    write!(self.writer, "<local>").unwrap();
-                }
-
+                self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
                 write!(self.writer, ";").unwrap();
 
                 stack = vm.cdr_value(vm.car(stack)).assume_cons();
