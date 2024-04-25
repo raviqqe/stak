@@ -1,7 +1,7 @@
 use stak_vm::{Cons, PrimitiveSet, Profiler, Type, Vm, FRAME_TAG};
 use std::{io::Write, time::Instant};
 
-const SEPARATOR: char = '\t';
+const COLUMN_SEPARATOR: char = '\t';
 
 pub struct WriteProfiler<T: Write> {
     writer: T,
@@ -17,13 +17,11 @@ impl<T: Write> WriteProfiler<T> {
     }
 
     fn write_type(&mut self, r#return: bool) {
-        write!(
-            self.writer,
-            "{}{}",
-            if r#return { "return" } else { "call" },
-            SEPARATOR,
-        )
-        .unwrap();
+        write!(self.writer, "{}", if r#return { "return" } else { "call" },).unwrap();
+    }
+
+    fn write_column_separator(&mut self) {
+        write!(self.writer, "{}", COLUMN_SEPARATOR).unwrap();
     }
 
     fn write<P: PrimitiveSet>(&mut self, vm: &Vm<P>) {
@@ -67,7 +65,7 @@ impl<T: Write> WriteProfiler<T> {
         writeln!(
             &mut self.writer,
             "{}{}",
-            SEPARATOR,
+            COLUMN_SEPARATOR,
             Instant::now().duration_since(self.start_time).as_nanos()
         )
         .unwrap();
@@ -77,11 +75,13 @@ impl<T: Write> WriteProfiler<T> {
 impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     fn profile_call(&mut self, vm: &Vm<P>, _call_code: Cons) {
         self.write_type(false);
+        self.write_column_separator();
         self.write(vm)
     }
 
     fn profile_return(&mut self, vm: &Vm<P>) {
         self.write_type(true);
+        self.write_column_separator();
         self.write(vm)
     }
 }
