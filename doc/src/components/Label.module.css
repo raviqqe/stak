@@ -1,4 +1,4 @@
 .container {
-  color: dimgrey;
+  color: var(--secondary-text-color);
   font-weight: bold;
 }
