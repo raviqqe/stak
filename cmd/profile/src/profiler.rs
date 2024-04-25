@@ -38,7 +38,7 @@ impl<T: Write> WriteProfiler<T> {
         .unwrap();
     }
 
-    fn write_procedure<P: PrimitiveSet>(&mut self, vm: &Vm<P>, code: Cons) -> bool {
+    fn write_procedure<P: PrimitiveSet>(&mut self, vm: &Vm<P>, code: Cons) {
         let operand = vm.car(code);
 
         if let Some(symbol) = operand.to_cons() {
@@ -54,14 +54,12 @@ impl<T: Write> WriteProfiler<T> {
                     .unwrap();
                     string = vm.cdr(string).assume_cons();
                 }
-
-                false
             } else {
-                true
+                // TODO Remove this hack.
+                write!(self.writer, "<top>").unwrap();
             }
         } else {
             write!(self.writer, "<local>").unwrap();
-            false
         }
     }
 
@@ -70,10 +68,7 @@ impl<T: Write> WriteProfiler<T> {
 
         while stack != vm.null() {
             if vm.cdr(stack).tag() == FRAME_TAG {
-                if self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons()) {
-                    break;
-                }
-
+                self.write_procedure(vm, vm.car_value(vm.car(stack)).assume_cons());
                 write!(self.writer, ";").unwrap();
 
                 stack = vm.cdr_value(vm.car(stack)).assume_cons();
@@ -88,12 +83,9 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons) {
         self.write_type(false);
         self.write_column_separator();
-
-        if !self.write_procedure(vm, call_code) {
-            self.write_frame_separator();
-            self.write_stack(vm);
-        }
-
+        self.write_procedure(vm, call_code);
+        self.write_frame_separator();
+        self.write_stack(vm);
         self.write_column_separator();
         self.write_time();
     }
