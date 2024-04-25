@@ -208,6 +208,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let r#return = instruction == self.null();
         let procedure = self.procedure();
 
+        if r#return {
+            self.profile_return();
+        }
+        self.profile_call(self.program_counter);
+
         trace!("procedure", procedure);
         trace!("return", r#return);
 
@@ -249,12 +254,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 } else {
                     self.allocate(program_counter.into(), self.stack.into())?
                 };
-
-                if r#return {
-                    self.profile_return();
-                }
-                self.profile_call(self.program_counter);
-
                 self.stack = self.allocate(
                     continuation.into(),
                     self.environment(self.program_counter)
