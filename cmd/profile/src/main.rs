@@ -23,6 +23,20 @@ use std::{
 #[derive(clap::Parser)]
 #[command(about, version)]
 struct Arguments {
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(clap::Subcommand)]
+#[command()]
+enum Command {
+    #[command()]
+    Run(RunArguments),
+}
+
+#[derive(clap::Args)]
+#[command()]
+struct RunArguments {
     #[arg(required(true))]
     bytecode_file: PathBuf,
     #[arg(short = 'p', long = "profile", required(true))]
@@ -32,20 +46,22 @@ struct Arguments {
 }
 
 fn main() -> Result<(), MainError> {
-    let arguments = Arguments::parse();
+    match Arguments::parse().command {
+        Command::Run(arguments) => {
+            let mut profiler = WriteProfiler::new(
+                OpenOptions::new()
+                    .write(true)
+                    .create(true)
+                    .truncate(true)
+                    .open(&arguments.profile_file)?,
+            );
+            let mut heap = vec![Default::default(); arguments.heap_size];
+            let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
+                .with_profiler(&mut profiler);
 
-    let mut profiler = WriteProfiler::new(
-        OpenOptions::new()
-            .write(true)
-            .create(true)
-            .truncate(true)
-            .open(&arguments.profile_file)?,
-    );
-    let mut heap = vec![Default::default(); arguments.heap_size];
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
-        .with_profiler(&mut profiler);
+            vm.initialize(read(&arguments.bytecode_file)?)?;
 
-    vm.initialize(read(&arguments.bytecode_file)?)?;
-
-    Ok(vm.run()?)
+            Ok(vm.run()?)
+        }
+    }
 }
