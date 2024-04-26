@@ -32,6 +32,7 @@ pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>
 mod tests {
     use super::*;
     use indoc::indoc;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn parse_record() {
@@ -46,7 +47,10 @@ mod tests {
                 .trim()
             )
             .collect::<Vec<_>>(),
-            vec![]
+            vec![
+                Ok(Record::new(RecordType::Call, vec![], 0)),
+                Ok(Record::new(RecordType::Return, vec![], 0))
+            ]
         );
     }
 }

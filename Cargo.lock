@@ -401,6 +401,7 @@ name = "stak-profiler"
 version = "0.1.0"
 dependencies = [
  "indoc",
+ "pretty_assertions",
 ]
 
 [[package]]
