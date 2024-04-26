@@ -9,7 +9,7 @@ export const source = atom(
   (scheme read)
   (scheme write))
 
-(write-string
+(display
   (apply string-append
     (apply
       append
