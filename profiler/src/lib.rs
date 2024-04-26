@@ -1,14 +1,14 @@
 //! Profiling for Stak Scheme.
 
+mod duration;
 mod error;
-mod flamegraph;
 mod parse;
 mod record;
 mod record_type;
 mod stack_profiler;
 
+pub use duration::calculate_durations;
 pub use error::Error;
-pub use flamegraph::calculate_durations;
 pub use parse::parse_records;
 pub use record::Record;
 pub use record_type::RecordType;

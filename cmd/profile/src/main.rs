@@ -11,7 +11,7 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_profiler::{burn_flamegraph, parse_records, StackProfiler};
+use stak_profiler::{calculate_durations, parse_records, StackProfiler};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
@@ -30,8 +30,8 @@ struct Arguments {
 enum Command {
     /// Runs a bytecode file.
     Run(RunArguments),
-    /// Burns a flamegraph.
-    Burn,
+    /// Analyze profile records.
+    Analyze(AnalyzeArguments),
 }
 
 #[derive(clap::Args)]
@@ -45,6 +45,18 @@ struct RunArguments {
     /// A heap size of a virtual machine.
     #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
+}
+
+#[derive(clap::Args)]
+struct AnalyzeArguments {
+    #[command(subcommand)]
+    command: Analysis,
+}
+
+#[derive(clap::Subcommand)]
+enum Analysis {
+    /// Calculates procedure durations.
+    Duration,
 }
 
 fn main() -> Result<(), MainError> {
@@ -65,6 +77,11 @@ fn main() -> Result<(), MainError> {
 
             Ok(vm.run()?)
         }
-        Command::Burn => Ok(burn_flamegraph(parse_records(stdin().lock()), stdout())?),
+        Command::Analyze(arguments) => match arguments.command {
+            Analysis::Duration => Ok(calculate_durations(
+                parse_records(stdin().lock()),
+                stdout(),
+            )?),
+        },
     }
 }
