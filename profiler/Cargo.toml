@@ -9,6 +9,9 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
+stak-vm = { version = "0.4.1", path = "../vm" }
+
+[dev-dependencies]
 indoc = "2.0.5"
 pretty_assertions = "1.4.0"
 

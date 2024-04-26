@@ -1,16 +1,13 @@
-use stak_profiler::LOCAL_PROCEDURE_FRAME;
+use crate::{RecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR, LOCAL_PROCEDURE_FRAME};
 use stak_vm::{Cons, PrimitiveSet, Profiler, StackSlot, Vm};
 use std::{io::Write, time::Instant};
 
-const COLUMN_SEPARATOR: char = '\t';
-const FRAME_SEPARATOR: char = ';';
-
-pub struct WriteProfiler<T: Write> {
+pub struct StackProfiler<T: Write> {
     writer: T,
     start_time: Instant,
 }
 
-impl<T: Write> WriteProfiler<T> {
+impl<T: Write> StackProfiler<T> {
     pub fn new(writer: T) -> Self {
         Self {
             writer,
@@ -77,12 +74,16 @@ impl<T: Write> WriteProfiler<T> {
     }
 }
 
-impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
+impl<T: Write, P: PrimitiveSet> Profiler<P> for StackProfiler<T> {
     fn profile_call(&mut self, vm: &Vm<P>, call_code: Cons, r#return: bool) {
         write!(
             self.writer,
             "{}",
-            if r#return { "return_call" } else { "call" }
+            if r#return {
+                RecordType::ReturnCall
+            } else {
+                RecordType::Call
+            }
         )
         .unwrap();
         self.write_column_separator();
@@ -94,7 +95,7 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for WriteProfiler<T> {
     }
 
     fn profile_return(&mut self, vm: &Vm<P>) {
-        write!(self.writer, "return",).unwrap();
+        write!(self.writer, "{}", RecordType::Return).unwrap();
         self.write_column_separator();
         self.write_stack(vm);
         self.write_column_separator();

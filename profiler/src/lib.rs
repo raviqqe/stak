@@ -5,14 +5,18 @@ mod flamegraph;
 mod parse;
 mod record;
 mod record_type;
+mod stack_profiler;
 
 pub use error::Error;
 pub use flamegraph::burn_flamegraph;
 pub use parse::parse_records;
 pub use record::Record;
 pub use record_type::RecordType;
+pub use stack_profiler::StackProfiler;
 
-pub const LOCAL_PROCEDURE_FRAME: &str = "<local>";
+const LOCAL_PROCEDURE_FRAME: &str = "_";
+const COLUMN_SEPARATOR: char = '\t';
+const FRAME_SEPARATOR: char = ';';
 
 #[cfg(test)]
 mod tests {

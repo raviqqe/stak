@@ -6,15 +6,12 @@
 //! stak-profile --profile profile.txt foo.bc
 //! ```
 
-mod profiler;
-
 use clap::Parser;
 use main_error::MainError;
-use profiler::WriteProfiler;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_profiler::{burn_flamegraph, parse_records};
+use stak_profiler::{burn_flamegraph, parse_records, StackProfiler};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
@@ -53,7 +50,7 @@ struct RunArguments {
 fn main() -> Result<(), MainError> {
     match Arguments::parse().command {
         Command::Run(arguments) => {
-            let mut profiler = WriteProfiler::new(
+            let mut profiler = StackProfiler::new(
                 OpenOptions::new()
                     .write(true)
                     .create(true)
