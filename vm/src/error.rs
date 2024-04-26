@@ -3,7 +3,7 @@ use core::fmt::{self, Debug, Display, Formatter};
 /// An error of a virtual machine.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
-    /// Mismatched numbers of call arguments and function parameters.
+    /// Mismatched numbers of call arguments and procedure parameters.
     ArgumentCount,
     /// A cons expected.
     ConsExpected,
