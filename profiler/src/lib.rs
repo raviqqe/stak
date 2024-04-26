@@ -1,5 +1,9 @@
+use core::num::ParseIntError;
+
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub struct Record {}
+pub struct Record {
+    time: u128,
+}
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum RecordType {
@@ -8,8 +12,32 @@ pub enum RecordType {
     ReturnCall,
 }
 
-pub fn parse_records(source: &str) -> impl Iterator<Item = Record> {
-    source.lines().map(|line| line.split("\t"))
+#[derive(Debug, Clone, Eq, PartialEq)]
+pub enum Error {
+    MissingRecordType,
+    MissingStack,
+    MissingTime,
+    ParseInt(ParseIntError),
+}
+
+impl From<ParseIntError> for Error {
+    fn from(error: ParseIntError) -> Self {
+        Self::ParseInt(error)
+    }
+}
+
+pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>> {
+    source.lines().map(|line| -> Result<Record, Error> {
+        let iterator = line.split("\t");
+
+        let r#type = iterator.next().ok_or(|| Error::MissingRecordType);
+        let stack = iterator.next().ok_or(|| Error::MissingStack);
+        let time = iterator.next().ok_or(|| Error::MissingTime);
+
+        Ok(Record {
+            time: iterator.next().ok_or(|| Error::MissingTime)?.parse()?,
+        })
+    })
 }
 
 #[cfg(test)]
