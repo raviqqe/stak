@@ -23,7 +23,6 @@ pub fn parse_records<'a>(source: &'a str) -> impl Iterator<Item = Result<Record<
                 .next()
                 .ok_or(Error::MissingStack)?
                 .split(";")
-                .map(ToOwned::to_owned)
                 .collect(),
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))
@@ -54,7 +53,7 @@ mod tests {
                 Ok(Record::new(
                     RecordType::Return,
                     vec!["foo", "bar", "baz"],
-                    0
+                    42
                 ))
             ]
         );
