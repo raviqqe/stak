@@ -19,7 +19,7 @@ pub fn burn_flamegraph<'a>(
                 write!(
                     writer,
                     "{} {}",
-                    previous.stack().rev().collect::<Vec<_>>().join(";"),
+                    previous.stack().collect::<Vec<_>>().join(";"),
                     record.time() - previous.time()
                 )?;
             }

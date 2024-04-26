@@ -23,8 +23,8 @@ impl<'a> Record<'a> {
         self.r#type
     }
     /// Returns a stack.
-    pub fn stack(&self) -> impl DoubleEndedIterator<Item = &str> {
-        self.stack.iter().map(AsRef::as_ref)
+    pub fn stack(&self) -> impl Iterator<Item = &str> {
+        self.stack.iter().map(AsRef::as_ref).rev()
     }
     /// Returns a time.
     pub fn time(&self) -> u128 {
