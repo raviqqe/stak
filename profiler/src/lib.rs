@@ -26,16 +26,16 @@ impl From<ParseIntError> for Error {
     }
 }
 
-pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>> {
+pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>> + '_ {
     source.lines().map(|line| -> Result<Record, Error> {
-        let iterator = line.split("\t");
+        let mut iterator = line.split("\t");
 
-        let r#type = iterator.next().ok_or(|| Error::MissingRecordType);
-        let stack = iterator.next().ok_or(|| Error::MissingStack);
-        let time = iterator.next().ok_or(|| Error::MissingTime);
+        let r#type = iterator.next().ok_or(Error::MissingRecordType)?;
+        let stack = iterator.next().ok_or(Error::MissingStack)?;
+        let time = iterator.next().ok_or(Error::MissingTime)?;
 
         Ok(Record {
-            time: iterator.next().ok_or(|| Error::MissingTime)?.parse()?,
+            time: iterator.next().ok_or(Error::MissingTime)?.parse()?,
         })
     })
 }
