@@ -1,4 +1,4 @@
-use crate::{Error, Record, RecordType};
+use crate::{Error, Record, RecordType, LOCAL_PROCEDURE_FRAME};
 use std::io::Write;
 
 /// Burns a flamegraph.
@@ -6,27 +6,49 @@ pub fn burn_flamegraph(
     records: impl IntoIterator<Item = Result<Record, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
+    let mut first = true;
     let mut stack = vec![];
 
     for record in records {
         let record = record?;
 
+        if first {
+            stack.push(Record::new(
+                RecordType::Call,
+                vec![LOCAL_PROCEDURE_FRAME.into()],
+                record.time(),
+            ));
+            first = false;
+        }
+
         match record.r#type() {
             RecordType::Call => {
                 stack.push(record);
             }
-            RecordType::Return => {
-                let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
-                writeln!(
-                    writer,
-                    "{} {}",
-                    previous.stack().collect::<Vec<_>>().join(";"),
-                    record.time() - previous.time()
-                )?;
+            RecordType::Return => burn_return(&mut stack, &record, &mut writer)?,
+            RecordType::ReturnCall => {
+                burn_return(&mut stack, &record, &mut writer)?;
+                stack.push(record);
             }
-            RecordType::ReturnCall => {}
         }
     }
+
+    Ok(())
+}
+
+fn burn_return(
+    stack: &mut Vec<Record>,
+    record: &Record,
+    mut writer: impl Write,
+) -> Result<(), Error> {
+    let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
+
+    writeln!(
+        writer,
+        "{} {}",
+        previous.stack().collect::<Vec<_>>().join(";"),
+        record.time() - previous.time()
+    )?;
 
     Ok(())
 }

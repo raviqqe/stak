@@ -12,6 +12,8 @@ pub use parse::parse_records;
 pub use record::Record;
 pub use record_type::RecordType;
 
+pub const LOCAL_PROCEDURE_FRAME: &str = "<local>";
+
 #[cfg(test)]
 mod tests {
     use super::*;
