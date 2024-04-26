@@ -1,8 +1,8 @@
 use crate::{Error, Record, RecordType, LOCAL_PROCEDURE_FRAME};
 use std::io::Write;
 
-/// Burns a flamegraph.
-pub fn burn_flamegraph(
+/// Calculates durations.
+pub fn calculate_durations(
     records: impl IntoIterator<Item = Result<Record, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
@@ -63,7 +63,7 @@ mod tests {
     fn analyze_call() {
         let mut buffer = vec![];
 
-        burn_flamegraph(
+        calculate_durations(
             [
                 Ok(Record::new(
                     RecordType::Call,
@@ -87,7 +87,7 @@ mod tests {
     fn analyze_nested_calls() {
         let mut buffer = vec![];
 
-        burn_flamegraph(
+        calculate_durations(
             [
                 Ok(Record::new(RecordType::Call, vec!["baz".into()], 0)),
                 Ok(Record::new(
