@@ -11,6 +11,7 @@ repository.workspace = true
 [dependencies]
 indoc = "2.0.5"
 pretty_assertions = "1.4.0"
+stak-vm = { version = "0.4.1", path = "../vm" }
 
 [lints]
 workspace = true

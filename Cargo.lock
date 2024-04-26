@@ -403,6 +403,7 @@ version = "0.1.0"
 dependencies = [
  "indoc",
  "pretty_assertions",
+ "stak-vm",
 ]
 
 [[package]]

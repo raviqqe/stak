@@ -15,6 +15,8 @@ pub use record_type::RecordType;
 pub use stack_profiler::StackProfiler;
 
 const LOCAL_PROCEDURE_FRAME: &str = "<local>";
+const COLUMN_SEPARATOR: char = '\t';
+const FRAME_SEPARATOR: char = ';';
 
 #[cfg(test)]
 mod tests {
