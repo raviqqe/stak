@@ -18,15 +18,13 @@ pub fn burn_flamegraph<'a>(
                 let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
                 write!(
                     writer,
-                    "{} {}",
+                    "{} {}\n",
                     previous.stack().collect::<Vec<_>>().join(";"),
                     record.time() - previous.time()
                 )?;
             }
             RecordType::ReturnCall => {}
         }
-
-        writeln!(writer)?;
     }
 
     Ok(())
