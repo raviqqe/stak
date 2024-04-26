@@ -1,6 +1,7 @@
 use crate::{Error, Record, RecordType};
 use std::io::Write;
 
+/// Burns a flamegraph.
 pub fn burn_flamegraph<'a>(
     records: impl IntoIterator<Item = Result<Record<'a>, Error>>,
     mut writer: impl Write,
