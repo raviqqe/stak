@@ -1,3 +1,5 @@
+//! Profiling for Stak Scheme.
+
 mod error;
 mod record;
 mod record_type;
@@ -6,7 +8,7 @@ pub use error::Error;
 pub use record::Record;
 pub use record_type::RecordType;
 
-pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>> + '_ {
+pub fn parse_records<'a>(source: &'a str) -> impl Iterator<Item = Result<Record<'a>, Error>> + '_ {
     source.lines().map(|line| -> Result<Record, Error> {
         let mut iterator = line.split("\t");
 
@@ -48,8 +50,12 @@ mod tests {
             )
             .collect::<Vec<_>>(),
             vec![
-                Ok(Record::new(RecordType::Call, vec![], 0)),
-                Ok(Record::new(RecordType::Return, vec![], 0))
+                Ok(Record::new(RecordType::Call, vec!["foo", "bar", "baz"], 0)),
+                Ok(Record::new(
+                    RecordType::Return,
+                    vec!["foo", "bar", "baz"],
+                    0
+                ))
             ]
         );
     }

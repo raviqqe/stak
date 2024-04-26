@@ -2,15 +2,15 @@ use crate::RecordType;
 
 /// A record.
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub struct Record {
+pub struct Record<'a> {
     r#type: RecordType,
-    stack: Vec<String>,
+    stack: Vec<&'a str>,
     time: u128,
 }
 
-impl Record {
+impl<'a> Record<'a> {
     /// Creates a new record.
-    pub fn new(r#type: RecordType, stack: Vec<String>, time: u128) -> Self {
+    pub fn new(r#type: RecordType, stack: Vec<&'a str>, time: u128) -> Self {
         Self {
             r#type,
             stack,
