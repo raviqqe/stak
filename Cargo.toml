@@ -15,7 +15,7 @@ members = [
   "macro-util",
   "minifier",
   "minifier_macro",
-  "primitive",
+  "primitive", "profiler",
   "sac",
   "vm",
   "wasm",
