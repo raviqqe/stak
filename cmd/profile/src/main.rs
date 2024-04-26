@@ -14,9 +14,11 @@ use profiler::WriteProfiler;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
+use stak_profiler::burn_flamegraph;
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
+    io::{stdin, stdout},
     path::PathBuf,
 };
 
@@ -28,15 +30,14 @@ struct Arguments {
 }
 
 #[derive(clap::Subcommand)]
-#[command()]
 enum Command {
     /// Runs a bytecode file.
-    #[command()]
     Run(RunArguments),
+    /// Burns a flamegraph.
+    Burn,
 }
 
 #[derive(clap::Args)]
-#[command()]
 struct RunArguments {
     /// A bytecode file.
     #[arg(required(true))]
@@ -67,5 +68,6 @@ fn main() -> Result<(), MainError> {
 
             Ok(vm.run()?)
         }
+        Command::Burn => Ok(burn_flamegraph(parse_records(stdin()), stdout())?),
     }
 }
