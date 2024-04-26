@@ -1,3 +1,4 @@
+use stak_profiler::LOCAL_PROCEDURE_FRAME;
 use stak_vm::{Cons, PrimitiveSet, Profiler, StackSlot, Vm};
 use std::{io::Write, time::Instant};
 
@@ -50,7 +51,7 @@ impl<T: Write> WriteProfiler<T> {
                 string = vm.cdr(string).assume_cons();
             }
         } else {
-            write!(self.writer, "<local>").unwrap();
+            write!(self.writer, "{LOCAL_PROCEDURE_FRAME}").unwrap();
         }
     }
 
