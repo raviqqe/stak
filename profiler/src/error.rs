@@ -1,9 +1,8 @@
-use core::num::ParseIntError;
-use std::{
-    error,
+use core::{
     fmt::{self, Display, Formatter},
-    io,
+    num::ParseIntError,
 };
+use std::{error, io};
 
 /// An error.
 #[derive(Debug, Clone, Eq, PartialEq)]
