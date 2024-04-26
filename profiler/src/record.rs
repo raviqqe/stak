@@ -24,7 +24,7 @@ impl<'a> Record<'a> {
     }
     /// Returns a stack.
     pub fn stack(&self) -> impl Iterator<Item = &str> {
-        self.stack.iter().map(AsRef::as_ref).rev()
+        self.stack.iter().map(AsRef::as_ref)
     }
     /// Returns a time.
     pub fn time(&self) -> u128 {

@@ -12,11 +12,15 @@ pub fn parse_records<'a>(source: &'a str) -> impl Iterator<Item = Result<Record<
                 "return_call" => RecordType::ReturnCall,
                 _ => return Err(Error::UnknownRecordType),
             },
-            iterator
-                .next()
-                .ok_or(Error::MissingStack)?
-                .split(";")
-                .collect(),
+            {
+                let mut stack = iterator
+                    .next()
+                    .ok_or(Error::MissingStack)?
+                    .split(";")
+                    .collect::<Vec<_>>();
+                stack.reverse();
+                stack
+            },
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))
     })
@@ -42,10 +46,10 @@ mod tests {
             )
             .collect::<Vec<_>>(),
             vec![
-                Ok(Record::new(RecordType::Call, vec!["foo", "bar", "baz"], 0)),
+                Ok(Record::new(RecordType::Call, vec!["baz", "bar", "foo"], 0)),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["foo", "bar", "baz"],
+                    vec!["baz", "bar", "foo"],
                     42
                 ))
             ]
