@@ -19,21 +19,23 @@ mod tests {
     use super::*;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
+    use std::io::BufReader;
 
     #[test]
     fn analyze_call() {
         let mut buffer = vec![];
 
         burn_flamegraph(
-            parse_records(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
                     return\tfoo;bar;baz\t42
                     "
                 )
-                .trim(),
-            ),
+                .trim()
+                .as_bytes(),
+            )),
             &mut buffer,
         )
         .unwrap();
@@ -46,7 +48,7 @@ mod tests {
         let mut buffer = vec![];
 
         burn_flamegraph(
-            parse_records(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -57,8 +59,9 @@ mod tests {
                     return\tbaz\t126
                     "
                 )
-                .trim(),
-            ),
+                .trim()
+                .as_bytes(),
+            )),
             &mut buffer,
         )
         .unwrap();
