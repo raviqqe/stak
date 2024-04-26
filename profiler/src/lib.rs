@@ -20,6 +20,7 @@ pub enum Error {
     MissingStack,
     MissingTime,
     ParseInt(ParseIntError),
+    UnknownRecordType,
 }
 
 impl From<ParseIntError> for Error {
@@ -33,7 +34,12 @@ pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>
         let mut iterator = line.split("\t");
 
         Ok(Record {
-            r#type: iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
+            r#type: match iterator.next().ok_or(Error::MissingRecordType)? {
+                "call" => RecordType::Call,
+                "return" => RecordType::Return,
+                "return_call" => RecordType::ReturnCall,
+                _ => return Err(Error::UnknownRecordType),
+            },
             stack: iterator
                 .next()
                 .ok_or(Error::MissingStack)?
