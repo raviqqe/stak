@@ -2,8 +2,8 @@ use crate::{Error, Record, RecordType};
 use std::io::Write;
 
 /// Burns a flamegraph.
-pub fn burn_flamegraph<'a>(
-    records: impl IntoIterator<Item = Result<Record<'a>, Error>>,
+pub fn burn_flamegraph(
+    records: impl IntoIterator<Item = Result<Record, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
     let mut stack = vec![];
@@ -43,10 +43,14 @@ mod tests {
 
         burn_flamegraph(
             [
-                Ok(Record::new(RecordType::Call, vec!["baz", "bar", "foo"], 0)),
+                Ok(Record::new(
+                    RecordType::Call,
+                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    0,
+                )),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["baz", "bar", "foo"],
+                    vec!["baz".into(), "bar".into(), "foo".into()],
                     42,
                 )),
             ],
@@ -63,16 +67,28 @@ mod tests {
 
         burn_flamegraph(
             [
-                Ok(Record::new(RecordType::Call, vec!["baz"], 0)),
-                Ok(Record::new(RecordType::Call, vec!["baz", "bar"], 1)),
-                Ok(Record::new(RecordType::Call, vec!["baz", "bar", "foo"], 2)),
+                Ok(Record::new(RecordType::Call, vec!["baz".into()], 0)),
+                Ok(Record::new(
+                    RecordType::Call,
+                    vec!["baz".into(), "bar".into()],
+                    1,
+                )),
+                Ok(Record::new(
+                    RecordType::Call,
+                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    2,
+                )),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["baz", "bar", "foo"],
+                    vec!["baz".into(), "bar".into(), "foo".into()],
                     42,
                 )),
-                Ok(Record::new(RecordType::Return, vec!["baz", "bar"], 84)),
-                Ok(Record::new(RecordType::Return, vec!["baz"], 126)),
+                Ok(Record::new(
+                    RecordType::Return,
+                    vec!["baz".into(), "bar".into()],
+                    84,
+                )),
+                Ok(Record::new(RecordType::Return, vec!["baz".into()], 126)),
             ],
             &mut buffer,
         )

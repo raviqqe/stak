@@ -1,8 +1,10 @@
 use crate::{error::Error, record::Record, record_type::RecordType};
+use std::io::BufRead;
 
 /// Parses records.
-pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record<'_>, Error>> + '_ {
-    source.lines().map(|line| -> Result<Record, Error> {
+pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record, Error>> {
+    reader.lines().map(|line| -> Result<Record, Error> {
+        let line = line?;
         let mut iterator = line.split('\t');
 
         Ok(Record::new(
@@ -17,6 +19,7 @@ pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record<'_>, Er
                     .next()
                     .ok_or(Error::MissingStack)?
                     .split(';')
+                    .map(ToOwned::to_owned)
                     .collect::<Vec<_>>();
                 stack.reverse();
                 stack

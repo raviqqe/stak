@@ -14,7 +14,7 @@ use profiler::WriteProfiler;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_profiler::burn_flamegraph;
+use stak_profiler::{burn_flamegraph, parse_records};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
@@ -68,6 +68,6 @@ fn main() -> Result<(), MainError> {
 
             Ok(vm.run()?)
         }
-        Command::Burn => Ok(burn_flamegraph(parse_records(stdin()), stdout())?),
+        Command::Burn => Ok(burn_flamegraph(parse_records(stdin().lock()), stdout())?),
     }
 }
