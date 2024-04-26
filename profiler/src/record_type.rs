@@ -37,3 +37,26 @@ impl FromStr for RecordType {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_display() {
+        assert_eq!(RecordType::Call.to_string(), "call");
+        assert_eq!(RecordType::Return.to_string(), "return");
+        assert_eq!(RecordType::ReturnCall.to_string(), "return_call");
+    }
+
+    #[test]
+    fn test_from_str() {
+        assert_eq!("call".parse(), Ok(RecordType::Call));
+        assert_eq!("return".parse(), Ok(RecordType::Return));
+        assert_eq!("return_call".parse(), Ok(RecordType::ReturnCall));
+        assert_eq!(
+            "unknown".parse::<RecordType>(),
+            Err(Error::UnknownRecordType)
+        );
+    }
+}
