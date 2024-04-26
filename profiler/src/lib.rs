@@ -1,33 +1,10 @@
-use core::num::ParseIntError;
+mod error;
+mod record;
+mod record_type;
 
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub struct Record {
-    r#type: RecordType,
-    stack: Vec<String>,
-    time: u128,
-}
-
-#[derive(Debug, Clone, Copy, Eq, PartialEq)]
-pub enum RecordType {
-    Call,
-    Return,
-    ReturnCall,
-}
-
-#[derive(Debug, Clone, Eq, PartialEq)]
-pub enum Error {
-    MissingRecordType,
-    MissingStack,
-    MissingTime,
-    ParseInt(ParseIntError),
-    UnknownRecordType,
-}
-
-impl From<ParseIntError> for Error {
-    fn from(error: ParseIntError) -> Self {
-        Self::ParseInt(error)
-    }
-}
+pub use error::Error;
+pub use record::Record;
+pub use record_type::RecordType;
 
 pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>> + '_ {
     source.lines().map(|line| -> Result<Record, Error> {

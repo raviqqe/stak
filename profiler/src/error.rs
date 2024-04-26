@@ -1,3 +1,5 @@
+use core::num::ParseIntError;
+
 /// An error.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Error {
