@@ -6,7 +6,7 @@ pub fn burn_flamegraph<'a>(
     mut writer: impl Write,
 ) -> Result<(), io::Error> {
     for record in records {
-        write!(writer, "foo")?;
+        writeln!(writer)?;
     }
 
     Ok(())
