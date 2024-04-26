@@ -1,6 +1,7 @@
 //! Profiling for Stak Scheme.
 
 mod error;
+mod flamegraph;
 mod parse;
 mod record;
 mod record_type;
