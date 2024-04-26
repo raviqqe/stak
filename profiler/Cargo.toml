@@ -8,6 +8,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
+indoc = "2.0.5"
 
 [lints]
 workspace = true
