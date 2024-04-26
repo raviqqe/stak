@@ -16,6 +16,7 @@ stak-device = { version = "0.2.31", path = "../../device", features = ["std"] }
 stak-primitive = { version = "0.2.32", path = "../../primitive", features = [
   "std",
 ] }
+stak-profiler = { version = "0.1.0", path = "../../profiler" }
 stak-vm = { version = "0.4.1", path = "../../vm", features = [
   "profile",
   "std",

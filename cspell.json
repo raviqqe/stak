@@ -17,6 +17,7 @@
     "cond",
     "embeddable",
     "fclose",
+    "flamegraph",
     "fopen",
     "fread",
     "fseek",

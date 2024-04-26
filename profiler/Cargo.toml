@@ -1,0 +1,15 @@
+[package]
+name = "stak-profiler"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+indoc = "2.0.5"
+pretty_assertions = "1.4.0"
+
+[lints]
+workspace = true

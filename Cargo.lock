@@ -393,7 +393,16 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-primitive",
+ "stak-profiler",
  "stak-vm",
+]
+
+[[package]]
+name = "stak-profiler"
+version = "0.1.0"
+dependencies = [
+ "indoc",
+ "pretty_assertions",
 ]
 
 [[package]]
