@@ -20,7 +20,7 @@ impl Display for RecordType {
         match self {
             Self::Call => write!(formatter, "call"),
             Self::Return => write!(formatter, "return"),
-            Self::ReturnCall => write!(formatter, "return"),
+            Self::ReturnCall => write!(formatter, "return_call"),
         }
     }
 }
