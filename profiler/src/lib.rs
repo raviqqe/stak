@@ -10,21 +10,21 @@ pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record, Error>
     source.lines().map(|line| -> Result<Record, Error> {
         let mut iterator = line.split("\t");
 
-        Ok(Record {
-            r#type: match iterator.next().ok_or(Error::MissingRecordType)? {
+        Ok(Record::new(
+            match iterator.next().ok_or(Error::MissingRecordType)? {
                 "call" => RecordType::Call,
                 "return" => RecordType::Return,
                 "return_call" => RecordType::ReturnCall,
                 _ => return Err(Error::UnknownRecordType),
             },
-            stack: iterator
+            iterator
                 .next()
                 .ok_or(Error::MissingStack)?
                 .split(";")
                 .map(ToOwned::to_owned)
                 .collect(),
-            time: iterator.next().ok_or(Error::MissingTime)?.parse()?,
-        })
+            iterator.next().ok_or(Error::MissingTime)?.parse()?,
+        ))
     })
 }
 
