@@ -8,7 +8,7 @@ mod record_type;
 mod stack_profiler;
 
 pub use error::Error;
-pub use flamegraph::burn_flamegraph;
+pub use flamegraph::calculate_durations;
 pub use parse::parse_records;
 pub use record::Record;
 pub use record_type::RecordType;
@@ -29,7 +29,7 @@ mod tests {
     fn analyze_call() {
         let mut buffer = vec![];
 
-        burn_flamegraph(
+        calculate_durations(
             parse_records(BufReader::new(
                 indoc!(
                     "
@@ -51,7 +51,7 @@ mod tests {
     fn analyze_nested_calls() {
         let mut buffer = vec![];
 
-        burn_flamegraph(
+        calculate_durations(
             parse_records(BufReader::new(
                 indoc!(
                     "
