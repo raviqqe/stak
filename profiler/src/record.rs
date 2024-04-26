@@ -7,3 +7,27 @@ pub struct Record {
     stack: Vec<String>,
     time: u128,
 }
+
+impl Record {
+    /// Creates a new record.
+    pub fn new(r#type: RecordType, stack: Vec<String>, time: u128) -> Self {
+        Self {
+            r#type,
+            stack,
+            time,
+        }
+    }
+
+    /// Returns a record type.
+    pub fn r#type(&self) -> RecordType {
+        self.r#type
+    }
+    /// Returns a stack.
+    pub fn stack(&self) -> impl Iterator<Item = &str> {
+        self.stack.iter().map(AsRef::as_ref)
+    }
+    /// Returns a time.
+    pub fn time(&self) -> u128 {
+        self.time
+    }
+}
