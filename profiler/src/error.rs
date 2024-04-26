@@ -1,8 +1,11 @@
 use core::num::ParseIntError;
+use std::io;
 
 /// An error.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub enum Error {
+    /// I/O failure.
+    Io(String),
     /// A missing record type.
     MissingRecordType,
     /// A missing stack.
@@ -13,6 +16,12 @@ pub enum Error {
     ParseInt(ParseIntError),
     /// An unknown record type.
     UnknownRecordType,
+}
+
+impl From<io::Error> for Error {
+    fn from(error: io::Error) -> Self {
+        Self::Io(error.to_string())
+    }
 }
 
 impl From<ParseIntError> for Error {
