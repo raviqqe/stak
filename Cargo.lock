@@ -393,6 +393,7 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-primitive",
+ "stak-profiler",
  "stak-vm",
 ]
 
