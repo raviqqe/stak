@@ -1,11 +1,11 @@
-use crate::{error::Error, record::Record};
+use crate::{error::Error, record::Record, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use std::io::BufRead;
 
 /// Parses records.
 pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record, Error>> {
     reader.lines().map(|line| -> Result<Record, Error> {
         let line = line?;
-        let mut iterator = line.split('\t');
+        let mut iterator = line.split(COLUMN_SEPARATOR);
 
         Ok(Record::new(
             iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
@@ -13,7 +13,7 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record
                 let mut stack = iterator
                     .next()
                     .ok_or(Error::MissingStack)?
-                    .split(';')
+                    .split(FRAME_SEPARATOR)
                     .map(ToOwned::to_owned)
                     .collect::<Vec<_>>();
                 stack.reverse();
