@@ -30,6 +30,7 @@ struct Arguments {
 #[derive(clap::Subcommand)]
 #[command()]
 enum Command {
+    /// Runs a bytecode file.
     #[command()]
     Run(RunArguments),
 }
@@ -37,10 +38,13 @@ enum Command {
 #[derive(clap::Args)]
 #[command()]
 struct RunArguments {
+    /// A bytecode file.
     #[arg(required(true))]
     bytecode_file: PathBuf,
+    /// A profile file to which a profiler writes records.
     #[arg(short = 'p', long = "profile", required(true))]
     profile_file: PathBuf,
+    /// A heap size of a virtual machine.
     #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
 }
