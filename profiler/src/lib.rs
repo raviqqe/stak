@@ -19,7 +19,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn parse_record() {
+    fn analyze_profile_records() {
         let mut buffer = vec![];
 
         burn_flamegraph(
