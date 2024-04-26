@@ -5,6 +5,7 @@ mod flamegraph;
 mod parse;
 mod record;
 mod record_type;
+mod stack_profiler;
 
 pub use error::Error;
 pub use flamegraph::burn_flamegraph;
