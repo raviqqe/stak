@@ -12,8 +12,9 @@ pub use flamegraph::burn_flamegraph;
 pub use parse::parse_records;
 pub use record::Record;
 pub use record_type::RecordType;
+pub use stack_profiler::StackProfiler;
 
-pub const LOCAL_PROCEDURE_FRAME: &str = "<local>";
+const LOCAL_PROCEDURE_FRAME: &str = "<local>";
 
 #[cfg(test)]
 mod tests {
