@@ -19,7 +19,7 @@ impl<'a> Record<'a> {
     }
 
     /// Returns a record type.
-    pub fn r#type(&self) -> RecordType {
+    pub const fn r#type(&self) -> RecordType {
         self.r#type
     }
     /// Returns a stack.
@@ -27,7 +27,7 @@ impl<'a> Record<'a> {
         self.stack.iter().map(AsRef::as_ref)
     }
     /// Returns a time.
-    pub fn time(&self) -> u128 {
+    pub const fn time(&self) -> u128 {
         self.time
     }
 }

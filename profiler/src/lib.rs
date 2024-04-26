@@ -24,7 +24,7 @@ mod tests {
 
         burn_flamegraph(
             parse_records(
-                &indoc!(
+                indoc!(
                     "
                     call\tfoo;bar;baz\t0
                     return\tfoo;bar;baz\t42
@@ -45,7 +45,7 @@ mod tests {
 
         burn_flamegraph(
             parse_records(
-                &indoc!(
+                indoc!(
                     "
                     call\tbaz\t0
                     call\tbar;baz\t1

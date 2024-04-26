@@ -1,9 +1,9 @@
 use crate::{error::Error, record::Record, record_type::RecordType};
 
 /// Parses records.
-pub fn parse_records<'a>(source: &'a str) -> impl Iterator<Item = Result<Record<'a>, Error>> + '_ {
+pub fn parse_records(source: &str) -> impl Iterator<Item = Result<Record<'_>, Error>> + '_ {
     source.lines().map(|line| -> Result<Record, Error> {
-        let mut iterator = line.split("\t");
+        let mut iterator = line.split('\t');
 
         Ok(Record::new(
             match iterator.next().ok_or(Error::MissingRecordType)? {
@@ -16,7 +16,7 @@ pub fn parse_records<'a>(source: &'a str) -> impl Iterator<Item = Result<Record<
                 let mut stack = iterator
                     .next()
                     .ok_or(Error::MissingStack)?
-                    .split(";")
+                    .split(';')
                     .collect::<Vec<_>>();
                 stack.reverse();
                 stack
@@ -36,7 +36,7 @@ mod tests {
     fn parse_record() {
         assert_eq!(
             parse_records(
-                &indoc!(
+                indoc!(
                     "
                     call\tfoo;bar;baz\t0
                     return\tfoo;bar;baz\t42
