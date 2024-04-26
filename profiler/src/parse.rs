@@ -1,4 +1,4 @@
-use crate::{error::Error, record::Record, record_type::RecordType};
+use crate::{error::Error, record::Record};
 use std::io::BufRead;
 
 /// Parses records.
@@ -8,12 +8,7 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record
         let mut iterator = line.split('\t');
 
         Ok(Record::new(
-            match iterator.next().ok_or(Error::MissingRecordType)? {
-                "call" => RecordType::Call,
-                "return" => RecordType::Return,
-                "return_call" => RecordType::ReturnCall,
-                _ => return Err(Error::UnknownRecordType),
-            },
+            iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
             {
                 let mut stack = iterator
                     .next()
@@ -32,6 +27,7 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::record_type::RecordType;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;

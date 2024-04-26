@@ -1,4 +1,8 @@
-use core::fmt::{self, Display, Formatter};
+use crate::error::Error;
+use core::{
+    fmt::{self, Display, Formatter},
+    str::FromStr,
+};
 
 /// A record type.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
@@ -17,6 +21,19 @@ impl Display for RecordType {
             Self::Call => write!(formatter, "call"),
             Self::Return => write!(formatter, "return"),
             Self::ReturnCall => write!(formatter, "return"),
+        }
+    }
+}
+
+impl FromStr for RecordType {
+    type Err = Error;
+
+    fn from_str(string: &str) -> Result<Self, Self::Err> {
+        match string {
+            "call" => Ok(Self::Call),
+            "return" => Ok(Self::Return),
+            "return_call" => Ok(Self::ReturnCall),
+            _ => Err(Error::UnknownRecordType),
         }
     }
 }
