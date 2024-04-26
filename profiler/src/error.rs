@@ -6,6 +6,8 @@ use std::io;
 pub enum Error {
     /// I/O failure.
     Io(String),
+    /// A missing call record.
+    MissingCallRecord,
     /// A missing record type.
     MissingRecordType,
     /// A missing stack.

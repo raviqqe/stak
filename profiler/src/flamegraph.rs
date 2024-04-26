@@ -11,8 +11,18 @@ pub fn burn_flamegraph<'a>(
         let record = record?;
 
         match record.r#type() {
-            RecordType::Call => {}
-            RecordType::Return => {}
+            RecordType::Call => {
+                stack.push(record);
+            }
+            RecordType::Return => {
+                let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
+                write!(
+                    writer,
+                    "{} {}",
+                    previous.stack().rev().collect::<Vec<_>>().join(";"),
+                    record.time() - previous.time()
+                )?;
+            }
             RecordType::ReturnCall => {}
         }
 
