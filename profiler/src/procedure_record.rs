@@ -1,7 +1,7 @@
 use crate::{Error, ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use std::str::FromStr;
 
-/// A record.
+/// A procedure record.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct ProcedureRecord {
     r#type: ProcedureOperation,

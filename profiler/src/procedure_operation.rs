@@ -4,7 +4,7 @@ use core::{
     str::FromStr,
 };
 
-/// A record type.
+/// A procedure operation.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum ProcedureOperation {
     /// A call.
