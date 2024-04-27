@@ -1,4 +1,4 @@
-use crate::{error::Error, record::ProcedureRecord};
+use crate::{error::Error, procedure_record::ProcedureRecord};
 use std::io::BufRead;
 
 /// Parses records.
@@ -11,7 +11,7 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Proced
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::record_type::ProcedureRecordType;
+    use crate::procedure_record_type::ProcedureRecordType;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;
