@@ -90,4 +90,11 @@ mod tests {
 
         assert_eq!(stack.to_string().parse::<Stack>().unwrap(), stack);
     }
+
+    #[test]
+    fn display_local() {
+        let stack = Stack::new(vec![Some("foo".into()), None]);
+
+        assert_eq!(stack.to_string(), "foo;");
+    }
 }
