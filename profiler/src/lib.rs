@@ -14,7 +14,6 @@ pub use record::Record;
 pub use record_type::RecordType;
 pub use stack_profiler::StackProfiler;
 
-const LOCAL_PROCEDURE_FRAME: &str = "_";
 const COLUMN_SEPARATOR: char = '\t';
 const FRAME_SEPARATOR: char = ';';
 
