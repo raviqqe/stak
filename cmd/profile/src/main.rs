@@ -15,7 +15,7 @@ use stak_profiler::{calculate_durations, parse_records, StackProfiler};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
-    io::{stdin, stdout},
+    io::{stdin, stdout, BufWriter},
     path::PathBuf,
 };
 
@@ -62,13 +62,13 @@ enum Analysis {
 fn main() -> Result<(), MainError> {
     match Arguments::parse().command {
         Command::Run(arguments) => {
-            let mut profiler = StackProfiler::new(
+            let mut profiler = StackProfiler::new(BufWriter::new(
                 OpenOptions::new()
                     .write(true)
                     .create(true)
                     .truncate(true)
                     .open(&arguments.profile_file)?,
-            );
+            ));
             let mut heap = vec![Default::default(); arguments.heap_size];
             let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
                 .with_profiler(&mut profiler);
@@ -80,7 +80,7 @@ fn main() -> Result<(), MainError> {
         Command::Analyze(arguments) => match arguments.command {
             Analysis::Duration => Ok(calculate_durations(
                 parse_records(stdin().lock()),
-                stdout(),
+                BufWriter::new(stdout().lock()),
             )?),
         },
     }
