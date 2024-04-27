@@ -1,5 +1,7 @@
 //! Profiling for Stak Scheme.
 
+extern crate alloc;
+
 mod duration;
 mod duration_record;
 mod error;
