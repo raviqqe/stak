@@ -28,7 +28,7 @@ impl Stack {
 
     /// Displays a stack with a fixed local names.
     pub fn display_local<'a>(&'a self, local_name: &'a str) -> impl Display + '_ {
-        StackDisplayLocal::new(self, local_name)
+        StackDisplay::new(self, local_name)
     }
 }
 
@@ -51,18 +51,18 @@ impl Display for Stack {
     }
 }
 
-pub struct StackDisplayLocal<'a> {
+pub struct StackDisplay<'a> {
     stack: &'a Stack,
     local_name: &'a str,
 }
 
-impl<'a> StackDisplayLocal<'a> {
+impl<'a> StackDisplay<'a> {
     pub fn new(stack: &'a Stack, local_name: &'a str) -> Self {
         Self { stack, local_name }
     }
 }
 
-impl Display for StackDisplayLocal<'_> {
+impl Display for StackDisplay<'_> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         let mut first = true;
 
