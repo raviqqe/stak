@@ -14,13 +14,7 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record
                     .next()
                     .ok_or(Error::MissingStack)?
                     .split(FRAME_SEPARATOR)
-                    .map(|frame| {
-                        if frame.is_empty() {
-                            None
-                        } else {
-                            Some(frame.to_owned())
-                        }
-                    })
+                    .map(|frame| (!frame.is_empty()).then_some(frame.to_owned()))
                     .collect::<Vec<_>>();
                 stack.reverse();
                 stack
