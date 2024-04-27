@@ -2,7 +2,9 @@ use crate::{error::Error, procedure_record::ProcedureRecord};
 use std::io::BufRead;
 
 /// Parses records.
-pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
+pub fn parse_raw_records(
+    reader: impl BufRead,
+) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
     reader
         .lines()
         .map(|line| -> Result<ProcedureRecord, Error> {
@@ -23,7 +25,7 @@ mod tests {
     #[test]
     fn parse_record() {
         assert_eq!(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0

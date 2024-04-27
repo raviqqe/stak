@@ -14,7 +14,7 @@ pub use duration::calculate_durations;
 pub use duration_record::DurationRecord;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
-pub use parse::parse_records;
+pub use parse::parse_raw_records;
 pub use procedure_operation::ProcedureOperation;
 pub use procedure_record::ProcedureRecord;
 pub use stack::Stack;
@@ -35,7 +35,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -57,7 +57,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -92,7 +92,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
