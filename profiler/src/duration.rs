@@ -1,4 +1,4 @@
-use crate::{Error, ProcedureOperation, ProcedureRecord, Stack, FRAME_SEPARATOR};
+use crate::{DurationRecord, Error, ProcedureOperation, ProcedureRecord, Stack};
 use std::io::Write;
 
 /// Calculates durations.
@@ -45,14 +45,8 @@ fn calculate_duration(
 
     writeln!(
         writer,
-        "{} {}",
-        previous
-            .stack()
-            .frames()
-            .map(|frame| frame.unwrap_or_default())
-            .collect::<Vec<_>>()
-            .join(&FRAME_SEPARATOR.to_string()),
-        record.time() - previous.time()
+        "{}",
+        DurationRecord::new(previous.stack().clone(), record.time() - previous.time()),
     )?;
 
     Ok(())
@@ -93,7 +87,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo\t42\n");
     }
 
     #[test]
@@ -149,9 +143,9 @@ mod tests {
             String::from_utf8(buffer).unwrap(),
             indoc!(
                 "
-                baz;bar;foo 40
-                baz;bar 83
-                baz 126
+                baz;bar;foo\t40
+                baz;bar\t83
+                baz\t126
                 "
             )
         );
