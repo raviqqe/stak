@@ -1,17 +1,25 @@
 //! Profiling for Stak Scheme.
 
+extern crate alloc;
+
 mod duration;
+mod duration_record;
 mod error;
+mod flamegraph;
 mod parse;
-mod record;
-mod record_type;
+mod procedure_operation;
+mod procedure_record;
+mod stack;
 mod stack_profiler;
 
 pub use duration::calculate_durations;
+pub use duration_record::DurationRecord;
 pub use error::Error;
-pub use parse::parse_records;
-pub use record::Record;
-pub use record_type::RecordType;
+pub use flamegraph::calculate_flamegraph;
+pub use parse::parse_raw_records;
+pub use procedure_operation::ProcedureOperation;
+pub use procedure_record::ProcedureRecord;
+pub use stack::Stack;
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';
@@ -29,7 +37,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -43,7 +51,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo\t42\n");
     }
 
     #[test]
@@ -51,7 +59,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -73,9 +81,9 @@ mod tests {
             String::from_utf8(buffer).unwrap(),
             indoc!(
                 "
-                baz;bar;foo 40
-                baz;bar 83
-                baz 126
+                baz;bar;foo\t40
+                baz;bar\t83
+                baz\t126
                 "
             )
         );
@@ -86,7 +94,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
@@ -100,6 +108,6 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), ";; 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), ";;\t42\n");
     }
 }

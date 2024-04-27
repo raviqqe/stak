@@ -12,7 +12,7 @@ pub enum Error {
     /// A missing call record.
     MissingCallRecord,
     /// A missing record type.
-    MissingRecordType,
+    MissingProcedureOperation,
     /// A missing stack.
     MissingStack,
     /// A missing time.
@@ -28,7 +28,7 @@ impl Display for Error {
         match self {
             Self::Io(error) => write!(formatter, "{error}"),
             Self::MissingCallRecord => write!(formatter, "missing call record"),
-            Self::MissingRecordType => write!(formatter, "missing record type"),
+            Self::MissingProcedureOperation => write!(formatter, "missing record type"),
             Self::MissingStack => write!(formatter, "missing stack"),
             Self::MissingTime => write!(formatter, "missing time"),
             Self::ParseInt(error) => write!(formatter, "{error}"),

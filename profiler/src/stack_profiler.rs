@@ -1,4 +1,4 @@
-use crate::{RecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use stak_vm::{Cons, PrimitiveSet, Profiler, StackSlot, Vm};
 use std::{io::Write, time::Instant};
 
@@ -78,9 +78,9 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for StackProfiler<T> {
             self.writer,
             "{}",
             if r#return {
-                RecordType::ReturnCall
+                ProcedureOperation::ReturnCall
             } else {
-                RecordType::Call
+                ProcedureOperation::Call
             }
         )
         .unwrap();
@@ -93,7 +93,7 @@ impl<T: Write, P: PrimitiveSet> Profiler<P> for StackProfiler<T> {
     }
 
     fn profile_return(&mut self, vm: &Vm<P>) {
-        write!(self.writer, "{}", RecordType::Return).unwrap();
+        write!(self.writer, "{}", ProcedureOperation::Return).unwrap();
         self.write_column_separator();
         self.write_stack(vm);
         self.write_column_separator();

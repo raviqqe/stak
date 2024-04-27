@@ -1,33 +1,23 @@
-use crate::{error::Error, record::Record, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{error::Error, procedure_record::ProcedureRecord};
 use std::io::BufRead;
 
 /// Parses records.
-pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record, Error>> {
-    reader.lines().map(|line| -> Result<Record, Error> {
-        let line = line?;
-        let mut iterator = line.split(COLUMN_SEPARATOR);
-
-        Ok(Record::new(
-            iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
-            {
-                let mut stack = iterator
-                    .next()
-                    .ok_or(Error::MissingStack)?
-                    .split(FRAME_SEPARATOR)
-                    .map(|frame| (!frame.is_empty()).then_some(frame.to_owned()))
-                    .collect::<Vec<_>>();
-                stack.reverse();
-                stack
-            },
-            iterator.next().ok_or(Error::MissingTime)?.parse()?,
-        ))
-    })
+pub fn parse_raw_records(
+    reader: impl BufRead,
+) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
+    reader
+        .lines()
+        .map(|line| -> Result<ProcedureRecord, Error> {
+            let mut record = line?.parse::<ProcedureRecord>()?;
+            record.stack_mut().reverse_frames();
+            Ok(record)
+        })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::record_type::RecordType;
+    use crate::{procedure_operation::ProcedureOperation, Stack};
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;
@@ -35,7 +25,7 @@ mod tests {
     #[test]
     fn parse_record() {
         assert_eq!(
-            parse_records(BufReader::new(
+            parse_raw_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -47,14 +37,22 @@ mod tests {
             ))
             .collect::<Vec<_>>(),
             vec![
-                Ok(Record::new(
-                    RecordType::Call,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Call,
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into())
+                    ]),
                     0
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Return,
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into())
+                    ]),
                     42
                 ))
             ]
