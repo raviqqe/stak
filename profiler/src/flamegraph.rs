@@ -3,9 +3,10 @@ use std::{collections::HashMap, io::Write};
 
 /// Calculates a flamegraph.
 pub fn calculate_flamegraph(
-    records: impl IntoIterator<Item = Result<DurationRecord, Error>>,
-    mut writer: impl Write,
+    _records: impl IntoIterator<Item = Result<DurationRecord, Error>>,
+    mut _writer: impl Write,
 ) -> Result<(), Error> {
-    let mut map = HashMap::new();
+    let mut _map = HashMap::<String, u128>::new();
+
     todo!()
 }

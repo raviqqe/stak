@@ -1,4 +1,4 @@
-use crate::{Error, ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{Error, Stack, COLUMN_SEPARATOR};
 use core::{
     fmt::{self, Display, Formatter},
     str::FromStr,
@@ -12,7 +12,7 @@ pub struct DurationRecord {
 }
 
 impl DurationRecord {
-    /// Creates a new record.
+    /// Creates a record.
     pub fn new(stack: Stack, time: u128) -> Self {
         Self { stack, time }
     }
@@ -35,7 +35,6 @@ impl FromStr for DurationRecord {
         let mut iterator = string.split(COLUMN_SEPARATOR);
 
         Ok(DurationRecord::new(
-            iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
             iterator.next().ok_or(Error::MissingStack)?.parse()?,
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))
@@ -44,18 +43,26 @@ impl FromStr for DurationRecord {
 
 impl Display for DurationRecord {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
-        let mut first = true;
-
-        for frame in &self.frames {
-            if !first {
-                write!(formatter, "{FRAME_SEPARATOR}")?;
-            }
-
-            first = false;
-
-            write!(formatter, "{}", frame.unwrap_or_default())?;
-        }
+        write!(formatter, "{}", &self.stack)?;
+        write!(formatter, "{COLUMN_SEPARATOR}")?;
+        write!(formatter, "{}", &self.time)?;
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse() {
+        let record =
+            DurationRecord::new(Stack::new(vec![Some("foo".into()), Some("bar".into())]), 42);
+
+        assert_eq!(
+            record.to_string().parse::<DurationRecord>().unwrap(),
+            record
+        );
     }
 }

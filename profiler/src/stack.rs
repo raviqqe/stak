@@ -51,7 +51,8 @@ impl Display for Stack {
 
             first = false;
 
-            write!(formatter, "{}", frame.unwrap_or_default())?;
+            write!(formatter, "{}", frame.as_deref().unwrap_or_default())?;
+
         }
 
         Ok(())

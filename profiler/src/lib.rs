@@ -13,6 +13,7 @@ mod stack_profiler;
 pub use duration::calculate_durations;
 pub use duration_record::DurationRecord;
 pub use error::Error;
+pub use flamegraph::calculate_flamegraph;
 pub use parse::parse_records;
 pub use procedure_operation::ProcedureOperation;
 pub use procedure_record::ProcedureRecord;
