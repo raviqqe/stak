@@ -1,4 +1,4 @@
-use crate::{error::Error, procedure_record::ProcedureRecord};
+use crate::{error::Error, ProcedureRecord};
 use std::io::BufRead;
 
 /// Parses records.
@@ -17,7 +17,7 @@ pub fn parse_raw_records(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{procedure_operation::ProcedureOperation, Stack};
+    use crate::{ProcedureOperation, Stack};
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;
