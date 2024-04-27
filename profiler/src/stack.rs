@@ -5,7 +5,7 @@ use core::{
 };
 
 /// A stack.
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
 pub struct Stack {
     frames: Vec<Option<String>>,
 }
