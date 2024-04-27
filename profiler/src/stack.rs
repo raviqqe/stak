@@ -57,7 +57,7 @@ pub struct StackDisplay<'a> {
 }
 
 impl<'a> StackDisplay<'a> {
-    pub fn new(stack: &'a Stack, local_name: &'a str) -> Self {
+    pub const fn new(stack: &'a Stack, local_name: &'a str) -> Self {
         Self { stack, local_name }
     }
 }

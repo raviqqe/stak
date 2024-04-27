@@ -28,7 +28,7 @@ impl ProcedureRecord {
     }
 
     /// Returns a stack.
-    pub fn stack(&self) -> &Stack {
+    pub const fn stack(&self) -> &Stack {
         &self.stack
     }
 
