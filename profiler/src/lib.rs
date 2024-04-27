@@ -79,9 +79,9 @@ mod tests {
             String::from_utf8(buffer).unwrap(),
             indoc!(
                 "
-                baz;bar;foo 40
-                baz;bar 83
-                baz 126
+                baz;bar;foo\t40
+                baz;bar\t83
+                baz\t126
                 "
             )
         );
@@ -106,6 +106,6 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), ";; 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), ";;\t42\n");
     }
 }
