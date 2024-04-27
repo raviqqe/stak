@@ -4,19 +4,19 @@ use std::str::FromStr;
 /// A duration record.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct DurationRecord {
-    stack: Vec<Option<String>>,
+    stack: Stack,
     time: u128,
 }
 
 impl DurationRecord {
     /// Creates a new record.
-    pub fn new(stack: Vec<Option<String>>, time: u128) -> Self {
+    pub fn new(stack: Stack, time: u128) -> Self {
         Self { stack, time }
     }
 
     /// Returns a stack.
-    pub fn stack(&self) -> impl Iterator<Item = Option<&str>> {
-        self.stack.iter().map(Option::as_deref)
+    pub fn stack(&self) -> &Stack {
+        &self.stack
     }
 
     /// Returns a time.
