@@ -89,8 +89,8 @@ mod tests {
             parse_records(BufReader::new(
                 indoc!(
                     "
-                    call\tfoo;;\t0
-                    return\tfoo;;\t42
+                    call\t;;\t0
+                    return\t;;\t42
                     "
                 )
                 .trim()
@@ -100,6 +100,6 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), ";;foo 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), ";; 42\n");
     }
 }
