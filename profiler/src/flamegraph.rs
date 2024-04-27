@@ -1,4 +1,4 @@
-use crate::Error;
+use crate::{DurationRecord, Error};
 use std::{collections::HashMap, io::Write};
 
 /// Calculates a flamegraph.

@@ -1,6 +1,7 @@
 //! Profiling for Stak Scheme.
 
 mod duration;
+mod duration_record;
 mod error;
 mod flamegraph;
 mod parse;
@@ -10,6 +11,7 @@ mod stack;
 mod stack_profiler;
 
 pub use duration::calculate_durations;
+pub use duration_record::DurationRecord;
 pub use error::Error;
 pub use parse::parse_records;
 pub use procedure_operation::ProcedureOperation;

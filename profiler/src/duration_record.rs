@@ -1,5 +1,8 @@
 use crate::{Error, ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
-use std::str::FromStr;
+use core::{
+    fmt::{self, Display, Formatter},
+    str::FromStr,
+};
 
 /// A duration record.
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -36,5 +39,23 @@ impl FromStr for DurationRecord {
             iterator.next().ok_or(Error::MissingStack)?.parse()?,
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))
+    }
+}
+
+impl Display for DurationRecord {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
+        let mut first = true;
+
+        for frame in &self.frames {
+            if !first {
+                write!(formatter, "{FRAME_SEPARATOR}")?;
+            }
+
+            first = false;
+
+            write!(formatter, "{}", frame.unwrap_or_default())?;
+        }
+
+        Ok(())
     }
 }

@@ -1,5 +1,8 @@
 use crate::{Error, FRAME_SEPARATOR};
-use std::{fmt::Display, str::FromStr};
+use core::{
+    fmt::{self, Display, Formatter},
+    str::FromStr,
+};
 
 /// A stack.
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -38,7 +41,7 @@ impl FromStr for Stack {
 }
 
 impl Display for Stack {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         let mut first = true;
 
         for frame in &self.frames {
