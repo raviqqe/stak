@@ -1,9 +1,9 @@
-use crate::{Error, Record, RecordType, FRAME_SEPARATOR};
+use crate::{DurationRecord, Error, ProcedureOperation, ProcedureRecord, Stack};
 use std::io::Write;
 
 /// Calculates durations.
 pub fn calculate_durations(
-    records: impl IntoIterator<Item = Result<Record, Error>>,
+    records: impl IntoIterator<Item = Result<ProcedureRecord, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
     let mut first = true;
@@ -13,17 +13,21 @@ pub fn calculate_durations(
         let record = record?;
 
         if first {
-            stack.push(Record::new(RecordType::Call, vec![None], record.time()));
+            stack.push(ProcedureRecord::new(
+                ProcedureOperation::Call,
+                Stack::new(vec![None]),
+                record.time(),
+            ));
             first = false;
         }
 
-        match record.r#type() {
-            RecordType::Call => {
+        match record.operation() {
+            ProcedureOperation::Call => {
                 stack.push(record);
             }
-            RecordType::Return => burn_return(&mut stack, &record, &mut writer)?,
-            RecordType::ReturnCall => {
-                burn_return(&mut stack, &record, &mut writer)?;
+            ProcedureOperation::Return => calculate_duration(&mut stack, &record, &mut writer)?,
+            ProcedureOperation::ReturnCall => {
+                calculate_duration(&mut stack, &record, &mut writer)?;
                 stack.push(record);
             }
         }
@@ -32,22 +36,17 @@ pub fn calculate_durations(
     Ok(())
 }
 
-fn burn_return(
-    stack: &mut Vec<Record>,
-    record: &Record,
+fn calculate_duration(
+    stack: &mut Vec<ProcedureRecord>,
+    record: &ProcedureRecord,
     mut writer: impl Write,
 ) -> Result<(), Error> {
     let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
 
     writeln!(
         writer,
-        "{} {}",
-        previous
-            .stack()
-            .map(|frame| frame.unwrap_or_default())
-            .collect::<Vec<_>>()
-            .join(&FRAME_SEPARATOR.to_string()),
-        record.time() - previous.time()
+        "{}",
+        DurationRecord::new(previous.stack().clone(), record.time() - previous.time()),
     )?;
 
     Ok(())
@@ -65,14 +64,22 @@ mod tests {
 
         calculate_durations(
             [
-                Ok(Record::new(
-                    RecordType::Call,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Call,
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     0,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Return,
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     42,
                 )),
             ],
@@ -80,7 +87,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo\t42\n");
     }
 
     #[test]
@@ -89,30 +96,42 @@ mod tests {
 
         calculate_durations(
             [
-                Ok(Record::new(RecordType::Call, vec![Some("baz".into())], 0)),
-                Ok(Record::new(
-                    RecordType::Call,
-                    vec![Some("baz".into()), Some("bar".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Call,
+                    Stack::new(vec![Some("baz".into())]),
+                    0,
+                )),
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Call,
+                    Stack::new(vec![Some("baz".into()), Some("bar".into())]),
                     1,
                 )),
-                Ok(Record::new(
-                    RecordType::Call,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Call,
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     2,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Return,
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     42,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
-                    vec![Some("baz".into()), Some("bar".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Return,
+                    Stack::new(vec![Some("baz".into()), Some("bar".into())]),
                     84,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
-                    vec![Some("baz".into())],
+                Ok(ProcedureRecord::new(
+                    ProcedureOperation::Return,
+                    Stack::new(vec![Some("baz".into())]),
                     126,
                 )),
             ],
@@ -124,9 +143,9 @@ mod tests {
             String::from_utf8(buffer).unwrap(),
             indoc!(
                 "
-                baz;bar;foo 40
-                baz;bar 83
-                baz 126
+                baz;bar;foo\t40
+                baz;bar\t83
+                baz\t126
                 "
             )
         );
