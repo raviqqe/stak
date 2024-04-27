@@ -1,4 +1,4 @@
-use crate::{Error, Record, RecordType, FRAME_SEPARATOR, LOCAL_PROCEDURE_FRAME};
+use crate::{Error, Record, RecordType, FRAME_SEPARATOR};
 use std::io::Write;
 
 /// Calculates durations.
@@ -13,11 +13,7 @@ pub fn calculate_durations(
         let record = record?;
 
         if first {
-            stack.push(Record::new(
-                RecordType::Call,
-                vec![LOCAL_PROCEDURE_FRAME.into()],
-                record.time(),
-            ));
+            stack.push(Record::new(RecordType::Call, vec![None], record.time()));
             first = false;
         }
 
@@ -48,7 +44,7 @@ fn burn_return(
         "{} {}",
         previous
             .stack()
-            .map(|frame| frame.unwrap_or(LOCAL_PROCEDURE_FRAME))
+            .map(|frame| frame.unwrap_or_default())
             .collect::<Vec<_>>()
             .join(&FRAME_SEPARATOR.to_string()),
         record.time() - previous.time()
@@ -76,7 +72,7 @@ mod tests {
                 )),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42,
                 )),
             ],
@@ -93,25 +89,25 @@ mod tests {
 
         calculate_durations(
             [
-                Ok(Record::new(RecordType::Call, vec!["baz".into()], 0)),
+                Ok(Record::new(RecordType::Call, vec![Some("baz".into())], 0)),
                 Ok(Record::new(
                     RecordType::Call,
-                    vec!["baz".into(), "bar".into()],
+                    vec![Some("baz".into()), Some("bar".into())],
                     1,
                 )),
                 Ok(Record::new(
                     RecordType::Call,
-                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     2,
                 )),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42,
                 )),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["baz".into(), "bar".into()],
+                    vec![Some("baz".into()), Some("bar".into())],
                     84,
                 )),
                 Ok(Record::new(RecordType::Return, vec!["baz".into()], 126)),

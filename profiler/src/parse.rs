@@ -14,7 +14,13 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record
                     .next()
                     .ok_or(Error::MissingStack)?
                     .split(FRAME_SEPARATOR)
-                    .map(ToOwned::to_owned)
+                    .map(|frame| {
+                        if frame.is_empty() {
+                            None
+                        } else {
+                            Some(frame.to_owned())
+                        }
+                    })
                     .collect::<Vec<_>>();
                 stack.reverse();
                 stack
@@ -49,12 +55,12 @@ mod tests {
             vec![
                 Ok(Record::new(
                     RecordType::Call,
-                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     0
                 )),
                 Ok(Record::new(
                     RecordType::Return,
-                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42
                 ))
             ]
