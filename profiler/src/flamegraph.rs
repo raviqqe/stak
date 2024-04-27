@@ -19,7 +19,7 @@ pub fn calculate_flamegraph(
     }
 
     for (key, value) in map {
-        write!(writer, "{} {}", key, value)?;
+        writeln!(writer, "{} {}", key, value)?;
     }
 
     Ok(())
