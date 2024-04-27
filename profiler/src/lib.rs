@@ -80,4 +80,26 @@ mod tests {
             )
         );
     }
+
+    #[test]
+    fn analyze_anonymous_procedure_call() {
+        let mut buffer = vec![];
+
+        calculate_durations(
+            parse_records(BufReader::new(
+                indoc!(
+                    "
+                    call\tfoo;;\t0
+                    return\tfoo;;\t42
+                    "
+                )
+                .trim()
+                .as_bytes(),
+            )),
+            &mut buffer,
+        )
+        .unwrap();
+
+        assert_eq!(String::from_utf8(buffer).unwrap(), ";;foo 42\n");
+    }
 }
