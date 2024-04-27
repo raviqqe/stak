@@ -67,7 +67,7 @@ mod tests {
             [
                 Ok(Record::new(
                     RecordType::Call,
-                    vec!["baz".into(), "bar".into(), "foo".into()],
+                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     0,
                 )),
                 Ok(Record::new(
@@ -110,7 +110,11 @@ mod tests {
                     vec![Some("baz".into()), Some("bar".into())],
                     84,
                 )),
-                Ok(Record::new(RecordType::Return, vec!["baz".into()], 126)),
+                Ok(Record::new(
+                    RecordType::Return,
+                    vec![Some("baz".into())],
+                    126,
+                )),
             ],
             &mut buffer,
         )
