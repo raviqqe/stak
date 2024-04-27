@@ -2,9 +2,11 @@
 
 mod duration;
 mod error;
+mod flamegraph;
 mod parse;
 mod procedure_operation;
 mod procedure_record;
+mod stack;
 mod stack_profiler;
 
 pub use duration::calculate_durations;
@@ -12,6 +14,7 @@ pub use error::Error;
 pub use parse::parse_records;
 pub use procedure_operation::ProcedureOperation;
 pub use procedure_record::ProcedureRecord;
+pub use stack::Stack;
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';

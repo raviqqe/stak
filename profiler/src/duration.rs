@@ -1,4 +1,4 @@
-use crate::{Error, ProcedureOperation, ProcedureRecord, FRAME_SEPARATOR};
+use crate::{Error, ProcedureOperation, ProcedureRecord, Stack, FRAME_SEPARATOR};
 use std::io::Write;
 
 /// Calculates durations.
@@ -15,19 +15,19 @@ pub fn calculate_durations(
         if first {
             stack.push(ProcedureRecord::new(
                 ProcedureOperation::Call,
-                vec![None],
+                Stack::new(vec![None]),
                 record.time(),
             ));
             first = false;
         }
 
-        match record.r#type() {
+        match record.operation() {
             ProcedureOperation::Call => {
                 stack.push(record);
             }
-            ProcedureOperation::Return => burn_return(&mut stack, &record, &mut writer)?,
+            ProcedureOperation::Return => calculate_duration(&mut stack, &record, &mut writer)?,
             ProcedureOperation::ReturnCall => {
-                burn_return(&mut stack, &record, &mut writer)?;
+                calculate_duration(&mut stack, &record, &mut writer)?;
                 stack.push(record);
             }
         }
@@ -36,7 +36,7 @@ pub fn calculate_durations(
     Ok(())
 }
 
-fn burn_return(
+fn calculate_duration(
     stack: &mut Vec<ProcedureRecord>,
     record: &ProcedureRecord,
     mut writer: impl Write,
@@ -48,6 +48,7 @@ fn burn_return(
         "{} {}",
         previous
             .stack()
+            .frames()
             .map(|frame| frame.unwrap_or_default())
             .collect::<Vec<_>>()
             .join(&FRAME_SEPARATOR.to_string()),
@@ -71,12 +72,20 @@ mod tests {
             [
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     0,
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     42,
                 )),
             ],
@@ -95,32 +104,40 @@ mod tests {
             [
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
-                    vec![Some("baz".into())],
+                    Stack::new(vec![Some("baz".into())]),
                     0,
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
-                    vec![Some("baz".into()), Some("bar".into())],
+                    Stack::new(vec![Some("baz".into()), Some("bar".into())]),
                     1,
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     2,
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
                     42,
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
-                    vec![Some("baz".into()), Some("bar".into())],
+                    Stack::new(vec![Some("baz".into()), Some("bar".into())]),
                     84,
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
-                    vec![Some("baz".into())],
+                    Stack::new(vec![Some("baz".into())]),
                     126,
                 )),
             ],

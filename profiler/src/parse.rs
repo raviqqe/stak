@@ -11,7 +11,7 @@ pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Proced
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::procedure_operation::ProcedureOperation;
+    use crate::{procedure_operation::ProcedureOperation, Stack};
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;
@@ -33,12 +33,20 @@ mod tests {
             vec![
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into())
+                    ]),
                     0
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
-                    vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("foo".into())
+                    ]),
                     42
                 ))
             ]

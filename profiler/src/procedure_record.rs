@@ -1,32 +1,34 @@
-use crate::{Error, ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{Error, ProcedureOperation, Stack, COLUMN_SEPARATOR};
 use std::str::FromStr;
 
 /// A procedure record.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct ProcedureRecord {
-    r#type: ProcedureOperation,
-    stack: Vec<Option<String>>,
+    operation: ProcedureOperation,
+    stack: Stack,
     time: u128,
 }
 
 impl ProcedureRecord {
     /// Creates a new record.
-    pub fn new(r#type: ProcedureOperation, stack: Vec<Option<String>>, time: u128) -> Self {
+    pub fn new(operation: ProcedureOperation, stack: Stack, time: u128) -> Self {
         Self {
-            r#type,
+            operation,
             stack,
             time,
         }
     }
 
-    /// Returns a record type.
-    pub const fn r#type(&self) -> ProcedureOperation {
-        self.r#type
+    /// Returns a procedure operation.
+    pub const fn operation(&self) -> ProcedureOperation {
+        self.operation
     }
+
     /// Returns a stack.
-    pub fn stack(&self) -> impl Iterator<Item = Option<&str>> {
-        self.stack.iter().map(Option::as_deref)
+    pub fn stack(&self) -> &Stack {
+        &self.stack
     }
+
     /// Returns a time.
     pub const fn time(&self) -> u128 {
         self.time
@@ -40,15 +42,16 @@ impl FromStr for ProcedureRecord {
         let mut iterator = string.split(COLUMN_SEPARATOR);
 
         Ok(ProcedureRecord::new(
-            iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
+            iterator
+                .next()
+                .ok_or(Error::MissingProcedureOperation)?
+                .parse()?,
             {
                 let mut stack = iterator
                     .next()
                     .ok_or(Error::MissingStack)?
-                    .split(FRAME_SEPARATOR)
-                    .map(|frame| (!frame.is_empty()).then_some(frame.to_owned()))
-                    .collect::<Vec<_>>();
-                stack.reverse();
+                    .parse::<Stack>()?;
+                stack.reverse_frames();
                 stack
             },
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
