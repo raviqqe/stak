@@ -1,4 +1,4 @@
-use crate::{Error, Record, RecordType, LOCAL_PROCEDURE_FRAME};
+use crate::{Error, Record, RecordType, FRAME_SEPARATOR, LOCAL_PROCEDURE_FRAME};
 use std::io::Write;
 
 /// Calculates durations.
@@ -46,7 +46,11 @@ fn burn_return(
     writeln!(
         writer,
         "{} {}",
-        previous.stack().collect::<Vec<_>>().join(";"),
+        previous
+            .stack()
+            .map(|frame| frame.unwrap_or(LOCAL_PROCEDURE_FRAME))
+            .collect::<Vec<_>>()
+            .join(&FRAME_SEPARATOR.to_string()),
         record.time() - previous.time()
     )?;
 
