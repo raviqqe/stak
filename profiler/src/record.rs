@@ -4,7 +4,7 @@ use crate::RecordType;
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Record {
     r#type: RecordType,
-    stack: Vec<String>,
+    stack: Vec<Option<String>>,
     time: u128,
 }
 
