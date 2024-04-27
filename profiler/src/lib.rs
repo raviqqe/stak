@@ -10,8 +10,8 @@ mod stack_profiler;
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use parse::parse_records;
-pub use record::Record;
-pub use record_type::RecordType;
+pub use record::ProcedureRecord;
+pub use record_type::ProcedureRecordType;
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';

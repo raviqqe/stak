@@ -1,9 +1,9 @@
-use crate::{Error, Record, RecordType, FRAME_SEPARATOR};
+use crate::{Error, ProcedureRecord, ProcedureRecordType, FRAME_SEPARATOR};
 use std::io::Write;
 
 /// Calculates durations.
 pub fn calculate_durations(
-    records: impl IntoIterator<Item = Result<Record, Error>>,
+    records: impl IntoIterator<Item = Result<ProcedureRecord, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
     let mut first = true;
@@ -13,16 +13,20 @@ pub fn calculate_durations(
         let record = record?;
 
         if first {
-            stack.push(Record::new(RecordType::Call, vec![None], record.time()));
+            stack.push(ProcedureRecord::new(
+                ProcedureRecordType::Call,
+                vec![None],
+                record.time(),
+            ));
             first = false;
         }
 
         match record.r#type() {
-            RecordType::Call => {
+            ProcedureRecordType::Call => {
                 stack.push(record);
             }
-            RecordType::Return => burn_return(&mut stack, &record, &mut writer)?,
-            RecordType::ReturnCall => {
+            ProcedureRecordType::Return => burn_return(&mut stack, &record, &mut writer)?,
+            ProcedureRecordType::ReturnCall => {
                 burn_return(&mut stack, &record, &mut writer)?;
                 stack.push(record);
             }
@@ -33,8 +37,8 @@ pub fn calculate_durations(
 }
 
 fn burn_return(
-    stack: &mut Vec<Record>,
-    record: &Record,
+    stack: &mut Vec<ProcedureRecord>,
+    record: &ProcedureRecord,
     mut writer: impl Write,
 ) -> Result<(), Error> {
     let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
@@ -65,13 +69,13 @@ mod tests {
 
         calculate_durations(
             [
-                Ok(Record::new(
-                    RecordType::Call,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Call,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     0,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Return,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42,
                 )),
@@ -89,29 +93,33 @@ mod tests {
 
         calculate_durations(
             [
-                Ok(Record::new(RecordType::Call, vec![Some("baz".into())], 0)),
-                Ok(Record::new(
-                    RecordType::Call,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Call,
+                    vec![Some("baz".into())],
+                    0,
+                )),
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Call,
                     vec![Some("baz".into()), Some("bar".into())],
                     1,
                 )),
-                Ok(Record::new(
-                    RecordType::Call,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Call,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     2,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Return,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Return,
                     vec![Some("baz".into()), Some("bar".into())],
                     84,
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Return,
                     vec![Some("baz".into())],
                     126,
                 )),

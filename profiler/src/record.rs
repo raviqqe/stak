@@ -1,17 +1,17 @@
-use crate::{Error, RecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{Error, ProcedureRecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use std::str::FromStr;
 
 /// A record.
 #[derive(Debug, Clone, Eq, PartialEq)]
-pub struct Record {
-    r#type: RecordType,
+pub struct ProcedureRecord {
+    r#type: ProcedureRecordType,
     stack: Vec<Option<String>>,
     time: u128,
 }
 
-impl Record {
+impl ProcedureRecord {
     /// Creates a new record.
-    pub fn new(r#type: RecordType, stack: Vec<Option<String>>, time: u128) -> Self {
+    pub fn new(r#type: ProcedureRecordType, stack: Vec<Option<String>>, time: u128) -> Self {
         Self {
             r#type,
             stack,
@@ -20,7 +20,7 @@ impl Record {
     }
 
     /// Returns a record type.
-    pub const fn r#type(&self) -> RecordType {
+    pub const fn r#type(&self) -> ProcedureRecordType {
         self.r#type
     }
     /// Returns a stack.
@@ -33,13 +33,13 @@ impl Record {
     }
 }
 
-impl FromStr for Record {
+impl FromStr for ProcedureRecord {
     type Err = Error;
 
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         let mut iterator = string.split(COLUMN_SEPARATOR);
 
-        Ok(Record::new(
+        Ok(ProcedureRecord::new(
             iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
             {
                 let mut stack = iterator

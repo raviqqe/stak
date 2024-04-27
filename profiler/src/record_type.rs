@@ -6,7 +6,7 @@ use core::{
 
 /// A record type.
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
-pub enum RecordType {
+pub enum ProcedureRecordType {
     /// A call.
     Call,
     /// A return.
@@ -15,7 +15,7 @@ pub enum RecordType {
     ReturnCall,
 }
 
-impl Display for RecordType {
+impl Display for ProcedureRecordType {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Call => write!(formatter, "call"),
@@ -25,7 +25,7 @@ impl Display for RecordType {
     }
 }
 
-impl FromStr for RecordType {
+impl FromStr for ProcedureRecordType {
     type Err = Error;
 
     fn from_str(string: &str) -> Result<Self, Self::Err> {
@@ -44,18 +44,18 @@ mod tests {
 
     #[test]
     fn test_display() {
-        assert_eq!(RecordType::Call.to_string(), "call");
-        assert_eq!(RecordType::Return.to_string(), "return");
-        assert_eq!(RecordType::ReturnCall.to_string(), "return_call");
+        assert_eq!(ProcedureRecordType::Call.to_string(), "call");
+        assert_eq!(ProcedureRecordType::Return.to_string(), "return");
+        assert_eq!(ProcedureRecordType::ReturnCall.to_string(), "return_call");
     }
 
     #[test]
     fn test_from_str() {
-        assert_eq!("call".parse(), Ok(RecordType::Call));
-        assert_eq!("return".parse(), Ok(RecordType::Return));
-        assert_eq!("return_call".parse(), Ok(RecordType::ReturnCall));
+        assert_eq!("call".parse(), Ok(ProcedureRecordType::Call));
+        assert_eq!("return".parse(), Ok(ProcedureRecordType::Return));
+        assert_eq!("return_call".parse(), Ok(ProcedureRecordType::ReturnCall));
         assert_eq!(
-            "unknown".parse::<RecordType>(),
+            "unknown".parse::<ProcedureRecordType>(),
             Err(Error::UnknownRecordType)
         );
     }

@@ -1,17 +1,17 @@
-use crate::{error::Error, record::Record};
+use crate::{error::Error, record::ProcedureRecord};
 use std::io::BufRead;
 
 /// Parses records.
-pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<Record, Error>> {
+pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
     reader
         .lines()
-        .map(|line| -> Result<Record, Error> { line?.parse() })
+        .map(|line| -> Result<ProcedureRecord, Error> { line?.parse() })
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::record_type::RecordType;
+    use crate::record_type::ProcedureRecordType;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;
@@ -31,13 +31,13 @@ mod tests {
             ))
             .collect::<Vec<_>>(),
             vec![
-                Ok(Record::new(
-                    RecordType::Call,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Call,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     0
                 )),
-                Ok(Record::new(
-                    RecordType::Return,
+                Ok(ProcedureRecord::new(
+                    ProcedureRecordType::Return,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42
                 ))
