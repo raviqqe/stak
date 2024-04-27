@@ -11,11 +11,11 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_profiler::{calculate_durations, parse_raw_records, StackProfiler};
+use stak_profiler::{calculate_durations, calculate_flamegraph, parse_raw_records, StackProfiler};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
-    io::{stdin, stdout, BufWriter},
+    io::{stdin, stdout, BufRead, BufWriter},
     path::PathBuf,
 };
 
@@ -57,6 +57,8 @@ struct AnalyzeArguments {
 enum Analysis {
     /// Calculates procedure durations.
     Duration,
+    /// Calculates a flamegraph.
+    Flamegraph,
 }
 
 fn main() -> Result<(), MainError> {
@@ -80,6 +82,10 @@ fn main() -> Result<(), MainError> {
         Command::Analyze(arguments) => match arguments.command {
             Analysis::Duration => Ok(calculate_durations(
                 parse_raw_records(stdin().lock()),
+                BufWriter::new(stdout().lock()),
+            )?),
+            Analysis::Flamegraph => Ok(calculate_flamegraph(
+                stdin().lock().lines().map(|line| line?.parse()),
                 BufWriter::new(stdout().lock()),
             )?),
         },
