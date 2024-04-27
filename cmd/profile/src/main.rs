@@ -80,7 +80,7 @@ fn main() -> Result<(), MainError> {
         Command::Analyze(arguments) => match arguments.command {
             Analysis::Duration => Ok(calculate_durations(
                 parse_records(stdin().lock()),
-                stdout(),
+                BufWriter::new(stdout().lock()),
             )?),
         },
     }
