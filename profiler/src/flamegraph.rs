@@ -24,3 +24,39 @@ pub fn calculate_flamegraph(
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn test_calculate_flamegraph() {
+        let mut buffer = vec![];
+
+        calculate_flamegraph(
+            [
+                Ok(DurationRecord::new(
+                    Stack::from(vec![None, Some("foo".into()), Some("bar".into())]),
+                    1,
+                )),
+                Ok(DurationRecord::new(
+                    Stack::from(vec![None, Some("foo".into()), Some("baz".into())]),
+                    2,
+                )),
+                Ok(DurationRecord::new(
+                    Stack::from(vec![None, Some("foo".into())]),
+                    3,
+                )),
+                Ok(DurationRecord::new(
+                    Stack::from(vec![None, Some("qux".into())]),
+                    4,
+                )),
+            ],
+            &mut buffer,
+        )
+        .unwrap();
+
+        assert_eq!(String::from_utf8(buffer).unwrap(), "foo");
+    }
+}
