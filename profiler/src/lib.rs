@@ -49,7 +49,7 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo 42\n");
+        assert_eq!(String::from_utf8(buffer).unwrap(), "baz;bar;foo\t42\n");
     }
 
     #[test]
