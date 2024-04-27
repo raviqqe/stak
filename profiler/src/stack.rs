@@ -52,9 +52,20 @@ impl Display for Stack {
             first = false;
 
             write!(formatter, "{}", frame.as_deref().unwrap_or_default())?;
-
         }
 
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse() {
+        let stack = Stack::new(vec![Some("foo".into()), Some("bar".into())]);
+
+        assert_eq!(stack.to_string().parse::<Stack>().unwrap(), stack);
     }
 }

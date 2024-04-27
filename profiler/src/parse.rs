@@ -5,7 +5,11 @@ use std::io::BufRead;
 pub fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
     reader
         .lines()
-        .map(|line| -> Result<ProcedureRecord, Error> { line?.parse() })
+        .map(|line| -> Result<ProcedureRecord, Error> {
+            let mut record = line?.parse::<ProcedureRecord>()?;
+            record.stack_mut().reverse_frames();
+            Ok(record)
+        })
 }
 
 #[cfg(test)]

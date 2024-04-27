@@ -1,5 +1,6 @@
 use crate::{Error, ProcedureOperation, Stack, COLUMN_SEPARATOR};
-use std::str::FromStr;
+use core::fmt::{self, Display, Formatter};
+use core::str::FromStr;
 
 /// A procedure record.
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -29,6 +30,11 @@ impl ProcedureRecord {
         &self.stack
     }
 
+    /// Returns a mutable stack.
+    pub fn stack_mut(&mut self) -> &mut Stack {
+        &mut self.stack
+    }
+
     /// Returns a time.
     pub const fn time(&self) -> u128 {
         self.time
@@ -46,15 +52,40 @@ impl FromStr for ProcedureRecord {
                 .next()
                 .ok_or(Error::MissingProcedureOperation)?
                 .parse()?,
-            {
-                let mut stack = iterator
-                    .next()
-                    .ok_or(Error::MissingStack)?
-                    .parse::<Stack>()?;
-                stack.reverse_frames();
-                stack
-            },
+            iterator.next().ok_or(Error::MissingStack)?.parse()?,
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))
+    }
+}
+
+impl Display for ProcedureRecord {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
+        write!(formatter, "{}", self.operation)?;
+        write!(formatter, "{COLUMN_SEPARATOR}")?;
+        write!(formatter, "{}", &self.stack)?;
+        write!(formatter, "{COLUMN_SEPARATOR}")?;
+        write!(formatter, "{}", &self.time)?;
+
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn parse() {
+        let record = ProcedureRecord::new(
+            ProcedureOperation::Call,
+            Stack::new(vec![Some("foo".into()), Some("bar".into())]),
+            42,
+        );
+
+        assert_eq!(
+            record.to_string().parse::<ProcedureRecord>().unwrap(),
+            record
+        );
     }
 }
