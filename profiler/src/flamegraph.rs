@@ -53,6 +53,10 @@ mod tests {
                     Stack::new(vec![None, Some("qux".into())]),
                     4,
                 )),
+                Ok(DurationRecord::new(
+                    Stack::new(vec![None, Some("foo".into()), Some("baz".into())]),
+                    42,
+                )),
             ],
             &mut buffer,
         )
@@ -64,7 +68,7 @@ mod tests {
                 "
                 <local>;foo 3
                 <local>;foo;bar 1
-                <local>;foo;baz 2
+                <local>;foo;baz 44
                 <local>;qux 4
                 "
             )
