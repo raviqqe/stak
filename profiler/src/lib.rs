@@ -3,15 +3,15 @@
 mod duration;
 mod error;
 mod parse;
+mod procedure_operation;
 mod procedure_record;
-mod procedure_record_type;
 mod stack_profiler;
 
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use parse::parse_records;
+pub use procedure_operation::ProcedureOperation;
 pub use procedure_record::ProcedureRecord;
-pub use procedure_record_type::ProcedureRecordType;
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';

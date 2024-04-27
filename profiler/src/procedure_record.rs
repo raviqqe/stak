@@ -1,17 +1,17 @@
-use crate::{Error, ProcedureRecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{Error, ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use std::str::FromStr;
 
 /// A record.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct ProcedureRecord {
-    r#type: ProcedureRecordType,
+    r#type: ProcedureOperation,
     stack: Vec<Option<String>>,
     time: u128,
 }
 
 impl ProcedureRecord {
     /// Creates a new record.
-    pub fn new(r#type: ProcedureRecordType, stack: Vec<Option<String>>, time: u128) -> Self {
+    pub fn new(r#type: ProcedureOperation, stack: Vec<Option<String>>, time: u128) -> Self {
         Self {
             r#type,
             stack,
@@ -20,7 +20,7 @@ impl ProcedureRecord {
     }
 
     /// Returns a record type.
-    pub const fn r#type(&self) -> ProcedureRecordType {
+    pub const fn r#type(&self) -> ProcedureOperation {
         self.r#type
     }
     /// Returns a stack.

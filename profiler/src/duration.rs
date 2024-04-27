@@ -1,4 +1,4 @@
-use crate::{Error, ProcedureRecord, ProcedureRecordType, FRAME_SEPARATOR};
+use crate::{Error, ProcedureOperation, ProcedureRecord, FRAME_SEPARATOR};
 use std::io::Write;
 
 /// Calculates durations.
@@ -14,7 +14,7 @@ pub fn calculate_durations(
 
         if first {
             stack.push(ProcedureRecord::new(
-                ProcedureRecordType::Call,
+                ProcedureOperation::Call,
                 vec![None],
                 record.time(),
             ));
@@ -22,11 +22,11 @@ pub fn calculate_durations(
         }
 
         match record.r#type() {
-            ProcedureRecordType::Call => {
+            ProcedureOperation::Call => {
                 stack.push(record);
             }
-            ProcedureRecordType::Return => burn_return(&mut stack, &record, &mut writer)?,
-            ProcedureRecordType::ReturnCall => {
+            ProcedureOperation::Return => burn_return(&mut stack, &record, &mut writer)?,
+            ProcedureOperation::ReturnCall => {
                 burn_return(&mut stack, &record, &mut writer)?;
                 stack.push(record);
             }
@@ -70,12 +70,12 @@ mod tests {
         calculate_durations(
             [
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Call,
+                    ProcedureOperation::Call,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     0,
                 )),
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Return,
+                    ProcedureOperation::Return,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42,
                 )),
@@ -94,32 +94,32 @@ mod tests {
         calculate_durations(
             [
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Call,
+                    ProcedureOperation::Call,
                     vec![Some("baz".into())],
                     0,
                 )),
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Call,
+                    ProcedureOperation::Call,
                     vec![Some("baz".into()), Some("bar".into())],
                     1,
                 )),
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Call,
+                    ProcedureOperation::Call,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     2,
                 )),
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Return,
+                    ProcedureOperation::Return,
                     vec![Some("baz".into()), Some("bar".into()), Some("foo".into())],
                     42,
                 )),
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Return,
+                    ProcedureOperation::Return,
                     vec![Some("baz".into()), Some("bar".into())],
                     84,
                 )),
                 Ok(ProcedureRecord::new(
-                    ProcedureRecordType::Return,
+                    ProcedureOperation::Return,
                     vec![Some("baz".into())],
                     126,
                 )),
