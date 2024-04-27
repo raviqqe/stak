@@ -1,4 +1,4 @@
-use crate::{RecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR, LOCAL_PROCEDURE_FRAME};
+use crate::{RecordType, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use stak_vm::{Cons, PrimitiveSet, Profiler, StackSlot, Vm};
 use std::{io::Write, time::Instant};
 
@@ -47,8 +47,6 @@ impl<T: Write> StackProfiler<T> {
                 .unwrap();
                 string = vm.cdr(string).assume_cons();
             }
-        } else {
-            write!(self.writer, "{LOCAL_PROCEDURE_FRAME}").unwrap();
         }
     }
 

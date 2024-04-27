@@ -4,13 +4,13 @@ use crate::RecordType;
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Record {
     r#type: RecordType,
-    stack: Vec<String>,
+    stack: Vec<Option<String>>,
     time: u128,
 }
 
 impl Record {
     /// Creates a new record.
-    pub fn new(r#type: RecordType, stack: Vec<String>, time: u128) -> Self {
+    pub fn new(r#type: RecordType, stack: Vec<Option<String>>, time: u128) -> Self {
         Self {
             r#type,
             stack,
@@ -23,8 +23,8 @@ impl Record {
         self.r#type
     }
     /// Returns a stack.
-    pub fn stack(&self) -> impl Iterator<Item = &str> {
-        self.stack.iter().map(AsRef::as_ref)
+    pub fn stack(&self) -> impl Iterator<Item = Option<&str>> {
+        self.stack.iter().map(Option::as_deref)
     }
     /// Returns a time.
     pub const fn time(&self) -> u128 {

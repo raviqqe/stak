@@ -14,7 +14,6 @@ pub use record::Record;
 pub use record_type::RecordType;
 pub use stack_profiler::StackProfiler;
 
-const LOCAL_PROCEDURE_FRAME: &str = "_";
 const COLUMN_SEPARATOR: char = '\t';
 const FRAME_SEPARATOR: char = ';';
 
@@ -80,5 +79,27 @@ mod tests {
                 "
             )
         );
+    }
+
+    #[test]
+    fn analyze_anonymous_procedure_call() {
+        let mut buffer = vec![];
+
+        calculate_durations(
+            parse_records(BufReader::new(
+                indoc!(
+                    "
+                    call\t;;\t0
+                    return\t;;\t42
+                    "
+                )
+                .trim()
+                .as_bytes(),
+            )),
+            &mut buffer,
+        )
+        .unwrap();
+
+        assert_eq!(String::from_utf8(buffer).unwrap(), ";; 42\n");
     }
 }
