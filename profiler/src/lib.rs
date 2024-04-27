@@ -3,23 +3,17 @@
 extern crate alloc;
 
 mod duration;
-mod duration_record;
 mod error;
 mod flamegraph;
 mod parse;
-mod procedure_operation;
-mod procedure_record;
-mod stack;
+mod record;
 mod stack_profiler;
 
 pub use duration::calculate_durations;
-pub use duration_record::DurationRecord;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
 pub use parse::parse_raw_records;
-pub use procedure_operation::ProcedureOperation;
-pub use procedure_record::ProcedureRecord;
-pub use stack::Stack;
+pub use record::{DurationRecord, ProcedureOperation, ProcedureRecord, Stack};
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';
