@@ -1,12 +1,12 @@
 use crate::{DurationRecord, Error, Stack};
-use std::{collections::HashMap, io::Write};
+use std::{collections::BTreeMap, io::Write};
 
 /// Calculates a flamegraph.
 pub fn calculate_flamegraph(
     records: impl IntoIterator<Item = Result<DurationRecord, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
-    let mut map = HashMap::<Stack, u128>::new();
+    let mut map = BTreeMap::<Stack, u128>::new();
 
     for record in records {
         let record = record?;
@@ -28,6 +28,7 @@ pub fn calculate_flamegraph(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use indoc::indoc;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -37,19 +38,19 @@ mod tests {
         calculate_flamegraph(
             [
                 Ok(DurationRecord::new(
-                    Stack::from(vec![None, Some("foo".into()), Some("bar".into())]),
+                    Stack::new(vec![None, Some("foo".into()), Some("bar".into())]),
                     1,
                 )),
                 Ok(DurationRecord::new(
-                    Stack::from(vec![None, Some("foo".into()), Some("baz".into())]),
+                    Stack::new(vec![None, Some("foo".into()), Some("baz".into())]),
                     2,
                 )),
                 Ok(DurationRecord::new(
-                    Stack::from(vec![None, Some("foo".into())]),
+                    Stack::new(vec![None, Some("foo".into())]),
                     3,
                 )),
                 Ok(DurationRecord::new(
-                    Stack::from(vec![None, Some("qux".into())]),
+                    Stack::new(vec![None, Some("qux".into())]),
                     4,
                 )),
             ],
@@ -57,6 +58,16 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(String::from_utf8(buffer).unwrap(), "foo");
+        assert_eq!(
+            String::from_utf8(buffer).unwrap(),
+            indoc!(
+                "
+                <local>;foo 3
+                <local>;foo;bar 1
+                <local>;foo;baz 2
+                <local>;qux 4
+                "
+            )
+        );
     }
 }
