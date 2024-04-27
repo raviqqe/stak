@@ -33,16 +33,7 @@ impl FromStr for DurationRecord {
 
         Ok(DurationRecord::new(
             iterator.next().ok_or(Error::MissingRecordType)?.parse()?,
-            {
-                let mut stack = iterator
-                    .next()
-                    .ok_or(Error::MissingStack)?
-                    .split(FRAME_SEPARATOR)
-                    .map(|frame| (!frame.is_empty()).then_some(frame.to_owned()))
-                    .collect::<Vec<_>>();
-                stack.reverse();
-                stack
-            },
+            iterator.next().ok_or(Error::MissingStack)?.parse()?,
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))
     }
