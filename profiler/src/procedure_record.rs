@@ -1,6 +1,8 @@
 use crate::{Error, ProcedureOperation, Stack, COLUMN_SEPARATOR};
-use core::fmt::{self, Display, Formatter};
-use core::str::FromStr;
+use core::{
+    fmt::{self, Display, Formatter},
+    str::FromStr,
+};
 
 /// A procedure record.
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -12,7 +14,7 @@ pub struct ProcedureRecord {
 
 impl ProcedureRecord {
     /// Creates a new record.
-    pub fn new(operation: ProcedureOperation, stack: Stack, time: u128) -> Self {
+    pub const fn new(operation: ProcedureOperation, stack: Stack, time: u128) -> Self {
         Self {
             operation,
             stack,
@@ -47,7 +49,7 @@ impl FromStr for ProcedureRecord {
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         let mut iterator = string.split(COLUMN_SEPARATOR);
 
-        Ok(ProcedureRecord::new(
+        Ok(Self::new(
             iterator
                 .next()
                 .ok_or(Error::MissingProcedureOperation)?

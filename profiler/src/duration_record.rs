@@ -13,12 +13,12 @@ pub struct DurationRecord {
 
 impl DurationRecord {
     /// Creates a record.
-    pub fn new(stack: Stack, time: u128) -> Self {
+    pub const fn new(stack: Stack, time: u128) -> Self {
         Self { stack, time }
     }
 
     /// Returns a stack.
-    pub fn stack(&self) -> &Stack {
+    pub const fn stack(&self) -> &Stack {
         &self.stack
     }
 
@@ -34,7 +34,7 @@ impl FromStr for DurationRecord {
     fn from_str(string: &str) -> Result<Self, Self::Err> {
         let mut iterator = string.split(COLUMN_SEPARATOR);
 
-        Ok(DurationRecord::new(
+        Ok(Self::new(
             iterator.next().ok_or(Error::MissingStack)?.parse()?,
             iterator.next().ok_or(Error::MissingTime)?.parse()?,
         ))

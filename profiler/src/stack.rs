@@ -12,7 +12,7 @@ pub struct Stack {
 
 impl Stack {
     /// Creates a stack.
-    pub fn new(frames: Vec<Option<String>>) -> Self {
+    pub const fn new(frames: Vec<Option<String>>) -> Self {
         Self { frames }
     }
 
@@ -73,7 +73,7 @@ impl Display for StackDisplay<'_> {
 
             first = false;
 
-            write!(formatter, "{}", frame.as_deref().unwrap_or(self.local_name))?;
+            write!(formatter, "{}", frame.unwrap_or(self.local_name))?;
         }
 
         Ok(())
