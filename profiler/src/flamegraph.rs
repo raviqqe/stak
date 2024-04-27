@@ -1,5 +1,6 @@
 use crate::{DurationRecord, Error, Stack};
-use std::{collections::BTreeMap, io::Write};
+use alloc::collections::BTreeMap;
+use std::io::Write;
 
 /// Calculates a flamegraph.
 pub fn calculate_flamegraph(
