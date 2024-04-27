@@ -57,8 +57,9 @@ Feature: Continuation
             #f))
         (write-u8 i)
         (set! i (+ i 1))
-        (unless (< i 91) (error "Oh, no!"))
-        (backtrack #f))
+        (if (< i 91)
+          (backtrack #f)
+          #f))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly:
