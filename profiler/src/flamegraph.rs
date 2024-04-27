@@ -18,8 +18,8 @@ pub fn calculate_flamegraph(
         }
     }
 
-    for (key, value) in map {
-        writeln!(writer, "{} {}", key, value)?;
+    for (stack, time) in map {
+        writeln!(writer, "{} {}", stack.display_local("<local>"), time)?;
     }
 
     Ok(())

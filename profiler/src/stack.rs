@@ -25,6 +25,11 @@ impl Stack {
     pub fn reverse_frames(&mut self) {
         self.frames.reverse();
     }
+
+    /// Displays a stack with a fixed local names.
+    pub fn display_local<'a>(&'a self, local_name: &'a str) -> impl Display + '_ {
+        StackDisplayLocal::new(self, local_name)
+    }
 }
 
 impl FromStr for Stack {
@@ -42,16 +47,33 @@ impl FromStr for Stack {
 
 impl Display for Stack {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
+        write!(formatter, "{}", self.display_local(""))
+    }
+}
+
+pub struct StackDisplayLocal<'a> {
+    stack: &'a Stack,
+    local_name: &'a str,
+}
+
+impl<'a> StackDisplayLocal<'a> {
+    pub fn new(stack: &'a Stack, local_name: &'a str) -> Self {
+        Self { stack, local_name }
+    }
+}
+
+impl Display for StackDisplayLocal<'_> {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         let mut first = true;
 
-        for frame in &self.frames {
+        for frame in self.stack.frames() {
             if !first {
                 write!(formatter, "{FRAME_SEPARATOR}")?;
             }
 
             first = false;
 
-            write!(formatter, "{}", frame.as_deref().unwrap_or_default())?;
+            write!(formatter, "{}", frame.as_deref().unwrap_or(self.local_name))?;
         }
 
         Ok(())
