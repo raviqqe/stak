@@ -24,7 +24,7 @@ impl Record {
     }
     /// Returns a stack.
     pub fn stack(&self) -> impl Iterator<Item = Option<&str>> {
-        self.stack.iter().map(|frame| frame.as_deref())
+        self.stack.iter().map(Option::as_deref)
     }
     /// Returns a time.
     pub const fn time(&self) -> u128 {
