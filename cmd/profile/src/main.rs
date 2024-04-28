@@ -13,7 +13,7 @@ use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
     calculate_durations, calculate_flamegraph, collapse_stacks, read_records, reverse_stacks,
-    write_records, DurationRecord, ProcedureRecord, StackProfiler, StackedRecord,
+    write_records, DurationRecord, ProcedureRecord, StackProfiler,
 };
 use stak_vm::Vm;
 use std::{
