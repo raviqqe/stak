@@ -19,12 +19,12 @@ const listItems = async (directory: string): Promise<Item[]> =>
         .map(async (path) => {
           const fullPath = join(documentDirectory, directory, path);
           const { name } = parse(path);
-          path = join(directory, name);
+          const linkPath = join(directory, name);
 
           return (await stat(fullPath)).isDirectory()
             ? {
                 label: capitalize(name.replace("-", " ")),
-                items: await listItems(path),
+                items: await listItems(linkPath),
               }
             : {
                 label:
@@ -33,7 +33,7 @@ const listItems = async (directory: string): Promise<Item[]> =>
                     .find((line) => line.startsWith("title: "))
                     ?.replace("title: ", "")
                     .trim() ?? "",
-                link: path,
+                link: linkPath,
               };
         }),
     ),
