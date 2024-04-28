@@ -14,7 +14,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{ProcedureOperation, ProcedureRecord};
+    use crate::{ProcedureOperation, ProcedureRecord, Stack};
     use indoc::indoc;
     use pretty_assertions::assert_eq;
     use std::io::BufReader;
@@ -34,21 +34,21 @@ mod tests {
             ))
             .collect::<Vec<_>>(),
             vec![
-                ProcedureRecord::new(
+                Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
                     Stack::new(vec![Some("baz".into())]),
                     0
-                ),
-                ProcedureRecord::new(
+                )),
+                Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
                     Stack::new(vec![Some("baz".into())]),
                     42
-                ),
-                ProcedureRecord::new(
+                )),
+                Ok(ProcedureRecord::new(
                     ProcedureOperation::ReturnCall,
                     Stack::new(vec![None; 3]),
                     2045
-                )
+                ))
             ]
         );
     }
