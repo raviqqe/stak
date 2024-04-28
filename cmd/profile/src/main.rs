@@ -12,7 +12,8 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, parse_raw_records, StackProfiler,
+    calculate_durations, calculate_flamegraph, collapse_stacks, parse_raw_records, ProcedureRecord,
+    StackProfiler,
 };
 use stak_vm::Vm;
 use std::{
@@ -82,20 +83,27 @@ fn main() -> Result<(), MainError> {
             vm.initialize(read(&arguments.bytecode_file)?)?;
             vm.run()?;
         }
-        Command::Analyze(arguments) => match arguments.command {
-            Analysis::Duration => calculate_durations(
-                parse_raw_records(stdin().lock()),
-                BufWriter::new(stdout().lock()),
-            )?,
-            Analysis::StackCollapse => collapse_stacks(
-                stdin().lock().lines().map(|line| line?.parse()),
-                BufWriter::new(stdout().lock()),
-            )?,
-            Analysis::Flamegraph => calculate_flamegraph(
-                stdin().lock().lines().map(|line| line?.parse()),
-                BufWriter::new(stdout().lock()),
-            )?,
-        },
+        Command::Analyze(arguments) => {
+            let reader = stdin().lock();
+            let writer = BufWriter::new(stdout().lock());
+
+            match arguments.command {
+                Analysis::Duration => calculate_durations(
+                    reader.lines().map(|line| {
+                        let mut record = line?.parse::<ProcedureRecord>()?;
+                        record.stack_mut().reverse_frames();
+                        Ok(record)
+                    }),
+                    writer,
+                )?,
+                Analysis::StackCollapse => {
+                    collapse_stacks(reader.lines().map(|line| line?.parse()), writer)?
+                }
+                Analysis::Flamegraph => {
+                    calculate_flamegraph(reader.lines().map(|line| line?.parse()), writer)?
+                }
+            }
+        }
     }
 
     Ok(())
