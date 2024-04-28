@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/solid";
 import { Boxes, CirclePlay } from "lucide-solid";
-import { type JSX } from "solid-js";
+import type { JSX } from "solid-js";
 import * as store from "../stores/demo.js";
 import { Button } from "./Button.jsx";
 import { ButtonGroup } from "./ButtonGroup.jsx";

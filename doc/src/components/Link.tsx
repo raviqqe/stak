@@ -1,4 +1,4 @@
-import { type JSX } from "solid-js";
+import type { JSX } from "solid-js";
 import styles from "./Link.module.css";
 
 interface Props {

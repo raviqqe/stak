@@ -1,5 +1,5 @@
 import { useStore } from "@nanostores/solid";
-import { type JSX } from "solid-js";
+import type { JSX } from "solid-js";
 import * as store from "../stores/demo.js";
 import styles from "./DemoIo.module.css";
 import { ErrorMessage } from "./ErrorMessage.jsx";
