@@ -14,6 +14,7 @@ pub use collapse::collapse_stacks;
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
+pub use read::read_records;
 pub use record::{
     DurationRecord, ProcedureOperation, ProcedureRecord, Record, Stack, StackedRecord,
 };
