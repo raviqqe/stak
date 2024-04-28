@@ -1,6 +1,4 @@
 *.bc
 *.info
-.astro
-dist
 target
 tmp
