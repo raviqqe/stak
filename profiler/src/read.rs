@@ -41,7 +41,7 @@ mod tests {
                 )),
                 Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
-                    Stack::new(vec![Some("baz".into())]),
+                    Stack::new(vec![Some("foo".into()), Some("bar".into())]),
                     42
                 )),
                 Ok(ProcedureRecord::new(
