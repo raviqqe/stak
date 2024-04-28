@@ -11,7 +11,9 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_profiler::{calculate_durations, calculate_flamegraph, parse_raw_records, StackProfiler};
+use stak_profiler::{
+    calculate_durations, calculate_flamegraph, collapse_stacks, parse_raw_records, StackProfiler,
+};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
@@ -58,7 +60,7 @@ enum Analysis {
     /// Calculates procedure durations.
     Duration,
     /// Calculates collapsed stacks.
-    StackCollapse
+    StackCollapse,
     /// Calculates a flamegraph.
     Flamegraph,
 }
@@ -85,7 +87,7 @@ fn main() -> Result<(), MainError> {
                 parse_raw_records(stdin().lock()),
                 BufWriter::new(stdout().lock()),
             )?,
-            Analysis::StackCollapse => calculate_flamegraph(
+            Analysis::StackCollapse => collapse_stacks(
                 stdin().lock().lines().map(|line| line?.parse()),
                 BufWriter::new(stdout().lock()),
             )?,
