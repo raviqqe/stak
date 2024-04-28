@@ -12,8 +12,8 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, read_records, write_records,
-    DurationRecord, ProcedureRecord, StackProfiler, StackedRecord,
+    calculate_durations, calculate_flamegraph, collapse_stacks, read_records, reverse_stacks,
+    write_records, DurationRecord, ProcedureRecord, StackProfiler, StackedRecord,
 };
 use stak_vm::Vm;
 use std::{
@@ -99,12 +99,7 @@ fn main() -> Result<(), MainError> {
                     writer,
                 )?,
                 Analysis::StackReverse => write_records(
-                    read_records::<DurationRecord>(reader).map(|record| {
-                        record.map(|mut record| {
-                            record.stack_mut().reverse_frames();
-                            record
-                        })
-                    }),
+                    reverse_stacks(read_records::<DurationRecord>(reader)),
                     writer,
                 )?,
                 Analysis::Flamegraph => calculate_flamegraph(read_records(reader), writer)?,

@@ -8,6 +8,7 @@ mod error;
 mod flamegraph;
 mod read;
 mod record;
+mod reverse;
 mod stack_profiler;
 mod write;
 
@@ -19,6 +20,7 @@ pub use read::read_records;
 pub use record::{
     DurationRecord, ProcedureOperation, ProcedureRecord, Record, Stack, StackedRecord,
 };
+pub use reverse::reverse_stacks;
 pub use stack_profiler::StackProfiler;
 pub use write::write_records;
 
@@ -37,7 +39,7 @@ mod tests {
         let mut buffer = vec![];
 
         write_records(
-            calculate_durations(read_records(BufReader::new(
+            reverse_stacks(calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -46,7 +48,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            ))),
+            )))),
             &mut buffer,
         )
         .unwrap();
@@ -59,7 +61,7 @@ mod tests {
         let mut buffer = vec![];
 
         write_records(
-            calculate_durations(read_records(BufReader::new(
+            reverse_stacks(calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -72,7 +74,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            ))),
+            )))),
             &mut buffer,
         )
         .unwrap();
@@ -94,7 +96,7 @@ mod tests {
         let mut buffer = vec![];
 
         write_records(
-            calculate_durations(read_records(BufReader::new(
+            reverse_stacks(calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
@@ -103,7 +105,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            ))),
+            )))),
             &mut buffer,
         )
         .unwrap();

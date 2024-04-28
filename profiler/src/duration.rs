@@ -83,7 +83,7 @@ mod tests {
                     Some("bar".into()),
                     Some("foo".into()),
                 ]),
-                0,
+                42,
             ))]
         );
     }
@@ -139,11 +139,11 @@ mod tests {
                         Some("bar".into()),
                         Some("foo".into()),
                     ]),
-                    42,
+                    40,
                 )),
                 Ok(DurationRecord::new(
                     Stack::new(vec![Some("baz".into()), Some("bar".into())]),
-                    84,
+                    83,
                 )),
                 Ok(DurationRecord::new(
                     Stack::new(vec![Some("baz".into())]),
