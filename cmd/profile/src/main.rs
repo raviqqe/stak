@@ -12,8 +12,8 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, DurationRecord, ProcedureRecord,
-    StackProfiler, StackedRecord,
+    calculate_durations, calculate_flamegraph, collapse_stacks, write_records, DurationRecord,
+    ProcedureRecord, StackProfiler, StackedRecord,
 };
 use stak_vm::Vm;
 use std::{
@@ -96,8 +96,8 @@ fn main() -> Result<(), MainError> {
                     }),
                     writer,
                 )?,
-                Analysis::StackCollapse => collapse_stacks(
-                    reader.lines().map(|line| line?.parse::<DurationRecord>()),
+                Analysis::StackCollapse => write_records(
+                    collapse_stacks(reader.lines().map(|line| line?.parse::<DurationRecord>())),
                     writer,
                 )?,
                 Analysis::Flamegraph => {

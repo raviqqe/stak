@@ -1,12 +1,15 @@
 use crate::Record;
-use std::io::{self, Write};
+use std::{
+    error::Error,
+    io::{self, Write},
+};
 
-pub fn write_records(
-    records: impl IntoIterator<Item = impl Record>,
+pub fn write_records<R: Record, E: Error + From<io::Error>>(
+    records: impl IntoIterator<Item = Result<R, E>>,
     mut writer: impl Write,
-) -> Result<(), io::Error> {
+) -> Result<(), E> {
     for record in records {
-        writeln!(writer, "{}", record)?;
+        writeln!(writer, "{}", record?)?;
     }
 
     Ok(())
@@ -15,7 +18,7 @@ pub fn write_records(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{ProcedureOperation, ProcedureRecord, Stack};
+    use crate::{Error, ProcedureOperation, ProcedureRecord, Stack};
     use indoc::indoc;
     use pretty_assertions::assert_eq;
 
@@ -23,23 +26,23 @@ mod tests {
     fn write() {
         let mut buffer = vec![];
 
-        write_records(
+        write_records::<_, Error>(
             [
-                ProcedureRecord::new(
+                Ok(ProcedureRecord::new(
                     ProcedureOperation::Call,
                     Stack::new(vec![Some("baz".into())]),
                     0,
-                ),
-                ProcedureRecord::new(
+                )),
+                Ok(ProcedureRecord::new(
                     ProcedureOperation::Return,
                     Stack::new(vec![Some("foo".into()), Some("bar".into())]),
                     42,
-                ),
-                ProcedureRecord::new(
+                )),
+                Ok(ProcedureRecord::new(
                     ProcedureOperation::ReturnCall,
                     Stack::new(vec![None; 3]),
                     2045,
-                ),
+                )),
             ],
             &mut buffer,
         )
