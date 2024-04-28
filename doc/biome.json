@@ -9,6 +9,9 @@
       "recommended": true
     }
   },
+  "files": {
+    "ignore": ["public"]
+  },
   "vcs": {
     "enabled": true,
     "clientKind": "git",
