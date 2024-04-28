@@ -16,6 +16,7 @@ export const Button = (props: Props): JSX.Element => (
       event.preventDefault();
       props.onClick();
     }}
+    type="button"
   >
     {props.icon}
     {props.children}
