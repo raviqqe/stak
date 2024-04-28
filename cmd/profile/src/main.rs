@@ -12,13 +12,13 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, DurationRecord, ProcedureRecord,
-    StackProfiler, StackedRecord,
+    calculate_durations, calculate_flamegraph, collapse_stacks, read_records, reverse_stacks,
+    write_records, DurationRecord, ProcedureRecord, StackProfiler,
 };
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
-    io::{stdin, stdout, BufRead, BufWriter},
+    io::{stdin, stdout, BufWriter},
     path::PathBuf,
 };
 
@@ -62,6 +62,8 @@ enum Analysis {
     Duration,
     /// Calculates collapsed stacks.
     StackCollapse,
+    /// Calculates reversed stacks.
+    StackReverse,
     /// Calculates a flamegraph.
     Flamegraph,
 }
@@ -88,21 +90,19 @@ fn main() -> Result<(), MainError> {
             let writer = BufWriter::new(stdout().lock());
 
             match arguments.command {
-                Analysis::Duration => calculate_durations(
-                    reader.lines().map(|line| {
-                        let mut record = line?.parse::<ProcedureRecord>()?;
-                        record.stack_mut().reverse_frames();
-                        Ok(record)
-                    }),
+                Analysis::Duration => write_records(
+                    calculate_durations(read_records::<ProcedureRecord>(reader)),
                     writer,
                 )?,
-                Analysis::StackCollapse => collapse_stacks(
-                    reader.lines().map(|line| line?.parse::<DurationRecord>()),
+                Analysis::StackCollapse => write_records(
+                    collapse_stacks(read_records::<DurationRecord>(reader)),
                     writer,
                 )?,
-                Analysis::Flamegraph => {
-                    calculate_flamegraph(reader.lines().map(|line| line?.parse()), writer)?
-                }
+                Analysis::StackReverse => write_records(
+                    reverse_stacks(read_records::<DurationRecord>(reader)),
+                    writer,
+                )?,
+                Analysis::Flamegraph => calculate_flamegraph(read_records(reader), writer)?,
             }
         }
     }

@@ -6,17 +6,23 @@ mod collapse;
 mod duration;
 mod error;
 mod flamegraph;
+mod read;
 mod record;
+mod reverse;
 mod stack_profiler;
+mod write;
 
 pub use collapse::collapse_stacks;
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
+pub use read::read_records;
 pub use record::{
     DurationRecord, ProcedureOperation, ProcedureRecord, Record, Stack, StackedRecord,
 };
+pub use reverse::reverse_stacks;
 pub use stack_profiler::StackProfiler;
+pub use write::write_records;
 
 const COLUMN_SEPARATOR: char = '\t';
 const FRAME_SEPARATOR: char = ';';
@@ -26,24 +32,14 @@ mod tests {
     use super::*;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
-    use std::io::{BufRead, BufReader};
-
-    fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
-        reader
-            .lines()
-            .map(|line| -> Result<ProcedureRecord, Error> {
-                let mut record = line?.parse::<ProcedureRecord>()?;
-                record.stack_mut().reverse_frames();
-                Ok(record)
-            })
-    }
+    use std::io::BufReader;
 
     #[test]
     fn analyze_call() {
         let mut buffer = vec![];
 
-        calculate_durations(
-            parse_records(BufReader::new(
+        write_records(
+            reverse_stacks(calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -52,7 +48,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            )))),
             &mut buffer,
         )
         .unwrap();
@@ -64,8 +60,8 @@ mod tests {
     fn analyze_nested_calls() {
         let mut buffer = vec![];
 
-        calculate_durations(
-            parse_records(BufReader::new(
+        write_records(
+            reverse_stacks(calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -78,7 +74,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            )))),
             &mut buffer,
         )
         .unwrap();
@@ -99,8 +95,8 @@ mod tests {
     fn analyze_anonymous_procedure_call() {
         let mut buffer = vec![];
 
-        calculate_durations(
-            parse_records(BufReader::new(
+        write_records(
+            reverse_stacks(calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
@@ -109,7 +105,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            )))),
             &mut buffer,
         )
         .unwrap();
