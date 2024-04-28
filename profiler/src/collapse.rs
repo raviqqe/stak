@@ -36,22 +36,6 @@ pub fn collapse_stacks(
     Ok(())
 }
 
-fn calculate_duration(
-    stack: &mut Vec<ProcedureRecord>,
-    record: &ProcedureRecord,
-    mut writer: impl Write,
-) -> Result<(), Error> {
-    let previous = stack.pop().ok_or(Error::MissingCallRecord)?;
-
-    writeln!(
-        writer,
-        "{}",
-        DurationRecord::new(previous.stack().clone(), record.time() - previous.time()),
-    )?;
-
-    Ok(())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
