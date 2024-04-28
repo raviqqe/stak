@@ -11,8 +11,51 @@ pub fn collapse_stacks(
 
         record.stack_mut().collapse_frames();
 
-        write!(writer, "{}", record)?;
+        writeln!(writer, "{record}")?;
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::Stack;
+    use indoc::indoc;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn analyze_call() {
+        let mut buffer = vec![];
+
+        collapse_stacks(
+            [
+                Ok(DurationRecord::new(
+                    Stack::new(vec![Some("bar".into()), Some("foo".into())]),
+                    123,
+                )),
+                Ok(DurationRecord::new(
+                    Stack::new(vec![
+                        Some("baz".into()),
+                        Some("bar".into()),
+                        Some("bar".into()),
+                        Some("foo".into()),
+                    ]),
+                    42,
+                )),
+            ],
+            &mut buffer,
+        )
+        .unwrap();
+
+        assert_eq!(
+            String::from_utf8(buffer).unwrap(),
+            indoc!(
+                "
+                bar;foo\t42
+                baz;bar;foo\t42
+                "
+            )
+        );
+    }
 }

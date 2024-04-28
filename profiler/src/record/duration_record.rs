@@ -23,7 +23,7 @@ impl DurationRecord {
     }
 
     /// Returns a mutable stack.
-    pub const fn stack_mut(&mut self) -> &mut Stack {
+    pub fn stack_mut(&mut self) -> &mut Stack {
         &mut self.stack
     }
 

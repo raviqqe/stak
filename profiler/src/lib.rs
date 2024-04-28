@@ -10,6 +10,7 @@ mod parse;
 mod record;
 mod stack_profiler;
 
+pub use collapse::collapse_stacks;
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
