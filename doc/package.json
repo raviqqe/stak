@@ -7,13 +7,15 @@
     "start": "astro dev",
     "build": "tools/build.sh",
     "preview": "astro preview",
-    "lint": "eslint --cache src",
+    "lint": "npm run lint:biome && eslint --cache src",
+    "lint:biome": "biome ci .",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.1.4",
     "@astrojs/solid-js": "^4.1.0",
     "@astrojs/starlight": "^0.21.5",
+    "@biomejs/biome": "^1.7.1",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.3",
     "@raviqqe/stak": "^0.2.10",

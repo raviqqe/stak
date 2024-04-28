@@ -1,10 +1,10 @@
-import { defineConfig } from "astro/config";
-import solid from "@astrojs/solid-js";
-import sitemap from "@astrojs/sitemap";
-import starlight from "@astrojs/starlight";
-import { sortBy, capitalize } from "@raviqqe/loscore";
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, parse } from "node:path";
+import sitemap from "@astrojs/sitemap";
+import solid from "@astrojs/solid-js";
+import starlight from "@astrojs/starlight";
+import { capitalize, sortBy } from "@raviqqe/loscore";
+import { defineConfig } from "astro/config";
 import wasm from "vite-plugin-wasm";
 
 type Item = { label: string; link: string } | { label: string; items: Item[] };
@@ -19,12 +19,12 @@ const listItems = async (directory: string): Promise<Item[]> =>
         .map(async (path) => {
           const fullPath = join(documentDirectory, directory, path);
           const { name } = parse(path);
-          path = join(directory, name);
+          const linkPath = join(directory, name);
 
           return (await stat(fullPath)).isDirectory()
             ? {
                 label: capitalize(name.replace("-", " ")),
-                items: await listItems(path),
+                items: await listItems(linkPath),
               }
             : {
                 label:
@@ -33,7 +33,7 @@ const listItems = async (directory: string): Promise<Item[]> =>
                     .find((line) => line.startsWith("title: "))
                     ?.replace("title: ", "")
                     .trim() ?? "",
-                link: path,
+                link: linkPath,
               };
         }),
     ),
