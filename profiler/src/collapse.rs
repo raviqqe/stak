@@ -9,7 +9,7 @@ pub fn collapse_stacks(
     for record in records {
         let mut record = record?;
 
-        record.stack_mut().collapse;
+        record.stack_mut().collapse_frames();
 
         write!(writer, "{}", record)?;
     }

@@ -22,6 +22,11 @@ impl DurationRecord {
         &self.stack
     }
 
+    /// Returns a mutable stack.
+    pub const fn stack_mut(&mut self) -> &mut Stack {
+        &mut self.stack
+    }
+
     /// Returns a time.
     pub const fn time(&self) -> u128 {
         self.time
