@@ -28,12 +28,22 @@ mod tests {
     use pretty_assertions::assert_eq;
     use std::io::{BufRead, BufReader};
 
+    fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
+        reader
+            .lines()
+            .map(|line| -> Result<ProcedureRecord, Error> {
+                let mut record = line?.parse::<ProcedureRecord>()?;
+                record.stack_mut().reverse_frames();
+                Ok(record)
+            })
+    }
+
     #[test]
     fn analyze_call() {
         let mut buffer = vec![];
 
         calculate_durations(
-            BufReader::new(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -42,9 +52,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )
-            .lines()
-            .map(|line| line?.parse()),
+            )),
             &mut buffer,
         )
         .unwrap();
@@ -57,7 +65,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_raw_records(BufReader::new(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -92,7 +100,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            BufReader::new(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
@@ -101,9 +109,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )
-            .lines()
-            .map(|line| line?.parse()),
+            )),
             &mut buffer,
         )
         .unwrap();
