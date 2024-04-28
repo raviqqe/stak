@@ -4,6 +4,8 @@ use core::{
     str::FromStr,
 };
 
+use super::{Record, StackedRecord};
+
 /// A duration record.
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct DurationRecord {
@@ -53,6 +55,18 @@ impl Display for DurationRecord {
         write!(formatter, "{}", &self.time)?;
 
         Ok(())
+    }
+}
+
+impl Record for DurationRecord {}
+
+impl StackedRecord for DurationRecord {
+    fn stack(&self) -> &Stack {
+        &self.stack
+    }
+
+    fn stack_mut(&mut self) -> &mut Stack {
+        &mut self.stack
     }
 }
 

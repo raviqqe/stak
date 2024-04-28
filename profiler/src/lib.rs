@@ -6,7 +6,6 @@ mod collapse;
 mod duration;
 mod error;
 mod flamegraph;
-mod parse;
 mod record;
 mod stack_profiler;
 
@@ -14,8 +13,9 @@ pub use collapse::collapse_stacks;
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
-pub use parse::parse_raw_records;
-pub use record::{DurationRecord, ProcedureOperation, ProcedureRecord, Stack};
+pub use record::{
+    DurationRecord, ProcedureOperation, ProcedureRecord, Record, Stack, StackedRecord,
+};
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';
@@ -26,14 +26,14 @@ mod tests {
     use super::*;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
-    use std::io::BufReader;
+    use std::io::{BufRead, BufReader};
 
     #[test]
     fn analyze_call() {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_raw_records(BufReader::new(
+            BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -42,7 +42,9 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            )
+            .lines()
+            .map(|line| line?.parse()),
             &mut buffer,
         )
         .unwrap();
@@ -90,7 +92,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_raw_records(BufReader::new(
+            BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
@@ -99,7 +101,9 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            )
+            .lines()
+            .map(|line| line?.parse()),
             &mut buffer,
         )
         .unwrap();

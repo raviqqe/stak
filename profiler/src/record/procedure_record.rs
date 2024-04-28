@@ -67,13 +67,11 @@ impl Display for ProcedureRecord {
 impl Record for ProcedureRecord {}
 
 impl StackedRecord for ProcedureRecord {
-    /// Returns a stack.
-    pub const fn stack(&self) -> &Stack {
+    fn stack(&self) -> &Stack {
         &self.stack
     }
 
-    /// Returns a mutable stack.
-    pub fn stack_mut(&mut self) -> &mut Stack {
+    fn stack_mut(&mut self) -> &mut Stack {
         &mut self.stack
     }
 }
