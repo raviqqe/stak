@@ -21,6 +21,7 @@ mod tests {
 
     #[test]
     fn read() {
+        // spell-checker: disable
         assert_eq!(
             read_records::<ProcedureRecord>(BufReader::new(
                 indoc!(
@@ -51,5 +52,6 @@ mod tests {
                 ))
             ]
         );
+        // spell-checker: enable
     }
 }
