@@ -13,4 +13,4 @@ cat <<EOF >tmp/main.scm
   (display x))
 EOF
 
-stak compile.scm <prelude.scm <tmp/main.scm >tmp/main.bc
+cat prelude.scm tmp/main.scm | stak compile.scm >tmp/main.bc
