@@ -33,8 +33,7 @@ pub fn calculate_durations(
                 }
             })
         })
-        .map(Result::transpose)
-        .flatten()
+        .flat_map(Result::transpose)
 }
 
 fn calculate_duration(
