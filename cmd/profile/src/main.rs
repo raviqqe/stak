@@ -57,6 +57,8 @@ struct AnalyzeArguments {
 enum Analysis {
     /// Calculates procedure durations.
     Duration,
+    /// Calculates collapsed stacks.
+    StackCollapse
     /// Calculates a flamegraph.
     Flamegraph,
 }
@@ -81,6 +83,10 @@ fn main() -> Result<(), MainError> {
         Command::Analyze(arguments) => match arguments.command {
             Analysis::Duration => calculate_durations(
                 parse_raw_records(stdin().lock()),
+                BufWriter::new(stdout().lock()),
+            )?,
+            Analysis::StackCollapse => calculate_flamegraph(
+                stdin().lock().lines().map(|line| line?.parse()),
                 BufWriter::new(stdout().lock()),
             )?,
             Analysis::Flamegraph => calculate_flamegraph(
