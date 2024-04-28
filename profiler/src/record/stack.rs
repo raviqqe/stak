@@ -96,6 +96,7 @@ impl Display for StackDisplay<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn parse() {
@@ -109,5 +110,32 @@ mod tests {
         let stack = Stack::new(vec![Some("foo".into()), None]);
 
         assert_eq!(stack.to_string(), "foo;");
+    }
+
+    mod collapse_frames {
+        use super::*;
+        use pretty_assertions::assert_eq;
+
+        #[test]
+        fn collapse_named_frames() {
+            let mut stack = Stack::new(vec![
+                Some("foo".into()),
+                Some("foo".into()),
+                Some("foo".into()),
+            ]);
+
+            stack.collapse_frames();
+
+            assert_eq!(stack.to_string(), "foo");
+        }
+
+        #[test]
+        fn collapse_anonymous_frames() {
+            let mut stack = Stack::new(vec![None, None]);
+
+            stack.collapse_frames();
+
+            assert_eq!(stack.to_string(), "");
+        }
     }
 }
