@@ -13,6 +13,8 @@ cat <<EOF >tmp/main.scm
 
 (define (foo x)
   (display x))
+
+(foo 42)
 EOF
 
 cat prelude.scm tmp/main.scm | stak compile.scm >tmp/main.bc
