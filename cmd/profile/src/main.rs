@@ -88,12 +88,12 @@ fn main() -> Result<(), MainError> {
             let writer = BufWriter::new(stdout().lock());
 
             match arguments.command {
-                Analysis::Duration => calculate_durations(
-                    reader.lines().map(|line| {
+                Analysis::Duration => write_records(
+                    calculate_durations(reader.lines().map(|line| {
                         let mut record = line?.parse::<ProcedureRecord>()?;
                         record.stack_mut().reverse_frames();
                         Ok(record)
-                    }),
+                    })),
                     writer,
                 )?,
                 Analysis::StackCollapse => write_records(

@@ -30,24 +30,14 @@ mod tests {
     use super::*;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
-    use std::io::{BufRead, BufReader};
-
-    fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
-        reader
-            .lines()
-            .map(|line| -> Result<ProcedureRecord, Error> {
-                let mut record = line?.parse::<ProcedureRecord>()?;
-                record.stack_mut().reverse_frames();
-                Ok(record)
-            })
-    }
+    use std::io::BufReader;
 
     #[test]
     fn analyze_call() {
         let mut buffer = vec![];
 
-        calculate_durations(
-            parse_records(BufReader::new(
+        write_records(
+            calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -56,7 +46,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            ))),
             &mut buffer,
         )
         .unwrap();
@@ -68,8 +58,8 @@ mod tests {
     fn analyze_nested_calls() {
         let mut buffer = vec![];
 
-        calculate_durations(
-            parse_records(BufReader::new(
+        write_records(
+            calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -82,7 +72,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            ))),
             &mut buffer,
         )
         .unwrap();
@@ -103,8 +93,8 @@ mod tests {
     fn analyze_anonymous_procedure_call() {
         let mut buffer = vec![];
 
-        calculate_durations(
-            parse_records(BufReader::new(
+        write_records(
+            calculate_durations(read_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
@@ -113,7 +103,7 @@ mod tests {
                 )
                 .trim()
                 .as_bytes(),
-            )),
+            ))),
             &mut buffer,
         )
         .unwrap();
