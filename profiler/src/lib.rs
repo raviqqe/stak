@@ -2,6 +2,7 @@
 
 extern crate alloc;
 
+mod collapse;
 mod duration;
 mod error;
 mod flamegraph;
