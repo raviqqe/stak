@@ -12,13 +12,13 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, write_records, DurationRecord,
-    ProcedureRecord, StackProfiler, StackedRecord,
+    calculate_durations, calculate_flamegraph, collapse_stacks, read_records, write_records,
+    DurationRecord, ProcedureRecord, StackProfiler, StackedRecord,
 };
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
-    io::{stdin, stdout, BufRead, BufWriter},
+    io::{stdin, stdout, BufWriter},
     path::PathBuf,
 };
 
@@ -89,20 +89,18 @@ fn main() -> Result<(), MainError> {
 
             match arguments.command {
                 Analysis::Duration => write_records(
-                    calculate_durations(reader.lines().map(|line| {
-                        let mut record = line?.parse::<ProcedureRecord>()?;
+                    calculate_durations(read_records::<ProcedureRecord>(reader).map(|record| {
+                        let mut record = record?;
                         record.stack_mut().reverse_frames();
                         Ok(record)
                     })),
                     writer,
                 )?,
                 Analysis::StackCollapse => write_records(
-                    collapse_stacks(reader.lines().map(|line| line?.parse::<DurationRecord>())),
+                    collapse_stacks(read_records::<DurationRecord>(reader)),
                     writer,
                 )?,
-                Analysis::Flamegraph => {
-                    calculate_flamegraph(reader.lines().map(|line| line?.parse()), writer)?
-                }
+                Analysis::Flamegraph => calculate_flamegraph(read_records(reader), writer)?,
             }
         }
     }
