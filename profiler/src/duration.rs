@@ -1,4 +1,4 @@
-use crate::{DurationRecord, Error, ProcedureOperation, ProcedureRecord, Stack};
+use crate::{DurationRecord, Error, ProcedureOperation, ProcedureRecord, Stack, StackedRecord};
 use std::io::Write;
 
 /// Calculates durations.
