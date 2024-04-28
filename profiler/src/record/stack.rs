@@ -26,6 +26,19 @@ impl Stack {
         self.frames.reverse();
     }
 
+    /// Collapses frames.
+    pub fn collapse_frames(&mut self) {
+        let mut frames = vec![];
+
+        for frame in self.frames.drain(..) {
+            if frames.last() != Some(&frame) {
+                frames.push(frame);
+            }
+        }
+
+        self.frames = frames;
+    }
+
     /// Displays a stack with a fixed local names.
     pub fn display_local<'a>(&'a self, local_name: &'a str) -> impl Display + '_ {
         StackDisplay::new(self, local_name)
@@ -83,6 +96,7 @@ impl Display for StackDisplay<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use pretty_assertions::assert_eq;
 
     #[test]
     fn parse() {
@@ -96,5 +110,46 @@ mod tests {
         let stack = Stack::new(vec![Some("foo".into()), None]);
 
         assert_eq!(stack.to_string(), "foo;");
+    }
+
+    mod collapse_frames {
+        use super::*;
+        use pretty_assertions::assert_eq;
+
+        #[test]
+        fn collapse_named_frames() {
+            let mut stack = Stack::new(vec![
+                Some("foo".into()),
+                Some("foo".into()),
+                Some("foo".into()),
+            ]);
+
+            stack.collapse_frames();
+
+            assert_eq!(stack.to_string(), "foo");
+        }
+
+        #[test]
+        fn collapse_anonymous_frames() {
+            let mut stack = Stack::new(vec![None, None]);
+
+            stack.collapse_frames();
+
+            assert_eq!(stack.to_string(), "");
+        }
+
+        #[test]
+        fn collapse_frames_in_middle() {
+            let mut stack = Stack::new(vec![
+                Some("baz".into()),
+                Some("bar".into()),
+                Some("bar".into()),
+                Some("foo".into()),
+            ]);
+
+            stack.collapse_frames();
+
+            assert_eq!(stack.to_string(), "baz;bar;foo");
+        }
     }
 }

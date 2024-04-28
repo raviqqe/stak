@@ -1,3 +1,4 @@
+use super::{Record, StackedRecord};
 use crate::{Error, Stack, COLUMN_SEPARATOR};
 use core::{
     fmt::{self, Display, Formatter},
@@ -15,11 +16,6 @@ impl DurationRecord {
     /// Creates a record.
     pub const fn new(stack: Stack, time: u128) -> Self {
         Self { stack, time }
-    }
-
-    /// Returns a stack.
-    pub const fn stack(&self) -> &Stack {
-        &self.stack
     }
 
     /// Returns a time.
@@ -48,6 +44,18 @@ impl Display for DurationRecord {
         write!(formatter, "{}", &self.time)?;
 
         Ok(())
+    }
+}
+
+impl Record for DurationRecord {}
+
+impl StackedRecord for DurationRecord {
+    fn stack(&self) -> &Stack {
+        &self.stack
+    }
+
+    fn stack_mut(&mut self) -> &mut Stack {
+        &mut self.stack
     }
 }
 

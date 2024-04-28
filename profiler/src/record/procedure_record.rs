@@ -1,3 +1,4 @@
+use super::{Record, StackedRecord};
 use crate::{Error, ProcedureOperation, Stack, COLUMN_SEPARATOR};
 use core::{
     fmt::{self, Display, Formatter},
@@ -25,16 +26,6 @@ impl ProcedureRecord {
     /// Returns a procedure operation.
     pub const fn operation(&self) -> ProcedureOperation {
         self.operation
-    }
-
-    /// Returns a stack.
-    pub const fn stack(&self) -> &Stack {
-        &self.stack
-    }
-
-    /// Returns a mutable stack.
-    pub fn stack_mut(&mut self) -> &mut Stack {
-        &mut self.stack
     }
 
     /// Returns a time.
@@ -69,6 +60,18 @@ impl Display for ProcedureRecord {
         write!(formatter, "{}", &self.time)?;
 
         Ok(())
+    }
+}
+
+impl Record for ProcedureRecord {}
+
+impl StackedRecord for ProcedureRecord {
+    fn stack(&self) -> &Stack {
+        &self.stack
+    }
+
+    fn stack_mut(&mut self) -> &mut Stack {
+        &mut self.stack
     }
 }
 

@@ -1,4 +1,4 @@
-use crate::{DurationRecord, Error, Stack};
+use crate::{DurationRecord, Error, Stack, StackedRecord};
 use alloc::collections::BTreeMap;
 use std::io::Write;
 

@@ -11,7 +11,10 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
-use stak_profiler::{calculate_durations, calculate_flamegraph, parse_raw_records, StackProfiler};
+use stak_profiler::{
+    calculate_durations, calculate_flamegraph, collapse_stacks, DurationRecord, ProcedureRecord,
+    StackProfiler, StackedRecord,
+};
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
@@ -57,6 +60,8 @@ struct AnalyzeArguments {
 enum Analysis {
     /// Calculates procedure durations.
     Duration,
+    /// Calculates collapsed stacks.
+    StackCollapse,
     /// Calculates a flamegraph.
     Flamegraph,
 }
@@ -76,18 +81,31 @@ fn main() -> Result<(), MainError> {
                 .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;
-
-            Ok(vm.run()?)
+            vm.run()?;
         }
-        Command::Analyze(arguments) => match arguments.command {
-            Analysis::Duration => Ok(calculate_durations(
-                parse_raw_records(stdin().lock()),
-                BufWriter::new(stdout().lock()),
-            )?),
-            Analysis::Flamegraph => Ok(calculate_flamegraph(
-                stdin().lock().lines().map(|line| line?.parse()),
-                BufWriter::new(stdout().lock()),
-            )?),
-        },
+        Command::Analyze(arguments) => {
+            let reader = stdin().lock();
+            let writer = BufWriter::new(stdout().lock());
+
+            match arguments.command {
+                Analysis::Duration => calculate_durations(
+                    reader.lines().map(|line| {
+                        let mut record = line?.parse::<ProcedureRecord>()?;
+                        record.stack_mut().reverse_frames();
+                        Ok(record)
+                    }),
+                    writer,
+                )?,
+                Analysis::StackCollapse => collapse_stacks(
+                    reader.lines().map(|line| line?.parse::<DurationRecord>()),
+                    writer,
+                )?,
+                Analysis::Flamegraph => {
+                    calculate_flamegraph(reader.lines().map(|line| line?.parse()), writer)?
+                }
+            }
+        }
     }
+
+    Ok(())
 }

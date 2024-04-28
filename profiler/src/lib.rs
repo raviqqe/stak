@@ -2,18 +2,20 @@
 
 extern crate alloc;
 
+mod collapse;
 mod duration;
 mod error;
 mod flamegraph;
-mod parse;
 mod record;
 mod stack_profiler;
 
+pub use collapse::collapse_stacks;
 pub use duration::calculate_durations;
 pub use error::Error;
 pub use flamegraph::calculate_flamegraph;
-pub use parse::parse_raw_records;
-pub use record::{DurationRecord, ProcedureOperation, ProcedureRecord, Stack};
+pub use record::{
+    DurationRecord, ProcedureOperation, ProcedureRecord, Record, Stack, StackedRecord,
+};
 pub use stack_profiler::StackProfiler;
 
 const COLUMN_SEPARATOR: char = '\t';
@@ -24,14 +26,24 @@ mod tests {
     use super::*;
     use indoc::indoc;
     use pretty_assertions::assert_eq;
-    use std::io::BufReader;
+    use std::io::{BufRead, BufReader};
+
+    fn parse_records(reader: impl BufRead) -> impl Iterator<Item = Result<ProcedureRecord, Error>> {
+        reader
+            .lines()
+            .map(|line| -> Result<ProcedureRecord, Error> {
+                let mut record = line?.parse::<ProcedureRecord>()?;
+                record.stack_mut().reverse_frames();
+                Ok(record)
+            })
+    }
 
     #[test]
     fn analyze_call() {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_raw_records(BufReader::new(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\tfoo;bar;baz\t0
@@ -53,7 +65,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_raw_records(BufReader::new(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\tbaz\t0
@@ -88,7 +100,7 @@ mod tests {
         let mut buffer = vec![];
 
         calculate_durations(
-            parse_raw_records(BufReader::new(
+            parse_records(BufReader::new(
                 indoc!(
                     "
                     call\t;;\t0
