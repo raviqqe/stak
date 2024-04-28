@@ -62,6 +62,8 @@ enum Analysis {
     Duration,
     /// Calculates collapsed stacks.
     StackCollapse,
+    /// Calculates reversed stacks.
+    StackReverse,
     /// Calculates a flamegraph.
     Flamegraph,
 }
@@ -89,15 +91,20 @@ fn main() -> Result<(), MainError> {
 
             match arguments.command {
                 Analysis::Duration => write_records(
-                    calculate_durations(read_records::<ProcedureRecord>(reader).map(|record| {
-                        let mut record = record?;
-                        record.stack_mut().reverse_frames();
-                        Ok(record)
-                    })),
+                    calculate_durations(read_records::<ProcedureRecord>(reader)),
                     writer,
                 )?,
                 Analysis::StackCollapse => write_records(
                     collapse_stacks(read_records::<DurationRecord>(reader)),
+                    writer,
+                )?,
+                Analysis::StackReverse => write_records(
+                    read_records::<DurationRecord>(reader).map(|record| {
+                        record.map(|mut record| {
+                            record.stack_mut().reverse_frames();
+                            record
+                        })
+                    }),
                     writer,
                 )?,
                 Analysis::Flamegraph => calculate_flamegraph(read_records(reader), writer)?,
