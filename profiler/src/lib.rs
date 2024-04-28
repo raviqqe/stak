@@ -6,6 +6,7 @@ mod collapse;
 mod duration;
 mod error;
 mod flamegraph;
+mod read;
 mod record;
 mod stack_profiler;
 
