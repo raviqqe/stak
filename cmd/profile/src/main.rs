@@ -76,18 +76,19 @@ fn main() -> Result<(), MainError> {
                 .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;
-
-            Ok(vm.run()?)
+            vm.run()?;
         }
         Command::Analyze(arguments) => match arguments.command {
-            Analysis::Duration => Ok(calculate_durations(
+            Analysis::Duration => calculate_durations(
                 parse_raw_records(stdin().lock()),
                 BufWriter::new(stdout().lock()),
-            )?),
-            Analysis::Flamegraph => Ok(calculate_flamegraph(
+            )?,
+            Analysis::Flamegraph => calculate_flamegraph(
                 stdin().lock().lines().map(|line| line?.parse()),
                 BufWriter::new(stdout().lock()),
-            )?),
+            )?,
         },
     }
+
+    Ok(())
 }
