@@ -1,4 +1,4 @@
-use crate::{ProcedureRecord, Record};
+use crate::Record;
 use core::str::FromStr;
 use std::io::BufRead;
 
@@ -11,6 +11,7 @@ pub fn read_records<R: Record>(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::ProcedureRecord;
     use indoc::indoc;
     use std::io::BufReader;
 
@@ -27,7 +28,7 @@ mod tests {
                 )
                 .as_bytes()
             ))
-            .collect(),
+            .collect::<Vec<_>>(),
             vec![]
         );
     }
