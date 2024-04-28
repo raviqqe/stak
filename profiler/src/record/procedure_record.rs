@@ -1,10 +1,9 @@
+use super::{Record, StackedRecord};
 use crate::{Error, ProcedureOperation, Stack, COLUMN_SEPARATOR};
 use core::{
     fmt::{self, Display, Formatter},
     str::FromStr,
 };
-
-use super::{Record, StackedRecord};
 
 /// A procedure record.
 #[derive(Debug, Clone, Eq, PartialEq)]

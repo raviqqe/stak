@@ -1,9 +1,9 @@
-use crate::{DurationRecord, Error};
+use crate::{Error, StackedRecord};
 use std::io::Write;
 
 /// Collapses stacks.
 pub fn collapse_stacks(
-    records: impl IntoIterator<Item = Result<DurationRecord, Error>>,
+    records: impl IntoIterator<Item = Result<impl StackedRecord, Error>>,
     mut writer: impl Write,
 ) -> Result<(), Error> {
     for record in records {
@@ -20,7 +20,7 @@ pub fn collapse_stacks(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Stack;
+    use crate::{DurationRecord, Stack};
     use indoc::indoc;
     use pretty_assertions::assert_eq;
 
