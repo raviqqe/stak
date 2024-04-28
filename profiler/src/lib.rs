@@ -9,6 +9,7 @@ mod flamegraph;
 mod read;
 mod record;
 mod stack_profiler;
+mod write;
 
 pub use collapse::collapse_stacks;
 pub use duration::calculate_durations;
@@ -19,6 +20,7 @@ pub use record::{
     DurationRecord, ProcedureOperation, ProcedureRecord, Record, Stack, StackedRecord,
 };
 pub use stack_profiler::StackProfiler;
+pub use write::write_records;
 
 const COLUMN_SEPARATOR: char = '\t';
 const FRAME_SEPARATOR: char = ';';
