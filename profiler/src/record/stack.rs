@@ -26,6 +26,11 @@ impl Stack {
         self.frames.reverse();
     }
 
+    /// Collapses frames.
+    pub fn collapse_frames(&mut self) {
+        self.frames.collapse();
+    }
+
     /// Displays a stack with a fixed local names.
     pub fn display_local<'a>(&'a self, local_name: &'a str) -> impl Display + '_ {
         StackDisplay::new(self, local_name)
