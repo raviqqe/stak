@@ -137,6 +137,12 @@ jobs:
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
+  profile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./tools/ci/github/setup
+      - run: tools/profile_test.sh
   test:
     needs:
       - build
@@ -145,6 +151,7 @@ jobs:
       - self_host_test
       - wasm
       - minimal
+      - profile
     if: always()
     runs-on: ubuntu-latest
     steps:
