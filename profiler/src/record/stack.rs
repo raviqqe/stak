@@ -137,5 +137,19 @@ mod tests {
 
             assert_eq!(stack.to_string(), "");
         }
+
+        #[test]
+        fn collapse_frames_in_middle() {
+            let mut stack = Stack::new(vec![
+                Some("baz".into()),
+                Some("bar".into()),
+                Some("bar".into()),
+                Some("foo".into()),
+            ]);
+
+            stack.collapse_frames();
+
+            assert_eq!(stack.to_string(), "baz;bar;foo");
+        }
     }
 }
