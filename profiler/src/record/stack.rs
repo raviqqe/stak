@@ -28,7 +28,15 @@ impl Stack {
 
     /// Collapses frames.
     pub fn collapse_frames(&mut self) {
-        self.frames.collapse();
+        let mut frames = vec![];
+
+        for frame in self.frames.drain(..) {
+            if frames.last() != Some(&frame) {
+                frames.push(frame);
+            }
+        }
+
+        self.frames = frames;
     }
 
     /// Displays a stack with a fixed local names.
