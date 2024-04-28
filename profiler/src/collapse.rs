@@ -52,7 +52,7 @@ mod tests {
             String::from_utf8(buffer).unwrap(),
             indoc!(
                 "
-                bar;foo\t42
+                bar;foo\t123
                 baz;bar;foo\t42
                 "
             )
