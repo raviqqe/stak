@@ -12,8 +12,8 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, parse_raw_records, ProcedureRecord,
-    StackProfiler,
+    calculate_durations, calculate_flamegraph, collapse_stacks, ProcedureRecord, StackProfiler,
+    StackedRecord,
 };
 use stak_vm::Vm;
 use std::{
