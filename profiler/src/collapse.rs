@@ -25,7 +25,7 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
-    fn analyze_call() {
+    fn collapse() {
         let mut buffer = vec![];
 
         collapse_stacks(
