@@ -18,4 +18,5 @@ EOF
 cat prelude.scm tmp/main.scm | stak compile.scm >tmp/main.bc
 stak-profile run --profile tmp/profile.txt tmp/main.bc
 stak-profile analyze duration <tmp/profile.txt >tmp/durations.txt
-stak-profile analyze stack-collapse <tmp/durations.txt >tmp/reversed-durations.txt
+stak-profile analyze stack-collapse <tmp/durations.txt >tmp/durations_collapsed.txt
+stak-profile analyze flamegraph <tmp/durations_collapsed.txt >tmp/flamegraph.txt
