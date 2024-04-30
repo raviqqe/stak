@@ -156,11 +156,11 @@
       (else
         (loop (cdr xs) (+ index 1))))))
 
-(define (memq-position one xs)
-  (list-position (lambda (other) (eq? one other)) xs))
+(define (memq-position x xs)
+  (list-position x xs eq?))
 
-(define (memv-position one xs)
-  (list-position (lambda (other) (eqv? one other)) xs))
+(define (memv-position x xs)
+  (list-position x xs eqv?))
 
 (define (flat-map f xs)
   (apply append (map f xs)))
