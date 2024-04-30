@@ -935,7 +935,7 @@
           (compile-sequence context (cdr expression) continuation))
 
         (($$compile)
-          (compile-call context (cons compile (cdr expression)) #f continuation))
+          (compile-call context (cons (lambda (x) x) (cdr expression)) #f continuation))
 
         (($$if)
           (compile-expression
