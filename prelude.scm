@@ -1785,11 +1785,13 @@
     (define (cddddr x) (cdr (cdddr x)))))
 
 (define-library (scheme eval)
-  (export eval)
+  (export environment eval)
 
   (import (scheme base))
 
   (begin
+    (define environment list)
+
     (define (eval expression . rest)
       ($$compile expression))))
 
