@@ -822,8 +822,26 @@
 
 ;; Procedures
 
-(define (compile expression)
+(define (compile-primitive-call name continuation)
+  (call-rib
+    (*
+      2
+      (case name
+        (($$close $$car)
+          1)
 
+        (($$cons $$-)
+          2)
+
+        (($$rib)
+          4)
+
+        (else
+          (error "unknown primitive" name))))
+    name
+    continuation))
+
+(define (compile expression)
   (define (compile-arity argument-count variadic)
     (+
       (* 2 argument-count)
@@ -831,25 +849,6 @@
 
   (define (compile-constant constant continuation)
     (code-rib constant-instruction constant continuation))
-
-  (define (compile-primitive-call name continuation)
-    (call-rib
-      (*
-        2
-        (case name
-          (($$close $$car)
-            1)
-
-          (($$cons $$-)
-            2)
-
-          (($$rib)
-            4)
-
-          (else
-            (error "unknown primitive" name))))
-      name
-      continuation))
 
   (define (drop? codes)
     (and
