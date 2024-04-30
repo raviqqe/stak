@@ -805,6 +805,25 @@
 
 ;; Procedures
 
+(define (compile-primitive-call name continuation)
+  (call-rib
+    (*
+      2
+      (case name
+        (($$close $$car)
+          1)
+
+        (($$cons $$-)
+          2)
+
+        (($$rib)
+          4)
+
+        (else
+          (error "unknown primitive" name))))
+    name
+    continuation))
+
 (define (compile expression)
   ; If a variable is not in environment, it is considered to be global.
   (define (resolve-variable environment variable)
