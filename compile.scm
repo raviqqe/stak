@@ -151,6 +151,9 @@
       (else
         (loop (cdr xs) (+ index 1))))))
 
+(define (memq-position one xs)
+  (list-position (lambda (other) (eq? one other)) xs))
+
 (define (memv-position one xs)
   (list-position (lambda (other) (eqv? one other)) xs))
 
@@ -818,7 +821,7 @@
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
-  (or (memv-position variable (compilation-context-environment context)) variable))
+  (or (memq-position variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -1279,7 +1282,7 @@
     ((symbol? operand)
       (* 2
         (or
-          (memv-position operand (encode-context-symbols context))
+          (memq-position operand (encode-context-symbols context))
           (error "symbol not found" operand))))
 
     (else
