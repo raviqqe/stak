@@ -935,9 +935,9 @@
           (($$begin)
             (compile-sequence context (cdr expression) continuation))
 
-          (($$compile)
+          (($$eval)
             ; TODO Evaluate an argument
-            (compile-call context (cons (lambda (x) x) (cdr expression)) #f continuation))
+            (compile-call context (cons compile (cdr expression)) #f continuation))
 
           (($$if)
             (compile-expression

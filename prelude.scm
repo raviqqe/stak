@@ -1793,7 +1793,7 @@
     (define environment list)
 
     (define (eval expression environment)
-      ($$compile expression))))
+      ($$eval expression))))
 
 (define-library (stak char)
   (export special-chars)
