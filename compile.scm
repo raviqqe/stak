@@ -918,76 +918,76 @@
     continuation
     (code-rib set-instruction 1 continuation)))
 
-(define (compile-expression context expression continuation)
-  (cond
-    ((symbol? expression)
-      (code-rib
-        get-instruction
-        (compilation-context-resolve context expression)
-        continuation))
-
-    ((pair? expression)
-      (case (car expression)
-        (($$apply)
-          (compile-call context (cdr expression) #t continuation))
-
-        (($$begin)
-          (compile-sequence context (cdr expression) continuation))
-
-        (($$compile)
-          ; TODO Evaluate an argument
-          (compile-call context (cons (lambda (x) x) (cdr expression)) #f continuation))
-
-        (($$if)
-          (compile-expression
-            context
-            (cadr expression)
-            (code-rib
-              if-instruction
-              (compile-expression
-                context
-                (caddr expression)
-                (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
-              (compile-expression context (cadddr expression) continuation))))
-
-        (($$lambda)
-          (let ((parameters (cadr expression)))
-            (compile-constant
-              (make-procedure
-                (compile-arity
-                  (count-parameters parameters)
-                  (symbol? (last-cdr parameters)))
-                (compile-sequence
-                  (compilation-context-append-locals
-                    context
-                    ; #f is for a frame.
-                    (reverse (cons #f (parameter-names parameters))))
-                  (cddr expression)
-                  '())
-                '())
-              (compile-primitive-call '$$close continuation))))
-
-        (($$quote)
-          (compile-constant (cadr expression) continuation))
-
-        (($$set!)
-          (compile-expression
-            context
-            (caddr expression)
-            (code-rib
-              set-instruction
-              (compilation-context-resolve
-                (compilation-context-push-local context #f)
-                (cadr expression))
-              (compile-unspecified continuation))))
-
-        (else
-          (compile-call context expression #f continuation))))
-
-    (else
-      (compile-constant expression continuation))))
-
 (define (compile expression)
+  (define (compile-expression context expression continuation)
+    (cond
+      ((symbol? expression)
+        (code-rib
+          get-instruction
+          (compilation-context-resolve context expression)
+          continuation))
+
+      ((pair? expression)
+        (case (car expression)
+          (($$apply)
+            (compile-call context (cdr expression) #t continuation))
+
+          (($$begin)
+            (compile-sequence context (cdr expression) continuation))
+
+          (($$compile)
+            ; TODO Evaluate an argument
+            (compile-call context (cons (lambda (x) x) (cdr expression)) #f continuation))
+
+          (($$if)
+            (compile-expression
+              context
+              (cadr expression)
+              (code-rib
+                if-instruction
+                (compile-expression
+                  context
+                  (caddr expression)
+                  (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
+                (compile-expression context (cadddr expression) continuation))))
+
+          (($$lambda)
+            (let ((parameters (cadr expression)))
+              (compile-constant
+                (make-procedure
+                  (compile-arity
+                    (count-parameters parameters)
+                    (symbol? (last-cdr parameters)))
+                  (compile-sequence
+                    (compilation-context-append-locals
+                      context
+                      ; #f is for a frame.
+                      (reverse (cons #f (parameter-names parameters))))
+                    (cddr expression)
+                    '())
+                  '())
+                (compile-primitive-call '$$close continuation))))
+
+          (($$quote)
+            (compile-constant (cadr expression) continuation))
+
+          (($$set!)
+            (compile-expression
+              context
+              (caddr expression)
+              (code-rib
+                set-instruction
+                (compilation-context-resolve
+                  (compilation-context-push-local context #f)
+                  (cadr expression))
+                (compile-unspecified continuation))))
+
+          (else
+            (compile-call context expression #f continuation))))
+
+      (else
+        (compile-constant expression continuation))))
+
   (compile-expression (make-compilation-context '()) expression '()))
 
 ; Constant building
