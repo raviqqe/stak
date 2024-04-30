@@ -150,7 +150,7 @@
       ((null? xs)
         #f)
 
-      ((f (car xs))
+      ((eq? x (car xs))
         index)
 
       (else
