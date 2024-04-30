@@ -822,103 +822,104 @@
 
 ;; Procedures
 
-(define (compile-arity argument-count variadic)
-  (+
-    (* 2 argument-count)
-    (if variadic 1 0)))
+(define (compile expression)
 
-(define (compile-constant constant continuation)
-  (code-rib constant-instruction constant continuation))
+  (define (compile-arity argument-count variadic)
+    (+
+      (* 2 argument-count)
+      (if variadic 1 0)))
 
-(define (compile-primitive-call name continuation)
-  (call-rib
-    (*
-      2
-      (case name
-        (($$close $$car)
-          1)
+  (define (compile-constant constant continuation)
+    (code-rib constant-instruction constant continuation))
 
-        (($$cons $$-)
-          2)
-
-        (($$rib)
-          4)
-
-        (else
-          (error "unknown primitive" name))))
-    name
-    continuation))
-
-(define (drop? codes)
-  (and
-    (target-pair? codes)
-    (eq? (rib-tag codes) set-instruction)
-    (eq? (rib-car codes) 0)))
-
-(define (compile-unspecified continuation)
-  (if (drop? continuation)
-    ; Skip a "drop" instruction.
-    (rib-cdr continuation)
-    (compile-constant #f continuation)))
-
-(define (compile-drop continuation)
-  (if (null? continuation)
-    continuation
-    (code-rib set-instruction 0 continuation)))
-
-(define (compile-sequence context expressions continuation)
-  (compile-expression
-    context
-    (car expressions)
-    (if (null? (cdr expressions))
-      continuation
-      (compile-drop (compile-sequence context (cdr expressions) continuation)))))
-
-(define (compile-raw-call context procedure arguments arity continuation)
-  (if (null? arguments)
+  (define (compile-primitive-call name continuation)
     (call-rib
-      arity
-      (compilation-context-resolve context procedure)
-      continuation)
+      (*
+        2
+        (case name
+          (($$close $$car)
+            1)
+
+          (($$cons $$-)
+            2)
+
+          (($$rib)
+            4)
+
+          (else
+            (error "unknown primitive" name))))
+      name
+      continuation))
+
+  (define (drop? codes)
+    (and
+      (target-pair? codes)
+      (eq? (rib-tag codes) set-instruction)
+      (eq? (rib-car codes) 0)))
+
+  (define (compile-unspecified continuation)
+    (if (drop? continuation)
+      ; Skip a "drop" instruction.
+      (rib-cdr continuation)
+      (compile-constant #f continuation)))
+
+  (define (compile-drop continuation)
+    (if (null? continuation)
+      continuation
+      (code-rib set-instruction 0 continuation)))
+
+  (define (compile-sequence context expressions continuation)
     (compile-expression
       context
-      (car arguments)
-      (compile-raw-call
-        (compilation-context-push-local context #f)
-        procedure
-        (cdr arguments)
-        arity
-        continuation))))
+      (car expressions)
+      (if (null? (cdr expressions))
+        continuation
+        (compile-drop (compile-sequence context (cdr expressions) continuation)))))
 
-(define (compile-call context expression variadic continuation)
-  (let* ((procedure (car expression))
-         (arguments (cdr expression))
-         (continue
-           (lambda (context procedure continuation)
-             (compile-raw-call
-               context
-               procedure
-               arguments
-               (compile-arity
-                 (- (length arguments) (if variadic 1 0))
-                 variadic)
-               continuation))))
-    (if (symbol? procedure)
-      (continue context procedure continuation)
+  (define (compile-raw-call context procedure arguments arity continuation)
+    (if (null? arguments)
+      (call-rib
+        arity
+        (compilation-context-resolve context procedure)
+        continuation)
       (compile-expression
         context
-        procedure
-        (continue
-          (compilation-context-push-local context '$procedure)
-          '$procedure
-          (compile-unbind continuation))))))
+        (car arguments)
+        (compile-raw-call
+          (compilation-context-push-local context #f)
+          procedure
+          (cdr arguments)
+          arity
+          continuation))))
 
-(define (compile-unbind continuation)
-  (if (null? continuation)
-    continuation
-    (code-rib set-instruction 1 continuation)))
+  (define (compile-call context expression variadic continuation)
+    (let* ((procedure (car expression))
+           (arguments (cdr expression))
+           (continue
+             (lambda (context procedure continuation)
+               (compile-raw-call
+                 context
+                 procedure
+                 arguments
+                 (compile-arity
+                   (- (length arguments) (if variadic 1 0))
+                   variadic)
+                 continuation))))
+      (if (symbol? procedure)
+        (continue context procedure continuation)
+        (compile-expression
+          context
+          procedure
+          (continue
+            (compilation-context-push-local context '$procedure)
+            '$procedure
+            (compile-unbind continuation))))))
 
-(define (compile expression)
+  (define (compile-unbind continuation)
+    (if (null? continuation)
+      continuation
+      (code-rib set-instruction 1 continuation)))
+
   (define (compile-expression context expression continuation)
     (cond
       ((symbol? expression)
