@@ -1,4 +1,5 @@
 Feature: Eval
+  @self-host
   Scenario: Import an `eval` library
     Given a file named "main.scm" with:
       """scheme
