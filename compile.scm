@@ -139,7 +139,12 @@
       (car xs)
       (list-head (cdr xs) (- n 1)))))
 
-(define (list-position f xs)
+(define (list-position x xs . rest)
+  (define eq?
+    (if (null? rest)
+      equal?
+      (car rest)))
+
   (let loop ((xs xs) (index 0))
     (cond
       ((null? xs)
