@@ -1792,7 +1792,7 @@
   (begin
     (define environment list)
 
-    (define (eval expression . rest)
+    (define (eval expression environment)
       ($$compile expression))))
 
 (define-library (stak char)
