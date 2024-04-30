@@ -1784,7 +1784,16 @@
     (define (cdddar x) (cdr (cddar x)))
     (define (cddddr x) (cdr (cdddr x)))))
 
-(define-library (scheme eval))
+(define-library (scheme eval)
+  (export environment eval)
+
+  (import (scheme base))
+
+  (begin
+    (define environment list)
+
+    (define (eval expression environment)
+      ($$compile expression))))
 
 (define-library (stak char)
   (export special-chars)
