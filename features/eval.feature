@@ -14,7 +14,7 @@ Feature: Eval
       """scheme
       (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '65))
+      (write-u8 (eval '65 (environment)))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
