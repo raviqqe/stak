@@ -720,11 +720,12 @@
           (loop (cdr xs) (+ y 1)))))
 
     (define (map* f xs)
-      (if (null? xs)
-        xs
-        (cons
-          (f (car xs))
-          (map* f (cdr xs)))))
+      (let loop ((xs xs))
+        (if (null? xs)
+          xs
+          (cons
+            (f (car xs))
+            (loop (cdr xs))))))
 
     (define (map f x . xs)
       (if (null? xs)
