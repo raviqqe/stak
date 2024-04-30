@@ -832,8 +832,7 @@
 
 (define (compile-primitive-call name continuation)
   (call-rib
-    (*
-      2
+    (compile-arity
       (case name
         (($$close $$car)
           1)
@@ -845,7 +844,8 @@
           4)
 
         (else
-          (error "unknown primitive" name))))
+          (error "unknown primitive" name)))
+      #f)
     name
     continuation))
 
