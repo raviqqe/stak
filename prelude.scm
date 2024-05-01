@@ -1791,13 +1791,14 @@
 
   (begin
     ($$incept flat-map flat-map)
+    ($$incept make-compilation-context make-compilation-context)
     ($$incept compile-primitive-call compile-primitive-call)
     ($$incept compile-expression compile-expression)
 
     (define environment list)
 
     (define (eval expression environment)
-      ($$compile expression))))
+      (compile-expression (make-compilation-context '()) expression '()))))
 
 (define-library (stak char)
   (export special-chars)
