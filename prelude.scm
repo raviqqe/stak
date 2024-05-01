@@ -1785,15 +1785,12 @@
     (define (cddddr x) (cdr (cdddr x)))))
 
 (define-library (scheme eval)
-  (export environment eval)
+  (export environment eval flat-map)
 
   (import (scheme base) (scheme write))
 
   (begin
     ($$incept flat-map flat-map)
-
-    (write flat-map)
-    (newline)
 
     (define environment list)
 
