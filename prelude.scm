@@ -2201,6 +2201,9 @@
 
     (define environment list)
 
+    (define (code-rib tag car cdr)
+      (rib pair-type car cdr tag))
+
     (define (compile-arity argument-count variadic)
       (+
         (* 2 argument-count)
