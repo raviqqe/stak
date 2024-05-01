@@ -617,6 +617,7 @@
 
 (define (fill-ellipsis-template context matches template)
   (let* ((variables (ellipsis-pattern-variables template))
+         (template (ellipsis-pattern-element template))
          (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
          (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
          (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
@@ -624,11 +625,7 @@
       (error "no ellipsis pattern variables" template))
     (apply
       map
-      (lambda matches
-        (fill-template
-          context
-          (append matches singleton-matches)
-          (ellipsis-pattern-element template)))
+      (lambda matches (fill-template context (append matches singleton-matches) template))
       (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
 
 (define (fill-template context matches template)
