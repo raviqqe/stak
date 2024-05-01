@@ -6,7 +6,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "useBlockStatements": true,
+      "useCollapsedElseIf": true,
+      "useConsistentArrayType": true,
+      "useFragmentSyntax": true,
+      "useShorthandArrayType": true,
+      "noConsole": true
     }
   },
   "files": {
