@@ -12,8 +12,7 @@
   (stak
     (define cons-rib cons)
     (define target-pair? pair?)
-    (define target-procedure? procedure?)
-    (define string->uninterned-symbol string->symbol))
+    (define target-procedure? procedure?))
 
   (else
     (define-record-type *rib*
