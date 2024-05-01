@@ -39,6 +39,7 @@
     scheme
     stak
 
+    pair-type
     procedure-type
 
     rib
@@ -2175,7 +2176,7 @@
 (define-library (scheme eval)
   (export environment eval)
 
-  (import (scheme base))
+  (import (scheme base) (stak base))
 
   (begin
     ; Types
@@ -2200,8 +2201,6 @@
     ; Procedures
 
     (define environment list)
-
-    (define pair-type 0)
 
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
@@ -2368,4 +2367,12 @@
           (compile-constant expression continuation))))
 
     (define (eval expression environment)
-      (compile-expression (make-compilation-context '()) expression '()))))
+      ((data-rib
+          procedure-type
+          #f
+          (cons
+            (compile-arity 0 #f)
+            (compile-expression
+              (make-compilation-context '())
+              expression
+              '())))))))
