@@ -953,6 +953,12 @@
                 (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
               (compile-expression context (cadddr expression) continuation))))
 
+        (($$incept)
+          (compile-expression
+            context
+            (list '$$set! (cadr expression) (car (caddr expression)))
+            continuation))
+
         (($$lambda)
           (let ((parameters (cadr expression)))
             (compile-constant
