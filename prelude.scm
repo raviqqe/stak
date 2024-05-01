@@ -2163,7 +2163,7 @@
   (import (scheme base) (stak base))
 
   (begin
-    (define exit-success (data-rib procedure-type #f (cons 0 '())))
+    (define exit-success (data-rib procedure-type '() (cons 0 '())))
 
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
@@ -2369,7 +2369,7 @@
     (define (eval expression environment)
       ((data-rib
           procedure-type
-          #f
+          '()
           (cons
             (compile-arity 0 #f)
             (compile-expression
