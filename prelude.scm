@@ -1787,10 +1787,13 @@
 (define-library (scheme eval)
   (export environment eval)
 
-  (import (scheme base))
+  (import (scheme base) (scheme write))
 
   (begin
     ($$incept flat-map flat-map)
+
+    (write flat-map)
+    (newline)
 
     (define environment list)
 

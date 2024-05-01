@@ -12,7 +12,8 @@
   (stak
     (define cons-rib cons)
     (define target-pair? pair?)
-    (define target-procedure? procedure?))
+    (define target-procedure? procedure?)
+    (define string->uninterned-symbol string->symbol))
 
   (else
     (define-record-type *rib*
@@ -956,7 +957,7 @@
         (($$incept)
           (compile-expression
             context
-            (list '$$set! (cadr expression) (cdr (caddr expression)))
+            (list '$$set! (cadr expression) (cdr (resolve-library-symbol (caddr expression))))
             continuation))
 
         (($$lambda)
