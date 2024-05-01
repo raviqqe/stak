@@ -956,7 +956,7 @@
         (($$incept)
           (compile-expression
             context
-            (list '$$set! (cadr expression) (car (caddr expression)))
+            (list '$$set! (cadr expression) (cdr (caddr expression)))
             continuation))
 
         (($$lambda)
