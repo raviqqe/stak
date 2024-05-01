@@ -1791,6 +1791,7 @@
 
   (begin
     ($$incept flat-map flat-map)
+    ($$incept compile-primitive-call compile-primitive-call)
     ($$incept compile-expression compile-expression)
 
     (define environment list)
