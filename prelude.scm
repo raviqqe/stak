@@ -1785,12 +1785,11 @@
     (define (cddddr x) (cdr (cdddr x)))))
 
 (define-library (scheme eval)
-  (export environment eval flat-map)
+  (export environment eval)
 
   (import (scheme base))
 
   (begin
-    ($$incept flat-map flat-map)
     ($$incept make-compilation-context make-compilation-context)
     ($$incept compile-primitive-call compile-primitive-call)
     ($$incept compile-expression compile-expression)
