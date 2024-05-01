@@ -7,12 +7,16 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "useBlockStatements": true,
-      "useCollapsedElseIf": true,
-      "useConsistentArrayType": true,
-      "useFragmentSyntax": true,
-      "useShorthandArrayType": true,
-      "noConsole": true
+      "style": {
+        "useBlockStatements": { "level": "error" },
+        "useCollapsedElseIf": { "level": "error" },
+        "useConsistentArrayType": { "level": "error" },
+        "useFragmentSyntax": { "level": "error" },
+        "useShorthandArrayType": { "level": "error" }
+      },
+      "nursery": {
+        "noConsole": { "level": "error" }
+      }
     }
   },
   "files": {
