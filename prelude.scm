@@ -1787,7 +1787,7 @@
 (define-library (scheme eval)
   (export environment eval flat-map)
 
-  (import (scheme base) (scheme write))
+  (import (scheme base))
 
   (begin
     ($$incept flat-map flat-map)
