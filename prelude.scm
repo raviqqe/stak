@@ -1784,17 +1784,6 @@
     (define (cdddar x) (cdr (cddar x)))
     (define (cddddr x) (cdr (cdddr x)))))
 
-(define-library (scheme eval)
-  (export environment eval)
-
-  (import (scheme base))
-
-  (begin
-    (define environment list)
-
-    (define (eval expression environment)
-      ($$compile expression))))
-
 (define-library (stak char)
   (export special-chars)
 
@@ -2182,3 +2171,104 @@
 
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
+
+(define-library (scheme eval)
+  (export environment eval)
+
+  (import (scheme base))
+
+  (begin
+    ; Types
+
+    ;; Context
+
+    (define-record-type compilation-context
+      (make-compilation-context environment)
+      compilation-context?
+      (environment compilation-context-environment))
+
+    (define (compilation-context-append-locals context variables)
+      (make-compilation-context (append variables (compilation-context-environment context))))
+
+    (define (compilation-context-push-local context variable)
+      (compilation-context-append-locals context (list variable)))
+
+    ; If a variable is not in environment, it is considered to be global.
+    (define (compilation-context-resolve context variable)
+      (or (memv-position variable (compilation-context-environment context)) variable))
+
+    ; Procedures
+
+    (define environment list)
+
+    (define (compile-expression context expression continuation)
+      (cond
+        ((symbol? expression)
+          (code-rib
+            get-instruction
+            (compilation-context-resolve context expression)
+            continuation))
+
+        ((pair? expression)
+          (case (car expression)
+            (($$apply)
+              (compile-call context (cdr expression) #t continuation))
+
+            (($$begin)
+              (compile-sequence context (cdr expression) continuation))
+
+            (($$compile)
+              ; TODO Evaluate an argument
+              (compile-call context (cons (lambda (x) x) (cdr expression)) #f continuation))
+
+            (($$if)
+              (compile-expression
+                context
+                (cadr expression)
+                (code-rib
+                  if-instruction
+                  (compile-expression
+                    context
+                    (caddr expression)
+                    (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
+                  (compile-expression context (cadddr expression) continuation))))
+
+            (($$lambda)
+              (let ((parameters (cadr expression)))
+                (compile-constant
+                  (make-procedure
+                    (compile-arity
+                      (count-parameters parameters)
+                      (symbol? (last-cdr parameters)))
+                    (compile-sequence
+                      (compilation-context-append-locals
+                        context
+                        ; #f is for a frame.
+                        (reverse (cons #f (parameter-names parameters))))
+                      (cddr expression)
+                      '())
+                    '())
+                  (compile-primitive-call '$$close continuation))))
+
+            (($$quote)
+              (compile-constant (cadr expression) continuation))
+
+            (($$set!)
+              (compile-expression
+                context
+                (caddr expression)
+                (code-rib
+                  set-instruction
+                  (compilation-context-resolve
+                    (compilation-context-push-local context #f)
+                    (cadr expression))
+                  (compile-unspecified continuation))))
+
+            (else
+              (compile-call context expression #f continuation))))
+
+        (else
+          (compile-constant expression continuation))))
+
+    (define (eval expression environment)
+      (compile-expression expression))))
