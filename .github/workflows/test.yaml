@@ -54,17 +54,14 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
-            tags: not @self
           - name: stak-tools
             host: gosh
-            tags: not @self
           - name: stak-tools
             host: guile
-            tags: not @self
           - name: stak-tools
             host: gosh
             features: [gc_always]
-            tags: not @self and not @long
+            tags: not @long
           - name: chibi
             tags: not @stak or @chibi
           - name: gauche
