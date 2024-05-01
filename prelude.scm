@@ -2200,6 +2200,14 @@
 
     ; Procedures
 
+    (define constant-instruction 0)
+    (define get-instruction 1)
+    (define set-instruction 2)
+    (define if-instruction 3)
+    ; TODO Remove this.
+    (define nop-instruction 4)
+    (define call-instruction 5)
+
     (define environment list)
 
     (define (code-rib tag car cdr)
