@@ -2217,10 +2217,6 @@
             (($$begin)
               (compile-sequence context (cdr expression) continuation))
 
-            (($$compile)
-              ; TODO Evaluate an argument
-              (compile-call context (cons (lambda (x) x) (cdr expression)) #f continuation))
-
             (($$if)
               (compile-expression
                 context
