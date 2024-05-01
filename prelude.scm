@@ -2201,6 +2201,8 @@
 
     (define environment list)
 
+    (define pair-type 0)
+
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
 
