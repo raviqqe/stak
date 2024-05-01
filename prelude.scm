@@ -2267,4 +2267,4 @@
           (compile-constant expression continuation))))
 
     (define (eval expression environment)
-      (compile-expression expression))))
+      (compile-expression (make-compilation-context '()) expression '()))))
