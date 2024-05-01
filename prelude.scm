@@ -1790,6 +1790,8 @@
   (import (scheme base))
 
   (begin
+    ($$incept flat-map flat-map)
+
     (define environment list)
 
     (define (eval expression environment)
