@@ -2189,9 +2189,10 @@
     ;; Context
 
     (define-record-type compilation-context
-      (make-compilation-context environment)
+      (make-compilation-context environment globals)
       compilation-context?
-      (environment compilation-context-environment))
+      (environment compilation-context-environment)
+      (globals compilation-context-globals))
 
     (define (compilation-context-append-locals context variables)
       (make-compilation-context (append variables (compilation-context-environment context))))
@@ -2389,6 +2390,7 @@
             (compile-arity 0 #f)
             (compile-expression
               (make-compilation-context
+                '()
                 (apply append
                   (map
                     (lambda (name)
