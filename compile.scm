@@ -820,7 +820,9 @@
   (libraries compilation-context-libraries))
 
 (define (compilation-context-append-locals context variables)
-  (make-compilation-context (append variables (compilation-context-environment context))))
+  (make-compilation-context
+    (append variables (compilation-context-environment context))
+    (compilation-context-libraries context)))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
