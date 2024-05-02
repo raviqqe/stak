@@ -2386,13 +2386,13 @@
               (make-compilation-context
                 (apply append
                   (map
-                    (lambda (pair)
+                    (lambda (name)
                       (cond
-                        ((assoc (car pair) libraries) =>
+                        ((assoc name libraries) =>
                           cddr)
 
                         (else
-                          (error "unknown library" (car pair)))))
+                          (error "unknown library" name))))
                     environment)))
               expression
               '())))))))
