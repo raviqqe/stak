@@ -410,7 +410,8 @@
       (cons (car expression)
         (flat-map
           (lambda (expression) (expand-library-expression context expression))
-          (cdr expression))))))
+          (cdr expression)))
+      (library-context-libraries context))))
 
 ; Macro system
 
@@ -1387,6 +1388,6 @@
 
 ; Main
 
-(define-values (codes) (expand-libraries (read-source)))
+(define-values (codes libraries) (expand-libraries (read-source)))
 
 (write-target (encode (compile (expand-macros codes))))
