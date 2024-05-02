@@ -411,13 +411,7 @@
         (flat-map
           (lambda (expression) (expand-library-expression context expression))
           (cdr expression)))
-      (map
-        (lambda (pair)
-          (let ((library (library-state-library (cdr pair))))
-            (cons
-              (library-name library)
-              (library-id library))))
-        (library-context-libraries context)))))
+      (map-values library-state-library (library-context-libraries context)))))
 
 ; Macro system
 
