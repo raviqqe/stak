@@ -2383,6 +2383,7 @@
           (cons
             (compile-arity 0 #f)
             (compile-expression
-              (make-compilation-context '())
+              (make-compilation-context
+                (apply append (map cddr environment)))
               expression
               '())))))))
