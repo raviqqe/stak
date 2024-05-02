@@ -968,6 +968,13 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
+        (($$libraries)
+          (compile-constant
+            (map-values
+              (foo)
+              (compilation-context-libraries context))
+            continuation))
+
         (($$quote)
           (compile-constant (cadr expression) continuation))
 

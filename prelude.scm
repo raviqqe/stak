@@ -2210,6 +2210,8 @@
 
     (define environment list)
 
+    (define libraries ($$libraries))
+
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
 
