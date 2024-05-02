@@ -2384,6 +2384,15 @@
             (compile-arity 0 #f)
             (compile-expression
               (make-compilation-context
-                (apply append (map cddr environment)))
+                (apply append
+                  (map
+                    (lambda (pair)
+                      (cond
+                        ((assoc (car pair) libraries) =>
+                          cddr)
+
+                        (else
+                          '())))
+                    environment)))
               expression
               '())))))))
