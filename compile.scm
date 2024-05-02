@@ -407,7 +407,8 @@
 (define (expand-libraries expression)
   (let ((context (make-library-context '() '())))
     (values
-      (cons (car expression)
+      (cons
+        (car expression)
         (flat-map
           (lambda (expression) (expand-library-expression context expression))
           (cdr expression)))
