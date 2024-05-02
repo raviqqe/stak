@@ -971,7 +971,10 @@
         (($$libraries)
           (compile-constant
             (map-values
-              (foo)
+              (lambda (library)
+                (cons
+                  (library-id library)
+                  (library-exports library)))
               (compilation-context-libraries context))
             continuation))
 
