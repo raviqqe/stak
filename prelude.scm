@@ -133,7 +133,7 @@
     fold-left
     fold-right
     reduce-right
-    list-position
+    member-position
     memv-position
     list-copy
 
@@ -829,20 +829,25 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
-    (define (list-position f xs)
+    (define (member-position x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
       (let loop ((xs xs) (index 0))
         (cond
           ((null? xs)
             #f)
 
-          ((f (car xs))
+          ((eq? x (car xs))
             index)
 
           (else
             (loop (cdr xs) (+ index 1))))))
 
     (define (memv-position x xs)
-      (list-position (lambda (y) (eqv? x y)) xs))
+      (member-position x xs eqv?))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1303,7 +1308,7 @@
     fold-left
     fold-right
     reduce-right
-    list-position
+    member-position
     memv-position
     list-copy
 
