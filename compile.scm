@@ -412,10 +412,11 @@
           (lambda (expression) (expand-library-expression context expression))
           (cdr expression)))
       (map
-        (lambda (library)
-          (cons
-            (library-name library)
-            (library-id library)))
+        (lambda (pair)
+          (let ((library (library-state-library (cdr pair))))
+            (cons
+              (library-name library)
+              (library-id library))))
         (library-context-libraries context)))))
 
 ; Macro system
