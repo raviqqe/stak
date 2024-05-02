@@ -2392,7 +2392,7 @@
                           cddr)
 
                         (else
-                          '())))
+                          (error "unknown library" (car pair)))))
                     environment)))
               expression
               '())))))))
