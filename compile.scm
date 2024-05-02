@@ -406,10 +406,11 @@
 
 (define (expand-libraries expression)
   (let ((context (make-library-context '() '())))
-    (cons (car expression)
-      (flat-map
-        (lambda (expression) (expand-library-expression context expression))
-        (cdr expression)))))
+    (values
+      (cons (car expression)
+        (flat-map
+          (lambda (expression) (expand-library-expression context expression))
+          (cdr expression))))))
 
 ; Macro system
 
@@ -1386,4 +1387,6 @@
 
 ; Main
 
-(write-target (encode (compile (expand-macros (expand-libraries (read-source))))))
+(define-values (codes) (expand-libraries (read-source)))
+
+(write-target (encode (compile (expand-macros codes))))
