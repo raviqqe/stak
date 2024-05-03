@@ -24,5 +24,6 @@ lto = true
 panic = "abort"
 
 [profile.dev]
-debug-assertions = false
+lto = true
+opt-level = 3
 panic = "abort"
