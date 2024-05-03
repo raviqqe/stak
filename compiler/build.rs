@@ -1,4 +1,3 @@
-use core::option_env;
 use std::{
     env,
     error::Error,
