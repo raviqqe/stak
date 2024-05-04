@@ -2181,7 +2181,7 @@
 (define-library (scheme eval)
   (export environment eval)
 
-  (import (scheme base) (stak base))
+  (import (scheme base) (scheme cxr) (stak base))
 
   (begin
     ; Types
