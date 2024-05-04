@@ -2259,7 +2259,7 @@
 
     (define (drop? codes)
       (and
-        (target-pair? codes)
+        (pair? codes)
         (eq? (rib-tag codes) set-instruction)
         (eq? (rib-car codes) 0)))
 
