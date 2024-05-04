@@ -2233,6 +2233,9 @@
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
 
+    (define (call-rib arity procedure continuation)
+      (code-rib (+ call-instruction arity) procedure continuation))
+
     (define (make-procedure arity code environment)
       (data-rib procedure-type environment (cons arity code)))
 
