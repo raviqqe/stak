@@ -2219,8 +2219,6 @@
     (define get-instruction 1)
     (define set-instruction 2)
     (define if-instruction 3)
-    ; TODO Remove this.
-    (define nop-instruction 4)
     (define call-instruction 5)
 
     (define environment list)
@@ -2348,10 +2346,7 @@
                 (cadr expression)
                 (code-rib
                   if-instruction
-                  (compile-expression
-                    context
-                    (caddr expression)
-                    (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
+                  (compile-expression context (caddr expression) continuation)
                   (compile-expression context (cadddr expression) continuation))))
 
             (($$lambda)
