@@ -133,7 +133,7 @@
     fold-left
     fold-right
     reduce-right
-    list-position
+    member-position
     memv-position
     list-copy
 
@@ -829,20 +829,25 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
-    (define (list-position f xs)
+    (define (member-position x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
       (let loop ((xs xs) (index 0))
         (cond
           ((null? xs)
             #f)
 
-          ((f (car xs))
+          ((eq? x (car xs))
             index)
 
           (else
             (loop (cdr xs) (+ index 1))))))
 
     (define (memv-position x xs)
-      (list-position (lambda (y) (eqv? x y)) xs))
+      (member-position x xs eqv?))
 
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
@@ -1303,7 +1308,7 @@
     fold-left
     fold-right
     reduce-right
-    list-position
+    member-position
     memv-position
     list-copy
 
@@ -2176,7 +2181,7 @@
 (define-library (scheme eval)
   (export environment eval)
 
-  (import (scheme base) (stak base))
+  (import (scheme base) (scheme cxr) (stak base))
 
   (begin
     ; Types
@@ -2184,19 +2189,29 @@
     ;; Context
 
     (define-record-type compilation-context
-      (make-compilation-context environment)
+      (make-compilation-context environment globals)
       compilation-context?
-      (environment compilation-context-environment))
+      (environment compilation-context-environment)
+      (globals compilation-context-globals))
 
     (define (compilation-context-append-locals context variables)
-      (make-compilation-context (append variables (compilation-context-environment context))))
+      (make-compilation-context
+        (append variables (compilation-context-environment context))
+        (compilation-context-globals context)))
 
     (define (compilation-context-push-local context variable)
       (compilation-context-append-locals context (list variable)))
 
     ; If a variable is not in environment, it is considered to be global.
     (define (compilation-context-resolve context variable)
-      (or (memv-position variable (compilation-context-environment context)) variable))
+      (or
+        (memv-position variable (compilation-context-environment context))
+        (cond
+          ((assq variable (compilation-context-globals context)) =>
+            cdr)
+
+          (else
+            variable))))
 
     ; Procedures
 
@@ -2204,11 +2219,11 @@
     (define get-instruction 1)
     (define set-instruction 2)
     (define if-instruction 3)
-    ; TODO Remove this.
-    (define nop-instruction 4)
     (define call-instruction 5)
 
     (define environment list)
+
+    (define libraries ($$libraries))
 
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
@@ -2242,7 +2257,7 @@
 
     (define (drop? codes)
       (and
-        (target-pair? codes)
+        (pair? codes)
         (eq? (rib-tag codes) set-instruction)
         (eq? (rib-car codes) 0)))
 
@@ -2331,10 +2346,7 @@
                 (cadr expression)
                 (code-rib
                   if-instruction
-                  (compile-expression
-                    context
-                    (caddr expression)
-                    (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
+                  (compile-expression context (caddr expression) continuation)
                   (compile-expression context (cadddr expression) continuation))))
 
             (($$lambda)
@@ -2381,6 +2393,18 @@
           (cons
             (compile-arity 0 #f)
             (compile-expression
-              (make-compilation-context '())
+              (make-compilation-context
+                '()
+                (apply
+                  append
+                  (map
+                    (lambda (name)
+                      (cond
+                        ((assoc name libraries) =>
+                          cddr)
+
+                        (else
+                          (error "unknown library" name))))
+                    environment)))
               expression
               '())))))))

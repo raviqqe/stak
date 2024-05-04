@@ -405,11 +405,16 @@
       (list expression))))
 
 (define (expand-libraries expression)
-  (let ((context (make-library-context '() '())))
-    (cons (car expression)
-      (flat-map
-        (lambda (expression) (expand-library-expression context expression))
-        (cdr expression)))))
+  (let* ((context (make-library-context '() '()))
+         (expression
+           (cons
+             (car expression)
+             (flat-map
+               (lambda (expression) (expand-library-expression context expression))
+               (cdr expression)))))
+    (values
+      expression
+      (map-values library-state-library (library-context-libraries context)))))
 
 ; Macro system
 
@@ -806,12 +811,15 @@
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment)
+  (make-compilation-context environment libraries)
   compilation-context?
-  (environment compilation-context-environment))
+  (environment compilation-context-environment)
+  (libraries compilation-context-libraries))
 
 (define (compilation-context-append-locals context variables)
-  (make-compilation-context (append variables (compilation-context-environment context))))
+  (make-compilation-context
+    (append variables (compilation-context-environment context))
+    (compilation-context-libraries context)))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
@@ -963,6 +971,16 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
+        (($$libraries)
+          (compile-constant
+            (map-values
+              (lambda (library)
+                (cons
+                  (library-id library)
+                  (library-exports library)))
+              (compilation-context-libraries context))
+            continuation))
+
         (($$quote)
           (compile-constant (cadr expression) continuation))
 
@@ -983,8 +1001,8 @@
     (else
       (compile-constant expression continuation))))
 
-(define (compile expression)
-  (compile-expression (make-compilation-context '()) expression '()))
+(define (compile libraries expression)
+  (compile-expression (make-compilation-context '() libraries) expression '()))
 
 ; Constant building
 
@@ -1386,4 +1404,6 @@
 
 ; Main
 
-(write-target (encode (compile (expand-macros (expand-libraries (read-source))))))
+(define-values (codes libraries) (expand-libraries (read-source)))
+
+(write-target (encode (compile libraries (expand-macros codes))))
