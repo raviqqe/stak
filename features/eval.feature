@@ -7,6 +7,16 @@ Feature: Eval
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
+  Scenario: Evaluate false
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (if (eval #f (environment)) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
   Scenario: Evaluate a number
     Given a file named "main.scm" with:
       """scheme
@@ -66,6 +76,28 @@ Feature: Eval
       (import (scheme base) (scheme eval))
 
       (write-u8 (eval '($$if #t 65 66) (environment)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario: Use a `$$lambda` primitive with no argument
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (eval '(($$lambda () 65)) (environment)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @stak
+  Scenario: Use a `$$lambda` primitive with an argument
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (eval '(($$lambda (x) x) 65) (environment)))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"

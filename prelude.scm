@@ -2225,13 +2225,43 @@
 
     (define libraries ($$libraries))
 
+    (define (last-cdr xs)
+      (if (pair? xs)
+        (last-cdr (cdr xs))
+        xs))
+
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
+
+    (define (call-rib arity procedure continuation)
+      (code-rib (+ call-instruction arity) procedure continuation))
+
+    (define (make-procedure arity code environment)
+      (data-rib procedure-type environment (cons arity code)))
 
     (define (compile-arity argument-count variadic)
       (+
         (* 2 argument-count)
         (if variadic 1 0)))
+
+    (define (parameter-names parameters)
+      (cond
+        ((pair? parameters)
+          (cons (car parameters) (parameter-names (cdr parameters))))
+
+        ((symbol? parameters)
+          (list parameters))
+
+        ((null? parameters)
+          '())
+
+        (else
+          (error "invalid variadic parameter" parameters))))
+
+    (define (count-parameters parameters)
+      (if (pair? parameters)
+        (+ 1 (count-parameters (cdr parameters)))
+        0))
 
     (define (compile-constant constant continuation)
       (code-rib constant-instruction constant continuation))
@@ -2387,24 +2417,22 @@
           (compile-constant expression continuation))))
 
     (define (eval expression environment)
-      ((data-rib
-          procedure-type
-          '()
-          (cons
-            (compile-arity 0 #f)
-            (compile-expression
-              (make-compilation-context
-                '()
-                (apply
-                  append
-                  (map
-                    (lambda (name)
-                      (cond
-                        ((assoc name libraries) =>
-                          cddr)
+      ((make-procedure
+          (compile-arity 0 #f)
+          (compile-expression
+            (make-compilation-context
+              '()
+              (apply
+                append
+                (map
+                  (lambda (name)
+                    (cond
+                      ((assoc name libraries) =>
+                        cddr)
 
-                        (else
-                          (error "unknown library" name))))
-                    environment)))
-              expression
-              '())))))))
+                      (else
+                        (error "unknown library" name))))
+                  environment)))
+            expression
+            '())
+          '())))))
