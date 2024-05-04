@@ -405,13 +405,15 @@
       (list expression))))
 
 (define (expand-libraries expression)
-  (let ((context (make-library-context '() '())))
+  (let* ((context (make-library-context '() '()))
+         (expression
+           (cons
+             (car expression)
+             (flat-map
+               (lambda (expression) (expand-library-expression context expression))
+               (cdr expression)))))
     (values
-      (cons
-        (car expression)
-        (flat-map
-          (lambda (expression) (expand-library-expression context expression))
-          (cdr expression)))
+      expression
       (map-values library-state-library (library-context-libraries context)))))
 
 ; Macro system
