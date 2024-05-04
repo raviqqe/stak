@@ -2393,7 +2393,8 @@
             (compile-expression
               (make-compilation-context
                 '()
-                (apply append
+                (apply
+                  append
                   (map
                     (lambda (name)
                       (cond
