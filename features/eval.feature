@@ -47,68 +47,63 @@ Feature: Eval
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak
-  Scenario: Use a `$$begin` primitive
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
+  Rule: Primitives
+    Scenario: Use a `$$begin` primitive
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '($$begin 42 65) (environment)))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+        (write-u8 (eval '($$begin 42 65) (environment)))
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "A"
 
-  @stak
-  Scenario: Use a `$$if` primitive with a false value
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
+    Scenario: Use a `$$if` primitive with a false value
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '($$if #f 65 66) (environment)))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "B"
+        (write-u8 (eval '($$if #f 65 66) (environment)))
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "B"
 
-  @stak
-  Scenario: Use a `$$if` primitive with a true value
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
+    Scenario: Use a `$$if` primitive with a true value
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '($$if #t 65 66) (environment)))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+        (write-u8 (eval '($$if #t 65 66) (environment)))
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "A"
 
-  @stak
-  Scenario: Use a `$$lambda` primitive with no argument
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
+    Scenario: Use a `$$lambda` primitive with no argument
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '(($$lambda () 65)) (environment)))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+        (write-u8 (eval '(($$lambda () 65)) (environment)))
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "A"
 
-  @stak
-  Scenario: Use a `$$lambda` primitive with an argument
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
+    Scenario: Use a `$$lambda` primitive with an argument
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '(($$lambda (x) x) 65) (environment)))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+        (write-u8 (eval '(($$lambda (x) x) 65) (environment)))
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "A"
 
-  @stak
-  Scenario: Use a `$$set!` primitive
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
+    Scenario: Use a `$$set!` primitive
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '($$begin ($$set! x 65) x) (environment)))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+        (write-u8 (eval '($$begin ($$set! x 65) x) (environment)))
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "A"
