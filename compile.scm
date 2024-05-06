@@ -382,15 +382,14 @@
 (define (expand-library-expression context expression)
   (case (and (pair? expression) (car expression))
     ((define-library)
-      (let* ((collect-bodies
-               (lambda (predicate)
-                 (flat-map
-                   cdr
-                   (filter
-                     (lambda (body) (eq? (car body) predicate))
-                     (cddr expression)))))
-             (id (library-context-id context))
-             (imports (resolve-import-sets context id (collect-bodies 'import))))
+      (let ((collect-bodies
+              (lambda (predicate)
+                (flat-map
+                  cdr
+                  (filter
+                    (lambda (body) (eq? (car body) predicate))
+                    (cddr expression)))))
+            (id (library-context-id context)))
         (library-context-add!
           context
           (make-library
@@ -402,7 +401,7 @@
                   (cons (caddr name) (rename-library-symbol context id (cadr name)))
                   (cons name (rename-library-symbol context id name))))
               (collect-bodies 'export))
-            imports
+            (resolve-import-sets context id (collect-bodies 'import))
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
