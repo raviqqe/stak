@@ -231,13 +231,13 @@
 ;; Types
 
 (define-record-type library
-  (make-library id name exports imports codes)
+  (make-library id name exports imports body)
   library?
   (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
-  (codes library-codes))
+  (body library-body))
 
 (define-record-type library-state
   (make-library-state library imported)
@@ -353,7 +353,7 @@
             '()
             (append
               (expand-import-sets context (library-id library) (library-imports library))
-              (library-codes library)))
+              (library-body library)))
           (map
             (lambda (names)
               (list
