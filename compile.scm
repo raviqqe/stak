@@ -357,20 +357,18 @@
 (define (resolve-import-sets context importer-id sets)
   (map
     (lambda (set)
-      (cons
-        set
-        (resolve-import-set context importer-id (lambda (x) x) set)))
+      (cons set (resolve-import-set context importer-id (lambda (x) x) set)))
     sets))
 
 (define (expand-import context pair)
-  (let* ((set (car pair))
-         (library (library-context-find context set)))
+  (let ((set (car pair)))
     (append
       (if (library-context-import! context set)
         '()
-        (append
-          (expand-imports context (library-imports library))
-          (library-body library)))
+        (let ((library (library-context-find context set)))
+          (append
+            (expand-imports context (library-imports library))
+            (library-body library))))
       (map
         (lambda (names)
           (list '$$alias (car names) (cdr names)))
