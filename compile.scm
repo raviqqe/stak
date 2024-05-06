@@ -803,7 +803,7 @@
             (list
               '$$quote
               (map-values
-                library-exports
+                (lambda (library) (library-exports library))
                 (macro-context-libraries context))))
 
           (($$quote)
