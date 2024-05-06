@@ -629,8 +629,8 @@
   (let* ((variables (ellipsis-pattern-variables template))
          (template (ellipsis-pattern-element template))
          (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
-         (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
-         (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+         (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
+         (ellipsis-matches (filter-values ellipsis-match? matches)))
     (when (null? ellipsis-matches)
       (error "no ellipsis pattern variables" template))
     (apply
