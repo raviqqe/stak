@@ -62,7 +62,7 @@ Feature: Evaluation
       """scheme
       (import (scheme base) (scheme eval))
 
-      (write-u8 (eval '(display "foo") (environment '(scheme write))))
+      (eval '(display "foo") (environment '(scheme write)))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
