@@ -725,21 +725,24 @@
   (define (expand expression)
     (expand-macro context expression))
 
+  (define (resolve name)
+    (resolve-denotation context name))
+
   (optimize
     (cond
       ((symbol? expression)
-        (let ((value (resolve-denotation context expression)))
+        (let ((value (resolve expression)))
           (when (procedure? value)
             (error "invalid syntax" expression))
           value))
 
       ((pair? expression)
-        (case (resolve-denotation context (car expression))
+        (case (resolve (car expression))
           (($$alias)
             (macro-context-set-last!
               context
               (cadr expression)
-              (resolve-denotation context (caddr expression)))
+              (resolve (caddr expression)))
             #f)
 
           (($$define)
@@ -803,7 +806,8 @@
             (list
               '$$quote
               (map-values
-                (lambda (library) (library-exports library))
+                (lambda (library)
+                  (map-values resolve (library-exports library)))
                 (macro-context-libraries context))))
 
           (($$quote)
