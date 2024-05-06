@@ -1,4 +1,4 @@
-Feature: Eval
+Feature: Evaluation
   Scenario: Import an `eval` library
     Given a file named "main.scm" with:
       """scheme
