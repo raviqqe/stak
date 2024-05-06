@@ -323,10 +323,10 @@
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
-(define (expand-import-set context importer-id qualify set)
+(define (resolve-import-set context importer-id qualify set)
   (case (predicate set)
     ((rename)
-      (expand-import-set
+      (resolve-import-set
         context
         importer-id
         (lambda (name)
@@ -340,31 +340,45 @@
         (cadr set)))
 
     ((prefix)
-      (expand-import-set
+      (resolve-import-set
         context
         importer-id
         (lambda (name) (symbol-append (caddr set) (qualify name)))
         (cadr set)))
 
     (else
-      (let ((library (library-context-find context set)))
-        (append
-          (if (library-context-import! context set)
-            '()
-            (append
-              (expand-import-sets context (library-id library) (library-imports library))
-              (library-body library)))
-          (map
-            (lambda (names)
-              (list
-                '$$alias
-                (rename-library-symbol context importer-id (qualify (car names)))
-                (cdr names)))
-            (library-exports library)))))))
+      (map
+        (lambda (names)
+          (cons
+            (rename-library-symbol context importer-id (qualify (car names)))
+            (cdr names)))
+        (library-exports (library-context-find context set))))))
 
-(define (expand-import-sets context importer-id sets)
+(define (resolve-import-sets context importer-id sets)
+  (map
+    (lambda (set)
+      (cons
+        set
+        (resolve-import-set context importer-id (lambda (x) x) set)))
+    sets))
+
+(define (expand-import context pair)
+  (let* ((set (car pair))
+         (library (library-context-find context set)))
+    (append
+      (if (library-context-import! context set)
+        '()
+        (append
+          (expand-imports context (library-imports library))
+          (library-body library)))
+      (map
+        (lambda (names)
+          (list '$$alias (car names) (cdr names)))
+        (cdr pair)))))
+
+(define (expand-imports context sets)
   (flat-map
-    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
+    (lambda (pair) (expand-import context pair))
     sets))
 
 (define (expand-library-expression context expression)
@@ -389,7 +403,7 @@
                   (cons (caddr name) (rename-library-symbol context id (cadr name)))
                   (cons name (rename-library-symbol context id name))))
               (collect-bodies 'export))
-            (collect-bodies 'import)
+            (resolve-import-sets context id (collect-bodies 'import))
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
@@ -399,7 +413,9 @@
         '()))
 
     ((import)
-      (expand-import-sets context #f (cdr expression)))
+      (expand-imports
+        context
+        (resolve-import-sets context #f (cdr expression))))
 
     (else
       (list expression))))
