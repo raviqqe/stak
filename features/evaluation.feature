@@ -79,7 +79,7 @@ Feature: Evaluation
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Use a `$$if` primitive with a false value
+    Scenario: Use a `$$if` primitive with a false condition
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
@@ -89,7 +89,7 @@ Feature: Evaluation
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "B"
 
-    Scenario: Use a `$$if` primitive with a true value
+    Scenario: Use a `$$if` primitive with a true condition
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
