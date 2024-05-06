@@ -988,10 +988,7 @@
         (($$libraries)
           (compile-constant
             (map-values
-              (lambda (library)
-                (cons
-                  (library-id library)
-                  (library-exports library)))
+              library-exports
               (compilation-context-libraries context))
             continuation))
 
