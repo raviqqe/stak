@@ -47,6 +47,26 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Use a `+` procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (eval '(+ 60 5) (environment '(scheme base))))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use a `display` procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (eval '(display "foo") (environment '(scheme write)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "foo"
+
   @stak
   Rule: Primitives
     Scenario: Use a `$$begin` primitive
@@ -59,7 +79,7 @@ Feature: Evaluation
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Use a `$$if` primitive with a false value
+    Scenario: Use a `$$if` primitive with a false condition
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
@@ -69,7 +89,7 @@ Feature: Evaluation
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "B"
 
-    Scenario: Use a `$$if` primitive with a true value
+    Scenario: Use a `$$if` primitive with a true condition
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))

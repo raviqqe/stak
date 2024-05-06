@@ -179,6 +179,9 @@
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
+(define (filter-values f xs)
+  (filter (lambda (pair) (f (cdr pair))) xs))
+
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
@@ -231,13 +234,13 @@
 ;; Types
 
 (define-record-type library
-  (make-library id name exports imports codes)
+  (make-library id name exports imports body)
   library?
   (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
-  (codes library-codes))
+  (body library-body))
 
 (define-record-type library-state
   (make-library-state library imported)
@@ -353,7 +356,7 @@
             '()
             (append
               (expand-import-sets context (library-id library) (library-imports library))
-              (library-codes library)))
+              (library-body library)))
           (map
             (lambda (names)
               (list
@@ -421,15 +424,17 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment id)
+  (make-macro-context environment id libraries)
   macro-context?
   (environment macro-context-environment macro-context-set-environment!)
-  (id macro-context-id macro-context-set-id!))
+  (id macro-context-id macro-context-set-id!)
+  (libraries macro-context-libraries))
 
 (define (macro-context-append context pairs)
   (make-macro-context
     (append pairs (macro-context-environment context))
-    (macro-context-id context)))
+    (macro-context-id context)
+    (macro-context-libraries context)))
 
 (define (macro-context-set! context name denotation)
   (let* ((environment (macro-context-environment context))
@@ -624,8 +629,8 @@
   (let* ((variables (ellipsis-pattern-variables template))
          (template (ellipsis-pattern-element template))
          (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
-         (singleton-matches (filter (lambda (pair) (not (ellipsis-match? (cdr pair)))) matches))
-         (ellipsis-matches (filter (lambda (pair) (ellipsis-match? (cdr pair))) matches)))
+         (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
+         (ellipsis-matches (filter-values ellipsis-match? matches)))
     (when (null? ellipsis-matches)
       (error "no ellipsis pattern variables" template))
     (apply
@@ -709,21 +714,24 @@
   (define (expand expression)
     (expand-macro context expression))
 
+  (define (resolve name)
+    (resolve-denotation context name))
+
   (optimize
     (cond
       ((symbol? expression)
-        (let ((value (resolve-denotation context expression)))
+        (let ((value (resolve expression)))
           (when (procedure? value)
             (error "invalid syntax" expression))
           value))
 
       ((pair? expression)
-        (case (resolve-denotation context (car expression))
+        (case (resolve (car expression))
           (($$alias)
             (macro-context-set-last!
               context
               (cadr expression)
-              (resolve-denotation context (caddr expression)))
+              (resolve (caddr expression)))
             #f)
 
           (($$define)
@@ -783,6 +791,16 @@
                 bindings)
               (expand-macro context (caddr expression))))
 
+          (($$libraries)
+            (list
+              '$$quote
+              (map-values
+                (lambda (library)
+                  (filter-values
+                    symbol?
+                    (map-values resolve (library-exports library))))
+                (macro-context-libraries context))))
+
           (($$quote)
             (cons
               '$$quote
@@ -803,23 +821,21 @@
       (else
         expression))))
 
-(define (expand-macros expression)
-  (expand-macro (make-macro-context '() 0) expression))
+(define (expand-macros libraries expression)
+  (expand-macro (make-macro-context '() 0 libraries) expression))
 
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment libraries)
+  (make-compilation-context environment)
   compilation-context?
-  (environment compilation-context-environment)
-  (libraries compilation-context-libraries))
+  (environment compilation-context-environment))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
-    (append variables (compilation-context-environment context))
-    (compilation-context-libraries context)))
+    (append variables (compilation-context-environment context))))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
@@ -971,16 +987,6 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
-        (($$libraries)
-          (compile-constant
-            (map-values
-              (lambda (library)
-                (cons
-                  (library-id library)
-                  (library-exports library)))
-              (compilation-context-libraries context))
-            continuation))
-
         (($$quote)
           (compile-constant (cadr expression) continuation))
 
@@ -1001,8 +1007,8 @@
     (else
       (compile-constant expression continuation))))
 
-(define (compile libraries expression)
-  (compile-expression (make-compilation-context '() libraries) expression '()))
+(define (compile expression)
+  (compile-expression (make-compilation-context '()) expression '()))
 
 ; Constant building
 
@@ -1404,6 +1410,6 @@
 
 ; Main
 
-(define-values (codes libraries) (expand-libraries (read-source)))
+(define-values (expression libraries) (expand-libraries (read-source)))
 
-(write-target (encode (compile libraries (expand-macros codes))))
+(write-target (encode (compile (expand-macros libraries expression))))
