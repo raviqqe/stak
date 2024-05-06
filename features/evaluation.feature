@@ -47,6 +47,16 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Use a `+` procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (eval '(+ 60 5) (environment '(scheme base))))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   @stak
   Rule: Primitives
     Scenario: Use a `$$begin` primitive
