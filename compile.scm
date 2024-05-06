@@ -435,15 +435,17 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment id)
+  (make-macro-context environment id libraries)
   macro-context?
   (environment macro-context-environment macro-context-set-environment!)
-  (id macro-context-id macro-context-set-id!))
+  (id macro-context-id macro-context-set-id!)
+  (libraries macro-context-libraries))
 
 (define (macro-context-append context pairs)
   (make-macro-context
     (append pairs (macro-context-environment context))
-    (macro-context-id context)))
+    (macro-context-id context)
+    (macro-context-libraries context)))
 
 (define (macro-context-set! context name denotation)
   (let* ((environment (macro-context-environment context))
@@ -797,6 +799,13 @@
                 bindings)
               (expand-macro context (caddr expression))))
 
+          (($$libraries)
+            (list
+              '$$quote
+              (map-values
+                library-exports
+                (macro-context-libraries context))))
+
           (($$quote)
             (cons
               '$$quote
@@ -817,23 +826,21 @@
       (else
         expression))))
 
-(define (expand-macros expression)
-  (expand-macro (make-macro-context '() 0) expression))
+(define (expand-macros libraries expression)
+  (expand-macro (make-macro-context '() 0 libraries) expression))
 
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment libraries)
+  (make-compilation-context environment)
   compilation-context?
-  (environment compilation-context-environment)
-  (libraries compilation-context-libraries))
+  (environment compilation-context-environment))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
-    (append variables (compilation-context-environment context))
-    (compilation-context-libraries context)))
+    (append variables (compilation-context-environment context))))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
@@ -985,13 +992,6 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
-        (($$libraries)
-          (compile-constant
-            (map-values
-              library-exports
-              (compilation-context-libraries context))
-            continuation))
-
         (($$quote)
           (compile-constant (cadr expression) continuation))
 
@@ -1012,8 +1012,8 @@
     (else
       (compile-constant expression continuation))))
 
-(define (compile libraries expression)
-  (compile-expression (make-compilation-context '() libraries) expression '()))
+(define (compile expression)
+  (compile-expression (make-compilation-context '()) expression '()))
 
 ; Constant building
 
@@ -1417,4 +1417,4 @@
 
 (define-values (expression libraries) (expand-libraries (read-source)))
 
-(write-target (encode (compile libraries (expand-macros expression))))
+(write-target (encode (compile (expand-macros libraries expression))))
