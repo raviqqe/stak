@@ -179,6 +179,9 @@
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
+(define (filter-values f xs)
+  (filter (lambda (pair) (f (cdr pair))) xs))
+
 (define (predicate expression)
   (and (pair? expression) (car expression)))
 
@@ -793,7 +796,9 @@
               '$$quote
               (map-values
                 (lambda (library)
-                  (map-values resolve (library-exports library)))
+                  (filter-values
+                    symbol?
+                    (map-values resolve (library-exports library))))
                 (macro-context-libraries context))))
 
           (($$quote)
