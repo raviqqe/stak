@@ -1404,6 +1404,6 @@
 
 ; Main
 
-(define-values (codes libraries) (expand-libraries (read-source)))
+(define-values (expression libraries) (expand-libraries (read-source)))
 
-(write-target (encode (compile libraries (expand-macros codes))))
+(write-target (encode (compile libraries (expand-macros expression))))
