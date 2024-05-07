@@ -19,9 +19,8 @@
           #f)
 
         (else
-          (begin
-            (write (eval (read) (interaction-environment)))
-            (newline)
-            (main)))))))
+          (write (eval (read) (interaction-environment)))
+          (newline)
+          (main))))))
 
 (main)
