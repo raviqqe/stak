@@ -1785,7 +1785,7 @@
     (define (cdddar x) (cdr (cddar x)))
     (define (cddddr x) (cdr (cdddr x)))))
 
-(define-library (stak char)
+(define-library (scheme char)
   (export char-whitespace? special-chars)
 
   (import (scheme base))
@@ -1971,7 +1971,7 @@
             (skip-comment)))))))
 
 (define-library (scheme write)
-  (import (scheme base) (stak char))
+  (import (scheme base) (scheme char))
 
   (export display write)
 
