@@ -7,6 +7,14 @@
 
 (let loop ()
   (display "> " (current-error-port))
-  (write (eval (read) (interaction-environment)))
-  (newline)
-  (loop))
+
+  (let ((char (peek-char)))
+    (if (or
+         (eof-object? char)
+         (= (char->integer char) 4))
+      #f
+      (begin
+        (write (eval (read) (interaction-environment)))
+        (newline)
+        (read-char)
+        (loop)))))
