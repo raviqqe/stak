@@ -2179,7 +2179,7 @@
       (unwind (lambda () (apply emergency-exit rest))))))
 
 (define-library (scheme eval)
-  (export environment eval)
+  (export environment eval interaction-environment)
 
   (import
     (scheme base)
