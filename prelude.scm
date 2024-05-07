@@ -2179,7 +2179,7 @@
       (unwind (lambda () (apply emergency-exit rest))))))
 
 (define-library (scheme eval)
-  (export environment eval interaction-environment)
+  (export environment eval)
 
   (import
     (scheme base)
@@ -2228,13 +2228,6 @@
     (define call-instruction 5)
 
     (define environment list)
-
-    (define (interaction-environment)
-      (environment
-        '(scheme base)
-        '(scheme process-context)
-        '(scheme read)
-        '(scheme write)))
 
     (define libraries ($$libraries))
 
@@ -2449,3 +2442,16 @@
             expression
             '())
           '())))))
+
+(define-library (scheme repl)
+  (export interaction-environment)
+
+  (import (scheme eval))
+
+  (begin
+    (define (interaction-environment)
+      (environment
+        '(scheme base)
+        '(scheme process-context)
+        '(scheme read)
+        '(scheme write)))))
