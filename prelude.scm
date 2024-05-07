@@ -2442,3 +2442,16 @@
             expression
             '())
           '())))))
+
+(define-library (scheme repl)
+  (export interaction-environment)
+
+  (import (scheme base) (scheme eval))
+
+  (begin
+    (define (interaction-environment)
+      (environment
+        '(scheme base)
+        '(scheme process-context)
+        '(scheme read)
+        '(scheme write)))))
