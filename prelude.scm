@@ -2446,7 +2446,7 @@
 (define-library (scheme repl)
   (export interaction-environment)
 
-  (import (scheme eval))
+  (import (scheme base) (scheme eval))
 
   (begin
     (define (interaction-environment)
