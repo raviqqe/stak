@@ -8,6 +8,14 @@
 (let loop ()
   (display "> " (current-error-port))
 
+  (let loop ()
+    (let ((char (peek-char)))
+      (if (char-whitespace? char)
+        (begin
+          (read-char)
+          (loop))
+        #f)))
+
   (let ((char (peek-char)))
     (if (or
          (eof-object? char)
@@ -16,5 +24,4 @@
       (begin
         (write (eval (read) (interaction-environment)))
         (newline)
-        (read-char)
         (loop)))))
