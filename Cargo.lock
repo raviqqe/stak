@@ -407,6 +407,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-repl"
+version = "0.1.0"
+dependencies = [
+ "stak-sac",
+]
+
+[[package]]
 name = "stak-sac"
 version = "0.1.35"
 dependencies = [
