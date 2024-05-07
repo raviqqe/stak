@@ -384,6 +384,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         value
     }
 
+    /// Peeks a value at the top of a stack.
+    pub fn top(&mut self) -> Value {
+        debug_assert_ne!(self.stack, self.null());
+
+        self.car(self.stack)
+    }
+
     /// Allocates a cons on heap.
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, T::Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
