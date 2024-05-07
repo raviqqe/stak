@@ -6,6 +6,7 @@
   (scheme repl))
 
 (let loop ()
+  (display "> " (current-error-port))
   (write (eval (read) (interaction-environment)))
   (newline)
   (loop))
