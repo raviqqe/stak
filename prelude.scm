@@ -2229,6 +2229,13 @@
 
     (define environment list)
 
+    (define (interaction-environment)
+      (environment
+        '(scheme base)
+        '(scheme process-context)
+        '(scheme read)
+        '(scheme write)))
+
     (define libraries ($$libraries))
 
     (define (last-cdr xs)
