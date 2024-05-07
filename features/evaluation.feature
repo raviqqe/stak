@@ -60,7 +60,7 @@ Feature: Evaluation
   Scenario: Use an interaction environment
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme eval))
+      (import (scheme base) (scheme eval) (scheme repl))
 
       (write-u8 (eval 65 (interaction-environment)))
       """
