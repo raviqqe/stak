@@ -10,14 +10,15 @@
 
   (let loop ()
     (let ((char (peek-char)))
-      (if (char-whitespace? char)
-        (begin
+      (cond
+        ((char-whitespace? char)
           (read-char)
           (loop))
-        (if (or
-             (eof-object? char)
-             (eqv? char (integer->char 4)))
-          #f
+
+        ((or (eof-object? char) (eqv? char (integer->char 4)))
+          #f)
+
+        (else
           (begin
             (write (eval (read) (interaction-environment)))
             (newline)
