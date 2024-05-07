@@ -47,6 +47,26 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Use two environments
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (eval 65 (environment '(scheme base) '(scheme write))))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use an interaction environment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (write-u8 (eval 65 (interaction-environment)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Use a `+` procedure
     Given a file named "main.scm" with:
       """scheme
