@@ -83,7 +83,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
         write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
         error: Error,
     ) -> Result<(), Error> {
-        let byte = vm.pop().assume_number().to_i64() as u8;
+        let byte = vm.top().assume_number().to_i64() as u8;
 
         write(&mut vm.primitive_set_mut().device, byte).map_err(|_| error)
     }

@@ -96,7 +96,6 @@
     char?
     integer->char
     char->integer
-    char-whitespace?
     char=?
     char<?
     char<=?
@@ -673,9 +672,6 @@
       (data-rib char-type '() x))
 
     (define char->integer rib-cdr)
-
-    (define (char-whitespace? x)
-      (memv x '(#\newline #\return #\space #\tab)))
 
     (define (char-compare compare)
       (lambda xs (apply compare (map char->integer xs))))
@@ -1271,7 +1267,6 @@
     char?
     integer->char
     char->integer
-    char-whitespace?
     char=?
     char<?
     char<=?
@@ -1790,8 +1785,8 @@
     (define (cdddar x) (cdr (cddar x)))
     (define (cddddr x) (cdr (cdddr x)))))
 
-(define-library (stak char)
-  (export special-chars)
+(define-library (scheme char)
+  (export char-whitespace? special-chars)
 
   (import (scheme base))
 
@@ -1805,12 +1800,15 @@
         ("null" . #\null)
         ("return" . #\return)
         ("space" . #\space)
-        ("tab" . #\tab)))))
+        ("tab" . #\tab)))
+
+    (define (char-whitespace? x)
+      (memv x '(#\newline #\return #\space #\tab)))))
 
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (stak base) (stak char))
+  (import (scheme base) (scheme char) (stak base))
 
   (begin
     (define (get-input-port rest)
@@ -1973,7 +1971,7 @@
             (skip-comment)))))))
 
 (define-library (scheme write)
-  (import (scheme base) (stak char))
+  (import (scheme base) (scheme char))
 
   (export display write)
 

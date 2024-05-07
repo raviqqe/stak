@@ -18,19 +18,20 @@ Feature: Character
   Scenario Outline: Check if a value is a whitespace
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (scheme char))
 
-      (write-u8 (if (char? <value>) 65 66))
+      (write-u8 (if (char-whitespace? <value>) 65 66))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
 
     Examples:
-      | value      |
-      | #\\newline |
-      | #\\return  |
-      | #\\space   |
-      | #\\tab     |
+      | value      | output |
+      | #\\A       | B      |
+      | #\\newline | A      |
+      | #\\return  | A      |
+      | #\\space   | A      |
+      | #\\tab     | A      |
 
   Scenario: Write a character
     Given a file named "main.scm" with:

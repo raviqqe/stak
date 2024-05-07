@@ -1,0 +1,15 @@
+[package]
+name = "stak-repl"
+description = "Stak Scheme REPL"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+stak-sac = { version = "0.1.35", path = "../../sac" }
+
+[lints]
+workspace = true
