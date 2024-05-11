@@ -831,9 +831,10 @@
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment)
+  (make-compilation-context environment macros)
   compilation-context?
-  (environment compilation-context-environment))
+  (environment compilation-context-environment)
+  (macros compilation-context-macros))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
@@ -1009,8 +1010,8 @@
     (else
       (compile-constant expression continuation))))
 
-(define (compile expression)
-  (compile-expression (make-compilation-context '()) expression '()))
+(define (compile macros expression)
+  (compile-expression (make-compilation-context '() macros) expression '()))
 
 ; Constant building
 
