@@ -2229,6 +2229,8 @@
 
     (define libraries ($$libraries))
 
+    (define macros ($$macros))
+
     (define (last-cdr xs)
       (if (pair? xs)
         (last-cdr (cdr xs))
