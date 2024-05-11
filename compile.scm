@@ -424,9 +424,10 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment id libraries)
+  (make-macro-context environment id syntaxes libraries)
   macro-context?
   (environment macro-context-environment macro-context-set-environment!)
+  (syntaxes macro-context-syntaxes macro-context-set-syntaxes!)
   (id macro-context-id macro-context-set-id!)
   (libraries macro-context-libraries))
 
@@ -434,6 +435,7 @@
   (make-macro-context
     (append pairs (macro-context-environment context))
     (macro-context-id context)
+    (macro-context-syntaxes context)
     (macro-context-libraries context)))
 
 (define (macro-context-set! context name denotation)
@@ -454,6 +456,13 @@
   (let ((id (macro-context-id context)))
     (macro-context-set-id! context (+ id 1))
     id))
+
+(define (macro-context-append-syntax! context name syntax)
+  (macro-context-set-syntaxes!
+    context
+    (cons
+      (cons name syntax)
+      (macro-context-syntaxes context))))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -744,6 +753,10 @@
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
+            (macro-context-append-syntax!
+              context
+              (cadr expression)
+              (caddr expression))
             #f)
 
           (($$lambda)
@@ -822,7 +835,7 @@
         expression))))
 
 (define (expand-macros libraries expression)
-  (let* ((context (make-macro-context '() 0 libraries))
+  (let* ((context (make-macro-context '() 0 '() libraries))
          (expression (expand-macro context expression)))
     (values expression '())))
 
