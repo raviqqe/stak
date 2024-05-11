@@ -289,7 +289,7 @@
 
 (define (resolve-library-symbol name)
   (let* ((string (symbol->string name))
-         (position (memv-position #\% (cdr (string->list string)))))
+         (position (memv-position #\% (string->list string))))
     (if position
       (string->symbol (string-copy string (+ position 2)))
       name)))
