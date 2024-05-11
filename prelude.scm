@@ -2229,6 +2229,7 @@
 
     (define libraries ($$libraries))
 
+    ; TODO Use this.
     (define macros ($$macros))
 
     (define (last-cdr xs)
