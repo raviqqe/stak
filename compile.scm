@@ -822,7 +822,10 @@
         expression))))
 
 (define (expand-macros libraries expression)
-  (expand-macro (make-macro-context '() 0 libraries) expression))
+  (let* ((context (make-macro-context '() 0 libraries))
+         (expression (expand-macro context expression)))
+    (values
+      expression)))
 
 ; Compilation
 
