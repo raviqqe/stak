@@ -824,8 +824,7 @@
 (define (expand-macros libraries expression)
   (let* ((context (make-macro-context '() 0 libraries))
          (expression (expand-macro context expression)))
-    (values
-      expression)))
+    (values expression '())))
 
 ; Compilation
 
