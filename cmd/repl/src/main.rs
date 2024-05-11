@@ -6,4 +6,4 @@
 //! stak-repl
 //! ```
 
-stak_sac::main!("repl.scm");
+stak_sac::main!("repl.scm", 2 << 22);
