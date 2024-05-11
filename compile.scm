@@ -804,6 +804,7 @@
                 bindings)
               (expand-macro context (caddr expression))))
 
+          ; TODO Inject this in the later phase.
           (($$libraries)
             (list
               '$$quote
