@@ -851,7 +851,8 @@
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
-    (append variables (compilation-context-environment context))))
+    (append variables (compilation-context-environment context))
+    (compilation-context-macros context)))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
