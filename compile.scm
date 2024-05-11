@@ -1427,8 +1427,8 @@
 
 ; Main
 
-(define-values (expression libraries) (expand-libraries (read-source)))
+(define-values (expression1 libraries) (expand-libraries (read-source)))
 
-(define-values (expression macros) (expand-macros libraries expression))
+(define-values (expression2 macros) (expand-macros libraries expression1))
 
-(write-target (encode (compile macros expression)))
+(write-target (encode (compile macros expression2)))
