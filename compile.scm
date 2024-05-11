@@ -291,7 +291,7 @@
   (let* ((string (symbol->string name))
          (position (memv-position #\% (string->list string))))
     (if position
-      (string->symbol (string-copy string (+ position 2)))
+      (string->symbol (string-copy string (+ position 1)))
       name)))
 
 (define (build-library-symbol id name)
