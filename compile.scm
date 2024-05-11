@@ -1005,6 +1005,10 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
+        (($$macros)
+          (compile-constant (compilation-context-macros context) continuation))
+)
+
         (($$quote)
           (compile-constant (cadr expression) continuation))
 
