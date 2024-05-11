@@ -424,18 +424,18 @@
 ;; Types
 
 (define-record-type macro-context
-  (make-macro-context environment id syntaxes libraries)
+  (make-macro-context environment id literals libraries)
   macro-context?
   (environment macro-context-environment macro-context-set-environment!)
   (id macro-context-id macro-context-set-id!)
-  (syntaxes macro-context-syntaxes macro-context-set-syntaxes!)
+  (literals macro-context-literals macro-context-set-literals!)
   (libraries macro-context-libraries))
 
 (define (macro-context-append context pairs)
   (make-macro-context
     (append pairs (macro-context-environment context))
     (macro-context-id context)
-    (macro-context-syntaxes context)
+    (macro-context-literals context)
     (macro-context-libraries context)))
 
 (define (macro-context-set! context name denotation)
@@ -457,12 +457,12 @@
     (macro-context-set-id! context (+ id 1))
     id))
 
-(define (macro-context-append-syntax! context name syntax)
-  (macro-context-set-syntaxes!
+(define (macro-context-append-literal! context name syntax)
+  (macro-context-set-literals!
     context
     (cons
       (cons name syntax)
-      (macro-context-syntaxes context))))
+      (macro-context-literals context))))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -753,7 +753,7 @@
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
-            (macro-context-append-syntax!
+            (macro-context-append-literal!
               context
               (cadr expression)
               (caddr expression))
