@@ -285,11 +285,11 @@
 
 ;; Procedures
 
-(define library-symbol-separator "%")
+(define library-symbol-separator #\%)
 
 (define (resolve-library-symbol name)
   (let* ((string (symbol->string name))
-         (position (memv-position #\% (string->list string))))
+         (position (memv-position library-symbol-separator (string->list string))))
     (if position
       (string->symbol (string-copy string (+ position 1)))
       name)))
@@ -298,7 +298,7 @@
   (string->uninterned-symbol
     (string-append
       (id->string id)
-      library-symbol-separator
+      (list->string (list library-symbol-separator))
       (symbol->string name))))
 
 (define (rename-library-symbol context id name)
