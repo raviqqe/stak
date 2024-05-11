@@ -297,9 +297,8 @@
 (define (build-library-symbol id name)
   (string->uninterned-symbol
     (string-append
-      library-symbol-separator
       (id->string id)
-      "$"
+      library-symbol-separator
       (symbol->string name))))
 
 (define (rename-library-symbol context id name)
