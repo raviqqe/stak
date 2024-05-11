@@ -423,17 +423,23 @@
 
 ;; Types
 
+(define-record-type macro-state
+  (make-macro-state id literals)
+  macro-state?
+  (id macro-state-id macro-state-set-id!)
+  (literals macro-state-literals macro-state-set-literals!))
+
 (define-record-type macro-context
-  (make-macro-context environment id libraries)
+  (make-macro-context state environment libraries)
   macro-context?
+  (state macro-context-state)
   (environment macro-context-environment macro-context-set-environment!)
-  (id macro-context-id macro-context-set-id!)
   (libraries macro-context-libraries))
 
 (define (macro-context-append context pairs)
   (make-macro-context
+    (macro-context-state context)
     (append pairs (macro-context-environment context))
-    (macro-context-id context)
     (macro-context-libraries context)))
 
 (define (macro-context-set! context name denotation)
@@ -451,9 +457,19 @@
         (set-last-cdr! environment tail)))))
 
 (define (macro-context-generate-id! context)
-  (let ((id (macro-context-id context)))
-    (macro-context-set-id! context (+ id 1))
+  (let* ((state (macro-context-state context))
+         (id (macro-state-id state)))
+    (macro-state-set-id! state (+ id 1))
     id))
+
+(define (macro-context-append-literal! context name syntax)
+  (define state (macro-context-state context))
+
+  (macro-state-set-literals!
+    state
+    (cons
+      (cons name syntax)
+      (macro-state-literals state))))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -744,6 +760,10 @@
               context
               (cadr expression)
               (make-transformer context (caddr expression)))
+            (macro-context-append-literal!
+              context
+              (cadr expression)
+              (caddr expression))
             #f)
 
           (($$lambda)
@@ -791,6 +811,7 @@
                 bindings)
               (expand-macro context (caddr expression))))
 
+          ; TODO Inject this in the later phase.
           (($$libraries)
             (list
               '$$quote
@@ -822,20 +843,26 @@
         expression))))
 
 (define (expand-macros libraries expression)
-  (expand-macro (make-macro-context '() 0 libraries) expression))
+  (let* ((context (make-macro-context (make-macro-state 0 '()) '() libraries))
+         (expression (expand-macro context expression)))
+    (values
+      expression
+      (macro-state-literals (macro-context-state context)))))
 
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment)
+  (make-compilation-context environment macros)
   compilation-context?
-  (environment compilation-context-environment))
+  (environment compilation-context-environment)
+  (macros compilation-context-macros))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
-    (append variables (compilation-context-environment context))))
+    (append variables (compilation-context-environment context))
+    (compilation-context-macros context)))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
@@ -987,6 +1014,9 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
+        (($$macros)
+          (compile-constant (compilation-context-macros context) continuation))
+
         (($$quote)
           (compile-constant (cadr expression) continuation))
 
@@ -1007,8 +1037,8 @@
     (else
       (compile-constant expression continuation))))
 
-(define (compile expression)
-  (compile-expression (make-compilation-context '()) expression '()))
+(define (compile macros expression)
+  (compile-expression (make-compilation-context '() macros) expression '()))
 
 ; Constant building
 
@@ -1410,6 +1440,8 @@
 
 ; Main
 
-(define-values (expression libraries) (expand-libraries (read-source)))
+(define-values (expression1 libraries) (expand-libraries (read-source)))
 
-(write-target (encode (compile (expand-macros libraries expression))))
+(define-values (expression2 macros) (expand-macros libraries expression1))
+
+(write-target (encode (compile macros expression2)))

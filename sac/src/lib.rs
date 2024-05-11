@@ -18,10 +18,15 @@ pub mod __private {
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
+        $crate::main!(
+            $path,
+            $crate::__private::stak_configuration::DEFAULT_HEAP_SIZE
+        );
+    };
+    ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
             clap::{self, Parser},
             main_error::MainError,
-            stak_configuration::DEFAULT_HEAP_SIZE,
             stak_device::StdioDevice,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
@@ -32,7 +37,7 @@ macro_rules! main {
         #[derive(clap::Parser)]
         #[command(about, version)]
         struct Arguments {
-            #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
+            #[arg(short = 's', long, default_value_t = $heap_size)]
             heap_size: usize,
         }
 
