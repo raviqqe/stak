@@ -427,8 +427,8 @@
   (make-macro-context environment id syntaxes libraries)
   macro-context?
   (environment macro-context-environment macro-context-set-environment!)
-  (syntaxes macro-context-syntaxes macro-context-set-syntaxes!)
   (id macro-context-id macro-context-set-id!)
+  (syntaxes macro-context-syntaxes macro-context-set-syntaxes!)
   (libraries macro-context-libraries))
 
 (define (macro-context-append context pairs)
