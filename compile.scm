@@ -1412,4 +1412,6 @@
 
 (define-values (expression libraries) (expand-libraries (read-source)))
 
-(write-target (encode (compile (expand-macros libraries expression))))
+(define-values (expression macros) (expand-macros libraries expression))
+
+(write-target (encode (compile macros expression)))
