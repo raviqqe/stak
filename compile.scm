@@ -285,23 +285,19 @@
 
 ;; Procedures
 
-(define library-symbol-prefix "$%")
+(define library-symbol-separator "%")
 
 (define (resolve-library-symbol name)
-  (let ((string (symbol->string name)))
-    (if (and
-         (> (string-length string) 4)
-         (equal? (substring string 0 2) library-symbol-prefix))
-      (let ((position (memv-position #\$ (cdr (string->list string)))))
-        (if position
-          (string->symbol (string-copy string (+ position 2)))
-          name))
+  (let* ((string (symbol->string name))
+         (position (memv-position #\% (cdr (string->list string)))))
+    (if position
+      (string->symbol (string-copy string (+ position 2)))
       name)))
 
 (define (build-library-symbol id name)
   (string->uninterned-symbol
     (string-append
-      library-symbol-prefix
+      library-symbol-separator
       (id->string id)
       "$"
       (symbol->string name))))
