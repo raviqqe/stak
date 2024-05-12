@@ -802,17 +802,6 @@
                 bindings)
               (expand-macro context (caddr expression))))
 
-          ; TODO Inject this in the later phase.
-          (($$libraries)
-            (list
-              '$$quote
-              (map-values
-                (lambda (library)
-                  (filter-values
-                    symbol?
-                    (map-values resolve (library-exports library))))
-                (macro-context-libraries context))))
-
           (($$quote)
             (cons
               '$$quote
@@ -1004,6 +993,9 @@
                   '())
                 '())
               (compile-primitive-call '$$close continuation))))
+
+        (($$libraries)
+          (compile-constant (compilation-context-libraries context) continuation))
 
         (($$macros)
           (compile-constant (compilation-context-macros context) continuation))
