@@ -2193,9 +2193,11 @@
     ; TODO Use this.
     (define macros ($$macros))
 
-    ; Types
+    ; Compilation
 
-    ;; Context
+    ;; Types
+
+    ;;; Context
 
     (define-record-type compilation-context
       (make-compilation-context environment globals)
@@ -2222,7 +2224,7 @@
           (else
             variable))))
 
-    ; Procedures
+    ;; Procedures
 
     (define constant-instruction 0)
     (define get-instruction 1)
