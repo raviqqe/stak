@@ -1427,6 +1427,7 @@
 ; Main
 
 (define (main)
+  ; TODO Use `define-values`.
   (let-values (((expression library-context) (expand-libraries (read-source))))
     (let-values (((expression macro-context) (expand-macros expression)))
       (write-target
