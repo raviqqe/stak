@@ -231,18 +231,8 @@
         ((_ arguments (define-values content ...) body1 body2 ...)
           (lambda "values" arguments () (define-values content ...) body1 body2 ...))
 
-        ((_ "values" arguments ((names value) ...)
-            (define-values (new-names argument ... . rest) body1 body2 ...)
-            body3
-            body4
-            ...)
-          (lambda "values" arguments ((names value) ... (new-name (lambda (argument ... . rest) body1 body2 ...)))
-            body3
-            body4
-            ...))
-
-        ((_ "values" arguments ((names value) ...) (define-values new-name new-value) body1 body2 ...)
-          (lambda "values" arguments ((names value) ... (new-name new-value)) body1 body2 ...))
+        ((_ "values" arguments ((names value) ...) (define-values new-names new-value) body1 body2 ...)
+          (lambda "values" arguments ((names value) ... (new-names new-value)) body1 body2 ...))
 
         ((_ "values" arguments ((names value) ...) body1 body2 ...)
           (lambda arguments (let-values ((names value) ...) body1 body2 ...)))
