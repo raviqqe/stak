@@ -410,9 +410,7 @@
              (flat-map
                (lambda (expression) (expand-library-expression context expression))
                (cdr expression)))))
-    (values
-      expression
-      (map-values library-state-library (library-context-libraries context)))))
+    (values expression context)))
 
 ; Macro system
 
@@ -425,17 +423,15 @@
   (literals macro-state-literals macro-state-set-literals!))
 
 (define-record-type macro-context
-  (make-macro-context state environment libraries)
+  (make-macro-context state environment)
   macro-context?
   (state macro-context-state)
-  (environment macro-context-environment macro-context-set-environment!)
-  (libraries macro-context-libraries))
+  (environment macro-context-environment macro-context-set-environment!))
 
 (define (macro-context-append context pairs)
   (make-macro-context
     (macro-context-state context)
-    (append pairs (macro-context-environment context))
-    (macro-context-libraries context)))
+    (append pairs (macro-context-environment context))))
 
 (define (macro-context-set! context name denotation)
   (let* ((environment (macro-context-environment context))
@@ -806,17 +802,6 @@
                 bindings)
               (expand-macro context (caddr expression))))
 
-          ; TODO Inject this in the later phase.
-          (($$libraries)
-            (list
-              '$$quote
-              (map-values
-                (lambda (library)
-                  (filter-values
-                    symbol?
-                    (map-values resolve (library-exports library))))
-                (macro-context-libraries context))))
-
           (($$quote)
             (cons
               '$$quote
@@ -837,26 +822,26 @@
       (else
         expression))))
 
-(define (expand-macros libraries expression)
-  (let* ((context (make-macro-context (make-macro-state 0 '()) '() libraries))
+(define (expand-macros expression)
+  (let* ((context (make-macro-context (make-macro-state 0 '()) '()))
          (expression (expand-macro context expression)))
-    (values
-      expression
-      (macro-state-literals (macro-context-state context)))))
+    (values expression context)))
 
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment macros)
+  (make-compilation-context environment libraries macros)
   compilation-context?
   (environment compilation-context-environment)
+  (libraries compilation-context-libraries)
   (macros compilation-context-macros))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
     (append variables (compilation-context-environment context))
+    (compilation-context-libraries context)
     (compilation-context-macros context)))
 
 (define (compilation-context-push-local context variable)
@@ -1009,6 +994,9 @@
                 '())
               (compile-primitive-call '$$close continuation))))
 
+        (($$libraries)
+          (compile-constant (compilation-context-libraries context) continuation))
+
         (($$macros)
           (compile-constant (compilation-context-macros context) continuation))
 
@@ -1032,8 +1020,11 @@
     (else
       (compile-constant expression continuation))))
 
-(define (compile macros expression)
-  (compile-expression (make-compilation-context '() macros) expression '()))
+(define (compile libraries macros expression)
+  (compile-expression
+    (make-compilation-context '() libraries macros)
+    expression
+    '()))
 
 ; Constant building
 
@@ -1435,8 +1426,22 @@
 
 ; Main
 
-(define-values (expression1 libraries) (expand-libraries (read-source)))
+(define (main)
+  ; TODO Use `define-values`.
+  (let-values (((expression library-context) (expand-libraries (read-source))))
+    (let-values (((expression macro-context) (expand-macros expression)))
+      (write-target
+        (encode
+          (compile
+            (map-values
+              (lambda (library)
+                (filter-values
+                  symbol?
+                  (map-values
+                    (lambda (name) (resolve-denotation macro-context name))
+                    (library-exports library))))
+              (map-values library-state-library (library-context-libraries library-context)))
+            (macro-state-literals (macro-context-state macro-context))
+            expression))))))
 
-(define-values (expression2 macros) (expand-macros libraries expression1))
-
-(write-target (encode (compile macros expression2)))
+(main)
