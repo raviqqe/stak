@@ -115,6 +115,7 @@ Feature: Multiple values
         (define (g)
           (define-values (x y) (f 0))
           (define-values (v w) (f 1))
+
           (write-u8 (+ x y))
           (write-u8 (+ v w)))
 
