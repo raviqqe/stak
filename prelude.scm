@@ -2188,6 +2188,11 @@
     (stak base))
 
   (begin
+    (define libraries ($$libraries))
+
+    ; TODO Use this.
+    (define macros ($$macros))
+
     ; Types
 
     ;; Context
@@ -2224,13 +2229,6 @@
     (define set-instruction 2)
     (define if-instruction 3)
     (define call-instruction 5)
-
-    (define environment list)
-
-    (define libraries ($$libraries))
-
-    ; TODO Use this.
-    (define macros ($$macros))
 
     (define (last-cdr xs)
       (if (pair? xs)
@@ -2442,7 +2440,9 @@
                   environment)))
             expression
             '())
-          '())))))
+          '())))
+
+    (define environment list)))
 
 (define-library (scheme repl)
   (export interaction-environment)
