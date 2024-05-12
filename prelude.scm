@@ -204,7 +204,7 @@
           ($$define name value))))
 
     (define-syntax lambda
-      (syntax-rules (define define-syntax)
+      (syntax-rules (define define-values define-syntax)
         ; Optimize a case where there is only a body of a expression.
         ((_ arguments body)
           ($$lambda arguments body))
@@ -227,6 +227,15 @@
 
         ((_ "value" arguments ((name value) ...) body1 body2 ...)
           (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
+
+        ((_ arguments (define-values content ...) body1 body2 ...)
+          (lambda "values" arguments () (define-values content ...) body1 body2 ...))
+
+        ((_ "values" arguments ((names value) ...) (define-values new-names new-value) body1 body2 ...)
+          (lambda "values" arguments ((names value) ... (new-names new-value)) body1 body2 ...))
+
+        ((_ "values" arguments ((names value) ...) body1 body2 ...)
+          (lambda arguments (let-values ((names value) ...) body1 body2 ...)))
 
         ((_ arguments (define-syntax name value) body1 body2 ...)
           (lambda "syntax" arguments ((name value)) body1 body2 ...))
