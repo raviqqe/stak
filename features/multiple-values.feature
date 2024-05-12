@@ -110,7 +110,7 @@ Feature: Multiple values
         (import (scheme base))
 
         (define (f x)
-          (values 60 x))
+          (values 65 x))
 
         (define (g)
           (define-values (x y) (f 0))
