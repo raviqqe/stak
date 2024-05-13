@@ -743,12 +743,12 @@
               (loop (map* cdr xs)))))))
 
     (define (for-each f x . xs)
-      (let loop ((xs (cons x xs)))
+      (let ((xs (cons x xs)))
         (if (memq #t (map* null? xs))
           #f
           (begin
             (apply f (map* car xs))
-            (loop (map* cdr xs))))))
+            (apply for-each f (map* cdr xs))))))
 
     (define (list-ref xs index)
       (car (list-tail xs index)))
