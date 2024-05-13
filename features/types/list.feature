@@ -47,6 +47,45 @@ Feature: List
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
+  Scenario: Use a `for-each` procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each
+        (lambda (x) (write-u8 (+ 60 x)))
+        '(5 6 7))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "ABC"
+
+  Scenario: Use a `for-each` procedure with two lists
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each
+        (lambda (x y) (write-u8 (+ x y)))
+        '(65 66 67)
+        '(1 2 3))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "BDF"
+
+  Scenario: Use a `for-each` procedure with three lists
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (for-each
+        (lambda (x y z) (write-u8 (+ x y z)))
+        '(65 66 67)
+        '(1 2 3)
+        '(4 5 6))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "FIL"
+
   Scenario: Use a `map` procedure
     Given a file named "main.scm" with:
       """scheme
