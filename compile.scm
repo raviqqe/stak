@@ -1427,8 +1427,8 @@
 ; Main
 
 (define (main)
-  (define-values (expression library-context) (expand-libraries (read-source)))
-  (define-values (expression macro-context) (expand-macros expression))
+  (define-values (expression1 library-context) (expand-libraries (read-source)))
+  (define-values (expression2 macro-context) (expand-macros expression1))
 
   (write-target
     (encode
@@ -1442,6 +1442,6 @@
                 (library-exports library))))
           (map-values library-state-library (library-context-libraries library-context)))
         (macro-state-literals (macro-context-state macro-context))
-        expression))))
+        expression2))))
 
 (main)
