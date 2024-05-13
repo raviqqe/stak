@@ -228,14 +228,8 @@
         ((_ "value" arguments ((name value) ...) body1 body2 ...)
           (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
 
-        ((_ arguments (define-values content ...) body1 body2 ...)
-          (lambda "values" arguments () (define-values content ...) body1 body2 ...))
-
-        ((_ "values" arguments ((names value) ...) (define-values new-names new-value) body1 body2 ...)
-          (lambda "values" arguments ((names value) ... (new-names new-value)) body1 body2 ...))
-
-        ((_ "values" arguments ((names value) ...) body1 body2 ...)
-          (lambda arguments (let-values ((names value) ...) body1 body2 ...)))
+        ((_ arguments (define-values names value) body1 body2 ...)
+          (lambda arguments (let-values ((names value)) body1 body2 ...)))
 
         ((_ arguments (define-syntax name value) body1 body2 ...)
           (lambda "syntax" arguments ((name value)) body1 body2 ...))
@@ -742,7 +736,13 @@
               (apply f (map* car xs))
               (loop (map* cdr xs)))))))
 
-    (define for-each map)
+    (define (for-each f x . xs)
+      (let ((xs (cons x xs)))
+        (if (memq #t (map* null? xs))
+          #f
+          (begin
+            (apply f (map* car xs))
+            (apply for-each f (map* cdr xs))))))
 
     (define (list-ref xs index)
       (car (list-tail xs index)))
