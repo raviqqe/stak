@@ -124,6 +124,26 @@ Feature: Multiple values
       When I successfully run `scheme main.scm`
       Then the stdout should contain exactly "AB"
 
+    Scenario: Define values in a definition multiple times sequentially
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base))
+
+        (define (f x)
+          (values 65 x))
+
+        (define (g)
+          (define-values (x y) (f 0))
+          (define-values (v w) (f (+ y 1))
+
+          (write-u8 (+ x y))
+          (write-u8 (+ v w)))
+
+        (g)
+        """
+      When I successfully run `scheme main.scm`
+      Then the stdout should contain exactly "AB"
+
   Rule: `let-values`
     Scenario: Define no value
       Given a file named "main.scm" with:
