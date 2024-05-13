@@ -756,8 +756,8 @@
           (if (memq #t (for-each* null? xs))
             #f
             (cons
-              (apply f (for-each* car xs))
-              (loop (for-each* cdr xs)))))))
+              (apply f (map* car xs))
+              (loop (map* cdr xs)))))))
 
     (define (list-ref xs index)
       (car (list-tail xs index)))
