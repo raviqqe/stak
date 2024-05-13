@@ -1427,21 +1427,21 @@
 ; Main
 
 (define (main)
-  ; TODO Use `define-values`.
-  (let-values (((expression library-context) (expand-libraries (read-source))))
-    (let-values (((expression macro-context) (expand-macros expression)))
-      (write-target
-        (encode
-          (compile
-            (map-values
-              (lambda (library)
-                (filter-values
-                  symbol?
-                  (map-values
-                    (lambda (name) (resolve-denotation macro-context name))
-                    (library-exports library))))
-              (map-values library-state-library (library-context-libraries library-context)))
-            (macro-state-literals (macro-context-state macro-context))
-            expression))))))
+  (define-values (expression library-context) (expand-libraries (read-source)))
+  (define-values (expression macro-context) (expand-macros expression))
+
+  (write-target
+    (encode
+      (compile
+        (map-values
+          (lambda (library)
+            (filter-values
+              symbol?
+              (map-values
+                (lambda (name) (resolve-denotation macro-context name))
+                (library-exports library))))
+          (map-values library-state-library (library-context-libraries library-context)))
+        (macro-state-literals (macro-context-state macro-context))
+        expression))))
 
 (main)
