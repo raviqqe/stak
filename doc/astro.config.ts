@@ -56,7 +56,7 @@ export default defineConfig({
     sitemap(),
     solid(),
     starlight({
-      title: "Stak",
+      title: "Stak Scheme",
       favicon: "/icon.svg",
       head: [
         {
