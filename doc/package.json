@@ -14,7 +14,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.1.4",
     "@astrojs/solid-js": "^4.2.0",
-    "@astrojs/starlight": "^0.22.2",
+    "@astrojs/starlight": "^0.22.3",
     "@biomejs/biome": "^1.7.3",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.4",
