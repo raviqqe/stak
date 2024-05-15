@@ -1,6 +1,6 @@
 [package]
 name = "stak-sac"
-description = "Stak Stand-Alone Complex"
+description = "Stand-Alone Complex for Stak Scheme"
 version = "0.1.38"
 edition.workspace = true
 keywords.workspace = true

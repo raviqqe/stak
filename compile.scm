@@ -1,6 +1,6 @@
-; Stak compiler based on Ribbit's
+; Stak Scheme compiler.
 ;
-; All compiler-internal variables contain at least one `$` character in their names.
+; All compiler-internal variables contain at least one `$` or `%` character in their names.
 
 (import
   (scheme base)
