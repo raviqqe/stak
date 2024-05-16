@@ -13,7 +13,7 @@ alloc = []
 std = []
 
 [dev-dependencies]
-insta = "1.38.0"
+insta = "1.39.0"
 pretty_assertions = "1.4.0"
 
 [lints]
