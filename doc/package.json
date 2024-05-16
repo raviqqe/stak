@@ -17,7 +17,7 @@
     "@astrojs/starlight": "^0.22.3",
     "@biomejs/biome": "^1.7.3",
     "@nanostores/solid": "^0.4.2",
-    "@raviqqe/loscore": "^0.2.4",
+    "@raviqqe/loscore": "^0.2.5",
     "@raviqqe/stak": "^0.2.15",
     "astro": "^4.8.4",
     "classnames": "^2.5.1",
