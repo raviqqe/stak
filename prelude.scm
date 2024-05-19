@@ -2212,6 +2212,9 @@
     (define (symbol-append . xs)
       (string->symbol (apply string-append (map symbol->string xs))))
 
+    (define (id->string id)
+      (number->string id 32))
+
     (define (build-library-symbol id name)
       (string->uninterned-symbol
         (string-append
