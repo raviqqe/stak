@@ -2633,9 +2633,9 @@
             expression))))
 
     (define (expand-macros expression)
-      (let* ((context (make-macro-context (make-macro-state 0 '()) '()))
-             (expression (expand-macro context expression)))
-        (values expression context)))
+      (expand-macro
+        (make-macro-context (make-macro-state 0 '()) '())
+        expression))
 
     ; Compilation
 
@@ -2879,7 +2879,7 @@
                       (else
                         (error "unknown library" name))))
                   environment)))
-            expression
+            (expand-macros expression)
             '())
           '())))
 
