@@ -2202,6 +2202,23 @@
     ; TODO Use this.
     (define macros ($$macros))
 
+    ; Utilities
+
+    (define (last-cdr xs)
+      (if (pair? xs)
+        (last-cdr (cdr xs))
+        xs))
+
+    (define (symbol-append . xs)
+      (string->symbol (apply string-append (map symbol->string xs))))
+
+    (define (build-library-symbol id name)
+      (string->uninterned-symbol
+        (string-append
+          (id->string id)
+          (list->string (list library-symbol-separator))
+          (symbol->string name))))
+
     ; Macro system
 
     ;; Types
@@ -2655,11 +2672,6 @@
     (define set-instruction 2)
     (define if-instruction 3)
     (define call-instruction 5)
-
-    (define (last-cdr xs)
-      (if (pair? xs)
-        (last-cdr (cdr xs))
-        xs))
 
     (define (code-rib tag car cdr)
       (rib pair-type car cdr tag))
