@@ -2209,6 +2209,19 @@
         (last-cdr (cdr xs))
         xs))
 
+    (define (relaxed-deep-map f xs)
+      (cond
+        ((null? xs)
+          '())
+
+        ((pair? xs)
+          (cons
+            (relaxed-deep-map f (car xs))
+            (relaxed-deep-map f (cdr xs))))
+
+        (else
+          (f xs))))
+
     (define (symbol-append . xs)
       (string->symbol (apply string-append (map symbol->string xs))))
 
@@ -2221,6 +2234,13 @@
           (id->string id)
           (list->string (list library-symbol-separator))
           (symbol->string name))))
+
+    (define (resolve-library-symbol name)
+      (let* ((string (symbol->string name))
+             (position (memv-position library-symbol-separator (string->list string))))
+        (if position
+          (string->symbol (string-copy string (+ position 1)))
+          name)))
 
     ; Macro system
 
