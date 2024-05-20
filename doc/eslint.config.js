@@ -6,7 +6,7 @@ export default [
   {
     rules: {
       "@typescript-eslint/triple-slash-reference": "off",
-      "import/order": "off",
+      "import-x/order": "off",
       "react/jsx-no-useless-fragment": "off",
       "react/no-unknown-property": "off",
     },
