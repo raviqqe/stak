@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-libc = { version = "0.2.153", default-features = false }
+libc = { version = "0.2", default-features = false }
 
 [lints]
 workspace = true
