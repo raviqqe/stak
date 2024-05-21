@@ -2197,11 +2197,6 @@
     (stak base))
 
   (begin
-    (define libraries ($$libraries))
-
-    ; TODO Use this.
-    (define macros ($$macros))
-
     ; Utilities
 
     (define (last-cdr xs)
@@ -2832,7 +2827,9 @@
           (compile-constant expression continuation))))
 
     (define eval
-      (let ((macro-context (make-macro-context (make-macro-state 0) '())))
+      (let ((libraries ($$libraries))
+            (macros ($$macros))
+            (macro-context (make-macro-context (make-macro-state 0) '())))
         (lambda (expression environment)
           ((make-procedure
               (compile-arity 0 #f)
