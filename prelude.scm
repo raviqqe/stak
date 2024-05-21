@@ -2620,11 +2620,6 @@
         (else
           expression)))
 
-    (define (expand-macros context expression)
-      (expand-macro
-        context
-        expression))
-
     ; Compilation
 
     ;; Types
@@ -2869,7 +2864,7 @@
                           (else
                             (error "unknown library" name))))
                       environment)))
-                (expand-macros macro-context expression)
+                (expand-macro macro-context expression)
                 '())
               '())))))
 
