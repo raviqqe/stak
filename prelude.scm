@@ -2247,10 +2247,9 @@
     ;; Types
 
     (define-record-type macro-state
-      (make-macro-state id literals)
+      (make-macro-state id)
       macro-state?
-      (id macro-state-id macro-state-set-id!)
-      (literals macro-state-literals macro-state-set-literals!))
+      (id macro-state-id macro-state-set-id!))
 
     (define-record-type macro-context
       (make-macro-context state environment)
@@ -2282,15 +2281,6 @@
              (id (macro-state-id state)))
         (macro-state-set-id! state (+ id 1))
         id))
-
-    (define (macro-context-append-literal! context name syntax)
-      (define state (macro-context-state context))
-
-      (macro-state-set-literals!
-        state
-        (cons
-          (cons name syntax)
-          (macro-state-literals state))))
 
     (define-record-type rule-context
       (make-rule-context definition-context use-context ellipsis literals)
@@ -2549,10 +2539,6 @@
                 context
                 (cadr expression)
                 (make-transformer context (caddr expression)))
-              (macro-context-append-literal!
-                context
-                (cadr expression)
-                (caddr expression))
               #f)
 
             (($$lambda)
@@ -2846,7 +2832,7 @@
           (compile-constant expression continuation))))
 
     (define eval
-      (let ((macro-context (make-macro-context (make-macro-state 0 '()) '())))
+      (let ((macro-context (make-macro-context (make-macro-state 0) '())))
         (lambda (expression environment)
           ((make-procedure
               (compile-arity 0 #f)
