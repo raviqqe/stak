@@ -2620,9 +2620,9 @@
         (else
           expression)))
 
-    (define (expand-macros expression)
+    (define (expand-macros context expression)
       (expand-macro
-        (make-macro-context (make-macro-state 0 '()) '())
+        context
         expression))
 
     ; Compilation
@@ -2850,26 +2850,28 @@
         (else
           (compile-constant expression continuation))))
 
-    (define (eval expression environment)
-      ((make-procedure
-          (compile-arity 0 #f)
-          (compile-expression
-            (make-compilation-context
-              '()
-              (apply
-                append
-                (map
-                  (lambda (name)
-                    (cond
-                      ((assoc name libraries) =>
-                        cdr)
+    (define eval
+      (let ((macro-context (make-macro-context (make-macro-state 0 '()) '())))
+        (lambda (expression environment)
+          ((make-procedure
+              (compile-arity 0 #f)
+              (compile-expression
+                (make-compilation-context
+                  '()
+                  (apply
+                    append
+                    (map
+                      (lambda (name)
+                        (cond
+                          ((assoc name libraries) =>
+                            cdr)
 
-                      (else
-                        (error "unknown library" name))))
-                  environment)))
-            (expand-macros expression)
-            '())
-          '())))
+                          (else
+                            (error "unknown library" name))))
+                      environment)))
+                (expand-macros macro-context expression)
+                '())
+              '())))))
 
     (define environment list)))
 
