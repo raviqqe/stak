@@ -2845,9 +2845,9 @@
         (for-each
           (lambda (pair)
             (macro-context-set-last!
-              context
+              macro-context
               (car pair)
-              (make-transformer context (cdr pair))))
+              (make-transformer macro-context (cdr pair))))
           ($$macros))
 
         (lambda (expression environment)
