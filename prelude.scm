@@ -2204,6 +2204,12 @@
         (last-cdr (cdr xs))
         xs))
 
+    (define (relaxed-length xs)
+      (let loop ((xs xs) (y 0))
+        (if (pair? xs)
+          (loop (cdr xs) (+ y 1))
+          y)))
+
     (define (relaxed-deep-map f xs)
       (cond
         ((null? xs)
