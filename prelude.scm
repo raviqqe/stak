@@ -2215,6 +2215,11 @@
         (last-cdr (cdr xs))
         xs))
 
+    (define (set-last-cdr! xs x)
+      (if (pair? (cdr xs))
+        (set-last-cdr! (cdr xs) x)
+        (set-cdr! xs x)))
+
     (define (relaxed-length xs)
       (let loop ((xs xs) (y 0))
         (if (pair? xs)
