@@ -1,7 +1,7 @@
 [package]
 name = "stak-primitive"
 description = "Stak Scheme primitives"
-version = "0.2.38"
+version = "0.2.39"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
