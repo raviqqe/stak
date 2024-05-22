@@ -118,6 +118,7 @@
     length
     map
     for-each
+    filter
     list-ref
     list-set!
     list-head
@@ -744,6 +745,15 @@
           (begin
             (apply f (map* car xs))
             (apply for-each f (map* cdr xs))))))
+
+    (define (filter f xs)
+      (if (null? xs)
+        '()
+        (let ((x (car xs))
+              (xs (filter f (cdr xs))))
+          (if (f x)
+            (cons x xs)
+            xs))))
 
     (define (list-ref xs index)
       (car (list-tail xs index)))
@@ -2226,6 +2236,9 @@
 
     (define (map-values f xs)
       (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
+
+    (define (filter-values f xs)
+      (filter (lambda (pair) (f (cdr pair))) xs))
 
     (define (predicate expression)
       (and (pair? expression) (car expression)))
