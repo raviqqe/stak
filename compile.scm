@@ -739,6 +739,10 @@
               context
               (cadr expression)
               (resolve (caddr expression)))
+            (macro-context-append-literal!
+              context
+              (cadr expression)
+              (caddr expression))
             #f)
 
           (($$define)

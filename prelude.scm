@@ -2865,7 +2865,9 @@
             (macro-context-set-last!
               macro-context
               (car pair)
-              (make-transformer macro-context (cdr pair))))
+              (if (symbol? (cdr pair))
+                (resolve-denotation macro-context (cdr pair))
+                (make-transformer macro-context (cdr pair)))))
           ($$macros))
 
         (lambda (expression environment)
