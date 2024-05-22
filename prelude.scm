@@ -2224,6 +2224,9 @@
         (else
           (f xs))))
 
+    (define (map-values f xs)
+      (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
+
     (define (predicate expression)
       (and (pair? expression) (car expression)))
 
