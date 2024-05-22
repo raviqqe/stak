@@ -2217,6 +2217,9 @@
         (else
           (f xs))))
 
+    (define (predicate expression)
+      (and (pair? expression) (car expression)))
+
     (define (symbol-append . xs)
       (string->symbol (apply string-append (map symbol->string xs))))
 
@@ -2828,8 +2831,15 @@
 
     (define eval
       (let ((libraries ($$libraries))
-            (macros ($$macros))
             (macro-context (make-macro-context (make-macro-state 0) '())))
+        (for-each
+          (lambda (pair)
+            (macro-context-set-last!
+              context
+              (car pair)
+              (make-transformer context (cdr pair))))
+          ($$macros))
+
         (lambda (expression environment)
           ((make-procedure
               (compile-arity 0 #f)
