@@ -120,6 +120,7 @@
     for-each
     list-ref
     list-set!
+    list-head
     list-tail
     member
     memq
