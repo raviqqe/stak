@@ -12,7 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.1.4",
+    "@astrojs/sitemap": "^3.1.5",
     "@astrojs/solid-js": "^4.2.0",
     "@astrojs/starlight": "^0.23.1",
     "@biomejs/biome": "^1.7.3",
