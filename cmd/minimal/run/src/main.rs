@@ -19,7 +19,7 @@ use stak_vm::{Value, Vm};
 const PRELUDE_SOURCE: &str = include_str!(env!("STAK_PRELUDE_FILE"));
 const COMPILER_BYTECODES: &[u8] = include_bytes!(env!("STAK_COMPILER_FILE"));
 
-const DEFAULT_BUFFER_SIZE: usize = 1 << 19;
+const DEFAULT_BUFFER_SIZE: usize = 1 << 18;
 const MAX_SOURCE_FILE_COUNT: usize = 4;
 
 #[cfg(not(test))]
