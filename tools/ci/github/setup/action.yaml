@@ -5,7 +5,7 @@ outputs: {}
 runs:
   using: composite
   steps:
-    - uses: swatinem/rust-cache@v1
+    - uses: raviqqe/cargo-cache@v1
     - uses: ruby/setup-ruby@v1
     - uses: homebrew/actions/setup-homebrew@master
       with:
