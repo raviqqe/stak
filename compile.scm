@@ -739,6 +739,10 @@
               context
               (cadr expression)
               (resolve (caddr expression)))
+            (macro-context-append-literal!
+              context
+              (cadr expression)
+              (caddr expression))
             #f)
 
           (($$define)
@@ -1441,7 +1445,7 @@
                 (lambda (name) (resolve-denotation macro-context name))
                 (library-exports library))))
           (map-values library-state-library (library-context-libraries library-context)))
-        (macro-state-literals (macro-context-state macro-context))
+        (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
 
 (main)

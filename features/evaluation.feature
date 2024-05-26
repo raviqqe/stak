@@ -1,3 +1,4 @@
+@long
 Feature: Evaluation
   Scenario: Import an `eval` library
     Given a file named "main.scm" with:
@@ -86,6 +87,50 @@ Feature: Evaluation
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
+
+  Scenario: Use a `define` syntax with a variable
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (eval
+        '(begin
+          (define x 65)
+          (write-u8 x))
+        (environment '(scheme base)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Use a `define` syntax with a procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (eval
+        '(begin
+          (define (f x)
+            (+ x 65))
+          (write-u8 (f 1)))
+        (environment '(scheme base)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  Scenario Outline: Use an `if` syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | #f    | B      |
+      | #t    | A      |
 
   @stak
   Rule: Primitives

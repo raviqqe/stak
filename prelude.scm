@@ -118,8 +118,10 @@
     length
     map
     for-each
+    filter
     list-ref
     list-set!
+    list-head
     list-tail
     member
     memq
@@ -743,6 +745,15 @@
           (begin
             (apply f (map* car xs))
             (apply for-each f (map* cdr xs))))))
+
+    (define (filter f xs)
+      (if (null? xs)
+        '()
+        (let ((x (car xs))
+              (xs (filter f (cdr xs))))
+          (if (f x)
+            (cons x xs)
+            xs))))
 
     (define (list-ref xs index)
       (car (list-tail xs index)))
@@ -2204,6 +2215,17 @@
         (last-cdr (cdr xs))
         xs))
 
+    (define (set-last-cdr! xs x)
+      (if (pair? (cdr xs))
+        (set-last-cdr! (cdr xs) x)
+        (set-cdr! xs x)))
+
+    (define (relaxed-length xs)
+      (let loop ((xs xs) (y 0))
+        (if (pair? xs)
+          (loop (cdr xs) (+ y 1))
+          y)))
+
     (define (relaxed-deep-map f xs)
       (cond
         ((null? xs)
@@ -2216,6 +2238,15 @@
 
         (else
           (f xs))))
+
+    (define (map-values f xs)
+      (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
+
+    (define (filter-values f xs)
+      (filter (lambda (pair) (f (cdr pair))) xs))
+
+    (define (predicate expression)
+      (and (pair? expression) (car expression)))
 
     (define (symbol-append . xs)
       (string->symbol (apply string-append (map symbol->string xs))))
@@ -2828,8 +2859,17 @@
 
     (define eval
       (let ((libraries ($$libraries))
-            (macros ($$macros))
             (macro-context (make-macro-context (make-macro-state 0) '())))
+        (for-each
+          (lambda (pair)
+            (macro-context-set-last!
+              macro-context
+              (car pair)
+              (if (symbol? (cdr pair))
+                (resolve-denotation macro-context (cdr pair))
+                (make-transformer macro-context (cdr pair)))))
+          ($$macros))
+
         (lambda (expression environment)
           ((make-procedure
               (compile-arity 0 #f)
