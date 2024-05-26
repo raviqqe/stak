@@ -9,13 +9,13 @@
 #![no_std]
 #![cfg_attr(not(test), no_main)]
 
-use core::{ffi::CStr, slice};
+use core::{ffi::CStr, mem::size_of, slice};
 use mstak_util::Mmap;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_primitive::SmallPrimitiveSet;
-use stak_vm::Vm;
+use stak_vm::{Value, Vm};
 
-const HEAP_SIZE: usize = 1 << 18;
+const HEAP_SIZE: usize = 1 << 19;
 
 #[cfg(not(test))]
 #[panic_handler]
@@ -29,10 +29,13 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         return 1;
     };
 
-    let mut heap = [Default::default(); HEAP_SIZE];
+    let heap = slice::from_raw_parts_mut(
+        libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,
+        HEAP_SIZE,
+    );
 
     let mut vm = Vm::new(
-        &mut heap,
+        heap,
         SmallPrimitiveSet::new(ReadWriteDevice::new(
             Stdin::new(),
             Stdout::new(),
