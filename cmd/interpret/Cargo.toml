@@ -1,7 +1,7 @@
 [package]
 name = "stak-interpret"
 description = "Stak Scheme bytecode interpreter"
-version = "0.1.40"
+version = "0.1.41"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -16,7 +16,7 @@ trace_heap = ["stak-vm/trace_heap"]
 [dependencies]
 clap = { version = "4.5.4", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.34", path = "../../configuration" }
+stak-configuration = { version = "0.1.35", path = "../../configuration" }
 stak-device = { version = "0.2", path = "../../device", features = ["std"] }
 stak-primitive = { version = "0.2", path = "../../primitive", features = [
   "std",
