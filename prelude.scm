@@ -2872,7 +2872,7 @@
           ($$macros))
 
         (lambda (expression environment)
-          (if (eq? (predicate expression) 'foo)
+          (if (eq? (predicate expression) 'import)
             (for-each
               (lambda (name)
                 (when (not (member name imported-librarires))
