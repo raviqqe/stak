@@ -2872,7 +2872,7 @@
 
         (lambda (expression environment)
           (if (eq? (predicate expression) 'foo)
-            foo
+            (foo)
             ((make-procedure
                 (compile-arity 0 #f)
                 (compile-expression
