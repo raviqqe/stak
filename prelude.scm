@@ -2857,7 +2857,7 @@
         (else
           (compile-constant expression continuation))))
 
-    (define (merge-environments xs ys)
+    (define (merge-environments one other)
       (fold-left
         (lambda (names name)
           (if (member name names)
