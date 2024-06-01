@@ -2859,6 +2859,7 @@
 
     (define eval
       (let ((libraries ($$libraries))
+            (imported-librarires '())
             (macro-context (make-macro-context (make-macro-state 0) '())))
         (for-each
           (lambda (pair)
