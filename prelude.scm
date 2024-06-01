@@ -2197,7 +2197,7 @@
       (unwind (lambda () (apply emergency-exit rest))))))
 
 (define-library (scheme eval)
-  (export environment eval)
+  (export environment eval imported-libraries)
 
   (import
     (scheme base)
@@ -2866,9 +2866,10 @@
         one
         other))
 
+    (define imported-librarires '())
+
     (define eval
       (let ((libraries ($$libraries))
-            (imported-librarires '())
             (macro-context (make-macro-context (make-macro-state 0) '())))
         (for-each
           (lambda (pair)
@@ -2914,8 +2915,4 @@
 
   (begin
     (define (interaction-environment)
-      (environment
-        '(scheme base)
-        '(scheme process-context)
-        '(scheme read)
-        '(scheme write)))))
+      imported-libraries)))
