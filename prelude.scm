@@ -2873,7 +2873,11 @@
 
         (lambda (expression environment)
           (if (eq? (predicate expression) 'foo)
-            (foo)
+            (for-each
+              (lambda (name)
+                (when (not (member name imported-librarires))
+                  (set imported-librarires (cons name imported-librarires))))
+              (cdr expression))
             ((make-procedure
                 (compile-arity 0 #f)
                 (compile-expression
