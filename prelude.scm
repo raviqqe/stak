@@ -2197,7 +2197,7 @@
       (unwind (lambda () (apply emergency-exit rest))))))
 
 (define-library (scheme eval)
-  (export environment eval)
+  (export environment eval interaction-libraries)
 
   (import
     (scheme base)
@@ -2857,6 +2857,17 @@
         (else
           (compile-constant expression continuation))))
 
+    (define (merge-environments one other)
+      (fold-left
+        (lambda (names name)
+          (if (member name names)
+            names
+            (cons name names)))
+        one
+        other))
+
+    (define interaction-libraries '())
+
     (define eval
       (let ((libraries ($$libraries))
             (macro-context (make-macro-context (make-macro-state 0) '())))
@@ -2871,25 +2882,34 @@
           ($$macros))
 
         (lambda (expression environment)
-          ((make-procedure
-              (compile-arity 0 #f)
-              (compile-expression
-                (make-compilation-context
-                  '()
-                  (apply
-                    append
-                    (map
-                      (lambda (name)
-                        (cond
-                          ((assoc name libraries) =>
-                            cdr)
+          (case (predicate expression)
+            ((import)
+              (unless (eq? environment interaction-libraries)
+                (error "invalid import in eval"))
+              (set!
+                interaction-libraries
+                (merge-environments interaction-libraries (cdr expression))))
 
-                          (else
-                            (error "unknown library" name))))
-                      environment)))
-                (expand-macro macro-context expression)
-                '())
-              '())))))
+            (else
+              ((make-procedure
+                  (compile-arity 0 #f)
+                  (compile-expression
+                    (make-compilation-context
+                      '()
+                      (apply
+                        append
+                        (map
+                          (lambda (name)
+                            (cond
+                              ((assoc name libraries) =>
+                                cdr)
+
+                              (else
+                                (error "unknown library" name))))
+                          environment)))
+                    (expand-macro macro-context expression)
+                    '())
+                  '())))))))
 
     (define environment list)))
 
@@ -2900,8 +2920,4 @@
 
   (begin
     (define (interaction-environment)
-      (environment
-        '(scheme base)
-        '(scheme process-context)
-        '(scheme read)
-        '(scheme write)))))
+      interaction-libraries)))
