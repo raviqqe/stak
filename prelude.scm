@@ -2857,6 +2857,15 @@
         (else
           (compile-constant expression continuation))))
 
+    (define (merge-environments xs ys)
+      (fold-left
+        (lambda (names name)
+          (if (member name names)
+            names
+            (cons name names)))
+        one
+        other))
+
     (define eval
       (let ((libraries ($$libraries))
             (imported-librarires '())
@@ -2873,11 +2882,9 @@
 
         (lambda (expression environment)
           (if (eq? (predicate expression) 'import)
-            (for-each
-              (lambda (name)
-                (when (not (member name imported-librarires))
-                  (set imported-librarires (cons name imported-librarires))))
-              (cdr expression))
+            (set!
+              imported-librarires
+              (merge-environments imported-librarires (cdr expression)))
             ((make-procedure
                 (compile-arity 0 #f)
                 (compile-expression
