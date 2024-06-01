@@ -2882,29 +2882,32 @@
           ($$macros))
 
         (lambda (expression environment)
-          (if (eq? (predicate expression) 'import)
-            (set!
-              imported-libraries
-              (merge-environments imported-libraries (cdr expression)))
-            ((make-procedure
-                (compile-arity 0 #f)
-                (compile-expression
-                  (make-compilation-context
-                    '()
-                    (apply
-                      append
-                      (map
-                        (lambda (name)
-                          (cond
-                            ((assoc name libraries) =>
-                              cdr)
+          (case (predicate expression)
+            ((import)
+              (set!
+                imported-libraries
+                (merge-environments imported-libraries (cdr expression))))
 
-                            (else
-                              (error "unknown library" name))))
-                        environment)))
-                  (expand-macro macro-context expression)
-                  '())
-                '()))))))
+            (else
+              ((make-procedure
+                  (compile-arity 0 #f)
+                  (compile-expression
+                    (make-compilation-context
+                      '()
+                      (apply
+                        append
+                        (map
+                          (lambda (name)
+                            (cond
+                              ((assoc name libraries) =>
+                                cdr)
+
+                              (else
+                                (error "unknown library" name))))
+                          environment)))
+                    (expand-macro macro-context expression)
+                    '())
+                  '())))))))
 
     (define environment list)))
 
