@@ -2197,7 +2197,7 @@
       (unwind (lambda () (apply emergency-exit rest))))))
 
 (define-library (scheme eval)
-  (export environment eval imported-libraries)
+  (export environment eval interaction-libraries)
 
   (import
     (scheme base)
@@ -2866,7 +2866,7 @@
         one
         other))
 
-    (define imported-libraries '())
+    (define interaction-libraries '())
 
     (define eval
       (let ((libraries ($$libraries))
@@ -2884,11 +2884,11 @@
         (lambda (expression environment)
           (case (predicate expression)
             ((import)
-              (unless (eq? environment imported-libraries)
+              (unless (eq? environment interaction-libraries)
                 (error "invalid import in eval"))
               (set!
-                imported-libraries
-                (merge-environments imported-libraries (cdr expression))))
+                interaction-libraries
+                (merge-environments interaction-libraries (cdr expression))))
 
             (else
               ((make-procedure
@@ -2920,4 +2920,4 @@
 
   (begin
     (define (interaction-environment)
-      imported-libraries)))
+      interaction-libraries)))
