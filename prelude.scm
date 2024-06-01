@@ -2866,7 +2866,7 @@
         one
         other))
 
-    (define imported-librarires '())
+    (define imported-libraries '())
 
     (define eval
       (let ((libraries ($$libraries))
@@ -2884,8 +2884,8 @@
         (lambda (expression environment)
           (if (eq? (predicate expression) 'import)
             (set!
-              imported-librarires
-              (merge-environments imported-librarires (cdr expression)))
+              imported-libraries
+              (merge-environments imported-libraries (cdr expression)))
             ((make-procedure
                 (compile-arity 0 #f)
                 (compile-expression
