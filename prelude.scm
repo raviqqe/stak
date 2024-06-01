@@ -2884,6 +2884,8 @@
         (lambda (expression environment)
           (case (predicate expression)
             ((import)
+              (unless (eq? environment imported-libraries)
+                (error "invalid import in eval"))
               (set!
                 imported-libraries
                 (merge-environments imported-libraries (cdr expression))))
