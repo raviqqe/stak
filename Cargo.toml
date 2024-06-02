@@ -3,6 +3,7 @@ resolver = "2"
 members = [
   "cmd/compile",
   "cmd/decode",
+  "cmd/eval",
   "cmd/interpret",
   "cmd/minify",
   "cmd/profile",
