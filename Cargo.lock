@@ -315,7 +315,14 @@ dependencies = [
 name = "stak-eval"
 version = "0.1.0"
 dependencies = [
+ "clap",
+ "main_error",
+ "stak-configuration",
+ "stak-device",
+ "stak-macro",
+ "stak-primitive",
  "stak-sac",
+ "stak-vm",
 ]
 
 [[package]]
