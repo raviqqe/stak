@@ -14,7 +14,7 @@
           (read-char)
           (loop))
 
-        ((or (eof-object? char) (eqv? char (integer->char 4)))
+        ((eof-object? char)
           #f)
 
         (else
