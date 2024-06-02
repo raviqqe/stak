@@ -7,8 +7,6 @@
   (scheme repl))
 
 (define (main)
-  (display "> " (current-error-port))
-
   (let loop ()
     (let ((char (peek-char)))
       (cond
