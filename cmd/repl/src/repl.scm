@@ -6,16 +6,22 @@
   (scheme eval)
   (scheme repl))
 
-(let loop ()
-  (let ((char (peek-char)))
-    (cond
-      ((char-whitespace? char)
-        (read-char)
-        (loop))
+(define (main)
+  (display "> " (current-error-port))
 
-      ((eof-object? char)
-        #f)
+  (let loop ()
+    (let ((char (peek-char)))
+      (cond
+        ((char-whitespace? char)
+          (read-char)
+          (loop))
 
-      (else
-        (eval (read) (interaction-environment))
-        (loop)))))
+        ((or (eof-object? char) (eqv? char (integer->char 4)))
+          #f)
+
+        (else
+          (write (eval (read) (interaction-environment)))
+          (newline)
+          (main))))))
+
+(main)
