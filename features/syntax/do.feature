@@ -18,7 +18,10 @@ Feature: do
       """scheme
       (import (scheme base))
 
-      (write-u8 (if (and <values>) 65 66))
+      (do ((vec (make-vector 5))
+           (i 0 (+ i 1)))
+        ((= i 5) vec)
+        (vector-set! vec i i))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "#(0 1 2 3 4)"
