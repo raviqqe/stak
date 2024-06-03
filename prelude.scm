@@ -520,10 +520,7 @@
           (letrec ((loop
                      (lambda (name ...)
                        (if test
-                         (begin
-                           (if #f #f)
-                           expr
-                           ...)
+                         (begin #f expression ...)
                          (begin
                            command
                            ...
