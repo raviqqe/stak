@@ -511,6 +511,31 @@
         ((_ test result1 result2 ...)
           (when (not test) result1 result2 ...))))
 
+    (define-syntax do
+      (syntax-rules ()
+        ((_ ((name initial step ...) ...)
+            (test expression ...)
+            command
+            ...)
+          (letrec ((loop
+                     (lambda (name ...)
+                       (if test
+                         (begin
+                           (if #f #f)
+                           expr
+                           ...)
+                         (begin
+                           command
+                           ...
+                           (loop (do "step" name step ...) ...))))))
+            (loop initial ...)))
+
+        ((_ "step" x)
+          x)
+
+        ((_ "step" x y)
+          y)))
+
     ; Type IDs
 
     (define pair-type 0)
