@@ -31,6 +31,7 @@
     boolean-or
     when
     unless
+    do
 
     base
     cxr
@@ -510,6 +511,26 @@
       (syntax-rules ()
         ((_ test result1 result2 ...)
           (when (not test) result1 result2 ...))))
+
+    (define-syntax do
+      (syntax-rules ()
+        ((_ ((name initial step ...) ...)
+            (test expression ...)
+            command
+            ...)
+          (let loop ((name initial) ...)
+            (if test
+              (begin #f expression ...)
+              (begin
+                command
+                ...
+                (loop (do "step" name step ...) ...)))))
+
+        ((_ "step" x)
+          x)
+
+        ((_ "step" x y)
+          y)))
 
     ; Type IDs
 
@@ -1224,6 +1245,7 @@
     or
     when
     unless
+    do
 
     base
     cxr
