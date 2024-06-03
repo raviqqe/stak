@@ -31,6 +31,7 @@
     boolean-or
     when
     unless
+    do
 
     base
     cxr
@@ -1246,6 +1247,7 @@
     or
     when
     unless
+    do
 
     base
     cxr
