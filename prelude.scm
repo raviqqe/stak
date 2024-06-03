@@ -737,10 +737,9 @@
           (cons fill (loop (- length 1))))))
 
     (define (length xs)
-      (let loop ((xs xs) (y 0))
-        (if (null? xs)
-          y
-          (loop (cdr xs) (+ y 1)))))
+      (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
+        ((null? xs)
+          y)))
 
     (define (map* f xs)
       (if (null? xs)
