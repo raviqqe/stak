@@ -518,15 +518,13 @@
             (test expression ...)
             command
             ...)
-          (letrec ((loop
-                     (lambda (name ...)
-                       (if test
-                         (begin #f expression ...)
-                         (begin
-                           command
-                           ...
-                           (loop (do "step" name step ...) ...))))))
-            (loop initial ...)))
+          (let loop ((name initial) ...)
+            (if test
+              (begin #f expression ...)
+              (begin
+                command
+                ...
+                (loop (do "step" name step ...) ...)))))
 
         ((_ "step" x)
           x)
