@@ -88,6 +88,7 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
 
+  @stak @gauche @guile
   Scenario: Use a `define` syntax with a variable
     Given a file named "main.scm" with:
       """scheme
@@ -102,6 +103,7 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @stak @gauche @guile
   Scenario: Use a `define` syntax with a procedure
     Given a file named "main.scm" with:
       """scheme
