@@ -4,24 +4,28 @@ Feature: do
       """scheme
       (import (scheme base))
 
-      (define x ’(1 3 5 7 9))
+      (define xs '(1 2 3 4 5 6 7 8 9 10 11))
 
-      (do ((x x (cdr x))
-           (sum 0 (+ sum (car x))))
-        ((null? x) sum)))
+      (do ((xs xs (cdr xs))
+           (y 0 (+ y (car xs))))
+        ((null? xs)
+          (write-u8 y)))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "25"
+    Then the stdout should contain exactly "B"
 
   Scenario: Use a `do` syntax without a step
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
 
-      (do ((vec (make-vector 5))
+      (define y 0)
+
+      (do ((xs #(1 2 3 4 5 6 7 8 9 10 11))
            (i 0 (+ i 1)))
-        ((= i 5) vec)
-        (vector-set! vec i i))
+        ((= i (vector-length xs))
+          (write-u8 y))
+        (set! y (+ y (vector-ref xs i))))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "#(0 1 2 3 4)"
+    Then the stdout should contain exactly "B"
