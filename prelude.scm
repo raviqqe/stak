@@ -839,10 +839,9 @@
         (cons (car xs) (append-lists ys (cdr xs)))))
 
     (define (reverse xs)
-      (let loop ((xs xs) (ys '()))
-        (if (null? xs)
-          ys
-          (loop (cdr xs) (cons (car xs) ys)))))
+      (do ((xs xs (cdr xs)) (ys '() (cons (car xs) ys)))
+        ((null? xs)
+          ys)))
 
     (define (fold-left f y xs)
       (if (null? xs)
@@ -1757,12 +1756,10 @@
 
     (define (write-bytevector xs . rest)
       (parameterize ((current-output-port (get-output-port rest)))
-        (let loop ((xs xs) (index 0))
-          (if (< index (bytevector-length xs))
-            (begin
-              (write-u8 (bytevector-u8-ref xs index))
-              (loop xs (+ index 1)))
-            #f))))
+        (do ((index 0 (+ index 1)))
+          ((= index (bytevector-length xs))
+            #f)
+          (write-u8 (bytevector-u8-ref xs index)))))
 
     (define (newline . rest)
       (write-char #\newline (get-output-port rest)))
