@@ -158,9 +158,8 @@
   (apply append (map f xs)))
 
 (define (relaxed-length xs)
-  (let loop ((xs xs) (y 0))
-    (if (pair? xs)
-      (loop (cdr xs) (+ y 1))
+  (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
+    ((not (pair? xs))
       y)))
 
 (define (relaxed-deep-map f xs)
@@ -1228,10 +1227,9 @@
       (find-continuation (rib-cdr codes)))))
 
 (define (count-skips codes continuation)
-  (let loop ((codes codes) (count 0))
-    (if (eq? codes continuation)
-      count
-      (loop (rib-cdr codes) (+ 1 count)))))
+  (do ((codes codes (rib-cdr codes)) (count 0 (+ 1 count)))
+    ((eq? codes continuation)
+      count)))
 
 ;; Context
 
@@ -1279,15 +1277,11 @@
   (+ bit (* 2 (modulo integer base))))
 
 (define (encode-integer-with-base integer base target)
-  (let loop ((x (quotient integer base))
-             (bit 0)
-             (target target))
-    (if (zero? x)
-      (values (encode-integer-part integer base bit) target)
-      (loop
-        (quotient x integer-base)
-        1
-        (cons (encode-integer-part x integer-base bit) target)))))
+  (do ((x (quotient integer base) (quotient x integer-base))
+       (bit 0 1)
+       (target target (cons (encode-integer-part x integer-base bit) target)))
+    ((zero? x)
+      (values (encode-integer-part integer base bit) target))))
 
 (define (encode-short-integer integer target)
   (encode-integer-with-base integer short-integer-base target))
