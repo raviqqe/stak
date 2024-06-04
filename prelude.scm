@@ -2239,9 +2239,8 @@
         (set-cdr! xs x)))
 
     (define (relaxed-length xs)
-      (let loop ((xs xs) (y 0))
-        (if (pair? xs)
-          (loop (cdr xs) (+ y 1))
+      (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
+        ((not (pair? xs))
           y)))
 
     (define (relaxed-deep-map f xs)
