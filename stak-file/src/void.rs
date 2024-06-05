@@ -13,7 +13,7 @@ impl FileSystem for VoidFileSystem {
         Err(Error::Read)
     }
 
-    fn write(&self, _: FileDescriptor, _byte: u8) -> Result<(), Self::Error> {
+    fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
         Err(Error::Write)
     }
 }
