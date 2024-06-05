@@ -6,6 +6,7 @@
 extern crate std;
 
 mod error;
+mod file_flag;
 mod file_system;
 #[cfg(feature = "libc")]
 mod libc;

@@ -3,6 +3,7 @@ use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
 #[derive(Debug)]
 pub struct VoidFileSystem {}
 
+/// A file system that does nothing and fails every operation.
 impl VoidFileSystem {
     pub const fn new() -> Self {
         Self {}
