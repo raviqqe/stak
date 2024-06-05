@@ -4,7 +4,7 @@ use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
 pub struct VoidFileSystem {}
 
 impl VoidFileSystem {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
