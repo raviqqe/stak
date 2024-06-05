@@ -57,11 +57,14 @@ mod tests {
 
     #[test]
     fn close() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("foo");
+        fs::write(&path, &[]).unwrap();
+
         let file_system = LibcFileSystem::new();
 
-        let file = tempfile::NamedTempFile::new().unwrap();
         let descriptor = file_system
-            .open(file.path().as_os_str().as_encoded_bytes(), 0)
+            .open(path.as_os_str().as_encoded_bytes(), 0)
             .unwrap();
         file_system.close(descriptor).unwrap();
     }
@@ -69,16 +72,17 @@ mod tests {
     #[test]
     fn read() {
         let directory = tempfile::tempdir().unwrap();
-        let file_system = LibcFileSystem::new();
         let path = directory.path().join("foo");
 
-        fs::write(&path, b"a").unwrap();
+        let file_system = LibcFileSystem::new();
+
+        fs::write(&path, &[42]).unwrap();
 
         let descriptor = file_system
             .open(path.as_os_str().as_encoded_bytes(), libc::O_RDONLY as _)
             .unwrap();
 
-        file_system.read(descriptor).unwrap();
+        assert_eq!(file_system.read(descriptor).unwrap(), 42);
     }
 
     #[test]
