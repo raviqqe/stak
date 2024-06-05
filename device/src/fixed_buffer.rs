@@ -13,7 +13,7 @@ pub struct FixedBufferDevice<'a, const O: usize, const E: usize> {
 
 impl<'a, const O: usize, const E: usize> FixedBufferDevice<'a, O, E> {
     /// Creates a device.
-    pub fn new(input: &'a [u8]) -> Self {
+    pub const fn new(input: &'a [u8]) -> Self {
         Self {
             input,
             output: [0; O],

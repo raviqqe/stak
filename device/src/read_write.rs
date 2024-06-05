@@ -11,7 +11,7 @@ pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
 
 impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
     /// Creates a device.
-    pub fn new(input: I, output: O, error: E) -> Self {
+    pub const fn new(input: I, output: O, error: E) -> Self {
         Self {
             input,
             output,
@@ -20,12 +20,12 @@ impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
     }
 
     /// Returns a reference to output.
-    pub fn output(&self) -> &O {
+    pub const fn output(&self) -> &O {
         &self.output
     }
 
     /// Returns a reference to error.
-    pub fn error(&self) -> &E {
+    pub const fn error(&self) -> &E {
         &self.error
     }
 }
