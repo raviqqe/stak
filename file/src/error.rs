@@ -1,10 +1,15 @@
 use core::fmt::{self, Display, Formatter};
 
+/// An error.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Error {
+    /// An open failure.
     Open,
+    /// A close failure.
     Close,
+    /// A read failure.
     Read,
+    /// A write failure.
     Write,
 }
 
