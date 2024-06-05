@@ -15,6 +15,14 @@ impl FileSystem for LibcFileSystem {
         }
     }
 
+    fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+        if unsafe { libc::close(descriptor as _) } == 0 {
+            Ok(())
+        } else {
+            Err(Error::Open)
+        }
+    }
+
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
