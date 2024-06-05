@@ -191,7 +191,19 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             // Optimize type checks.
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
-            Primitive::OPEN_FILE => Self::check_type(vm, Type::Pair)?,
+            Primitive::OPEN_FILE => {
+                let byte = vm
+                    .primitive_set_mut()
+                    .device
+                    .read()
+                    .map_err(|_| Error::ReadInput)?;
+
+                vm.push(if let Some(byte) = byte {
+                    Number::new(byte as i64).into()
+                } else {
+                    vm.boolean(false).into()
+                })?;
+            }
             Primitive::READ_FILE => Self::check_type(vm, Type::Pair)?,
             Primitive::WRITE_FILE => Self::check_type(vm, Type::Pair)?,
             _ => return Err(Error::Illegal),
