@@ -191,6 +191,15 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             // Optimize type checks.
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
+            Primitive::OPEN_FILE => {
+                todo!();
+            }
+            Primitive::READ_FILE => {
+                todo!();
+            }
+            Primitive::WRITE_FILE => {
+                todo!();
+            }
             _ => return Err(Error::Illegal),
         }
 

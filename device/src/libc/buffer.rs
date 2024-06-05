@@ -11,7 +11,7 @@ pub struct Buffer<'a> {
 }
 
 impl<'a> Buffer<'a> {
-    pub fn new(data: &'a [&'a [u8]]) -> Self {
+    pub const fn new(data: &'a [&'a [u8]]) -> Self {
         Self {
             data,
             buffer_index: 0,

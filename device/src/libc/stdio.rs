@@ -4,7 +4,7 @@ use super::{error::Error, Read, Write};
 pub struct Stdin {}
 
 impl Stdin {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -29,7 +29,7 @@ impl Read for Stdin {
 pub struct Stdout {}
 
 impl Stdout {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
@@ -46,7 +46,7 @@ impl Write for Stdout {
 pub struct Stderr {}
 
 impl Stderr {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }

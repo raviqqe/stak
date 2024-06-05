@@ -12,6 +12,7 @@ members = [
   "compiler",
   "configuration",
   "device",
+  "file",
   "macro",
   "macro-util",
   "minifier",

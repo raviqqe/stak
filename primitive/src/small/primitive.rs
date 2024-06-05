@@ -23,6 +23,9 @@ pub(super) enum Primitive {
     Halt,
     Null,
     Pair,
+    OpenFile,
+    ReadFile,
+    WriteFile,
 }
 
 impl Primitive {
@@ -48,4 +51,7 @@ impl Primitive {
     pub const HALT: u8 = Self::Halt as _;
     pub const NULL: u8 = Self::Null as _;
     pub const PAIR: u8 = Self::Pair as _;
+    pub const OPEN_FILE: u8 = Self::OpenFile as _;
+    pub const READ_FILE: u8 = Self::ReadFile as _;
+    pub const WRITE_FILE: u8 = Self::WriteFile as _;
 }
