@@ -5,15 +5,15 @@ pub struct VoidFileSystem {}
 impl FileSystem for VoidFileSystem {
     type Error = Error;
 
-    fn open(&self, path: &[u8]) -> Result<FileDescriptor, Self::Error> {
+    fn open(&self, _: &[u8]) -> Result<FileDescriptor, Self::Error> {
         Err(Error::Open)
     }
 
-    fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&self, _: FileDescriptor) -> Result<u8, Self::Error> {
         Err(Error::Read)
     }
 
-    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
+    fn write(&self, _: FileDescriptor, _byte: u8) -> Result<(), Self::Error> {
         Err(Error::Write)
     }
 }
