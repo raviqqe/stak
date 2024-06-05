@@ -12,7 +12,7 @@ impl FileSystem for LibcFileSystem {
     type Error = Error;
 
     fn open(&self, path: &[u8], flags: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
-        let descriptor = unsafe { libc::open(path as *const _ as _, flags as _, 0644) };
+        let descriptor = unsafe { libc::open(path as *const _ as _, flags as _) };
 
         if descriptor >= 0 {
             Ok(descriptor as _)
