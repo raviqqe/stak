@@ -1,6 +1,13 @@
 use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
 
+#[derive(Debug)]
 pub struct VoidFileSystem {}
+
+impl VoidFileSystem {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
 
 impl FileSystem for VoidFileSystem {
     type Error = Error;
@@ -15,5 +22,11 @@ impl FileSystem for VoidFileSystem {
 
     fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
         Err(Error::Write)
+    }
+}
+
+impl Default for VoidFileSystem {
+    fn default() -> Self {
+        Self::new()
     }
 }
