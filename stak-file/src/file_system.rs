@@ -1,7 +1,8 @@
 use crate::Error;
+use core::fmt::Debug;
 
 pub trait FileSystem {
-    type Error: Debug = Error;
+    type Error: Debug;
 
     fn open(&self, path: &[u8]) -> Result<usize, Error>;
     fn read(&self, descriptor: usize) -> Result<u8, Error>;

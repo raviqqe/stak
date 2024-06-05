@@ -1,6 +1,6 @@
 use core::fmt::{self, Display, Formatter};
 
-#[derive(Clone, Copy, Debug, Eq, ParitalEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Error {
     Open,
     Read,
