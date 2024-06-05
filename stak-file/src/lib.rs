@@ -5,3 +5,5 @@ mod void;
 pub use error::Error;
 pub use file_system::FileSystem;
 pub use void::VoidFileSystem;
+
+pub type FileDescriptor = usize;

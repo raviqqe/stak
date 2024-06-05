@@ -1,3 +1,6 @@
+use core::fmt::{self, Display, Formatter};
+
+#[derive(Clone, Copy, Debug, Eq, ParitalEq)]
 pub enum Error {
     Open,
     Read,
@@ -5,7 +8,7 @@ pub enum Error {
 }
 
 impl Display for Error {
-    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             Error::Open => write!(f, "cannot open file"),
             Error::Read => write!(f, "cannot read file"),
