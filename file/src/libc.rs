@@ -102,6 +102,10 @@ mod tests {
         file_system.write(descriptor, 42).unwrap();
         file_system.close(descriptor).unwrap();
 
-        assert_eq!(fs::read(&path).unwrap(), &[42]);
+        let descriptor = file_system
+            .open(path.as_os_str().as_encoded_bytes(), libc::O_RDONLY as _)
+            .unwrap();
+        assert_eq!(file_system.read(descriptor).unwrap(), 42);
+        file_system.close(descriptor).unwrap();
     }
 }
