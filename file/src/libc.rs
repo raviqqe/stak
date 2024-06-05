@@ -2,6 +2,12 @@ use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
 
 pub struct LibcFileSystem {}
 
+impl LibcFileSystem {
+    pub const fn new() -> Self {
+        Self {}
+    }
+}
+
 impl FileSystem for LibcFileSystem {
     type Error = Error;
 
@@ -19,7 +25,7 @@ impl FileSystem for LibcFileSystem {
         if unsafe { libc::close(descriptor as _) } == 0 {
             Ok(())
         } else {
-            Err(Error::Open)
+            Err(Error::Close)
         }
     }
 
@@ -41,5 +47,36 @@ impl FileSystem for LibcFileSystem {
         } else {
             Err(Error::Write)
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Write;
+
+    #[test]
+    fn close() {
+        let file_system = LibcFileSystem::new();
+
+        let file = tempfile::NamedTempFile::new().unwrap();
+        let descriptor = file_system
+            .open(file.path().as_os_str().as_encoded_bytes(), 0)
+            .unwrap();
+        file_system.close(descriptor).unwrap();
+    }
+
+    #[test]
+    fn read() {
+        let file_system = LibcFileSystem::new();
+
+        let mut file = tempfile::NamedTempFile::new().unwrap();
+
+        file.write(b"a").unwrap();
+
+        let descriptor = file_system
+            .open(file.path().as_os_str().as_encoded_bytes(), 0)
+            .unwrap();
+        file_system.read(descriptor).unwrap();
     }
 }

@@ -2,6 +2,9 @@
 
 #![no_std]
 
+#[cfg(test)]
+extern crate std;
+
 mod error;
 mod file_system;
 #[cfg(feature = "libc")]

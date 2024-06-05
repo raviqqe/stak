@@ -13,6 +13,7 @@ libc = ["dep:libc"]
 
 [dependencies]
 libc = { version = "0.2", default-features = false, optional = true }
+tempfile = "3.10.1"
 
 [lints]
 workspace = true
