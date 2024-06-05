@@ -1,5 +1,6 @@
 use crate::{Error, FileDescriptor, FileSystem};
 
+#[derive(Debug)]
 pub struct LibcFileSystem {}
 
 impl LibcFileSystem {
@@ -16,8 +17,10 @@ impl FileSystem for LibcFileSystem {
             libc::open(
                 path as *const _ as _,
                 if output {
+                    // spell-checker: disable-next-line
                     libc::O_WRONLY | libc::O_CREAT | libc::O_TRUNC
                 } else {
+                    // spell-checker: disable-next-line
                     libc::O_RDONLY
                 },
             )
