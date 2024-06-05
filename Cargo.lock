@@ -312,6 +312,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-file"
+version = "0.1.0"
+
+[[package]]
 name = "stak-interpret"
 version = "0.1.42"
 dependencies = [
