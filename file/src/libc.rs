@@ -32,7 +32,7 @@ impl FileSystem for LibcFileSystem {
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        if unsafe { libc::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 0 {
+        if unsafe { libc::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
             Ok(buffer[0])
         } else {
             Err(Error::Read)
@@ -42,7 +42,7 @@ impl FileSystem for LibcFileSystem {
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         let buffer = [byte];
 
-        if unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } == 0 {
+        if unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } == 1 {
             Ok(())
         } else {
             Err(Error::Write)
@@ -53,7 +53,7 @@ impl FileSystem for LibcFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::io::Write;
+    use std::{ffi::CString, fs};
 
     #[test]
     fn close() {
@@ -68,15 +68,19 @@ mod tests {
 
     #[test]
     fn read() {
+        let directory = tempfile::tempdir().unwrap();
         let file_system = LibcFileSystem::new();
+        let path = directory.path().join("foo");
 
-        let mut file = tempfile::NamedTempFile::new().unwrap();
-
-        file.write(b"a").unwrap();
+        fs::write(&path, b"a").unwrap();
 
         let descriptor = file_system
-            .open(file.path().as_os_str().as_encoded_bytes(), 0)
+            .open(
+                &CString::new(path.to_str().unwrap()).unwrap().as_bytes(),
+                libc::O_RDONLY as _,
+            )
             .unwrap();
+
         file_system.read(descriptor).unwrap();
     }
 
@@ -84,13 +88,15 @@ mod tests {
     fn write() {
         let file_system = LibcFileSystem::new();
 
-        let mut file = tempfile::NamedTempFile::new().unwrap();
-
-        file.write(b"a").unwrap();
+        let file = tempfile::NamedTempFile::new().unwrap();
 
         let descriptor = file_system
-            .open(file.path().as_os_str().as_encoded_bytes(), 0)
+            .open(
+                file.path().as_os_str().as_encoded_bytes(),
+                libc::O_WRONLY as _,
+            )
             .unwrap();
+
         file_system.write(descriptor, 42).unwrap();
     }
 }
