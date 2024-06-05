@@ -79,4 +79,18 @@ mod tests {
             .unwrap();
         file_system.read(descriptor).unwrap();
     }
+
+    #[test]
+    fn write() {
+        let file_system = LibcFileSystem::new();
+
+        let mut file = tempfile::NamedTempFile::new().unwrap();
+
+        file.write(b"a").unwrap();
+
+        let descriptor = file_system
+            .open(file.path().as_os_str().as_encoded_bytes(), 0)
+            .unwrap();
+        file_system.write(descriptor, 42).unwrap();
+    }
 }
