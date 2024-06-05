@@ -192,9 +192,8 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
             Primitive::OPEN_FILE => Self::check_type(vm, Type::Pair)?,
-            Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
-            Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
-            Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
+            Primitive::READ_FILE => Self::check_type(vm, Type::Pair)?,
+            Primitive::WRITE_FILE => Self::check_type(vm, Type::Pair)?,
             _ => return Err(Error::Illegal),
         }
 
