@@ -15,3 +15,4 @@ pub use libc::LibcFileSystem;
 pub use void::VoidFileSystem;
 
 pub type FileDescriptor = usize;
+pub type OpenFlagSet = u32;

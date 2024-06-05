@@ -1,11 +1,11 @@
-use crate::{Error, FileDescriptor, FileSystem};
+use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
 
 pub struct VoidFileSystem {}
 
 impl FileSystem for VoidFileSystem {
     type Error = Error;
 
-    fn open(&self, _: &[u8]) -> Result<FileDescriptor, Self::Error> {
+    fn open(&self, _: &[u8], _: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
         Err(Error::Open)
     }
 

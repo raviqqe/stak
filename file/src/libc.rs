@@ -1,12 +1,18 @@
-use crate::{Error, FileDescriptor, FileSystem};
+use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
 
 pub struct LibcFileSystem {}
 
 impl FileSystem for LibcFileSystem {
     type Error = Error;
 
-    fn open(&self, _: &[u8]) -> Result<FileDescriptor, Self::Error> {
-        Err(Error::Open)
+    fn open(&self, path: &[u8], flags: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
+        let descriptor = unsafe { libc::open(path as *const _ as _, flags as _) };
+
+        if descriptor >= 0 {
+            Ok(descriptor as _)
+        } else {
+            Err(Error::Open)
+        }
     }
 
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
