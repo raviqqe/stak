@@ -1,8 +1,9 @@
-use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
+use crate::{Error, FileDescriptor, FileSystem};
 
 #[derive(Debug)]
 pub struct VoidFileSystem {}
 
+/// A file system that does nothing and fails every operation.
 impl VoidFileSystem {
     pub const fn new() -> Self {
         Self {}
@@ -12,8 +13,12 @@ impl VoidFileSystem {
 impl FileSystem for VoidFileSystem {
     type Error = Error;
 
-    fn open(&self, _: &[u8], _: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
+    fn open(&self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
         Err(Error::Open)
+    }
+
+    fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
+        Err(Error::Close)
     }
 
     fn read(&self, _: FileDescriptor) -> Result<u8, Self::Error> {
