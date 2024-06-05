@@ -53,7 +53,7 @@ impl FileSystem for LibcFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::{ffi::CString, fs};
+    use std::fs;
 
     #[test]
     fn close() {
@@ -75,10 +75,7 @@ mod tests {
         fs::write(&path, b"a").unwrap();
 
         let descriptor = file_system
-            .open(
-                &CString::new(path.to_str().unwrap()).unwrap().as_bytes(),
-                libc::O_RDONLY as _,
-            )
+            .open(path.as_os_str().as_encoded_bytes(), libc::O_RDONLY as _)
             .unwrap();
 
         file_system.read(descriptor).unwrap();
