@@ -8,7 +8,7 @@ pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
 }
 
 impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
-    pub fn new(stdin: I, stdout: O, stderr: E) -> Self {
+    pub const fn new(stdin: I, stdout: O, stderr: E) -> Self {
         Self {
             stdin,
             stdout,
@@ -16,15 +16,15 @@ impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
         }
     }
 
-    pub fn stdin(&self) -> &I {
+    pub const fn stdin(&self) -> &I {
         &self.stdin
     }
 
-    pub fn stdout(&self) -> &O {
+    pub const fn stdout(&self) -> &O {
         &self.stdout
     }
 
-    pub fn stderr(&self) -> &E {
+    pub const fn stderr(&self) -> &E {
         &self.stderr
     }
 }
