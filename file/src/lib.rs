@@ -13,6 +13,7 @@ mod system;
 mod void;
 
 pub use error::Error;
+pub use flag::FileFlag;
 #[cfg(feature = "libc")]
 pub use libc::LibcFileSystem;
 pub use system::FileSystem;
