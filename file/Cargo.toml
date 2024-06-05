@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-std = ["dep:libc"]
+libc = ["dep:libc"]
 
 [dependencies]
 libc = { version = "0.2", default-features = false, optional = true }

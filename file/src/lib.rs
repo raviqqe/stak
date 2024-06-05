@@ -2,11 +2,10 @@
 
 #![no_std]
 
-#[cfg(feature = "std")]
-extern crate std;
-
 mod error;
 mod file_system;
+#[cfg(feature = "libc")]
+mod libc;
 mod void;
 
 pub use error::Error;
