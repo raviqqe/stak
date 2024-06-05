@@ -16,6 +16,10 @@ impl FileSystem for VoidFileSystem {
         Err(Error::Open)
     }
 
+    fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
+        Err(Error::Close)
+    }
+
     fn read(&self, _: FileDescriptor) -> Result<u8, Self::Error> {
         Err(Error::Read)
     }

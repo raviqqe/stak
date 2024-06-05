@@ -194,6 +194,9 @@ impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
             Primitive::OPEN_FILE => {
                 todo!();
             }
+            Primitive::CLOSE_FILE => {
+                todo!();
+            }
             Primitive::READ_FILE => {
                 todo!();
             }
