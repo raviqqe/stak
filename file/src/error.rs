@@ -8,11 +8,11 @@ pub enum Error {
 }
 
 impl Display for Error {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Error::Open => write!(f, "cannot open file"),
-            Error::Read => write!(f, "cannot read file"),
-            Error::Write => write!(f, "cannot write file"),
+            Error::Open => write!(formatter, "cannot open file"),
+            Error::Read => write!(formatter, "cannot read file"),
+            Error::Write => write!(formatter, "cannot write file"),
         }
     }
 }
