@@ -1,4 +1,4 @@
-use crate::{Error, FileDescriptor, OpenFlagSet};
+use crate::{Error, FileDescriptor};
 use core::fmt::Debug;
 
 /// A file system.
@@ -6,7 +6,7 @@ pub trait FileSystem {
     type Error: Debug;
 
     /// Opens a file.
-    fn open(&self, path: &[u8], flags: OpenFlagSet) -> Result<FileDescriptor, Error>;
+    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Error>;
 
     /// Closes a file.
     fn close(&self, descriptor: FileDescriptor) -> Result<(), Error>;

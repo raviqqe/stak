@@ -1,4 +1,4 @@
-use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
+use crate::{Error, FileDescriptor, FileSystem};
 
 pub struct LibcFileSystem {}
 
@@ -11,8 +11,17 @@ impl LibcFileSystem {
 impl FileSystem for LibcFileSystem {
     type Error = Error;
 
-    fn open(&self, path: &[u8], flags: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
-        let descriptor = unsafe { libc::open(path as *const _ as _, flags as _) };
+    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+        let descriptor = unsafe {
+            libc::open(
+                path as *const _ as _,
+                if output {
+                    libc::O_WRONLY | libc::O_CREAT | libc::O_TRUNC
+                } else {
+                    libc::O_RDONLY
+                },
+            )
+        };
 
         if descriptor >= 0 {
             Ok(descriptor as _)
@@ -64,7 +73,7 @@ mod tests {
         let file_system = LibcFileSystem::new();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), 0)
+            .open(path.as_os_str().as_encoded_bytes(), false)
             .unwrap();
         file_system.close(descriptor).unwrap();
     }
@@ -79,7 +88,7 @@ mod tests {
         fs::write(&path, &[42]).unwrap();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), libc::O_RDONLY as _)
+            .open(path.as_os_str().as_encoded_bytes(), false)
             .unwrap();
 
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
@@ -93,17 +102,14 @@ mod tests {
         let file_system = LibcFileSystem::new();
 
         let descriptor = file_system
-            .open(
-                path.as_os_str().as_encoded_bytes(),
-                (libc::O_WRONLY | libc::O_CREAT) as _,
-            )
+            .open(path.as_os_str().as_encoded_bytes(), true)
             .unwrap();
 
         file_system.write(descriptor, 42).unwrap();
         file_system.close(descriptor).unwrap();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), libc::O_RDONLY as _)
+            .open(path.as_os_str().as_encoded_bytes(), false)
             .unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
         file_system.close(descriptor).unwrap();

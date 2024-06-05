@@ -1,4 +1,4 @@
-use crate::{Error, FileDescriptor, FileSystem, OpenFlagSet};
+use crate::{Error, FileDescriptor, FileSystem};
 
 #[derive(Debug)]
 pub struct VoidFileSystem {}
@@ -13,7 +13,7 @@ impl VoidFileSystem {
 impl FileSystem for VoidFileSystem {
     type Error = Error;
 
-    fn open(&self, _: &[u8], _: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
+    fn open(&self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
         Err(Error::Open)
     }
 
