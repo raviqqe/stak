@@ -19,7 +19,13 @@ impl FileSystem for LibcFileSystem {
         }
     }
 
-    fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
-        Err(Error::Write)
+    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
+        let buffer = [byte];
+
+        if unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } == 0 {
+            Ok(())
+        } else {
+            Err(Error::Write)
+        }
     }
 }
