@@ -12,7 +12,7 @@ impl FileSystem for LibcFileSystem {
     type Error = Error;
 
     fn open(&self, path: &[u8], flags: OpenFlagSet) -> Result<FileDescriptor, Self::Error> {
-        let descriptor = unsafe { libc::open(path as *const _ as _, flags as _) };
+        let descriptor = unsafe { libc::open(path as *const _ as _, flags as _, 0644) };
 
         if descriptor >= 0 {
             Ok(descriptor as _)
@@ -87,17 +87,21 @@ mod tests {
 
     #[test]
     fn write() {
-        let file_system = LibcFileSystem::new();
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("foo");
 
-        let file = tempfile::NamedTempFile::new().unwrap();
+        let file_system = LibcFileSystem::new();
 
         let descriptor = file_system
             .open(
-                file.path().as_os_str().as_encoded_bytes(),
-                libc::O_WRONLY as _,
+                path.as_os_str().as_encoded_bytes(),
+                (libc::O_WRONLY | libc::O_CREAT) as _,
             )
             .unwrap();
 
         file_system.write(descriptor, 42).unwrap();
+        file_system.close(descriptor).unwrap();
+
+        assert_eq!(fs::read(&path).unwrap(), &[42]);
     }
 }
