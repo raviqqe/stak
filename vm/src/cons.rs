@@ -1,6 +1,7 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
+/// A tag.
 pub type Tag = u16;
 
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`

@@ -1,10 +1,11 @@
 use crate::{Error, FileDescriptor, FileSystem};
 
+/// A file system that does nothing and fails every operation.
 #[derive(Debug)]
 pub struct VoidFileSystem {}
 
-/// A file system that does nothing and fails every operation.
 impl VoidFileSystem {
+    /// Creates a file system.
     pub const fn new() -> Self {
         Self {}
     }
