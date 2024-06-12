@@ -2,6 +2,7 @@
 
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
+use stak_file::VoidFileSystem;
 use stak_macro::include_r7rs;
 use stak_primitive::{SmallError, SmallPrimitiveSet};
 use stak_vm::Vm;
@@ -14,7 +15,10 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(reader, writer, empty())),
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(reader, writer, empty()),
+            VoidFileSystem::new(),
+        ),
     )?;
 
     vm.initialize(PROGRAM.iter().copied())?;

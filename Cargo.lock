@@ -404,6 +404,7 @@ dependencies = [
  "pretty_assertions",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-primitive",
  "stak-vm",
