@@ -14,7 +14,7 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem> {
     file_system: F,
 }
 
-impl<D: Device> SmallPrimitiveSet<D> {
+impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
     /// Creates a primitive set.
     pub fn new(device: D, file_system: F) -> Self {
         Self {
@@ -128,7 +128,7 @@ impl<D: Device> SmallPrimitiveSet<D> {
     }
 }
 
-impl<T: Device> PrimitiveSet for SmallPrimitiveSet<T> {
+impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
     type Error = Error;
 
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
