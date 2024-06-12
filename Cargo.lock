@@ -369,6 +369,7 @@ dependencies = [
  "main_error",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-primitive",
  "stak-vm",
 ]
