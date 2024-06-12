@@ -300,6 +300,7 @@ dependencies = [
  "main_error",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-minifier-macro",
  "stak-primitive",
