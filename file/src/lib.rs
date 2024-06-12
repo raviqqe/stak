@@ -17,4 +17,5 @@ pub use libc::LibcFileSystem;
 pub use system::FileSystem;
 pub use void::VoidFileSystem;
 
+/// A file descriptor.
 pub type FileDescriptor = usize;

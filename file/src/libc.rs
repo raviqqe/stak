@@ -1,9 +1,11 @@
 use crate::{Error, FileDescriptor, FileSystem};
 
+/// A file system based on the libc API.
 #[derive(Debug)]
 pub struct LibcFileSystem {}
 
 impl LibcFileSystem {
+    /// Creates a file system.
     pub const fn new() -> Self {
         Self {}
     }
