@@ -14,6 +14,7 @@ mstak-util = { version = "0.1.17", path = "../util" }
 stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }
+stak-file = { version = "0.1.0", path = "../../../file", features = ["libc"] }
 stak-primitive = { version = "0.2.25", path = "../../../primitive" }
 stak-vm = { version = "0.4.0", path = "../../../vm" }
 
