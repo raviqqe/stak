@@ -1,5 +1,6 @@
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
+use stak_file::VoidFileSystem;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
 use wasm_bindgen::prelude::*;
@@ -19,7 +20,10 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
 
     let mut vm = Vm::new(
         &mut heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(input, &mut output, &mut error)),
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(input, &mut output, &mut error),
+            VoidFileSystem::new(),
+        ),
     )?;
 
     vm.initialize(bytecodes.iter().copied())?;
