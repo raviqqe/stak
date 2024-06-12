@@ -9,7 +9,9 @@ use stak_vm::{Value, Vm};
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
 
-fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>> {
+fn create_vm(
+    heap: &mut [Value],
+) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>, VoidFileSystem> {
     Vm::new(
         heap,
         SmallPrimitiveSet::new(
