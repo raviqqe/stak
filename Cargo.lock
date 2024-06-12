@@ -383,6 +383,7 @@ dependencies = [
  "quote",
  "stak-compiler",
  "stak-device",
+ "stak-file",
  "stak-macro-util",
  "stak-primitive",
  "stak-vm",

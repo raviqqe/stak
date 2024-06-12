@@ -1,6 +1,7 @@
 #![no_std]
 
 use stak_device::FixedBufferDevice;
+use stak_file::VoidFileSystem;
 use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
@@ -11,7 +12,10 @@ const BUFFER_SIZE: usize = 1 << 10;
 fn create_vm(heap: &mut [Value]) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>> {
     Vm::new(
         heap,
-        SmallPrimitiveSet::new(FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[])),
+        SmallPrimitiveSet::new(
+            FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]),
+            VoidFileSystem::new(),
+        ),
     )
     .unwrap()
 }
