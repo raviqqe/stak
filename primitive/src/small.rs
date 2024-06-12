@@ -126,6 +126,10 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
 
         values
     }
+
+    fn push_result<T, E>(vm: &mut Vm<Self>, result: Result<T, E>) -> Result<(), Error> {
+        vm.push(vm.boolean(result.is_err()).into())
+    }
 }
 
 impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
@@ -196,17 +200,40 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
             // Optimize type checks.
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
-            Primitive::OPEN_FILE => {
-                todo!();
-            }
+            Primitive::OPEN_FILE => todo!(),
             Primitive::CLOSE_FILE => {
-                todo!();
+                let [descriptor] = Self::pop_number_arguments(vm);
+
+                let result = vm
+                    .primitive_set_mut()
+                    .file_system
+                    .close(descriptor.to_i64() as _);
+
+                Self::push_result(vm, result)?;
             }
             Primitive::READ_FILE => {
-                todo!();
+                let [descriptor] = Self::pop_number_arguments(vm);
+
+                let result = vm
+                    .primitive_set_mut()
+                    .file_system
+                    .read(descriptor.to_i64() as _);
+
+                vm.push(if let Ok(byte) = result {
+                    Number::new(byte as _).into()
+                } else {
+                    vm.boolean(false).into()
+                })?;
             }
             Primitive::WRITE_FILE => {
-                todo!();
+                let [descriptor, byte] = Self::pop_number_arguments(vm);
+
+                let result = vm
+                    .primitive_set_mut()
+                    .file_system
+                    .write(descriptor.to_i64() as _, byte.to_i64() as _);
+
+                Self::push_result(vm, result)?;
             }
             _ => return Err(Error::Illegal),
         }
