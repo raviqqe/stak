@@ -5,26 +5,31 @@ pub use self::error::Error;
 use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Sub};
 use stak_device::Device;
+use stak_file::FileSystem;
 use stak_vm::{Number, PrimitiveSet, Tag, Type, Value, Vm};
 
 /// A primitive set that covers R7RS small.
-pub struct SmallPrimitiveSet<T: Device> {
-    device: T,
+pub struct SmallPrimitiveSet<D: Device, F: FileSystem> {
+    device: D,
+    file_system: F,
 }
 
-impl<T: Device> SmallPrimitiveSet<T> {
+impl<D: Device> SmallPrimitiveSet<D> {
     /// Creates a primitive set.
-    pub fn new(device: T) -> Self {
-        Self { device }
+    pub fn new(device: D, file_system: F) -> Self {
+        Self {
+            device,
+            file_system,
+        }
     }
 
     /// Returns a reference to a device.
-    pub fn device(&self) -> &T {
+    pub fn device(&self) -> &D {
         &self.device
     }
 
     /// Returns a mutable reference to a device.
-    pub fn device_mut(&mut self) -> &mut T {
+    pub fn device_mut(&mut self) -> &mut D {
         &mut self.device
     }
 
@@ -80,7 +85,7 @@ impl<T: Device> SmallPrimitiveSet<T> {
 
     fn write(
         vm: &mut Vm<Self>,
-        write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
+        write: fn(&mut D, u8) -> Result<(), <D as Device>::Error>,
         error: Error,
     ) -> Result<(), Error> {
         let byte = vm.top().assume_number().to_i64() as u8;
