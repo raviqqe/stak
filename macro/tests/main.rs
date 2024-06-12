@@ -11,7 +11,7 @@ const BUFFER_SIZE: usize = 1 << 10;
 
 fn create_vm(
     heap: &mut [Value],
-) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>>, VoidFileSystem> {
+) -> Vm<SmallPrimitiveSet<FixedBufferDevice<BUFFER_SIZE, 0>, VoidFileSystem>> {
     Vm::new(
         heap,
         SmallPrimitiveSet::new(
