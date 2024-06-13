@@ -254,12 +254,8 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
                 let mut path = Vec::<_, PATH_SIZE>::new();
 
                 while list.assume_cons() != vm.null() {
-                    if path
-                        .push(vm.car_value(list).assume_number().to_i64() as u8)
-                        .is_err()
-                    {
-                        return None;
-                    };
+                    path.push(vm.car_value(list).assume_number().to_i64() as u8)
+                        .ok()?;
                 }
 
                 let output = output == vm.boolean(true).into();
