@@ -22,6 +22,7 @@ stak-code = { version = "0.2", path = "../code" }
 insta = "1.39.0"
 stak-code = { path = "../code", features = ["alloc"] }
 stak-device = { path = "../device" }
+stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
 stak-primitive = { path = "../primitive" }
 

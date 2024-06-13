@@ -12,6 +12,7 @@
 use core::{ffi::CStr, mem::size_of, slice};
 use mstak_util::Mmap;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
+use stak_file::LibcFileSystem;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
@@ -36,11 +37,10 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
 
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(
-            Stdin::new(),
-            Stdout::new(),
-            Stderr::new(),
-        )),
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+            LibcFileSystem::new(),
+        ),
     )
     .unwrap();
 

@@ -20,6 +20,7 @@ stak-macro-util = { version = "0.1.17", path = "../macro-util" }
 
 [dev-dependencies]
 stak-device = { path = "../device" }
+stak-file = { path = "../file" }
 stak-primitive = { path = "../primitive" }
 stak-vm = { path = "../vm" }
 

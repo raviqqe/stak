@@ -10,6 +10,7 @@ use clap::Parser;
 use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
+use stak_file::LibcFileSystem;
 use stak_primitive::SmallPrimitiveSet;
 use stak_profiler::{
     calculate_durations, calculate_flamegraph, collapse_stacks, read_records, reverse_stacks,
@@ -79,8 +80,11 @@ fn main() -> Result<(), MainError> {
                     .open(&arguments.profile_file)?,
             ));
             let mut heap = vec![Default::default(); arguments.heap_size];
-            let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?
-                .with_profiler(&mut profiler);
+            let mut vm = Vm::new(
+                &mut heap,
+                SmallPrimitiveSet::new(StdioDevice::new(), LibcFileSystem::new()),
+            )?
+            .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;
             vm.run()?;

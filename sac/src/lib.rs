@@ -6,6 +6,7 @@ pub mod __private {
     pub use main_error;
     pub use stak_configuration;
     pub use stak_device;
+    pub use stak_file;
     pub use stak_macro;
     pub use stak_primitive;
     pub use stak_vm;
@@ -28,6 +29,7 @@ macro_rules! main {
             clap::{self, Parser},
             main_error::MainError,
             stak_device::StdioDevice,
+            stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
             stak_vm::Vm,
@@ -45,7 +47,10 @@ macro_rules! main {
             let arguments = Arguments::parse();
 
             let mut heap = vec![Default::default(); arguments.heap_size];
-            let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
+            let mut vm = Vm::new(
+                &mut heap,
+                SmallPrimitiveSet::new(StdioDevice::new(), LibcFileSystem::new()),
+            )?;
 
             vm.initialize(include_r7rs!($path).iter().copied())?;
 

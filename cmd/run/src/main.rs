@@ -10,6 +10,7 @@ use clap::Parser;
 use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{ReadWriteDevice, StdioDevice};
+use stak_file::{LibcFileSystem, VoidFileSystem};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
@@ -56,7 +57,10 @@ fn main() -> Result<(), MainError> {
     read_source(&arguments.files, &mut source)?;
     compile(&source, &mut target, &mut heap)?;
 
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(StdioDevice::new()))?;
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(StdioDevice::new(), LibcFileSystem::new()),
+    )?;
 
     vm.initialize(target)?;
 
@@ -74,7 +78,10 @@ fn read_source(files: &[PathBuf], source: &mut String) -> Result<(), io::Error> 
 fn compile(source: &str, target: &mut Vec<u8>, heap: &mut [Value]) -> Result<(), Box<dyn Error>> {
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(source.as_bytes(), target, empty())),
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(source.as_bytes(), target, empty()),
+            VoidFileSystem::new(),
+        ),
     )?;
 
     vm.initialize(COMPILER_PROGRAM.iter().copied())?;

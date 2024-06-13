@@ -5,6 +5,7 @@ mod error;
 pub use self::error::CompileError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
+use stak_file::VoidFileSystem;
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::Vm;
 use std::{
@@ -44,7 +45,10 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut error_message = vec![];
     let device = ReadWriteDevice::new(source, target, &mut error_message);
-    let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device))?;
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(device, VoidFileSystem::new()),
+    )?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 

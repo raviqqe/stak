@@ -13,6 +13,7 @@ use core::{array, env, ffi::CStr, slice};
 use mstak_util::{Heap, Mmap};
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
+use stak_file::{LibcFileSystem, VoidFileSystem};
 use stak_primitive::SmallPrimitiveSet;
 use stak_vm::{Value, Vm};
 
@@ -60,11 +61,10 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
 
     let mut vm = Vm::new(
         heap.as_slice_mut(),
-        SmallPrimitiveSet::new(ReadWriteDevice::new(
-            Stdin::new(),
-            Stdout::new(),
-            Stderr::new(),
-        )),
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
+            LibcFileSystem::new(),
+        ),
     )
     .unwrap();
 
@@ -77,7 +77,10 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
 fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
     let mut vm = Vm::new(
         heap,
-        SmallPrimitiveSet::new(ReadWriteDevice::new(source, target, Stderr::new())),
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(source, target, Stderr::new()),
+            VoidFileSystem::new(),
+        ),
     )
     .unwrap();
 

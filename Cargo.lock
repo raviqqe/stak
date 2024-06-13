@@ -300,6 +300,7 @@ dependencies = [
  "main_error",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-minifier-macro",
  "stak-primitive",
@@ -328,6 +329,7 @@ dependencies = [
  "indoc",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-primitive",
  "stak-vm",
 ]
@@ -368,6 +370,7 @@ dependencies = [
  "main_error",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-primitive",
  "stak-vm",
 ]
@@ -380,6 +383,7 @@ dependencies = [
  "quote",
  "stak-compiler",
  "stak-device",
+ "stak-file",
  "stak-macro-util",
  "stak-primitive",
  "stak-vm",
@@ -402,6 +406,7 @@ dependencies = [
  "pretty_assertions",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-primitive",
  "stak-vm",
@@ -430,6 +435,7 @@ name = "stak-primitive"
 version = "0.2.41"
 dependencies = [
  "stak-device",
+ "stak-file",
  "stak-vm",
 ]
 
@@ -441,6 +447,7 @@ dependencies = [
  "main_error",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-primitive",
  "stak-profiler",
  "stak-vm",
@@ -470,6 +477,7 @@ dependencies = [
  "main_error",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-primitive",
  "stak-vm",
@@ -482,6 +490,7 @@ dependencies = [
  "insta",
  "stak-code",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-primitive",
 ]
@@ -494,6 +503,7 @@ dependencies = [
  "stak-compiler",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-macro",
  "stak-primitive",
  "stak-vm",

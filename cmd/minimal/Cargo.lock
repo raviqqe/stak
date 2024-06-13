@@ -16,6 +16,7 @@ dependencies = [
  "mstak-util",
  "stak-configuration",
  "stak-device",
+ "stak-file",
  "stak-primitive",
  "stak-vm",
 ]
@@ -27,6 +28,7 @@ dependencies = [
  "libc",
  "mstak-util",
  "stak-device",
+ "stak-file",
  "stak-primitive",
  "stak-vm",
 ]
@@ -54,10 +56,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-file"
+version = "0.1.0"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "stak-primitive"
 version = "0.2.41"
 dependencies = [
  "stak-device",
+ "stak-file",
  "stak-vm",
 ]
 
