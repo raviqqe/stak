@@ -229,8 +229,8 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
                 vm.primitive_set_mut()
                     .file_system
                     .open(&path, output)
-                    .map(|descriptor| Number::new(descriptor as _).into())
                     .ok()
+                    .map(|descriptor| Number::new(descriptor as _).into())
             })?,
             Primitive::CLOSE_FILE => Self::operate_result(vm, |vm| {
                 let [descriptor] = Self::pop_number_arguments(vm);
