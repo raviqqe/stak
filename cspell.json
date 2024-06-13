@@ -23,6 +23,7 @@
     "fseek",
     "fstat",
     "ftell",
+    "heapless",
     "indoc",
     "insta",
     "lcov",
