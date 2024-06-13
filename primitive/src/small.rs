@@ -9,11 +9,12 @@ use stak_device::Device;
 use stak_file::FileSystem;
 use stak_vm::{Number, PrimitiveSet, Tag, Type, Value, Vm};
 
+const PATH_SIZE: usize = 64;
+
 /// A primitive set that covers R7RS small.
-pub struct SmallPrimitiveSet<D: Device, F: FileSystem, const N: usize = 64> {
+pub struct SmallPrimitiveSet<D: Device, F: FileSystem> {
     device: D,
     file_system: F,
-    path: Vec<u8, N>,
 }
 
 impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
@@ -22,7 +23,6 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         Self {
             device,
             file_system,
-            path: Vec::new(),
         }
     }
 
@@ -54,6 +54,26 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         let [x, y] = Self::pop_number_arguments(vm);
 
         vm.push(vm.boolean(operate(x.to_i64(), y.to_i64())).into())
+    }
+
+    fn operate_option<'a>(
+        vm: &mut Vm<'a, Self>,
+        operate: impl Fn(&mut Vm<'a, Self>) -> Option<Value>,
+    ) -> Result<(), Error> {
+        let value = if let Some(value) = operate(vm) {
+            value
+        } else {
+            vm.boolean(false).into()
+        };
+
+        vm.push(value)
+    }
+
+    fn operate_result<'a, E>(
+        vm: &mut Vm<'a, Self>,
+        operate: impl Fn(&mut Vm<'a, Self>) -> Result<(), E>,
+    ) -> Result<(), Error> {
+        vm.push(vm.boolean(operate(vm).is_err()).into())
     }
 
     fn rib(vm: &mut Vm<Self>, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
@@ -133,6 +153,32 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
     fn push_result<T, E>(vm: &mut Vm<Self>, result: Result<T, E>) -> Result<(), Error> {
         vm.push(vm.boolean(result.is_err()).into())
     }
+
+    fn open_file(vm: &mut Vm<Self>) -> Result<(), Error> {
+        let [list, output] = Self::pop_arguments(vm);
+        let mut path = Vec::<_, PATH_SIZE>::new();
+
+        while list.assume_cons() != vm.null() {
+            if path
+                .push(vm.car_value(list).assume_number().to_i64() as u8)
+                .is_err()
+            {
+                vm.push(vm.boolean(false).into())?;
+                return Ok(());
+            }
+        }
+
+        let output = output == vm.boolean(true).into();
+        let result = vm.primitive_set_mut().file_system.open(&path, output);
+
+        vm.push(if let Ok(descriptor) = result {
+            Number::new(descriptor as _).into()
+        } else {
+            vm.boolean(false).into()
+        })?;
+
+        Ok(())
+    }
 }
 
 impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
@@ -203,41 +249,50 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
             // Optimize type checks.
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
-            Primitive::OPEN_FILE => todo!(),
-            Primitive::CLOSE_FILE => {
+            Primitive::OPEN_FILE => Self::operate_option(vm, |vm| {
+                let [list, output] = Self::pop_arguments(vm);
+                let mut path = Vec::<_, PATH_SIZE>::new();
+
+                while list.assume_cons() != vm.null() {
+                    if path
+                        .push(vm.car_value(list).assume_number().to_i64() as u8)
+                        .is_err()
+                    {
+                        return None;
+                    };
+                }
+
+                let output = output == vm.boolean(true).into();
+
+                vm.primitive_set_mut()
+                    .file_system
+                    .open(&path, output)
+                    .map(|descriptor| Number::new(descriptor as _).into())
+                    .ok()
+            })?,
+            Primitive::CLOSE_FILE => Self::operate_result(vm, |vm| {
                 let [descriptor] = Self::pop_number_arguments(vm);
 
-                let result = vm
-                    .primitive_set_mut()
+                vm.primitive_set_mut()
                     .file_system
-                    .close(descriptor.to_i64() as _);
-
-                Self::push_result(vm, result)?;
-            }
-            Primitive::READ_FILE => {
+                    .close(descriptor.to_i64() as _)
+            })?,
+            Primitive::READ_FILE => Self::operate_option(vm, |vm| {
                 let [descriptor] = Self::pop_number_arguments(vm);
 
-                let result = vm
-                    .primitive_set_mut()
+                vm.primitive_set_mut()
                     .file_system
-                    .read(descriptor.to_i64() as _);
-
-                vm.push(if let Ok(byte) = result {
-                    Number::new(byte as _).into()
-                } else {
-                    vm.boolean(false).into()
-                })?;
-            }
-            Primitive::WRITE_FILE => {
+                    .read(descriptor.to_i64() as _)
+                    .ok()
+                    .map(|byte| Number::new(byte as _).into())
+            })?,
+            Primitive::WRITE_FILE => Self::operate_result(vm, |vm| {
                 let [descriptor, byte] = Self::pop_number_arguments(vm);
 
-                let result = vm
-                    .primitive_set_mut()
+                vm.primitive_set_mut()
                     .file_system
-                    .write(descriptor.to_i64() as _, byte.to_i64() as _);
-
-                Self::push_result(vm, result)?;
-            }
+                    .write(descriptor.to_i64() as _, byte.to_i64() as _)
+            })?,
             _ => return Err(Error::Illegal),
         }
 
