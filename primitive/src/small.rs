@@ -9,9 +9,10 @@ use stak_file::FileSystem;
 use stak_vm::{Number, PrimitiveSet, Tag, Type, Value, Vm};
 
 /// A primitive set that covers R7RS small.
-pub struct SmallPrimitiveSet<D: Device, F: FileSystem> {
+pub struct SmallPrimitiveSet<D: Device, F: FileSystem, const N: usize = 64> {
     device: D,
     file_system: F,
+    path: Vec<u8, N>,
 }
 
 impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
