@@ -4,6 +4,7 @@ mod primitive;
 pub use self::error::Error;
 use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Sub};
+use heapless::Vec;
 use stak_device::Device;
 use stak_file::FileSystem;
 use stak_vm::{Number, PrimitiveSet, Tag, Type, Value, Vm};
@@ -21,6 +22,7 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         Self {
             device,
             file_system,
+            path: Vec::new(),
         }
     }
 
