@@ -225,7 +225,7 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
                         .ok()?;
                 }
 
-                let output = output == vm.boolean(true).into();
+                let output = output != vm.boolean(false).into();
 
                 vm.primitive_set_mut()
                     .file_system
