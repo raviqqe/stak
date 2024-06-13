@@ -354,7 +354,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "libc",
  "tempfile",
@@ -427,7 +427,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.2.41"
+version = "0.3.0"
 dependencies = [
  "stak-device",
  "stak-vm",
