@@ -61,7 +61,6 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         operate: impl Fn(&mut Vm<'a, Self>) -> Option<Value>,
     ) -> Result<(), Error> {
         let value = operate(vm).unwrap_or_else(|| vm.boolean(false).into());
-
         vm.push(value)
     }
 
