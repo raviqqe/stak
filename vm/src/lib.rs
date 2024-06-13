@@ -14,7 +14,7 @@
 //!
 //! let mut heap = [Default::default(); HEAP_SIZE];
 //! let device = FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]);
-//! let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device), VoidFileSystem::new()).unwrap();
+//! let mut vm = Vm::new(&mut heap, SmallPrimitiveSet::new(device, VoidFileSystem::new())).unwrap();
 //!
 //! const PROGRAM: &[u8] = compile_r7rs!(r#"
 //!     (import (scheme write))
