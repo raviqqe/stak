@@ -60,11 +60,7 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         vm: &mut Vm<'a, Self>,
         operate: impl Fn(&mut Vm<'a, Self>) -> Option<Value>,
     ) -> Result<(), Error> {
-        let value = if let Some(value) = operate(vm) {
-            value
-        } else {
-            vm.boolean(false).into()
-        };
+        let value = operate(vm).unwrap_or_else(|| vm.boolean(false).into());
 
         vm.push(value)
     }
@@ -73,7 +69,8 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         vm: &mut Vm<'a, Self>,
         operate: impl Fn(&mut Vm<'a, Self>) -> Result<(), E>,
     ) -> Result<(), Error> {
-        vm.push(vm.boolean(operate(vm).is_err()).into())
+        let result = operate(vm);
+        vm.push(vm.boolean(result.is_err()).into())
     }
 
     fn rib(vm: &mut Vm<Self>, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
@@ -148,36 +145,6 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         values[0] = vm.pop();
 
         values
-    }
-
-    fn push_result<T, E>(vm: &mut Vm<Self>, result: Result<T, E>) -> Result<(), Error> {
-        vm.push(vm.boolean(result.is_err()).into())
-    }
-
-    fn open_file(vm: &mut Vm<Self>) -> Result<(), Error> {
-        let [list, output] = Self::pop_arguments(vm);
-        let mut path = Vec::<_, PATH_SIZE>::new();
-
-        while list.assume_cons() != vm.null() {
-            if path
-                .push(vm.car_value(list).assume_number().to_i64() as u8)
-                .is_err()
-            {
-                vm.push(vm.boolean(false).into())?;
-                return Ok(());
-            }
-        }
-
-        let output = output == vm.boolean(true).into();
-        let result = vm.primitive_set_mut().file_system.open(&path, output);
-
-        vm.push(if let Ok(descriptor) = result {
-            Number::new(descriptor as _).into()
-        } else {
-            vm.boolean(false).into()
-        })?;
-
-        Ok(())
     }
 }
 
