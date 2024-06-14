@@ -13,6 +13,6 @@ std = []
 
 [dependencies]
 heapless = "0.8.0"
-stak-device = { version = "0.2.40", path = "../device" }
+stak-device = { version = "0.2.41", path = "../device" }
 stak-file = { version = "0.1.0", path = "../file" }
-stak-vm = { version = "0.4.10", path = "../vm" }
+stak-vm = { version = "0.4.11", path = "../vm" }
