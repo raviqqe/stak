@@ -1427,6 +1427,7 @@
     eof-object
     eof-object?
 
+    make-port
     port?
     port-descriptor
     port-last-byte

@@ -216,12 +216,13 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
             Primitive::OPEN_FILE => Self::operate_option(vm, |vm| {
-                let [list, output] = Self::pop_arguments(vm);
+                let [mut list, output] = Self::pop_arguments(vm);
                 let mut path = Vec::<_, PATH_SIZE>::new();
 
                 while list.assume_cons() != vm.null() {
                     path.push(vm.car_value(list).assume_number().to_i64() as u8)
                         .ok()?;
+                    list = vm.cdr_value(list);
                 }
 
                 path.push(0).ok()?;
