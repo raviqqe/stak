@@ -3015,7 +3015,7 @@
       (lambda (path thunk)
         (let ((file (open-file path)))
           (parameterize ((current-port file))
-            (let ((result (thunk)))
+            (let ((value (thunk)))
               (close-port file)
               value)))))
 
