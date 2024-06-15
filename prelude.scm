@@ -568,9 +568,9 @@
     (define $$- (primitive 13))
     (define $$* (primitive 14))
     (define $$/ (primitive 15))
-    (define $$read-u8 (primitive 16))
-    (define $$write-u8 (primitive 17))
-    (define $$write-error-u8 (primitive 18))
+    (define $$read-input (primitive 16))
+    (define $$write-output (primitive 17))
+    (define $$write-error (primitive 18))
     (define $$halt (primitive 19))
     (define null? (primitive 20))
     (define pair? (primitive 21))
@@ -1273,7 +1273,7 @@
     $$-
     $$*
     $$/
-    $$read-u8
+    $$read-input
 
     apply
     data-rib
@@ -1742,7 +1742,7 @@
             (let ((descriptor (port-descriptor port)))
               (cond
                 ((eq? descriptor 'stdin)
-                  ($$read-u8))
+                  ($$read-input))
 
                 ((number? descriptor)
                   ($$read-file descriptor))
@@ -1771,10 +1771,10 @@
     (define (write-u8 byte . rest)
       (case (port-descriptor (get-output-port rest))
         ((stdout)
-          ($$write-u8 byte))
+          ($$write-output byte))
 
         ((stderr)
-          ($$write-error-u8 byte))
+          ($$write-error byte))
 
         (else =>
           (lambda (descriptor)
