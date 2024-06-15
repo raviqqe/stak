@@ -3017,11 +3017,11 @@
 
     (define (with-port-from-file open-file current-port)
       (lambda (path thunk)
-        (let ((file (open-file path)))
-          (parameterize ((current-port file))
-            (let ((value (thunk)))
-              (close-port file)
-              value)))))
+        (let ((file #f))
+          (dynamic-wind
+            (lambda () (set! file (open-file path)))
+            (lambda () (parameterize ((current-port file)) (thunk)))
+            (lambda () (close-port file))))))
 
     (define with-input-from-file (with-port-from-file open-input-file current-input-port))
     (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
