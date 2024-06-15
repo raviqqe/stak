@@ -2986,7 +2986,9 @@
           (make-port descriptor))))
 
     (define open-input-file (open-file #f))
-    (define open-output-file (open-file #f))
+    (define open-output-file (open-file #t))
+    (define open-binary-input-file open-input-file)
+    (define open-binary-output-file open-output-file)
 
     (define (close-file descriptor)
       (unless ($$close-file descriptor)
