@@ -1386,6 +1386,10 @@
     string->uninterned-symbol
     string->symbol
 
+    close-port
+    close-input-port
+    close-output-port
+
     define-record-type
     record?
 
@@ -1467,6 +1471,17 @@
           (let ((x (string->uninterned-symbol x)))
             (set! symbols (cons x symbols))
             x))))
+
+    ; Ports
+
+    (define $$close-file (primitive 23))
+
+    (define (close-port port)
+      (unless ($$close-file (port-descriptor port))
+        (error "cannot close file")))
+
+    (define close-input-port close-port)
+    (define close-output-port close-port)
 
     ; Control
 
@@ -2967,7 +2982,6 @@
 
   (begin
     (define $$open-file (primitive 22))
-    (define $$close-file (primitive 23))
 
     ; TODO
     (define (call-with-input-file path callback)
@@ -2997,22 +3011,18 @@
     (define open-binary-input-file open-input-file)
     (define open-binary-output-file open-output-file)
 
-    (define (close-file descriptor)
-      (unless ($$close-file descriptor)
-        (error "cannot close file")))
-
     (define (with-input-from-file path thunk)
       (let ((file (open-input-file path)))
         (parameterize ((current-input-port file))
           (let ((result (thunk)))
-            (close-file file)
+            (close-input-port file)
             value))))
 
     (define (with-output-from-file path thunk)
       (let ((file (open-output-file path)))
         (parameterize ((current-output-port file))
           (let ((result (thunk)))
-            (close-file file)
+            (close-output-port file)
             value))))))
 
 (define-library (scheme repl)
