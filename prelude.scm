@@ -1722,7 +1722,7 @@
             x)
           (or
             (let ((descriptor (port-descriptor port)))
-              (case
+              (cond
                 ((eq? descriptor 'stdin)
                   ($$read-u8))
 
