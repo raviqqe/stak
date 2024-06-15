@@ -1,4 +1,6 @@
 use crate::{Error, FileDescriptor, FileSystem};
+use core::ffi::c_int;
+use libc::{S_IRUSR, S_IWUSR};
 
 /// A file system based on the libc API.
 #[derive(Debug)]
@@ -25,6 +27,7 @@ impl FileSystem for LibcFileSystem {
                     // spell-checker: disable-next-line
                     libc::O_RDONLY
                 },
+                (S_IRUSR | S_IWUSR) as c_int,
             )
         };
 
