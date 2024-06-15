@@ -2971,13 +2971,17 @@
 
     (define (open-file output)
       (lambda (path)
-        ($$open-file path output)))
+        (let ((descriptor ($$open-file path output)))
+          (unless descriptor
+            (error "cannot open file"))
+          (make-port descriptor))))
 
     (define open-input-file (open-file #f))
     (define open-output-file (open-file #f))
 
     (define (close-file descriptor)
-      ($$close-file descriptor))
+      (unless ($$close-file descriptor)
+        (error "cannot close file")))
 
     (define (with-input-from-file path thunk)
       (let ((file (open-input-file path)))

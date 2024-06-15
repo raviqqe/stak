@@ -69,7 +69,7 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         operate: impl Fn(&mut Vm<'a, Self>) -> Result<(), E>,
     ) -> Result<(), Error> {
         let result = operate(vm);
-        vm.push(vm.boolean(result.is_err()).into())
+        vm.push(vm.boolean(result.is_ok()).into())
     }
 
     fn rib(vm: &mut Vm<Self>, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
