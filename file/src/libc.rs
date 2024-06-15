@@ -1,5 +1,6 @@
 use crate::{Error, FileDescriptor, FileSystem};
 use core::ffi::c_int;
+// spell-checker: disable-next-line
 use libc::{S_IRUSR, S_IWUSR};
 
 /// A file system based on the libc API.
