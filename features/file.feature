@@ -80,9 +80,7 @@ Feature: File
       """scheme
       (import (scheme base) (scheme file))
 
-      (with-input-from-file "foo.txt"
-        (lambda ()
-          (write-u8 (read-u8))))
+      (write-u8 (with-input-from-file "foo.txt" read-u8))
       """
     And a file named "foo.txt" with:
       """text
