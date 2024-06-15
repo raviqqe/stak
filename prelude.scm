@@ -568,14 +568,12 @@
     (define $$- (primitive 13))
     (define $$* (primitive 14))
     (define $$/ (primitive 15))
-    (define $$read-u8 (primitive 16))
-    (define $$write-u8 (primitive 17))
-    (define $$write-error-u8 (primitive 18))
+    (define $$read-input (primitive 16))
+    (define $$write-output (primitive 17))
+    (define $$write-error (primitive 18))
     (define $$halt (primitive 19))
     (define null? (primitive 20))
     (define pair? (primitive 21))
-    (define $$read-file (primitive 24))
-    (define $$write-file (primitive 25))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -1273,7 +1271,6 @@
     $$-
     $$*
     $$/
-    $$read-u8
 
     apply
     data-rib
@@ -1386,10 +1383,6 @@
     string->uninterned-symbol
     string->symbol
 
-    close-port
-    close-input-port
-    close-output-port
-
     define-record-type
     record?
 
@@ -1432,13 +1425,21 @@
     eof-object?
 
     make-port
+    make-input-port
+    make-output-port
     port?
-    port-descriptor
-    port-last-byte
-    port-set-last-byte!
+    input-port?
+    output-port?
+    textual-port?
+    binary-port?
+
     current-input-port
     current-output-port
     current-error-port
+
+    close-port
+    close-input-port
+    close-output-port
 
     read-u8
     peek-u8
@@ -1471,17 +1472,6 @@
           (let ((x (string->uninterned-symbol x)))
             (set! symbols (cons x symbols))
             x))))
-
-    ; Ports
-
-    (define $$close-file (primitive 23))
-
-    (define (close-port port)
-      (unless ($$close-file (port-descriptor port))
-        (error "cannot close file")))
-
-    (define close-input-port close-port)
-    (define close-output-port close-port)
 
     ; Control
 
@@ -1711,17 +1701,41 @@
 
     ; TODO Support multiple bytes.
     (define-record-type port
-      (make-port* descriptor last-byte)
+      (make-port* read write close last-byte)
       port?
-      (descriptor port-descriptor)
+      (read port-read)
+      (write port-write)
+      (close port-close)
       (last-byte port-last-byte port-set-last-byte!))
 
-    (define (make-port descriptor)
-      (make-port* descriptor #f))
+    (define input-port? port-read)
+    (define output-port? port-write)
+    (define textual-port? port?)
+    (define binary-port? port?)
 
-    (define current-input-port (make-parameter (make-port 'stdin)))
-    (define current-output-port (make-parameter (make-port 'stdout)))
-    (define current-error-port (make-parameter (make-port 'stderr)))
+    (define (make-port read write close)
+      (make-port* read write close #f))
+
+    (define (make-input-port read close)
+      (make-port read #f close))
+
+    (define (make-output-port write close)
+      (make-port #f write close))
+
+    (define current-input-port (make-parameter (make-input-port $$read-input #f)))
+    (define current-output-port (make-parameter (make-output-port $$write-output #f)))
+    (define current-error-port (make-parameter (make-output-port $$write-error #f)))
+
+    ; Close
+
+    (define (close-port port)
+      (let ((close (port-close port)))
+        (unless close
+          (error "cannot close port"))
+        (close)))
+
+    (define close-input-port close-port)
+    (define close-output-port close-port)
 
     ; Read
 
@@ -1738,18 +1752,10 @@
           (begin
             (port-set-last-byte! port #f)
             x)
-          (or
-            (let ((descriptor (port-descriptor port)))
-              (cond
-                ((eq? descriptor 'stdin)
-                  ($$read-u8))
-
-                ((number? descriptor)
-                  ($$read-file descriptor))
-
-                (else
-                  (error "unknown input port"))))
-            (eof-object)))))
+          (let ((read (port-read port)))
+            (unless read
+              (error "cannot read from port"))
+            (or (read) (eof-object))))))
 
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
@@ -1769,18 +1775,10 @@
       (if (null? rest) (current-output-port) (car rest)))
 
     (define (write-u8 byte . rest)
-      (case (port-descriptor (get-output-port rest))
-        ((stdout)
-          ($$write-u8 byte))
-
-        ((stderr)
-          ($$write-error-u8 byte))
-
-        (else =>
-          (lambda (descriptor)
-            (unless (number? descriptor)
-              (error "unknown output port"))
-            ($$write-file descriptor byte)))))
+      (let ((write (port-write (get-output-port rest))))
+        (unless write
+          (error "cannot write to port"))
+        (write byte)))
 
     (define (write-char x . rest)
       (write-u8 (char->integer x) (get-output-port rest)))
@@ -2982,6 +2980,9 @@
 
   (begin
     (define $$open-file (primitive 22))
+    (define $$close-file (primitive 23))
+    (define $$read-file (primitive 24))
+    (define $$write-file (primitive 25))
 
     ; TODO
     (define (call-with-input-file path callback)
@@ -3004,7 +3005,10 @@
         (let ((descriptor ($$open-file (string->code-points path) output)))
           (unless descriptor
             (error "cannot open file"))
-          (make-port descriptor))))
+          (make-port
+            (lambda () ($$read-file descriptor))
+            (lambda (byte) ($$write-file descriptor byte))
+            (lambda () ($$close-file descriptor))))))
 
     (define open-input-file (open-file #f))
     (define open-output-file (open-file #t))
@@ -3013,11 +3017,11 @@
 
     (define (with-port-from-file open-file current-port)
       (lambda (path thunk)
-        (let ((file (open-file path)))
-          (parameterize ((current-port file))
-            (let ((value (thunk)))
-              (close-port file)
-              value)))))
+        (let ((file #f))
+          (dynamic-wind
+            (lambda () (set! file (open-file path)))
+            (lambda () (parameterize ((current-port file)) (thunk)))
+            (lambda () (close-port file))))))
 
     (define with-input-from-file (with-port-from-file open-input-file current-input-port))
     (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
