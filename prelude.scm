@@ -157,6 +157,7 @@
 
     string?
     list->string
+    string->code-points
     string->list
     string-append
     string-length
@@ -2985,7 +2986,7 @@
 
     (define (open-file output)
       (lambda (path)
-        (let ((descriptor ($$open-file path output)))
+        (let ((descriptor ($$open-file (string->code-points path) output)))
           (unless descriptor
             (error "cannot open file"))
           (make-port descriptor))))
