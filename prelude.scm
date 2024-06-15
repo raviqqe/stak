@@ -1271,7 +1271,6 @@
     $$-
     $$*
     $$/
-    $$read-input
 
     apply
     data-rib
