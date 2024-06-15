@@ -1429,6 +1429,8 @@
     make-input-port
     make-output-port
     port?
+    textual-port?
+    binary-port?
 
     current-input-port
     current-output-port
@@ -1704,6 +1706,9 @@
       (write port-write)
       (close port-close)
       (last-byte port-last-byte port-set-last-byte!))
+
+    (define textual-port? port?)
+    (define binary-port? port?)
 
     (define (default-read)
       (error "cannot read from port"))
