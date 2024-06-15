@@ -224,6 +224,8 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
                         .ok()?;
                 }
 
+                path.push(0).ok()?;
+
                 let output = output != vm.boolean(false).into();
 
                 vm.primitive_set_mut()
