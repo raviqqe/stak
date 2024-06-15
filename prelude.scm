@@ -1708,7 +1708,7 @@
     (define (default-read)
       (error "cannot read from port"))
 
-    (define (default-write)
+    (define (default-write byte)
       (error "cannot write to port"))
 
     (define (default-close)
