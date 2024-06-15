@@ -50,3 +50,21 @@ Feature: File
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+  Scenario Outline: Close a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (close-port (<procedure> "foo.txt"))
+      """
+    And a file named "foo.txt" with:
+      """text
+      """
+    When I successfully run `scheme main.scm`
+    Then the exit status should be 0
+
+    Examples:
+      | procedure        |
+      | open-input-file  |
+      | open-output-file |
