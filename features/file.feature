@@ -25,12 +25,12 @@ Feature: File
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Close an input file
+  Scenario Outline: Close an input file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
 
-      (close-input-port (open-input-file "foo.txt"))
+      (close-input-port (<procedure> "foo.txt"))
       """
     And a file named "foo.txt" with:
       """text
@@ -38,18 +38,28 @@ Feature: File
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Close an output file
+    Examples:
+      | procedure              |
+      | open-input-file        |
+      | open-binary-input-file |
+
+  Scenario Outline: Close an output file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
 
-      (close-output-port (open-output-file "foo.txt"))
+      (close-output-port (<procedure> "foo.txt"))
       """
     And a file named "foo.txt" with:
       """text
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+    Examples:
+      | procedure               |
+      | open-output-file        |
+      | open-binary-output-file |
 
   Scenario Outline: Close a file
     Given a file named "main.scm" with:
@@ -65,6 +75,24 @@ Feature: File
     Then the exit status should be 0
 
     Examples:
-      | procedure        |
-      | open-input-file  |
-      | open-output-file |
+      | procedure               |
+      | open-input-file         |
+      | open-output-file        |
+      | open-binary-input-file  |
+      | open-binary-output-file |
+
+  Scenario: Call a thunk with an input file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (with-input-from-file "foo.txt"
+        (lambda ()
+          (write-u8 (read-u8))))
+      """
+    And a file named "foo.txt" with:
+      """text
+      A
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
