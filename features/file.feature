@@ -88,3 +88,13 @@ Feature: File
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Call a thunk with an output file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (with-output-to-file "foo.txt" (lambda () (write-u8 65)))
+      """
+    When I successfully run `scheme main.scm`
+    Then a file named "foo.txt" should contain exactly "A"

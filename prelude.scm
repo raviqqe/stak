@@ -3020,7 +3020,7 @@
               value)))))
 
     (define with-input-from-file (with-port-from-file open-input-file current-input-port))
-    (define with-output-from-file (with-port-from-file open-output-file current-output-port))))
+    (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
 (define-library (scheme repl)
   (export interaction-environment)
