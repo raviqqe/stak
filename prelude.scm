@@ -2978,6 +2978,10 @@
     (define (delete-file output)
       #f)
 
+    ; TODO
+    (define (file-exists? path)
+      #f)
+
     (define (open-file output)
       (lambda (path)
         (let ((descriptor ($$open-file path output)))
