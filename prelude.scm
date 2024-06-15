@@ -43,6 +43,7 @@
     pair-type
     procedure-type
 
+    primitive
     rib
     cons
     close
@@ -571,10 +572,6 @@
     (define $$halt (primitive 19))
     (define null? (primitive 20))
     (define pair? (primitive 21))
-    (define $$open-file (primitive 22))
-    (define $$close-file (primitive 23))
-    (define $$read-file (primitive 24))
-    (define $$write-file (primitive 25))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -2933,6 +2930,30 @@
                   '())))))))
 
     (define environment list)))
+
+(define-library (scheme repl)
+  (export
+    call-with-input-file
+    call-with-output-file
+    delete-file
+    file-exists?
+    open-binary-input-file
+    open-binary-output-file
+    open-input-file
+    open-output-file
+    with-input-from-file
+    with-output-to-file)
+
+  (import (stak base) (scheme base))
+
+  (begin
+    (define $$open-file (primitive 22))
+    (define $$close-file (primitive 23))
+    (define $$read-file (primitive 24))
+    (define $$write-file (primitive 25))
+
+    (define (interaction-environment)
+      interaction-libraries)))
 
 (define-library (scheme repl)
   (export interaction-environment)
