@@ -27,6 +27,7 @@ impl FileSystem for LibcFileSystem {
                     // spell-checker: disable-next-line
                     libc::O_RDONLY
                 },
+                // spell-checker: disable-next-line
                 (S_IRUSR | S_IWUSR) as c_int,
             )
         };
