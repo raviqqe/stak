@@ -572,6 +572,8 @@
     (define $$halt (primitive 19))
     (define null? (primitive 20))
     (define pair? (primitive 21))
+    (define $$read-file (primitive 24))
+    (define $$write-file (primitive 25))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -1718,7 +1720,18 @@
           (begin
             (port-set-last-byte! port #f)
             x)
-          (or ($$read-u8) (eof-object)))))
+          (or
+            (let ((descriptor (port-descriptor port)))
+              (case
+                ((eq? descriptor 'stdin)
+                  ($$read-u8))
+
+                ((number? descriptor)
+                  ($$read-file descriptor))
+
+                (else
+                  (error "unknown input port"))))
+            (eof-object)))))
 
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
@@ -1745,8 +1758,11 @@
         ((stderr)
           ($$write-error-u8 byte))
 
-        (else
-          (error "invalid port"))))
+        (else =>
+          (lambda (descriptor)
+            (unless (number? descriptor)
+              (error "unknown output port"))
+            ($$write-file descriptor byte)))))
 
     (define (write-char x . rest)
       (write-u8 (char->integer x) (get-output-port rest)))
@@ -2949,10 +2965,33 @@
   (begin
     (define $$open-file (primitive 22))
     (define $$close-file (primitive 23))
-    (define $$read-file (primitive 24))
-    (define $$write-file (primitive 25))
 
-    #f))
+    (define (todo)
+      (error "todo"))
+
+    (define (open-file output)
+      (lambda (path)
+        ($$open-file path output)))
+
+    (define open-input-file (open-file #f))
+    (define open-output-file (open-file #f))
+
+    (define (close-file descriptor)
+      ($$close-file descriptor))
+
+    (define (with-input-from-file path thunk)
+      (let ((file (open-input-file path)))
+        (parameterize ((current-input-port file))
+          (let ((result (thunk)))
+            (close-file file)
+            value))))
+
+    (define (with-output-from-file path thunk)
+      (let ((file (open-output-file path)))
+        (parameterize ((current-output-port file))
+          (let ((result (thunk)))
+            (close-file file)
+            value))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
