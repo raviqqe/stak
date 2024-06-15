@@ -2947,7 +2947,7 @@
 
     (define environment list)))
 
-(define-library (scheme repl)
+(define-library (scheme file)
   (export
     call-with-input-file
     call-with-output-file
@@ -2966,8 +2966,17 @@
     (define $$open-file (primitive 22))
     (define $$close-file (primitive 23))
 
-    (define (todo)
-      (error "todo"))
+    ; TODO
+    (define (call-with-input-file path callback)
+      #f)
+
+    ; TODO
+    (define (call-with-output-file path callback)
+      #f)
+
+    ; TODO
+    (define (delete-file output)
+      #f)
 
     (define (open-file output)
       (lambda (path)
