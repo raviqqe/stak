@@ -1,5 +1,5 @@
 Feature: File
-  Scenario: Open an input file
+  Scenario Outline: Open a file
     Given a file named "main.scm" with:
       """scheme
       (import (scheme file))
@@ -12,18 +12,32 @@ Feature: File
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  Scenario: Open an output file
+    Examples:
+      | procedure               |
+      | open-input-file         |
+      | open-output-file        |
+      | open-binary-input-file  |
+      | open-binary-output-file |
+
+  Scenario Outline: Close a file
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme file))
+      (import (scheme base) (scheme file))
 
-      (open-output-file "foo.txt")
+      (close-port (<procedure> "foo.txt"))
       """
     And a file named "foo.txt" with:
       """text
       """
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
+
+    Examples:
+      | procedure               |
+      | open-input-file         |
+      | open-output-file        |
+      | open-binary-input-file  |
+      | open-binary-output-file |
 
   Scenario Outline: Close an input file
     Given a file named "main.scm" with:
@@ -59,26 +73,6 @@ Feature: File
     Examples:
       | procedure               |
       | open-output-file        |
-      | open-binary-output-file |
-
-  Scenario Outline: Close a file
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme file))
-
-      (close-port (<procedure> "foo.txt"))
-      """
-    And a file named "foo.txt" with:
-      """text
-      """
-    When I successfully run `scheme main.scm`
-    Then the exit status should be 0
-
-    Examples:
-      | procedure               |
-      | open-input-file         |
-      | open-output-file        |
-      | open-binary-input-file  |
       | open-binary-output-file |
 
   Scenario: Call a thunk with an input file
