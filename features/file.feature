@@ -97,4 +97,7 @@ Feature: File
       (with-output-to-file "foo.txt" (lambda () (write-u8 65)))
       """
     When I successfully run `scheme main.scm`
-    Then a file named "foo.txt" should contain exactly "A"
+    Then a file named "foo.txt" should contain exactly:
+      """
+      A
+      """
