@@ -1428,6 +1428,8 @@
     make-input-port
     make-output-port
     port?
+    input-port?
+    output-port?
     textual-port?
     binary-port?
 
@@ -1706,35 +1708,31 @@
       (close port-close)
       (last-byte port-last-byte port-set-last-byte!))
 
+    (define input-port? port-read)
+    (define output-port? port-write)
     (define textual-port? port?)
     (define binary-port? port?)
-
-    (define (default-read)
-      (error "cannot read from port"))
-
-    (define (default-write byte)
-      (error "cannot write to port"))
-
-    (define (default-close)
-      (error "cannot close port"))
 
     (define (make-port read write close)
       (make-port* read write close #f))
 
     (define (make-input-port read close)
-      (make-port read default-write close))
+      (make-port read #f close))
 
     (define (make-output-port write close)
-      (make-port default-read write close))
+      (make-port #f write close))
 
-    (define current-input-port (make-parameter (make-input-port $$read-input default-close)))
-    (define current-output-port (make-parameter (make-output-port $$write-output default-close)))
-    (define current-error-port (make-parameter (make-output-port $$write-error default-close)))
+    (define current-input-port (make-parameter (make-input-port $$read-input #f)))
+    (define current-output-port (make-parameter (make-output-port $$write-output #f)))
+    (define current-error-port (make-parameter (make-output-port $$write-error #f)))
 
     ; Close
 
     (define (close-port port)
-      ((port-close port)))
+      (let ((close (port-close port)))
+        (unless close
+          (error "cannot close port"))
+        (close)))
 
     (define close-input-port close-port)
     (define close-output-port close-port)
@@ -1754,9 +1752,10 @@
           (begin
             (port-set-last-byte! port #f)
             x)
-          (or
-            ((port-read port))
-            (eof-object)))))
+          (let ((read (port-read port)))
+            (unless read
+              (error "cannot read from port"))
+            (or (read) (eof-object))))))
 
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
@@ -1776,7 +1775,10 @@
       (if (null? rest) (current-output-port) (car rest)))
 
     (define (write-u8 byte . rest)
-      ((port-write (get-output-port rest)) byte))
+      (let ((write (port-write (get-output-port rest))))
+        (unless write
+          (error "cannot write to port"))
+        (write byte)))
 
     (define (write-char x . rest)
       (write-u8 (char->integer x) (get-output-port rest)))
