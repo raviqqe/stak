@@ -2952,8 +2952,7 @@
     (define $$read-file (primitive 24))
     (define $$write-file (primitive 25))
 
-    (define (interaction-environment)
-      interaction-libraries)))
+    #f))
 
 (define-library (scheme repl)
   (export interaction-environment)
