@@ -4,7 +4,7 @@ Feature: File
       """scheme
       (import (scheme file))
 
-      (open-input-file "foo.txt")
+      (<procedure> "foo.txt")
       """
     And a file named "foo.txt" with:
       """text
