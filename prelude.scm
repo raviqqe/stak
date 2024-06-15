@@ -548,7 +548,8 @@
 
     ; Primitives
 
-    (define (primitive id) ($$rib procedure-type '() id 0))
+    (define (primitive id)
+      ($$rib procedure-type '() id 0))
 
     (define rib $$rib)
     (define cons (primitive 1))
