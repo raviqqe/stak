@@ -43,6 +43,7 @@
     pair-type
     procedure-type
 
+    primitive
     rib
     cons
     close
@@ -156,6 +157,7 @@
 
     string?
     list->string
+    string->code-points
     string->list
     string-append
     string-length
@@ -547,7 +549,8 @@
 
     ; Primitives
 
-    (define (primitive id) ($$rib procedure-type '() id 0))
+    (define (primitive id)
+      ($$rib procedure-type '() id 0))
 
     (define rib $$rib)
     (define cons (primitive 1))
@@ -571,6 +574,8 @@
     (define $$halt (primitive 19))
     (define null? (primitive 20))
     (define pair? (primitive 21))
+    (define $$read-file (primitive 24))
+    (define $$write-file (primitive 25))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -1381,6 +1386,10 @@
     string->uninterned-symbol
     string->symbol
 
+    close-port
+    close-input-port
+    close-output-port
+
     define-record-type
     record?
 
@@ -1422,6 +1431,7 @@
     eof-object
     eof-object?
 
+    make-port
     port?
     port-descriptor
     port-last-byte
@@ -1461,6 +1471,17 @@
           (let ((x (string->uninterned-symbol x)))
             (set! symbols (cons x symbols))
             x))))
+
+    ; Ports
+
+    (define $$close-file (primitive 23))
+
+    (define (close-port port)
+      (unless ($$close-file (port-descriptor port))
+        (error "cannot close file")))
+
+    (define close-input-port close-port)
+    (define close-output-port close-port)
 
     ; Control
 
@@ -1717,7 +1738,18 @@
           (begin
             (port-set-last-byte! port #f)
             x)
-          (or ($$read-u8) (eof-object)))))
+          (or
+            (let ((descriptor (port-descriptor port)))
+              (cond
+                ((eq? descriptor 'stdin)
+                  ($$read-u8))
+
+                ((number? descriptor)
+                  ($$read-file descriptor))
+
+                (else
+                  (error "unknown input port"))))
+            (eof-object)))))
 
     (define (peek-u8 . rest)
       (let* ((port (get-input-port rest))
@@ -1744,8 +1776,11 @@
         ((stderr)
           ($$write-error-u8 byte))
 
-        (else
-          (error "invalid port"))))
+        (else =>
+          (lambda (descriptor)
+            (unless (number? descriptor)
+              (error "unknown output port"))
+            ($$write-file descriptor byte)))))
 
     (define (write-char x . rest)
       (write-u8 (char->integer x) (get-output-port rest)))
@@ -2929,6 +2964,63 @@
                   '())))))))
 
     (define environment list)))
+
+(define-library (scheme file)
+  (export
+    call-with-input-file
+    call-with-output-file
+    delete-file
+    file-exists?
+    open-binary-input-file
+    open-binary-output-file
+    open-input-file
+    open-output-file
+    with-input-from-file
+    with-output-to-file)
+
+  (import (stak base) (scheme base))
+
+  (begin
+    (define $$open-file (primitive 22))
+
+    ; TODO
+    (define (call-with-input-file path callback)
+      #f)
+
+    ; TODO
+    (define (call-with-output-file path callback)
+      #f)
+
+    ; TODO
+    (define (delete-file output)
+      #f)
+
+    ; TODO
+    (define (file-exists? path)
+      #f)
+
+    (define (open-file output)
+      (lambda (path)
+        (let ((descriptor ($$open-file (string->code-points path) output)))
+          (unless descriptor
+            (error "cannot open file"))
+          (make-port descriptor))))
+
+    (define open-input-file (open-file #f))
+    (define open-output-file (open-file #t))
+    (define open-binary-input-file open-input-file)
+    (define open-binary-output-file open-output-file)
+
+    (define (with-port-from-file open-file current-port)
+      (lambda (path thunk)
+        (let ((file (open-file path)))
+          (parameterize ((current-port file))
+            (let ((value (thunk)))
+              (close-port file)
+              value)))))
+
+    (define with-input-from-file (with-port-from-file open-input-file current-input-port))
+    (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
 (define-library (scheme repl)
   (export interaction-environment)
