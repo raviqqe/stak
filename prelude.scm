@@ -1712,7 +1712,7 @@
       (error "cannot write to port"))
 
     (define (default-close)
-      (error "cannot close to port"))
+      (error "cannot close port"))
 
     (define (make-port read write close)
       (make-port* read write close #f))
