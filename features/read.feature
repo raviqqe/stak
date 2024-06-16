@@ -1,5 +1,5 @@
 Feature: Read
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Read a byte
     Given a file named "main.scm" with:
       """scheme
@@ -16,7 +16,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Read bytes
     Given a file named "main.scm" with:
       """scheme
@@ -35,7 +35,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "ABC"
 
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Peek a byte
     Given a file named "main.scm" with:
       """scheme
@@ -52,7 +52,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Peek a byte multiple times
     Given a file named "main.scm" with:
       """scheme
@@ -70,7 +70,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "AA"
 
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Peek and read bytes
     Given a file named "main.scm" with:
       """scheme

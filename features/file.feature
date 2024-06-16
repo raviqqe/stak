@@ -75,7 +75,7 @@ Feature: File
       | open-output-file        |
       | open-binary-output-file |
 
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Call a thunk with an input file
     Given a file named "main.scm" with:
       """scheme

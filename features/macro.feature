@@ -718,7 +718,7 @@ Feature: Macro
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @stak @chibi @guile
+  @chibi @guile @stak
   Scenario: Use a macro as a value
     Given a file named "main.scm" with:
       """scheme
