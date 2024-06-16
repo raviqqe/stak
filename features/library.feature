@@ -1,5 +1,5 @@
 Feature: Library system
-  @stak @gauche
+  @gauche @stak
   Scenario: Define a library
     Given a file named "main.scm" with:
       """scheme
@@ -15,7 +15,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Import a library twice
     Given a file named "main.scm" with:
       """scheme
@@ -31,7 +31,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Import a function
     Given a file named "main.scm" with:
       """scheme
@@ -51,7 +51,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Import a macro
     Given a file named "main.scm" with:
       """scheme
@@ -73,7 +73,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Import functions
     Given a file named "main.scm" with:
       """scheme
@@ -97,7 +97,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Import a function with a prefix
     Given a file named "main.scm" with:
       """scheme
@@ -117,7 +117,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Import a renamed function
     Given a file named "main.scm" with:
       """scheme
@@ -137,7 +137,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Export an imported function
     Given a file named "main.scm" with:
       """scheme
@@ -162,7 +162,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Export a renamed function
     Given a file named "main.scm" with:
       """scheme
@@ -182,7 +182,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Do not modify a library environment
     Given a file named "main.scm" with:
       """scheme
@@ -209,7 +209,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "BA"
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Modify a library environment
     Given a file named "main.scm" with:
       """scheme
