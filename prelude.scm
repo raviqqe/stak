@@ -1743,7 +1743,7 @@
     (define (call-with-port port f)
       (let ((value (f port)))
         (close-port port)
-        value)
+        value))
 
     ; Read
 
@@ -2998,8 +2998,8 @@
       (call-with-port (open-input-file path f)))
 
     (define (call-with-output-file path f)
-      (call-with-port (open-output-file path f))
-)
+      (call-with-port (open-output-file path f)))
+
     (define (delete-file path)
       (unless ($$delete-file (string->code-points path))
         (error "cannot delete file")))
