@@ -13,7 +13,7 @@ impl LibcFileSystem {
         Self {}
     }
 
-    fn execute(&self, error: Error, callback: impl Fn() -> c_int) -> Result<(), Error> {
+    fn execute(error: Error, callback: impl Fn() -> c_int) -> Result<(), Error> {
         if callback() == 0 {
             Ok(())
         } else {
@@ -49,7 +49,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        self.execute(Error::Close, || unsafe { libc::close(descriptor as _) })
+        Self::execute(Error::Close, || unsafe { libc::close(descriptor as _) })
     }
 
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
@@ -63,14 +63,14 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        self.execute(Error::Write, || {
+        Self::execute(Error::Write, || {
             let buffer = [byte];
             (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
         })
     }
 
     fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
-        self.execute(Error::Delete, || unsafe {
+        Self::execute(Error::Delete, || unsafe {
             libc::remove(path as *const _ as _)
         })
     }
@@ -95,7 +95,7 @@ mod tests {
     fn close() {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
-        fs::write(&path, &[]).unwrap();
+        fs::write(&path, []).unwrap();
 
         let file_system = LibcFileSystem::new();
 
@@ -112,7 +112,7 @@ mod tests {
 
         let file_system = LibcFileSystem::new();
 
-        fs::write(&path, &[42]).unwrap();
+        fs::write(&path, [42]).unwrap();
 
         let descriptor = file_system
             .open(path.as_os_str().as_encoded_bytes(), false)
@@ -146,7 +146,7 @@ mod tests {
     fn delete() {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
-        fs::write(&path, &[]).unwrap();
+        fs::write(&path, []).unwrap();
 
         let file_system = LibcFileSystem::new();
 
@@ -161,7 +161,7 @@ mod tests {
     fn exists() {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
-        fs::write(&path, &[]).unwrap();
+        fs::write(&path, []).unwrap();
 
         let file_system = LibcFileSystem::new();
 
