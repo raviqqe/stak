@@ -116,15 +116,20 @@ Feature: File
     When I successfully run `scheme main.scm`
     Then a file named "foo.txt" should not exist
 
-  Scenario: Check if a file exists
+  Scenario Outline: Check if a file exists
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme file))
 
-      (write-u8 (if (file-exists? "foo.txt") 65 66))
+      (write-u8 (if (file-exists? "<path>") 65 66))
       """
     And a file named "foo.txt" with:
       """text
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | path    | output |
+      | foo.txt | A      |
+      | bar.txt | B      |
