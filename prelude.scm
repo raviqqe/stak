@@ -1390,6 +1390,7 @@
     call-with-values
 
     call/cc
+    call-with-current-continuation
 
     make-point
     point?
@@ -1441,6 +1442,8 @@
     close-input-port
     close-output-port
 
+    call-with-port
+
     read-u8
     peek-u8
     read-char
@@ -1490,6 +1493,8 @@
               (rib-cdr (rib-car (close dummy-procedure))) ; frame
               continuation)
             argument))))
+
+    (define call-with-current-continuation call/cc)
 
     ;; Dynamic wind
 
@@ -1736,6 +1741,11 @@
 
     (define close-input-port close-port)
     (define close-output-port close-port)
+
+    (define (call-with-port port f)
+      (let ((x (f port)))
+        (close-port port)
+        x))
 
     ; Read
 
@@ -2986,13 +2996,11 @@
     (define $$delete-file (primitive 26))
     (define $$exists-file (primitive 27))
 
-    ; TODO
-    (define (call-with-input-file path callback)
-      #f)
+    (define (call-with-input-file path f)
+      (call-with-port (open-input-file path) f))
 
-    ; TODO
-    (define (call-with-output-file path callback)
-      #f)
+    (define (call-with-output-file path f)
+      (call-with-port (open-output-file path) f))
 
     (define (delete-file path)
       (unless ($$delete-file (string->code-points path))

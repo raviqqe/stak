@@ -103,6 +103,33 @@ Feature: File
       A
       """
 
+  Scenario: Call a procedure with an input file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (write-u8 (call-with-input-file "foo.txt" read-u8))
+      """
+    And a file named "foo.txt" with:
+      """text
+      A
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Call a procedure with an output file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (call-with-output-file "foo.txt" (lambda (port) (write-u8 65 port)))
+      """
+    When I successfully run `scheme main.scm`
+    Then a file named "foo.txt" should contain exactly:
+      """
+      A
+      """
+
   Scenario: Delete a file
     Given a file named "main.scm" with:
       """scheme
