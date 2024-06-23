@@ -29,6 +29,14 @@ impl FileSystem for VoidFileSystem {
     fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
         Err(Error::Write)
     }
+
+    fn delete(&self, _: &[u8]) -> Result<(), Self::Error> {
+        Err(Error::Delete)
+    }
+
+    fn exists(&self, _: &[u8]) -> Result<bool, Self::Error> {
+        Err(Error::Exists)
+    }
 }
 
 impl Default for VoidFileSystem {

@@ -145,6 +145,20 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
 
         values
     }
+
+    fn decode_path(vm: &mut Vm<Self>, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
+        let mut path = Vec::<_, PATH_SIZE>::new();
+
+        while list.assume_cons() != vm.null() {
+            path.push(vm.car_value(list).assume_number().to_i64() as u8)
+                .ok()?;
+            list = vm.cdr_value(list);
+        }
+
+        path.push(0).ok()?;
+
+        Some(path)
+    }
 }
 
 impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
@@ -216,17 +230,8 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
             Primitive::NULL => Self::check_type(vm, Type::Null)?,
             Primitive::PAIR => Self::check_type(vm, Type::Pair)?,
             Primitive::OPEN_FILE => Self::operate_option(vm, |vm| {
-                let [mut list, output] = Self::pop_arguments(vm);
-                let mut path = Vec::<_, PATH_SIZE>::new();
-
-                while list.assume_cons() != vm.null() {
-                    path.push(vm.car_value(list).assume_number().to_i64() as u8)
-                        .ok()?;
-                    list = vm.cdr_value(list);
-                }
-
-                path.push(0).ok()?;
-
+                let [list, output] = Self::pop_arguments(vm);
+                let path = Self::decode_path(vm, list)?;
                 let output = output != vm.boolean(false).into();
 
                 vm.primitive_set_mut()
@@ -257,6 +262,26 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
                 vm.primitive_set_mut()
                     .file_system
                     .write(descriptor.to_i64() as _, byte.to_i64() as _)
+            })?,
+            Primitive::DELETE_FILE => Self::operate_option(vm, |vm| {
+                let [list] = Self::pop_arguments(vm);
+                let path = Self::decode_path(vm, list)?;
+
+                vm.primitive_set_mut()
+                    .file_system
+                    .delete(&path)
+                    .ok()
+                    .map(|_| vm.boolean(true).into())
+            })?,
+            Primitive::EXISTS_FILE => Self::operate_option(vm, |vm| {
+                let [list] = Self::pop_arguments(vm);
+                let path = Self::decode_path(vm, list)?;
+
+                vm.primitive_set_mut()
+                    .file_system
+                    .exists(&path)
+                    .ok()
+                    .map(|value| vm.boolean(value).into())
             })?,
             _ => return Err(Error::Illegal),
         }
