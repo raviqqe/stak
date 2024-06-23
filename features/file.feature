@@ -122,7 +122,7 @@ Feature: File
       """scheme
       (import (scheme base) (scheme file))
 
-      (call-with-output-file "foo.txt" (lambda () (write-u8 65)))
+      (call-with-output-file "foo.txt" (lambda (port) (write-u8 65 port)))
       """
     When I successfully run `scheme main.scm`
     Then a file named "foo.txt" should contain exactly:
