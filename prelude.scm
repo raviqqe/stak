@@ -1390,6 +1390,7 @@
     call-with-values
 
     call/cc
+    call-with-current-continuation
 
     make-point
     point?
@@ -1490,6 +1491,8 @@
               (rib-cdr (rib-car (close dummy-procedure))) ; frame
               continuation)
             argument))))
+
+    (define call-with-current-continuation call/cc)
 
     ;; Dynamic wind
 
