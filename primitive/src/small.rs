@@ -146,7 +146,7 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
         values
     }
 
-    fn decode_path(vm: &mut Vm<Self>, list: Value) -> Option<Vec<u8, PATH_SIZE>> {
+    fn decode_path(vm: &mut Vm<Self>, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
         let mut path = Vec::<_, PATH_SIZE>::new();
 
         while list.assume_cons() != vm.null() {
