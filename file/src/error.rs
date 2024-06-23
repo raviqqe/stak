@@ -11,6 +11,10 @@ pub enum Error {
     Read,
     /// A write failure.
     Write,
+    /// A deletion failure.
+    Delete,
+    /// A existence check failure.
+    Exists,
 }
 
 impl Display for Error {
@@ -20,6 +24,8 @@ impl Display for Error {
             Self::Close => write!(formatter, "cannot close file"),
             Self::Read => write!(formatter, "cannot read file"),
             Self::Write => write!(formatter, "cannot write file"),
+            Self::Delete => write!(formatter, "cannot delete file"),
+            Self::Exists => write!(formatter, "cannot check file existence"),
         }
     }
 }

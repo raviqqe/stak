@@ -1,7 +1,7 @@
 use crate::{Error, FileDescriptor, FileSystem};
 use core::ffi::c_int;
 // spell-checker: disable-next-line
-use libc::{S_IRUSR, S_IWUSR};
+use libc::{F_OK, S_IRUSR, S_IWUSR};
 
 /// A file system based on the libc API.
 #[derive(Debug)]
@@ -11,6 +11,14 @@ impl LibcFileSystem {
     /// Creates a file system.
     pub const fn new() -> Self {
         Self {}
+    }
+
+    fn execute(&self, error: Error, callback: impl Fn() -> c_int) -> Result<(), Error> {
+        if unsafe { callback() } == 0 {
+            Ok(())
+        } else {
+            Err(Error::Close)
+        }
     }
 }
 
@@ -41,11 +49,7 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        if unsafe { libc::close(descriptor as _) } == 0 {
-            Ok(())
-        } else {
-            Err(Error::Close)
-        }
+        self.execute(Error::Close, || unsafe { libc::close(descriptor as _) })
     }
 
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
@@ -59,13 +63,20 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        let buffer = [byte];
+        self.execute(Error::Write, || {
+            let buffer = [byte];
+            (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } == 1) as i32
+        })
+    }
 
-        if unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } == 1 {
-            Ok(())
-        } else {
-            Err(Error::Write)
-        }
+    fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
+        self.execute(Error::Delete, || unsafe {
+            libc::remove(path as *const _ as _)
+        })
+    }
+
+    fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
+        Ok(unsafe { libc::access(path as *const _ as _, F_OK) } == 0)
     }
 }
 
