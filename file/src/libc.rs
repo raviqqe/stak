@@ -143,6 +143,21 @@ mod tests {
     }
 
     #[test]
+    fn delete() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("foo");
+        fs::write(&path, &[]).unwrap();
+
+        let file_system = LibcFileSystem::new();
+
+        file_system
+            .delete(path.as_os_str().as_encoded_bytes())
+            .unwrap();
+
+        assert!(!path.exists());
+    }
+
+    #[test]
     fn exists() {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
