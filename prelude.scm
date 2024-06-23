@@ -1740,6 +1740,11 @@
     (define close-input-port close-port)
     (define close-output-port close-port)
 
+    (define (call-with-port port f)
+      (let ((value (f port)))
+        (close-port port)
+        value)
+
     ; Read
 
     (define (get-input-port rest)
