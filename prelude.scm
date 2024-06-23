@@ -2991,6 +2991,8 @@
     (define $$close-file (primitive 23))
     (define $$read-file (primitive 24))
     (define $$write-file (primitive 25))
+    (define $$delete-file (primitive 26))
+    (define $$exists-file (primitive 27))
 
     ; TODO
     (define (call-with-input-file path callback)
@@ -3000,13 +3002,12 @@
     (define (call-with-output-file path callback)
       #f)
 
-    ; TODO
-    (define (delete-file output)
-      #f)
+    (define (delete-file path)
+      (unless ($$delete-file (string->code-points path))
+        (error "cannot delete file")))
 
-    ; TODO
     (define (file-exists? path)
-      #f)
+      ($$exists-file (string->code-points path)))
 
     (define (open-file output)
       (lambda (path)

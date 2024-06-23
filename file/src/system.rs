@@ -16,4 +16,10 @@ pub trait FileSystem {
 
     /// Writes a file.
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Error>;
+
+    /// Deletes a file.
+    fn delete(&self, path: &[u8]) -> Result<(), Error>;
+
+    /// Checks if a file exists.
+    fn exists(&self, path: &[u8]) -> Result<bool, Error>;
 }

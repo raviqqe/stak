@@ -36,7 +36,7 @@ Feature: Write
       | #\\\\\\\\ |
       | #\\(      |
 
-  @stak @gauche
+  @gauche @stak
   Scenario Outline: Write an escaped special character
     Given a file named "main.scm" with:
       """scheme
@@ -212,7 +212,7 @@ Feature: Write
       | #(1 2 3)             |
       | #(1 #(1 2) #(3 4 5)) |
 
-  @stak @gauche @guile
+  @gauche @guile @stak
   Scenario Outline: Write a bytevector
     Given a file named "main.scm" with:
       """scheme
@@ -240,7 +240,7 @@ Feature: Write
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "(42 foo #f)"
 
-  @stak @gauche
+  @gauche @stak
   Scenario Outline: Write a quote
     Given a file named "main.scm" with:
       """scheme
@@ -263,7 +263,7 @@ Feature: Write
       | (quasiquote . 42) |
       | (unquote . 42)    |
 
-  @stak @gauche @guile
+  @gauche @guile @stak
   Scenario Outline: Write a value in a collection
     Given a file named "main.scm" with:
       """scheme
@@ -289,7 +289,7 @@ Feature: Write
       | #(#(#\\space)) | #(#(#\\space))  |
       | #(#("foo"))    | #(#(\\"foo\\")) |
 
-  @stak @gauche @guile
+  @gauche @guile @stak
   Scenario Outline: Display a value
     Given a file named "main.scm" with:
       """scheme

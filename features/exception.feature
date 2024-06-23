@@ -23,7 +23,7 @@ Feature: Exception
     And the stderr should contain "unknown"
     And the exit status should not be 0
 
-  @stak @gauche
+  @gauche @stak
   Scenario: Raise an error with a value
     Given a file named "main.scm" with:
       """scheme
@@ -163,7 +163,7 @@ Feature: Exception
     And the stdout should contain exactly ""
     And the stderr should contain "exception handler returned on a non-continuable exception"
 
-  @stak @gauche @guile
+  @gauche @guile @stak
   Scenario: Leave a dynamic extent
     Given a file named "main.scm" with:
       """scheme

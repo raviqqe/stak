@@ -12,27 +12,27 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.1.5",
-    "@astrojs/solid-js": "^4.3.0",
-    "@astrojs/starlight": "^0.24.2",
-    "@biomejs/biome": "^1.8.1",
+    "@astrojs/sitemap": "^3.1.6",
+    "@astrojs/solid-js": "^4.4.0",
+    "@astrojs/starlight": "^0.24.4",
+    "@biomejs/biome": "^1.8.2",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.5",
-    "@raviqqe/stak": "^0.2.19",
-    "astro": "^4.10.2",
+    "@raviqqe/stak": "^0.2.20",
+    "astro": "^4.11.0",
     "classnames": "^2.5.1",
-    "lucide-solid": "^0.394.0",
+    "lucide-solid": "^0.395.0",
     "nanostores": "^0.10.3",
     "solid-js": "^1.8.17",
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
     "@raviqqe/eslint-config": "^2.1.2",
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.7",
     "eslint": "^8.57.0",
-    "eslint-plugin-solid": "^0.14.0",
+    "eslint-plugin-solid": "^0.14.1",
     "prettier": "^3.3.2",
     "prettier-plugin-astro": "^0.14.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   }
 }
