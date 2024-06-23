@@ -102,3 +102,29 @@ Feature: File
       """
       A
       """
+
+  Scenario: Delete a file
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme file))
+
+      (delete-file "foo.txt")
+      """
+    And a file named "foo.txt" with:
+      """text
+      """
+    When I successfully run `scheme main.scm`
+    Then a file named "foo.txt" should not exist
+
+  Scenario: Check if a file exists
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme file))
+
+      (write-u8 (if (file-exists? "foo.txt") 65 66))
+      """
+    And a file named "foo.txt" with:
+      """text
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
