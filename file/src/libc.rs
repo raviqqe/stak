@@ -65,7 +65,7 @@ impl FileSystem for LibcFileSystem {
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         self.execute(Error::Write, || {
             let buffer = [byte];
-            (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } == 1) as i32
+            (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
         })
     }
 
