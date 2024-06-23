@@ -141,4 +141,17 @@ mod tests {
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
         file_system.close(descriptor).unwrap();
     }
+
+    #[test]
+    fn exists() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("foo");
+        fs::write(&path, &[]).unwrap();
+
+        let file_system = LibcFileSystem::new();
+
+        assert!(file_system
+            .exists(path.as_os_str().as_encoded_bytes())
+            .unwrap());
+    }
 }
