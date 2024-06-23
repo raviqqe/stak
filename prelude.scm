@@ -1741,9 +1741,9 @@
     (define close-output-port close-port)
 
     (define (call-with-port port f)
-      (let ((value (f port)))
+      (let ((x (f port)))
         (close-port port)
-        value))
+        x))
 
     ; Read
 
