@@ -27,6 +27,8 @@ pub(super) enum Primitive {
     CloseFile,
     ReadFile,
     WriteFile,
+    DeleteFile,
+    ExistsFile,
 }
 
 impl Primitive {
@@ -56,4 +58,6 @@ impl Primitive {
     pub const CLOSE_FILE: u8 = Self::CloseFile as _;
     pub const READ_FILE: u8 = Self::ReadFile as _;
     pub const WRITE_FILE: u8 = Self::WriteFile as _;
+    pub const DELETE_FILE: u8 = Self::DeleteFile as _;
+    pub const EXISTS_FILE: u8 = Self::ExistsFile as _;
 }
