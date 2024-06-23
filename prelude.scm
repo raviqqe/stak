@@ -2995,10 +2995,10 @@
     (define $$exists-file (primitive 27))
 
     (define (call-with-input-file path f)
-      (call-with-port (open-input-file path f)))
+      (call-with-port (open-input-file path) f))
 
     (define (call-with-output-file path f)
-      (call-with-port (open-output-file path f)))
+      (call-with-port (open-output-file path) f))
 
     (define (delete-file path)
       (unless ($$delete-file (string->code-points path))
