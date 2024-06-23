@@ -1442,6 +1442,8 @@
     close-input-port
     close-output-port
 
+    call-with-port
+
     read-u8
     peek-u8
     read-char
