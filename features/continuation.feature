@@ -66,3 +66,13 @@ Feature: Continuation
       """
       ABCDEFGHIJKLMNOPQRSTUVWXYZ
       """
+
+  Scenario: Call a `call-with-current-continuation` function
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (call-with-current-continuation (lambda (k) (k 65))))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
