@@ -14,10 +14,10 @@ impl LibcFileSystem {
     }
 
     fn execute(&self, error: Error, callback: impl Fn() -> c_int) -> Result<(), Error> {
-        if unsafe { callback() } == 0 {
+        if callback() == 0 {
             Ok(())
         } else {
-            Err(Error::Close)
+            Err(error)
         }
     }
 }

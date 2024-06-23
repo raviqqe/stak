@@ -34,7 +34,7 @@ impl FileSystem for VoidFileSystem {
         Err(Error::Delete)
     }
 
-    fn write(&self, _: &[u8]) -> Result<(), Self::Error> {
+    fn exists(&self, _: &[u8]) -> Result<bool, Self::Error> {
         Err(Error::Exists)
     }
 }
