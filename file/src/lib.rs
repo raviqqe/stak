@@ -2,12 +2,14 @@
 
 #![no_std]
 
-#[cfg(test)]
+#[cfg(any(feature = "std", test))]
 extern crate std;
 
 mod error;
 #[cfg(feature = "libc")]
 mod libc;
+#[cfg(any(feature = "std", test))]
+mod os;
 mod system;
 mod void;
 
