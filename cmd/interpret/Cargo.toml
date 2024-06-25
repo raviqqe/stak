@@ -18,7 +18,7 @@ clap = { version = "4.5.7", features = ["derive"] }
 main_error = "0.1.2"
 stak-configuration = { version = "0.1.37", path = "../../configuration" }
 stak-device = { version = "0.2.41", path = "../../device", features = ["std"] }
-stak-file = { version = "0.2.0", path = "../../file", features = ["libc"] }
+stak-file = { version = "0.2.0", path = "../../file", features = ["std"] }
 stak-primitive = { version = "0.3.0", path = "../../primitive", features = [
   "std",
 ] }
