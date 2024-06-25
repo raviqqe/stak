@@ -45,7 +45,7 @@ impl FileSystem for OsFileSystem {
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut file = unsafe { File::from_raw_fd(descriptor as _) };
         let mut buffer = [0u8; 1];
-        file.read(&mut buffer)?;
+        file.read_exact(&mut buffer)?;
         forget(file);
 
         Ok(buffer[0])
@@ -53,14 +53,14 @@ impl FileSystem for OsFileSystem {
 
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         let mut file = unsafe { File::from_raw_fd(descriptor as _) };
-        file.write(&[byte])?;
+        file.write_all(&[byte])?;
         forget(file);
 
         Ok(())
     }
 
     fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
-        remove_file(&Self::create_path(path))
+        remove_file(Self::create_path(path))
     }
 
     fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
