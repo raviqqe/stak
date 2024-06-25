@@ -8,7 +8,7 @@ extern crate std;
 mod error;
 #[cfg(feature = "libc")]
 mod libc;
-#[cfg(any(feature = "std"))]
+#[cfg(feature = "std")]
 mod os;
 mod system;
 mod void;
@@ -16,6 +16,8 @@ mod void;
 pub use error::Error;
 #[cfg(feature = "libc")]
 pub use libc::LibcFileSystem;
+#[cfg(feature = "std")]
+pub use os::OsFileSystem;
 pub use system::FileSystem;
 pub use void::VoidFileSystem;
 
