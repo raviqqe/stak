@@ -8,7 +8,7 @@ extern crate std;
 mod error;
 #[cfg(feature = "libc")]
 mod libc;
-#[cfg(any(feature = "std", test))]
+#[cfg(any(feature = "std"))]
 mod os;
 mod system;
 mod void;
