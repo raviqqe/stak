@@ -1,6 +1,6 @@
 use crate::{FileDescriptor, FileSystem};
 use std::{
-    ffi::OsStr,
+    ffi::{CStr, OsStr},
     fs::{remove_file, File, OpenOptions},
     io::{self, Read, Write},
     mem::forget,
@@ -19,7 +19,8 @@ impl OsFileSystem {
     }
 
     fn create_path(path: &[u8]) -> PathBuf {
-        PathBuf::from(unsafe { OsStr::from_encoded_bytes_unchecked(path) })
+        let string = CStr::from_bytes_with_nul(path).unwrap();
+        PathBuf::from(unsafe { OsStr::from_encoded_bytes_unchecked(string.to_bytes()) })
     }
 }
 
