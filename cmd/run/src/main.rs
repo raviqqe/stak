@@ -10,7 +10,7 @@ use clap::Parser;
 use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::{ReadWriteDevice, StdioDevice};
-use stak_file::{LibcFileSystem, VoidFileSystem};
+use stak_file::{OsFileSystem, VoidFileSystem};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
@@ -59,7 +59,7 @@ fn main() -> Result<(), MainError> {
 
     let mut vm = Vm::new(
         &mut heap,
-        SmallPrimitiveSet::new(StdioDevice::new(), LibcFileSystem::new()),
+        SmallPrimitiveSet::new(StdioDevice::new(), OsFileSystem::new()),
     )?;
 
     vm.initialize(target)?;
