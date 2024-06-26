@@ -29,6 +29,8 @@ pub(super) enum Primitive {
     WriteFile,
     DeleteFile,
     ExistsFile,
+    CommandLine,
+    EnvironmentVariable,
 }
 
 impl Primitive {
@@ -60,4 +62,6 @@ impl Primitive {
     pub const WRITE_FILE: u8 = Self::WriteFile as _;
     pub const DELETE_FILE: u8 = Self::DeleteFile as _;
     pub const EXISTS_FILE: u8 = Self::ExistsFile as _;
+    pub const COMMAND_LINE: u8 = Self::CommandLine as _;
+    pub const ENVIRONMENT_VARIABLE: u8 = Self::EnvironmentVariable as _;
 }

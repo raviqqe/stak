@@ -2247,6 +2247,9 @@
   (import (scheme base) (stak base))
 
   (begin
+    (define $$command-line (primitive 28))
+    (define $$get-environment-variable (primitive 29))
+
     (define exit-success (data-rib procedure-type '() (cons 0 '())))
 
     (define (emergency-exit . rest)
