@@ -475,7 +475,6 @@ dependencies = [
 name = "stak-process-context"
 version = "0.1.0"
 dependencies = [
- "libc",
  "once_cell",
 ]
 
