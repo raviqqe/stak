@@ -26,7 +26,7 @@ jobs:
           - macos-14
         options:
           -
-          - --features std
+          - --features libc,std
           - --features gc_always --exclude stak-compiler
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
