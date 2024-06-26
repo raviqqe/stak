@@ -4,7 +4,7 @@ use crate::ProcessContext;
 pub struct VoidProcessContext {}
 
 impl VoidProcessContext {
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }

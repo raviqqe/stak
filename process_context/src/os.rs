@@ -28,3 +28,9 @@ impl ProcessContext for OsProcessContext {
             .map(|(key, value)| (key.as_ref(), value.as_ref()))
     }
 }
+
+impl Default for OsProcessContext {
+    fn default() -> Self {
+        Self::new()
+    }
+}
