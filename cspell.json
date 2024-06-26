@@ -50,6 +50,7 @@
     "uninlined",
     "uninterned",
     "unresolve",
+    "unsync",
     "yota"
   ],
   "patterns": [
