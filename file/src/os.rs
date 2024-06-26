@@ -78,7 +78,11 @@ impl Default for OsFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
+    use std::{ffi::CString, fs, path::Path};
+
+    fn create_path_string(path: &Path) -> CString {
+        CString::new(path.as_os_str().as_encoded_bytes()).unwrap()
+    }
 
     #[test]
     fn close() {
@@ -89,7 +93,7 @@ mod tests {
         let file_system = OsFileSystem::new();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), false)
+            .open(create_path_string(&path).to_bytes_with_nul(), false)
             .unwrap();
         file_system.close(descriptor).unwrap();
     }
@@ -104,7 +108,7 @@ mod tests {
         fs::write(&path, [42]).unwrap();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), false)
+            .open(create_path_string(&path).to_bytes_with_nul(), false)
             .unwrap();
 
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
@@ -118,14 +122,14 @@ mod tests {
         let file_system = OsFileSystem::new();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), true)
+            .open(create_path_string(&path).to_bytes_with_nul(), true)
             .unwrap();
 
         file_system.write(descriptor, 42).unwrap();
         file_system.close(descriptor).unwrap();
 
         let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), false)
+            .open(create_path_string(&path).to_bytes_with_nul(), false)
             .unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
         file_system.close(descriptor).unwrap();
@@ -140,7 +144,7 @@ mod tests {
         let file_system = OsFileSystem::new();
 
         file_system
-            .delete(path.as_os_str().as_encoded_bytes())
+            .delete(create_path_string(&path).to_bytes_with_nul())
             .unwrap();
 
         assert!(!path.exists());
@@ -155,7 +159,7 @@ mod tests {
         let file_system = OsFileSystem::new();
 
         assert!(file_system
-            .exists(path.as_os_str().as_encoded_bytes())
+            .exists(create_path_string(&path).to_bytes_with_nul())
             .unwrap());
     }
 }
