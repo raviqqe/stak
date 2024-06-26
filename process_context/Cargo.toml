@@ -13,6 +13,7 @@ std = []
 
 [dependencies]
 libc = { version = "0.2", default-features = false, optional = true }
+once_cell = "1.19.0"
 
 [lints]
 workspace = true
