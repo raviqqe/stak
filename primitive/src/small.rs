@@ -7,17 +7,19 @@ use core::ops::{Add, Div, Mul, Sub};
 use heapless::Vec;
 use stak_device::Device;
 use stak_file::FileSystem;
+use stak_process_context::ProcessContext;
 use stak_vm::{Number, PrimitiveSet, Tag, Type, Value, Vm};
 
 const PATH_SIZE: usize = 64;
 
 /// A primitive set that covers R7RS small.
-pub struct SmallPrimitiveSet<D: Device, F: FileSystem> {
+pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
     device: D,
     file_system: F,
+    process_context: P,
 }
 
-impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
+impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     /// Creates a primitive set.
     pub fn new(device: D, file_system: F) -> Self {
         Self {
@@ -161,7 +163,7 @@ impl<D: Device, F: FileSystem> SmallPrimitiveSet<D, F> {
     }
 }
 
-impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
+impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiveSet<D, F, P> {
     type Error = Error;
 
     fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {

@@ -468,6 +468,7 @@ dependencies = [
  "heapless",
  "stak-device",
  "stak-file",
+ "stak-process-context",
  "stak-vm",
 ]
 
