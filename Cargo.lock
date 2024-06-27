@@ -335,6 +335,7 @@ dependencies = [
  "stak-macro",
  "stak-minifier-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 

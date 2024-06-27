@@ -14,6 +14,7 @@ use stak_file::{OsFileSystem, VoidFileSystem};
 use stak_macro::include_r7rs;
 use stak_minifier_macro::include_minified;
 use stak_primitive::SmallPrimitiveSet;
+use stak_process_context::{OsProcessContext, VoidProcessContext};
 use stak_vm::{Value, Vm};
 use std::{
     error::Error,
@@ -59,7 +60,11 @@ fn main() -> Result<(), MainError> {
 
     let mut vm = Vm::new(
         &mut heap,
-        SmallPrimitiveSet::new(StdioDevice::new(), OsFileSystem::new()),
+        SmallPrimitiveSet::new(
+            StdioDevice::new(),
+            OsFileSystem::new(),
+            OsProcessContext::new(),
+        ),
     )?;
 
     vm.initialize(target)?;
@@ -81,6 +86,7 @@ fn compile(source: &str, target: &mut Vec<u8>, heap: &mut [Value]) -> Result<(),
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(source.as_bytes(), target, empty()),
             VoidFileSystem::new(),
+            VoidProcessContext::new(),
         ),
     )?;
 
