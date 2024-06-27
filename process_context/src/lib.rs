@@ -1,3 +1,5 @@
+//! A process context for Stak Scheme.
+
 #![no_std]
 
 #[cfg(feature = "std")]

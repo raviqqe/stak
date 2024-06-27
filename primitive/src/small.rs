@@ -283,6 +283,12 @@ impl<D: Device, F: FileSystem> PrimitiveSet for SmallPrimitiveSet<D, F> {
                     .ok()
                     .map(|value| vm.boolean(value).into())
             })?,
+            Primitive::COMMAND_LINE => {
+                todo!();
+            }
+            Primitive::ENVIRONMENT_VARIABLES => {
+                todo!();
+            }
             _ => return Err(Error::Illegal),
         }
 
