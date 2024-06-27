@@ -362,6 +362,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -440,6 +441,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -489,6 +491,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-profiler",
  "stak-vm",
 ]
@@ -546,6 +549,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",

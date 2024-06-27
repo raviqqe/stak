@@ -21,10 +21,11 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
 
 impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     /// Creates a primitive set.
-    pub fn new(device: D, file_system: F) -> Self {
+    pub fn new(device: D, file_system: F, process_context: P) -> Self {
         Self {
             device,
             file_system,
+            process_context,
         }
     }
 
