@@ -1,5 +1,6 @@
 use crate::ProcessContext;
 
+/// A void process context that provides no context information.
 #[derive(Debug, Default)]
 pub struct VoidProcessContext {}
 

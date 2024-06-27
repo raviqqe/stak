@@ -3,6 +3,7 @@ use alloc::{string::String, vec::Vec};
 use once_cell::unsync::Lazy;
 use std::env::{args, vars};
 
+/// A process context provided by an OS.
 pub struct OsProcessContext {
     arguments: Lazy<Vec<String>>,
     environment_variables: Lazy<Vec<(String, String)>>,
