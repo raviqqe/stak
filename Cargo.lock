@@ -420,6 +420,7 @@ dependencies = [
  "stak-file",
  "stak-macro-util",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
  "syn",
 ]
