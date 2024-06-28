@@ -540,6 +540,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
 ]
 
 [[package]]
