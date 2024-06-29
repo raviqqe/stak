@@ -1,5 +1,7 @@
 //! Build scripts for Stak Scheme.
 
+extern crate alloc;
+
 mod error;
 
 pub use error::BuildError;

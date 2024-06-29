@@ -1,8 +1,6 @@
+use alloc::fmt::{self, Display, Formatter};
 use stak_compiler::CompileError;
-use std::{
-    error::Error,
-    fmt::{self, Display, Formatter},
-};
+use std::error::Error;
 use tokio::io;
 
 #[derive(Debug)]
@@ -28,8 +26,8 @@ impl Error for BuildError {}
 impl Display for BuildError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Self::Compile(error) => write!(formatter, "{}", error),
-            Self::Io(error) => write!(formatter, "{}", error),
+            Self::Compile(error) => write!(formatter, "{error}"),
+            Self::Io(error) => write!(formatter, "{error}"),
         }
     }
 }
