@@ -35,11 +35,11 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
 
     for path in paths {
         let path = canonicalize(path?).await?;
+        let src_path = src_directory.join(&path);
 
-        handles.push(spawn(compile(
-            src_directory.join(&path),
-            out_directory.join(&path),
-        )))
+        println!("cargo::rerun-if-changed={}", src_path.display());
+
+        handles.push(spawn(compile(src_path, out_directory.to_path_buf())))
     }
 
     join_all(handles).await;
