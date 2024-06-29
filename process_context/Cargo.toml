@@ -1,5 +1,6 @@
 [package]
 name = "stak-process-context"
+description = "Process context for Stak Scheme"
 version = "0.1.0"
 edition.workspace = true
 keywords.workspace = true
