@@ -5,7 +5,7 @@ use proc_macro2::Literal;
 use quote::quote;
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
-use std::{env, error::Error, path::Path};
+use std::{error::Error, path::Path};
 use syn::{parse_macro_input, LitStr};
 
 /// Includes a program in R7RS Scheme as bytecodes built by the `stak-build`
@@ -18,12 +18,7 @@ pub fn include(input: TokenStream) -> TokenStream {
 }
 
 fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
-    let path = format!(
-        "{}",
-        Path::new(path)
-            .strip_prefix(Path::new(&env::var("CARGO_MANIFEST_DIR")?).join("src"))?
-            .display()
-    );
+    let path = format!("{}", Path::new("src").join(path).display());
 
     Ok(quote!(include_bytes!(concat!(env!("OUT_DIR"), #path))))
 }
