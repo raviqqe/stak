@@ -12,7 +12,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use tokio::{
-    fs::{read_to_string, write},
+    fs::{canonicalize, read_to_string, write},
     runtime::Runtime,
     spawn,
 };
@@ -33,11 +33,11 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
     let mut handles = vec![];
 
     for path in paths {
-        let path = path?;
+        let path = canonicalize(path?).await?;
 
         handles.push(spawn(compile(
-            path.clone(),
-            out_directory.join(path.strip_prefix(&src_directory)?),
+            src_directory.join(&path),
+            out_directory.join(&path),
         )))
     }
 
