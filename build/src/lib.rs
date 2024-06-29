@@ -6,7 +6,11 @@ pub use error::BuildError;
 use futures::future::join_all;
 use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
-use std::{env, error::Error, path::Path};
+use std::{
+    env,
+    error::Error,
+    path::{Path, PathBuf},
+};
 use tokio::{
     fs::{read_to_string, write},
     runtime::Runtime,
@@ -31,10 +35,10 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
     for path in paths {
         let path = path?;
 
-        spawn(compile(
-            &path,
-            &out_directory.join(path.strip_prefix(src_directory)),
-        ));
+        handles.push(spawn(compile(
+            path.clone(),
+            out_directory.join(path.strip_prefix(&src_directory)?),
+        )))
     }
 
     join_all(handles).await;
@@ -42,7 +46,7 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn compile(src_path: &Path, out_path: &Path) -> Result<(), BuildError> {
+async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError> {
     let string = read_to_string(src_path).await?;
     let mut buffer = vec![];
 
