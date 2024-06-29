@@ -16,6 +16,8 @@ const PATH_SIZE: usize = 64;
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
     device: D,
     file_system: F,
+    // TODO
+    #[allow(unused)]
     process_context: P,
 }
 
