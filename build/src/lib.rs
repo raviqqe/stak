@@ -25,4 +25,4 @@ fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>
     Ok(quote!(include_bytes!(concat!(env!("OUT_DIR"), #path))))
 }
 
-pub fn bulid_r7rs() -> Result<(), Box<dyn Error>> {}
+pub fn build_r7rs() -> Result<(), Box<dyn Error>> {}
