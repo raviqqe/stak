@@ -17,6 +17,7 @@ quote = "1.0.36"
 syn = "2.0.68"
 stak-compiler = { version = "0.1.45", path = "../compiler" }
 stak-macro-util = { version = "0.1.18", path = "../macro-util" }
+tokio = { version = "1.38.0", features = ["full"] }
 
 [dev-dependencies]
 stak-device = { path = "../device" }
