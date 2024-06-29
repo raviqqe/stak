@@ -12,7 +12,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use tokio::{
-    fs::{canonicalize, read_to_string, write},
+    fs::{read_to_string, write},
     runtime::Runtime,
     spawn,
 };
@@ -27,19 +27,18 @@ pub fn build_r7rs() -> Result<(), Box<dyn Error>> {
 }
 
 async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
-    let src_directory = Path::new(&env::var("CARGO_MANIFEST_DIR")?).join("src");
     let out_directory_variable = env::var("OUT_DIR")?;
     let out_directory = Path::new(&out_directory_variable);
 
     let mut handles = vec![];
 
     for path in paths {
-        let path = canonicalize(path?).await?;
-        let src_path = src_directory.join(&path);
+        let path = path?;
+        let out_path = out_directory.join(&path);
 
-        println!("cargo::rerun-if-changed={}", src_path.display());
+        println!("cargo::rerun-if-changed={}", path.display());
 
-        handles.push(spawn(compile(src_path, out_directory.join(&path))))
+        handles.push(spawn(compile(path, out_path)))
     }
 
     join_all(handles).await;
