@@ -32,7 +32,7 @@ for stage in $(seq 0 $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage $stage >stage$(expr $stage + 1).bc
 done
 
-for file in bench/*/main.scm compile.scm; do
+for file in bench/*/main.scm cmd/*/src/*.scm; do
   echo '>>>' $file
 
   for stage in $(seq 0 $stage_count); do
