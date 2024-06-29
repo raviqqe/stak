@@ -28,7 +28,7 @@ pub fn build_r7rs() -> Result<(), Box<dyn Error>> {
 
 async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
     let src_directory = Path::new(&env::var("CARGO_MANIFEST_DIR")?).join("src");
-    let out_directory = Path::new(&env::var("OUT_DIR")?).join("src");
+    let out_directory = Path::new(&env::var("OUT_DIR")?);
 
     let mut handles = vec![];
 
