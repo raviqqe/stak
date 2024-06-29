@@ -3,9 +3,12 @@ use stak_compiler::CompileError;
 use std::error::Error;
 use tokio::io;
 
+/// A build error.
 #[derive(Debug)]
 pub enum BuildError {
+    /// A compile error.
     Compile(CompileError),
+    /// An I/O error.
     Io(io::Error),
 }
 

@@ -18,6 +18,7 @@ use tokio::{
     spawn,
 };
 
+/// Builds R7RS source files into bytecode target files.
 pub fn build_r7rs() -> Result<(), Box<dyn Error>> {
     let runtime = Runtime::new()?;
     let _ = runtime.enter();
