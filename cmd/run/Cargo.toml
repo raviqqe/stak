@@ -19,6 +19,7 @@ stak-minifier-macro = { version = "0.1.19", path = "../../minifier_macro" }
 stak-primitive = { version = "0.4.0", path = "../../primitive", features = [
   "std",
 ] }
+stak-process-context = { version = "0.1.0", path = "../../process_context", features = ["std"] }
 stak-vm = { version = "0.4.11", path = "../../vm", features = ["std"] }
 
 [lints]

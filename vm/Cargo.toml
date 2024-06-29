@@ -25,6 +25,7 @@ stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
 stak-primitive = { path = "../primitive" }
+stak-process-context = { path = "../process_context" }
 
 [lints]
 workspace = true

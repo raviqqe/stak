@@ -15,6 +15,7 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::libc::{Buffer, BufferMut, Read, ReadWriteDevice, Stderr, Stdin, Stdout, Write};
 use stak_file::{LibcFileSystem, VoidFileSystem};
 use stak_primitive::SmallPrimitiveSet;
+use stak_process_context::VoidProcessContext;
 use stak_vm::{Value, Vm};
 
 const PRELUDE_SOURCE: &str = include_str!(env!("STAK_PRELUDE_FILE"));
@@ -64,6 +65,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
+            VoidProcessContext::new(),
         ),
     )
     .unwrap();
@@ -80,6 +82,7 @@ fn compile(source: impl Read, target: impl Write, heap: &mut [Value]) {
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(source, target, Stderr::new()),
             VoidFileSystem::new(),
+            VoidProcessContext::new(),
         ),
     )
     .unwrap();

@@ -18,6 +18,7 @@ stak-configuration = { version = "0.1.37", path = "../configuration" }
 stak-device = { version = "0.2", path = "../device", features = ["std"] }
 stak-file = { version = "0.3.0", path = "../file" }
 stak-primitive = { version = "0.4", path = "../primitive", features = ["std"] }
+stak-process-context = { version = "0.1.0", path = "../process_context" }
 stak-vm = { version = "0.4", path = "../vm", features = ["std"] }
 wasm-bindgen = "0.2.84"
 

@@ -22,6 +22,7 @@ stak-macro-util = { version = "0.1.18", path = "../macro-util" }
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-primitive = { path = "../primitive" }
+stak-process-context = { path = "../process_context" }
 stak-vm = { path = "../vm" }
 
 [lints]

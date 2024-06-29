@@ -335,6 +335,7 @@ dependencies = [
  "stak-macro",
  "stak-minifier-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -362,6 +363,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -403,6 +405,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -417,6 +420,7 @@ dependencies = [
  "stak-file",
  "stak-macro-util",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
  "syn",
 ]
@@ -440,6 +444,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -468,7 +473,15 @@ dependencies = [
  "heapless",
  "stak-device",
  "stak-file",
+ "stak-process-context",
  "stak-vm",
+]
+
+[[package]]
+name = "stak-process-context"
+version = "0.1.0"
+dependencies = [
+ "once_cell",
 ]
 
 [[package]]
@@ -481,6 +494,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-profiler",
  "stak-vm",
 ]
@@ -512,6 +526,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -525,6 +540,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
 ]
 
 [[package]]
@@ -538,6 +554,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
