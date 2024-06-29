@@ -21,8 +21,5 @@ stak-primitive = { version = "0.4.0", path = "../../primitive", features = [
 ] }
 stak-vm = { version = "0.4.11", path = "../../vm", features = ["std"] }
 
-[build-dependencies]
-stak-build = { version = "0.1.0", path = "../../build" }
-
 [lints]
 workspace = true

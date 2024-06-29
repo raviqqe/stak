@@ -329,7 +329,6 @@ version = "0.2.45"
 dependencies = [
  "clap",
  "main_error",
- "stak-build",
  "stak-configuration",
  "stak-device",
  "stak-file",
@@ -474,6 +473,7 @@ dependencies = [
 name = "stak-minify"
 version = "0.1.19"
 dependencies = [
+ "stak-build",
  "stak-sac",
 ]
 
