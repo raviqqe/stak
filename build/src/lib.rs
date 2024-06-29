@@ -39,7 +39,7 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
 
         println!("cargo::rerun-if-changed={}", src_path.display());
 
-        handles.push(spawn(compile(src_path, out_directory.to_path_buf())))
+        handles.push(spawn(compile(src_path, out_directory.join(&path))))
     }
 
     join_all(handles).await;
