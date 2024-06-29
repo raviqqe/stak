@@ -7,13 +7,13 @@ pub enum BuildError {
 }
 
 impl From<CompileError> for BuildError {
-    fn from(error: CompileError) -> BuildError {
+    fn from(error: CompileError) -> Self {
         Self::Compile(error)
     }
 }
 
 impl From<io::Error> for BuildError {
-    fn from(error: io::Error) -> BuildError {
+    fn from(error: io::Error) -> Self {
         Self::Io(error)
     }
 }
