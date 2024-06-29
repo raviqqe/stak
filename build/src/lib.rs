@@ -12,7 +12,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use tokio::{
-    fs::{read_to_string, write},
+    fs::{create_dir_all, read_to_string, write},
     runtime::Runtime,
     spawn,
 };
@@ -51,6 +51,10 @@ async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError>
     let mut buffer = vec![];
 
     compile_r7rs(string.as_bytes(), &mut buffer)?;
+
+    if let Some(path) = out_path.parent() {
+        create_dir_all(path).await?;
+    }
 
     write(out_path, &buffer).await?;
 
