@@ -41,7 +41,9 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
         handles.push(spawn(compile(path, out_path)))
     }
 
-    try_join_all(handles).await?;
+    for handle in handles {
+        handle.await??;
+    }
 
     Ok(())
 }
