@@ -8,6 +8,7 @@ members = [
   "cmd/profile",
   "cmd/repl",
   "cmd/run",
+  "build",
   "code",
   "compiler",
   "configuration",

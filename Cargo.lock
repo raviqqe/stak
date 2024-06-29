@@ -339,6 +339,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-build"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "stak-compiler",
+ "stak-device",
+ "stak-file",
+ "stak-macro-util",
+ "stak-primitive",
+ "stak-vm",
+ "syn",
+]
+
+[[package]]
 name = "stak-code"
 version = "0.2.40"
 dependencies = [
