@@ -3,7 +3,6 @@
 mod error;
 
 pub use error::BuildError;
-use futures::future::try_join_all;
 use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
 use std::{
