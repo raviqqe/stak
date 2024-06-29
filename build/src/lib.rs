@@ -3,7 +3,7 @@
 mod error;
 
 pub use error::BuildError;
-use futures::future::join_all;
+use futures::future::{join_all, try_join_all};
 use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
 use std::{
@@ -41,7 +41,7 @@ async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
         handles.push(spawn(compile(path, out_path)))
     }
 
-    join_all(handles).await;
+    try_join_all(handles).await?;
 
     Ok(())
 }
