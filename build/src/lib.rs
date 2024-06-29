@@ -36,10 +36,6 @@ pub fn include_r7rs(input: TokenStream) -> TokenStream {
     convert_result((|| generate_r7rs(&read_source_file(input)?))()).into()
 }
 
-pub async fn build_r7rs() {
-    foo
-}
-
 fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     generate_scheme(source, |source, target| {
         stak_compiler::compile_r7rs(source, target)

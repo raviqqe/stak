@@ -329,6 +329,7 @@ version = "0.2.45"
 dependencies = [
  "clap",
  "main_error",
+ "stak-build",
  "stak-configuration",
  "stak-device",
  "stak-file",
