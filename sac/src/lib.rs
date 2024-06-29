@@ -31,7 +31,7 @@ macro_rules! main {
             main_error::MainError,
             stak_device::StdioDevice,
             stak_file::OsFileSystem,
-            stak_macro::include_r7rs,
+            stak_macro::include,
             stak_primitive::SmallPrimitiveSet,
             stak_process_context::OsProcessContext,
             stak_vm::Vm,
@@ -58,7 +58,7 @@ macro_rules! main {
                 ),
             )?;
 
-            vm.initialize(include_r7rs!($path).iter().copied())?;
+            vm.initialize(include!($path).iter().copied())?;
 
             Ok(vm.run()?)
         }
