@@ -2244,9 +2244,18 @@
 (define-library (scheme process-context)
   (export exit emergency-exit)
 
-  (import (scheme base) (stak base))
+  (import (scheme base) (scheme lazy) (stak base))
 
   (begin
+    (define $$command-line (primitive 28))
+    (define $$get-environment-variables (primitive 29))
+
+    (define command-line (delay ($$command-line)))
+    (define get-environment-variables (delay ($$get-environment-variables)))
+
+    (define (get-environment-variable name)
+      (assoc name (get-environment-variables)))
+
     (define exit-success (data-rib procedure-type '() (cons 0 '())))
 
     (define (emergency-exit . rest)

@@ -359,7 +359,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         list
     }
 
-    fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T::Error> {
+    /// Returns a cons.
+    pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, T::Error> {
         self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
     }
 

@@ -43,6 +43,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -55,6 +56,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-primitive",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -100,8 +102,13 @@ dependencies = [
  "heapless",
  "stak-device",
  "stak-file",
+ "stak-process-context",
  "stak-vm",
 ]
+
+[[package]]
+name = "stak-process-context"
+version = "0.1.0"
 
 [[package]]
 name = "stak-vm"

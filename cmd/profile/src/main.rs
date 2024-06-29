@@ -12,6 +12,7 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_file::OsFileSystem;
 use stak_primitive::SmallPrimitiveSet;
+use stak_process_context::OsProcessContext;
 use stak_profiler::{
     calculate_durations, calculate_flamegraph, collapse_stacks, read_records, reverse_stacks,
     write_records, DurationRecord, ProcedureRecord, StackProfiler,
@@ -82,7 +83,11 @@ fn main() -> Result<(), MainError> {
             let mut heap = vec![Default::default(); arguments.heap_size];
             let mut vm = Vm::new(
                 &mut heap,
-                SmallPrimitiveSet::new(StdioDevice::new(), OsFileSystem::new()),
+                SmallPrimitiveSet::new(
+                    StdioDevice::new(),
+                    OsFileSystem::new(),
+                    OsProcessContext::new(),
+                ),
             )?
             .with_profiler(&mut profiler);
 

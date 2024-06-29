@@ -5,6 +5,7 @@ use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
 use stak_macro::include_r7rs;
 use stak_primitive::{SmallError, SmallPrimitiveSet};
+use stak_process_context::VoidProcessContext;
 use stak_vm::Vm;
 use std::io::{empty, Read, Write};
 
@@ -18,6 +19,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(reader, writer, empty()),
             VoidFileSystem::new(),
+            VoidProcessContext::new(),
         ),
     )?;
 

@@ -1,0 +1,17 @@
+[package]
+name = "stak-process-context"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[features]
+std = ["dep:once_cell"]
+
+[dependencies]
+once_cell = { version = "1.19.0", default-features = false, optional = true }
+
+[lints]
+workspace = true

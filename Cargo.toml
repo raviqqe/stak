@@ -19,6 +19,7 @@ members = [
   "minifier",
   "minifier_macro",
   "primitive",
+  "process_context",
   "profiler",
   "sac",
   "vm",
