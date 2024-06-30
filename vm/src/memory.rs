@@ -35,6 +35,7 @@ macro_rules! assert_heap_value {
     };
 }
 
+/// A memory on a virtual machine.
 pub struct Memory<'a> {
     program_counter: Cons,
     stack: Cons,
@@ -46,6 +47,7 @@ pub struct Memory<'a> {
 }
 
 impl<'a> Memory<'a> {
+    /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
             program_counter: NEVER,
