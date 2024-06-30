@@ -13,10 +13,7 @@ use crate::{
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::{
-    fmt::{self, Display, Formatter},
-    mem::replace,
-};
+use core::fmt::{self, Display, Formatter};
 use stak_code as code;
 
 mod instruction {
@@ -538,7 +535,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            let program_counter = replace(&mut self.memory.program_counter(), program_counter);
+            let program_counter = {
+                let counter = self.memory.program_counter();
+                self.memory.set_program_counter(program_counter);
+                counter
+            };
 
             if r#return {
                 self.memory.push(program_counter.into())?;
