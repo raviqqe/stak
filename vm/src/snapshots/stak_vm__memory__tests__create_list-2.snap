@@ -1,6 +1,5 @@
 ---
 source: vm/src/memory.rs
-assertion_line: 664
 expression: vm
 ---
 program counter: !:0
