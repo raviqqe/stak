@@ -1,5 +1,6 @@
 ---
-source: vm/src/vm.rs
+source: vm/src/memory.rs
+assertion_line: 664
 expression: vm
 ---
 program counter: !:0
@@ -9,4 +10,3 @@ stack: !:0
 04: c2:2 c0:0
 06: n1 c0:0
 08: n2 c6:0
-
