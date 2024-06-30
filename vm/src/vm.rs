@@ -75,8 +75,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
-        while self.memory.program_counter != self.memory.null() {
-            let instruction = self.memory.cdr(self.memory.program_counter).assume_cons();
+        while self.memory.program_counter() != self.memory.null() {
+            let instruction = self.memory.cdr(self.memory.program_counter()).assume_cons();
 
             trace!("instruction", instruction.tag());
 
@@ -127,7 +127,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.set_cdr(cons, value);
             }
             TypedValue::Number(index) => {
-                let cons = self.memory.tail(self.memory.stack, index);
+                let cons = self.memory.tail(self.memory.stack(), index);
                 let value = self.memory.pop();
                 self.memory.set_car(cons, value)
             }
@@ -137,12 +137,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn r#if(&mut self) {
-        self.memory.program_counter = (if self.memory.pop() == self.memory.boolean(false).into() {
-            self.memory.cdr(self.memory.program_counter)
-        } else {
-            self.operand()
-        })
-        .assume_cons();
+        let value = self.memory.pop();
+
+        self.memory.set_program_counter(
+            (if value == self.memory.boolean(false).into() {
+                self.memory.cdr(self.memory.program_counter())
+            } else {
+                self.operand()
+            })
+            .assume_cons(),
+        );
     }
 
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
@@ -159,7 +163,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
                 #[cfg(feature = "profile")]
-                self.profile_call(self.memory.program_counter, r#return);
+                self.profile_call(self.memory.program_counter(), r#return);
 
                 let arguments = Self::parse_arity(arity);
                 let parameters =
@@ -184,26 +188,28 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
 
                 // Use a `program_counter` field as an escape cell for a procedure.
-                let program_counter = self.memory.program_counter;
-                self.memory.program_counter = self.memory.register();
+                let program_counter = self.memory.program_counter();
+                self.memory.set_program_counter(self.memory.register());
                 self.memory.set_register(list);
 
                 let continuation = if r#return {
                     self.continuation()
                 } else {
                     self.memory
-                        .allocate(program_counter.into(), self.memory.stack.into())?
+                        .allocate(program_counter.into(), self.memory.stack().into())?
                 };
-                self.memory.stack = self.memory.allocate(
+                let stack = self.memory.allocate(
                     continuation.into(),
-                    self.environment(self.memory.program_counter)
+                    self.environment(self.memory.program_counter())
                         .set_tag(StackSlot::Frame as _)
                         .into(),
                 )?;
-                self.memory.program_counter = self
-                    .memory
-                    .cdr(self.code(self.memory.program_counter).assume_cons())
-                    .assume_cons();
+                self.memory.set_stack(stack);
+                self.memory.set_program_counter(
+                    self.memory
+                        .cdr(self.code(self.memory.program_counter()).assume_cons())
+                        .assume_cons(),
+                );
 
                 for _ in 0..parameters.count.to_i64() {
                     if self.memory.register() == self.memory.null() {
@@ -250,34 +256,36 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn advance_program_counter(&mut self) {
-        self.memory.program_counter = self.memory.cdr(self.memory.program_counter).assume_cons();
+        self.memory
+            .set_program_counter(self.memory.cdr(self.memory.program_counter()).assume_cons());
 
-        if self.memory.program_counter == self.memory.null() {
+        if self.memory.program_counter() == self.memory.null() {
             #[cfg(feature = "profile")]
             self.profile_return();
 
             let continuation = self.continuation();
 
-            self.memory.program_counter = self
-                .memory
-                .cdr(self.memory.car(continuation).assume_cons())
-                .assume_cons();
+            self.memory.set_program_counter(
+                self.memory
+                    .cdr(self.memory.car(continuation).assume_cons())
+                    .assume_cons(),
+            );
             // Keep a value at the top of a stack.
             self.memory
-                .set_cdr(self.memory.stack, self.memory.cdr(continuation));
+                .set_cdr(self.memory.stack(), self.memory.cdr(continuation));
         }
     }
 
     fn operand(&self) -> Value {
-        self.memory.car(self.memory.program_counter)
+        self.memory.car(self.memory.program_counter())
     }
 
     fn resolve_operand(&self, operand: Value) -> Value {
         match operand.to_typed() {
             TypedValue::Cons(cons) => self.memory.cdr(cons),
-            TypedValue::Number(index) => {
-                self.memory.car(self.memory.tail(self.memory.stack, index))
-            }
+            TypedValue::Number(index) => self
+                .memory
+                .car(self.memory.tail(self.memory.stack(), index)),
         }
     }
 
@@ -297,7 +305,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // (program-counter . stack)
     fn continuation(&self) -> Cons {
-        let mut stack = self.memory.stack;
+        let mut stack = self.memory.stack();
 
         while self.memory.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
             stack = self.memory.cdr(stack).assume_cons();

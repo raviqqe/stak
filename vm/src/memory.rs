@@ -49,8 +49,8 @@ macro_rules! assert_heap_value {
 }
 
 pub struct Memory<'a> {
-    pub program_counter: Cons,
-    pub stack: Cons,
+    program_counter: Cons,
+    stack: Cons,
     r#false: Cons,
     register: Cons,
     allocation_index: usize,
@@ -361,6 +361,7 @@ impl<'a> Memory<'a> {
     // Initialization
 
     /// Initializes a virtual machine with bytecodes of a program.
+    // TODO Move this to a `vm` module.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
 
