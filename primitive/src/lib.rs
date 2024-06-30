@@ -8,6 +8,8 @@
 #[cfg(feature = "std")]
 extern crate std;
 
+mod composite;
 mod small;
 
+pub use composite::CompositePrimitiveSet;
 pub use small::{Error as SmallError, SmallPrimitiveSet};
