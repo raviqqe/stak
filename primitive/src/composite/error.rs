@@ -1,15 +1,15 @@
 use core::fmt::{self, Display, Formatter};
 
+/// An error that can be caused by an illegal primitive.
+pub trait IllegalPrimitiveError {
+    fn is_illegal_primitive(&self) -> bool;
+}
+
 /// A composite error.
 #[derive(Debug)]
 pub enum CompositeError<E, F> {
     Primary(E),
     Secondary(F),
-}
-
-/// An error that can be caused by an illegal primitive.
-pub trait IllegalPrimitiveError {
-    fn is_illegal_primitive(&self) -> bool;
 }
 
 impl<E: From<stak_vm::Error>, F> From<stak_vm::Error> for CompositeError<E, F> {
