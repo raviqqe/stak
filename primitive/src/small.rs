@@ -169,7 +169,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
 impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiveSet<D, F, P> {
     type Error = Error;
 
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
                 let [r#type, car, cdr, tag] = Self::pop_arguments(vm);
