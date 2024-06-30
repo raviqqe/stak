@@ -1,17 +1,22 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    cons::{Cons, Tag},
+    cons::{Cons, Tag, NEVER},
     memory::Memory,
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
+    symbol_index,
     value::{TypedValue, Value},
     Error, StackSlot,
 };
+use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter};
+use core::{
+    fmt::{self, Display, Formatter},
+    mem::replace,
+};
 use stak_code as code;
 
 mod instruction {
@@ -337,113 +342,143 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), Error> {
         let mut input = input.into_iter();
 
-        self.program_counter = self.null();
-        self.stack = self.null();
+        self.memory.set_program_counter(self.memory.null());
+        self.memory.set_stack(self.memory.null());
 
         trace!("decode", "start");
 
         // Allow access to a symbol table during instruction decoding.
-        self.register = self.decode_symbols(&mut input)?;
-        self.stack = self.null();
+        let symbols = self.decode_symbols(&mut input)?;
+        self.memory.set_register(symbols);
+        self.memory.set_stack(self.memory.null());
         self.decode_instructions(&mut input)?;
-        self.build_symbol_table(self.register)?;
+        self.build_symbol_table(self.memory.register())?;
 
         trace!("decode", "end");
 
         // Initialize an implicit top-level frame.
         let codes = self
-            .allocate(Number::new(0).into(), self.null().into())?
+            .memory
+            .allocate(Number::new(0).into(), self.memory.null().into())?
             .into();
-        let continuation = self.allocate(codes, self.null().into())?.into();
-        self.stack = self.cons(continuation, self.null().set_tag(StackSlot::Frame as _))?;
+        let continuation = self
+            .memory
+            .allocate(codes, self.memory.null().into())?
+            .into();
+        let stack = self.memory.cons(
+            continuation,
+            self.memory.null().set_tag(StackSlot::Frame as _),
+        )?;
+        self.memory.set_stack(stack);
 
-        self.register = NEVER;
+        self.memory.set_register(NEVER);
 
         Ok(())
     }
 
     fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         // Initialize a shared empty string.
-        self.register = self.create_string(self.null(), 0)?;
+        let string = self.create_string(self.memory.null(), 0)?;
+        self.memory.set_register(string);
 
         for _ in 0..Self::decode_integer(input).ok_or(Error::BytecodeIntegerMissing)? {
-            self.initialize_symbol(None, self.boolean(false).into())?;
+            self.initialize_symbol(None, self.memory.boolean(false).into())?;
         }
 
         let mut length = 0;
-        let mut name = self.null();
+        let mut name = self.memory.null();
 
         while {
             let byte = input.next().ok_or(Error::BytecodeEnd)?;
 
             (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
                 let string = self.create_string(name, length)?;
-                self.initialize_symbol(Some(string), self.boolean(false).into())?;
+                self.initialize_symbol(Some(string), self.memory.boolean(false).into())?;
 
-                (0, self.null())
+                (0, self.memory.null())
             } else {
                 (
                     length + 1,
-                    self.cons(Number::new(byte as i64).into(), name)?,
+                    self.memory.cons(Number::new(byte as i64).into(), name)?,
                 )
             };
 
             byte != SYMBOL_TERMINATOR
         } {}
 
-        let rib = self.allocate(
+        let rib = self.memory.allocate(
             NEVER.set_tag(Type::Procedure as Tag).into(),
             Number::default().into(),
         )?;
 
-        let mut cons = self.stack;
+        let mut cons = self.memory.stack();
 
-        for value in [self.boolean(false), self.boolean(true), self.null(), rib] {
-            self.set_cdr_value(self.car(cons), value.into());
-            cons = self.cdr(cons).assume_cons();
+        for value in [
+            self.memory.boolean(false),
+            self.memory.boolean(true),
+            self.memory.null(),
+            rib,
+        ] {
+            self.memory
+                .set_cdr_value(self.memory.car(cons), value.into());
+            cons = self.memory.cdr(cons).assume_cons();
         }
 
-        Ok(self.stack)
+        Ok(self.memory.stack())
     }
 
     fn build_symbol_table(&mut self, symbols: Cons) -> Result<(), Error> {
-        self.stack = self
-            .car(self.tail(symbols, Number::new(symbol_index::RIB as i64)))
-            .assume_cons();
-        self.register = self.cons(self.r#false.into(), symbols)?;
+        self.memory.set_stack(
+            self.memory
+                .car(
+                    self.memory
+                        .tail(symbols, Number::new(symbol_index::RIB as i64)),
+                )
+                .assume_cons(),
+        );
+        let symbols = self
+            .memory
+            .cons(self.memory.boolean(false).into(), symbols)?;
+        self.memory.set_register(symbols);
 
-        let mut current = self.register;
+        let mut current = self.memory.register();
 
-        while self.cdr(current) != self.null().into() {
-            if self.cdr_value(self.car_value(self.car_value(self.cdr(current))))
-                == Number::new(0).into()
+        while self.memory.cdr(current) != self.memory.null().into() {
+            if self.memory.cdr_value(
+                self.memory
+                    .car_value(self.memory.car_value(self.memory.cdr(current))),
+            ) == Number::new(0).into()
             {
-                self.set_cdr(current, self.cdr_value(self.cdr(current)));
+                self.memory
+                    .set_cdr(current, self.memory.cdr_value(self.memory.cdr(current)));
             } else {
-                current = self.cdr(current).assume_cons()
+                current = self.memory.cdr(current).assume_cons()
             }
         }
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.set_car_value(self.cdr(self.stack), self.cdr(self.register));
+        self.memory.set_car_value(
+            self.memory.cdr(self.memory.stack()),
+            self.memory.cdr(self.memory.register()),
+        );
 
         Ok(())
     }
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), Error> {
-        let symbol = self.allocate(
-            name.unwrap_or(self.register)
+        let symbol = self.memory.allocate(
+            name.unwrap_or(self.memory.register())
                 .set_tag(Type::Symbol as Tag)
                 .into(),
             value,
         )?;
 
-        self.push(symbol.into())
+        self.memory.push(symbol.into())
     }
 
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
-        self.allocate(
+        self.memory.allocate(
             name.set_tag(Type::String as Tag).into(),
             Number::new(length).into(),
         )
@@ -466,9 +501,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     r#return,
                 )?,
                 code::Instruction::IF => {
-                    let then = self.program_counter;
+                    let then = self.memory.program_counter();
 
-                    self.program_counter = self.pop().assume_cons();
+                    let r#else = self.memory.pop();
+                    self.memory.set_program_counter(r#else.assume_cons());
 
                     self.append_instruction(instruction as Tag, then.into(), false)?
                 }
@@ -479,14 +515,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.append_instruction(instruction as Tag + integer as Tag, operand, r#return)?
                 }
                 code::Instruction::CLOSE => {
-                    let code = self.allocate(
+                    let code = self.memory.allocate(
                         Number::new(integer as i64).into(),
-                        self.program_counter.into(),
+                        self.memory.program_counter().into(),
                     )?;
-                    let procedure =
-                        self.allocate(NEVER.set_tag(Type::Procedure as Tag).into(), code.into())?;
+                    let procedure = self
+                        .memory
+                        .allocate(NEVER.set_tag(Type::Procedure as Tag).into(), code.into())?;
 
-                    self.program_counter = self.pop().assume_cons();
+                    let counter = self.memory.pop();
+                    self.memory.set_program_counter(counter.assume_cons());
 
                     self.append_instruction(
                         code::Instruction::CONSTANT as Tag,
@@ -494,16 +532,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         r#return,
                     )?
                 }
-                code::Instruction::SKIP => {
-                    self.tail(self.program_counter, Number::new(integer as i64))
-                }
+                code::Instruction::SKIP => self
+                    .memory
+                    .tail(self.memory.program_counter(), Number::new(integer as i64)),
                 _ => return Err(Error::IllegalInstruction),
             };
 
-            let program_counter = replace(&mut self.program_counter, program_counter);
+            let program_counter = replace(&mut self.memory.program_counter(), program_counter);
 
             if r#return {
-                self.push(program_counter.into())?;
+                self.memory.push(program_counter.into())?;
             }
         }
 
@@ -516,12 +554,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         operand: Value,
         r#return: bool,
     ) -> Result<Cons, Error> {
-        self.cons(
+        self.memory.cons(
             operand,
             (if r#return {
-                self.null()
+                self.memory.null()
             } else {
-                self.program_counter
+                self.memory.program_counter()
             })
             .set_tag(instruction),
         )
@@ -552,7 +590,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("symbol", is_symbol);
 
         if is_symbol {
-            self.car(self.tail(self.register, index))
+            self.memory
+                .car(self.memory.tail(self.memory.register(), index))
         } else {
             index.into()
         }

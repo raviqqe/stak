@@ -6,7 +6,6 @@ use crate::{
     value::Value,
     Error, StackSlot,
 };
-use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 use core::{
     fmt::{self, Display, Formatter},
     mem::replace,
