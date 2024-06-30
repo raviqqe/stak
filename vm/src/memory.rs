@@ -83,6 +83,7 @@ impl<'a> Memory<'a> {
         Ok(memory)
     }
 
+    /// Returns a tail of a list.
     pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
         while index != Number::default() {
             list = self.cdr(list).assume_cons();
