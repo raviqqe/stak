@@ -170,7 +170,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 trace!("parameter count", parameters.count);
                 trace!("parameter variadic", parameters.variadic);
 
-                self.memory.register = procedure;
+                self.memory.set_register(procedure);
 
                 let mut list = if arguments.variadic {
                     self.memory.pop().assume_cons()
@@ -185,8 +185,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 // Use a `program_counter` field as an escape cell for a procedure.
                 let program_counter = self.memory.program_counter;
-                self.memory.program_counter = self.memory.register;
-                self.memory.register = list;
+                self.memory.program_counter = self.memory.register();
+                self.memory.set_register(list);
 
                 let continuation = if r#return {
                     self.continuation()
@@ -206,27 +206,30 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     .assume_cons();
 
                 for _ in 0..parameters.count.to_i64() {
-                    if self.memory.register == self.memory.null() {
+                    if self.memory.register() == self.memory.null() {
                         return Err(Error::ArgumentCount.into());
                     }
 
-                    self.memory.push(self.memory.car(self.memory.register))?;
-                    self.memory.register = self.memory.cdr(self.memory.register).assume_cons();
+                    self.memory.push(self.memory.car(self.memory.register()))?;
+                    self.memory
+                        .set_register(self.memory.cdr(self.memory.register()).assume_cons());
                 }
 
                 if parameters.variadic {
-                    self.memory.push(self.memory.register.into())?;
-                } else if self.memory.register != self.memory.null() {
+                    self.memory.push(self.memory.register().into())?;
+                } else if self.memory.register() != self.memory.null() {
                     return Err(Error::ArgumentCount.into());
                 }
             }
             TypedValue::Number(primitive) => {
                 if Self::parse_arity(arity).variadic {
-                    self.memory.register = self.memory.pop().assume_cons();
+                    let list = self.memory.pop().assume_cons();
+                    self.memory.set_register(list);
 
-                    while self.memory.register != self.memory.null() {
-                        self.memory.push(self.memory.car(self.memory.register))?;
-                        self.memory.register = self.memory.cdr(self.memory.register).assume_cons();
+                    while self.memory.register() != self.memory.null() {
+                        self.memory.push(self.memory.car(self.memory.register()))?;
+                        self.memory
+                            .set_register(self.memory.cdr(self.memory.register()).assume_cons());
                     }
                 }
 

@@ -51,11 +51,11 @@ macro_rules! assert_heap_value {
 pub struct Memory<'a> {
     pub program_counter: Cons,
     pub stack: Cons,
-    pub r#false: Cons,
-    pub register: Cons,
-    pub allocation_index: usize,
-    pub space: bool,
-    pub heap: &'a mut [Value],
+    r#false: Cons,
+    register: Cons,
+    allocation_index: usize,
+    space: bool,
+    heap: &'a mut [Value],
 }
 
 impl<'a> Memory<'a> {
@@ -83,19 +83,28 @@ impl<'a> Memory<'a> {
         Ok(memory)
     }
 
-    /// Returns a tail of a list.
-    pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
-        while index != Number::default() {
-            list = self.cdr(list).assume_cons();
-            index = Number::new(index.to_i64() - 1);
-        }
-
-        list
+    /// Returns a register.
+    pub fn register(&self) -> Cons {
+        self.register
     }
 
-    /// Allocates a cons.
-    pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
-        self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
+    /// Sets a value to a register.
+    pub fn set_register(&mut self, cons: Cons) {
+        self.register = cons;
+    }
+
+    /// Returns a boolean value.
+    pub fn boolean(&self, value: bool) -> Cons {
+        if value {
+            self.car(self.r#false).assume_cons()
+        } else {
+            self.r#false
+        }
+    }
+
+    /// Returns a null value.
+    pub fn null(&self) -> Cons {
+        self.cdr(self.r#false).assume_cons()
     }
 
     /// Returns a current stack.
@@ -124,6 +133,11 @@ impl<'a> Memory<'a> {
         debug_assert_ne!(self.stack, self.null());
 
         self.car(self.stack)
+    }
+
+    /// Allocates a cons.
+    pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
+        self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
     }
 
     /// Allocates a cons on heap.
@@ -266,18 +280,14 @@ impl<'a> Memory<'a> {
         self.set_cdr(cons.assume_cons(), value);
     }
 
-    /// Returns a boolean value.
-    pub fn boolean(&self, value: bool) -> Cons {
-        if value {
-            self.car(self.r#false).assume_cons()
-        } else {
-            self.r#false
+    /// Returns a tail of a list.
+    pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
+        while index != Number::default() {
+            list = self.cdr(list).assume_cons();
+            index = Number::new(index.to_i64() - 1);
         }
-    }
 
-    /// Returns a null value.
-    pub fn null(&self) -> Cons {
-        self.cdr(self.r#false).assume_cons()
+        list
     }
 
     // Garbage collection
