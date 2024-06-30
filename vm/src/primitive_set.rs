@@ -8,5 +8,5 @@ pub trait PrimitiveSet: Sized {
     type Error: From<Error>;
 
     /// Runs a primitive on a virtual machine.
-    fn operate(&mut self, vm: &mut Memory, primitive: u8) -> Result<(), Self::Error>;
+    fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error>;
 }
