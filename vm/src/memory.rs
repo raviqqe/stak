@@ -180,16 +180,14 @@ impl<'a> Memory<'a> {
         self.allocation_start() + self.allocation_index
     }
 
-    /// Returns a value on a heap.
-    pub fn get(&self, index: usize) -> Value {
+    fn get(&self, index: usize) -> Value {
         assert_heap_access!(self, index);
         self.heap[index]
     }
 
-    /// Returns a mutable reference to a value on a heap.
-    pub fn get_mut(&mut self, index: usize) -> &mut Value {
+    fn set(&mut self, index: usize, value: Value) {
         assert_heap_access!(self, index);
-        &mut self.heap[index]
+        self.heap[index] = value
     }
 
     /// Returns a value of a `car` field in a cons.
@@ -221,7 +219,7 @@ impl<'a> Memory<'a> {
     }
 
     fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
-        *self.get_mut(cons.index() + index) = value;
+        self.set(cons.index() + index, value);
     }
 
     fn set_raw_car(&mut self, cons: Cons, value: Value) {
@@ -300,7 +298,8 @@ impl<'a> Memory<'a> {
         let mut index = self.allocation_start();
 
         while index < self.allocation_end() {
-            *self.get_mut(index) = self.copy_value(self.get(index))?;
+            let value = self.copy_value(self.get(index))?;
+            self.set(index, value);
             index += 1;
         }
 
