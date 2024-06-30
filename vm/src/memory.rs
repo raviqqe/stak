@@ -2,24 +2,12 @@ use crate::{
     cons::{Cons, Tag, NEVER},
     number::Number,
     r#type::Type,
-    symbol_index,
     value::Value,
-    Error, StackSlot,
+    Error,
 };
-use core::{
-    fmt::{self, Display, Formatter},
-    mem::replace,
-};
-use stak_code as code;
+use core::fmt::{self, Display, Formatter};
 
 const CONS_FIELD_COUNT: usize = 2;
-
-macro_rules! trace {
-    ($prefix:literal, $data:expr) => {
-        #[cfg(feature = "trace_instruction")]
-        std::eprintln!("{}: {}", $prefix, $data);
-    };
-}
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
