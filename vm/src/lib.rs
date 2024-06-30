@@ -45,6 +45,7 @@ extern crate std;
 
 mod cons;
 mod error;
+mod memory;
 mod number;
 mod primitive_set;
 mod profiler;
