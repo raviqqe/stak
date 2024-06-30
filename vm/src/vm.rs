@@ -49,7 +49,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
     primitive_set: T,
     memory: Memory<'a>,
     #[cfg(feature = "profile")]
-    profiler: Option<RefCell<&'a mut dyn Profiler<T>>>,
+    profiler: Option<RefCell<&'a mut dyn Profiler>>,
 }
 
 // Note that some routines look unnecessarily complicated as we need to mark all
@@ -66,7 +66,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[cfg(feature = "profile")]
-    pub fn with_profiler(self, profiler: &'a mut dyn Profiler<T>) -> Self {
+    pub fn with_profiler(self, profiler: &'a mut dyn Profiler) -> Self {
         Self {
             profiler: Some(profiler.into()),
             ..self

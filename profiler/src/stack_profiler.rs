@@ -1,5 +1,5 @@
 use crate::{ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
-use stak_vm::{Cons, Memory, PrimitiveSet, Profiler, StackSlot};
+use stak_vm::{Cons, Memory, Profiler, StackSlot};
 use std::{io::Write, time::Instant};
 
 pub struct StackProfiler<T: Write> {
@@ -72,7 +72,7 @@ impl<T: Write> StackProfiler<T> {
     }
 }
 
-impl<T: Write, P: PrimitiveSet> Profiler<P> for StackProfiler<T> {
+impl<T: Write> Profiler for StackProfiler<T> {
     fn profile_call(&mut self, memory: &Memory, call_code: Cons, r#return: bool) {
         write!(
             self.writer,
