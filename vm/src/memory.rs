@@ -83,14 +83,34 @@ impl<'a> Memory<'a> {
         Ok(memory)
     }
 
+    /// Returns a program counter.
+    pub const fn program_counter(&self) -> Cons {
+        self.program_counter
+    }
+
+    /// Sets a program counter.
+    pub fn set_program_counter(&mut self, value: Cons) {
+        self.program_counter = value;
+    }
+
     /// Returns a register.
-    pub fn register(&self) -> Cons {
+    pub const fn register(&self) -> Cons {
         self.register
     }
 
-    /// Sets a value to a register.
-    pub fn set_register(&mut self, cons: Cons) {
-        self.register = cons;
+    /// Sets a register.
+    pub fn set_register(&mut self, value: Cons) {
+        self.register = value;
+    }
+
+    /// Returns a stack.
+    pub const fn stack(&self) -> Cons {
+        self.stack
+    }
+
+    /// Sets a stack.
+    pub fn set_stack(&mut self, value: Cons) {
+        self.stack = value;
     }
 
     /// Returns a boolean value.
@@ -105,11 +125,6 @@ impl<'a> Memory<'a> {
     /// Returns a null value.
     pub fn null(&self) -> Cons {
         self.cdr(self.r#false).assume_cons()
-    }
-
-    /// Returns a current stack.
-    pub const fn stack(&self) -> Cons {
-        self.stack
     }
 
     /// Pushes a value to a stack.
