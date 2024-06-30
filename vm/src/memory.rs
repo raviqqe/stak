@@ -144,7 +144,7 @@ impl<'a> Memory<'a> {
 
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
-            return Err(Error::OutOfMemory.into());
+            return Err(Error::OutOfMemory);
         }
 
         let cons = Cons::new(self.allocation_end() as u64);
@@ -499,7 +499,7 @@ impl<'a> Memory<'a> {
                 code::Instruction::SKIP => {
                     self.tail(self.program_counter, Number::new(integer as i64))
                 }
-                _ => return Err(Error::IllegalInstruction.into()),
+                _ => return Err(Error::IllegalInstruction),
             };
 
             let program_counter = replace(&mut self.program_counter, program_counter);
