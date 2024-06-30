@@ -616,3 +616,168 @@ impl<'a> Display for Memory<'a> {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const HEAP_SIZE: usize = 1 << 9;
+
+    fn create_heap() -> [Value; HEAP_SIZE] {
+        [Default::default(); HEAP_SIZE]
+    }
+
+    macro_rules! assert_snapshot {
+        ($memory:expr) => {
+            #[cfg(not(feature = "gc_always"))]
+            insta::assert_snapshot!($memory);
+
+            let _ = $memory;
+        };
+    }
+
+    #[test]
+    fn create() {
+        let mut heap = create_heap();
+        let vm = Memory::new(&mut heap).unwrap();
+
+        assert_snapshot!(vm);
+    }
+
+    #[test]
+    fn create_list() {
+        let mut heap = create_heap();
+        let mut vm = Memory::new(&mut heap).unwrap();
+
+        assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
+
+        let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
+
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(vm);
+
+        let list = vm.cons(Number::new(2).into(), list).unwrap();
+
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(vm);
+
+        let list = vm.cons(Number::new(3).into(), list).unwrap();
+
+        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(vm);
+    }
+
+    #[test]
+    fn convert_false() {
+        let mut heap = create_heap();
+        let vm = Memory::new(&mut heap).unwrap();
+
+        assert_eq!(
+            Value::from(vm.boolean(false)).to_cons().unwrap(),
+            vm.boolean(false)
+        );
+    }
+
+    #[test]
+    fn convert_true() {
+        let mut heap = create_heap();
+        let vm = Memory::new(&mut heap).unwrap();
+
+        assert_eq!(
+            Value::from(vm.boolean(true)).to_cons().unwrap(),
+            vm.boolean(true)
+        );
+    }
+
+    #[test]
+    fn convert_null() {
+        let mut heap = create_heap();
+        let vm = Memory::new(&mut heap).unwrap();
+
+        assert_eq!(Value::from(vm.null()).to_cons().unwrap(), vm.null());
+    }
+
+    mod stack {
+        use super::*;
+
+        #[test]
+        fn push_and_pop() {
+            let mut heap = create_heap();
+            let mut vm = Memory::new(&mut heap).unwrap();
+
+            vm.stack = vm.null();
+            vm.push(Number::new(42).into()).unwrap();
+
+            assert_eq!(vm.pop(), Number::new(42).into());
+        }
+
+        #[test]
+        fn push_and_pop_twice() {
+            let mut heap = create_heap();
+            let mut vm = Memory::new(&mut heap).unwrap();
+
+            vm.stack = vm.null();
+            vm.push(Number::new(1).into()).unwrap();
+            vm.push(Number::new(2).into()).unwrap();
+
+            assert_eq!(vm.pop(), Number::new(2).into());
+            assert_eq!(vm.pop(), Number::new(1).into());
+        }
+    }
+
+    mod garbage_collection {
+        use super::*;
+
+        #[test]
+        fn collect_cons() {
+            let mut heap = create_heap();
+            let mut vm = Memory::new(&mut heap).unwrap();
+
+            vm.allocate(Number::default().into(), Number::default().into())
+                .unwrap();
+            vm.collect_garbages(None).unwrap();
+
+            assert_snapshot!(vm);
+        }
+
+        #[test]
+        fn collect_stack() {
+            let mut heap = create_heap();
+            let mut vm = Memory::new(&mut heap).unwrap();
+
+            vm.stack = vm.null();
+            vm.push(Number::new(42).into()).unwrap();
+            vm.collect_garbages(None).unwrap();
+
+            assert_snapshot!(vm);
+        }
+
+        #[test]
+        fn collect_deep_stack() {
+            let mut heap = create_heap();
+            let mut vm = Memory::new(&mut heap).unwrap();
+
+            vm.stack = vm.null();
+            vm.push(Number::new(1).into()).unwrap();
+            vm.push(Number::new(2).into()).unwrap();
+            vm.collect_garbages(None).unwrap();
+
+            assert_snapshot!(vm);
+        }
+
+        #[test]
+        fn collect_cycle() {
+            let mut heap = create_heap();
+            let mut vm = Memory::new(&mut heap).unwrap();
+
+            let cons = vm
+                .allocate(Number::default().into(), Number::default().into())
+                .unwrap();
+            vm.set_cdr(cons, cons.into());
+
+            vm.collect_garbages(None).unwrap();
+
+            assert_snapshot!(vm);
+        }
+    }
+}

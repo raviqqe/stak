@@ -354,438 +354,276 @@ mod tests {
 
     const HEAP_SIZE: usize = 1 << 9;
 
-    fn create_heap() -> [Value; HEAP_SIZE] {
-        [Default::default(); HEAP_SIZE]
-    }
-
     struct FakePrimitiveSet;
 
     impl PrimitiveSet for FakePrimitiveSet {
         type Error = Error;
 
-        fn operate(_vm: &mut Vm<Self>, _primitive: u8) -> Result<(), Error> {
+        fn operate(&mut self, _memory: &mut Memory, _primitive: u8) -> Result<(), Error> {
             Err(Error::IllegalInstruction)
         }
     }
 
-    fn create_vm(heap: &mut [Value]) -> Vm<FakePrimitiveSet> {
-        Vm::new(heap, FakePrimitiveSet).unwrap()
-    }
-
-    macro_rules! assert_snapshot {
-        ($vm:expr) => {
-            #[cfg(not(feature = "gc_always"))]
-            insta::assert_snapshot!($vm);
-
-            let _ = $vm;
-        };
+    fn create_heap() -> [Value; HEAP_SIZE] {
+        [Default::default(); HEAP_SIZE]
     }
 
     fn default_symbols() -> Vec<String> {
         vec![Default::default(); symbol_index::OTHER as usize]
     }
 
-    #[test]
-    fn create() {
+    fn run_program(program: &Program) {
         let mut heap = create_heap();
-        let vm = create_vm(&mut heap);
+        let mut vm = Vm::new(&mut heap, FakePrimitiveSet).unwrap();
 
-        assert_snapshot!(vm);
-    }
+        vm.initialize(encode(program)).unwrap();
 
-    #[test]
-    fn create_list() {
-        let mut heap = create_heap();
-        let mut vm = create_vm(&mut heap);
-
-        assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
-
-        let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
-
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
-
-        let list = vm.cons(Number::new(2).into(), list).unwrap();
-
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
-
-        let list = vm.cons(Number::new(3).into(), list).unwrap();
-
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        vm.run().unwrap()
     }
 
     #[test]
-    fn convert_false() {
-        let mut heap = create_heap();
-        let vm = create_vm(&mut heap);
-
-        assert_eq!(
-            Value::from(vm.boolean(false)).to_cons().unwrap(),
-            vm.boolean(false)
-        );
+    fn run_nothing() {
+        run_program(&Program::new(default_symbols(), vec![]));
     }
 
     #[test]
-    fn convert_true() {
-        let mut heap = create_heap();
-        let vm = create_vm(&mut heap);
-
-        assert_eq!(
-            Value::from(vm.boolean(true)).to_cons().unwrap(),
-            vm.boolean(true)
-        );
+    fn constant() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![Instruction::Constant(Operand::Integer(42))],
+        ));
     }
 
     #[test]
-    fn convert_null() {
-        let mut heap = create_heap();
-        let vm = create_vm(&mut heap);
-
-        assert_eq!(Value::from(vm.null()).to_cons().unwrap(), vm.null());
+    fn create_closure() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![Instruction::Close(
+                0,
+                vec![Instruction::Constant(Operand::Integer(0))],
+            )],
+        ));
     }
 
-    mod stack {
-        use super::*;
-
-        #[test]
-        fn push_and_pop() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            vm.stack = vm.null();
-            vm.push(Number::new(42).into()).unwrap();
-
-            assert_eq!(vm.pop(), Number::new(42).into());
-        }
-
-        #[test]
-        fn push_and_pop_twice() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            vm.stack = vm.null();
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
-
-            assert_eq!(vm.pop(), Number::new(2).into());
-            assert_eq!(vm.pop(), Number::new(1).into());
-        }
+    #[test]
+    fn get_closure() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Close(0, vec![Instruction::Constant(Operand::Integer(0))]),
+                Instruction::Get(Operand::Integer(0)),
+            ],
+        ));
     }
 
-    mod garbage_collection {
-        use super::*;
-
-        #[test]
-        fn collect_cons() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            vm.allocate(Number::default().into(), Number::default().into())
-                .unwrap();
-            vm.collect_garbages(None).unwrap();
-
-            assert_snapshot!(vm);
-        }
-
-        #[test]
-        fn collect_stack() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            vm.stack = vm.null();
-            vm.push(Number::new(42).into()).unwrap();
-            vm.collect_garbages(None).unwrap();
-
-            assert_snapshot!(vm);
-        }
-
-        #[test]
-        fn collect_deep_stack() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            vm.stack = vm.null();
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
-            vm.collect_garbages(None).unwrap();
-
-            assert_snapshot!(vm);
-        }
-
-        #[test]
-        fn collect_cycle() {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
-
-            let cons = vm
-                .allocate(Number::default().into(), Number::default().into())
-                .unwrap();
-            vm.set_cdr(cons, cons.into());
-
-            vm.collect_garbages(None).unwrap();
-
-            assert_snapshot!(vm);
-        }
+    #[test]
+    fn set_global() {
+        run_program(&Program::new(
+            default_symbols().into_iter().chain(["x".into()]).collect(),
+            vec![
+                Instruction::Constant(Operand::Integer(42)),
+                Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
+            ],
+        ));
     }
 
-    mod instruction {
-        use super::*;
+    #[test]
+    fn set_empty_global() {
+        run_program(&Program::new(
+            default_symbols().into_iter().chain(["".into()]).collect(),
+            vec![
+                Instruction::Constant(Operand::Integer(42)),
+                Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
+            ],
+        ));
+    }
 
-        fn run_program(program: &Program) {
-            let mut heap = create_heap();
-            let mut vm = create_vm(&mut heap);
+    #[test]
+    fn set_second_global() {
+        run_program(&Program::new(
+            default_symbols()
+                .into_iter()
+                .chain(["x".into(), "y".into()])
+                .collect(),
+            vec![
+                Instruction::Constant(Operand::Integer(42)),
+                Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
+            ],
+        ));
+    }
 
-            vm.initialize(encode(program)).unwrap();
+    #[test]
+    fn set_second_empty_global() {
+        run_program(&Program::new(
+            default_symbols()
+                .into_iter()
+                .chain(["".into(), "".into()])
+                .collect(),
+            vec![
+                Instruction::Constant(Operand::Integer(42)),
+                Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
+            ],
+        ));
+    }
 
-            vm.run().unwrap()
-        }
+    #[test]
+    fn set_local() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Set(Operand::Integer(0)),
+            ],
+        ));
+    }
 
-        #[test]
-        fn run_nothing() {
-            run_program(&Program::new(default_symbols(), vec![]));
-        }
+    #[test]
+    fn set_second_local() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Set(Operand::Integer(1)),
+            ],
+        ));
+    }
 
-        #[test]
-        fn constant() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![Instruction::Constant(Operand::Integer(42))],
-            ));
-        }
+    #[test]
+    fn get_global() {
+        run_program(&Program::new(
+            default_symbols().into_iter().chain(["x".into()]).collect(),
+            vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
+        ));
+    }
 
-        #[test]
-        fn create_closure() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![Instruction::Close(
-                    0,
-                    vec![Instruction::Constant(Operand::Integer(0))],
-                )],
-            ));
-        }
+    #[test]
+    fn get_empty_global() {
+        run_program(&Program::new(
+            default_symbols().into_iter().chain(["".into()]).collect(),
+            vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
+        ));
+    }
 
-        #[test]
-        fn get_closure() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Close(0, vec![Instruction::Constant(Operand::Integer(0))]),
-                    Instruction::Get(Operand::Integer(0)),
-                ],
-            ));
-        }
+    #[test]
+    fn get_second_global() {
+        run_program(&Program::new(
+            default_symbols()
+                .into_iter()
+                .chain(["x".into(), "y".into()])
+                .collect(),
+            vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
+        ));
+    }
 
-        #[test]
-        fn set_global() {
-            run_program(&Program::new(
-                default_symbols().into_iter().chain(["x".into()]).collect(),
-                vec![
-                    Instruction::Constant(Operand::Integer(42)),
-                    Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
-                ],
-            ));
-        }
+    #[test]
+    fn get_second_empty_global() {
+        run_program(&Program::new(
+            default_symbols()
+                .into_iter()
+                .chain(["".into(), "".into()])
+                .collect(),
+            vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
+        ));
+    }
 
-        #[test]
-        fn set_empty_global() {
-            run_program(&Program::new(
-                default_symbols().into_iter().chain(["".into()]).collect(),
-                vec![
-                    Instruction::Constant(Operand::Integer(42)),
-                    Instruction::Set(Operand::Symbol(symbol_index::OTHER)),
-                ],
-            ));
-        }
+    #[test]
+    fn get_built_in_globals() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
+                Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                Instruction::Get(Operand::Symbol(symbol_index::NULL)),
+                Instruction::Get(Operand::Symbol(symbol_index::RIB)),
+            ],
+        ));
+    }
 
-        #[test]
-        fn set_second_global() {
-            run_program(&Program::new(
-                default_symbols()
-                    .into_iter()
-                    .chain(["x".into(), "y".into()])
-                    .collect(),
-                vec![
-                    Instruction::Constant(Operand::Integer(42)),
-                    Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
-                ],
-            ));
-        }
+    #[test]
+    fn get_local() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Get(Operand::Integer(0)),
+            ],
+        ));
+    }
 
-        #[test]
-        fn set_second_empty_global() {
-            run_program(&Program::new(
-                default_symbols()
-                    .into_iter()
-                    .chain(["".into(), "".into()])
-                    .collect(),
-                vec![
-                    Instruction::Constant(Operand::Integer(42)),
-                    Instruction::Set(Operand::Symbol(symbol_index::OTHER + 1)),
-                ],
-            ));
-        }
+    #[test]
+    fn get_second_local() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Get(Operand::Integer(1)),
+            ],
+        ));
+    }
 
-        #[test]
-        fn set_local() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
+    #[test]
+    fn if_with_false() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
+                Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+            ],
+        ));
+    }
+
+    #[test]
+    fn if_with_true() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+            ],
+        ));
+    }
+
+    #[test]
+    fn if_with_continuation() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                Instruction::Constant(Operand::Integer(0)),
+            ],
+        ));
+    }
+
+    #[test]
+    fn if_with_skip_instruction() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                Instruction::If(vec![
                     Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Set(Operand::Integer(0)),
-                ],
-            ));
-        }
+                    Instruction::Skip(1),
+                ]),
+                Instruction::Constant(Operand::Integer(0)),
+                Instruction::Constant(Operand::Integer(0)),
+            ],
+        ));
+    }
 
-        #[test]
-        fn set_second_local() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Set(Operand::Integer(1)),
-                ],
-            ));
-        }
-
-        #[test]
-        fn get_global() {
-            run_program(&Program::new(
-                default_symbols().into_iter().chain(["x".into()]).collect(),
-                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
-            ));
-        }
-
-        #[test]
-        fn get_empty_global() {
-            run_program(&Program::new(
-                default_symbols().into_iter().chain(["".into()]).collect(),
-                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER))],
-            ));
-        }
-
-        #[test]
-        fn get_second_global() {
-            run_program(&Program::new(
-                default_symbols()
-                    .into_iter()
-                    .chain(["x".into(), "y".into()])
-                    .collect(),
-                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
-            ));
-        }
-
-        #[test]
-        fn get_second_empty_global() {
-            run_program(&Program::new(
-                default_symbols()
-                    .into_iter()
-                    .chain(["".into(), "".into()])
-                    .collect(),
-                vec![Instruction::Get(Operand::Symbol(symbol_index::OTHER + 1))],
-            ));
-        }
-
-        #[test]
-        fn get_built_in_globals() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
-                    Instruction::Get(Operand::Symbol(symbol_index::NULL)),
-                    Instruction::Get(Operand::Symbol(symbol_index::RIB)),
-                ],
-            ));
-        }
-
-        #[test]
-        fn get_local() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Get(Operand::Integer(0)),
-                ],
-            ));
-        }
-
-        #[test]
-        fn get_second_local() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Get(Operand::Integer(1)),
-                ],
-            ));
-        }
-
-        #[test]
-        fn if_with_false() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Get(Operand::Symbol(symbol_index::FALSE)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
-                ],
-            ));
-        }
-
-        #[test]
-        fn if_with_true() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
-                ],
-            ));
-        }
-
-        #[test]
-        fn if_with_continuation() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
-                    Instruction::Constant(Operand::Integer(0)),
-                ],
-            ));
-        }
-
-        #[test]
-        fn if_with_skip_instruction() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
-                    Instruction::If(vec![
-                        Instruction::Constant(Operand::Integer(0)),
-                        Instruction::Skip(1),
-                    ]),
-                    Instruction::Constant(Operand::Integer(0)),
-                    Instruction::Constant(Operand::Integer(0)),
-                ],
-            ));
-        }
-
-        #[test]
-        fn multiple_if() {
-            run_program(&Program::new(
-                default_symbols(),
-                vec![
-                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
-                    Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
-                    Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
-                    Instruction::Constant(Operand::Integer(0)),
-                ],
-            ));
-        }
+    #[test]
+    fn multiple_if() {
+        run_program(&Program::new(
+            default_symbols(),
+            vec![
+                Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                Instruction::Get(Operand::Symbol(symbol_index::TRUE)),
+                Instruction::If(vec![Instruction::Constant(Operand::Integer(0))]),
+                Instruction::Constant(Operand::Integer(0)),
+            ],
+        ));
     }
 }
