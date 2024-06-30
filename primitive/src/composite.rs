@@ -1,24 +1,30 @@
 mod error;
 
-use self::error::CompositeError;
+use self::error::{CompositeError, IllegalPrimitiveError};
+use core::fmt::{Debug, Display};
 use stak_vm::{PrimitiveSet, Vm};
 
 /// A composite primitive set.
-pub struct CompositePrimitiveSet<'a, const N: usize> {
-    primitive_sets: [&'a dyn PrimitiveSet; N],
+pub struct CompositePrimitiveSet<P: PrimitiveSet, Q: PrimitiveSet> {
+    first: P,
+    second: Q,
 }
 
-impl<'a, const N: usize> CompositePrimitiveSet<'a, N> {
+impl<P: PrimitiveSet, Q: PrimitiveSet> CompositePrimitiveSet<P, Q> {
     /// Creates a primitive set.
-    pub fn new(primitive_sets: [&'a dyn PrimitiveSet; N]) -> Self {
-        Self { primitive_sets }
+    pub fn new(first: P, second: Q) -> Self {
+        Self { first, second }
     }
 }
 
-impl<'a, N, E: CompositeError> PrimitiveSet for CompositePrimitiveSet<'a, N> {
-    type Error = E;
+impl<P: PrimitiveSet, Q: PrimitiveSet> PrimitiveSet for CompositePrimitiveSet<P, Q>
+where
+    P::Error: IllegalPrimitiveError + Debug + Display,
+    Q::Error: IllegalPrimitiveError + Debug + Display,
+{
+    type Error = CompositeError<P::Error, Q::Error>;
 
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Error> {
+    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Self::Error> {
         todo!()
     }
 }
