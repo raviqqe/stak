@@ -1,5 +1,5 @@
 ---
-source: vm/src/vm.rs
+source: vm/src/memory.rs
 expression: vm
 ---
 program counter: !:0
@@ -7,4 +7,3 @@ stack: !:0
 100: c102:2 c104:0
 102: c104:2 n0
 104: !:1 n0
-

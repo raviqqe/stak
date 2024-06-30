@@ -45,6 +45,7 @@ extern crate std;
 
 mod cons;
 mod error;
+mod memory;
 mod number;
 mod primitive_set;
 mod profiler;
@@ -56,6 +57,7 @@ mod vm;
 
 pub use cons::{Cons, Tag};
 pub use error::Error;
+pub use memory::Memory;
 pub use number::Number;
 pub use primitive_set::PrimitiveSet;
 pub use profiler::Profiler;
