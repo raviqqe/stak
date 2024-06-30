@@ -67,6 +67,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         })
     }
 
+    /// Sets a profiler.
     #[cfg(feature = "profile")]
     pub fn with_profiler(self, profiler: &'a mut dyn Profiler) -> Self {
         Self {
