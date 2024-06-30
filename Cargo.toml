@@ -34,6 +34,7 @@ repository = "https://github.com/raviqqe/stak"
 
 [workspace.lints.rust]
 warnings = "deny"
+missing_docs = "deny"
 
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"
