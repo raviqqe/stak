@@ -500,8 +500,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code::Instruction::IF => {
                     let then = self.memory.program_counter();
 
-                    let r#else = self.memory.pop();
-                    self.memory.set_program_counter(r#else.assume_cons());
+                    let continuation = self.memory.pop();
+                    self.memory.set_program_counter(continuation.assume_cons());
 
                     self.append_instruction(instruction as Tag, then.into(), false)?
                 }
@@ -520,8 +520,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .memory
                         .allocate(NEVER.set_tag(Type::Procedure as Tag).into(), code.into())?;
 
-                    let counter = self.memory.pop();
-                    self.memory.set_program_counter(counter.assume_cons());
+                    let continuation = self.memory.pop();
+                    self.memory.set_program_counter(continuation.assume_cons());
 
                     self.append_instruction(
                         code::Instruction::CONSTANT as Tag,
