@@ -33,8 +33,8 @@ readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [workspace.lints.rust]
-warnings = "deny"
 missing_docs = "deny"
+warnings = "deny"
 
 [workspace.lints.clippy]
 alloc_instead_of_core = "deny"

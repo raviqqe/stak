@@ -1,3 +1,5 @@
+//! A build script.
+
 use std::{
     env,
     error::Error,
