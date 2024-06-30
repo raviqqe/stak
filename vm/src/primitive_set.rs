@@ -1,4 +1,4 @@
-use crate::{Error, Vm};
+use crate::{memory::Memory, Error};
 
 /// A primitive set.
 ///
@@ -8,5 +8,5 @@ pub trait PrimitiveSet: Sized {
     type Error: From<Error>;
 
     /// Runs a primitive on a virtual machine.
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Self::Error>;
+    fn operate(&mut self, vm: &mut Memory, primitive: u8) -> Result<(), Self::Error>;
 }

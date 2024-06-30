@@ -3,7 +3,7 @@ use crate::{
     number::Number,
     r#type::Type,
     symbol_index,
-    value::{TypedValue, Value},
+    value::Value,
     Error, StackSlot,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
@@ -83,43 +83,7 @@ impl<'a> Memory<'a> {
         Ok(memory)
     }
 
-    fn operand(&self) -> Value {
-        self.car(self.program_counter)
-    }
-
-    fn resolve_operand(&self, operand: Value) -> Value {
-        match operand.to_typed() {
-            TypedValue::Cons(cons) => self.cdr(cons),
-            TypedValue::Number(index) => self.car(self.tail(self.stack, index)),
-        }
-    }
-
-    // (environment . code)
-    fn procedure(&self) -> Cons {
-        self.resolve_operand(self.operand()).assume_cons()
-    }
-
-    fn environment(&self, procedure: Cons) -> Cons {
-        self.car(procedure).assume_cons()
-    }
-
-    // (parameter-count . instruction-list) | primitive-id
-    fn code(&self, procedure: Cons) -> Value {
-        self.cdr(procedure)
-    }
-
-    // (program-counter . stack)
-    fn continuation(&self) -> Cons {
-        let mut stack = self.stack;
-
-        while self.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
-            stack = self.cdr(stack).assume_cons();
-        }
-
-        self.car(stack).assume_cons()
-    }
-
-    fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
+    pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
         while index != Number::default() {
             list = self.cdr(list).assume_cons();
             index = Number::new(index.to_i64() - 1);

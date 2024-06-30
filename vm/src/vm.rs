@@ -127,7 +127,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.set_cdr(cons, value);
             }
             TypedValue::Number(index) => {
-                let cons = self.tail(self.memory.stack, index);
+                let cons = self.memory.tail(self.memory.stack, index);
                 let value = self.memory.pop();
                 self.memory.set_car(cons, value)
             }
@@ -230,7 +230,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     }
                 }
 
-                T::operate(self, primitive.to_i64() as u8)?;
+                self.primitive_set
+                    .operate(&mut self.memory, primitive.to_i64() as u8)?;
                 self.advance_program_counter();
             }
         }
@@ -271,7 +272,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn resolve_operand(&self, operand: Value) -> Value {
         match operand.to_typed() {
             TypedValue::Cons(cons) => self.memory.cdr(cons),
-            TypedValue::Number(index) => self.memory.car(self.tail(self.memory.stack, index)),
+            TypedValue::Number(index) => {
+                self.memory.car(self.memory.tail(self.memory.stack, index))
+            }
         }
     }
 
@@ -298,15 +301,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
 
         self.memory.car(stack).assume_cons()
-    }
-
-    fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
-        while index != Number::default() {
-            list = self.memory.cdr(list).assume_cons();
-            index = Number::new(index.to_i64() - 1);
-        }
-
-        list
     }
 
     // Profiling
