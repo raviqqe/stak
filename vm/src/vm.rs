@@ -335,7 +335,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Initializes a virtual machine with bytecodes of a program.
-    // TODO Move this to a `vm` module.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         let mut input = input.into_iter();
 
