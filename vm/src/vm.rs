@@ -76,6 +76,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
+    /// Returns a reference to a primitive set.
+    pub const fn primitive_set(&self) -> &T {
+        &self.primitive_set
+    }
+
+    /// Returns a mutable reference to a primitive set.
+    pub fn primitive_set_mut(&mut self) -> &mut T {
+        &mut self.primitive_set
+    }
+
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.memory.program_counter() != self.memory.null() {
