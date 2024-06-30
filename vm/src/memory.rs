@@ -180,11 +180,13 @@ impl<'a> Memory<'a> {
         self.allocation_start() + self.allocation_index
     }
 
+    /// Returns a value on a heap.
     pub fn get(&self, index: usize) -> Value {
         assert_heap_access!(self, index);
         self.heap[index]
     }
 
+    /// Returns a mutable reference to a value on a heap.
     pub fn get_mut(&mut self, index: usize) -> &mut Value {
         assert_heap_access!(self, index);
         &mut self.heap[index]
