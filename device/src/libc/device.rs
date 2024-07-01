@@ -1,6 +1,7 @@
 use super::{error::Error, Read, Write};
 use crate::Device;
 
+/// A device composed of objects implementing `Read` and `Write` traits.
 pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
     stdin: I,
     stdout: O,
@@ -8,6 +9,7 @@ pub struct ReadWriteDevice<I: Read, O: Write, E: Write> {
 }
 
 impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
+    /// Creates a device.
     pub const fn new(stdin: I, stdout: O, stderr: E) -> Self {
         Self {
             stdin,
@@ -16,14 +18,17 @@ impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
         }
     }
 
+    /// Returns a stdin.
     pub const fn stdin(&self) -> &I {
         &self.stdin
     }
 
+    /// Returns a stdout.
     pub const fn stdout(&self) -> &O {
         &self.stdout
     }
 
+    /// Returns a stderr.
     pub const fn stderr(&self) -> &E {
         &self.stderr
     }
