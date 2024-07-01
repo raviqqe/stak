@@ -1,13 +1,14 @@
 use crate::{read_file_size, validate};
 use core::{ffi::CStr, ptr::null_mut, slice};
 
+/// A mmap.
 pub struct Mmap {
     ptr: *mut u8,
     len: usize,
 }
 
 impl Mmap {
-    /// Creates a new mmap opening a file at a path.
+    /// Creates a mmap opening a file at a path.
     pub fn new(path: &CStr) -> Self {
         let len = read_file_size(path);
 
@@ -27,6 +28,7 @@ impl Mmap {
         }
     }
 
+    /// Returns a slice of bytes.
     pub fn as_slice(&self) -> &[u8] {
         unsafe { slice::from_raw_parts(self.ptr, self.len) }
     }
