@@ -3,6 +3,7 @@ mod error;
 use super::{Read, Write};
 pub use error::BufferError;
 
+/// An immutable buffer.
 #[derive(Debug)]
 pub struct Buffer<'a> {
     data: &'a [&'a [u8]],
@@ -11,6 +12,7 @@ pub struct Buffer<'a> {
 }
 
 impl<'a> Buffer<'a> {
+    /// Creates an immutable buffer.
     pub const fn new(data: &'a [&'a [u8]]) -> Self {
         Self {
             data,
@@ -42,6 +44,7 @@ impl Read for Buffer<'_> {
     }
 }
 
+/// A mutable buffer.
 #[derive(Debug)]
 pub struct BufferMut<'a> {
     data: &'a mut [u8],
@@ -49,10 +52,12 @@ pub struct BufferMut<'a> {
 }
 
 impl<'a> BufferMut<'a> {
+    /// Creates a mutable buffer.
     pub fn new(data: &'a mut [u8]) -> Self {
         Self { data, index: 0 }
     }
 
+    /// Returns bytes.
     pub fn as_bytes(&self) -> &[u8] {
         &self.data[..self.index]
     }
