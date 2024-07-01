@@ -2,12 +2,14 @@ use crate::{ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
 use stak_vm::{Cons, Memory, Profiler, StackSlot};
 use std::{io::Write, time::Instant};
 
+/// A stack profiler.
 pub struct StackProfiler<T: Write> {
     writer: T,
     start_time: Instant,
 }
 
 impl<T: Write> StackProfiler<T> {
+    /// Creates a stack profiler.
     pub fn new(writer: T) -> Self {
         Self {
             writer,

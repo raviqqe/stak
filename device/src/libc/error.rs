@@ -1,9 +1,13 @@
 use core::fmt::{self, Display, Formatter};
 
+/// An error.
 #[derive(Debug)]
 pub enum Error {
+    /// A stdin error.
     Stdin,
+    /// A stdout error.
     Stdout,
+    /// A stderr error.
     Stderr,
 }
 

@@ -11,6 +11,7 @@ pub struct OsProcessContext {
 }
 
 impl OsProcessContext {
+    /// Creates a process context.
     pub fn new() -> Self {
         Self {
             arguments: Lazy::new(|| args().collect()),

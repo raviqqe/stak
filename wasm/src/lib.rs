@@ -1,3 +1,5 @@
+//! A Stak Scheme interpreter in WASM.
+
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
@@ -6,6 +8,7 @@ use stak_process_context::VoidProcessContext;
 use stak_vm::Vm;
 use wasm_bindgen::prelude::*;
 
+/// Compiles a source code.
 #[wasm_bindgen]
 pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
     let mut target = vec![];
@@ -13,6 +16,7 @@ pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
     Ok(target)
 }
 
+/// Interprets bytecodes with a standard input and returns its standard output.
 #[wasm_bindgen]
 pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     let mut heap = vec![Default::default(); heap_size];
@@ -34,6 +38,7 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
     Ok(output)
 }
 
+/// Decodes bytecodes into its Markdown format.
 #[wasm_bindgen]
 pub fn decode(bytecodes: &[u8]) -> Result<String, JsError> {
     Ok(stak_code::decode(bytecodes)?.to_string())

@@ -1,3 +1,5 @@
+//! Bytecodes for Stak Scheme.
+
 #![no_std]
 
 #[cfg(feature = "alloc")]

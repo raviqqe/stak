@@ -6,6 +6,7 @@ use core::iter::DoubleEndedIterator;
 pub struct VoidProcessContext {}
 
 impl VoidProcessContext {
+    /// Creates a process context.
     pub const fn new() -> Self {
         Self {}
     }
