@@ -1,5 +1,4 @@
 use crate::ProcessContext;
-use core::iter::DoubleEndedIterator;
 
 /// A void process context that provides no context information.
 #[derive(Debug, Default)]
@@ -13,16 +12,11 @@ impl VoidProcessContext {
 }
 
 impl ProcessContext for VoidProcessContext {
-    fn command_line(
-        &self,
-    ) -> impl IntoIterator<Item = &str, IntoIter = impl DoubleEndedIterator<Item = &str>> {
+    fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         []
     }
 
-    fn environment_variables(
-        &self,
-    ) -> impl IntoIterator<Item = (&str, &str), IntoIter = impl DoubleEndedIterator<Item = (&str, &str)>>
-    {
+    fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
         []
     }
 }
