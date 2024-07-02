@@ -287,10 +287,39 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
                     .map(|value| memory.boolean(value).into())
             })?,
             Primitive::COMMAND_LINE => {
-                todo!();
+                let mut list = memory.null();
+
+                for argument in self.process_context.command_line_rev() {
+                    let mut string = memory.null();
+
+                    for character in argument.chars().rev() {
+                        string = memory.cons(Number::new(character as _).into(), string)?;
+                    }
+
+                    list = memory.cons(string.into(), list)?;
+                }
+
+                memory.push(list.into())?;
             }
             Primitive::ENVIRONMENT_VARIABLES => {
-                todo!();
+                let mut list = memory.null();
+
+                for (key, value) in self.process_context.environment_variables() {
+                    let mut pair = (memory.null(), memory.null());
+
+                    for character in key.chars().rev() {
+                        pair.0 = memory.cons(Number::new(character as _).into(), pair.0)?;
+                    }
+
+                    for character in value.chars().rev() {
+                        pair.1 = memory.cons(Number::new(character as _).into(), pair.1)?;
+                    }
+
+                    let pair = memory.cons(pair.0.into(), pair.1.into())?;
+                    list = memory.cons(pair.into(), list)?;
+                }
+
+                memory.push(list.into())?;
             }
             _ => return Err(Error::Illegal),
         }
