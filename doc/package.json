@@ -33,6 +33,6 @@
     "eslint-plugin-solid": "^0.14.1",
     "prettier": "^3.3.2",
     "prettier-plugin-astro": "^0.14.0",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.3"
   }
 }
