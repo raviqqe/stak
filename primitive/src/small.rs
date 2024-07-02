@@ -287,7 +287,19 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
                     .map(|value| memory.boolean(value).into())
             })?,
             Primitive::COMMAND_LINE => {
-                todo!();
+                let mut list = memory.null();
+
+                for argument in self.process_context.command_line().into_iter().rev() {
+                    let mut string = memory.null();
+
+                    for character in argument.chars().rev() {
+                        string = memory.cons(Number::new(character as _).into(), list)?;
+                    }
+
+                    list = memory.cons(string.into(), list)?;
+                }
+
+                memory.push(list.into())?;
             }
             Primitive::ENVIRONMENT_VARIABLES => {
                 todo!();
