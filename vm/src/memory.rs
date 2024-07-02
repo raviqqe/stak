@@ -178,15 +178,15 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
-    fn is_out_of_memory(&self) -> bool {
+    const fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
-    fn space_size(&self) -> usize {
+    const fn space_size(&self) -> usize {
         self.heap.len() / 2
     }
 
-    fn allocation_start(&self) -> usize {
+    const fn allocation_start(&self) -> usize {
         if self.space {
             self.space_size()
         } else {
@@ -194,7 +194,7 @@ impl<'a> Memory<'a> {
         }
     }
 
-    fn allocation_end(&self) -> usize {
+    const fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
@@ -218,11 +218,11 @@ impl<'a> Memory<'a> {
         self.get(cons.index() + 1)
     }
 
-    fn unchecked_car(&self, cons: Cons) -> Value {
+    const fn unchecked_car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
-    fn unchecked_cdr(&self, cons: Cons) -> Value {
+    const fn unchecked_cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 
