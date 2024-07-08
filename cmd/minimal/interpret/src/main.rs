@@ -27,7 +27,9 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 
 #[cfg_attr(not(test), no_mangle)]
 unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-    let file = &slice::from_raw_parts(argv, argc as _)[1];
+    let Some(&file) = &slice::from_raw_parts(argv, argc as _).get(1) else {
+        return 1;
+    };
 
     let heap = slice::from_raw_parts_mut(
         libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,
@@ -44,7 +46,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     )
     .unwrap();
 
-    let mmap = Mmap::new(CStr::from_ptr(*file));
+    let mmap = Mmap::new(CStr::from_ptr(file));
 
     vm.initialize(mmap.as_slice().iter().copied()).unwrap();
     vm.run().unwrap();
