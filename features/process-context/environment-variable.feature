@@ -1,5 +1,5 @@
 Feature: Environment variables
-  Scenario: Get an environment variables
+  Scenario: Get an environment variable
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme process-context))
