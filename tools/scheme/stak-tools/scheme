@@ -12,11 +12,12 @@ compile() {
   fi
 }
 
-script=$1
-shift 1
+arguments() {
+  echo $@ | tr ' ' '\n' | grep "$@" '\.scm$'
+}
 
 export PATH=$directory/target/release_test:$PATH
 
-cat $directory/prelude.scm "$script" | compile >main.bc
+cat $directory/prelude.scm $(arguments) | compile >main.bc
 stak-decode <main.bc >/dev/null
-stak-interpret main.bc "$@"
+stak-interpret main.bc $(arguments -v)
