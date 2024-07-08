@@ -26,6 +26,7 @@ use std::{
 
 const PRELUDE_SOURCE: &str = include_minified!("prelude.scm");
 const COMPILER_PROGRAM: &[u8] = include_r7rs!("compile.scm");
+const SCHEME_FILE_EXTENSION: &str = ".scm";
 
 #[derive(Clone, Copy, clap::ValueEnum)]
 enum Library {
@@ -37,7 +38,7 @@ enum Library {
 #[command(about, version)]
 struct Arguments {
     #[arg(required(true))]
-    files: Vec<PathBuf>,
+    arguments: Vec<String>,
     #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
     #[arg(short, long, default_value = "r7rs")]
@@ -54,8 +55,15 @@ fn main() -> Result<(), MainError> {
         Library::R7rs => PRELUDE_SOURCE.into(),
     };
     let mut target = vec![];
+    let Some(index) = arguments
+        .arguments
+        .iter()
+        .rposition(|argument| argument.ends_with(SCHEME_FILE_EXTENSION))
+    else {
+        return Err("No scheme file specified".into());
+    };
 
-    read_source(&arguments.files, &mut source)?;
+    read_source(&arguments.arguments[..index], &mut source)?;
     compile(&source, &mut target, &mut heap)?;
 
     let mut vm = Vm::new(
@@ -72,7 +80,7 @@ fn main() -> Result<(), MainError> {
     Ok(vm.run()?)
 }
 
-fn read_source(files: &[PathBuf], source: &mut String) -> Result<(), io::Error> {
+fn read_source(files: &[String], source: &mut String) -> Result<(), io::Error> {
     for file in files {
         File::open(file)?.read_to_string(source)?;
     }
