@@ -2243,7 +2243,12 @@
         (lambda () x)))))
 
 (define-library (scheme process-context)
-  (export exit emergency-exit)
+  (export
+    command-line
+    emergency-exit
+    exit
+    get-environment-variable
+    get-environment-variables)
 
   (import (scheme base) (scheme lazy) (stak base))
 
@@ -2252,10 +2257,22 @@
     (define $$get-environment-variables (primitive 29))
 
     (define command-line (delay (map code-points->string ($$command-line))))
-    (define get-environment-variables (delay ($$get-environment-variables)))
+    (define get-environment-variables
+      (delay
+        (map
+          (lambda (pair)
+            (cons
+              (code-points->string (car pair))
+              (code-points->string (cdr pair))))
+          ($$get-environment-variables))))
 
     (define (get-environment-variable name)
-      (assoc name (get-environment-variables)))
+      (cond
+        ((assoc name (get-environment-variables)) =>
+          cdr)
+
+        (else
+          #f)))
 
     (define exit-success (data-rib procedure-type '() (cons 0 '())))
 
