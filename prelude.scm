@@ -2243,7 +2243,12 @@
         (lambda () x)))))
 
 (define-library (scheme process-context)
-  (export exit emergency-exit)
+  (export
+    command-line
+    emergency-exit
+    exit
+    get-environment-variable
+    get-environment-variables)
 
   (import (scheme base) (scheme lazy) (stak base))
 
