@@ -21,4 +21,9 @@ directory=tmp/$(echo "$@" | shasum | head -c 8)
 mkdir -p $directory
 cd $directory
 
-echo "$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features $options ../../$file)"
+output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features $options ../../$file)
+status=$?
+
+echo "$output"
+
+exit $status
