@@ -2267,7 +2267,12 @@
           ($$get-environment-variables))))
 
     (define (get-environment-variable name)
-      (assoc name (get-environment-variables)))
+      (cond
+        ((assoc name (get-environment-variables)) =>
+          cdr)
+
+        (else
+          #f)))
 
     (define exit-success (data-rib procedure-type '() (cons 0 '())))
 

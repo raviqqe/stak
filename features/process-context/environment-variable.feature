@@ -4,7 +4,7 @@ Feature: Environment variables
       """scheme
       (import (scheme base) (scheme process-context))
 
-      (write-string (cdr (get-environment-variable "FOO")))
+      (write-string (get-environment-variable "FOO"))
       """
     And I set the environment variable "FOO" to "bar"
     When I successfully run `scheme main.scm`
