@@ -11,8 +11,5 @@ repository.workspace = true
 [dependencies]
 stak-sac = { version = "0.1.43", path = "../../sac" }
 
-[build-dependencies]
-stak-build = { version = "0.1.0", path = "../../build" }
-
 [lints]
 workspace = true
