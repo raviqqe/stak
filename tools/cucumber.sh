@@ -12,6 +12,10 @@ done
 
 shift $(expr $OPTIND - 1)
 
+if [ $# -ne 1 ]; then
+  exit 1
+fi
+
 file=$1
 
 cd $(dirname $0)/..
