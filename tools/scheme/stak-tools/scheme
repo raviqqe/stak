@@ -12,8 +12,11 @@ compile() {
   fi
 }
 
+script=$1
+shift 1
+
 export PATH=$directory/target/release_test:$PATH
 
-cat $directory/prelude.scm "$@" | compile >main.bc
+cat $directory/prelude.scm "$script" | compile >main.bc
 stak-decode <main.bc >/dev/null
-stak-interpret main.bc
+stak-interpret main.bc "$@"

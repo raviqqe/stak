@@ -27,9 +27,7 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
 
 #[cfg_attr(not(test), no_mangle)]
 unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-    let [_, file] = slice::from_raw_parts(argv, argc as _) else {
-        return 1;
-    };
+    let file = &slice::from_raw_parts(argv, argc as _)[1];
 
     let heap = slice::from_raw_parts_mut(
         libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,

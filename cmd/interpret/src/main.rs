@@ -21,6 +21,8 @@ use std::{fs::read, path::PathBuf};
 struct Arguments {
     #[arg(required(true))]
     file: PathBuf,
+    #[arg()]
+    arguments: Vec<String>,
     #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
 }
