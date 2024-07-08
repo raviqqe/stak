@@ -33,9 +33,9 @@ export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 cucumber="bundler exec cucumber --publish-quiet --strict-undefined --require $PWD/features"
 
-if [ $# -ne 0 ]; then
-  $cucumber "$@"
-else
+if [ $# -eq 0 ]; then
   git ls-files '**/*.feature' |
     xargs -P $(nproc) -I % sh -c "mkdir -p tmp/\$(basename %) && cd \$_ && $cucumber ../../%"
+else
+  $cucumber "$@"
 fi
