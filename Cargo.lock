@@ -572,7 +572,6 @@ dependencies = [
 name = "stak-minify"
 version = "0.1.19"
 dependencies = [
- "stak-build",
  "stak-sac",
 ]
 

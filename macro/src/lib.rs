@@ -14,7 +14,7 @@ use syn::{parse_macro_input, LitStr};
 /// Includes a program in R7RS Scheme as bytecodes built by the `stak-build`
 /// crate.
 #[proc_macro]
-pub fn include(input: TokenStream) -> TokenStream {
+pub fn include_bytecode(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(include_result(&input.value())).into()
