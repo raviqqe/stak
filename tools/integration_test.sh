@@ -36,6 +36,10 @@ export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 cucumber="bundler exec cucumber --publish-quiet --strict-undefined --require $PWD/features"
 
+if [ -n "$tags" ]; then
+  cucumber="$cucumber --tags \"$tags\""
+fi
+
 if [ $# -eq 0 ]; then
   git ls-files '**/*.feature' |
     xargs -P $(nproc) -I % sh -c "mkdir -p tmp/\$(basename %) && cd \$_ && echo \"\$($cucumber ../../%)\""
