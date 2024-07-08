@@ -5,8 +5,28 @@ use proc_macro2::Literal;
 use quote::quote;
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
-use std::error::Error;
+use std::{
+    error::Error,
+    path::{Path, MAIN_SEPARATOR_STR},
+};
 use syn::{parse_macro_input, LitStr};
+
+/// Includes a program in R7RS Scheme as bytecodes built by the `stak-build`
+/// crate.
+#[proc_macro]
+pub fn include_bytecode(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as LitStr);
+
+    convert_result(include_result(&input.value())).into()
+}
+
+fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
+    let path = format!("{}", Path::new("src").join(path).display());
+
+    Ok(quote!(include_bytes!(
+        concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path)
+    )))
+}
 
 /// Compiles a program in R7RS Scheme into bytecodes.
 ///
