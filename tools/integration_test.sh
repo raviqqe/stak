@@ -41,5 +41,5 @@ fi
 if [ $# -eq 0 ]; then
   git ls-files '**/*.feature' | xargs -P $(nproc) -I % tools/cucumber.sh $options %
 else
-  $cucumber "$@"
+  bundler exec cucumber --publish-quiet --strict-undefined "$@"
 fi
