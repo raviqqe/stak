@@ -2257,7 +2257,14 @@
     (define $$get-environment-variables (primitive 29))
 
     (define command-line (delay (map code-points->string ($$command-line))))
-    (define get-environment-variables (delay ($$get-environment-variables)))
+    (define get-environment-variables
+      (delay
+        (map
+          (lambda (pair)
+            (cons
+              (code-points->string (car pair))
+              (code-points->string (cdr pair))))
+          ($$get-environment-variables))))
 
     (define (get-environment-variable name)
       (assoc name (get-environment-variables)))
