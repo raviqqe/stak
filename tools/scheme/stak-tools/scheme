@@ -3,6 +3,7 @@
 set -e
 
 directory=$(dirname $0)/../../..
+raw_arguments="$@"
 
 compile() {
   if [ -n "$STAK_HOST_INTERPRETER" ]; then
@@ -13,7 +14,7 @@ compile() {
 }
 
 arguments() {
-  echo $@ | tr ' ' '\n' | grep "$@" '\.scm$'
+  echo $raw_arguments | tr ' ' '\n' | grep "$@" '\.scm$'
 }
 
 export PATH=$directory/target/release_test:$PATH
