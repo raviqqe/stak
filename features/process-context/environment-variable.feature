@@ -7,7 +7,7 @@ Feature: Environment variables
       (write-string (cdr (get-environment-variable "FOO")))
       """
     And I set the environment variable "FOO" to "bar"
-    When I successfully run `scheme main.scm hello`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "bar"
 
   Scenario: Get environment variables
@@ -25,6 +25,6 @@ Feature: Environment variables
       """
     And I set the environment variable "FOO" to "bar"
     And I set the environment variable "BAZ" to "qux"
-    When I successfully run `scheme main.scm hello`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain "FOO=bar"
     And the stdout should contain "BAZ=qux"
