@@ -8,7 +8,7 @@ use heapless::Vec;
 use stak_device::Device;
 use stak_file::FileSystem;
 use stak_process_context::ProcessContext;
-use stak_vm::{Memory, Number, PrimitiveSet, Tag, Type, Value};
+use stak_vm::{Cons, Memory, Number, PrimitiveSet, Tag, Type, Value};
 
 const PATH_SIZE: usize = 64;
 
@@ -173,6 +173,16 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
 
         Some(path)
     }
+
+    fn build_string(memory: &mut Memory, string: &str) -> Result<Cons, Error> {
+        let mut list = memory.null();
+
+        for character in string.chars().rev() {
+            list = memory.cons(Number::new(character as _).into(), list)?;
+        }
+
+        Ok(list)
+    }
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiveSet<D, F, P> {
@@ -287,39 +297,32 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
                     .map(|value| memory.boolean(value).into())
             })?,
             Primitive::COMMAND_LINE => {
-                let mut list = memory.null();
+                memory.set_register(memory.null());
 
                 for argument in self.process_context.command_line_rev() {
-                    let mut string = memory.null();
-
-                    for character in argument.chars().rev() {
-                        string = memory.cons(Number::new(character as _).into(), string)?;
-                    }
-
-                    list = memory.cons(string.into(), list)?;
+                    let string = Self::build_string(memory, argument)?;
+                    let list = memory.cons(string.into(), memory.register())?;
+                    memory.set_register(list);
                 }
 
-                memory.push(list.into())?;
+                memory.push(memory.register().into())?;
             }
             Primitive::ENVIRONMENT_VARIABLES => {
-                let mut list = memory.null();
+                memory.set_register(memory.null());
 
                 for (key, value) in self.process_context.environment_variables() {
-                    let mut pair = (memory.null(), memory.null());
+                    let pair = memory.allocate(memory.null().into(), memory.null().into())?;
+                    let list = memory.cons(pair.into(), memory.register())?;
+                    memory.set_register(list);
 
-                    for character in key.chars().rev() {
-                        pair.0 = memory.cons(Number::new(character as _).into(), pair.0)?;
-                    }
+                    let string = Self::build_string(memory, key)?;
+                    memory.set_car_value(memory.car(memory.register()), string.into());
 
-                    for character in value.chars().rev() {
-                        pair.1 = memory.cons(Number::new(character as _).into(), pair.1)?;
-                    }
-
-                    let pair = memory.cons(pair.0.into(), pair.1.into())?;
-                    list = memory.cons(pair.into(), list)?;
+                    let string = Self::build_string(memory, value)?;
+                    memory.set_cdr_value(memory.car(memory.register()), string.into());
                 }
 
-                memory.push(list.into())?;
+                memory.push(memory.register().into())?;
             }
             _ => return Err(Error::Illegal),
         }

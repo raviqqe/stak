@@ -3,6 +3,7 @@
 set -e
 
 directory=$(dirname $0)/../../..
+raw_arguments="$@"
 
 compile() {
   if [ -n "$STAK_HOST_INTERPRETER" ]; then
@@ -12,8 +13,12 @@ compile() {
   fi
 }
 
+arguments() {
+  echo $raw_arguments | tr ' ' '\n' | grep "$@" '\.scm$'
+}
+
 export PATH=$directory/target/release_test:$PATH
 
-cat $directory/prelude.scm "$@" | compile >main.bc
+cat $directory/prelude.scm $(arguments) | compile >main.bc
 stak-decode <main.bc >/dev/null
-stak-interpret main.bc
+stak-interpret main.bc $(arguments -v)
