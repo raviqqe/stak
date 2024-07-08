@@ -31,4 +31,11 @@ cargo build --profile release_test --features $features
 export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-cucumber --publish-quiet --strict-undefined "$@"
+cucumber='cucumber --publish-quiet --strict-undefined'
+
+if [ $# -ne 0 ]; then
+  $cucumber "$@"
+else
+  git ls-files '**/*.feature' |
+    xargs -I % sh -c "mkdir -p tmp/% && cd tmp/% && $cucumber ../../%"
+fi
