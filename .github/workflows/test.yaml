@@ -81,7 +81,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           -f ${{ join(matrix.interpreter.features, ',') }},
-          --tags '${{ matrix.interpreter.tags || 'not @none' }}'
+          -t '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_integration_test:
     strategy:
       fail-fast: false
