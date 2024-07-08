@@ -54,13 +54,15 @@ fn main() -> Result<(), MainError> {
         Library::R7rs => PRELUDE_SOURCE.into(),
     };
     let mut target = vec![];
-    let Some(index) = arguments
+    let index = arguments
         .arguments
         .iter()
-        .rposition(|argument| argument.ends_with(SCHEME_FILE_EXTENSION))
-    else {
+        .take_while(|argument| argument.ends_with(SCHEME_FILE_EXTENSION))
+        .count();
+
+    if index == 0 {
         return Err("No scheme file specified".into());
-    };
+    }
 
     read_source(&arguments.arguments[..index], &mut source)?;
     compile(&source, &mut target, &mut heap)?;
