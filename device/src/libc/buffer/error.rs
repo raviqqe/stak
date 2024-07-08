@@ -1,5 +1,6 @@
 use core::fmt::{self, Display, Formatter};
 
+/// A buffer error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum BufferError {
     Read,

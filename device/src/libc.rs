@@ -1,3 +1,5 @@
+//! Devices based on libc.
+
 mod buffer;
 mod device;
 mod error;

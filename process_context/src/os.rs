@@ -1,6 +1,5 @@
 use crate::ProcessContext;
 use alloc::{string::String, vec::Vec};
-use core::iter::DoubleEndedIterator;
 use once_cell::unsync::Lazy;
 use std::env::{args, vars};
 
@@ -11,6 +10,7 @@ pub struct OsProcessContext {
 }
 
 impl OsProcessContext {
+    /// Creates a process context.
     pub fn new() -> Self {
         Self {
             arguments: Lazy::new(|| args().collect()),
@@ -20,16 +20,11 @@ impl OsProcessContext {
 }
 
 impl ProcessContext for OsProcessContext {
-    fn command_line(
-        &self,
-    ) -> impl IntoIterator<Item = &str, IntoIter = impl DoubleEndedIterator<Item = &str>> {
-        (*self.arguments).iter().map(AsRef::as_ref)
+    fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
+        (*self.arguments).iter().map(AsRef::as_ref).rev()
     }
 
-    fn environment_variables(
-        &self,
-    ) -> impl IntoIterator<Item = (&str, &str), IntoIter = impl DoubleEndedIterator<Item = (&str, &str)>>
-    {
+    fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
         (*self.environment_variables)
             .iter()
             .map(|(key, value)| (key.as_ref(), value.as_ref()))

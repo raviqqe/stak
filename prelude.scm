@@ -158,6 +158,7 @@
     string?
     list->string
     string->code-points
+    code-points->string
     string->list
     string-append
     string-length
@@ -2250,7 +2251,7 @@
     (define $$command-line (primitive 28))
     (define $$get-environment-variables (primitive 29))
 
-    (define command-line (delay ($$command-line)))
+    (define command-line (delay (map code-points->string ($$command-line))))
     (define get-environment-variables (delay ($$get-environment-variables)))
 
     (define (get-environment-variable name)

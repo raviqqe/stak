@@ -11,4 +11,5 @@ pub use procedure_record::ProcedureRecord;
 pub use stack::Stack;
 pub use stacked_record::StackedRecord;
 
+/// A profile record.
 pub trait Record: Display + FromStr {}

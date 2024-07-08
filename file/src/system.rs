@@ -3,6 +3,7 @@ use core::fmt::Debug;
 
 /// A file system.
 pub trait FileSystem {
+    /// An error.
     type Error: Debug;
 
     /// Opens a file.
