@@ -5,7 +5,7 @@ set -e
 while getopts t: option; do
   case $option in
   t)
-    options="--tags '$OPTARG'"
+    tags=$OPTARG
     ;;
   esac
 done
@@ -25,7 +25,7 @@ directory=tmp/$(basename ${file%.*})
 mkdir -p $directory
 cd $directory
 
-output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features $options ../../$file)
+output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features ${tags:+--tags "$tags"} ../../$file)
 status=$?
 
 echo "$output"
