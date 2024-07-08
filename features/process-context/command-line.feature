@@ -6,5 +6,5 @@ Feature: Command line
 
       (map write-string (command-line))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly ""
+    When I successfully run `scheme main.scm hello`
+    Then the stdout should contain "hello"
