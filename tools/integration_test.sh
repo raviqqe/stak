@@ -39,7 +39,7 @@ if [ -n "$tags" ]; then
 fi
 
 if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | xargs -P $(nproc) -I % tools/cucumber.sh $options %
+  git ls-files '**/*.feature' | xargs --verbose -P $(nproc) -I % tools/cucumber.sh $options %
 else
   bundler exec cucumber --publish-quiet --strict-undefined "$@"
 fi
