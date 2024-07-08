@@ -42,7 +42,7 @@ fi
 
 if [ $# -eq 0 ]; then
   git ls-files '**/*.feature' |
-    xargs -P $(nproc) -I % sh -c "mkdir -p tmp/\$(basename %) && cd \$_ && echo \"\$($cucumber ../../%)\""
+    xargs -P $(nproc) -I % sh -c "directory=tmp/\$(basename %) mkdir -p \$directory && cd \$directory && echo \"\$($cucumber ../../%)\""
 else
   $cucumber "$@"
 fi
