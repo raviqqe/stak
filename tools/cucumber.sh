@@ -16,7 +16,7 @@ file=$1
 
 cd $(dirname $0)/..
 
-directory=tmp/$(echo "$@" | shasum | head -c 8)
+directory=tmp/$(basename ${file%.*})
 
 mkdir -p $directory
 cd $directory
