@@ -39,7 +39,7 @@ if [ -n "$tags" ]; then
 fi
 
 if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | xargs tools/cucumber.sh $options
+  git ls-files '**/*.feature' | xargs -P $(nproc) tools/cucumber.sh $options
 else
   $cucumber "$@"
 fi
