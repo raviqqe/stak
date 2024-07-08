@@ -43,6 +43,7 @@
     "repr",
     "ribbit",
     "rlib",
+    "rposition",
     "rustc",
     "rustfmt",
     "rustup",
