@@ -37,5 +37,5 @@ if [ $# -ne 0 ]; then
   $cucumber "$@"
 else
   git ls-files '**/*.feature' |
-    xargs -I % sh -c "mkdir -p tmp/% && cd tmp/% && $cucumber ../../%"
+    xargs -I % sh -c 'directory=tmp/$(basename %) && mkdir -p $directory && cd $directory && $cucumber ../../%'
 fi
