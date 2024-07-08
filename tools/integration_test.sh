@@ -35,7 +35,7 @@ cucumber="bundler exec cucumber --publish-quiet --strict-undefined --require $PW
 
 if [ $# -eq 0 ]; then
   git ls-files '**/*.feature' |
-    xargs -P $(nproc) -I % sh -c "mkdir -p tmp/\$(basename %) && cd \$_ && $cucumber ../../%"
+    xargs -P $(nproc) -I % sh -c "mkdir -p tmp/\$(basename %) && cd \$_ && echo \"\$($cucumber ../../%)\""
 else
   $cucumber "$@"
 fi
