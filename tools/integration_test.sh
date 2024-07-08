@@ -5,13 +5,16 @@ set -ex
 features=,
 interpreter=stak
 
-while getopts f:i: option; do
+while getopts f:i:t: option; do
   case $option in
   f)
     features=$OPTARG
     ;;
   i)
     interpreter=$OPTARG
+    ;;
+  t)
+    tags=$OPTARG
     ;;
   esac
 done
