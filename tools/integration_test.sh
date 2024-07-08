@@ -37,7 +37,7 @@ export PATH=$PWD/tools/scheme/$interpreter:$PATH
 cucumber="bundler exec cucumber --publish-quiet --strict-undefined --require $PWD/features"
 
 if [ -n "$tags" ]; then
-  cucumber="$cucumber --tags \"$tags\""
+  cucumber="$cucumber --tags '$tags'"
 fi
 
 if [ $# -eq 0 ]; then
