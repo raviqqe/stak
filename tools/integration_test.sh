@@ -35,7 +35,7 @@ export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 if [ -n "$tags" ]; then
-  options="--tags '$tags'"
+  options="-t '$tags'"
 fi
 
 if [ $# -eq 0 ]; then
