@@ -34,12 +34,8 @@ cargo build --profile release_test --features $features
 export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-if [ -n "$tags" ]; then
-  options="-t '$tags'"
-fi
-
 if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | xargs --verbose -P $(nproc) -I % tools/cucumber.sh $options %
+  git ls-files '**/*.feature' | xargs --verbose -P $(nproc) -I % tools/cucumber.sh ${tags:+--tags "$tags"} %
 else
   bundler exec cucumber --publish-quiet --strict-undefined "$@"
 fi
