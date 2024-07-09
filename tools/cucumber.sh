@@ -26,7 +26,7 @@ mkdir -p $directory
 cd $directory
 
 run() {
-  unset $(env | cut -d = -f 1 | gre -v -e PATH)
+  unset $(env | cut -d = -f 1 | grep -v -e PATH)
 
   bundler exec cucumber \
     --publish-quiet \
