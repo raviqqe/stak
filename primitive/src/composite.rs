@@ -2,7 +2,7 @@ mod error;
 
 use self::error::{CompositeError, IllegalPrimitiveError};
 use core::fmt::{Debug, Display};
-use stak_vm::{PrimitiveSet, Vm};
+use stak_vm::{Memory, PrimitiveSet};
 
 /// A composite primitive set.
 pub struct CompositePrimitiveSet<P: PrimitiveSet, Q: PrimitiveSet> {
@@ -24,18 +24,19 @@ where
 {
     type Error = CompositeError<P::Error, Q::Error>;
 
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Self::Error> {
-        let Err(error) = vm.primitive_set().first.operate(vm, primitive) else {
+    fn operate(&mut self, vm: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
+        let Err(error) = self.first.operate(vm, primitive) else {
             return Ok(());
         };
 
         if !error.is_illegal_primitive() {
-            return Err(error);
+            return Err(CompositeError::Primary(error));
         }
 
-        vm.primitive_set()
-            .second
+        self.second
             .operate(vm, primitive)
-            .map_err(CompositeError::First)
+            .map_err(CompositeError::Secondary)?;
+
+        Ok(())
     }
 }
