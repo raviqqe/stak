@@ -8,6 +8,7 @@ members = [
   "cmd/profile",
   "cmd/repl",
   "cmd/run",
+  "build",
   "code",
   "compiler",
   "configuration",
@@ -33,6 +34,7 @@ readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
 
 [workspace.lints.rust]
+missing_docs = "deny"
 warnings = "deny"
 
 [workspace.lints.clippy]

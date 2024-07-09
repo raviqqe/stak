@@ -4,6 +4,7 @@ use std::{
     io::{self, Write},
 };
 
+/// Writes profile records.
 pub fn write_records<R: Record, E: Error + From<io::Error>>(
     records: impl IntoIterator<Item = Result<R, E>>,
     mut writer: impl Write,

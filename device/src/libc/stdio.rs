@@ -1,9 +1,11 @@
 use super::{error::Error, Read, Write};
 
+/// A stdin.
 #[derive(Debug, Default)]
 pub struct Stdin {}
 
 impl Stdin {
+    /// Creates a stdin.
     pub const fn new() -> Self {
         Self {}
     }
@@ -25,10 +27,12 @@ impl Read for Stdin {
     }
 }
 
+/// A stdout.
 #[derive(Debug, Default)]
 pub struct Stdout {}
 
 impl Stdout {
+    /// Creates a stdout.
     pub const fn new() -> Self {
         Self {}
     }
@@ -42,10 +46,12 @@ impl Write for Stdout {
     }
 }
 
+/// A stderr.
 #[derive(Debug, Default)]
 pub struct Stderr {}
 
 impl Stderr {
+    /// Creates a stderr.
     pub const fn new() -> Self {
         Self {}
     }

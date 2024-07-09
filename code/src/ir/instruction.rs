@@ -30,13 +30,21 @@ pub enum Instruction {
 }
 
 impl Instruction {
+    /// A `constant` instruction.
     pub const CONSTANT: u8 = 0;
+    /// A `get` instruction.
     pub const GET: u8 = 1;
+    /// A `set` instruction.
     pub const SET: u8 = 2;
+    /// An `if` instruction.
     pub const IF: u8 = 3;
+    /// A `nop` instruction.
     pub const NOP: u8 = 4;
+    /// A `call` instruction.
     pub const CALL: u8 = 5;
+    /// A `close` instruction.
     pub const CLOSE: u8 = 6;
+    /// A `skip` instruction.
     pub const SKIP: u8 = 7;
 }
 
@@ -45,8 +53,8 @@ mod display {
     use super::*;
     use core::fmt::{self, Display, Formatter};
 
-    /// Displays instructions in a slice.
     impl Instruction {
+        /// Displays instructions in a slice.
         pub fn display_slice(instructions: &[Self]) -> impl Display + '_ {
             DisplayInstructionList::new(instructions, 0)
         }

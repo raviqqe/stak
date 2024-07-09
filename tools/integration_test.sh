@@ -5,13 +5,16 @@ set -ex
 features=,
 interpreter=stak
 
-while getopts f:i: option; do
+while getopts f:i:t: option; do
   case $option in
   f)
     features=$OPTARG
     ;;
   i)
     interpreter=$OPTARG
+    ;;
+  t)
+    tags=$OPTARG
     ;;
   esac
 done
@@ -31,4 +34,8 @@ cargo build --profile release_test --features $features
 export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
-cucumber --publish-quiet --strict-undefined "$@"
+if [ $# -eq 0 ]; then
+  git ls-files '**/*.feature' | xargs --verbose -P $(nproc) -I % tools/cucumber.sh ${tags:+-t "$tags"} %
+else
+  bundler exec cucumber --publish-quiet --strict-undefined "$@"
+fi

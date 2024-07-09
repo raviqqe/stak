@@ -2,6 +2,7 @@ use crate::Record;
 use core::str::FromStr;
 use std::io::{self, BufRead};
 
+/// Reads profile records.
 pub fn read_records<R: Record>(
     reader: impl BufRead,
 ) -> impl Iterator<Item = Result<R, <R as FromStr>::Err>>

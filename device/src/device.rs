@@ -2,6 +2,7 @@ use core::fmt::Debug;
 
 /// A device.
 pub trait Device {
+    /// An error.
     type Error: Debug;
 
     /// Reads from standard input.

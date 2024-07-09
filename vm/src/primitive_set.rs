@@ -1,12 +1,14 @@
-use crate::{Error, Vm};
+use crate::{memory::Memory, Error};
 
 /// A primitive set.
 ///
 /// [`PrimitiveSet`](PrimitiveSet)s provide primitive functionalities, such as
-/// arithmetic and I/O, to [`Vm`](Vm)s. Each primitive has its own identifier.
+/// arithmetic and I/O, to [`Vm`](super::Vm)s. Each primitive has its own
+/// identifier.
 pub trait PrimitiveSet: Sized {
+    /// An error.
     type Error: From<Error>;
 
     /// Runs a primitive on a virtual machine.
-    fn operate(vm: &mut Vm<Self>, primitive: u8) -> Result<(), Self::Error>;
+    fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error>;
 }
