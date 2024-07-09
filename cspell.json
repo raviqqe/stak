@@ -15,6 +15,7 @@
     "codecov",
     "codegen",
     "cond",
+    "coreutils",
     "embeddable",
     "fclose",
     "flamegraph",
@@ -53,6 +54,7 @@
     "uninterned",
     "unresolve",
     "unsync",
+    "uutils",
     "yota"
   ],
   "patterns": [
