@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 while getopts t: option; do
   case $option in
