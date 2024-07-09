@@ -25,7 +25,7 @@ directory=tmp/$(basename ${file%.*})
 mkdir -p $directory
 cd $directory
 
-output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features ${tags:+-t "$tags"} ../../$file)
+output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features ${tags:+--tags "$tags"} ../../$file)
 status=$?
 
 echo "$output"
