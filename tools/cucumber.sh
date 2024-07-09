@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -ex
+set -e
 
 while getopts t: option; do
   case $option in
@@ -25,7 +25,7 @@ directory=tmp/$(basename ${file%.*})
 mkdir -p $directory
 cd $directory
 
-output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features ${tags:+--tags "$tags"} ../../$file 2>£1)
+output=$(bundler exec cucumber --publish-quiet --strict-undefined --require ../../features ${tags:+--tags "$tags"} ../../$file 2>&1)
 status=$?
 
 echo "$output"
