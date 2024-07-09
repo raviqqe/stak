@@ -38,6 +38,7 @@
     "mstak",
     "munmap",
     "nanos",
+    "nproc",
     "quasiquote",
     "raviqqe",
     "repr",
