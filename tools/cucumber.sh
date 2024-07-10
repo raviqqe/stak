@@ -25,20 +25,11 @@ directory=tmp/$(basename ${file%.*})
 mkdir -p $directory
 cd $directory
 
-run() {
-  unset $(env | cut -d = -f 1 | grep -v -e PATH)
+unset $(env | cut -d = -f 1 | grep -v -e PATH)
 
-  bundler exec cucumber \
-    --publish-quiet \
-    --strict-undefined \
-    --require ../../features \
-    ${tags:+--tags "$tags"} \
-    ../../$file
-}
-
-output=$(run 2>&1)
-status=$?
-
-echo "$output"
-
-exit $status
+bundler exec cucumber \
+  --publish-quiet \
+  --strict-undefined \
+  --require ../../features \
+  ${tags:+--tags "$tags"} \
+  ../../$file
