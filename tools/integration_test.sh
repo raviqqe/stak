@@ -28,6 +28,8 @@ cargo build --profile release_test --features $features
   cargo build --release
 )
 
+unset $(env | cut -d = -f 1 | gre -v -e PATH -e PWD)
+
 export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
