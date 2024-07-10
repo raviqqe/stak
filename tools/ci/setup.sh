@@ -2,5 +2,5 @@
 
 set -e
 
-brew install chibi-scheme gauche guile uutils-coreutils uutils-findutils
+brew install chibi-scheme gauche guile uutils-coreutils parallel
 cargo install stak
