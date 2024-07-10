@@ -28,9 +28,7 @@ cargo build --profile release_test --features $features
   cargo build --release
 )
 
-unset $(env | cut -d = -f 1 | grep -v -e PATH -e PWD)
-
-export STAK_ROOT=$PWD
-export PATH=$PWD/tools/scheme/$interpreter:$PATH
-
-cucumber --publish-quiet --strict-undefined "$@"
+env -i \
+  STAK_ROOT=$PWD \
+  PATH=$PWD/tools/scheme/$interpreter:$PATH \
+  cucumber --publish-quiet --strict-undefined "$@"
