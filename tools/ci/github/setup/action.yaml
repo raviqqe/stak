@@ -12,5 +12,5 @@ runs:
         stable: true
     - run: tools/ci/setup.sh
       shell: bash
-    - run: echo PATH=$(brew --prefix uutils-findutils)/libexec/uubin >>${{ github.env }}
+    - run: echo PATH=$(brew --prefix uutils-findutils)/libexec/uubin:$PATH >>${{ github.env }}
       shell: bash
