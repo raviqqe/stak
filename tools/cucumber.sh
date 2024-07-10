@@ -25,7 +25,7 @@ directory=tmp/$(basename ${file%.*})
 mkdir -p $directory
 cd $directory
 
-unset $(env | cut -d = -f 1 | grep -v -e PATH)
+unset $(env | cut -d = -f 1 | grep -v -e PATH -e STAK_ROOT)
 
 bundler exec cucumber \
   --publish-quiet \
