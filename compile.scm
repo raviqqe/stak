@@ -321,11 +321,18 @@
               renamed)))))))
 
 (define (expand-import-set context importer-id qualify set)
+  (define (expand transform)
+    (expand-import-set context importer-id transform (cadr set)))
+
   (case (predicate set)
+    ((except)
+      (let ((names (cddr set)))
+        (expand
+          (lambda (name)
+            (if (memq name names) #f name)))))
+
     ((rename)
-      (expand-import-set
-        context
-        importer-id
+      (expand
         (lambda (name)
           (let ((name (qualify name)))
             (cond
@@ -333,24 +340,18 @@
                 cadr)
 
               (else
-                name))))
-        (cadr set)))
+                name))))))
 
     ((only)
       (let ((names (cddr set)))
-        (expand-import-set
-          context
-          importer-id
+        (expand
           (lambda (name)
-            (if (memq name names) name #f))
-          (cadr set))))
+            (if (memq name names) name #f)))))
 
     ((prefix)
-      (expand-import-set
-        context
-        importer-id
-        (lambda (name) (symbol-append (caddr set) (qualify name)))
-        (cadr set)))
+      (expand
+        (lambda (name)
+          (symbol-append (caddr set) (qualify name)))))
 
     (else
       (let ((library (library-context-find context set)))
