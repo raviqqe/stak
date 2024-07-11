@@ -91,17 +91,23 @@ jobs:
           - ubuntu-latest
           - macos-14
         interpreter:
-          - stak
-          - stak-tools
-          - mstak
-          - mstak-tools
+          - name: stak
+          - name: stak-tools
+          - name: mstak
+            tags: not @process-context
+          - name: mstak-tools
+            tags: not @process-context
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
-      - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
+      - run: >
+          tools/integration_test.sh
+          -i ${{ matrix.interpreter.name }}
+          --
+          --tag '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
