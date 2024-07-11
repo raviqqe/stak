@@ -336,6 +336,20 @@
                 name))))
         (cadr set)))
 
+    ((only)
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name)
+          (let ((name (qualify name)))
+            (cond
+              ((assq name (cddr set)) =>
+                cadr)
+
+              (else
+                name))))
+        (cadr set)))
+
     ((prefix)
       (expand-import-set
         context
