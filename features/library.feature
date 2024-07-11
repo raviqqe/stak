@@ -112,7 +112,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Import only a function
+  Scenario: Import only a symbol
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -131,7 +131,29 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Import functions except a function
+  Scenario: Import only a symbol and use one of the others
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            #f)
+
+          (define (bar)
+            #f)))
+
+      (import (only (foo) foo))
+
+      (bar)
+      """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
+  Scenario: Import symbols except one
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -152,6 +174,28 @@ Feature: Library system
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "B"
+
+  Scenario: Import symbols except one and use it
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            #f)
+
+          (define (bar)
+            #f)))
+
+      (import (except (foo) foo))
+
+      (foo)
+      """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
 
   Scenario: Import a renamed function
     Given a file named "main.scm" with:
