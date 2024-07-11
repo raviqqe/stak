@@ -3013,7 +3013,9 @@
     with-input-from-file
     with-output-to-file)
 
-  (import (stak base) (scheme base))
+  (import
+    (scheme base)
+    (only (stak base) primitive string->code-points))
 
   (begin
     (define $$open-file (primitive 22))
