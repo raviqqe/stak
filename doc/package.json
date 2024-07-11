@@ -14,14 +14,14 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.1.6",
     "@astrojs/solid-js": "^4.4.0",
-    "@astrojs/starlight": "^0.25.0",
+    "@astrojs/starlight": "^0.25.1",
     "@biomejs/biome": "^1.8.3",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.5",
     "@raviqqe/stak": "^0.2.20",
     "astro": "^4.11.5",
     "classnames": "^2.5.1",
-    "lucide-solid": "^0.403.0",
+    "lucide-solid": "^0.407.0",
     "nanostores": "^0.10.3",
     "solid-js": "^1.8.18",
     "vite-plugin-wasm": "^3.3.0"
