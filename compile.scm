@@ -337,18 +337,13 @@
         (cadr set)))
 
     ((only)
-      (expand-import-set
-        context
-        importer-id
-        (lambda (name)
-          (let ((name (qualify name)))
-            (cond
-              ((assq name (cddr set)) =>
-                cadr)
-
-              (else
-                name))))
-        (cadr set)))
+      (let ((names (cddr set)))
+        (expand-import-set
+          context
+          importer-id
+          (lambda (name)
+            (if (memq name names) name #f))
+          (cadr set))))
 
     ((prefix)
       (expand-import-set
