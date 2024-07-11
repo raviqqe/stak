@@ -25,9 +25,10 @@ directory=tmp/$(basename ${file%.*})
 mkdir -p $directory
 cd $directory
 
-unset $(env | cut -d = -f 1 | grep -v -e PATH -e STAK_ROOT)
-
-bundler exec cucumber \
+env -i \
+  PATH=$PATH \
+  $(env | grep STAK_) \
+  bundler exec cucumber \
   --publish-quiet \
   --strict-undefined \
   --require ../../features \
