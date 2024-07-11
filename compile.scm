@@ -321,8 +321,8 @@
               renamed)))))))
 
 (define (expand-import-set context importer-id qualify set)
-  (define (expand transform)
-    (expand-import-set context importer-id transform (cadr set)))
+  (define (expand qualify)
+    (expand-import-set context importer-id qualify (cadr set)))
 
   (case (predicate set)
     ((except)
@@ -361,12 +361,16 @@
             (append
               (expand-import-sets context (library-id library) (library-imports library))
               (library-body library)))
-          (map
+          (flat-map
             (lambda (names)
-              (list
-                '$$alias
-                (rename-library-symbol context importer-id (qualify (car names)))
-                (cdr names)))
+              (let ((name (qualify (car names))))
+                (if name
+                  (list
+                    (list
+                      '$$alias
+                      (rename-library-symbol context importer-id name)
+                      (cdr names)))
+                  '())))
             (library-exports library)))))))
 
 (define (expand-import-sets context importer-id sets)
