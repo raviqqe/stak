@@ -29,6 +29,7 @@ cargo build --profile release_test --features $features
 )
 
 env -i \
-  STAK_ROOT=$PWD \
   PATH=$PWD/tools/scheme/$interpreter:$PATH \
+  STAK_ROOT=$PWD \
+  $(env | grep STAK_) \
   cucumber --publish-quiet --strict-undefined "$@"
