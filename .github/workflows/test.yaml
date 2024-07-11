@@ -107,7 +107,7 @@ jobs:
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
           --
-          --tag '${{ matrix.interpreter.tags || 'not @none' }}'
+          --tags '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
