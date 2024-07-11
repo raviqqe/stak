@@ -35,7 +35,7 @@ export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | parallel -q tools/cucumber.sh ${tags:+-t "$tags"}
+  git ls-files '**/*.feature' | xargs ls -S | parallel -q tools/cucumber.sh ${tags:+-t "$tags"}
 else
   bundler exec cucumber --publish-quiet --strict-undefined "$@"
 fi
