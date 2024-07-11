@@ -1,3 +1,4 @@
+@process-context
 Feature: Environment variables
   Scenario: Get an environment variable
     Given a file named "main.scm" with:
