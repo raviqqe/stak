@@ -3065,7 +3065,9 @@
 (define-library (scheme repl)
   (export interaction-environment)
 
-  (import (scheme base) (scheme eval))
+  (import
+    (only (scheme base) define)
+    (only (scheme eval) interaction-libraries))
 
   (begin
     (define (interaction-environment)
