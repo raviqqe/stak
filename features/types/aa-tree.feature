@@ -1,5 +1,5 @@
+@stak
 Feature: AA tree
-  @stak
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
@@ -13,7 +13,6 @@ Feature: AA tree
       """
     Then the exit status should be 0
 
-  @stak
   Scenario: Check if a value is a tree
     Given a file named "main.scm" with:
       """scheme
@@ -28,7 +27,6 @@ Feature: AA tree
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak
   Scenario: Find no value
     Given a file named "main.scm" with:
       """scheme
@@ -45,7 +43,6 @@ Feature: AA tree
     Then the exit status should be 0
     And the stdout should contain exactly "B"
 
-  @stak
   Scenario: Insert a value into a tree
     Given a file named "main.scm" with:
       """scheme
@@ -64,7 +61,6 @@ Feature: AA tree
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak
   Scenario: Insert a value into a left of a tree
     Given a file named "main.scm" with:
       """scheme
@@ -87,7 +83,6 @@ Feature: AA tree
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
-  @stak
   Scenario: Insert a value into a right of a tree
     Given a file named "main.scm" with:
       """scheme
@@ -110,7 +105,6 @@ Feature: AA tree
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
-  @stak
   Scenario: Insert a value into the same node of a tree
     Given a file named "main.scm" with:
       """scheme
@@ -130,7 +124,6 @@ Feature: AA tree
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak
   Scenario Outline: Insert values into a tree
     Given a file named "main.scm" with:
       """scheme
@@ -179,7 +172,6 @@ Feature: AA tree
       | 2 4 1 3 | BABABABAAAAA |
       | 2 4 3 1 | BABABABAAAAA |
 
-  @stak
   Scenario Outline: Convert a list into a tree
     Given a file named "main.scm" with:
       """scheme
