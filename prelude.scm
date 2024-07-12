@@ -3013,7 +3013,9 @@
     with-input-from-file
     with-output-to-file)
 
-  (import (stak base) (scheme base))
+  (import
+    (scheme base)
+    (only (stak base) primitive string->code-points))
 
   (begin
     (define $$open-file (primitive 22))
@@ -3065,7 +3067,9 @@
 (define-library (scheme repl)
   (export interaction-environment)
 
-  (import (scheme base) (scheme eval))
+  (import
+    (only (scheme base) define)
+    (only (scheme eval) interaction-libraries))
 
   (begin
     (define (interaction-environment)

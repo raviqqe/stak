@@ -1,5 +1,5 @@
+@gauche @stak
 Feature: Library system
-  @gauche @stak
   Scenario: Define a library
     Given a file named "main.scm" with:
       """scheme
@@ -15,7 +15,6 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the exit status should be 0
 
-  @gauche @stak
   Scenario: Import a library twice
     Given a file named "main.scm" with:
       """scheme
@@ -31,8 +30,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
-  Scenario: Import a function
+  Scenario: Import a procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -51,7 +49,6 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
   Scenario: Import a macro
     Given a file named "main.scm" with:
       """scheme
@@ -73,8 +70,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
-  Scenario: Import functions
+  Scenario: Import procedures
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -97,8 +93,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  @gauche @stak
-  Scenario: Import a function with a prefix
+  Scenario: Import a procedure with a prefix
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -117,8 +112,92 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
-  Scenario: Import a renamed function
+  Scenario: Import only a symbol
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+
+      (import (only (foo) foo))
+
+      (foo 65)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Import only a symbol and use one of the others
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            #f)
+
+          (define (bar)
+            #f)))
+
+      (import (only (foo) foo))
+
+      (bar)
+      """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
+  Scenario: Import symbols except one
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))
+
+          (define (bar x)
+            (write-u8 (+ x 1)))))
+
+      (import (except (foo) foo))
+
+      (bar 65)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+  Scenario: Import symbols except one and use it
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo)
+            #f)
+
+          (define (bar)
+            #f)))
+
+      (import (except (foo) foo))
+
+      (foo)
+      """
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
+
+  Scenario: Import a renamed procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -137,8 +216,35 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
-  Scenario: Export an imported function
+  Scenario Outline: Nest import qualifiers
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))
+
+          (define (bar x)
+            (write-u8 (+ x 1)))))
+
+      (import <import set>)
+
+      (<symbol> 65)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | import set                                            | symbol | output |
+      | (only (prefix (foo) my-) my-foo)                      | my-foo | A      |
+      | (rename (prefix (foo) my-) (my-foo my-baz))           | my-baz | A      |
+      | (except (prefix (rename (foo) (bar baz)) my-) my-foo) | my-baz | B      |
+
+  Scenario: Export an imported procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -162,8 +268,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
-  Scenario: Export a renamed function
+  Scenario: Export a renamed procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -182,7 +287,6 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @gauche @stak
   Scenario: Do not modify a library environment
     Given a file named "main.scm" with:
       """scheme
@@ -209,7 +313,6 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "BA"
 
-  @gauche @stak
   Scenario: Modify a library environment
     Given a file named "main.scm" with:
       """scheme
