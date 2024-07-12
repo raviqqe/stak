@@ -328,8 +328,9 @@
     ((except)
       (let ((names (cddr set)))
         (expand
-          (lambda (name)
-            (if (memq name names) #f name)))))
+          (let ((name (qualify name)))
+            (lambda (name)
+              (if (memq name names) #f name))))))
 
     ((rename)
       (expand
@@ -346,7 +347,8 @@
       (let ((names (cddr set)))
         (expand
           (lambda (name)
-            (if (memq name names) name #f)))))
+            (let ((name (qualify name)))
+              (if (memq name names) name #f))))))
 
     ((prefix)
       (expand
