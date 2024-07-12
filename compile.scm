@@ -329,13 +329,14 @@
       (let ((names (cddr set)))
         (expand
           (lambda (name)
-            (let ((name (qualify name)))
-              (if (memq name names) #f name))))))
+            (if (memq name names)
+              #f
+              (qualify name))))))
 
     ((rename)
       (expand
         (lambda (name)
-          (let ((name (qualify name)))
+          (qualify
             (cond
               ((assq name (cddr set)) =>
                 cadr)
@@ -347,13 +348,14 @@
       (let ((names (cddr set)))
         (expand
           (lambda (name)
-            (let ((name (qualify name)))
-              (if (memq name names) name #f))))))
+            (if (memq name names)
+              (qualify name)
+              #f)))))
 
     ((prefix)
       (expand
         (lambda (name)
-          (symbol-append (caddr set) (qualify name)))))
+          (qualify (symbol-append (caddr set) name)))))
 
     (else
       (let ((library (library-context-find context set)))
