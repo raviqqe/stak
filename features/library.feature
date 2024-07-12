@@ -30,7 +30,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Import a function
+  Scenario: Import a procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -70,7 +70,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Import functions
+  Scenario: Import procedures
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -93,7 +93,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "AB"
 
-  Scenario: Import a function with a prefix
+  Scenario: Import a procedure with a prefix
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -197,7 +197,7 @@ Feature: Library system
     When I run `scheme main.scm`
     Then the exit status should not be 0
 
-  Scenario: Import a renamed function
+  Scenario: Import a renamed procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -216,7 +216,35 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Export an imported function
+  Scenario Outline: Nest import qualifiers
+    Given a file named "main.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo bar)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))
+
+          (define (bar x)
+            (write-u8 (+ x 1)))))
+
+      (import <import set>)
+
+      (<symbol> 65)
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | import set                                            | symbol | output |
+      | (only (prefix (foo) my-) my-foo)                      | my-foo | A      |
+      | (rename (prefix (foo) my-) (my-foo my-baz))           | my-baz | A      |
+      | (except (prefix (rename (foo) (bar baz)) my-) my-foo) | my-baz | B      |
+
+  Scenario: Export an imported procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)
@@ -240,7 +268,7 @@ Feature: Library system
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Export a renamed function
+  Scenario: Export a renamed procedure
     Given a file named "main.scm" with:
       """scheme
       (define-library (foo)

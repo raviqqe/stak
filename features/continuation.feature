@@ -67,7 +67,7 @@ Feature: Continuation
       ABCDEFGHIJKLMNOPQRSTUVWXYZ
       """
 
-  Scenario: Call a `call-with-current-continuation` function
+  Scenario: Call a `call-with-current-continuation` procedure
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
