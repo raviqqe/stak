@@ -14,7 +14,7 @@ compile() {
 
 while getopts l: option; do
   case $option in
-  x)
+  l)
     libraries="$libraries $OPTARG"
     ;;
   esac
