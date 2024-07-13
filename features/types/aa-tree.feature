@@ -132,7 +132,7 @@ Feature: AA tree
       (define tree (aa-tree-empty <))
 
       (define (check x)
-        (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+        (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
 
       (for-each
         (lambda (x)
