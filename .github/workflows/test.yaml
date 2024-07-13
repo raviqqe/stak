@@ -91,6 +91,7 @@ jobs:
           - macos-14
         interpreter:
           - name: stak
+            tags: not @library
           - name: stak-tools
           - name: mstak
             tags: not @process-context

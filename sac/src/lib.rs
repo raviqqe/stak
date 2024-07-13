@@ -41,6 +41,8 @@ macro_rules! main {
         #[derive(clap::Parser)]
         #[command(about, version)]
         struct Arguments {
+            #[arg()]
+            arguments: Vec<String>,
             #[arg(short = 's', long, default_value_t = $heap_size)]
             heap_size: usize,
         }
