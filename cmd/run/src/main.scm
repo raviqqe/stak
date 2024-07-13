@@ -7,8 +7,10 @@
   (scheme repl))
 
 (define (main)
-  (display "> " (current-error-port))
-
+  (do ()
+    ((eof-object? (peek-char))
+      #f)
+    (set! y (+ y (vector-ref xs i))))
   (do ()
     (let ((char (peek-char)))
       (cond
