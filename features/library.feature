@@ -167,7 +167,7 @@ Feature: Library system
 
       (bar)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run `scheme -l foo.scm main.scm`
     Then the exit status should not be 0
 
   Scenario: Import symbols except one
@@ -215,7 +215,7 @@ Feature: Library system
 
       (foo)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run `scheme -l foo.scm main.scm`
     Then the exit status should not be 0
 
   Scenario: Import a renamed procedure
