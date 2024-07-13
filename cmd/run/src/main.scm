@@ -4,7 +4,9 @@
   (scheme read)
   (scheme write)
   (scheme eval)
-  (scheme repl))
+  (scheme repl)
+  (scheme file)
+  (scheme process-context))
 
 (define (main)
   (do ()
