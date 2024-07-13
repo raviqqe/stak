@@ -20,10 +20,10 @@
               (equal? (substring y (- length 4) length) ".scm")))))))
 
   (do ()
-    ((eof-object? (peek-char))
+    ((eof-object? (peek-char script))
       #f)
-    (if (char-whitespace? (peek-char))
-      (read-char)
-      (eval (read) (interaction-environment)))))
+    (if (char-whitespace? (peek-char script))
+      (read-char script)
+      (eval (read script) (interaction-environment)))))
 
 (main)
