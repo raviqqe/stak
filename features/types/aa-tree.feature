@@ -115,7 +115,7 @@ Feature: AA tree
       (aa-tree-insert! tree 1)
       (aa-tree-insert! tree 1)
 
-      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
       """
     When I run the following script:
       """sh
