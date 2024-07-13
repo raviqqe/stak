@@ -67,7 +67,7 @@ jobs:
           - name: gauche
             tags: not @stak or @gauche
           - name: guile
-            tags: (not @stak or @guile) and not @library
+            tags: not @stak or @guile
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
