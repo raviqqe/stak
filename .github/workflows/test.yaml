@@ -63,11 +63,11 @@ jobs:
             features: [gc_always]
             tags: not @long
           - name: chibi
-            tags: not @stak or @chibi
+            tags: (not @stak or @chibi) and not @library
           - name: gauche
             tags: not @stak or @gauche
           - name: guile
-            tags: not @stak or @guile
+            tags: (not @stak or @guile) and not @library
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}

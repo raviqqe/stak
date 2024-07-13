@@ -1,7 +1,7 @@
-@gauche @library @stak
+@library
 Feature: Library system
   Scenario: Define a library
-    Given a file named "main.scm" with:
+    Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
         (export foo)
@@ -12,22 +12,27 @@ Feature: Library system
           (define (foo x)
             (write-u8 x))))
       """
-    When I successfully run `scheme main.scm`
+    Given a file named "main.scm" with:
+      """scheme
+      """
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the exit status should be 0
 
   Scenario: Import a library twice
-    Given a file named "main.scm" with:
+    Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
         (import (scheme base) (scheme write))
 
         (begin
           (write-u8 65)))
-
+      """
+    And a file named "main.scm" with:
+      """scheme
       (import (foo))
       (import (foo))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Import a procedure
@@ -46,7 +51,7 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Import a macro
@@ -67,7 +72,7 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Import procedures
@@ -90,7 +95,7 @@ Feature: Library system
       (foo 65)
       (bar 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Import a procedure with a prefix
@@ -109,7 +114,7 @@ Feature: Library system
 
       (bar-foo 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Import only a symbol
@@ -128,7 +133,7 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Import only a symbol and use one of the others
@@ -150,7 +155,7 @@ Feature: Library system
 
       (bar)
       """
-    When I run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the exit status should not be 0
 
   Scenario: Import symbols except one
@@ -172,7 +177,7 @@ Feature: Library system
 
       (bar 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Import symbols except one and use it
@@ -194,7 +199,7 @@ Feature: Library system
 
       (foo)
       """
-    When I run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the exit status should not be 0
 
   Scenario: Import a renamed procedure
@@ -213,7 +218,7 @@ Feature: Library system
 
       (bar 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Nest import qualifiers
@@ -235,7 +240,7 @@ Feature: Library system
 
       (<symbol> 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -265,7 +270,7 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Export a renamed procedure
@@ -284,7 +289,7 @@ Feature: Library system
 
       (bar 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Do not modify a library environment

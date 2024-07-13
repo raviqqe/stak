@@ -1,4 +1,4 @@
-@library @stak
+@library
 Feature: AA tree
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
