@@ -1,4 +1,4 @@
-@gauche @stak
+@gauche @library @stak
 Feature: Library system
   Scenario: Define a library
     Given a file named "main.scm" with:
