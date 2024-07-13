@@ -1,6 +1,7 @@
 (import
   (scheme base)
   (scheme char)
+  (scheme lazy)
   (scheme read)
   (scheme write)
   (scheme eval)
