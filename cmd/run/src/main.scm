@@ -9,7 +9,7 @@
   (scheme process-context))
 
 (define (main)
-  (define script
+  (define program
     (open-input-file
       (car
         (member
@@ -20,10 +20,10 @@
               (equal? (substring y (- length 4) length) ".scm")))))))
 
   (do ()
-    ((eof-object? (peek-char script))
+    ((eof-object? (peek-char program))
       #f)
-    (if (char-whitespace? (peek-char script))
-      (read-char script)
-      (eval (read script) (interaction-environment)))))
+    (if (char-whitespace? (peek-char program))
+      (read-char program)
+      (eval (read program) (interaction-environment)))))
 
 (main)
