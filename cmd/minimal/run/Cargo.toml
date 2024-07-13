@@ -1,7 +1,7 @@
 [package]
 name = "mstak"
 description = "Minimal Stak Scheme interpreter"
-version = "0.1.17"
+version = "0.1.18"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -10,15 +10,15 @@ repository.workspace = true
 
 [dependencies]
 libc = { version = "0.2", default-features = false }
-mstak-util = { version = "0.1.17", path = "../util" }
+mstak-util = { version = "0.1.18", path = "../util" }
 stak-configuration = { version = "0.1.20", path = "../../../configuration" }
 stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }
-stak-file = { version = "0.3.0", path = "../../../file", features = ["libc"] }
-stak-primitive = { version = "0.4.0", path = "../../../primitive" }
-stak-process-context = { version = "0.1.0", path = "../../../process_context" }
-stak-vm = { version = "0.4.0", path = "../../../vm" }
+stak-file = { version = "0.4.0", path = "../../../file", features = ["libc"] }
+stak-primitive = { version = "0.5.0", path = "../../../primitive" }
+stak-process-context = { version = "0.2.0", path = "../../../process_context" }
+stak-vm = { version = "0.5.0", path = "../../../vm" }
 
 [lints]
 workspace = true
