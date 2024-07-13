@@ -22,8 +22,12 @@ done
 
 shift $(expr $OPTIND - 1)
 
+main=$1
+
+shift 1
+
 export PATH=$directory/target/release_test:$PATH
 
-cat $directory/prelude.scm $libraries $1 | compile >main.bc
+cat $directory/prelude.scm $libraries $main | compile >main.bc
 stak-decode <main.bc >/dev/null
-stak-interpret main.bc $(arguments -v)
+stak-interpret main.bc "$@"
