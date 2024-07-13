@@ -7,7 +7,7 @@
     aa-tree->list
     list->aa-tree)
 
-  (import (stak base))
+  (import (scheme base))
 
   (begin
     (define-record-type aa-tree
