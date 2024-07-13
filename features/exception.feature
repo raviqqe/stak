@@ -10,7 +10,7 @@ Feature: Exception
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
 
-  Scenario: Raise an error with an unknown value
+  Scenario: Raise an error with a value
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -21,7 +21,7 @@ Feature: Exception
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
 
-  Scenario: Raise an error with a value
+  Scenario: Raise an error with a pretty-printed value
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme write))
