@@ -343,7 +343,7 @@ Feature: Library system
       (foo 65)
       (bar 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     Then the stdout should contain exactly "BA"
 
   Scenario: Modify a library environment
@@ -373,6 +373,6 @@ Feature: Library system
       (foo 65)
       (bar 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `scheme -l foo.scm main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AABB"
