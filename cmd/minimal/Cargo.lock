@@ -35,7 +35,7 @@ checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
 
 [[package]]
 name = "mstak"
-version = "0.1.17"
+version = "0.1.18"
 dependencies = [
  "libc",
  "mstak-util",
@@ -49,7 +49,7 @@ dependencies = [
 
 [[package]]
 name = "mstak-interpret"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "libc",
  "mstak-util",
@@ -62,7 +62,7 @@ dependencies = [
 
 [[package]]
 name = "mstak-util"
-version = "0.1.17"
+version = "0.1.18"
 dependencies = [
  "libc",
 ]
@@ -75,29 +75,29 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-code"
-version = "0.2.40"
+version = "0.2.41"
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.37"
+version = "0.1.38"
 
 [[package]]
 name = "stak-device"
-version = "0.2.41"
+version = "0.2.42"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-file"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-primitive"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "heapless",
  "stak-device",
@@ -108,11 +108,11 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "stak-vm"
-version = "0.4.11"
+version = "0.4.12"
 dependencies = [
  "stak-code",
 ]
