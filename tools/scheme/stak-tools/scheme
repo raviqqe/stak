@@ -3,7 +3,6 @@
 set -e
 
 directory=$(dirname $0)/../../..
-raw_arguments="$@"
 
 compile() {
   if [ -n "$STAK_HOST_INTERPRETER" ]; then
@@ -13,12 +12,22 @@ compile() {
   fi
 }
 
-arguments() {
-  echo $raw_arguments | tr ' ' '\n' | grep "$@" '\.scm$'
-}
+while getopts l: option; do
+  case $option in
+  l)
+    libraries="$libraries $OPTARG"
+    ;;
+  esac
+done
+
+shift $(expr $OPTIND - 1)
+
+main=$1
+
+shift 1
 
 export PATH=$directory/target/release_test:$PATH
 
-cat $directory/prelude.scm $(arguments) | compile >main.bc
+cat $directory/prelude.scm $libraries $main | compile >main.bc
 stak-decode <main.bc >/dev/null
-stak-interpret main.bc $(arguments -v)
+stak-interpret main.bc "$@"

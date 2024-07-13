@@ -1,4 +1,4 @@
-@library @stak
+@library
 Feature: AA tree
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
@@ -9,7 +9,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
 
@@ -22,7 +22,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -38,7 +38,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "B"
@@ -56,7 +56,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -73,12 +73,12 @@ Feature: AA tree
 
       (for-each
         (lambda (x)
-          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -95,12 +95,12 @@ Feature: AA tree
 
       (for-each
         (lambda (x)
-          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -115,11 +115,11 @@ Feature: AA tree
       (aa-tree-insert! tree 1)
       (aa-tree-insert! tree 1)
 
-      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -132,7 +132,7 @@ Feature: AA tree
       (define tree (aa-tree-empty <))
 
       (define (check x)
-        (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+        (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
 
       (for-each
         (lambda (x)
@@ -145,7 +145,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
@@ -181,7 +181,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
