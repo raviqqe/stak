@@ -10,7 +10,7 @@
   (scheme process-context))
 
 (define (main)
-  (define program (open-input-file (linux-ref (command-line) 1)))
+  (define program (open-input-file (list-ref (command-line) 1)))
 
   (do ()
     ((eof-object? (peek-char program))
