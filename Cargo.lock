@@ -498,7 +498,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.3.1"
+version = "0.4.0"
 dependencies = [
  "libc",
  "tempfile",
@@ -577,7 +577,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.4.1"
+version = "0.5.0"
 dependencies = [
  "heapless",
  "stak-device",
@@ -588,7 +588,7 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "once_cell",
 ]
@@ -641,7 +641,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.4.12"
+version = "0.5.0"
 dependencies = [
  "insta",
  "stak-code",

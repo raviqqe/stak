@@ -11,11 +11,11 @@ repository.workspace = true
 [dependencies]
 stak-configuration = { version = "0.1.38", path = "../configuration" }
 stak-device = { version = "0.2.42", path = "../device", features = ["std"] }
-stak-file = { version = "0.3.1", path = "../file" }
+stak-file = { version = "0.4.0", path = "../file" }
 stak-macro = { version = "0.1.43", path = "../macro" }
-stak-primitive = { version = "0.4.1", path = "../primitive" }
-stak-process-context = { version = "0.1.1", path = "../process_context" }
-stak-vm = { version = "0.4.12", path = "../vm" }
+stak-primitive = { version = "0.5.0", path = "../primitive" }
+stak-process-context = { version = "0.2.0", path = "../process_context" }
+stak-vm = { version = "0.5.0", path = "../vm" }
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"

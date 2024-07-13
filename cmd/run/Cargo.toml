@@ -13,14 +13,14 @@ clap = { version = "4.5.9", features = ["derive"] }
 main_error = "0.1.2"
 stak-configuration = { version = "0.1.38", path = "../../configuration" }
 stak-device = { version = "0.2.42", path = "../../device", features = ["std"] }
-stak-file = { version = "0.3.1", path = "../../file", features = ["std"] }
+stak-file = { version = "0.4.0", path = "../../file", features = ["std"] }
 stak-macro = { version = "0.1.43", path = "../../macro" }
 stak-minifier-macro = { version = "0.1.20", path = "../../minifier_macro" }
-stak-primitive = { version = "0.4.1", path = "../../primitive", features = [
+stak-primitive = { version = "0.5.0", path = "../../primitive", features = [
   "std",
 ] }
-stak-process-context = { version = "0.1.1", path = "../../process_context", features = ["std"] }
-stak-vm = { version = "0.4.12", path = "../../vm", features = ["std"] }
+stak-process-context = { version = "0.2.0", path = "../../process_context", features = ["std"] }
+stak-vm = { version = "0.5.0", path = "../../vm", features = ["std"] }
 
 [lints]
 workspace = true
