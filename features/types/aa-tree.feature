@@ -73,7 +73,7 @@ Feature: AA tree
 
       (for-each
         (lambda (x)
-          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I run the following script:
@@ -95,7 +95,7 @@ Feature: AA tree
 
       (for-each
         (lambda (x)
-          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I run the following script:
