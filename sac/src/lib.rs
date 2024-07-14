@@ -94,6 +94,12 @@ macro_rules! libc_main {
             stak_vm::Vm,
         };
 
+        #[cfg(not(test))]
+        #[panic_handler]
+        fn panic(_info: &core::panic::PanicInfo) -> ! {
+            unsafe { libc::exit(1) }
+        }
+
         #[cfg_attr(not(test), no_mangle)]
         unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
             let mut heap = [Default::default(); $heap_size];
