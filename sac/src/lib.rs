@@ -4,6 +4,8 @@
 pub mod __private {
     #[cfg(feature = "std")]
     pub use clap;
+    #[cfg(feature = "libc")]
+    pub use libc;
     #[cfg(feature = "std")]
     pub use main_error;
     pub use stak_configuration;
@@ -86,6 +88,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
+            libc::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
@@ -97,7 +100,7 @@ macro_rules! libc_main {
         #[cfg(not(test))]
         #[panic_handler]
         fn panic(_info: &core::panic::PanicInfo) -> ! {
-            unsafe { libc::exit(1) }
+            unsafe { exit(1) }
         }
 
         #[cfg_attr(not(test), no_mangle)]
