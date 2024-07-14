@@ -36,7 +36,6 @@ macro_rules! main {
             stak_primitive::SmallPrimitiveSet,
             stak_process_context::OsProcessContext,
             stak_vm::Vm,
-            std::{env, error::Error},
         };
 
         #[derive(clap::Parser)]
@@ -81,9 +80,6 @@ macro_rules! libc_main {
         );
     };
     ($path:expr, $heap_size:expr) => {
-        #![no_std]
-        #![cfg_attr(not(test), no_main)]
-
         use $crate::__private::{
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
@@ -91,7 +87,6 @@ macro_rules! libc_main {
             stak_primitive::SmallPrimitiveSet,
             stak_process_context::VoidProcessContext,
             stak_vm::Vm,
-            std::{env, error::Error},
         };
 
         #[cfg_attr(not(test), no_mangle)]
