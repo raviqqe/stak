@@ -113,7 +113,7 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), no_mangle)]
         unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-            let mut heap = Heap::new(DEFAULT_HEAP_SIZE, Default::default);
+            let mut heap = Heap::new($heap_size, Default::default);
             let mut vm = Vm::new(
                 heap.as_slice_mut(),
                 SmallPrimitiveSet::new(
