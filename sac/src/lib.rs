@@ -84,9 +84,7 @@ macro_rules! libc_main {
         #![no_std]
         #![cfg_attr(not(test), no_main)]
 
-        use mstak_util::Mmap;
         use $crate::__private::{
-            clap::{self, Parser},
             core::{ffi::CStr, mem::size_of, slice},
             main_error::MainError,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
@@ -104,13 +102,9 @@ macro_rules! libc_main {
                 return 1;
             };
 
-            let heap = slice::from_raw_parts_mut(
-                libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,
-                HEAP_SIZE,
-            );
-
+            let mut heap = [Default::default(); $heap_size];
             let mut vm = Vm::new(
-                heap,
+                &mut heap,
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
@@ -119,9 +113,7 @@ macro_rules! libc_main {
             )
             .unwrap();
 
-            let mmap = Mmap::new(CStr::from_ptr(file));
-
-            vm.initialize(mmap.as_slice().iter().copied()).unwrap();
+            vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
             vm.run().unwrap();
 
             0
