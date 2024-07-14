@@ -61,6 +61,12 @@ codegen-units = 1
 lto = true
 panic = "abort"
 
+[profile.release_test]
+inherits = "release"
+debug = "line-tables-only"
+debug-assertions = true
+overflow-checks = true
+
 [profile.dev.build-override]
 opt-level = 3
 debug-assertions = false
@@ -71,8 +77,7 @@ opt-level = 3
 debug-assertions = false
 overflow-checks = false
 
-[profile.release_test]
-inherits = "release"
-debug = "line-tables-only"
-debug-assertions = true
-overflow-checks = true
+[profile.release_test.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false
