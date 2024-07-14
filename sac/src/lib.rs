@@ -14,9 +14,10 @@ pub mod __private {
     pub use std;
 }
 
-/// Defines a `main` function that executes a bytecode file at a given path.
+/// Defines a `main` function that executes a source file at a given path.
 ///
-/// The given bytecode file is bundled into a resulting binary.
+/// The given source file is compiled into bytecodes and bundled into a
+/// resulting binary.
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
@@ -67,9 +68,10 @@ macro_rules! main {
     };
 }
 
-/// Defines a `main` function that executes a bytecode file at a given path.
+/// Defines a `main` function that executes a source file at a given path.
 ///
-/// The given bytecode file is bundled into a resulting binary.
+/// The given source file is compiled into bytecodes and bundled into a
+/// resulting binary.
 #[macro_export]
 macro_rules! libc_main {
     ($path:expr) => {
