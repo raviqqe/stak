@@ -1,5 +1,10 @@
 //! Utilities to build executable binaries from bytecode files.
 
+#![no_std]
+
+#[cfg(feature = "std")]
+pub extern crate std;
+
 #[doc(hidden)]
 pub mod __private {
     #[cfg(feature = "std")]
