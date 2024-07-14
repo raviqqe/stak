@@ -22,6 +22,7 @@ members = [
   "process_context",
   "profiler",
   "sac",
+  "util",
   "vm",
   "wasm",
 ]

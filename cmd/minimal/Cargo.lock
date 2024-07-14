@@ -51,19 +51,12 @@ name = "mstak-interpret"
 version = "0.1.17"
 dependencies = [
  "libc",
- "mstak-util",
  "stak-device",
  "stak-file",
  "stak-primitive",
  "stak-process-context",
+ "stak-util",
  "stak-vm",
-]
-
-[[package]]
-name = "mstak-util"
-version = "0.1.18"
-dependencies = [
- "libc",
 ]
 
 [[package]]
@@ -171,7 +164,15 @@ dependencies = [
  "stak-macro",
  "stak-primitive",
  "stak-process-context",
+ "stak-util",
  "stak-vm",
+]
+
+[[package]]
+name = "stak-util"
+version = "0.1.18"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

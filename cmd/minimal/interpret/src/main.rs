@@ -10,11 +10,11 @@
 #![cfg_attr(not(test), no_main)]
 
 use core::{ffi::CStr, mem::size_of, slice};
-use mstak_util::Mmap;
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
 use stak_primitive::SmallPrimitiveSet;
 use stak_process_context::VoidProcessContext;
+use stak_util::Mmap;
 use stak_vm::{Value, Vm};
 
 const HEAP_SIZE: usize = 1 << 19;

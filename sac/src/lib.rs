@@ -19,6 +19,8 @@ pub mod __private {
     pub use stak_macro;
     pub use stak_primitive;
     pub use stak_process_context;
+    #[cfg(feature = "libc")]
+    pub use stak_util;
     pub use stak_vm;
     #[cfg(feature = "std")]
     pub use std;
@@ -99,6 +101,7 @@ macro_rules! libc_main {
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
             stak_process_context::VoidProcessContext,
+            stak_util::Heap,
             stak_vm::Vm,
         };
 
@@ -110,9 +113,9 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), no_mangle)]
         unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-            let mut heap = [Default::default(); $heap_size];
+            let mut heap = Heap::new(DEFAULT_HEAP_SIZE, Default::default);
             let mut vm = Vm::new(
-                &mut heap,
+                heap.as_slice_mut(),
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),

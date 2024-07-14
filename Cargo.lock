@@ -628,7 +628,15 @@ dependencies = [
  "stak-macro",
  "stak-primitive",
  "stak-process-context",
+ "stak-util",
  "stak-vm",
+]
+
+[[package]]
+name = "stak-util"
+version = "0.1.18"
+dependencies = [
+ "libc",
 ]
 
 [[package]]

@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-libc = ["dep:libc", "stak-device/libc", "stak-file/libc"]
+libc = ["dep:libc", "dep:stak-util", "stak-device/libc", "stak-file/libc"]
 std = [
   "dep:clap",
   "stak-device/std",
@@ -29,4 +29,5 @@ stak-file = { version = "0.4.0", path = "../file" }
 stak-macro = { version = "0.1.43", path = "../macro" }
 stak-primitive = { version = "0.5.0", path = "../primitive" }
 stak-process-context = { version = "0.2.0", path = "../process_context" }
+stak-util = { version = "0.1.18", path = "../util", optional = true }
 stak-vm = { version = "0.5.0", path = "../vm" }
