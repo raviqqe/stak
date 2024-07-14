@@ -81,6 +81,9 @@ macro_rules! libc_main {
         );
     };
     ($path:expr, $heap_size:expr) => {
+        #![no_std]
+        #![cfg_attr(not(test), no_main)]
+
         use $crate::__private::{
             clap::{self, Parser},
             main_error::MainError,
@@ -88,7 +91,7 @@ macro_rules! libc_main {
             stak_file::OsFileSystem,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
-            stak_process_context::OsProcessContext,
+            stak_process_context::VoidProcessContext,
             stak_vm::Vm,
             std::{env, error::Error},
         };
@@ -110,8 +113,8 @@ macro_rules! libc_main {
                 &mut heap,
                 SmallPrimitiveSet::new(
                     StdioDevice::new(),
-                    OsFileSystem::new(),
-                    OsProcessContext::new(),
+                    LibcFileSystem::new(),
+                    VoidProcessContext::new(),
                 ),
             )?;
 

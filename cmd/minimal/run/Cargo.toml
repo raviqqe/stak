@@ -18,6 +18,7 @@ stak-device = { version = "0.2.24", path = "../../../device", features = [
 stak-file = { version = "0.4.0", path = "../../../file", features = ["libc"] }
 stak-primitive = { version = "0.5.0", path = "../../../primitive" }
 stak-process-context = { version = "0.2.0", path = "../../../process_context" }
+stak-sac = { version = "0.1.44", path = "../../../sac" }
 stak-vm = { version = "0.5.0", path = "../../../vm" }
 
 [lints]
