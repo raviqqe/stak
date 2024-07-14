@@ -75,7 +75,7 @@ macro_rules! main {
 #[macro_export]
 macro_rules! libc_main {
     ($path:expr) => {
-        $crate::main!(
+        $crate::libc_main!(
             $path,
             $crate::__private::stak_configuration::DEFAULT_HEAP_SIZE
         );
@@ -85,8 +85,6 @@ macro_rules! libc_main {
         #![cfg_attr(not(test), no_main)]
 
         use $crate::__private::{
-            core::{ffi::CStr, mem::size_of, slice},
-            main_error::MainError,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
@@ -98,10 +96,6 @@ macro_rules! libc_main {
 
         #[cfg_attr(not(test), no_mangle)]
         unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-            let Some(&file) = &slice::from_raw_parts(argv, argc as _).get(1) else {
-                return 1;
-            };
-
             let mut heap = [Default::default(); $heap_size];
             let mut vm = Vm::new(
                 &mut heap,
