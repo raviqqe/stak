@@ -2,7 +2,9 @@
 
 #[doc(hidden)]
 pub mod __private {
+    #[cfg(feature = "std")]
     pub use clap;
+    #[cfg(feature = "std")]
     pub use main_error;
     pub use stak_configuration;
     pub use stak_device;
@@ -11,6 +13,7 @@ pub mod __private {
     pub use stak_primitive;
     pub use stak_process_context;
     pub use stak_vm;
+    #[cfg(feature = "std")]
     pub use std;
 }
 
@@ -18,6 +21,7 @@ pub mod __private {
 ///
 /// The given source file is compiled into bytecodes and bundled into a
 /// resulting binary.
+#[cfg(feature = "std")]
 #[macro_export]
 macro_rules! main {
     ($path:expr) => {
@@ -71,6 +75,7 @@ macro_rules! main {
 ///
 /// The given source file is compiled into bytecodes and bundled into a
 /// resulting binary.
+#[cfg(feature = "libc")]
 #[macro_export]
 macro_rules! libc_main {
     ($path:expr) => {
