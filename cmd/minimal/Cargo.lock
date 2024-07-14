@@ -163,6 +163,7 @@ version = "0.2.0"
 name = "stak-sac"
 version = "0.1.44"
 dependencies = [
+ "libc",
  "main_error",
  "stak-configuration",
  "stak-device",
