@@ -13,7 +13,7 @@ use core::{ffi::CStr, mem::size_of, slice};
 use stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout};
 use stak_file::LibcFileSystem;
 use stak_primitive::SmallPrimitiveSet;
-use stak_process_context::VoidProcessContext;
+use stak_process_context::LibcProcessContext;
 use stak_util::Mmap;
 use stak_vm::{Value, Vm};
 
@@ -41,7 +41,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
-            VoidProcessContext::new(),
+            LibcProcessContext::new(argc, argv),
         ),
     )
     .unwrap();

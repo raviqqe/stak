@@ -1,4 +1,4 @@
-@process-context
+@command-line
 Feature: Command line
   Scenario: Get an argument
     Given a file named "main.scm" with:
