@@ -34,6 +34,11 @@ lto = true
 panic = "abort"
 strip = true
 
+[profile.dev.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false
+
 [profile.release.build-override]
 opt-level = 3
 debug-assertions = false
