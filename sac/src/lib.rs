@@ -100,7 +100,7 @@ macro_rules! libc_main {
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
             stak_primitive::SmallPrimitiveSet,
-            stak_process_context::VoidProcessContext,
+            stak_process_context::LibcProcessContext,
             stak_util::Heap,
             stak_vm::Vm,
         };
@@ -119,7 +119,7 @@ macro_rules! libc_main {
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
-                    VoidProcessContext::new(),
+                    LibcProcessContext::new(),
                 ),
             )
             .unwrap();

@@ -28,6 +28,8 @@ stak-device = { version = "0.2.42", path = "../device" }
 stak-file = { version = "0.4.0", path = "../file" }
 stak-macro = { version = "0.1.43", path = "../macro" }
 stak-primitive = { version = "0.5.0", path = "../primitive" }
-stak-process-context = { version = "0.2.0", path = "../process_context" }
+stak-process-context = { version = "0.2.0", path = "../process_context", features = [
+  "libc",
+] }
 stak-util = { version = "0.1.18", path = "../util", optional = true }
 stak-vm = { version = "0.5.0", path = "../vm" }
