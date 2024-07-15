@@ -9,7 +9,12 @@ pub struct LibcProcessContext {
 
 impl LibcProcessContext {
     /// Creates a process context.
-    pub unsafe fn new(argc: isize, argv: *const *const i8) -> Self {
+    ///
+    /// # Safety
+    ///
+    /// The `argc` and `argv` arguments should be the ones passed down as
+    /// arguments to the `main` function in C.
+    pub const unsafe fn new(argc: isize, argv: *const *const i8) -> Self {
         Self {
             arguments: unsafe { slice::from_raw_parts(argv, argc as _) },
         }
