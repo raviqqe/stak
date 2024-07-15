@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+libc = []
 std = ["dep:once_cell"]
 
 [dependencies]

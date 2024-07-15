@@ -94,9 +94,9 @@ jobs:
             tags: not @library
           - name: stak-tools
           - name: mstak
-            tags: not @process-context
+            tags: not @command-line and not @environment-variable and not @library
           - name: mstak-tools
-            tags: not @process-context
+            tags: not @environment-variable
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
