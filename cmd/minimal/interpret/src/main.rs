@@ -41,7 +41,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
-            LibcProcessContext::new(),
+            LibcProcessContext::new(argc, argv),
         ),
     )
     .unwrap();
