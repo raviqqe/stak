@@ -34,12 +34,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
 
 [[package]]
-name = "main_error"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "155db5e86c6e45ee456bf32fad5a290ee1f7151c2faca27ea27097568da67d1a"
-
-[[package]]
 name = "mstak"
 version = "0.1.18"
 dependencies = [
@@ -157,7 +151,6 @@ name = "stak-sac"
 version = "0.1.44"
 dependencies = [
  "libc",
- "main_error",
  "stak-configuration",
  "stak-device",
  "stak-file",
