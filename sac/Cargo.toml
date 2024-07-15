@@ -12,6 +12,7 @@ repository.workspace = true
 libc = ["dep:libc", "dep:stak-util", "stak-device/libc", "stak-file/libc"]
 std = [
   "dep:clap",
+  "dep:main_error",
   "stak-device/std",
   "stak-file/std",
   "stak-primitive/std",
@@ -22,7 +23,7 @@ std = [
 [dependencies]
 clap = { version = "4.5.9", features = ["derive"], optional = true }
 libc = { version = "0.2", default-features = false, optional = true }
-main_error = "0.1.2"
+main_error = { version = "0.1.2", optional = true }
 stak-configuration = { version = "0.1.38", path = "../configuration" }
 stak-device = { version = "0.2.42", path = "../device" }
 stak-file = { version = "0.4.0", path = "../file" }
