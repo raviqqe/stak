@@ -37,14 +37,7 @@ checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
 name = "mstak"
 version = "0.1.18"
 dependencies = [
- "libc",
- "mstak-util",
- "stak-configuration",
- "stak-device",
- "stak-file",
- "stak-primitive",
- "stak-process-context",
- "stak-vm",
+ "stak-sac",
 ]
 
 [[package]]
@@ -52,19 +45,30 @@ name = "mstak-interpret"
 version = "0.1.17"
 dependencies = [
  "libc",
- "mstak-util",
  "stak-device",
  "stak-file",
  "stak-primitive",
  "stak-process-context",
+ "stak-util",
  "stak-vm",
 ]
 
 [[package]]
-name = "mstak-util"
-version = "0.1.18"
+name = "proc-macro2"
+version = "1.0.86"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
 dependencies = [
- "libc",
+ "unicode-ident",
+]
+
+[[package]]
+name = "quote"
+version = "1.0.36"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0fa76aaf39101c457836aec0ce2316dbdc3ab723cdda1c6bd4e6ad4208acaca7"
+dependencies = [
+ "proc-macro2",
 ]
 
 [[package]]
@@ -76,6 +80,18 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "stak-code"
 version = "0.2.41"
+
+[[package]]
+name = "stak-compiler"
+version = "0.1.46"
+dependencies = [
+ "stak-configuration",
+ "stak-device",
+ "stak-file",
+ "stak-primitive",
+ "stak-process-context",
+ "stak-vm",
+]
 
 [[package]]
 name = "stak-configuration"
@@ -96,6 +112,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-macro"
+version = "0.1.43"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "stak-compiler",
+ "stak-macro-util",
+ "syn",
+]
+
+[[package]]
+name = "stak-macro-util"
+version = "0.1.19"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "stak-primitive"
 version = "0.5.0"
 dependencies = [
@@ -111,8 +147,47 @@ name = "stak-process-context"
 version = "0.2.0"
 
 [[package]]
+name = "stak-sac"
+version = "0.1.44"
+dependencies = [
+ "libc",
+ "stak-configuration",
+ "stak-device",
+ "stak-file",
+ "stak-macro",
+ "stak-primitive",
+ "stak-process-context",
+ "stak-util",
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-util"
+version = "0.1.18"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "stak-vm"
 version = "0.5.0"
 dependencies = [
  "stak-code",
 ]
+
+[[package]]
+name = "syn"
+version = "2.0.71"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b146dcf730474b4bcd16c311627b31ede9ab149045db4d6088b3becaea046462"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "unicode-ident",
+]
+
+[[package]]
+name = "unicode-ident"
+version = "1.0.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"

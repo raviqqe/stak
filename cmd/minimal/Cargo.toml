@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["interpret", "run", "util"]
+members = ["interpret", "run"]
 
 [workspace.package]
 edition = "2021"
@@ -23,13 +23,23 @@ todo = "deny"
 unimplemented = "deny"
 use_self = "deny"
 
+[profile.dev]
+lto = true
+opt-level = 3
+panic = "abort"
+
 [profile.release]
 codegen-units = 1
 lto = true
 panic = "abort"
 strip = true
 
-[profile.dev]
-lto = true
+[profile.dev.build-override]
 opt-level = 3
-panic = "abort"
+debug-assertions = false
+overflow-checks = false
+
+[profile.release.build-override]
+opt-level = 3
+debug-assertions = false
+overflow-checks = false

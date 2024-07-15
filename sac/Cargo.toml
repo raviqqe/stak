@@ -8,17 +8,29 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
+[features]
+libc = ["dep:libc", "dep:stak-util", "stak-device/libc", "stak-file/libc"]
+std = [
+  "dep:clap",
+  "dep:main_error",
+  "stak-device/std",
+  "stak-file/std",
+  "stak-primitive/std",
+  "stak-process-context/std",
+  "stak-vm/std",
+]
+
 [dependencies]
-clap = { version = "4.5.9", features = ["derive"] }
-main_error = "0.1.2"
+clap = { version = "4.5.9", features = ["derive"], optional = true }
+libc = { version = "0.2", default-features = false, optional = true }
+main_error = { version = "0.1.2", optional = true }
 stak-configuration = { version = "0.1.38", path = "../configuration" }
-stak-device = { version = "0.2.42", path = "../device", features = ["std"] }
-stak-file = { version = "0.4.0", path = "../file", features = ["std"] }
+stak-device = { version = "0.2.42", path = "../device" }
+stak-file = { version = "0.4.0", path = "../file" }
 stak-macro = { version = "0.1.43", path = "../macro" }
-stak-primitive = { version = "0.5.0", path = "../primitive", features = [
-  "std",
-] }
+stak-primitive = { version = "0.5.0", path = "../primitive" }
 stak-process-context = { version = "0.2.0", path = "../process_context", features = [
-  "std",
+  "libc",
 ] }
-stak-vm = { version = "0.5.0", path = "../vm", features = ["std"] }
+stak-util = { version = "0.1.18", path = "../util", optional = true }
+stak-vm = { version = "0.5.0", path = "../vm" }

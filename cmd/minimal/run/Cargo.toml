@@ -9,26 +9,17 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-libc = { version = "0.2", default-features = false }
-mstak-util = { version = "0.1.18", path = "../util" }
-stak-configuration = { version = "0.1.20", path = "../../../configuration" }
-stak-device = { version = "0.2.24", path = "../../../device", features = [
-  "libc",
-] }
-stak-file = { version = "0.4.0", path = "../../../file", features = ["libc"] }
-stak-primitive = { version = "0.5.0", path = "../../../primitive" }
-stak-process-context = { version = "0.2.0", path = "../../../process_context" }
-stak-vm = { version = "0.5.0", path = "../../../vm" }
+stak-sac = { version = "0.1.44", path = "../../../sac", features = ["libc"] }
 
 [lints]
 workspace = true
 
-[profile.release]
-codegen-units = 1
-lto = true
-panic = "abort"
-
 [profile.dev]
 lto = true
 opt-level = 3
+panic = "abort"
+
+[profile.release]
+codegen-units = 1
+lto = true
 panic = "abort"

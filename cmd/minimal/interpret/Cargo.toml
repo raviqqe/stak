@@ -10,7 +10,7 @@ repository.workspace = true
 
 [dependencies]
 libc = { version = "0.2", default-features = false }
-mstak-util = { version = "0.1.18", path = "../util" }
+stak-util = { version = "0.1.18", path = "../../../util" }
 stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }
@@ -24,12 +24,12 @@ stak-vm = { version = "0.5.0", path = "../../../vm" }
 [lints]
 workspace = true
 
-[profile.release]
-codegen-units = 1
-lto = true
-panic = "abort"
-
 [profile.dev]
 lto = true
 opt-level = 3
+panic = "abort"
+
+[profile.release]
+codegen-units = 1
+lto = true
 panic = "abort"

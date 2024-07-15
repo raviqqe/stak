@@ -1,6 +1,6 @@
 [package]
-name = "mstak-util"
-description = "Minimal Stak Scheme utilities"
+name = "stak-util"
+description = "Stak Scheme utilities"
 version = "0.1.18"
 edition.workspace = true
 keywords.workspace = true
