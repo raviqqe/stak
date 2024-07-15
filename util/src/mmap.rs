@@ -29,7 +29,7 @@ impl Mmap {
     }
 
     /// Returns a slice of bytes.
-    pub fn as_slice(&self) -> &[u8] {
+    pub const fn as_slice(&self) -> &[u8] {
         unsafe { slice::from_raw_parts(self.ptr, self.len) }
     }
 }
