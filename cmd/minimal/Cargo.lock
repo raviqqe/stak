@@ -35,14 +35,14 @@ checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
 
 [[package]]
 name = "mstak"
-version = "0.1.19"
+version = "0.2.0"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.1.18"
+version = "0.2.0"
 dependencies = [
  "libc",
  "stak-device",
