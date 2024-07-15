@@ -119,7 +119,7 @@ macro_rules! libc_main {
                 SmallPrimitiveSet::new(
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
-                    LibcProcessContext::new(),
+                    LibcProcessContext::new(argc, argv),
                 ),
             )
             .unwrap();
