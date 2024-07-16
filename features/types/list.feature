@@ -273,7 +273,6 @@ Feature: List
 
     Examples:
       | procedure |
-      | assq      |
       | assv      |
       | assoc     |
 

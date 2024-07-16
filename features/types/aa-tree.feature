@@ -1,5 +1,5 @@
+@library
 Feature: AA tree
-  @stak
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
@@ -9,11 +9,10 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
 
-  @stak
   Scenario: Check if a value is a tree
     Given a file named "main.scm" with:
       """scheme
@@ -23,12 +22,11 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak
   Scenario: Find no value
     Given a file named "main.scm" with:
       """scheme
@@ -40,12 +38,11 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "B"
 
-  @stak
   Scenario: Insert a value into a tree
     Given a file named "main.scm" with:
       """scheme
@@ -59,12 +56,11 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak
   Scenario: Insert a value into a left of a tree
     Given a file named "main.scm" with:
       """scheme
@@ -77,17 +73,16 @@ Feature: AA tree
 
       (for-each
         (lambda (x)
-          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
-  @stak
   Scenario: Insert a value into a right of a tree
     Given a file named "main.scm" with:
       """scheme
@@ -100,17 +95,16 @@ Feature: AA tree
 
       (for-each
         (lambda (x)
-          (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+          (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
         '(1 2 3))
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
 
-  @stak
   Scenario: Insert a value into the same node of a tree
     Given a file named "main.scm" with:
       """scheme
@@ -121,16 +115,15 @@ Feature: AA tree
       (aa-tree-insert! tree 1)
       (aa-tree-insert! tree 1)
 
-      (write-u8 (if (= (aa-tree-find tree 1) 1) 65 66))
+      (write-u8 (if (eq? (aa-tree-find tree 1) 1) 65 66))
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
-  @stak
   Scenario Outline: Insert values into a tree
     Given a file named "main.scm" with:
       """scheme
@@ -139,7 +132,7 @@ Feature: AA tree
       (define tree (aa-tree-empty <))
 
       (define (check x)
-        (write-u8 (if (= (aa-tree-find tree x) x) 65 66)))
+        (write-u8 (if (eq? (aa-tree-find tree x) x) 65 66)))
 
       (for-each
         (lambda (x)
@@ -152,7 +145,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
@@ -179,7 +172,6 @@ Feature: AA tree
       | 2 4 1 3 | BABABABAAAAA |
       | 2 4 3 1 | BABABABAAAAA |
 
-  @stak
   Scenario Outline: Convert a list into a tree
     Given a file named "main.scm" with:
       """scheme
@@ -189,7 +181,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme $STAK_ROOT/aa-tree.scm main.scm
+      scheme -l $STAK_ROOT/aa-tree.scm main.scm
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"

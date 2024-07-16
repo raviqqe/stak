@@ -321,27 +321,41 @@
               renamed)))))))
 
 (define (expand-import-set context importer-id qualify set)
+  (define (expand qualify)
+    (expand-import-set context importer-id qualify (cadr set)))
+
   (case (predicate set)
+    ((except)
+      (let ((names (cddr set)))
+        (expand
+          (lambda (name)
+            (if (memq name names)
+              #f
+              (qualify name))))))
+
     ((rename)
-      (expand-import-set
-        context
-        importer-id
+      (expand
         (lambda (name)
-          (let ((name (qualify name)))
+          (qualify
             (cond
               ((assq name (cddr set)) =>
                 cadr)
 
               (else
-                name))))
-        (cadr set)))
+                name))))))
+
+    ((only)
+      (let ((names (cddr set)))
+        (expand
+          (lambda (name)
+            (if (memq name names)
+              (qualify name)
+              #f)))))
 
     ((prefix)
-      (expand-import-set
-        context
-        importer-id
-        (lambda (name) (symbol-append (caddr set) (qualify name)))
-        (cadr set)))
+      (expand
+        (lambda (name)
+          (qualify (symbol-append (caddr set) name)))))
 
     (else
       (let ((library (library-context-find context set)))
@@ -351,12 +365,16 @@
             (append
               (expand-import-sets context (library-id library) (library-imports library))
               (library-body library)))
-          (map
+          (flat-map
             (lambda (names)
-              (list
-                '$$alias
-                (rename-library-symbol context importer-id (qualify (car names)))
-                (cdr names)))
+              (let ((name (qualify (car names))))
+                (if name
+                  (list
+                    (list
+                      '$$alias
+                      (rename-library-symbol context importer-id name)
+                      (cdr names)))
+                  '())))
             (library-exports library)))))))
 
 (define (expand-import-sets context importer-id sets)

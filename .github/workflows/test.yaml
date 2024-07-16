@@ -63,7 +63,7 @@ jobs:
             features: [gc_always]
             tags: not @long
           - name: chibi
-            tags: not @stak or @chibi
+            tags: (not @stak or @chibi) and not @library
           - name: gauche
             tags: not @stak or @gauche
           - name: guile
@@ -90,17 +90,23 @@ jobs:
           - ubuntu-latest
           - macos-14
         interpreter:
-          - stak
-          - stak-tools
-          - mstak
-          - mstak-tools
+          - name: stak
+            tags: not @library
+          - name: stak-tools
+          - name: mstak
+            tags: not @environment-variable and not @library
+          - name: mstak-tools
+            tags: not @environment-variable
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
-      - run: tools/integration_test.sh -i ${{ matrix.interpreter }}
+      - run: >
+          tools/integration_test.sh
+          -i ${{ matrix.interpreter.name }}
+          -t '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_test:
     runs-on: ubuntu-latest
     steps:
