@@ -13,3 +13,6 @@ stak-sac = { version = "0.1.45", path = "../../sac", features = ["std"] }
 
 [lints]
 workspace = true
+
+[profile.release.build-override]
+opt-level = 3
