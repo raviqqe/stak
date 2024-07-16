@@ -2,5 +2,8 @@
 
 set -e
 
-cargo clippy "$@"
-cargo clippy --all-features "$@"
+cd $(dirname $0)/..
+
+parallel --trim lr --verbose "cd {1} && cargo clippy $@ {2}" ::: \
+  $(tools/workspaces.sh) ::: \
+  -- --all-features
