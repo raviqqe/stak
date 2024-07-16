@@ -6,12 +6,19 @@ on:
   pull_request:
 jobs:
   clippy:
+    strategy:
+      matrix:
+        packages:
+          -
+          - -p stak-code
+        features:
+          -
+          - --all-features
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./tools/ci/github/setup
-      - run: tools/lint.sh
-      - run: tools/lint.sh -p stak-code
+      - run: tools/lint.sh ${{ matrix.packages }} ${{ matrix.features }}
   rust_format:
     runs-on: ubuntu-latest
     steps:

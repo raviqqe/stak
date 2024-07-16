@@ -2,8 +2,4 @@
 
 set -e
 
-cd $(dirname $0)/..
-
-parallel --verbose "cd {1} && cargo clippy $@ {2}" ::: \
-  $(tools/workspaces.sh) ::: \
-  -- --all-features
+parallel --verbose "cd {1} && cargo clippy $@" ::: $($(dirname $0)/workspaces.sh)
