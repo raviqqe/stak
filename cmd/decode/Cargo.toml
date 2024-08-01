@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-clap = { version = "4.5.11", features = ["derive"] }
+clap = { version = "4.5.13", features = ["derive"] }
 main_error = "0.1.2"
 stak-code = { version = "0.2", path = "../../code", features = [
   "alloc",
