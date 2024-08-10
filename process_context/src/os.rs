@@ -1,6 +1,9 @@
 use crate::ProcessContext;
 use alloc::{string::String, vec::Vec};
-use std::env::{args, sync::LazyLock, vars};
+use std::{
+    env::{args, vars},
+    sync::LazyLock,
+};
 
 /// A process context provided by an OS.
 pub struct OsProcessContext {
