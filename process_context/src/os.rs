@@ -1,20 +1,19 @@
 use crate::ProcessContext;
 use alloc::{string::String, vec::Vec};
-use once_cell::unsync::Lazy;
-use std::env::{args, vars};
+use std::env::{args, sync::LazyLock, vars};
 
 /// A process context provided by an OS.
 pub struct OsProcessContext {
-    arguments: Lazy<Vec<String>>,
-    environment_variables: Lazy<Vec<(String, String)>>,
+    arguments: LazyLock<Vec<String>>,
+    environment_variables: LazyLock<Vec<(String, String)>>,
 }
 
 impl OsProcessContext {
     /// Creates a process context.
     pub fn new() -> Self {
         Self {
-            arguments: Lazy::new(|| args().collect()),
-            environment_variables: Lazy::new(|| vars().collect()),
+            arguments: LazyLock::new(|| args().collect()),
+            environment_variables: LazyLock::new(|| vars().collect()),
         }
     }
 }

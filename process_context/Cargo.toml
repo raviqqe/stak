@@ -10,10 +10,7 @@ repository.workspace = true
 
 [features]
 libc = []
-std = ["dep:once_cell"]
-
-[dependencies]
-once_cell = { version = "1.19.0", default-features = false, optional = true }
+os = []
 
 [lints]
 workspace = true
