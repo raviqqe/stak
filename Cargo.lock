@@ -564,9 +564,6 @@ dependencies = [
 [[package]]
 name = "stak-process-context"
 version = "0.2.1"
-dependencies = [
- "once_cell",
-]
 
 [[package]]
 name = "stak-profile"
