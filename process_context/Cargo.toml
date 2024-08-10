@@ -10,7 +10,7 @@ repository.workspace = true
 
 [features]
 libc = []
-os = []
+std = []
 
 [lints]
 workspace = true
