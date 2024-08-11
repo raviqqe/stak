@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+float = ["stak-vm/float"]
 gc_always = ["stak-vm/gc_always"]
 trace_instruction = ["stak-vm/trace_instruction"]
 trace_heap = ["stak-vm/trace_heap"]

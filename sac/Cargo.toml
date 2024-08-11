@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+float = ["stak-vm/float"]
 libc = ["dep:libc", "dep:stak-util", "stak-device/libc", "stak-file/libc"]
 std = [
   "dep:clap",
