@@ -9,8 +9,9 @@ type NumberRepresentation = f64;
 
 /// A number.
 ///
-/// It represents a signed 63-bit integer.
-#[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
+/// It represents a signed 63-bit integer by default. If the `float` feature is
+/// enabled, it represents a 64-bit floating-point number.
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Ord)]
 #[cfg_attr(not(feature = "float"), derive(Eq))]
 pub struct Number(NumberRepresentation);
 
