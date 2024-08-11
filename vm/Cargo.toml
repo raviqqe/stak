@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+float = []
 gc_always = []
 profile = []
 std = []
