@@ -9,7 +9,8 @@ use core::fmt::{self, Display, Formatter};
 pub struct Value(u64);
 
 /// A typed value.
-#[derive(Copy, Clone, Eq, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
+#[cfg_attr(not(feature = "float"), derive(Eq))]
 pub enum TypedValue {
     Cons(Cons),
     Number(Number),
