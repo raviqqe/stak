@@ -6,4 +6,4 @@
 //! stak-minify < foo.scm > bar.scm
 //! ```
 
-stak_sac::main!("minify.scm");
+stak_sac::main!("main.scm");
