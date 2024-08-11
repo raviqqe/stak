@@ -1,11 +1,17 @@
 use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
+#[cfg(not(feature = "float"))]
+type NumberRepresentation = i64;
+
+#[cfg(feature = "float")]
+type NumberRepresentation = f64;
+
 /// A number.
 ///
 /// It represents a signed 63-bit integer.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
-pub struct Number(i64);
+pub struct Number(NumberRepresentation);
 
 impl Number {
     /// Creates a number.
