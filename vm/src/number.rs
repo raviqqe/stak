@@ -11,8 +11,8 @@ type NumberRepresentation = f64;
 ///
 /// It represents a signed 63-bit integer by default. If the `float` feature is
 /// enabled, it represents a 64-bit floating-point number.
-#[derive(Clone, Copy, Debug, PartialEq, PartialOrd, Ord)]
-#[cfg_attr(not(feature = "float"), derive(Eq))]
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+#[cfg_attr(not(feature = "float"), derive(Eq, Ord))]
 pub struct Number(NumberRepresentation);
 
 impl Number {
