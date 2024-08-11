@@ -12,14 +12,19 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stak-code = { version = "0.2", path = "../code", features = ["alloc", "std"] }
-stak-compiler = { version = "0.1", path = "../compiler" }
+stak-code = { version = "0.2.43", path = "../code", features = [
+  "alloc",
+  "std",
+] }
+stak-compiler = { version = "0.1.48", path = "../compiler" }
 stak-configuration = { version = "0.1.40", path = "../configuration" }
-stak-device = { version = "0.2", path = "../device", features = ["std"] }
+stak-device = { version = "0.2.44", path = "../device", features = ["std"] }
 stak-file = { version = "0.4.2", path = "../file" }
-stak-primitive = { version = "0.5", path = "../primitive", features = ["std"] }
+stak-primitive = { version = "0.5.2", path = "../primitive", features = [
+  "std",
+] }
 stak-process-context = { version = "0.2.2", path = "../process_context" }
-stak-vm = { version = "0.5", path = "../vm", features = ["std"] }
+stak-vm = { version = "0.5.2", path = "../vm", features = ["std"] }
 wasm-bindgen = "0.2.84"
 
 [dev-dependencies]
