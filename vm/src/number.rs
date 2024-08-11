@@ -11,6 +11,7 @@ type NumberRepresentation = f64;
 ///
 /// It represents a signed 63-bit integer.
 #[derive(Clone, Copy, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[cfg_attr(not(feature = "float"), derive(Eq))]
 pub struct Number(NumberRepresentation);
 
 impl Number {
