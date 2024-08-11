@@ -1,8 +1,5 @@
 use crate::{value::Value, Error};
-use core::{
-    fmt::{self, Display, Formatter},
-    mem::transmute,
-};
+use core::fmt::{self, Display, Formatter};
 
 #[cfg(not(feature = "float"))]
 type NumberRepresentation = i64;
@@ -30,7 +27,7 @@ impl Number {
     }
 
     pub(crate) const fn from_raw(raw: u64) -> Self {
-        Self(transmute(raw))
+        Self(raw as i64)
     }
 
     pub(crate) const fn to_raw(self) -> u64 {
