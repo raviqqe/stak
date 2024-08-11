@@ -35,14 +35,14 @@ checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
 
 [[package]]
 name = "mstak"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "libc",
  "stak-device",
@@ -79,11 +79,11 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-code"
-version = "0.2.42"
+version = "0.2.43"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.47"
+version = "0.1.48"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -95,25 +95,25 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.39"
+version = "0.1.40"
 
 [[package]]
 name = "stak-device"
-version = "0.2.43"
+version = "0.2.44"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-file"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.1.44"
+version = "0.1.45"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -124,7 +124,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.20"
+version = "0.1.21"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -133,7 +133,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "heapless",
  "stak-device",
@@ -144,11 +144,11 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.1"
+version = "0.2.2"
 
 [[package]]
 name = "stak-sac"
-version = "0.1.45"
+version = "0.1.46"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -163,23 +163,23 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.19"
+version = "0.1.20"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "stak-code",
 ]
 
 [[package]]
 name = "syn"
-version = "2.0.71"
+version = "2.0.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b146dcf730474b4bcd16c311627b31ede9ab149045db4d6088b3becaea046462"
+checksum = "837a7e8026c6ce912ff01cefbe8cafc2f8010ac49682e2a3d9decc3bce1ecaaf"
 dependencies = [
  "proc-macro2",
  "quote",
