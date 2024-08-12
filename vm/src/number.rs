@@ -55,7 +55,10 @@ impl Number {
     }
 
     pub(crate) const fn to_raw(self) -> u64 {
-        self.0 as u64
+        #[cfg(feature = "float")]
+        return self.0.to_bits();
+        #[cfg(not(feature = "float"))]
+        return self.0 as _;
     }
 }
 
