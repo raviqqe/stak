@@ -17,6 +17,7 @@ trace_instruction = []
 trace_heap = []
 
 [dependencies]
+nonbox = "0.1.2"
 stak-code = { version = "0.2", path = "../code" }
 
 [dev-dependencies]

@@ -322,6 +322,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "nonbox"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ded4b9b75601ba51fa88e7f34d5e26925bb69f49091b7ee3fbfce80b37a2e83"
+
+[[package]]
 name = "object"
 version = "0.36.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -625,6 +631,7 @@ name = "stak-vm"
 version = "0.5.2"
 dependencies = [
  "insta",
+ "nonbox",
  "stak-code",
  "stak-device",
  "stak-file",
