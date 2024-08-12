@@ -2,12 +2,12 @@ use crate::{value::Value, Error};
 use core::fmt::{self, Display, Formatter};
 
 /// A number representation.
-#[cfg(not(feature = "float"))]
-pub type NumberRepresentation = i64;
-
-/// A number representation.
 #[cfg(feature = "float")]
 pub type NumberRepresentation = f64;
+
+/// A number representation.
+#[cfg(not(feature = "float"))]
+pub type NumberRepresentation = i64;
 
 /// A number.
 ///
