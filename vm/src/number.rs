@@ -26,6 +26,14 @@ impl Number {
         return Self(number << 1 | 1);
     }
 
+    /// Converts a number to a number representation.
+    pub const fn to_representation(self) -> NumberRepresentation {
+        #[cfg(feature = "float")]
+        return self.0;
+        #[cfg(not(feature = "float"))]
+        return self.0 >> 1;
+    }
+
     /// Converts a number to a 64-bit integer.
     pub const fn to_i64(self) -> i64 {
         #[cfg(feature = "float")]
@@ -36,7 +44,7 @@ impl Number {
 
     /// Converts a number to a 64-bit floating-point number.
     pub const fn to_f64(self) -> f64 {
-        self.0 as f64
+        return self.to_representation() as f64;
     }
 
     pub(crate) fn from_raw(raw: u64) -> Self {
@@ -67,7 +75,7 @@ impl TryFrom<Value> for Number {
 
 impl Display for Number {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        write!(formatter, "n{}", self.to_i64())
+        write!(formatter, "n{}", self.to_representation())
     }
 }
 
