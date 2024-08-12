@@ -23,4 +23,4 @@ updates:
   - package-ecosystem: npm
     directory: /doc
     schedule:
-      interval: daily
+      interval: weekly
