@@ -23,7 +23,7 @@ impl Number {
         #[cfg(feature = "float")]
         return Self(number);
         #[cfg(not(feature = "float"))]
-        return Self(number << 2 | 1);
+        return Self(number << 1 | 1);
     }
 
     /// Converts a number to a 64-bit integer.
