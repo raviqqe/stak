@@ -366,10 +366,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Initialize an implicit top-level frame.
         let codes = self
             .memory
-            .allocate(
-                Number::new(0 as NumberRepresentation).into(),
-                self.memory.null().into(),
-            )?
+            .allocate(Number::default().into(), self.memory.null().into())?
             .into();
         let continuation = self
             .memory
@@ -458,7 +455,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             if self.memory.cdr_value(
                 self.memory
                     .car_value(self.memory.car_value(self.memory.cdr(current))),
-            ) == Number::new(0 as NumberRepresentation).into()
+            ) == Number::default().into()
             {
                 self.memory
                     .set_cdr(current, self.memory.cdr_value(self.memory.cdr(current)));
