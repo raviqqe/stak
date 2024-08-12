@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-float = []
+float = ["dep:nonbox"]
 gc_always = []
 profile = []
 std = []
@@ -17,7 +17,7 @@ trace_instruction = []
 trace_heap = []
 
 [dependencies]
-nonbox = "0.1.2"
+nonbox = { version = "0.1.2", optional = true }
 stak-code = { version = "0.2", path = "../code" }
 
 [dev-dependencies]
