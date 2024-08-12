@@ -40,6 +40,7 @@
     "mstak",
     "munmap",
     "nanos",
+    "nonbox",
     "nproc",
     "quasiquote",
     "raviqqe",

@@ -58,7 +58,7 @@ mod vm;
 pub use cons::{Cons, Tag};
 pub use error::Error;
 pub use memory::Memory;
-pub use number::Number;
+pub use number::{Number, NumberRepresentation};
 pub use primitive_set::PrimitiveSet;
 pub use profiler::Profiler;
 pub use r#type::Type;

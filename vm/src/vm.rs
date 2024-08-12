@@ -8,7 +8,7 @@ use crate::{
     r#type::Type,
     symbol_index,
     value::{TypedValue, Value},
-    Error, StackSlot,
+    Error, NumberRepresentation, StackSlot,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 #[cfg(feature = "profile")]
@@ -263,7 +263,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     const fn parse_arity(info: usize) -> Arity {
         Arity {
-            count: Number::new((info / 2) as i64),
+            count: Number::new((info / 2) as NumberRepresentation),
             variadic: info % 2 == 1,
         }
     }
@@ -366,7 +366,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Initialize an implicit top-level frame.
         let codes = self
             .memory
-            .allocate(Number::new(0).into(), self.memory.null().into())?
+            .allocate(
+                Number::new(0 as NumberRepresentation).into(),
+                self.memory.null().into(),
+            )?
             .into();
         let continuation = self
             .memory
@@ -406,7 +409,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             } else {
                 (
                     length + 1,
-                    self.memory.cons(Number::new(byte as i64).into(), name)?,
+                    self.memory
+                        .cons(Number::new(byte as NumberRepresentation).into(), name)?,
                 )
             };
 
@@ -437,10 +441,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn build_symbol_table(&mut self, symbols: Cons) -> Result<(), Error> {
         self.memory.set_stack(
             self.memory
-                .car(
-                    self.memory
-                        .tail(symbols, Number::new(symbol_index::RIB as i64)),
-                )
+                .car(self.memory.tail(
+                    symbols,
+                    Number::new(symbol_index::RIB as NumberRepresentation),
+                ))
                 .assume_cons(),
         );
         let symbols = self
@@ -454,7 +458,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             if self.memory.cdr_value(
                 self.memory
                     .car_value(self.memory.car_value(self.memory.cdr(current))),
-            ) == Number::new(0).into()
+            ) == Number::new(0 as NumberRepresentation).into()
             {
                 self.memory
                     .set_cdr(current, self.memory.cdr_value(self.memory.cdr(current)));
@@ -487,7 +491,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
         self.memory.allocate(
             name.set_tag(Type::String as Tag).into(),
-            Number::new(length).into(),
+            Number::new(length as NumberRepresentation).into(),
         )
     }
 
@@ -523,7 +527,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
                 code::Instruction::CLOSE => {
                     let code = self.memory.allocate(
-                        Number::new(integer as i64).into(),
+                        Number::new(integer as NumberRepresentation).into(),
                         self.memory.program_counter().into(),
                     )?;
                     let procedure = self
@@ -539,9 +543,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         r#return,
                     )?
                 }
-                code::Instruction::SKIP => self
-                    .memory
-                    .tail(self.memory.program_counter(), Number::new(integer as i64)),
+                code::Instruction::SKIP => self.memory.tail(
+                    self.memory.program_counter(),
+                    Number::new(integer as NumberRepresentation),
+                ),
                 _ => return Err(Error::IllegalInstruction),
             };
 
@@ -594,7 +599,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn decode_operand(&self, integer: u64) -> Value {
-        let index = Number::new((integer >> 1) as i64);
+        let index = Number::new((integer >> 1) as NumberRepresentation);
         let is_symbol = integer & 1 == 0;
 
         trace!("operand", index);
