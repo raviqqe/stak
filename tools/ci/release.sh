@@ -29,8 +29,8 @@ fi
 
 cargo install cargo-workspaces
 
-update_cargo_toml
 update_bytecode
+update_cargo_toml
 
 git config user.email action@github.com
 git config user.name 'GitHub Action'
