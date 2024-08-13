@@ -7,8 +7,6 @@ bytecode_file=compiler/src/compile.bc
 update_bytecode() {
   cat prelude.scm compile.scm | stak compile.scm >$bytecode_file
 
-  git config user.email action@github.com
-  git config user.name 'GitHub Action'
   git add -f $bytecode_file
 }
 
@@ -33,6 +31,9 @@ cargo install cargo-workspaces
 
 update_cargo_toml
 update_bytecode
+
+git config user.email action@github.com
+git config user.name 'GitHub Action'
 git commit -m release
 
 for directory in . cmd/minimal; do
