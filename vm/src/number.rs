@@ -36,7 +36,7 @@ impl Number {
 
     /// Converts `i64` into a number.
     pub const fn from_i64(number: i64) -> Self {
-        return Self::new(number as _);
+        Self::new(number as _)
     }
 
     /// Converts a number to a 64-bit integer.
@@ -52,14 +52,14 @@ impl Number {
         self.to_representation() as f64
     }
 
-    pub(crate) const fn from_raw(raw: u64) -> Self {
+    pub(crate) fn from_raw(raw: u64) -> Self {
         #[cfg(feature = "float")]
         return Self(f64::from_bits(raw));
         #[cfg(not(feature = "float"))]
         return Self(raw as _);
     }
 
-    pub(crate) const fn to_raw(self) -> u64 {
+    pub(crate) fn to_raw(self) -> u64 {
         #[cfg(feature = "float")]
         return self.0.to_bits();
         #[cfg(not(feature = "float"))]
