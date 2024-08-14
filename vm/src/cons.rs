@@ -1,4 +1,5 @@
 use crate::{value::Value, Error};
+use cfg_if::cfg_if;
 use core::fmt::{self, Display, Formatter};
 
 /// A tag.
@@ -11,7 +12,9 @@ pub type Tag = u16;
 ///
 /// - in car, its cons is moved already on garbage collection.
 /// - in cdr, nothing.
-pub const NEVER: Cons = Cons::new(u64::MAX);
+pub fn never() -> Cons {
+    Cons::new(u64::MAX)
+}
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -22,23 +25,51 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
-    pub const fn new(index: u64) -> Self {
-        Self(index << (TAG_SIZE + 1))
+    pub fn new(index: u64) -> Self {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return Self(nonbox::f64::u64::box_unsigned(index << TAG_SIZE));
+            } else {
+                return Self(index << (TAG_SIZE + 1));
+            }
+        }
     }
 
     /// Returns a memory address on heap.
-    pub const fn index(self) -> usize {
-        (self.0 >> (TAG_SIZE + 1)) as usize
+    pub fn index(self) -> usize {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return (nonbox::f64::u64::unbox_unsigned(self.0).unwrap() >> TAG_SIZE) as _;
+            } else {
+                return (self.0 >> (TAG_SIZE + 1)) as _;
+            }
+        }
     }
 
     /// Returns a tag.
-    pub const fn tag(self) -> Tag {
-        ((self.0 >> 1) & TAG_MASK) as Tag
+    pub fn tag(self) -> Tag {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return (nonbox::f64::u64::unbox_unsigned(self.0).unwrap() & TAG_MASK) as _;
+            } else {
+                return ((self.0 >> 1) & TAG_MASK) as _;
+            }
+        }
     }
 
     /// Sets a tag.
-    pub const fn set_tag(self, tag: Tag) -> Self {
-        Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1)
+    pub fn set_tag(self, tag: Tag) -> Self {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return Self(
+                    nonbox::f64::u64::box_unsigned(
+                        nonbox::f64::u64::unbox_unsigned(self.0).unwrap() & !TAG_MASK | (tag as u64 & TAG_MASK),
+                    ),
+                );
+            } else {
+                return Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1);
+            }
+        }
     }
 
     pub(crate) const fn from_raw(raw: u64) -> Self {
@@ -68,7 +99,7 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self == &NEVER {
+        if self == &never() {
             write!(formatter, "!")?;
         } else {
             write!(formatter, "c{:x}", self.index())?;

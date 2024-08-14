@@ -1,7 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    cons::{never, Cons, Tag},
     memory::Memory,
     number::Number,
     primitive_set::PrimitiveSet,
@@ -378,7 +378,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         )?;
         self.memory.set_stack(stack);
 
-        self.memory.set_register(NEVER);
+        self.memory.set_register(never());
 
         Ok(())
     }
@@ -414,7 +414,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         } {}
 
         let rib = self.memory.allocate(
-            NEVER.set_tag(Type::Procedure as Tag).into(),
+            never().set_tag(Type::Procedure as Tag).into(),
             Number::default().into(),
         )?;
 
@@ -528,7 +528,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     )?;
                     let procedure = self
                         .memory
-                        .allocate(NEVER.set_tag(Type::Procedure as Tag).into(), code.into())?;
+                        .allocate(never().set_tag(Type::Procedure as Tag).into(), code.into())?;
 
                     let continuation = self.memory.pop();
                     self.memory.set_program_counter(continuation.assume_cons());

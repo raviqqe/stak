@@ -118,7 +118,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cons::NEVER, Type};
+    use crate::{cons::never, Type};
 
     #[test]
     fn convert_cons() {
@@ -147,7 +147,7 @@ mod tests {
 
     #[test]
     fn convert_moved() {
-        assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);
+        assert_eq!(Value::from(never()).to_cons().unwrap(), never());
     }
 
     #[test]
