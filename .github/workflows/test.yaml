@@ -26,6 +26,7 @@ jobs:
           - macos-14
         options:
           -
+          - --features float
           - --features libc,std
           - --features gc_always --exclude stak-compiler
         exclude:
@@ -60,7 +61,12 @@ jobs:
             host: guile
           - name: stak-tools
             host: gosh
-            features: [gc_always]
+            features:
+              - float
+          - name: stak-tools
+            host: gosh
+            features:
+              - gc_always
             tags: not @long
           - name: chibi
             tags: (not @stak or @chibi) and not @library
