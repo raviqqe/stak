@@ -1,7 +1,7 @@
 [package]
 name = "stak-process-context"
 description = "Process context for Stak Scheme"
-version = "0.2.1"
+version = "0.2.2"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -10,10 +10,7 @@ repository.workspace = true
 
 [features]
 libc = []
-std = ["dep:once_cell"]
-
-[dependencies]
-once_cell = { version = "1.19.0", default-features = false, optional = true }
+std = []
 
 [lints]
 workspace = true
