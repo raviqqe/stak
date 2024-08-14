@@ -94,19 +94,19 @@ mod tests {
 
     #[test]
     fn default() {
-        assert_eq!(Number::default(), Number::new(0));
+        assert_eq!(Number::default(), Number::from_i64(0));
     }
 
     #[test]
     fn to_i64() {
-        assert_eq!(Number::new(0).to_i64(), 0);
-        assert_eq!(Number::new(42).to_i64(), 42);
-        assert_eq!(Number::new(-1).to_i64(), -1);
+        assert_eq!(Number::default().to_i64(), 0);
+        assert_eq!(Number::from_i64(42).to_i64(), 42);
+        assert_eq!(Number::from_i64(-1).to_i64(), -1);
     }
 
     #[test]
     fn format() {
-        assert_eq!(format!("{}", Number::new(42)), "n42");
-        assert_eq!(format!("{}", Number::new(-1)), "n-1");
+        assert_eq!(format!("{}", Number::from_i64(42)), "n42");
+        assert_eq!(format!("{}", Number::from_i64(-1)), "n-1");
     }
 }

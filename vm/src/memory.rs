@@ -414,17 +414,17 @@ mod tests {
 
         assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
 
-        let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
+        let list = vm.cons(Number::from_i64(1).into(), vm.null()).unwrap();
 
         assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
 
-        let list = vm.cons(Number::new(2).into(), list).unwrap();
+        let list = vm.cons(Number::from_i64(2).into(), list).unwrap();
 
         assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
 
-        let list = vm.cons(Number::new(3).into(), list).unwrap();
+        let list = vm.cons(Number::from_i64(3).into(), list).unwrap();
 
         assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
@@ -469,9 +469,9 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(42).into()).unwrap();
+            vm.push(Number::from_i64(42).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::new(42).into());
+            assert_eq!(vm.pop(), Number::from_i64(42).into());
         }
 
         #[test]
@@ -480,11 +480,11 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
+            vm.push(Number::from_i64(1).into()).unwrap();
+            vm.push(Number::from_i64(2).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::new(2).into());
-            assert_eq!(vm.pop(), Number::new(1).into());
+            assert_eq!(vm.pop(), Number::from_i64(2).into());
+            assert_eq!(vm.pop(), Number::from_i64(1).into());
         }
     }
 
@@ -509,7 +509,7 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(42).into()).unwrap();
+            vm.push(Number::from_i64(42).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
             assert_snapshot!(vm);
@@ -521,8 +521,8 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
+            vm.push(Number::from_i64(1).into()).unwrap();
+            vm.push(Number::from_i64(2).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
             assert_snapshot!(vm);

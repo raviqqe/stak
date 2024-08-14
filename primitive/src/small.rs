@@ -51,7 +51,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     fn operate_binary(memory: &mut Memory, operate: fn(i64, i64) -> i64) -> Result<(), Error> {
         let [x, y] = Self::pop_number_arguments(memory);
 
-        memory.push(Number::new(operate(x.to_i64(), y.to_i64())).into())?;
+        memory.push(Number::from_i64(operate(x.to_i64(), y.to_i64())).into())?;
         Ok(())
     }
 
@@ -102,13 +102,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         field: impl Fn(&Memory<'a>, Value) -> Value,
     ) -> Result<(), Error> {
         Self::operate_top(memory, |vm, value| {
-            Number::new(
-                field(vm, value)
-                    .to_cons()
-                    .map(|cons| cons.tag() as _)
-                    .unwrap_or(Type::default() as _),
-            )
-            .into()
+            field(vm, value)
+                .to_cons()
+                .map(|cons| Number::new(cons.tag() as _))
+                .unwrap_or(Number::from_i64(Type::default() as _))
+                .into()
         })
     }
 
@@ -176,7 +174,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         let mut list = memory.null();
 
         for character in string.chars().rev() {
-            list = memory.cons(Number::new(character as _).into(), list)?;
+            list = memory.cons(Number::from_i64(character as _).into(), list)?;
         }
 
         Ok(list)
@@ -236,7 +234,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
                 let byte = self.device.read().map_err(|_| Error::ReadInput)?;
 
                 memory.push(if let Some(byte) = byte {
-                    Number::new(byte as i64).into()
+                    Number::from_i64(byte as _).into()
                 } else {
                     memory.boolean(false).into()
                 })?;
