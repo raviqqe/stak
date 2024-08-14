@@ -44,10 +44,10 @@ impl Number {
 
     /// Converts a number to a 64-bit floating-point number.
     pub const fn to_f64(self) -> f64 {
-        return self.to_representation() as f64;
+        self.to_representation() as f64
     }
 
-    pub(crate) fn from_raw(raw: u64) -> Self {
+    pub(crate) const fn from_raw(raw: u64) -> Self {
         #[cfg(feature = "float")]
         return Self(f64::from_bits(raw));
         #[cfg(not(feature = "float"))]
