@@ -3,7 +3,7 @@ use crate::{
     number::Number,
     r#type::Type,
     value::Value,
-    Error, NumberRepresentation,
+    Error,
 };
 use core::fmt::{self, Display, Formatter};
 
@@ -288,7 +288,7 @@ impl<'a> Memory<'a> {
     pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
         while index != Number::default() {
             list = self.cdr(list).assume_cons();
-            index = Number::new((index.to_i64() - 1) as NumberRepresentation);
+            index = Number::from_i64(index.to_i64() - 1);
         }
 
         list

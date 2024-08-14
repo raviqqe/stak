@@ -8,7 +8,7 @@ use crate::{
     r#type::Type,
     symbol_index,
     value::{TypedValue, Value},
-    Error, NumberRepresentation, StackSlot,
+    Error, StackSlot,
 };
 use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
 #[cfg(feature = "profile")]
@@ -263,7 +263,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     const fn parse_arity(info: usize) -> Arity {
         Arity {
-            count: Number::new((info / 2) as NumberRepresentation),
+            count: Number::from_i64((info / 2) as _),
             variadic: info % 2 == 1,
         }
     }
@@ -406,8 +406,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             } else {
                 (
                     length + 1,
-                    self.memory
-                        .cons(Number::new(byte as NumberRepresentation).into(), name)?,
+                    self.memory.cons(Number::from_i64(byte as _).into(), name)?,
                 )
             };
 
@@ -438,10 +437,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn build_symbol_table(&mut self, symbols: Cons) -> Result<(), Error> {
         self.memory.set_stack(
             self.memory
-                .car(self.memory.tail(
-                    symbols,
-                    Number::new(symbol_index::RIB as NumberRepresentation),
-                ))
+                .car(
+                    self.memory
+                        .tail(symbols, Number::from_i64(symbol_index::RIB as _)),
+                )
                 .assume_cons(),
         );
         let symbols = self
@@ -488,7 +487,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
         self.memory.allocate(
             name.set_tag(Type::String as Tag).into(),
-            Number::new(length as NumberRepresentation).into(),
+            Number::from_i64(length).into(),
         )
     }
 
@@ -524,7 +523,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
                 code::Instruction::CLOSE => {
                     let code = self.memory.allocate(
-                        Number::new(integer as NumberRepresentation).into(),
+                        Number::from_i64(integer).into(),
                         self.memory.program_counter().into(),
                     )?;
                     let procedure = self
@@ -540,10 +539,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         r#return,
                     )?
                 }
-                code::Instruction::SKIP => self.memory.tail(
-                    self.memory.program_counter(),
-                    Number::new(integer as NumberRepresentation),
-                ),
+                code::Instruction::SKIP => self
+                    .memory
+                    .tail(self.memory.program_counter(), Number::from_i64(integer)),
                 _ => return Err(Error::IllegalInstruction),
             };
 
@@ -596,7 +594,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn decode_operand(&self, integer: u64) -> Value {
-        let index = Number::new((integer >> 1) as NumberRepresentation);
+        let index = Number::from_i64((integer >> 1) as _);
         let is_symbol = integer & 1 == 0;
 
         trace!("operand", index);
