@@ -36,10 +36,7 @@ impl Number {
 
     /// Converts `i64` into a number.
     pub const fn from_i64(number: i64) -> Self {
-        #[cfg(feature = "float")]
-        return Self(number as _);
-        #[cfg(not(feature = "float"))]
-        return Self::new(number);
+        return Self::new(number as _);
     }
 
     /// Converts a number to a 64-bit integer.
