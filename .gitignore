@@ -1,4 +1,5 @@
 *.bc
 *.info
+.cargo_cache
 target
 tmp

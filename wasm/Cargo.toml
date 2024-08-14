@@ -30,7 +30,7 @@ wasm-bindgen = "0.2.84"
 [dev-dependencies]
 stak-configuration = { path = "../configuration" }
 stak-macro = { path = "../macro" }
-wasm-bindgen-test = "0.3.34"
+wasm-bindgen-test = "0.3.43"
 
 [lints]
 workspace = true

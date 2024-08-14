@@ -23,4 +23,6 @@ updates:
   - package-ecosystem: npm
     directory: /doc
     schedule:
-      interval: weekly
+      interval: daily
+      time: "02:00"
+      timezone: Asia/Tokyo

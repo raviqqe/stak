@@ -1,7 +1,7 @@
 [package]
 name = "stak"
 description = "Stak Scheme interpreter"
-version = "0.2.48"
+version = "0.2.49"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
