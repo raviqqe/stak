@@ -57,11 +57,6 @@ impl Number {
         }
     }
 
-    /// Converts a number to a 64-bit floating-point number.
-    pub const fn to_f64(self) -> f64 {
-        self.to_representation() as f64
-    }
-
     pub(crate) fn from_raw(raw: u64) -> Self {
         cfg_if! {
             if #[cfg(feature = "float")] {
