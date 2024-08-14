@@ -2,6 +2,7 @@ use crate::{
     cons::{Cons, Tag},
     number::Number,
 };
+use cfg_if::cfg_if;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -45,7 +46,7 @@ impl Value {
     }
 
     /// Converts a value to a cons assuming its type.
-    pub const fn assume_cons(self) -> Cons {
+    pub fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
         Cons::from_raw(self.0)
@@ -59,12 +60,18 @@ impl Value {
     }
 
     /// Checks if it is a cons.
-    pub const fn is_cons(&self) -> bool {
-        self.0 & 1 == 0
+    pub fn is_cons(&self) -> bool {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return f64::from_bits(self.0).is_nan();
+            } else {
+                return self.0 & 1 == 0;
+            }
+        }
     }
 
     /// Checks if it is a number.
-    pub const fn is_number(&self) -> bool {
+    pub fn is_number(&self) -> bool {
         !self.is_cons()
     }
 
