@@ -23,7 +23,7 @@
     "classnames": "^2.5.1",
     "lucide-solid": "^0.427.0",
     "nanostores": "^0.11.2",
-    "solid-js": "^1.8.20",
+    "solid-js": "^1.8.21",
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
