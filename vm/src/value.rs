@@ -63,7 +63,7 @@ impl Value {
     pub fn is_cons(&self) -> bool {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return f64::from_bits(self.0).is_nan();
+                return nonbox::f64::u64::unbox_unsigned(self.0).is_some();
             } else {
                 return self.0 & 1 == 0;
             }
