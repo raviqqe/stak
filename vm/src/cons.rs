@@ -26,48 +26,40 @@ pub struct Cons(u64);
 impl Cons {
     /// Creates a cons from a memory address on heap.
     pub fn new(index: u64) -> Self {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                return Self(nonbox::f64::u64::box_unsigned(index << TAG_SIZE));
-            } else {
-                return Self(index << (TAG_SIZE + 1));
-            }
-        }
+        Self::r#box(index << TAG_SIZE)
     }
 
     /// Returns a memory address on heap.
     pub fn index(self) -> usize {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                return (nonbox::f64::u64::unbox_unsigned(self.0).unwrap() >> TAG_SIZE) as _;
-            } else {
-                return (self.0 >> (TAG_SIZE + 1)) as _;
-            }
-        }
+        (self.unbox() >> TAG_SIZE) as _
     }
 
     /// Returns a tag.
     pub fn tag(self) -> Tag {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                return (nonbox::f64::u64::unbox_unsigned(self.0).unwrap() & TAG_MASK) as _;
-            } else {
-                return ((self.0 >> 1) & TAG_MASK) as _;
-            }
-        }
+        (self.unbox() & TAG_MASK) as _
     }
 
     /// Sets a tag.
     pub fn set_tag(self, tag: Tag) -> Self {
+        Self::r#box(self.unbox() & !TAG_MASK | (tag as u64 & TAG_MASK))
+    }
+
+    fn r#box(value: u64) -> Self {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return Self(
-                    nonbox::f64::u64::box_unsigned(
-                        nonbox::f64::u64::unbox_unsigned(self.0).unwrap() & !TAG_MASK | (tag as u64 & TAG_MASK),
-                    ),
-                );
+                return Self(nonbox::f64::u64::box_unsigned(value));
             } else {
-                return Self(((self.0 >> 1) & !TAG_MASK | (tag as u64 & TAG_MASK)) << 1);
+                return Self(value << 1);
+            }
+        }
+    }
+
+    fn unbox(self) -> u64 {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return nonbox::f64::u64::unbox_unsigned(self.0).unwrap();
+            } else {
+                return self.0 >> 1;
             }
         }
     }
