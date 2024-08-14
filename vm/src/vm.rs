@@ -523,7 +523,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
                 code::Instruction::CLOSE => {
                     let code = self.memory.allocate(
-                        Number::from_i64(integer).into(),
+                        Number::from_i64(integer as _).into(),
                         self.memory.program_counter().into(),
                     )?;
                     let procedure = self
@@ -539,9 +539,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         r#return,
                     )?
                 }
-                code::Instruction::SKIP => self
-                    .memory
-                    .tail(self.memory.program_counter(), Number::from_i64(integer)),
+                code::Instruction::SKIP => self.memory.tail(
+                    self.memory.program_counter(),
+                    Number::from_i64(integer as _),
+                ),
                 _ => return Err(Error::IllegalInstruction),
             };
 
