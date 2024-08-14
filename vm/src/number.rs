@@ -1,4 +1,5 @@
 use crate::{value::Value, Error};
+use cfg_if::cfg_if;
 use core::fmt::{self, Display, Formatter};
 
 /// A number representation.
@@ -20,18 +21,24 @@ pub struct Number(NumberRepresentation);
 impl Number {
     /// Creates a number.
     pub const fn new(number: NumberRepresentation) -> Self {
-        #[cfg(feature = "float")]
-        return Self(number);
-        #[cfg(not(feature = "float"))]
-        return Self(number << 1 | 1);
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return Self(number);
+            } else {
+                return Self(number << 1 | 1);
+            }
+        }
     }
 
     /// Converts a number to a number representation.
     pub const fn to_representation(self) -> NumberRepresentation {
-        #[cfg(feature = "float")]
-        return self.0;
-        #[cfg(not(feature = "float"))]
-        return self.0 >> 1;
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return self.0;
+            } else {
+                return self.0 >> 1;
+            }
+        }
     }
 
     /// Converts `i64` into a number.
@@ -41,10 +48,13 @@ impl Number {
 
     /// Converts a number to a 64-bit integer.
     pub const fn to_i64(self) -> i64 {
-        #[cfg(feature = "float")]
-        return self.0 as i64;
-        #[cfg(not(feature = "float"))]
-        return self.0 >> 1;
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return self.0 as _;
+            } else {
+                return self.0 >> 1;
+            }
+        }
     }
 
     /// Converts a number to a 64-bit floating-point number.
@@ -53,17 +63,23 @@ impl Number {
     }
 
     pub(crate) fn from_raw(raw: u64) -> Self {
-        #[cfg(feature = "float")]
-        return Self(f64::from_bits(raw));
-        #[cfg(not(feature = "float"))]
-        return Self(raw as _);
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return Self(f64::from_bits(raw));
+            } else {
+                return Self(raw as _);
+            }
+        }
     }
 
     pub(crate) fn to_raw(self) -> u64 {
-        #[cfg(feature = "float")]
-        return self.0.to_bits();
-        #[cfg(not(feature = "float"))]
-        return self.0 as _;
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                return self.0.to_bits();
+            } else {
+                return self.0 as _;
+            }
+        }
     }
 }
 
