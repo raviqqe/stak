@@ -23,9 +23,9 @@ impl Number {
     pub const fn new(number: NumberRepresentation) -> Self {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return Self(number);
+                Self(number)
             } else {
-                return Self(number << 1 | 1);
+                Self(number << 1 | 1)
             }
         }
     }
@@ -34,9 +34,9 @@ impl Number {
     pub const fn to_representation(self) -> NumberRepresentation {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return self.0;
+                self.0
             } else {
-                return self.0 >> 1;
+                self.0 >> 1
             }
         }
     }
@@ -50,9 +50,9 @@ impl Number {
     pub const fn to_i64(self) -> i64 {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return self.0 as _;
+                self.0 as _
             } else {
-                return self.0 >> 1;
+                self.0 >> 1
             }
         }
     }
@@ -65,9 +65,9 @@ impl Number {
     pub(crate) fn from_raw(raw: u64) -> Self {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return Self(f64::from_bits(raw));
+                Self(f64::from_bits(raw))
             } else {
-                return Self(raw as _);
+                Self(raw as _)
             }
         }
     }
@@ -75,9 +75,9 @@ impl Number {
     pub(crate) fn to_raw(self) -> u64 {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return self.0.to_bits();
+                self.0.to_bits()
             } else {
-                return self.0 as _;
+                self.0 as _
             }
         }
     }

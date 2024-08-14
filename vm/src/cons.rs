@@ -47,9 +47,9 @@ impl Cons {
     fn r#box(value: u64) -> Self {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return Self(nonbox::f64::u64::box_unsigned(value));
+                Self(nonbox::f64::u64::box_unsigned(value))
             } else {
-                return Self(value << 1);
+                Self(value << 1)
             }
         }
     }
@@ -57,9 +57,9 @@ impl Cons {
     fn unbox(self) -> u64 {
         cfg_if! {
             if #[cfg(feature = "float")] {
-                return nonbox::f64::u64::unbox_unsigned(self.0).unwrap();
+                nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
             } else {
-                return self.0 >> 1;
+                self.0 >> 1
             }
         }
     }
