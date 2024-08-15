@@ -1,9 +1,7 @@
 use crate::{FileDescriptor, FileSystem};
-use core::{
-    ffi::{CStr, OsStr},
-    mem::forget,
-};
+use core::{ffi::CStr, mem::forget};
 use std::{
+    ffi::OsStr,
     fs::{remove_file, File, OpenOptions},
     io::{self, Read, Write},
     os::fd::{FromRawFd, IntoRawFd},
