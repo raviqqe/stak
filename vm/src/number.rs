@@ -115,7 +115,17 @@ impl Div for Number {
     type Output = Self;
 
     fn div(self, other: Self) -> Self::Output {
-        Self::new(self.to_representation() / other.to_representation())
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                // TODO Add a remainder primitive instead.
+                Self::new(
+                    (self.to_representation() - self.to_representation() % other.to_representation())
+                        / other.to_representation(),
+                )
+            } else {
+                Self::new(self.to_representation() / other.to_representation())
+            }
+        }
     }
 }
 
