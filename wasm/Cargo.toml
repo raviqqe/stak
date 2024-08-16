@@ -1,7 +1,7 @@
 [package]
 name = "stak-wasm"
 description = "Stak Scheme VM in WebAssembly"
-version = "0.2.24"
+version = "0.2.25"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -12,19 +12,19 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stak-code = { version = "0.2.44", path = "../code", features = [
+stak-code = { version = "0.2.45", path = "../code", features = [
   "alloc",
   "std",
 ] }
-stak-compiler = { version = "0.1.49", path = "../compiler" }
-stak-configuration = { version = "0.1.41", path = "../configuration" }
-stak-device = { version = "0.2.45", path = "../device", features = ["std"] }
-stak-file = { version = "0.4.3", path = "../file" }
-stak-primitive = { version = "0.5.3", path = "../primitive", features = [
+stak-compiler = { version = "0.1.50", path = "../compiler" }
+stak-configuration = { version = "0.1.42", path = "../configuration" }
+stak-device = { version = "0.2.46", path = "../device", features = ["std"] }
+stak-file = { version = "0.4.4", path = "../file" }
+stak-primitive = { version = "0.5.4", path = "../primitive", features = [
   "std",
 ] }
-stak-process-context = { version = "0.2.3", path = "../process_context" }
-stak-vm = { version = "0.5.3", path = "../vm", features = ["std"] }
+stak-process-context = { version = "0.2.4", path = "../process_context" }
+stak-vm = { version = "0.5.4", path = "../vm", features = ["std"] }
 wasm-bindgen = "0.2.84"
 
 [dev-dependencies]

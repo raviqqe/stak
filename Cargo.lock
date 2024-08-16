@@ -112,9 +112,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "clap"
-version = "4.5.15"
+version = "4.5.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "11d8838454fda655dafd3accb2b6e2bea645b9e4078abe84a22ceb947235c5cc"
+checksum = "ed6719fffa43d0d87e5fd8caeab59be1554fb028cd30edc88fc4369b17971019"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -278,9 +278,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.155"
+version = "0.2.156"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
+checksum = "a5f43f184355eefb8d17fc948dbecf6c13be3c141f20d834ae842193a448c72a"
 
 [[package]]
 name = "linked-hash-map"
@@ -434,14 +434,14 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.2.50"
+version = "0.2.51"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-build"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -450,7 +450,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.44"
+version = "0.2.45"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -458,14 +458,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.49"
+version = "0.1.50"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.49"
+version = "0.1.50"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -478,11 +478,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.41"
+version = "0.1.42"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.50"
+version = "0.1.51"
 dependencies = [
  "clap",
  "main_error",
@@ -491,14 +491,14 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.45"
+version = "0.2.46"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-file"
-version = "0.4.3"
+version = "0.4.4"
 dependencies = [
  "libc",
  "tempfile",
@@ -506,7 +506,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.47"
+version = "0.1.48"
 dependencies = [
  "clap",
  "main_error",
@@ -520,7 +520,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.46"
+version = "0.1.47"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -536,7 +536,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.22"
+version = "0.1.23"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -545,7 +545,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.1.23"
+version = "0.1.24"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
@@ -559,7 +559,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.1.23"
+version = "0.1.24"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -570,14 +570,14 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.1.23"
+version = "0.1.24"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-primitive"
-version = "0.5.3"
+version = "0.5.4"
 dependencies = [
  "heapless",
  "stak-device",
@@ -588,11 +588,11 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.3"
+version = "0.2.4"
 
 [[package]]
 name = "stak-profile"
-version = "0.1.15"
+version = "0.1.16"
 dependencies = [
  "clap",
  "main_error",
@@ -607,7 +607,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.1.14"
+version = "0.1.15"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -616,14 +616,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.1.11"
+version = "0.1.12"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.1.47"
+version = "0.1.48"
 dependencies = [
  "clap",
  "libc",
@@ -640,14 +640,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.21"
+version = "0.1.22"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.5.3"
+version = "0.5.4"
 dependencies = [
  "cfg-if",
  "insta",
@@ -662,7 +662,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.2.24"
+version = "0.2.25"
 dependencies = [
  "stak-code",
  "stak-compiler",
