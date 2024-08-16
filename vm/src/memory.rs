@@ -290,7 +290,7 @@ impl<'a> Memory<'a> {
     pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
         while index != Number::default() {
             list = self.cdr(list).assume_cons();
-            index = Number::from_i64(index.to_i64() - 1);
+            index = index - Number::from_i64(1);
         }
 
         list
