@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    cons::{never, Cons, Tag},
     number::Number,
     r#type::Type,
     value::Value,
@@ -20,7 +20,7 @@ macro_rules! assert_heap_access {
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if $cons != NEVER {
+        if $cons != never() {
             debug_assert!($self.allocation_start() <= $cons.index());
             debug_assert!($cons.index() < $self.allocation_end());
         }
@@ -50,18 +50,20 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            program_counter: NEVER,
-            stack: NEVER,
-            r#false: NEVER,
-            register: NEVER,
+            program_counter: never(),
+            stack: never(),
+            r#false: never(),
+            register: never(),
             allocation_index: 0,
             space: false,
             heap,
         };
 
-        let null = memory
-            .allocate_unchecked(NEVER.set_tag(Type::Null as Tag).into(), Default::default())?;
-        // Do not use `NEVER` for `car` for an `equal?` procedure.
+        let null = memory.allocate_unchecked(
+            never().set_tag(Type::Null as Tag).into(),
+            Default::default(),
+        )?;
+        // Do not use `never()` for `car` for an `equal?` procedure.
         let r#true = memory.allocate_unchecked(
             null.set_tag(Type::Boolean as Tag).into(),
             Default::default(),
@@ -218,11 +220,11 @@ impl<'a> Memory<'a> {
         self.get(cons.index() + 1)
     }
 
-    const fn unchecked_car(&self, cons: Cons) -> Value {
+    fn unchecked_car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
-    const fn unchecked_cdr(&self, cons: Cons) -> Value {
+    fn unchecked_cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 
@@ -288,7 +290,7 @@ impl<'a> Memory<'a> {
     pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
         while index != Number::default() {
             list = self.cdr(list).assume_cons();
-            index = Number::new(index.to_i64() - 1);
+            index = index - Number::from_i64(1);
         }
 
         list
@@ -329,9 +331,9 @@ impl<'a> Memory<'a> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == NEVER {
-            NEVER
-        } else if self.unchecked_cdr(cons) == NEVER.into() {
+        Ok(if cons == never() {
+            never()
+        } else if self.unchecked_cdr(cons) == never().into() {
             // Get a forward pointer.
             self.unchecked_car(cons).assume_cons()
         } else {
@@ -340,7 +342,7 @@ impl<'a> Memory<'a> {
 
             // Set a forward pointer.
             self.set_unchecked_car(cons, copy.into());
-            self.set_unchecked_cdr(cons, NEVER.into());
+            self.set_unchecked_cdr(cons, never().into());
 
             copy
         }
@@ -414,17 +416,17 @@ mod tests {
 
         assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
 
-        let list = vm.cons(Number::new(1).into(), vm.null()).unwrap();
+        let list = vm.cons(Number::from_i64(1).into(), vm.null()).unwrap();
 
         assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
 
-        let list = vm.cons(Number::new(2).into(), list).unwrap();
+        let list = vm.cons(Number::from_i64(2).into(), list).unwrap();
 
         assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
 
-        let list = vm.cons(Number::new(3).into(), list).unwrap();
+        let list = vm.cons(Number::from_i64(3).into(), list).unwrap();
 
         assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
         assert_snapshot!(vm);
@@ -469,9 +471,9 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(42).into()).unwrap();
+            vm.push(Number::from_i64(42).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::new(42).into());
+            assert_eq!(vm.pop(), Number::from_i64(42).into());
         }
 
         #[test]
@@ -480,11 +482,11 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
+            vm.push(Number::from_i64(1).into()).unwrap();
+            vm.push(Number::from_i64(2).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::new(2).into());
-            assert_eq!(vm.pop(), Number::new(1).into());
+            assert_eq!(vm.pop(), Number::from_i64(2).into());
+            assert_eq!(vm.pop(), Number::from_i64(1).into());
         }
     }
 
@@ -509,7 +511,7 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(42).into()).unwrap();
+            vm.push(Number::from_i64(42).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
             assert_snapshot!(vm);
@@ -521,8 +523,8 @@ mod tests {
             let mut vm = Memory::new(&mut heap).unwrap();
 
             vm.stack = vm.null();
-            vm.push(Number::new(1).into()).unwrap();
-            vm.push(Number::new(2).into()).unwrap();
+            vm.push(Number::from_i64(1).into()).unwrap();
+            vm.push(Number::from_i64(2).into()).unwrap();
             vm.collect_garbages(None).unwrap();
 
             assert_snapshot!(vm);

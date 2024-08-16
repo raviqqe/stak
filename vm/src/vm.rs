@@ -1,7 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    cons::{never, Cons, Tag},
     memory::Memory,
     number::Number,
     primitive_set::PrimitiveSet,
@@ -263,7 +263,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     const fn parse_arity(info: usize) -> Arity {
         Arity {
-            count: Number::new((info / 2) as i64),
+            count: Number::from_i64((info / 2) as _),
             variadic: info % 2 == 1,
         }
     }
@@ -366,7 +366,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         // Initialize an implicit top-level frame.
         let codes = self
             .memory
-            .allocate(Number::new(0).into(), self.memory.null().into())?
+            .allocate(Number::default().into(), self.memory.null().into())?
             .into();
         let continuation = self
             .memory
@@ -378,7 +378,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         )?;
         self.memory.set_stack(stack);
 
-        self.memory.set_register(NEVER);
+        self.memory.set_register(never());
 
         Ok(())
     }
@@ -406,7 +406,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             } else {
                 (
                     length + 1,
-                    self.memory.cons(Number::new(byte as i64).into(), name)?,
+                    self.memory.cons(Number::from_i64(byte as _).into(), name)?,
                 )
             };
 
@@ -414,7 +414,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         } {}
 
         let rib = self.memory.allocate(
-            NEVER.set_tag(Type::Procedure as Tag).into(),
+            never().set_tag(Type::Procedure as Tag).into(),
             Number::default().into(),
         )?;
 
@@ -439,7 +439,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.memory
                 .car(
                     self.memory
-                        .tail(symbols, Number::new(symbol_index::RIB as i64)),
+                        .tail(symbols, Number::from_i64(symbol_index::RIB as _)),
                 )
                 .assume_cons(),
         );
@@ -454,7 +454,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             if self.memory.cdr_value(
                 self.memory
                     .car_value(self.memory.car_value(self.memory.cdr(current))),
-            ) == Number::new(0).into()
+            ) == Number::default().into()
             {
                 self.memory
                     .set_cdr(current, self.memory.cdr_value(self.memory.cdr(current)));
@@ -487,7 +487,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
         self.memory.allocate(
             name.set_tag(Type::String as Tag).into(),
-            Number::new(length).into(),
+            Number::from_i64(length).into(),
         )
     }
 
@@ -523,12 +523,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
                 code::Instruction::CLOSE => {
                     let code = self.memory.allocate(
-                        Number::new(integer as i64).into(),
+                        Number::from_i64(integer as _).into(),
                         self.memory.program_counter().into(),
                     )?;
                     let procedure = self
                         .memory
-                        .allocate(NEVER.set_tag(Type::Procedure as Tag).into(), code.into())?;
+                        .allocate(never().set_tag(Type::Procedure as Tag).into(), code.into())?;
 
                     let continuation = self.memory.pop();
                     self.memory.set_program_counter(continuation.assume_cons());
@@ -539,9 +539,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         r#return,
                     )?
                 }
-                code::Instruction::SKIP => self
-                    .memory
-                    .tail(self.memory.program_counter(), Number::new(integer as i64)),
+                code::Instruction::SKIP => self.memory.tail(
+                    self.memory.program_counter(),
+                    Number::from_i64(integer as _),
+                ),
                 _ => return Err(Error::IllegalInstruction),
             };
 
@@ -594,7 +595,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn decode_operand(&self, integer: u64) -> Value {
-        let index = Number::new((integer >> 1) as i64);
+        let index = Number::from_i64((integer >> 1) as _);
         let is_symbol = integer & 1 == 0;
 
         trace!("operand", index);

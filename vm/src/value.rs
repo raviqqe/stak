@@ -2,6 +2,7 @@ use crate::{
     cons::{Cons, Tag},
     number::Number,
 };
+use cfg_if::cfg_if;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -9,7 +10,8 @@ use core::fmt::{self, Display, Formatter};
 pub struct Value(u64);
 
 /// A typed value.
-#[derive(Copy, Clone, Eq, Debug, PartialEq)]
+#[derive(Copy, Clone, Debug, PartialEq)]
+#[cfg_attr(not(feature = "float"), derive(Eq))]
 pub enum TypedValue {
     Cons(Cons),
     Number(Number),
@@ -17,7 +19,7 @@ pub enum TypedValue {
 
 impl Value {
     /// Converts a value to a cons.
-    pub const fn to_cons(self) -> Option<Cons> {
+    pub fn to_cons(self) -> Option<Cons> {
         if let TypedValue::Cons(cons) = self.to_typed() {
             Some(cons)
         } else {
@@ -26,7 +28,7 @@ impl Value {
     }
 
     /// Converts a value to a number.
-    pub const fn to_number(self) -> Option<Number> {
+    pub fn to_number(self) -> Option<Number> {
         if let TypedValue::Number(number) = self.to_typed() {
             Some(number)
         } else {
@@ -35,7 +37,7 @@ impl Value {
     }
 
     /// Converts a value to a typed value.
-    pub const fn to_typed(self) -> TypedValue {
+    pub fn to_typed(self) -> TypedValue {
         if self.is_cons() {
             TypedValue::Cons(self.assume_cons())
         } else {
@@ -44,26 +46,32 @@ impl Value {
     }
 
     /// Converts a value to a cons assuming its type.
-    pub const fn assume_cons(self) -> Cons {
+    pub fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
         Cons::from_raw(self.0)
     }
 
     /// Converts a value to a number assuming its type.
-    pub const fn assume_number(self) -> Number {
+    pub fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
         Number::from_raw(self.0)
     }
 
     /// Checks if it is a cons.
-    pub const fn is_cons(&self) -> bool {
-        self.0 & 1 == 0
+    pub fn is_cons(&self) -> bool {
+        cfg_if! {
+            if #[cfg(feature = "float")] {
+                nonbox::f64::u64::unbox_unsigned(self.0).is_some()
+            } else {
+                self.0 & 1 == 0
+            }
+        }
     }
 
     /// Checks if it is a number.
-    pub const fn is_number(&self) -> bool {
+    pub fn is_number(&self) -> bool {
         !self.is_cons()
     }
 
@@ -117,7 +125,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cons::NEVER, Type};
+    use crate::{cons::never, Type};
 
     #[test]
     fn convert_cons() {
@@ -139,19 +147,19 @@ mod tests {
 
     #[test]
     fn convert_number() {
-        let number = Number::new(42);
+        let number = Number::from_i64(42);
 
         assert_eq!(Value::from(number).to_number().unwrap(), number);
     }
 
     #[test]
     fn convert_moved() {
-        assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);
+        assert_eq!(Value::from(never()).to_cons().unwrap(), never());
     }
 
     #[test]
     fn get_tag_from_number() {
-        let tag = Value::from(Number::new(42)).tag();
+        let tag = Value::from(Number::from_i64(42)).tag();
 
         assert_eq!(tag, Default::default());
         assert_eq!(tag, Type::default() as Tag);
@@ -159,9 +167,9 @@ mod tests {
 
     #[test]
     fn set_tag_to_number() {
-        let value = Value::from(Number::new(42)).set_tag(0b111);
+        let value = Value::from(Number::from_i64(42)).set_tag(0b111);
 
         assert_eq!(value.tag(), Default::default());
-        assert_eq!(value.to_number(), Some(Number::new(42)));
+        assert_eq!(value.to_number(), Some(Number::from_i64(42)));
     }
 }
