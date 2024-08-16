@@ -50,11 +50,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
 
     fn operate_binary(
         memory: &mut Memory,
-        operate: fn(NumberRepresentation, NumberRepresentation) -> NumberRepresentation,
+        operate: fn(Number, Number) -> Number,
     ) -> Result<(), Error> {
         let [x, y] = Self::pop_number_arguments(memory);
 
-        memory.push(Number::new(operate(x.to_representation(), y.to_representation())).into())?;
+        memory.push(operate(x, y).into())?;
 
         Ok(())
     }

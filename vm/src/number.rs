@@ -1,6 +1,9 @@
 use crate::{value::Value, Error};
 use cfg_if::cfg_if;
-use core::fmt::{self, Display, Formatter};
+use core::{
+    fmt::{self, Display, Formatter},
+    ops::{Add, Div, Mul, Rem, Sub},
+};
 
 /// A number representation.
 #[cfg(feature = "float")]
@@ -84,6 +87,46 @@ impl Default for Number {
     }
 }
 
+impl Add for Number {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+        Self::new(self.to_representation() + other.to_representation())
+    }
+}
+
+impl Sub for Number {
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self::Output {
+        Self::new(self.to_representation() - other.to_representation())
+    }
+}
+
+impl Mul for Number {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self::Output {
+        Self::new(self.to_representation() * other.to_representation())
+    }
+}
+
+impl Div for Number {
+    type Output = Self;
+
+    fn div(self, other: Self) -> Self::Output {
+        Self::new(self.to_representation() / other.to_representation())
+    }
+}
+
+impl Rem for Number {
+    type Output = Self;
+
+    fn rem(self, other: Self) -> Self::Output {
+        Self::new(self.to_representation() % other.to_representation())
+    }
+}
+
 impl TryFrom<Value> for Number {
     type Error = Error;
 
@@ -119,5 +162,62 @@ mod tests {
     fn format() {
         assert_eq!(format!("{}", Number::from_i64(42)), "n42");
         assert_eq!(format!("{}", Number::from_i64(-1)), "n-1");
+    }
+
+    #[test]
+    fn add() {
+        assert_eq!(Number::default() + Number::from_i64(1), Number::from_i64(1));
+        assert_eq!(
+            Number::from_i64(1) + Number::from_i64(2),
+            Number::from_i64(3)
+        );
+    }
+
+    #[test]
+    fn subtract() {
+        assert_eq!(
+            Number::default() - Number::from_i64(1),
+            Number::from_i64(-1)
+        );
+        assert_eq!(Number::from_i64(1) - Number::default(), Number::from_i64(1));
+        assert_eq!(
+            Number::from_i64(3) - Number::from_i64(1),
+            Number::from_i64(2)
+        );
+    }
+
+    #[test]
+    fn multiply() {
+        assert_eq!(Number::default() * Number::from_i64(1), Number::default());
+        assert_eq!(
+            Number::from_i64(1) * Number::from_i64(2),
+            Number::from_i64(2)
+        );
+        assert_eq!(
+            Number::from_i64(2) * Number::from_i64(3),
+            Number::from_i64(6)
+        );
+    }
+
+    #[test]
+    fn divide() {
+        assert_eq!(Number::default() / Number::from_i64(1), Number::default());
+        assert_eq!(
+            Number::from_i64(2) / Number::from_i64(1),
+            Number::from_i64(2)
+        );
+        assert_eq!(
+            Number::from_i64(6) / Number::from_i64(2),
+            Number::from_i64(3)
+        );
+    }
+
+    #[test]
+    fn remainder() {
+        assert_eq!(Number::default() % Number::from_i64(1), Number::default());
+        assert_eq!(
+            Number::from_i64(3) % Number::from_i64(2),
+            Number::from_i64(1)
+        );
     }
 }
