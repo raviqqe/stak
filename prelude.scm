@@ -60,6 +60,7 @@
     $$-
     $$*
     $$/
+    $$remainder
 
     apply
     data-rib
@@ -85,9 +86,13 @@
     +
     -
     *
-    quotient
     /
+    remainder
+    quotient
+    truncate-remainder
+    truncate-quotient
     modulo
+    floor-remainder
     =
     <
     >
@@ -569,12 +574,13 @@
     (define $$- (primitive 13))
     (define $$* (primitive 14))
     (define $$/ (primitive 15))
-    (define $$read-input (primitive 16))
-    (define $$write-output (primitive 17))
-    (define $$write-error (primitive 18))
-    (define $$halt (primitive 19))
-    (define null? (primitive 20))
-    (define pair? (primitive 21))
+    (define $$remainder (primitive 16))
+    (define $$read-input (primitive 17))
+    (define $$write-output (primitive 18))
+    (define $$write-error (primitive 19))
+    (define $$halt (primitive 20))
+    (define null? (primitive 21))
+    (define pair? (primitive 22))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -657,8 +663,14 @@
     (define + (arithmetic-operator $$+ 0))
     (define - (inverse-arithmetic-operator $$- 0))
     (define * (arithmetic-operator $$* 1))
-    (define quotient (inverse-arithmetic-operator $$/ 1))
-    (define / quotient)
+    (define / (inverse-arithmetic-operator $$/ 1))
+
+    (define remainder $$remainder)
+    (define (quotient x y)
+      (/ (- x (remainder x y)) y))
+
+    (define truncate-remainder remainder)
+    (define truncate-quotient quotient)
 
     (define (modulo x y)
       (let ((r (- x (* y (quotient x y)))))
@@ -671,6 +683,8 @@
 
           (else
             (+ r y)))))
+
+    (define floor-remainder modulo)
 
     (define (comparison-operator f)
       (lambda xs
@@ -968,8 +982,8 @@
               (list #\-)
               '())
             (let loop ((x (abs x)) (ys '()))
-              (let* ((q (/ x radix))
-                     (d (- x (* q radix)))
+              (let* ((q (quotient x radix))
+                     (d (quotient (remainder x radix) 1))
                      (ys
                        (cons
                          (integer->char
@@ -1297,9 +1311,13 @@
     +
     -
     *
-    quotient
     /
+    remainder
+    quotient
+    truncate-remainder
+    truncate-quotient
     modulo
+    floor-remainder
     =
     <
     >
@@ -2253,8 +2271,8 @@
   (import (scheme base) (scheme lazy) (stak base))
 
   (begin
-    (define $$command-line (primitive 28))
-    (define $$get-environment-variables (primitive 29))
+    (define $$command-line (primitive 29))
+    (define $$get-environment-variables (primitive 30))
 
     (define command-line (delay (map code-points->string ($$command-line))))
     (define get-environment-variables
@@ -3018,12 +3036,12 @@
     (only (stak base) primitive string->code-points))
 
   (begin
-    (define $$open-file (primitive 22))
-    (define $$close-file (primitive 23))
-    (define $$read-file (primitive 24))
-    (define $$write-file (primitive 25))
-    (define $$delete-file (primitive 26))
-    (define $$exists-file (primitive 27))
+    (define $$open-file (primitive 23))
+    (define $$close-file (primitive 24))
+    (define $$read-file (primitive 25))
+    (define $$write-file (primitive 26))
+    (define $$delete-file (primitive 27))
+    (define $$exists-file (primitive 28))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))

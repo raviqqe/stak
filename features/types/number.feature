@@ -82,25 +82,57 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | expression     | value |
-      | (+)            | 0     |
-      | (+ 1)          | 1     |
-      | (+ 1 2)        | 3     |
-      | (- 1)          | -1    |
-      | (- 0 1)        | -1    |
-      | (- 0 1 2)      | -3    |
-      | (*)            | 1     |
-      | (* 2)          | 2     |
-      | (* 2 3)        | 6     |
-      | (/ 6 2)        | 3     |
-      | (/ 6 2 3)      | 1     |
-      | (quotient 6 2) | 3     |
-      | (quotient 6 3) | 2     |
-      | (modulo 5 1)   | 0     |
-      | (modulo 5 2)   | 1     |
-      | (modulo 5 3)   | 2     |
-      | (modulo -5 2)  | 1     |
-      | (modulo -5 -2) | -1    |
+      | expression | value |
+      | (+)        | 0     |
+      | (+ 1)      | 1     |
+      | (+ 1 2)    | 3     |
+      | (- 1)      | -1    |
+      | (- 0 1)    | -1    |
+      | (- 0 1 2)  | -3    |
+      | (*)        | 1     |
+      | (* 2)      | 2     |
+      | (* 2 3)    | 6     |
+      | (/ 6 2)    | 3     |
+      | (/ 6 2 3)  | 1     |
+
+  Scenario Outline: Use division operators
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= <expression> <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | expression                 | value |
+      | (quotient 6 2)             | 3     |
+      | (quotient 6 3)             | 2     |
+      | (quotient -6 2)            | -3    |
+      | (quotient -6 -2)           | 3     |
+      | (truncate-quotient 6 2)    | 3     |
+      | (truncate-quotient 6 3)    | 2     |
+      | (truncate-quotient -6 2)   | -3    |
+      | (truncate-quotient -6 -2)  | 3     |
+      | (remainder 8 3)            | 2     |
+      | (remainder 8 -3)           | 2     |
+      | (remainder -8 3)           | -2    |
+      | (remainder -8 -3)          | -2    |
+      | (truncate-remainder 8 3)   | 2     |
+      | (truncate-remainder 8 -3)  | 2     |
+      | (truncate-remainder -8 3)  | -2    |
+      | (truncate-remainder -8 -3) | -2    |
+      | (modulo 5 1)               | 0     |
+      | (modulo 5 2)               | 1     |
+      | (modulo 5 3)               | 2     |
+      | (modulo -5 2)              | 1     |
+      | (modulo -5 -2)             | -1    |
+      | (floor-remainder 5 1)      | 0     |
+      | (floor-remainder 5 2)      | 1     |
+      | (floor-remainder 5 3)      | 2     |
+      | (floor-remainder -5 2)     | 1     |
+      | (floor-remainder -5 -2)    | -1    |
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
@@ -135,7 +167,7 @@ Feature: Number
       | (>= 1 0)   |
       | (>= 0 0)   |
 
-  @stak @guile
+  @guile @stak
   Scenario Outline: Use comparison operators with an insufficient number of arguments
     Given a file named "main.scm" with:
       """scheme
@@ -187,7 +219,7 @@ Feature: Number
       | -2    | 32    | -2     |
       | -42   | 32    | -1a    |
 
-  @stak @gauche @guile
+  @gauche @guile @stak
   Scenario Outline: Convert a string to a number
     Given a file named "main.scm" with:
       """scheme
