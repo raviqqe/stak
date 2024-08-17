@@ -979,8 +979,8 @@
               (list #\-)
               '())
             (let loop ((x (abs x)) (ys '()))
-              (let* ((q (/ x radix))
-                     (d (- x (* q radix)))
+              (let* ((q (quotient x radix))
+                     (d (quotient (remainder x radix) 1))
                      (ys
                        (cons
                          (integer->char
