@@ -2254,8 +2254,8 @@
   (import (scheme base) (scheme lazy) (stak base))
 
   (begin
-    (define $$command-line (primitive 28))
-    (define $$get-environment-variables (primitive 29))
+    (define $$command-line (primitive 29))
+    (define $$get-environment-variables (primitive 30))
 
     (define command-line (delay (map code-points->string ($$command-line))))
     (define get-environment-variables
@@ -3019,12 +3019,12 @@
     (only (stak base) primitive string->code-points))
 
   (begin
-    (define $$open-file (primitive 22))
-    (define $$close-file (primitive 23))
-    (define $$read-file (primitive 24))
-    (define $$write-file (primitive 25))
-    (define $$delete-file (primitive 26))
-    (define $$exists-file (primitive 27))
+    (define $$open-file (primitive 23))
+    (define $$close-file (primitive 24))
+    (define $$read-file (primitive 25))
+    (define $$write-file (primitive 26))
+    (define $$delete-file (primitive 27))
+    (define $$exists-file (primitive 28))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
