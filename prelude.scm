@@ -1011,7 +1011,7 @@
                 (if (positive? q)
                   (loop q ys)
                   ys)))
-            (format-point (quotient x 1) radix)))))
+            (format-point (remainder (abs x) 1) radix)))))
 
     (define digit-characters
       (map
