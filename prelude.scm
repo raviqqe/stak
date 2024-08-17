@@ -60,6 +60,7 @@
     $$-
     $$*
     $$/
+    $$remainder
 
     apply
     data-rib
@@ -85,9 +86,10 @@
     +
     -
     *
-    quotient
     /
+    quotient
     modulo
+    truncate-remainder
     =
     <
     >
@@ -660,6 +662,7 @@
     (define * (arithmetic-operator $$* 1))
     (define quotient (inverse-arithmetic-operator $$/ 1))
     (define / quotient)
+    (define truncate-remainder $$remainder)
 
     (define (modulo x y)
       (let ((r (- x (* y (quotient x y)))))
@@ -1298,9 +1301,10 @@
     +
     -
     *
-    quotient
     /
+    quotient
     modulo
+    truncate-remainder
     =
     <
     >
