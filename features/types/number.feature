@@ -106,32 +106,33 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | (quotient 6 2)             | 3  |
-      | (quotient 6 3)             | 2  |
-      | (quotient -6 2)            | -3 |
-      | (quotient -6 -2)           | 3  |
-      | (truncate-quotient 6 2)    | 3  |
-      | (truncate-quotient 6 3)    | 2  |
-      | (truncate-quotient -6 2)   | -3 |
-      | (truncate-quotient -6 -2)  | 3  |
-      | (remainder 8 3)            | 2  |
-      | (remainder 8 -3)           | 2  |
-      | (remainder -8 3)           | -2 |
-      | (remainder -8 -3)          | -2 |
-      | (truncate-remainder 8 3)   | 2  |
-      | (truncate-remainder 8 -3)  | 2  |
-      | (truncate-remainder -8 3)  | -2 |
-      | (truncate-remainder -8 -3) | -2 |
-      | (modulo 5 1)               | 0  |
-      | (modulo 5 2)               | 1  |
-      | (modulo 5 3)               | 2  |
-      | (modulo -5 2)              | 1  |
-      | (modulo -5 -2)             | -1 |
-      | (floor-remainder 5 1)      | 0  |
-      | (floor-remainder 5 2)      | 1  |
-      | (floor-remainder 5 3)      | 2  |
-      | (floor-remainder -5 2)     | 1  |
-      | (floor-remainder -5 -2)    | -1 |
+      | expression                 | value |
+      | (quotient 6 2)             | 3     |
+      | (quotient 6 3)             | 2     |
+      | (quotient -6 2)            | -3    |
+      | (quotient -6 -2)           | 3     |
+      | (truncate-quotient 6 2)    | 3     |
+      | (truncate-quotient 6 3)    | 2     |
+      | (truncate-quotient -6 2)   | -3    |
+      | (truncate-quotient -6 -2)  | 3     |
+      | (remainder 8 3)            | 2     |
+      | (remainder 8 -3)           | 2     |
+      | (remainder -8 3)           | -2    |
+      | (remainder -8 -3)          | -2    |
+      | (truncate-remainder 8 3)   | 2     |
+      | (truncate-remainder 8 -3)  | 2     |
+      | (truncate-remainder -8 3)  | -2    |
+      | (truncate-remainder -8 -3) | -2    |
+      | (modulo 5 1)               | 0     |
+      | (modulo 5 2)               | 1     |
+      | (modulo 5 3)               | 2     |
+      | (modulo -5 2)              | 1     |
+      | (modulo -5 -2)             | -1    |
+      | (floor-remainder 5 1)      | 0     |
+      | (floor-remainder 5 2)      | 1     |
+      | (floor-remainder 5 3)      | 2     |
+      | (floor-remainder -5 2)     | 1     |
+      | (floor-remainder -5 -2)    | -1    |
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
