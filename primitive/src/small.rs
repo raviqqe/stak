@@ -3,7 +3,7 @@ mod primitive;
 
 pub use self::error::Error;
 use self::primitive::Primitive;
-use core::ops::{Add, Div, Mul, Sub};
+use core::ops::{Add, Div, Mul, Rem, Sub};
 use heapless::Vec;
 use stak_device::Device;
 use stak_file::FileSystem;
@@ -241,6 +241,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::SUBTRACT => Self::operate_binary(memory, Sub::sub)?,
             Primitive::MULTIPLY => Self::operate_binary(memory, Mul::mul)?,
             Primitive::DIVIDE => Self::operate_binary(memory, Div::div)?,
+            Primitive::REMAINDER => Self::operate_binary(memory, Rem::rem)?,
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| Error::ReadInput)?;
 
