@@ -92,6 +92,7 @@
     truncate-remainder
     truncate-quotient
     modulo
+    floor-remainder
     =
     <
     >
@@ -682,6 +683,8 @@
 
           (else
             (+ r y)))))
+
+    (define floor-remainder modulo)
 
     (define (comparison-operator f)
       (lambda xs
@@ -1314,6 +1317,7 @@
     truncate-remainder
     truncate-quotient
     modulo
+    floor-remainder
     =
     <
     >
