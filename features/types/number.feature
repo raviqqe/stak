@@ -82,25 +82,29 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
     Examples:
-      | expression     | value |
-      | (+)            | 0     |
-      | (+ 1)          | 1     |
-      | (+ 1 2)        | 3     |
-      | (- 1)          | -1    |
-      | (- 0 1)        | -1    |
-      | (- 0 1 2)      | -3    |
-      | (*)            | 1     |
-      | (* 2)          | 2     |
-      | (* 2 3)        | 6     |
-      | (/ 6 2)        | 3     |
-      | (/ 6 2 3)      | 1     |
-      | (quotient 6 2) | 3     |
-      | (quotient 6 3) | 2     |
-      | (modulo 5 1)   | 0     |
-      | (modulo 5 2)   | 1     |
-      | (modulo 5 3)   | 2     |
-      | (modulo -5 2)  | 1     |
-      | (modulo -5 -2) | -1    |
+      | expression                 | value |
+      | (+)                        | 0     |
+      | (+ 1)                      | 1     |
+      | (+ 1 2)                    | 3     |
+      | (- 1)                      | -1    |
+      | (- 0 1)                    | -1    |
+      | (- 0 1 2)                  | -3    |
+      | (*)                        | 1     |
+      | (* 2)                      | 2     |
+      | (* 2 3)                    | 6     |
+      | (/ 6 2)                    | 3     |
+      | (/ 6 2 3)                  | 1     |
+      | (quotient 6 2)             | 3     |
+      | (quotient 6 3)             | 2     |
+      | (modulo 5 1)               | 0     |
+      | (modulo 5 2)               | 1     |
+      | (modulo 5 3)               | 2     |
+      | (modulo -5 2)              | 1     |
+      | (modulo -5 -2)             | -1    |
+      | (truncate-remainder 8 3)   | 2     |
+      | (truncate-remainder 8 -3)  | 2     |
+      | (truncate-remainder -8 3)  | -2    |
+      | (truncate-remainder -8 -3) | -2    |
 
   Scenario: Calculate a multiplicative inverse
     Given a file named "main.scm" with:
@@ -135,7 +139,7 @@ Feature: Number
       | (>= 1 0)   |
       | (>= 0 0)   |
 
-  @stak @guile
+  @guile @stak
   Scenario Outline: Use comparison operators with an insufficient number of arguments
     Given a file named "main.scm" with:
       """scheme
@@ -187,7 +191,7 @@ Feature: Number
       | -2    | 32    | -2     |
       | -42   | 32    | -1a    |
 
-  @stak @gauche @guile
+  @gauche @guile @stak
   Scenario Outline: Convert a string to a number
     Given a file named "main.scm" with:
       """scheme
