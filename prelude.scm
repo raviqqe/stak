@@ -1024,17 +1024,17 @@
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
 
-      (define (convert-point xs y)
-        (let loop ((power radix) (xs xs) (y y))
+      (define (convert-point xs)
+        (let loop ((xs xs) (y 0) (power 1))
           (if (null? xs)
-            y
+            (/ y power)
             (let ((x (convert-digit (car xs) radix)))
               (and
                 x
                 (loop
-                  (* power radix)
                   (cdr xs)
-                  (+ y (/ x power))))))))
+                  (+ (* radix y) x)
+                  (* power radix)))))))
 
       (define (convert xs)
         (and
@@ -1047,7 +1047,7 @@
               ((and
                   (not initial)
                   (eqv? (car xs) #\.))
-                (convert-point (cdr xs) y))
+                (+ y (convert-point (cdr xs))))
 
               (else
                 (let ((x (convert-digit (car xs) radix)))
