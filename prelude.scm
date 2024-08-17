@@ -1039,19 +1039,19 @@
       (define (convert xs)
         (and
           (pair? xs)
-          (let loop ((initial #t) (xs xs) (y 0))
+          (let loop ((xs xs) (y 0))
             (cond
               ((null? xs)
                 y)
 
-              ((and
-                  (not initial)
-                  (eqv? (car xs) #\.))
-                (convert-point (cdr xs) y))
+              ((eqv? (car xs) #\.)
+                (and
+                  (pair? (cdr xs))
+                  (convert-point (cdr xs) y)))
 
               (else
                 (let ((x (convert-digit (car xs) radix)))
-                  (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
+                  (and x (loop (cdr xs) (+ (* radix y) x)))))))))
 
       (let ((xs (string->list x)))
         (if (and (pair? xs) (eqv? (car xs) #\-))
