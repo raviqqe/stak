@@ -974,6 +974,27 @@
     (define (string-append . xs)
       (code-points->string (apply append (map string->code-points xs))))
 
+    (define (format-digit x)
+      (integer->char
+        (if (< 9 x)
+          (+ (char->integer #\a) (- x 10))
+          (+ (char->integer #\0) x))))
+
+    (define (format-point x radix)
+      (let loop ((x x) (ys '()))
+        (cond
+          ((not (zero? x))
+            (let ((x (* x radix)))
+              (cons
+                (format-digit (quotient x 1))
+                (loop (remainder x 1) ys))))
+
+          ((null? ys)
+            '())
+
+          (else
+            (cons #\. ys)))))
+
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
         (list->string
@@ -983,17 +1004,14 @@
               '())
             (let loop ((x (abs x)) (ys '()))
               (let* ((q (quotient x radix))
-                     (d (quotient (remainder x radix) 1))
                      (ys
                        (cons
-                         (integer->char
-                           (if (< 9 d)
-                             (+ (char->integer #\a) (- d 10))
-                             (+ (char->integer #\0) d)))
+                         (format-digit (quotient (remainder x radix) 1))
                          ys)))
                 (if (positive? q)
                   (loop q ys)
-                  ys)))))))
+                  ys)))
+            (format-point (quotient x 1) radix)))))
 
     (define digit-characters
       (map
