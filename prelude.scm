@@ -87,9 +87,11 @@
     -
     *
     /
+    remainder
     quotient
-    modulo
     truncate-remainder
+    truncate-quotient
+    modulo
     =
     <
     >
@@ -660,9 +662,14 @@
     (define + (arithmetic-operator $$+ 0))
     (define - (inverse-arithmetic-operator $$- 0))
     (define * (arithmetic-operator $$* 1))
-    (define quotient (inverse-arithmetic-operator $$/ 1))
-    (define / quotient)
-    (define truncate-remainder $$remainder)
+    (define / (inverse-arithmetic-operator $$/ 1))
+
+    (define remainder $$remainder)
+    (define (quotient x y)
+      (/ (- x (remainder x y)) y))
+
+    (define truncate-remainder remainder)
+    (define truncate-quotient quotient)
 
     (define (modulo x y)
       (let ((r (- x (* y (quotient x y)))))
@@ -1302,9 +1309,11 @@
     -
     *
     /
+    remainder
     quotient
-    modulo
     truncate-remainder
+    truncate-quotient
+    modulo
     =
     <
     >
