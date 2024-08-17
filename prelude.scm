@@ -981,19 +981,19 @@
           (+ (char->integer #\0) x))))
 
     (define (format-point x radix)
-      (let loop ((x x) (ys '()))
-        (cond
-          ((not (zero? x))
-            (let ((x (* x radix)))
-              (cons
-                (format-digit (quotient x 1))
-                (loop (remainder x 1) ys))))
+      (if (zero? x)
+        '()
+        (cons #\.
+          (let loop ((x x) (ys '()))
+            (cond
+              ((zero? x)
+                '())
 
-          ((null? ys)
-            '())
-
-          (else
-            (cons #\. ys)))))
+              (else
+                (let ((x (* x radix)))
+                  (cons
+                    (format-digit (quotient x 1))
+                    (loop (remainder x 1) ys)))))))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
