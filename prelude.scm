@@ -569,7 +569,7 @@
     (define $$- (primitive 13))
     (define $$* (primitive 14))
     (define $$/ (primitive 15))
-    (define $$% (primitive 16))
+    (define $$remainder (primitive 16))
     (define $$read-input (primitive 17))
     (define $$write-output (primitive 18))
     (define $$write-error (primitive 19))
