@@ -639,12 +639,11 @@
     (define (number? x)
       (not (rib? x)))
 
+    (define complex? number?)
     (define real? number?)
     (define (integer? x)
       (zero? (remainder x 1)))
     (define rational? integer?)
-    (define complex? real?)
-    (define number? complex?)
 
     (define (exact? x) #t)
     (define (inexact? x) #f)
