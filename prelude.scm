@@ -708,6 +708,11 @@
         (- x)
         x))
 
+    ; TODO Set a true machine epsilon.
+    (define epsilon
+      (let ((x (/ 2 10000000000000000)))
+        (if (zero? x) 1 x)))
+
     ;; Character
 
     (define char? (instance? char-type))
@@ -974,6 +979,55 @@
     (define (string-append . xs)
       (code-points->string (apply append (map string->code-points xs))))
 
+    (define (string-copy x . rest)
+      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
+
+    (define substring string-copy)
+
+    (define string=? (comparison-operator equal?))
+
+    (define string<?
+      (comparison-operator
+        (lambda (x y)
+          (integer-list<?
+            (string->code-points x)
+            (string->code-points y)))))
+
+    (define (integer-list<? x y)
+      (and
+        (not (null? y))
+        (boolean-or
+          (null? x)
+          (< (car x) (car y))
+          (and
+            (= (car x) (car y))
+            (integer-list<? (cdr x) (cdr y))))))
+
+    (define (string>? x y) (string<? y x))
+
+    ;;; Number
+
+    (define (format-digit x)
+      (integer->char
+        (if (< 9 x)
+          (+ (char->integer #\a) (- x 10))
+          (+ (char->integer #\0) x))))
+
+    (define (format-point x radix)
+      (if (< x epsilon)
+        '()
+        (cons #\.
+          (let loop ((x x) (ys '()))
+            (cond
+              ((< x epsilon)
+                '())
+
+              (else
+                (let ((x (* x radix)))
+                  (cons
+                    (format-digit (quotient x 1))
+                    (loop (remainder x 1) ys)))))))))
+
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
         (list->string
@@ -983,17 +1037,14 @@
               '())
             (let loop ((x (abs x)) (ys '()))
               (let* ((q (quotient x radix))
-                     (d (quotient (remainder x radix) 1))
                      (ys
                        (cons
-                         (integer->char
-                           (if (< 9 d)
-                             (+ (char->integer #\a) (- d 10))
-                             (+ (char->integer #\0) d)))
+                         (format-digit (quotient (remainder x radix) 1))
                          ys)))
                 (if (positive? q)
                   (loop q ys)
-                  ys)))))))
+                  ys)))
+            (format-point (remainder (abs x) 1) radix)))))
 
     (define digit-characters
       (map
@@ -1024,46 +1075,40 @@
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
 
+      (define (convert-point xs)
+        (let loop ((xs xs) (y 0) (power 1))
+          (if (null? xs)
+            (/ y power)
+            (let ((x (convert-digit (car xs) radix)))
+              (and
+                x
+                (loop
+                  (cdr xs)
+                  (+ (* radix y) x)
+                  (* power radix)))))))
+
       (define (convert xs)
         (and
           (pair? xs)
-          (let loop ((xs xs) (y 0))
-            (if (null? xs)
-              y
-              (let ((x (convert-digit (car xs) radix)))
-                (and x (loop (cdr xs) (+ (* radix y) x))))))))
+          (let loop ((initial #t) (xs xs) (y 0))
+            (cond
+              ((null? xs)
+                y)
+
+              ((and
+                  (not initial)
+                  (eqv? (car xs) #\.))
+                (+ y (convert-point (cdr xs))))
+
+              (else
+                (let ((x (convert-digit (car xs) radix)))
+                  (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
 
       (let ((xs (string->list x)))
         (if (and (pair? xs) (eqv? (car xs) #\-))
           (let ((x (convert (cdr xs))))
             (and x (- x)))
           (convert xs))))
-
-    (define (string-copy x . rest)
-      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
-
-    (define substring string-copy)
-
-    (define string=? (comparison-operator equal?))
-
-    (define string<?
-      (comparison-operator
-        (lambda (x y)
-          (integer-list<?
-            (string->code-points x)
-            (string->code-points y)))))
-
-    (define (integer-list<? x y)
-      (and
-        (not (null? y))
-        (boolean-or
-          (null? x)
-          (< (car x) (car y))
-          (and
-            (= (car x) (car y))
-            (integer-list<? (cdr x) (cdr y))))))
-
-    (define (string>? x y) (string<? y x))
 
     ;; Symbol
 
