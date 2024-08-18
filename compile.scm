@@ -1098,6 +1098,9 @@
         cdr
         continue))))
 
+(define (build-number-constant)
+  foo)
+
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
     (code-rib
