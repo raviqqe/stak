@@ -101,17 +101,12 @@ jobs:
           - macos-14
         interpreter:
           - name: stak
-            tags: not @float and not @library
+            tags: not @library
           - name: stak-tools
             tags: not @float
-          - name: stak
-            features:
-              - float
-            tags: not @library
-          # TODO Enable this when a compiler supports floating-point number literals.
-          # - name: stak-tools
-          #   features:
-          #     - float
+            # TODO Enable this when a compiler supports floating-point number literals.
+            # features:
+            #   - float
           - name: mstak
             tags: not @environment-variable and not @float and not @library
           - name: mstak-tools
