@@ -62,10 +62,11 @@ jobs:
           - name: stak-tools
             host: guile
             tags: not @float
-          - name: stak-tools
-            host: gosh
-            features:
-              - float
+          # TODO Enable this when a compiler supports floating-point number literals.
+          # - name: stak-tools
+          #   host: gosh
+          #   features:
+          #     - float
           - name: stak-tools
             host: gosh
             features:
