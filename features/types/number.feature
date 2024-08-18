@@ -219,6 +219,24 @@ Feature: Number
       | -2    | 32    | -2     |
       | -42   | 32    | -1a    |
 
+  @float
+  Scenario Outline: Convert a floating point number to a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (number->string <value>))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0.5   | 0.5    |
+      | 0.125 | 0.125  |
+      | 3.14  | 3.14   |
+      | -3.14 | -3.14  |
+
   @gauche @guile @stak
   Scenario Outline: Convert a string to a number
     Given a file named "main.scm" with:
@@ -259,6 +277,24 @@ Feature: Number
       | -2    | 32    | -2     |
       | -1a   | 32    | -42    |
       | -1A   | 32    | -42    |
+
+  @float
+  Scenario Outline: Convert a string to a floating point number
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-string (number->string (string->number "<value>")))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | 0.5   | 0.5    |
+      | 0.125 | 0.125  |
+      | 3.14  | 3.14   |
+      | -3.14 | -3.14  |
 
   Scenario Outline: Convert an invalid string to a number
     Given a file named "main.scm" with:
