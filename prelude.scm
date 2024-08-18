@@ -708,6 +708,11 @@
         (- x)
         x))
 
+    ; TODO Set a true machine epsilon.
+    (define epsilon
+      (let ((x (/ 2 10000000000000000)))
+        (if (zero? x) 1 x)))
+
     ;; Character
 
     (define char? (instance? char-type))
@@ -974,6 +979,34 @@
     (define (string-append . xs)
       (code-points->string (apply append (map string->code-points xs))))
 
+    (define (string-copy x . rest)
+      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
+
+    (define substring string-copy)
+
+    (define string=? (comparison-operator equal?))
+
+    (define string<?
+      (comparison-operator
+        (lambda (x y)
+          (integer-list<?
+            (string->code-points x)
+            (string->code-points y)))))
+
+    (define (integer-list<? x y)
+      (and
+        (not (null? y))
+        (boolean-or
+          (null? x)
+          (< (car x) (car y))
+          (and
+            (= (car x) (car y))
+            (integer-list<? (cdr x) (cdr y))))))
+
+    (define (string>? x y) (string<? y x))
+
+    ;;; Number
+
     (define (format-digit x)
       (integer->char
         (if (< 9 x)
@@ -981,12 +1014,12 @@
           (+ (char->integer #\0) x))))
 
     (define (format-point x radix)
-      (if (zero? x)
+      (if (< x epsilon)
         '()
         (cons #\.
           (let loop ((x x) (ys '()))
             (cond
-              ((zero? x)
+              ((< x epsilon)
                 '())
 
               (else
@@ -1076,32 +1109,6 @@
           (let ((x (convert (cdr xs))))
             (and x (- x)))
           (convert xs))))
-
-    (define (string-copy x . rest)
-      (code-points->string (apply list-copy (cons (string->code-points x) rest))))
-
-    (define substring string-copy)
-
-    (define string=? (comparison-operator equal?))
-
-    (define string<?
-      (comparison-operator
-        (lambda (x y)
-          (integer-list<?
-            (string->code-points x)
-            (string->code-points y)))))
-
-    (define (integer-list<? x y)
-      (and
-        (not (null? y))
-        (boolean-or
-          (null? x)
-          (< (car x) (car y))
-          (and
-            (= (car x) (car y))
-            (integer-list<? (cdr x) (cdr y))))))
-
-    (define (string>? x y) (string<? y x))
 
     ;; Symbol
 
