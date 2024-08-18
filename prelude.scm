@@ -1074,16 +1074,16 @@
       (define radix (if (null? rest) 10 (car rest)))
 
       (define (convert-point xs)
-        (let loop ((xs xs) (y 0) (power 1))
+        (let loop ((xs xs) (y 0) (d 1))
           (if (null? xs)
-            (/ y power)
+            (/ y d)
             (let ((x (convert-digit (car xs) radix)))
               (and
                 x
                 (loop
                   (cdr xs)
                   (+ (* radix y) x)
-                  (* power radix)))))))
+                  (* d radix)))))))
 
       (define (convert xs)
         (and
