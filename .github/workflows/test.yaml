@@ -100,12 +100,18 @@ jobs:
           - macos-14
         interpreter:
           - name: stak
+            tags: not @float and not @library
+          - name: stak-tools
+            tags: not @float
+          - name: stak
+            features: float
             tags: not @library
           - name: stak-tools
+            features: float
           - name: mstak
-            tags: not @environment-variable and not @library
+            tags: not @environment-variable and not @float and not @library
           - name: mstak-tools
-            tags: not @environment-variable
+            tags: not @environment-variable and not @float
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
@@ -115,6 +121,7 @@ jobs:
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
+          -f ${{ join(matrix.interpreter.features, ',') }},
           -t '${{ matrix.interpreter.tags || 'not @none' }}'
   self_host_test:
     runs-on: ubuntu-latest
