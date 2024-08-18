@@ -1081,7 +1081,7 @@
 (define (constant-normal? constant)
   (or
     (symbol? constant)
-    (and (number? constant) (not (negative? constant)))
+    (and (integer? constant) (not (negative? constant)))
     (target-procedure? constant)))
 
 (define (build-child-constants context car cdr continue)
