@@ -1109,7 +1109,7 @@
           (lambda ()
             (compile-primitive-call '$$- (continue))))))
 
-    ((not integer?)
+    ((not (integer? constant))
       (raise "floating point number not supported yet"))
 
     (else
