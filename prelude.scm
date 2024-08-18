@@ -1019,15 +1019,12 @@
         '()
         (cons #\.
           (let loop ((x x) (ys '()))
-            (cond
-              ((< x epsilon)
-                '())
-
-              (else
-                (let ((x (* x radix)))
-                  (cons
-                    (format-digit (quotient x 1))
-                    (loop (remainder x 1) ys)))))))))
+            (if (< x epsilon)
+              '()
+              (let ((x (* x radix)))
+                (cons
+                  (format-digit (quotient x 1))
+                  (loop (remainder x 1) ys))))))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
