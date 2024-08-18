@@ -55,10 +55,13 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
+            tags: not @float
           - name: stak-tools
             host: gosh
+            tags: not @float
           - name: stak-tools
             host: guile
+            tags: not @float
           - name: stak-tools
             host: gosh
             features:
@@ -67,7 +70,7 @@ jobs:
             host: gosh
             features:
               - gc_always
-            tags: not @long
+            tags: not @float and not @long
           - name: chibi
             tags: (not @stak or @chibi) and not @library
           - name: gauche
