@@ -636,13 +636,13 @@
 
     ;; Number
 
-    (define (integer? x)
+    (define (number? x)
       (not (rib? x)))
 
     (define rational? integer?)
-    (define real? rational?)
     (define complex? real?)
     (define number? complex?)
+    (define real? number?)
 
     (define (exact? x) #t)
     (define (inexact? x) #f)
