@@ -640,6 +640,8 @@
       (not (rib? x)))
 
     (define real? number?)
+    (define (integer? x)
+      (zero? (remainder x 1)))
     (define rational? integer?)
     (define complex? real?)
     (define number? complex?)
