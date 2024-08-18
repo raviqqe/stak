@@ -105,10 +105,13 @@ jobs:
           - name: stak-tools
             tags: not @float
           - name: stak
-            features: float
+            features:
+              - float
             tags: not @library
-          - name: stak-tools
-            features: float
+          # TODO Enable this when a compiler supports floating-point number literals.
+          # - name: stak-tools
+          #   features:
+          #     - float
           - name: mstak
             tags: not @environment-variable and not @float and not @library
           - name: mstak-tools
