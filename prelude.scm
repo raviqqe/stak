@@ -711,7 +711,7 @@
 
     ; TODO Set a true machine epsilon.
     (define epsilon
-      (let ((x (/ 2 10000000000000000)))
+      (let ((x (/ 2 100000000 100000000)))
         (if (zero? x) 1 x)))
 
     ;; Character
