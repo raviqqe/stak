@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+default = ["float"]
 float = ["stak-vm/float"]
 
 [dependencies]
