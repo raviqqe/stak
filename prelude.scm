@@ -1018,16 +1018,13 @@
       (if (< x epsilon)
         '()
         (cons #\.
-          (let loop ((x x) (ys '()))
-            (cond
-              ((< x epsilon)
-                '())
-
-              (else
-                (let ((x (* x radix)))
-                  (cons
-                    (format-digit (quotient x 1))
-                    (loop (remainder x 1) ys)))))))))
+          (let loop ((x x) (d epsilon) (ys '()))
+            (if (< x d)
+              '()
+              (let ((x (* x radix)))
+                (cons
+                  (format-digit (quotient x 1))
+                  (loop (remainder x 1) (* d radix) ys))))))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
@@ -1077,16 +1074,16 @@
       (define radix (if (null? rest) 10 (car rest)))
 
       (define (convert-point xs)
-        (let loop ((xs xs) (y 0) (power 1))
+        (let loop ((xs xs) (y 0) (d 1))
           (if (null? xs)
-            (/ y power)
+            (/ y d)
             (let ((x (convert-digit (car xs) radix)))
               (and
                 x
                 (loop
                   (cdr xs)
                   (+ (* radix y) x)
-                  (* power radix)))))))
+                  (* d radix)))))))
 
       (define (convert xs)
         (and
