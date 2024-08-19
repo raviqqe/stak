@@ -333,9 +333,9 @@ dependencies = [
 
 [[package]]
 name = "nonbox"
-version = "0.2.1"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a29fedbf4a940ce50db7558d2a1b961974e98148003ce247e0a59478e4d35b02"
+checksum = "e03b4c680d40ac694599b8d9bd432827378dad73db8fe5f36b40b59f173e75c4"
 
 [[package]]
 name = "object"
