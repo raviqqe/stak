@@ -18,7 +18,7 @@ trace_heap = []
 
 [dependencies]
 cfg-if = "1.0.0"
-nonbox = { version = "0.2.1", optional = true }
+nonbox = { version = "0.2.2", optional = true }
 stak-code = { version = "0.2", path = "../code" }
 
 [dev-dependencies]
