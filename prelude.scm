@@ -711,7 +711,8 @@
 
     ; TODO Set a true machine epsilon.
     (define epsilon
-      (let ((x (/ 2 10000000000000000)))
+      ; Variadic arguments to arithmetic operators are not available at this point.
+      (let ((x (/ (/ 2 100000000) 100000000)))
         (if (zero? x) 1 x)))
 
     ;; Character
