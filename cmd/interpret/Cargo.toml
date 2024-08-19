@@ -1,7 +1,7 @@
 [package]
 name = "stak-interpret"
 description = "Stak Scheme bytecode interpreter"
-version = "0.1.48"
+version = "0.1.49"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -18,16 +18,16 @@ trace_heap = ["stak-vm/trace_heap"]
 [dependencies]
 clap = { version = "4.5.16", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.42", path = "../../configuration" }
-stak-device = { version = "0.2.46", path = "../../device", features = ["std"] }
-stak-file = { version = "0.4.4", path = "../../file", features = ["std"] }
-stak-primitive = { version = "0.5.4", path = "../../primitive", features = [
+stak-configuration = { version = "0.1.43", path = "../../configuration" }
+stak-device = { version = "0.2.47", path = "../../device", features = ["std"] }
+stak-file = { version = "0.4.5", path = "../../file", features = ["std"] }
+stak-primitive = { version = "0.5.5", path = "../../primitive", features = [
   "std",
 ] }
-stak-process-context = { version = "0.2.4", path = "../../process_context", features = [
+stak-process-context = { version = "0.2.5", path = "../../process_context", features = [
   "std",
 ] }
-stak-vm = { version = "0.5.4", path = "../../vm", features = ["std"] }
+stak-vm = { version = "0.5.5", path = "../../vm", features = ["std"] }
 
 [lints]
 workspace = true
