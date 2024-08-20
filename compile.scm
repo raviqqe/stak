@@ -1081,7 +1081,11 @@
 (define (constant-normal? constant)
   (or
     (symbol? constant)
-    (and (number? constant) (>= constant 0))
+    (and
+      ; TODO Remove this `number?` call if `integer?` is fixed for non-numbers.
+      (number? constant)
+      (integer? constant)
+      (not (negative? constant)))
     (target-procedure? constant)))
 
 (define (build-child-constants context car cdr continue)
@@ -1097,6 +1101,23 @@
       (build-child
         cdr
         continue))))
+
+(define (build-number-constant constant continue)
+  (cond
+    ((negative? constant)
+      (code-rib
+        constant-instruction
+        0
+        (build-number-constant
+          (abs constant)
+          (lambda ()
+            (compile-primitive-call '$$- (continue))))))
+
+    ((not (integer? constant))
+      (raise "floating point numbers not supported yet"))
+
+    (else
+      (code-rib constant-instruction constant (continue)))))
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
@@ -1129,14 +1150,12 @@
         ((char? constant)
           (build-rib char-type '() (char->integer constant)))
 
-        ((and (number? constant) (negative? constant))
-          (code-rib
-            constant-instruction
-            0
-            (code-rib
-              constant-instruction
-              (abs constant)
-              (compile-primitive-call '$$- (continue)))))
+        ((and
+            (number? constant)
+            (or
+              (not (integer? constant))
+              (negative? constant)))
+          (build-number-constant constant continue))
 
         ((pair? constant)
           (build-child-constants
