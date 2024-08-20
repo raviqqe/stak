@@ -642,7 +642,9 @@
     (define complex? number?)
     (define real? number?)
     (define (integer? x)
-      (zero? (remainder x 1)))
+      (and
+        (number? x)
+        (zero? (remainder x 1))))
     (define rational? integer?)
 
     (define (exact? x) #t)

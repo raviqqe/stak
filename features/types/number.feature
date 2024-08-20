@@ -17,6 +17,76 @@ Feature: Number
       | 42    | A      |
       | -2045 | A      |
 
+  Scenario Outline: Check a number class of integers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (<predicate> <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | value | output |
+      | number?   | 0     | A      |
+      | number?   | 1     | A      |
+      | number?   | -42   | A      |
+      | complex?  | 0     | A      |
+      | complex?  | 1     | A      |
+      | complex?  | -42   | A      |
+      | real?     | 0     | A      |
+      | real?     | 1     | A      |
+      | real?     | -42   | A      |
+      | rational? | 0     | A      |
+      | rational? | 1     | A      |
+      | rational? | -42   | A      |
+      | integer?  | 0     | A      |
+      | integer?  | 1     | A      |
+      | integer?  | -42   | A      |
+
+  @float
+  Scenario Outline: Check a number class of floating point numbers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (<predicate> <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | value    | output |
+      | number?   | 3.14     | A      |
+      | number?   | -42.2045 | A      |
+      | complex?  | 3.14     | A      |
+      | complex?  | -42.2045 | A      |
+      | real?     | 3.14     | A      |
+      | real?     | -42.2045 | A      |
+      | rational? | 3.14     | B      |
+      | rational? | -42.2045 | B      |
+      | integer?  | 3.14     | B      |
+      | integer?  | -42.2045 | B      |
+
+  Scenario Outline: Check a number class of non-numbers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (<predicate> #f) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "B"
+
+    Examples:
+      | predicate |
+      | number?   |
+      | complex?  |
+      | real?     |
+      | rational? |
+      | integer?  |
+
   Scenario Outline: Use literals
     Given a file named "main.scm" with:
       """scheme
