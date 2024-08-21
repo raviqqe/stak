@@ -2,7 +2,7 @@ use crate::{
     cons::{Cons, Tag},
     number::Number,
 };
-use cfg_if::cfg_if;
+use cfg_exif::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -61,13 +61,11 @@ impl Value {
 
     /// Checks if it is a cons.
     pub fn is_cons(&self) -> bool {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                nonbox::f64::u64::unbox_unsigned(self.0).is_some()
-            } else {
-                self.0 & 1 == 0
-            }
-        }
+        feature!(if ("float") {
+            nonbox::f64::u64::unbox_unsigned(self.0).is_some()
+        } else {
+            self.0 & 1 == 0
+        })
     }
 
     /// Checks if it is a number.
