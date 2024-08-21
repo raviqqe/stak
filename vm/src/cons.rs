@@ -1,5 +1,5 @@
 use crate::{value::Value, Error};
-use cfg_if::cfg_if;
+use cfg_exif::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A tag.
@@ -45,23 +45,19 @@ impl Cons {
     }
 
     fn r#box(value: u64) -> Self {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                Self(nonbox::f64::u64::box_unsigned(value))
-            } else {
-                Self(value << 1)
-            }
-        }
+        Self(feature!(if ("float") {
+            nonbox::f64::u64::box_unsigned(value)
+        } else {
+            value << 1
+        }))
     }
 
     fn unbox(self) -> u64 {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
-            } else {
-                self.0 >> 1
-            }
-        }
+        feature!(if ("float") {
+            nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
+        } else {
+            self.0 >> 1
+        })
     }
 
     pub(crate) const fn from_raw(raw: u64) -> Self {

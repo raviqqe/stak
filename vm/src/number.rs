@@ -1,5 +1,5 @@
 use crate::{value::Value, Error};
-use cfg_if::cfg_if;
+use cfg_exif::feature;
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
@@ -24,24 +24,12 @@ pub struct Number(NumberRepresentation);
 impl Number {
     /// Creates a number.
     pub const fn new(number: NumberRepresentation) -> Self {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                Self(number)
-            } else {
-                Self(number << 1 | 1)
-            }
-        }
+        Self(feature!(if ("float") { number } else { number << 1 | 1 }))
     }
 
     /// Converts a number to a number representation.
     pub const fn to_representation(self) -> NumberRepresentation {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                self.0
-            } else {
-                self.0 >> 1
-            }
-        }
+        feature!(if ("float") { self.0 } else { self.0 >> 1 })
     }
 
     /// Converts `i64` into a number.
@@ -51,33 +39,23 @@ impl Number {
 
     /// Converts a number to a 64-bit integer.
     pub const fn to_i64(self) -> i64 {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                self.0 as _
-            } else {
-                self.0 >> 1
-            }
-        }
+        feature!(if ("float") { self.0 as _ } else { self.0 >> 1 })
     }
 
     pub(crate) fn from_raw(raw: u64) -> Self {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                Self(f64::from_bits(raw))
-            } else {
-                Self(raw as _)
-            }
-        }
+        Self(feature!(if ("float") {
+            f64::from_bits(raw)
+        } else {
+            raw as _
+        }))
     }
 
     pub(crate) fn to_raw(self) -> u64 {
-        cfg_if! {
-            if #[cfg(feature = "float")] {
-                self.0.to_bits()
-            } else {
-                self.0 as _
-            }
-        }
+        feature!(if ("float") {
+            self.0.to_bits()
+        } else {
+            self.0 as _
+        })
     }
 }
 

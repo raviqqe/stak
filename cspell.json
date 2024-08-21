@@ -17,6 +17,7 @@
     "cond",
     "coreutils",
     "embeddable",
+    "exif",
     "fclose",
     "findutils",
     "flamegraph",
