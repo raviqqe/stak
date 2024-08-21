@@ -41,14 +41,14 @@ checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
 
 [[package]]
 name = "mstak"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "libc",
  "stak-device",
@@ -85,11 +85,11 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-code"
-version = "0.2.46"
+version = "0.2.47"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.51"
+version = "0.1.52"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -101,25 +101,25 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.43"
+version = "0.1.44"
 
 [[package]]
 name = "stak-device"
-version = "0.2.47"
+version = "0.2.48"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-file"
-version = "0.4.5"
+version = "0.4.6"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.1.48"
+version = "0.1.49"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -130,7 +130,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.24"
+version = "0.1.25"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -139,7 +139,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "heapless",
  "stak-device",
@@ -150,11 +150,11 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.5"
+version = "0.2.6"
 
 [[package]]
 name = "stak-sac"
-version = "0.1.49"
+version = "0.1.50"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -169,14 +169,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.23"
+version = "0.1.24"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.5.5"
+version = "0.5.6"
 dependencies = [
  "cfg-if",
  "stak-code",
