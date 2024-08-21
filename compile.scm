@@ -1082,8 +1082,6 @@
   (or
     (symbol? constant)
     (and
-      ; TODO Remove this `number?` call if `integer?` is fixed for non-numbers.
-      (number? constant)
       (integer? constant)
       (not (negative? constant)))
     (target-procedure? constant)))
