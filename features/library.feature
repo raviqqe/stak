@@ -297,7 +297,6 @@ Feature: Library system
     When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
     Then the stdout should contain exactly "A"
 
-  @chibi @gauche @stak
   Scenario: Export a renamed procedure
     Given a file named "foo.scm" with:
       """scheme
