@@ -49,7 +49,7 @@ Feature: Number
   Scenario Outline: Check a number class of floating point numbers
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (scheme inexact))
 
       (write-u8 (if (<predicate> <value>) 65 66))
       """
@@ -64,27 +64,14 @@ Feature: Number
       | complex?  | -42.2045 | A      |
       | real?     | 3.14     | A      |
       | real?     | -42.2045 | A      |
-      | integer?  | 3.14     | B      |
-      | integer?  | -42.2045 | B      |
-
-  @float @stak
-  Scenario Outline: Check if a number is rational
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (write-u8 (if (<predicate> <value>) 65 66))
-      """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
-
-    Examples:
-      | predicate | value    | output |
       | rational? | 0        | A      |
       | rational? | 1        | A      |
       | rational? | -42      | A      |
-      | rational? | 3.14     | B      |
-      | rational? | -42.2045 | B      |
+      | rational? | 3.14     | A      |
+      | rational? | -42.2045 | A      |
+      | rational? | (exp 1)  | A      |
+      | integer?  | 3.14     | B      |
+      | integer?  | -42.2045 | B      |
 
   Scenario Outline: Check a number class of non-numbers
     Given a file named "main.scm" with:
