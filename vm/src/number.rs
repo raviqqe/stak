@@ -37,7 +37,7 @@ impl Number {
         Self::new(number as _)
     }
 
-    /// Converts a number to `i64.
+    /// Converts a number to `i64`.
     pub const fn to_i64(self) -> i64 {
         feature!(if ("float") { self.0 as _ } else { self.0 >> 1 })
     }

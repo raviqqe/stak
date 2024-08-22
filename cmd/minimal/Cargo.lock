@@ -9,10 +9,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
-name = "cfg-if"
-version = "1.0.0"
+name = "cfg-exif"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
+checksum = "dcdfe3b5f3997edf006fb6d77713fc63d4c6789adc50a44e7bfd074e7e8337b1"
 
 [[package]]
 name = "hash32"
@@ -38,6 +38,12 @@ name = "libc"
 version = "0.2.154"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ae743338b92ff9146ce83992f766a31066a91a8c84a45e0e9f21e7cf6de6d346"
+
+[[package]]
+name = "libm"
+version = "0.2.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ec2a862134d2a7d32d7983ddcdd1c4923530833c9f2ea1a44fc5fa473989058"
 
 [[package]]
 name = "mstak"
@@ -142,6 +148,7 @@ name = "stak-primitive"
 version = "0.5.6"
 dependencies = [
  "heapless",
+ "libm",
  "stak-device",
  "stak-file",
  "stak-process-context",
@@ -178,7 +185,7 @@ dependencies = [
 name = "stak-vm"
 version = "0.5.6"
 dependencies = [
- "cfg-if",
+ "cfg-exif",
  "stak-code",
 ]
 
