@@ -234,6 +234,28 @@ Feature: Number
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @float
+  Scenario: Calculate an exponentiation
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (< (abs (- (expt 2 3) (exp (* (log 2) 3)))) 0.000001) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+  @float
+  Scenario: Calculate a logarithm
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (< (abs (- (log 2 3) (/ (log 2) (log 3)))) 0.000001) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario Outline: Use a comparison operator
     Given a file named "main.scm" with:
       """scheme
