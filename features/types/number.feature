@@ -238,7 +238,7 @@ Feature: Number
   Scenario: Calculate an exponentiation
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (scheme inexact))
 
       (write-u8 (if (< (abs (- (expt 2 3) (exp (* (log 2) 3)))) 0.000001) 65 66))
       """
@@ -249,7 +249,7 @@ Feature: Number
   Scenario: Calculate a logarithm
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base))
+      (import (scheme base) (scheme inexact))
 
       (write-u8 (if (< (abs (- (log 2 3) (/ (log 2) (log 3)))) 0.000001) 65 66))
       """
