@@ -3043,6 +3043,7 @@
         one
         other))
 
+    ; TODO Import this from the `(scheme repl)` library instead.
     (define interaction-libraries '())
 
     (define eval
