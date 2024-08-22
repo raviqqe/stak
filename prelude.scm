@@ -2445,7 +2445,6 @@
     (scheme lazy)
     (scheme process-context)
     (scheme read)
-    (scheme repl)
     (scheme write)
     (stak base))
 
