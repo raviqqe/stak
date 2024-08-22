@@ -93,6 +93,9 @@
     truncate-quotient
     modulo
     floor-remainder
+    exp
+    expt
+    log
     =
     <
     >
@@ -692,10 +695,12 @@
     (define floor-remainder modulo)
 
     (define exp $$exp)
+
     (define (log x . xs)
       (if (null? xs)
         ($$log x)
         (/ ($$log x) ($$log (car xs)))))
+
     (define (expt x y)
       ($$exp (* ($$log x) y)))
 
@@ -1374,6 +1379,9 @@
     truncate-quotient
     modulo
     floor-remainder
+    exp
+    expt
+    log
     =
     <
     >
