@@ -48,6 +48,14 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         Ok(())
     }
 
+    fn operate_unary(memory: &mut Memory, operate: fn(Number) -> Number) -> Result<(), Error> {
+        let [x] = Self::pop_number_arguments(memory);
+
+        memory.push(operate(x).into())?;
+
+        Ok(())
+    }
+
     fn operate_binary(
         memory: &mut Memory,
         operate: fn(Number, Number) -> Number,
@@ -242,6 +250,12 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::MULTIPLY => Self::operate_binary(memory, Mul::mul)?,
             Primitive::DIVIDE => Self::operate_binary(memory, Div::div)?,
             Primitive::REMAINDER => Self::operate_binary(memory, Rem::rem)?,
+            Primitive::EXPONENTIATION => {
+                Self::operate_unary(memory, |x| Number::from_f64(libm::exp(x.to_f64())))?
+            }
+            Primitive::LOGARITHM => {
+                Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
+            }
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| Error::ReadInput)?;
 

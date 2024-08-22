@@ -93,6 +93,9 @@
     truncate-quotient
     modulo
     floor-remainder
+    exp
+    expt
+    log
     =
     <
     >
@@ -575,12 +578,14 @@
     (define $$* (primitive 14))
     (define $$/ (primitive 15))
     (define $$remainder (primitive 16))
-    (define $$read-input (primitive 17))
-    (define $$write-output (primitive 18))
-    (define $$write-error (primitive 19))
-    (define $$halt (primitive 20))
-    (define null? (primitive 21))
-    (define pair? (primitive 22))
+    (define $$exp (primitive 17))
+    (define $$log (primitive 18))
+    (define $$read-input (primitive 19))
+    (define $$write-output (primitive 20))
+    (define $$write-error (primitive 21))
+    (define $$halt (primitive 22))
+    (define null? (primitive 23))
+    (define pair? (primitive 24))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -640,12 +645,12 @@
       (not (rib? x)))
 
     (define complex? number?)
-    (define real? number?)
+    (define real? complex?)
+    (define rational? real?)
     (define (integer? x)
       (and
         (number? x)
         (zero? (remainder x 1))))
-    (define rational? integer?)
 
     (define (exact? x) #t)
     (define (inexact? x) #f)
@@ -688,6 +693,16 @@
             (+ r y)))))
 
     (define floor-remainder modulo)
+
+    (define exp $$exp)
+
+    (define (log x . xs)
+      (if (null? xs)
+        ($$log x)
+        (/ ($$log x) ($$log (car xs)))))
+
+    (define (expt x y)
+      (exp (* (log x) y)))
 
     (define (comparison-operator f)
       (lambda xs
@@ -1364,6 +1379,7 @@
     truncate-quotient
     modulo
     floor-remainder
+    expt
     =
     <
     >
@@ -1876,6 +1892,11 @@
     (define (write-value value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
 
+(define-library (scheme inexact)
+  (export exp log)
+
+  (import (only (stak base) exp log)))
+
 (define-library (scheme cxr)
   (import (scheme base))
 
@@ -2317,8 +2338,8 @@
   (import (scheme base) (scheme lazy) (stak base))
 
   (begin
-    (define $$command-line (primitive 29))
-    (define $$get-environment-variables (primitive 30))
+    (define $$command-line (primitive 31))
+    (define $$get-environment-variables (primitive 32))
 
     (define command-line (delay (map code-points->string ($$command-line))))
     (define get-environment-variables
@@ -2348,12 +2369,80 @@
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
 
+(define-library (scheme file)
+  (export
+    call-with-input-file
+    call-with-output-file
+    delete-file
+    file-exists?
+    open-binary-input-file
+    open-binary-output-file
+    open-input-file
+    open-output-file
+    with-input-from-file
+    with-output-to-file)
+
+  (import
+    (scheme base)
+    (only (stak base) primitive string->code-points))
+
+  (begin
+    (define $$open-file (primitive 25))
+    (define $$close-file (primitive 26))
+    (define $$read-file (primitive 27))
+    (define $$write-file (primitive 28))
+    (define $$delete-file (primitive 29))
+    (define $$exists-file (primitive 30))
+
+    (define (call-with-input-file path f)
+      (call-with-port (open-input-file path) f))
+
+    (define (call-with-output-file path f)
+      (call-with-port (open-output-file path) f))
+
+    (define (delete-file path)
+      (unless ($$delete-file (string->code-points path))
+        (error "cannot delete file")))
+
+    (define (file-exists? path)
+      ($$exists-file (string->code-points path)))
+
+    (define (open-file output)
+      (lambda (path)
+        (let ((descriptor ($$open-file (string->code-points path) output)))
+          (unless descriptor
+            (error "cannot open file"))
+          (make-port
+            (lambda () ($$read-file descriptor))
+            (lambda (byte) ($$write-file descriptor byte))
+            (lambda () ($$close-file descriptor))))))
+
+    (define open-input-file (open-file #f))
+    (define open-output-file (open-file #t))
+    (define open-binary-input-file open-input-file)
+    (define open-binary-output-file open-output-file)
+
+    (define (with-port-from-file open-file current-port)
+      (lambda (path thunk)
+        (let ((file #f))
+          (dynamic-wind
+            (lambda () (set! file (open-file path)))
+            (lambda () (parameterize ((current-port file)) (thunk)))
+            (lambda () (close-port file))))))
+
+    (define with-input-from-file (with-port-from-file open-input-file current-input-port))
+    (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
+
 (define-library (scheme eval)
   (export environment eval interaction-libraries)
 
   (import
     (scheme base)
+    (scheme char)
     (scheme cxr)
+    (scheme file)
+    (scheme inexact)
+    (scheme lazy)
     (scheme process-context)
     (scheme read)
     (scheme write)
@@ -3017,6 +3106,7 @@
         one
         other))
 
+    ; TODO Import this from the `(scheme repl)` library instead.
     (define interaction-libraries '())
 
     (define eval
@@ -3063,70 +3153,6 @@
                   '())))))))
 
     (define environment list)))
-
-(define-library (scheme file)
-  (export
-    call-with-input-file
-    call-with-output-file
-    delete-file
-    file-exists?
-    open-binary-input-file
-    open-binary-output-file
-    open-input-file
-    open-output-file
-    with-input-from-file
-    with-output-to-file)
-
-  (import
-    (scheme base)
-    (only (stak base) primitive string->code-points))
-
-  (begin
-    (define $$open-file (primitive 23))
-    (define $$close-file (primitive 24))
-    (define $$read-file (primitive 25))
-    (define $$write-file (primitive 26))
-    (define $$delete-file (primitive 27))
-    (define $$exists-file (primitive 28))
-
-    (define (call-with-input-file path f)
-      (call-with-port (open-input-file path) f))
-
-    (define (call-with-output-file path f)
-      (call-with-port (open-output-file path) f))
-
-    (define (delete-file path)
-      (unless ($$delete-file (string->code-points path))
-        (error "cannot delete file")))
-
-    (define (file-exists? path)
-      ($$exists-file (string->code-points path)))
-
-    (define (open-file output)
-      (lambda (path)
-        (let ((descriptor ($$open-file (string->code-points path) output)))
-          (unless descriptor
-            (error "cannot open file"))
-          (make-port
-            (lambda () ($$read-file descriptor))
-            (lambda (byte) ($$write-file descriptor byte))
-            (lambda () ($$close-file descriptor))))))
-
-    (define open-input-file (open-file #f))
-    (define open-output-file (open-file #t))
-    (define open-binary-input-file open-input-file)
-    (define open-binary-output-file open-output-file)
-
-    (define (with-port-from-file open-file current-port)
-      (lambda (path thunk)
-        (let ((file #f))
-          (dynamic-wind
-            (lambda () (set! file (open-file path)))
-            (lambda () (parameterize ((current-port file)) (thunk)))
-            (lambda () (close-port file))))))
-
-    (define with-input-from-file (with-port-from-file open-input-file current-input-port))
-    (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
 (define-library (scheme repl)
   (export interaction-environment)

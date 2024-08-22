@@ -1,13 +1,12 @@
 (import
   (scheme base)
   (scheme char)
-  (scheme lazy)
-  (scheme read)
-  (scheme write)
   (scheme eval)
-  (scheme repl)
   (scheme file)
-  (scheme process-context))
+  (scheme process-context)
+  (scheme read)
+  (scheme repl)
+  (scheme write))
 
 (define (main)
   (define program (open-input-file (list-ref (command-line) 1)))
