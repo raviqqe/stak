@@ -39,11 +39,7 @@ impl Number {
 
     /// Converts a number to `i64`.
     pub const fn to_i64(self) -> i64 {
-        feature!(if ("float") {
-            self.0 as _
-        } else {
-            self.to_representation()
-        })
+        self.to_representation() as _
     }
 
     /// Converts `f64` to a number.
@@ -53,11 +49,7 @@ impl Number {
 
     /// Converts a number to `f64`.
     pub const fn to_f64(self) -> f64 {
-        feature!(if ("float") {
-            self.0
-        } else {
-            self.to_representation() as _
-        })
+        self.to_representation() as _
     }
 
     pub(crate) fn from_raw(raw: u64) -> Self {
