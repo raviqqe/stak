@@ -242,6 +242,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::MULTIPLY => Self::operate_binary(memory, Mul::mul)?,
             Primitive::DIVIDE => Self::operate_binary(memory, Div::div)?,
             Primitive::REMAINDER => Self::operate_binary(memory, Rem::rem)?,
+            Primitive::EXPONENTIATION => Self::operate_binary(memory, Div::div)?,
+            Primitive::LOGARITHM => Self::operate_binary(memory, Mul::mul)?,
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| Error::ReadInput)?;
 

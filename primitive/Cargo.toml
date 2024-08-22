@@ -13,6 +13,7 @@ std = []
 
 [dependencies]
 heapless = "0.8.0"
+libm = { version = "0.2.8", default-features = false }
 stak-device = { version = "0.2.48", path = "../device" }
 stak-file = { version = "0.4.6", path = "../file" }
 stak-process-context = { version = "0.2.6", path = "../process_context" }

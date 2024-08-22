@@ -18,6 +18,8 @@ pub(super) enum Primitive {
     Multiply,
     Divide,
     Remainder,
+    Exponentiation,
+    Logarithm,
     Read,
     Write,
     WriteError,
@@ -52,6 +54,8 @@ impl Primitive {
     pub const MULTIPLY: u8 = Self::Multiply as _;
     pub const DIVIDE: u8 = Self::Divide as _;
     pub const REMAINDER: u8 = Self::Remainder as _;
+    pub const EXPONENTIATION: u8 = Self::Exponentiation as _;
+    pub const LOGARITHM: u8 = Self::Logarithm as _;
     pub const READ: u8 = Self::Read as _;
     pub const WRITE: u8 = Self::Write as _;
     pub const WRITE_ERROR: u8 = Self::WriteError as _;
