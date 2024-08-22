@@ -2369,6 +2369,70 @@
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
 
+(define-library (scheme file)
+  (export
+    call-with-input-file
+    call-with-output-file
+    delete-file
+    file-exists?
+    open-binary-input-file
+    open-binary-output-file
+    open-input-file
+    open-output-file
+    with-input-from-file
+    with-output-to-file)
+
+  (import
+    (scheme base)
+    (only (stak base) primitive string->code-points))
+
+  (begin
+    (define $$open-file (primitive 25))
+    (define $$close-file (primitive 26))
+    (define $$read-file (primitive 27))
+    (define $$write-file (primitive 28))
+    (define $$delete-file (primitive 29))
+    (define $$exists-file (primitive 30))
+
+    (define (call-with-input-file path f)
+      (call-with-port (open-input-file path) f))
+
+    (define (call-with-output-file path f)
+      (call-with-port (open-output-file path) f))
+
+    (define (delete-file path)
+      (unless ($$delete-file (string->code-points path))
+        (error "cannot delete file")))
+
+    (define (file-exists? path)
+      ($$exists-file (string->code-points path)))
+
+    (define (open-file output)
+      (lambda (path)
+        (let ((descriptor ($$open-file (string->code-points path) output)))
+          (unless descriptor
+            (error "cannot open file"))
+          (make-port
+            (lambda () ($$read-file descriptor))
+            (lambda (byte) ($$write-file descriptor byte))
+            (lambda () ($$close-file descriptor))))))
+
+    (define open-input-file (open-file #f))
+    (define open-output-file (open-file #t))
+    (define open-binary-input-file open-input-file)
+    (define open-binary-output-file open-output-file)
+
+    (define (with-port-from-file open-file current-port)
+      (lambda (path thunk)
+        (let ((file #f))
+          (dynamic-wind
+            (lambda () (set! file (open-file path)))
+            (lambda () (parameterize ((current-port file)) (thunk)))
+            (lambda () (close-port file))))))
+
+    (define with-input-from-file (with-port-from-file open-input-file current-input-port))
+    (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
+
 (define-library (scheme eval)
   (export environment eval interaction-libraries)
 
@@ -3090,70 +3154,6 @@
                   '())))))))
 
     (define environment list)))
-
-(define-library (scheme file)
-  (export
-    call-with-input-file
-    call-with-output-file
-    delete-file
-    file-exists?
-    open-binary-input-file
-    open-binary-output-file
-    open-input-file
-    open-output-file
-    with-input-from-file
-    with-output-to-file)
-
-  (import
-    (scheme base)
-    (only (stak base) primitive string->code-points))
-
-  (begin
-    (define $$open-file (primitive 25))
-    (define $$close-file (primitive 26))
-    (define $$read-file (primitive 27))
-    (define $$write-file (primitive 28))
-    (define $$delete-file (primitive 29))
-    (define $$exists-file (primitive 30))
-
-    (define (call-with-input-file path f)
-      (call-with-port (open-input-file path) f))
-
-    (define (call-with-output-file path f)
-      (call-with-port (open-output-file path) f))
-
-    (define (delete-file path)
-      (unless ($$delete-file (string->code-points path))
-        (error "cannot delete file")))
-
-    (define (file-exists? path)
-      ($$exists-file (string->code-points path)))
-
-    (define (open-file output)
-      (lambda (path)
-        (let ((descriptor ($$open-file (string->code-points path) output)))
-          (unless descriptor
-            (error "cannot open file"))
-          (make-port
-            (lambda () ($$read-file descriptor))
-            (lambda (byte) ($$write-file descriptor byte))
-            (lambda () ($$close-file descriptor))))))
-
-    (define open-input-file (open-file #f))
-    (define open-output-file (open-file #t))
-    (define open-binary-input-file open-input-file)
-    (define open-binary-output-file open-output-file)
-
-    (define (with-port-from-file open-file current-port)
-      (lambda (path thunk)
-        (let ((file #f))
-          (dynamic-wind
-            (lambda () (set! file (open-file path)))
-            (lambda () (parameterize ((current-port file)) (thunk)))
-            (lambda () (close-port file))))))
-
-    (define with-input-from-file (with-port-from-file open-input-file current-input-port))
-    (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
 (define-library (scheme repl)
   (export interaction-environment)
