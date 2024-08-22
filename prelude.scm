@@ -575,8 +575,8 @@
     (define $$* (primitive 14))
     (define $$/ (primitive 15))
     (define $$remainder (primitive 16))
-    (define $$exponentiation (primitive 17))
-    (define $$logarithm (primitive 18))
+    (define $$exp (primitive 17))
+    (define $$log (primitive 18))
     (define $$read-input (primitive 19))
     (define $$write-output (primitive 20))
     (define $$write-error (primitive 21))
@@ -690,6 +690,14 @@
             (+ r y)))))
 
     (define floor-remainder modulo)
+
+    (define exp $$exp)
+    (define (log x . xs)
+      (if (null? xs)
+        ($$log x)
+        (/ ($$log x) ($$log (car xs)))))
+    (define (expt x y)
+      ($$exp (* ($$log x) y)))
 
     (define (comparison-operator f)
       (lambda xs
