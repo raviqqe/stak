@@ -1,4 +1,12 @@
 {
+  "ignoreRegExpList": ["cxr"],
+  "patterns": [
+    {
+      "name": "cxr",
+      "pattern": "/c[ad]+r/"
+    }
+  ],
+  "useGitignore": true,
   "words": [
     "alist",
     "alloc",
@@ -32,6 +40,7 @@
     "lcov",
     "letrec",
     "libc",
+    "libm",
     "memq",
     "memv",
     "minifier",
@@ -59,13 +68,5 @@
     "unsync",
     "uutils",
     "yota"
-  ],
-  "patterns": [
-    {
-      "name": "cxr",
-      "pattern": "/c[ad]+r/"
-    }
-  ],
-  "ignoreRegExpList": ["cxr"],
-  "useGitignore": true
+  ]
 }
