@@ -297,6 +297,34 @@ Feature: Library system
     When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Import and export only a procedure
+    Given a file named "foo.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "bar.scm" with:
+      """scheme
+      (define-library (bar)
+        (export foo)
+
+        (import (only (foo) foo)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (bar))
+
+      (foo 65)
+      """
+    When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Export a renamed procedure
     Given a file named "foo.scm" with:
       """scheme
