@@ -269,7 +269,7 @@ Feature: Library system
       | (rename (prefix (foo) my-) (my-foo my-baz))           | my-baz | A      |
       | (except (prefix (rename (foo) (bar baz)) my-) my-foo) | my-baz | B      |
 
-  Scenario: Export an imported procedure
+  Scenario: Re-export an imported procedure
     Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
@@ -287,6 +287,34 @@ Feature: Library system
         (export foo)
 
         (import (foo)))
+      """
+    And a file named "main.scm" with:
+      """scheme
+      (import (bar))
+
+      (foo 65)
+      """
+    When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
+    Then the stdout should contain exactly "A"
+
+  Scenario: Re-export a qualified imported procedure
+    Given a file named "foo.scm" with:
+      """scheme
+      (define-library (foo)
+        (export foo)
+
+        (import (scheme base))
+
+        (begin
+          (define (foo x)
+            (write-u8 x))))
+      """
+    And a file named "bar.scm" with:
+      """scheme
+      (define-library (bar)
+        (export foo)
+
+        (import (only (foo) foo)))
       """
     And a file named "main.scm" with:
       """scheme
