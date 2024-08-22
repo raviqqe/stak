@@ -37,9 +37,19 @@ impl Number {
         Self::new(number as _)
     }
 
-    /// Converts a number to a 64-bit integer.
+    /// Converts a number to `i64.
     pub const fn to_i64(self) -> i64 {
         feature!(if ("float") { self.0 as _ } else { self.0 >> 1 })
+    }
+
+    /// Converts `f64` to a number.
+    pub const fn from_f64(number: f64) -> Self {
+        Self::new(number as _)
+    }
+
+    /// Converts a number to `f64`.
+    pub const fn to_f64(self) -> f64 {
+        feature!(if ("float") { self.0 } else { self.0 as _ })
     }
 
     pub(crate) fn from_raw(raw: u64) -> Self {
