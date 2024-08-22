@@ -222,7 +222,7 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
   @float
-  Scenario: Calculate an exponentation
+  Scenario: Calculate an exponentiation
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
