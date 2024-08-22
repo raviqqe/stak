@@ -702,7 +702,7 @@
         (/ ($$log x) ($$log (car xs)))))
 
     (define (expt x y)
-      ($$exp (* ($$log x) y)))
+      (exp (* (log x) y)))
 
     (define (comparison-operator f)
       (lambda xs
