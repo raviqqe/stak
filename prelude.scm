@@ -1893,9 +1893,9 @@
       (write-string "<unknown>" (get-output-port rest)))))
 
 (define-library (scheme inexact)
-  (import (only (stak base) exp log))
+  (export exp log)
 
-  (export exp log))
+  (import (only (stak base) exp log)))
 
 (define-library (scheme cxr)
   (import (scheme base))
