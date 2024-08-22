@@ -1379,9 +1379,7 @@
     truncate-quotient
     modulo
     floor-remainder
-    exp
     expt
-    log
     =
     <
     >
@@ -1893,6 +1891,11 @@
     ; Dummy implementation
     (define (write-value value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
+
+(define-library (scheme inexact)
+  (import (only (stak base) exp log))
+
+  (export exp log))
 
 (define-library (scheme cxr)
   (import (scheme base))
