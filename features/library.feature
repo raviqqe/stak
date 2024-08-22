@@ -297,7 +297,7 @@ Feature: Library system
     When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Import and re-export only a procedure
+  Scenario: Re-export a qualified imported procedure
     Given a file named "foo.scm" with:
       """scheme
       (define-library (foo)
