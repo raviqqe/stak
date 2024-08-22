@@ -1,10 +1,10 @@
 (import
   (scheme base)
   (scheme char)
-  (scheme read)
-  (scheme write)
   (scheme eval)
-  (scheme repl))
+  (scheme read)
+  (scheme repl)
+  (scheme write))
 
 (define (main)
   (display "> " (current-error-port))

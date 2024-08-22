@@ -2374,9 +2374,14 @@
 
   (import
     (scheme base)
+    (scheme char)
     (scheme cxr)
+    (scheme file)
+    (scheme inexact)
+    (scheme lazy)
     (scheme process-context)
     (scheme read)
+    (scheme repl)
     (scheme write)
     (stak base))
 
