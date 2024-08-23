@@ -1,8 +1,11 @@
 (import
   (scheme base)
   (scheme char)
+  (scheme cxr)
   (scheme eval)
   (scheme file)
+  (scheme inexact)
+  (scheme lazy)
   (scheme process-context)
   (scheme read)
   (scheme repl)
