@@ -2433,6 +2433,14 @@
     (define with-input-from-file (with-port-from-file open-input-file current-input-port))
     (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
+(define-library (scheme repl)
+  (export interaction-environment)
+
+  (import (only (scheme base) define make-parameter))
+
+  (begin
+    (define interaction-environment (make-parameter '()))))
+
 (define-library (scheme eval)
   (export environment eval interaction-libraries)
 
@@ -3153,14 +3161,3 @@
                   '())))))))
 
     (define environment list)))
-
-(define-library (scheme repl)
-  (export interaction-environment)
-
-  (import
-    (only (scheme base) define)
-    (only (scheme eval) interaction-libraries))
-
-  (begin
-    (define (interaction-environment)
-      interaction-libraries)))
