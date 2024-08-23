@@ -3120,6 +3120,7 @@
               (if (symbol? (cdr pair))
                 (resolve-denotation macro-context (cdr pair))
                 (make-transformer macro-context (cdr pair)))))
+          ; TODO Use macros from this `(scheme eval)` library's context rathern than the top level's.
           ($$macros))
 
         (lambda (expression environment)
