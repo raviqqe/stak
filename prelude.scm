@@ -1035,7 +1035,8 @@
     (define (format-point x radix)
       (if (< x epsilon)
         '()
-        (cons #\.
+        (cons
+          #\.
           (let loop ((x x) (d epsilon) (ys '()))
             (if (< x d)
               '()
