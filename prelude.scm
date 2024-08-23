@@ -1042,14 +1042,15 @@
               '()
               (let* ((x (* x radix))
                      (r (remainder x 1))
-                     (x (quotient x 1)))
+                     (x (quotient x 1))
+                     (d (* d radix)))
                 (if (< (- 1 r) d)
                   (cons
                     (format-digit (+ x 1))
                     '())
                   (cons
                     (format-digit x)
-                    (loop r (* d radix) ys)))))))))
+                    (loop r d ys)))))))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
