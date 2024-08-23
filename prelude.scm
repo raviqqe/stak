@@ -1040,10 +1040,16 @@
           (let loop ((x x) (d epsilon) (ys '()))
             (if (< x d)
               '()
-              (let ((x (* x radix)))
-                (cons
-                  (format-digit (quotient x 1))
-                  (loop (remainder x 1) (* d radix) ys))))))))
+              (let* ((x (* x radix))
+                     (r (remainder x 1))
+                     (x (quotient x 1)))
+                (if (< (- 1 r) d)
+                  (cons
+                    (format-digit (+ x 1))
+                    '())
+                  (cons
+                    (format-digit x)
+                    (loop r (* d radix) ys)))))))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
