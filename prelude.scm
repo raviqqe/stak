@@ -2441,8 +2441,16 @@
     (define with-input-from-file (with-port-from-file open-input-file current-input-port))
     (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
+(define-library (scheme repl)
+  (export interaction-environment)
+
+  (import (only (scheme base) define make-parameter quote))
+
+  (begin
+    (define interaction-environment (make-parameter '()))))
+
 (define-library (scheme eval)
-  (export environment eval interaction-libraries)
+  (export environment eval)
 
   (import
     (scheme base)
@@ -2453,6 +2461,7 @@
     (scheme lazy)
     (scheme process-context)
     (scheme read)
+    (scheme repl)
     (scheme write)
     (stak base))
 
@@ -3114,9 +3123,6 @@
         one
         other))
 
-    ; TODO Import this from the `(scheme repl)` library instead.
-    (define interaction-libraries '())
-
     (define eval
       (let ((libraries ($$libraries))
             (macro-context (make-macro-context (make-macro-state 0) '())))
@@ -3135,11 +3141,10 @@
         (lambda (expression environment)
           (case (predicate expression)
             ((import)
-              (unless (eq? environment interaction-libraries)
+              (unless (eq? environment (interaction-environment))
                 (error "invalid import in eval"))
-              (set!
-                interaction-libraries
-                (merge-environments interaction-libraries (cdr expression))))
+              (interaction-environment
+                (merge-environments (interaction-environment) (cdr expression))))
 
             (else
               ((make-procedure
@@ -3163,14 +3168,3 @@
                   '())))))))
 
     (define environment list)))
-
-(define-library (scheme repl)
-  (export interaction-environment)
-
-  (import
-    (only (scheme base) define)
-    (only (scheme eval) interaction-libraries))
-
-  (begin
-    (define (interaction-environment)
-      interaction-libraries)))
