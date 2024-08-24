@@ -1035,14 +1035,22 @@
     (define (format-point x radix)
       (if (< x epsilon)
         '()
-        (cons #\.
+        (cons
+          #\.
           (let loop ((x x) (d epsilon) (ys '()))
             (if (< x d)
               '()
-              (let ((x (* x radix)))
-                (cons
-                  (format-digit (quotient x 1))
-                  (loop (remainder x 1) (* d radix) ys))))))))
+              (let* ((x (* x radix))
+                     (r (remainder x 1))
+                     (q (quotient x 1))
+                     (d (* d radix)))
+                (if (< (- 1 r) d)
+                  (cons
+                    (format-digit (+ q 1))
+                    '())
+                  (cons
+                    (format-digit q)
+                    (loop r d ys)))))))))
 
     (define (number->string x . rest)
       (let ((radix (if (null? rest) 10 (car rest))))
@@ -3126,6 +3134,8 @@
               (if (symbol? (cdr pair))
                 (resolve-denotation macro-context (cdr pair))
                 (make-transformer macro-context (cdr pair)))))
+          ; TODO Use macros from this `(scheme eval)` library's context rather
+          ; than the top level's.
           ($$macros))
 
         (lambda (expression environment)
