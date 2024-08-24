@@ -89,7 +89,7 @@ Feature: Evaluation
     Then the stdout should contain exactly "foo"
 
   @stak
-  Scenario: Use a procedure without importing a library
+  Scenario: Use a procedure without importing its library
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
