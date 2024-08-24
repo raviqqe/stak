@@ -81,6 +81,16 @@ Feature: Evaluation
   Scenario: Use a `display` procedure
     Given a file named "main.scm" with:
       """scheme
+      (import (scheme base) (scheme eval) (scheme write))
+
+      (eval '(display "foo") (environment '(scheme write)))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "foo"
+
+  Scenario: Use a procedure without importing a library
+    Given a file named "main.scm" with:
+      """scheme
       (import (scheme base) (scheme eval))
 
       (eval '(display "foo") (environment '(scheme write)))
