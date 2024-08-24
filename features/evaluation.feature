@@ -88,6 +88,7 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
 
+  @stak
   Scenario: Use a procedure without importing a library
     Given a file named "main.scm" with:
       """scheme
@@ -95,8 +96,8 @@ Feature: Evaluation
 
       (eval '(display "foo") (environment '(scheme write)))
       """
-    When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "foo"
+    When I run `scheme main.scm`
+    Then the exit status should not be 0
 
   @gauche @guile @stak
   Scenario: Use a `define` syntax with a variable
