@@ -2436,7 +2436,7 @@
 (define-library (scheme repl)
   (export interaction-environment)
 
-  (import (only (scheme base) define make-parameter))
+  (import (only (scheme base) define make-parameter quote))
 
   (begin
     (define interaction-environment (make-parameter '()))))
