@@ -2455,6 +2455,7 @@
   (import
     (scheme base)
     (scheme cxr)
+    (scheme repl)
     (stak base))
 
   (begin
