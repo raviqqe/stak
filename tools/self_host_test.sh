@@ -23,10 +23,11 @@ artifact_path() {
 
 cd $(dirname $0)/..
 
-target=target/release_test
+profile=release_test
+target=target/$profile
 
 mkdir -p tmp
-cargo build --profile release_test
+cargo build --profile $profile
 
 for stage in $(seq 0 $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage $stage >stage$(expr $stage + 1).bc
