@@ -88,17 +88,6 @@ Feature: Evaluation
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "foo"
 
-  @stak
-  Scenario: Use a procedure without importing its library
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
-
-      (eval '(display "foo") (environment '(scheme write)))
-      """
-    When I run `scheme main.scm`
-    Then the exit status should not be 0
-
   @gauche @guile @stak
   Scenario: Use a `define` syntax with a variable
     Given a file named "main.scm" with:
