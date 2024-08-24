@@ -2454,15 +2454,8 @@
 
   (import
     (scheme base)
-    (scheme char)
     (scheme cxr)
-    (scheme file)
-    (scheme inexact)
-    (scheme lazy)
-    (scheme process-context)
-    (scheme read)
     (scheme repl)
-    (scheme write)
     (stak base))
 
   (begin
@@ -3134,8 +3127,8 @@
               (if (symbol? (cdr pair))
                 (resolve-denotation macro-context (cdr pair))
                 (make-transformer macro-context (cdr pair)))))
-          ; TODO Use macros from this `(scheme eval)` library's context rather
-          ; than the top level's.
+          ; TODO Use macros from this `(scheme eval)` library's environment rather
+          ; than the top level one?
           ($$macros))
 
         (lambda (expression environment)

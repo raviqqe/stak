@@ -81,7 +81,7 @@ Feature: Evaluation
   Scenario: Use a `display` procedure
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme eval))
+      (import (scheme base) (scheme eval) (scheme write))
 
       (eval '(display "foo") (environment '(scheme write)))
       """
