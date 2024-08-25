@@ -4,7 +4,7 @@ set -ex
 
 interpreter=stak-interpret
 
-while getopts fi: option; do
+while getopts i: option; do
   case $option in
   i)
     interpreter=$OPTARG
