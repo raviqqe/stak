@@ -18,9 +18,6 @@ jobs:
         interpreter:
           - stak-interpret
           - mstak-interpret
-        interpreter:
-          - stak-interpret
-          - mstak-interpret
         options:
           -
           - -d
