@@ -3,9 +3,13 @@
 set -ex
 
 interpreter=stak-interpret
+filter=.
 
-while getopts i: option; do
+while getopts fi: option; do
   case $option in
+  f)
+    filter=$OPTARG
+    ;;
   i)
     interpreter=$OPTARG
     ;;
@@ -28,12 +32,6 @@ for directory in . cmd/minimal; do
 done
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
-
-filter=.
-
-if [ $# -gt 0 ]; then
-  filter="$@"
-fi
 
 for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   base=${file%.scm}
