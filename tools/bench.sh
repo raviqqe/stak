@@ -3,12 +3,11 @@
 set -ex
 
 interpreter=stak-interpret
-filter=.
 
-while getopts fi: option; do
+while getopts di: option; do
   case $option in
-  f)
-    filter=$OPTARG
+  d)
+    build_options=--no-default-features
     ;;
   i)
     interpreter=$OPTARG
@@ -17,6 +16,10 @@ while getopts fi: option; do
 done
 
 shift $(expr $OPTIND - 1)
+
+if [ $# -ne 0 ]; then
+  exit 1
+fi
 
 brew install chibi-scheme gambit-scheme gauche
 
@@ -27,11 +30,17 @@ cd $(dirname $0)/..
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo build --release $@
+    cargo build --release $build_options
   )
 done
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+
+filter=.
+
+if [ $# -gt 0 ]; then
+  filter="$@"
+fi
 
 for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   base=${file%.scm}
