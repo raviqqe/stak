@@ -18,6 +18,12 @@ jobs:
         interpreter:
           - stak-interpret
           - mstak-interpret
+        interpreter:
+          - stak-interpret
+          - mstak-interpret
+        options:
+          -
+          - -d
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
@@ -27,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: tools/bench.sh -i ${{ matrix.interpreter }}
+      - run: tools/bench.sh -i ${{ matrix.interpreter }} ${{ matrix.options }}
   bench:
     needs:
       - interpret
