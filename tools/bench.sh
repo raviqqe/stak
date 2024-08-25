@@ -6,9 +6,6 @@ interpreter=stak-interpret
 
 while getopts fi: option; do
   case $option in
-  f)
-    features=$OPTARG
-    ;;
   i)
     interpreter=$OPTARG
     ;;
@@ -30,7 +27,7 @@ cd $(dirname $0)/..
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo build --release --features ${features:-,}
+    cargo build --release $@
   )
 done
 
