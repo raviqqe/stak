@@ -67,7 +67,9 @@
     ($$close 2)
     ($$car 4)
     ($$- 13)
-    ($$/ 15)))
+    ($$* 15)
+    ($$exp 17)
+    ($$log 18)))
 
 ; Types
 
@@ -184,6 +186,11 @@
 
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
+
+; TODO Set a true machine epsilon.
+(define epsilon
+  (let ((x (/ 2 100000000 100000000)))
+    (if (zero? x) 1 x)))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -1101,6 +1108,16 @@
         cdr
         continue))))
 
+(define (fraction x)
+  (- x (floor x)))
+
+(define (decompose-float x)
+  (let ((y (log x 2)))
+    (do ((y y (- y 1)))
+      ((< (fraction (/ x (expt 2 (floor y)))) epsilon)
+        (let ((y (floor y)))
+          (values (round (/ x (expt 2 y))) (round y)))))))
+
 (define (build-number-constant constant continue)
   (cond
     ((negative? constant)
@@ -1112,7 +1129,22 @@
             (compile-primitive-call '$$- (continue))))))
 
     ((not (integer? constant))
-      (raise "floating point numbers not supported yet"))
+      (let-values ((mantissa exponent) (decompose-float constant))
+        (constant-rib
+          x
+          (constant-rib
+            y
+            (constant-rib
+              2
+              (compile-primitive-call
+                '$$log
+                (compile-primitive-call
+                  '$$*
+                  (compile-primitive-call
+                    '$$exp
+                    (compile-primitive-call
+                      '$$*
+                      (continue))))))))))
 
     (else
       (constant-rib constant (continue)))))
