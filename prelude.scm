@@ -93,6 +93,11 @@
     truncate-quotient
     modulo
     floor-remainder
+    floor
+    round
+    exact
+    inexact
+    abs
     exp
     expt
     log
@@ -101,7 +106,6 @@
     >
     <=
     >=
-    abs
 
     char?
     integer->char
@@ -704,6 +708,11 @@
     (define (inexact x)
       x)
 
+    (define (abs x)
+      (if (negative? x)
+        (- x)
+        x))
+
     (define exp $$exp)
 
     (define (log x . xs)
@@ -713,11 +722,6 @@
 
     (define (expt x y)
       (exp (* (log x) y)))
-
-    (define (abs x)
-      (if (negative? x)
-        (- x)
-        x))
 
     (define (comparison-operator f)
       (lambda xs
