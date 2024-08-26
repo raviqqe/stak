@@ -712,7 +712,7 @@
           y)))
 
     (define (round x)
-      (ceil (- x (/ 1 2))))
+      (* (quotient (/ (+ x 1) 2) 1) 2))
 
     (define exact round)
     (define (inexact x)
