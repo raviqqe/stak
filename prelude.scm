@@ -705,7 +705,11 @@
           y)))
 
     (define (round x)
-      (floor (+ x (/ 1 2))))
+      (let ((x (+ x (/ 1 2))))
+        (floor
+          (if (zero? (remainder x 1))
+            (- x 1)
+            x))))
 
     (define exact round)
     (define (inexact x)
