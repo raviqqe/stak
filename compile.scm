@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (scheme cxr)
+  (scheme inexact)
   (scheme read)
   (scheme write))
 
@@ -894,10 +895,10 @@
   (call-rib
     (compile-arity
       (case name
-        (($$close $$car)
+        (($$close $$car $$exp $$log)
           1)
 
-        (($$cons $$- $$/)
+        (($$cons $$- $$*)
           2)
 
         (($$rib)
@@ -1116,7 +1117,7 @@
     (do ((y y (- y 1)))
       ((< (fraction (/ x (expt 2 (floor y)))) epsilon)
         (let ((y (floor y)))
-          (values (round (/ x (expt 2 y))) (round y)))))))
+          (values (exact (/ x (expt 2 y))) (exact y)))))))
 
 (define (build-number-constant constant continue)
   (cond
@@ -1129,22 +1130,23 @@
             (compile-primitive-call '$$- (continue))))))
 
     ((not (integer? constant))
-      (let-values ((mantissa exponent) (decompose-float constant))
+      (let-values (((x y) (decompose-float constant)))
         (constant-rib
           x
-          (constant-rib
+          (build-number-constant
             y
-            (constant-rib
-              2
-              (compile-primitive-call
-                '$$log
+            (lambda ()
+              (constant-rib
+                2
                 (compile-primitive-call
-                  '$$*
+                  '$$log
                   (compile-primitive-call
-                    '$$exp
+                    '$$*
                     (compile-primitive-call
-                      '$$*
-                      (continue))))))))))
+                      '$$exp
+                      (compile-primitive-call
+                        '$$*
+                        (continue)))))))))))
 
     (else
       (constant-rib constant (continue)))))
