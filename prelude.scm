@@ -94,6 +94,7 @@
     modulo
     floor-remainder
     floor
+    ceil
     round
     exact
     inexact
@@ -702,6 +703,12 @@
       (let ((y (quotient x 1)))
         (if (negative? (remainder x 1))
           (- y 1)
+          y)))
+
+    (define (ceil x)
+      (let ((y (quotient x 1)))
+        (if (positive? (remainder x 1))
+          (+ y 1)
           y)))
 
     (define (round x)
@@ -1409,6 +1416,7 @@
     modulo
     floor-remainder
     floor
+    ceil
     round
     exact
     inexact
