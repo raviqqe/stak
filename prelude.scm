@@ -700,8 +700,9 @@
     (define (round x)
       (floor (+ x (/ 1 2))))
 
-    (define (exact x y)
-      (exp (* (log x) y)))
+    (define exact floor)
+
+    (define (inexact x) x)
 
     (define exp $$exp)
 
