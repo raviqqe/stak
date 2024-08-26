@@ -86,11 +86,14 @@
 (define (code-rib tag car cdr)
   (rib pair-type car cdr tag))
 
-(define (data-rib type car cdr)
-  (rib type car cdr 0))
-
 (define (call-rib arity procedure continuation)
   (code-rib (+ call-instruction arity) procedure continuation))
+
+(define (constant-rib constant continuation)
+  (code-rib constant-instruction constant continuation))
+
+(define (data-rib type car cdr)
+  (rib type car cdr 0))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))
@@ -880,9 +883,6 @@
     (* 2 argument-count)
     (if variadic 1 0)))
 
-(define (compile-constant constant continuation)
-  (code-rib constant-instruction constant continuation))
-
 (define (compile-primitive-call name continuation)
   (call-rib
     (compile-arity
@@ -912,7 +912,7 @@
   (if (drop? continuation)
     ; Skip a "drop" instruction.
     (rib-cdr continuation)
-    (compile-constant #f continuation)))
+    (constant-rib #f continuation)))
 
 (define (compile-drop continuation)
   (if (null? continuation)
@@ -1001,7 +1001,7 @@
 
         (($$lambda)
           (let ((parameters (cadr expression)))
-            (compile-constant
+            (constant-rib
               (make-procedure
                 (compile-arity
                   (count-parameters parameters)
@@ -1017,13 +1017,13 @@
               (compile-primitive-call '$$close continuation))))
 
         (($$libraries)
-          (compile-constant (compilation-context-libraries context) continuation))
+          (constant-rib (compilation-context-libraries context) continuation))
 
         (($$macros)
-          (compile-constant (compilation-context-macros context) continuation))
+          (constant-rib (compilation-context-macros context) continuation))
 
         (($$quote)
-          (compile-constant (cadr expression) continuation))
+          (constant-rib (cadr expression) continuation))
 
         (($$set!)
           (compile-expression
@@ -1040,7 +1040,7 @@
           (compile-call context expression #f continuation))))
 
     (else
-      (compile-constant expression continuation))))
+      (constant-rib expression continuation))))
 
 (define (compile libraries macros expression)
   (compile-expression
@@ -1104,7 +1104,7 @@
 (define (build-number-constant constant continue)
   (cond
     ((negative? constant)
-      (compile-constant
+      (constant-rib
         0
         (build-number-constant
           (abs constant)
@@ -1115,18 +1115,18 @@
       (raise "floating point numbers not supported yet"))
 
     (else
-      (compile-constant constant (continue)))))
+      (constant-rib constant (continue)))))
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
-    (compile-constant
+    (constant-rib
       type
       (build-child-constants
         context
         car
         cdr
         (lambda ()
-          (compile-constant
+          (constant-rib
             0
             (compile-primitive-call '$$rib (continue)))))))
 
@@ -1135,7 +1135,7 @@
       (code-rib get-instruction symbol (continue))
       (cond
         ((constant-normal? constant)
-          (compile-constant constant (continue)))
+          (constant-rib constant (continue)))
 
         ((bytevector? constant)
           (build-rib
@@ -1161,7 +1161,7 @@
             (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
-          (compile-constant
+          (constant-rib
             (string->symbol constant)
             (compile-primitive-call '$$car (continue))))
 
@@ -1411,13 +1411,13 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (compile-constant
+  (constant-rib
     procedure-type
-    (compile-constant
+    (constant-rib
       '()
-      (compile-constant
+      (constant-rib
         (cadr primitive)
-        (compile-constant
+        (constant-rib
           0
           (compile-primitive-call
             '$$rib
