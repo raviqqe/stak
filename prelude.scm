@@ -694,6 +694,15 @@
 
     (define floor-remainder modulo)
 
+    (define (floor x)
+      (quotient x 1))
+
+    (define (round x)
+      (floor (+ x (/ 1 2))))
+
+    (define (exact x y)
+      (exp (* (log x) y)))
+
     (define exp $$exp)
 
     (define (log x . xs)
@@ -703,6 +712,11 @@
 
     (define (expt x y)
       (exp (* (log x) y)))
+
+    (define (abs x)
+      (if (negative? x)
+        (- x)
+        x))
 
     (define (comparison-operator f)
       (lambda xs
@@ -720,11 +734,6 @@
     (define > (comparison-operator (lambda (x y) ($$< y x))))
     (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
     (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
-
-    (define (abs x)
-      (if (negative? x)
-        (- x)
-        x))
 
     ; TODO Set a true machine epsilon.
     (define epsilon
