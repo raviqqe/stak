@@ -244,12 +244,12 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
   @float
-  Scenario Outline: Use a floor function
+  Scenario Outline: Use a round function
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
 
-      (write-u8 (if (= (floor <input>) <output>) 65 66))
+      (write-u8 (if (= (round <input>) <output>) 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
