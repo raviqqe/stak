@@ -699,7 +699,10 @@
     (define floor-remainder modulo)
 
     (define (floor x)
-      (quotient x 1))
+      (let ((y (quotient x 1)))
+        (if (and (negative? x) (not (zero? (remainder x 1))))
+          (- y 1)
+          y)))
 
     (define (round x)
       (floor (+ x (/ 1 2))))
