@@ -1400,14 +1400,17 @@
     truncate-remainder
     truncate-quotient
     modulo
-    floor-remainder
+    floor
+    round
+    exact
+    inexact
+    abs
     expt
     =
     <
     >
     <=
     >=
-    abs
 
     char?
     integer->char
