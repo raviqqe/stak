@@ -244,6 +244,32 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
   @float
+  Scenario Outline: Use a floor function
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (floor <input>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | 0     | 0      |
+      | 0.1   | 0      |
+      | 0.9   | 0      |
+      | 1     | 1      |
+      | 1.1   | 1      |
+      | 1.9   | 1      |
+      | 2     | 2      |
+      | -0.9  | -1     |
+      | -1    | -1     |
+      | -1.9  | -2     |
+      | -2    | -2     |
+      | -2.1  | -3     |
+
+  @float
   Scenario Outline: Use a round function
     Given a file named "main.scm" with:
       """scheme
