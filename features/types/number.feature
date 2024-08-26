@@ -256,11 +256,22 @@ Feature: Number
 
     Examples:
       | input | output |
-      | 0.0   | 0.0    |
-      | 1.0   | 1.0    |
-      | -1.0  | -1.0   |
-      | -1.0  | -1.0   |
-      | -1.0  | -1.0   |
+      | 0     | 0      |
+      | 0.1   | 0      |
+      | 0.49  | 0      |
+      | 0.5   | 2      |
+      | 0.9   | 1      |
+      | 1     | 1      |
+      | 1.1   | 1      |
+      | 1.49  | 1      |
+      | 1.5   | 2      |
+      | 1.9   | 2      |
+      | 2     | 2      |
+      | -1    | -1     |
+      | -0.9  | -1     |
+      | -1.5  | -1     |
+      | -1.51 | -2     |
+      | -1.9  | -2     |
 
   Scenario Outline: Use a comparison operator
     Given a file named "main.scm" with:
