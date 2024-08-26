@@ -1403,6 +1403,7 @@
     truncate-remainder
     truncate-quotient
     modulo
+    floor-remainder
     floor
     round
     exact
