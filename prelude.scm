@@ -700,7 +700,7 @@
 
     (define (floor x)
       (let ((y (quotient x 1)))
-        (if (and (negative? x) (not (zero? (remainder x 1))))
+        (if (negative? (remainder x 1))
           (- y 1)
           y)))
 
