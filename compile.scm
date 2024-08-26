@@ -1104,8 +1104,7 @@
 (define (build-number-constant constant continue)
   (cond
     ((negative? constant)
-      (code-rib
-        constant-instruction
+      (compile-constant
         0
         (build-number-constant
           (abs constant)
@@ -1116,20 +1115,18 @@
       (raise "floating point numbers not supported yet"))
 
     (else
-      (code-rib constant-instruction constant (continue)))))
+      (compile-constant constant (continue)))))
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
-    (code-rib
-      constant-instruction
+    (compile-constant
       type
       (build-child-constants
         context
         car
         cdr
         (lambda ()
-          (code-rib
-            constant-instruction
+          (compile-constant
             0
             (compile-primitive-call '$$rib (continue)))))))
 
@@ -1138,7 +1135,7 @@
       (code-rib get-instruction symbol (continue))
       (cond
         ((constant-normal? constant)
-          (code-rib constant-instruction constant (continue)))
+          (compile-constant constant (continue)))
 
         ((bytevector? constant)
           (build-rib
@@ -1164,8 +1161,7 @@
             (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
-          (code-rib
-            constant-instruction
+          (compile-constant
             (string->symbol constant)
             (compile-primitive-call '$$car (continue))))
 
@@ -1415,17 +1411,13 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (code-rib
-    constant-instruction
+  (compile-constant
     procedure-type
-    (code-rib
-      constant-instruction
+    (compile-constant
       '()
-      (code-rib
-        constant-instruction
+      (compile-constant
         (cadr primitive)
-        (code-rib
-          constant-instruction
+        (compile-constant
           0
           (compile-primitive-call
             '$$rib
