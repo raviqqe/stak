@@ -658,8 +658,9 @@
         (number? x)
         (zero? (remainder x 1))))
 
-    (define (exact? x) #t)
-    (define (inexact? x) #f)
+    (define exact? integer?)
+    (define (inexact? x)
+      (not (exact? x)))
 
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
