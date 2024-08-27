@@ -688,7 +688,7 @@
     (define truncate-quotient quotient)
 
     (define (modulo x y)
-      (let ((r (- x (* y (quotient x y)))))
+      (let ((r (remainder x y)))
         (cond
           ((zero? r)
             0)
