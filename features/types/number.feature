@@ -199,10 +199,10 @@ Feature: Number
       | (truncate-remainder -8 -3) | -2    |
       | (modulo 5 1)               | 0     |
       | (modulo 5 2)               | 1     |
-      | (modulo 5 3)               | 2     |
-      | (modulo 5 -2)              | -1    |
-      | (modulo -5 2)              | 1     |
-      | (modulo -5 -2)             | -1    |
+      | (modulo 8 3)               | 2     |
+      | (modulo 8 -3)              | -1    |
+      | (modulo -8 3)              | 1     |
+      | (modulo -8 -3)             | -2    |
       | (floor-remainder 5 1)      | 0     |
       | (floor-remainder 5 2)      | 1     |
       | (floor-remainder 5 3)      | 2     |
