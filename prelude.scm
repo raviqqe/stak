@@ -93,6 +93,13 @@
     truncate-quotient
     modulo
     floor-remainder
+    truncate
+    floor
+    ceiling
+    round
+    exact
+    inexact
+    abs
     exp
     expt
     log
@@ -101,7 +108,6 @@
     >
     <=
     >=
-    abs
 
     char?
     integer->char
@@ -652,8 +658,9 @@
         (number? x)
         (zero? (remainder x 1))))
 
-    (define (exact? x) #t)
-    (define (inexact? x) #f)
+    (define exact? integer?)
+    (define (inexact? x)
+      (not (exact? x)))
 
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
@@ -681,18 +688,40 @@
     (define truncate-quotient quotient)
 
     (define (modulo x y)
-      (let ((r (- x (* y (quotient x y)))))
-        (cond
-          ((zero? r)
-            0)
-
-          ((eq? (negative? x) (negative? y))
-            r)
-
-          (else
-            (+ r y)))))
+      (let ((r (remainder x y)))
+        (if (or (zero? r) (eq? (negative? x) (negative? y)))
+          r
+          (+ r y))))
 
     (define floor-remainder modulo)
+
+    (define (truncate x)
+      (quotient x 1))
+
+    (define (floor x)
+      (let ((y (quotient x 1)))
+        (if (negative? (remainder x 1))
+          (- y 1)
+          y)))
+
+    (define (ceiling x)
+      (- (floor (- x))))
+
+    (define (round x)
+      (let* ((x (* x 2))
+             (y (floor (/ (+ x 1) 2))))
+        (if (= (modulo x 2) 1)
+          (- y (modulo y 2))
+          y)))
+
+    (define exact round)
+    (define (inexact x)
+      x)
+
+    (define (abs x)
+      (if (negative? x)
+        (- x)
+        x))
 
     (define exp $$exp)
 
@@ -720,11 +749,6 @@
     (define > (comparison-operator (lambda (x y) ($$< y x))))
     (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
     (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
-
-    (define (abs x)
-      (if (negative? x)
-        (- x)
-        x))
 
     ; TODO Set a true machine epsilon.
     (define epsilon
@@ -1387,13 +1411,19 @@
     truncate-quotient
     modulo
     floor-remainder
+    truncate
+    floor
+    ceiling
+    round
+    exact
+    inexact
+    abs
     expt
     =
     <
     >
     <=
     >=
-    abs
 
     char?
     integer->char
