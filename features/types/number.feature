@@ -267,12 +267,12 @@ Feature: Number
       | -2.1  | -3     |
 
   @float
-  Scenario Outline: Use a ceil function
+  Scenario Outline: Use a ceiling function
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
 
-      (write-u8 (if (= (ceil <input>) <output>) 65 66))
+      (write-u8 (if (= (ceiling <input>) <output>) 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
