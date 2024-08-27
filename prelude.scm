@@ -689,15 +689,9 @@
 
     (define (modulo x y)
       (let ((r (remainder x y)))
-        (cond
-          ((zero? r)
-            0)
-
-          ((eq? (negative? x) (negative? y))
-            r)
-
-          (else
-            (+ r y)))))
+        (if (or (zero? r) (eq? (negative? x) (negative? y)))
+          r
+          (+ r y))))
 
     (define floor-remainder modulo)
 
