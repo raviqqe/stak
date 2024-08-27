@@ -200,6 +200,7 @@ Feature: Number
       | (modulo 5 1)               | 0     |
       | (modulo 5 2)               | 1     |
       | (modulo 5 3)               | 2     |
+      | (modulo 5 -2)              | -1    |
       | (modulo -5 2)              | 1     |
       | (modulo -5 -2)             | -1    |
       | (floor-remainder 5 1)      | 0     |

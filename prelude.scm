@@ -717,7 +717,11 @@
           y)))
 
     (define (round x)
-      (* (quotient (/ (+ x 1) 2) 1) 2))
+      (let* ((x (* x 2))
+             (y (floor (/ (+ x 1) 2))))
+        (if (= (abs (remainder x 2)) 1)
+          (- y (modulo y 2))
+          y)))
 
     (define exact round)
     (define (inexact x)
