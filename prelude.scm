@@ -93,6 +93,7 @@
     truncate-quotient
     modulo
     floor-remainder
+    truncate
     floor
     ceiling
     round
@@ -698,6 +699,9 @@
             (+ r y)))))
 
     (define floor-remainder modulo)
+
+    (define (truncate x)
+      (quotient x 1))
 
     (define (floor x)
       (let ((y (quotient x 1)))
@@ -1411,6 +1415,7 @@
     truncate-quotient
     modulo
     floor-remainder
+    truncate
     floor
     ceiling
     round
