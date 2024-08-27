@@ -711,10 +711,7 @@
           y)))
 
     (define (ceiling x)
-      (let ((y (quotient x 1)))
-        (if (positive? (remainder x 1))
-          (+ y 1)
-          y)))
+      (- (floor (- x))))
 
     (define (round x)
       (let* ((x (* x 2))
