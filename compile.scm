@@ -1112,10 +1112,14 @@
 (define (fraction x)
   (- x (floor x)))
 
+(define maximum-float-integer (expt 2 50))
+
 (define (decompose-float x)
   (let ((y (log x 2)))
     (do ((y y (- y 1)))
-      ((< (fraction (/ x (expt 2 (floor y)))) epsilon)
+      ((or
+          (< (fraction (/ x (expt 2 (floor y)))) epsilon)
+          (> (/ x (expt 2 (+ y 1))) maximum-float-integer))
         (let ((y (floor y)))
           (values (exact (/ x (expt 2 y))) (exact y)))))))
 
