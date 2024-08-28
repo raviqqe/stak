@@ -199,9 +199,10 @@ Feature: Number
       | (truncate-remainder -8 -3) | -2    |
       | (modulo 5 1)               | 0     |
       | (modulo 5 2)               | 1     |
-      | (modulo 5 3)               | 2     |
-      | (modulo -5 2)              | 1     |
-      | (modulo -5 -2)             | -1    |
+      | (modulo 8 3)               | 2     |
+      | (modulo 8 -3)              | -1    |
+      | (modulo -8 3)              | 1     |
+      | (modulo -8 -3)             | -2    |
       | (floor-remainder 5 1)      | 0     |
       | (floor-remainder 5 2)      | 1     |
       | (floor-remainder 5 3)      | 2     |
@@ -213,10 +214,7 @@ Feature: Number
       """scheme
       (import (scheme base))
 
-      (define (test x y)
-        (write-u8 (if (= x y) 65 66)))
-
-      (test (/ 2) (/ 1 2))
+      (write-u8 (if (= (/ 2) (/ 1 2)) 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
@@ -242,6 +240,116 @@ Feature: Number
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  @float
+  Scenario Outline: Use a truncate function
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (truncate <input>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | 0     | 0      |
+      | 0.1   | 0      |
+      | 0.9   | 0      |
+      | 1     | 1      |
+      | 1.1   | 1      |
+      | 1.9   | 1      |
+      | 2     | 2      |
+      | -0.9  | 0      |
+      | -1    | -1     |
+      | -1.9  | -1     |
+      | -2    | -2     |
+      | -2.1  | -2     |
+
+  @float
+  Scenario Outline: Use a floor function
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (floor <input>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | 0     | 0      |
+      | 0.1   | 0      |
+      | 0.9   | 0      |
+      | 1     | 1      |
+      | 1.1   | 1      |
+      | 1.9   | 1      |
+      | 2     | 2      |
+      | -0.9  | -1     |
+      | -1    | -1     |
+      | -1.9  | -2     |
+      | -2    | -2     |
+      | -2.1  | -3     |
+
+  @float
+  Scenario Outline: Use a ceiling function
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (ceiling <input>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | 0     | 0      |
+      | 0.1   | 1      |
+      | 0.9   | 1      |
+      | 1     | 1      |
+      | 1.1   | 2      |
+      | 1.9   | 2      |
+      | 2     | 2      |
+      | -0.9  | 0      |
+      | -1    | -1     |
+      | -1.9  | -1     |
+      | -2    | -2     |
+      | -2.1  | -2     |
+
+  @float
+  Scenario Outline: Use a round function
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme inexact))
+
+      (write-u8 (if (= (round <input>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | input | output |
+      | 0     | 0      |
+      | 0.1   | 0      |
+      | 0.49  | 0      |
+      | 0.5   | 0      |
+      | 0.9   | 1      |
+      | 1     | 1      |
+      | 1.1   | 1      |
+      | 1.49  | 1      |
+      | 1.5   | 2      |
+      | 1.9   | 2      |
+      | 2     | 2      |
+      | 2.5   | 2      |
+      | 3.5   | 4      |
+      | -1    | -1     |
+      | -0.9  | -1     |
+      | -1.5  | -2     |
+      | -1.51 | -2     |
+      | -1.9  | -2     |
 
   Scenario Outline: Use a comparison operator
     Given a file named "main.scm" with:

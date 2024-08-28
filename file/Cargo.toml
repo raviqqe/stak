@@ -1,7 +1,7 @@
 [package]
 name = "stak-file"
 description = "File system for Stak Scheme"
-version = "0.4.8"
+version = "0.4.9"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
