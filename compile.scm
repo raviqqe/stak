@@ -1116,6 +1116,9 @@
 (define maximum-float-integer (expt 2 49))
 
 (define (decompose-float x)
+  (define (round-integer x)
+    (exact (round x)))
+
   (define (mantissa y)
     (/ x (expt 2 y)))
 
@@ -1125,7 +1128,7 @@
           (< (fraction (mantissa (floor y))) epsilon)
           (> (mantissa (+ y 1)) maximum-float-integer))
         (let ((y (floor y)))
-          (values (round (mantissa y)) (round y)))))))
+          (values (round-integer (mantissa y)) (round-integer y)))))))
 
 (define (build-number-constant constant continue)
   (cond
