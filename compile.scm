@@ -1115,17 +1115,17 @@
 ; TODO Why not 51 instead of 49?
 (define maximum-float-integer (expt 2 49))
 
-(define (mantissa x y)
-  (/ x (expt 2 y)))
-
 (define (decompose-float x)
+  (define (mantissa y)
+    (/ x (expt 2 y)))
+
   (let ((y (log x 2)))
     (do ((y y (- y 1)))
       ((or
-          (< (fraction (mantissa x (floor y))) epsilon)
-          (> (mantissa x (+ y 1)) maximum-float-integer))
+          (< (fraction (mantissa (floor y))) epsilon)
+          (> (mantissa (+ y 1)) maximum-float-integer))
         (let ((y (floor y)))
-          (values (round (mantissa x y)) (round y)))))))
+          (values (round (mantissa y)) (round y)))))))
 
 (define (build-number-constant constant continue)
   (cond
