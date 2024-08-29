@@ -752,7 +752,7 @@
 
     ; TODO Set a true machine epsilon.
     ;
-    ; Currently, we have a precision limitation due to compression of floating point number in a compiler
+    ; Currently, we have a precision limitation due to compression of floating point number in a compiler.
     (define epsilon
       ; Variadic arguments to arithmetic operators are not available at this point.
       (let ((x (/ (/ 1 10000000) 100000000)))
