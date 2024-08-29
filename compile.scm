@@ -190,7 +190,7 @@
 
 ; TODO Set a true machine epsilon.
 (define epsilon
-  (let ((x (/ 2 100000000 100000000)))
+  (let ((x (/ 1 10000000 100000000)))
     (if (zero? x) 1 x)))
 
 (define (predicate expression)
