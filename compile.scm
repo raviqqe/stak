@@ -1125,7 +1125,7 @@
           (< (fraction (mantissa x (floor y))) epsilon)
           (> (mantissa x (+ y 1)) maximum-float-integer))
         (let ((y (floor y)))
-          (values (exact (mantissa x y)) (exact y)))))))
+          (values (round (mantissa x y)) (round y)))))))
 
 (define (build-number-constant constant continue)
   (cond
