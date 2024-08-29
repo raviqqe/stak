@@ -432,7 +432,8 @@ Feature: Number
       (write-string (number->string <value>))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    # TODO Use an `exactly` adverb.
+    Then the stdout should contain "<output>"
 
     Examples:
       | value | output |

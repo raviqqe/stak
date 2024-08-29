@@ -55,22 +55,15 @@ jobs:
         interpreter:
           - name: stak-tools
             host: chibi-scheme
-            # TODO Enable a `@float` tag when a compiler supports floating-point number literals.
-            tags: not @float
           - name: stak-tools
             host: gosh
-            # TODO Enable a `@float` tag when a compiler supports floating-point number literals.
-            tags: not @float
           - name: stak-tools
             host: guile
-            # TODO Enable a `@float` tag when a compiler supports floating-point number literals.
-            tags: not @float
           - name: stak-tools
             host: gosh
             features:
               - gc_always
-            # TODO Enable a `@float` tag when a compiler supports floating-point number literals.
-            tags: not @float and not @long
+            tags: not @long
           - name: chibi
             tags: (not @stak or @chibi) and not @library
           - name: gauche
@@ -102,8 +95,6 @@ jobs:
           - name: stak
             tags: not @library
           - name: stak-tools
-            # TODO Enable a `@float` tag when a compiler supports floating-point number literals.
-            tags: not @float
           - name: mstak
             tags: not @environment-variable and not @float and not @library
           - name: mstak-tools

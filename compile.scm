@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (scheme cxr)
+  (scheme inexact)
   (scheme read)
   (scheme write))
 
@@ -67,7 +68,9 @@
     ($$close 2)
     ($$car 4)
     ($$- 13)
-    ($$/ 15)))
+    ($$* 14)
+    ($$exp 17)
+    ($$log 18)))
 
 ; Types
 
@@ -86,11 +89,14 @@
 (define (code-rib tag car cdr)
   (rib pair-type car cdr tag))
 
-(define (data-rib type car cdr)
-  (rib type car cdr 0))
-
 (define (call-rib arity procedure continuation)
   (code-rib (+ call-instruction arity) procedure continuation))
+
+(define (constant-rib constant continuation)
+  (code-rib constant-instruction constant continuation))
+
+(define (data-rib type car cdr)
+  (rib type car cdr 0))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))
@@ -181,6 +187,11 @@
 
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
+
+; TODO Set a true machine epsilon.
+(define epsilon
+  (let ((x (/ 1 10000000 100000000)))
+    (if (zero? x) 1 x)))
 
 (define (predicate expression)
   (and (pair? expression) (car expression)))
@@ -880,17 +891,14 @@
     (* 2 argument-count)
     (if variadic 1 0)))
 
-(define (compile-constant constant continuation)
-  (code-rib constant-instruction constant continuation))
-
 (define (compile-primitive-call name continuation)
   (call-rib
     (compile-arity
       (case name
-        (($$close $$car)
+        (($$close $$car $$exp $$log)
           1)
 
-        (($$cons $$- $$/)
+        (($$cons $$- $$*)
           2)
 
         (($$rib)
@@ -912,7 +920,7 @@
   (if (drop? continuation)
     ; Skip a "drop" instruction.
     (rib-cdr continuation)
-    (compile-constant #f continuation)))
+    (constant-rib #f continuation)))
 
 (define (compile-drop continuation)
   (if (null? continuation)
@@ -1001,7 +1009,7 @@
 
         (($$lambda)
           (let ((parameters (cadr expression)))
-            (compile-constant
+            (constant-rib
               (make-procedure
                 (compile-arity
                   (count-parameters parameters)
@@ -1017,13 +1025,13 @@
               (compile-primitive-call '$$close continuation))))
 
         (($$libraries)
-          (compile-constant (compilation-context-libraries context) continuation))
+          (constant-rib (compilation-context-libraries context) continuation))
 
         (($$macros)
-          (compile-constant (compilation-context-macros context) continuation))
+          (constant-rib (compilation-context-macros context) continuation))
 
         (($$quote)
-          (compile-constant (cadr expression) continuation))
+          (constant-rib (cadr expression) continuation))
 
         (($$set!)
           (compile-expression
@@ -1040,7 +1048,7 @@
           (compile-call context expression #f continuation))))
 
     (else
-      (compile-constant expression continuation))))
+      (constant-rib expression continuation))))
 
 (define (compile libraries macros expression)
   (compile-expression
@@ -1101,11 +1109,27 @@
         cdr
         continue))))
 
+(define (fraction x)
+  (- x (floor x)))
+
+; TODO Why not 51 instead of 49?
+(define maximum-float-integer (expt 2 49))
+
+(define (decompose-float x)
+  (define (mantissa y)
+    (/ x (expt 2 y)))
+
+  (do ((y (log x 2) (- y 1)))
+    ((or
+        (< (fraction (mantissa (floor y))) epsilon)
+        (> (mantissa (+ y 1)) maximum-float-integer))
+      (let ((y (floor y)))
+        (values (exact (round (mantissa y))) (exact y))))))
+
 (define (build-number-constant constant continue)
   (cond
     ((negative? constant)
-      (code-rib
-        constant-instruction
+      (constant-rib
         0
         (build-number-constant
           (abs constant)
@@ -1113,23 +1137,37 @@
             (compile-primitive-call '$$- (continue))))))
 
     ((not (integer? constant))
-      (raise "floating point numbers not supported yet"))
+      (let-values (((x y) (decompose-float constant)))
+        (constant-rib
+          x
+          (build-number-constant
+            y
+            (lambda ()
+              (constant-rib
+                2
+                (compile-primitive-call
+                  '$$log
+                  (compile-primitive-call
+                    '$$*
+                    (compile-primitive-call
+                      '$$exp
+                      (compile-primitive-call
+                        '$$*
+                        (continue)))))))))))
 
     (else
-      (code-rib constant-instruction constant (continue)))))
+      (constant-rib constant (continue)))))
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
-    (code-rib
-      constant-instruction
+    (constant-rib
       type
       (build-child-constants
         context
         car
         cdr
         (lambda ()
-          (code-rib
-            constant-instruction
+          (constant-rib
             0
             (compile-primitive-call '$$rib (continue)))))))
 
@@ -1138,7 +1176,7 @@
       (code-rib get-instruction symbol (continue))
       (cond
         ((constant-normal? constant)
-          (code-rib constant-instruction constant (continue)))
+          (constant-rib constant (continue)))
 
         ((bytevector? constant)
           (build-rib
@@ -1164,8 +1202,7 @@
             (lambda () (compile-primitive-call '$$cons (continue)))))
 
         ((string? constant)
-          (code-rib
-            constant-instruction
+          (constant-rib
             (string->symbol constant)
             (compile-primitive-call '$$car (continue))))
 
@@ -1415,17 +1452,13 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (code-rib
-    constant-instruction
+  (constant-rib
     procedure-type
-    (code-rib
-      constant-instruction
+    (constant-rib
       '()
-      (code-rib
-        constant-instruction
+      (constant-rib
         (cadr primitive)
-        (code-rib
-          constant-instruction
+        (constant-rib
           0
           (compile-primitive-call
             '$$rib

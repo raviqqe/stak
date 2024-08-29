@@ -751,9 +751,11 @@
     (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
 
     ; TODO Set a true machine epsilon.
+    ;
+    ; Currently, we have a precision limitation due to compression of floating point number in a compiler.
     (define epsilon
       ; Variadic arguments to arithmetic operators are not available at this point.
-      (let ((x (/ (/ 2 100000000) 100000000)))
+      (let ((x (/ (/ 1 10000000) 100000000)))
         (if (zero? x) 1 x)))
 
     ;; Character
