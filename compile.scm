@@ -1119,13 +1119,12 @@
   (define (mantissa y)
     (/ x (expt 2 y)))
 
-  (let ((y (log x 2)))
-    (do ((y y (- y 1)))
-      ((or
-          (< (fraction (mantissa (floor y))) epsilon)
-          (> (mantissa (+ y 1)) maximum-float-integer))
-        (let ((y (floor y)))
-          (values (exact (round (mantissa y))) (exact y)))))))
+  (do ((y (log x 2) (- y 1)))
+    ((or
+        (< (fraction (mantissa (floor y))) epsilon)
+        (> (mantissa (+ y 1)) maximum-float-integer))
+      (let ((y (floor y)))
+        (values (exact (round (mantissa y))) (exact y))))))
 
 (define (build-number-constant constant continue)
   (cond
