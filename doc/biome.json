@@ -14,7 +14,6 @@
       "style": {
         "noDefaultExport": { "level": "error" },
         "noNegationElse": { "level": "error" },
-        "noSkippedTests": { "level": "error" },
         "useBlockStatements": { "level": "error" },
         "useCollapsedElseIf": { "level": "error" },
         "useConsistentArrayType": { "level": "error" },
@@ -24,6 +23,7 @@
         "useShorthandAssign": { "level": "error" }
       },
       "suspicious": {
+        "noSkippedTests": { "level": "error" },
         "useAwait": { "level": "error" }
       },
       "nursery": {
@@ -34,6 +34,23 @@
   "organizeImports": {
     "enabled": true
   },
+  "overrides": [
+    {
+      "include": [
+        "astro.config.ts",
+        "eslint.config.js",
+        "vite.config.ts",
+        "vitest.config.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": { "level": "off" }
+          }
+        }
+      }
+    }
+  ],
   "vcs": {
     "enabled": true,
     "clientKind": "git",
