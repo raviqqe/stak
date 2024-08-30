@@ -1,7 +1,11 @@
 {
+  "files": {
+    "ignore": ["public"]
+  },
   "formatter": {
     "enabled": true,
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "indentWidth": 2
   },
   "linter": {
     "enabled": true,
@@ -19,8 +23,8 @@
       }
     }
   },
-  "files": {
-    "ignore": ["public"]
+  "organizeImports": {
+    "enabled": true
   },
   "vcs": {
     "enabled": true,
