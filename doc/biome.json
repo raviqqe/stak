@@ -1,27 +1,56 @@
 {
+  "files": {
+    "ignore": ["public"]
+  },
   "formatter": {
     "enabled": true,
-    "indentStyle": "space"
+    "indentStyle": "space",
+    "indentWidth": 2
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
       "style": {
+        "noDefaultExport": { "level": "error" },
+        "noNegationElse": { "level": "error" },
         "useBlockStatements": { "level": "error" },
         "useCollapsedElseIf": { "level": "error" },
         "useConsistentArrayType": { "level": "error" },
+        "useForOf": { "level": "error" },
         "useFragmentSyntax": { "level": "error" },
-        "useShorthandArrayType": { "level": "error" }
+        "useShorthandArrayType": { "level": "error" },
+        "useShorthandAssign": { "level": "error" }
+      },
+      "suspicious": {
+        "noSkippedTests": { "level": "error" },
+        "useAwait": { "level": "error" }
       },
       "nursery": {
         "noConsole": { "level": "error" }
       }
     }
   },
-  "files": {
-    "ignore": ["public"]
+  "organizeImports": {
+    "enabled": true
   },
+  "overrides": [
+    {
+      "include": [
+        "astro.config.ts",
+        "eslint.config.js",
+        "vite.config.ts",
+        "vitest.config.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noDefaultExport": { "level": "off" }
+          }
+        }
+      }
+    }
+  ],
   "vcs": {
     "enabled": true,
     "clientKind": "git",
