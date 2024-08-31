@@ -2399,7 +2399,7 @@
         (else
           #f)))
 
-    (define exit-success (data-rib procedure-type '() (cons 0 '())))
+    (define exit-success (data-rib procedure-type '() '()))
 
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
@@ -2960,7 +2960,7 @@
       (code-rib (+ call-instruction arity) procedure continuation))
 
     (define (make-procedure arity code environment)
-      (data-rib procedure-type environment (cons arity code)))
+      (rib procedure-type environment code arity))
 
     (define (compile-arity argument-count variadic)
       (+

@@ -99,7 +99,7 @@
   (rib type car cdr 0))
 
 (define (make-procedure arity code environment)
-  (data-rib procedure-type environment (cons-rib arity code)))
+  (rib procedure-type environment code arity))
 
 (define (procedure-code procedure)
   (rib-cdr (rib-cdr procedure)))
