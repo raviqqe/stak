@@ -346,6 +346,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
 
                 memory.push(memory.register().into())?;
             }
+            Primitive::IDENTITY => Self::operate_top(memory, |_, value| value)?,
             _ => return Err(Error::Illegal),
         }
 
