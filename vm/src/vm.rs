@@ -269,24 +269,24 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn advance_program_counter(&mut self) {
-        self.memory
-            .set_program_counter(self.memory.cdr(self.memory.program_counter()).assume_cons());
+        let mut code = self.memory.cdr(self.memory.program_counter()).assume_cons();
 
-        if self.memory.program_counter() == self.memory.null() {
+        if code == self.memory.null() {
             #[cfg(feature = "profile")]
             self.profile_return();
 
             let continuation = self.continuation();
-
-            self.memory.set_program_counter(
-                self.memory
-                    .cdr(self.memory.car(continuation).assume_cons())
-                    .assume_cons(),
-            );
             // Keep a value at the top of a stack.
             self.memory
                 .set_cdr(self.memory.stack(), self.memory.cdr(continuation));
+
+            code = self
+                .memory
+                .cdr(self.memory.car(continuation).assume_cons())
+                .assume_cons();
         }
+
+        self.memory.set_program_counter(code);
     }
 
     fn operand(&self) -> Value {
