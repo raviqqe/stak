@@ -8,7 +8,7 @@
     "build": "tools/build.sh",
     "preview": "astro preview",
     "lint": "npm run lint:biome && eslint --cache src",
-    "lint:biome": "biome ci .",
+    "lint:biome": "biome ci",
     "format": "biome format --write ."
   },
   "dependencies": {
