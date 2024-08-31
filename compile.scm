@@ -1368,15 +1368,14 @@
     (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
 
 (define (encode-procedure context procedure return target)
-  (let ((code (rib-cdr procedure)))
-    (encode-codes
-      context
-      (rib-cdr code)
-      (encode-instruction
-        close-instruction
-        (rib-car code)
-        return
-        target))))
+  (encode-codes
+    context
+    (rib-cdr procedure)
+    (encode-instruction
+      close-instruction
+      (rib-tag procedure)
+      return
+      target)))
 
 (define (encode-operand context operand)
   (cond
