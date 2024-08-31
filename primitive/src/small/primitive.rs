@@ -34,7 +34,6 @@ pub(super) enum Primitive {
     ExistsFile,
     CommandLine,
     EnvironmentVariables,
-    Identity,
 }
 
 impl Primitive {
@@ -71,5 +70,4 @@ impl Primitive {
     pub const EXISTS_FILE: u8 = Self::ExistsFile as _;
     pub const COMMAND_LINE: u8 = Self::CommandLine as _;
     pub const ENVIRONMENT_VARIABLES: u8 = Self::EnvironmentVariables as _;
-    pub const IDENTITY: u8 = Self::Identity as _;
 }
