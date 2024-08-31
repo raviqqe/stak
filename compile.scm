@@ -102,7 +102,7 @@
   (rib procedure-type environment code arity))
 
 (define (procedure-code procedure)
-  (rib-cdr (rib-cdr procedure)))
+  (rib-cdr procedure))
 
 (define (bytevector->list xs)
   (let loop ((index 0) (result '()))
