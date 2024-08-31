@@ -179,8 +179,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.profile_call(self.memory.program_counter(), r#return);
 
                 let arguments = Self::parse_arity(arity);
-                let parameters =
-                    Self::parse_arity(self.memory.car(code).assume_number().to_i64() as usize);
+                let parameters = Self::parse_arity(code.tag() as usize);
 
                 trace!("argument count", arguments.count);
                 trace!("argument variadic", arguments.variadic);
@@ -522,13 +521,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.append_instruction(instruction as Tag + integer as Tag, operand, r#return)?
                 }
                 code::Instruction::CLOSE => {
-                    let code = self.memory.allocate(
-                        Number::from_i64(integer as _).into(),
-                        self.memory.program_counter().into(),
+                    let procedure = self.memory.allocate(
+                        never().set_tag(Type::Procedure as Tag).into(),
+                        self.memory.program_counter().set_tag(integer as Tag).into(),
                     )?;
-                    let procedure = self
-                        .memory
-                        .allocate(never().set_tag(Type::Procedure as Tag).into(), code.into())?;
 
                     let continuation = self.memory.pop();
                     self.memory.set_program_counter(continuation.assume_cons());
