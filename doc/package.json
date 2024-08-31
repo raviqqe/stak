@@ -8,7 +8,7 @@
     "build": "tools/build.sh",
     "preview": "astro preview",
     "lint": "npm run lint:biome && eslint --cache src",
-    "lint:biome": "biome ci .",
+    "lint:biome": "biome ci",
     "format": "biome format --write ."
   },
   "dependencies": {
@@ -27,6 +27,7 @@
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
+    "@raviqqe/biome-config": "^1.0.0",
     "@raviqqe/eslint-config": "^3.1.2",
     "@types/node": "^22.5.1",
     "eslint": "^8.57.0",
