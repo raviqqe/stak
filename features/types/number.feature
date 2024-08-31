@@ -433,15 +433,15 @@ Feature: Number
       """
     When I successfully run `scheme main.scm`
     # TODO Use an `exactly` adverb.
-    Then the stdout should contain "<output>"
+    Then the stdout should contain "<value>"
 
     Examples:
-      | value | output |
-      | 0.5   | 0.5    |
-      | 0.125 | 0.125  |
-      | 1.2   | 1.2    |
-      | 3.14  | 3.14   |
-      | -3.14 | -3.14  |
+      | value |
+      | 0.5   |
+      | 0.125 |
+      | 1.2   |
+      | 3.14  |
+      | -3.14 |
 
   @gauche @guile @stak
   Scenario Outline: Convert a string to a number
@@ -493,15 +493,15 @@ Feature: Number
       (write-string (number->string (string->number "<value>")))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "<output>"
+    Then the stdout should contain exactly "<value>"
 
     Examples:
-      | value | output |
-      | 0.5   | 0.5    |
-      | 0.125 | 0.125  |
-      | 1.2   | 1.2    |
-      | 3.14  | 3.14   |
-      | -3.14 | -3.14  |
+      | value |
+      | 0.5   |
+      | 0.125 |
+      | 1.2   |
+      | 3.14  |
+      | -3.14 |
 
   Scenario Outline: Convert an invalid string to a number
     Given a file named "main.scm" with:
