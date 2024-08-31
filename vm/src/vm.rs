@@ -217,11 +217,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .into(),
                 )?;
                 self.memory.set_stack(stack);
-                self.memory.set_program_counter(
-                    self.memory
-                        .cdr(self.code(self.memory.program_counter()).assume_cons())
-                        .assume_cons(),
-                );
+                self.memory
+                    .set_program_counter(self.code(self.memory.program_counter()).assume_cons());
 
                 for _ in 0..parameters.count.to_i64() {
                     if self.memory.register() == self.memory.null() {
