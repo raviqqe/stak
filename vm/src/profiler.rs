@@ -9,5 +9,5 @@ pub trait Profiler {
     fn profile_return(&mut self, memory: &Memory);
 
     /// Profiles a call.
-    fn profile_event(&mut self, memory: &Memory, event: &str);
+    fn profile_event(&mut self, event: &str);
 }
