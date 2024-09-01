@@ -345,14 +345,26 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
+    #[cfg(feature = "profile")]
+    fn profile_event(&self, name: &str) {
+        if let Some(profiler) = &self.profiler {
+            profiler.borrow_mut().profile_event(name);
+        }
+    }
+
     /// Initializes a virtual machine with bytecodes of a program.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
+        #[cfg(feature = "profile")]
+        self.profile_event("initialization_start");
+
         let mut input = input.into_iter();
 
         self.memory.set_program_counter(self.memory.null());
         self.memory.set_stack(self.memory.null());
 
         trace!("decode", "start");
+        #[cfg(feature = "profile")]
+        self.profile_event("decode_start");
 
         // Allow access to a symbol table during instruction decoding.
         let symbols = self.decode_symbols(&mut input)?;
@@ -362,6 +374,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.build_symbol_table(self.memory.register())?;
 
         trace!("decode", "end");
+        #[cfg(feature = "profile")]
+        self.profile_event("decode_end");
 
         // Initialize an implicit top-level frame.
         let codes = self
@@ -379,6 +393,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.set_stack(stack);
 
         self.memory.set_register(never());
+
+        #[cfg(feature = "profile")]
+        self.profile_event("initialization_end");
 
         Ok(())
     }
