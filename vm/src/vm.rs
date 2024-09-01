@@ -401,8 +401,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         self.memory.set_register(never());
 
-        #[cfg(feature = "profile")]
-        self.profile_event("initialization_end");
+        profile_event!(&self, "initialization_end");
 
         Ok(())
     }
