@@ -12,8 +12,7 @@ where
     reader
         .lines()
         .map(|line| Ok(line?.parse().ok()))
-        .map(Result::transpose)
-        .flatten()
+        .filter_map(Result::transpose)
 }
 
 #[cfg(test)]
