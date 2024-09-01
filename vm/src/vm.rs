@@ -43,7 +43,7 @@ macro_rules! trace_heap {
 macro_rules! profile_event {
     ($self:expr, $name:literal) => {
         #[cfg(feature = "profile")]
-        $self.profile_event($name);
+        (&$self).profile_event($name);
     };
 }
 
@@ -361,7 +361,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Initializes a virtual machine with bytecodes of a program.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
-        profile_event!(&self, "initialization_start");
+        profile_event!(self, "initialization_start");
 
         let mut input = input.into_iter();
 
@@ -369,20 +369,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.set_stack(self.memory.null());
 
         trace!("decode", "start");
-        profile_event!(&self, "symbol_decode_start");
+        profile_event!(self, "symbol_decode_start");
 
         // Allow access to a symbol table during instruction decoding.
         let symbols = self.decode_symbols(&mut input)?;
 
-        profile_event!(&self, "symbol_decode_end");
-        profile_event!(&self, "instruction_decode_start");
+        profile_event!(self, "symbol_decode_end");
+        profile_event!(self, "instruction_decode_start");
 
         self.memory.set_register(symbols);
         self.memory.set_stack(self.memory.null());
         self.decode_instructions(&mut input)?;
         self.build_symbol_table(self.memory.register())?;
 
-        profile_event!(&self, "instruction_decode_end");
+        profile_event!(self, "instruction_decode_end");
 
         // Initialize an implicit top-level frame.
         let codes = self
@@ -401,7 +401,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         self.memory.set_register(never());
 
-        profile_event!(&self, "initialization_end");
+        profile_event!(self, "initialization_end");
 
         Ok(())
     }
