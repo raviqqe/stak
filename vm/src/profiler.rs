@@ -7,4 +7,7 @@ pub trait Profiler {
 
     /// Profiles a return.
     fn profile_return(&mut self, memory: &Memory);
+
+    /// Profiles a call.
+    fn profile_event(&mut self, name: &str);
 }

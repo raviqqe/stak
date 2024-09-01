@@ -101,4 +101,10 @@ impl<T: Write> Profiler for StackProfiler<T> {
         self.write_column_separator();
         self.write_time();
     }
+
+    fn profile_event(&mut self, name: &str) {
+        write!(self.writer, "{name}").unwrap();
+        self.write_column_separator();
+        self.write_time();
+    }
 }
