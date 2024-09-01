@@ -101,4 +101,12 @@ impl<T: Write> Profiler for StackProfiler<T> {
         self.write_column_separator();
         self.write_time();
     }
+
+    fn profile_return(&mut self, memory: &Memory) {
+        write!(self.writer, "{}", ProcedureOperation::Return).unwrap();
+        self.write_column_separator();
+        self.write_stack(memory);
+        self.write_column_separator();
+        self.write_time();
+    }
 }
