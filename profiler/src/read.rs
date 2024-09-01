@@ -9,7 +9,11 @@ pub fn read_records<R: Record>(
 where
     <R as FromStr>::Err: From<io::Error>,
 {
-    reader.lines().map(|line| line?.parse())
+    reader
+        .lines()
+        .map(|line| Ok(line?.parse().ok()))
+        .map(Result::transpose)
+        .flatten()
 }
 
 #[cfg(test)]
