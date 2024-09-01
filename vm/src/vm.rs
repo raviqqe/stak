@@ -373,12 +373,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         // Allow access to a symbol table during instruction decoding.
         let symbols = self.decode_symbols(&mut input)?;
+        self.memory.set_register(symbols);
+        self.memory.set_stack(self.memory.null());
 
         profile_event!(self, "symbol_decode_end");
         profile_event!(self, "instruction_decode_start");
 
-        self.memory.set_register(symbols);
-        self.memory.set_stack(self.memory.null());
         self.decode_instructions(&mut input)?;
         self.build_symbol_table(self.memory.register())?;
 
