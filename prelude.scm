@@ -1938,7 +1938,7 @@
   (import (only (stak base) exp log)))
 
 (define-library (scheme cxr)
-  (import (scheme base))
+  (import (only (scheme base) car cdr define))
 
   (export
     caaar
