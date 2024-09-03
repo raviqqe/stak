@@ -2178,9 +2178,9 @@
             (skip-comment)))))))
 
 (define-library (scheme write)
-  (import (scheme base) (scheme char))
-
   (export display write)
+
+  (import (scheme base) (scheme char))
 
   (begin
     (define (get-output-port rest)
