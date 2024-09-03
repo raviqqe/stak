@@ -1936,8 +1936,6 @@
   (import (only (stak base) exp log)))
 
 (define-library (scheme cxr)
-  (import (only (scheme base) car caar cadr cdr cdar cddr define))
-
   (export
     caaar
     caadr
@@ -1963,6 +1961,8 @@
     cddadr
     cdddar
     cddddr)
+
+  (import (only (scheme base) car caar cadr cdr cdar cddr define))
 
   (begin
     (define (caaar x) (car (caar x)))
