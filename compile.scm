@@ -1097,10 +1097,7 @@
 
 (define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
-    (build-constant
-      context
-      constant
-      (lambda () (build-constant-codes context constant continue))))
+    (build-constant-codes context constant continue))
 
   (build-child
     car
