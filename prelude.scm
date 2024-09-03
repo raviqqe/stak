@@ -1938,7 +1938,7 @@
   (import (only (stak base) exp log)))
 
 (define-library (scheme cxr)
-  (import (scheme base))
+  (import (only (scheme base) car caar cadr cdr cdar cddr define))
 
   (export
     caaar
@@ -1995,7 +1995,7 @@
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
-  (import (scheme base))
+  (import (only (scheme base) define memv quote))
 
   (begin
     (define special-chars
@@ -2178,9 +2178,9 @@
             (skip-comment)))))))
 
 (define-library (scheme write)
-  (import (scheme base) (scheme char))
-
   (export display write)
+
+  (import (scheme base) (scheme char))
 
   (begin
     (define (get-output-port rest)
@@ -2336,7 +2336,7 @@
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
 
-  (import (scheme base))
+  (import (only (scheme base) begin define define-syntax if let lambda procedure? set! syntax-rules))
 
   (begin
     (define-syntax delay
