@@ -1995,7 +1995,7 @@
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
-  (import (scheme base))
+  (import (only (scheme base) define memv quote))
 
   (begin
     (define special-chars
