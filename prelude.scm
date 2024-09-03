@@ -2336,7 +2336,7 @@
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
 
-  (import (only (scheme base) begin define-syntax if let lambda set! syntax-rules))
+  (import (only (scheme base) begin define-syntax if let lambda procedure? set! syntax-rules))
 
   (begin
     (define-syntax delay
