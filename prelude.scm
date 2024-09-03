@@ -34,7 +34,6 @@
     do
 
     base
-    cxr
     library
     r7rs
     scheme
@@ -1359,7 +1358,6 @@
     do
 
     base
-    cxr
     library
     r7rs
     scheme
