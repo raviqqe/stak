@@ -2379,6 +2379,7 @@
     (only (stak base) data-rib code-points->string primitive))
 
   (begin
+    (define $$halt (primitive 22))
     (define $$command-line (primitive 31))
     (define $$get-environment-variables (primitive 32))
 
