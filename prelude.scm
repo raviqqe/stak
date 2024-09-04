@@ -2373,7 +2373,10 @@
     get-environment-variable
     get-environment-variables)
 
-  (import (scheme base) (scheme lazy) (stak base))
+  (import
+    (scheme base)
+    (scheme lazy)
+    (only (stak base) data-rib code-points->string primitive))
 
   (begin
     (define $$command-line (primitive 31))
