@@ -2461,7 +2461,7 @@
     get-environment-variables)
 
   (import
-    (scheme base)
+    (only (scheme base) => apply assoc car cdr cond cons define else eq? if lambda map null? or quote unwind)
     (scheme lazy)
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
