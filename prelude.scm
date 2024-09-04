@@ -2421,7 +2421,7 @@
     with-output-to-file)
 
   (import
-    (only (scheme base) call-with-port close-port define dynamic-wind error lambda let make-port parameterize set! unless)
+    (only (scheme base) call-with-port close-port current-input-port current-output-port define dynamic-wind error lambda let make-port parameterize set! unless)
     (only (stak base) primitive string->code-points))
 
   (begin
