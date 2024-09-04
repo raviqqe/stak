@@ -2218,7 +2218,54 @@
 (define-library (scheme write)
   (export display write)
 
-  (import (scheme base) (scheme char))
+  (import
+    (only (scheme base)
+      =>
+      and
+      assoc
+      assq
+      begin
+      bytevector->list
+      bytevector?
+      cadr
+      car
+      cddr
+      cdr
+      char?
+      cond
+      cons
+      current-output-port
+      define
+      else
+      eq?
+      error
+      for-each
+      if
+      lambda
+      let
+      make-parameter
+      map
+      not
+      null?
+      number->string
+      number?
+      or
+      pair?
+      parameterize
+      procedure?
+      quote
+      record?
+      set!
+      string->list
+      string?
+      symbol->string
+      symbol?
+      vector->list
+      vector?
+      when
+      write-char
+      write-string)
+    (scheme char))
 
   (begin
     (define (get-output-port rest)
