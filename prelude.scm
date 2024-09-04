@@ -2014,7 +2014,44 @@
   (export read)
 
   (import
-    (only (scheme base) current-input-port)
+    (only (scheme base)
+      and
+      assoc
+      begin
+      boolean-or
+      car
+      case
+      cdr
+      cond
+      cons
+      current-input-port
+      define
+      else
+      eof-object?
+      eq?
+      equal?
+      eqv?
+      error
+      if
+      length
+      let
+      list
+      list->bytevector
+      list->string
+      list->vector
+      memv
+      null?
+      or
+      parameterize
+      peek-char
+      quote
+      read-char
+      reverse
+      string->number
+      string->symbol
+      symbol->string
+      symbol?
+      unless)
     (scheme char)
     (only (stak base) boolean-or))
 
