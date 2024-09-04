@@ -21,6 +21,9 @@
     let*
     letrec
     letrec*
+    define-values
+    let-values
+    let*-values
     if
     cond
     case
@@ -191,9 +194,6 @@
     define-record-type
     record?
 
-    define-values
-    let-values
-    let*-values
     values
     call-with-values)
 
@@ -2013,7 +2013,10 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (scheme char) (stak base))
+  (import
+    (scheme base)
+    (scheme char)
+    (only (stak base) boolean-or))
 
   (begin
     (define (get-input-port rest)
@@ -2373,9 +2376,13 @@
     get-environment-variable
     get-environment-variables)
 
-  (import (scheme base) (scheme lazy) (stak base))
+  (import
+    (scheme base)
+    (scheme lazy)
+    (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
+    (define $$halt (primitive 22))
     (define $$command-line (primitive 31))
     (define $$get-environment-variables (primitive 32))
 
@@ -2421,7 +2428,7 @@
     with-output-to-file)
 
   (import
-    (scheme base)
+    (only (scheme base) call-with-port close-port current-input-port current-output-port define dynamic-wind error lambda let make-port parameterize set! unless)
     (only (stak base) primitive string->code-points))
 
   (begin
@@ -2484,9 +2491,9 @@
 
   (import
     (scheme base)
-    (scheme cxr)
+    (only (scheme cxr) caddr cadddr cdddr)
     (scheme repl)
-    (stak base))
+    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
   (begin
     ; Utilities
