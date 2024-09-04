@@ -2013,7 +2013,10 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (scheme char) (stak base))
+  (import
+    (scheme base)
+    (scheme char)
+    (only (stak base) boolean-or))
 
   (begin
     (define (get-input-port rest)
