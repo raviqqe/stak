@@ -1363,7 +1363,6 @@
     scheme
     stak
 
-    rib
     cons
     close
     rib?
