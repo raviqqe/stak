@@ -2486,7 +2486,7 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base) filter list-head pair-type procedure-type memv-position))
+    (only (stak base) filter list-head memv-position pair-type procedure-type))
 
   (begin
     ; Utilities
