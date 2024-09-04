@@ -2484,7 +2484,7 @@
 
   (import
     (scheme base)
-    (scheme cxr)
+    (only (scheme cxr) caddr cadddr cdddr)
     (scheme repl)
     (only (stak base) filter list-head memv-position pair-type procedure-type))
 
