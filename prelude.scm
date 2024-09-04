@@ -2014,7 +2014,44 @@
   (export read)
 
   (import
-    (scheme base)
+    (only (scheme base)
+      and
+      assoc
+      begin
+      boolean-or
+      car
+      case
+      cdr
+      cond
+      cons
+      current-input-port
+      define
+      else
+      eof-object?
+      eq?
+      equal?
+      eqv?
+      error
+      if
+      length
+      let
+      list
+      list->bytevector
+      list->string
+      list->vector
+      memv
+      null?
+      or
+      parameterize
+      peek-char
+      quote
+      read-char
+      reverse
+      string->number
+      string->symbol
+      symbol->string
+      symbol?
+      unless)
     (scheme char)
     (only (stak base) boolean-or))
 
@@ -2181,7 +2218,55 @@
 (define-library (scheme write)
   (export display write)
 
-  (import (scheme base) (scheme char))
+  (import
+    (only (scheme base)
+      =>
+      and
+      assoc
+      assq
+      begin
+      bytevector->list
+      bytevector?
+      cadr
+      car
+      cddr
+      cdr
+      char?
+      cond
+      cons
+      current-output-port
+      define
+      else
+      eq?
+      error
+      for-each
+      if
+      lambda
+      let
+      make-parameter
+      map
+      not
+      null?
+      number->string
+      number?
+      or
+      pair?
+      parameterize
+      procedure?
+      quote
+      record?
+      set!
+      string->list
+      string?
+      symbol->string
+      symbol?
+      vector->list
+      vector?
+      when
+      write-char
+      write-string
+      write-value)
+    (scheme char))
 
   (begin
     (define (get-output-port rest)
@@ -2377,7 +2462,7 @@
     get-environment-variables)
 
   (import
-    (scheme base)
+    (only (scheme base) => apply assoc car cdr cond cons define else eq? if lambda map null? or quote unwind)
     (scheme lazy)
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
