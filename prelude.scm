@@ -2376,7 +2376,7 @@
   (import
     (scheme base)
     (scheme lazy)
-    (only (stak base) data-rib code-points->string primitive))
+    (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
     (define $$halt (primitive 22))
