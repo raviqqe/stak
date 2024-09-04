@@ -21,6 +21,9 @@
     let*
     letrec
     letrec*
+    define-values
+    let-values
+    let*-values
     if
     cond
     case
@@ -191,9 +194,6 @@
     define-record-type
     record?
 
-    define-values
-    let-values
-    let*-values
     values
     call-with-values)
 
@@ -2486,7 +2486,7 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (stak base))
+    (only (stak base) filter list-head pair-type procedure-type memv-position))
 
   (begin
     ; Utilities
