@@ -2014,7 +2014,7 @@
   (export read)
 
   (import
-    (scheme base)
+    (only (scheme base) current-input-port)
     (scheme char)
     (only (stak base) boolean-or))
 
