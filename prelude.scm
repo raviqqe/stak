@@ -2264,7 +2264,8 @@
       vector?
       when
       write-char
-      write-string)
+      write-string
+      write-value)
     (scheme char))
 
   (begin
