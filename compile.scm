@@ -345,17 +345,6 @@
               #f
               (qualify name))))))
 
-    ((rename)
-      (expand
-        (lambda (name)
-          (qualify
-            (cond
-              ((assq name (cddr set)) =>
-                cadr)
-
-              (else
-                name))))))
-
     ((only)
       (let ((names (cddr set)))
         (expand
@@ -368,6 +357,17 @@
       (expand
         (lambda (name)
           (qualify (symbol-append (caddr set) name)))))
+
+    ((rename)
+      (expand
+        (lambda (name)
+          (qualify
+            (cond
+              ((assq name (cddr set)) =>
+                cadr)
+
+              (else
+                name))))))
 
     (else
       (let ((library (library-context-find context set)))
