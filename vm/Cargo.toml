@@ -12,7 +12,6 @@ repository.workspace = true
 float = ["dep:nonbox"]
 gc_always = []
 profile = []
-std = []
 trace_instruction = []
 trace_heap = []
 

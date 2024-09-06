@@ -1,4 +1,7 @@
-use core::fmt::{self, Debug, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Debug, Display, Formatter},
+};
 
 /// An error of a virtual machine.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -23,8 +26,7 @@ pub enum Error {
     ProcedureExpected,
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {

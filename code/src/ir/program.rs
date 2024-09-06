@@ -13,7 +13,7 @@ pub struct Program {
 
 impl Program {
     /// Creates a program.
-    pub fn new(symbols: Vec<String>, instructions: Vec<Instruction>) -> Self {
+    pub const fn new(symbols: Vec<String>, instructions: Vec<Instruction>) -> Self {
         Self {
             symbols,
             instructions,
