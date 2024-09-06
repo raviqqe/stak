@@ -183,6 +183,30 @@
     (else
       (f xs))))
 
+(define (unique xs)
+  (let loop ((xs xs) (ys '()))
+    (if (null? xs)
+      ys
+      (loop
+        (cdr xs)
+        (if (memq (car xs) ys)
+          ys
+          (cons (car xs) ys))))))
+
+(define (deep-unique x)
+  (cond
+    ((pair? x)
+      (deep-unique
+        (append
+          (deep-unique (car x))
+          (deep-unique (cdr x)))))
+
+    ((symbol? x)
+      (list x))
+
+    (else
+      '())))
+
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
@@ -256,7 +280,7 @@
   (symbols library-symbols))
 
 (define (make-library id name exports imports body)
-  (make-library* id name exports imports body #f))
+  (make-library* id name exports imports body (delay (deep-unique (cons exports body)))))
 
 (define-record-type library-state
   (make-library-state library imported)
