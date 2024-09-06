@@ -1576,7 +1576,7 @@
 
     write-value)
 
-  (import (stak base))
+  (import (shake (stak base)))
 
   (begin
     ; Symbol table
@@ -1962,7 +1962,7 @@
     cdddar
     cddddr)
 
-  (import (only (scheme base) car caar cadr cdr cdar cddr define))
+  (import (shake (scheme base)))
 
   (begin
     (define (caaar x) (car (caar x)))
@@ -1993,7 +1993,7 @@
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
-  (import (only (scheme base) define memv quote))
+  (import (shake (scheme base)))
 
   (begin
     (define special-chars
@@ -2013,47 +2013,7 @@
 (define-library (scheme read)
   (export read)
 
-  (import
-    (only (scheme base)
-      and
-      assoc
-      begin
-      boolean-or
-      car
-      case
-      cdr
-      cond
-      cons
-      current-input-port
-      define
-      else
-      eof-object?
-      eq?
-      equal?
-      eqv?
-      error
-      if
-      length
-      let
-      list
-      list->bytevector
-      list->string
-      list->vector
-      memv
-      null?
-      or
-      parameterize
-      peek-char
-      quote
-      read-char
-      reverse
-      string->number
-      string->symbol
-      symbol->string
-      symbol?
-      unless)
-    (scheme char)
-    (only (stak base) boolean-or))
+  (import (shake (scheme base)) (scheme char) (only (stak base) boolean-or))
 
   (begin
     (define (get-input-port rest)
@@ -2218,55 +2178,7 @@
 (define-library (scheme write)
   (export display write)
 
-  (import
-    (only (scheme base)
-      =>
-      and
-      assoc
-      assq
-      begin
-      bytevector->list
-      bytevector?
-      cadr
-      car
-      cddr
-      cdr
-      char?
-      cond
-      cons
-      current-output-port
-      define
-      else
-      eq?
-      error
-      for-each
-      if
-      lambda
-      let
-      make-parameter
-      map
-      not
-      null?
-      number->string
-      number?
-      or
-      pair?
-      parameterize
-      procedure?
-      quote
-      record?
-      set!
-      string->list
-      string?
-      symbol->string
-      symbol?
-      vector->list
-      vector?
-      when
-      write-char
-      write-string
-      write-value)
-    (scheme char))
+  (import (shake (scheme base)) (scheme char))
 
   (begin
     (define (get-output-port rest)
@@ -2422,7 +2334,7 @@
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
 
-  (import (only (scheme base) begin define define-syntax if let lambda procedure? set! syntax-rules))
+  (import (shake (scheme base)))
 
   (begin
     (define-syntax delay
@@ -2462,7 +2374,7 @@
     get-environment-variables)
 
   (import
-    (only (scheme base) => apply assoc car cdr cond cons define else eq? if lambda map null? or quote unwind)
+    (shake (scheme base))
     (scheme lazy)
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
@@ -2513,7 +2425,7 @@
     with-output-to-file)
 
   (import
-    (only (scheme base) call-with-port close-port current-input-port current-output-port define dynamic-wind error lambda let make-port parameterize set! unless)
+    (shake (scheme base))
     (only (stak base) primitive string->code-points))
 
   (begin
@@ -2575,8 +2487,8 @@
   (export environment eval)
 
   (import
-    (scheme base)
-    (only (scheme cxr) caddr cadddr cdddr)
+    (shake (scheme base))
+    (shake (scheme cxr))
     (scheme repl)
     (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
