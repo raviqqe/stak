@@ -479,11 +479,12 @@
 (define (expand-libraries expression)
   (let* ((context (make-library-context '() '()))
          (body-symbols
-           (deep-unique
-             (filter
-               (lambda (expression)
-                 (not (and (pair? expression) (memq (car expression) library-predicates))))
-               (cdr expression))))
+           (delay
+             (deep-unique
+               (filter
+                 (lambda (expression)
+                   (not (and (pair? expression) (memq (car expression) library-predicates))))
+                 (cdr expression)))))
          (expression
            (cons
              (car expression)
