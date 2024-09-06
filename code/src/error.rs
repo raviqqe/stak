@@ -1,5 +1,8 @@
 use alloc::string::FromUtf8Error;
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// An error of encoding and decoding bytecodes.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -26,7 +29,7 @@ impl From<FromUtf8Error> for Error {
     }
 }
 
-impl core::error::Error for Error {}
+impl error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
