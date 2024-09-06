@@ -434,7 +434,7 @@
     (lambda (set) (expand-import-set context importer-id importer-symbols (lambda (x) x) set))
     sets))
 
-(define (expand-library-expression context expression)
+(define (expand-library-expression context body-symbols expression)
   (case (and (pair? expression) (car expression))
     ((define-library)
       (let* ((collect-bodies
@@ -469,18 +469,26 @@
         '()))
 
     ((import)
-      (expand-import-sets context #f #f (cdr expression)))
+      (expand-import-sets context #f body-symbols (cdr expression)))
 
     (else
       (list expression))))
 
+(define library-predicates '(define-library import))
+
 (define (expand-libraries expression)
   (let* ((context (make-library-context '() '()))
+         (body-symbols
+           (deep-unique
+             (filter
+               (lambda (expression)
+                 (not (and (pair? expression) (memq (car expression) library-predicates))))
+               (cdr expression))))
          (expression
            (cons
              (car expression)
              (flat-map
-               (lambda (expression) (expand-library-expression context expression))
+               (lambda (expression) (expand-library-expression context body-symbols expression))
                (cdr expression)))))
     (values expression context)))
 
