@@ -50,6 +50,7 @@ mod tests {
         assert_eq!(
             buffer,
             indoc!(
+                // spell-checker: disable
                 b"
                 call\tbaz\t0
                 return\tfoo;bar\t42
