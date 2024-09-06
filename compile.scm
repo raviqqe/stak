@@ -246,13 +246,17 @@
 ;; Types
 
 (define-record-type library
-  (make-library id name exports imports body)
+  (make-library* id name exports imports body symbols)
   library?
   (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
-  (body library-body))
+  (body library-body)
+  (symbols library-symbols))
+
+(define (make-library id name exports imports body)
+  (make-library* id name exports imports body #f))
 
 (define-record-type library-state
   (make-library-state library imported)
@@ -385,7 +389,11 @@
           (if (library-context-import! context set)
             '()
             (append
-              (expand-import-sets context (library-id library) #f (library-imports library))
+              (expand-import-sets
+                context
+                (library-id library)
+                (library-symbols library)
+                (library-imports library))
               (library-body library)))
           (flat-map
             (lambda (names)
