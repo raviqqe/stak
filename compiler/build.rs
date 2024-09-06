@@ -1,8 +1,8 @@
 //! A build script.
 
+use core::error::Error;
 use std::{
     env,
-    error::Error,
     fs::{self, File},
     io::{self, Write},
     path::Path,

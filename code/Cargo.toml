@@ -10,7 +10,6 @@ repository.workspace = true
 
 [features]
 alloc = []
-std = []
 
 [dev-dependencies]
 insta = "1.39.0"

@@ -1,14 +1,12 @@
 //! Macros to bundle and use Scheme programs.
 
+use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
-use std::{
-    error::Error,
-    path::{Path, MAIN_SEPARATOR_STR},
-};
+use std::path::{Path, MAIN_SEPARATOR_STR};
 use syn::{parse_macro_input, LitStr};
 
 /// Includes a program in R7RS Scheme as bytecodes built by the `stak-build`

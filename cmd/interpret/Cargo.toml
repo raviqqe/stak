@@ -21,13 +21,11 @@ main_error = "0.1.2"
 stak-configuration = { version = "0.1.50", path = "../../configuration" }
 stak-device = { version = "0.2.54", path = "../../device", features = ["std"] }
 stak-file = { version = "0.4.12", path = "../../file", features = ["std"] }
-stak-primitive = { version = "0.5.12", path = "../../primitive", features = [
-  "std",
-] }
+stak-primitive = { version = "0.5.12", path = "../../primitive" }
 stak-process-context = { version = "0.2.12", path = "../../process_context", features = [
   "std",
 ] }
-stak-vm = { version = "0.5.12", path = "../../vm", features = ["std"] }
+stak-vm = { version = "0.5.12", path = "../../vm" }
 
 [lints]
 workspace = true

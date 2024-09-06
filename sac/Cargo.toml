@@ -16,9 +16,7 @@ std = [
   "dep:main_error",
   "stak-device/std",
   "stak-file/std",
-  "stak-primitive/std",
   "stak-process-context/std",
-  "stak-vm/std",
 ]
 
 [dependencies]

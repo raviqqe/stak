@@ -1,4 +1,7 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 use stak_primitive::SmallError;
 
 /// A compile error.
@@ -12,7 +15,7 @@ pub enum CompileError {
     Vm(stak_vm::Error),
 }
 
-impl std::error::Error for CompileError {}
+impl error::Error for CompileError {}
 
 impl Display for CompileError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
