@@ -23,10 +23,7 @@ stak-process-context = { version = "0.2.12", path = "../../process_context", fea
   "std",
 ] }
 stak-profiler = { version = "0.1.23", path = "../../profiler" }
-stak-vm = { version = "0.5.12", path = "../../vm", features = [
-  "profile",
-  "std",
-] }
+stak-vm = { version = "0.5.12", path = "../../vm", features = ["profile"] }
 
 [lints]
 workspace = true

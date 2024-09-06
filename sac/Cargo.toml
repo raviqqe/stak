@@ -17,7 +17,6 @@ std = [
   "stak-device/std",
   "stak-file/std",
   "stak-process-context/std",
-  "stak-vm/std",
 ]
 
 [dependencies]

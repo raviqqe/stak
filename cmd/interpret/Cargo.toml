@@ -25,7 +25,7 @@ stak-primitive = { version = "0.5.12", path = "../../primitive" }
 stak-process-context = { version = "0.2.12", path = "../../process_context", features = [
   "std",
 ] }
-stak-vm = { version = "0.5.12", path = "../../vm", features = ["std"] }
+stak-vm = { version = "0.5.12", path = "../../vm" }
 
 [lints]
 workspace = true
