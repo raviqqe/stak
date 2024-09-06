@@ -1576,7 +1576,7 @@
 
     write-value)
 
-  (import (stak base))
+  (import (shake (stak base)))
 
   (begin
     ; Symbol table
@@ -1993,7 +1993,7 @@
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
-  (import (only (scheme base) define memv quote))
+  (import (shake (scheme base)))
 
   (begin
     (define special-chars
@@ -2422,7 +2422,7 @@
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
 
-  (import (only (scheme base) begin define define-syntax if let lambda procedure? set! syntax-rules))
+  (import (shake (scheme base)))
 
   (begin
     (define-syntax delay
@@ -2574,11 +2574,7 @@
 (define-library (scheme eval)
   (export environment eval)
 
-  (import
-    (scheme base)
-    (only (scheme cxr) caddr cadddr cdddr)
-    (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
+  (import (shake (scheme base)) (shake (scheme cxr)) (scheme repl) (shake (stak base)))
 
   (begin
     ; Utilities
