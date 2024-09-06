@@ -26,8 +26,7 @@ impl From<FromUtf8Error> for Error {
     }
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl core::error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
