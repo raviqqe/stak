@@ -1,8 +1,6 @@
 use crate::Record;
-use std::{
-    error::Error,
-    io::{self, Write},
-};
+use core::error::Error;
+use std::io::{self, Write};
 
 /// Writes profile records.
 pub fn write_records<R: Record, E: Error + From<io::Error>>(
