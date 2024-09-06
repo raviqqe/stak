@@ -333,9 +333,9 @@
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
-(define (expand-import-set context importer-id qualify set)
+(define (expand-import-set context importer-id importer-symbols qualify set)
   (define (expand qualify)
-    (expand-import-set context importer-id qualify (cadr set)))
+    (expand-import-set context importer-id importer-symbols qualify (cadr set)))
 
   (case (predicate set)
     ((except)
@@ -373,7 +373,9 @@
     ((shake)
       (expand
         (lambda (name)
-          (if (memq name (force symbols))
+          (if (or
+               (not importer-symbols)
+               (memq name (force importer-symbols)))
             (qualify name)
             #f))))
 
@@ -383,7 +385,7 @@
           (if (library-context-import! context set)
             '()
             (append
-              (expand-import-sets context (library-id library) (library-imports library))
+              (expand-import-sets context (library-id library) #f (library-imports library))
               (library-body library)))
           (flat-map
             (lambda (names)
@@ -397,9 +399,9 @@
                   '())))
             (library-exports library)))))))
 
-(define (expand-import-sets context importer-id sets)
+(define (expand-import-sets context importer-id importer-symbols sets)
   (flat-map
-    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
+    (lambda (set) (expand-import-set context importer-id importer-symbols (lambda (x) x) set))
     sets))
 
 (define (expand-library-expression context expression)
@@ -434,7 +436,7 @@
         '()))
 
     ((import)
-      (expand-import-sets context #f (cdr expression)))
+      (expand-import-sets context #f #f (cdr expression)))
 
     (else
       (list expression))))
