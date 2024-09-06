@@ -478,6 +478,7 @@
 
 (define (expand-libraries expression)
   (let* ((context (make-library-context '() '()))
+         ; TODO Use `body-symbols` for tree shaking.
          (body-symbols
            (delay
              (deep-unique
@@ -489,7 +490,7 @@
            (cons
              (car expression)
              (flat-map
-               (lambda (expression) (expand-library-expression context body-symbols expression))
+               (lambda (expression) (expand-library-expression context #f expression))
                (cdr expression)))))
     (values expression context)))
 
