@@ -6,6 +6,7 @@
   (scheme base)
   (scheme cxr)
   (scheme inexact)
+  (scheme lazy)
   (scheme read)
   (scheme write))
 
@@ -370,12 +371,11 @@
                 name))))))
 
     ((shake)
-      (let ((names (cddr set)))
-        (expand
-          (lambda (name)
-            (if (memq name names)
-              (qualify name)
-              #f)))))
+      (expand
+        (lambda (name)
+          (if (memq name (force symbols))
+            (qualify name)
+            #f))))
 
     (else
       (let ((library (library-context-find context set)))
