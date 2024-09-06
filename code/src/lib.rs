@@ -4,8 +4,6 @@
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
-#[cfg(any(feature = "std", test))]
-extern crate std;
 
 #[cfg(feature = "alloc")]
 mod decode;
