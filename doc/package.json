@@ -18,7 +18,7 @@
     "@biomejs/biome": "^1.8.3",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.5",
-    "@raviqqe/stak": "^0.2.32",
+    "@raviqqe/stak": "^0.2.33",
     "astro": "^4.15.3",
     "classnames": "^2.5.1",
     "lucide-solid": "^0.438.0",
