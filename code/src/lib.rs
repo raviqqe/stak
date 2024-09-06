@@ -4,6 +4,8 @@
 
 #[cfg(feature = "alloc")]
 extern crate alloc;
+#[cfg(test)]
+extern crate std;
 
 #[cfg(feature = "alloc")]
 mod decode;
