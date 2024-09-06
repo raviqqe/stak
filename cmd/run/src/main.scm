@@ -6,8 +6,7 @@
   (only (scheme eval) eval)
   (shake (scheme file))
   (only (scheme inexact))
-  ; TODO Use `only`.
-  (scheme lazy)
+  (only (scheme lazy))
   (only (scheme process-context) command-line)
   (scheme read)
   (scheme repl)
