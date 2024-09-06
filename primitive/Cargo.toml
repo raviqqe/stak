@@ -8,9 +8,6 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[features]
-std = []
-
 [dependencies]
 heapless = "0.8.0"
 libm = { version = "0.2.8", default-features = false }
