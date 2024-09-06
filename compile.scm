@@ -195,7 +195,7 @@
 
 (define (deep-unique x)
   (cond
-    ((pair? x)
+    ((and (pair? x) (not (symbol? (car x))))
       (deep-unique
         (append
           (deep-unique (car x))

@@ -1933,7 +1933,7 @@
 (define-library (scheme inexact)
   (export exp log)
 
-  (import (only (stak base) exp log)))
+  (import (shake (stak base))))
 
 (define-library (scheme cxr)
   (export
@@ -1962,7 +1962,7 @@
     cdddar
     cddddr)
 
-  (import (only (scheme base) car caar cadr cdr cdar cddr define))
+  (import (shake (scheme base)))
 
   (begin
     (define (caaar x) (car (caar x)))
@@ -2512,9 +2512,7 @@
     with-input-from-file
     with-output-to-file)
 
-  (import
-    (only (scheme base) call-with-port close-port current-input-port current-output-port define dynamic-wind error lambda let make-port parameterize set! unless)
-    (only (stak base) primitive string->code-points))
+  (import (shake (scheme base)) (shake (stak base)))
 
   (begin
     (define $$open-file (primitive 25))
@@ -2566,7 +2564,7 @@
 (define-library (scheme repl)
   (export interaction-environment)
 
-  (import (only (scheme base) define make-parameter quote))
+  (import (shake (scheme base)))
 
   (begin
     (define interaction-environment (make-parameter '()))))
@@ -2574,11 +2572,7 @@
 (define-library (scheme eval)
   (export environment eval)
 
-  (import
-    (scheme base)
-    (only (scheme cxr) caddr cadddr cdddr)
-    (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
+  (import (scheme base) (shake (scheme cxr)) (scheme repl) (shake (stak base)))
 
   (begin
     ; Utilities
