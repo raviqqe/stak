@@ -1962,7 +1962,7 @@
     cdddar
     cddddr)
 
-  (import (only (scheme base) car caar cadr cdr cdar cddr define))
+  (import (shake (scheme base)))
 
   (begin
     (define (caaar x) (car (caar x)))

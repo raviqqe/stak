@@ -184,18 +184,19 @@
       (f xs))))
 
 (define (unique xs)
-  (let loop ((xs xs) (ys '()))
-    (if (null? xs)
-      ys
-      (loop
-        (cdr xs)
-        (if (memq (car xs) ys)
-          ys
-          (cons (car xs) ys))))))
+  (if (null? xs)
+    '()
+    (let ((ys (unique (cdr xs))))
+      (if (memq (car xs) ys)
+        ys
+        (cons (car xs) ys)))))
 
 (define (deep-unique x)
   (cond
-    ((and (pair? x) (not (symbol? (car x))))
+    ((and (pair? x) (symbol? (car x)))
+      (unique (cons (car x) (deep-unique (cdr x)))))
+
+    ((pair? x)
       (deep-unique
         (append
           (deep-unique (car x))
@@ -270,7 +271,7 @@
 ;; Types
 
 (define-record-type library
-  (make-library* id name exports imports body symbols)
+  (make-library id name exports imports body symbols)
   library?
   (id library-id)
   (name library-name)
@@ -278,9 +279,6 @@
   (imports library-imports)
   (body library-body)
   (symbols library-symbols))
-
-(define (make-library id name exports imports body)
-  (make-library* id name exports imports body (delay (deep-unique (cons exports body)))))
 
 (define-record-type library-state
   (make-library-state library imported)
@@ -399,6 +397,7 @@
                 name))))))
 
     ((shake)
+      (write (force importer-symbols) (current-error-port))
       (expand
         (lambda (name)
           (if (or
@@ -439,14 +438,16 @@
 (define (expand-library-expression context expression)
   (case (and (pair? expression) (car expression))
     ((define-library)
-      (let ((collect-bodies
-              (lambda (predicate)
-                (flat-map
-                  cdr
-                  (filter
-                    (lambda (body) (eq? (car body) predicate))
-                    (cddr expression)))))
-            (id (library-context-id context)))
+      (let* ((collect-bodies
+               (lambda (predicate)
+                 (flat-map
+                   cdr
+                   (filter
+                     (lambda (body) (eq? (car body) predicate))
+                     (cddr expression)))))
+             (id (library-context-id context))
+             (exports (collect-bodies 'export))
+             (bodies (collect-bodies 'begin)))
         (library-context-add!
           context
           (make-library
@@ -457,14 +458,15 @@
                 (if (eq? (predicate name) 'rename)
                   (cons (caddr name) (rename-library-symbol context id (cadr name)))
                   (cons name (rename-library-symbol context id name))))
-              (collect-bodies 'export))
+              exports)
             (collect-bodies 'import)
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
                   (rename-library-symbol context id value)
                   value))
-              (collect-bodies 'begin))))
+              bodies)
+            (delay (deep-unique (cons exports bodies)))))
         '()))
 
     ((import)
