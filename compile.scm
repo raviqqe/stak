@@ -397,7 +397,6 @@
                 name))))))
 
     ((shake)
-      (write (force importer-symbols) (current-error-port))
       (expand
         (lambda (name)
           (if (or
