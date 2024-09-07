@@ -35,7 +35,7 @@ for directory in . cmd/minimal; do
 done
 
 baseline=$(which $interpreter)
-candidate=$(PATH=$PWD/target/release:$PWD/cmd/minimal/target/release which $interpreter)
+candidate=$(PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH which $interpreter)
 
 filter=.
 
