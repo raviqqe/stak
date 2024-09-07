@@ -37,6 +37,8 @@ done
 baseline=$(which $interpreter)
 candidate=$(PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH which $interpreter)
 
+export PATH=$PWD/target/release:$PATH
+
 filter=.
 
 if [ $# -gt 0 ]; then
