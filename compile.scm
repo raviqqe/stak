@@ -1564,14 +1564,16 @@
                        car
                        (filter
                          (lambda (pair)
-                           (equal?
-                             (symbol->string (build-library-symbol (library-id library) (car pair)))
-                             (symbol->string (cdr pair))))
+                           (and
+                             (symbol? (cdr pair))
+                             (equal?
+                               (symbol->string (build-library-symbol (library-id library) (car pair)))
+                               (symbol->string (cdr pair)))))
                          exports))))
               (list
                 (library-id library)
                 locals
-                (filter-keys (lambda (name) (not (memq name locals))) exports)
+                (filter-values symbol? (filter-keys (lambda (name) (not (memq name locals))) exports))
                 (filter-values symbol? exports))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
