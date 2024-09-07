@@ -489,7 +489,8 @@
            (cons
              (car expression)
              (flat-map
-               (lambda (expression) (expand-library-expression context body-symbols expression))
+               (lambda (expression)
+                 (expand-library-expression context body-symbols expression))
                (cdr expression)))))
     (values expression context)))
 
