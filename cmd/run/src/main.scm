@@ -1,6 +1,7 @@
 ; We import all libraries here because the compiler strips any unimported libraries.
 (import
-  (shake (scheme base))
+  ; TODO Use `only` when macro resolution in `eval` is fixed.
+  (scheme base)
   (shake (scheme char))
   (only (scheme cxr))
   (only (scheme eval) eval)
