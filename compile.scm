@@ -1554,6 +1554,14 @@
           (lambda (library)
             (list
               (library-id library)
+              (map
+                car
+                (filter
+                  (lambda (pair)
+                    (equal?
+                      (symbol->string (build-library-symbol (library-id library) (car pair)))
+                      (cdr pair)))
+                  (library-exports library)))
               (filter-values
                 symbol?
                 (map-values
