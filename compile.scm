@@ -1559,7 +1559,7 @@
                      (map-values
                        (lambda (name) (resolve-denotation macro-context name))
                        (library-exports library)))
-                   (locals
+                   (internals
                      (map
                        car
                        (filter
@@ -1572,8 +1572,8 @@
                          exports))))
               (list
                 (library-id library)
-                locals
-                (filter-values symbol? (filter-keys (lambda (name) (not (memq name locals))) exports))
+                internals
+                (filter-values symbol? (filter-keys (lambda (name) (not (memq name internals))) exports))
                 (filter-values symbol? exports))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
