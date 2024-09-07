@@ -1,12 +1,14 @@
 ; We import all libraries here because the compiler strips any unimported libraries.
 (import
-  (shake (scheme base))
+  ; TODO (shake (scheme base))
+  (scheme base)
   (shake (scheme char))
   (only (scheme cxr))
   (only (scheme eval) eval)
   (shake (scheme file))
   (only (scheme inexact))
-  (only (scheme lazy))
+  ; TODO (only (scheme lazy))
+  (scheme lazy)
   (only (scheme process-context) command-line)
   (scheme read)
   (scheme repl)
