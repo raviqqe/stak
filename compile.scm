@@ -1552,21 +1552,20 @@
       (compile
         (map-values
           (lambda (library)
-            (list
-              (library-id library)
-              (map
-                car
-                (filter
-                  (lambda (pair)
-                    (equal?
-                      (symbol->string (build-library-symbol (library-id library) (car pair)))
-                      (symbol->string (cdr pair))))
-                  (library-exports library)))
-              (filter-values
-                symbol?
-                (map-values
-                  (lambda (name) (resolve-denotation macro-context name))
-                  (library-exports library)))))
+            (let ((exports (map-values
+                            (lambda (name) (resolve-denotation macro-context name))
+                            (library-exports library))))
+              (list
+                (library-id library)
+                (map
+                  car
+                  (filter
+                    (lambda (pair)
+                      (equal?
+                        (symbol->string (build-library-symbol (library-id library) (car pair)))
+                        (symbol->string (cdr pair))))
+                    exports))
+                (filter-values symbol? exports))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
