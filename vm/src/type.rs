@@ -20,4 +20,6 @@ pub enum Type {
     Vector,
     /// A byte vector.
     ByteVector,
+    /// A record.
+    Record,
 }

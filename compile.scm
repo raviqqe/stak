@@ -6,6 +6,7 @@
   (scheme base)
   (scheme cxr)
   (scheme inexact)
+  (scheme lazy)
   (scheme read)
   (scheme write))
 
@@ -181,6 +182,31 @@
     (else
       (f xs))))
 
+(define (unique xs)
+  (if (null? xs)
+    '()
+    (let ((ys (unique (cdr xs))))
+      (if (memq (car xs) ys)
+        ys
+        (cons (car xs) ys)))))
+
+(define (deep-unique x)
+  (cond
+    ((and (pair? x) (symbol? (car x)))
+      (unique (cons (car x) (deep-unique (cdr x)))))
+
+    ((pair? x)
+      (deep-unique
+        (append
+          (deep-unique (car x))
+          (deep-unique (cdr x)))))
+
+    ((symbol? x)
+      (list x))
+
+    (else
+      '())))
+
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
@@ -244,13 +270,14 @@
 ;; Types
 
 (define-record-type library
-  (make-library id name exports imports body)
+  (make-library id name exports imports body symbols)
   library?
   (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
-  (body library-body))
+  (body library-body)
+  (symbols library-symbols))
 
 (define-record-type library-state
   (make-library-state library imported)
@@ -331,9 +358,9 @@
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
-(define (expand-import-set context importer-id qualify set)
+(define (expand-import-set context importer-id importer-symbols qualify set)
   (define (expand qualify)
-    (expand-import-set context importer-id qualify (cadr set)))
+    (expand-import-set context importer-id importer-symbols qualify (cadr set)))
 
   (case (predicate set)
     ((except)
@@ -343,17 +370,6 @@
             (if (memq name names)
               #f
               (qualify name))))))
-
-    ((rename)
-      (expand
-        (lambda (name)
-          (qualify
-            (cond
-              ((assq name (cddr set)) =>
-                cadr)
-
-              (else
-                name))))))
 
     ((only)
       (let ((names (cddr set)))
@@ -368,13 +384,37 @@
         (lambda (name)
           (qualify (symbol-append (caddr set) name)))))
 
+    ((rename)
+      (expand
+        (lambda (name)
+          (qualify
+            (cond
+              ((assq name (cddr set)) =>
+                cadr)
+
+              (else
+                name))))))
+
+    ((shake)
+      (expand
+        (lambda (name)
+          (if (or
+               (not importer-symbols)
+               (memq name (force importer-symbols)))
+            (qualify name)
+            #f))))
+
     (else
       (let ((library (library-context-find context set)))
         (append
           (if (library-context-import! context set)
             '()
             (append
-              (expand-import-sets context (library-id library) (library-imports library))
+              (expand-import-sets
+                context
+                (library-id library)
+                (library-symbols library)
+                (library-imports library))
               (library-body library)))
           (flat-map
             (lambda (names)
@@ -388,22 +428,24 @@
                   '())))
             (library-exports library)))))))
 
-(define (expand-import-sets context importer-id sets)
+(define (expand-import-sets context importer-id importer-symbols sets)
   (flat-map
-    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
+    (lambda (set) (expand-import-set context importer-id importer-symbols (lambda (x) x) set))
     sets))
 
-(define (expand-library-expression context expression)
+(define (expand-library-expression context body-symbols expression)
   (case (and (pair? expression) (car expression))
     ((define-library)
-      (let ((collect-bodies
-              (lambda (predicate)
-                (flat-map
-                  cdr
-                  (filter
-                    (lambda (body) (eq? (car body) predicate))
-                    (cddr expression)))))
-            (id (library-context-id context)))
+      (let* ((collect-bodies
+               (lambda (predicate)
+                 (flat-map
+                   cdr
+                   (filter
+                     (lambda (body) (eq? (car body) predicate))
+                     (cddr expression)))))
+             (id (library-context-id context))
+             (exports (collect-bodies 'export))
+             (bodies (collect-bodies 'begin)))
         (library-context-add!
           context
           (make-library
@@ -414,29 +456,40 @@
                 (if (eq? (predicate name) 'rename)
                   (cons (caddr name) (rename-library-symbol context id (cadr name)))
                   (cons name (rename-library-symbol context id name))))
-              (collect-bodies 'export))
+              exports)
             (collect-bodies 'import)
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
                   (rename-library-symbol context id value)
                   value))
-              (collect-bodies 'begin))))
+              bodies)
+            (delay (deep-unique (cons exports bodies)))))
         '()))
 
     ((import)
-      (expand-import-sets context #f (cdr expression)))
+      (expand-import-sets context #f body-symbols (cdr expression)))
 
     (else
       (list expression))))
 
+(define library-predicates '(define-library import))
+
 (define (expand-libraries expression)
   (let* ((context (make-library-context '() '()))
+         (body-symbols
+           (delay
+             (deep-unique
+               (filter
+                 (lambda (expression)
+                   (not (and (pair? expression) (memq (car expression) library-predicates))))
+                 (cdr expression)))))
          (expression
            (cons
              (car expression)
              (flat-map
-               (lambda (expression) (expand-library-expression context expression))
+               (lambda (expression)
+                 (expand-library-expression context body-symbols expression))
                (cdr expression)))))
     (values expression context)))
 
@@ -1096,10 +1149,7 @@
 
 (define (build-child-constants context car cdr continue)
   (define (build-child constant continue)
-    (build-constant
-      context
-      constant
-      (lambda () (build-constant-codes context constant continue))))
+    (build-constant-codes context constant continue))
 
   (build-child
     car

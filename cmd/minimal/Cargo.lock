@@ -47,14 +47,14 @@ checksum = "4ec2a862134d2a7d32d7983ddcdd1c4923530833c9f2ea1a44fc5fa473989058"
 
 [[package]]
 name = "mstak"
-version = "0.2.9"
+version = "0.2.11"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.2.9"
+version = "0.2.11"
 dependencies = [
  "libc",
  "stak-device",
@@ -91,11 +91,11 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-code"
-version = "0.2.51"
+version = "0.2.53"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.56"
+version = "0.1.58"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -107,25 +107,25 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.48"
+version = "0.1.50"
 
 [[package]]
 name = "stak-device"
-version = "0.2.52"
+version = "0.2.54"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-file"
-version = "0.4.10"
+version = "0.4.12"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.1.53"
+version = "0.1.55"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -136,7 +136,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.29"
+version = "0.1.31"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -145,7 +145,7 @@ dependencies = [
 
 [[package]]
 name = "stak-primitive"
-version = "0.5.10"
+version = "0.5.12"
 dependencies = [
  "heapless",
  "libm",
@@ -157,11 +157,11 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.10"
+version = "0.2.12"
 
 [[package]]
 name = "stak-sac"
-version = "0.1.54"
+version = "0.1.56"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -176,14 +176,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.28"
+version = "0.1.30"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.5.10"
+version = "0.5.12"
 dependencies = [
  "cfg-exif",
  "stak-code",
@@ -191,9 +191,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.76"
+version = "2.0.77"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "578e081a14e0cefc3279b0472138c513f37b41a08d5a3cca9b6e4e8ceb6cd525"
+checksum = "9f35bcdf61fd8e7be6caf75f429fdca8beb3ed76584befb503b1569faee373ed"
 dependencies = [
  "proc-macro2",
  "quote",

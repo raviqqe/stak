@@ -1,4 +1,7 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -18,8 +21,7 @@ pub enum Error {
     WriteOutput,
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {

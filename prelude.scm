@@ -21,6 +21,9 @@
     let*
     letrec
     letrec*
+    define-values
+    let-values
+    let*-values
     if
     cond
     case
@@ -34,7 +37,6 @@
     do
 
     base
-    cxr
     library
     r7rs
     scheme
@@ -192,9 +194,6 @@
     define-record-type
     record?
 
-    define-values
-    let-values
-    let*-values
     values
     call-with-values)
 
@@ -1359,7 +1358,6 @@
     do
 
     base
-    cxr
     library
     r7rs
     scheme
@@ -1578,7 +1576,7 @@
 
     write-value)
 
-  (import (stak base))
+  (import (shake (stak base)))
 
   (begin
     ; Symbol table
@@ -1938,8 +1936,6 @@
   (import (only (stak base) exp log)))
 
 (define-library (scheme cxr)
-  (import (scheme base))
-
   (export
     caaar
     caadr
@@ -1965,6 +1961,8 @@
     cddadr
     cdddar
     cddddr)
+
+  (import (shake (scheme base)))
 
   (begin
     (define (caaar x) (car (caar x)))
@@ -1995,7 +1993,7 @@
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
-  (import (scheme base))
+  (import (shake (scheme base)))
 
   (begin
     (define special-chars
@@ -2015,7 +2013,7 @@
 (define-library (scheme read)
   (export read)
 
-  (import (scheme base) (scheme char) (stak base))
+  (import (shake (scheme base)) (scheme char) (only (stak base) boolean-or))
 
   (begin
     (define (get-input-port rest)
@@ -2178,9 +2176,9 @@
             (skip-comment)))))))
 
 (define-library (scheme write)
-  (import (scheme base) (scheme char))
-
   (export display write)
+
+  (import (shake (scheme base)) (scheme char))
 
   (begin
     (define (get-output-port rest)
@@ -2336,7 +2334,7 @@
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
 
-  (import (scheme base))
+  (import (shake (scheme base)))
 
   (begin
     (define-syntax delay
@@ -2375,9 +2373,13 @@
     get-environment-variable
     get-environment-variables)
 
-  (import (scheme base) (scheme lazy) (stak base))
+  (import
+    (shake (scheme base))
+    (scheme lazy)
+    (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
+    (define $$halt (primitive 22))
     (define $$command-line (primitive 31))
     (define $$get-environment-variables (primitive 32))
 
@@ -2423,7 +2425,7 @@
     with-output-to-file)
 
   (import
-    (scheme base)
+    (shake (scheme base))
     (only (stak base) primitive string->code-points))
 
   (begin
@@ -2485,10 +2487,10 @@
   (export environment eval)
 
   (import
-    (scheme base)
-    (scheme cxr)
+    (shake (scheme base))
+    (shake (scheme cxr))
     (scheme repl)
-    (stak base))
+    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
   (begin
     ; Utilities

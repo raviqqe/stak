@@ -1,6 +1,8 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+};
 use stak_compiler::CompileError;
-use std::error::Error;
 use tokio::io;
 
 /// A build error.

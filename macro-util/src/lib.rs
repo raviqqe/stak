@@ -1,8 +1,9 @@
 //! Macro utilities.
 
+use core::error::Error;
 use proc_macro2::TokenStream;
 use quote::quote;
-use std::{env, error::Error, fs::read_to_string, path::Path};
+use std::{env, fs::read_to_string, path::Path};
 use syn::LitStr;
 
 /// Reads a source file.
