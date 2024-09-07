@@ -1078,10 +1078,10 @@
               (compile-primitive-call '$$close continuation))))
 
         (($$libraries)
-          (constant-rib (compilation-context-libraries context) continuation))
+          (constant-rib (force (compilation-context-libraries context)) continuation))
 
         (($$macros)
-          (constant-rib (compilation-context-macros context) continuation))
+          (constant-rib (force (compilation-context-macros context)) continuation))
 
         (($$quote)
           (constant-rib (cadr expression) continuation))
@@ -1550,15 +1550,16 @@
   (write-target
     (encode
       (compile
-        (map-values
-          (lambda (library)
-            (filter-values
-              symbol?
-              (map-values
-                (lambda (name) (resolve-denotation macro-context name))
-                (library-exports library))))
-          (map-values library-state-library (library-context-libraries library-context)))
-        (reverse (macro-state-literals (macro-context-state macro-context)))
+        (delay
+          (map-values
+            (lambda (library)
+              (filter-values
+                symbol?
+                (map-values
+                  (lambda (name) (resolve-denotation macro-context name))
+                  (library-exports library))))
+            (map-values library-state-library (library-context-libraries library-context))))
+        (delay (reverse (macro-state-literals (macro-context-state macro-context))))
         expression2))))
 
 (main)
