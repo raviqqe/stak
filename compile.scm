@@ -1552,9 +1552,10 @@
       (compile
         (map-values
           (lambda (library)
-            (let ((exports (map-values
-                            (lambda (name) (resolve-denotation macro-context name))
-                            (library-exports library))))
+            (let ((exports
+                    (map-values
+                      (lambda (name) (resolve-denotation macro-context name))
+                      (library-exports library))))
               (list
                 (library-id library)
                 (map
