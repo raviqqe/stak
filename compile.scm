@@ -1560,7 +1560,7 @@
                   (lambda (pair)
                     (equal?
                       (symbol->string (build-library-symbol (library-id library) (car pair)))
-                      (cdr pair)))
+                      (symbol->string (cdr pair))))
                   (library-exports library)))
               (filter-values
                 symbol?
