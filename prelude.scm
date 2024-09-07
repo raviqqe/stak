@@ -3183,7 +3183,7 @@
                           (lambda (name)
                             (cond
                               ((assoc name libraries) =>
-                                cdr)
+                                caddr)
 
                               (else
                                 (error "unknown library" name))))

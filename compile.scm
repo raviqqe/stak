@@ -1552,11 +1552,13 @@
       (compile
         (map-values
           (lambda (library)
-            (filter-values
-              symbol?
-              (map-values
-                (lambda (name) (resolve-denotation macro-context name))
-                (library-exports library))))
+            (list
+              (library-id library)
+              (filter-values
+                symbol?
+                (map-values
+                  (lambda (name) (resolve-denotation macro-context name))
+                  (library-exports library)))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
