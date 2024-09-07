@@ -211,6 +211,9 @@
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
+(define (filter-keys f xs)
+  (filter (lambda (pair) (f (car pair))) xs))
+
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
 
@@ -1552,20 +1555,23 @@
       (compile
         (map-values
           (lambda (library)
-            (let ((exports
-                    (map-values
-                      (lambda (name) (resolve-denotation macro-context name))
-                      (library-exports library))))
+            (let* ((exports
+                     (map-values
+                       (lambda (name) (resolve-denotation macro-context name))
+                       (library-exports library)))
+                   (locals
+                     (map
+                       car
+                       (filter
+                         (lambda (pair)
+                           (equal?
+                             (symbol->string (build-library-symbol (library-id library) (car pair)))
+                             (symbol->string (cdr pair))))
+                         exports))))
               (list
                 (library-id library)
-                (map
-                  car
-                  (filter
-                    (lambda (pair)
-                      (equal?
-                        (symbol->string (build-library-symbol (library-id library) (car pair)))
-                        (symbol->string (cdr pair))))
-                    exports))
+                locals
+                (filter-keys (lambda (name) (not (memq name locals))) exports)
                 (filter-values symbol? exports))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
