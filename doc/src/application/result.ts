@@ -1,10 +1,10 @@
 export interface SuccessResult<T> {
-  value: T;
   error?: undefined;
+  value: T;
 }
 
 export interface ErrorResult {
   error: string;
 }
 
-export type Result<T> = SuccessResult<T> | ErrorResult;
+export type Result<T> = ErrorResult | SuccessResult<T>;

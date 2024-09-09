@@ -2,9 +2,9 @@ import type { JSX } from "solid-js";
 import styles from "./Button.module.css";
 
 interface Props {
-  icon?: JSX.Element;
   children: JSX.Element;
   disabled?: boolean;
+  icon?: JSX.Element;
   onClick: () => void;
 }
 
