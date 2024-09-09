@@ -12,7 +12,7 @@ repository.workspace = true
 alloc = []
 
 [dev-dependencies]
-insta = "1.39.0"
+insta = "1.40.0"
 pretty_assertions = "1.4.0"
 
 [lints]
