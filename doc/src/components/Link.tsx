@@ -2,8 +2,8 @@ import type { JSX } from "solid-js";
 import styles from "./Link.module.css";
 
 interface Props {
-  href: string;
   children: JSX.Element;
+  href: string;
 }
 
 export const Link = (props: Props): JSX.Element => (
