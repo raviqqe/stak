@@ -335,18 +335,20 @@
       (string->symbol (string-copy string (+ position 1)))
       name)))
 
+(define (should-rename? id name)
+  (and id (not (eqv? (string-ref (symbol->string name) 0) #\$))))
+
 (define (build-library-symbol id name)
-  (string->uninterned-symbol
-    (string-append
-      (id->string id)
-      (list->string (list library-symbol-separator))
-      (symbol->string name))))
+  (if (should-rename? id name)
+    (string->uninterned-symbol
+      (string-append
+        (id->string id)
+        (list->string (list library-symbol-separator))
+        (symbol->string name)))
+    name))
 
 (define (rename-library-symbol context id name)
-  (if (or
-       (not id)
-       (eqv? (string-ref (symbol->string name) 0) #\$))
-    name
+  (if (should-rename? id name)
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
            (names (cdr pair)))
@@ -360,7 +362,8 @@
           (else
             (let ((renamed (build-library-symbol id name)))
               (set-cdr! pair (cons (cons name renamed) names))
-              renamed)))))))
+              renamed)))))
+    name))
 
 (define (expand-import-set context importer-id importer-symbols qualify set)
   (define (expand qualify)
