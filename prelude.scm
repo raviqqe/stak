@@ -3184,7 +3184,7 @@
                             (cond
                               ((assoc name libraries) =>
                                 (lambda (library)
-                                  (cadddr (cdr library))))
+                                  (cadddr (cddr library))))
 
                               (else
                                 (error "unknown library" name))))

@@ -1552,6 +1552,7 @@
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
+  (define macros (macro-state-literals (macro-context-state macro-context)))
 
   (write-target
     (encode
@@ -1560,7 +1561,11 @@
           (lambda (library)
             (let* ((exports
                      (map-values
-                       (lambda (name) (resolve-denotation macro-context name))
+                       (lambda (name)
+                         (let ((denotation (resolve-denotation macro-context name)))
+                           (if (symbol? denotation)
+                             denotation
+                             (cdr (assq name macros)))))
                        (library-exports library)))
                    (internals
                      (map
@@ -1577,9 +1582,10 @@
                 (library-id library)
                 internals
                 (filter-values symbol? (filter-keys (lambda (name) (not (memq name internals))) exports))
+                (filter-values pair? exports)
                 (filter-values symbol? exports))))
           (map-values library-state-library (library-context-libraries library-context)))
-        (reverse (macro-state-literals (macro-context-state macro-context)))
+        (reverse macros)
         expression2))))
 
 (main)
