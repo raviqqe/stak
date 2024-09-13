@@ -1582,7 +1582,6 @@
                 (library-id library)
                 internals
                 (filter-values symbol? (filter-keys (lambda (name) (not (memq name internals))) exports))
-                (filter-values pair? exports)
                 (filter-values symbol? exports))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse macros)
