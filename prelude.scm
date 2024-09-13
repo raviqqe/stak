@@ -2541,7 +2541,7 @@
     (define library-symbol-separator #\%)
 
     (define (build-library-symbol id name)
-      (string->uninterned-symbol
+      (string->symbol
         (string-append
           (id->string id)
           (list->string (list library-symbol-separator))
@@ -2623,7 +2623,7 @@
 
     (define (rename-variable context name)
       ; Share tails when appending strings.
-      (string->uninterned-symbol
+      (string->symbol
         (string-append
           (id->string (macro-context-generate-id! context))
           "$"
