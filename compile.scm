@@ -1552,39 +1552,42 @@
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
-  (define macros (macro-state-literals (macro-context-state macro-context)))
 
   (write-target
     (encode
       (compile
         (map-values
           (lambda (library)
-            (let* ((exports
-                     (map-values
-                       (lambda (name)
-                         (let ((denotation (resolve-denotation macro-context name)))
-                           (if (symbol? denotation)
-                             denotation
-                             (cdr (assq name macros)))))
-                       (library-exports library)))
-                   (internals
+            (let* ((id (library-id library))
+                   (exports
                      (map
-                       car
-                       (filter
-                         (lambda (pair)
-                           (and
-                             (symbol? (cdr pair))
-                             (equal?
-                               (symbol->string (build-library-symbol (library-id library) (car pair)))
-                               (symbol->string (cdr pair)))))
-                         exports))))
+                       (lambda (pair)
+                         (let ((denotation (resolve-denotation macro-context (cdr pair))))
+                           (cons
+                             (car pair)
+                             (and
+                               (symbol? denotation)
+                               (not
+                                 (equal?
+                                   (symbol->string (build-library-symbol id (car pair)))
+                                   (symbol->string denotation)))
+                               denotation))))
+                       (library-exports library))))
               (list
-                (library-id library)
-                internals
-                (filter-values symbol? (filter-keys (lambda (name) (not (memq name internals))) exports))
-                (filter-values symbol? exports))))
+                id
+                (map car (filter-values (lambda (denotation) (not denotation)) exports))
+                (filter-values (lambda (denotation) denotation) exports)
+                (filter-values
+                  symbol?
+                  (map-values
+                    (lambda (name)
+                      (let ((denotation (resolve-denotation macro-context name)))
+                        (if (symbol? denotation)
+                          denotation
+                          (cdr (assq name macros)))))
+                    (library-exports library))))))
           (map-values library-state-library (library-context-libraries library-context)))
-        (reverse macros)
+        (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
 
 (main)
