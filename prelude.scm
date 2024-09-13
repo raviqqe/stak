@@ -2,8 +2,8 @@
 
 (define-library (stak base)
   (export
-    define-syntax
     syntax-rules
+    define-syntax
     _
     ...
     define
@@ -1324,8 +1324,8 @@
 
 (define-library (scheme base)
   (export
-    define-syntax
     syntax-rules
+    define-syntax
     _
     ...
     define
@@ -2537,6 +2537,8 @@
 
     (define (id->string id)
       (number->string id 32))
+
+    (define library-symbol-separator #\%)
 
     (define (build-library-symbol id name)
       (string->uninterned-symbol
