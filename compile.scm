@@ -1577,11 +1577,7 @@
                 (filter-values
                   symbol?
                   (map-values
-                    (lambda (name)
-                      (let ((denotation (resolve-denotation macro-context name)))
-                        (if (symbol? denotation)
-                          denotation
-                          (cdr (assq name macros)))))
+                    (lambda (name) (resolve-denotation macro-context name))
                     (library-exports library))))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
