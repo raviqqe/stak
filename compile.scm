@@ -1573,12 +1573,7 @@
               (list
                 id
                 (map car (filter-values (lambda (denotation) (not denotation)) exports))
-                (filter-values (lambda (denotation) denotation) exports)
-                (filter-values
-                  symbol?
-                  (map-values
-                    (lambda (name) (resolve-denotation macro-context name))
-                    (library-exports library))))))
+                (filter-values (lambda (denotation) denotation) exports))))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
