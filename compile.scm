@@ -211,9 +211,6 @@
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
-(define (filter-keys f xs)
-  (filter (lambda (pair) (f (car pair))) xs))
-
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
 
