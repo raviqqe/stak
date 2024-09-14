@@ -2925,15 +2925,13 @@
     ;;; Context
 
     (define-record-type compilation-context
-      (make-compilation-context environment globals)
+      (make-compilation-context environment)
       compilation-context?
-      (environment compilation-context-environment)
-      (globals compilation-context-globals))
+      (environment compilation-context-environment))
 
     (define (compilation-context-append-locals context variables)
       (make-compilation-context
-        (append variables (compilation-context-environment context))
-        (compilation-context-globals context)))
+        (append variables (compilation-context-environment context))))
 
     (define (compilation-context-push-local context variable)
       (compilation-context-append-locals context (list variable)))
@@ -2942,12 +2940,7 @@
     (define (compilation-context-resolve context variable)
       (or
         (memv-position variable (compilation-context-environment context))
-        (cond
-          ((assq variable (compilation-context-globals context)) =>
-            cdr)
-
-          (else
-            variable))))
+        variable))
 
     ;; Procedures
 
@@ -3177,7 +3170,7 @@
               ((make-procedure
                   (compile-arity 0 #f)
                   (compile-expression
-                    (make-compilation-context '() '())
+                    (make-compilation-context '())
                     (expand-macro
                       macro-context
                       (let ((names
