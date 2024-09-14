@@ -1560,7 +1560,7 @@
              (library-exports library))))
     (list
       id
-      (map car (filter-values (lambda (denotation) (not denotation)) exports))
+      (map car (filter-values not exports))
       (filter-values (lambda (denotation) denotation) exports))))
 
 (define (main)
