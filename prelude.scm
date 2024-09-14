@@ -3179,28 +3179,33 @@
                   (compile-expression
                     (make-compilation-context '() '())
                     (expand-macro
-                      (macro-context-append
-                        macro-context
-                        (map-values
-                          (lambda (name)
-                            (resolve-denotation macro-context name))
-                          (apply
-                            append
-                            (map
-                              (lambda (name)
-                                (let ((pair (assoc name libraries)))
-                                  (unless pair
-                                    (error "unknown library" name))
-                                  (let* ((library (cdr pair))
-                                         (id (car library)))
-                                    (append
-                                      (map
-                                        (lambda (name)
-                                          (cons name (build-library-symbol id name)))
-                                        (cadr library))
-                                      (caddr library)))))
-                              environment))))
-                      expression)
+                      macro-context
+                      (let ((names
+                              (apply
+                                append
+                                (map
+                                  (lambda (name)
+                                    (let ((pair (assoc name libraries)))
+                                      (unless pair
+                                        (error "unknown library" name))
+                                      (let* ((library (cdr pair))
+                                             (id (car library)))
+                                        (append
+                                          (map
+                                            (lambda (name)
+                                              (cons name (build-library-symbol id name)))
+                                            (cadr library))
+                                          (caddr library)))))
+                                  environment))))
+                        (relaxed-deep-map
+                          (lambda (x)
+                            (cond
+                              ((assq x names) =>
+                                cdr)
+
+                              (else
+                                x)))
+                          expression)))
                     '())
                   '())))))))
 
