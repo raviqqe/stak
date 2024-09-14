@@ -325,6 +325,11 @@
 
 (define library-symbol-separator #\%)
 
+(define (library-symbol? name)
+  (memv-position
+    library-symbol-separator
+    (string->list (symbol->string name))))
+
 (define (resolve-library-symbol name)
   (let* ((string (symbol->string name))
          (position (memv-position library-symbol-separator (string->list string))))
@@ -1573,8 +1578,10 @@
         (map-values
           marshall-library
           (map-values library-state-library (library-context-libraries library-context)))
-        ; TODO Exclude unqualified symbols.
-        (reverse (macro-state-literals (macro-context-state macro-context)))
+        (reverse
+          (filter
+            (lambda (pair) (library-symbol? (car pair)))
+            (macro-state-literals (macro-context-state macro-context))))
         expression2))))
 
 (main)
