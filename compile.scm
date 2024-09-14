@@ -1547,27 +1547,6 @@
 
 ; Main
 
-(define (marshall-library library)
-  (let* ((id (library-id library))
-         (exports
-           (map
-             (lambda (pair)
-               (let ((name (car pair))
-                     (denotation (cdr pair)))
-                 (cons
-                   name
-                   (and
-                     (not
-                       (equal?
-                         (build-library-name id name)
-                         (symbol->string denotation)))
-                     denotation))))
-             (library-exports library))))
-    (list
-      id
-      (map car (filter-values not exports))
-      (filter-values (lambda (denotation) denotation) exports))))
-
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
@@ -1576,7 +1555,7 @@
     (encode
       (compile
         (map-values
-          marshall-library
+          library-exports
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse
           (filter

@@ -3136,17 +3136,7 @@
         other))
 
     (define eval
-      (let ((libraries
-              (map-values
-                (lambda (library)
-                  (let ((id (car library)))
-                    (append
-                      (map
-                        (lambda (name)
-                          (cons name (string->symbol (build-library-name id name))))
-                        (cadr library))
-                      (caddr library))))
-                ($$libraries)))
+      (let ((libraries ($$libraries))
             (macro-context (make-macro-context (make-macro-state 0) '())))
         (for-each
           (lambda (pair)
