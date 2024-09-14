@@ -3173,6 +3173,7 @@
                     (make-compilation-context '())
                     (expand-macro
                       macro-context
+                      ; TODO Move name expansion to the top level.
                       (let ((names
                               (apply
                                 append

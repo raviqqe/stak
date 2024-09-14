@@ -1573,6 +1573,7 @@
         (map-values
           (lambda (library) (marshall-library macro-context library))
           (map-values library-state-library (library-context-libraries library-context)))
+        ; TODO Exclude unqualified symbols.
         (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
 
