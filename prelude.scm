@@ -2824,104 +2824,97 @@
       (define (resolve name)
         (resolve-denotation context name))
 
-      (cond
-        ((symbol? expression)
-          (let ((value (resolve expression)))
-            (when (procedure? value)
-              (error "invalid syntax" expression))
-            value))
+      ; Indent one level for easier comparison with a compiler.
+      (begin
+        (cond
+          ((symbol? expression)
+            (let ((value (resolve expression)))
+              (when (procedure? value)
+                (error "invalid syntax" expression))
+              value))
 
-        ((pair? expression)
-          (case (resolve (car expression))
-            (($$alias)
-              (macro-context-set-last!
-                context
-                (cadr expression)
-                (resolve (caddr expression)))
-              #f)
+          ((pair? expression)
+            (case (resolve (car expression))
+              (($$define)
+                (let ((name (cadr expression)))
+                  (macro-context-set! context name name)
+                  (expand (cons '$$set! (cdr expression)))))
 
-            (($$define)
-              (let ((name (cadr expression)))
-                (macro-context-set! context name name)
-                (expand (cons '$$set! (cdr expression)))))
-
-            (($$define-syntax)
-              (macro-context-set-last!
-                context
-                (cadr expression)
-                (make-transformer context (caddr expression)))
-              #f)
-
-            (($$lambda)
-              (let* ((parameters (cadr expression))
-                     (context
-                       (macro-context-append
-                         context
-                         (map
-                           (lambda (name) (cons name (rename-variable context name)))
-                           (parameter-names parameters))))
-                     ; We need to resolve parameter denotations before expanding a body.
-                     (parameters
-                       (relaxed-deep-map
-                         (lambda (name) (resolve-denotation context name))
-                         parameters)))
-                (list
-                  '$$lambda
-                  parameters
-                  (expand-macro context (caddr expression)))))
-
-            (($$let-syntax)
-              (expand-macro
-                (macro-context-append
+              (($$define-syntax)
+                (macro-context-set-last!
                   context
-                  (map-values
-                    (lambda (transformer)
-                      (make-transformer context (car transformer)))
-                    (cadr expression)))
-                (caddr expression)))
+                  (cadr expression)
+                  (make-transformer context (caddr expression)))
+                #f)
 
-            (($$letrec-syntax)
-              (let* ((bindings (cadr expression))
-                     (context
-                       (macro-context-append
-                         context
-                         (map-values
-                           (lambda (value) #f)
-                           bindings))))
-                (for-each
-                  (lambda (pair)
-                    (macro-context-set!
-                      context
-                      (car pair)
-                      (make-transformer context (cadr pair))))
-                  bindings)
-                (expand-macro context (caddr expression))))
+              (($$lambda)
+                (let* ((parameters (cadr expression))
+                       (context
+                         (macro-context-append
+                           context
+                           (map
+                             (lambda (name) (cons name (rename-variable context name)))
+                             (parameter-names parameters))))
+                       ; We need to resolve parameter denotations before expanding a body.
+                       (parameters
+                         (relaxed-deep-map
+                           (lambda (name) (resolve-denotation context name))
+                           parameters)))
+                  (list
+                    '$$lambda
+                    parameters
+                    (expand-macro context (caddr expression)))))
 
-            (($$quote)
-              (cons
-                '$$quote
-                (relaxed-deep-map
-                  (lambda (value)
-                    (if (symbol? value)
-                      (resolve-library-symbol value)
-                      value))
-                  (cdr expression))))
+              (($$let-syntax)
+                (expand-macro
+                  (macro-context-append
+                    context
+                    (map-values
+                      (lambda (transformer)
+                        (make-transformer context (car transformer)))
+                      (cadr expression)))
+                  (caddr expression)))
 
-            (else =>
-              (lambda (value)
-                (if (procedure? value)
-                  (let-values (((expression context) (value context expression)))
-                    (expand-macro context expression))
-                  (map expand expression))))))
+              (($$letrec-syntax)
+                (let* ((bindings (cadr expression))
+                       (context
+                         (macro-context-append
+                           context
+                           (map-values
+                             (lambda (value) #f)
+                             bindings))))
+                  (for-each
+                    (lambda (pair)
+                      (macro-context-set!
+                        context
+                        (car pair)
+                        (make-transformer context (cadr pair))))
+                    bindings)
+                  (expand-macro context (caddr expression))))
 
-        (else
-          expression)))
+              (($$quote)
+                (cons
+                  '$$quote
+                  (relaxed-deep-map
+                    (lambda (value)
+                      (if (symbol? value)
+                        (resolve-library-symbol value)
+                        value))
+                    (cdr expression))))
+
+              (else =>
+                (lambda (value)
+                  (if (procedure? value)
+                    (let-values (((expression context) (value context expression)))
+                      (expand-macro context expression))
+                    (map expand expression))))))
+
+          (else
+            expression))))
 
     ; Compilation
 
-    ;; Types
-
-    ;;; Context
+    ;; Context
 
     (define-record-type compilation-context
       (make-compilation-context environment)
