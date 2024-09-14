@@ -332,20 +332,17 @@
       (string->symbol (string-copy string (+ position 1)))
       name)))
 
-(define (should-rename? id name)
-  (and id (not (eqv? (string-ref (symbol->string name) 0) #\$))))
-
-(define (build-library-symbol id name)
-  (if (should-rename? id name)
-    (string->uninterned-symbol
-      (string-append
-        (id->string id)
-        (list->string (list library-symbol-separator))
-        (symbol->string name)))
-    name))
+(define (build-library-name id name)
+  (string-append
+    (id->string id)
+    (list->string (list library-symbol-separator))
+    (symbol->string name)))
 
 (define (rename-library-symbol context id name)
-  (if (should-rename? id name)
+  (if (or
+       (not id)
+       (eqv? (string-ref (symbol->string name) 0) #\$))
+    name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
            (names (cdr pair)))
@@ -357,10 +354,9 @@
             cdr)
 
           (else
-            (let ((renamed (build-library-symbol id name)))
+            (let ((renamed (string->uninterned-symbol (build-library-name id name))))
               (set-cdr! pair (cons (cons name renamed) names))
-              renamed)))))
-    name))
+              renamed)))))))
 
 (define (expand-import-set context importer-id importer-symbols qualify set)
   (define (expand qualify)
@@ -562,7 +558,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(stak base)`.
-        (symbol->string (build-library-symbol 0 x))
+        (build-library-name 0 x)
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
@@ -1558,7 +1554,7 @@
                      (symbol? denotation)
                      (not
                        (equal?
-                         (symbol->string (build-library-symbol id (car pair)))
+                         (build-library-name id (car pair))
                          (symbol->string denotation)))
                      denotation))))
              (library-exports library))))
