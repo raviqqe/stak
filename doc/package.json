@@ -14,24 +14,24 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.1.6",
     "@astrojs/solid-js": "^4.4.1",
-    "@astrojs/starlight": "^0.26.3",
-    "@biomejs/biome": "^1.8.3",
+    "@astrojs/starlight": "^0.27.1",
+    "@biomejs/biome": "^1.9.0",
     "@nanostores/solid": "^0.4.2",
     "@raviqqe/loscore": "^0.2.5",
-    "@raviqqe/stak": "^0.2.33",
-    "astro": "^4.15.3",
+    "@raviqqe/stak": "^0.2.34",
+    "astro": "^4.15.4",
     "classnames": "^2.5.1",
-    "lucide-solid": "^0.438.0",
+    "lucide-solid": "^0.441.0",
     "nanostores": "^0.11.3",
     "solid-js": "^1.8.22",
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
     "@raviqqe/biome-config": "^1.0.2",
-    "@raviqqe/eslint-config": "^3.1.2",
+    "@raviqqe/eslint-config": "^4.0.5",
     "@types/node": "^22.5.4",
     "eslint": "^8.57.0",
     "eslint-plugin-solid": "^0.14.3",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }
