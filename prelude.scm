@@ -2956,6 +2956,9 @@
     (define (call-rib arity procedure continuation)
       (code-rib (+ call-instruction arity) procedure continuation))
 
+    (define (constant-rib constant continuation)
+      (code-rib constant-instruction constant continuation))
+
     (define (make-procedure arity code environment)
       (data-rib procedure-type environment (cons arity code)))
 
@@ -2982,9 +2985,6 @@
       (if (pair? parameters)
         (+ 1 (count-parameters (cdr parameters)))
         0))
-
-    (define (compile-constant constant continuation)
-      (code-rib constant-instruction constant continuation))
 
     (define (compile-primitive-call name continuation)
       (call-rib
@@ -3015,7 +3015,7 @@
       (if (drop? continuation)
         ; Skip a "drop" instruction.
         (rib-cdr continuation)
-        (compile-constant #f continuation)))
+        (constant-rib #f continuation)))
 
     (define (compile-drop continuation)
       (if (null? continuation)
@@ -3101,7 +3101,7 @@
 
             (($$lambda)
               (let ((parameters (cadr expression)))
-                (compile-constant
+                (constant-rib
                   (make-procedure
                     (compile-arity
                       (count-parameters parameters)
@@ -3117,7 +3117,7 @@
                   (compile-primitive-call '$$close continuation))))
 
             (($$quote)
-              (compile-constant (cadr expression) continuation))
+              (constant-rib (cadr expression) continuation))
 
             (($$set!)
               (compile-expression
@@ -3134,7 +3134,7 @@
               (compile-call context expression #f continuation))))
 
         (else
-          (compile-constant expression continuation))))
+          (constant-rib expression continuation))))
 
     (define (merge-environments one other)
       (fold-left
