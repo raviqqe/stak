@@ -332,12 +332,11 @@
       (string->symbol (string-copy string (+ position 1)))
       name)))
 
-(define (build-library-symbol id name)
-  (string->uninterned-symbol
-    (string-append
-      (id->string id)
-      (list->string (list library-symbol-separator))
-      (symbol->string name))))
+(define (build-library-name id name)
+  (string-append
+    (id->string id)
+    (list->string (list library-symbol-separator))
+    (symbol->string name)))
 
 (define (rename-library-symbol context id name)
   (if (or
@@ -355,7 +354,7 @@
             cdr)
 
           (else
-            (let ((renamed (build-library-symbol id name)))
+            (let ((renamed (string->uninterned-symbol (build-library-name id name))))
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
@@ -559,7 +558,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(stak base)`.
-        (symbol->string (build-library-symbol 0 x))
+        (build-library-name 0 x)
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
