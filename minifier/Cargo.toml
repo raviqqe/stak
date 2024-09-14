@@ -1,7 +1,7 @@
 [package]
 name = "stak-minifier"
 description = "Stak Scheme source code minifier"
-version = "0.1.33"
+version = "0.1.34"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,13 +9,13 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-configuration = { version = "0.1.51", path = "../configuration" }
-stak-device = { version = "0.2.55", path = "../device", features = ["std"] }
-stak-file = { version = "0.4.13", path = "../file" }
-stak-macro = { version = "0.1.56", path = "../macro" }
-stak-primitive = { version = "0.5.13", path = "../primitive" }
-stak-process-context = { version = "0.2.13", path = "../process_context" }
-stak-vm = { version = "0.5.13", path = "../vm" }
+stak-configuration = { version = "0.1.52", path = "../configuration" }
+stak-device = { version = "0.2.56", path = "../device", features = ["std"] }
+stak-file = { version = "0.4.14", path = "../file" }
+stak-macro = { version = "0.1.57", path = "../macro" }
+stak-primitive = { version = "0.5.14", path = "../primitive" }
+stak-process-context = { version = "0.2.14", path = "../process_context" }
+stak-vm = { version = "0.5.14", path = "../vm" }
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"
