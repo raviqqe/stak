@@ -1547,14 +1547,14 @@
          (exports
            (map
              (lambda (pair)
-               (let ((denotation (resolve-denotation macro-context (cdr pair))))
+               (let ((name (car pair))
+                     (denotation (cdr pair)))
                  (cons
-                   (car pair)
+                   name
                    (and
-                     (symbol? denotation)
                      (not
                        (equal?
-                         (build-library-name id (car pair))
+                         (build-library-name id name)
                          (symbol->string denotation)))
                      denotation))))
              (library-exports library))))
