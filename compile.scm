@@ -1542,7 +1542,7 @@
 
 ; Main
 
-(define (marshall-library macro-context library)
+(define (marshall-library library)
   (let* ((id (library-id library))
          (exports
            (map
@@ -1571,7 +1571,7 @@
     (encode
       (compile
         (map-values
-          (lambda (library) (marshall-library macro-context library))
+          marshall-library
           (map-values library-state-library (library-context-libraries library-context)))
         ; TODO Exclude unqualified symbols.
         (reverse (macro-state-literals (macro-context-state macro-context)))
