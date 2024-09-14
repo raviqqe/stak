@@ -2540,12 +2540,11 @@
 
     (define library-symbol-separator #\%)
 
-    (define (build-library-symbol id name)
-      (string->symbol
-        (string-append
-          (id->string id)
-          (list->string (list library-symbol-separator))
-          (symbol->string name))))
+    (define (build-library-name id name)
+      (string-append
+        (id->string id)
+        (list->string (list library-symbol-separator))
+        (symbol->string name)))
 
     (define (resolve-library-symbol name)
       (let* ((string (symbol->string name))
@@ -2609,7 +2608,7 @@
         (lambda (x)
           (cons
             ; `0` is always the library ID of `(stak base)`.
-            (symbol->string (build-library-symbol 0 x))
+            (build-library-name 0 x)
             (symbol-append '$$ x)))
         '(+ - * / <)))
 
@@ -2825,104 +2824,97 @@
       (define (resolve name)
         (resolve-denotation context name))
 
-      (cond
-        ((symbol? expression)
-          (let ((value (resolve expression)))
-            (when (procedure? value)
-              (error "invalid syntax" expression))
-            value))
+      ; Indent one level for easier comparison with a compiler.
+      (begin
+        (cond
+          ((symbol? expression)
+            (let ((value (resolve expression)))
+              (when (procedure? value)
+                (error "invalid syntax" expression))
+              value))
 
-        ((pair? expression)
-          (case (resolve (car expression))
-            (($$alias)
-              (macro-context-set-last!
-                context
-                (cadr expression)
-                (resolve (caddr expression)))
-              #f)
+          ((pair? expression)
+            (case (resolve (car expression))
+              (($$define)
+                (let ((name (cadr expression)))
+                  (macro-context-set! context name name)
+                  (expand (cons '$$set! (cdr expression)))))
 
-            (($$define)
-              (let ((name (cadr expression)))
-                (macro-context-set! context name name)
-                (expand (cons '$$set! (cdr expression)))))
-
-            (($$define-syntax)
-              (macro-context-set-last!
-                context
-                (cadr expression)
-                (make-transformer context (caddr expression)))
-              #f)
-
-            (($$lambda)
-              (let* ((parameters (cadr expression))
-                     (context
-                       (macro-context-append
-                         context
-                         (map
-                           (lambda (name) (cons name (rename-variable context name)))
-                           (parameter-names parameters))))
-                     ; We need to resolve parameter denotations before expanding a body.
-                     (parameters
-                       (relaxed-deep-map
-                         (lambda (name) (resolve-denotation context name))
-                         parameters)))
-                (list
-                  '$$lambda
-                  parameters
-                  (expand-macro context (caddr expression)))))
-
-            (($$let-syntax)
-              (expand-macro
-                (macro-context-append
+              (($$define-syntax)
+                (macro-context-set-last!
                   context
-                  (map-values
-                    (lambda (transformer)
-                      (make-transformer context (car transformer)))
-                    (cadr expression)))
-                (caddr expression)))
+                  (cadr expression)
+                  (make-transformer context (caddr expression)))
+                #f)
 
-            (($$letrec-syntax)
-              (let* ((bindings (cadr expression))
-                     (context
-                       (macro-context-append
-                         context
-                         (map-values
-                           (lambda (value) #f)
-                           bindings))))
-                (for-each
-                  (lambda (pair)
-                    (macro-context-set!
-                      context
-                      (car pair)
-                      (make-transformer context (cadr pair))))
-                  bindings)
-                (expand-macro context (caddr expression))))
+              (($$lambda)
+                (let* ((parameters (cadr expression))
+                       (context
+                         (macro-context-append
+                           context
+                           (map
+                             (lambda (name) (cons name (rename-variable context name)))
+                             (parameter-names parameters))))
+                       ; We need to resolve parameter denotations before expanding a body.
+                       (parameters
+                         (relaxed-deep-map
+                           (lambda (name) (resolve-denotation context name))
+                           parameters)))
+                  (list
+                    '$$lambda
+                    parameters
+                    (expand-macro context (caddr expression)))))
 
-            (($$quote)
-              (cons
-                '$$quote
-                (relaxed-deep-map
-                  (lambda (value)
-                    (if (symbol? value)
-                      (resolve-library-symbol value)
-                      value))
-                  (cdr expression))))
+              (($$let-syntax)
+                (expand-macro
+                  (macro-context-append
+                    context
+                    (map-values
+                      (lambda (transformer)
+                        (make-transformer context (car transformer)))
+                      (cadr expression)))
+                  (caddr expression)))
 
-            (else =>
-              (lambda (value)
-                (if (procedure? value)
-                  (let-values (((expression context) (value context expression)))
-                    (expand-macro context expression))
-                  (map expand expression))))))
+              (($$letrec-syntax)
+                (let* ((bindings (cadr expression))
+                       (context
+                         (macro-context-append
+                           context
+                           (map-values
+                             (lambda (value) #f)
+                             bindings))))
+                  (for-each
+                    (lambda (pair)
+                      (macro-context-set!
+                        context
+                        (car pair)
+                        (make-transformer context (cadr pair))))
+                    bindings)
+                  (expand-macro context (caddr expression))))
 
-        (else
-          expression)))
+              (($$quote)
+                (cons
+                  '$$quote
+                  (relaxed-deep-map
+                    (lambda (value)
+                      (if (symbol? value)
+                        (resolve-library-symbol value)
+                        value))
+                    (cdr expression))))
+
+              (else =>
+                (lambda (value)
+                  (if (procedure? value)
+                    (let-values (((expression context) (value context expression)))
+                      (expand-macro context expression))
+                    (map expand expression))))))
+
+          (else
+            expression))))
 
     ; Compilation
 
-    ;; Types
-
-    ;;; Context
+    ;; Context
 
     (define-record-type compilation-context
       (make-compilation-context environment)
@@ -2938,9 +2930,7 @@
 
     ; If a variable is not in environment, it is considered to be global.
     (define (compilation-context-resolve context variable)
-      (or
-        (memv-position variable (compilation-context-environment context))
-        variable))
+      (or (memv-position variable (compilation-context-environment context)) variable))
 
     ;; Procedures
 
@@ -2955,6 +2945,9 @@
 
     (define (call-rib arity procedure continuation)
       (code-rib (+ call-instruction arity) procedure continuation))
+
+    (define (constant-rib constant continuation)
+      (code-rib constant-instruction constant continuation))
 
     (define (make-procedure arity code environment)
       (data-rib procedure-type environment (cons arity code)))
@@ -2982,9 +2975,6 @@
       (if (pair? parameters)
         (+ 1 (count-parameters (cdr parameters)))
         0))
-
-    (define (compile-constant constant continuation)
-      (code-rib constant-instruction constant continuation))
 
     (define (compile-primitive-call name continuation)
       (call-rib
@@ -3015,7 +3005,7 @@
       (if (drop? continuation)
         ; Skip a "drop" instruction.
         (rib-cdr continuation)
-        (compile-constant #f continuation)))
+        (constant-rib #f continuation)))
 
     (define (compile-drop continuation)
       (if (null? continuation)
@@ -3101,7 +3091,7 @@
 
             (($$lambda)
               (let ((parameters (cadr expression)))
-                (compile-constant
+                (constant-rib
                   (make-procedure
                     (compile-arity
                       (count-parameters parameters)
@@ -3117,7 +3107,7 @@
                   (compile-primitive-call '$$close continuation))))
 
             (($$quote)
-              (compile-constant (cadr expression) continuation))
+              (constant-rib (cadr expression) continuation))
 
             (($$set!)
               (compile-expression
@@ -3134,7 +3124,7 @@
               (compile-call context expression #f continuation))))
 
         (else
-          (compile-constant expression continuation))))
+          (constant-rib expression continuation))))
 
     (define (merge-environments one other)
       (fold-left
@@ -3153,7 +3143,7 @@
                     (append
                       (map
                         (lambda (name)
-                          (cons name (build-library-symbol id name)))
+                          (cons name (string->symbol (build-library-name id name))))
                         (cadr library))
                       (caddr library))))
                 ($$libraries)))
