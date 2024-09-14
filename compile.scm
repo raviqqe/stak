@@ -1546,6 +1546,27 @@
 
 ; Main
 
+(define (marshall-library macro-context library)
+  (let* ((id (library-id library))
+         (exports
+           (map
+             (lambda (pair)
+               (let ((denotation (resolve-denotation macro-context (cdr pair))))
+                 (cons
+                   (car pair)
+                   (and
+                     (symbol? denotation)
+                     (not
+                       (equal?
+                         (symbol->string (build-library-symbol id (car pair)))
+                         (symbol->string denotation)))
+                     denotation))))
+             (library-exports library))))
+    (list
+      id
+      (map car (filter-values (lambda (denotation) (not denotation)) exports))
+      (filter-values (lambda (denotation) denotation) exports))))
+
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
@@ -1554,26 +1575,7 @@
     (encode
       (compile
         (map-values
-          (lambda (library)
-            (let* ((id (library-id library))
-                   (exports
-                     (map
-                       (lambda (pair)
-                         (let ((denotation (resolve-denotation macro-context (cdr pair))))
-                           (cons
-                             (car pair)
-                             (and
-                               (symbol? denotation)
-                               (not
-                                 (equal?
-                                   (symbol->string (build-library-symbol id (car pair)))
-                                   (symbol->string denotation)))
-                               denotation))))
-                       (library-exports library))))
-              (list
-                id
-                (map car (filter-values (lambda (denotation) (not denotation)) exports))
-                (filter-values (lambda (denotation) denotation) exports))))
+          (lambda (library) (marshall-library macro-context library))
           (map-values library-state-library (library-context-libraries library-context)))
         (reverse (macro-state-literals (macro-context-state macro-context)))
         expression2))))
