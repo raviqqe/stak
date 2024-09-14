@@ -2541,7 +2541,7 @@
     (define library-symbol-separator #\%)
 
     (define (build-library-symbol id name)
-      (string->uninterned-symbol
+      (string->symbol
         (string-append
           (id->string id)
           (list->string (list library-symbol-separator))
@@ -2623,7 +2623,7 @@
 
     (define (rename-variable context name)
       ; Share tails when appending strings.
-      (string->uninterned-symbol
+      (string->symbol
         (string-append
           (id->string (macro-context-generate-id! context))
           "$"
@@ -2925,15 +2925,13 @@
     ;;; Context
 
     (define-record-type compilation-context
-      (make-compilation-context environment globals)
+      (make-compilation-context environment)
       compilation-context?
-      (environment compilation-context-environment)
-      (globals compilation-context-globals))
+      (environment compilation-context-environment))
 
     (define (compilation-context-append-locals context variables)
       (make-compilation-context
-        (append variables (compilation-context-environment context))
-        (compilation-context-globals context)))
+        (append variables (compilation-context-environment context))))
 
     (define (compilation-context-push-local context variable)
       (compilation-context-append-locals context (list variable)))
@@ -2942,12 +2940,7 @@
     (define (compilation-context-resolve context variable)
       (or
         (memv-position variable (compilation-context-environment context))
-        (cond
-          ((assq variable (compilation-context-globals context)) =>
-            cdr)
-
-          (else
-            variable))))
+        variable))
 
     ;; Procedures
 
@@ -3153,7 +3146,17 @@
         other))
 
     (define eval
-      (let ((libraries ($$libraries))
+      (let ((libraries
+              (map-values
+                (lambda (library)
+                  (let ((id (car library)))
+                    (append
+                      (map
+                        (lambda (name)
+                          (cons name (build-library-symbol id name)))
+                        (cadr library))
+                      (caddr library))))
+                ($$libraries)))
             (macro-context (make-macro-context (make-macro-state 0) '())))
         (for-each
           (lambda (pair)
@@ -3163,8 +3166,6 @@
               (if (symbol? (cdr pair))
                 (resolve-denotation macro-context (cdr pair))
                 (make-transformer macro-context (cdr pair)))))
-          ; TODO Use macros from this `(scheme eval)` library's environment rather
-          ; than the top level one?
           ($$macros))
 
         (lambda (expression environment)
@@ -3179,20 +3180,28 @@
               ((make-procedure
                   (compile-arity 0 #f)
                   (compile-expression
-                    (make-compilation-context
-                      '()
-                      (apply
-                        append
-                        (map
-                          (lambda (name)
+                    (make-compilation-context '())
+                    (expand-macro
+                      macro-context
+                      (let ((names
+                              (apply
+                                append
+                                (map
+                                  (lambda (name)
+                                    (let ((pair (assoc name libraries)))
+                                      (unless pair
+                                        (error "unknown library" name))
+                                      (cdr pair)))
+                                  environment))))
+                        (relaxed-deep-map
+                          (lambda (x)
                             (cond
-                              ((assoc name libraries) =>
+                              ((assq x names) =>
                                 cdr)
 
                               (else
-                                (error "unknown library" name))))
-                          environment)))
-                    (expand-macro macro-context expression)
+                                x)))
+                          expression)))
                     '())
                   '())))))))
 
