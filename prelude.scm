@@ -2540,12 +2540,11 @@
 
     (define library-symbol-separator #\%)
 
-    (define (build-library-symbol id name)
-      (string->symbol
-        (string-append
-          (id->string id)
-          (list->string (list library-symbol-separator))
-          (symbol->string name))))
+    (define (build-library-name id name)
+      (string-append
+        (id->string id)
+        (list->string (list library-symbol-separator))
+        (symbol->string name)))
 
     (define (resolve-library-symbol name)
       (let* ((string (symbol->string name))
@@ -2609,7 +2608,7 @@
         (lambda (x)
           (cons
             ; `0` is always the library ID of `(stak base)`.
-            (symbol->string (build-library-symbol 0 x))
+            (build-library-name 0 x)
             (symbol-append '$$ x)))
         '(+ - * / <)))
 
@@ -2938,9 +2937,7 @@
 
     ; If a variable is not in environment, it is considered to be global.
     (define (compilation-context-resolve context variable)
-      (or
-        (memv-position variable (compilation-context-environment context))
-        variable))
+      (or (memv-position variable (compilation-context-environment context)) variable))
 
     ;; Procedures
 
@@ -3153,7 +3150,7 @@
                     (append
                       (map
                         (lambda (name)
-                          (cons name (build-library-symbol id name)))
+                          (cons name (string->symbol (build-library-name id name))))
                         (cadr library))
                       (caddr library))))
                 ($$libraries)))
