@@ -401,6 +401,10 @@ Feature: Number
       | values | output |
       | 0      | 0      |
       | 1      | 1      |
+      | 1 2    | 1      |
+      | 1 2 3  | 1      |
+      | 2 3 1  | 1      |
+      | 3 1 2  | 1      |
 
   Scenario Outline: Use a maximum procedure
     Given a file named "main.scm" with:
@@ -416,6 +420,10 @@ Feature: Number
       | values | output |
       | 0      | 0      |
       | 1      | 1      |
+      | 1 2    | 2      |
+      | 1 2 3  | 3      |
+      | 2 3 1  | 3      |
+      | 3 1 2  | 3      |
 
   Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:
