@@ -2500,17 +2500,11 @@
           y)))
 
     (define (relaxed-deep-map f xs)
-      (cond
-        ((null? xs)
-          '())
-
-        ((pair? xs)
-          (cons
-            (relaxed-deep-map f (car xs))
-            (relaxed-deep-map f (cdr xs))))
-
-        (else
-          (f xs))))
+      (if (pair? xs)
+        (cons
+          (relaxed-deep-map f (car xs))
+          (relaxed-deep-map f (cdr xs)))
+        (f xs)))
 
     (define (map-values f xs)
       (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
