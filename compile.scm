@@ -347,6 +347,7 @@
   (if (or
        (not id)
        (let ((name (symbol->string name)))
+         ; TODO (equal? (substring name 0 (min 2 (string-length name))) "$$")
          (and
            (> (string-length name) 1)
            (equal? (substring name 0 2) "$$"))))
