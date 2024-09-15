@@ -68,8 +68,11 @@
   '(($$cons 1)
     ($$close 2)
     ($$car 4)
+    ($$< 11)
+    ($$+ 12)
     ($$- 13)
     ($$* 14)
+    ($$/ 15)
     ($$exp 17)
     ($$log 18)))
 
@@ -340,7 +343,11 @@
 (define (rename-library-symbol context id name)
   (if (or
        (not id)
-       (eqv? (string-ref (symbol->string name) 0) #\$))
+       (let ((name (symbol->string name)))
+         ; TODO (equal? (substring name 0 (min 2 (string-length name))) "$$")
+         (and
+           (> (string-length name) 1)
+           (equal? (substring name 0 2) "$$"))))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
