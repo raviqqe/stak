@@ -347,7 +347,10 @@
   (if (or
        (not id)
        (let ((name (symbol->string name)))
-         (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+         ; TODO (equal? (substring name 0 (min 2 (string-length name))) "$$")
+         (and
+           (> (string-length name) 1)
+           (equal? (substring name 0 2) "$$"))))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
