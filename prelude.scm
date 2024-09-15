@@ -742,7 +742,7 @@
       (lambda (x . xs)
         (fold-left (lambda (x y) (if (f x y) x y)) x xs)))
     (define min (extremum $<))
-    (define max (extremum (lambda (x y) ($> y x))))
+    (define max (extremum (lambda (x y) ($< y x))))
 
     ; TODO Set a true machine epsilon.
     ;
