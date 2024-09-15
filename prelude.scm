@@ -1374,11 +1374,6 @@
     rib-set-car!
     rib-set-cdr!
     eq?
-    $$<
-    $$+
-    $$-
-    $$*
-    $$/
 
     apply
     data-rib
