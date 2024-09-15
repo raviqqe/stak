@@ -387,6 +387,36 @@ Feature: Number
       |        |
       | 0      |
 
+  Scenario Outline: Use a minimum procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (min <values>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values | output |
+      | 0      | 0      |
+      | 1      | 1      |
+
+  Scenario Outline: Use a maximum procedure
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (max <values>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values | output |
+      | 0      | 0      |
+      | 1      | 1      |
+
   Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:
       """scheme
