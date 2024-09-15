@@ -1568,6 +1568,11 @@
   (import (shake (stak base)))
 
   (begin
+    (define $read-input (primitive 19))
+    (define $write-output (primitive 20))
+    (define $write-error (primitive 21))
+    (define $halt (primitive 22))
+
     ; Symbol table
 
     (define symbols (rib-car $$rib))
@@ -1699,7 +1704,7 @@
                         (error-object-irritants exception)))
                     (write-value exception))
                   (newline)
-                  ($$halt))))))))
+                  ($halt))))))))
 
     (define (with-exception-handler handler thunk)
       (let ((new (convert-exception-handler handler))
@@ -1835,9 +1840,9 @@
     (define (make-output-port write close)
       (make-port #f write close))
 
-    (define current-input-port (make-parameter (make-input-port $$read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $$write-output #f)))
-    (define current-error-port (make-parameter (make-output-port $$write-error #f)))
+    (define current-input-port (make-parameter (make-input-port $read-input #f)))
+    (define current-output-port (make-parameter (make-output-port $write-output #f)))
+    (define current-error-port (make-parameter (make-output-port $write-error #f)))
 
     ; Close
 
