@@ -346,7 +346,10 @@
 (define (rename-library-symbol context id name)
   (if (or
        (not id)
-       (eqv? (string-ref (symbol->string name) 0) #\$))
+       (let ((name (symbol->string name)))
+         (and
+           (> (string-length name) 1)
+           (equal? (substring name 0 2) "$$"))))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
@@ -564,7 +567,7 @@
       (cons
         ; `0` is always the library ID of `(stak base)`.
         (build-library-name 0 x)
-        (symbol-append '$ x)))
+        (symbol-append '0%$ x)))
     '(+ - * / <)))
 
 (define (optimize expression)
