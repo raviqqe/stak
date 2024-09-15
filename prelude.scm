@@ -2368,11 +2368,11 @@
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
-    (define $$halt (primitive 22))
-    (define $$command-line (primitive 31))
-    (define $$get-environment-variables (primitive 32))
+    (define $halt (primitive 22))
+    (define $command-line (primitive 31))
+    (define $get-environment-variables (primitive 32))
 
-    (define command-line (delay (map code-points->string ($$command-line))))
+    (define command-line (delay (map code-points->string ($command-line))))
     (define get-environment-variables
       (delay
         (map
@@ -2380,7 +2380,7 @@
             (cons
               (code-points->string (car pair))
               (code-points->string (cdr pair))))
-          ($$get-environment-variables))))
+          ($get-environment-variables))))
 
     (define (get-environment-variable name)
       (cond
@@ -2395,7 +2395,7 @@
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
         (exit-success)
-        ($$halt)))
+        ($halt)))
 
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
