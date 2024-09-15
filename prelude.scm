@@ -3125,8 +3125,10 @@
         other))
 
     (define eval
-      (let ((libraries ($$libraries))
-            (macro-context (make-macro-context (make-macro-state 0) '())))
+      (let ()
+        (define libraries ($$libraries))
+        (define macro-context (make-macro-context (make-macro-state 0) '()))
+
         (for-each
           (lambda (pair)
             (macro-context-set-last!
