@@ -68,8 +68,11 @@
   '(($$cons 1)
     ($$close 2)
     ($$car 4)
+    ($$< 11)
+    ($$+ 12)
     ($$- 13)
     ($$* 14)
+    ($$/ 15)
     ($$exp 17)
     ($$log 18)))
 
@@ -568,7 +571,7 @@
       (cons
         ; `0` is always the library ID of `(stak base)`.
         (build-library-name 0 x)
-        (symbol-append '0%$ x)))
+        (symbol-append '$$ x)))
     '(+ - * / <)))
 
 (define (optimize expression)
