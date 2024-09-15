@@ -571,18 +571,14 @@
     (define rib-set-car! (primitive 8))
     (define rib-set-cdr! (primitive 9))
     (define eq? (primitive 10))
-    (define $$< (primitive 11))
-    (define $$+ (primitive 12))
-    (define $$- (primitive 13))
-    (define $$* (primitive 14))
-    (define $$/ (primitive 15))
-    (define $$remainder (primitive 16))
-    (define $$exp (primitive 17))
-    (define $$log (primitive 18))
-    (define $$read-input (primitive 19))
-    (define $$write-output (primitive 20))
-    (define $$write-error (primitive 21))
-    (define $$halt (primitive 22))
+    (define $< (primitive 11))
+    (define $+ (primitive 12))
+    (define $- (primitive 13))
+    (define $* (primitive 14))
+    (define $/ (primitive 15))
+    (define remainder (primitive 16))
+    (define exp (primitive 17))
+    (define $log (primitive 18))
     (define null? (primitive 23))
     (define pair? (primitive 24))
 
@@ -668,12 +664,11 @@
           (f y x)
           (fold-left f x xs))))
 
-    (define + (arithmetic-operator $$+ 0))
-    (define - (inverse-arithmetic-operator $$- 0))
-    (define * (arithmetic-operator $$* 1))
-    (define / (inverse-arithmetic-operator $$/ 1))
+    (define + (arithmetic-operator $+ 0))
+    (define - (inverse-arithmetic-operator $- 0))
+    (define * (arithmetic-operator $* 1))
+    (define / (inverse-arithmetic-operator $/ 1))
 
-    (define remainder $$remainder)
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
 
@@ -716,12 +711,10 @@
         (- x)
         x))
 
-    (define exp $$exp)
-
     (define (log x . xs)
       (if (null? xs)
-        ($$log x)
-        (/ ($$log x) ($$log (car xs)))))
+        ($log x)
+        (/ ($log x) ($log (car xs)))))
 
     (define (expt x y)
       (exp (* (log x) y)))
@@ -738,10 +731,10 @@
                 (and (f x y) (loop y (cdr xs)))))))))
 
     (define = (comparison-operator eq?))
-    (define < (comparison-operator $$<))
-    (define > (comparison-operator (lambda (x y) ($$< y x))))
-    (define <= (comparison-operator (lambda (x y) (not ($$< y x)))))
-    (define >= (comparison-operator (lambda (x y) (not ($$< x y)))))
+    (define < (comparison-operator $<))
+    (define > (comparison-operator (lambda (x y) ($< y x))))
+    (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
+    (define >= (comparison-operator (lambda (x y) (not ($< x y)))))
 
     ; TODO Set a true machine epsilon.
     ;
@@ -1568,6 +1561,11 @@
   (import (shake (stak base)))
 
   (begin
+    (define $read-input (primitive 19))
+    (define $write-output (primitive 20))
+    (define $write-error (primitive 21))
+    (define $halt (primitive 22))
+
     ; Symbol table
 
     (define symbols (rib-car $$rib))
@@ -1699,7 +1697,7 @@
                         (error-object-irritants exception)))
                     (write-value exception))
                   (newline)
-                  ($$halt))))))))
+                  ($halt))))))))
 
     (define (with-exception-handler handler thunk)
       (let ((new (convert-exception-handler handler))
@@ -1835,9 +1833,9 @@
     (define (make-output-port write close)
       (make-port #f write close))
 
-    (define current-input-port (make-parameter (make-input-port $$read-input #f)))
-    (define current-output-port (make-parameter (make-output-port $$write-output #f)))
-    (define current-error-port (make-parameter (make-output-port $$write-error #f)))
+    (define current-input-port (make-parameter (make-input-port $read-input #f)))
+    (define current-output-port (make-parameter (make-output-port $write-output #f)))
+    (define current-error-port (make-parameter (make-output-port $write-error #f)))
 
     ; Close
 
@@ -2368,11 +2366,11 @@
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
-    (define $$halt (primitive 22))
-    (define $$command-line (primitive 31))
-    (define $$get-environment-variables (primitive 32))
+    (define $halt (primitive 22))
+    (define $command-line (primitive 31))
+    (define $get-environment-variables (primitive 32))
 
-    (define command-line (delay (map code-points->string ($$command-line))))
+    (define command-line (delay (map code-points->string ($command-line))))
     (define get-environment-variables
       (delay
         (map
@@ -2380,7 +2378,7 @@
             (cons
               (code-points->string (car pair))
               (code-points->string (cdr pair))))
-          ($$get-environment-variables))))
+          ($get-environment-variables))))
 
     (define (get-environment-variable name)
       (cond
@@ -2395,7 +2393,7 @@
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
         (exit-success)
-        ($$halt)))
+        ($halt)))
 
     (define (exit . rest)
       (unwind (lambda () (apply emergency-exit rest))))))
@@ -2418,12 +2416,12 @@
     (only (stak base) primitive string->code-points))
 
   (begin
-    (define $$open-file (primitive 25))
-    (define $$close-file (primitive 26))
-    (define $$read-file (primitive 27))
-    (define $$write-file (primitive 28))
-    (define $$delete-file (primitive 29))
-    (define $$exists-file (primitive 30))
+    (define $open-file (primitive 25))
+    (define $close-file (primitive 26))
+    (define $read-file (primitive 27))
+    (define $write-file (primitive 28))
+    (define $delete-file (primitive 29))
+    (define $exists-file (primitive 30))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
@@ -2432,21 +2430,21 @@
       (call-with-port (open-output-file path) f))
 
     (define (delete-file path)
-      (unless ($$delete-file (string->code-points path))
+      (unless ($delete-file (string->code-points path))
         (error "cannot delete file")))
 
     (define (file-exists? path)
-      ($$exists-file (string->code-points path)))
+      ($exists-file (string->code-points path)))
 
     (define (open-file output)
       (lambda (path)
-        (let ((descriptor ($$open-file (string->code-points path) output)))
+        (let ((descriptor ($open-file (string->code-points path) output)))
           (unless descriptor
             (error "cannot open file"))
           (make-port
-            (lambda () ($$read-file descriptor))
-            (lambda (byte) ($$write-file descriptor byte))
-            (lambda () ($$close-file descriptor))))))
+            (lambda () ($read-file descriptor))
+            (lambda (byte) ($write-file descriptor byte))
+            (lambda () ($close-file descriptor))))))
 
     (define open-input-file (open-file #f))
     (define open-output-file (open-file #t))
@@ -2502,17 +2500,11 @@
               y)))
 
         (define (relaxed-deep-map f xs)
-          (cond
-            ((null? xs)
-              '())
-
-            ((pair? xs)
-              (cons
-                (relaxed-deep-map f (car xs))
-                (relaxed-deep-map f (cdr xs))))
-
-            (else
-              (f xs))))
+          (if (pair? xs)
+            (cons
+              (relaxed-deep-map f (car xs))
+              (relaxed-deep-map f (cdr xs)))
+            (f xs)))
 
         (define (map-values f xs)
           (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
