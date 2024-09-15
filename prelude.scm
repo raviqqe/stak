@@ -2586,15 +2586,6 @@
 
         ;; Procedures
 
-        (define primitive-procedures
-          (map
-            (lambda (x)
-              (cons
-                ; `0` is always the library ID of `(stak base)`.
-                (build-library-name 0 x)
-                (symbol-append '$$ x)))
-            '(+ - * / <)))
-
         (define (resolve-denotation context expression)
           (cond
             ((assq expression (macro-context-environment context)) =>
