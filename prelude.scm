@@ -104,6 +104,8 @@
     >
     <=
     >=
+    min
+    max
 
     char?
     integer->char
@@ -1412,6 +1414,8 @@
     >
     <=
     >=
+    min
+    max
 
     char?
     integer->char
