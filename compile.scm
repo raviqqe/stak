@@ -171,17 +171,11 @@
       y)))
 
 (define (relaxed-deep-map f xs)
-  (cond
-    ((null? xs)
-      '())
-
-    ((pair? xs)
-      (cons
-        (relaxed-deep-map f (car xs))
-        (relaxed-deep-map f (cdr xs))))
-
-    (else
-      (f xs))))
+  (if (pair? xs)
+    (cons
+      (relaxed-deep-map f (car xs))
+      (relaxed-deep-map f (cdr xs)))
+    (f xs)))
 
 (define (unique xs)
   (if (null? xs)
