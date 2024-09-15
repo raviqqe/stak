@@ -2480,645 +2480,638 @@
     (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
   (begin
-    ; Utilities
+    (define eval
+      (let ()
+        ; Utilities
 
-    (define (last-cdr xs)
-      (if (pair? xs)
-        (last-cdr (cdr xs))
-        xs))
+        (define (last-cdr xs)
+          (if (pair? xs)
+            (last-cdr (cdr xs))
+            xs))
 
-    (define (set-last-cdr! xs x)
-      (if (pair? (cdr xs))
-        (set-last-cdr! (cdr xs) x)
-        (set-cdr! xs x)))
+        (define (set-last-cdr! xs x)
+          (if (pair? (cdr xs))
+            (set-last-cdr! (cdr xs) x)
+            (set-cdr! xs x)))
 
-    (define (relaxed-length xs)
-      (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
-        ((not (pair? xs))
-          y)))
+        (define (relaxed-length xs)
+          (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
+            ((not (pair? xs))
+              y)))
 
-    (define (relaxed-deep-map f xs)
-      (if (pair? xs)
-        (cons
-          (relaxed-deep-map f (car xs))
-          (relaxed-deep-map f (cdr xs)))
-        (f xs)))
+        (define (relaxed-deep-map f xs)
+          (if (pair? xs)
+            (cons
+              (relaxed-deep-map f (car xs))
+              (relaxed-deep-map f (cdr xs)))
+            (f xs)))
 
-    (define (map-values f xs)
-      (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
+        (define (map-values f xs)
+          (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
 
-    (define (filter-values f xs)
-      (filter (lambda (pair) (f (cdr pair))) xs))
+        (define (filter-values f xs)
+          (filter (lambda (pair) (f (cdr pair))) xs))
 
-    (define (predicate expression)
-      (and (pair? expression) (car expression)))
+        (define (predicate expression)
+          (and (pair? expression) (car expression)))
 
-    (define (symbol-append . xs)
-      (string->symbol (apply string-append (map symbol->string xs))))
+        (define (symbol-append . xs)
+          (string->symbol (apply string-append (map symbol->string xs))))
 
-    (define (id->string id)
-      (number->string id 32))
+        (define (id->string id)
+          (number->string id 32))
 
-    (define library-symbol-separator #\%)
+        (define library-symbol-separator #\%)
 
-    (define (build-library-name id name)
-      (string-append
-        (id->string id)
-        (list->string (list library-symbol-separator))
-        (symbol->string name)))
+        (define (build-library-name id name)
+          (string-append
+            (id->string id)
+            (list->string (list library-symbol-separator))
+            (symbol->string name)))
 
-    (define (resolve-library-symbol name)
-      (let* ((string (symbol->string name))
-             (position (memv-position library-symbol-separator (string->list string))))
-        (if position
-          (string->symbol (string-copy string (+ position 1)))
-          name)))
+        (define (resolve-library-symbol name)
+          (let* ((string (symbol->string name))
+                 (position (memv-position library-symbol-separator (string->list string))))
+            (if position
+              (string->symbol (string-copy string (+ position 1)))
+              name)))
 
-    ; Macro system
+        ; Macro system
 
-    ;; Types
+        ;; Types
 
-    (define-record-type macro-state
-      (make-macro-state id)
-      macro-state?
-      (id macro-state-id macro-state-set-id!))
+        (define-record-type macro-state
+          (make-macro-state id)
+          macro-state?
+          (id macro-state-id macro-state-set-id!))
 
-    (define-record-type macro-context
-      (make-macro-context state environment)
-      macro-context?
-      (state macro-context-state)
-      (environment macro-context-environment macro-context-set-environment!))
+        (define-record-type macro-context
+          (make-macro-context state environment)
+          macro-context?
+          (state macro-context-state)
+          (environment macro-context-environment macro-context-set-environment!))
 
-    (define (macro-context-append context pairs)
-      (make-macro-context
-        (macro-context-state context)
-        (append pairs (macro-context-environment context))))
+        (define (macro-context-append context pairs)
+          (make-macro-context
+            (macro-context-state context)
+            (append pairs (macro-context-environment context))))
 
-    (define (macro-context-set! context name denotation)
-      (let* ((environment (macro-context-environment context))
-             (pair (assq name environment)))
-        (when pair (set-cdr! pair denotation))
-        pair))
+        (define (macro-context-set! context name denotation)
+          (let* ((environment (macro-context-environment context))
+                 (pair (assq name environment)))
+            (when pair (set-cdr! pair denotation))
+            pair))
 
-    (define (macro-context-set-last! context name denotation)
-      (unless (macro-context-set! context name denotation)
-        (let ((environment (macro-context-environment context))
-              (tail (list (cons name denotation))))
-          (if (null? environment)
-            (macro-context-set-environment! context tail)
-            (set-last-cdr! environment tail)))))
+        (define (macro-context-set-last! context name denotation)
+          (unless (macro-context-set! context name denotation)
+            (let ((environment (macro-context-environment context))
+                  (tail (list (cons name denotation))))
+              (if (null? environment)
+                (macro-context-set-environment! context tail)
+                (set-last-cdr! environment tail)))))
 
-    (define (macro-context-generate-id! context)
-      (let* ((state (macro-context-state context))
-             (id (macro-state-id state)))
-        (macro-state-set-id! state (+ id 1))
-        id))
+        (define (macro-context-generate-id! context)
+          (let* ((state (macro-context-state context))
+                 (id (macro-state-id state)))
+            (macro-state-set-id! state (+ id 1))
+            id))
 
-    (define-record-type rule-context
-      (make-rule-context definition-context use-context ellipsis literals)
-      rule-context?
-      (definition-context rule-context-definition-context)
-      (use-context rule-context-use-context)
-      (ellipsis rule-context-ellipsis)
-      (literals rule-context-literals))
+        (define-record-type rule-context
+          (make-rule-context definition-context use-context ellipsis literals)
+          rule-context?
+          (definition-context rule-context-definition-context)
+          (use-context rule-context-use-context)
+          (ellipsis rule-context-ellipsis)
+          (literals rule-context-literals))
 
-    ;; Procedures
+        ;; Procedures
 
-    (define primitive-procedures
-      (map
-        (lambda (x)
-          (cons
-            ; `0` is always the library ID of `(stak base)`.
-            (build-library-name 0 x)
-            (symbol-append '$$ x)))
-        '(+ - * / <)))
-
-    (define (resolve-denotation context expression)
-      (cond
-        ((assq expression (macro-context-environment context)) =>
-          cdr)
-
-        (else
-          expression)))
-
-    (define (rename-variable context name)
-      ; Share tails when appending strings.
-      (string->symbol
-        (string-append
-          (id->string (macro-context-generate-id! context))
-          "$"
-          (symbol->string name))))
-
-    (define (find-pattern-variables ellipsis bound-variables pattern)
-      (define excluded-variables (cons ellipsis bound-variables))
-
-      (let loop ((pattern pattern) (variables '()))
-        (cond
-          ((pair? pattern)
-            (loop
-              (car pattern)
-              (loop
-                (cdr pattern)
-                variables)))
-
-          ((and (symbol? pattern) (not (memq pattern excluded-variables)))
-            (cons pattern variables))
-
-          (else
-            variables))))
-
-    (define-record-type ellipsis-match
-      (make-ellipsis-match value)
-      ellipsis-match?
-      (value ellipsis-match-value))
-
-    (define-record-type ellipsis-pattern
-      (make-ellipsis-pattern element variables)
-      ellipsis-pattern?
-      (element ellipsis-pattern-element)
-      (variables ellipsis-pattern-variables))
-
-    (define (compile-pattern context ellipsis literals pattern)
-      (define (compile pattern)
-        (compile-pattern context ellipsis literals pattern))
-
-      (cond
-        ((not (pair? pattern))
-          pattern)
-
-        ((and
-            (pair? (cdr pattern))
-            (eq? ellipsis (resolve-denotation context (cadr pattern))))
-          (cons
-            (make-ellipsis-pattern
-              (compile (car pattern))
-              (find-pattern-variables ellipsis literals (car pattern)))
-            (compile (cddr pattern))))
-
-        (else
-          (cons
-            (compile (car pattern))
-            (compile (cdr pattern))))))
-
-    (define (match-ellipsis-pattern context pattern expression)
-      (map-values
-        make-ellipsis-match
-        (apply
-          map
-          list
-          (ellipsis-pattern-variables pattern)
-          (map
-            (lambda (expression)
-              (match-pattern context (ellipsis-pattern-element pattern) expression))
-            expression))))
-
-    (define (match-pattern context pattern expression)
-      (define (match pattern expression)
-        (match-pattern context pattern expression))
-
-      (cond
-        ((and
-            (symbol? pattern)
-            (memq pattern (rule-context-literals context)))
-          (unless (eq?
-                   (resolve-denotation (rule-context-use-context context) expression)
-                   (resolve-denotation (rule-context-definition-context context) pattern))
-            (raise #f))
-          '())
-
-        ((symbol? pattern)
-          (list (cons pattern expression)))
-
-        ((pair? pattern)
+        (define (resolve-denotation context expression)
           (cond
-            ((ellipsis-pattern? (car pattern))
-              (let ((length (- (relaxed-length expression) (relaxed-length (cdr pattern)))))
-                (when (negative? length)
-                  (raise #f))
-                (append
-                  (match-ellipsis-pattern context (car pattern) (list-head expression length))
-                  (match (cdr pattern) (list-tail expression length)))))
+            ((assq expression (macro-context-environment context)) =>
+              cdr)
 
-            ((pair? expression)
-              (append
-                (match (car pattern) (car expression))
-                (match (cdr pattern) (cdr expression))))
+            (else
+              expression)))
+
+        (define (rename-variable context name)
+          ; Share tails when appending strings.
+          (string->symbol
+            (string-append
+              (id->string (macro-context-generate-id! context))
+              "$"
+              (symbol->string name))))
+
+        (define (find-pattern-variables ellipsis bound-variables pattern)
+          (define excluded-variables (cons ellipsis bound-variables))
+
+          (let loop ((pattern pattern) (variables '()))
+            (cond
+              ((pair? pattern)
+                (loop
+                  (car pattern)
+                  (loop
+                    (cdr pattern)
+                    variables)))
+
+              ((and (symbol? pattern) (not (memq pattern excluded-variables)))
+                (cons pattern variables))
+
+              (else
+                variables))))
+
+        (define-record-type ellipsis-match
+          (make-ellipsis-match value)
+          ellipsis-match?
+          (value ellipsis-match-value))
+
+        (define-record-type ellipsis-pattern
+          (make-ellipsis-pattern element variables)
+          ellipsis-pattern?
+          (element ellipsis-pattern-element)
+          (variables ellipsis-pattern-variables))
+
+        (define (compile-pattern context ellipsis literals pattern)
+          (define (compile pattern)
+            (compile-pattern context ellipsis literals pattern))
+
+          (cond
+            ((not (pair? pattern))
+              pattern)
+
+            ((and
+                (pair? (cdr pattern))
+                (eq? ellipsis (resolve-denotation context (cadr pattern))))
+              (cons
+                (make-ellipsis-pattern
+                  (compile (car pattern))
+                  (find-pattern-variables ellipsis literals (car pattern)))
+                (compile (cddr pattern))))
+
+            (else
+              (cons
+                (compile (car pattern))
+                (compile (cdr pattern))))))
+
+        (define (match-ellipsis-pattern context pattern expression)
+          (map-values
+            make-ellipsis-match
+            (apply
+              map
+              list
+              (ellipsis-pattern-variables pattern)
+              (map
+                (lambda (expression)
+                  (match-pattern context (ellipsis-pattern-element pattern) expression))
+                expression))))
+
+        (define (match-pattern context pattern expression)
+          (define (match pattern expression)
+            (match-pattern context pattern expression))
+
+          (cond
+            ((and
+                (symbol? pattern)
+                (memq pattern (rule-context-literals context)))
+              (unless (eq?
+                       (resolve-denotation (rule-context-use-context context) expression)
+                       (resolve-denotation (rule-context-definition-context context) pattern))
+                (raise #f))
+              '())
+
+            ((symbol? pattern)
+              (list (cons pattern expression)))
+
+            ((pair? pattern)
+              (cond
+                ((ellipsis-pattern? (car pattern))
+                  (let ((length (- (relaxed-length expression) (relaxed-length (cdr pattern)))))
+                    (when (negative? length)
+                      (raise #f))
+                    (append
+                      (match-ellipsis-pattern context (car pattern) (list-head expression length))
+                      (match (cdr pattern) (list-tail expression length)))))
+
+                ((pair? expression)
+                  (append
+                    (match (car pattern) (car expression))
+                    (match (cdr pattern) (cdr expression))))
+
+                (else
+                  (raise #f))))
+
+            ((equal? pattern expression)
+              '())
 
             (else
               (raise #f))))
 
-        ((equal? pattern expression)
-          '())
+        (define (fill-ellipsis-template context matches template)
+          (let* ((variables (ellipsis-pattern-variables template))
+                 (template (ellipsis-pattern-element template))
+                 (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
+                 (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
+                 (ellipsis-matches (filter-values ellipsis-match? matches)))
+            (when (null? ellipsis-matches)
+              (error "no ellipsis pattern variables" template))
+            (apply
+              map
+              (lambda matches (fill-template context (append matches singleton-matches) template))
+              (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
 
-        (else
-          (raise #f))))
+        (define (fill-template context matches template)
+          (define (fill template)
+            (fill-template context matches template))
 
-    (define (fill-ellipsis-template context matches template)
-      (let* ((variables (ellipsis-pattern-variables template))
-             (template (ellipsis-pattern-element template))
-             (matches (filter (lambda (pair) (memq (car pair) variables)) matches))
-             (singleton-matches (filter-values (lambda (match) (not (ellipsis-match? match))) matches))
-             (ellipsis-matches (filter-values ellipsis-match? matches)))
-        (when (null? ellipsis-matches)
-          (error "no ellipsis pattern variables" template))
-        (apply
-          map
-          (lambda matches (fill-template context (append matches singleton-matches) template))
-          (map (lambda (pair) (ellipsis-match-value (cdr pair))) ellipsis-matches))))
+          (cond
+            ((and (symbol? template) (assq template matches)) =>
+              cdr)
 
-    (define (fill-template context matches template)
-      (define (fill template)
-        (fill-template context matches template))
-
-      (cond
-        ((and (symbol? template) (assq template matches)) =>
-          cdr)
-
-        ((pair? template)
-          (append
-            (let ((first (car template)))
-              (if (ellipsis-pattern? first)
-                (fill-ellipsis-template context matches first)
-                (list (fill first))))
-            (fill (cdr template))))
-
-        (else
-          template)))
-
-    (define (make-transformer definition-context transformer)
-      (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
-        (case (resolve-denotation definition-context (predicate transformer))
-          (($$syntax-rules)
-            (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
-                   (literals (caddr transformer))
-                   (rules
-                     (map
-                       (lambda (rule)
-                         (map
-                           (lambda (pattern)
-                             (compile-pattern definition-context ellipsis literals pattern))
-                           rule))
-                       (cdddr transformer))))
-              (lambda (use-context expression)
-                (let loop ((rules rules))
-                  (unless (pair? rules)
-                    (error "invalid syntax" expression))
-                  (let ((rule (car rules))
-                        (rule-context (make-rule-context definition-context use-context ellipsis literals)))
-                    (guard (value
-                            ((not value)
-                              (loop (cdr rules))))
-                      (let* ((matches (match-pattern rule-context (car rule) expression))
-                             (template (cadr rule))
-                             (names
-                               (map
-                                 (lambda (name) (cons name (rename-variable use-context name)))
-                                 (find-pattern-variables ellipsis (append literals (map car matches)) template))))
-                        (values
-                          (fill-template rule-context (append names matches) template)
-                          (macro-context-append
-                            use-context
-                            (map
-                              (lambda (pair)
-                                (cons
-                                  (cdr pair)
-                                  (resolve-denotation definition-context (car pair))))
-                              names))))))))))
-
-          (else
-            (error "unsupported macro transformer" transformer)))))
-
-    (define (expand-outer-macro context expression)
-      (if (pair? expression)
-        (let ((value (resolve-denotation context (car expression))))
-          (if (procedure? value)
-            (let-values (((expression context) (value context expression)))
-              (expand-outer-macro context expression))
-            (values expression context)))
-        (values expression context)))
-
-    ; https://www.researchgate.net/publication/220997237_Macros_That_Work
-    (define (expand-macro context expression)
-      (define (expand expression)
-        (expand-macro context expression))
-
-      (define (resolve name)
-        (resolve-denotation context name))
-
-      ; Indent one level for easier comparison with a compiler.
-      (begin
-        (cond
-          ((symbol? expression)
-            (let ((value (resolve expression)))
-              (when (procedure? value)
-                (error "invalid syntax" expression))
-              value))
-
-          ((pair? expression)
-            (case (resolve (car expression))
-              (($$define)
-                (let ((name (cadr expression)))
-                  (macro-context-set! context name name)
-                  (expand (cons '$$set! (cdr expression)))))
-
-              (($$define-syntax)
-                (macro-context-set-last!
-                  context
-                  (cadr expression)
-                  (make-transformer context (caddr expression)))
-                #f)
-
-              (($$lambda)
-                (let* ((parameters (cadr expression))
-                       (context
-                         (macro-context-append
-                           context
-                           (map
-                             (lambda (name) (cons name (rename-variable context name)))
-                             (parameter-names parameters))))
-                       ; We need to resolve parameter denotations before expanding a body.
-                       (parameters
-                         (relaxed-deep-map
-                           (lambda (name) (resolve-denotation context name))
-                           parameters)))
-                  (list
-                    '$$lambda
-                    parameters
-                    (expand-macro context (caddr expression)))))
-
-              (($$let-syntax)
-                (expand-macro
-                  (macro-context-append
-                    context
-                    (map-values
-                      (lambda (transformer)
-                        (make-transformer context (car transformer)))
-                      (cadr expression)))
-                  (caddr expression)))
-
-              (($$letrec-syntax)
-                (let* ((bindings (cadr expression))
-                       (context
-                         (macro-context-append
-                           context
-                           (map-values
-                             (lambda (value) #f)
-                             bindings))))
-                  (for-each
-                    (lambda (pair)
-                      (macro-context-set!
-                        context
-                        (car pair)
-                        (make-transformer context (cadr pair))))
-                    bindings)
-                  (expand-macro context (caddr expression))))
-
-              (($$quote)
-                (cons
-                  '$$quote
-                  (relaxed-deep-map
-                    (lambda (value)
-                      (if (symbol? value)
-                        (resolve-library-symbol value)
-                        value))
-                    (cdr expression))))
-
-              (else =>
-                (lambda (value)
-                  (if (procedure? value)
-                    (let-values (((expression context) (value context expression)))
-                      (expand-macro context expression))
-                    (map expand expression))))))
-
-          (else
-            expression))))
-
-    ; Compilation
-
-    ;; Context
-
-    (define-record-type compilation-context
-      (make-compilation-context environment)
-      compilation-context?
-      (environment compilation-context-environment))
-
-    (define (compilation-context-append-locals context variables)
-      (make-compilation-context
-        (append variables (compilation-context-environment context))))
-
-    (define (compilation-context-push-local context variable)
-      (compilation-context-append-locals context (list variable)))
-
-    ; If a variable is not in environment, it is considered to be global.
-    (define (compilation-context-resolve context variable)
-      (or (memv-position variable (compilation-context-environment context)) variable))
-
-    ;; Procedures
-
-    (define constant-instruction 0)
-    (define get-instruction 1)
-    (define set-instruction 2)
-    (define if-instruction 3)
-    (define call-instruction 5)
-
-    (define (code-rib tag car cdr)
-      (rib pair-type car cdr tag))
-
-    (define (call-rib arity procedure continuation)
-      (code-rib (+ call-instruction arity) procedure continuation))
-
-    (define (constant-rib constant continuation)
-      (code-rib constant-instruction constant continuation))
-
-    (define (make-procedure arity code environment)
-      (data-rib procedure-type environment (cons arity code)))
-
-    (define (compile-arity argument-count variadic)
-      (+
-        (* 2 argument-count)
-        (if variadic 1 0)))
-
-    (define (parameter-names parameters)
-      (cond
-        ((pair? parameters)
-          (cons (car parameters) (parameter-names (cdr parameters))))
-
-        ((symbol? parameters)
-          (list parameters))
-
-        ((null? parameters)
-          '())
-
-        (else
-          (error "invalid variadic parameter" parameters))))
-
-    (define (count-parameters parameters)
-      (if (pair? parameters)
-        (+ 1 (count-parameters (cdr parameters)))
-        0))
-
-    (define (compile-primitive-call name continuation)
-      (call-rib
-        (compile-arity
-          (case name
-            (($$close $$car)
-              1)
-
-            (($$cons $$-)
-              2)
-
-            (($$rib)
-              4)
+            ((pair? template)
+              (append
+                (let ((first (car template)))
+                  (if (ellipsis-pattern? first)
+                    (fill-ellipsis-template context matches first)
+                    (list (fill first))))
+                (fill (cdr template))))
 
             (else
-              (error "unknown primitive" name)))
-          #f)
-        name
-        continuation))
+              template)))
 
-    (define (drop? codes)
-      (and
-        (pair? codes)
-        (eq? (rib-tag codes) set-instruction)
-        (eq? (rib-car codes) 0)))
+        (define (make-transformer definition-context transformer)
+          (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
+            (case (resolve-denotation definition-context (predicate transformer))
+              (($$syntax-rules)
+                (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
+                       (literals (caddr transformer))
+                       (rules
+                         (map
+                           (lambda (rule)
+                             (map
+                               (lambda (pattern)
+                                 (compile-pattern definition-context ellipsis literals pattern))
+                               rule))
+                           (cdddr transformer))))
+                  (lambda (use-context expression)
+                    (let loop ((rules rules))
+                      (unless (pair? rules)
+                        (error "invalid syntax" expression))
+                      (let ((rule (car rules))
+                            (rule-context (make-rule-context definition-context use-context ellipsis literals)))
+                        (guard (value
+                                ((not value)
+                                  (loop (cdr rules))))
+                          (let* ((matches (match-pattern rule-context (car rule) expression))
+                                 (template (cadr rule))
+                                 (names
+                                   (map
+                                     (lambda (name) (cons name (rename-variable use-context name)))
+                                     (find-pattern-variables ellipsis (append literals (map car matches)) template))))
+                            (values
+                              (fill-template rule-context (append names matches) template)
+                              (macro-context-append
+                                use-context
+                                (map
+                                  (lambda (pair)
+                                    (cons
+                                      (cdr pair)
+                                      (resolve-denotation definition-context (car pair))))
+                                  names))))))))))
 
-    (define (compile-unspecified continuation)
-      (if (drop? continuation)
-        ; Skip a "drop" instruction.
-        (rib-cdr continuation)
-        (constant-rib #f continuation)))
+              (else
+                (error "unsupported macro transformer" transformer)))))
 
-    (define (compile-drop continuation)
-      (if (null? continuation)
-        continuation
-        (code-rib set-instruction 0 continuation)))
+        (define (expand-outer-macro context expression)
+          (if (pair? expression)
+            (let ((value (resolve-denotation context (car expression))))
+              (if (procedure? value)
+                (let-values (((expression context) (value context expression)))
+                  (expand-outer-macro context expression))
+                (values expression context)))
+            (values expression context)))
 
-    (define (compile-sequence context expressions continuation)
-      (compile-expression
-        context
-        (car expressions)
-        (if (null? (cdr expressions))
-          continuation
-          (compile-drop (compile-sequence context (cdr expressions) continuation)))))
+        ; https://www.researchgate.net/publication/220997237_Macros_That_Work
+        (define (expand-macro context expression)
+          (define (expand expression)
+            (expand-macro context expression))
 
-    (define (compile-raw-call context procedure arguments arity continuation)
-      (if (null? arguments)
-        (call-rib
-          arity
-          (compilation-context-resolve context procedure)
-          continuation)
-        (compile-expression
-          context
-          (car arguments)
-          (compile-raw-call
-            (compilation-context-push-local context #f)
-            procedure
-            (cdr arguments)
-            arity
-            continuation))))
+          (define (resolve name)
+            (resolve-denotation context name))
 
-    (define (compile-call context expression variadic continuation)
-      (let* ((procedure (car expression))
-             (arguments (cdr expression))
-             (continue
-               (lambda (context procedure continuation)
-                 (compile-raw-call
-                   context
-                   procedure
-                   arguments
-                   (compile-arity
-                     (- (length arguments) (if variadic 1 0))
-                     variadic)
-                   continuation))))
-        (if (symbol? procedure)
-          (continue context procedure continuation)
-          (compile-expression
-            context
-            procedure
-            (continue
-              (compilation-context-push-local context '$procedure)
-              '$procedure
-              (compile-unbind continuation))))))
+          ; Indent one level for easier comparison with a compiler.
+          (begin
+            (cond
+              ((symbol? expression)
+                (let ((value (resolve expression)))
+                  (when (procedure? value)
+                    (error "invalid syntax" expression))
+                  value))
 
-    (define (compile-unbind continuation)
-      (if (null? continuation)
-        continuation
-        (code-rib set-instruction 1 continuation)))
+              ((pair? expression)
+                (case (resolve (car expression))
+                  (($$define)
+                    (let ((name (cadr expression)))
+                      (macro-context-set! context name name)
+                      (expand (cons '$$set! (cdr expression)))))
 
-    (define (compile-expression context expression continuation)
-      (cond
-        ((symbol? expression)
-          (code-rib
-            get-instruction
-            (compilation-context-resolve context expression)
+                  (($$define-syntax)
+                    (macro-context-set-last!
+                      context
+                      (cadr expression)
+                      (make-transformer context (caddr expression)))
+                    #f)
+
+                  (($$lambda)
+                    (let* ((parameters (cadr expression))
+                           (context
+                             (macro-context-append
+                               context
+                               (map
+                                 (lambda (name) (cons name (rename-variable context name)))
+                                 (parameter-names parameters))))
+                           ; We need to resolve parameter denotations before expanding a body.
+                           (parameters
+                             (relaxed-deep-map
+                               (lambda (name) (resolve-denotation context name))
+                               parameters)))
+                      (list
+                        '$$lambda
+                        parameters
+                        (expand-macro context (caddr expression)))))
+
+                  (($$let-syntax)
+                    (expand-macro
+                      (macro-context-append
+                        context
+                        (map-values
+                          (lambda (transformer)
+                            (make-transformer context (car transformer)))
+                          (cadr expression)))
+                      (caddr expression)))
+
+                  (($$letrec-syntax)
+                    (let* ((bindings (cadr expression))
+                           (context
+                             (macro-context-append
+                               context
+                               (map-values
+                                 (lambda (value) #f)
+                                 bindings))))
+                      (for-each
+                        (lambda (pair)
+                          (macro-context-set!
+                            context
+                            (car pair)
+                            (make-transformer context (cadr pair))))
+                        bindings)
+                      (expand-macro context (caddr expression))))
+
+                  (($$quote)
+                    (cons
+                      '$$quote
+                      (relaxed-deep-map
+                        (lambda (value)
+                          (if (symbol? value)
+                            (resolve-library-symbol value)
+                            value))
+                        (cdr expression))))
+
+                  (else =>
+                    (lambda (value)
+                      (if (procedure? value)
+                        (let-values (((expression context) (value context expression)))
+                          (expand-macro context expression))
+                        (map expand expression))))))
+
+              (else
+                expression))))
+
+        ; Compilation
+
+        ;; Context
+
+        (define-record-type compilation-context
+          (make-compilation-context environment)
+          compilation-context?
+          (environment compilation-context-environment))
+
+        (define (compilation-context-append-locals context variables)
+          (make-compilation-context
+            (append variables (compilation-context-environment context))))
+
+        (define (compilation-context-push-local context variable)
+          (compilation-context-append-locals context (list variable)))
+
+        ; If a variable is not in environment, it is considered to be global.
+        (define (compilation-context-resolve context variable)
+          (or (memv-position variable (compilation-context-environment context)) variable))
+
+        ;; Procedures
+
+        (define constant-instruction 0)
+        (define get-instruction 1)
+        (define set-instruction 2)
+        (define if-instruction 3)
+        (define call-instruction 5)
+
+        (define (code-rib tag car cdr)
+          (rib pair-type car cdr tag))
+
+        (define (call-rib arity procedure continuation)
+          (code-rib (+ call-instruction arity) procedure continuation))
+
+        (define (constant-rib constant continuation)
+          (code-rib constant-instruction constant continuation))
+
+        (define (make-procedure arity code environment)
+          (data-rib procedure-type environment (cons arity code)))
+
+        (define (compile-arity argument-count variadic)
+          (+
+            (* 2 argument-count)
+            (if variadic 1 0)))
+
+        (define (parameter-names parameters)
+          (cond
+            ((pair? parameters)
+              (cons (car parameters) (parameter-names (cdr parameters))))
+
+            ((symbol? parameters)
+              (list parameters))
+
+            ((null? parameters)
+              '())
+
+            (else
+              (error "invalid variadic parameter" parameters))))
+
+        (define (count-parameters parameters)
+          (if (pair? parameters)
+            (+ 1 (count-parameters (cdr parameters)))
+            0))
+
+        (define (compile-primitive-call name continuation)
+          (call-rib
+            (compile-arity
+              (case name
+                (($$close $$car)
+                  1)
+
+                (($$cons $$-)
+                  2)
+
+                (($$rib)
+                  4)
+
+                (else
+                  (error "unknown primitive" name)))
+              #f)
+            name
             continuation))
 
-        ((pair? expression)
-          (case (car expression)
-            (($$apply)
-              (compile-call context (cdr expression) #t continuation))
+        (define (drop? codes)
+          (and
+            (pair? codes)
+            (eq? (rib-tag codes) set-instruction)
+            (eq? (rib-car codes) 0)))
 
-            (($$begin)
-              (compile-sequence context (cdr expression) continuation))
+        (define (compile-unspecified continuation)
+          (if (drop? continuation)
+            ; Skip a "drop" instruction.
+            (rib-cdr continuation)
+            (constant-rib #f continuation)))
 
-            (($$if)
+        (define (compile-drop continuation)
+          (if (null? continuation)
+            continuation
+            (code-rib set-instruction 0 continuation)))
+
+        (define (compile-sequence context expressions continuation)
+          (compile-expression
+            context
+            (car expressions)
+            (if (null? (cdr expressions))
+              continuation
+              (compile-drop (compile-sequence context (cdr expressions) continuation)))))
+
+        (define (compile-raw-call context procedure arguments arity continuation)
+          (if (null? arguments)
+            (call-rib
+              arity
+              (compilation-context-resolve context procedure)
+              continuation)
+            (compile-expression
+              context
+              (car arguments)
+              (compile-raw-call
+                (compilation-context-push-local context #f)
+                procedure
+                (cdr arguments)
+                arity
+                continuation))))
+
+        (define (compile-call context expression variadic continuation)
+          (let* ((procedure (car expression))
+                 (arguments (cdr expression))
+                 (continue
+                   (lambda (context procedure continuation)
+                     (compile-raw-call
+                       context
+                       procedure
+                       arguments
+                       (compile-arity
+                         (- (length arguments) (if variadic 1 0))
+                         variadic)
+                       continuation))))
+            (if (symbol? procedure)
+              (continue context procedure continuation)
               (compile-expression
                 context
-                (cadr expression)
-                (code-rib
-                  if-instruction
-                  (compile-expression context (caddr expression) continuation)
-                  (compile-expression context (cadddr expression) continuation))))
+                procedure
+                (continue
+                  (compilation-context-push-local context '$procedure)
+                  '$procedure
+                  (compile-unbind continuation))))))
 
-            (($$lambda)
-              (let ((parameters (cadr expression)))
-                (constant-rib
-                  (make-procedure
-                    (compile-arity
-                      (count-parameters parameters)
-                      (symbol? (last-cdr parameters)))
-                    (compile-sequence
-                      (compilation-context-append-locals
-                        context
-                        ; #f is for a frame.
-                        (reverse (cons #f (parameter-names parameters))))
-                      (cddr expression)
-                      '())
-                    '())
-                  (compile-primitive-call '$$close continuation))))
+        (define (compile-unbind continuation)
+          (if (null? continuation)
+            continuation
+            (code-rib set-instruction 1 continuation)))
 
-            (($$quote)
-              (constant-rib (cadr expression) continuation))
+        (define (compile-expression context expression continuation)
+          (cond
+            ((symbol? expression)
+              (code-rib
+                get-instruction
+                (compilation-context-resolve context expression)
+                continuation))
 
-            (($$set!)
-              (compile-expression
-                context
-                (caddr expression)
-                (code-rib
-                  set-instruction
-                  (compilation-context-resolve
-                    (compilation-context-push-local context #f)
-                    (cadr expression))
-                  (compile-unspecified continuation))))
+            ((pair? expression)
+              (case (car expression)
+                (($$apply)
+                  (compile-call context (cdr expression) #t continuation))
+
+                (($$begin)
+                  (compile-sequence context (cdr expression) continuation))
+
+                (($$if)
+                  (compile-expression
+                    context
+                    (cadr expression)
+                    (code-rib
+                      if-instruction
+                      (compile-expression context (caddr expression) continuation)
+                      (compile-expression context (cadddr expression) continuation))))
+
+                (($$lambda)
+                  (let ((parameters (cadr expression)))
+                    (constant-rib
+                      (make-procedure
+                        (compile-arity
+                          (count-parameters parameters)
+                          (symbol? (last-cdr parameters)))
+                        (compile-sequence
+                          (compilation-context-append-locals
+                            context
+                            ; #f is for a frame.
+                            (reverse (cons #f (parameter-names parameters))))
+                          (cddr expression)
+                          '())
+                        '())
+                      (compile-primitive-call '$$close continuation))))
+
+                (($$quote)
+                  (constant-rib (cadr expression) continuation))
+
+                (($$set!)
+                  (compile-expression
+                    context
+                    (caddr expression)
+                    (code-rib
+                      set-instruction
+                      (compilation-context-resolve
+                        (compilation-context-push-local context #f)
+                        (cadr expression))
+                      (compile-unspecified continuation))))
+
+                (else
+                  (compile-call context expression #f continuation))))
 
             (else
-              (compile-call context expression #f continuation))))
+              (constant-rib expression continuation))))
 
-        (else
-          (constant-rib expression continuation))))
+        (define (merge-environments one other)
+          (fold-left
+            (lambda (names name)
+              (if (member name names)
+                names
+                (cons name names)))
+            one
+            other))
 
-    (define (merge-environments one other)
-      (fold-left
-        (lambda (names name)
-          (if (member name names)
-            names
-            (cons name names)))
-        one
-        other))
+        (define libraries ($$libraries))
+        (define macro-context (make-macro-context (make-macro-state 0) '()))
 
-    (define eval
-      (let ((libraries ($$libraries))
-            (macro-context (make-macro-context (make-macro-state 0) '())))
         (for-each
           (lambda (pair)
             (macro-context-set-last!
