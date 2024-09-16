@@ -18,7 +18,7 @@ stak-process-context = { version = "0.2.15", path = "../process_context" }
 stak-vm = { version = "0.5.15", path = "../vm" }
 
 [dev-dependencies]
-pretty_assertions = "1.4.0"
+pretty_assertions = "1.4.1"
 
 [lints]
 workspace = true
