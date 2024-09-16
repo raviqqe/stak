@@ -968,7 +968,7 @@
 
 (define (drop? codes)
   (and
-    (rib? codes)
+    (not (null? codes))
     (eq? (rib-instruction codes) set-instruction)
     (eq? (rib-car codes) 0)))
 
@@ -1335,7 +1335,7 @@
 
 (define (nop-codes? codes)
   (and
-    (rib? codes)
+    (not (null? codes))
     (eq? (rib-instruction codes) nop-instruction)))
 
 (define (terminal-codes? codes)
