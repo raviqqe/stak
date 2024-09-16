@@ -13,7 +13,9 @@
 (cond-expand
   (stak
     (define cons-rib cons)
-    (define target-procedure? procedure?))
+    (define target-procedure? procedure?)
+    ; TODO Remove this?
+    (define (null? x) (eq? x '())))
 
   (else
     (define-record-type *rib*
