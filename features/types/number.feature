@@ -242,7 +242,7 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
   @float
-  Scenario Outline: Use a truncate function
+  Scenario Outline: Truncate a number
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -268,7 +268,7 @@ Feature: Number
       | -2.1  | -2     |
 
   @float
-  Scenario Outline: Use a floor function
+  Scenario Outline: Calculate a floor
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -294,7 +294,7 @@ Feature: Number
       | -2.1  | -3     |
 
   @float
-  Scenario Outline: Use a ceiling function
+  Scenario Outline: Calculate a ceiling
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -320,7 +320,7 @@ Feature: Number
       | -2.1  | -2     |
 
   @float
-  Scenario Outline: Use a round function
+  Scenario Outline: Round a number
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -351,7 +351,7 @@ Feature: Number
       | -1.51 | -2     |
       | -1.9  | -2     |
 
-  Scenario Outline: Use a comparison operator
+  Scenario Outline: Compare numbers
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -372,7 +372,7 @@ Feature: Number
       | (>= 0 0)   |
 
   @guile @stak
-  Scenario Outline: Use comparison operators with an insufficient number of arguments
+  Scenario Outline: Compare numbers with an insufficient number of arguments
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -387,7 +387,7 @@ Feature: Number
       |        |
       | 0      |
 
-  Scenario Outline: Use a minimum procedure
+  Scenario Outline: Calculate a minimum
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -406,7 +406,7 @@ Feature: Number
       | 2 3 1  | 1      |
       | 3 1 2  | 1      |
 
-  Scenario Outline: Use a maximum procedure
+  Scenario Outline: Calculate a maximum
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
