@@ -1046,84 +1046,85 @@
 
     ;;; Number
 
-    (define (format-digit x)
-      (integer->char
-        (if (< 9 x)
-          (+ (char->integer #\a) (- x 10))
-          (+ (char->integer #\0) x))))
-
-    (define (format-point x radix)
-      (if (< x epsilon)
-        '()
-        (cons
-          #\.
-          (let loop ((x x) (d epsilon) (ys '()))
-            (if (< x d)
-              '()
-              (let* ((x (* x radix))
-                     (r (remainder x 1))
-                     (q (quotient x 1))
-                     (d (* d radix)))
-                (if (< (- 1 r) d)
-                  (cons
-                    (format-digit (+ q 1))
-                    '())
-                  (cons
-                    (format-digit q)
-                    (loop r d ys)))))))))
-
     (define (number->string x . rest)
-      (let ((radix (if (null? rest) 10 (car rest))))
-        (list->string
-          (append
-            (if (negative? x)
-              (list #\-)
-              '())
-            (let loop ((x (abs x)) (ys '()))
-              (let* ((q (quotient x radix))
-                     (ys
-                       (cons
-                         (format-digit (quotient (remainder x radix) 1))
-                         ys)))
-                (if (positive? q)
-                  (loop q ys)
-                  ys)))
-            (format-point (remainder (abs x) 1) radix)))))
+      (define radix (if (null? rest) 10 (car rest)))
 
-    (define digit-characters
-      (map
-        (lambda (pair)
+      (define (format-digit x)
+        (integer->char
+          (if (< 9 x)
+            (+ (char->integer #\a) (- x 10))
+            (+ (char->integer #\0) x))))
+
+      (define (format-point x)
+        (if (< x epsilon)
+          '()
           (cons
-            (cons
-              (char->integer (caar pair))
-              (char->integer (cdar pair)))
-            (cdr pair)))
-        '(((#\0 . #\9) . 0)
-          ((#\A . #\Z) . 10)
-          ((#\a . #\z) . 10))))
+            #\.
+            (let loop ((x x) (d epsilon) (ys '()))
+              (if (< x d)
+                '()
+                (let* ((x (* x radix))
+                       (r (remainder x 1))
+                       (q (quotient x 1))
+                       (d (* d radix)))
+                  (if (< (- 1 r) d)
+                    (cons
+                      (format-digit (+ q 1))
+                      '())
+                    (cons
+                      (format-digit q)
+                      (loop r d ys)))))))))
 
-    (define (convert-digit x radix)
-      (let* ((x (char->integer x))
-             (y
-               (member
-                 x
-                 digit-characters
-                 (lambda (x pair) (<= (caar pair) x (cdar pair))))))
-        (and
-          y
-          ; TODO Fix performance.
-          (let* ((y (car y))
-                 (y (+ (- x (caar y)) (cdr y))))
-            (and (< y radix) y)))))
+      (list->string
+        (append
+          (if (negative? x)
+            (list #\-)
+            '())
+          (let loop ((x (abs x)) (ys '()))
+            (let* ((q (quotient x radix))
+                   (ys
+                     (cons
+                       (format-digit (quotient (remainder x radix) 1))
+                       ys)))
+              (if (positive? q)
+                (loop q ys)
+                ys)))
+          (format-point (remainder (abs x) 1)))))
 
     (define (string->number x . rest)
       (define radix (if (null? rest) 10 (car rest)))
+
+      (define digit-characters
+        (map
+          (lambda (pair)
+            (cons
+              (cons
+                (char->integer (caar pair))
+                (char->integer (cdar pair)))
+              (cdr pair)))
+          '(((#\0 . #\9) . 0)
+            ((#\A . #\Z) . 10)
+            ((#\a . #\z) . 10))))
+
+      (define (convert-digit x)
+        (let* ((x (char->integer x))
+               (y
+                 (member
+                   x
+                   digit-characters
+                   (lambda (x pair) (<= (caar pair) x (cdar pair))))))
+          (and
+            y
+            ; TODO Fix performance.
+            (let* ((y (car y))
+                   (y (+ (- x (caar y)) (cdr y))))
+              (and (< y radix) y)))))
 
       (define (convert-point xs)
         (let loop ((xs xs) (y 0) (d 1))
           (if (null? xs)
             (/ y d)
-            (let ((x (convert-digit (car xs) radix)))
+            (let ((x (convert-digit (car xs))))
               (and
                 x
                 (loop
@@ -1145,7 +1146,7 @@
                 (+ y (convert-point (cdr xs))))
 
               (else
-                (let ((x (convert-digit (car xs) radix)))
+                (let ((x (convert-digit (car xs))))
                   (and x (loop #f (cdr xs) (+ (* radix y) x)))))))))
 
       (let ((xs (string->list x)))
