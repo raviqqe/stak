@@ -2179,27 +2179,27 @@
     (define (get-output-port rest)
       (if (null? rest) (current-output-port) (car rest)))
 
-    (define special-char-names
-      (map
-        (lambda (pair) (cons (cdr pair) (car pair)))
-        special-chars))
-
-    (define escaped-chars
-      '((#\newline . #\n)
-        (#\tab . #\t)
-        (#\return . #\r)
-        (#\" . #\")
-        (#\\ . #\\)))
-
-    (define (write-escaped-char x)
-      (let ((pair (assoc x escaped-chars)))
-        (if pair
-          (begin
-            (write-char #\\)
-            (write-char (cdr pair)))
-          (write-char x))))
-
     (define (write x . rest)
+      (define escaped-chars
+        '((#\newline . #\n)
+          (#\tab . #\t)
+          (#\return . #\r)
+          (#\" . #\")
+          (#\\ . #\\)))
+
+      (define special-char-names
+        (map
+          (lambda (pair) (cons (cdr pair) (car pair)))
+          special-chars))
+
+      (define (write-escaped-char x)
+        (let ((pair (assoc x escaped-chars)))
+          (if pair
+            (begin
+              (write-char #\\)
+              (write-char (cdr pair)))
+            (write-char x))))
+
       (parameterize ((current-write write)
                      (current-output-port (get-output-port rest)))
         (cond
@@ -2271,12 +2271,12 @@
 
     (define current-write (make-parameter write))
 
-    (define quotes
-      '((quote . #\')
-        (quasiquote . #\`)
-        (unquote . #\,)))
-
     (define (write-list xs)
+      (define quotes
+        '((quote . #\')
+          (quasiquote . #\`)
+          (unquote . #\,)))
+
       (if (or (null? xs) (null? (cdr xs)))
         (write-sequence xs)
         (cond
