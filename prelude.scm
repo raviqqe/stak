@@ -2014,161 +2014,161 @@
 
   (begin
     (define (read . rest)
-      (parameterize ((current-input-port
-                       (if (null? rest) (current-input-port) (car rest))))
-        (read-raw)))
+      (define (read-raw)
+        (let ((char (peek-non-whitespace-char)))
+          (cond
+            ((eof-object? char)
+              char)
 
-    (define (read-raw)
-      (let ((char (peek-non-whitespace-char)))
-        (cond
-          ((eof-object? char)
-            char)
+            ((eqv? char #\()
+              (read-list))
 
-          ((eqv? char #\()
-            (read-list))
+            ((eqv? char #\#)
+              (read-char)
+              (case (peek-char)
+                ((#\f)
+                  (read-char)
+                  #f)
 
-          ((eqv? char #\#)
-            (read-char)
-            (case (peek-char)
-              ((#\f)
-                (read-char)
-                #f)
+                ((#\t)
+                  (read-char)
+                  #t)
 
-              ((#\t)
-                (read-char)
-                #t)
+                ((#\\)
+                  (read-char)
+                  (let ((char (peek-char)))
+                    (if (char-whitespace? char)
+                      (read-char)
+                      (let ((x (read-symbol-chars)))
+                        (cond
+                          ((null? x)
+                            (read-char))
 
-              ((#\\)
-                (read-char)
-                (let ((char (peek-char)))
-                  (if (char-whitespace? char)
-                    (read-char)
-                    (let ((x (read-symbol-chars)))
-                      (cond
-                        ((null? x)
-                          (read-char))
+                          ((eq? (length x) 1)
+                            (car x))
 
-                        ((eq? (length x) 1)
-                          (car x))
+                          (else
+                            (cdr (assoc (list->string x) special-chars))))))))
+
+                ((#\u)
+                  (read-char)
+                  (read-char)
+                  (list->bytevector (read-list)))
+
+                (else
+                  (list->vector (read-list)))))
+
+            ((eqv? char #\')
+              (read-char)
+              (list 'quote (read-raw)))
+
+            ((eqv? char #\`)
+              (read-char)
+              (list 'quasiquote (read-raw)))
+
+            ((eqv? char #\,)
+              (read-char)
+              (if (eqv? (peek-char) #\@)
+                (begin
+                  (read-char)
+                  (list 'unquote-splicing (read-raw)))
+                (list 'unquote (read-raw))))
+
+            ((eqv? char #\")
+              (read-string))
+
+            (else
+              (let ((x (list->string (read-symbol-chars))))
+                (or (string->number x) (string->symbol x)))))))
+
+      (define (read-list)
+        (define (read-tail)
+          (if (eqv? (peek-non-whitespace-char) #\))
+            (begin
+              (read-char)
+              '())
+            (let ((x (read-raw)))
+              (if (and (symbol? x) (equal? (symbol->string x) "."))
+                (let ((x (read-raw)))
+                  (read-char)
+                  x)
+                (cons x (read-tail))))))
+
+        (unless (eqv? (read-char) #\()
+          (error "( expected"))
+        (read-tail))
+
+      (define (read-symbol-chars)
+        (let ((char (peek-char)))
+          (if (boolean-or
+               (memv char '(#\( #\)))
+               (eof-object? char)
+               (char-whitespace? char))
+            '()
+            (cons (read-char) (read-symbol-chars)))))
+
+      (define (read-string)
+        (unless (eqv? (read-char) #\")
+          (error "\" expected"))
+        (let loop ((xs '()))
+          (let ((char (read-char)))
+            (cond
+              ((eof-object? char)
+                (error "unexpected end of input"))
+
+              ((eqv? char #\")
+                (list->string (reverse xs)))
+
+              ((eqv? char #\\)
+                (let ((char (read-char)))
+                  (loop
+                    (cons
+                      (case char
+                        ((#\n)
+                          #\newline)
+
+                        ((#\r)
+                          #\return)
+
+                        ((#\t)
+                          #\tab)
 
                         (else
-                          (cdr (assoc (list->string x) special-chars))))))))
-
-              ((#\u)
-                (read-char)
-                (read-char)
-                (list->bytevector (read-list)))
+                          char))
+                      xs))))
 
               (else
-                (list->vector (read-list)))))
+                (loop (cons char xs)))))))
 
-          ((eqv? char #\')
-            (read-char)
-            (list 'quote (read-raw)))
-
-          ((eqv? char #\`)
-            (read-char)
-            (list 'quasiquote (read-raw)))
-
-          ((eqv? char #\,)
-            (read-char)
-            (if (eqv? (peek-char) #\@)
+      (define (peek-non-whitespace-char)
+        (let ((char (peek-char)))
+          (cond
+            ((char-whitespace? char)
               (begin
                 (read-char)
-                (list 'unquote-splicing (read-raw)))
-              (list 'unquote (read-raw))))
+                (peek-non-whitespace-char)))
 
-          ((eqv? char #\")
-            (read-string))
+            ((eqv? char #\;)
+              (skip-comment))
 
-          (else
-            (let ((x (list->string (read-symbol-chars))))
-              (or (string->number x) (string->symbol x)))))))
+            (else
+              char))))
 
-    (define (read-list)
-      (define (read-tail)
-        (if (eqv? (peek-non-whitespace-char) #\))
-          (begin
-            (read-char)
-            '())
-          (let ((x (read-raw)))
-            (if (and (symbol? x) (equal? (symbol->string x) "."))
-              (let ((x (read-raw)))
-                (read-char)
-                x)
-              (cons x (read-tail))))))
-
-      (unless (eqv? (read-char) #\()
-        (error "( expected"))
-      (read-tail))
-
-    (define (read-symbol-chars)
-      (let ((char (peek-char)))
-        (if (boolean-or
-             (memv char '(#\( #\)))
-             (eof-object? char)
-             (char-whitespace? char))
-          '()
-          (cons (read-char) (read-symbol-chars)))))
-
-    (define (read-string)
-      (unless (eqv? (read-char) #\")
-        (error "\" expected"))
-      (let loop ((xs '()))
+      (define (skip-comment)
         (let ((char (read-char)))
           (cond
             ((eof-object? char)
-              (error "unexpected end of input"))
+              char)
 
-            ((eqv? char #\")
-              (list->string (reverse xs)))
-
-            ((eqv? char #\\)
-              (let ((char (read-char)))
-                (loop
-                  (cons
-                    (case char
-                      ((#\n)
-                        #\newline)
-
-                      ((#\r)
-                        #\return)
-
-                      ((#\t)
-                        #\tab)
-
-                      (else
-                        char))
-                    xs))))
+            ((eqv? char #\newline)
+              (peek-non-whitespace-char))
 
             (else
-              (loop (cons char xs)))))))
+              (skip-comment)))))
 
-    (define (peek-non-whitespace-char)
-      (let ((char (peek-char)))
-        (cond
-          ((char-whitespace? char)
-            (begin
-              (read-char)
-              (peek-non-whitespace-char)))
-
-          ((eqv? char #\;)
-            (skip-comment))
-
-          (else
-            char))))
-
-    (define (skip-comment)
-      (let ((char (read-char)))
-        (cond
-          ((eof-object? char)
-            char)
-
-          ((eqv? char #\newline)
-            (peek-non-whitespace-char))
-
-          (else
-            (skip-comment)))))))
+      (parameterize ((current-input-port
+                       (if (null? rest) (current-input-port) (car rest))))
+        (read-raw)))))
 
 (define-library (scheme write)
   (export display write)
