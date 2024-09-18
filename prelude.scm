@@ -2173,7 +2173,7 @@
 (define-library (scheme write)
   (export display write)
 
-  (import (shake (scheme base)) (scheme char))
+  (import (shake (scheme base)) (shake (scheme char)))
 
   (begin
     (define (get-output-port rest)
