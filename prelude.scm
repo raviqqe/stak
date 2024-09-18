@@ -1514,7 +1514,6 @@
     set-current-point!
 
     dynamic-wind
-    travel-to-point!
 
     make-parameter
     parameterize
