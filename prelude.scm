@@ -2277,6 +2277,10 @@
           (quasiquote . #\`)
           (unquote . #\,)))
 
+      (define (write-quote char value)
+        (write-char char)
+        ((current-write) value))
+
       (if (or (null? xs) (null? (cdr xs)))
         (write-sequence xs)
         (cond
@@ -2315,10 +2319,6 @@
               (write xs)))))
 
       (write-char #\)))
-
-    (define (write-quote char value)
-      (write-char char)
-      ((current-write) value))
 
     (define (write-vector xs)
       (write-char #\#)
