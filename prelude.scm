@@ -2013,11 +2013,9 @@
   (import (shake (scheme base)) (scheme char) (only (stak base) boolean-or))
 
   (begin
-    (define (get-input-port rest)
-      (if (null? rest) (current-input-port) (car rest)))
-
     (define (read . rest)
-      (parameterize ((current-input-port (get-input-port rest)))
+      (parameterize ((current-input-port
+                       (if (null? rest) (current-input-port) (car rest))))
         (read-raw)))
 
     (define (read-raw)
