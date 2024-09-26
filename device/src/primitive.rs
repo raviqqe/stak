@@ -5,6 +5,8 @@ pub use error::PrimitiveError;
 pub use primitive_set::DevicePrimitiveSet;
 
 /// A primitive for a device.
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Primitive {
     /// Read.
     Read,
