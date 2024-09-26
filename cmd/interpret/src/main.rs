@@ -11,8 +11,8 @@ use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::StdioDevice;
 use stak_file::OsFileSystem;
-use stak_primitive::SmallPrimitiveSet;
 use stak_process_context::OsProcessContext;
+use stak_r7rs::SmallPrimitiveSet;
 use stak_vm::Vm;
 use std::{fs::read, path::PathBuf};
 
