@@ -6,8 +6,6 @@ use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use heapless::Vec;
 use stak_device::Device;
-use stak_file::FileSystem;
-use stak_process_context::ProcessContext;
 use stak_vm::{Cons, Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
 
 /// A primitive set for devices.
