@@ -1,6 +1,8 @@
+//! A primitive set for devices.
+
 mod error;
 
-use self::error::Error;
+pub use self::error::Error;
 use crate::Device;
 use stak_vm::{Memory, Number, PrimitiveSet};
 
@@ -58,7 +60,7 @@ impl<const READ: u8, const WRITE: u8, const WRITE_ERROR: u8, D: Device> Primitiv
         } else if primitive == WRITE_ERROR {
             self.write(memory, Device::write_error, Error::WriteError)?;
         } else {
-            return Err(Error::Illegal);
+            return Err(stak_vm::Error::IllegalPrimitive.into());
         }
 
         Ok(())

@@ -5,7 +5,7 @@ pub use self::error::Error;
 use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use heapless::Vec;
-use stak_device::Device;
+use stak_device::{primitive_set::DevicePrimitiveSet, Device};
 use stak_file::FileSystem;
 use stak_process_context::ProcessContext;
 use stak_vm::{Cons, Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
@@ -14,7 +14,12 @@ const PATH_SIZE: usize = 64;
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
-    device: D,
+    device: DevicePrimitiveSet<
+        { Primitive::READ },
+        { Primitive::WRITE },
+        { Primitive::WRITE_ERROR },
+        D,
+    >,
     file_system: F,
     process_context: P,
 }
@@ -23,7 +28,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     /// Creates a primitive set.
     pub fn new(device: D, file_system: F, process_context: P) -> Self {
         Self {
-            device,
+            device: DevicePrimitiveSet::new(device),
             file_system,
             process_context,
         }
@@ -31,12 +36,12 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
 
     /// Returns a reference to a device.
     pub fn device(&self) -> &D {
-        &self.device
+        self.device.device()
     }
 
     /// Returns a mutable reference to a device.
     pub fn device_mut(&mut self) -> &mut D {
-        &mut self.device
+        self.device.device_mut()
     }
 
     fn operate_top<'a>(
@@ -127,17 +132,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
                 .unwrap_or(Number::from_i64(Type::default() as _))
                 .into()
         })
-    }
-
-    fn write(
-        &mut self,
-        memory: &mut Memory,
-        write: fn(&mut D, u8) -> Result<(), <D as Device>::Error>,
-        error: Error,
-    ) -> Result<(), Error> {
-        let byte = memory.top().assume_number().to_i64() as u8;
-
-        write(&mut self.device, byte).map_err(|_| error)
     }
 
     fn check_type(memory: &mut Memory, r#type: Type) -> Result<(), Error> {
@@ -256,17 +250,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::LOGARITHM => {
                 Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
             }
-            Primitive::READ => {
-                let byte = self.device.read().map_err(|_| Error::ReadInput)?;
-
-                memory.push(if let Some(byte) = byte {
-                    Number::from_i64(byte as _).into()
-                } else {
-                    memory.boolean(false).into()
-                })?;
-            }
-            Primitive::WRITE => self.write(memory, Device::write, Error::WriteOutput)?,
-            Primitive::WRITE_ERROR => self.write(memory, Device::write_error, Error::WriteError)?,
             Primitive::HALT => return Err(Error::Halt),
             // Optimize type checks.
             Primitive::NULL => Self::check_type(memory, Type::Null)?,
@@ -346,7 +329,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
 
                 memory.push(memory.register().into())?;
             }
-            _ => return Err(Error::Illegal),
+            _ => self.device.operate(memory, primitive)?,
         }
 
         Ok(())
