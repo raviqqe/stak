@@ -1,3 +1,4 @@
+use core::error;
 use core::fmt::{self, Display, Formatter};
 
 /// An error.
@@ -16,6 +17,8 @@ pub enum Error {
     /// A existence check failure.
     Exists,
 }
+
+impl error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {

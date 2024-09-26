@@ -1,4 +1,4 @@
-use crate::Device;
+use crate::{BufferError, Device};
 
 /// A fixed buffer device.
 #[derive(Debug)]
@@ -36,7 +36,7 @@ impl<'a, const O: usize, const E: usize> FixedBufferDevice<'a, O, E> {
 }
 
 impl<'a, const O: usize, const E: usize> Device for FixedBufferDevice<'a, O, E> {
-    type Error = ();
+    type Error = BufferError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         Ok(if let Some(&byte) = self.input.get(self.input_index) {
@@ -50,7 +50,7 @@ impl<'a, const O: usize, const E: usize> Device for FixedBufferDevice<'a, O, E> 
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         let Some(output) = self.output.get_mut(self.output_index) else {
-            return Err(());
+            return Err(BufferError::Write);
         };
 
         *output = byte;
@@ -61,7 +61,7 @@ impl<'a, const O: usize, const E: usize> Device for FixedBufferDevice<'a, O, E> 
 
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
         let Some(error) = self.error.get_mut(self.error_index) else {
-            return Err(());
+            return Err(BufferError::Write);
         };
 
         *error = byte;

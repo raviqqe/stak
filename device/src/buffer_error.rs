@@ -6,7 +6,9 @@ use core::{
 /// A buffer error.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum BufferError {
+    /// A read error.
     Read,
+    /// A write error.
     Write,
 }
 

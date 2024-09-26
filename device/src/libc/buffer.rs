@@ -1,7 +1,5 @@
-mod error;
-
 use super::{Read, Write};
-pub use error::BufferError;
+use crate::BufferError;
 
 /// An immutable buffer.
 #[derive(Debug)]
