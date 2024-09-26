@@ -1,4 +1,7 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// An error.
 #[derive(Debug)]
@@ -10,6 +13,8 @@ pub enum Error {
     /// A stderr error.
     Stderr,
 }
+
+impl error::Error for BufferError {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
