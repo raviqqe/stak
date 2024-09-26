@@ -5,7 +5,7 @@ use core::{
 
 /// An error.
 #[derive(Debug)]
-pub enum Error {
+pub enum LibcError {
     /// A stdin error.
     Stdin,
     /// A stdout error.
@@ -14,9 +14,9 @@ pub enum Error {
     Stderr,
 }
 
-impl error::Error for Error {}
+impl error::Error for LibcError {}
 
-impl Display for Error {
+impl Display for LibcError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Stdin => write!(formatter, "failed to read stdin"),

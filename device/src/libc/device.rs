@@ -1,4 +1,4 @@
-use super::{error::Error, Read, Write};
+use super::{error::LibcError, Read, Write};
 use crate::Device;
 
 /// A device composed of objects implementing `Read` and `Write` traits.
@@ -35,17 +35,17 @@ impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
 }
 
 impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
-    type Error = Error;
+    type Error = LibcError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        self.stdin.read().map_err(|_| Error::Stdin)
+        self.stdin.read().map_err(|_| LibcError::Stdin)
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        self.stdout.write(byte).map_err(|_| Error::Stdout)
+        self.stdout.write(byte).map_err(|_| LibcError::Stdout)
     }
 
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        self.stderr.write(byte).map_err(|_| Error::Stderr)
+        self.stderr.write(byte).map_err(|_| LibcError::Stderr)
     }
 }
