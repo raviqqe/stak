@@ -134,6 +134,30 @@ impl<'a> Memory<'a> {
         value
     }
 
+    /// Pops values from a stack.
+    pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
+        let mut values = [Default::default(); M];
+
+        for index in 0..M - 1 {
+            values[M - 1 - index] = self.pop();
+        }
+
+        values[0] = self.pop();
+
+        values
+    }
+
+    /// Pops numbers from a stack.
+    pub fn pop_numbers<const M: usize>(&mut self) -> [Number; M] {
+        let mut numbers = [Default::default(); M];
+
+        for (index, value) in self.pop_many::<M>().into_iter().enumerate() {
+            numbers[index] = value.assume_number();
+        }
+
+        numbers
+    }
+
     /// Peeks a value at the top of a stack.
     pub fn top(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());

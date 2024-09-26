@@ -46,7 +46,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     }
 
     fn operate_unary(memory: &mut Memory, operate: fn(Number) -> Number) -> Result<(), Error> {
-        let [x] = Self::pop_number_arguments(memory);
+        let [x] = memory.pop_numbers();
 
         memory.push(operate(x).into())?;
 
@@ -57,7 +57,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         memory: &mut Memory,
         operate: fn(Number, Number) -> Number,
     ) -> Result<(), Error> {
-        let [x, y] = Self::pop_number_arguments(memory);
+        let [x, y] = memory.pop_numbers();
 
         memory.push(operate(x, y).into())?;
 
@@ -68,7 +68,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         memory: &mut Memory,
         operate: fn(NumberRepresentation, NumberRepresentation) -> bool,
     ) -> Result<(), Error> {
-        let [x, y] = Self::pop_number_arguments(memory);
+        let [x, y] = memory.pop_numbers();
 
         memory.push(
             memory
@@ -88,7 +88,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         memory: &mut Memory<'a>,
         set_field: fn(&mut Memory<'a>, Value, Value),
     ) -> Result<(), Error> {
-        let [x, y] = Self::pop_arguments(memory);
+        let [x, y] = memory.pop_many();
 
         set_field(memory, x, y);
         memory.push(y)?;
@@ -128,7 +128,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
     fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
-                let [r#type, car, cdr, tag] = Self::pop_arguments(memory);
+                let [r#type, car, cdr, tag] = memory.pop_many();
 
                 Self::rib(
                     memory,
@@ -139,7 +139,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             }
             // Optimize a cons.
             Primitive::CONS => {
-                let [car, cdr] = Self::pop_arguments(memory);
+                let [car, cdr] = memory.pop_many();
 
                 Self::rib(memory, Type::Pair as Tag, car, cdr)?;
             }
@@ -163,7 +163,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,
             Primitive::EQUAL => {
-                let [x, y] = Self::pop_arguments(memory);
+                let [x, y] = memory.pop_many();
                 memory.push(memory.boolean(x == y).into())?;
             }
             Primitive::LESS_THAN => Self::operate_comparison(memory, |x, y| x < y)?,
