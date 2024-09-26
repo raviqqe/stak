@@ -3,7 +3,7 @@ use super::Primitive;
 use crate::Device;
 use stak_vm::{Memory, Number, PrimitiveSet, Value};
 
-/// A primitive set for devices.
+/// A primitive set for a device.
 pub struct DevicePrimitiveSet<D: Device> {
     device: D,
 }
