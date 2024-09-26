@@ -78,24 +78,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         Ok(())
     }
 
-    fn operate_option<'a>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&mut Memory<'a>) -> Option<Value>,
-    ) -> Result<(), Error> {
-        let value = operate(memory).unwrap_or_else(|| memory.boolean(false).into());
-        memory.push(value)?;
-        Ok(())
-    }
-
-    fn operate_result<'a, E>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&mut Memory<'a>) -> Result<(), E>,
-    ) -> Result<(), Error> {
-        let result = operate(memory);
-        memory.push(memory.boolean(result.is_ok()).into())?;
-        Ok(())
-    }
-
     fn rib(memory: &mut Memory, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
         let rib = memory.allocate(car.set_tag(r#type), cdr)?;
         memory.push(rib.into())?;
