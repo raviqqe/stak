@@ -1532,13 +1532,21 @@
              primitives
              (build-constants constant-context codes)))
          (constant-symbols (map cdr (constant-context-constants constant-context)))
-         (symbols (append default-symbols (find-symbols constant-symbols codes))))
+         (code-symbols (find-symbols constant-symbols codes))
+         (library-symbols (filter library-symbol? code-symbols))
+         (empty-symbols (append constant-symbols library-symbols))
+         (symbols
+           (append
+             default-symbols
+             (filter
+               (lambda (symbol) (not (library-symbol? symbol)))
+               code-symbols))))
     (encode-symbols
       symbols
-      constant-symbols
+      empty-symbols
       (encode-codes
         (make-encode-context
-          (append symbols constant-symbols)
+          (append symbols empty-symbols)
           constant-context)
         codes
         '()))))
