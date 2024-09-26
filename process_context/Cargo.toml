@@ -14,3 +14,6 @@ std = []
 
 [lints]
 workspace = true
+
+[dependencies]
+stak-vm = { version = "0.5.16", path = "../vm" }

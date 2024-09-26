@@ -9,7 +9,7 @@ mod write;
 
 pub use buffer::{Buffer, BufferMut};
 pub use device::ReadWriteDevice;
-pub use error::Error;
+pub use error::LibcError;
 pub use read::Read;
 pub use stdio::{Stderr, Stdin, Stdout};
 pub use write::Write;

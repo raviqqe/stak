@@ -506,13 +506,16 @@ name = "stak-device"
 version = "0.2.58"
 dependencies = [
  "libc",
+ "stak-vm",
 ]
 
 [[package]]
 name = "stak-file"
 version = "0.4.16"
 dependencies = [
+ "heapless",
  "libc",
+ "stak-vm",
  "tempfile",
 ]
 
@@ -591,7 +594,6 @@ dependencies = [
 name = "stak-primitive"
 version = "0.5.16"
 dependencies = [
- "heapless",
  "libm",
  "stak-device",
  "stak-file",
@@ -602,6 +604,9 @@ dependencies = [
 [[package]]
 name = "stak-process-context"
 version = "0.2.16"
+dependencies = [
+ "stak-vm",
+]
 
 [[package]]
 name = "stak-profile"

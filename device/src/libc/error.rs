@@ -1,8 +1,11 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// An error.
 #[derive(Debug)]
-pub enum Error {
+pub enum LibcError {
     /// A stdin error.
     Stdin,
     /// A stdout error.
@@ -11,7 +14,9 @@ pub enum Error {
     Stderr,
 }
 
-impl Display for Error {
+impl error::Error for LibcError {}
+
+impl Display for LibcError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Stdin => write!(formatter, "failed to read stdin"),

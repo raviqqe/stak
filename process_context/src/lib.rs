@@ -12,6 +12,7 @@ extern crate std;
 mod libc;
 #[cfg(feature = "std")]
 mod os;
+mod primitive;
 mod process_context;
 mod void;
 
@@ -19,5 +20,6 @@ mod void;
 pub use libc::LibcProcessContext;
 #[cfg(feature = "std")]
 pub use os::OsProcessContext;
+pub use primitive::{Primitive, ProcessContextPrimitiveSet};
 pub use process_context::ProcessContext;
 pub use void::VoidProcessContext;

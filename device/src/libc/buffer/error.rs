@@ -1,4 +1,7 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// A buffer error.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -6,6 +9,8 @@ pub enum BufferError {
     Read,
     Write,
 }
+
+impl error::Error for BufferError {}
 
 impl Display for BufferError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {

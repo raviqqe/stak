@@ -78,7 +78,8 @@ impl Default for OsFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::{ffi::CString, fs, path::Path};
+    use alloc::ffi::CString;
+    use std::{fs, path::Path};
 
     fn create_path_string(path: &Path) -> CString {
         CString::new(path.as_os_str().as_encoded_bytes()).unwrap()

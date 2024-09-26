@@ -2,6 +2,8 @@
 
 #![no_std]
 
+#[cfg(test)]
+extern crate alloc;
 #[cfg(any(feature = "std", test))]
 extern crate std;
 
@@ -10,6 +12,7 @@ mod error;
 mod libc;
 #[cfg(feature = "std")]
 mod os;
+mod primitive;
 mod system;
 mod void;
 
@@ -18,6 +21,7 @@ pub use error::Error;
 pub use libc::LibcFileSystem;
 #[cfg(feature = "std")]
 pub use os::OsFileSystem;
+pub use primitive::{FilePrimitiveSet, Primitive};
 pub use system::FileSystem;
 pub use void::VoidFileSystem;
 

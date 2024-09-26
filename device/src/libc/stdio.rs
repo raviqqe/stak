@@ -1,4 +1,4 @@
-use super::{error::Error, Read, Write};
+use super::{error::LibcError, Read, Write};
 
 /// A stdin.
 #[derive(Debug, Default)]
@@ -12,7 +12,7 @@ impl Stdin {
 }
 
 impl Read for Stdin {
-    type Error = Error;
+    type Error = LibcError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         let mut bytes = [0];
@@ -39,10 +39,10 @@ impl Stdout {
 }
 
 impl Write for Stdout {
-    type Error = Error;
+    type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(libc::STDOUT_FILENO, byte, Error::Stdout)
+        write(libc::STDOUT_FILENO, byte, LibcError::Stdout)
     }
 }
 
@@ -58,14 +58,14 @@ impl Stderr {
 }
 
 impl Write for Stderr {
-    type Error = Error;
+    type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(libc::STDERR_FILENO, byte, Error::Stderr)
+        write(libc::STDERR_FILENO, byte, LibcError::Stderr)
     }
 }
 
-fn write(fd: i32, byte: u8, error: Error) -> Result<(), Error> {
+fn write(fd: i32, byte: u8, error: LibcError) -> Result<(), LibcError> {
     let mut bytes = [byte];
 
     if unsafe { libc::write(fd, &mut bytes as *mut _ as _, 1) } == 1 {
