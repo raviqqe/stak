@@ -15,10 +15,7 @@ pub enum Primitive {
 }
 
 impl Primitive {
-    /// A primitive code for read.
-    pub const READ: u8 = Self::Read as _;
-    /// A primitive code for write.
-    pub const WRITE: u8 = Self::Write as _;
-    /// A primitive code for write error.
-    pub const WRITE_ERROR: u8 = Self::WriteError as _;
+    const READ: u8 = Self::Read as _;
+    const WRITE: u8 = Self::Write as _;
+    const WRITE_ERROR: u8 = Self::WriteError as _;
 }
