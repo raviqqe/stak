@@ -594,7 +594,6 @@ dependencies = [
 name = "stak-primitive"
 version = "0.5.16"
 dependencies = [
- "heapless",
  "libm",
  "stak-device",
  "stak-file",

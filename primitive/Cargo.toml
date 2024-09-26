@@ -9,7 +9,6 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-heapless = "0.8.0"
 libm = { version = "0.2.8", default-features = false }
 stak-device = { version = "0.2.58", path = "../device" }
 stak-file = { version = "0.4.16", path = "../file" }
