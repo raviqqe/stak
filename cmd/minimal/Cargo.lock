@@ -59,7 +59,7 @@ dependencies = [
  "libc",
  "stak-device",
  "stak-file",
- "stak-primitive",
+ "stak-r7rs",
  "stak-process-context",
  "stak-util",
  "stak-vm",
@@ -100,7 +100,7 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
+ "stak-r7rs",
  "stak-process-context",
  "stak-vm",
 ]
@@ -144,7 +144,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-primitive"
+name = "stak-r7rs"
 version = "0.5.16"
 dependencies = [
  "heapless",
@@ -168,7 +168,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
+ "stak-r7rs",
  "stak-process-context",
  "stak-util",
  "stak-vm",
