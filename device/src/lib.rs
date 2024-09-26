@@ -11,7 +11,7 @@ mod device;
 mod fixed_buffer;
 #[cfg(feature = "libc")]
 pub mod libc;
-mod primitive_set;
+mod primitive;
 #[cfg(feature = "std")]
 mod read_write;
 #[cfg(feature = "std")]
@@ -19,7 +19,7 @@ mod stdio;
 
 pub use device::Device;
 pub use fixed_buffer::FixedBufferDevice;
-pub use primitive_set::{DevicePrimitiveSet, PrimitiveError};
+pub use primitive::{DevicePrimitiveSet, Primitive, PrimitiveError};
 #[cfg(feature = "std")]
 pub use read_write::ReadWriteDevice;
 #[cfg(feature = "std")]
