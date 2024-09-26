@@ -1,6 +1,6 @@
 [package]
 name = "stak-primitive"
-description = "Stak Scheme primitives"
+description = "Stak Scheme primitives for R7RS"
 version = "0.5.16"
 edition.workspace = true
 keywords.workspace = true
