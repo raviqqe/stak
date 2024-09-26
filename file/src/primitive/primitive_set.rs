@@ -1,8 +1,7 @@
 use super::Primitive;
 use crate::FileSystem;
 use heapless::Vec;
-use stak_vm::Error;
-use stak_vm::{Memory, Number, PrimitiveSet, Value};
+use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
 
 const PATH_SIZE: usize = 64;
 

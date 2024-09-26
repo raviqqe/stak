@@ -1,5 +1,7 @@
-use core::error;
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// An error.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
