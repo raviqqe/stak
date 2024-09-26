@@ -35,28 +35,6 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
         Ok(())
     }
 
-    fn pop_number_arguments<const M: usize>(memory: &mut Memory) -> [Number; M] {
-        let mut numbers = [Default::default(); M];
-
-        for (index, value) in Self::pop_arguments::<M>(memory).into_iter().enumerate() {
-            numbers[index] = value.assume_number();
-        }
-
-        numbers
-    }
-
-    fn pop_arguments<const M: usize>(memory: &mut Memory) -> [Value; M] {
-        let mut values = [Default::default(); M];
-
-        for index in 0..M - 1 {
-            values[M - 1 - index] = memory.pop();
-        }
-
-        values[0] = memory.pop();
-
-        values
-    }
-
     fn decode_path(memory: &mut Memory, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
         let mut path = Vec::<_, PATH_SIZE>::new();
 
