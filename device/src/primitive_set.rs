@@ -7,13 +7,11 @@ use crate::Device;
 use stak_vm::{Memory, Number, PrimitiveSet};
 
 /// A primitive set for devices.
-pub struct DevicePrimitiveSet<const READ: u8, const WRITE: u8, const WRITE_ERROR: u8, D: Device> {
+pub struct DevicePrimitiveSet<D: Device> {
     device: D,
 }
 
-impl<const READ: u8, const WRITE: u8, const WRITE_ERROR: u8, D: Device>
-    DevicePrimitiveSet<READ, WRITE, WRITE_ERROR, D>
-{
+impl<D: Device> DevicePrimitiveSet<D> {
     /// Creates a primitive set.
     pub fn new(device: D) -> Self {
         Self { device }
@@ -41,26 +39,23 @@ impl<const READ: u8, const WRITE: u8, const WRITE_ERROR: u8, D: Device>
     }
 }
 
-impl<const READ: u8, const WRITE: u8, const WRITE_ERROR: u8, D: Device> PrimitiveSet
-    for DevicePrimitiveSet<READ, WRITE, WRITE_ERROR, D>
-{
+impl<D: Device> PrimitiveSet for DevicePrimitiveSet<D> {
     type Error = Error;
 
     fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
-        if primitive == READ {
-            let byte = self.device.read().map_err(|_| Error::ReadInput)?;
+        match primitive {
+            0 => {
+                let byte = self.device.read().map_err(|_| Error::ReadInput)?;
 
-            memory.push(if let Some(byte) = byte {
-                Number::from_i64(byte as _).into()
-            } else {
-                memory.boolean(false).into()
-            })?;
-        } else if primitive == WRITE {
-            self.write(memory, Device::write, Error::WriteOutput)?;
-        } else if primitive == WRITE_ERROR {
-            self.write(memory, Device::write_error, Error::WriteError)?;
-        } else {
-            return Err(stak_vm::Error::IllegalPrimitive.into());
+                memory.push(if let Some(byte) = byte {
+                    Number::from_i64(byte as _).into()
+                } else {
+                    memory.boolean(false).into()
+                })?;
+            }
+            1 => self.write(memory, Device::write, Error::WriteOutput)?,
+            2 => self.write(memory, Device::write_error, Error::WriteError)?,
+            _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 
         Ok(())

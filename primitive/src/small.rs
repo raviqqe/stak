@@ -14,12 +14,7 @@ const PATH_SIZE: usize = 64;
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
-    device: DevicePrimitiveSet<
-        { Primitive::READ },
-        { Primitive::WRITE },
-        { Primitive::WRITE_ERROR },
-        D,
-    >,
+    device: DevicePrimitiveSet<D>,
     file_system: F,
     process_context: P,
 }
@@ -329,7 +324,10 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
 
                 memory.push(memory.register().into())?;
             }
-            _ => self.device.operate(memory, primitive)?,
+            Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
+                self.device.operate(memory, primitive - Primitive::READ)?
+            }
+            _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 
         Ok(())

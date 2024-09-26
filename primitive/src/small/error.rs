@@ -10,8 +10,6 @@ pub enum Error {
     Device(stak_device::primitive_set::Error),
     /// A halt of a virtual machine.
     Halt,
-    /// An illegal primitive.
-    Illegal,
     /// A virtual machine error.
     Vm(stak_vm::Error),
 }
@@ -23,7 +21,6 @@ impl Display for Error {
         match self {
             Self::Device(error) => write!(formatter, "{error}"),
             Self::Halt => write!(formatter, "halt"),
-            Self::Illegal => write!(formatter, "illegal primitive"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
     }
