@@ -4,15 +4,15 @@ mod primitive_set;
 pub use error::PrimitiveError;
 pub use primitive_set::DevicePrimitiveSet;
 
-/// A primitive for a device.
+/// A primitive of a device.
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Primitive {
-    /// Read.
+    /// Read from a device.
     Read,
-    /// Write.
+    /// Write to a device.
     Write,
-    /// Write error.
+    /// Write error to a device.
     WriteError,
 }
 

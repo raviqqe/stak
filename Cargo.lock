@@ -513,7 +513,9 @@ dependencies = [
 name = "stak-file"
 version = "0.4.16"
 dependencies = [
+ "heapless",
  "libc",
+ "stak-vm",
  "tempfile",
 ]
 

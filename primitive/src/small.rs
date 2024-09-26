@@ -4,18 +4,15 @@ mod primitive;
 pub use self::error::Error;
 use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
-use heapless::Vec;
 use stak_device::{Device, DevicePrimitiveSet};
-use stak_file::FileSystem;
+use stak_file::{FilePrimitiveSet, FileSystem};
 use stak_process_context::ProcessContext;
 use stak_vm::{Cons, Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
-
-const PATH_SIZE: usize = 64;
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
     device: DevicePrimitiveSet<D>,
-    file_system: F,
+    file: FilePrimitiveSet<F>,
     process_context: P,
 }
 
@@ -24,7 +21,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     pub fn new(device: D, file_system: F, process_context: P) -> Self {
         Self {
             device: DevicePrimitiveSet::new(device),
-            file_system,
+            file: FilePrimitiveSet::new(file_system),
             process_context,
         }
     }
@@ -164,20 +161,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         values
     }
 
-    fn decode_path(memory: &mut Memory, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
-        let mut path = Vec::<_, PATH_SIZE>::new();
-
-        while list.assume_cons() != memory.null() {
-            path.push(memory.car_value(list).assume_number().to_i64() as u8)
-                .ok()?;
-            list = memory.cdr_value(list);
-        }
-
-        path.push(0).ok()?;
-
-        Some(path)
-    }
-
     fn build_string(memory: &mut Memory, string: &str) -> Result<Cons, Error> {
         let mut list = memory.null();
 
@@ -249,53 +232,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             // Optimize type checks.
             Primitive::NULL => Self::check_type(memory, Type::Null)?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
-            Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
-                let [list, output] = Self::pop_arguments(memory);
-                let path = Self::decode_path(memory, list)?;
-                let output = output != memory.boolean(false).into();
-
-                self.file_system
-                    .open(&path, output)
-                    .ok()
-                    .map(|descriptor| Number::new(descriptor as _).into())
-            })?,
-            Primitive::CLOSE_FILE => Self::operate_result(memory, |memory| {
-                let [descriptor] = Self::pop_number_arguments(memory);
-
-                self.file_system.close(descriptor.to_i64() as _)
-            })?,
-            Primitive::READ_FILE => Self::operate_option(memory, |memory| {
-                let [descriptor] = Self::pop_number_arguments(memory);
-
-                self.file_system
-                    .read(descriptor.to_i64() as _)
-                    .ok()
-                    .map(|byte| Number::new(byte as _).into())
-            })?,
-            Primitive::WRITE_FILE => Self::operate_result(memory, |memory| {
-                let [descriptor, byte] = Self::pop_number_arguments(memory);
-
-                self.file_system
-                    .write(descriptor.to_i64() as _, byte.to_i64() as _)
-            })?,
-            Primitive::DELETE_FILE => Self::operate_option(memory, |memory| {
-                let [list] = Self::pop_arguments(memory);
-                let path = Self::decode_path(memory, list)?;
-
-                self.file_system
-                    .delete(&path)
-                    .ok()
-                    .map(|_| memory.boolean(true).into())
-            })?,
-            Primitive::EXISTS_FILE => Self::operate_option(memory, |memory| {
-                let [list] = Self::pop_arguments(memory);
-                let path = Self::decode_path(memory, list)?;
-
-                self.file_system
-                    .exists(&path)
-                    .ok()
-                    .map(|value| memory.boolean(value).into())
-            })?,
             Primitive::COMMAND_LINE => {
                 memory.set_register(memory.null());
 
@@ -327,6 +263,14 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }
+            Primitive::OPEN_FILE
+            | Primitive::CLOSE_FILE
+            | Primitive::READ_FILE
+            | Primitive::WRITE_FILE
+            | Primitive::DELETE_FILE
+            | Primitive::EXISTS_FILE => self
+                .file
+                .operate(memory, primitive - Primitive::OPEN_FILE)?,
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 
