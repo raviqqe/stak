@@ -23,7 +23,7 @@ impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ReadInput => write!(formatter, "failed to read input"),
-            Self::Vm(error) => write!(formatter, "{}", error),
+            Self::Vm(error) => write!(formatter, "{error}"),
             Self::WriteError => write!(formatter, "failed to write error"),
             Self::WriteOutput => write!(formatter, "failed to write output"),
         }
