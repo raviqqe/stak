@@ -11,7 +11,6 @@ pub enum PrimitiveError {
     /// A virtual machine error.
     Vm(stak_vm::Error),
     /// A failure to write to standard error.
-    #[allow(clippy::enum_variant_names)]
     WriteError,
     /// A failure to write to standard output.
     WriteOutput,
