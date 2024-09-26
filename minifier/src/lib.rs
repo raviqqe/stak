@@ -4,7 +4,7 @@ use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
 use stak_macro::include_r7rs;
-use stak_primitive::{SmallError, SmallPrimitiveSet};
+use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_process_context::VoidProcessContext;
 use stak_vm::Vm;
 use std::io::{empty, Read, Write};

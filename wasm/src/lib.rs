@@ -3,7 +3,7 @@
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
-use stak_primitive::SmallPrimitiveSet;
+use stak_r7rs::SmallPrimitiveSet;
 use stak_process_context::VoidProcessContext;
 use stak_vm::Vm;
 use wasm_bindgen::prelude::*;

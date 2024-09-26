@@ -17,7 +17,7 @@ pub mod __private {
     pub use stak_device;
     pub use stak_file;
     pub use stak_macro;
-    pub use stak_primitive;
+    pub use stak_r7rs;
     pub use stak_process_context;
     #[cfg(feature = "libc")]
     pub use stak_util;
@@ -46,7 +46,7 @@ macro_rules! main {
             stak_device::StdioDevice,
             stak_file::OsFileSystem,
             stak_macro::include_r7rs,
-            stak_primitive::SmallPrimitiveSet,
+            stak_r7rs::SmallPrimitiveSet,
             stak_process_context::OsProcessContext,
             stak_vm::Vm,
         };
@@ -99,7 +99,7 @@ macro_rules! libc_main {
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
-            stak_primitive::SmallPrimitiveSet,
+            stak_r7rs::SmallPrimitiveSet,
             stak_process_context::LibcProcessContext,
             stak_util::Heap,
             stak_vm::Vm,
