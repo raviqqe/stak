@@ -88,7 +88,7 @@ mod tests {
         let mut device = FixedBufferDevice::<1, 0>::new(&[]);
 
         assert_eq!(device.write(42), Ok(()));
-        assert_eq!(device.write(42), Err(()));
+        assert_eq!(device.write(42), Err(BufferError::Write));
         assert_eq!(device.output(), [42]);
     }
 
@@ -97,7 +97,7 @@ mod tests {
         let mut device = FixedBufferDevice::<0, 1>::new(&[]);
 
         assert_eq!(device.write_error(42), Ok(()));
-        assert_eq!(device.write_error(42), Err(()));
+        assert_eq!(device.write_error(42), Err(BufferError::Write));
         assert_eq!(device.error(), [42]);
     }
 }
