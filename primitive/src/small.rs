@@ -5,7 +5,7 @@ pub use self::error::Error;
 use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use heapless::Vec;
-use stak_device::{primitive_set::DevicePrimitiveSet, Device};
+use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::FileSystem;
 use stak_process_context::ProcessContext;
 use stak_vm::{Cons, Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};

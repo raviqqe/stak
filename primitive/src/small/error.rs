@@ -7,7 +7,7 @@ use core::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum Error {
     /// A device error.
-    Device(stak_device::primitive_set::Error),
+    Device(stak_device::PrimitiveError),
     /// A halt of a virtual machine.
     Halt,
     /// A virtual machine error.
@@ -32,8 +32,8 @@ impl From<stak_vm::Error> for Error {
     }
 }
 
-impl From<stak_device::primitive_set::Error> for Error {
-    fn from(error: stak_device::primitive_set::Error) -> Self {
+impl From<stak_device::PrimitiveError> for Error {
+    fn from(error: stak_device::PrimitiveError) -> Self {
         Self::Device(error)
     }
 }

@@ -5,7 +5,7 @@ use core::{
 
 /// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub enum Error {
+pub enum PrimitiveError {
     /// A failure to read from standard input.
     ReadInput,
     /// A virtual machine error.
@@ -17,9 +17,9 @@ pub enum Error {
     WriteOutput,
 }
 
-impl error::Error for Error {}
+impl error::Error for PrimitiveError {}
 
-impl Display for Error {
+impl Display for PrimitiveError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ReadInput => write!(formatter, "failed to read input"),
@@ -30,7 +30,7 @@ impl Display for Error {
     }
 }
 
-impl From<stak_vm::Error> for Error {
+impl From<stak_vm::Error> for PrimitiveError {
     fn from(error: stak_vm::Error) -> Self {
         Self::Vm(error)
     }

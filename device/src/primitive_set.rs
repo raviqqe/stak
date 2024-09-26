@@ -1,8 +1,6 @@
-//! A primitive set for devices.
-
 mod error;
 
-pub use self::error::Error;
+pub use self::error::PrimitiveError;
 use crate::Device;
 use stak_vm::{Memory, Number, PrimitiveSet};
 
@@ -31,8 +29,8 @@ impl<D: Device> DevicePrimitiveSet<D> {
         &mut self,
         memory: &mut Memory,
         write: fn(&mut D, u8) -> Result<(), <D as Device>::Error>,
-        error: Error,
-    ) -> Result<(), Error> {
+        error: PrimitiveError,
+    ) -> Result<(), PrimitiveError> {
         let byte = memory.top().assume_number().to_i64() as u8;
 
         write(&mut self.device, byte).map_err(|_| error)
@@ -40,12 +38,12 @@ impl<D: Device> DevicePrimitiveSet<D> {
 }
 
 impl<D: Device> PrimitiveSet for DevicePrimitiveSet<D> {
-    type Error = Error;
+    type Error = PrimitiveError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
         match primitive {
             0 => {
-                let byte = self.device.read().map_err(|_| Error::ReadInput)?;
+                let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;
 
                 memory.push(if let Some(byte) = byte {
                     Number::from_i64(byte as _).into()
@@ -53,8 +51,8 @@ impl<D: Device> PrimitiveSet for DevicePrimitiveSet<D> {
                     memory.boolean(false).into()
                 })?;
             }
-            1 => self.write(memory, Device::write, Error::WriteOutput)?,
-            2 => self.write(memory, Device::write_error, Error::WriteError)?,
+            1 => self.write(memory, Device::write, PrimitiveError::WriteOutput)?,
+            2 => self.write(memory, Device::write_error, PrimitiveError::WriteError)?,
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 
