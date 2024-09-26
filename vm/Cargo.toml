@@ -26,7 +26,7 @@ stak-code = { path = "../code", features = ["alloc"] }
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
-stak-r7rs = { path = "../primitive" }
+stak-r7rs = { path = "../r7rs" }
 stak-process-context = { path = "../process_context" }
 
 [lints]
