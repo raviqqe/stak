@@ -21,7 +21,7 @@ pub use error::Error;
 pub use libc::LibcFileSystem;
 #[cfg(feature = "std")]
 pub use os::OsFileSystem;
-pub use primitive::{FilePrimitiveSet, Primitive, PrimitiveError};
+pub use primitive::{FilePrimitiveSet, Primitive};
 pub use system::FileSystem;
 pub use void::VoidFileSystem;
 

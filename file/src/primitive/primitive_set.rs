@@ -1,7 +1,7 @@
-pub use super::error::PrimitiveError;
 use super::Primitive;
 use crate::FileSystem;
 use heapless::Vec;
+use stak_vm::Error;
 use stak_vm::{Memory, Number, PrimitiveSet, Value};
 
 const PATH_SIZE: usize = 64;
@@ -17,20 +17,10 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
         Self { file_system }
     }
 
-    /// Returns a reference to a file system.
-    pub const fn file_system(&self) -> &T {
-        &self.file_system
-    }
-
-    /// Returns a mutable reference to a file system.
-    pub fn file_system_mut(&mut self) -> &mut T {
-        &mut self.file_system
-    }
-
     fn operate_option<'a>(
         memory: &mut Memory<'a>,
         operate: impl Fn(&mut Memory<'a>) -> Option<Value>,
-    ) -> Result<(), PrimitiveError> {
+    ) -> Result<(), Error> {
         let value = operate(memory).unwrap_or_else(|| memory.boolean(false).into());
         memory.push(value)?;
         Ok(())
@@ -39,7 +29,7 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
     fn operate_result<'a, E>(
         memory: &mut Memory<'a>,
         operate: impl Fn(&mut Memory<'a>) -> Result<(), E>,
-    ) -> Result<(), PrimitiveError> {
+    ) -> Result<(), Error> {
         let result = operate(memory);
         memory.push(memory.boolean(result.is_ok()).into())?;
         Ok(())
@@ -83,7 +73,7 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
 }
 
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
-    type Error = PrimitiveError;
+    type Error = Error;
 
     fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
         match primitive {
@@ -134,7 +124,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                     .ok()
                     .map(|value| memory.boolean(value).into())
             })?,
-            _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
+            _ => return Err(Error::IllegalPrimitive),
         }
 
         Ok(())

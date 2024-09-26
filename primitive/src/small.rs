@@ -6,14 +6,14 @@ use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
-use stak_process_context::ProcessContext;
-use stak_vm::{Cons, Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
+use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
+use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
 
 /// A primitive set that covers R7RS small.
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
     device: DevicePrimitiveSet<D>,
     file: FilePrimitiveSet<F>,
-    process_context: P,
+    process_context: ProcessContextPrimitiveSet<P>,
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
@@ -22,7 +22,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
         Self {
             device: DevicePrimitiveSet::new(device),
             file: FilePrimitiveSet::new(file_system),
-            process_context,
+            process_context: ProcessContextPrimitiveSet::new(process_context),
         }
     }
 
@@ -142,16 +142,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
 
         values
     }
-
-    fn build_string(memory: &mut Memory, string: &str) -> Result<Cons, Error> {
-        let mut list = memory.null();
-
-        for character in string.chars().rev() {
-            list = memory.cons(Number::from_i64(character as _).into(), list)?;
-        }
-
-        Ok(list)
-    }
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiveSet<D, F, P> {
@@ -214,34 +204,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             // Optimize type checks.
             Primitive::NULL => Self::check_type(memory, Type::Null)?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
-            Primitive::COMMAND_LINE => {
-                memory.set_register(memory.null());
-
-                for argument in self.process_context.command_line_rev() {
-                    let string = Self::build_string(memory, argument)?;
-                    let list = memory.cons(string.into(), memory.register())?;
-                    memory.set_register(list);
-                }
-
-                memory.push(memory.register().into())?;
-            }
-            Primitive::ENVIRONMENT_VARIABLES => {
-                memory.set_register(memory.null());
-
-                for (key, value) in self.process_context.environment_variables() {
-                    let pair = memory.allocate(memory.null().into(), memory.null().into())?;
-                    let list = memory.cons(pair.into(), memory.register())?;
-                    memory.set_register(list);
-
-                    let string = Self::build_string(memory, key)?;
-                    memory.set_car_value(memory.car(memory.register()), string.into());
-
-                    let string = Self::build_string(memory, value)?;
-                    memory.set_cdr_value(memory.car(memory.register()), string.into());
-                }
-
-                memory.push(memory.register().into())?;
-            }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }
@@ -253,6 +215,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             | Primitive::EXISTS_FILE => self
                 .file
                 .operate(memory, primitive - Primitive::OPEN_FILE)?,
+            Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => self
+                .process_context
+                .operate(memory, primitive - Primitive::COMMAND_LINE)?,
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 

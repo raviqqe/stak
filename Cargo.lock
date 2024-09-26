@@ -605,6 +605,9 @@ dependencies = [
 [[package]]
 name = "stak-process-context"
 version = "0.2.16"
+dependencies = [
+ "stak-vm",
+]
 
 [[package]]
 name = "stak-profile"

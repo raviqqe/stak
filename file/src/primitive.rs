@@ -1,7 +1,5 @@
-mod error;
 mod primitive_set;
 
-pub use error::PrimitiveError;
 pub use primitive_set::FilePrimitiveSet;
 
 /// A primitive of a file system.
