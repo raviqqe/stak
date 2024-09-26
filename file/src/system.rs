@@ -1,10 +1,10 @@
 use crate::FileDescriptor;
-use core::fmt::Debug;
+use core::error::Error;
 
 /// A file system.
 pub trait FileSystem {
     /// An error.
-    type Error: Debug;
+    type Error: Error;
 
     /// Opens a file.
     fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error>;

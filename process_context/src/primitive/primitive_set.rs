@@ -27,7 +27,7 @@ impl<T: ProcessContext> ProcessContextPrimitiveSet<T> {
 impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::COMMAND_LINE => {
                 memory.set_register(memory.null());

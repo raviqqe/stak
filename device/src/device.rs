@@ -1,9 +1,9 @@
-use core::fmt::Debug;
+use core::error::Error;
 
 /// A device.
 pub trait Device {
     /// An error.
-    type Error: Debug;
+    type Error: Error;
 
     /// Reads from standard input.
     fn read(&mut self) -> Result<Option<u8>, Self::Error>;

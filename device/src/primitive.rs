@@ -5,7 +5,6 @@ pub use error::PrimitiveError;
 pub use primitive_set::DevicePrimitiveSet;
 
 /// A primitive of a device.
-#[repr(u8)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Primitive {
     /// Read from a device.
@@ -17,7 +16,7 @@ pub enum Primitive {
 }
 
 impl Primitive {
-    const READ: u8 = Self::Read as _;
-    const WRITE: u8 = Self::Write as _;
-    const WRITE_ERROR: u8 = Self::WriteError as _;
+    const READ: usize = Self::Read as _;
+    const WRITE: usize = Self::Write as _;
+    const WRITE_ERROR: usize = Self::WriteError as _;
 }

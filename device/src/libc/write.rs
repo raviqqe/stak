@@ -1,9 +1,9 @@
-use core::fmt::Display;
+use core::error::Error;
 
 /// A trait that writes a byte.
 pub trait Write {
     /// An error.
-    type Error: Display;
+    type Error: Error;
 
     /// Writes a byte.
     fn write(&mut self, byte: u8) -> Result<(), Self::Error>;

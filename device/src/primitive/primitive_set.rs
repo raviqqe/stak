@@ -39,7 +39,7 @@ impl<T: Device> DevicePrimitiveSet<T> {
 impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
     type Error = PrimitiveError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;

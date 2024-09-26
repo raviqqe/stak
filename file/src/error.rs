@@ -1,4 +1,7 @@
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error,
+    fmt::{self, Display, Formatter},
+};
 
 /// An error.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -16,6 +19,8 @@ pub enum Error {
     /// A existence check failure.
     Exists,
 }
+
+impl error::Error for Error {}
 
 impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {

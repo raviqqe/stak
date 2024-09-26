@@ -260,7 +260,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
 
                 self.primitive_set
-                    .operate(&mut self.memory, primitive.to_i64() as u8)?;
+                    .operate(&mut self.memory, primitive.to_i64() as _)?;
                 self.advance_program_counter();
             }
         }
@@ -679,7 +679,7 @@ mod tests {
     impl PrimitiveSet for FakePrimitiveSet {
         type Error = Error;
 
-        fn operate(&mut self, _memory: &mut Memory, _primitive: u8) -> Result<(), Error> {
+        fn operate(&mut self, _memory: &mut Memory, _primitive: usize) -> Result<(), Error> {
             Err(Error::IllegalInstruction)
         }
     }
