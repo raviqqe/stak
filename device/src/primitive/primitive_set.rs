@@ -1,7 +1,7 @@
 pub use super::error::PrimitiveError;
 use super::Primitive;
 use crate::Device;
-use stak_vm::{Memory, Number, PrimitiveSet};
+use stak_vm::{Memory, Number, PrimitiveSet, Value};
 
 /// A primitive set for devices.
 pub struct DevicePrimitiveSet<D: Device> {
@@ -10,12 +10,12 @@ pub struct DevicePrimitiveSet<D: Device> {
 
 impl<D: Device> DevicePrimitiveSet<D> {
     /// Creates a primitive set.
-    pub fn new(device: D) -> Self {
+    pub const fn new(device: D) -> Self {
         Self { device }
     }
 
     /// Returns a reference to a device.
-    pub fn device(&self) -> &D {
+    pub const fn device(&self) -> &D {
         &self.device
     }
 
@@ -44,11 +44,10 @@ impl<D: Device> PrimitiveSet for DevicePrimitiveSet<D> {
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;
 
-                memory.push(if let Some(byte) = byte {
-                    Number::from_i64(byte as _).into()
-                } else {
-                    memory.boolean(false).into()
-                })?;
+                memory.push(byte.map_or_else(
+                    || Value::from(memory.boolean(false)),
+                    |byte| Number::from_i64(byte as _).into(),
+                ))?;
             }
             Primitive::WRITE => self.write(memory, Device::write, PrimitiveError::WriteOutput)?,
             Primitive::WRITE_ERROR => {
