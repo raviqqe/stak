@@ -53,7 +53,7 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: u8) -> Result<(), Self::Error> {
+    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
                 let [list, output] = memory.pop_many();

@@ -260,7 +260,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
 
                 self.primitive_set
-                    .operate(&mut self.memory, primitive.to_i64() as u8)?;
+                    .operate(&mut self.memory, primitive.to_i64() as _)?;
                 self.advance_program_counter();
             }
         }
