@@ -2529,12 +2529,6 @@
 
         (define library-symbol-separator #\%)
 
-        (define (build-library-name id name)
-          (string-append
-            (id->string id)
-            (list->string (list library-symbol-separator))
-            (symbol->string name)))
-
         (define (resolve-library-symbol name)
           (let* ((string (symbol->string name))
                  (position (memv-position library-symbol-separator (string->list string))))
