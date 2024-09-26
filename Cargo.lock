@@ -506,6 +506,7 @@ name = "stak-device"
 version = "0.2.58"
 dependencies = [
  "libc",
+ "stak-vm",
 ]
 
 [[package]]
