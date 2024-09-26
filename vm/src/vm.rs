@@ -679,7 +679,7 @@ mod tests {
     impl PrimitiveSet for FakePrimitiveSet {
         type Error = Error;
 
-        fn operate(&mut self, _memory: &mut Memory, _primitive: u8) -> Result<(), Error> {
+        fn operate(&mut self, _memory: &mut Memory, _primitive: usize) -> Result<(), Error> {
             Err(Error::IllegalInstruction)
         }
     }
