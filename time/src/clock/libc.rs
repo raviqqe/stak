@@ -3,16 +3,16 @@ use stak_vm::Number;
 
 /// A clock based on libc.
 #[derive(Debug, Default)]
-pub struct LibcTime {}
+pub struct LibcClock {}
 
-impl LibcTime {
+impl LibcClock {
     /// Creates a clock.
     pub const fn new() -> Self {
         Self {}
     }
 }
 
-impl Time for LibcTime {
+impl Clock for LibcClock {
     fn current_jiffy(&self) -> Number {
         Number::from_i64(libc::time() as _)
     }
