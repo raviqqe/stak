@@ -1,0 +1,19 @@
+[package]
+name = "stak-time"
+description = "Time library for Stak Scheme"
+version = "0.2.17"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[features]
+libc = []
+std = []
+
+[lints]
+workspace = true
+
+[dependencies]
+stak-vm = { version = "0.5.17", path = "../vm" }

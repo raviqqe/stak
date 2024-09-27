@@ -22,6 +22,7 @@ members = [
   "profiler",
   "r7rs",
   "sac",
+  "time",
   "util",
   "vm",
   "wasm",
