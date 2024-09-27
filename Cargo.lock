@@ -629,6 +629,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-process-context",
+ "stak-time",
  "stak-vm",
 ]
 
