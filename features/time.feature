@@ -9,6 +9,7 @@ Feature: Time
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
+  @chibi @stak
   Scenario: Get a current jiffy
     Given a file named "main.scm" with:
       """scheme
