@@ -2474,7 +2474,7 @@
     current-second
     jiffies-per-second)
 
-  (import (shake (scheme base)))
+  (import (shake (stak base)))
 
   (begin
     (define current-jiffy (primitive 400))
