@@ -1,40 +1,20 @@
 use crate::Time;
 use alloc::{string::String, vec::Vec};
-use std::{
-    env::{args, vars},
-    sync::LazyLock,
-};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-/// A time provided by an OS.
-pub struct OsTime {
-    arguments: LazyLock<Vec<String>>,
-    environment_variables: LazyLock<Vec<(String, String)>>,
-}
+/// A clock provided by an OS.
+#[derive(Debug, Default)]
+pub struct OsClock {}
 
-impl OsTime {
+impl OsClock {
     /// Creates a time.
     pub fn new() -> Self {
-        Self {
-            arguments: LazyLock::new(|| args().collect()),
-            environment_variables: LazyLock::new(|| vars().collect()),
-        }
+        Self {}
     }
 }
 
-impl Time for OsTime {
-    fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
-        (*self.arguments).iter().map(AsRef::as_ref).rev()
-    }
-
-    fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
-        (*self.environment_variables)
-            .iter()
-            .map(|(key, value)| (key.as_ref(), value.as_ref()))
-    }
-}
-
-impl Default for OsTime {
-    fn default() -> Self {
-        Self::new()
+impl Time for OsClock {
+    fn current_jiffy(&self) -> Number {
+        Number::from_i64(Duration::between(SystemTime::now(), UNIX_EPOCH) as _)
     }
 }

@@ -1,22 +1,19 @@
 use crate::Clock;
+use stak_vm::Number;
 
-/// A void time that provides no context information.
+/// A void clock stopped a fixed time.
 #[derive(Debug, Default)]
 pub struct VoidClock {}
 
-impl VoidTime {
+impl VoidClock {
     /// Creates a clock.
     pub const fn new() -> Self {
         Self {}
     }
 }
 
-impl Clock for VoidTime {
-    fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
-        []
-    }
-
-    fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
-        []
+impl Clock for VoidClock {
+    fn current_jiffy(&self) -> Number {
+        Default::default()
     }
 }
