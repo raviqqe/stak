@@ -21,6 +21,7 @@ stak-r7rs = { version = "0.6.0", path = "../r7rs" }
 stak-process-context = { version = "0.2.17", path = "../process_context" }
 stak-vm = { version = "0.5.17", path = "../vm" }
 wasm-bindgen = "0.2.84"
+stak-time = { version = "0.1.0", path = "../time" }
 
 [dev-dependencies]
 stak-configuration = { path = "../configuration" }

@@ -485,6 +485,7 @@ dependencies = [
  "stak-file",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -530,6 +531,7 @@ dependencies = [
  "stak-file",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -545,6 +547,7 @@ dependencies = [
  "stak-macro-util",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
  "syn",
 ]
@@ -569,6 +572,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -609,6 +613,7 @@ dependencies = [
  "stak-process-context",
  "stak-profiler",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -629,6 +634,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-process-context",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -652,7 +658,16 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-util",
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-time"
+version = "0.1.0"
+dependencies = [
+ "libc",
  "stak-vm",
 ]
 
@@ -676,6 +691,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
 ]
 
 [[package]]
@@ -690,6 +706,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",

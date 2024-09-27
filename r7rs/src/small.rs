@@ -7,22 +7,25 @@ use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
+use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
 
 /// A primitive set that covers R7RS small.
-pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext> {
+pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clock> {
     device: DevicePrimitiveSet<D>,
     file: FilePrimitiveSet<F>,
     process_context: ProcessContextPrimitiveSet<P>,
+    time: TimePrimitiveSet<C>,
 }
 
-impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
+impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D, F, P, C> {
     /// Creates a primitive set.
-    pub fn new(device: D, file_system: F, process_context: P) -> Self {
+    pub fn new(device: D, file_system: F, process_context: P, clock: C) -> Self {
         Self {
             device: DevicePrimitiveSet::new(device),
             file: FilePrimitiveSet::new(file_system),
             process_context: ProcessContextPrimitiveSet::new(process_context),
+            time: TimePrimitiveSet::new(clock),
         }
     }
 
@@ -122,7 +125,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext> SmallPrimitiveSet<D, F, P> {
     }
 }
 
-impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiveSet<D, F, P> {
+impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
+    for SmallPrimitiveSet<D, F, P, C>
+{
     type Error = Error;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
@@ -196,6 +201,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext> PrimitiveSet for SmallPrimitiv
             Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => self
                 .process_context
                 .operate(memory, primitive - Primitive::COMMAND_LINE)?,
+            Primitive::CURRENT_JIFFY => self
+                .time
+                .operate(memory, primitive - Primitive::CURRENT_JIFFY)?,
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 

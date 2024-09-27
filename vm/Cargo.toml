@@ -26,8 +26,9 @@ stak-code = { path = "../code", features = ["alloc"] }
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
-stak-r7rs = { path = "../r7rs" }
 stak-process-context = { path = "../process_context" }
+stak-r7rs = { path = "../r7rs" }
+stak-time = { path = "../time" }
 
 [lints]
 workspace = true

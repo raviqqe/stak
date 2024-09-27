@@ -19,6 +19,7 @@ pub mod __private {
     pub use stak_macro;
     pub use stak_process_context;
     pub use stak_r7rs;
+    pub use stak_time;
     #[cfg(feature = "libc")]
     pub use stak_util;
     pub use stak_vm;
@@ -48,6 +49,7 @@ macro_rules! main {
             stak_macro::include_r7rs,
             stak_process_context::OsProcessContext,
             stak_r7rs::SmallPrimitiveSet,
+            stak_time::OsClock,
             stak_vm::Vm,
         };
 
@@ -70,6 +72,7 @@ macro_rules! main {
                     StdioDevice::new(),
                     OsFileSystem::new(),
                     OsProcessContext::new(),
+                    OsClock::new(),
                 ),
             )?;
 
@@ -101,6 +104,7 @@ macro_rules! libc_main {
             stak_macro::include_r7rs,
             stak_process_context::LibcProcessContext,
             stak_r7rs::SmallPrimitiveSet,
+            stak_time::LibcClock,
             stak_util::Heap,
             stak_vm::Vm,
         };
@@ -120,6 +124,7 @@ macro_rules! libc_main {
                     ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
                     LibcFileSystem::new(),
                     LibcProcessContext::new(argc, argv),
+                    LibcClock::new(),
                 ),
             )
             .unwrap();

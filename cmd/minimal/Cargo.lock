@@ -61,6 +61,7 @@ dependencies = [
  "stak-file",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-util",
  "stak-vm",
 ]
@@ -102,6 +103,7 @@ dependencies = [
  "stak-file",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -155,12 +157,13 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.5.17"
+version = "0.6.0"
 dependencies = [
  "libm",
  "stak-device",
  "stak-file",
  "stak-process-context",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -175,7 +178,16 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-util",
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-time"
+version = "0.1.0"
+dependencies = [
+ "libc",
  "stak-vm",
 ]
 

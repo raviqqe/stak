@@ -9,6 +9,7 @@
   (only (scheme process-context))
   (shake (scheme read))
   (shake (scheme repl))
+  (only (scheme time))
   (shake (scheme write)))
 
 (define (main)

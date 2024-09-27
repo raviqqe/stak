@@ -33,6 +33,7 @@ pub(super) enum Primitive {
     ExistsFile,
     CommandLine = 300,
     EnvironmentVariables,
+    CurrentJiffy = 400,
 }
 
 impl Primitive {
@@ -69,4 +70,5 @@ impl Primitive {
     pub const EXISTS_FILE: usize = Self::ExistsFile as _;
     pub const COMMAND_LINE: usize = Self::CommandLine as _;
     pub const ENVIRONMENT_VARIABLES: usize = Self::EnvironmentVariables as _;
+    pub const CURRENT_JIFFY: usize = Self::CurrentJiffy as _;
 }
