@@ -581,8 +581,8 @@
     (define remainder (primitive 16))
     (define exp (primitive 17))
     (define $log (primitive 18))
-    (define null? (primitive 23))
-    (define pair? (primitive 24))
+    (define null? (primitive 20))
+    (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -1571,10 +1571,10 @@
   (import (shake (stak base)))
 
   (begin
-    (define $read-input (primitive 19))
-    (define $write-output (primitive 20))
-    (define $write-error (primitive 21))
-    (define $halt (primitive 22))
+    (define $halt (primitive 19))
+    (define $read-input (primitive 100))
+    (define $write-output (primitive 101))
+    (define $write-error (primitive 102))
 
     ; Symbol table
 
@@ -2374,9 +2374,9 @@
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
-    (define $halt (primitive 22))
-    (define $command-line (primitive 31))
-    (define $get-environment-variables (primitive 32))
+    (define $halt (primitive 19))
+    (define $command-line (primitive 300))
+    (define $get-environment-variables (primitive 301))
 
     (define command-line (delay (map code-points->string ($command-line))))
     (define get-environment-variables
@@ -2422,12 +2422,12 @@
     (only (stak base) primitive string->code-points))
 
   (begin
-    (define $open-file (primitive 25))
-    (define $close-file (primitive 26))
-    (define $read-file (primitive 27))
-    (define $write-file (primitive 28))
-    (define $delete-file (primitive 29))
-    (define $exists-file (primitive 30))
+    (define $open-file (primitive 200))
+    (define $close-file (primitive 201))
+    (define $read-file (primitive 202))
+    (define $write-file (primitive 203))
+    (define $delete-file (primitive 204))
+    (define $exists-file (primitive 205))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
