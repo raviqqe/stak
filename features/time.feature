@@ -17,7 +17,7 @@ Feature: Time
 
       (define seconds (current-second))
 
-      (write-u8 (if (>= (current-jiffy) (* seconds (jiffies-per-second))) 65 66))
+      (write-u8 (if (>= (current-jiffy) (* (- seconds 1) (jiffies-per-second))) 65 66))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
