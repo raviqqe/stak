@@ -55,12 +55,12 @@ impl Primitive {
     pub const REMAINDER: usize = Self::Remainder as _;
     pub const EXPONENTIATION: usize = Self::Exponentiation as _;
     pub const LOGARITHM: usize = Self::Logarithm as _;
-    pub const READ: usize = Self::Read as _;
-    pub const WRITE: usize = Self::Write as _;
-    pub const WRITE_ERROR: usize = Self::WriteError as _;
     pub const HALT: usize = Self::Halt as _;
     pub const NULL: usize = Self::Null as _;
     pub const PAIR: usize = Self::Pair as _;
+    pub const READ: usize = Self::Read as _;
+    pub const WRITE: usize = Self::Write as _;
+    pub const WRITE_ERROR: usize = Self::WriteError as _;
     pub const OPEN_FILE: usize = Self::OpenFile as _;
     pub const CLOSE_FILE: usize = Self::CloseFile as _;
     pub const READ_FILE: usize = Self::ReadFile as _;
