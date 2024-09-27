@@ -13,7 +13,9 @@ impl LibcClock {
 }
 
 impl Clock for LibcClock {
-    fn current_jiffy(&self) -> Number {
+    type Error = Never;
+
+    fn current_jiffy(&self) -> Result<Number, Never> {
         Number::from_i64(libc::time() as _)
     }
 }

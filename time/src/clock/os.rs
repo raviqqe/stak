@@ -1,6 +1,6 @@
 use super::Clock;
 use stak_vm::Number;
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{SystemTime, SystemTimeError, UNIX_EPOCH};
 
 /// A clock provided by an OS.
 #[derive(Debug, Default)]
@@ -14,7 +14,11 @@ impl OsClock {
 }
 
 impl Clock for OsClock {
-    fn current_jiffy(&self) -> Number {
-        Number::from_i64(Duration::between(SystemTime::now(), UNIX_EPOCH) as _)
+    type Error = SystemTimeError;
+
+    fn current_jiffy(&self) -> Result<Number, Self::Error> {
+        Ok(Number::from_i64(
+            SystemTime::duration_since(UNIX_EPOCH)?.as_nanos() as _,
+        ))
     }
 }
