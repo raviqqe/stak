@@ -8,7 +8,7 @@ pub struct OsClock {}
 
 impl OsClock {
     /// Creates a time.
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
