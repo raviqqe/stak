@@ -1,14 +1,14 @@
-use crate::ProcessContext;
+use crate::Time;
 use core::{ffi::CStr, slice};
 
-/// A process context based on libc.
+/// A time based on libc.
 #[derive(Debug)]
-pub struct LibcProcessContext {
+pub struct LibcTime {
     arguments: &'static [*const i8],
 }
 
-impl LibcProcessContext {
-    /// Creates a process context.
+impl LibcTime {
+    /// Creates a time.
     ///
     /// # Safety
     ///
@@ -21,7 +21,7 @@ impl LibcProcessContext {
     }
 }
 
-impl ProcessContext for LibcProcessContext {
+impl Time for LibcTime {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         self.arguments
             .iter()

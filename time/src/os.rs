@@ -1,18 +1,18 @@
-use crate::ProcessContext;
+use crate::Time;
 use alloc::{string::String, vec::Vec};
 use std::{
     env::{args, vars},
     sync::LazyLock,
 };
 
-/// A process context provided by an OS.
-pub struct OsProcessContext {
+/// A time provided by an OS.
+pub struct OsTime {
     arguments: LazyLock<Vec<String>>,
     environment_variables: LazyLock<Vec<(String, String)>>,
 }
 
-impl OsProcessContext {
-    /// Creates a process context.
+impl OsTime {
+    /// Creates a time.
     pub fn new() -> Self {
         Self {
             arguments: LazyLock::new(|| args().collect()),
@@ -21,7 +21,7 @@ impl OsProcessContext {
     }
 }
 
-impl ProcessContext for OsProcessContext {
+impl Time for OsTime {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         (*self.arguments).iter().map(AsRef::as_ref).rev()
     }
@@ -33,7 +33,7 @@ impl ProcessContext for OsProcessContext {
     }
 }
 
-impl Default for OsProcessContext {
+impl Default for OsTime {
     fn default() -> Self {
         Self::new()
     }

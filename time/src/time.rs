@@ -1,5 +1,5 @@
-/// A process context.
-pub trait ProcessContext {
+/// A time.
+pub trait Time {
     /// Returns a command name and its arguments in a reverse order.
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str>;
 

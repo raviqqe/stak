@@ -1,8 +1,8 @@
 mod primitive_set;
 
-pub use primitive_set::ProcessContextPrimitiveSet;
+pub use primitive_set::TimePrimitiveSet;
 
-/// A primitive of process context.
+/// A primitive of time.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Primitive {
     /// A command line.

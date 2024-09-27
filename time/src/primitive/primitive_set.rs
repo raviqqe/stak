@@ -1,16 +1,16 @@
 use super::Primitive;
-use crate::ProcessContext;
+use crate::Time;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet};
 
-/// A primitive set for process context.
-pub struct ProcessContextPrimitiveSet<T: ProcessContext> {
-    process_context: T,
+/// A primitive set for time.
+pub struct TimePrimitiveSet<T: Time> {
+    time: T,
 }
 
-impl<T: ProcessContext> ProcessContextPrimitiveSet<T> {
+impl<T: Time> TimePrimitiveSet<T> {
     /// Creates a primitive set.
-    pub const fn new(process_context: T) -> Self {
-        Self { process_context }
+    pub const fn new(time: T) -> Self {
+        Self { time }
     }
 
     fn build_string(memory: &mut Memory, string: &str) -> Result<Cons, Error> {
@@ -24,7 +24,7 @@ impl<T: ProcessContext> ProcessContextPrimitiveSet<T> {
     }
 }
 
-impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
+impl<T: Time> PrimitiveSet for TimePrimitiveSet<T> {
     type Error = Error;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
@@ -32,7 +32,7 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
             Primitive::COMMAND_LINE => {
                 memory.set_register(memory.null());
 
-                for argument in self.process_context.command_line_rev() {
+                for argument in self.time.command_line_rev() {
                     let string = Self::build_string(memory, argument)?;
                     let list = memory.cons(string.into(), memory.register())?;
                     memory.set_register(list);
@@ -43,7 +43,7 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
             Primitive::ENVIRONMENT_VARIABLES => {
                 memory.set_register(memory.null());
 
-                for (key, value) in self.process_context.environment_variables() {
+                for (key, value) in self.time.environment_variables() {
                     let pair = memory.allocate(memory.null().into(), memory.null().into())?;
                     let list = memory.cons(pair.into(), memory.register())?;
                     memory.set_register(list);

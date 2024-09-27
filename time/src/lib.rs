@@ -1,4 +1,4 @@
-//! A process context for Stak Scheme.
+//! A time for Stak Scheme.
 
 #![no_std]
 
@@ -13,13 +13,13 @@ mod libc;
 #[cfg(feature = "std")]
 mod os;
 mod primitive;
-mod process_context;
+mod time;
 mod void;
 
 #[cfg(feature = "libc")]
-pub use libc::LibcProcessContext;
+pub use libc::LibcTime;
 #[cfg(feature = "std")]
-pub use os::OsProcessContext;
-pub use primitive::{Primitive, ProcessContextPrimitiveSet};
-pub use process_context::ProcessContext;
-pub use void::VoidProcessContext;
+pub use os::OsTime;
+pub use primitive::{Primitive, TimePrimitiveSet};
+pub use time::Time;
+pub use void::VoidTime;

@@ -1,17 +1,17 @@
-use crate::ProcessContext;
+use crate::Time;
 
-/// A void process context that provides no context information.
+/// A void time that provides no context information.
 #[derive(Debug, Default)]
-pub struct VoidProcessContext {}
+pub struct VoidTime {}
 
-impl VoidProcessContext {
-    /// Creates a process context.
+impl VoidTime {
+    /// Creates a time.
     pub const fn new() -> Self {
         Self {}
     }
 }
 
-impl ProcessContext for VoidProcessContext {
+impl Time for VoidTime {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         []
     }
