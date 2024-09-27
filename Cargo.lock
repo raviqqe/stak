@@ -691,6 +691,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
 ]
 
 [[package]]
