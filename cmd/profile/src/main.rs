@@ -17,6 +17,7 @@ use stak_profiler::{
     write_records, DurationRecord, ProcedureRecord, StackProfiler,
 };
 use stak_r7rs::SmallPrimitiveSet;
+use stak_time::OsClock;
 use stak_vm::Vm;
 use std::{
     fs::{read, OpenOptions},
@@ -87,6 +88,7 @@ fn main() -> Result<(), MainError> {
                     StdioDevice::new(),
                     OsFileSystem::new(),
                     OsProcessContext::new(),
+                    OsClock::new(),
                 ),
             )?
             .with_profiler(&mut profiler);

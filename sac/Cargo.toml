@@ -10,13 +10,20 @@ repository.workspace = true
 
 [features]
 float = ["stak-vm/float"]
-libc = ["dep:libc", "dep:stak-util", "stak-device/libc", "stak-file/libc"]
+libc = [
+  "dep:libc",
+  "dep:stak-util",
+  "stak-device/libc",
+  "stak-file/libc",
+  "stak-time/libc",
+]
 std = [
   "dep:clap",
   "dep:main_error",
   "stak-device/std",
   "stak-file/std",
   "stak-process-context/std",
+  "stak-time/std",
 ]
 
 [dependencies]
@@ -33,3 +40,4 @@ stak-process-context = { version = "0.2.17", path = "../process_context", featur
 ] }
 stak-util = { version = "0.1.35", path = "../util", optional = true }
 stak-vm = { version = "0.5.17", path = "../vm" }
+stak-time = { version = "0.1.0", path = "../time" }

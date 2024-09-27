@@ -9,6 +9,7 @@ use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
+use stak_time::VoidClock;
 use stak_vm::Vm;
 use std::io::{Read, Write};
 
@@ -46,7 +47,12 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
     let device = ReadWriteDevice::new(source, target, &mut error_message);
     let mut vm = Vm::new(
         &mut heap,
-        SmallPrimitiveSet::new(device, VoidFileSystem::new(), VoidProcessContext::new()),
+        SmallPrimitiveSet::new(
+            device,
+            VoidFileSystem::new(),
+            VoidProcessContext::new(),
+            VoidClock::new(),
+        ),
     )?;
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;

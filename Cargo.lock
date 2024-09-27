@@ -485,6 +485,7 @@ dependencies = [
  "stak-file",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -530,6 +531,7 @@ dependencies = [
  "stak-file",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -569,6 +571,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -609,6 +612,7 @@ dependencies = [
  "stak-process-context",
  "stak-profiler",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
@@ -653,6 +657,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-util",
  "stak-vm",
 ]
@@ -699,6 +704,7 @@ dependencies = [
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
