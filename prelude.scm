@@ -581,8 +581,8 @@
     (define remainder (primitive 16))
     (define exp (primitive 17))
     (define $log (primitive 18))
-    (define null? (primitive 23))
-    (define pair? (primitive 24))
+    (define null? (primitive 20))
+    (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
       (rib type car cdr 0))
@@ -1571,10 +1571,10 @@
   (import (shake (stak base)))
 
   (begin
-    (define $read-input (primitive 19))
-    (define $write-output (primitive 20))
-    (define $write-error (primitive 21))
-    (define $halt (primitive 22))
+    (define $halt (primitive 19))
+    (define $read-input (primitive 22))
+    (define $write-output (primitive 23))
+    (define $write-error (primitive 24))
 
     ; Symbol table
 
@@ -2374,7 +2374,7 @@
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
-    (define $halt (primitive 22))
+    (define $halt (primitive 19))
     (define $command-line (primitive 31))
     (define $get-environment-variables (primitive 32))
 
