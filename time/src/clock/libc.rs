@@ -1,35 +1,19 @@
-use crate::Time;
-use core::{ffi::CStr, slice};
+use super::Clock;
+use stak_vm::Number;
 
-/// A time based on libc.
-#[derive(Debug)]
-pub struct LibcTime {
-    arguments: &'static [*const i8],
-}
+/// A clock based on libc.
+#[derive(Debug, Default)]
+pub struct LibcTime {}
 
 impl LibcTime {
-    /// Creates a time.
-    ///
-    /// # Safety
-    ///
-    /// The `argc` and `argv` arguments should be the ones passed down as
-    /// arguments to the `main` function in C.
-    pub const unsafe fn new(argc: isize, argv: *const *const i8) -> Self {
-        Self {
-            arguments: unsafe { slice::from_raw_parts(argv, argc as _) },
-        }
+    /// Creates a clock.
+    pub const fn new() -> Self {
+        Self {}
     }
 }
 
 impl Time for LibcTime {
-    fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
-        self.arguments
-            .iter()
-            .rev()
-            .map(|&argument| unsafe { CStr::from_ptr(argument) }.to_str().unwrap())
-    }
-
-    fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
-        []
+    fn current_jiffy(&self) -> Number {
+        Number::from_i64(libc::time() as _)
     }
 }
