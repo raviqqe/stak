@@ -10,6 +10,7 @@
   (only (scheme process-context) command-line)
   (scheme read)
   (scheme repl)
+  (only (scheme time))
   (only (scheme write)))
 
 (define (main)
