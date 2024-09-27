@@ -3,9 +3,6 @@
 #![no_std]
 
 #[cfg(feature = "std")]
-extern crate alloc;
-
-#[cfg(feature = "std")]
 extern crate std;
 
 mod clock;
