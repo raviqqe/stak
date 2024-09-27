@@ -2468,6 +2468,23 @@
     (define with-input-from-file (with-port-from-file open-input-file current-input-port))
     (define with-output-to-file (with-port-from-file open-output-file current-output-port))))
 
+(define-library (scheme time)
+  (export
+    current-jiffy
+    current-second
+    jiffies-per-second)
+
+  (import (shake (scheme base)))
+
+  (begin
+    (define current-jiffy (primitive 400))
+
+    (define (jiffies-per-second)
+      1000000000)
+
+    (define (current-second)
+      (/ (current-jiffy) (jiffies-per-second)))))
+
 (define-library (scheme repl)
   (export interaction-environment)
 
