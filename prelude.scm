@@ -1572,9 +1572,9 @@
 
   (begin
     (define $halt (primitive 19))
-    (define $read-input (primitive 22))
-    (define $write-output (primitive 23))
-    (define $write-error (primitive 24))
+    (define $read-input (primitive 100))
+    (define $write-output (primitive 101))
+    (define $write-error (primitive 102))
 
     ; Symbol table
 
@@ -2375,8 +2375,8 @@
 
   (begin
     (define $halt (primitive 19))
-    (define $command-line (primitive 31))
-    (define $get-environment-variables (primitive 32))
+    (define $command-line (primitive 301))
+    (define $get-environment-variables (primitive 302))
 
     (define command-line (delay (map code-points->string ($command-line))))
     (define get-environment-variables
@@ -2422,12 +2422,12 @@
     (only (stak base) primitive string->code-points))
 
   (begin
-    (define $open-file (primitive 25))
-    (define $close-file (primitive 26))
-    (define $read-file (primitive 27))
-    (define $write-file (primitive 28))
-    (define $delete-file (primitive 29))
-    (define $exists-file (primitive 30))
+    (define $open-file (primitive 201))
+    (define $close-file (primitive 202))
+    (define $read-file (primitive 203))
+    (define $write-file (primitive 204))
+    (define $delete-file (primitive 205))
+    (define $exists-file (primitive 206))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
