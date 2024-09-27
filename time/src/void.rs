@@ -1,4 +1,4 @@
-use crate::Time;
+use crate::Clock;
 
 /// A void time that provides no context information.
 #[derive(Debug, Default)]
@@ -11,7 +11,7 @@ impl VoidTime {
     }
 }
 
-impl Time for VoidTime {
+impl Clock for VoidTime {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
         []
     }

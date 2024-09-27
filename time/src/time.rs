@@ -1,5 +1,5 @@
-/// A time.
-pub trait Time {
+/// A clock.
+pub trait Clock {
     /// Returns a command name and its arguments in a reverse order.
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str>;
 

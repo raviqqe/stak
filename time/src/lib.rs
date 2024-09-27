@@ -21,5 +21,5 @@ pub use libc::LibcTime;
 #[cfg(feature = "std")]
 pub use os::OsTime;
 pub use primitive::{Primitive, TimePrimitiveSet};
-pub use time::Time;
+pub use time::Clock;
 pub use void::VoidTime;
