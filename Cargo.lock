@@ -657,6 +657,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-time"
+version = "0.1.0"
+dependencies = [
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-util"
 version = "0.1.35"
 dependencies = [
