@@ -6,7 +6,7 @@ Feature: Time
 
       (write-u8 (if (> (current-second) 1727447593) 65 66))
       """
-    When I successfully run `scheme main.scm hello`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Get a current jiffy
@@ -18,5 +18,5 @@ Feature: Time
 
       (write-u8 (if (>= (current-jiffy) (* seconds (jiffies-per-second))) 65 66))
       """
-    When I successfully run `scheme main.scm hello`
+    When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
