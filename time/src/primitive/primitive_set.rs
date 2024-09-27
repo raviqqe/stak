@@ -20,7 +20,7 @@ impl<T: Clock> PrimitiveSet for TimePrimitiveSet<T> {
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::CURRENT_JIFFY => {
-                memory.push(self.clock.current_jiffy())?;
+                memory.push(self.clock.current_jiffy().into())?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
