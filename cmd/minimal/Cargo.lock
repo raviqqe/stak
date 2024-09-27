@@ -59,8 +59,8 @@ dependencies = [
  "libc",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-util",
  "stak-vm",
 ]
@@ -100,8 +100,8 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-vm",
 ]
 
@@ -114,13 +114,16 @@ name = "stak-device"
 version = "0.2.58"
 dependencies = [
  "libc",
+ "stak-vm",
 ]
 
 [[package]]
 name = "stak-file"
 version = "0.4.16"
 dependencies = [
+ "heapless",
  "libc",
+ "stak-vm",
 ]
 
 [[package]]
@@ -144,20 +147,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-primitive"
+name = "stak-process-context"
+version = "0.2.16"
+dependencies = [
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-r7rs"
 version = "0.5.16"
 dependencies = [
- "heapless",
  "libm",
  "stak-device",
  "stak-file",
  "stak-process-context",
  "stak-vm",
 ]
-
-[[package]]
-name = "stak-process-context"
-version = "0.2.16"
 
 [[package]]
 name = "stak-sac"
@@ -168,8 +173,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-util",
  "stak-vm",
 ]

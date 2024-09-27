@@ -483,8 +483,8 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-vm",
 ]
 
@@ -528,8 +528,8 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-vm",
 ]
 
@@ -543,8 +543,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro-util",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-vm",
  "syn",
 ]
@@ -567,8 +567,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-vm",
 ]
 
@@ -591,17 +591,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-primitive"
-version = "0.5.16"
-dependencies = [
- "libm",
- "stak-device",
- "stak-file",
- "stak-process-context",
- "stak-vm",
-]
-
-[[package]]
 name = "stak-process-context"
 version = "0.2.16"
 dependencies = [
@@ -617,9 +606,9 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
  "stak-profiler",
+ "stak-r7rs",
  "stak-vm",
 ]
 
@@ -629,6 +618,17 @@ version = "0.1.27"
 dependencies = [
  "indoc",
  "pretty_assertions",
+ "stak-vm",
+]
+
+[[package]]
+name = "stak-r7rs"
+version = "0.5.16"
+dependencies = [
+ "libm",
+ "stak-device",
+ "stak-file",
+ "stak-process-context",
  "stak-vm",
 ]
 
@@ -650,8 +650,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-util",
  "stak-vm",
 ]
@@ -674,8 +674,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
 ]
 
 [[package]]
@@ -688,8 +688,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
  "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
