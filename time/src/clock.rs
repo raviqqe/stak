@@ -14,7 +14,7 @@ pub use void::VoidClock;
 
 /// A clock.
 pub trait Clock {
-    // An error.
+    /// An error.
     type Error: Error;
 
     /// Returns a current jiffy.
