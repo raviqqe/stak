@@ -2375,8 +2375,8 @@
 
   (begin
     (define $halt (primitive 19))
-    (define $command-line (primitive 301))
-    (define $get-environment-variables (primitive 302))
+    (define $command-line (primitive 300))
+    (define $get-environment-variables (primitive 301))
 
     (define command-line (delay (map code-points->string ($command-line))))
     (define get-environment-variables
@@ -2422,12 +2422,12 @@
     (only (stak base) primitive string->code-points))
 
   (begin
-    (define $open-file (primitive 201))
-    (define $close-file (primitive 202))
-    (define $read-file (primitive 203))
-    (define $write-file (primitive 204))
-    (define $delete-file (primitive 205))
-    (define $exists-file (primitive 206))
+    (define $open-file (primitive 200))
+    (define $close-file (primitive 201))
+    (define $read-file (primitive 202))
+    (define $write-file (primitive 203))
+    (define $delete-file (primitive 204))
+    (define $exists-file (primitive 205))
 
     (define (call-with-input-file path f)
       (call-with-port (open-input-file path) f))
