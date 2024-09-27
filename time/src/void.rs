@@ -2,10 +2,10 @@ use crate::Clock;
 
 /// A void time that provides no context information.
 #[derive(Debug, Default)]
-pub struct VoidTime {}
+pub struct VoidClock {}
 
 impl VoidTime {
-    /// Creates a time.
+    /// Creates a clock.
     pub const fn new() -> Self {
         Self {}
     }
