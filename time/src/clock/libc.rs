@@ -18,7 +18,7 @@ impl Clock for LibcClock {
 
     fn current_jiffy(&self) -> Result<Number, Self::Error> {
         Ok(Number::from_i64(
-            unsafe { libc::time(null_mut()) } * 1000_000_000,
+            unsafe { libc::time(null_mut()) } * 1_000_000_000,
         ))
     }
 }
