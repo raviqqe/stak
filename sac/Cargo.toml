@@ -1,7 +1,7 @@
 [package]
 name = "stak-sac"
 description = "Stand-Alone Complex for Stak Scheme"
-version = "0.1.60"
+version = "0.1.61"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -23,13 +23,13 @@ std = [
 clap = { version = "4.5.18", features = ["derive"], optional = true }
 libc = { version = "0.2", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
-stak-configuration = { version = "0.1.54", path = "../configuration" }
-stak-device = { version = "0.2.58", path = "../device" }
-stak-file = { version = "0.4.16", path = "../file" }
-stak-macro = { version = "0.1.59", path = "../macro" }
-stak-r7rs = { version = "0.5.16", path = "../r7rs" }
-stak-process-context = { version = "0.2.16", path = "../process_context", features = [
+stak-configuration = { version = "0.1.55", path = "../configuration" }
+stak-device = { version = "0.2.59", path = "../device" }
+stak-file = { version = "0.4.17", path = "../file" }
+stak-macro = { version = "0.1.60", path = "../macro" }
+stak-r7rs = { version = "0.6.0", path = "../r7rs" }
+stak-process-context = { version = "0.2.17", path = "../process_context", features = [
   "libc",
 ] }
-stak-util = { version = "0.1.34", path = "../util", optional = true }
-stak-vm = { version = "0.5.16", path = "../vm" }
+stak-util = { version = "0.1.35", path = "../util", optional = true }
+stak-vm = { version = "0.5.17", path = "../vm" }
