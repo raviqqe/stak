@@ -21,8 +21,9 @@ stak-macro-util = { version = "0.1.36", path = "../macro-util" }
 [dev-dependencies]
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
-stak-r7rs = { path = "../r7rs" }
 stak-process-context = { path = "../process_context" }
+stak-r7rs = { path = "../r7rs" }
+stak-time = { path = "../time" }
 stak-vm = { path = "../vm" }
 
 [lints]

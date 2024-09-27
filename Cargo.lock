@@ -547,6 +547,7 @@ dependencies = [
  "stak-macro-util",
  "stak-process-context",
  "stak-r7rs",
+ "stak-time",
  "stak-vm",
  "syn",
 ]

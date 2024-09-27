@@ -5,6 +5,7 @@ use stak_file::VoidFileSystem;
 use stak_macro::{compile_bare, compile_r7rs, include_bare, include_r7rs};
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
+use stak_time::VoidClock;
 use stak_vm::{Value, Vm};
 
 const HEAP_SIZE: usize = 1 << 16;
@@ -19,6 +20,7 @@ fn create_vm(
             FixedBufferDevice::<BUFFER_SIZE, 0>::new(&[]),
             VoidFileSystem::new(),
             VoidProcessContext::new(),
+            VoidClock::new(),
         ),
     )
     .unwrap()
