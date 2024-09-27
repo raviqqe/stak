@@ -9,11 +9,12 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-libc = []
+libc = ["dep:libc"]
 std = []
+
+[dependencies]
+libc = { version = "0.2", default-features = false, optional = true }
+stak-vm = { version = "0.5.17", path = "../vm" }
 
 [lints]
 workspace = true
-
-[dependencies]
-stak-vm = { version = "0.5.17", path = "../vm" }

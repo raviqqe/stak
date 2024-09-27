@@ -660,6 +660,7 @@ dependencies = [
 name = "stak-time"
 version = "0.1.0"
 dependencies = [
+ "libc",
  "stak-vm",
 ]
 
