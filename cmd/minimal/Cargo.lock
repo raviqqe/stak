@@ -157,7 +157,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.6.1"
+version = "0.7.0"
 dependencies = [
  "libm",
  "stak-device",
