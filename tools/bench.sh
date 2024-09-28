@@ -23,7 +23,7 @@ fi
 
 brew install chibi-scheme gambit-scheme gauche
 
-cargo install hyperfine mstak-interpret stak-interpret
+cargo install hyperfine mstak mstak-interpret stak stak-interpret
 
 cd $(dirname $0)/..
 
@@ -50,7 +50,7 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
 
   cat prelude.scm $file | stak-compile >$base.bc
 
-  scripts="$baseline $base.bc,$candidate $base.bc,gsi $file,chibi-scheme $file,gosh $file"
+  scripts="$baseline $base.bc,$candidate $base.bc,gsi $file,gsi $file,chibi-scheme $file,gosh $file"
 
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"
