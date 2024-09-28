@@ -2546,6 +2546,12 @@
 
         (define library-symbol-separator #\%)
 
+        (define (build-library-name id name)
+          (string-append
+            (id->string id)
+            (list->string (list library-symbol-separator))
+            (symbol->string name)))
+
         (define (resolve-library-symbol name)
           (let* ((string (symbol->string name))
                  (position (memv-position library-symbol-separator (string->list string))))
@@ -2602,6 +2608,46 @@
           (literals rule-context-literals))
 
         ;; Procedures
+
+        (define primitive-procedures
+          (map
+            (lambda (x)
+              (cons
+                ; `0` is always the library ID of `(stak base)`.
+                (build-library-name 0 x)
+                (symbol-append '$$ x)))
+            '(+ - * / <)))
+
+        (define (optimize expression)
+          (let ((predicate (predicate expression)))
+            (cond
+              ((eq? predicate '$$begin)
+                ; Omit top-level constants.
+                (cons '$$begin
+                  (let loop ((expressions (cdr expression)))
+                    (let ((expression (car expressions))
+                          (expressions (cdr expressions)))
+                      (cond
+                        ((null? expressions)
+                          (list expression))
+
+                        ((pair? expression)
+                          (cons expression (loop expressions)))
+
+                        (else
+                          (loop expressions)))))))
+
+              ((and
+                  (list? expression)
+                  (= (length expression) 3)
+                  (symbol? predicate)
+                  (assoc (symbol->string predicate) primitive-procedures))
+                =>
+                (lambda (pair)
+                  (cons (cdr pair) (cdr expression))))
+
+              (else
+                expression))))
 
         (define (resolve-denotation context expression)
           (cond
@@ -2815,8 +2861,7 @@
           (define (resolve name)
             (resolve-denotation context name))
 
-          ; Indent one level for easier comparison with a compiler.
-          (begin
+          (optimize
             (cond
               ((symbol? expression)
                 (let ((value (resolve expression)))
