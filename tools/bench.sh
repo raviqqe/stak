@@ -2,15 +2,10 @@
 
 set -ex
 
-interpreter=stak-interpret
-
-while getopts di: option; do
+while getopts d: option; do
   case $option in
   d)
     build_options=--no-default-features
-    ;;
-  i)
-    interpreter=$OPTARG
     ;;
   esac
 done
@@ -23,7 +18,7 @@ fi
 
 brew install chibi-scheme gambit-scheme gauche
 
-cargo install hyperfine mstak mstak-interpret stak stak-interpret
+cargo install hyperfine stak
 
 cd $(dirname $0)/..
 
@@ -34,10 +29,7 @@ for directory in . cmd/minimal; do
   )
 done
 
-baseline=$(which $interpreter)
-candidate=$(PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH which $interpreter)
-
-export PATH=$PWD/target/release:$PATH
+export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
 filter=.
 
