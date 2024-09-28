@@ -24,7 +24,7 @@ stak-file = { version = "0.4.18", path = "../../file", features = ["std"] }
 stak-process-context = { version = "0.2.18", path = "../../process_context", features = [
   "std",
 ] }
-stak-r7rs = { version = "0.6.1", path = "../../r7rs" }
+stak-r7rs = { version = "0.7.0", path = "../../r7rs" }
 stak-time = { version = "0.1.1", path = "../../time", features = ["std"] }
 stak-vm = { version = "0.5.18", path = "../../vm" }
 
