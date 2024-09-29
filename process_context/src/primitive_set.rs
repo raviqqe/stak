@@ -1,4 +1,6 @@
-use super::Primitive;
+mod primitive;
+
+pub use self::primitive::Primitive;
 use crate::ProcessContext;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet};
 
