@@ -1,7 +1,7 @@
 [package]
 name = "stak-time"
 description = "Time library for Stak Scheme"
-version = "0.1.1"
+version = "0.1.2"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -14,7 +14,7 @@ std = []
 
 [dependencies]
 libc = { version = "0.2", default-features = false, optional = true }
-stak-vm = { version = "0.5.18", path = "../vm" }
+stak-vm = { version = "0.5.19", path = "../vm" }
 
 [lints]
 workspace = true
