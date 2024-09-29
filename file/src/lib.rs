@@ -12,7 +12,7 @@ mod error;
 mod libc;
 #[cfg(feature = "std")]
 mod os;
-mod primitive;
+mod primitive_set;
 mod system;
 mod void;
 
@@ -21,7 +21,7 @@ pub use error::Error;
 pub use libc::LibcFileSystem;
 #[cfg(feature = "std")]
 pub use os::OsFileSystem;
-pub use primitive::{FilePrimitiveSet, Primitive};
+pub use primitive_set::{FilePrimitiveSet, Primitive};
 pub use system::FileSystem;
 pub use void::VoidFileSystem;
 

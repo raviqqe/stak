@@ -1,4 +1,6 @@
-use super::Primitive;
+mod primitive;
+
+pub use self::primitive::Primitive;
 use crate::FileSystem;
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
