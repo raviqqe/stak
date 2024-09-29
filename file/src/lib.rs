@@ -7,23 +7,11 @@ extern crate alloc;
 #[cfg(any(feature = "std", test))]
 extern crate std;
 
-mod error;
-#[cfg(feature = "libc")]
-mod libc;
-#[cfg(feature = "std")]
-mod os;
+mod file_system;
 mod primitive_set;
-mod system;
-mod void;
 
-pub use error::Error;
-#[cfg(feature = "libc")]
-pub use libc::LibcFileSystem;
-#[cfg(feature = "std")]
-pub use os::OsFileSystem;
+pub use file_system::*;
 pub use primitive_set::{FilePrimitiveSet, Primitive};
-pub use system::FileSystem;
-pub use void::VoidFileSystem;
 
 /// A file descriptor.
 pub type FileDescriptor = usize;

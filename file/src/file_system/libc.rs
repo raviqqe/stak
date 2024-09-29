@@ -1,4 +1,4 @@
-use crate::{Error, FileDescriptor, FileSystem};
+use super::{Error, FileDescriptor, FileSystem};
 use core::ffi::c_int;
 // spell-checker: disable-next-line
 use libc::{F_OK, S_IRUSR, S_IWUSR};
