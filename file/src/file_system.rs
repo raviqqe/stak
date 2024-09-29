@@ -5,7 +5,8 @@ mod libc;
 mod os;
 mod void;
 
-pub use self::error::Error;
+pub use self::error::FileError;
+use core::error::Error;
 #[cfg(feature = "libc")]
 pub use libc::LibcFileSystem;
 #[cfg(feature = "std")]
@@ -18,7 +19,7 @@ pub type FileDescriptor = usize;
 /// A file system.
 pub trait FileSystem {
     /// An error.
-    type Error: core::error::Error;
+    type Error: Error;
 
     /// Opens a file.
     fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error>;

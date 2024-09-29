@@ -1,4 +1,4 @@
-use crate::{Error, FileDescriptor, FileSystem};
+use crate::{FileDescriptor, FileError, FileSystem};
 
 /// A file system that does nothing and fails every operation.
 #[derive(Debug)]
@@ -12,30 +12,30 @@ impl VoidFileSystem {
 }
 
 impl FileSystem for VoidFileSystem {
-    type Error = Error;
+    type Error = FileError;
 
     fn open(&self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
-        Err(Error::Open)
+        Err(FileError::Open)
     }
 
     fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
-        Err(Error::Close)
+        Err(FileError::Close)
     }
 
     fn read(&self, _: FileDescriptor) -> Result<u8, Self::Error> {
-        Err(Error::Read)
+        Err(FileError::Read)
     }
 
     fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
-        Err(Error::Write)
+        Err(FileError::Write)
     }
 
     fn delete(&self, _: &[u8]) -> Result<(), Self::Error> {
-        Err(Error::Delete)
+        Err(FileError::Delete)
     }
 
     fn exists(&self, _: &[u8]) -> Result<bool, Self::Error> {
-        Err(Error::Exists)
+        Err(FileError::Exists)
     }
 }
 
