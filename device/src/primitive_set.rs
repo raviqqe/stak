@@ -1,7 +1,8 @@
+mod error;
 mod primitive;
 
+pub use self::error::PrimitiveError;
 pub use self::primitive::Primitive;
-pub use super::error::PrimitiveError;
 use crate::Device;
 use stak_vm::{Memory, Number, PrimitiveSet, Value};
 

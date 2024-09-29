@@ -1,9 +1,3 @@
-mod error;
-mod primitive_set;
-
-pub use error::PrimitiveError;
-pub use primitive_set::DevicePrimitiveSet;
-
 /// A primitive of a device.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Primitive {
@@ -16,7 +10,7 @@ pub enum Primitive {
 }
 
 impl Primitive {
-    const READ: usize = Self::Read as _;
-    const WRITE: usize = Self::Write as _;
-    const WRITE_ERROR: usize = Self::WriteError as _;
+    pub(super) const READ: usize = Self::Read as _;
+    pub(super) const WRITE: usize = Self::Write as _;
+    pub(super) const WRITE_ERROR: usize = Self::WriteError as _;
 }
