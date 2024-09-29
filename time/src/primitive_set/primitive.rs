@@ -1,5 +1,3 @@
-mod primitive_set;
-
 pub use primitive_set::TimePrimitiveSet;
 
 /// A primitive of time.

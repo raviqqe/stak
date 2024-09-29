@@ -6,7 +6,7 @@
 extern crate std;
 
 mod clock;
-mod primitive;
+mod primitive_set;
 
 pub use clock::*;
-pub use primitive::{Primitive, TimePrimitiveSet};
+pub use primitive_set::{Primitive, TimePrimitiveSet};
