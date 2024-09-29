@@ -52,7 +52,6 @@
     rib?
     rib-car
     rib-cdr
-    rib-type
     rib-tag
     rib-set-car!
     rib-set-cdr!
@@ -568,7 +567,6 @@
     (define rib? (primitive 3))
     (define rib-car (primitive 4))
     (define rib-cdr (primitive 5))
-    (define rib-type (primitive 6))
     (define rib-tag (primitive 7))
     (define rib-set-car! (primitive 8))
     (define rib-set-cdr! (primitive 9))
@@ -585,7 +583,7 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      (rib type car cdr 0))
+      (rib 0 [car cdr type))
 
     (define (apply f x . xs)
       ($$apply
@@ -601,7 +599,7 @@
       (lambda (x)
         (and
           (rib? x)
-          (eq? (rib-type x) type))))
+          (eq? (rib-tag x) type))))
 
     (define (eqv? x y)
       (boolean-or
@@ -617,7 +615,7 @@
         (and
           (rib? x)
           (rib? y)
-          (eq? (rib-type x) (rib-type y))
+          (eq? (rib-tag x) (rib-tag y))
           ; Optimize for the cases of strings and vectors where `cdr`s are integers.
           (boolean-or
             (rib? (rib-cdr x))
@@ -1365,7 +1363,6 @@
     rib?
     rib-car
     rib-cdr
-    rib-type
     rib-tag
     rib-set-car!
     rib-set-cdr!

@@ -20,7 +20,6 @@
     (define-record-type *rib*
       (rib type car cdr tag)
       rib?
-      (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
@@ -29,7 +28,7 @@
       (rib pair-type car cdr 0))
 
     (define (instance? value type)
-      (and (rib? value) (eq? (rib-type value) type)))
+      (and (rib? value) (eq? (rib-tag value) type)))
 
     (define (target-pair? value)
       (instance? value pair-type))
