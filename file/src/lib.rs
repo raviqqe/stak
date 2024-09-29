@@ -12,6 +12,3 @@ mod primitive_set;
 
 pub use file_system::*;
 pub use primitive_set::{FilePrimitiveSet, Primitive};
-
-/// A file descriptor.
-pub type FileDescriptor = usize;
