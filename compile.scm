@@ -18,14 +18,14 @@
 
   (else
     (define-record-type *rib*
-      (rib type car cdr tag)
+      (rib car cdr tag)
       rib?
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
 
     (define (cons-rib car cdr)
-      (rib pair-type car cdr 0))
+      (rib car cdr 0))
 
     (define (instance? value type)
       (and (rib? value) (eq? (rib-tag value) type)))
@@ -90,7 +90,7 @@
 ; Utility
 
 (define (code-rib tag car cdr)
-  (rib pair-type car cdr tag))
+  (rib car cdr tag))
 
 (define (call-rib arity procedure continuation)
   (code-rib (+ call-instruction arity) procedure continuation))
@@ -99,7 +99,7 @@
   (code-rib constant-instruction constant continuation))
 
 (define (data-rib type car cdr)
-  (rib type car cdr 0))
+  (rib car cdr type))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))

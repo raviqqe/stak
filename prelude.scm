@@ -583,7 +583,7 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      (rib 0 [car cdr type))
+      (rib 0 car cdr type))
 
     (define (apply f x . xs)
       ($$apply
