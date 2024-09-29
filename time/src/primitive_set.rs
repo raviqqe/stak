@@ -1,4 +1,6 @@
-use super::Primitive;
+mod primitive;
+
+pub use self::primitive::Primitive;
 use crate::Clock;
 use stak_vm::{Error, Memory, PrimitiveSet};
 

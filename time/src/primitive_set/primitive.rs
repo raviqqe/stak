@@ -1,7 +1,3 @@
-mod primitive_set;
-
-pub use primitive_set::TimePrimitiveSet;
-
 /// A primitive of time.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Primitive {
@@ -10,5 +6,5 @@ pub enum Primitive {
 }
 
 impl Primitive {
-    const CURRENT_JIFFY: usize = Self::CurrentJiffy as _;
+    pub(super) const CURRENT_JIFFY: usize = Self::CurrentJiffy as _;
 }

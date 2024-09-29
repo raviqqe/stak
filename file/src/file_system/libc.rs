@@ -1,4 +1,4 @@
-use crate::{Error, FileDescriptor, FileSystem};
+use super::{FileDescriptor, FileError, FileSystem};
 use core::ffi::c_int;
 // spell-checker: disable-next-line
 use libc::{F_OK, S_IRUSR, S_IWUSR};
@@ -13,7 +13,7 @@ impl LibcFileSystem {
         Self {}
     }
 
-    fn execute(error: Error, callback: impl Fn() -> c_int) -> Result<(), Error> {
+    fn execute(error: FileError, callback: impl Fn() -> c_int) -> Result<(), FileError> {
         if callback() == 0 {
             Ok(())
         } else {
@@ -23,7 +23,7 @@ impl LibcFileSystem {
 }
 
 impl FileSystem for LibcFileSystem {
-    type Error = Error;
+    type Error = FileError;
 
     fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
         let descriptor = unsafe {
@@ -44,12 +44,12 @@ impl FileSystem for LibcFileSystem {
         if descriptor >= 0 {
             Ok(descriptor as _)
         } else {
-            Err(Error::Open)
+            Err(FileError::Open)
         }
     }
 
     fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        Self::execute(Error::Close, || unsafe { libc::close(descriptor as _) })
+        Self::execute(FileError::Close, || unsafe { libc::close(descriptor as _) })
     }
 
     fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
@@ -58,19 +58,19 @@ impl FileSystem for LibcFileSystem {
         if unsafe { libc::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
             Ok(buffer[0])
         } else {
-            Err(Error::Read)
+            Err(FileError::Read)
         }
     }
 
     fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        Self::execute(Error::Write, || {
+        Self::execute(FileError::Write, || {
             let buffer = [byte];
             (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
         })
     }
 
     fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
-        Self::execute(Error::Delete, || unsafe {
+        Self::execute(FileError::Delete, || unsafe {
             libc::remove(path as *const _ as _)
         })
     }

@@ -5,7 +5,7 @@ use core::{
 
 /// An error.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum Error {
+pub enum FileError {
     /// An open failure.
     Open,
     /// A close failure.
@@ -20,9 +20,9 @@ pub enum Error {
     Exists,
 }
 
-impl error::Error for Error {}
+impl error::Error for FileError {}
 
-impl Display for Error {
+impl Display for FileError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Open => write!(formatter, "cannot open file"),

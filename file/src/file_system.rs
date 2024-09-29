@@ -1,5 +1,20 @@
-use crate::FileDescriptor;
+mod error;
+#[cfg(feature = "libc")]
+mod libc;
+#[cfg(feature = "std")]
+mod os;
+mod void;
+
+pub use self::error::FileError;
 use core::error::Error;
+#[cfg(feature = "libc")]
+pub use libc::LibcFileSystem;
+#[cfg(feature = "std")]
+pub use os::OsFileSystem;
+pub use void::VoidFileSystem;
+
+/// A file descriptor.
+pub type FileDescriptor = usize;
 
 /// A file system.
 pub trait FileSystem {
