@@ -560,7 +560,8 @@
     ; Primitives
 
     (define (primitive id)
-      ($$rib procedure-type '() id 0))
+      ; TODO Remove a rib type.
+      ($$rib procedure-type '() id procedure-type))
 
     (define rib $$rib)
     (define cons (primitive 1))
@@ -585,7 +586,8 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      (rib type car cdr 0))
+      ; TODO Remove a rib type.
+      (rib type car cdr type))
 
     (define (apply f x . xs)
       ($$apply

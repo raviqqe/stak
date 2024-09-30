@@ -146,7 +146,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::CONS => {
                 let [car, cdr] = memory.pop_many();
 
-                Self::rib(memory, Type::Pair as Tag, car, cdr)?;
+                // TODO Remove a rib type.
+                Self::rib(memory, Type::Pair as Tag, car, cdr.set_tag(Type::Pair as _))?;
             }
             Primitive::CLOSE => {
                 let closure = memory.pop();

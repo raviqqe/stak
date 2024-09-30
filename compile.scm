@@ -13,29 +13,23 @@
 (cond-expand
   (stak
     (define cons-rib cons)
-    (define target-pair? pair?)
     (define target-procedure? procedure?))
 
   (else
     (define-record-type *rib*
       (rib type car cdr tag)
       rib?
+      ; TODO Remove rib types.
       (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
 
     (define (cons-rib car cdr)
-      (rib pair-type car cdr 0))
-
-    (define (instance? value type)
-      (and (rib? value) (eq? (rib-type value) type)))
-
-    (define (target-pair? value)
-      (instance? value pair-type))
+      (rib pair-type car cdr pair-type))
 
     (define (target-procedure? value)
-      (instance? value procedure-type))
+      (and (rib? value) (eqv? (rib-type value) procedure-type)))
 
     (define string->uninterned-symbol string->symbol)))
 
@@ -100,7 +94,7 @@
   (code-rib constant-instruction constant continuation))
 
 (define (data-rib type car cdr)
-  (rib type car cdr 0))
+  (rib type car cdr type))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type environment (cons-rib arity code)))
@@ -967,7 +961,8 @@
 
 (define (drop? codes)
   (and
-    (target-pair? codes)
+    (rib? codes)
+    (not (null? codes))
     (eq? (rib-tag codes) set-instruction)
     (eq? (rib-car codes) 0)))
 
@@ -1213,6 +1208,7 @@
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
     (constant-rib
+      ; TODO Remove a duplicate type tag.
       type
       (build-child-constants
         context
@@ -1220,7 +1216,7 @@
         cdr
         (lambda ()
           (constant-rib
-            0
+            type
             (compile-primitive-call '$$rib (continue)))))))
 
   (let ((symbol (constant-context-constant context constant)))
@@ -1334,8 +1330,8 @@
 
 (define (nop-codes? codes)
   (and
-    (target-pair? codes)
-    (eq? (rib-tag codes) nop-instruction)))
+    (rib? codes)
+    (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1505,13 +1501,14 @@
 
 (define (build-primitive primitive continuation)
   (constant-rib
+    ; TODO Remove a duplicate type tag.
     procedure-type
     (constant-rib
       '()
       (constant-rib
         (cadr primitive)
         (constant-rib
-          0
+          procedure-type
           (compile-primitive-call
             '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))
