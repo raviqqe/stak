@@ -1501,13 +1501,14 @@
 
 (define (build-primitive primitive continuation)
   (constant-rib
+    ; TODO Remove a duplicate type tag.
     procedure-type
     (constant-rib
       '()
       (constant-rib
         (cadr primitive)
         (constant-rib
-          0
+          procedure-type
           (compile-primitive-call
             '$$rib
             (code-rib set-instruction (car primitive) continuation)))))))
