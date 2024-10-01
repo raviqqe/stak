@@ -118,7 +118,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
                 .boolean(
                     value
                         .to_cons()
-                        .map(|cons| memory.cdr(cons).tag() == r#type as Tag)
+                        .map(|cons| memory.cdr(cons).tag() == r#type as _)
                         .unwrap_or_default(),
                 )
                 .into()
@@ -142,14 +142,14 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::CONS => {
                 let [car, cdr] = memory.pop_many();
 
-                Self::rib(memory, Type::Pair as Tag, car, cdr)?;
+                Self::rib(memory, Type::Pair as _, car, cdr)?;
             }
             Primitive::CLOSE => {
                 let closure = memory.pop();
 
                 Self::rib(
                     memory,
-                    Type::Procedure as Tag,
+                    Type::Procedure as _,
                     memory.cdr_value(closure),
                     memory.stack().into(),
                 )?;
