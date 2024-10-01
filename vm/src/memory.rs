@@ -437,7 +437,7 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
+        assert_eq!(vm.cdr(vm.null()).tag(), Type::Null as Tag);
 
         let list = vm.cons(Number::from_i64(1).into(), vm.null()).unwrap();
 
