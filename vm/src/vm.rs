@@ -387,9 +387,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             .memory
             .allocate(codes, self.memory.null().into())?
             .into();
-        let stack = self.memory.cons(
+        let stack = self.memory.allocate(
             continuation,
-            self.memory.null().set_tag(StackSlot::Frame as _),
+            self.memory.null().set_tag(StackSlot::Frame as _).into(),
         )?;
         self.memory.set_stack(stack);
 
@@ -583,14 +583,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         operand: Value,
         r#return: bool,
     ) -> Result<Cons, Error> {
-        self.memory.cons(
+        self.memory.allocate(
             operand,
             (if r#return {
                 self.memory.null()
             } else {
                 self.memory.program_counter()
             })
-            .set_tag(instruction),
+            .set_tag(instruction)
+            .into(),
         )
     }
 
