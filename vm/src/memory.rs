@@ -63,9 +63,10 @@ impl<'a> Memory<'a> {
             Default::default(),
             never().set_tag(Type::Null as Tag).into(),
         )?;
+        // Do not use `never()` for `cdr` for an `equal?` procedure.
         let r#true = memory.allocate_unchecked(
             Default::default(),
-            never().set_tag(Type::Boolean as Tag).into(),
+            null.set_tag(Type::Boolean as Tag).into(),
         )?;
         memory.r#false =
             memory.allocate_unchecked(null.into(), r#true.set_tag(Type::Boolean as Tag).into())?;
