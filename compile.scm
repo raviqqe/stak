@@ -61,7 +61,7 @@
 (define primitives
   '(($$cons 1)
     ($$close 2)
-    ($$car 4)
+    ($$cdr 5)
     ($$< 11)
     ($$+ 12)
     ($$- 13)
@@ -97,10 +97,10 @@
   (rib type car cdr type))
 
 (define (make-procedure arity code environment)
-  (data-rib procedure-type environment (cons-rib arity code)))
+  (data-rib procedure-type (cons-rib arity code) environment))
 
 (define (procedure-code procedure)
-  (rib-cdr (rib-cdr procedure)))
+  (rib-cdr (rib-car procedure)))
 
 (define (bytevector->list xs)
   (let loop ((index 0) (result '()))
@@ -944,7 +944,7 @@
   (call-rib
     (compile-arity
       (case name
-        (($$close $$car $$exp $$log)
+        (($$close $$cdr $$exp $$log)
           1)
 
         (($$cons $$- $$*)
@@ -1229,11 +1229,11 @@
         ((bytevector? constant)
           (build-rib
             bytevector-type
-            (bytevector->list constant)
-            (bytevector-length constant)))
+            (bytevector-length constant)
+            (bytevector->list constant)))
 
         ((char? constant)
-          (build-rib char-type '() (char->integer constant)))
+          (build-rib char-type (char->integer constant) '()))
 
         ((and
             (number? constant)
@@ -1252,13 +1252,13 @@
         ((string? constant)
           (constant-rib
             (string->symbol constant)
-            (compile-primitive-call '$$car (continue))))
+            (compile-primitive-call '$$cdr (continue))))
 
         ((vector? constant)
           (build-rib
             vector-type
-            (vector->list constant)
-            (vector-length constant)))
+            (vector-length constant)
+            (vector->list constant)))
 
         (else
           (error "invalid constant" constant))))))
@@ -1416,7 +1416,7 @@
     (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
 
 (define (encode-procedure context procedure return target)
-  (let ((code (rib-cdr procedure)))
+  (let ((code (rib-car procedure)))
     (encode-codes
       context
       (rib-cdr code)
@@ -1503,11 +1503,14 @@
   (constant-rib
     ; TODO Remove a duplicate type tag.
     procedure-type
-    (constant-rib
-      '()
-      (constant-rib
-        (cadr primitive)
-        (constant-rib
+    (code-rib
+      constant-instruction
+      (cadr primitive)
+      (code-rib
+        constant-instruction
+        '()
+        (code-rib
+          constant-instruction
           procedure-type
           (compile-primitive-call
             '$$rib

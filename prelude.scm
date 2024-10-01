@@ -52,7 +52,6 @@
     rib?
     rib-car
     rib-cdr
-    rib-type
     rib-tag
     rib-set-car!
     rib-set-cdr!
@@ -561,7 +560,7 @@
 
     (define (primitive id)
       ; TODO Remove a rib type.
-      ($$rib procedure-type '() id procedure-type))
+      ($$rib procedure-type id '() procedure-type))
 
     (define rib $$rib)
     (define cons (primitive 1))
@@ -569,7 +568,6 @@
     (define rib? (primitive 3))
     (define rib-car (primitive 4))
     (define rib-cdr (primitive 5))
-    (define rib-type (primitive 6))
     (define rib-tag (primitive 7))
     (define rib-set-car! (primitive 8))
     (define rib-set-cdr! (primitive 9))
@@ -586,8 +584,7 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      ; TODO Remove a rib type.
-      (rib type car cdr type))
+      (rib 0 car cdr type))
 
     (define (apply f x . xs)
       ($$apply
@@ -603,7 +600,7 @@
       (lambda (x)
         (and
           (rib? x)
-          (eq? (rib-type x) type))))
+          (eq? (rib-tag x) type))))
 
     (define (eqv? x y)
       (boolean-or
@@ -619,11 +616,11 @@
         (and
           (rib? x)
           (rib? y)
-          (eq? (rib-type x) (rib-type y))
-          ; Optimize for the cases of strings and vectors where `cdr`s are integers.
+          (eq? (rib-tag x) (rib-tag y))
+          ; Optimize for the cases of strings and vectors where `car`s are integers.
           (boolean-or
-            (rib? (rib-cdr x))
-            (eq? (rib-cdr x) (rib-cdr y)))
+            (rib? (rib-car x))
+            (eq? (rib-car x) (rib-car y)))
           (equal? (rib-car x) (rib-car y))
           (equal? (rib-cdr x) (rib-cdr y)))))
 
@@ -759,9 +756,9 @@
     (define char? (instance? char-type))
 
     (define (integer->char x)
-      (data-rib char-type '() x))
+      (data-rib char-type x '()))
 
-    (define char->integer rib-cdr)
+    (define char->integer rib-car)
 
     (define (char-compare compare)
       (lambda xs (apply compare (map char->integer xs))))
@@ -961,15 +958,15 @@
 
     (define bytevector? (instance? bytevector-type))
 
-    (define bytevector-length rib-cdr)
+    (define bytevector-length rib-car)
 
     (define (bytevector-u8-ref vector index)
       (list-ref (rib-car vector) index))
 
     (define (list->bytevector x)
-      (data-rib bytevector-type x (length x)))
+      (data-rib bytevector-type (length x) x))
 
-    (define bytevector->list rib-car)
+    (define bytevector->list rib-cdr)
 
     ;; Vector
 
@@ -981,7 +978,7 @@
     (define (make-vector length . rest)
       (list->vector (apply make-list (cons length rest))))
 
-    (define vector-length rib-cdr)
+    (define vector-length rib-car)
 
     (define (vector-ref vector index)
       (list-ref (vector->list vector) index))
@@ -990,23 +987,23 @@
       (list-set! (vector->list vector) index value))
 
     (define (list->vector x)
-      (data-rib vector-type x (length x)))
+      (data-rib vector-type (length x) x))
 
-    (define vector->list rib-car)
+    (define vector->list rib-cdr)
 
     ;; String
 
     (define string? (instance? string-type))
 
     (define (string-rib codes length)
-      (data-rib string-type codes length))
+      (data-rib string-type length codes))
 
     (define (code-points->string x)
       (string-rib x (length x)))
 
-    (define string->code-points rib-car)
+    (define string->code-points rib-cdr)
 
-    (define string-length rib-cdr)
+    (define string-length rib-car)
 
     (define (list->string x)
       (string-rib (map char->integer x) (length x)))
@@ -1164,7 +1161,7 @@
     (define symbol->string rib-car)
 
     (define (string->uninterned-symbol x)
-      (data-rib symbol-type x #f))
+      (data-rib symbol-type #f x))
 
     ;; Record
 
@@ -1199,7 +1196,7 @@
 
     (define (record-constructor type)
       (lambda xs
-        (data-rib record-type xs type)))
+        (data-rib record-type type xs)))
 
     (define (record-predicate type)
       (lambda (x)
@@ -1367,7 +1364,6 @@
     rib?
     rib-car
     rib-cdr
-    rib-type
     rib-tag
     rib-set-car!
     rib-set-cdr!
@@ -1580,9 +1576,9 @@
 
     ; Symbol table
 
-    (define symbols (rib-car $$rib))
+    (define symbols (rib-cdr $$rib))
     ; Allow garbage collection for a symbol table.
-    (rib-set-car! $$rib #f)
+    (rib-set-cdr! $$rib #f)
 
     (define (string->symbol x)
       (cond
@@ -1601,14 +1597,14 @@
     (define dummy-procedure (lambda () #f))
 
     (define (call/cc receiver)
-      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-car (close dummy-procedure))))))
+      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-procedure))))))
             (point current-point))
         (receiver
           (lambda (argument)
             (travel-to-point! current-point point)
             (set-current-point! point)
             (rib-set-car!
-              (rib-cdr (rib-car (close dummy-procedure))) ; frame
+              (rib-cdr (rib-cdr (close dummy-procedure))) ; frame
               continuation)
             argument))))
 
@@ -2400,7 +2396,7 @@
 
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
-        ((data-rib procedure-type '() (cons 0 '())))
+        ((data-rib procedure-type (cons 0 '()) '()))
         ($halt)))
 
     (define (exit . rest)
@@ -2988,7 +2984,7 @@
           (code-rib constant-instruction constant continuation))
 
         (define (make-procedure arity code environment)
-          (data-rib procedure-type environment (cons arity code)))
+          (data-rib procedure-type (cons arity code) environment))
 
         (define (compile-arity argument-count variadic)
           (+
@@ -3018,7 +3014,7 @@
           (call-rib
             (compile-arity
               (case name
-                (($$close $$car)
+                (($$close)
                   1)
 
                 (($$cons $$-)

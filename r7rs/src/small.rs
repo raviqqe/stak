@@ -82,7 +82,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
     }
 
     fn rib(memory: &mut Memory, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
-        let rib = memory.allocate(car.set_tag(r#type), cdr)?;
+        let rib = memory.allocate(car, cdr.set_tag(r#type))?;
         memory.push(rib.into())?;
         Ok(())
     }
@@ -146,8 +146,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::CONS => {
                 let [car, cdr] = memory.pop_many();
 
-                // TODO Remove a rib type.
-                Self::rib(memory, Type::Pair as Tag, car, cdr.set_tag(Type::Pair as _))?;
+                Self::rib(memory, Type::Pair as Tag, car, cdr)?;
             }
             Primitive::CLOSE => {
                 let closure = memory.pop();
@@ -155,8 +154,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::rib(
                     memory,
                     Type::Procedure as Tag,
-                    memory.stack().into(),
                     memory.cdr_value(closure),
+                    memory.stack().into(),
                 )?;
             }
             Primitive::IS_RIB => Self::operate_top(memory, |memory, value| {
