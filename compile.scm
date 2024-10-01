@@ -29,7 +29,7 @@
       (rib pair-type car cdr pair-type))
 
     (define (target-procedure? value)
-      (and (rib? value) (eqv? (rib-type value) procedure-type)))
+      (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
     (define string->uninterned-symbol string->symbol)))
 
