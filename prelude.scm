@@ -584,7 +584,8 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      (rib 0 car cdr type))
+      ; TODO Remove a rib type.
+      (rib type car cdr type))
 
     (define (apply f x . xs)
       ($$apply
