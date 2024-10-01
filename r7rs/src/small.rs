@@ -81,8 +81,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    fn rib(memory: &mut Memory, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
-        let rib = memory.allocate(car, cdr.set_tag(r#type))?;
+    // TODO Move a tag argument to the last.
+    fn rib(memory: &mut Memory, tag: Tag, car: Value, cdr: Value) -> Result<(), Error> {
+        let rib = memory.allocate(car, cdr.set_tag(tag))?;
         memory.push(rib.into())?;
         Ok(())
     }
