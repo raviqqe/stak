@@ -468,9 +468,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut current = self.memory.register();
 
         while self.memory.cdr(current) != self.memory.null().into() {
-            if self.memory.cdr_value(
+            if self.memory.car_value(
                 self.memory
-                    .car_value(self.memory.car_value(self.memory.cdr(current))),
+                    .cdr_value(self.memory.car_value(self.memory.cdr(current))),
             ) == Number::default().into()
             {
                 self.memory
