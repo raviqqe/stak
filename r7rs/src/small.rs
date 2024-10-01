@@ -150,7 +150,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::rib(
                     memory,
                     Type::Procedure as _,
-                    memory.cdr_value(closure),
+                    memory.car_value(closure),
                     memory.stack().into(),
                 )?;
             }
