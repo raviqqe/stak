@@ -106,7 +106,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             field(vm, value)
                 .to_cons()
                 .map(|cons| Number::new(cons.tag() as _))
-                .unwrap_or(Number::from_i64(Type::default() as _))
+                .unwrap_or(Number::default())
                 .into()
         })
     }
@@ -117,7 +117,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
                 .boolean(
                     value
                         .to_cons()
-                        .map(|cons| memory.car(cons).tag() == r#type as Tag)
+                        .map(|cons| memory.cdr(cons).tag() == r#type as Tag)
                         .unwrap_or_default(),
                 )
                 .into()
@@ -133,14 +133,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
-                let [r#type, car, cdr, tag] = memory.pop_many();
+                let [_, car, cdr, tag] = memory.pop_many();
 
-                Self::rib(
-                    memory,
-                    r#type.assume_number().to_i64() as Tag,
-                    car,
-                    cdr.set_tag(tag.assume_number().to_i64() as Tag),
-                )?;
+                Self::rib(memory, tag.assume_number().to_i64() as _, car, cdr)?;
             }
             // Optimize a cons.
             Primitive::CONS => {

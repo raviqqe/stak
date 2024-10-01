@@ -166,7 +166,7 @@ impl<'a> Memory<'a> {
 
     /// Allocates a cons.
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
-        self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
+        self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
     /// Allocates a cons on heap.

@@ -444,7 +444,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             rib,
         ] {
             self.memory
-                .set_cdr_value(self.memory.car(cons), value.into());
+                .set_car_value(self.memory.car(cons), value.into());
             cons = self.memory.cdr(cons).assume_cons();
         }
 
