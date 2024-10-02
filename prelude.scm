@@ -1366,6 +1366,7 @@
     rib?
     rib-car
     rib-cdr
+    rib3
     rib-tag
     rib-set-car!
     rib-set-cdr!
