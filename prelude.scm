@@ -1002,9 +1002,9 @@
     (define (code-points->string x)
       (string-rib x (length x)))
 
-    (define string->code-points rib-cdr)
-
     (define string-length rib-car)
+
+    (define string->code-points rib-cdr)
 
     (define (list->string x)
       (string-rib (map char->integer x) (length x)))
