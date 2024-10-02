@@ -446,14 +446,14 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.2.68"
+version = "0.2.69"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-build"
-version = "0.1.22"
+version = "0.1.23"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -462,7 +462,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.62"
+version = "0.2.63"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -470,14 +470,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.67"
+version = "0.1.68"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.67"
+version = "0.1.68"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -491,11 +491,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.59"
+version = "0.1.60"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.68"
+version = "0.1.69"
 dependencies = [
  "clap",
  "main_error",
@@ -504,7 +504,7 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.63"
+version = "0.2.64"
 dependencies = [
  "libc",
  "stak-vm",
@@ -512,7 +512,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.4.21"
+version = "0.4.22"
 dependencies = [
  "heapless",
  "libc",
@@ -522,7 +522,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.65"
+version = "0.1.66"
 dependencies = [
  "clap",
  "main_error",
@@ -537,7 +537,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.64"
+version = "0.1.65"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -554,7 +554,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.40"
+version = "0.1.41"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -563,7 +563,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.1.41"
+version = "0.1.42"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
@@ -578,7 +578,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.1.41"
+version = "0.1.42"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -589,21 +589,21 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.1.41"
+version = "0.1.42"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.21"
+version = "0.2.22"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-profile"
-version = "0.1.33"
+version = "0.1.34"
 dependencies = [
  "clap",
  "main_error",
@@ -619,7 +619,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.1.32"
+version = "0.1.33"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -628,7 +628,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.7.3"
+version = "0.7.4"
 dependencies = [
  "libm",
  "stak-device",
@@ -640,14 +640,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.1.29"
+version = "0.1.30"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.1.65"
+version = "0.1.66"
 dependencies = [
  "clap",
  "libc",
@@ -665,7 +665,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "libc",
  "stak-vm",
@@ -673,14 +673,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.39"
+version = "0.1.40"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.5.21"
+version = "0.5.22"
 dependencies = [
  "cfg-exif",
  "insta",
@@ -696,7 +696,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.2.42"
+version = "0.2.43"
 dependencies = [
  "stak-code",
  "stak-compiler",
