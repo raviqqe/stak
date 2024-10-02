@@ -130,7 +130,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn get(&mut self) -> Result<(), T::Error> {
-        let value = self.resolve_operand(self.operand());
+        let value = self.memory.car(self.operand_cons());
 
         trace!("operand", value);
 
@@ -141,18 +141,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn set(&mut self) {
-        match self.operand().to_typed() {
-            TypedValue::Cons(cons) => {
-                let value = self.memory.pop();
-                self.memory.set_cdr(cons, value);
-            }
-            TypedValue::Number(index) => {
-                let cons = self.memory.tail(self.memory.stack(), index);
-                let value = self.memory.pop();
-                self.memory.set_car(cons, value)
-            }
-        }
+        let operand = self.operand_cons();
+        let value = self.memory.pop();
 
+        self.memory.set_car(operand, value);
         self.advance_program_counter();
     }
 
@@ -300,27 +292,29 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.car(self.memory.program_counter())
     }
 
-    fn resolve_operand(&self, operand: Value) -> Value {
+    fn operand_cons(&self) -> Cons {
+        self.resolve_variable(self.operand())
+    }
+
+    fn resolve_variable(&self, operand: Value) -> Cons {
         match operand.to_typed() {
-            TypedValue::Cons(cons) => self.memory.cdr(cons),
-            TypedValue::Number(index) => self
-                .memory
-                .car(self.memory.tail(self.memory.stack(), index)),
+            TypedValue::Cons(cons) => cons,
+            TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index),
         }
     }
 
-    // (environment . code)
+    // (code . environment)
     fn procedure(&self) -> Cons {
-        self.resolve_operand(self.operand()).assume_cons()
-    }
-
-    fn environment(&self, procedure: Cons) -> Cons {
-        self.memory.car(procedure).assume_cons()
+        self.memory.car(self.operand_cons()).assume_cons()
     }
 
     // (parameter-count . instruction-list) | primitive-id
     fn code(&self, procedure: Cons) -> Value {
-        self.memory.cdr(procedure)
+        self.memory.car(procedure)
+    }
+
+    fn environment(&self, procedure: Cons) -> Cons {
+        self.memory.cdr(procedure).assume_cons()
     }
 
     // (program-counter . stack)
@@ -393,9 +387,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             .memory
             .allocate(codes, self.memory.null().into())?
             .into();
-        let stack = self.memory.cons(
+        let stack = self.memory.allocate(
             continuation,
-            self.memory.null().set_tag(StackSlot::Frame as _),
+            self.memory.null().set_tag(StackSlot::Frame as _).into(),
         )?;
         self.memory.set_stack(stack);
 
@@ -437,8 +431,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         } {}
 
         let rib = self.memory.allocate(
-            never().set_tag(Type::Procedure as Tag).into(),
             Number::default().into(),
+            never().set_tag(Type::Procedure as Tag).into(),
         )?;
 
         let mut cons = self.memory.stack();
@@ -450,7 +444,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             rib,
         ] {
             self.memory
-                .set_cdr_value(self.memory.car(cons), value.into());
+                .set_car_value(self.memory.car(cons), value.into());
             cons = self.memory.cdr(cons).assume_cons();
         }
 
@@ -474,9 +468,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut current = self.memory.register();
 
         while self.memory.cdr(current) != self.memory.null().into() {
-            if self.memory.cdr_value(
+            if self.memory.car_value(
                 self.memory
-                    .car_value(self.memory.car_value(self.memory.cdr(current))),
+                    .cdr_value(self.memory.car_value(self.memory.cdr(current))),
             ) == Number::default().into()
             {
                 self.memory
@@ -488,8 +482,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         // Set a rib primitive's environment to a symbol table for access from a base
         // library.
-        self.memory.set_car_value(
-            self.memory.cdr(self.memory.stack()),
+        self.memory.set_cdr_value(
+            self.memory.car(self.memory.stack()),
             self.memory.cdr(self.memory.register()),
         );
 
@@ -498,10 +492,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), Error> {
         let symbol = self.memory.allocate(
+            value,
             name.unwrap_or(self.memory.register())
                 .set_tag(Type::Symbol as Tag)
                 .into(),
-            value,
         )?;
 
         self.memory.push(symbol.into())
@@ -509,8 +503,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
         self.memory.allocate(
-            name.set_tag(Type::String as Tag).into(),
             Number::from_i64(length).into(),
+            name.set_tag(Type::String as Tag).into(),
         )
     }
 
@@ -551,7 +545,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     )?;
                     let procedure = self
                         .memory
-                        .allocate(never().set_tag(Type::Procedure as Tag).into(), code.into())?;
+                        .allocate(code.into(), never().set_tag(Type::Procedure as Tag).into())?;
 
                     let continuation = self.memory.pop();
                     self.memory.set_program_counter(continuation.assume_cons());
@@ -589,14 +583,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         operand: Value,
         r#return: bool,
     ) -> Result<Cons, Error> {
-        self.memory.cons(
+        self.memory.allocate(
             operand,
             (if r#return {
                 self.memory.null()
             } else {
                 self.memory.program_counter()
             })
-            .set_tag(instruction),
+            .set_tag(instruction)
+            .into(),
         )
     }
 

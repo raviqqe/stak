@@ -81,8 +81,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    fn rib(memory: &mut Memory, r#type: Tag, car: Value, cdr: Value) -> Result<(), Error> {
-        let rib = memory.allocate(car.set_tag(r#type), cdr)?;
+    fn rib(memory: &mut Memory, car: Value, cdr: Value, tag: Tag) -> Result<(), Error> {
+        let rib = memory.allocate(car, cdr.set_tag(tag))?;
         memory.push(rib.into())?;
         Ok(())
     }
@@ -106,7 +106,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             field(vm, value)
                 .to_cons()
                 .map(|cons| Number::new(cons.tag() as _))
-                .unwrap_or(Number::from_i64(Type::default() as _))
+                .unwrap_or(Number::default())
                 .into()
         })
     }
@@ -117,7 +117,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
                 .boolean(
                     value
                         .to_cons()
-                        .map(|cons| memory.car(cons).tag() == r#type as Tag)
+                        .map(|cons| memory.cdr(cons).tag() == r#type as _)
                         .unwrap_or_default(),
                 )
                 .into()
@@ -133,30 +133,25 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
-                let [r#type, car, cdr, tag] = memory.pop_many();
+                // TODO Remove a rib type.
+                let [_, car, cdr, tag] = memory.pop_many();
 
-                Self::rib(
-                    memory,
-                    r#type.assume_number().to_i64() as Tag,
-                    car,
-                    cdr.set_tag(tag.assume_number().to_i64() as Tag),
-                )?;
+                Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
             }
             // Optimize a cons.
             Primitive::CONS => {
                 let [car, cdr] = memory.pop_many();
 
-                // TODO Remove a rib type.
-                Self::rib(memory, Type::Pair as Tag, car, cdr.set_tag(Type::Pair as _))?;
+                Self::rib(memory, car, cdr, Type::Pair as _)?;
             }
             Primitive::CLOSE => {
                 let closure = memory.pop();
 
                 Self::rib(
                     memory,
-                    Type::Procedure as Tag,
+                    memory.car_value(closure),
                     memory.stack().into(),
-                    memory.cdr_value(closure),
+                    Type::Procedure as _,
                 )?;
             }
             Primitive::IS_RIB => Self::operate_top(memory, |memory, value| {
@@ -164,7 +159,12 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             })?,
             Primitive::CAR => Self::operate_top(memory, Memory::car_value)?,
             Primitive::CDR => Self::operate_top(memory, Memory::cdr_value)?,
-            Primitive::TYPE => Self::tag(memory, Memory::car_value)?,
+            // TODO Remove a rib type primitive.
+            Primitive::RIB3 => {
+                let [car, cdr, tag] = memory.pop_many();
+
+                Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
+            }
             Primitive::TAG => Self::tag(memory, Memory::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,
@@ -186,7 +186,10 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             }
             Primitive::HALT => return Err(Error::Halt),
             // Optimize type checks.
-            Primitive::NULL => Self::check_type(memory, Type::Null)?,
+            // TODO Use `Self::check_type()`.
+            Primitive::NULL => Self::operate_top(memory, |memory, value| {
+                memory.boolean(value == memory.null().into()).into()
+            })?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?

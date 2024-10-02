@@ -60,16 +60,16 @@ impl<'a> Memory<'a> {
         };
 
         let null = memory.allocate_unchecked(
+            Default::default(),
             never().set_tag(Type::Null as Tag).into(),
-            Default::default(),
         )?;
-        // Do not use `never()` for `car` for an `equal?` procedure.
+        // Do not use `never()` for `cdr` for an `equal?` procedure.
         let r#true = memory.allocate_unchecked(
-            null.set_tag(Type::Boolean as Tag).into(),
             Default::default(),
+            null.set_tag(Type::Boolean as Tag).into(),
         )?;
         memory.r#false =
-            memory.allocate_unchecked(r#true.set_tag(Type::Boolean as Tag).into(), null.into())?;
+            memory.allocate_unchecked(null.into(), r#true.set_tag(Type::Boolean as Tag).into())?;
 
         Ok(memory)
     }
@@ -107,7 +107,7 @@ impl<'a> Memory<'a> {
     /// Returns a boolean value.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.car(self.r#false).assume_cons()
+            self.cdr(self.r#false).assume_cons()
         } else {
             self.r#false
         }
@@ -115,7 +115,7 @@ impl<'a> Memory<'a> {
 
     /// Returns a null value.
     pub fn null(&self) -> Cons {
-        self.cdr(self.r#false).assume_cons()
+        self.car(self.r#false).assume_cons()
     }
 
     /// Pushes a value to a stack.
@@ -167,7 +167,7 @@ impl<'a> Memory<'a> {
 
     /// Allocates a cons.
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
-        self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
+        self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
     /// Allocates a cons on heap.
@@ -357,16 +357,16 @@ impl<'a> Memory<'a> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if cons == never() {
             never()
-        } else if self.unchecked_cdr(cons) == never().into() {
+        } else if self.unchecked_car(cons) == never().into() {
             // Get a forward pointer.
-            self.unchecked_car(cons).assume_cons()
+            self.unchecked_cdr(cons).assume_cons()
         } else {
             let copy =
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, copy.into());
-            self.set_unchecked_cdr(cons, never().into());
+            self.set_unchecked_car(cons, never().into());
+            self.set_unchecked_cdr(cons, copy.into());
 
             copy
         }
@@ -438,7 +438,7 @@ mod tests {
         let mut heap = create_heap();
         let mut vm = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
+        assert_eq!(vm.cdr(vm.null()).tag(), Type::Null as Tag);
 
         let list = vm.cons(Number::from_i64(1).into(), vm.null()).unwrap();
 
