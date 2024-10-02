@@ -181,7 +181,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             }
             Primitive::HALT => return Err(Error::Halt),
             // Optimize type checks.
-            Primitive::NULL => Self::check_type(memory, Type::Null)?,
+            Primitive::NULL => Self::operate_top(memory, |memory, value| {
+                memory.boolean(value == memory.null().into()).into()
+            })?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
