@@ -81,8 +81,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
-    // TODO Move a tag argument to the last.
-    fn rib(memory: &mut Memory, tag: Tag, car: Value, cdr: Value) -> Result<(), Error> {
+    fn rib(memory: &mut Memory, car: Value, cdr: Value, tag: Tag) -> Result<(), Error> {
         let rib = memory.allocate(car, cdr.set_tag(tag))?;
         memory.push(rib.into())?;
         Ok(())
@@ -137,22 +136,22 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 // TODO Remove a rib type.
                 let [_, car, cdr, tag] = memory.pop_many();
 
-                Self::rib(memory, tag.assume_number().to_i64() as _, car, cdr)?;
+                Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
             }
             // Optimize a cons.
             Primitive::CONS => {
                 let [car, cdr] = memory.pop_many();
 
-                Self::rib(memory, Type::Pair as _, car, cdr)?;
+                Self::rib(memory, car, cdr, Type::Pair as _)?;
             }
             Primitive::CLOSE => {
                 let closure = memory.pop();
 
                 Self::rib(
                     memory,
-                    Type::Procedure as _,
                     memory.car_value(closure),
                     memory.stack().into(),
+                    Type::Procedure as _,
                 )?;
             }
             Primitive::IS_RIB => Self::operate_top(memory, |memory, value| {
@@ -161,7 +160,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::CAR => Self::operate_top(memory, Memory::car_value)?,
             Primitive::CDR => Self::operate_top(memory, Memory::cdr_value)?,
             // TODO Remove a rib type primitive.
-            Primitive::TYPE => Self::tag(memory, Memory::car_value)?,
+            Primitive::RIB3 => {
+                let [car, cdr, tag] = memory.pop_many();
+
+                Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
+            }
             Primitive::TAG => Self::tag(memory, Memory::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,

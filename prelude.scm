@@ -52,6 +52,7 @@
     rib?
     rib-car
     rib-cdr
+    rib3
     rib-tag
     rib-set-car!
     rib-set-cdr!
@@ -568,6 +569,7 @@
     (define rib? (primitive 3))
     (define rib-car (primitive 4))
     (define rib-cdr (primitive 5))
+    (define rib3 (primitive 6))
     (define rib-tag (primitive 7))
     (define rib-set-car! (primitive 8))
     (define rib-set-cdr! (primitive 9))
@@ -584,8 +586,7 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      ; TODO Remove a rib type.
-      (rib type car cdr type))
+      (rib3 car cdr type))
 
     (define (apply f x . xs)
       ($$apply
@@ -2499,7 +2500,7 @@
     (shake (scheme base))
     (shake (scheme cxr))
     (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
+    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib rib3))
 
   (begin
     (define eval
@@ -2976,7 +2977,7 @@
         (define call-instruction 5)
 
         (define (code-rib tag car cdr)
-          (rib pair-type car cdr tag))
+          (rib3 car cdr tag))
 
         (define (call-rib arity procedure continuation)
           (code-rib (+ call-instruction arity) procedure continuation))
