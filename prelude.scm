@@ -1159,7 +1159,7 @@
 
     (define symbol? (instance? symbol-type))
 
-    (define symbol->string rib-car)
+    (define symbol->string rib-cdr)
 
     (define (string->uninterned-symbol x)
       (data-rib symbol-type #f x))
@@ -1203,17 +1203,17 @@
       (lambda (x)
         (and
           (record? x)
-          (eq? (rib-cdr x) type))))
+          (eq? (rib-car x) type))))
 
     (define (record-getter type field)
       (let ((index (field-index type field)))
         (lambda (record)
-          (list-ref (rib-car record) index))))
+          (list-ref (rib-cdr record) index))))
 
     (define (record-setter type field)
       (let ((index (field-index type field)))
         (lambda (record value)
-          (list-set! (rib-car record) index value))))
+          (list-set! (rib-cdr record) index value))))
 
     (define (field-index type field)
       (memv-position field (cdr type)))
