@@ -3032,7 +3032,8 @@
 
         (define (drop? codes)
           (and
-            (pair? codes)
+            (rib? codes)
+            (not (null? codes))
             (eq? (rib-tag codes) set-instruction)
             (eq? (rib-car codes) 0)))
 
