@@ -1,7 +1,7 @@
 [package]
 name = "stak-wasm"
 description = "Stak Scheme VM in WebAssembly"
-version = "0.2.42"
+version = "0.2.43"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -12,16 +12,16 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stak-code = { version = "0.2.62", path = "../code", features = ["alloc"] }
-stak-compiler = { version = "0.1.67", path = "../compiler" }
-stak-configuration = { version = "0.1.59", path = "../configuration" }
-stak-device = { version = "0.2.63", path = "../device", features = ["std"] }
-stak-file = { version = "0.4.21", path = "../file" }
-stak-r7rs = { version = "0.7.3", path = "../r7rs" }
-stak-process-context = { version = "0.2.21", path = "../process_context" }
-stak-vm = { version = "0.5.21", path = "../vm" }
+stak-code = { version = "0.2.63", path = "../code", features = ["alloc"] }
+stak-compiler = { version = "0.1.68", path = "../compiler" }
+stak-configuration = { version = "0.1.60", path = "../configuration" }
+stak-device = { version = "0.2.64", path = "../device", features = ["std"] }
+stak-file = { version = "0.4.22", path = "../file" }
+stak-r7rs = { version = "0.7.4", path = "../r7rs" }
+stak-process-context = { version = "0.2.22", path = "../process_context" }
+stak-vm = { version = "0.5.22", path = "../vm" }
 wasm-bindgen = "0.2.84"
-stak-time = { version = "0.1.4", path = "../time" }
+stak-time = { version = "0.1.5", path = "../time" }
 
 [dev-dependencies]
 stak-configuration = { path = "../configuration" }
