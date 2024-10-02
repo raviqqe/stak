@@ -961,13 +961,13 @@
 
     (define bytevector-length rib-car)
 
-    (define (bytevector-u8-ref vector index)
-      (list-ref (bytevector->list vector) index))
+    (define bytevector->list rib-cdr)
 
     (define (list->bytevector x)
       (data-rib bytevector-type (length x) x))
 
-    (define bytevector->list rib-cdr)
+    (define (bytevector-u8-ref vector index)
+      (list-ref (bytevector->list vector) index))
 
     ;; Vector
 
