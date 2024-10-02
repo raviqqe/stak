@@ -981,6 +981,8 @@
 
     (define vector-length rib-car)
 
+    (define vector->list rib-cdr)
+
     (define (vector-ref vector index)
       (list-ref (vector->list vector) index))
 
@@ -989,8 +991,6 @@
 
     (define (list->vector x)
       (data-rib vector-type (length x) x))
-
-    (define vector->list rib-cdr)
 
     ;; String
 
