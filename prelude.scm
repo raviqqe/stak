@@ -2978,7 +2978,7 @@
         (define call-instruction 5)
 
         (define (code-rib tag car cdr)
-          (rib3 car cdr tag))
+          (rib car cdr tag))
 
         (define (call-rib arity procedure continuation)
           (code-rib (+ call-instruction arity) procedure continuation))
