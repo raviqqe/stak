@@ -560,7 +560,6 @@
     ; Primitives
 
     (define (primitive id)
-      ; TODO Remove a rib type.
       ($$rib id '() procedure-type))
 
     (define rib $$rib)
