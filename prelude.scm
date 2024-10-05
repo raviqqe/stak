@@ -560,8 +560,7 @@
     ; Primitives
 
     (define (primitive id)
-      ; TODO Remove a rib type.
-      ($$rib procedure-type id '() procedure-type))
+      ($$rib id '() procedure-type))
 
     (define rib $$rib)
     (define cons (primitive 1))
@@ -586,7 +585,7 @@
     (define pair? (primitive 21))
 
     (define (data-rib type car cdr)
-      (rib3 car cdr type))
+      (rib car cdr type))
 
     (define (apply f x . xs)
       ($$apply
@@ -2501,7 +2500,7 @@
     (shake (scheme base))
     (shake (scheme cxr))
     (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib3))
+    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
   (begin
     (define eval
@@ -2978,7 +2977,7 @@
         (define call-instruction 5)
 
         (define (code-rib tag car cdr)
-          (rib3 car cdr tag))
+          (rib car cdr tag))
 
         (define (call-rib arity procedure continuation)
           (code-rib (+ call-instruction arity) procedure continuation))
@@ -3024,7 +3023,7 @@
                   2)
 
                 (($$rib)
-                  4)
+                  3)
 
                 (else
                   (error "unknown primitive" name)))

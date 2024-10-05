@@ -133,8 +133,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
-                // TODO Remove a rib type.
-                let [_, car, cdr, tag] = memory.pop_many();
+                let [car, cdr, tag] = memory.pop_many();
 
                 Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
             }
@@ -159,7 +158,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             })?,
             Primitive::CAR => Self::operate_top(memory, Memory::car_value)?,
             Primitive::CDR => Self::operate_top(memory, Memory::cdr_value)?,
-            // TODO Remove a rib type primitive.
+            // TODO Remove a rib3 primitive.
             Primitive::RIB3 => {
                 let [car, cdr, tag] = memory.pop_many();
 

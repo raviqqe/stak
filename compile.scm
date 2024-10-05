@@ -12,21 +12,20 @@
 
 (cond-expand
   (stak
+    (define rib rib3)
     (define cons-rib cons)
     (define target-procedure? procedure?))
 
   (else
     (define-record-type *rib*
-      (rib type car cdr tag)
+      (rib car cdr tag)
       rib?
-      ; TODO Remove rib types.
-      (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
 
     (define (cons-rib car cdr)
-      (rib pair-type car cdr pair-type))
+      (rib car cdr pair-type))
 
     (define (target-procedure? value)
       (and (rib? value) (eqv? (rib-tag value) procedure-type)))
@@ -85,7 +84,7 @@
 ; Utility
 
 (define (code-rib tag car cdr)
-  (rib pair-type car cdr tag))
+  (rib car cdr tag))
 
 (define (call-rib arity procedure continuation)
   (code-rib (+ call-instruction arity) procedure continuation))
@@ -94,7 +93,7 @@
   (code-rib constant-instruction constant continuation))
 
 (define (data-rib type car cdr)
-  (rib type car cdr type))
+  (rib car cdr type))
 
 (define (make-procedure arity code environment)
   (data-rib procedure-type (cons-rib arity code) environment))
@@ -951,7 +950,7 @@
           2)
 
         (($$rib)
-          4)
+          3)
 
         (else
           (error "unknown primitive" name)))
@@ -1207,17 +1206,14 @@
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
-    (constant-rib
-      ; TODO Remove a duplicate type tag.
-      type
-      (build-child-constants
-        context
-        car
-        cdr
-        (lambda ()
-          (constant-rib
-            type
-            (compile-primitive-call '$$rib (continue)))))))
+    (build-child-constants
+      context
+      car
+      cdr
+      (lambda ()
+        (constant-rib
+          type
+          (compile-primitive-call '$$rib (continue))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
@@ -1500,21 +1496,18 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (constant-rib
-    ; TODO Remove a duplicate type tag.
-    procedure-type
+  (code-rib
+    constant-instruction
+    (cadr primitive)
     (code-rib
       constant-instruction
-      (cadr primitive)
+      '()
       (code-rib
         constant-instruction
-        '()
-        (code-rib
-          constant-instruction
-          procedure-type
-          (compile-primitive-call
-            '$$rib
-            (code-rib set-instruction (car primitive) continuation)))))))
+        procedure-type
+        (compile-primitive-call
+          '$$rib
+          (code-rib set-instruction (car primitive) continuation))))))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)
