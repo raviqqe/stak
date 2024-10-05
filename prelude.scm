@@ -52,7 +52,6 @@
     rib?
     rib-car
     rib-cdr
-    rib3
     rib-tag
     rib-set-car!
     rib-set-cdr!
@@ -568,7 +567,6 @@
     (define rib? (primitive 3))
     (define rib-car (primitive 4))
     (define rib-cdr (primitive 5))
-    (define rib3 (primitive 6))
     (define rib-tag (primitive 7))
     (define rib-set-car! (primitive 8))
     (define rib-set-cdr! (primitive 9))
@@ -1365,7 +1363,6 @@
     rib?
     rib-car
     rib-cdr
-    rib3
     rib-tag
     rib-set-car!
     rib-set-cdr!
