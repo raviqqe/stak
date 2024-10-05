@@ -158,7 +158,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             })?,
             Primitive::CAR => Self::operate_top(memory, Memory::car_value)?,
             Primitive::CDR => Self::operate_top(memory, Memory::cdr_value)?,
-            // TODO Remove a rib type primitive.
+            // TODO Remove a rib3 primitive.
             Primitive::RIB3 => {
                 let [car, cdr, tag] = memory.pop_many();
 
