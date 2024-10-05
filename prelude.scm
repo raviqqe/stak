@@ -2501,7 +2501,7 @@
     (shake (scheme base))
     (shake (scheme cxr))
     (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib3))
+    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
   (begin
     (define eval
