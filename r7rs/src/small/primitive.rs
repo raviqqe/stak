@@ -43,7 +43,6 @@ impl Primitive {
     pub const IS_RIB: usize = Self::IsRib as _;
     pub const CAR: usize = Self::Car as _;
     pub const CDR: usize = Self::Cdr as _;
-    pub const RIB3: usize = Self::Rib3 as _;
     pub const TAG: usize = Self::Tag as _;
     pub const SET_CAR: usize = Self::SetCar as _;
     pub const SET_CDR: usize = Self::SetCdr as _;
