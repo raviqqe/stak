@@ -3024,7 +3024,7 @@
                   2)
 
                 (($$rib)
-                  4)
+                  3)
 
                 (else
                   (error "unknown primitive" name)))
