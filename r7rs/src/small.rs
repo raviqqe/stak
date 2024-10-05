@@ -106,7 +106,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             field(vm, value)
                 .to_cons()
                 .map(|cons| Number::new(cons.tag() as _))
-                .unwrap_or(Number::default())
+                .unwrap_or_default()
                 .into()
         })
     }
