@@ -62,7 +62,6 @@ mod display {
 
     struct DisplayInstruction<'a> {
         instruction: &'a Instruction,
-        #[allow(unused)]
         indent: usize,
     }
 

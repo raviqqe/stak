@@ -6,6 +6,7 @@ pub(super) enum Primitive {
     IsRib,
     Car,
     Cdr,
+    #[expect(dead_code)]
     Rib3, // deprecated
     Tag,
     SetCar,
