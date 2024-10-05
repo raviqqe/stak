@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-vm = { version = "0.5.23", path = "../vm" }
+stak-vm = { version = "0.6.0", path = "../vm" }
 
 [dev-dependencies]
 indoc = "2.0.5"

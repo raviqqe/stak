@@ -17,9 +17,9 @@ stak-compiler = { version = "0.1.69", path = "../compiler" }
 stak-configuration = { version = "0.1.61", path = "../configuration" }
 stak-device = { version = "0.2.65", path = "../device", features = ["std"] }
 stak-file = { version = "0.4.23", path = "../file" }
-stak-r7rs = { version = "0.7.5", path = "../r7rs" }
+stak-r7rs = { version = "0.8.0", path = "../r7rs" }
 stak-process-context = { version = "0.2.23", path = "../process_context" }
-stak-vm = { version = "0.5.23", path = "../vm" }
+stak-vm = { version = "0.6.0", path = "../vm" }
 wasm-bindgen = "0.2.84"
 stak-time = { version = "0.1.6", path = "../time" }
 

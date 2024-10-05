@@ -37,7 +37,7 @@ stak-macro = { version = "0.1.66", path = "../macro" }
 stak-process-context = { version = "0.2.23", path = "../process_context", features = [
   "libc",
 ] }
-stak-r7rs = { version = "0.7.5", path = "../r7rs" }
+stak-r7rs = { version = "0.8.0", path = "../r7rs" }
 stak-time = { version = "0.1.6", path = "../time" }
 stak-util = { version = "0.1.41", path = "../util", optional = true }
-stak-vm = { version = "0.5.23", path = "../vm" }
+stak-vm = { version = "0.6.0", path = "../vm" }

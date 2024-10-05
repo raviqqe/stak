@@ -15,7 +15,7 @@ std = []
 [dependencies]
 heapless = "0.8.0"
 libc = { version = "0.2", default-features = false, optional = true }
-stak-vm = { version = "0.5.23", path = "../vm" }
+stak-vm = { version = "0.6.0", path = "../vm" }
 
 [dev-dependencies]
 tempfile = "3.13.0"

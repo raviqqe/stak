@@ -1,7 +1,7 @@
 [package]
 name = "stak-profile"
 description = "Stak Scheme profiler"
-version = "0.1.35"
+version = "0.2.0"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -22,9 +22,9 @@ stak-process-context = { version = "0.2.23", path = "../../process_context", fea
   "std",
 ] }
 stak-profiler = { version = "0.1.34", path = "../../profiler" }
-stak-r7rs = { version = "0.7.5", path = "../../r7rs" }
+stak-r7rs = { version = "0.8.0", path = "../../r7rs" }
 stak-time = { version = "0.1.6", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.5.23", path = "../../vm", features = ["profile"] }
+stak-vm = { version = "0.6.0", path = "../../vm", features = ["profile"] }
 
 [lints]
 workspace = true

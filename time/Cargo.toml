@@ -14,7 +14,7 @@ std = []
 
 [dependencies]
 libc = { version = "0.2", default-features = false, optional = true }
-stak-vm = { version = "0.5.23", path = "../vm" }
+stak-vm = { version = "0.6.0", path = "../vm" }
 
 [lints]
 workspace = true
