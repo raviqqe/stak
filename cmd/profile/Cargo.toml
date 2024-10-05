@@ -1,7 +1,7 @@
 [package]
 name = "stak-profile"
 description = "Stak Scheme profiler"
-version = "0.1.34"
+version = "0.2.0"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -15,16 +15,16 @@ float = ["stak-vm/float"]
 [dependencies]
 clap = { version = "4.5.19", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.60", path = "../../configuration" }
-stak-device = { version = "0.2.64", path = "../../device", features = ["std"] }
-stak-file = { version = "0.4.22", path = "../../file", features = ["std"] }
-stak-process-context = { version = "0.2.22", path = "../../process_context", features = [
+stak-configuration = { version = "0.1.61", path = "../../configuration" }
+stak-device = { version = "0.2.65", path = "../../device", features = ["std"] }
+stak-file = { version = "0.4.23", path = "../../file", features = ["std"] }
+stak-process-context = { version = "0.2.23", path = "../../process_context", features = [
   "std",
 ] }
-stak-profiler = { version = "0.1.33", path = "../../profiler" }
-stak-r7rs = { version = "0.7.4", path = "../../r7rs" }
-stak-time = { version = "0.1.5", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.5.22", path = "../../vm", features = ["profile"] }
+stak-profiler = { version = "0.1.34", path = "../../profiler" }
+stak-r7rs = { version = "0.8.0", path = "../../r7rs" }
+stak-time = { version = "0.1.6", path = "../../time", features = ["std"] }
+stak-vm = { version = "0.6.0", path = "../../vm", features = ["profile"] }
 
 [lints]
 workspace = true
