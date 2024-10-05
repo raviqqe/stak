@@ -12,7 +12,6 @@
 
 (cond-expand
   (stak
-    (define rib rib3)
     (define cons-rib cons)
     (define target-procedure? procedure?))
 

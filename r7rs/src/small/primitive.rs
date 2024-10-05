@@ -6,7 +6,7 @@ pub(super) enum Primitive {
     IsRib,
     Car,
     Cdr,
-    Rib3,
+    Rib3, // deprecated
     Tag,
     SetCar,
     SetCdr,
