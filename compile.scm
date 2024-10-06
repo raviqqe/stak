@@ -1148,6 +1148,25 @@
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
+(define (encode-integer-parts integer base)
+  (let ((rest (quotient integer base)))
+    (values
+      (encode-integer-part integer base (if (zero? rest) 0 1))
+      rest)))
+
+(define (encode-integer-rest x target)
+  (do ((x x (quotient x integer-base))
+       (target
+         target
+         (cons
+           (encode-integer-part
+             x
+             integer-base
+             (if (zero? (quotient x integer-base)) 0 1))
+           target)))
+    ((zero? x)
+      target)))
+
 (define (encode-integer-with-base integer base target)
   (do ((x (quotient integer base) (quotient x integer-base))
        (bit 0 1)
@@ -1183,7 +1202,8 @@
       (+ (* operand 2) 1))
 
     ((symbol? operand)
-      (* 2
+      (*
+        2
         (or
           (memv-position operand (encode-context-symbols context))
           (error "symbol not found" operand))))
@@ -1191,62 +1211,19 @@
     (else
       (error "invalid operand" operand))))
 
-(define (encode-codes context codes target)
-  (if (terminal-codes? codes)
-    target
-    (let* ((instruction (rib-tag codes))
-           (operand (rib-car codes))
-           (codes (rib-cdr codes))
-           (return (null? codes))
-           (encode-simple
-             (lambda (instruction)
-               (encode-instruction
-                 instruction
-                 (encode-operand context operand)
-                 return
-                 target))))
-      (encode-codes
-        context
-        codes
-        (cond
-          ((and
-              (eq? instruction constant-instruction)
-              (target-procedure? operand))
-            (encode-procedure context operand return target))
+(define (encode-ribs context ribs target)
+  (cond
+    ((rib? codes)
+      (encode-ribs
+        (rib-car ribs)
+        (encode-ribs
+          (rib-cdr ribs)
+          target)))
 
-          ((memq instruction (list get-instruction set-instruction))
-            (encode-simple instruction))
+    ; TODO Support the other data types for Scheme implementations other than Stak.
 
-          ((eq? instruction constant-instruction)
-            (let ((symbol (encode-context-constant context operand)))
-              (if symbol
-                (encode-instruction
-                  get-instruction
-                  (encode-operand context symbol)
-                  return
-                  target)
-                (encode-simple constant-instruction))))
-
-          ((eq? instruction if-instruction)
-            (let ((continuation (find-continuation operand))
-                  (target
-                    (encode-codes
-                      context
-                      operand
-                      (encode-instruction if-instruction 0 #f target))))
-              (if (null? continuation)
-                target
-                (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
-
-          ((eq? instruction nop-instruction)
-            (error "unexpected nop instruction"))
-
-          (else
-            (encode-instruction
-              call-instruction
-              (- instruction call-instruction)
-              return
-              (encode-integer (encode-operand context operand) target))))))))
+    (else
+      '())))
 
 ;; Primitives
 
@@ -1274,7 +1251,7 @@
 ;; Main
 
 (define (encode codes)
-  (encode-codes
+  (encode-ribs
     (make-encode-context '())
     (build-primitives primitives codes)
     '()))
