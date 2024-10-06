@@ -1349,10 +1349,9 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context symbols constant-context)
+  (make-encode-context dictionary)
   encode-context?
-  (symbols encode-context-symbols encode-context-set-symbols!)
-  (constant-context encode-context-constant-context))
+  (dictionary encode-context-dictionary encode-context-set-dictionary!))
 
 (define (encode-context-constant context constant)
   (constant-context-constant (encode-context-constant-context context) constant))
