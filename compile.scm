@@ -1154,7 +1154,7 @@
       (encode-integer-part integer base (if (zero? rest) 0 1))
       rest)))
 
-(define (encode-integer-rest x target)
+(define (encode-integer-tail x target)
   (do ((x x (quotient x integer-base))
        (target
          target
@@ -1219,15 +1219,18 @@
   (cond
     ((rib? codes)
       (encode-ribs
-        (rib-car ribs)
+        (rib-cdr ribs)
         (encode-ribs
-          (rib-cdr ribs)
+          (rib-car ribs)
           target)))
 
     ; TODO Support the other data types for Scheme implementations other than Stak.
 
     (else
-      '())))
+      (let-values ((head tail) (encode-integer-parts (encode-number)))
+        (cons
+          (* 2 head)
+          (encode-integer-tail tail target)))))
 
 ;; Primitives
 
