@@ -1172,7 +1172,7 @@
     ((and (integer? x) (positive? x))
       (* 2 integer))
 
-    ((and (integer? x))
+    ((integer? x)
       (+ 1 (* 4 (abs integer))))
 
     (else
