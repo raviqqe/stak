@@ -1140,32 +1140,6 @@
 (define (encode-context-find context constant)
   (memv constant (encode-context-dictionary context)))
 
-;; Symbols
-
-(define symbol-separator (- 256 2))
-(define symbol-terminator (- 256 1))
-
-(define (encode-string string target)
-  (if (null? string)
-    target
-    (encode-string (cdr string) (cons (char->integer (car string)) target))))
-
-(define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
-
-(define (encode-symbols symbols constant-symbols target)
-  (let ((target (cons symbol-terminator target)))
-    (encode-integer
-      (length constant-symbols)
-      (cdr
-        (fold-left
-          (lambda (target symbol)
-            (cons
-              symbol-separator
-              (encode-symbol symbol target)))
-          target
-          symbols)))))
-
 ;; Codes
 
 (define integer-base 128)
