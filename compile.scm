@@ -1354,7 +1354,7 @@
   (dictionary encode-context-dictionary encode-context-set-dictionary!))
 
 (define (encode-context-push! context constant)
-  (encode-context-constant-set-dictionary! (cons constant (encode-context-dictionary context))))
+  (encode-context-set-dictionary! (cons constant (encode-context-dictionary context))))
 
 (define (encode-context-find context constant)
   (constant-context-dictionary (encode-context-dictionary context) constant))
