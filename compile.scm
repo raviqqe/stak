@@ -1296,7 +1296,7 @@
 
 ;; Utility
 
-(define (find-symbols constant-symbols codes)
+(define (find-symbols codes)
   (let loop ((codes codes) (symbols '()))
     (if (terminal-codes? codes)
       symbols
@@ -1316,7 +1316,6 @@
             ((and
                 (symbol? operand)
                 (not (memq operand default-symbols))
-                (not (memq operand constant-symbols))
                 (not (memq operand symbols)))
               (cons operand symbols))
 
@@ -1518,13 +1517,8 @@
 ;; Main
 
 (define (encode codes)
-  (let* ((constant-context (make-constant-context '() 0))
-         (codes
-           (build-primitives
-             primitives
-             (build-constants constant-context codes)))
-         (constant-symbols (map cdr (constant-context-constants constant-context)))
-         (symbols (append default-symbols (find-symbols constant-symbols codes))))
+  (let* ((codes (build-primitives primitives codes))
+         (symbols (append default-symbols (find-symbols codes))))
     (encode-symbols
       symbols
       constant-symbols
