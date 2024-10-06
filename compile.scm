@@ -1276,7 +1276,7 @@
 (define (encode codes)
   (encode-codes
     (make-encode-context '())
-    (codes (build-primitives primitives codes))
+    (build-primitives primitives codes)
     '()))
 
 ; Main
