@@ -1143,6 +1143,7 @@
 ;; Codes
 
 (define integer-base 128)
+(define value-base 64)
 (define short-integer-base 8)
 
 (define (encode-integer-part integer base bit)
@@ -1227,10 +1228,10 @@
     ; TODO Support the other data types for Scheme implementations other than Stak.
 
     (else
-      (let-values ((head tail) (encode-integer-parts (encode-number)))
+      (let-values ((head tail) (encode-integer-parts (encode-number) value-base))
         (cons
           (* 2 head)
-          (encode-integer-tail tail target)))))
+          (encode-integer-tail tail target))))))
 
 ;; Primitives
 
