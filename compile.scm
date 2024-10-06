@@ -1353,8 +1353,11 @@
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!))
 
-(define (encode-context-constant context constant)
-  (constant-context-constant (encode-context-constant-context context) constant))
+(define (encode-context-push! context constant)
+  (encode-context-constant-set-dictionary! (cons constant (encode-context-dictionary context))))
+
+(define (encode-context-find context constant)
+  (constant-context-dictionary (encode-context-dictionary context) constant))
 
 ;; Symbols
 
