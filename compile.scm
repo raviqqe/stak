@@ -1517,17 +1517,10 @@
 ;; Main
 
 (define (encode codes)
-  (let* ((codes (build-primitives primitives codes))
-         (symbols (append default-symbols (find-symbols codes))))
-    (encode-symbols
-      symbols
-      constant-symbols
-      (encode-codes
-        (make-encode-context
-          (append symbols constant-symbols)
-          constant-context)
-        codes
-        '()))))
+  (encode-codes
+    (make-encode-context '())
+    (codes (build-primitives primitives codes))
+    '()))
 
 ; Main
 
