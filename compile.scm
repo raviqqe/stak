@@ -1357,7 +1357,7 @@
   (encode-context-set-dictionary! (cons constant (encode-context-dictionary context))))
 
 (define (encode-context-find context constant)
-  (constant-context-dictionary (encode-context-dictionary context) constant))
+  (memv constant (encode-context-dictionary context)))
 
 ;; Symbols
 
