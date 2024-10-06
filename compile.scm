@@ -1167,12 +1167,16 @@
     ((zero? x)
       target)))
 
-(define (encode-integer-with-base integer base target)
-  (do ((x (quotient integer base) (quotient x integer-base))
-       (bit 0 1)
-       (target target (cons (encode-integer-part x integer-base bit) target)))
-    ((zero? x)
-      (values (encode-integer-part integer base bit) target))))
+(define (encode-number x)
+  (cond
+    ((and (integer? x) (positive? x))
+      (* 2 integer))
+
+    ((and (integer? x))
+      (+ 1 (* 4 (abs integer))))
+
+    (else
+      (error "float not supported"))))
 
 (define (encode-short-integer integer target)
   (encode-integer-with-base integer short-integer-base target))
