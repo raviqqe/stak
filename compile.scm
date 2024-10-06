@@ -1216,19 +1216,19 @@
     (else
       (error "invalid operand" operand))))
 
-(define (encode-ribs context ribs target)
+(define (encode-ribs context value target)
   (cond
-    ((rib? codes)
+    ((rib? value)
       (encode-ribs
-        (rib-cdr ribs)
+        (rib-cdr value)
         (encode-ribs
-          (rib-car ribs)
+          (rib-car value)
           target)))
 
     ; TODO Support the other data types for Scheme implementations other than Stak.
 
     (else
-      (let-values ((head tail) (encode-integer-parts (encode-number) value-base))
+      (let-values ((head tail) (encode-integer-parts (encode-number value) value-base))
         (cons
           (* 2 head)
           (encode-integer-tail tail target))))))
