@@ -1191,6 +1191,7 @@
                (or
                  singly-shared
                  (memq value singletons)
+                 (procedure? value)
                  (symbol? value)
                  (string? value)
                  (char? value))))
@@ -1219,7 +1220,7 @@
                          (not
                            (if data
                              (target-procedure? value)
-                             (memq tag `(close-instruction if-instruction))))
+                             (memq tag (list close-instruction if-instruction))))
                          (let-values (((head tail)
                                         (encode-integer-parts tag tag-base)))
                            (cons
