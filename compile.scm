@@ -1145,7 +1145,7 @@
 (define tag-base 32)
 (define share-base 31)
 
-(define singletons '(#f #t '()))
+(define singletons '(#f #t ()))
 
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
