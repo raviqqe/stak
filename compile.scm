@@ -1116,17 +1116,6 @@
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
 
-(define (find-continuation codes)
-  (cond
-    ((null? codes)
-      '())
-
-    ((nop-codes? codes)
-      (rib-cdr codes))
-
-    (else
-      (find-continuation (rib-cdr codes)))))
-
 ;; Context
 
 (define-record-type encode-context
@@ -1134,17 +1123,27 @@
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!))
 
-(define (encode-context-push! context constant)
-  (encode-context-set-dictionary! (cons constant (encode-context-dictionary context))))
+(define (encode-context-push! context value)
+  (encode-context-set-dictionary! (cons value (encode-context-dictionary context))))
 
-(define (encode-context-find context constant)
-  (memv constant (encode-context-dictionary context)))
+(define (encode-context-revamp! context index)
+  (let* ((dictionary (cons #f (encode-context-dictionary context)))
+         (cons (list-tail dictionary index)))
+    (set-car! dictionary (cadr cons))
+    (encode-context-set-dictionary! context dictionary)
+    (set-cdr! cons (cddr cons))))
+
+(define (encode-context-find-index context value)
+  (memv-position value (encode-context-dictionary context)))
 
 ;; Codes
 
 (define integer-base 128)
-(define value-base 64)
-(define short-integer-base 8)
+(define number-base 64)
+(define tag-base 32)
+(define share-base 31)
+
+(define singletons '(#f #t '()))
 
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
@@ -1179,59 +1178,58 @@
     (else
       (error "float not supported"))))
 
-(define (encode-short-integer integer target)
-  (encode-integer-with-base integer short-integer-base target))
-
-(define (encode-integer integer target)
-  (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
-    (cons byte target)))
-
-(define (encode-instruction instruction integer return target)
-  (let-values (((integer target) (encode-short-integer integer target)))
-    (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
-
-(define (encode-procedure context procedure return target)
-  (let ((code (rib-car procedure)))
-    (encode-codes
-      context
-      (rib-cdr code)
-      (encode-instruction
-        close-instruction
-        (rib-car code)
-        return
-        target))))
-
-(define (encode-operand context operand)
-  (cond
-    ((number? operand)
-      (+ (* operand 2) 1))
-
-    ((symbol? operand)
-      (*
-        2
-        (or
-          (memv-position operand (encode-context-symbols context))
-          (error "symbol not found" operand))))
-
-    (else
-      (error "invalid operand" operand))))
-
-(define (encode-ribs context value target)
+(define (encode-ribs context value data target)
   (cond
     ((rib? value)
-      (encode-ribs
-        (rib-cdr value)
-        (encode-ribs
-          (rib-car value)
-          target)))
+      (let* ((singly-shared (and (not data) (nop-codes? value)))
+             (shared
+               (or
+                 singly-shared
+                 (memq value singletons)
+                 (symbol? value))))
+        (cond
+          ((and shared (encode-context-find-index context value)) =>
+            (lambda (index)
+              (encode-context-revamp! context index)
+              (let-values (((head tail)
+                             (encode-integer-parts
+                               (+ (if singly-shared 0 1) (* 2 index))
+                               share-base)))
+                (cons
+                  (+ 3 (* 4 (+ 1 head)))
+                  (encode-integer-tail tail target)))))
+
+          (else
+            (let* ((tag (rib-tag value))
+                   (target
+                     (encode-ribs
+                       context
+                       (rib-cdr value)
+                       data
+                       (encode-ribs
+                         context
+                         (rib-car value)
+                         (or
+                           (and data (not (target-procedure? value)))
+                           (not (memq tag `(close-instruction if-instruction))))
+                         (let-values (((head tail)
+                                        (encode-integer-parts tag tag-base)))
+                           (cons
+                             (+ 1 (* 2 head))
+                             (encode-integer-tail
+                               tail
+                               (if shared
+                                 (cons 3 target)
+                                 target))))))))
+              (when shared
+                (encode-context-push! context value))
+              target)))))
 
     ; TODO Support the other data types for Scheme implementations other than Stak.
 
     (else
-      (let-values ((head tail) (encode-integer-parts (encode-number value) value-base))
-        (cons
-          (* 2 head)
-          (encode-integer-tail tail target))))))
+      (let-values ((head tail) (encode-integer-parts (encode-number value) number-base))
+        (cons (* 2 head) (encode-integer-tail tail target))))))
 
 ;; Primitives
 
@@ -1262,6 +1260,7 @@
   (encode-ribs
     (make-encode-context '())
     (build-primitives primitives codes)
+    #f
     '()))
 
 ; Main
