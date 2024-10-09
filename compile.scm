@@ -1118,12 +1118,13 @@
     context
     (cons value (encode-context-dictionary context))))
 
-(define (encode-context-revamp! context index)
+(define (encode-context-remove! context index)
   (let* ((dictionary (cons #f (encode-context-dictionary context)))
-         (cons (list-tail dictionary index)))
-    (set-car! dictionary (cadr cons))
-    (encode-context-set-dictionary! context dictionary)
-    (set-cdr! cons (cddr cons))))
+         (cons (list-tail dictionary index))
+         (value (cadr cons)))
+    (set-cdr! cons (cddr cons))
+    (encode-context-set-dictionary! context (cdr dictionary))
+    value))
 
 (define (encode-context-find-index context value)
   (memv-position value (encode-context-dictionary context)))
@@ -1194,14 +1195,16 @@
         (cond
           ((and shared (encode-context-find-index context value)) =>
             (lambda (index)
-              (encode-context-revamp! context index)
-              (let-values (((head tail)
-                             (encode-integer-parts
-                               (+ (* 2 index) (if singly-shared 0 1))
-                               share-base)))
-                (cons
-                  (+ 3 (* 4 (+ 1 head)))
-                  (encode-integer-tail tail target)))))
+              (let ((value (encode-context-remove! context index)))
+                (when (not singly-shared)
+                  (encode-context-push! context value))
+                (let-values (((head tail)
+                               (encode-integer-parts
+                                 (+ (* 2 index) (if singly-shared 0 1))
+                                 share-base)))
+                  (cons
+                    (+ 3 (* 4 (+ 1 head)))
+                    (encode-integer-tail tail target))))))
 
           (else
             (let* ((tag (rib-tag value))
