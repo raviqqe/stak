@@ -1106,16 +1106,6 @@
 
 ; Encoding
 
-;; Utility
-
-(define (nop-codes? codes)
-  (and
-    (rib? codes)
-    (eqv? (rib-tag codes) nop-instruction)))
-
-(define (terminal-codes? codes)
-  (or (null? codes) (nop-codes? codes)))
-
 ;; Context
 
 (define-record-type encode-context
@@ -1146,6 +1136,11 @@
 (define share-base 31)
 
 (define singletons '(#f #t ()))
+
+(define (nop-codes? codes)
+  (and
+    (rib? codes)
+    (eqv? (rib-tag codes) nop-instruction)))
 
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
