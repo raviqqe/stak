@@ -1181,6 +1181,9 @@
       (error "float not supported"))))
 
 (define (encode-ribs context value data target)
+  ; TODO Remove this hack.
+  (when (null? value)
+    (rib-set-cdr! value 0))
   (cond
     ((rib? value)
       (let* ((singly-shared (and (not data) (nop-codes? value)))
