@@ -1186,14 +1186,16 @@
                (or
                  singly-shared
                  (memq value singletons)
-                 (symbol? value))))
+                 (symbol? value)
+                 (string? value)
+                 (char? value))))
         (cond
           ((and shared (encode-context-find-index context value)) =>
             (lambda (index)
               (encode-context-revamp! context index)
               (let-values (((head tail)
                              (encode-integer-parts
-                               (+ (if singly-shared 0 1) (* 2 index))
+                               (+ (* 2 index) (if singly-shared 0 1))
                                share-base)))
                 (cons
                   (+ 3 (* 4 (+ 1 head)))
@@ -1209,9 +1211,10 @@
                        (encode-ribs
                          context
                          (rib-car value)
-                         (or
-                           (and data (not (target-procedure? value)))
-                           (not (memq tag `(close-instruction if-instruction))))
+                         (not
+                           (if data
+                             (target-procedure? value)
+                             (memq tag `(close-instruction if-instruction))))
                          (let-values (((head tail)
                                         (encode-integer-parts tag tag-base)))
                            (cons
@@ -1228,7 +1231,7 @@
     ; TODO Support the other data types for Scheme implementations other than Stak.
 
     (else
-      (let-values ((head tail) (encode-integer-parts (encode-number value) number-base))
+      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
         (cons (* 2 head) (encode-integer-tail tail target))))))
 
 ;; Primitives
