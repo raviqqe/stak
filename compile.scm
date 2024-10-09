@@ -1233,8 +1233,6 @@
                 (encode-context-push! context value))
               target)))))
 
-    ; TODO Support the other data types for Scheme implementations other than Stak.
-
     (else
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
         (cons (* 2 head) (encode-integer-tail tail target))))))
