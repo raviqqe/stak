@@ -1124,7 +1124,9 @@
   (dictionary encode-context-dictionary encode-context-set-dictionary!))
 
 (define (encode-context-push! context value)
-  (encode-context-set-dictionary! (cons value (encode-context-dictionary context))))
+  (encode-context-set-dictionary!
+    context
+    (cons value (encode-context-dictionary context))))
 
 (define (encode-context-revamp! context index)
   (let* ((dictionary (cons #f (encode-context-dictionary context)))
