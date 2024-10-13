@@ -21,7 +21,7 @@
     "@raviqqe/stak": "^0.2.45",
     "astro": "^4.16.0",
     "classnames": "^2.5.1",
-    "lucide-solid": "^0.451.0",
+    "lucide-solid": "^0.452.0",
     "nanostores": "^0.11.3",
     "solid-js": "^1.9.2",
     "vite-plugin-wasm": "^3.3.0"
