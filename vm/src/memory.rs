@@ -428,62 +428,64 @@ mod tests {
     #[test]
     fn create() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
-        assert_snapshot!(vm);
+        assert_snapshot!(memory);
     }
 
     #[test]
     fn create_list() {
         let mut heap = create_heap();
-        let mut vm = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(vm.cdr(vm.null()).tag(), Type::Null as Tag);
+        assert_eq!(memory.cdr(memory.null()).tag(), Type::Null as Tag);
 
-        let list = vm.cons(Number::from_i64(1).into(), vm.null()).unwrap();
+        let list = memory
+            .cons(Number::from_i64(1).into(), memory.null())
+            .unwrap();
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(memory);
 
-        let list = vm.cons(Number::from_i64(2).into(), list).unwrap();
+        let list = memory.cons(Number::from_i64(2).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(memory);
 
-        let list = vm.cons(Number::from_i64(3).into(), list).unwrap();
+        let list = memory.cons(Number::from_i64(3).into(), list).unwrap();
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(memory);
     }
 
     #[test]
     fn convert_false() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(vm.boolean(false)).to_cons().unwrap(),
-            vm.boolean(false)
+            Value::from(memory.boolean(false)).to_cons().unwrap(),
+            memory.boolean(false)
         );
     }
 
     #[test]
     fn convert_true() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(vm.boolean(true)).to_cons().unwrap(),
-            vm.boolean(true)
+            Value::from(memory.boolean(true)).to_cons().unwrap(),
+            memory.boolean(true)
         );
     }
 
     #[test]
     fn convert_null() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(Value::from(vm.null()).to_cons().unwrap(), vm.null());
+        assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
     }
 
     mod stack {
@@ -492,25 +494,25 @@ mod tests {
         #[test]
         fn push_and_pop() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(42).into()).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(42).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::from_i64(42).into());
+            assert_eq!(memory.pop(), Number::from_i64(42).into());
         }
 
         #[test]
         fn push_and_pop_twice() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(1).into()).unwrap();
-            vm.push(Number::from_i64(2).into()).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(1).into()).unwrap();
+            memory.push(Number::from_i64(2).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::from_i64(2).into());
-            assert_eq!(vm.pop(), Number::from_i64(1).into());
+            assert_eq!(memory.pop(), Number::from_i64(2).into());
+            assert_eq!(memory.pop(), Number::from_i64(1).into());
         }
     }
 
@@ -520,53 +522,54 @@ mod tests {
         #[test]
         fn collect_cons() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.allocate(Number::default().into(), Number::default().into())
+            memory
+                .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
-            vm.collect_garbages(None).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
 
         #[test]
         fn collect_stack() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(42).into()).unwrap();
-            vm.collect_garbages(None).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(42).into()).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
 
         #[test]
         fn collect_deep_stack() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(1).into()).unwrap();
-            vm.push(Number::from_i64(2).into()).unwrap();
-            vm.collect_garbages(None).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(1).into()).unwrap();
+            memory.push(Number::from_i64(2).into()).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
 
         #[test]
         fn collect_cycle() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            let cons = vm
+            let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
-            vm.set_cdr(cons, cons.into());
+            memory.set_cdr(cons, cons.into());
 
-            vm.collect_garbages(None).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
     }
 }
