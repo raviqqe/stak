@@ -12,7 +12,7 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/sitemap": "^3.2.1",
     "@astrojs/solid-js": "^4.4.2",
     "@astrojs/starlight": "^0.28.3",
     "@biomejs/biome": "^1.9.3",
