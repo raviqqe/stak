@@ -1,16 +1,15 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    cons::{never, Cons, Tag},
+    cons::{Cons, Tag},
     memory::Memory,
     number::Number,
     primitive_set::PrimitiveSet,
     r#type::Type,
-    symbol_index,
     value::{TypedValue, Value},
     Error, StackSlot,
 };
-use code::{SYMBOL_SEPARATOR, SYMBOL_TERMINATOR};
+use code::v2::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE};
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
 use core::fmt::{self, Display, Formatter};
@@ -357,300 +356,84 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
 
-        let mut input = input.into_iter();
-
-        self.memory.set_program_counter(self.memory.null());
-        self.memory.set_stack(self.memory.null());
-
-        trace!("decode", "start");
-        profile_event!(self, "symbol_decode_start");
-
-        // Allow access to a symbol table during instruction decoding.
-        let symbols = self.decode_symbols(&mut input)?;
-        self.memory.set_register(symbols);
-        self.memory.set_stack(self.memory.null());
-
-        profile_event!(self, "symbol_decode_end");
-        profile_event!(self, "instruction_decode_start");
-
-        self.decode_instructions(&mut input)?;
-        self.build_symbol_table(self.memory.register())?;
-
-        profile_event!(self, "instruction_decode_end");
-
-        // Initialize an implicit top-level frame.
-        let codes = self
-            .memory
-            .allocate(Number::default().into(), self.memory.null().into())?
-            .into();
-        let continuation = self
-            .memory
-            .allocate(codes, self.memory.null().into())?
-            .into();
-        let stack = self.memory.allocate(
-            continuation,
-            self.memory.null().set_tag(StackSlot::Frame as _).into(),
-        )?;
-        self.memory.set_stack(stack);
-
-        self.memory.set_register(never());
+        let code = self.decode_ribs(&mut input.into_iter())?;
+        self.memory.set_program_counter(code);
 
         profile_event!(self, "initialization_end");
 
         Ok(())
     }
 
-    fn decode_symbols(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
-        // Initialize a shared empty string.
-        let string = self.create_string(self.memory.null(), 0)?;
-        self.memory.set_register(string);
-
-        for _ in 0..Self::decode_integer(input).ok_or(Error::BytecodeIntegerMissing)? {
-            self.initialize_symbol(None, self.memory.boolean(false).into())?;
-        }
-
-        let mut length = 0;
-        let mut name = self.memory.null();
-
-        while {
-            let byte = input.next().ok_or(Error::BytecodeEnd)?;
-
-            (length, name) = if matches!(byte, SYMBOL_SEPARATOR | SYMBOL_TERMINATOR) {
-                let string = self.create_string(name, length)?;
-                self.initialize_symbol(Some(string), self.memory.boolean(false).into())?;
-
-                (0, self.memory.null())
+    fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
+        while let Some(head) = input.next() {
+            if head & 1 == 0 {
+                self.memory.push(
+                    Self::decode_number(Self::decode_integer_tail(input, head >> 1, NUMBER_BASE)?)
+                        .into(),
+                );
+            } else if head & 0b10 == 0 {
+                let left = self.memory.pop();
+                let right = self.memory.pop();
+                let r#type = Self::decode_integer_tail(input, head >> 2, TAG_BASE)?;
+                let rib = self.memory.allocate(left, right.set_tag(r#type as _))?;
+                self.memory.push(rib.into());
             } else {
-                (
-                    length + 1,
-                    self.memory.cons(Number::from_i64(byte as _).into(), name)?,
-                )
-            };
+                let head = head >> 2;
 
-            byte != SYMBOL_TERMINATOR
-        } {}
-
-        let rib = self.memory.allocate(
-            Number::default().into(),
-            never().set_tag(Type::Procedure as Tag).into(),
-        )?;
-
-        let mut cons = self.memory.stack();
-
-        for value in [
-            self.memory.boolean(false),
-            self.memory.boolean(true),
-            self.memory.null(),
-            rib,
-        ] {
-            self.memory
-                .set_car_value(self.memory.car(cons), value.into());
-            cons = self.memory.cdr(cons).assume_cons();
-        }
-
-        Ok(self.memory.stack())
-    }
-
-    fn build_symbol_table(&mut self, symbols: Cons) -> Result<(), Error> {
-        self.memory.set_stack(
-            self.memory
-                .car(
-                    self.memory
-                        .tail(symbols, Number::from_i64(symbol_index::RIB as _)),
-                )
-                .assume_cons(),
-        );
-        let symbols = self
-            .memory
-            .cons(self.memory.boolean(false).into(), symbols)?;
-        self.memory.set_register(symbols);
-
-        let mut current = self.memory.register();
-
-        while self.memory.cdr(current) != self.memory.null().into() {
-            if self.memory.car_value(
-                self.memory
-                    .cdr_value(self.memory.car_value(self.memory.cdr(current))),
-            ) == Number::default().into()
-            {
-                self.memory
-                    .set_cdr(current, self.memory.cdr_value(self.memory.cdr(current)));
-            } else {
-                current = self.memory.cdr(current).assume_cons()
-            }
-        }
-
-        // Set a rib primitive's environment to a symbol table for access from a base
-        // library.
-        self.memory.set_cdr_value(
-            self.memory.car(self.memory.stack()),
-            self.memory.cdr(self.memory.register()),
-        );
-
-        Ok(())
-    }
-
-    fn initialize_symbol(&mut self, name: Option<Cons>, value: Value) -> Result<(), Error> {
-        let symbol = self.memory.allocate(
-            value,
-            name.unwrap_or(self.memory.register())
-                .set_tag(Type::Symbol as Tag)
-                .into(),
-        )?;
-
-        self.memory.push(symbol.into())
-    }
-
-    fn create_string(&mut self, name: Cons, length: i64) -> Result<Cons, Error> {
-        self.memory.allocate(
-            Number::from_i64(length).into(),
-            name.set_tag(Type::String as Tag).into(),
-        )
-    }
-
-    fn decode_instructions(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<(), Error> {
-        while let Some((instruction, r#return, integer)) = Self::decode_instruction(input)? {
-            trace!("instruction", instruction);
-            trace!("return", r#return);
-
-            debug_assert!(instruction != code::Instruction::IF || !r#return);
-
-            let program_counter = match instruction {
-                code::Instruction::CONSTANT
-                | code::Instruction::GET
-                | code::Instruction::SET
-                | code::Instruction::NOP => self.append_instruction(
-                    instruction as Tag,
-                    self.decode_operand(integer),
-                    r#return,
-                )?,
-                code::Instruction::IF => {
-                    let then = self.memory.program_counter();
-
-                    let continuation = self.memory.pop();
-                    self.memory.set_program_counter(continuation.assume_cons());
-
-                    self.append_instruction(instruction as Tag, then.into(), false)?
-                }
-                code::Instruction::CALL => {
-                    let operand = self.decode_operand(
-                        Self::decode_integer(input).ok_or(Error::BytecodeOperandMissing)?,
+                if head == 0 {
+                    let value = self.memory.top();
+                    self.push_to_dictionary(value);
+                } else {
+                    let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
+                    let cons = self.memory.tail(
+                        self.memory.program_counter(),
+                        Number::from_i64((integer >> 1) as _),
                     );
-                    self.append_instruction(instruction as Tag + integer as Tag, operand, r#return)?
+                    let value = self.memory.car(cons);
+                    if integer & 1 != 0 {
+                        self.push_to_dictionary(value.clone());
+                    }
+                    self.memory.push(value);
                 }
-                code::Instruction::CLOSE => {
-                    let code = self.memory.allocate(
-                        Number::from_i64(integer as _).into(),
-                        self.memory.program_counter().into(),
-                    )?;
-                    let procedure = self
-                        .memory
-                        .allocate(code.into(), never().set_tag(Type::Procedure as Tag).into())?;
-
-                    let continuation = self.memory.pop();
-                    self.memory.set_program_counter(continuation.assume_cons());
-
-                    self.append_instruction(
-                        code::Instruction::CONSTANT as Tag,
-                        procedure.into(),
-                        r#return,
-                    )?
-                }
-                code::Instruction::SKIP => self.memory.tail(
-                    self.memory.program_counter(),
-                    Number::from_i64(integer as _),
-                ),
-                _ => return Err(Error::IllegalInstruction),
-            };
-
-            let program_counter = {
-                let counter = self.memory.program_counter();
-                self.memory.set_program_counter(program_counter);
-                counter
-            };
-
-            if r#return {
-                self.memory.push(program_counter.into())?;
             }
         }
+
+        self.memory.pop().to_cons().ok_or(Error::BytecodeEnd)
+    }
+
+    fn push_to_dictionary(&mut self, value: Value) -> Result<(), Error> {
+        let cons = self.memory.cons(value, self.memory.program_counter())?;
+        self.memory.set_program_counter(cons);
 
         Ok(())
     }
 
-    fn append_instruction(
-        &mut self,
-        instruction: Tag,
-        operand: Value,
-        r#return: bool,
-    ) -> Result<Cons, Error> {
-        self.memory.allocate(
-            operand,
-            (if r#return {
-                self.memory.null()
-            } else {
-                self.memory.program_counter()
-            })
-            .set_tag(instruction)
-            .into(),
-        )
-    }
+    fn decode_number(integer: u128) -> Number {
+        let number = integer >> 1;
 
-    fn decode_instruction(
-        input: &mut impl Iterator<Item = u8>,
-    ) -> Result<Option<(u8, bool, u64)>, Error> {
-        let Some(byte) = input.next() else {
-            return Ok(None);
-        };
-
-        let instruction = byte & code::INSTRUCTION_MASK;
-
-        Ok(Some((
-            instruction >> 1,
-            instruction & 1 != 0,
-            Self::decode_short_integer(input, byte >> code::INSTRUCTION_BITS)
-                .ok_or(Error::BytecodeOperandMissing)?,
-        )))
-    }
-
-    fn decode_operand(&self, integer: u64) -> Value {
-        let index = Number::from_i64((integer >> 1) as _);
-        let is_symbol = integer & 1 == 0;
-
-        trace!("operand", index);
-        trace!("symbol", is_symbol);
-
-        if is_symbol {
-            self.memory
-                .car(self.memory.tail(self.memory.register(), index))
+        if integer & 1 == 0 {
+            Number::from_i64(number as _)
+        } else if integer & 1 == 0 {
+            Number::from_i64(number as _)
         } else {
-            index.into()
+            panic!("floating point number not supported")
         }
     }
 
-    fn decode_integer(input: &mut impl Iterator<Item = u8>) -> Option<u64> {
-        let byte = input.next()?;
-        Self::decode_integer_rest(input, byte, code::INTEGER_BASE)
-    }
-
-    fn decode_short_integer(input: &mut impl Iterator<Item = u8>, rest: u8) -> Option<u64> {
-        Self::decode_integer_rest(input, rest, code::SHORT_INTEGER_BASE)
-    }
-
-    fn decode_integer_rest(
+    fn decode_integer_tail(
         input: &mut impl Iterator<Item = u8>,
-        rest: u8,
-        base: u64,
-    ) -> Option<u64> {
-        let mut x = rest;
-        let mut y = 0;
+        mut x: u8,
+        mut base: u128,
+    ) -> Result<u128, Error> {
+        let mut y = (x >> 1) as u128;
 
         while x & 1 != 0 {
-            y *= code::INTEGER_BASE;
-            x = input.next()?;
-            y += (x >> 1) as u64;
+            x = input.next().ok_or_else(|| Error::BytecodeEnd)?;
+            y += (x as u128 >> 1) * base;
+            base *= INTEGER_BASE;
         }
 
-        Some(y * base + (rest >> 1) as u64)
+        Ok(y)
     }
 }
 
