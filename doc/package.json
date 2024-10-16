@@ -12,26 +12,26 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.1.6",
+    "@astrojs/sitemap": "^3.2.1",
     "@astrojs/solid-js": "^4.4.2",
-    "@astrojs/starlight": "^0.28.2",
-    "@biomejs/biome": "^1.9.2",
-    "@nanostores/solid": "^0.4.2",
+    "@astrojs/starlight": "^0.28.3",
+    "@biomejs/biome": "^1.9.3",
+    "@nanostores/solid": "^0.5.0",
     "@raviqqe/loscore": "^0.2.5",
-    "@raviqqe/stak": "^0.2.37",
-    "astro": "^4.15.9",
+    "@raviqqe/stak": "^0.2.45",
+    "astro": "^4.16.5",
     "classnames": "^2.5.1",
-    "lucide-solid": "^0.446.0",
+    "lucide-solid": "^0.453.0",
     "nanostores": "^0.11.3",
-    "solid-js": "^1.9.1",
+    "solid-js": "^1.9.2",
     "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
     "@raviqqe/biome-config": "^1.0.2",
-    "@raviqqe/eslint-config": "^4.0.5",
-    "@types/node": "^22.7.0",
-    "eslint": "^9.11.1",
+    "@raviqqe/eslint-config": "^4.0.6",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.12.0",
     "eslint-plugin-solid": "^0.14.3",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.3"
   }
 }

@@ -2,7 +2,7 @@ use core::{
     error,
     fmt::{self, Display, Formatter},
 };
-use stak_primitive::SmallError;
+use stak_r7rs::SmallError;
 
 /// A compile error.
 #[derive(Clone, Debug, Eq, PartialEq)]

@@ -1,7 +1,7 @@
 [package]
 name = "mstak-interpret"
 description = "Minimal Stak Scheme bytecode interpreter"
-version = "0.2.15"
+version = "0.3.1"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -15,11 +15,12 @@ stak-device = { version = "0.2.24", path = "../../../device", features = [
   "libc",
 ] }
 stak-file = { version = "0.4.0", path = "../../../file", features = ["libc"] }
-stak-primitive = { version = "0.5.0", path = "../../../primitive" }
 stak-process-context = { version = "0.2.0", path = "../../../process_context", features = [
   "libc",
 ] }
-stak-vm = { version = "0.5.0", path = "../../../vm" }
+stak-r7rs = { version = "0.8.0", path = "../../../r7rs" }
+stak-time = { version = "0.1.0", path = "../../../time", features = ["libc"] }
+stak-vm = { version = "0.6.0", path = "../../../vm" }
 
 [lints]
 workspace = true

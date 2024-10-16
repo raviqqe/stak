@@ -1,9 +1,24 @@
-use core::fmt::Debug;
+mod buffer_error;
+mod fixed_buffer;
+#[cfg(feature = "libc")]
+pub mod libc;
+#[cfg(feature = "std")]
+mod read_write;
+#[cfg(feature = "std")]
+mod stdio;
+
+pub use buffer_error::BufferError;
+use core::error::Error;
+pub use fixed_buffer::FixedBufferDevice;
+#[cfg(feature = "std")]
+pub use read_write::ReadWriteDevice;
+#[cfg(feature = "std")]
+pub use stdio::StdioDevice;
 
 /// A device.
 pub trait Device {
     /// An error.
-    type Error: Debug;
+    type Error: Error;
 
     /// Reads from standard input.
     fn read(&mut self) -> Result<Option<u8>, Self::Error>;

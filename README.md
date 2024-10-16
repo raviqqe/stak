@@ -5,7 +5,7 @@
 [![Codecov](https://img.shields.io/codecov/c/github/raviqqe/stak.svg?style=flat-square)](https://codecov.io/gh/raviqqe/stak)
 [![License](https://img.shields.io/github/license/raviqqe/stak.svg?style=flat-square)](LICENSE)
 
-No-`std` and no-`alloc` Scheme implementation in Rust
+The no-`std` and no-`alloc` R7RS Scheme implementation in Rust
 
 The documentation is [here](https://raviqqe.github.io/stak).
 

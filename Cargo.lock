@@ -118,9 +118,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "clap"
-version = "4.5.18"
+version = "4.5.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0956a43b323ac1afaffc053ed5c4b7c1f1800bacd1683c353aabbb752515dd3"
+checksum = "b97f376d85a664d5837dbae44bf546e6477a679ff6610010f17276f686d867e8"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -128,9 +128,9 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.5.18"
+version = "4.5.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d72166dd41634086d5803a47eb71ae740e61d84709c36f3c34110173db3961b"
+checksum = "19bc80abd44e4bed93ca373a0704ccbd1b710dc5749406201bb018272808dc54"
 dependencies = [
  "anstream",
  "anstyle",
@@ -208,9 +208,9 @@ dependencies = [
 
 [[package]]
 name = "fastrand"
-version = "2.1.0"
+version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9fc0510504f03c51ada170672ac806f1f105a88aa97a5281117e1ddc3368e51a"
+checksum = "e8c02a5121d4ea3eb16a80748c74f5549a5665e4c21333c6098f283870fbdea6"
 
 [[package]]
 name = "gimli"
@@ -269,9 +269,9 @@ dependencies = [
 
 [[package]]
 name = "js-sys"
-version = "0.3.70"
+version = "0.3.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1868808506b929d7b0cfa8f75951347aa71bb21144b7791bae35d9bccfcfe37a"
+checksum = "6a88f1bda2bd75b0452a14784937d796722fdebfe50df998aeb3f0b7603019a9"
 dependencies = [
  "wasm-bindgen",
 ]
@@ -382,9 +382,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.86"
+version = "1.0.87"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e719e8df665df0d1c8fbfd238015744736151d4445ec0836b8e628aae103b77"
+checksum = "b3e4daa0dcf6feba26f985457cdf104d4b4256fc5a09547140f3631bb076b19a"
 dependencies = [
  "unicode-ident",
 ]
@@ -406,9 +406,9 @@ checksum = "719b953e2095829ee67db738b3bfa9fa368c94900df327b3f07fe6e794d2fe1f"
 
 [[package]]
 name = "rustix"
-version = "0.38.34"
+version = "0.38.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "70dc5ec042f7a43c4a73241207cecc9873a06d45debb38b329f8541d85c2730f"
+checksum = "8acb788b847c24f28525660c4d7758620a7210875711f79e7f663cc152726811"
 dependencies = [
  "bitflags",
  "errno",
@@ -446,14 +446,14 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.2.63"
+version = "0.3.1"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-build"
-version = "0.1.17"
+version = "0.1.25"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -462,7 +462,7 @@ dependencies = [
 
 [[package]]
 name = "stak-code"
-version = "0.2.57"
+version = "0.2.65"
 dependencies = [
  "insta",
  "pretty_assertions",
@@ -470,31 +470,32 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.1.62"
+version = "0.2.1"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.62"
+version = "0.1.70"
 dependencies = [
  "indoc",
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.54"
+version = "0.1.62"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.63"
+version = "0.1.71"
 dependencies = [
  "clap",
  "main_error",
@@ -503,36 +504,40 @@ dependencies = [
 
 [[package]]
 name = "stak-device"
-version = "0.2.58"
+version = "0.2.66"
 dependencies = [
  "libc",
+ "stak-vm",
 ]
 
 [[package]]
 name = "stak-file"
-version = "0.4.16"
+version = "0.4.24"
 dependencies = [
+ "heapless",
  "libc",
+ "stak-vm",
  "tempfile",
 ]
 
 [[package]]
 name = "stak-interpret"
-version = "0.1.60"
+version = "0.2.1"
 dependencies = [
  "clap",
  "main_error",
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-macro"
-version = "0.1.59"
+version = "0.1.67"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -540,15 +545,16 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro-util",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
  "stak-vm",
  "syn",
 ]
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.35"
+version = "0.1.43"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -557,21 +563,22 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.1.36"
+version = "0.1.44"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.1.36"
+version = "0.1.44"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -582,45 +589,37 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.1.36"
+version = "0.1.44"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
-name = "stak-primitive"
-version = "0.5.16"
+name = "stak-process-context"
+version = "0.2.24"
 dependencies = [
- "heapless",
- "libm",
- "stak-device",
- "stak-file",
- "stak-process-context",
  "stak-vm",
 ]
 
 [[package]]
-name = "stak-process-context"
-version = "0.2.16"
-
-[[package]]
 name = "stak-profile"
-version = "0.1.28"
+version = "0.2.1"
 dependencies = [
  "clap",
  "main_error",
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-primitive",
  "stak-process-context",
  "stak-profiler",
+ "stak-r7rs",
+ "stak-time",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-profiler"
-version = "0.1.27"
+version = "0.1.35"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -628,15 +627,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-r7rs"
+version = "0.8.1"
+dependencies = [
+ "libm",
+ "stak-device",
+ "stak-file",
+ "stak-process-context",
+ "stak-time",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-repl"
-version = "0.1.24"
+version = "0.2.1"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.1.60"
+version = "0.1.68"
 dependencies = [
  "clap",
  "libc",
@@ -645,22 +656,31 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
  "stak-util",
  "stak-vm",
 ]
 
 [[package]]
+name = "stak-time"
+version = "0.1.7"
+dependencies = [
+ "libc",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-util"
-version = "0.1.34"
+version = "0.1.42"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.5.16"
+version = "0.6.1"
 dependencies = [
  "cfg-exif",
  "insta",
@@ -669,13 +689,14 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
 ]
 
 [[package]]
 name = "stak-wasm"
-version = "0.2.37"
+version = "0.2.45"
 dependencies = [
  "stak-code",
  "stak-compiler",
@@ -683,8 +704,9 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-primitive",
  "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
  "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
@@ -698,9 +720,9 @@ checksum = "5ee073c9e4cd00e28217186dbe12796d692868f432bf2e97ee73bed0c56dfa01"
 
 [[package]]
 name = "syn"
-version = "2.0.77"
+version = "2.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f35bcdf61fd8e7be6caf75f429fdca8beb3ed76584befb503b1569faee373ed"
+checksum = "89132cd0bf050864e1d38dc3bbc07a0eb8e7530af26344d3d2bbbef83499f590"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -709,9 +731,9 @@ dependencies = [
 
 [[package]]
 name = "tempfile"
-version = "3.12.0"
+version = "3.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04cbcdd0c794ebb0d4cf35e88edd2f7d2c4c3e9a5a6dab322839b321c6a87a64"
+checksum = "f0f2c9fc62d0beef6951ccffd757e241266a2c833136efbe35af6cd2567dca5b"
 dependencies = [
  "cfg-if",
  "fastrand",
@@ -754,9 +776,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.93"
+version = "0.2.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a82edfc16a6c469f5f44dc7b571814045d60404b55a0ee849f9bcfa2e63dd9b5"
+checksum = "128d1e363af62632b8eb57219c8fd7877144af57558fb2ef0368d0087bddeb2e"
 dependencies = [
  "cfg-if",
  "once_cell",
@@ -765,9 +787,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.93"
+version = "0.2.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9de396da306523044d3302746f1208fa71d7532227f15e347e2d93e4145dd77b"
+checksum = "cb6dd4d3ca0ddffd1dd1c9c04f94b868c37ff5fac97c30b97cff2d74fce3a358"
 dependencies = [
  "bumpalo",
  "log",
@@ -780,9 +802,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-futures"
-version = "0.4.43"
+version = "0.4.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61e9300f63a621e96ed275155c108eb6f843b6a26d053f122ab69724559dc8ed"
+checksum = "cc7ec4f8827a71586374db3e87abdb5a2bb3a15afed140221307c3ec06b1f63b"
 dependencies = [
  "cfg-if",
  "js-sys",
@@ -792,9 +814,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.93"
+version = "0.2.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "585c4c91a46b072c92e908d99cb1dcdf95c5218eeb6f3bf1efa991ee7a68cccf"
+checksum = "e79384be7f8f5a9dd5d7167216f022090cf1f9ec128e6e6a482a2cb5c5422c56"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -802,9 +824,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.93"
+version = "0.2.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afc340c74d9005395cf9dd098506f7f44e38f2b4a21c6aaacf9a105ea5e1e836"
+checksum = "26c6ab57572f7a24a4985830b120de1594465e5d500f24afe89e16b4e833ef68"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -815,15 +837,15 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.93"
+version = "0.2.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c62a0a307cb4a311d3a07867860911ca130c3494e8c2719593806c08bc5d0484"
+checksum = "65fc09f10666a9f147042251e0dda9c18f166ff7de300607007e96bdebc1068d"
 
 [[package]]
 name = "wasm-bindgen-test"
-version = "0.3.43"
+version = "0.3.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "68497a05fb21143a08a7d24fc81763384a3072ee43c44e86aad1744d6adef9d9"
+checksum = "d381749acb0943d357dcbd8f0b100640679883fcdeeef04def49daf8d33a5426"
 dependencies = [
  "console_error_panic_hook",
  "js-sys",
@@ -836,9 +858,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-macro"
-version = "0.3.43"
+version = "0.3.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b8220be1fa9e4c889b30fd207d4906657e7e90b12e0e6b0c8b8d8709f5de021"
+checksum = "c97b2ef2c8d627381e51c071c2ab328eac606d3f69dd82bcbca20a9e389d95f0"
 dependencies = [
  "proc-macro2",
  "quote",

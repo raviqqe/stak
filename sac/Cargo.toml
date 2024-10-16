@@ -1,7 +1,7 @@
 [package]
 name = "stak-sac"
 description = "Stand-Alone Complex for Stak Scheme"
-version = "0.1.60"
+version = "0.1.68"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -10,26 +10,34 @@ repository.workspace = true
 
 [features]
 float = ["stak-vm/float"]
-libc = ["dep:libc", "dep:stak-util", "stak-device/libc", "stak-file/libc"]
+libc = [
+  "dep:libc",
+  "dep:stak-util",
+  "stak-device/libc",
+  "stak-file/libc",
+  "stak-time/libc",
+]
 std = [
   "dep:clap",
   "dep:main_error",
   "stak-device/std",
   "stak-file/std",
   "stak-process-context/std",
+  "stak-time/std",
 ]
 
 [dependencies]
-clap = { version = "4.5.18", features = ["derive"], optional = true }
+clap = { version = "4.5.20", features = ["derive"], optional = true }
 libc = { version = "0.2", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
-stak-configuration = { version = "0.1.54", path = "../configuration" }
-stak-device = { version = "0.2.58", path = "../device" }
-stak-file = { version = "0.4.16", path = "../file" }
-stak-macro = { version = "0.1.59", path = "../macro" }
-stak-primitive = { version = "0.5.16", path = "../primitive" }
-stak-process-context = { version = "0.2.16", path = "../process_context", features = [
+stak-configuration = { version = "0.1.62", path = "../configuration" }
+stak-device = { version = "0.2.66", path = "../device" }
+stak-file = { version = "0.4.24", path = "../file" }
+stak-macro = { version = "0.1.67", path = "../macro" }
+stak-process-context = { version = "0.2.24", path = "../process_context", features = [
   "libc",
 ] }
-stak-util = { version = "0.1.34", path = "../util", optional = true }
-stak-vm = { version = "0.5.16", path = "../vm" }
+stak-r7rs = { version = "0.8.1", path = "../r7rs" }
+stak-time = { version = "0.1.7", path = "../time" }
+stak-util = { version = "0.1.42", path = "../util", optional = true }
+stak-vm = { version = "0.6.1", path = "../vm" }

@@ -13,29 +13,21 @@
 (cond-expand
   (stak
     (define cons-rib cons)
-    (define target-pair? pair?)
     (define target-procedure? procedure?))
 
   (else
     (define-record-type *rib*
-      (rib type car cdr tag)
+      (rib car cdr tag)
       rib?
-      (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
 
     (define (cons-rib car cdr)
-      (rib pair-type car cdr 0))
-
-    (define (instance? value type)
-      (and (rib? value) (eq? (rib-type value) type)))
-
-    (define (target-pair? value)
-      (instance? value pair-type))
+      (rib car cdr pair-type))
 
     (define (target-procedure? value)
-      (instance? value procedure-type))
+      (and (rib? value) (eqv? (rib-tag value) procedure-type)))
 
     (define string->uninterned-symbol string->symbol)))
 
@@ -67,7 +59,7 @@
 (define primitives
   '(($$cons 1)
     ($$close 2)
-    ($$car 4)
+    ($$cdr 5)
     ($$< 11)
     ($$+ 12)
     ($$- 13)
@@ -91,7 +83,7 @@
 ; Utility
 
 (define (code-rib tag car cdr)
-  (rib pair-type car cdr tag))
+  (rib car cdr tag))
 
 (define (call-rib arity procedure continuation)
   (code-rib (+ call-instruction arity) procedure continuation))
@@ -100,13 +92,13 @@
   (code-rib constant-instruction constant continuation))
 
 (define (data-rib type car cdr)
-  (rib type car cdr 0))
+  (rib car cdr type))
 
 (define (make-procedure arity code environment)
-  (data-rib procedure-type environment (cons-rib arity code)))
+  (data-rib procedure-type (cons-rib arity code) environment))
 
 (define (procedure-code procedure)
-  (rib-cdr (rib-cdr procedure)))
+  (rib-cdr (rib-car procedure)))
 
 (define (bytevector->list xs)
   (let loop ((index 0) (result '()))
@@ -950,14 +942,14 @@
   (call-rib
     (compile-arity
       (case name
-        (($$close $$car $$exp $$log)
+        (($$close $$cdr $$exp $$log)
           1)
 
         (($$cons $$- $$*)
           2)
 
         (($$rib)
-          4)
+          3)
 
         (else
           (error "unknown primitive" name)))
@@ -967,7 +959,8 @@
 
 (define (drop? codes)
   (and
-    (target-pair? codes)
+    (rib? codes)
+    (not (null? codes))
     (eq? (rib-tag codes) set-instruction)
     (eq? (rib-car codes) 0)))
 
@@ -1212,16 +1205,14 @@
 
 (define (build-constant-codes context constant continue)
   (define (build-rib type car cdr)
-    (constant-rib
-      type
-      (build-child-constants
-        context
-        car
-        cdr
-        (lambda ()
-          (constant-rib
-            0
-            (compile-primitive-call '$$rib (continue)))))))
+    (build-child-constants
+      context
+      car
+      cdr
+      (lambda ()
+        (constant-rib
+          type
+          (compile-primitive-call '$$rib (continue))))))
 
   (let ((symbol (constant-context-constant context constant)))
     (if symbol
@@ -1233,11 +1224,11 @@
         ((bytevector? constant)
           (build-rib
             bytevector-type
-            (bytevector->list constant)
-            (bytevector-length constant)))
+            (bytevector-length constant)
+            (bytevector->list constant)))
 
         ((char? constant)
-          (build-rib char-type '() (char->integer constant)))
+          (build-rib char-type (char->integer constant) '()))
 
         ((and
             (number? constant)
@@ -1256,13 +1247,13 @@
         ((string? constant)
           (constant-rib
             (string->symbol constant)
-            (compile-primitive-call '$$car (continue))))
+            (compile-primitive-call '$$cdr (continue))))
 
         ((vector? constant)
           (build-rib
             vector-type
-            (vector->list constant)
-            (vector-length constant)))
+            (vector-length constant)
+            (vector->list constant)))
 
         (else
           (error "invalid constant" constant))))))
@@ -1334,8 +1325,8 @@
 
 (define (nop-codes? codes)
   (and
-    (target-pair? codes)
-    (eq? (rib-tag codes) nop-instruction)))
+    (rib? codes)
+    (eqv? (rib-tag codes) nop-instruction)))
 
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
@@ -1420,7 +1411,7 @@
     (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
 
 (define (encode-procedure context procedure return target)
-  (let ((code (rib-cdr procedure)))
+  (let ((code (rib-car procedure)))
     (encode-codes
       context
       (rib-cdr code)
@@ -1504,17 +1495,18 @@
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (constant-rib
-    procedure-type
-    (constant-rib
+  (code-rib
+    constant-instruction
+    (cadr primitive)
+    (code-rib
+      constant-instruction
       '()
-      (constant-rib
-        (cadr primitive)
-        (constant-rib
-          0
-          (compile-primitive-call
-            '$$rib
-            (code-rib set-instruction (car primitive) continuation)))))))
+      (code-rib
+        constant-instruction
+        procedure-type
+        (compile-primitive-call
+          '$$rib
+          (code-rib set-instruction (car primitive) continuation))))))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)

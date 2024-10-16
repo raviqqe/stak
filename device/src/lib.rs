@@ -8,17 +8,7 @@ extern crate alloc;
 extern crate std;
 
 mod device;
-mod fixed_buffer;
-#[cfg(feature = "libc")]
-pub mod libc;
-#[cfg(feature = "std")]
-mod read_write;
-#[cfg(feature = "std")]
-mod stdio;
+mod primitive_set;
 
-pub use device::Device;
-pub use fixed_buffer::FixedBufferDevice;
-#[cfg(feature = "std")]
-pub use read_write::ReadWriteDevice;
-#[cfg(feature = "std")]
-pub use stdio::StdioDevice;
+pub use device::*;
+pub use primitive_set::{DevicePrimitiveSet, Primitive, PrimitiveError};

@@ -1,7 +1,7 @@
 [package]
 name = "stak-vm"
 description = "VM for Stak Scheme"
-version = "0.5.16"
+version = "0.6.1"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -26,8 +26,9 @@ stak-code = { path = "../code", features = ["alloc"] }
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
-stak-primitive = { path = "../primitive" }
 stak-process-context = { path = "../process_context" }
+stak-r7rs = { path = "../r7rs" }
+stak-time = { path = "../time" }
 
 [lints]
 workspace = true
