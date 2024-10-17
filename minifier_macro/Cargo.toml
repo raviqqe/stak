@@ -12,7 +12,7 @@ repository.workspace = true
 proc-macro = true
 
 [dependencies]
-proc-macro2 = { version = "1.0.87", features = ["proc-macro"] }
+proc-macro2 = { version = "1.0.88", features = ["proc-macro"] }
 quote = "1.0.37"
 syn = "2.0.79"
 stak-minifier = { version = "0.1.44", path = "../minifier" }
