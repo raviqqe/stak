@@ -372,11 +372,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .into(),
                 )?;
             } else if head & 0b10 == 0 {
-                let left = self.memory.pop();
-                let right = self.memory.pop();
+                let car = self.memory.pop();
+                let cdr = self.memory.pop();
                 let r#type = Self::decode_integer_tail(input, head >> 2, TAG_BASE)?;
-                let rib = self.memory.allocate(left, right.set_tag(r#type as _))?;
-                self.memory.push(rib.into())?;
+                let cons = self.memory.allocate(car, cdr.set_tag(r#type as _))?;
+                self.memory.push(cons.into())?;
             } else {
                 let head = head >> 2;
 
