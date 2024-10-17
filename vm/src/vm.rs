@@ -409,12 +409,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn decode_number(integer: u128) -> Number {
-        let number = integer >> 1;
-
         if integer & 1 == 0 {
-            Number::from_i64(number as _)
+            Number::from_i64((integer >> 1) as _)
         } else if integer & 0b10 == 0 {
-            Number::from_i64(-(number as i64))
+            Number::from_i64(-((integer >> 2) as i64))
         } else {
             panic!("floating point number not supported")
         }
