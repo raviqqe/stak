@@ -413,8 +413,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         if integer & 1 == 0 {
             Number::from_i64(number as _)
-        } else if integer & 1 == 0 {
-            Number::from_i64(number as _)
+        } else if integer & 0b10 == 0 {
+            Number::from_i64(-(number as i64))
         } else {
             panic!("floating point number not supported")
         }
