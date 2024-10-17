@@ -1177,10 +1177,6 @@
       (error "float not supported"))))
 
 (define (encode-ribs context value data target)
-  ; TODO Remove this hack.
-  (when (null? value)
-    (rib-set-cdr! value 0))
-
   (cond
     ((rib? value)
       (let* ((singly-shared (and (not data) (nop-codes? value)))
@@ -1263,6 +1259,9 @@
 ;; Main
 
 (define (encode codes)
+  ; TODO Remove this hack.
+  (rib-set-cdr! '() (cons 0 0))
+
   (encode-ribs
     (make-encode-context '())
     (build-primitives primitives codes)
