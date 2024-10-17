@@ -370,19 +370,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(input, head >> 1, NUMBER_BASE)?)
                         .into(),
-                );
+                )?;
             } else if head & 0b10 == 0 {
                 let left = self.memory.pop();
                 let right = self.memory.pop();
                 let r#type = Self::decode_integer_tail(input, head >> 2, TAG_BASE)?;
                 let rib = self.memory.allocate(left, right.set_tag(r#type as _))?;
-                self.memory.push(rib.into());
+                self.memory.push(rib.into())?;
             } else {
                 let head = head >> 2;
 
                 if head == 0 {
                     let value = self.memory.top();
-                    self.push_to_dictionary(value);
+                    self.push_to_dictionary(value)?;
                 } else {
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
                     let cons = self.memory.tail(
@@ -391,9 +391,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     );
                     let value = self.memory.car(cons);
                     if integer & 1 != 0 {
-                        self.push_to_dictionary(value.clone());
+                        self.push_to_dictionary(value.clone())?;
                     }
-                    self.memory.push(value);
+                    self.memory.push(value)?;
                 }
             }
         }
