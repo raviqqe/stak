@@ -385,11 +385,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.push_to_dictionary(value)?;
                 } else {
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
-                    let cons = self.memory.tail(
+                    let value = self.memory.car(self.memory.tail(
                         self.memory.program_counter(),
                         Number::from_i64((integer >> 1) as _),
-                    );
-                    let value = self.memory.car(cons);
+                    ));
                     if integer & 1 != 0 {
                         self.push_to_dictionary(value)?;
                     }
