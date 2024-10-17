@@ -428,7 +428,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut y = (x >> 1) as u128;
 
         while x & 1 != 0 {
-            x = input.next().ok_or_else(|| Error::BytecodeEnd)?;
+            x = input.next().ok_or(Error::BytecodeEnd)?;
             y += (x as u128 >> 1) * base;
             base *= INTEGER_BASE;
         }
