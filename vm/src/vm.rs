@@ -391,7 +391,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     );
                     let value = self.memory.car(cons);
                     if integer & 1 != 0 {
-                        self.push_to_dictionary(value.clone())?;
+                        self.push_to_dictionary(value)?;
                     }
                     self.memory.push(value)?;
                 }
