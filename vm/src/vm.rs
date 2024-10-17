@@ -385,13 +385,23 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.push_to_dictionary(value)?;
                 } else {
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
-                    let value = self.memory.car(self.memory.tail(
+                    let dictionary = self.memory.cons(
+                        self.memory.boolean(false).into(),
                         self.memory.program_counter(),
-                        Number::from_i64((integer >> 1) as _),
-                    ));
+                    )?;
+                    let cons = self
+                        .memory
+                        .tail(dictionary, Number::from_i64((integer >> 1) as _));
+                    let value = self.memory.car_value(self.memory.cdr(cons));
+                    self.memory
+                        .set_cdr(cons, self.memory.cdr_value(self.memory.cdr(cons)));
+                    self.memory
+                        .set_program_counter(self.memory.cdr(dictionary).assume_cons());
+
                     if integer & 1 != 0 {
                         self.push_to_dictionary(value)?;
                     }
+
                     self.memory.push(value)?;
                 }
             }
