@@ -1202,13 +1202,14 @@
                   (if data
                     (target-procedure? value)
                     (memq tag (list close-instruction if-instruction)))))
+
               (let-values (((head tail) (encode-integer-parts tag tag-base)))
                 (write-u8 (+ 1 (* 2 head)))
-                (encode-integer-tail tail)
+                (encode-integer-tail tail))
 
-                (when shared
-                  (encode-context-push! context value)
-                  (write-u8 3))))))))
+              (when shared
+                (encode-context-push! context value)
+                (write-u8 3)))))))
 
     (else
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
