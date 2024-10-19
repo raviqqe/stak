@@ -1204,7 +1204,7 @@
                     (memq tag (list close-instruction if-instruction)))))
 
               (let-values (((head tail) (encode-integer-parts tag tag-base)))
-                (write-u8 (+ 1 (* 2 head)))
+                (write-u8 (+ 1 (* 4 head)))
                 (encode-integer-tail tail))
 
               (when shared
