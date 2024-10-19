@@ -1,7 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    cons::{Cons, Tag},
+    cons::{never, Cons, Tag},
     memory::Memory,
     number::Number,
     primitive_set::PrimitiveSet,
@@ -355,9 +355,28 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Initializes a virtual machine with bytecodes of a program.
     pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
+        profile_event!(self, "decode_start");
 
-        let code = self.decode_ribs(&mut input.into_iter())?;
-        self.memory.set_program_counter(code);
+        let program = self.decode_ribs(&mut input.into_iter())?;
+        self.memory
+            .set_program_counter(self.memory.cdr(program).assume_cons());
+        self.memory
+            .set_false(self.memory.car(program).assume_cons());
+
+        profile_event!(self, "decode_end");
+
+        // Initialize an implicit top-level frame.
+        let codes = self
+            .memory
+            .cons(Number::default().into(), self.memory.null())?
+            .into();
+        let continuation = self.memory.cons(codes, self.memory.null())?.into();
+        let stack = self.memory.allocate(
+            continuation,
+            self.memory.null().set_tag(StackSlot::Frame as _).into(),
+        )?;
+        self.memory.set_stack(stack);
+        self.memory.set_register(never());
 
         profile_event!(self, "initialization_end");
 

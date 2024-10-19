@@ -118,6 +118,11 @@ impl<'a> Memory<'a> {
         self.car(self.r#false).assume_cons()
     }
 
+    /// Sets a false value.
+    pub fn set_false(&mut self, cons: Cons) {
+        self.r#false = cons;
+    }
+
     /// Pushes a value to a stack.
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;

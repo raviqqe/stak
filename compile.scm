@@ -1245,7 +1245,7 @@
   ; TODO Remove this hack.
   (rib-set-cdr! '() (cons 0 0))
 
-  (encode-rib (make-encode-context '()) (build-primitives primitives codes) #f))
+  (encode-rib (make-encode-context '()) (cons #f (build-primitives primitives codes)) #f))
 
 ; Main
 
