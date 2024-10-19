@@ -1167,7 +1167,7 @@
     (else
       (error "float not supported"))))
 
-(define (encode-ribs context value data)
+(define (encode-rib context value data)
   (cond
     ((rib? value)
       (let* ((singly-shared (and (not data) (nop-codes? value)))
@@ -1194,8 +1194,8 @@
 
           (else
             (let ((tag (rib-tag value)))
-              (encode-ribs context (rib-cdr value) data)
-              (encode-ribs
+              (encode-rib context (rib-cdr value) data)
+              (encode-rib
                 context
                 (rib-car value)
                 (not
@@ -1244,7 +1244,7 @@
   ; TODO Remove this hack.
   (rib-set-cdr! '() (cons 0 0))
 
-  (encode-ribs (make-encode-context '()) (build-primitives primitives codes) #f))
+  (encode-rib (make-encode-context '()) (build-primitives primitives codes) #f))
 
 ; Main
 
