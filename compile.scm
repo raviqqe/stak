@@ -250,11 +250,6 @@
     ; Keep an invariant that a `begin` body must not be empty.
     (cons #f (read-all))))
 
-; Target code writing
-
-(define (write-target codes)
-  (for-each write-u8 codes))
-
 ; Library system
 
 ;; Types
@@ -1152,18 +1147,14 @@
       (encode-integer-part integer base (if (zero? rest) 0 1))
       rest)))
 
-(define (encode-integer-tail x target)
-  (do ((x x (quotient x integer-base))
-       (target
-         target
-         (cons
-           (encode-integer-part
-             x
-             integer-base
-             (if (zero? (quotient x integer-base)) 0 1))
-           target)))
-    ((zero? x)
-      target)))
+(define (encode-integer-tail x)
+  (do ((x x (quotient x integer-base)))
+    ((zero? x))
+    (write-u8
+      (encode-integer-part
+        x
+        integer-base
+        (if (zero? (quotient x integer-base)) 0 1)))))
 
 (define (encode-number x)
   (cond
@@ -1176,7 +1167,7 @@
     (else
       (error "float not supported"))))
 
-(define (encode-ribs context value data target)
+(define (encode-ribs context value data)
   (cond
     ((rib? value)
       (let* ((singly-shared (and (not data) (nop-codes? value)))
@@ -1198,40 +1189,31 @@
                                (encode-integer-parts
                                  (+ (* 2 index) (if singly-shared 0 1))
                                  share-base)))
-                  (cons
-                    (+ 3 (* 4 (+ 1 head)))
-                    (encode-integer-tail tail target))))))
+                  (write-u8 (+ 3 (* 4 (+ 1 head))))
+                  (encode-integer-tail tail)))))
 
           (else
-            (let* ((tag (rib-tag value))
-                   (target
-                     (encode-ribs
-                       context
-                       (rib-cdr value)
-                       data
-                       (encode-ribs
-                         context
-                         (rib-car value)
-                         (not
-                           (if data
-                             (target-procedure? value)
-                             (memq tag (list close-instruction if-instruction))))
-                         (let-values (((head tail)
-                                        (encode-integer-parts tag tag-base)))
-                           (cons
-                             (+ 1 (* 2 head))
-                             (encode-integer-tail
-                               tail
-                               (if shared
-                                 (cons 3 target)
-                                 target))))))))
-              (when shared
-                (encode-context-push! context value))
-              target)))))
+            (let ((tag (rib-tag value)))
+              (encode-ribs context (rib-cdr value) data)
+              (encode-ribs
+                context
+                (rib-car value)
+                (not
+                  (if data
+                    (target-procedure? value)
+                    (memq tag (list close-instruction if-instruction)))))
+              (let-values (((head tail) (encode-integer-parts tag tag-base)))
+                (write-u8 (+ 1 (* 2 head)))
+                (encode-integer-tail tail)
+
+                (when shared
+                  (encode-context-push! context value)
+                  (write-u8 3))))))))
 
     (else
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (cons (* 2 head) (encode-integer-tail tail target))))))
+        (write-u8 (* 2 head))
+        (encode-integer-tail tail)))))
 
 ;; Primitives
 
@@ -1262,11 +1244,7 @@
   ; TODO Remove this hack.
   (rib-set-cdr! '() (cons 0 0))
 
-  (encode-ribs
-    (make-encode-context '())
-    (build-primitives primitives codes)
-    #f
-    '()))
+  (encode-ribs (make-encode-context '()) (build-primitives primitives codes) #f))
 
 ; Main
 
@@ -1274,16 +1252,15 @@
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
 
-  (write-target
-    (encode
-      (compile
-        (map-values
-          library-exports
-          (map-values library-state-library (library-context-libraries library-context)))
-        (reverse
-          (filter
-            (lambda (pair) (library-symbol? (car pair)))
-            (macro-state-literals (macro-context-state macro-context))))
-        expression2))))
+  (encode
+    (compile
+      (map-values
+        library-exports
+        (map-values library-state-library (library-context-libraries library-context)))
+      (reverse
+        (filter
+          (lambda (pair) (library-symbol? (car pair)))
+          (macro-state-literals (macro-context-state macro-context))))
+      expression2)))
 
 (main)
