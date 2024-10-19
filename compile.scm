@@ -1158,11 +1158,11 @@
 
 (define (encode-number x)
   (cond
-    ((and (integer? x) (positive? x))
-      (* 2 x))
+    ((and (integer? x) (negative? x))
+      (+ 1 (* 4 (abs x))))
 
     ((integer? x)
-      (+ 1 (* 4 (abs x))))
+      (* 2 x))
 
     (else
       (error "float not supported"))))
