@@ -11,7 +11,7 @@ repository.workspace = true
 [dependencies]
 glob = "0.3.1"
 stak-compiler = { version = "0.1.70", path = "../compiler" }
-tokio = { version = "1.40.0", features = ["fs", "rt-multi-thread"] }
+tokio = { version = "1.41.0", features = ["fs", "rt-multi-thread"] }
 
 [lints]
 workspace = true
