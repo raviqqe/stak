@@ -13,7 +13,7 @@ float = ["dep:nonbox"]
 gc_always = []
 profile = []
 trace_instruction = []
-trace_heap = []
+trace_memory = []
 
 [dependencies]
 cfg-exif = "0.3.0"

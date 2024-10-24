@@ -33,9 +33,9 @@ macro_rules! trace {
     };
 }
 
-macro_rules! trace_heap {
+macro_rules! trace_memory {
     ($self:expr) => {
-        #[cfg(feature = "trace_heap")]
+        #[cfg(feature = "trace_memory")]
         std::eprintln!("{}", $self);
     };
 }
@@ -112,7 +112,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 )?,
             }
 
-            trace_heap!(self);
+            trace_memory!(self);
         }
 
         Ok(())
@@ -130,9 +130,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn get(&mut self) -> Result<(), T::Error> {
-        let value = self.memory.car(self.operand_cons());
+        let operand = self.operand_cons();
+        let value = self.memory.car(operand);
 
-        trace!("operand", value);
+        trace!("operand", operand);
+        trace!("value", value);
 
         self.memory.push(value)?;
         self.advance_program_counter();
@@ -143,6 +145,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn set(&mut self) {
         let operand = self.operand_cons();
         let value = self.memory.pop();
+
+        trace!("operand", operand);
+        trace!("value", value);
 
         self.memory.set_car(operand, value);
         self.advance_program_counter();
