@@ -1123,7 +1123,7 @@
     (encode-context-set-dictionary! context (cdr dictionary))
     value))
 
-(define (encode-context-find-index context value)
+(define (encode-context-position context value)
   (memv-position value (encode-context-dictionary context)))
 
 ;; Codes
@@ -1197,7 +1197,7 @@
                    (string? value)
                    (char? value))))
           (cond
-            ((and shared (encode-context-find-index context value)) =>
+            ((and shared (encode-context-position context value)) =>
               (lambda (index)
                 (let ((value (encode-context-remove! context index)))
                   (when (not singly-shared)
