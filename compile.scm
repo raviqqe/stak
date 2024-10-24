@@ -57,7 +57,8 @@
 ; Primitives
 
 (define primitives
-  '(($$cons 1)
+  '(($$rib 0)
+    ($$cons 1)
     ($$close 2)
     ($$cdr 5)
     ($$< 11)
@@ -1104,9 +1105,10 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context dictionary)
+  (make-encode-context dictionary constants)
   encode-context?
-  (dictionary encode-context-dictionary encode-context-set-dictionary!))
+  (dictionary encode-context-dictionary encode-context-set-dictionary!)
+  (constants encode-context-constants encode-context-set-constants!))
 
 (define (encode-context-push! context value)
   (encode-context-set-dictionary!
@@ -1138,6 +1140,20 @@
     (rib? codes)
     (eqv? (rib-tag codes) nop-instruction)))
 
+(define (build-constant context x)
+  (let ((constants (encode-context-constants context)))
+    (cond
+      ((not (symbol? x))
+        x)
+
+      ((assoc x constants) =>
+        cdr)
+
+      (else
+        (let ((y (data-rib symbol-type #f (symbol->string x))))
+          (encode-context-set-constants! context (cons (cons x y) constants))
+          y)))))
+
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
@@ -1168,69 +1184,65 @@
       (error "float not supported"))))
 
 (define (encode-node context value data)
-  (cond
-    ((rib? value)
-      (let* ((singly-shared (and (not data) (nop-codes? value)))
-             (shared
-               (or
-                 singly-shared
-                 (memq value singletons)
-                 (procedure? value)
-                 (symbol? value)
-                 (string? value)
-                 (char? value))))
-        (cond
-          ((and shared (encode-context-find-index context value)) =>
-            (lambda (index)
-              (let ((value (encode-context-remove! context index)))
-                (when (not singly-shared)
-                  (encode-context-push! context value))
-                (let-values (((head tail)
-                               (encode-integer-parts
-                                 (+ (* 2 index) (if singly-shared 0 1))
-                                 share-base)))
-                  (write-u8 (+ 3 (* 4 (+ 1 head))))
-                  (encode-integer-tail tail)))))
+  (let ((value (if data (build-constant context value) value)))
+    (cond
+      ((rib? value)
+        (let* ((singly-shared (and (not data) (nop-codes? value)))
+               (shared
+                 (or
+                   singly-shared
+                   (memq value singletons)
+                   (procedure? value)
+                   (symbol? value)
+                   (string? value)
+                   (char? value))))
+          (cond
+            ((and shared (encode-context-find-index context value)) =>
+              (lambda (index)
+                (let ((value (encode-context-remove! context index)))
+                  (when (not singly-shared)
+                    (encode-context-push! context value))
+                  (let-values (((head tail)
+                                 (encode-integer-parts
+                                   (+ (* 2 index) (if singly-shared 0 1))
+                                   share-base)))
+                    (write-u8 (+ 3 (* 4 (+ 1 head))))
+                    (encode-integer-tail tail)))))
 
-          (else
-            (let ((tag (rib-tag value)))
-              (encode-node context (rib-cdr value) data)
-              (encode-node
-                context
-                (rib-car value)
-                (not
-                  (if data
-                    (target-procedure? value)
-                    (memq tag (list close-instruction if-instruction)))))
+            (else
+              (let ((tag (rib-tag value)))
+                (encode-node context (rib-cdr value) data)
+                (encode-node
+                  context
+                  (rib-car value)
+                  (not
+                    (if data
+                      (target-procedure? value)
+                      (memq tag (list close-instruction if-instruction)))))
 
-              (let-values (((head tail) (encode-integer-parts tag tag-base)))
-                (write-u8 (+ 1 (* 4 head)))
-                (encode-integer-tail tail))
+                (let-values (((head tail) (encode-integer-parts tag tag-base)))
+                  (write-u8 (+ 1 (* 4 head)))
+                  (encode-integer-tail tail))
 
-              (when shared
-                (encode-context-push! context value)
-                (write-u8 3)))))))
+                (when shared
+                  (encode-context-push! context value)
+                  (write-u8 3)))))))
 
-    (else
-      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-u8 (* 2 head))
-        (encode-integer-tail tail)))))
+      (else
+        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+          (write-u8 (* 2 head))
+          (encode-integer-tail tail))))))
 
 ;; Primitives
 
 (define (build-primitive primitive continuation)
   (code-rib
     constant-instruction
-    (cadr primitive)
+    (data-rib procedure-type (cadr primitive) '())
     (code-rib
-      constant-instruction
-      '()
-      (code-rib
-        constant-instruction
-        procedure-type
-        (compile-primitive-call
-          '$$rib
-          (code-rib set-instruction (car primitive) continuation))))))
+      set-instruction
+      (car primitive)
+      continuation)))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)
@@ -1245,7 +1257,7 @@
   ; TODO Remove this hack.
   (rib-set-cdr! '() (cons 0 0))
 
-  (encode-node (make-encode-context '()) (cons #f (build-primitives primitives codes)) #f))
+  (encode-node (make-encode-context '() '()) (cons #f (build-primitives primitives codes)) #f))
 
 ; Main
 
