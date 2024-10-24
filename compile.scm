@@ -57,7 +57,8 @@
 ; Primitives
 
 (define primitives
-  '(($$cons 1)
+  '(($$rib 0)
+    ($$cons 1)
     ($$close 2)
     ($$cdr 5)
     ($$< 11)
@@ -249,11 +250,6 @@
     '$$begin
     ; Keep an invariant that a `begin` body must not be empty.
     (cons #f (read-all))))
-
-; Target code writing
-
-(define (write-target codes)
-  (for-each write-u8 codes))
 
 ; Library system
 
@@ -1104,409 +1100,149 @@
     expression
     '()))
 
-; Constant building
+; Encoding
 
 ;; Context
 
-(define-record-type constant-context
-  (make-constant-context constants constant-id)
-  constant-context?
-  (constants constant-context-constants constant-context-set-constants!)
-  (constant-id constant-context-constant-id constant-context-set-constant-id!))
+(define-record-type encode-context
+  (make-encode-context dictionary constants)
+  encode-context?
+  (dictionary encode-context-dictionary encode-context-set-dictionary!)
+  (constants encode-context-constants encode-context-set-constants!))
 
-(define (constant-context-constant context constant)
-  (cond
-    ((assv constant (append default-constants (constant-context-constants context))) =>
-      cdr)
-
-    (else
-      #f)))
-
-(define (constant-context-add-constant! context constant symbol)
-  (constant-context-set-constants!
+(define (encode-context-push! context value)
+  (encode-context-set-dictionary!
     context
-    (cons (cons constant symbol) (constant-context-constants context))))
+    (cons value (encode-context-dictionary context))))
 
-(define (constant-context-generate-constant-id! context)
-  (let ((id (constant-context-constant-id context)))
-    (constant-context-set-constant-id! context (+ id 1))
-    (string->uninterned-symbol (string-append "$" (id->string id)))))
+(define (encode-context-remove! context index)
+  (let* ((dictionary (cons #f (encode-context-dictionary context)))
+         (cons (list-tail dictionary index))
+         (value (cadr cons)))
+    (set-cdr! cons (cddr cons))
+    (encode-context-set-dictionary! context (cdr dictionary))
+    value))
 
-;; Main
+(define (encode-context-position context value)
+  (memv-position value (encode-context-dictionary context)))
 
-; We do not need to check boolean and null which are registered as default constants.
-(define (constant-normal? constant)
-  (or
-    (symbol? constant)
-    (and
-      (integer? constant)
-      (not (negative? constant)))
-    (target-procedure? constant)))
+;; Codes
 
-(define (build-child-constants context car cdr continue)
-  (define (build-child constant continue)
-    (build-constant-codes context constant continue))
+(define integer-base 128)
+(define number-base 64)
+(define tag-base 32)
+(define share-base 31)
 
-  (build-child
-    car
-    (lambda ()
-      (build-child
-        cdr
-        continue))))
-
-(define (fraction x)
-  (- x (floor x)))
-
-; TODO Why not 51 instead of 49?
-(define maximum-float-integer (expt 2 49))
-
-(define (decompose-float x)
-  (define (mantissa y)
-    (/ x (expt 2 y)))
-
-  (do ((y (log x 2) (- y 1)))
-    ((or
-        (< (fraction (mantissa (floor y))) epsilon)
-        (> (mantissa (+ y 1)) maximum-float-integer))
-      (let ((y (floor y)))
-        (values (exact (round (mantissa y))) (exact y))))))
-
-(define (build-number-constant constant continue)
-  (cond
-    ((negative? constant)
-      (constant-rib
-        0
-        (build-number-constant
-          (abs constant)
-          (lambda ()
-            (compile-primitive-call '$$- (continue))))))
-
-    ((not (integer? constant))
-      (let-values (((x y) (decompose-float constant)))
-        (constant-rib
-          x
-          (build-number-constant
-            y
-            (lambda ()
-              (constant-rib
-                2
-                (compile-primitive-call
-                  '$$log
-                  (compile-primitive-call
-                    '$$*
-                    (compile-primitive-call
-                      '$$exp
-                      (compile-primitive-call
-                        '$$*
-                        (continue)))))))))))
-
-    (else
-      (constant-rib constant (continue)))))
-
-(define (build-constant-codes context constant continue)
-  (define (build-rib type car cdr)
-    (build-child-constants
-      context
-      car
-      cdr
-      (lambda ()
-        (constant-rib
-          type
-          (compile-primitive-call '$$rib (continue))))))
-
-  (let ((symbol (constant-context-constant context constant)))
-    (if symbol
-      (code-rib get-instruction symbol (continue))
-      (cond
-        ((constant-normal? constant)
-          (constant-rib constant (continue)))
-
-        ((bytevector? constant)
-          (build-rib
-            bytevector-type
-            (bytevector-length constant)
-            (bytevector->list constant)))
-
-        ((char? constant)
-          (build-rib char-type (char->integer constant) '()))
-
-        ((and
-            (number? constant)
-            (or
-              (not (integer? constant))
-              (negative? constant)))
-          (build-number-constant constant continue))
-
-        ((pair? constant)
-          (build-child-constants
-            context
-            (car constant)
-            (cdr constant)
-            (lambda () (compile-primitive-call '$$cons (continue)))))
-
-        ((string? constant)
-          (constant-rib
-            (string->symbol constant)
-            (compile-primitive-call '$$cdr (continue))))
-
-        ((vector? constant)
-          (build-rib
-            vector-type
-            (vector-length constant)
-            (vector->list constant)))
-
-        (else
-          (error "invalid constant" constant))))))
-
-(define (build-constant context constant continue)
-  (if (or (constant-normal? constant) (constant-context-constant context constant))
-    (continue)
-    (let ((id (constant-context-generate-constant-id! context)))
-      (build-constant-codes
-        context
-        constant
-        (lambda ()
-          (constant-context-add-constant! context constant id)
-          (code-rib set-instruction id (continue)))))))
-
-(define (build-constants context codes)
-  (let loop ((codes codes) (continue (lambda () codes)))
-    (if (terminal-codes? codes)
-      (continue)
-      (let* ((instruction (rib-tag codes))
-             (operand (rib-car codes))
-             (codes (rib-cdr codes))
-             (continue (lambda () (loop codes continue))))
-        (cond
-          ((eq? instruction constant-instruction)
-            (build-constant
-              context
-              operand
-              (if (target-procedure? operand)
-                (lambda () (loop (procedure-code operand) continue))
-                continue)))
-
-          ((eq? instruction if-instruction)
-            (loop operand continue))
-
-          (else
-            (continue)))))))
-
-; Encoding
-
-;; Utility
-
-(define (find-symbols constant-symbols codes)
-  (let loop ((codes codes) (symbols '()))
-    (if (terminal-codes? codes)
-      symbols
-      (let ((instruction (rib-tag codes))
-            (operand (rib-car codes)))
-        (loop
-          (rib-cdr codes)
-          (cond
-            ((and
-                (eq? instruction constant-instruction)
-                (target-procedure? operand))
-              (loop (procedure-code operand) symbols))
-
-            ((eq? instruction if-instruction)
-              (loop operand symbols))
-
-            ((and
-                (symbol? operand)
-                (not (memq operand default-symbols))
-                (not (memq operand constant-symbols))
-                (not (memq operand symbols)))
-              (cons operand symbols))
-
-            (else
-              symbols)))))))
+(define singletons '(#f #t ()))
 
 (define (nop-codes? codes)
   (and
     (rib? codes)
     (eqv? (rib-tag codes) nop-instruction)))
 
-(define (terminal-codes? codes)
-  (or (null? codes) (nop-codes? codes)))
+(define (build-constant context x)
+  (let ((constants (encode-context-constants context)))
+    (cond
+      ((not (symbol? x))
+        x)
 
-(define (find-continuation codes)
-  (cond
-    ((null? codes)
-      '())
+      ((assoc x constants) =>
+        cdr)
 
-    ((nop-codes? codes)
-      (rib-cdr codes))
-
-    (else
-      (find-continuation (rib-cdr codes)))))
-
-(define (count-skips codes continuation)
-  (do ((codes codes (rib-cdr codes)) (count 0 (+ 1 count)))
-    ((eq? codes continuation)
-      count)))
-
-;; Context
-
-(define-record-type encode-context
-  (make-encode-context symbols constant-context)
-  encode-context?
-  (symbols encode-context-symbols encode-context-set-symbols!)
-  (constant-context encode-context-constant-context))
-
-(define (encode-context-constant context constant)
-  (constant-context-constant (encode-context-constant-context context) constant))
-
-;; Symbols
-
-(define symbol-separator (- 256 2))
-(define symbol-terminator (- 256 1))
-
-(define (encode-string string target)
-  (if (null? string)
-    target
-    (encode-string (cdr string) (cons (char->integer (car string)) target))))
-
-(define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
-
-(define (encode-symbols symbols constant-symbols target)
-  (let ((target (cons symbol-terminator target)))
-    (encode-integer
-      (length constant-symbols)
-      (cdr
-        (fold-left
-          (lambda (target symbol)
-            (cons
-              symbol-separator
-              (encode-symbol symbol target)))
-          target
-          symbols)))))
-
-;; Codes
-
-(define integer-base 128)
-(define short-integer-base 8)
+      (else
+        (let ((y (data-rib symbol-type #f (symbol->string x))))
+          (encode-context-set-constants! context (cons (cons x y) constants))
+          y)))))
 
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
-(define (encode-integer-with-base integer base target)
-  (do ((x (quotient integer base) (quotient x integer-base))
-       (bit 0 1)
-       (target target (cons (encode-integer-part x integer-base bit) target)))
-    ((zero? x)
-      (values (encode-integer-part integer base bit) target))))
+(define (encode-integer-parts integer base)
+  (let ((rest (quotient integer base)))
+    (values
+      (encode-integer-part integer base (if (zero? rest) 0 1))
+      rest)))
 
-(define (encode-short-integer integer target)
-  (encode-integer-with-base integer short-integer-base target))
+(define (encode-integer-tail x)
+  (do ((x x (quotient x integer-base)))
+    ((zero? x))
+    (write-u8
+      (encode-integer-part
+        x
+        integer-base
+        (if (zero? (quotient x integer-base)) 0 1)))))
 
-(define (encode-integer integer target)
-  (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
-    (cons byte target)))
-
-(define (encode-instruction instruction integer return target)
-  (let-values (((integer target) (encode-short-integer integer target)))
-    (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
-
-(define (encode-procedure context procedure return target)
-  (let ((code (rib-car procedure)))
-    (encode-codes
-      context
-      (rib-cdr code)
-      (encode-instruction
-        close-instruction
-        (rib-car code)
-        return
-        target))))
-
-(define (encode-operand context operand)
+(define (encode-number x)
   (cond
-    ((number? operand)
-      (+ (* operand 2) 1))
+    ((and (integer? x) (negative? x))
+      (+ 1 (* 4 (abs x))))
 
-    ((symbol? operand)
-      (* 2
-        (or
-          (memv-position operand (encode-context-symbols context))
-          (error "symbol not found" operand))))
+    ((integer? x)
+      (* 2 x))
 
     (else
-      (error "invalid operand" operand))))
+      (error "float not supported"))))
 
-(define (encode-codes context codes target)
-  (if (terminal-codes? codes)
-    target
-    (let* ((instruction (rib-tag codes))
-           (operand (rib-car codes))
-           (codes (rib-cdr codes))
-           (return (null? codes))
-           (encode-simple
-             (lambda (instruction)
-               (encode-instruction
-                 instruction
-                 (encode-operand context operand)
-                 return
-                 target))))
-      (encode-codes
-        context
-        codes
-        (cond
-          ((and
-              (eq? instruction constant-instruction)
-              (target-procedure? operand))
-            (encode-procedure context operand return target))
+(define (encode-node context value data)
+  (let ((value (if data (build-constant context value) value)))
+    (cond
+      ((rib? value)
+        (let* ((singly-shared (and (not data) (nop-codes? value)))
+               (shared
+                 (or
+                   singly-shared
+                   (memq value singletons)
+                   (procedure? value)
+                   (symbol? value)
+                   (string? value)
+                   (char? value))))
+          (cond
+            ((and shared (encode-context-position context value)) =>
+              (lambda (index)
+                (let ((value (encode-context-remove! context index)))
+                  (when (not singly-shared)
+                    (encode-context-push! context value))
+                  (let-values (((head tail)
+                                 (encode-integer-parts
+                                   (+ (* 2 index) (if singly-shared 0 1))
+                                   share-base)))
+                    (write-u8 (+ 3 (* 4 (+ 1 head))))
+                    (encode-integer-tail tail)))))
 
-          ((memq instruction (list get-instruction set-instruction))
-            (encode-simple instruction))
+            (else
+              (let ((tag (rib-tag value)))
+                (encode-node context (rib-cdr value) data)
+                (encode-node
+                  context
+                  (rib-car value)
+                  (not
+                    (if data
+                      (target-procedure? value)
+                      (memq tag (list close-instruction if-instruction)))))
 
-          ((eq? instruction constant-instruction)
-            (let ((symbol (encode-context-constant context operand)))
-              (if symbol
-                (encode-instruction
-                  get-instruction
-                  (encode-operand context symbol)
-                  return
-                  target)
-                (encode-simple constant-instruction))))
+                (let-values (((head tail) (encode-integer-parts tag tag-base)))
+                  (write-u8 (+ 1 (* 4 head)))
+                  (encode-integer-tail tail))
 
-          ((eq? instruction if-instruction)
-            (let ((continuation (find-continuation operand))
-                  (target
-                    (encode-codes
-                      context
-                      operand
-                      (encode-instruction if-instruction 0 #f target))))
-              (if (null? continuation)
-                target
-                (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
+                (when shared
+                  (encode-context-push! context value)
+                  (write-u8 3)))))))
 
-          ((eq? instruction nop-instruction)
-            (error "unexpected nop instruction"))
-
-          (else
-            (encode-instruction
-              call-instruction
-              (- instruction call-instruction)
-              return
-              (encode-integer (encode-operand context operand) target))))))))
+      (else
+        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+          (write-u8 (* 2 head))
+          (encode-integer-tail tail))))))
 
 ;; Primitives
 
 (define (build-primitive primitive continuation)
   (code-rib
     constant-instruction
-    (cadr primitive)
+    (data-rib procedure-type (cadr primitive) '())
     (code-rib
-      constant-instruction
-      '()
-      (code-rib
-        constant-instruction
-        procedure-type
-        (compile-primitive-call
-          '$$rib
-          (code-rib set-instruction (car primitive) continuation))))))
+      set-instruction
+      (car primitive)
+      continuation)))
 
 (define (build-primitives primitives continuation)
   (if (null? primitives)
@@ -1518,22 +1254,10 @@
 ;; Main
 
 (define (encode codes)
-  (let* ((constant-context (make-constant-context '() 0))
-         (codes
-           (build-primitives
-             primitives
-             (build-constants constant-context codes)))
-         (constant-symbols (map cdr (constant-context-constants constant-context)))
-         (symbols (append default-symbols (find-symbols constant-symbols codes))))
-    (encode-symbols
-      symbols
-      constant-symbols
-      (encode-codes
-        (make-encode-context
-          (append symbols constant-symbols)
-          constant-context)
-        codes
-        '()))))
+  ; TODO Remove this hack.
+  (rib-set-cdr! '() (cons 0 0))
+
+  (encode-node (make-encode-context '() '()) (cons #f (build-primitives primitives codes)) #f))
 
 ; Main
 
@@ -1541,16 +1265,15 @@
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
 
-  (write-target
-    (encode
-      (compile
-        (map-values
-          library-exports
-          (map-values library-state-library (library-context-libraries library-context)))
-        (reverse
-          (filter
-            (lambda (pair) (library-symbol? (car pair)))
-            (macro-state-literals (macro-context-state macro-context))))
-        expression2))))
+  (encode
+    (compile
+      (map-values
+        library-exports
+        (map-values library-state-library (library-context-libraries library-context)))
+      (reverse
+        (filter
+          (lambda (pair) (library-symbol? (car pair)))
+          (macro-state-literals (macro-context-state macro-context))))
+      expression2)))
 
 (main)
