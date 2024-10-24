@@ -144,6 +144,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let operand = self.operand_cons();
         let value = self.memory.pop();
 
+        trace!("operand", operand);
+        trace!("value", value);
+
         self.memory.set_car(operand, value);
         self.advance_program_counter();
     }
