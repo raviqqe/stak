@@ -59,10 +59,9 @@ impl<'a> Memory<'a> {
             heap,
         };
 
-        let null = memory.allocate_unchecked(
-            Default::default(),
-            never().set_tag(Type::Null as Tag).into(),
-        )?;
+        let nil = memory.allocate_unchecked(Default::default(), Default::default())?;
+        let null =
+            memory.allocate_unchecked(Default::default(), nil.set_tag(Type::Null as Tag).into())?;
         // Do not use `never()` for `cdr` for an `equal?` procedure.
         let r#true = memory.allocate_unchecked(
             Default::default(),
