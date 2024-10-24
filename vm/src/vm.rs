@@ -130,9 +130,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn get(&mut self) -> Result<(), T::Error> {
-        let value = self.memory.car(self.operand_cons());
+        let operand = self.operand_cons();
+        let value = self.memory.car(operand);
 
-        trace!("operand", value);
+        trace!("operand", operand);
+        trace!("value", value);
 
         self.memory.push(value)?;
         self.advance_program_counter();
