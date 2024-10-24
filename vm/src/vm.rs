@@ -33,9 +33,9 @@ macro_rules! trace {
     };
 }
 
-macro_rules! trace_heap {
+macro_rules! trace_memory {
     ($self:expr) => {
-        #[cfg(feature = "trace_heap")]
+        #[cfg(feature = "trace_memory")]
         std::eprintln!("{}", $self);
     };
 }
@@ -112,7 +112,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 )?,
             }
 
-            trace_heap!(self);
+            trace_memory!(self);
         }
 
         Ok(())

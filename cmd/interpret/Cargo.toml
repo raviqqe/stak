@@ -13,7 +13,7 @@ default = ["float"]
 float = ["stak-vm/float"]
 gc_always = ["stak-vm/gc_always"]
 trace_instruction = ["stak-vm/trace_instruction"]
-trace_heap = ["stak-vm/trace_heap"]
+trace_memory = ["stak-vm/trace_memory"]
 
 [dependencies]
 clap = { version = "4.5.20", features = ["derive"] }
