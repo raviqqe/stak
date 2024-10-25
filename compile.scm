@@ -1254,9 +1254,6 @@
 ;; Main
 
 (define (encode codes)
-  ; TODO Remove this hack.
-  (rib-set-cdr! '() (cons 0 0))
-
   (encode-node (make-encode-context '() '()) (cons #f (build-primitives primitives codes)) #f))
 
 ; Main
