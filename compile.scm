@@ -1146,7 +1146,7 @@
       ((not (symbol? x))
         x)
 
-      ((assoc x constants) =>
+      ((assq x constants) =>
         cdr)
 
       (else
