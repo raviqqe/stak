@@ -123,8 +123,6 @@ impl<'a> Memory<'a> {
 
     /// Pops a value from a stack.
     pub fn pop(&mut self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
-
         let value = self.car(self.stack);
         self.stack = self.cdr(self.stack).assume_cons();
         value
@@ -156,8 +154,6 @@ impl<'a> Memory<'a> {
 
     /// Peeks a value at the top of a stack.
     pub fn top(&mut self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
-
         self.car(self.stack)
     }
 
