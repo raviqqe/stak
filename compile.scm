@@ -905,15 +905,17 @@
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment libraries macros)
+  (make-compilation-context environment symbols libraries macros)
   compilation-context?
   (environment compilation-context-environment)
+  (symbols compilation-context-symbols)
   (libraries compilation-context-libraries)
   (macros compilation-context-macros))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
     (append variables (compilation-context-environment context))
+    (compilation-context-symbols context)
     (compilation-context-libraries context)
     (compilation-context-macros context)))
 
@@ -925,6 +927,34 @@
   (or (memv-position variable (compilation-context-environment context)) variable))
 
 ;; Procedures
+
+(define (find-quoted-symbols expression)
+  (cond
+    ((symbol? expression)
+      (list expression))
+
+    ((vector? expression)
+      (find-quoted-symbols (vector->list expression)))
+
+    ((pair? expression)
+      (append (find-quoted-symbols (car expression)) (find-quoted-symbols (cdr expression))))
+
+    (else
+      '())))
+
+(define (find-symbols expression)
+  (define (find expression)
+    (cond
+      ((not (pair? expression))
+        '())
+
+      ((eq? (car expression) '$$quote)
+        (find-quoted-symbols (cadr expression)))
+
+      (else
+        (apply append (map find-symbols (cdr expression))))))
+
+  (unique (find expression)))
 
 (define (compile-arity argument-count variadic)
   (+
@@ -1085,6 +1115,9 @@
                 (cadr expression))
               (compile-unspecified continuation))))
 
+        (($$symbols)
+          (constant-rib (compilation-context-symbols context) continuation))
+
         (else
           (compile-call context expression #f continuation))))
 
@@ -1093,7 +1126,7 @@
 
 (define (compile libraries macros expression)
   (compile-expression
-    (make-compilation-context '() libraries macros)
+    (make-compilation-context '() (find-symbols expression) libraries macros)
     expression
     '()))
 

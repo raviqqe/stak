@@ -1575,19 +1575,17 @@
 
     ; Symbol table
 
-    (define symbols (rib-cdr $$rib))
-    ; Allow garbage collection for a symbol table.
-    (rib-set-cdr! $$rib #f)
+    (define string->symbol
+      (let ((symbols ($$symbols)))
+        (lambda (x)
+          (cond
+            ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
+              car)
 
-    (define (string->symbol x)
-      (cond
-        ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
-          car)
-
-        (else
-          (let ((x (string->uninterned-symbol x)))
-            (set! symbols (cons x symbols))
-            x))))
+            (else
+              (let ((x (string->uninterned-symbol x)))
+                (set! symbols (cons x symbols))
+                x))))))
 
     ; Control
 
