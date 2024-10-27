@@ -8,7 +8,8 @@ use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::{Value, Vm};
 
-const HEAP_SIZE: usize = 1 << 16;
+// TODO Decrease this.
+const HEAP_SIZE: usize = 1 << 18;
 const BUFFER_SIZE: usize = 1 << 10;
 
 fn create_vm(
