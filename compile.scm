@@ -952,7 +952,7 @@
         (find-quoted-symbols (cadr expression)))
 
       (else
-        (apply append (map find-symbols (cdr expression))))))
+        (apply append (map find (cdr expression))))))
 
   (unique (find expression)))
 
