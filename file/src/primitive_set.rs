@@ -5,7 +5,7 @@ use crate::FileSystem;
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
 
-const PATH_SIZE: usize = 64;
+const PATH_SIZE: usize = 128;
 
 /// A primitive set for a file system.
 pub struct FilePrimitiveSet<T: FileSystem> {
