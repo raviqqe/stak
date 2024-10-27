@@ -1126,7 +1126,15 @@
 
 (define (compile libraries macros expression)
   (compile-expression
-    (make-compilation-context '() (find-symbols expression) libraries macros)
+    (make-compilation-context
+      '()
+      (unique
+        (append
+          (find-symbols expression)
+          (find-quoted-symbols libraries)
+          (find-quoted-symbols macros)))
+      libraries
+      macros)
     expression
     '()))
 
