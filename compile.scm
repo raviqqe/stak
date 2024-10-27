@@ -50,9 +50,6 @@
 (define if-instruction 3)
 (define nop-instruction 4)
 (define call-instruction 5)
-; Only for encoding
-(define close-instruction 6)
-(define skip-instruction 7)
 
 ; Primitives
 
@@ -1218,7 +1215,7 @@
                   (not
                     (if data
                       (target-procedure? value)
-                      (memq tag (list close-instruction if-instruction)))))
+                      (eq? tag if-instruction))))
 
                 (let-values (((head tail) (encode-integer-parts tag tag-base)))
                   (write-u8 (+ 1 (* 4 head)))
