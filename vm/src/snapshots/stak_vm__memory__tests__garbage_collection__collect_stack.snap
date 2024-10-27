@@ -5,7 +5,5 @@ expression: memory
 program counter: !:0
 stack: c100:0
 100: n42 c104:0 <- stack
-102: c104:0 c106:2
-104: n0 c108:1
-106: n0 c104:2
-108: n0 n0
+102: c104:0 c104:0
+104: n0 n0

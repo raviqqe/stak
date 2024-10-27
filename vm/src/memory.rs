@@ -60,7 +60,8 @@ impl<'a> Memory<'a> {
         };
 
         // Initialize a fake false value.
-        memory.r#false = memory.allocate_unchecked(Default::default(), Default::default())?;
+        let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
+        memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
 
         Ok(memory)
     }
@@ -429,8 +430,6 @@ mod tests {
     fn create_list() {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
-
-        assert_eq!(memory.cdr(memory.null()).tag(), Type::Null as Tag);
 
         let list = memory
             .cons(Number::from_i64(1).into(), memory.null())

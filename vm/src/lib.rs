@@ -53,7 +53,6 @@ mod number;
 mod primitive_set;
 mod profiler;
 mod stack_slot;
-mod symbol_index;
 mod r#type;
 mod value;
 mod vm;

@@ -5,9 +5,7 @@ expression: memory
 program counter: !:0
 stack: !:0
 00: n0 n0
-02: n0 c0:1
-04: n0 c2:2
-06: c2:0 c4:2
-08: n1 c2:0
-0a: n2 c8:0
-0c: n3 ca:0
+02: c0:0 c0:0
+04: n1 c0:0
+06: n2 c4:0
+08: n3 c6:0
