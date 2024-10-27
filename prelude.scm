@@ -2548,11 +2548,8 @@
             (symbol->string name)))
 
         (define (resolve-library-symbol name)
-          (let* ((string (symbol->string name))
-                 (position (memv-position library-symbol-separator (string->list string))))
-            (if position
-              (string->symbol (string-copy string (+ position 1)))
-              name)))
+          ; Symbols can be from a different library environment.
+          (string->symbol (symbol->string name)))
 
         ; Macro system
 

@@ -1197,7 +1197,7 @@
         cdr)
 
       (else
-        (let ((y (data-rib symbol-type #f (symbol->string x))))
+        (let ((y (data-rib symbol-type #f (symbol->string (resolve-library-symbol x)))))
           (encode-context-set-constants! context (cons (cons x y) constants))
           y)))))
 
