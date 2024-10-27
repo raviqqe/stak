@@ -1,7 +1,7 @@
 [package]
 name = "stak-macro"
 description = "Macros to integrate Stak Scheme"
-version = "0.1.68"
+version = "0.1.69"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -15,8 +15,8 @@ proc-macro = true
 proc-macro2 = { version = "1.0.89", features = ["proc-macro"] }
 quote = "1.0.37"
 syn = "2.0.85"
-stak-compiler = { version = "0.1.71", path = "../compiler" }
-stak-macro-util = { version = "0.1.44", path = "../macro-util" }
+stak-compiler = { version = "0.1.72", path = "../compiler" }
+stak-macro-util = { version = "0.1.45", path = "../macro-util" }
 
 [dev-dependencies]
 stak-device = { path = "../device" }
