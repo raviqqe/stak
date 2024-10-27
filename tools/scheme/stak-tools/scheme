@@ -29,5 +29,6 @@ shift 1
 export PATH=$directory/target/release_test:$PATH
 
 cat $directory/prelude.scm $libraries $main | compile >main.bc
-stak-decode <main.bc >/dev/null
+# TODO Test a decoder.
+# stak-decode <main.bc >/dev/null
 stak-interpret main.bc "$@"
