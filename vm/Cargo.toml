@@ -21,7 +21,7 @@ nonbox = { version = "0.3.0", optional = true }
 stak-code = { version = "0.2", path = "../code" }
 
 [dev-dependencies]
-insta = "1.40.0"
+insta = "1.41.0"
 stak-code = { path = "../code", features = ["alloc"] }
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
