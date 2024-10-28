@@ -1182,6 +1182,14 @@
 
 (define singletons '(#f #t ()))
 
+(define (shared-value? value)
+  (or
+    (memq value singletons)
+    (procedure? value)
+    (symbol? value)
+    (string? value)
+    (char? value)))
+
 (define (nop-codes? codes)
   (and
     (rib? codes)
@@ -1238,11 +1246,8 @@
                (shared
                  (or
                    singly-shared
-                   (memq value singletons)
-                   (procedure? value)
-                   (symbol? value)
-                   (string? value)
-                   (char? value))))
+                   (null? value)
+                   (and data (shared-value? value)))))
           (cond
             ((and shared (encode-context-position context value)) =>
               (lambda (index)
