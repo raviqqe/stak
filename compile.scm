@@ -1219,6 +1219,7 @@
 
   (define (count-data value)
     (when (rib? value)
+      ; TODO Use `assoc`.
       (when (or (not (shared-value? value)) (not (assv value counts)))
         (count-data (rib-cdr value))
 
