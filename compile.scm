@@ -1152,10 +1152,11 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context dictionary constants)
+  (make-encode-context dictionary constants counts)
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!)
-  (constants encode-context-constants encode-context-set-constants!))
+  (constants encode-context-constants encode-context-set-constants!)
+  (counts encode-context-counts encode-context-set-counts!))
 
 (define (encode-context-push! context value)
   (encode-context-set-dictionary!
@@ -1182,18 +1183,60 @@
 
 (define singletons '(#f #t ()))
 
+(define (countable-shared-value? value)
+  (or
+    (char? value)
+    ; TODO Include strings.
+    ;(string? value)
+    (symbol? value)))
+
 (define (shared-value? value)
   (or
     (memq value singletons)
     (procedure? value)
-    (symbol? value)
-    (string? value)
-    (char? value)))
+    (countable-shared-value? value)))
 
 (define (nop-codes? codes)
   (and
     (rib? codes)
     (eqv? (rib-tag codes) nop-instruction)))
+
+(define (terminal-codes? codes)
+  (or (null? codes) (nop-codes? codes)))
+
+(define (count-constants codes)
+  (define counts '())
+
+  (define (add value)
+    (cond
+      ; TODO Use `assoc`.
+      ((assv value counts) =>
+        (lambda (pair)
+          (set-cdr! pair (+ 1 (cdr pair)))))
+
+      (else
+        (set! counts (cons (cons value 1) counts)))))
+
+  (define (count-data value)
+    (when (rib? value)
+      (when (or (not (shared-value? value)) (not (assv value counts)))
+        (count-data (rib-cdr value))
+
+        (when (not (symbol? value))
+          (let ((head (rib-car value)))
+            ((if (and (procedure? value) (rib? head)) count-code count-data) head))))
+
+      (when (countable-shared-value? value)
+        (add value))))
+
+  (define (count-code codes)
+    (when (not (terminal-codes? codes))
+      ((if (eq? (rib-tag codes) if-instruction) count-code count-data) (rib-car codes))
+      (count-code (rib-cdr codes))))
+
+  (count-code codes)
+
+  counts)
 
 (define (build-constant context x)
   (let ((constants (encode-context-constants context)))
@@ -1306,7 +1349,11 @@
 ;; Main
 
 (define (encode codes)
-  (encode-node (make-encode-context '() '()) (cons #f (build-primitives primitives codes)) #f))
+  (let ((codes (cons #f (build-primitives primitives codes))))
+    (encode-node
+      (make-encode-context '() '() (count-constants codes))
+      codes
+      #f)))
 
 ; Main
 
