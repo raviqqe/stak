@@ -1204,16 +1204,6 @@
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
 
-(define (increment-count counts value)
-  (cond
-    ; TODO Use `assoc`.
-    ((assv value counts) =>
-      (lambda (pair)
-        (set-cdr! pair (+ 1 (cdr pair)))))
-
-    (else
-      (set! counts (cons (cons value 1) counts)))))
-
 (define (decrement-count counts value)
   ; TODO Use `assoc`.
   (let ((pair (assv value counts)))
@@ -1221,6 +1211,16 @@
 
 (define (count-constants codes)
   (define counts '())
+
+  (define (increment value)
+    (cond
+      ; TODO Use `assoc`.
+      ((assv value counts) =>
+        (lambda (pair)
+          (set-cdr! pair (+ 1 (cdr pair)))))
+
+      (else
+        (set! counts (cons (cons value 1) counts)))))
 
   (define (count-data value)
     (when (rib? value)
@@ -1233,7 +1233,7 @@
             ((if (and (procedure? value) (rib? head)) count-code count-data) head))))
 
       (when (countable-shared-value? value)
-        (increment-count counts value))))
+        (increment value))))
 
   (define (count-code codes)
     (when (not (terminal-codes? codes))
@@ -1291,24 +1291,31 @@
   (let ((value (if data (build-constant context value) value)))
     (cond
       ((rib? value)
-        (let* ((singly-shared (and (not data) (nop-codes? value)))
+        (let* ((branch (and (not data) (nop-codes? value)))
                (shared
                  (or
-                   singly-shared
+                   branch
                    (null? value)
                    (and data (shared-value? value)))))
           (cond
             ((and shared (encode-context-position context value)) =>
               (lambda (index)
-                (let ((value (encode-context-remove! context index)))
-                  (when (not singly-shared)
-                    (encode-context-push! context value))
-                  (let-values (((head tail)
-                                 (encode-integer-parts
-                                   (+ (* 2 index) (if singly-shared 0 1))
-                                   share-base)))
-                    (write-u8 (+ 3 (* 4 (+ 1 head))))
-                    (encode-integer-tail tail)))))
+                (let ((counts (encode-context-counts context)))
+                  (decrement-count counts value)
+
+                  (let ((removed
+                          (or
+                            branch
+                            (and (countable-shared-value? value) (zero? (cdr (assv value counts))))))
+                        (value (encode-context-remove! context index)))
+                    (when (not removed)
+                      (encode-context-push! context value))
+                    (let-values (((head tail)
+                                   (encode-integer-parts
+                                     (+ (* 2 index) (if removed 0 1))
+                                     share-base)))
+                      (write-u8 (+ 3 (* 4 (+ 1 head))))
+                      (encode-integer-tail tail))))))
 
             (else
               (let ((tag (rib-tag value)))
