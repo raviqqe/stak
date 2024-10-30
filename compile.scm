@@ -1204,18 +1204,23 @@
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
 
+(define (increment-count counts value)
+  (cond
+    ; TODO Use `assoc`.
+    ((assv value counts) =>
+      (lambda (pair)
+        (set-cdr! pair (+ 1 (cdr pair)))))
+
+    (else
+      (set! counts (cons (cons value 1) counts)))))
+
+(define (decrement-count counts value)
+  ; TODO Use `assoc`.
+  (let ((pair (assv value counts)))
+    (set-cdr! pair (- 1 (cdr pair)))))
+
 (define (count-constants codes)
   (define counts '())
-
-  (define (add value)
-    (cond
-      ; TODO Use `assoc`.
-      ((assv value counts) =>
-        (lambda (pair)
-          (set-cdr! pair (+ 1 (cdr pair)))))
-
-      (else
-        (set! counts (cons (cons value 1) counts)))))
 
   (define (count-data value)
     (when (rib? value)
@@ -1228,7 +1233,7 @@
             ((if (and (procedure? value) (rib? head)) count-code count-data) head))))
 
       (when (countable-shared-value? value)
-        (add value))))
+        (increment-count counts value))))
 
   (define (count-code codes)
     (when (not (terminal-codes? codes))
