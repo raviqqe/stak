@@ -1204,6 +1204,17 @@
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
 
+(define (find-continuation codes)
+  (cond
+    ((null? codes)
+      '())
+
+    ((nop-codes? codes)
+      (rib-cdr codes))
+
+    (else
+      (find-continuation (rib-cdr codes)))))
+
 (define (decrement-count! counts value)
   (when (countable-shared-value? value)
     ; TODO Use `assoc`.
@@ -1240,7 +1251,12 @@
 
   (define (count-code! codes)
     (when (not (terminal-codes? codes))
-      ((if (eq? (rib-tag codes) if-instruction) count-code! count-data!) (rib-car codes))
+      (if (eq? (rib-tag codes) if-instruction)
+        (begin
+          (count-code! (find-continuation codes))
+          (count-code! (rib-car codes)))
+        (count-data! (rib-car codes)))
+
       (count-code! (rib-cdr codes))))
 
   (count-code! codes)
