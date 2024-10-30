@@ -1309,7 +1309,8 @@
 (define (encode-node context value data)
   (let ((decrement!
           (lambda ()
-            (decrement-count! (encode-context-counts context) value)))
+            (when data
+              (decrement-count! (encode-context-counts context) value))))
         (value (if data (build-constant context value) value)))
     (cond
       ((rib? value)
