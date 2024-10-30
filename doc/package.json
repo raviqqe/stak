@@ -14,7 +14,7 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/solid-js": "^4.4.2",
-    "@astrojs/starlight": "^0.28.3",
+    "@astrojs/starlight": "^0.28.4",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
     "@raviqqe/loscore": "^0.2.6",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@raviqqe/biome-config": "^1.0.2",
     "@raviqqe/eslint-config": "^4.0.6",
-    "@types/node": "^22.8.1",
+    "@types/node": "^22.8.4",
     "eslint": "^9.13.0",
     "eslint-plugin-solid": "^0.14.3",
     "typescript": "^5.6.3"
