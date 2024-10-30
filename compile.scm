@@ -1204,43 +1204,46 @@
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
 
-(define (decrement-count counts value)
-  ; TODO Use `assoc`.
-  (let ((pair (assv value counts)))
-    (set-cdr! pair (- 1 (cdr pair)))))
+(define (decrement-count! counts value)
+  (when (countable-shared-value? value)
+    ; TODO Use `assoc`.
+    (let ((pair (assv value counts)))
+      (when (not pair)
+        (error "missing count" value))
+      (set-cdr! pair (- 1 (cdr pair))))))
 
 (define (count-constants codes)
   (define counts '())
 
-  (define (increment value)
-    (cond
-      ; TODO Use `assoc`.
-      ((assv value counts) =>
-        (lambda (pair)
-          (set-cdr! pair (+ 1 (cdr pair)))))
+  (define (increment! value)
+    (when (countable-shared-value? value)
+      (cond
+        ; TODO Use `assoc`.
+        ((assv value counts) =>
+          (lambda (pair)
+            (set-cdr! pair (+ 1 (cdr pair)))))
 
-      (else
-        (set! counts (cons (cons value 1) counts)))))
+        (else
+          (set! counts (cons (cons value 1) counts))))))
 
-  (define (count-data value)
+  (define (count-data! value)
     (when (rib? value)
       ; TODO Use `assoc`.
       (when (or (not (shared-value? value)) (not (assv value counts)))
-        (count-data (rib-cdr value))
+        (count-data! (rib-cdr value))
 
         (when (not (symbol? value))
           (let ((head (rib-car value)))
-            ((if (and (procedure? value) (rib? head)) count-code count-data) head))))
+            ((if (and (procedure? value) (rib? head)) count-code! count-data!) head))))
 
-      (when (countable-shared-value? value)
-        (increment value))))
+      (increment! value)))
 
-  (define (count-code codes)
+  (define (count-code! codes)
     (when (not (terminal-codes? codes))
-      ((if (eq? (rib-tag codes) if-instruction) count-code count-data) (rib-car codes))
-      (count-code (rib-cdr codes))))
+      ((if (eq? (rib-tag codes) if-instruction) count-code! count-data!) (rib-car codes))
+      (count-code! (rib-cdr codes))))
 
-  (count-code codes)
+  (count-code! codes)
 
   counts)
 
@@ -1288,7 +1291,10 @@
       (error "float not supported"))))
 
 (define (encode-node context value data)
-  (let ((value (if data (build-constant context value) value)))
+  (let ((decrement!
+          (lambda ()
+            (decrement-count! (encode-context-counts context) value)))
+        (value (if data (build-constant context value) value)))
     (cond
       ((rib? value)
         (let* ((branch (and (not data) (nop-codes? value)))
@@ -1300,22 +1306,22 @@
           (cond
             ((and shared (encode-context-position context value)) =>
               (lambda (index)
-                (let ((counts (encode-context-counts context)))
-                  (decrement-count counts value)
-
-                  (let ((removed
-                          (or
-                            branch
-                            (and (countable-shared-value? value) (zero? (cdr (assv value counts))))))
-                        (value (encode-context-remove! context index)))
-                    (when (not removed)
-                      (encode-context-push! context value))
-                    (let-values (((head tail)
-                                   (encode-integer-parts
-                                     (+ (* 2 index) (if removed 0 1))
-                                     share-base)))
-                      (write-u8 (+ 3 (* 4 (+ 1 head))))
-                      (encode-integer-tail tail))))))
+                (decrement!)
+                (let ((removed
+                        (or
+                          branch
+                          (and
+                            (countable-shared-value? value)
+                            (zero? (cdr (assv value (encode-context-counts context)))))))
+                      (value (encode-context-remove! context index)))
+                  (when (not removed)
+                    (encode-context-push! context value))
+                  (let-values (((head tail)
+                                 (encode-integer-parts
+                                   (+ (* 2 index) (if removed 0 1))
+                                   share-base)))
+                    (write-u8 (+ 3 (* 4 (+ 1 head))))
+                    (encode-integer-tail tail)))))
 
             (else
               (let ((tag (rib-tag value)))
@@ -1334,6 +1340,7 @@
 
                 (when shared
                   (encode-context-push! context value)
+                  (decrement!)
                   (write-u8 3)))))))
 
       (else
