@@ -406,7 +406,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 if head == 0 {
                     let value = self.memory.top();
-                    self.push_to_dictionary(value)?;
+                    let cons = self.memory.cons(value, self.memory.program_counter())?;
+                    self.memory.set_program_counter(cons);
                 } else {
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
                     let dictionary = self.memory.cons(
@@ -419,11 +420,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let value = self.memory.car_value(self.memory.cdr(cons));
                     self.memory
                         .set_cdr(cons, self.memory.cdr_value(self.memory.cdr(cons)));
-                    self.memory
-                        .set_program_counter(self.memory.cdr(dictionary).assume_cons());
 
-                    if integer & 1 != 0 {
-                        self.push_to_dictionary(value)?;
+                    if integer & 1 == 0 {
+                        self.memory
+                            .set_program_counter(self.memory.cdr(dictionary).assume_cons());
+                    } else {
+                        self.memory.set_car(dictionary, value);
+                        self.memory.set_program_counter(dictionary);
                     }
 
                     self.memory.push(value)?;
@@ -432,13 +435,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
 
         self.memory.pop().to_cons().ok_or(Error::BytecodeEnd)
-    }
-
-    fn push_to_dictionary(&mut self, value: Value) -> Result<(), Error> {
-        let cons = self.memory.cons(value, self.memory.program_counter())?;
-        self.memory.set_program_counter(cons);
-
-        Ok(())
     }
 
     fn decode_number(integer: u128) -> Number {
