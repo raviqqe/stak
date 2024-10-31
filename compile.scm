@@ -1307,11 +1307,13 @@
       (error "float not supported"))))
 
 (define (encode-node context value data)
-  (let ((decrement!
-          (lambda ()
-            (when data
-              (decrement-count! (encode-context-counts context) value))))
-        (value (if data (build-constant context value) value)))
+  (let* ((counts (encode-context-counts context))
+         (decrement!
+           (lambda ()
+             (when data
+               (decrement-count! counts value))))
+         (original-value value)
+         (value (if data (build-constant context value) value)))
     (cond
       ((rib? value)
         (let* ((branch (and (not data) (nop-codes? value)))
@@ -1329,7 +1331,7 @@
                           branch
                           (and
                             (countable-shared-value? value)
-                            (zero? (cdr (assv value (encode-context-counts context)))))))
+                            (zero? (cdr (assv original-value counts))))))
                       (value (encode-context-remove! context index)))
                   (when (not removed)
                     (encode-context-push! context value))
