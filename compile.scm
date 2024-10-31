@@ -1221,7 +1221,7 @@
     (let ((pair (assv value counts)))
       (when (not pair)
         (error "missing count" value))
-      (set-cdr! pair (- 1 (cdr pair))))))
+      (set-cdr! pair (- (cdr pair) 1)))))
 
 (define (count-constants codes)
   (define counts '())
