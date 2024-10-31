@@ -1167,7 +1167,7 @@
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!)
   (constants encode-context-constants encode-context-set-constants!)
-  (counts encode-context-counts encode-context-set-counts!))
+  (counts encode-context-counts))
 
 (define (encode-context-push! context value)
   (encode-context-set-dictionary!
