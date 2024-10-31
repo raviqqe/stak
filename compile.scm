@@ -1219,7 +1219,7 @@
   (when (countable-shared-value? value)
     ; TODO Use `assoc`.
     (let ((pair (assv value counts)))
-      (when (not pair)
+      (unless pair
         (error "missing count" value))
       (set-cdr! pair (- (cdr pair) 1)))))
 
@@ -1246,7 +1246,7 @@
         (when (or (not (shared-value? value)) (not counted))
           (count-data! (rib-cdr value))
 
-          (when (not (symbol? value))
+          (unless (symbol? value)
             (let ((head (rib-car value)))
               ((if (and (procedure? value) (rib? head)) count-code! count-data!) head)))))))
 
@@ -1344,7 +1344,7 @@
                             (countable-shared-value? value)
                             (zero? (cdr (assv original-value counts))))))
                       (value (encode-context-remove! context index)))
-                  (when (not removed)
+                  (unless removed
                     (encode-context-push! context value))
                   (let-values (((head tail)
                                  (encode-integer-parts
@@ -1405,7 +1405,7 @@
 
     (do ((counts (encode-context-counts context) (cdr counts)))
       ((null? counts))
-      (when (not (zero? (cdar counts)))
+      (unless (zero? (cdar counts))
         (error "invalid constant count")))))
 
 ; Main
