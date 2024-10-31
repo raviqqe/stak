@@ -1208,17 +1208,6 @@
 (define (terminal-codes? codes)
   (or (null? codes) (nop-codes? codes)))
 
-(define (find-continuation codes)
-  (cond
-    ((null? codes)
-      '())
-
-    ((nop-codes? codes)
-      (rib-cdr codes))
-
-    (else
-      (find-continuation (rib-cdr codes)))))
-
 (define (decrement-count! counts value)
   (when (countable-shared-value? value)
     ; TODO Use `assoc`.
@@ -1229,6 +1218,7 @@
 
 (define (count-constants codes)
   (define counts '())
+  (define continuations '())
 
   (define (increment! value)
     (when (countable-shared-value? value)
@@ -1243,25 +1233,30 @@
 
   (define (count-data! value)
     (when (rib? value)
-      ; TODO Use `assoc`.
-      (when (or (not (shared-value? value)) (not (assv value counts)))
-        (count-data! (rib-cdr value))
+      (let ((counted (assv value counts)))
+        (increment! value)
+        ; TODO Use `assoc`.
+        (when (or (not (shared-value? value)) (not counted))
+          (count-data! (rib-cdr value))
 
-        (when (not (symbol? value))
-          (let ((head (rib-car value)))
-            ((if (and (procedure? value) (rib? head)) count-code! count-data!) head))))
-
-      (increment! value)))
+          (when (not (symbol? value))
+            (let ((head (rib-car value)))
+              ((if (and (procedure? value) (rib? head)) count-code! count-data!) head)))))))
 
   (define (count-code! codes)
-    (when (not (terminal-codes? codes))
-      (if (eq? (rib-tag codes) if-instruction)
-        (begin
-          (count-code! (find-continuation codes))
-          (count-code! (rib-car codes)))
-        (count-data! (rib-car codes)))
+    (cond
+      ((nop-codes? codes)
+        ; TODO Remove an element.
+        (when (not (memq codes continuations))
+          (set! continuations (cons codes continuations))
+          (count-code! (rib-cdr codes))))
 
-      (count-code! (rib-cdr codes))))
+      ((not (terminal-codes? codes))
+        (if (= (rib-tag codes) if-instruction)
+          (count-code! (rib-car codes))
+          (count-data! (rib-car codes)))
+
+        (count-code! (rib-cdr codes)))))
 
   (count-code! codes)
 
