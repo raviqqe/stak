@@ -1387,11 +1387,14 @@
 ;; Main
 
 (define (encode codes)
-  (let ((codes (cons #f (build-primitives primitives codes))))
-    (encode-node
-      (make-encode-context '() '() (count-constants codes))
-      codes
-      #f)))
+  (let* ((codes (cons #f (build-primitives primitives codes)))
+         (context (make-encode-context '() '() (count-constants codes))))
+    (encode-node context codes #f)
+
+    (do ((counts (encode-context-counts context) (cdr counts)))
+      ((null? counts))
+      (when (not (zero? (cdar counts)))
+        (error "invalid constant count")))))
 
 ; Main
 
