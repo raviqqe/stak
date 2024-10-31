@@ -1204,7 +1204,6 @@
 (define (shared-value? value)
   (or
     (memq value singletons)
-    (procedure? value)
     (countable-shared-value? value)))
 
 (define (nop-codes? codes)
