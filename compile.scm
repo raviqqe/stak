@@ -201,6 +201,13 @@
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
 
+(define (remove! x xs)
+  (let* ((index (memv-position x xs))
+         (xs (cons #f xs))
+         (pair (list-tail xs index)))
+    (set-cdr! pair (cddr pair))
+    (cdr xs)))
+
 ; TODO Set a true machine epsilon.
 (define epsilon
   (let ((x (/ 1 10000000 100000000)))
@@ -1169,9 +1176,9 @@
 
 (define (encode-context-remove! context index)
   (let* ((dictionary (cons #f (encode-context-dictionary context)))
-         (cons (list-tail dictionary index))
-         (value (cadr cons)))
-    (set-cdr! cons (cddr cons))
+         (pair (list-tail dictionary index))
+         (value (cadr pair)))
+    (set-cdr! pair (cddr pair))
     (encode-context-set-dictionary! context (cdr dictionary))
     value))
 
@@ -1247,9 +1254,11 @@
     (cond
       ((nop-codes? codes)
         ; TODO Remove an element.
-        (when (not (memq codes continuations))
-          (set! continuations (cons codes continuations))
-          (count-code! (rib-cdr codes))))
+        (if (memq codes continuations)
+          (set! continuations (remove! codes continuations))
+          (begin
+            (set! continuations (cons codes continuations))
+            (count-code! (rib-cdr codes)))))
 
       ((not (terminal-codes? codes))
         (if (= (rib-tag codes) if-instruction)
@@ -1259,6 +1268,9 @@
         (count-code! (rib-cdr codes)))))
 
   (count-code! codes)
+
+  (when (positive? (length continuations))
+    (error "leftover continuations"))
 
   counts)
 
