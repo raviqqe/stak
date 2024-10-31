@@ -1079,13 +1079,17 @@
           (compile-expression
             context
             (cadr expression)
-            (code-rib
-              if-instruction
-              (compile-expression
-                context
-                (caddr expression)
-                (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
-              (compile-expression context (cadddr expression) continuation))))
+            (let ((continuation
+                    (if (null? continuation)
+                      '()
+                      (code-rib nop-instruction 0 continuation))))
+              (code-rib
+                if-instruction
+                (compile-expression
+                  context
+                  (caddr expression)
+                  continuation)
+                (compile-expression context (cadddr expression) continuation)))))
 
         (($$lambda)
           (let ((parameters (cadr expression)))
