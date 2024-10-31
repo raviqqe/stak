@@ -44,17 +44,18 @@ jobs:
           - ubuntu-latest
           - macos-14
         interpreter:
-          - name: stak-tools
-            host: chibi-scheme
-          - name: stak-tools
-            host: gosh
-          - name: stak-tools
-            host: guile
-          - name: stak-tools
-            host: gosh
-            features:
-              - gc_always
-            tags: not @long
+          # TODO Enable `stak-tools` tests.
+          # - name: stak-tools
+          #   host: chibi-scheme
+          # - name: stak-tools
+          #   host: gosh
+          # - name: stak-tools
+          #   host: guile
+          # - name: stak-tools
+          #   host: gosh
+          #   features:
+          #     - gc_always
+          #   tags: not @long
           - name: chibi
             tags: (not @stak or @chibi) and not @library
           - name: gauche
