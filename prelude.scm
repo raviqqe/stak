@@ -616,6 +616,8 @@
           (rib? x)
           (rib? y)
           (eq? (rib-tag x) (rib-tag y))
+          ; Avoid checking values in global variables.
+          (not (eq? (rib-tag x) symbol-type))
           ; Optimize for the cases of strings and vectors where `car`s are integers.
           (boolean-or
             (rib? (rib-car x))

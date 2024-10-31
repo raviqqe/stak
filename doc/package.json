@@ -18,8 +18,8 @@
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
     "@raviqqe/loscore": "^0.2.6",
-    "@raviqqe/stak": "^0.2.47",
-    "astro": "^4.16.7",
+    "@raviqqe/stak": "^0.2.48",
+    "astro": "^4.16.8",
     "classnames": "^2.5.1",
     "lucide-solid": "^0.454.0",
     "nanostores": "^0.11.3",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@raviqqe/biome-config": "^1.0.2",
     "@raviqqe/eslint-config": "^4.0.6",
-    "@types/node": "^22.8.4",
+    "@types/node": "^22.8.5",
     "eslint": "^9.13.0",
     "eslint-plugin-solid": "^0.14.3",
     "typescript": "^5.6.3"
