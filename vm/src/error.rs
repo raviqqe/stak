@@ -12,8 +12,6 @@ pub enum Error {
     ConsExpected,
     /// An unexpected end of bytecodes.
     BytecodeEnd,
-    /// A missing node in bytecodes.
-    BytecodeNodeMissing,
     /// An illegal instruction detected.
     IllegalInstruction,
     /// An illegal primitive detected.
@@ -33,7 +31,6 @@ impl Display for Error {
         match self {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
             Self::BytecodeEnd => write!(formatter, "unexpected end of bytecodes"),
-            Self::BytecodeNodeMissing => write!(formatter, "node missing in bytecodes"),
             Self::ConsExpected => write!(formatter, "cons expected"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),
             Self::IllegalPrimitive => write!(formatter, "illegal primitive"),
