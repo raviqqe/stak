@@ -1228,14 +1228,13 @@
     (when (rib? value)
       (let ((counted (assoc value counts)))
         (when (or (not (shared-value? value)) (not counted))
+          (let ((head (rib-car value)))
+            ((if (and (procedure? value) (rib? head)) count-code! count-data!)
+              (if (symbol? value) #f head)))
           (count-data!
             (if (symbol? value)
               (symbol->string (resolve-library-symbol value))
-              (rib-cdr value)))
-
-          (let ((head (rib-car value)))
-            ((if (and (procedure? value) (rib? head)) count-code! count-data!)
-              (if (symbol? value) #f head))))
+              (rib-cdr value))))
         (increment! value))))
 
   (define (count-code! codes)
@@ -1250,7 +1249,6 @@
       ((not (terminal-codes? codes))
         ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
           (rib-car codes))
-
         (count-code! (rib-cdr codes)))))
 
   (count-code! codes)
