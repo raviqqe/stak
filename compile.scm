@@ -1252,7 +1252,6 @@
   (define (count-code! codes)
     (cond
       ((nop-codes? codes)
-        ; TODO Remove an element.
         (if (memq codes continuations)
           (set! continuations (remove! codes continuations))
           (begin
