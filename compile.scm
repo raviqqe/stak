@@ -1227,16 +1227,16 @@
   (define (count-data! value)
     (when (rib? value)
       (let ((counted (assoc value counts)))
-        (increment! value)
         (when (or (not (shared-value? value)) (not counted))
           (count-data!
             (if (symbol? value)
               (symbol->string (resolve-library-symbol value))
               (rib-cdr value)))
 
-          (unless (symbol? value)
-            (let ((head (rib-car value)))
-              ((if (and (procedure? value) (rib? head)) count-code! count-data!) head)))))))
+          (let ((head (rib-car value)))
+            ((if (and (procedure? value) (rib? head)) count-code! count-data!)
+              (if (symbol? value) #f head))))
+        (increment! value))))
 
   (define (count-code! codes)
     (cond
