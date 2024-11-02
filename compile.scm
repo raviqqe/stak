@@ -1259,9 +1259,8 @@
             (count-code! (rib-cdr codes)))))
 
       ((not (terminal-codes? codes))
-        (if (= (rib-tag codes) if-instruction)
-          (count-code! (rib-car codes))
-          (count-data! (rib-car codes)))
+        ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
+          (rib-car codes))
 
         (count-code! (rib-cdr codes)))))
 
