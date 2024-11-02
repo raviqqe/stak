@@ -1197,7 +1197,7 @@
 (define (countable-shared-value? value)
   (or
     (char? value)
-    ; TODO Include strings.
+    ; TODO Share strings.
     ;(string? value)
     (symbol? value)))
 
@@ -1216,8 +1216,7 @@
 
 (define (decrement-count! counts value)
   (when (countable-shared-value? value)
-    ; TODO Use `assoc`.
-    (let ((pair (assv value counts)))
+    (let ((pair (assoc value counts)))
       (unless pair
         (error "missing count" value))
       (set-cdr! pair (- (cdr pair) 1)))))
@@ -1229,8 +1228,7 @@
   (define (increment! value)
     (when (countable-shared-value? value)
       (cond
-        ; TODO Use `assoc`.
-        ((assv value counts) =>
+        ((assoc value counts) =>
           (lambda (pair)
             (set-cdr! pair (+ 1 (cdr pair)))))
 
@@ -1239,9 +1237,8 @@
 
   (define (count-data! value)
     (when (rib? value)
-      (let ((counted (assv value counts)))
+      (let ((counted (assoc value counts)))
         (increment! value)
-        ; TODO Use `assoc`.
         (when (or (not (shared-value? value)) (not counted))
           (count-data! (rib-cdr value))
 
@@ -1340,7 +1337,7 @@
                           branch
                           (and
                             (countable-shared-value? value)
-                            (zero? (cdr (assv original-value counts))))))
+                            (zero? (cdr (assoc original-value counts))))))
                       (value (encode-context-remove! context index)))
                   (unless removed
                     (encode-context-push! context value))
