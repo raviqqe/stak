@@ -31,17 +31,6 @@
 
     (define string->uninterned-symbol string->symbol)))
 
-; Constants
-
-(define default-constants
-  '((#f . $$false)
-    (#t . $$true)
-    (() . $$null)
-    ; It is fine to have a key duplicate with `false`'s because it is never hit.
-    (#f . $$rib)))
-
-(define default-symbols (map cdr default-constants))
-
 ; Instructions
 
 (define constant-instruction 0)
