@@ -1341,7 +1341,6 @@
 
             (else
               (let ((tag (rib-tag value)))
-                (encode-node context (rib-cdr value) data)
                 (encode-node
                   context
                   (rib-car value)
@@ -1349,6 +1348,7 @@
                     (if data
                       (target-procedure? value)
                       (eq? tag if-instruction))))
+                (encode-node context (rib-cdr value) data)
 
                 (let-values (((head tail) (encode-integer-parts tag tag-base)))
                   (write-u8 (+ 1 (* 4 head)))

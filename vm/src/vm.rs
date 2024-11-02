@@ -396,8 +396,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .into(),
                 )?;
             } else if head & 0b10 == 0 {
-                let car = self.memory.pop();
                 let cdr = self.memory.pop();
+                let car = self.memory.pop();
                 let r#type = Self::decode_integer_tail(input, head >> 2, TAG_BASE)?;
                 let cons = self.memory.allocate(car, cdr.set_tag(r#type as _))?;
                 self.memory.push(cons.into())?;
