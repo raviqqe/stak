@@ -325,6 +325,7 @@
     (list->string (list library-symbol-separator))
     (symbol->string name)))
 
+; TODO Remove library symbol prefixes.
 (define (resolve-library-symbol name)
   (let* ((string (symbol->string name))
          (position (memv-position library-symbol-separator (string->list string))))
@@ -1197,8 +1198,7 @@
 (define (countable-shared-value? value)
   (or
     (char? value)
-    ; TODO Share strings.
-    ;(string? value)
+    (string? value)
     (symbol? value)))
 
 (define (shared-value? value)
@@ -1240,7 +1240,10 @@
       (let ((counted (assoc value counts)))
         (increment! value)
         (when (or (not (shared-value? value)) (not counted))
-          (count-data! (rib-cdr value))
+          (count-data!
+            (if (symbol? value)
+              (symbol->string (resolve-library-symbol value))
+              (rib-cdr value)))
 
           (unless (symbol? value)
             (let ((head (rib-car value)))
@@ -1401,7 +1404,7 @@
     (do ((counts (encode-context-counts context) (cdr counts)))
       ((null? counts))
       (unless (zero? (cdar counts))
-        (error "invalid constant count")))))
+        (error "invalid constant count" (car counts))))))
 
 ; Main
 
