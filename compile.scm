@@ -1395,6 +1395,10 @@
                (count-constants codes)))))
     (encode-node context codes #f)
 
+    (let ((size (length (encode-context-dictionary context))))
+      (unless (zero? size)
+        (error "dictionary not empty" size)))
+
     (do ((counts (encode-context-counts context) (cdr counts)))
       ((null? counts))
       (unless (zero? (cdar counts))
