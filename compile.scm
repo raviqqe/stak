@@ -1316,8 +1316,8 @@
                (shared
                  (or
                    branch
-                   (null? value)
-                   (and data (shared-value? value)))))
+                   (null? original-value)
+                   (and data (assoc original-value counts)))))
           (cond
             ((and shared (encode-context-position context value)) =>
               (lambda (index)
@@ -1386,7 +1386,13 @@
 
 (define (encode codes)
   (let* ((codes (cons #f (build-primitives primitives codes)))
-         (context (make-encode-context '() '() (count-constants codes))))
+         (context
+           (make-encode-context
+             '()
+             '()
+             (filter
+               (lambda (pair) (> (cdr pair) 1))
+               (count-constants codes)))))
     (encode-node context codes #f)
 
     (do ((counts (encode-context-counts context) (cdr counts)))
