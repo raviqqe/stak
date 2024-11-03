@@ -1189,27 +1189,20 @@
 
 (define singletons '(#f #t ()))
 
-(define (countable-shared-value? value)
-  (or
-    (char? value)
-    (string? value)
-    (symbol? value)))
-
 (define (shared-value? value)
   (or
     (memq value singletons)
-    (countable-shared-value? value)))
+    (char? value)
+    (string? value)
+    (symbol? value)))
 
 (define (nop-codes? codes)
   (and
     (rib? codes)
     (eqv? (rib-tag codes) nop-instruction)))
 
-(define (terminal-codes? codes)
-  (or (null? codes) (nop-codes? codes)))
-
 (define (decrement-count! counts value)
-  (when (countable-shared-value? value)
+  (when (shared-value? value)
     (let ((pair (assoc value counts)))
       (unless pair
         (error "missing count" value))
@@ -1220,7 +1213,7 @@
   (define continuations '())
 
   (define (increment! value)
-    (when (countable-shared-value? value)
+    (when (shared-value? value)
       (cond
         ((assoc value counts) =>
           (lambda (pair)
@@ -1251,7 +1244,10 @@
             (set! continuations (cons codes continuations))
             (count-code! (rib-cdr codes)))))
 
-      ((not (terminal-codes? codes))
+      ((null? codes)
+        (count-data! codes))
+
+      (else
         ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
           (rib-car codes))
         (count-code! (rib-cdr codes)))))
@@ -1330,7 +1326,7 @@
                         (or
                           branch
                           (and
-                            (countable-shared-value? value)
+                            (shared-value? value)
                             (zero? (cdr (assoc original-value counts))))))
                       (value (encode-context-remove! context index)))
                   (unless removed
@@ -1351,7 +1347,8 @@
                     (if data
                       (target-procedure? value)
                       (eq? tag if-instruction))))
-                (encode-node context (rib-cdr value) data)
+                (let ((tail (rib-cdr value)))
+                  (encode-node context tail (or (null? tail) data)))
 
                 (let-values (((head tail) (encode-integer-parts tag tag-base)))
                   (write-u8 (+ 1 (* 4 head)))
