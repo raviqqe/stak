@@ -141,8 +141,13 @@
       (else
         (loop (cdr xs) (+ index 1))))))
 
-(define (memv-position one xs)
-  (list-position (lambda (other) (eqv? one other)) xs))
+(define (member-position x xs . rest)
+  (define eq? (if (null? rest) equal? (car rest)))
+
+  (list-position (lambda (y) (eq? x y)) xs))
+
+(define (memv-position x xs)
+  (member-position x xs eqv?))
 
 (define (flat-map f xs)
   (apply append (map f xs)))
@@ -1173,7 +1178,7 @@
     value))
 
 (define (encode-context-position context value)
-  (memv-position value (encode-context-dictionary context)))
+  (member-position value (encode-context-dictionary context)))
 
 ;; Codes
 
