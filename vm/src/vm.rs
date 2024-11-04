@@ -443,7 +443,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         } else if integer & 0b10 == 0 {
             Number::from_i64(-((integer >> 2) as i64))
         } else {
-            panic!("floating point number not supported")
+            let integer = integer >> 2;
+            let mantissa = if integer % 2 == 0 { 1.0 } else { -1.0 } * (integer >> 12) as f64;
+            let exponent = ((integer >> 1) % (1 << 11)) as i32 - 1023;
+
+            Number::from_f64(if exponent < 0 {
+                mantissa / (1 << exponent.abs()) as f64
+            } else {
+                mantissa * (1 << exponent) as f64
+            })
         }
     }
 

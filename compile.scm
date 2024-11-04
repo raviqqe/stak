@@ -1276,9 +1276,11 @@
 (define (fraction x)
   (- x (floor x)))
 
-; TODO Why not 51 instead of 49?
-(define maximum-float-integer (expt 2 49))
+; We need to fit 64-bit floating-point numbers' sign, mantissa, and exponent into its mantissa...
+; TODO Shouldn't this exponent be a higher number like 37 = 52 - 12 - 3?
+(define maximum-float-integer (expt 2 25))
 
+; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent.
 (define (decompose-float x)
   (define (mantissa y)
     (/ x (expt 2 y)))
@@ -1318,7 +1320,14 @@
 
     (else
       (let-values (((x y) (decompose-float x)))
-        (error "float not supported")))))
+        (+
+          3
+          (*
+            4
+            (+
+              (if (negative? x) 1 0)
+              (* 2 (+ y 1023))
+              (* 4096 (abs x)))))))))
 
 (define (encode-node context value data)
   (let* ((counts (encode-context-counts context))
