@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: tools/lint.sh
       - run: tools/lint.sh -p stak-code
   rust_format:
@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: cargo +nightly install schemat
       - run: schemat -cv $(git ls-files '**.scm')
   spell_check:
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - uses: bnjbvr/cargo-machete@main
   readme:
     runs-on: ubuntu-latest
