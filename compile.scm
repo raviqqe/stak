@@ -1319,15 +1319,15 @@
       (* 2 x))
 
     (else
-      (let-values (((x y) (decompose-float x)))
+      (let-values (((m e) (decompose-float (abs x))))
         (+
           3
           (*
             4
             (+
               (if (negative? x) 1 0)
-              (* 2 (+ y 1023))
-              (* 4096 (abs x)))))))))
+              (* 2 (+ e 1023))
+              (* 4096 m))))))))
 
 (define (encode-node context value data)
   (let* ((counts (encode-context-counts context))
