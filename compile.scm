@@ -1273,6 +1273,23 @@
           (encode-context-set-constants! context (cons (cons x y) constants))
           y)))))
 
+(define (fraction x)
+  (- x (floor x)))
+
+; TODO Why not 51 instead of 49?
+(define maximum-float-integer (expt 2 49))
+
+(define (decompose-float x)
+  (define (mantissa y)
+    (/ x (expt 2 y)))
+
+  (do ((y (log x 2) (- y 1)))
+    ((or
+        (< (fraction (mantissa (floor y))) epsilon)
+        (> (mantissa (+ y 1)) maximum-float-integer))
+      (let ((y (floor y)))
+        (values (exact (round (mantissa y))) (exact y))))))
+
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
@@ -1300,7 +1317,8 @@
       (* 2 x))
 
     (else
-      (error "float not supported"))))
+      (let-values (((x y) (decompose-float x)))
+        (error "float not supported")))))
 
 (define (encode-node context value data)
   (let* ((counts (encode-context-counts context))
