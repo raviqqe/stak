@@ -1278,7 +1278,7 @@
 
 ; We need to fit 64-bit floating-point numbers' sign, mantissa, and exponent into its mantissa...
 ; TODO Shouldn't this exponent be a higher number like 37 = 52 - 12 - 3?
-(define maximum-float-integer (expt 2 25))
+(define maximum-float-integer (expt 2 30))
 
 ; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent.
 (define (decompose-float x)
