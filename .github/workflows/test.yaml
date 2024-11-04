@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: cargo build --locked
   unit_test:
     strategy:
@@ -34,7 +34,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: cargo test --workspace ${{ matrix.options }}
   integration_test:
     strategy:
@@ -69,7 +69,7 @@ jobs:
       GUILE_AUTO_COMPILE: 0
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -95,7 +95,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: >
           tools/integration_test.sh
           -i ${{ matrix.interpreter.name }}
@@ -105,13 +105,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: tools/self_host_test.sh
   minimal:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: cargo build
         working-directory: cmd/minimal
       - run: cargo build --release
@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
@@ -140,7 +140,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - run: tools/profile_test.sh
   test:
     needs:

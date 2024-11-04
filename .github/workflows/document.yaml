@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - run: npm ci
         working-directory: doc
