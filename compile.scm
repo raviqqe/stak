@@ -1224,16 +1224,16 @@
 
   (define (count-data! value)
     (when (rib? value)
-      (let ((counted (assoc value counts)))
-        (when (or (not (shared-value? value)) (not counted))
-          (let ((head (rib-car value)))
-            ((if (and (procedure? value) (rib? head)) count-code! count-data!)
-              (if (symbol? value) #f head)))
-          (count-data!
-            (if (symbol? value)
-              (symbol->string (resolve-library-symbol value))
-              (rib-cdr value))))
-        (increment! value))))
+      (unless (and (shared-value? value) (assoc value counts))
+        (let ((head (rib-car value)))
+          ((if (and (procedure? value) (rib? head)) count-code! count-data!)
+            (if (symbol? value) #f head)))
+        (count-data!
+          (if (symbol? value)
+            ; TODO Use `build-constant`.
+            (symbol->string (resolve-library-symbol value))
+            (rib-cdr value))))
+      (increment! value)))
 
   (define (count-code! codes)
     (cond
