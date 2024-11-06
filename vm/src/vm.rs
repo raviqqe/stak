@@ -410,27 +410,27 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.memory.set_program_counter(cons);
                 } else {
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
-                    let mut dictionary = self.memory.program_counter();
                     let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self
-                            .memory
-                            .tail(dictionary, Number::from_i64((index - 1) as _));
+                        let cons = self.memory.tail(
+                            self.memory.program_counter(),
+                            Number::from_i64((index - 1) as _),
+                        );
                         let head = self.memory.cdr(cons).assume_cons();
                         let tail = self.memory.cdr(head);
-                        self.memory.set_cdr(head, dictionary.into());
+                        self.memory
+                            .set_cdr(head, self.memory.program_counter().into());
                         self.memory.set_cdr(cons, tail);
-                        dictionary = head;
+                        self.memory.set_program_counter(head);
                     }
 
-                    let value = self.memory.car(dictionary);
+                    let value = self.memory.car(self.memory.program_counter());
 
                     if integer & 1 == 0 {
-                        self.memory
-                            .set_program_counter(self.memory.cdr(dictionary).assume_cons());
-                    } else {
-                        self.memory.set_program_counter(dictionary);
+                        self.memory.set_program_counter(
+                            self.memory.cdr(self.memory.program_counter()).assume_cons(),
+                        );
                     }
 
                     self.memory.push(value)?;
