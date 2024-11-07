@@ -1211,35 +1211,29 @@
     (marshal-ribs context value data))
 
   (cond
-    ((number? value)
+    ((or (number? value) (memq value singletons))
       value)
 
-    ((or (eq? value #f) (eq? value #t) (null? value))
-      value)
+    ((and data (record? value))
+      (error "invalid record"))
 
-    (data
-      (if (procedure? value)
-        (begin
-          (unless (null? (rib-cdr value))
-            (error "invalid environment"))
-          (data-rib procedure-type (marshal (rib-car value) #f) '()))
-        (let ((constants (marshal-context-constants context)))
-          (cond
-            ((not (symbol? value))
-              (rib
-                (marshal (rib-car value) #t)
-                (marshal (rib-cdr value) #t)
-                (rib-tag value)))
+    ((and data (procedure? value))
+      (unless (null? (rib-cdr value))
+        (error "invalid environment"))
+      (data-rib procedure-type (marshal (rib-car value) #f) '()))
 
-            ((assq value constants) =>
-              cdr)
+    ((and data (symbol? value))
+      (let ((constants (marshal-context-constants context)))
+        (cond
+          ((assq value constants) =>
+            cdr)
 
-            (else
-              (let ((y (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))))
-                (marshal-context-set-constants! context (cons (cons value y) constants))
-                y))))))
+          (else
+            (let ((symbol (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))))
+              (marshal-context-set-constants! context (cons (cons value symbol) constants))
+              symbol)))))
 
-    ((nop-codes? value)
+    ((and (not data) (nop-codes? value))
       (cond
         ((assq value (marshal-context-continuations context)) =>
           cdr)
@@ -1253,8 +1247,8 @@
 
     (else
       (rib
-        (marshal (rib-car value) (not (= (rib-tag value) if-instruction)))
-        (marshal (rib-cdr value) #f)
+        (marshal (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
+        (marshal (rib-cdr value) data)
         (rib-tag value)))))
 
 (define (decrement-count! counts value)
