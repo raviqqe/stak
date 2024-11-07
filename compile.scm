@@ -1222,16 +1222,19 @@
         (error "invalid environment"))
       (data-rib procedure-type (marshal (rib-car value) #f) '()))
 
-    ((and data (symbol? value))
+    ((and data (or (char? value) (string? value) (symbol? value)))
       (let ((constants (marshal-context-constants context)))
         (cond
-          ((assq value constants) =>
+          ((assoc value constants) =>
             cdr)
 
           (else
-            (let ((symbol (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))))
-              (marshal-context-set-constants! context (cons (cons value symbol) constants))
-              symbol)))))
+            (let ((marshalled
+                    (if (symbol? value)
+                      (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
+                      value)))
+              (marshal-context-set-constants! context (cons (cons value marshalled) constants))
+              marshalled)))))
 
     ((and (not data) (nop-codes? value))
       (cond
