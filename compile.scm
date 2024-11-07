@@ -1157,11 +1157,16 @@
 
 ;; Context
 
+(define-record-type marshal-context
+  (make-marshal-context constants continuations)
+  marshal-context?
+  (constants marshal-context-constants marshal-context-set-constants!)
+  (continuations marshal-context-continuations marshal-context-set-continuations!))
+
 (define-record-type encode-context
-  (make-encode-context dictionary constants counts)
+  (make-encode-context dictionary counts)
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!)
-  (constants encode-context-constants encode-context-set-constants!)
   (counts encode-context-counts))
 
 (define (encode-context-push! context value)
@@ -1201,6 +1206,57 @@
     (rib? codes)
     (eqv? (rib-tag codes) nop-instruction)))
 
+(define (marshal-ribs context value data)
+  (define (marshal value data)
+    (marshal-ribs context value data))
+
+  (cond
+    ((number? value)
+      value)
+
+    ((or (eq? value #f) (eq? value #t) (null? value))
+      value)
+
+    (data
+      (if (procedure? value)
+        (begin
+          (unless (null? (rib-cdr value))
+            (error "invalid environment"))
+          (data-rib procedure-type (marshal (rib-car value) #f) '()))
+        (let ((constants (marshal-context-constants context)))
+          (cond
+            ((not (symbol? value))
+              (rib
+                (marshal (rib-car value) #t)
+                (marshal (rib-cdr value) #t)
+                (rib-tag value)))
+
+            ((assq value constants) =>
+              cdr)
+
+            (else
+              (let ((y (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))))
+                (marshal-context-set-constants! context (cons (cons value y) constants))
+                y))))))
+
+    ((nop-codes? value)
+      (cond
+        ((assq value (marshal-context-continuations context)) =>
+          cdr)
+
+        (else
+          (let ((continuation (code-rib nop-instruction 0 (marshal (rib-cdr value) #f))))
+            (marshal-context-set-continuations!
+              context
+              (cons (cons value continuation) (marshal-context-continuations context)))
+            continuation))))
+
+    (else
+      (rib
+        (marshal (rib-car value) (not (= (rib-tag value) if-instruction)))
+        (marshal (rib-cdr value) #f)
+        (rib-tag value)))))
+
 (define (decrement-count! counts value)
   (when (shared-value? value)
     (let ((pair (assoc value counts)))
@@ -1230,8 +1286,7 @@
             (if (symbol? value) #f head)))
         (count-data!
           (if (symbol? value)
-            ; TODO Use `build-constant`.
-            (symbol->string (resolve-library-symbol value))
+            (symbol->string value)
             (rib-cdr value))))
       (increment! value)))
 
@@ -1258,20 +1313,6 @@
     (error "leftover continuations"))
 
   counts)
-
-(define (build-constant context x)
-  (let ((constants (encode-context-constants context)))
-    (cond
-      ((not (symbol? x))
-        x)
-
-      ((assq x constants) =>
-        cdr)
-
-      (else
-        (let ((y (data-rib symbol-type #f (symbol->string (resolve-library-symbol x)))))
-          (encode-context-set-constants! context (cons (cons x y) constants))
-          y)))))
 
 (define (fraction x)
   (- x (floor x)))
@@ -1334,17 +1375,15 @@
          (decrement!
            (lambda ()
              (when data
-               (decrement-count! counts value))))
-         (original-value value)
-         (value (if data (build-constant context value) value)))
+               (decrement-count! counts value)))))
     (cond
       ((rib? value)
         (let* ((branch (and (not data) (nop-codes? value)))
                (shared
                  (or
                    branch
-                   (null? original-value)
-                   (and data (assoc original-value counts)))))
+                   (null? value)
+                   (and data (assoc value counts)))))
           (cond
             ((and shared (encode-context-position context value)) =>
               (lambda (index)
@@ -1354,7 +1393,7 @@
                           branch
                           (and
                             (shared-value? value)
-                            (zero? (cdr (assoc original-value counts))))))
+                            (zero? (cdr (assoc value counts))))))
                       (value (encode-context-remove! context index)))
                   (unless removed
                     (encode-context-push! context value))
@@ -1412,10 +1451,13 @@
 ;; Main
 
 (define (encode codes)
-  (let* ((codes (cons #f (build-primitives primitives codes)))
+  (let* ((codes
+           (marshal-ribs
+             (make-marshal-context '() '())
+             (cons #f (build-primitives primitives codes))
+             #f))
          (context
            (make-encode-context
-             '()
              '()
              (filter
                (lambda (pair) (> (cdr pair) 1))
@@ -1433,6 +1475,18 @@
 
 ; Main
 
+; TODO Consider moving this logic to marshalling.
+(define (initialize-tri-force)
+  (let ((nil (cons 0 0)))
+    (set-car! '() 0)
+    (set-cdr! '() nil)
+
+    (set-car! #t 0)
+    (set-cdr! #t nil)
+
+    (set-car! #f '())
+    (set-cdr! #f #t)))
+
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
@@ -1448,4 +1502,5 @@
           (macro-state-literals (macro-context-state macro-context))))
       expression2)))
 
+(initialize-tri-force)
 (main)
