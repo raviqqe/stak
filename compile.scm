@@ -1153,15 +1153,72 @@
     expression
     '()))
 
-; Encoding
-
-;; Context
+; Marshalling
 
 (define-record-type marshal-context
   (make-marshal-context constants continuations)
   marshal-context?
   (constants marshal-context-constants marshal-context-set-constants!)
   (continuations marshal-context-continuations marshal-context-set-continuations!))
+
+(define singletons '(#f #t ()))
+
+(define (nop-codes? codes)
+  (and
+    (rib? codes)
+    (eqv? (rib-tag codes) nop-instruction)))
+
+(define (marshal context value data)
+  (define (marshal-rib value data)
+    (marshal context value data))
+
+  (cond
+    ((or (number? value) (memq value singletons))
+      value)
+
+    ((and data (record? value))
+      (error "invalid record"))
+
+    ((and data (procedure? value))
+      (unless (null? (rib-cdr value))
+        (error "invalid environment"))
+      (data-rib procedure-type (marshal-rib (rib-car value) #f) '()))
+
+    ((and data (or (char? value) (string? value) (symbol? value)))
+      (let ((constants (marshal-context-constants context)))
+        (cond
+          ((assoc value constants) =>
+            cdr)
+
+          (else
+            (let ((marshalled
+                    (if (symbol? value)
+                      (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
+                      value)))
+              (marshal-context-set-constants! context (cons (cons value marshalled) constants))
+              marshalled)))))
+
+    ((and (not data) (nop-codes? value))
+      (cond
+        ((assq value (marshal-context-continuations context)) =>
+          cdr)
+
+        (else
+          (let ((continuation (code-rib nop-instruction 0 (marshal-rib (rib-cdr value) #f))))
+            (marshal-context-set-continuations!
+              context
+              (cons (cons value continuation) (marshal-context-continuations context)))
+            continuation))))
+
+    (else
+      (rib
+        (marshal-rib (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
+        (marshal-rib (rib-cdr value) data)
+        (rib-tag value)))))
+
+; Encoding
+
+;; Context
 
 (define-record-type encode-context
   (make-encode-context dictionary counts)
@@ -1192,67 +1249,12 @@
 (define tag-base 32)
 (define share-base 31)
 
-(define singletons '(#f #t ()))
-
 (define (shared-value? value)
   (or
     (memq value singletons)
     (char? value)
     (string? value)
     (symbol? value)))
-
-(define (nop-codes? codes)
-  (and
-    (rib? codes)
-    (eqv? (rib-tag codes) nop-instruction)))
-
-(define (marshal-ribs context value data)
-  (define (marshal value data)
-    (marshal-ribs context value data))
-
-  (cond
-    ((or (number? value) (memq value singletons))
-      value)
-
-    ((and data (record? value))
-      (error "invalid record"))
-
-    ((and data (procedure? value))
-      (unless (null? (rib-cdr value))
-        (error "invalid environment"))
-      (data-rib procedure-type (marshal (rib-car value) #f) '()))
-
-    ((and data (or (char? value) (string? value) (symbol? value)))
-      (let ((constants (marshal-context-constants context)))
-        (cond
-          ((assoc value constants) =>
-            cdr)
-
-          (else
-            (let ((marshalled
-                    (if (symbol? value)
-                      (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
-                      value)))
-              (marshal-context-set-constants! context (cons (cons value marshalled) constants))
-              marshalled)))))
-
-    ((and (not data) (nop-codes? value))
-      (cond
-        ((assq value (marshal-context-continuations context)) =>
-          cdr)
-
-        (else
-          (let ((continuation (code-rib nop-instruction 0 (marshal (rib-cdr value) #f))))
-            (marshal-context-set-continuations!
-              context
-              (cons (cons value continuation) (marshal-context-continuations context)))
-            continuation))))
-
-    (else
-      (rib
-        (marshal (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
-        (marshal (rib-cdr value) data)
-        (rib-tag value)))))
 
 (define (decrement-count! counts value)
   (when (shared-value? value)
@@ -1449,7 +1451,7 @@
 
 (define (encode codes)
   (let* ((codes
-           (marshal-ribs
+           (marshal
              (make-marshal-context '() '())
              (cons #f (build-primitives primitives codes))
              #f))
