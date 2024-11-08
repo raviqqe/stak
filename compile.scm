@@ -1168,9 +1168,9 @@
     (rib? codes)
     (eq? (rib-tag codes) nop-instruction)))
 
-(define (marshal context value data)
-  (define (marshal-rib value data)
-    (marshal context value data))
+(define (marshal-rib context value data)
+  (define (marshal value data)
+    (marshal-rib context value data))
 
   (cond
     ((or (number? value) (memq value singletons))
@@ -1182,7 +1182,7 @@
     ((and data (procedure? value))
       (unless (null? (rib-cdr value))
         (error "invalid environment"))
-      (data-rib procedure-type (marshal-rib (rib-car value) #f) '()))
+      (data-rib procedure-type (marshal (rib-car value) #f) '()))
 
     ((and data (or (char? value) (string? value) (symbol? value)))
       (let ((constants (marshal-context-constants context)))
@@ -1204,7 +1204,7 @@
           cdr)
 
         (else
-          (let ((continuation (code-rib nop-instruction 0 (marshal-rib (rib-cdr value) #f))))
+          (let ((continuation (code-rib nop-instruction 0 (marshal (rib-cdr value) #f))))
             (marshal-context-set-continuations!
               context
               (cons (cons value continuation) (marshal-context-continuations context)))
@@ -1212,9 +1212,12 @@
 
     (else
       (rib
-        (marshal-rib (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
-        (marshal-rib (rib-cdr value) data)
+        (marshal (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
+        (marshal (rib-cdr value) data)
         (rib-tag value)))))
+
+(define (marshal codes)
+  (marshal-rib (make-marshal-context '() '()) codes #f))
 
 ; Encoding
 
@@ -1450,17 +1453,12 @@
 ;; Main
 
 (define (encode codes)
-  (let* ((codes
-           (marshal
-             (make-marshal-context '() '())
-             (cons #f (build-primitives primitives codes))
-             #f))
-         (context
-           (make-encode-context
-             '()
-             (filter
-               (lambda (pair) (> (cdr pair) 1))
-               (count-constants codes)))))
+  (let ((context
+          (make-encode-context
+            '()
+            (filter
+              (lambda (pair) (> (cdr pair) 1))
+              (count-constants codes)))))
     (encode-node context codes #f)
 
     (let ((size (length (encode-context-dictionary context))))
@@ -1491,15 +1489,20 @@
   (define-values (expression2 macro-context) (expand-macros expression1))
 
   (encode
-    (compile
-      (map-values
-        library-exports
-        (map-values library-state-library (library-context-libraries library-context)))
-      (reverse
-        (filter
-          (lambda (pair) (library-symbol? (car pair)))
-          (macro-state-literals (macro-context-state macro-context))))
-      expression2)))
+    (marshal
+      (cons
+        #f
+        (build-primitives
+          primitives
+          (compile
+            (map-values
+              library-exports
+              (map-values library-state-library (library-context-libraries library-context)))
+            (reverse
+              (filter
+                (lambda (pair) (library-symbol? (car pair)))
+                (macro-state-literals (macro-context-state macro-context))))
+            expression2))))))
 
 (initialize-tri-force)
 (main)
