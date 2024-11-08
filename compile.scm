@@ -1166,7 +1166,7 @@
 (define (nop-codes? codes)
   (and
     (rib? codes)
-    (eqv? (rib-tag codes) nop-instruction)))
+    (eq? (rib-tag codes) nop-instruction)))
 
 (define (marshal context value data)
   (define (marshal-rib value data)
