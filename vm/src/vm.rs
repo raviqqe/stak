@@ -364,9 +364,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         let program = self.decode_ribs(&mut input.into_iter())?;
         self.memory
-            .set_program_counter(self.memory.cdr(program).assume_cons());
-        self.memory
             .set_false(self.memory.car(program).assume_cons());
+        self.memory
+            .set_program_counter(self.memory.cdr(program).assume_cons());
 
         profile_event!(self, "decode_end");
 
