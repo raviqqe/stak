@@ -44,16 +44,12 @@
 
 (define primitives
   '(($$rib 0)
-    ($$cons 1)
     ($$close 2)
-    ($$cdr 5)
     ($$< 11)
     ($$+ 12)
     ($$- 13)
     ($$* 14)
-    ($$/ 15)
-    ($$exp 17)
-    ($$log 18)))
+    ($$/ 15)))
 
 ; Types
 
@@ -972,25 +968,6 @@
     (* 2 argument-count)
     (if variadic 1 0)))
 
-(define (compile-primitive-call name continuation)
-  (call-rib
-    (compile-arity
-      (case name
-        (($$close $$cdr $$exp $$log)
-          1)
-
-        (($$cons $$- $$*)
-          2)
-
-        (($$rib)
-          3)
-
-        (else
-          (error "unknown primitive" name)))
-      #f)
-    name
-    continuation))
-
 (define (drop? codes)
   (and
     (rib? codes)
@@ -1108,7 +1085,7 @@
                   (cddr expression)
                   '())
                 '())
-              (compile-primitive-call '$$close continuation))))
+              (call-rib (compile-arity 1 #f) '$$close continuation))))
 
         (($$libraries)
           (constant-rib (compilation-context-libraries context) continuation))
@@ -1443,6 +1420,7 @@
       (car primitive)
       continuation)))
 
+; TODO Consider moving this logic to marshalling.
 (define (build-primitives primitives continuation)
   (if (null? primitives)
     continuation
