@@ -18,7 +18,7 @@ libc = { version = "0.2", default-features = false, optional = true }
 stak-vm = { version = "0.6.4", path = "../vm" }
 
 [dev-dependencies]
-tempfile = "3.13.0"
+tempfile = "3.14.0"
 
 [lints]
 workspace = true
