@@ -1346,26 +1346,15 @@
   (let* ((counts (encode-context-counts context))
          (decrement!
            (lambda ()
-             (when data
-               (decrement-count! counts value)))))
+             (decrement-count! counts value))))
     (cond
       ((rib? value)
-        (let* ((branch (and (not data) (nop-codes? value)))
-               (shared
-                 (or
-                   branch
-                   (null? value)
-                   (and data (assoc value counts)))))
+        (let ((shared (assoc value counts)))
           (cond
             ((and shared (encode-context-position context value)) =>
               (lambda (index)
                 (decrement!)
-                (let ((removed
-                        (or
-                          branch
-                          (and
-                            (shared-value? value)
-                            (zero? (cdr (assoc value counts))))))
+                (let ((removed (zero? (cdr (assoc value counts))))
                       (value (encode-context-remove! context index)))
                   (unless removed
                     (encode-context-push! context value))
