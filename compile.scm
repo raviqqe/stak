@@ -145,6 +145,9 @@
 (define (memv-position x xs)
   (member-position x xs eqv?))
 
+(define (memq-position x xs)
+  (member-position x xs eq?))
+
 (define (flat-map f xs)
   (apply append (map f xs)))
 
@@ -1220,7 +1223,7 @@
     value))
 
 (define (encode-context-position context value)
-  (member-position value (encode-context-dictionary context)))
+  (memq-position value (encode-context-dictionary context)))
 
 ;; Codes
 
@@ -1238,7 +1241,7 @@
 
 (define (decrement-count! counts value)
   (when (shared-value? value)
-    (let ((pair (assoc value counts)))
+    (let ((pair (assq value counts)))
       (unless pair
         (error "missing count" value))
       (set-cdr! pair (- (cdr pair) 1)))))
@@ -1249,7 +1252,7 @@
   (define (increment! value)
     (when (shared-value? value)
       (cond
-        ((assoc value counts) =>
+        ((assq value counts) =>
           (lambda (pair)
             (set-cdr! pair (+ 1 (cdr pair)))))
 
@@ -1258,7 +1261,7 @@
 
   (define (count-data! value)
     (when (rib? value)
-      (unless (and (shared-value? value) (assoc value counts))
+      (unless (and (shared-value? value) (assq value counts))
         ((if (procedure? value) count-code! count-data!) (rib-car value))
         (count-data! (rib-cdr value)))
       (increment! value)))
@@ -1347,7 +1350,7 @@
          (decrement! (lambda () (decrement-count! counts value))))
     (cond
       ((rib? value)
-        (let ((entry (assoc value counts)))
+        (let ((entry (assq value counts)))
           (cond
             ((and entry (encode-context-position context value)) =>
               (lambda (index)
