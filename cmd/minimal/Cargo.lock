@@ -47,14 +47,14 @@ checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "mstak"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "libc",
  "stak-device",
@@ -92,11 +92,11 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-code"
-version = "0.2.68"
+version = "0.2.69"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.73"
+version = "0.1.74"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -109,11 +109,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.65"
+version = "0.1.66"
 
 [[package]]
 name = "stak-device"
-version = "0.2.69"
+version = "0.2.70"
 dependencies = [
  "libc",
  "stak-vm",
@@ -121,7 +121,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.4.27"
+version = "0.4.28"
 dependencies = [
  "heapless",
  "libc",
@@ -130,7 +130,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.70"
+version = "0.1.71"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -141,7 +141,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.46"
+version = "0.1.47"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -150,14 +150,14 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.27"
+version = "0.2.28"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.8.4"
+version = "0.8.5"
 dependencies = [
  "libm",
  "stak-device",
@@ -169,7 +169,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.71"
+version = "0.1.72"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -185,7 +185,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "libc",
  "stak-vm",
@@ -193,14 +193,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.45"
+version = "0.1.46"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.6.4"
+version = "0.6.5"
 dependencies = [
  "cfg-exif",
  "stak-code",
