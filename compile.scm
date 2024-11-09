@@ -1272,11 +1272,9 @@
         (count-data! codes))
 
       ((nop-codes? codes)
-        (if (assq codes counts)
-          ; TODO Increment!
-          (decrement-count! counts codes)
-          (begin
-            (increment! codes)
+        (let ((counted (assq codes counts)))
+          (increment! codes)
+          (unless counted
             (count-code! (rib-cdr codes)))))
 
       (else
