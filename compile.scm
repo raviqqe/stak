@@ -1260,26 +1260,24 @@
   (define (count-data! value)
     (when (rib? value)
       (unless (and (shared-value? value) (assoc value counts))
-        (let ((head (rib-car value)))
-          ((if (and (procedure? value) (rib? head)) count-code! count-data!)
-            (if (symbol? value) #f head)))
-        (count-data!
-          (if (symbol? value)
-            (symbol->string value)
-            (rib-cdr value))))
+        ((if (procedure? value) count-code! count-data!) (rib-car value))
+        (count-data! (rib-cdr value)))
       (increment! value)))
 
   (define (count-code! codes)
     (cond
+      ((number? codes)
+        #f)
+
+      ((null? codes)
+        (count-data! codes))
+
       ((nop-codes? codes)
         (if (memq codes continuations)
           (set! continuations (remove! codes continuations))
           (begin
             (set! continuations (cons codes continuations))
             (count-code! (rib-cdr codes)))))
-
-      ((null? codes)
-        (count-data! codes))
 
       (else
         ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
