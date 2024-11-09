@@ -1342,7 +1342,7 @@
               (* 2 (+ e 1023))
               (* 4096 m))))))))
 
-(define (encode-node context value)
+(define (encode-rib context value)
   (let* ((counts (encode-context-counts context))
          (decrement! (lambda () (decrement-count! counts value))))
     (cond
@@ -1365,8 +1365,8 @@
 
             (else
               (let ((tag (rib-tag value)))
-                (encode-node context (rib-car value))
-                (encode-node context (rib-cdr value))
+                (encode-rib context (rib-car value))
+                (encode-rib context (rib-cdr value))
 
                 (let-values (((head tail) (encode-integer-parts tag tag-base)))
                   (write-u8 (+ 1 (* 4 head)))
@@ -1410,7 +1410,7 @@
             (filter
               (lambda (pair) (> (cdr pair) 1))
               (count-constants codes)))))
-    (encode-node context codes)
+    (encode-rib context codes)
 
     (let ((size (length (encode-context-dictionary context))))
       (unless (zero? size)
