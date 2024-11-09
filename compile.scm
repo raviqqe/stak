@@ -1245,7 +1245,6 @@
 
 (define (count-constants codes)
   (define counts '())
-  (define continuations '())
 
   (define (increment! value)
     (when (shared-value? value)
@@ -1273,10 +1272,11 @@
         (count-data! codes))
 
       ((nop-codes? codes)
-        (if (memq codes continuations)
-          (set! continuations (remove! codes continuations))
+        (if (assq codes counts)
+          ; TODO Increment!
+          (decrement-count! counts codes)
           (begin
-            (set! continuations (cons codes continuations))
+            (increment! codes)
             (count-code! (rib-cdr codes)))))
 
       (else
@@ -1285,9 +1285,6 @@
         (count-code! (rib-cdr codes)))))
 
   (count-code! codes)
-
-  (when (positive? (length continuations))
-    (error "leftover continuations"))
 
   counts)
 
