@@ -1441,7 +1441,7 @@
     (do ((counts (encode-context-counts context) (cdr counts)))
       ((null? counts))
       (unless (zero? (cdar counts))
-        (error "invalid constant count" (car counts))))))
+        (error "invalid constant count" (map cdr counts))))))
 
 ; Main
 
