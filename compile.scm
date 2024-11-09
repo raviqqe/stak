@@ -1344,17 +1344,15 @@
 
 (define (encode-node context value data)
   (let* ((counts (encode-context-counts context))
-         (decrement!
-           (lambda ()
-             (decrement-count! counts value))))
+         (decrement! (lambda () (decrement-count! counts value))))
     (cond
       ((rib? value)
-        (let ((shared (assoc value counts)))
+        (let ((entry (assoc value counts)))
           (cond
-            ((and shared (encode-context-position context value)) =>
+            ((and entry (encode-context-position context value)) =>
               (lambda (index)
                 (decrement!)
-                (let ((removed (zero? (cdr (assoc value counts))))
+                (let ((removed (zero? (cdr entry)))
                       (value (encode-context-remove! context index)))
                   (unless removed
                     (encode-context-push! context value))
@@ -1381,7 +1379,7 @@
                   (write-u8 (+ 1 (* 4 head)))
                   (encode-integer-tail tail))
 
-                (when shared
+                (when entry
                   (encode-context-push! context value)
                   (decrement!)
                   (write-u8 3)))))))
