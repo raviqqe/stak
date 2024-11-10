@@ -1143,7 +1143,7 @@
 
 (define singletons '(#f #t ()))
 
-(define (nop-codes? codes)
+(define (nop-code? codes)
   (and
     (rib? codes)
     (eq? (rib-tag codes) nop-instruction)))
@@ -1178,7 +1178,7 @@
               (marshal-context-set-constants! context (cons (cons value marshalled) constants))
               marshalled)))))
 
-    ((and (not data) (nop-codes? value))
+    ((and (not data) (nop-code? value))
       (cond
         ((assq value (marshal-context-continuations context)) =>
           cdr)
@@ -1237,12 +1237,14 @@
     (memq value singletons)
     (char? value)
     (string? value)
-    (symbol? value)))
+    (symbol? value)
+    ; This is technically equivalent to `symbol?`. But we include this check for sanity.
+    (nop-code? value)))
 
 (define (strip-nop-instructions codes)
   ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
   ; all `#f` and nop instructions' are `0`.
-  (if (and (nop-codes? codes) (car codes))
+  (if (and (nop-code? codes) (car codes))
     (strip-nop-instructions (rib-cdr codes))
     codes))
 
@@ -1280,7 +1282,7 @@
       ((null? codes)
         (count-data! codes))
 
-      ((nop-codes? codes)
+      ((nop-code? codes)
         (let* ((codes (strip-nop-instructions codes))
                (counted (assq codes counts)))
           (increment! codes)
