@@ -1239,32 +1239,38 @@
     (string? value)
     (symbol? value)))
 
+(define (strip-nop-instructions codes)
+  ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
+  ; all `#f` and nop instructions' are `0`.
+  (if (and (nop-codes? codes) (car codes))
+    (strip-nop-instructions (rib-cdr codes))
+    codes))
+
 (define (decrement-count! counts value)
-  (when (shared-value? value)
-    (let ((pair (assq value counts)))
-      (unless pair
-        (error "missing count" value))
-      (set-cdr! pair (- (cdr pair) 1)))))
+  (let ((pair (assq value counts)))
+    (unless pair
+      (error "missing count" value))
+    (set-cdr! pair (- (cdr pair) 1))))
 
 (define (count-constants codes)
   (define counts '())
 
   (define (increment! value)
-    (when (shared-value? value)
-      (cond
-        ((assq value counts) =>
-          (lambda (pair)
-            (set-cdr! pair (+ 1 (cdr pair)))))
+    (cond
+      ((assq value counts) =>
+        (lambda (pair)
+          (set-cdr! pair (+ 1 (cdr pair)))))
 
-        (else
-          (set! counts (cons (cons value 1) counts))))))
+      (else
+        (set! counts (cons (cons value 1) counts)))))
 
   (define (count-data! value)
     (when (rib? value)
       (unless (and (shared-value? value) (assq value counts))
         ((if (procedure? value) count-code! count-data!) (rib-car value))
         (count-data! (rib-cdr value)))
-      (increment! value)))
+      (when (shared-value? value)
+        (increment! value))))
 
   (define (count-code! codes)
     (cond
@@ -1275,10 +1281,11 @@
         (count-data! codes))
 
       ((nop-codes? codes)
-        (let ((counted (assq codes counts)))
+        (let* ((codes (strip-nop-instructions codes))
+               (counted (assq codes counts)))
           (increment! codes)
           (unless counted
-            (count-code! (rib-cdr codes)))))
+            (count-code! codes))))
 
       (else
         ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
@@ -1346,8 +1353,13 @@
               (* 4096 m))))))))
 
 (define (encode-rib context value)
-  (let* ((counts (encode-context-counts context))
-         (decrement! (lambda () (decrement-count! counts value))))
+  (let* ((original value)
+         (value (strip-nop-instructions value))
+         (counts (encode-context-counts context))
+         (decrement!
+           (lambda ()
+             (when (shared-value? original)
+               (decrement-count! counts value)))))
     (cond
       ((rib? value)
         (let ((entry (assq value counts)))
