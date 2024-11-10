@@ -2604,12 +2604,10 @@
         ;; Procedures
 
         (define primitive-procedures
+          ; TODO Check the predicates are actually from the `(stak base)` library.
           (map
             (lambda (x)
-              (cons
-                ; `0` is always the library ID of `(stak base)`.
-                (build-library-name 0 x)
-                (symbol-append '$$ x)))
+              (cons (symbol->string x) (symbol-append '$$ x)))
             '(+ - * / <)))
 
         (define (optimize expression)
