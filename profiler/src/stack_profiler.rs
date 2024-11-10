@@ -38,6 +38,7 @@ impl<T: Write> StackProfiler<T> {
         let operand = memory.car(code);
 
         if let Some(symbol) = operand.to_cons() {
+            // TODO Fix dumping procedure names.
             let mut string = memory.car_value(memory.car(symbol)).assume_cons();
 
             while string != memory.null() {
