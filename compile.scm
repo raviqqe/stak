@@ -1355,12 +1355,12 @@
               (* 4096 m))))))))
 
 (define (encode-rib context value)
-  (let* ((original value)
+  (let* ((shared (shared-value? value))
          (value (strip-nop-instructions value))
          (counts (encode-context-counts context))
          (decrement!
            (lambda ()
-             (when (shared-value? original)
+             (when shared
                (decrement-count! counts value)))))
     (cond
       ((rib? value)
