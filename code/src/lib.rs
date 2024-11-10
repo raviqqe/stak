@@ -23,6 +23,8 @@ pub use encode::encode;
 pub use error::Error;
 pub use ir::*;
 
+// TODO Migrate to v2.
+
 /// A number of bits required to encode an instruction in bytecodes.
 pub const INSTRUCTION_BITS: u64 = 4;
 /// A mask for instruction bits in bytecodes.
