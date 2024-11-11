@@ -19,6 +19,7 @@ EOF
 
 cat prelude.scm tmp/main.scm | stak-compile >tmp/main.bc
 stak-profile run --profile tmp/profile.txt tmp/main.bc
+file --mime-type tmp/profile.txt | grep text/plain
 stak-profile analyze duration <tmp/profile.txt |
   stak-profile analyze stack-collapse |
   stak-profile analyze stack-reverse |
