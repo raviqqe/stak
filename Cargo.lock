@@ -499,7 +499,6 @@ version = "0.1.75"
 dependencies = [
  "clap",
  "main_error",
- "stak-code",
 ]
 
 [[package]]
@@ -698,7 +697,6 @@ dependencies = [
 name = "stak-wasm"
 version = "0.2.49"
 dependencies = [
- "stak-code",
  "stak-compiler",
  "stak-configuration",
  "stak-device",

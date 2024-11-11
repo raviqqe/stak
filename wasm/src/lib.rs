@@ -39,9 +39,3 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
 
     Ok(output)
 }
-
-/// Decodes bytecodes into its Markdown format.
-#[wasm_bindgen]
-pub fn decode(bytecodes: &[u8]) -> Result<String, JsError> {
-    Ok(stak_code::decode(bytecodes)?.to_string())
-}
