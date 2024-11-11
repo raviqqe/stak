@@ -461,14 +461,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-code"
-version = "0.2.69"
-dependencies = [
- "insta",
- "pretty_assertions",
-]
-
-[[package]]
 name = "stak-compile"
 version = "0.2.5"
 dependencies = [
@@ -497,8 +489,7 @@ version = "0.1.66"
 name = "stak-decode"
 version = "0.1.75"
 dependencies = [
- "clap",
- "main_error",
+ "stak-sac",
 ]
 
 [[package]]
@@ -684,7 +675,6 @@ dependencies = [
  "cfg-exif",
  "insta",
  "nonbox",
- "stak-code",
  "stak-device",
  "stak-file",
  "stak-macro",

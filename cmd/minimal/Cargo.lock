@@ -91,10 +91,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
-name = "stak-code"
-version = "0.2.69"
-
-[[package]]
 name = "stak-compiler"
 version = "0.1.74"
 dependencies = [
@@ -203,7 +199,6 @@ name = "stak-vm"
 version = "0.6.5"
 dependencies = [
  "cfg-exif",
- "stak-code",
 ]
 
 [[package]]

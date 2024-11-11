@@ -9,8 +9,10 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-clap = { version = "4.5.20", features = ["derive"] }
-main_error = "0.1.2"
+stak-sac = { version = "0.1.72", path = "../../sac", features = [
+  "float",
+  "std",
+] }
 
 [lints]
 workspace = true
