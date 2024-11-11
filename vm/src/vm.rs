@@ -1,7 +1,9 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    cons::{never, Cons, Tag},
+    code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
+    cons::{never, Cons},
+    instruction::Instruction,
     memory::Memory,
     number::Number,
     primitive_set::PrimitiveSet,
@@ -9,21 +11,9 @@ use crate::{
     value::{TypedValue, Value},
     Error, StackSlot,
 };
-use code::v2::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE};
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
 use core::fmt::{self, Display, Formatter};
-use stak_code as code;
-
-mod instruction {
-    use super::*;
-
-    pub const CONSTANT: Tag = code::Instruction::CONSTANT as _;
-    pub const GET: Tag = code::Instruction::GET as _;
-    pub const SET: Tag = code::Instruction::SET as _;
-    pub const IF: Tag = code::Instruction::IF as _;
-    pub const NOP: Tag = code::Instruction::NOP as _;
-}
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -100,15 +90,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
-                instruction::CONSTANT => self.constant()?,
-                instruction::GET => self.get()?,
-                instruction::SET => self.set(),
-                instruction::IF => self.r#if(),
-                instruction::NOP => self.advance_program_counter(),
-                code => self.call(
-                    instruction,
-                    code as usize - code::Instruction::CALL as usize,
-                )?,
+                Instruction::CONSTANT => self.constant()?,
+                Instruction::GET => self.get()?,
+                Instruction::SET => self.set(),
+                Instruction::IF => self.r#if(),
+                Instruction::NOP => self.advance_program_counter(),
+                code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
 
             trace_memory!(self);
