@@ -1577,19 +1577,17 @@
 
     ; Symbol table
 
-    (define symbols (rib-cdr $$rib))
-    ; Allow garbage collection for a symbol table.
-    (rib-set-cdr! $$rib #f)
+    (define string->symbol
+      (let ((symbols ($$symbols)))
+        (lambda (x)
+          (cond
+            ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
+              car)
 
-    (define (string->symbol x)
-      (cond
-        ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
-          car)
-
-        (else
-          (let ((x (string->uninterned-symbol x)))
-            (set! symbols (cons x symbols))
-            x))))
+            (else
+              (let ((x (string->uninterned-symbol x)))
+                (set! symbols (cons x symbols))
+                x))))))
 
     ; Control
 
@@ -2552,11 +2550,8 @@
             (symbol->string name)))
 
         (define (resolve-library-symbol name)
-          (let* ((string (symbol->string name))
-                 (position (memv-position library-symbol-separator (string->list string))))
-            (if position
-              (string->symbol (string-copy string (+ position 1)))
-              name)))
+          ; Symbols can be from a different library environment.
+          (string->symbol (symbol->string name)))
 
         ; Macro system
 
@@ -2609,12 +2604,10 @@
         ;; Procedures
 
         (define primitive-procedures
+          ; TODO Check the predicates are actually from the `(stak base)` library.
           (map
             (lambda (x)
-              (cons
-                ; `0` is always the library ID of `(stak base)`.
-                (build-library-name 0 x)
-                (symbol-append '$$ x)))
+              (cons (symbol->string x) (symbol-append '$$ x)))
             '(+ - * / <)))
 
         (define (optimize expression)

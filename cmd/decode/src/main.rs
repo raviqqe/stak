@@ -9,6 +9,8 @@
 //! stak-decode < foo.bc
 //! ```
 
+// TODO Rewrite in Scheme.
+
 use main_error::MainError;
 use stak_code::decode;
 use std::io::{stdin, Read};

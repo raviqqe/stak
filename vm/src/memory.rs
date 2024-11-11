@@ -59,16 +59,9 @@ impl<'a> Memory<'a> {
             heap,
         };
 
-        let nil = memory.allocate_unchecked(Default::default(), Default::default())?;
-        let null =
-            memory.allocate_unchecked(Default::default(), nil.set_tag(Type::Null as Tag).into())?;
-        // Do not use `never()` for `cdr` for an `equal?` procedure.
-        let r#true = memory.allocate_unchecked(
-            Default::default(),
-            null.set_tag(Type::Boolean as Tag).into(),
-        )?;
-        memory.r#false =
-            memory.allocate_unchecked(null.into(), r#true.set_tag(Type::Boolean as Tag).into())?;
+        // Initialize a fake false value.
+        let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
+        memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
 
         Ok(memory)
     }
@@ -115,6 +108,11 @@ impl<'a> Memory<'a> {
     /// Returns a null value.
     pub fn null(&self) -> Cons {
         self.car(self.r#false).assume_cons()
+    }
+
+    /// Sets a false value.
+    pub fn set_false(&mut self, cons: Cons) {
+        self.r#false = cons;
     }
 
     /// Pushes a value to a stack.
@@ -436,8 +434,6 @@ mod tests {
     fn create_list() {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
-
-        assert_eq!(memory.cdr(memory.null()).tag(), Type::Null as Tag);
 
         let list = memory
             .cons(Number::from_i64(1).into(), memory.null())
