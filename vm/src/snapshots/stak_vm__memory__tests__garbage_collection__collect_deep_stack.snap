@@ -2,7 +2,7 @@
 source: vm/src/memory.rs
 expression: memory
 ---
-program counter: !:0
+code: !:0
 stack: c100:0
 100: n2 c104:0 <- stack
 102: c106:0 c106:0
