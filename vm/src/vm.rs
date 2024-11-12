@@ -84,8 +84,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
-        while self.memory.program_counter() != self.memory.null() {
-            let instruction = self.memory.cdr(self.memory.program_counter()).assume_cons();
+        while self.memory.code() != self.memory.null() {
+            let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
             trace!("instruction", instruction.tag());
 
@@ -94,7 +94,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instruction::GET => self.get()?,
                 Instruction::SET => self.set(),
                 Instruction::IF => self.r#if(),
-                Instruction::NOP => self.advance_program_counter(),
+                Instruction::NOP => self.advance_code(),
                 code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
 
@@ -110,7 +110,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("constant", constant);
 
         self.memory.push(constant)?;
-        self.advance_program_counter();
+        self.advance_code();
 
         Ok(())
     }
@@ -123,7 +123,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.push(value)?;
-        self.advance_program_counter();
+        self.advance_code();
 
         Ok(())
     }
@@ -136,15 +136,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.set_car(operand, value);
-        self.advance_program_counter();
+        self.advance_code();
     }
 
     fn r#if(&mut self) {
         let value = self.memory.pop();
 
-        self.memory.set_program_counter(
+        self.memory.set_code(
             (if value == self.memory.boolean(false).into() {
-                self.memory.cdr(self.memory.program_counter())
+                self.memory.cdr(self.memory.code())
             } else {
                 self.operand()
             })
@@ -166,7 +166,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
                 #[cfg(feature = "profile")]
-                self.profile_call(self.memory.program_counter(), r#return);
+                self.profile_call(self.memory.code(), r#return);
 
                 let arguments = Self::parse_arity(arity);
                 let parameters =
@@ -190,27 +190,27 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     list = self.memory.cons(value, list)?;
                 }
 
-                // Use a `program_counter` field as an escape cell for a procedure.
-                let program_counter = self.memory.program_counter();
-                self.memory.set_program_counter(self.memory.register());
+                // Use a `code` field as an escape cell for a procedure.
+                let code = self.memory.code();
+                self.memory.set_code(self.memory.register());
                 self.memory.set_register(list);
 
                 let continuation = if r#return {
                     self.continuation()
                 } else {
                     self.memory
-                        .allocate(program_counter.into(), self.memory.stack().into())?
+                        .allocate(code.into(), self.memory.stack().into())?
                 };
                 let stack = self.memory.allocate(
                     continuation.into(),
-                    self.environment(self.memory.program_counter())
+                    self.environment(self.memory.code())
                         .set_tag(StackSlot::Frame as _)
                         .into(),
                 )?;
                 self.memory.set_stack(stack);
-                self.memory.set_program_counter(
+                self.memory.set_code(
                     self.memory
-                        .cdr(self.code(self.memory.program_counter()).assume_cons())
+                        .cdr(self.code(self.memory.code()).assume_cons())
                         .assume_cons(),
                 );
 
@@ -244,7 +244,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 self.primitive_set
                     .operate(&mut self.memory, primitive.to_i64() as _)?;
-                self.advance_program_counter();
+                self.advance_code();
             }
         }
 
@@ -258,8 +258,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
-    fn advance_program_counter(&mut self) {
-        let mut code = self.memory.cdr(self.memory.program_counter()).assume_cons();
+    fn advance_code(&mut self) {
+        let mut code = self.memory.cdr(self.memory.code()).assume_cons();
 
         if code == self.memory.null() {
             #[cfg(feature = "profile")]
@@ -276,11 +276,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 .assume_cons();
         }
 
-        self.memory.set_program_counter(code);
+        self.memory.set_code(code);
     }
 
     fn operand(&self) -> Value {
-        self.memory.car(self.memory.program_counter())
+        self.memory.car(self.memory.code())
     }
 
     fn operand_cons(&self) -> Cons {
@@ -308,7 +308,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.cdr(procedure).assume_cons()
     }
 
-    // (program-counter . stack)
+    // (code . stack)
     fn continuation(&self) -> Cons {
         let mut stack = self.memory.stack();
 
@@ -353,7 +353,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory
             .set_false(self.memory.car(program).assume_cons());
         self.memory
-            .set_program_counter(self.memory.cdr(program).assume_cons());
+            .set_code(self.memory.cdr(program).assume_cons());
 
         profile_event!(self, "decode_end");
 
@@ -393,30 +393,30 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 if head == 0 {
                     let value = self.memory.top();
-                    let cons = self.memory.cons(value, self.memory.program_counter())?;
-                    self.memory.set_program_counter(cons);
+                    let cons = self.memory.cons(value, self.memory.code())?;
+                    self.memory.set_code(cons);
                 } else {
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
                     let index = integer >> 1;
 
                     if index > 0 {
                         let cons = self.memory.tail(
-                            self.memory.program_counter(),
+                            self.memory.code(),
                             Number::from_i64((index - 1) as _),
                         );
                         let head = self.memory.cdr(cons).assume_cons();
                         let tail = self.memory.cdr(head);
                         self.memory
-                            .set_cdr(head, self.memory.program_counter().into());
+                            .set_cdr(head, self.memory.code().into());
                         self.memory.set_cdr(cons, tail);
-                        self.memory.set_program_counter(head);
+                        self.memory.set_code(head);
                     }
 
-                    let value = self.memory.car(self.memory.program_counter());
+                    let value = self.memory.car(self.memory.code());
 
                     if integer & 1 == 0 {
-                        self.memory.set_program_counter(
-                            self.memory.cdr(self.memory.program_counter()).assume_cons(),
+                        self.memory.set_code(
+                            self.memory.cdr(self.memory.code()).assume_cons(),
                         );
                     }
 

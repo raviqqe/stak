@@ -37,7 +37,7 @@ macro_rules! assert_heap_value {
 
 /// A memory on a virtual machine.
 pub struct Memory<'a> {
-    program_counter: Cons,
+    code: Cons,
     stack: Cons,
     r#false: Cons,
     register: Cons,
@@ -50,7 +50,7 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            program_counter: never(),
+            code: never(),
             stack: never(),
             r#false: never(),
             register: never(),
@@ -66,14 +66,14 @@ impl<'a> Memory<'a> {
         Ok(memory)
     }
 
-    /// Returns a program counter.
-    pub const fn program_counter(&self) -> Cons {
-        self.program_counter
+    /// Returns a code.
+    pub const fn code(&self) -> Cons {
+        self.code
     }
 
-    /// Sets a program counter.
-    pub fn set_program_counter(&mut self, value: Cons) {
-        self.program_counter = value;
+    /// Sets a code.
+    pub fn set_code(&mut self, value: Cons) {
+        self.code = value;
     }
 
     /// Returns a register.
@@ -323,7 +323,7 @@ impl<'a> Memory<'a> {
         self.allocation_index = 0;
         self.space = !self.space;
 
-        self.program_counter = self.copy_cons(self.program_counter)?;
+        self.code = self.copy_cons(self.code)?;
         self.stack = self.copy_cons(self.stack)?;
         self.r#false = self.copy_cons(self.r#false)?;
         self.register = self.copy_cons(self.register)?;
@@ -373,7 +373,7 @@ impl<'a> Memory<'a> {
 
 impl<'a> Display for Memory<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        writeln!(formatter, "program counter: {}", self.program_counter)?;
+        writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
 
         for index in 0..self.allocation_index / 2 {
@@ -388,8 +388,8 @@ impl<'a> Display for Memory<'a> {
                 self.cdr(cons)
             )?;
 
-            if index == self.program_counter.index() {
-                write!(formatter, " <- program counter")?;
+            if index == self.code.index() {
+                write!(formatter, " <- code")?;
             } else if index == self.stack.index() {
                 write!(formatter, " <- stack")?;
             } else if index == self.register.index() {
