@@ -352,8 +352,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let program = self.decode_ribs(&mut input.into_iter())?;
         self.memory
             .set_false(self.memory.car(program).assume_cons());
-        self.memory
-            .set_code(self.memory.cdr(program).assume_cons());
+        self.memory.set_code(self.memory.cdr(program).assume_cons());
 
         profile_event!(self, "decode_end");
 
@@ -400,14 +399,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self.memory.tail(
-                            self.memory.code(),
-                            Number::from_i64((index - 1) as _),
-                        );
+                        let cons = self
+                            .memory
+                            .tail(self.memory.code(), Number::from_i64((index - 1) as _));
                         let head = self.memory.cdr(cons).assume_cons();
                         let tail = self.memory.cdr(head);
-                        self.memory
-                            .set_cdr(head, self.memory.code().into());
+                        self.memory.set_cdr(head, self.memory.code().into());
                         self.memory.set_cdr(cons, tail);
                         self.memory.set_code(head);
                     }
@@ -415,9 +412,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let value = self.memory.car(self.memory.code());
 
                     if integer & 1 == 0 {
-                        self.memory.set_code(
-                            self.memory.cdr(self.memory.code()).assume_cons(),
-                        );
+                        self.memory
+                            .set_code(self.memory.cdr(self.memory.code()).assume_cons());
                     }
 
                     self.memory.push(value)?;
