@@ -1252,17 +1252,18 @@
     codes))
 
 (define (increment-count! context value)
-  (let ((counts (encode-context-counts context)))
-    (cond
-      ((assq value counts) =>
-        (lambda (pair)
-          (set-cdr! pair (+ 1 (cdr pair)))))
+  (cond
+    ((encode-context-find-count context value) =>
+      (lambda (pair)
+        (set-cdr! pair (+ 1 (cdr pair)))))
 
-      (else
-        (encode-context-set-counts! context (cons (cons value 1) counts))))))
+    (else
+      (encode-context-set-counts!
+        context
+        (cons (cons value 1) (counts (encode-context-counts context)))))))
 
 (define (decrement-count! context value)
-  (let ((pair (assq value (encode-context-counts context))))
+  (let ((pair (encode-context-find-count context value)))
     (unless pair
       (error "missing count" value))
     (set-cdr! pair (- (cdr pair) 1))))
@@ -1270,7 +1271,7 @@
 (define (count-ribs! context codes)
   (define (count-data! value)
     (when (rib? value)
-      (unless (and (shared-value? value) (assq value (encode-context-counts context)))
+      (unless (and (shared-value? value) (encode-context-find-count context value))
         ((if (procedure? value) count-code! count-data!) (rib-car value))
         (count-data! (rib-cdr value)))
       (when (shared-value? value)
@@ -1286,7 +1287,7 @@
 
       ((nop-code? codes)
         (let* ((codes (strip-nop-instructions codes))
-               (counted (assq codes (encode-context-counts context))))
+               (counted (encode-context-find-count context codes)))
           (increment-count! context codes)
           (unless counted
             (count-code! codes))))
@@ -1357,14 +1358,13 @@
 (define (encode-rib context value)
   (let* ((shared (shared-value? value))
          (value (strip-nop-instructions value))
-         (counts (encode-context-counts context))
          (decrement!
            (lambda ()
              (when shared
                (decrement-count! context value)))))
     (cond
       ((rib? value)
-        (let ((entry (assq value counts)))
+        (let ((entry (encode-context-find-count context value)))
           (cond
             ((and entry (encode-context-position context value)) =>
               (lambda (index)
