@@ -1260,7 +1260,7 @@
     (else
       (encode-context-set-counts!
         context
-        (cons (cons value 1) (counts (encode-context-counts context)))))))
+        (cons (cons value 1) (encode-context-counts context))))))
 
 (define (decrement-count! context value)
   (let ((pair (encode-context-find-count context value)))
