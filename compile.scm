@@ -946,15 +946,6 @@
 (define (find-symbols expression)
   (define (find expression)
     (cond
-      ((and
-          (symbol? expression)
-          (let ((string (symbol->string expression)))
-            (and
-              (> (string-length string) 1)
-              (eqv? (string-ref string 0) #\$)
-              (eqv? (string-ref string 1) #\$))))
-        (list expression))
-
       ((not (pair? expression))
         '())
 
@@ -1125,6 +1116,7 @@
       '()
       (unique
         (append
+          (map car primitives)
           (find-symbols expression)
           (find-quoted-symbols libraries)
           (find-quoted-symbols macros)))
