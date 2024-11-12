@@ -1254,7 +1254,7 @@
       (error "missing count" value))
     (set-cdr! pair (- (cdr pair) 1))))
 
-(define (count-constants codes)
+(define (count-ribs codes)
   (define counts '())
 
   (define (increment! value)
@@ -1426,7 +1426,7 @@
             '()
             (filter
               (lambda (pair) (> (cdr pair) 1))
-              (count-constants codes)))))
+              (count-ribs codes)))))
     (encode-rib context codes)
 
     (let ((size (length (encode-context-dictionary context))))
