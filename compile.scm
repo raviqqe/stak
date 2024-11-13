@@ -65,6 +65,10 @@
 
 ; Utility
 
+(define (debug . xs)
+  (write xs (current-error-port))
+  (newline (current-error-port)))
+
 (define (code-rib tag car cdr)
   (rib car cdr tag))
 
@@ -1149,7 +1153,7 @@
                 ((symbol? value)
                   (data-rib
                     symbol-type
-                    #f
+                    (marshal-unique-constant context #f)
                     (symbol->string (resolve-library-symbol value))))
 
                 ((null? value)
@@ -1279,7 +1283,7 @@
 (define (strip-nop-instructions codes)
   ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
   ; all `#f` and nop instructions' are `0`.
-  (if (and (nop-code? codes) (car codes))
+  (if (and (nop-code? codes) (zero? (car codes)))
     (strip-nop-instructions (rib-cdr codes))
     codes))
 
