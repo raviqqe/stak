@@ -1133,8 +1133,6 @@
   (constants marshal-context-constants marshal-context-set-constants!)
   (continuations marshal-context-continuations marshal-context-set-continuations!))
 
-(define singletons '(#f #t ()))
-
 (define (nop-code? codes)
   (and
     (rib? codes)
@@ -1232,10 +1230,11 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context dictionary counts)
+  (make-encode-context dictionary counts null)
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!)
-  (counts encode-context-counts encode-context-set-counts!))
+  (counts encode-context-counts encode-context-set-counts!)
+  (null encode-context-null))
 
 (define (encode-context-push! context value)
   (encode-context-set-dictionary!
@@ -1264,13 +1263,18 @@
 (define share-base 31)
 
 (define (shared-value? value)
-  (or
-    (memq value singletons)
-    (char? value)
-    (string? value)
-    (symbol? value)
-    ; This is technically equivalent to `symbol?`. But we include this check for sanity.
-    (nop-code? value)))
+  (and
+    (rib? value)
+    (memq
+      (rib-tag value)
+      (list
+        boolean-type
+        char-type
+        null-type
+        string-type
+        symbol-type
+        ; This is technically equivalent to `symbol-type`. But we include this check for sanity.
+        nop-instruction))))
 
 (define (strip-nop-instructions codes)
   ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
@@ -1310,7 +1314,7 @@
       ((number? codes)
         #f)
 
-      ((null? codes)
+      ((eq? codes (encode-context-null context))
         (count-data! codes))
 
       ((nop-code? codes)
@@ -1449,7 +1453,7 @@
 ;; Main
 
 (define (encode codes)
-  (let ((context (make-encode-context '() '())))
+  (let ((context (make-encode-context '() '() (rib-car (rib-car codes)))))
     (count-ribs! context codes)
     (encode-context-set-counts!
       context
@@ -1468,18 +1472,6 @@
         (error "invalid constant count" (map cdr counts))))))
 
 ; Main
-
-; TODO Consider moving this logic to marshalling.
-(define (initialize-tri-force)
-  (let ((nil (cons 0 0)))
-    (set-car! '() 0)
-    (set-cdr! '() nil)
-
-    (set-car! #t 0)
-    (set-cdr! #t nil)
-
-    (set-car! #f '())
-    (set-cdr! #f #t)))
 
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
@@ -1501,5 +1493,4 @@
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
 
-(initialize-tri-force)
 (main)
