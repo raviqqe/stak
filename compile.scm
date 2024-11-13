@@ -1179,7 +1179,7 @@
                   marshalled)))))
 
         (else
-          (marshal-rib value data))))
+          (marshal-normal value data))))
 
     ((nop-code? value)
       (cond
@@ -1194,7 +1194,7 @@
             continuation))))
 
     (else
-      (marshal-car-data value (not (= (rib-tag value) if-instruction))))))
+      (marshal-normal value (not (= (rib-tag value) if-instruction))))))
 
 (define (marshal codes)
   (marshal-rib (make-marshal-context '() '()) codes #f))
