@@ -1154,7 +1154,7 @@
                   (data-rib
                     symbol-type
                     (marshal-unique-constant context #f)
-                    (symbol->string (resolve-library-symbol value))))
+                    (marshal-unique-constant context (symbol->string (resolve-library-symbol value)))))
 
                 ((null? value)
                   (data-rib null-type 0 (cons 0 0)))
