@@ -1140,6 +1140,40 @@
     (rib? codes)
     (eq? (rib-tag codes) nop-instruction)))
 
+(define (marshal-unique-constant context value)
+  (cond
+    ((assoc value (marshal-context-constants context)) =>
+      cdr)
+
+    (else
+      (let ((marshalled
+              (cond
+                ((symbol? value)
+                  (data-rib
+                    symbol-type
+                    #f
+                    (symbol->string (resolve-library-symbol value))))
+
+                ((null? value)
+                  (data-rib null-type 0 (cons 0 0)))
+
+                ((boolean? value)
+                  (if value
+                    (data-rib boolean-type 0 (marshal-unique-constant context '()))
+                    (data-rib
+                      boolean-type
+                      (marshal-unique-constant context '())
+                      (marshal-unique-constant context #t))))
+
+                (else
+                  value))))
+        (marshal-context-set-constants!
+          context
+          (cons
+            (cons value marshalled)
+            (marshal-context-constants context)))
+        marshalled))))
+
 (define (marshal-rib context value data)
   (define (marshal value data)
     (marshal-rib context value data))
@@ -1151,10 +1185,10 @@
       (rib-tag value)))
 
   (cond
-    ((or (number? value) (memq value singletons))
+    ((number? value)
       value)
 
-    (data
+    ((or data (null? value))
       (cond
         ((record? value)
           (error "invalid record"))
@@ -1164,19 +1198,13 @@
             (error "invalid environment"))
           (data-rib procedure-type (marshal (rib-car value) #f) '()))
 
-        ((or (char? value) (string? value) (symbol? value))
-          (let ((constants (marshal-context-constants context)))
-            (cond
-              ((assoc value constants) =>
-                cdr)
-
-              (else
-                (let ((marshalled
-                        (if (symbol? value)
-                          (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
-                          value)))
-                  (marshal-context-set-constants! context (cons (cons value marshalled) constants))
-                  marshalled)))))
+        ((or
+            (null? value)
+            (boolean? value)
+            (char? value)
+            (string? value)
+            (symbol? value))
+          (marshal-unique-constant context value))
 
         (else
           (marshal-normal value data))))
