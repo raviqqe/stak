@@ -1143,6 +1143,17 @@
     (eq? (rib-tag codes) nop-instruction)))
 
 (define (marshal-unique-constant context value)
+  (define (marshal value)
+    (marshal-unique-constant context value))
+
+  (define (marshal-list value)
+    (if (null? value)
+      (marshal '())
+      (data-rib
+        pair-type
+        (rib-car value)
+        (marshal-list (rib-cdr value)))))
+
   (cond
     ((assoc value (marshal-context-constants context)) =>
       cdr)
@@ -1150,25 +1161,31 @@
     (else
       (let ((marshalled
               (cond
-                ((symbol? value)
-                  (data-rib
-                    symbol-type
-                    (marshal-unique-constant context #f)
-                    (marshal-unique-constant context (symbol->string (resolve-library-symbol value)))))
-
                 ((null? value)
                   (data-rib null-type 0 (cons 0 0)))
 
                 ((boolean? value)
                   (if value
-                    (data-rib boolean-type 0 (marshal-unique-constant context '()))
-                    (data-rib
-                      boolean-type
-                      (marshal-unique-constant context '())
-                      (marshal-unique-constant context #t))))
+                    (data-rib boolean-type 0 (marshal '()))
+                    (data-rib boolean-type (marshal '()) (marshal #t))))
+
+                ((symbol? value)
+                  (data-rib
+                    symbol-type
+                    (marshal #f)
+                    (marshal (symbol->string (resolve-library-symbol value)))))
+
+                ((char? value)
+                  (data-rib char-type (char->integer value) (marshal '())))
+
+                ((string? value)
+                  (data-rib
+                    string-type
+                    (string-length value)
+                    (marshal-list value)))
 
                 (else
-                  value))))
+                  (error "invalid type")))))
         (marshal-context-set-constants!
           context
           (cons
