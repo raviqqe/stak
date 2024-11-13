@@ -1144,33 +1144,44 @@
   (define (marshal value data)
     (marshal-rib context value data))
 
+  (define (marshal-normal value car-data)
+    (rib
+      (marshal (rib-car value) car-data)
+      (marshal (rib-cdr value) data)
+      (rib-tag value)))
+
   (cond
     ((or (number? value) (memq value singletons))
       value)
 
-    ((and data (record? value))
-      (error "invalid record"))
+    (data
+      (cond
+        ((record? value)
+          (error "invalid record"))
 
-    ((and data (procedure? value))
-      (unless (null? (rib-cdr value))
-        (error "invalid environment"))
-      (data-rib procedure-type (marshal (rib-car value) #f) '()))
+        ((procedure? value)
+          (unless (null? (rib-cdr value))
+            (error "invalid environment"))
+          (data-rib procedure-type (marshal (rib-car value) #f) '()))
 
-    ((and data (or (char? value) (string? value) (symbol? value)))
-      (let ((constants (marshal-context-constants context)))
-        (cond
-          ((assoc value constants) =>
-            cdr)
+        ((or (char? value) (string? value) (symbol? value))
+          (let ((constants (marshal-context-constants context)))
+            (cond
+              ((assoc value constants) =>
+                cdr)
 
-          (else
-            (let ((marshalled
-                    (if (symbol? value)
-                      (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
-                      value)))
-              (marshal-context-set-constants! context (cons (cons value marshalled) constants))
-              marshalled)))))
+              (else
+                (let ((marshalled
+                        (if (symbol? value)
+                          (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
+                          value)))
+                  (marshal-context-set-constants! context (cons (cons value marshalled) constants))
+                  marshalled)))))
 
-    ((and (not data) (nop-code? value))
+        (else
+          (marshal-rib value data))))
+
+    ((nop-code? value)
       (cond
         ((assq value (marshal-context-continuations context)) =>
           cdr)
@@ -1183,10 +1194,7 @@
             continuation))))
 
     (else
-      (rib
-        (marshal (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
-        (marshal (rib-cdr value) data)
-        (rib-tag value)))))
+      (marshal-car-data value (not (= (rib-tag value) if-instruction))))))
 
 (define (marshal codes)
   (marshal-rib (make-marshal-context '() '()) codes #f))
