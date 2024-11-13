@@ -946,15 +946,6 @@
 (define (find-symbols expression)
   (define (find expression)
     (cond
-      ((and
-          (symbol? expression)
-          (let ((string (symbol->string expression)))
-            (and
-              (> (string-length string) 1)
-              (eqv? (string-ref string 0) #\$)
-              (eqv? (string-ref string 1) #\$))))
-        (list expression))
-
       ((not (pair? expression))
         '())
 
@@ -1125,6 +1116,7 @@
       '()
       (unique
         (append
+          (map car primitives)
           (find-symbols expression)
           (find-quoted-symbols libraries)
           (find-quoted-symbols macros)))
@@ -1207,7 +1199,7 @@
   (make-encode-context dictionary counts)
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!)
-  (counts encode-context-counts))
+  (counts encode-context-counts encode-context-set-counts!))
 
 (define (encode-context-push! context value)
   (encode-context-set-dictionary!
@@ -1224,6 +1216,9 @@
 
 (define (encode-context-position context value)
   (memq-position value (encode-context-dictionary context)))
+
+(define (encode-context-find-count context value)
+  (assq value (encode-context-counts context)))
 
 ;; Codes
 
@@ -1248,31 +1243,31 @@
     (strip-nop-instructions (rib-cdr codes))
     codes))
 
-(define (decrement-count! counts value)
-  (let ((pair (assq value counts)))
+(define (increment-count! context value)
+  (cond
+    ((encode-context-find-count context value) =>
+      (lambda (pair)
+        (set-cdr! pair (+ 1 (cdr pair)))))
+
+    (else
+      (encode-context-set-counts!
+        context
+        (cons (cons value 1) (encode-context-counts context))))))
+
+(define (decrement-count! context value)
+  (let ((pair (encode-context-find-count context value)))
     (unless pair
       (error "missing count" value))
     (set-cdr! pair (- (cdr pair) 1))))
 
-(define (count-constants codes)
-  (define counts '())
-
-  (define (increment! value)
-    (cond
-      ((assq value counts) =>
-        (lambda (pair)
-          (set-cdr! pair (+ 1 (cdr pair)))))
-
-      (else
-        (set! counts (cons (cons value 1) counts)))))
-
+(define (count-ribs! context codes)
   (define (count-data! value)
     (when (rib? value)
-      (unless (and (shared-value? value) (assq value counts))
+      (unless (and (shared-value? value) (encode-context-find-count context value))
         ((if (procedure? value) count-code! count-data!) (rib-car value))
         (count-data! (rib-cdr value)))
       (when (shared-value? value)
-        (increment! value))))
+        (increment-count! context value))))
 
   (define (count-code! codes)
     (cond
@@ -1284,8 +1279,8 @@
 
       ((nop-code? codes)
         (let* ((codes (strip-nop-instructions codes))
-               (counted (assq codes counts)))
-          (increment! codes)
+               (counted (encode-context-find-count context codes)))
+          (increment-count! context codes)
           (unless counted
             (count-code! codes))))
 
@@ -1294,9 +1289,7 @@
           (rib-car codes))
         (count-code! (rib-cdr codes)))))
 
-  (count-code! codes)
-
-  counts)
+  (count-code! codes))
 
 (define (fraction x)
   (- x (floor x)))
@@ -1357,14 +1350,13 @@
 (define (encode-rib context value)
   (let* ((shared (shared-value? value))
          (value (strip-nop-instructions value))
-         (counts (encode-context-counts context))
          (decrement!
            (lambda ()
              (when shared
-               (decrement-count! counts value)))))
+               (decrement-count! context value)))))
     (cond
       ((rib? value)
-        (let ((entry (assq value counts)))
+        (let ((entry (encode-context-find-count context value)))
           (cond
             ((and entry (encode-context-position context value)) =>
               (lambda (index)
@@ -1421,12 +1413,13 @@
 ;; Main
 
 (define (encode codes)
-  (let ((context
-          (make-encode-context
-            '()
-            (filter
-              (lambda (pair) (> (cdr pair) 1))
-              (count-constants codes)))))
+  (let ((context (make-encode-context '() '())))
+    (count-ribs! context codes)
+    (encode-context-set-counts!
+      context
+      (filter
+        (lambda (pair) (> (cdr pair) 1))
+        (encode-context-counts context)))
     (encode-rib context codes)
 
     (let ((size (length (encode-context-dictionary context))))

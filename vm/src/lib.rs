@@ -46,8 +46,10 @@ extern crate alloc;
 #[cfg(any(feature = "trace_instruction", test))]
 extern crate std;
 
+mod code;
 mod cons;
 mod error;
+mod instruction;
 mod memory;
 mod number;
 mod primitive_set;

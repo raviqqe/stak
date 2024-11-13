@@ -9,7 +9,6 @@ members = [
   "cmd/repl",
   "cmd/run",
   "build",
-  "code",
   "compiler",
   "configuration",
   "device",

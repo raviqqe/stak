@@ -12,7 +12,6 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stak-code = { version = "0.2.69", path = "../code", features = ["alloc"] }
 stak-compiler = { version = "0.1.74", path = "../compiler" }
 stak-configuration = { version = "0.1.66", path = "../configuration" }
 stak-device = { version = "0.2.70", path = "../device", features = ["std"] }
