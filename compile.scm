@@ -1182,7 +1182,7 @@
                   (data-rib
                     string-type
                     (string-length value)
-                    (marshal-list value)))
+                    (marshal-list (rib-cdr value))))
 
                 (else
                   (error "invalid type")))))
