@@ -65,6 +65,10 @@
 
 ; Utility
 
+(define (debug . xs)
+  (write xs (current-error-port))
+  (newline (current-error-port)))
+
 (define (code-rib tag car cdr)
   (rib car cdr tag))
 
@@ -1133,44 +1137,98 @@
   (constants marshal-context-constants marshal-context-set-constants!)
   (continuations marshal-context-continuations marshal-context-set-continuations!))
 
-(define singletons '(#f #t ()))
-
 (define (nop-code? codes)
   (and
     (rib? codes)
     (eq? (rib-tag codes) nop-instruction)))
 
+(define (marshal-unique-constant context value)
+  (define (marshal value)
+    (marshal-unique-constant context value))
+
+  (define (marshal-list value)
+    (if (null? value)
+      (marshal '())
+      (data-rib
+        pair-type
+        (rib-car value)
+        (marshal-list (rib-cdr value)))))
+
+  (cond
+    ((assoc value (marshal-context-constants context)) =>
+      cdr)
+
+    (else
+      (let ((marshalled
+              (cond
+                ((null? value)
+                  (data-rib null-type 0 (cons 0 0)))
+
+                ((boolean? value)
+                  (if value
+                    (data-rib boolean-type 0 (marshal '()))
+                    (data-rib boolean-type (marshal '()) (marshal #t))))
+
+                ((symbol? value)
+                  (data-rib
+                    symbol-type
+                    (marshal #f)
+                    (marshal (symbol->string (resolve-library-symbol value)))))
+
+                ((char? value)
+                  (data-rib char-type (char->integer value) (marshal '())))
+
+                ((string? value)
+                  (data-rib
+                    string-type
+                    (string-length value)
+                    (marshal-list (rib-cdr value))))
+
+                (else
+                  (error "invalid type")))))
+        (marshal-context-set-constants!
+          context
+          (cons
+            (cons value marshalled)
+            (marshal-context-constants context)))
+        marshalled))))
+
 (define (marshal-rib context value data)
   (define (marshal value data)
     (marshal-rib context value data))
 
+  (define (marshal-normal value car-data)
+    (rib
+      (marshal (rib-car value) car-data)
+      (marshal (rib-cdr value) data)
+      (rib-tag value)))
+
   (cond
-    ((or (number? value) (memq value singletons))
+    ((number? value)
       value)
 
-    ((and data (record? value))
-      (error "invalid record"))
+    ((or data (null? value))
+      (cond
+        ((record? value)
+          (error "invalid record"))
 
-    ((and data (procedure? value))
-      (unless (null? (rib-cdr value))
-        (error "invalid environment"))
-      (data-rib procedure-type (marshal (rib-car value) #f) '()))
+        ((procedure? value)
+          (unless (null? (rib-cdr value))
+            (error "invalid environment"))
+          (data-rib procedure-type (marshal (rib-car value) #f) '()))
 
-    ((and data (or (char? value) (string? value) (symbol? value)))
-      (let ((constants (marshal-context-constants context)))
-        (cond
-          ((assoc value constants) =>
-            cdr)
+        ((or
+            (null? value)
+            (boolean? value)
+            (char? value)
+            (string? value)
+            (symbol? value))
+          (marshal-unique-constant context value))
 
-          (else
-            (let ((marshalled
-                    (if (symbol? value)
-                      (data-rib symbol-type #f (symbol->string (resolve-library-symbol value)))
-                      value)))
-              (marshal-context-set-constants! context (cons (cons value marshalled) constants))
-              marshalled)))))
+        (else
+          (marshal-normal value data))))
 
-    ((and (not data) (nop-code? value))
+    ((nop-code? value)
       (cond
         ((assq value (marshal-context-continuations context)) =>
           cdr)
@@ -1183,10 +1241,7 @@
             continuation))))
 
     (else
-      (rib
-        (marshal (rib-car value) (or data (not (= (rib-tag value) if-instruction))))
-        (marshal (rib-cdr value) data)
-        (rib-tag value)))))
+      (marshal-normal value (not (= (rib-tag value) if-instruction))))))
 
 (define (marshal codes)
   (marshal-rib (make-marshal-context '() '()) codes #f))
@@ -1196,10 +1251,11 @@
 ;; Context
 
 (define-record-type encode-context
-  (make-encode-context dictionary counts)
+  (make-encode-context dictionary counts null)
   encode-context?
   (dictionary encode-context-dictionary encode-context-set-dictionary!)
-  (counts encode-context-counts encode-context-set-counts!))
+  (counts encode-context-counts encode-context-set-counts!)
+  (null encode-context-null))
 
 (define (encode-context-push! context value)
   (encode-context-set-dictionary!
@@ -1228,18 +1284,23 @@
 (define share-base 31)
 
 (define (shared-value? value)
-  (or
-    (memq value singletons)
-    (char? value)
-    (string? value)
-    (symbol? value)
-    ; This is technically equivalent to `symbol?`. But we include this check for sanity.
-    (nop-code? value)))
+  (and
+    (rib? value)
+    (memq
+      (rib-tag value)
+      (list
+        boolean-type
+        char-type
+        null-type
+        string-type
+        symbol-type
+        ; This is technically equivalent to `symbol-type`. But we include this check for sanity.
+        nop-instruction))))
 
 (define (strip-nop-instructions codes)
   ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
   ; all `#f` and nop instructions' are `0`.
-  (if (and (nop-code? codes) (car codes))
+  (if (and (nop-code? codes) (zero? (car codes)))
     (strip-nop-instructions (rib-cdr codes))
     codes))
 
@@ -1274,7 +1335,7 @@
       ((number? codes)
         #f)
 
-      ((null? codes)
+      ((eq? codes (encode-context-null context))
         (count-data! codes))
 
       ((nop-code? codes)
@@ -1413,7 +1474,7 @@
 ;; Main
 
 (define (encode codes)
-  (let ((context (make-encode-context '() '())))
+  (let ((context (make-encode-context '() '() (rib-car (rib-car codes)))))
     (count-ribs! context codes)
     (encode-context-set-counts!
       context
@@ -1432,18 +1493,6 @@
         (error "invalid constant count" (map cdr counts))))))
 
 ; Main
-
-; TODO Consider moving this logic to marshalling.
-(define (initialize-tri-force)
-  (let ((nil (cons 0 0)))
-    (set-car! '() 0)
-    (set-cdr! '() nil)
-
-    (set-car! #t 0)
-    (set-cdr! #t nil)
-
-    (set-car! #f '())
-    (set-cdr! #f #t)))
 
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
@@ -1465,5 +1514,4 @@
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
 
-(initialize-tri-force)
 (main)
