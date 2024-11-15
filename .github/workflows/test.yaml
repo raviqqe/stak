@@ -87,10 +87,11 @@ jobs:
           - name: stak
             tags: not @library
           - name: stak-tools
+            tags: "@stak or @library or @float"
           - name: mstak
             tags: not @environment-variable and not @float and not @library
           - name: mstak-tools
-            tags: not @environment-variable and not @float
+            tags: "@stak or @library"
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
