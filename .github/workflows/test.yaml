@@ -10,6 +10,7 @@ concurrency:
 env:
   HOMEBREW_NO_INSTALL_UPGRADE: 1
   HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+  SELF_HOST_INTEGRATION_TEST_TAGS: "@stak or @library"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -87,11 +88,11 @@ jobs:
           - name: stak
             tags: not @library
           - name: stak-tools
-            tags: "@stak or @library or @float"
+            tags: ${{ env.SELF_HOST_INTEGRATION_TEST_TAGS }} or @float
           - name: mstak
             tags: not @environment-variable and not @float and not @library
           - name: mstak-tools
-            tags: "@stak or @library"
+            tags: ${{ env.SELF_HOST_INTEGRATION_TEST_TAGS }}
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
     runs-on: ${{ matrix.os }}
