@@ -3,7 +3,7 @@
 (define (decode-ribs)
   (do ((byte (read-u8) (read-u8)))
     ((eof-object? byte))
-    (write-string "- " byte)
+    (write-string "- ")
     (write byte)
     (newline)))
 
