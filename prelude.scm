@@ -78,6 +78,8 @@
     zero?
     positive?
     negative?
+    even?
+    odd?
     +
     -
     *
@@ -656,6 +658,8 @@
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
     (define (negative? x) (< x 0))
+    (define (even? x) (eq? (modulo x) 0))
+    (define (odd? x) (not (even? x)))
 
     (define (arithmetic-operator f y)
       (lambda xs (fold-left f y xs)))
