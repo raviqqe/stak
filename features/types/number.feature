@@ -38,7 +38,7 @@ Feature: Number
       | even?     | 2     | A      |
       | even?     | 3     | B      |
       | odd?      | 3     | A      |
-      | odd??     | 2     | B      |
+      | odd?      | 2     | B      |
 
   Scenario Outline: Check a number class of integers
     Given a file named "main.scm" with:
