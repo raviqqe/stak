@@ -17,7 +17,7 @@ Feature: Number
       | 42    | A      |
       | -2045 | A      |
 
-  Scenario Outline: Check a number trait of integers
+  Scenario Outline: Check a number trait
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
