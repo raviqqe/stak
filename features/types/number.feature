@@ -17,6 +17,29 @@ Feature: Number
       | 42    | A      |
       | -2045 | A      |
 
+  Scenario Outline: Check a number trait of integers
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (<predicate> <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | value | output |
+      | zero?     | 0     | A      |
+      | zero?     | 1     | B      |
+      | positive? | 42    | A      |
+      | positive? | -42   | B      |
+      | negative? | -42   | A      |
+      | negative? | 42    | B      |
+      | even?     | 2     | A      |
+      | even?     | 3     | B      |
+      | odd?      | 3     | B      |
+      | odd??     | 2     | A      |
+
   Scenario Outline: Check a number class of integers
     Given a file named "main.scm" with:
       """scheme
