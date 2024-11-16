@@ -1380,6 +1380,8 @@
       (encode-integer-part integer base (if (zero? rest) 0 1))
       rest)))
 
+; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
+; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
 (define (encode-integer-tail x)
   (do ((x x (quotient x integer-base)))
     ((zero? x))
