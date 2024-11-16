@@ -1395,6 +1395,8 @@
     zero?
     positive?
     negative?
+    even?
+    odd?
     +
     -
     *
