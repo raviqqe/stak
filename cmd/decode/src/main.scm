@@ -48,6 +48,7 @@
             (decode-number (decode-integer-tail byte number-base))
             stack)))
 
+      ; TODO
       (else
         (write-string "- ")
         (write byte)
