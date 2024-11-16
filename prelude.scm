@@ -658,7 +658,7 @@
     (define (zero? x) (eq? x 0))
     (define (positive? x) (> x 0))
     (define (negative? x) (< x 0))
-    (define (even? x) (eq? (modulo x) 0))
+    (define (even? x) (zero? (modulo x)))
     (define (odd? x) (not (even? x)))
 
     (define (arithmetic-operator f y)
