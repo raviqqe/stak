@@ -12,13 +12,6 @@
 (define tag-base 32)
 (define share-base 31)
 
-(define-record-type *rib*
-  (make-rib car cdr tag)
-  *rib*?
-  (car rib-car)
-  (cdr rib-cdr)
-  (tag rib-tag))
-
 (define-record-type *stack*
   (make-stack values)
   stack?
@@ -70,15 +63,18 @@
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
                (tag (decode-integer-tail (quotient byte 4) tag-base)))
-          (stack-push! (make-rib a d tag) stack)))
+          (stack-push! (rib a d tag) stack)))
 
       (else
         (let* ((head (quotient byte 4))
                (integer (decode-integer-tail (- head 1) share-base))
                (index (quotient integer 2)))
           (when (> index 0)
-            (let ((foo (tail (stack-values dictionary))))
-              (write-string "- ")))
+            (let ((pair (tail (stack-values dictionary) (- index 1)))
+                  (head (cdr pair))
+                  (tail (cdr head)))
+              (set-cdr! head dictionary)
+              (set-cdr! pair tail)))
           (write byte)
           (newline))))))
 
