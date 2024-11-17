@@ -196,7 +196,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.6.6"
+version = "0.7.0"
 dependencies = [
  "cfg-exif",
 ]
