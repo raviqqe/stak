@@ -24,12 +24,12 @@
   stack?
   (values stack-values stack-set-values!))
 
-(define (stack-push stack value)
-  (set! stack (cons value stack)))
+(define (stack-push! stack value)
+  (stack-set-values! stack (cons value stack)))
 
-(define (stack-pop stack)
+(define (stack-pop! stack)
   (let ((value (car stack)))
-    (set! stack (cdr stack))
+    (stack-set-values! stack (cdr stack))
     value))
 
 (define dictioanry (make-stack '()))
@@ -64,13 +64,13 @@
     ((eof-object? byte))
     (cond
       ((even? byte)
-        (stack-push (decode-number (decode-integer-tail byte number-base)) stack))
+        (stack-push! (decode-number (decode-integer-tail byte number-base)) stack))
 
       ((even? (quotient byte 2))
-        (let* ((d (stack-pop stack))
-               (a (stack-pop stack))
+        (let* ((d (stack-pop! stack))
+               (a (stack-pop! stack))
                (tag (decode-integer-tail (quotient byte 4) tag-base)))
-          (stack-push (make-rib a d tag) stack)))
+          (stack-push! (make-rib a d tag) stack)))
 
       (else
         (let* ((head (quotient byte 4))
