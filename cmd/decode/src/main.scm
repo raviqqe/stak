@@ -12,7 +12,7 @@
 (define tag-base 32)
 (define share-base 31)
 
-(define-record-type *stack*
+(define-record-type stack
   (make-stack values)
   stack?
   (values stack-values stack-set-values!))
@@ -25,9 +25,14 @@
     (stack-set-values! stack (cdr stack))
     value))
 
-(define dictioanry (make-stack '()))
-
-(define stack (make-stack '()))
+(define (stack-swap! stack index)
+  (let ((values (stack-values stack))
+        (pair (tail values (- index 1)))
+        (head (cdr pair))
+        (tail (cdr head)))
+    (set-cdr! head stack)
+    (set-cdr! pair tail)
+    (stack-set-values! stack head)))
 
 (define (decode-integer-tail x base)
   (let loop ((x x)
@@ -53,6 +58,9 @@
         (* m (expt 2 e))))))
 
 (define (decode-ribs data)
+  (define dictioanry (make-stack '()))
+  (define stack (make-stack '()))
+
   (do ((byte (read-u8) (read-u8)))
     ((eof-object? byte))
     (cond
@@ -70,12 +78,10 @@
                (integer (decode-integer-tail (- head 1) share-base))
                (index (quotient integer 2)))
           (when (> index 0)
-            (let ((pair (tail (stack-values dictionary) (- index 1)))
-                  (head (cdr pair))
-                  (tail (cdr head)))
-              (set-cdr! head dictionary)
-              (set-cdr! pair tail)))
-          (write byte)
-          (newline))))))
+            (stack-swap! dictionary index))
+          (let ((value (car dictionary)))
+            (when (even? integer)
+              (stack-pop! dictionary))
+            (stack-push! stack value)))))))
 
-(decode-ribs #f)
+(define codes (decode-ribs #f))
