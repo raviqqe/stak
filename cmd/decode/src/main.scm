@@ -58,7 +58,7 @@
         (* m (expt 2 e))))))
 
 (define (decode-ribs data)
-  (define dictioanry (make-stack '()))
+  (define dictionary (make-stack '()))
   (define stack (make-stack '()))
 
   (do ((byte (read-u8) (read-u8)))
