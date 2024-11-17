@@ -14,4 +14,4 @@ stak-device = { version = "0.2.71", path = "../device" }
 stak-file = { version = "0.4.29", path = "../file" }
 stak-process-context = { version = "0.2.29", path = "../process_context" }
 stak-time = { version = "0.1.12", path = "../time" }
-stak-vm = { version = "0.6.6", path = "../vm" }
+stak-vm = { version = "0.7.0", path = "../vm" }

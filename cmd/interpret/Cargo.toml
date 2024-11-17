@@ -1,7 +1,7 @@
 [package]
 name = "stak-interpret"
 description = "Stak Scheme bytecode interpreter"
-version = "0.2.6"
+version = "0.3.0"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -26,7 +26,7 @@ stak-process-context = { version = "0.2.29", path = "../../process_context", fea
 ] }
 stak-r7rs = { version = "0.8.6", path = "../../r7rs" }
 stak-time = { version = "0.1.12", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.6.6", path = "../../vm" }
+stak-vm = { version = "0.7.0", path = "../../vm" }
 
 [lints]
 workspace = true

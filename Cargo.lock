@@ -462,7 +462,7 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.2.6"
+version = "0.3.0"
 dependencies = [
  "stak-sac",
 ]
@@ -512,7 +512,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.2.6"
+version = "0.3.0"
 dependencies = [
  "clap",
  "main_error",
@@ -593,7 +593,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profile"
-version = "0.2.6"
+version = "0.3.0"
 dependencies = [
  "clap",
  "main_error",
@@ -609,7 +609,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.1.40"
+version = "0.2.0"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -670,7 +670,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.6.6"
+version = "0.7.0"
 dependencies = [
  "cfg-exif",
  "insta",
@@ -685,7 +685,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.2.50"
+version = "0.3.0"
 dependencies = [
  "stak-compiler",
  "stak-configuration",

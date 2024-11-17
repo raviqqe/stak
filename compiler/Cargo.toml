@@ -15,7 +15,7 @@ stak-file = { version = "0.4.29", path = "../file" }
 stak-process-context = { version = "0.2.29", path = "../process_context" }
 stak-r7rs = { version = "0.8.6", path = "../r7rs" }
 stak-time = { version = "0.1.12", path = "../time" }
-stak-vm = { version = "0.6.6", path = "../vm" }
+stak-vm = { version = "0.7.0", path = "../vm" }
 
 [dev-dependencies]
 indoc = "2.0.5"
