@@ -12,7 +12,29 @@
 (define tag-base 32)
 (define share-base 31)
 
-(define stack '())
+(define-record-type *rib*
+  (make-rib car cdr tag)
+  *rib*?
+  (car rib-car)
+  (cdr rib-cdr)
+  (tag rib-tag))
+
+(define-record-type *stack*
+  (make-stack values)
+  stack?
+  (values stack-values stack-set-values!))
+
+(define (stack-push stack value)
+  (set! stack (cons value stack)))
+
+(define (stack-pop stack)
+  (let ((value (car stack)))
+    (set! stack (cdr stack))
+    value))
+
+(define dictioanry (make-stack '()))
+
+(define stack (make-stack '()))
 
 (define (decode-integer-tail x base)
   (let loop ((x x)
@@ -42,16 +64,22 @@
     ((eof-object? byte))
     (cond
       ((even? byte)
-        (set!
-          stack
-          (cons
-            (decode-number (decode-integer-tail byte number-base))
-            stack)))
+        (stack-push (decode-number (decode-integer-tail byte number-base)) stack))
 
-      ; TODO
+      ((even? (quotient byte 2))
+        (let* ((d (stack-pop stack))
+               (a (stack-pop stack))
+               (tag (decode-integer-tail (quotient byte 4) tag-base)))
+          (stack-push (make-rib a d tag) stack)))
+
       (else
-        (write-string "- ")
-        (write byte)
-        (newline)))))
+        (let* ((head (quotient byte 4))
+               (integer (decode-integer-tail (- head 1) share-base))
+               (index (quotient integer 2)))
+          (when (> index 0)
+            (let ((foo (tail (stack-values dictionary))))
+              (write-string "- ")))
+          (write byte)
+          (newline))))))
 
 (decode-ribs #f)
