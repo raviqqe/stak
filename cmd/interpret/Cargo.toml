@@ -1,7 +1,7 @@
 [package]
 name = "stak-interpret"
 description = "Stak Scheme bytecode interpreter"
-version = "0.2.5"
+version = "0.2.6"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -18,15 +18,15 @@ trace_memory = ["stak-vm/trace_memory"]
 [dependencies]
 clap = { version = "4.5.21", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.66", path = "../../configuration" }
-stak-device = { version = "0.2.70", path = "../../device", features = ["std"] }
-stak-file = { version = "0.4.28", path = "../../file", features = ["std"] }
-stak-process-context = { version = "0.2.28", path = "../../process_context", features = [
+stak-configuration = { version = "0.1.67", path = "../../configuration" }
+stak-device = { version = "0.2.71", path = "../../device", features = ["std"] }
+stak-file = { version = "0.4.29", path = "../../file", features = ["std"] }
+stak-process-context = { version = "0.2.29", path = "../../process_context", features = [
   "std",
 ] }
-stak-r7rs = { version = "0.8.5", path = "../../r7rs" }
-stak-time = { version = "0.1.11", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.6.5", path = "../../vm" }
+stak-r7rs = { version = "0.8.6", path = "../../r7rs" }
+stak-time = { version = "0.1.12", path = "../../time", features = ["std"] }
+stak-vm = { version = "0.6.6", path = "../../vm" }
 
 [lints]
 workspace = true
