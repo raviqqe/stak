@@ -1151,8 +1151,8 @@
       (marshal '())
       (data-rib
         pair-type
-        (rib-car value)
-        (marshal-list (rib-cdr value)))))
+        (car value)
+        (marshal-list (cdr value)))))
 
   (cond
     ((assoc value (marshal-context-constants context)) =>
@@ -1182,7 +1182,7 @@
                   (data-rib
                     string-type
                     (string-length value)
-                    (marshal-list (rib-cdr value))))
+                    (marshal-list (map char->integer (string->list value)))))
 
                 (else
                   (error "invalid type")))))
@@ -1226,7 +1226,8 @@
           (marshal-normal value data))
 
         (else
-          (error "invalid type" value))))
+          ; TODO Reject record types on Stak Scheme.
+          value)))
 
     ((nop-code? value)
       (cond
