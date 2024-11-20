@@ -957,7 +957,7 @@
         (find-quoted-symbols (cadr expression)))
 
       (else
-        (apply append (map find expression)))))
+        (append (find (car expression)) (find (cdr expression))))))
 
   (unique (find expression)))
 
