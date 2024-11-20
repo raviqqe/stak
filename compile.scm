@@ -1226,7 +1226,7 @@
           (marshal-normal value data))
 
         (else
-          (error "invalid type"))))
+          (error "invalid type" value))))
 
     ((nop-code? value)
       (cond
