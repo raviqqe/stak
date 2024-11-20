@@ -1209,7 +1209,7 @@
 
     ((or data (null? value))
       (cond
-        ((procedure? value)
+        ((target-procedure? value)
           (unless (null? (rib-cdr value))
             (error "invalid environment"))
           (data-rib procedure-type (marshal (rib-car value) #f) '()))
