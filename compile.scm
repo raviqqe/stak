@@ -1502,7 +1502,7 @@
 
   (encode
     (marshal
-      (cons
+      (cons-rib
         #f
         (build-primitives
           primitives
