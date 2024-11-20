@@ -1223,7 +1223,7 @@
           (marshal-unique-constant context value))
 
         ((or (bytevector? value) (pair? value) (vector? value))
-          (marshal-normal value data))
+          (marshal-normal value #t))
 
         (else
           ; TODO Reject record types on Stak Scheme.
