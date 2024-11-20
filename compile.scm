@@ -1209,9 +1209,6 @@
 
     ((or data (null? value))
       (cond
-        ((record? value)
-          (error "invalid record"))
-
         ((procedure? value)
           (unless (null? (rib-cdr value))
             (error "invalid environment"))
@@ -1225,8 +1222,11 @@
             (symbol? value))
           (marshal-unique-constant context value))
 
+        ((or (bytevector? value) (pair? value) (vector? value))
+          (marshal-normal value data))
+
         (else
-          (marshal-normal value data))))
+          (error "invalid type"))))
 
     ((nop-code? value)
       (cond
