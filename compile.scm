@@ -1148,7 +1148,7 @@
 
   (cond
     ((null? value)
-      (data-rib null-type 0 (cons 0 0)))
+      (data-rib null-type 0 (cons-rib 0 0)))
 
     ((boolean? value)
       (if value
