@@ -1301,7 +1301,7 @@
 (define (strip-nop-instructions codes)
   ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
   ; all `#f` and nop instructions' are `0`.
-  (if (and (nop-code? codes) (zero? (car codes)))
+  (if (and (nop-code? codes) (eq? (rib-car codes) 0))
     (strip-nop-instructions (rib-cdr codes))
     codes))
 
