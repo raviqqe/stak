@@ -1183,17 +1183,6 @@
       (error "invalid type"))))
 
 (define (marshal-unique-constant context value)
-  (define (marshal value)
-    (marshal-unique-constant context value))
-
-  (define (marshal-list value)
-    (if (null? value)
-      (marshal '())
-      (data-rib
-        pair-type
-        (car value)
-        (marshal-list (cdr value)))))
-
   (cond
     ((assoc value (marshal-context-constants context)) =>
       cdr)
