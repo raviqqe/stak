@@ -1200,12 +1200,6 @@
   (define (marshal value data)
     (marshal-rib context value data))
 
-  (define (marshal-normal value car-data)
-    (rib
-      (marshal (rib-car value) car-data)
-      (marshal (rib-cdr value) data)
-      (rib-tag value)))
-
   (cond
     ((number? value)
       value)
@@ -1215,7 +1209,7 @@
         ((target-procedure? value)
           (unless (null? (rib-cdr value))
             (error "invalid environment"))
-          (data-rib procedure-type (marshal (rib-car value) #f) '()))
+          (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
 
         ((or
             (null? value)
@@ -1245,7 +1239,10 @@
             continuation))))
 
     (else
-      (marshal-normal value (not (= (rib-tag value) if-instruction))))))
+      (rib
+        (marshal (rib-car value) (not (= (rib-tag value) if-instruction)))
+        (marshal (rib-cdr value) data)
+        (rib-tag value)))))
 
 (define (marshal codes)
   (marshal-rib (make-marshal-context '() '()) codes #f))
