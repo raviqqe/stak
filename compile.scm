@@ -27,7 +27,7 @@
       (rib car cdr pair-type))
 
     (define (target-procedure? value)
-      (and (rib? value) (eqv? (rib-tag value) procedure-type)))
+      (and (rib? value) (eq? (rib-tag value) procedure-type)))
 
     (define string->uninterned-symbol string->symbol)))
 
@@ -957,7 +957,7 @@
         (find-quoted-symbols (cadr expression)))
 
       (else
-        (apply append (map find expression)))))
+        (append (find (car expression)) (find (cdr expression))))))
 
   (unique (find expression)))
 
@@ -1142,50 +1142,53 @@
     (rib? codes)
     (eq? (rib-tag codes) nop-instruction)))
 
-(define (marshal-unique-constant context value)
+(define (marshal-constant context value)
   (define (marshal value)
-    (marshal-unique-constant context value))
+    (marshal-rib context value #t))
 
-  (define (marshal-list value)
-    (if (null? value)
-      (marshal '())
+  (cond
+    ((null? value)
+      (data-rib null-type 0 (cons-rib 0 0)))
+
+    ((boolean? value)
+      (if value
+        (data-rib boolean-type 0 (marshal '()))
+        (data-rib boolean-type (marshal '()) (marshal #t))))
+
+    ((symbol? value)
       (data-rib
-        pair-type
-        (rib-car value)
-        (marshal-list (rib-cdr value)))))
+        symbol-type
+        (marshal #f)
+        (marshal (symbol->string (resolve-library-symbol value)))))
 
+    ((char? value)
+      (data-rib char-type (char->integer value) (marshal '())))
+
+    ((string? value)
+      (data-rib
+        string-type
+        (string-length value)
+        (marshal (map char->integer (string->list value)))))
+
+    ((pair? value)
+      (cons-rib (marshal (car value)) (marshal (cdr value))))
+
+    ((vector? value)
+      (data-rib vector-type (vector-length value) (marshal (vector->list value))))
+
+    ((bytevector? value)
+      (data-rib bytevector-type (bytevector-length value) (marshal (bytevector->list value))))
+
+    (else
+      (error "invalid type"))))
+
+(define (marshal-unique-constant context value)
   (cond
     ((assoc value (marshal-context-constants context)) =>
       cdr)
 
     (else
-      (let ((marshalled
-              (cond
-                ((null? value)
-                  (data-rib null-type 0 (cons 0 0)))
-
-                ((boolean? value)
-                  (if value
-                    (data-rib boolean-type 0 (marshal '()))
-                    (data-rib boolean-type (marshal '()) (marshal #t))))
-
-                ((symbol? value)
-                  (data-rib
-                    symbol-type
-                    (marshal #f)
-                    (marshal (symbol->string (resolve-library-symbol value)))))
-
-                ((char? value)
-                  (data-rib char-type (char->integer value) (marshal '())))
-
-                ((string? value)
-                  (data-rib
-                    string-type
-                    (string-length value)
-                    (marshal-list (rib-cdr value))))
-
-                (else
-                  (error "invalid type")))))
+      (let ((marshalled (marshal-constant context value)))
         (marshal-context-set-constants!
           context
           (cons
@@ -1197,25 +1200,16 @@
   (define (marshal value data)
     (marshal-rib context value data))
 
-  (define (marshal-normal value car-data)
-    (rib
-      (marshal (rib-car value) car-data)
-      (marshal (rib-cdr value) data)
-      (rib-tag value)))
-
   (cond
     ((number? value)
       value)
 
     ((or data (null? value))
       (cond
-        ((record? value)
-          (error "invalid record"))
-
-        ((procedure? value)
+        ((target-procedure? value)
           (unless (null? (rib-cdr value))
             (error "invalid environment"))
-          (data-rib procedure-type (marshal (rib-car value) #f) '()))
+          (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
 
         ((or
             (null? value)
@@ -1225,8 +1219,12 @@
             (symbol? value))
           (marshal-unique-constant context value))
 
+        ((or (bytevector? value) (pair? value) (vector? value))
+          (marshal-constant context value))
+
         (else
-          (marshal-normal value data))))
+          ; TODO Reject record types on Stak Scheme.
+          value)))
 
     ((nop-code? value)
       (cond
@@ -1241,7 +1239,10 @@
             continuation))))
 
     (else
-      (marshal-normal value (not (= (rib-tag value) if-instruction))))))
+      (rib
+        (marshal (rib-car value) (not (= (rib-tag value) if-instruction)))
+        (marshal (rib-cdr value) data)
+        (rib-tag value)))))
 
 (define (marshal codes)
   (marshal-rib (make-marshal-context '() '()) codes #f))
@@ -1300,7 +1301,7 @@
 (define (strip-nop-instructions codes)
   ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
   ; all `#f` and nop instructions' are `0`.
-  (if (and (nop-code? codes) (zero? (car codes)))
+  (if (and (nop-code? codes) (eq? (rib-car codes) 0))
     (strip-nop-instructions (rib-cdr codes))
     codes))
 
@@ -1325,7 +1326,7 @@
   (define (count-data! value)
     (when (rib? value)
       (unless (and (shared-value? value) (encode-context-find-count context value))
-        ((if (procedure? value) count-code! count-data!) (rib-car value))
+        ((if (target-procedure? value) count-code! count-data!) (rib-car value))
         (count-data! (rib-cdr value)))
       (when (shared-value? value)
         (increment-count! context value))))
@@ -1502,7 +1503,7 @@
 
   (encode
     (marshal
-      (cons
+      (cons-rib
         #f
         (build-primitives
           primitives
