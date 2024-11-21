@@ -1216,8 +1216,7 @@
           (marshal-constant context value))
 
         (else
-          ; TODO Reject record types on Stak Scheme.
-          value)))
+          (error "invalid type"))))
 
     ((nop-code? value)
       (cond
