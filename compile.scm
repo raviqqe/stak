@@ -1326,7 +1326,7 @@
   (define (count-data! value)
     (when (rib? value)
       (unless (and (shared-value? value) (encode-context-find-count context value))
-        ((if (procedure? value) count-code! count-data!) (rib-car value))
+        ((if (target-procedure? value) count-code! count-data!) (rib-car value))
         (count-data! (rib-cdr value)))
       (when (shared-value? value)
         (increment-count! context value))))
