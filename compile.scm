@@ -198,13 +198,6 @@
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
 
-(define (remove! x xs)
-  (let* ((index (memv-position x xs))
-         (xs (cons #f xs))
-         (pair (list-tail xs index)))
-    (set-cdr! pair (cddr pair))
-    (cdr xs)))
-
 ; TODO Set a true machine epsilon.
 (define epsilon
   (let ((x (/ 1 10000000 100000000)))
@@ -1316,11 +1309,8 @@
         context
         (cons (cons value 1) (encode-context-counts context))))))
 
-(define (decrement-count! context value)
-  (let ((pair (encode-context-find-count context value)))
-    (unless pair
-      (error "missing count" value))
-    (set-cdr! pair (- (cdr pair) 1))))
+(define (decrement-count! pair)
+  (set-cdr! pair (- (cdr pair) 1)))
 
 (define (count-ribs! context codes)
   (define (count-data! value)
@@ -1419,7 +1409,7 @@
         (cond
           ((and entry (encode-context-position context value)) =>
             (lambda (index)
-              (decrement-count! context value)
+              (decrement-count! entry)
               (let ((removed (zero? (cdr entry)))
                     (value (encode-context-remove! context index)))
                 (unless removed
@@ -1442,7 +1432,7 @@
 
               (when entry
                 (encode-context-push! context value)
-                (decrement-count! context value)
+                (decrement-count! entry)
                 (write-u8 3)))))))
 
     (else
