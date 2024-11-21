@@ -198,13 +198,6 @@
 (define (filter-values f xs)
   (filter (lambda (pair) (f (cdr pair))) xs))
 
-(define (remove! x xs)
-  (let* ((index (memv-position x xs))
-         (xs (cons #f xs))
-         (pair (list-tail xs index)))
-    (set-cdr! pair (cddr pair))
-    (cdr xs)))
-
 ; TODO Set a true machine epsilon.
 (define epsilon
   (let ((x (/ 1 10000000 100000000)))
@@ -1223,8 +1216,7 @@
           (marshal-constant context value))
 
         (else
-          ; TODO Reject record types on Stak Scheme.
-          value)))
+          (error "invalid type"))))
 
     ((nop-code? value)
       (cond
@@ -1316,11 +1308,8 @@
         context
         (cons (cons value 1) (encode-context-counts context))))))
 
-(define (decrement-count! context value)
-  (let ((pair (encode-context-find-count context value)))
-    (unless pair
-      (error "missing count" value))
-    (set-cdr! pair (- (cdr pair) 1))))
+(define (decrement-count! pair)
+  (set-cdr! pair (- (cdr pair) 1)))
 
 (define (count-ribs! context codes)
   (define (count-data! value)
@@ -1412,48 +1401,43 @@
               (* 4096 m))))))))
 
 (define (encode-rib context value)
-  (let* ((shared (shared-value? value))
-         (value (strip-nop-instructions value))
-         (decrement!
-           (lambda ()
-             (when shared
-               (decrement-count! context value)))))
-    (cond
-      ((rib? value)
-        (let ((entry (encode-context-find-count context value)))
-          (cond
-            ((and entry (encode-context-position context value)) =>
-              (lambda (index)
-                (decrement!)
-                (let ((removed (zero? (cdr entry)))
-                      (value (encode-context-remove! context index)))
-                  (unless removed
-                    (encode-context-push! context value))
-                  (let-values (((head tail)
-                                 (encode-integer-parts
-                                   (+ (* 2 index) (if removed 0 1))
-                                   share-base)))
-                    (write-u8 (+ 3 (* 4 (+ 1 head))))
-                    (encode-integer-tail tail)))))
+  (cond
+    ((rib? value)
+      (let* ((value (strip-nop-instructions value))
+             (entry (encode-context-find-count context value)))
+        (cond
+          ((and entry (encode-context-position context value)) =>
+            (lambda (index)
+              (decrement-count! entry)
+              (let ((removed (zero? (cdr entry)))
+                    (value (encode-context-remove! context index)))
+                (unless removed
+                  (encode-context-push! context value))
+                (let-values (((head tail)
+                               (encode-integer-parts
+                                 (+ (* 2 index) (if removed 0 1))
+                                 share-base)))
+                  (write-u8 (+ 3 (* 4 (+ 1 head))))
+                  (encode-integer-tail tail)))))
 
-            (else
-              (let ((tag (rib-tag value)))
-                (encode-rib context (rib-car value))
-                (encode-rib context (rib-cdr value))
+          (else
+            (let ((tag (rib-tag value)))
+              (encode-rib context (rib-car value))
+              (encode-rib context (rib-cdr value))
 
-                (let-values (((head tail) (encode-integer-parts tag tag-base)))
-                  (write-u8 (+ 1 (* 4 head)))
-                  (encode-integer-tail tail))
+              (let-values (((head tail) (encode-integer-parts tag tag-base)))
+                (write-u8 (+ 1 (* 4 head)))
+                (encode-integer-tail tail))
 
-                (when entry
-                  (encode-context-push! context value)
-                  (decrement!)
-                  (write-u8 3)))))))
+              (when entry
+                (encode-context-push! context value)
+                (decrement-count! entry)
+                (write-u8 3)))))))
 
-      (else
-        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-          (write-u8 (* 2 head))
-          (encode-integer-tail tail))))))
+    (else
+      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+        (write-u8 (* 2 head))
+        (encode-integer-tail tail)))))
 
 ;; Primitives
 
