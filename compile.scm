@@ -1142,6 +1142,46 @@
     (rib? codes)
     (eq? (rib-tag codes) nop-instruction)))
 
+(define (marshal-constant context value)
+  (define (marshal value)
+    (marshal-rib context value #t))
+
+  (cond
+    ((null? value)
+      (data-rib null-type 0 (cons 0 0)))
+
+    ((boolean? value)
+      (if value
+        (data-rib boolean-type 0 (marshal '()))
+        (data-rib boolean-type (marshal '()) (marshal #t))))
+
+    ((symbol? value)
+      (data-rib
+        symbol-type
+        (marshal #f)
+        (marshal (symbol->string (resolve-library-symbol value)))))
+
+    ((char? value)
+      (data-rib char-type (char->integer value) (marshal '())))
+
+    ((string? value)
+      (data-rib
+        string-type
+        (string-length value)
+        (marshal (map char->integer (string->list value)))))
+
+    ((pair? value)
+      (cons-rib (marshal (car value)) (marshal (cdr value))))
+
+    ((vector? value)
+      (data-rib vector-type (vector-length value) (marshal (vector->list value))))
+
+    ((bytevector? value)
+      (data-rib bytevector-type (bytevector-length value) (marshal (bytevector->list value))))
+
+    (else
+      (error "invalid type"))))
+
 (define (marshal-unique-constant context value)
   (define (marshal value)
     (marshal-unique-constant context value))
@@ -1159,33 +1199,7 @@
       cdr)
 
     (else
-      (let ((marshalled
-              (cond
-                ((null? value)
-                  (data-rib null-type 0 (cons 0 0)))
-
-                ((boolean? value)
-                  (if value
-                    (data-rib boolean-type 0 (marshal '()))
-                    (data-rib boolean-type (marshal '()) (marshal #t))))
-
-                ((symbol? value)
-                  (data-rib
-                    symbol-type
-                    (marshal #f)
-                    (marshal (symbol->string (resolve-library-symbol value)))))
-
-                ((char? value)
-                  (data-rib char-type (char->integer value) (marshal '())))
-
-                ((string? value)
-                  (data-rib
-                    string-type
-                    (string-length value)
-                    (marshal-list (map char->integer (string->list value)))))
-
-                (else
-                  (error "invalid type")))))
+      (let ((marshalled (marshal-constant context value)))
         (marshal-context-set-constants!
           context
           (cons
