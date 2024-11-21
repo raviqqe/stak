@@ -1412,43 +1412,43 @@
               (* 4096 m))))))))
 
 (define (encode-rib context value)
-  (let ((value (strip-nop-instructions value)))
-    (cond
-      ((rib? value)
-        (let ((entry (encode-context-find-count context value)))
-          (cond
-            ((and entry (encode-context-position context value)) =>
-              (lambda (index)
+  (cond
+    ((rib? value)
+      (let* ((value (strip-nop-instructions value))
+             (entry (encode-context-find-count context value)))
+        (cond
+          ((and entry (encode-context-position context value)) =>
+            (lambda (index)
+              (decrement-count! context value)
+              (let ((removed (zero? (cdr entry)))
+                    (value (encode-context-remove! context index)))
+                (unless removed
+                  (encode-context-push! context value))
+                (let-values (((head tail)
+                               (encode-integer-parts
+                                 (+ (* 2 index) (if removed 0 1))
+                                 share-base)))
+                  (write-u8 (+ 3 (* 4 (+ 1 head))))
+                  (encode-integer-tail tail)))))
+
+          (else
+            (let ((tag (rib-tag value)))
+              (encode-rib context (rib-car value))
+              (encode-rib context (rib-cdr value))
+
+              (let-values (((head tail) (encode-integer-parts tag tag-base)))
+                (write-u8 (+ 1 (* 4 head)))
+                (encode-integer-tail tail))
+
+              (when entry
+                (encode-context-push! context value)
                 (decrement-count! context value)
-                (let ((removed (zero? (cdr entry)))
-                      (value (encode-context-remove! context index)))
-                  (unless removed
-                    (encode-context-push! context value))
-                  (let-values (((head tail)
-                                 (encode-integer-parts
-                                   (+ (* 2 index) (if removed 0 1))
-                                   share-base)))
-                    (write-u8 (+ 3 (* 4 (+ 1 head))))
-                    (encode-integer-tail tail)))))
+                (write-u8 3)))))))
 
-            (else
-              (let ((tag (rib-tag value)))
-                (encode-rib context (rib-car value))
-                (encode-rib context (rib-cdr value))
-
-                (let-values (((head tail) (encode-integer-parts tag tag-base)))
-                  (write-u8 (+ 1 (* 4 head)))
-                  (encode-integer-tail tail))
-
-                (when entry
-                  (encode-context-push! context value)
-                  (decrement-count! context value)
-                  (write-u8 3)))))))
-
-      (else
-        (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-          (write-u8 (* 2 head))
-          (encode-integer-tail tail))))))
+    (else
+      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+        (write-u8 (* 2 head))
+        (encode-integer-tail tail)))))
 
 ;; Primitives
 
