@@ -1412,19 +1412,14 @@
               (* 4096 m))))))))
 
 (define (encode-rib context value)
-  (let* ((shared (shared-value? value))
-         (value (strip-nop-instructions value))
-         (decrement!
-           (lambda ()
-             (when shared
-               (decrement-count! context value)))))
+  (let ((value (strip-nop-instructions value)))
     (cond
       ((rib? value)
         (let ((entry (encode-context-find-count context value)))
           (cond
             ((and entry (encode-context-position context value)) =>
               (lambda (index)
-                (decrement!)
+                (decrement-count! context value)
                 (let ((removed (zero? (cdr entry)))
                       (value (encode-context-remove! context index)))
                   (unless removed
@@ -1447,7 +1442,7 @@
 
                 (when entry
                   (encode-context-push! context value)
-                  (decrement!)
+                  (decrement-count! context value)
                   (write-u8 3)))))))
 
       (else
