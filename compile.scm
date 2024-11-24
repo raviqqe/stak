@@ -302,14 +302,6 @@
 
 ;; Procedures
 
-; TODO Remove library symbol prefixes.
-(define (resolve-library-symbol name)
-  (let* ((string (symbol->string name))
-         (position (memv-position library-symbol-separator (string->list string))))
-    (if position
-      (string->symbol (string-copy string (+ position 1)))
-      name)))
-
 (define (rename-library-symbol context id name)
   (if (or
        (not id)
@@ -1140,7 +1132,7 @@
       (data-rib
         symbol-type
         (marshal #f)
-        (marshal (symbol->string (resolve-library-symbol value)))))
+        (marshal (symbol->string value))))
 
     ((char? value)
       (data-rib char-type (char->integer value) (marshal '())))
