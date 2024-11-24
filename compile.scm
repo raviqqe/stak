@@ -1402,7 +1402,7 @@
 
 (define (encode-rib context value)
   (cond
-    ((and (rib? value) (rib-tag value 0))
+    ((and (rib? value) (rib-tag value 0) (number? (rib-car value 0)))
       (let-values (((head tail)
                      (encode-integer-parts
                        (+ (* 2 index) (if removed 0 1))
