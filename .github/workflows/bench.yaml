@@ -14,12 +14,12 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-14
+          - macos-15
         options:
           -
           - -d
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
