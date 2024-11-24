@@ -302,19 +302,6 @@
 
 ;; Procedures
 
-(define library-symbol-separator #\%)
-
-(define (library-symbol? name)
-  (memv-position
-    library-symbol-separator
-    (string->list (symbol->string name))))
-
-(define (build-library-name id name)
-  (string-append
-    (id->string id)
-    (list->string (list library-symbol-separator))
-    (symbol->string name)))
-
 ; TODO Remove library symbol prefixes.
 (define (resolve-library-symbol name)
   (let* ((string (symbol->string name))
@@ -340,7 +327,7 @@
             cdr)
 
           (else
-            (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+            (let ((renamed (string->uninterned-symbol name)))
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
