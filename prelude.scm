@@ -2547,14 +2547,6 @@
         (define (id->string id)
           (number->string id 32))
 
-        (define library-symbol-separator #\%)
-
-        (define (build-library-name id name)
-          (string-append
-            (id->string id)
-            (list->string (list library-symbol-separator))
-            (symbol->string name)))
-
         (define (resolve-library-symbol name)
           ; Symbols can be from a different library environment.
           (string->symbol (symbol->string name)))
