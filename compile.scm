@@ -1404,14 +1404,15 @@
   (cond
     ((and
         (rib? value)
-        (rib-tag value 0)
-        (number? (rib-car value 0)))
+        (zero? (rib-tag value))
+        (number? (rib-car value))
+        (integer? (rib-car value))
+        (<= 0 (rib-car value) 127))
       (let-values (((head tail)
-                     (encode-integer-parts
-                       (+ (* 2 index) (if removed 0 1))
-                       share-base)))
-        (write-u8 (+ 3 (* 4 (+ 1 head))))
-        (encode-integer-tail tail)))
+                     (encode-integer-parts (rib-car value) integer-base)))
+        (write-u8 (* 2 head))
+        (unless (zero? tail)
+          (error "invalid integer tail"))))
 
     ((rib? value)
       (let* ((value (strip-nop-instructions value))
