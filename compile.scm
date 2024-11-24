@@ -1402,6 +1402,14 @@
 
 (define (encode-rib context value)
   (cond
+    ((and (rib? value) (rib-tag value 0))
+      (let-values (((head tail)
+                     (encode-integer-parts
+                       (+ (* 2 index) (if removed 0 1))
+                       share-base)))
+        (write-u8 (+ 3 (* 4 (+ 1 head))))
+        (encode-integer-tail tail)))
+
     ((rib? value)
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
