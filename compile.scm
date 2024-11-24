@@ -866,7 +866,8 @@
               (relaxed-deep-map
                 (lambda (value)
                   (if (symbol? value)
-                    (resolve-library-symbol value)
+                    ; Symbols might be from different environments.
+                    (string->symbol (symbol->string name))
                     value))
                 (cdr expression))))
 
