@@ -9,7 +9,7 @@ use crate::{
     primitive_set::PrimitiveSet,
     r#type::Type,
     value::{TypedValue, Value},
-    Error, StackSlot, Tag,
+    Error, StackSlot,
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
@@ -378,10 +378,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
                 let cdr = self.memory.pop();
-                let cons = self.memory.allocate(
-                    Number::from_i64((head >> 1) as _).into(),
-                    cdr.set_tag(Tag::default()),
-                )?;
+                let cons = self
+                    .memory
+                    .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
                 self.memory.push(cons.into())?;
             } else if head & 0b10 == 0 {
                 let cdr = self.memory.pop();
