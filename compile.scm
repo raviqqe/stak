@@ -1272,9 +1272,9 @@
 ;; Codes
 
 (define integer-base 128)
-(define number-base 64)
+(define number-base 16)
 (define tag-base 32)
-(define share-base 31)
+(define share-base 15)
 
 (define (shared-value? value)
   (and
@@ -1402,22 +1402,19 @@
 
 (define (encode-rib context value)
   (cond
-    ((and
-        (rib? value)
-        (zero? (rib-tag value))
-        (number? (rib-car value))
-        (integer? (rib-car value))
-        (<= 0 (rib-car value) 127))
-      (let-values (((head tail)
-                     (encode-integer-parts (rib-car value) integer-base)))
-        (write-u8 (* 2 head))
-        (unless (zero? tail)
-          (error "invalid integer tail"))))
-
     ((rib? value)
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
         (cond
+          ((and
+              (not entry)
+              (zero? (rib-tag value))
+              (number? (rib-car value))
+              (integer? (rib-car value))
+              (<= 0 (rib-car value) 127))
+            (encode-rib context (rib-cdr value))
+            (write-u8 (* 2 (rib-car value))))
+
           ((and entry (encode-context-position context value)) =>
             (lambda (index)
               (decrement-count! entry)
@@ -1429,7 +1426,7 @@
                                (encode-integer-parts
                                  (+ (* 2 index) (if removed 0 1))
                                  share-base)))
-                  (write-u8 (+ 3 (* 4 (+ 1 head))))
+                  (write-u8 (+ 3 (* 8 (+ 1 head))))
                   (encode-integer-tail tail)))))
 
           (else
@@ -1448,7 +1445,7 @@
 
     (else
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-u8 (* 2 head))
+        (write-u8 (+ 7 (* 8 head)))
         (encode-integer-tail tail)))))
 
 ;; Primitives
