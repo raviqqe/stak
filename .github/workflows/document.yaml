@@ -26,7 +26,7 @@ jobs:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
-  lint:
+  document_lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
   document:
     needs:
       - build
-      - lint
+      - document_lint
     if: always()
     runs-on: ubuntu-latest
     steps:
