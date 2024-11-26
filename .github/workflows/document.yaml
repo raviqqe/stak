@@ -12,7 +12,7 @@ concurrency:
   group: document-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  document_build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
-  document_lint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +38,8 @@ jobs:
         working-directory: doc
   document:
     needs:
-      - document_build
-      - document_lint
+      - build
+      - lint
     if: always()
     runs-on: ubuntu-latest
     steps:
