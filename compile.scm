@@ -1273,8 +1273,8 @@
 
 (define integer-base 128)
 (define number-base 16)
-(define tag-base 32)
-(define share-base 15)
+(define tag-base 16)
+(define share-base 31)
 
 (define (shared-value? value)
   (and
@@ -1426,7 +1426,7 @@
                                (encode-integer-parts
                                  (+ (* 2 index) (if removed 0 1))
                                  share-base)))
-                  (write-u8 (+ 3 (* 8 (+ 1 head))))
+                  (write-u8 (+ 1 (* 4 (+ 1 head))))
                   (encode-integer-tail tail)))))
 
           (else
@@ -1435,7 +1435,7 @@
               (encode-rib context (rib-cdr value))
 
               (let-values (((head tail) (encode-integer-parts tag tag-base)))
-                (write-u8 (+ 1 (* 4 head)))
+                (write-u8 (+ 3 (* 8 head)))
                 (encode-integer-tail tail))
 
               (when entry
