@@ -4,7 +4,9 @@ set -e
 
 type=${1:-patch}
 
-shift 1
+if [ $# -gt 0 ]; then
+  shift 1
+fi
 
 options="$@"
 
