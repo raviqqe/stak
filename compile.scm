@@ -1441,7 +1441,7 @@
               (when entry
                 (encode-context-push! context value)
                 (decrement-count! entry)
-                (write-u8 3)))))))
+                (write-u8 1)))))))
 
     (else
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
