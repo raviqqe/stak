@@ -412,9 +412,11 @@
         context
         importer-id
         (lambda (name)
-          (if (or (not importer-symbols) (memq name (force importer-symbols)))
-            (qualify name)
-            #f))
+          (and
+            (or
+              (not importer-symbols)
+              (memq name (force importer-symbols)))
+            name))
         set))
     sets))
 
