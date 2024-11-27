@@ -1,10 +1,10 @@
 ; We import all libraries here because the compiler strips any unimported libraries.
 (import
-  (shake (scheme base))
-  (shake (scheme char))
+  (scheme base)
+  (scheme char)
   (only (scheme cxr))
   (only (scheme eval) eval)
-  (shake (scheme file))
+  (scheme file)
   (only (scheme inexact))
   (only (scheme lazy))
   (only (scheme process-context) command-line)
