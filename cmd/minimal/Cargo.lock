@@ -47,14 +47,14 @@ checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "mstak"
-version = "0.3.7"
+version = "0.3.8"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.1"
+version = "0.4.2"
 dependencies = [
  "libc",
  "stak-device",
@@ -92,7 +92,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.76"
+version = "0.1.77"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -105,11 +105,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.68"
+version = "0.1.69"
 
 [[package]]
 name = "stak-device"
-version = "0.2.72"
+version = "0.2.73"
 dependencies = [
  "libc",
  "stak-vm",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.4.30"
+version = "0.4.31"
 dependencies = [
  "heapless",
  "libc",
@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.73"
+version = "0.1.74"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -137,7 +137,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.49"
+version = "0.1.50"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -146,14 +146,14 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.30"
+version = "0.2.31"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.8.7"
+version = "0.8.8"
 dependencies = [
  "libm",
  "stak-device",
@@ -165,7 +165,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.74"
+version = "0.1.75"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.13"
+version = "0.1.14"
 dependencies = [
  "libc",
  "stak-vm",
@@ -189,14 +189,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.48"
+version = "0.1.49"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.1"
+version = "0.7.2"
 dependencies = [
  "cfg-exif",
 ]
