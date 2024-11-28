@@ -308,10 +308,10 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a tail of a list.
-    pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
-        while index != Number::default() {
+    pub fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
+        while index > 0 {
             list = self.cdr(list).assume_cons();
-            index = index - Number::from_i64(1);
+            index -= 1;
         }
 
         list
