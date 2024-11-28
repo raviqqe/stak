@@ -1112,12 +1112,15 @@
   (compile-expression
     (make-compilation-context
       '()
-      (unique
-        (append
-          (map car primitives)
-          (find-symbols expression)
-          (find-quoted-symbols libraries)
-          (find-quoted-symbols macros)))
+      (filter
+        (lambda (symbol)
+          (not (library-symbol? symbol)))
+        (unique
+          (append
+            (map car primitives)
+            (find-symbols expression)
+            (find-quoted-symbols libraries)
+            (find-quoted-symbols macros))))
       libraries
       macros)
     expression
