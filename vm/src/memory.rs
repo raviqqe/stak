@@ -311,7 +311,7 @@ impl<'a> Memory<'a> {
     pub fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
         while index > 0 {
             list = self.cdr(list).assume_cons();
-            index = index - 1;
+            index -= 1;
         }
 
         list
