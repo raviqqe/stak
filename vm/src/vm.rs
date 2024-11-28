@@ -394,7 +394,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self.memory.tail(self.memory.code(), (index - 1) as _);
+                        let cons = self.memory.tail(self.memory.code(), index as usize - 1);
                         let head = self.memory.cdr(cons).assume_cons();
                         let tail = self.memory.cdr(head);
                         self.memory.set_cdr(head, self.memory.code().into());
