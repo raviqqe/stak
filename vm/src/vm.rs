@@ -290,7 +290,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn resolve_variable(&self, operand: Value) -> Cons {
         match operand.to_typed() {
             TypedValue::Cons(cons) => cons,
-            TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index),
+            TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
         }
     }
 
@@ -394,9 +394,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self
-                            .memory
-                            .tail(self.memory.code(), Number::from_i64((index - 1) as _));
+                        let cons = self.memory.tail(self.memory.code(), (index - 1) as _);
                         let head = self.memory.cdr(cons).assume_cons();
                         let tail = self.memory.cdr(head);
                         self.memory.set_cdr(head, self.memory.code().into());
