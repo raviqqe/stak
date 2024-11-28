@@ -40,7 +40,7 @@ impl Stack {
     }
 
     /// Displays a stack with a fixed local names.
-    pub fn display_local<'a>(&'a self, local_name: &'a str) -> impl Display + '_ {
+    pub fn display_local(&self, local_name: &str) -> impl Display {
         StackDisplay::new(self, local_name)
     }
 }
