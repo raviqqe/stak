@@ -463,7 +463,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 }
 
-impl<'a, T: PrimitiveSet> Display for Vm<'a, T> {
+impl<T: PrimitiveSet> Display for Vm<'_, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
     }
