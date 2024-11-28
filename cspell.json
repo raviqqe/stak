@@ -14,6 +14,7 @@
     "assq",
     "assv",
     "astro",
+    "astrojs",
     "bindgen",
     "bytecodes",
     "bytevector",
@@ -42,6 +43,7 @@
     "letrec",
     "libc",
     "libm",
+    "loscore",
     "memq",
     "memv",
     "minifier",
@@ -51,6 +53,7 @@
     "mstak",
     "munmap",
     "nanos",
+    "nanostores",
     "nonbox",
     "nproc",
     "quasiquote",
@@ -68,6 +71,7 @@
     "unresolve",
     "unsync",
     "uutils",
+    "varint",
     "yota"
   ]
 }

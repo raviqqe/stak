@@ -38,7 +38,7 @@ impl<T: Write> StackProfiler<T> {
         let operand = memory.car(code);
 
         if let Some(symbol) = operand.to_cons() {
-            let mut string = memory.car_value(memory.car(symbol)).assume_cons();
+            let mut string = memory.cdr_value(memory.cdr(symbol)).assume_cons();
 
             while string != memory.null() {
                 write!(
@@ -98,6 +98,12 @@ impl<T: Write> Profiler for StackProfiler<T> {
         write!(self.writer, "{}", ProcedureOperation::Return).unwrap();
         self.write_column_separator();
         self.write_stack(memory);
+        self.write_column_separator();
+        self.write_time();
+    }
+
+    fn profile_event(&mut self, name: &str) {
+        write!(self.writer, "{name}").unwrap();
         self.write_column_separator();
         self.write_time();
     }

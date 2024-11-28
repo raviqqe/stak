@@ -2,15 +2,10 @@
 
 set -ex
 
-interpreter=stak-interpret
-
-while getopts di: option; do
+while getopts d: option; do
   case $option in
   d)
     build_options=--no-default-features
-    ;;
-  i)
-    interpreter=$OPTARG
     ;;
   esac
 done
@@ -23,7 +18,7 @@ fi
 
 brew install chibi-scheme gambit-scheme gauche
 
-cargo install hyperfine
+cargo install hyperfine stak
 
 cd $(dirname $0)/..
 
@@ -47,7 +42,7 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
 
   cat prelude.scm $file | stak-compile >$base.bc
 
-  scripts="$interpreter $base.bc,gsi $file,chibi-scheme $file,gosh $file"
+  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"

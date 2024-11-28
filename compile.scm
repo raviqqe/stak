@@ -6,48 +6,30 @@
   (scheme base)
   (scheme cxr)
   (scheme inexact)
+  (scheme lazy)
   (scheme read)
   (scheme write))
 
 (cond-expand
   (stak
     (define cons-rib cons)
-    (define target-pair? pair?)
     (define target-procedure? procedure?))
 
   (else
     (define-record-type *rib*
-      (rib type car cdr tag)
+      (rib car cdr tag)
       rib?
-      (type rib-type)
       (car rib-car)
       (cdr rib-cdr)
       (tag rib-tag))
 
     (define (cons-rib car cdr)
-      (rib pair-type car cdr 0))
-
-    (define (instance? value type)
-      (and (rib? value) (eq? (rib-type value) type)))
-
-    (define (target-pair? value)
-      (instance? value pair-type))
+      (rib car cdr pair-type))
 
     (define (target-procedure? value)
-      (instance? value procedure-type))
+      (and (rib? value) (eq? (rib-tag value) procedure-type)))
 
     (define string->uninterned-symbol string->symbol)))
-
-; Constants
-
-(define default-constants
-  '((#f . $$false)
-    (#t . $$true)
-    (() . $$null)
-    ; It is fine to have a key duplicate with `false`'s because it is never hit.
-    (#f . $$rib)))
-
-(define default-symbols (map cdr default-constants))
 
 ; Instructions
 
@@ -57,20 +39,17 @@
 (define if-instruction 3)
 (define nop-instruction 4)
 (define call-instruction 5)
-; Only for encoding
-(define close-instruction 6)
-(define skip-instruction 7)
 
 ; Primitives
 
 (define primitives
-  '(($$cons 1)
+  '(($$rib 0)
     ($$close 2)
-    ($$car 4)
+    ($$< 11)
+    ($$+ 12)
     ($$- 13)
     ($$* 14)
-    ($$exp 17)
-    ($$log 18)))
+    ($$/ 15)))
 
 ; Types
 
@@ -86,8 +65,12 @@
 
 ; Utility
 
+(define (debug . xs)
+  (write xs (current-error-port))
+  (newline (current-error-port)))
+
 (define (code-rib tag car cdr)
-  (rib pair-type car cdr tag))
+  (rib car cdr tag))
 
 (define (call-rib arity procedure continuation)
   (code-rib (+ call-instruction arity) procedure continuation))
@@ -96,13 +79,13 @@
   (code-rib constant-instruction constant continuation))
 
 (define (data-rib type car cdr)
-  (rib type car cdr 0))
+  (rib car cdr type))
 
 (define (make-procedure arity code environment)
-  (data-rib procedure-type environment (cons-rib arity code)))
+  (data-rib procedure-type (cons-rib arity code) environment))
 
 (define (procedure-code procedure)
-  (rib-cdr (rib-cdr procedure)))
+  (rib-cdr (rib-car procedure)))
 
 (define (bytevector->list xs)
   (let loop ((index 0) (result '()))
@@ -158,8 +141,16 @@
       (else
         (loop (cdr xs) (+ index 1))))))
 
-(define (memv-position one xs)
-  (list-position (lambda (other) (eqv? one other)) xs))
+(define (member-position x xs . rest)
+  (define eq? (if (null? rest) equal? (car rest)))
+
+  (list-position (lambda (y) (eq? x y)) xs))
+
+(define (memv-position x xs)
+  (member-position x xs eqv?))
+
+(define (memq-position x xs)
+  (member-position x xs eq?))
 
 (define (flat-map f xs)
   (apply append (map f xs)))
@@ -170,17 +161,36 @@
       y)))
 
 (define (relaxed-deep-map f xs)
-  (cond
-    ((null? xs)
-      '())
+  (if (pair? xs)
+    (cons
+      (relaxed-deep-map f (car xs))
+      (relaxed-deep-map f (cdr xs)))
+    (f xs)))
 
-    ((pair? xs)
-      (cons
-        (relaxed-deep-map f (car xs))
-        (relaxed-deep-map f (cdr xs))))
+(define (unique xs)
+  (if (null? xs)
+    '()
+    (let ((ys (unique (cdr xs))))
+      (if (memq (car xs) ys)
+        ys
+        (cons (car xs) ys)))))
+
+(define (deep-unique x)
+  (cond
+    ((and (pair? x) (symbol? (car x)))
+      (unique (cons (car x) (deep-unique (cdr x)))))
+
+    ((pair? x)
+      (deep-unique
+        (append
+          (deep-unique (car x))
+          (deep-unique (cdr x)))))
+
+    ((symbol? x)
+      (list x))
 
     (else
-      (f xs))))
+      '())))
 
 (define (map-values f xs)
   (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
@@ -235,23 +245,19 @@
     ; Keep an invariant that a `begin` body must not be empty.
     (cons #f (read-all))))
 
-; Target code writing
-
-(define (write-target codes)
-  (for-each write-u8 codes))
-
 ; Library system
 
 ;; Types
 
 (define-record-type library
-  (make-library id name exports imports body)
+  (make-library id name exports imports body symbols)
   library?
   (id library-id)
   (name library-name)
   (exports library-exports)
   (imports library-imports)
-  (body library-body))
+  (body library-body)
+  (symbols library-symbols))
 
 (define-record-type library-state
   (make-library-state library imported)
@@ -298,6 +304,18 @@
 
 (define library-symbol-separator #\%)
 
+(define (library-symbol? name)
+  (memv-position
+    library-symbol-separator
+    (string->list (symbol->string name))))
+
+(define (build-library-name id name)
+  (string-append
+    (id->string id)
+    (list->string (list library-symbol-separator))
+    (symbol->string name)))
+
+; TODO Remove library symbol prefixes.
 (define (resolve-library-symbol name)
   (let* ((string (symbol->string name))
          (position (memv-position library-symbol-separator (string->list string))))
@@ -305,17 +323,11 @@
       (string->symbol (string-copy string (+ position 1)))
       name)))
 
-(define (build-library-symbol id name)
-  (string->uninterned-symbol
-    (string-append
-      (id->string id)
-      (list->string (list library-symbol-separator))
-      (symbol->string name))))
-
 (define (rename-library-symbol context id name)
   (if (or
        (not id)
-       (eqv? (string-ref (symbol->string name) 0) #\$))
+       (let ((name (symbol->string name)))
+         (equal? (substring name 0 (min 2 (string-length name))) "$$")))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
@@ -328,7 +340,7 @@
             cdr)
 
           (else
-            (let ((renamed (build-library-symbol id name)))
+            (let ((renamed (string->uninterned-symbol (build-library-name id name))))
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
@@ -345,17 +357,6 @@
               #f
               (qualify name))))))
 
-    ((rename)
-      (expand
-        (lambda (name)
-          (qualify
-            (cond
-              ((assq name (cddr set)) =>
-                cadr)
-
-              (else
-                name))))))
-
     ((only)
       (let ((names (cddr set)))
         (expand
@@ -369,13 +370,28 @@
         (lambda (name)
           (qualify (symbol-append (caddr set) name)))))
 
+    ((rename)
+      (expand
+        (lambda (name)
+          (qualify
+            (cond
+              ((assq name (cddr set)) =>
+                cadr)
+
+              (else
+                name))))))
+
     (else
       (let ((library (library-context-find context set)))
         (append
           (if (library-context-import! context set)
             '()
             (append
-              (expand-import-sets context (library-id library) (library-imports library))
+              (expand-import-sets
+                context
+                (library-id library)
+                (library-symbols library)
+                (library-imports library))
               (library-body library)))
           (flat-map
             (lambda (names)
@@ -389,22 +405,34 @@
                   '())))
             (library-exports library)))))))
 
-(define (expand-import-sets context importer-id sets)
+(define (expand-import-sets context importer-id importer-symbols sets)
   (flat-map
-    (lambda (set) (expand-import-set context importer-id (lambda (x) x) set))
+    (lambda (set)
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name)
+          (and
+            (or
+              (not importer-symbols)
+              (memq name (force importer-symbols)))
+            name))
+        set))
     sets))
 
-(define (expand-library-expression context expression)
+(define (expand-library-expression context body-symbols expression)
   (case (and (pair? expression) (car expression))
     ((define-library)
-      (let ((collect-bodies
-              (lambda (predicate)
-                (flat-map
-                  cdr
-                  (filter
-                    (lambda (body) (eq? (car body) predicate))
-                    (cddr expression)))))
-            (id (library-context-id context)))
+      (let* ((collect-bodies
+               (lambda (predicate)
+                 (flat-map
+                   cdr
+                   (filter
+                     (lambda (body) (eq? (car body) predicate))
+                     (cddr expression)))))
+             (id (library-context-id context))
+             (exports (collect-bodies 'export))
+             (bodies (collect-bodies 'begin)))
         (library-context-add!
           context
           (make-library
@@ -415,29 +443,40 @@
                 (if (eq? (predicate name) 'rename)
                   (cons (caddr name) (rename-library-symbol context id (cadr name)))
                   (cons name (rename-library-symbol context id name))))
-              (collect-bodies 'export))
+              exports)
             (collect-bodies 'import)
             (relaxed-deep-map
               (lambda (value)
                 (if (symbol? value)
                   (rename-library-symbol context id value)
                   value))
-              (collect-bodies 'begin))))
+              bodies)
+            (delay (deep-unique (cons exports bodies)))))
         '()))
 
     ((import)
-      (expand-import-sets context #f (cdr expression)))
+      (expand-import-sets context #f body-symbols (cdr expression)))
 
     (else
       (list expression))))
 
+(define library-predicates '(define-library import))
+
 (define (expand-libraries expression)
   (let* ((context (make-library-context '() '()))
+         (body-symbols
+           (delay
+             (deep-unique
+               (filter
+                 (lambda (expression)
+                   (not (and (pair? expression) (memq (car expression) library-predicates))))
+                 (cdr expression)))))
          (expression
            (cons
              (car expression)
              (flat-map
-               (lambda (expression) (expand-library-expression context expression))
+               (lambda (expression)
+                 (expand-library-expression context body-symbols expression))
                (cdr expression)))))
     (values expression context)))
 
@@ -506,7 +545,7 @@
     (lambda (x)
       (cons
         ; `0` is always the library ID of `(stak base)`.
-        (symbol->string (build-library-symbol 0 x))
+        (build-library-name 0 x)
         (symbol-append '$$ x)))
     '(+ - * / <)))
 
@@ -865,15 +904,17 @@
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment libraries macros)
+  (make-compilation-context environment symbols libraries macros)
   compilation-context?
   (environment compilation-context-environment)
+  (symbols compilation-context-symbols)
   (libraries compilation-context-libraries)
   (macros compilation-context-macros))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
     (append variables (compilation-context-environment context))
+    (compilation-context-symbols context)
     (compilation-context-libraries context)
     (compilation-context-macros context)))
 
@@ -886,33 +927,43 @@
 
 ;; Procedures
 
+(define (find-quoted-symbols expression)
+  (cond
+    ((symbol? expression)
+      (list expression))
+
+    ((vector? expression)
+      (find-quoted-symbols (vector->list expression)))
+
+    ((pair? expression)
+      (append (find-quoted-symbols (car expression)) (find-quoted-symbols (cdr expression))))
+
+    (else
+      '())))
+
+(define (find-symbols expression)
+  (define (find expression)
+    (cond
+      ((not (pair? expression))
+        '())
+
+      ((eq? (car expression) '$$quote)
+        (find-quoted-symbols (cadr expression)))
+
+      (else
+        (append (find (car expression)) (find (cdr expression))))))
+
+  (unique (find expression)))
+
 (define (compile-arity argument-count variadic)
   (+
     (* 2 argument-count)
     (if variadic 1 0)))
 
-(define (compile-primitive-call name continuation)
-  (call-rib
-    (compile-arity
-      (case name
-        (($$close $$car $$exp $$log)
-          1)
-
-        (($$cons $$- $$*)
-          2)
-
-        (($$rib)
-          4)
-
-        (else
-          (error "unknown primitive" name)))
-      #f)
-    name
-    continuation))
-
 (define (drop? codes)
   (and
-    (target-pair? codes)
+    (rib? codes)
+    (not (null? codes))
     (eq? (rib-tag codes) set-instruction)
     (eq? (rib-car codes) 0)))
 
@@ -999,13 +1050,17 @@
           (compile-expression
             context
             (cadr expression)
-            (code-rib
-              if-instruction
-              (compile-expression
-                context
-                (caddr expression)
-                (if (null? continuation) '() (code-rib nop-instruction 0 continuation)))
-              (compile-expression context (cadddr expression) continuation))))
+            (let ((continuation
+                    (if (null? continuation)
+                      '()
+                      (code-rib nop-instruction 0 continuation))))
+              (code-rib
+                if-instruction
+                (compile-expression
+                  context
+                  (caddr expression)
+                  continuation)
+                (compile-expression context (cadddr expression) continuation)))))
 
         (($$lambda)
           (let ((parameters (cadr expression)))
@@ -1022,7 +1077,7 @@
                   (cddr expression)
                   '())
                 '())
-              (compile-primitive-call '$$close continuation))))
+              (call-rib (compile-arity 1 #f) '$$close continuation))))
 
         (($$libraries)
           (constant-rib (compilation-context-libraries context) continuation))
@@ -1044,6 +1099,9 @@
                 (cadr expression))
               (compile-unspecified continuation))))
 
+        (($$symbols)
+          (constant-rib (compilation-context-symbols context) continuation))
+
         (else
           (compile-call context expression #f continuation))))
 
@@ -1052,69 +1110,247 @@
 
 (define (compile libraries macros expression)
   (compile-expression
-    (make-compilation-context '() libraries macros)
+    (make-compilation-context
+      '()
+      (unique
+        (append
+          (map car primitives)
+          (find-symbols expression)
+          (find-quoted-symbols libraries)
+          (find-quoted-symbols macros)))
+      libraries
+      macros)
     expression
     '()))
 
-; Constant building
+; Marshalling
 
-;; Context
+(define-record-type marshal-context
+  (make-marshal-context constants continuations)
+  marshal-context?
+  (constants marshal-context-constants marshal-context-set-constants!)
+  (continuations marshal-context-continuations marshal-context-set-continuations!))
 
-(define-record-type constant-context
-  (make-constant-context constants constant-id)
-  constant-context?
-  (constants constant-context-constants constant-context-set-constants!)
-  (constant-id constant-context-constant-id constant-context-set-constant-id!))
+(define (nop-code? codes)
+  (and
+    (rib? codes)
+    (eq? (rib-tag codes) nop-instruction)))
 
-(define (constant-context-constant context constant)
+(define (marshal-constant context value)
+  (define (marshal value)
+    (marshal-rib context value #t))
+
   (cond
-    ((assv constant (append default-constants (constant-context-constants context))) =>
+    ((null? value)
+      (data-rib null-type 0 (cons-rib 0 0)))
+
+    ((boolean? value)
+      (if value
+        (data-rib boolean-type 0 (marshal '()))
+        (data-rib boolean-type (marshal '()) (marshal #t))))
+
+    ((symbol? value)
+      (data-rib
+        symbol-type
+        (marshal #f)
+        (marshal (symbol->string (resolve-library-symbol value)))))
+
+    ((char? value)
+      (data-rib char-type (char->integer value) (marshal '())))
+
+    ((string? value)
+      (data-rib
+        string-type
+        (string-length value)
+        (marshal (map char->integer (string->list value)))))
+
+    ((pair? value)
+      (cons-rib (marshal (car value)) (marshal (cdr value))))
+
+    ((vector? value)
+      (data-rib vector-type (vector-length value) (marshal (vector->list value))))
+
+    ((bytevector? value)
+      (data-rib bytevector-type (bytevector-length value) (marshal (bytevector->list value))))
+
+    (else
+      (error "invalid type"))))
+
+(define (marshal-unique-constant context value)
+  (cond
+    ((assoc value (marshal-context-constants context)) =>
       cdr)
 
     (else
-      #f)))
+      (let ((marshalled (marshal-constant context value)))
+        (marshal-context-set-constants!
+          context
+          (cons
+            (cons value marshalled)
+            (marshal-context-constants context)))
+        marshalled))))
 
-(define (constant-context-add-constant! context constant symbol)
-  (constant-context-set-constants!
+(define (marshal-rib context value data)
+  (define (marshal value data)
+    (marshal-rib context value data))
+
+  (cond
+    ((number? value)
+      value)
+
+    ((or data (null? value))
+      (cond
+        ((target-procedure? value)
+          (unless (null? (rib-cdr value))
+            (error "invalid environment"))
+          (data-rib procedure-type (marshal (rib-car value) #f) (marshal '() #t)))
+
+        ((or
+            (null? value)
+            (boolean? value)
+            (char? value)
+            (string? value)
+            (symbol? value))
+          (marshal-unique-constant context value))
+
+        ((or (bytevector? value) (pair? value) (vector? value))
+          (marshal-constant context value))
+
+        (else
+          (error "invalid type"))))
+
+    ((nop-code? value)
+      (cond
+        ((assq value (marshal-context-continuations context)) =>
+          cdr)
+
+        (else
+          (let ((continuation (code-rib nop-instruction 0 (marshal (rib-cdr value) #f))))
+            (marshal-context-set-continuations!
+              context
+              (cons (cons value continuation) (marshal-context-continuations context)))
+            continuation))))
+
+    (else
+      (rib
+        (marshal (rib-car value) (not (= (rib-tag value) if-instruction)))
+        (marshal (rib-cdr value) data)
+        (rib-tag value)))))
+
+(define (marshal codes)
+  (marshal-rib (make-marshal-context '() '()) codes #f))
+
+; Encoding
+
+;; Context
+
+(define-record-type encode-context
+  (make-encode-context dictionary counts null)
+  encode-context?
+  (dictionary encode-context-dictionary encode-context-set-dictionary!)
+  (counts encode-context-counts encode-context-set-counts!)
+  (null encode-context-null))
+
+(define (encode-context-push! context value)
+  (encode-context-set-dictionary!
     context
-    (cons (cons constant symbol) (constant-context-constants context))))
+    (cons value (encode-context-dictionary context))))
 
-(define (constant-context-generate-constant-id! context)
-  (let ((id (constant-context-constant-id context)))
-    (constant-context-set-constant-id! context (+ id 1))
-    (string->uninterned-symbol (string-append "$" (id->string id)))))
+(define (encode-context-remove! context index)
+  (let* ((dictionary (cons #f (encode-context-dictionary context)))
+         (pair (list-tail dictionary index))
+         (value (cadr pair)))
+    (set-cdr! pair (cddr pair))
+    (encode-context-set-dictionary! context (cdr dictionary))
+    value))
 
-;; Main
+(define (encode-context-position context value)
+  (memq-position value (encode-context-dictionary context)))
 
-; We do not need to check boolean and null which are registered as default constants.
-(define (constant-normal? constant)
-  (or
-    (symbol? constant)
-    (and
-      (integer? constant)
-      (not (negative? constant)))
-    (target-procedure? constant)))
+(define (encode-context-find-count context value)
+  (assq value (encode-context-counts context)))
 
-(define (build-child-constants context car cdr continue)
-  (define (build-child constant continue)
-    (build-constant
-      context
-      constant
-      (lambda () (build-constant-codes context constant continue))))
+;; Codes
 
-  (build-child
-    car
-    (lambda ()
-      (build-child
-        cdr
-        continue))))
+(define integer-base 128)
+(define number-base 16)
+(define tag-base 16)
+(define share-base 31)
+
+(define (shared-value? value)
+  (and
+    (rib? value)
+    (memq
+      (rib-tag value)
+      (list
+        boolean-type
+        char-type
+        null-type
+        string-type
+        symbol-type
+        ; This is technically equivalent to `symbol-type`. But we include this check for sanity.
+        nop-instruction))))
+
+(define (strip-nop-instructions codes)
+  ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
+  ; all `#f` and nop instructions' are `0`.
+  (if (and (nop-code? codes) (eq? (rib-car codes) 0))
+    (strip-nop-instructions (rib-cdr codes))
+    codes))
+
+(define (increment-count! context value)
+  (cond
+    ((encode-context-find-count context value) =>
+      (lambda (pair)
+        (set-cdr! pair (+ 1 (cdr pair)))))
+
+    (else
+      (encode-context-set-counts!
+        context
+        (cons (cons value 1) (encode-context-counts context))))))
+
+(define (decrement-count! pair)
+  (set-cdr! pair (- (cdr pair) 1)))
+
+(define (count-ribs! context codes)
+  (define (count-data! value)
+    (when (rib? value)
+      (unless (and (shared-value? value) (encode-context-find-count context value))
+        ((if (target-procedure? value) count-code! count-data!) (rib-car value))
+        (count-data! (rib-cdr value)))
+      (when (shared-value? value)
+        (increment-count! context value))))
+
+  (define (count-code! codes)
+    (cond
+      ((number? codes)
+        #f)
+
+      ((eq? codes (encode-context-null context))
+        (count-data! codes))
+
+      ((nop-code? codes)
+        (let* ((codes (strip-nop-instructions codes))
+               (counted (encode-context-find-count context codes)))
+          (increment-count! context codes)
+          (unless counted
+            (count-code! codes))))
+
+      (else
+        ((if (= (rib-tag codes) if-instruction) count-code! count-data!)
+          (rib-car codes))
+        (count-code! (rib-cdr codes)))))
+
+  (count-code! codes))
 
 (define (fraction x)
   (- x (floor x)))
 
-; TODO Why not 51 instead of 49?
-(define maximum-float-integer (expt 2 49))
+; We need to fit 64-bit floating-point numbers' sign, mantissa, and exponent into its mantissa...
+; TODO Shouldn't this exponent be a higher number like 37 = 52 - 12 - 3?
+(define maximum-float-integer (expt 2 30))
 
+; Lossy decomposition of floating-point numbers into a signed mantissa and an exponent.
 (define (decompose-float x)
   (define (mantissa y)
     (/ x (expt 2 y)))
@@ -1126,344 +1362,105 @@
       (let ((y (floor y)))
         (values (exact (round (mantissa y))) (exact y))))))
 
-(define (build-number-constant constant continue)
-  (cond
-    ((negative? constant)
-      (constant-rib
-        0
-        (build-number-constant
-          (abs constant)
-          (lambda ()
-            (compile-primitive-call '$$- (continue))))))
-
-    ((not (integer? constant))
-      (let-values (((x y) (decompose-float constant)))
-        (constant-rib
-          x
-          (build-number-constant
-            y
-            (lambda ()
-              (constant-rib
-                2
-                (compile-primitive-call
-                  '$$log
-                  (compile-primitive-call
-                    '$$*
-                    (compile-primitive-call
-                      '$$exp
-                      (compile-primitive-call
-                        '$$*
-                        (continue)))))))))))
-
-    (else
-      (constant-rib constant (continue)))))
-
-(define (build-constant-codes context constant continue)
-  (define (build-rib type car cdr)
-    (constant-rib
-      type
-      (build-child-constants
-        context
-        car
-        cdr
-        (lambda ()
-          (constant-rib
-            0
-            (compile-primitive-call '$$rib (continue)))))))
-
-  (let ((symbol (constant-context-constant context constant)))
-    (if symbol
-      (code-rib get-instruction symbol (continue))
-      (cond
-        ((constant-normal? constant)
-          (constant-rib constant (continue)))
-
-        ((bytevector? constant)
-          (build-rib
-            bytevector-type
-            (bytevector->list constant)
-            (bytevector-length constant)))
-
-        ((char? constant)
-          (build-rib char-type '() (char->integer constant)))
-
-        ((and
-            (number? constant)
-            (or
-              (not (integer? constant))
-              (negative? constant)))
-          (build-number-constant constant continue))
-
-        ((pair? constant)
-          (build-child-constants
-            context
-            (car constant)
-            (cdr constant)
-            (lambda () (compile-primitive-call '$$cons (continue)))))
-
-        ((string? constant)
-          (constant-rib
-            (string->symbol constant)
-            (compile-primitive-call '$$car (continue))))
-
-        ((vector? constant)
-          (build-rib
-            vector-type
-            (vector->list constant)
-            (vector-length constant)))
-
-        (else
-          (error "invalid constant" constant))))))
-
-(define (build-constant context constant continue)
-  (if (or (constant-normal? constant) (constant-context-constant context constant))
-    (continue)
-    (let ((id (constant-context-generate-constant-id! context)))
-      (build-constant-codes
-        context
-        constant
-        (lambda ()
-          (constant-context-add-constant! context constant id)
-          (code-rib set-instruction id (continue)))))))
-
-(define (build-constants context codes)
-  (let loop ((codes codes) (continue (lambda () codes)))
-    (if (terminal-codes? codes)
-      (continue)
-      (let* ((instruction (rib-tag codes))
-             (operand (rib-car codes))
-             (codes (rib-cdr codes))
-             (continue (lambda () (loop codes continue))))
-        (cond
-          ((eq? instruction constant-instruction)
-            (build-constant
-              context
-              operand
-              (if (target-procedure? operand)
-                (lambda () (loop (procedure-code operand) continue))
-                continue)))
-
-          ((eq? instruction if-instruction)
-            (loop operand continue))
-
-          (else
-            (continue)))))))
-
-; Encoding
-
-;; Utility
-
-(define (find-symbols constant-symbols codes)
-  (let loop ((codes codes) (symbols '()))
-    (if (terminal-codes? codes)
-      symbols
-      (let ((instruction (rib-tag codes))
-            (operand (rib-car codes)))
-        (loop
-          (rib-cdr codes)
-          (cond
-            ((and
-                (eq? instruction constant-instruction)
-                (target-procedure? operand))
-              (loop (procedure-code operand) symbols))
-
-            ((eq? instruction if-instruction)
-              (loop operand symbols))
-
-            ((and
-                (symbol? operand)
-                (not (memq operand default-symbols))
-                (not (memq operand constant-symbols))
-                (not (memq operand symbols)))
-              (cons operand symbols))
-
-            (else
-              symbols)))))))
-
-(define (nop-codes? codes)
-  (and
-    (target-pair? codes)
-    (eq? (rib-tag codes) nop-instruction)))
-
-(define (terminal-codes? codes)
-  (or (null? codes) (nop-codes? codes)))
-
-(define (find-continuation codes)
-  (cond
-    ((null? codes)
-      '())
-
-    ((nop-codes? codes)
-      (rib-cdr codes))
-
-    (else
-      (find-continuation (rib-cdr codes)))))
-
-(define (count-skips codes continuation)
-  (do ((codes codes (rib-cdr codes)) (count 0 (+ 1 count)))
-    ((eq? codes continuation)
-      count)))
-
-;; Context
-
-(define-record-type encode-context
-  (make-encode-context symbols constant-context)
-  encode-context?
-  (symbols encode-context-symbols encode-context-set-symbols!)
-  (constant-context encode-context-constant-context))
-
-(define (encode-context-constant context constant)
-  (constant-context-constant (encode-context-constant-context context) constant))
-
-;; Symbols
-
-(define symbol-separator (- 256 2))
-(define symbol-terminator (- 256 1))
-
-(define (encode-string string target)
-  (if (null? string)
-    target
-    (encode-string (cdr string) (cons (char->integer (car string)) target))))
-
-(define (encode-symbol symbol target)
-  (encode-string (string->list (symbol->string symbol)) target))
-
-(define (encode-symbols symbols constant-symbols target)
-  (let ((target (cons symbol-terminator target)))
-    (encode-integer
-      (length constant-symbols)
-      (cdr
-        (fold-left
-          (lambda (target symbol)
-            (cons
-              symbol-separator
-              (encode-symbol symbol target)))
-          target
-          symbols)))))
-
-;; Codes
-
-(define integer-base 128)
-(define short-integer-base 8)
-
 (define (encode-integer-part integer base bit)
   (+ bit (* 2 (modulo integer base))))
 
-(define (encode-integer-with-base integer base target)
-  (do ((x (quotient integer base) (quotient x integer-base))
-       (bit 0 1)
-       (target target (cons (encode-integer-part x integer-base bit) target)))
-    ((zero? x)
-      (values (encode-integer-part integer base bit) target))))
+(define (encode-integer-parts integer base)
+  (let ((rest (quotient integer base)))
+    (values
+      (encode-integer-part integer base (if (zero? rest) 0 1))
+      rest)))
 
-(define (encode-short-integer integer target)
-  (encode-integer-with-base integer short-integer-base target))
+; Unlike Ribbit Scheme, we use the forward encoding algorithm. So this integer encoding also proceeds forward.
+; Therefore, we need to adopt little endianness like the `varint` in Protocol Buffer.
+(define (encode-integer-tail x)
+  (do ((x x (quotient x integer-base)))
+    ((zero? x))
+    (write-u8
+      (encode-integer-part
+        x
+        integer-base
+        (if (zero? (quotient x integer-base)) 0 1)))))
 
-(define (encode-integer integer target)
-  (let-values (((byte target) (encode-integer-with-base integer integer-base target)))
-    (cons byte target)))
-
-(define (encode-instruction instruction integer return target)
-  (let-values (((integer target) (encode-short-integer integer target)))
-    (cons (+ (if return 1 0) (* 2 instruction) (* 16 integer)) target)))
-
-(define (encode-procedure context procedure return target)
-  (let ((code (rib-cdr procedure)))
-    (encode-codes
-      context
-      (rib-cdr code)
-      (encode-instruction
-        close-instruction
-        (rib-car code)
-        return
-        target))))
-
-(define (encode-operand context operand)
+(define (encode-number x)
   (cond
-    ((number? operand)
-      (+ (* operand 2) 1))
+    ((and (integer? x) (negative? x))
+      (+ 1 (* 4 (abs x))))
 
-    ((symbol? operand)
-      (* 2
-        (or
-          (memv-position operand (encode-context-symbols context))
-          (error "symbol not found" operand))))
+    ((integer? x)
+      (* 2 x))
 
     (else
-      (error "invalid operand" operand))))
+      (let-values (((m e) (decompose-float (abs x))))
+        (+
+          3
+          (*
+            4
+            (+
+              (if (negative? x) 1 0)
+              (* 2 (+ e 1023))
+              (* 4096 m))))))))
 
-(define (encode-codes context codes target)
-  (if (terminal-codes? codes)
-    target
-    (let* ((instruction (rib-tag codes))
-           (operand (rib-car codes))
-           (codes (rib-cdr codes))
-           (return (null? codes))
-           (encode-simple
-             (lambda (instruction)
-               (encode-instruction
-                 instruction
-                 (encode-operand context operand)
-                 return
-                 target))))
-      (encode-codes
-        context
-        codes
+(define (encode-rib context value)
+  (cond
+    ((rib? value)
+      (let* ((value (strip-nop-instructions value))
+             (entry (encode-context-find-count context value)))
         (cond
           ((and
-              (eq? instruction constant-instruction)
-              (target-procedure? operand))
-            (encode-procedure context operand return target))
+              (not entry)
+              (zero? (rib-tag value))
+              (number? (rib-car value))
+              (integer? (rib-car value))
+              (<= 0 (rib-car value) 127))
+            (encode-rib context (rib-cdr value))
+            (write-u8 (* 2 (rib-car value))))
 
-          ((memq instruction (list get-instruction set-instruction))
-            (encode-simple instruction))
-
-          ((eq? instruction constant-instruction)
-            (let ((symbol (encode-context-constant context operand)))
-              (if symbol
-                (encode-instruction
-                  get-instruction
-                  (encode-operand context symbol)
-                  return
-                  target)
-                (encode-simple constant-instruction))))
-
-          ((eq? instruction if-instruction)
-            (let ((continuation (find-continuation operand))
-                  (target
-                    (encode-codes
-                      context
-                      operand
-                      (encode-instruction if-instruction 0 #f target))))
-              (if (null? continuation)
-                target
-                (encode-instruction skip-instruction (count-skips codes continuation) #t target))))
-
-          ((eq? instruction nop-instruction)
-            (error "unexpected nop instruction"))
+          ((and entry (encode-context-position context value)) =>
+            (lambda (index)
+              (decrement-count! entry)
+              (let ((removed (zero? (cdr entry)))
+                    (value (encode-context-remove! context index)))
+                (unless removed
+                  (encode-context-push! context value))
+                (let-values (((head tail)
+                               (encode-integer-parts
+                                 (+ (* 2 index) (if removed 0 1))
+                                 share-base)))
+                  (write-u8 (+ 1 (* 4 (+ 1 head))))
+                  (encode-integer-tail tail)))))
 
           (else
-            (encode-instruction
-              call-instruction
-              (- instruction call-instruction)
-              return
-              (encode-integer (encode-operand context operand) target))))))))
+            (let ((tag (rib-tag value)))
+              (encode-rib context (rib-car value))
+              (encode-rib context (rib-cdr value))
+
+              (let-values (((head tail) (encode-integer-parts tag tag-base)))
+                (write-u8 (+ 3 (* 8 head)))
+                (encode-integer-tail tail))
+
+              (when entry
+                (encode-context-push! context value)
+                (decrement-count! entry)
+                (write-u8 1)))))))
+
+    (else
+      (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
+        (write-u8 (+ 7 (* 8 head)))
+        (encode-integer-tail tail)))))
 
 ;; Primitives
 
 (define (build-primitive primitive continuation)
-  (constant-rib
-    procedure-type
-    (constant-rib
-      '()
-      (constant-rib
-        (cadr primitive)
-        (constant-rib
-          0
-          (compile-primitive-call
-            '$$rib
-            (code-rib set-instruction (car primitive) continuation)))))))
+  (code-rib
+    constant-instruction
+    (data-rib procedure-type (cadr primitive) '())
+    (code-rib
+      set-instruction
+      (car primitive)
+      continuation)))
 
+; TODO Consider moving this logic to marshalling.
 (define (build-primitives primitives continuation)
   (if (null? primitives)
     continuation
@@ -1474,22 +1471,23 @@
 ;; Main
 
 (define (encode codes)
-  (let* ((constant-context (make-constant-context '() 0))
-         (codes
-           (build-primitives
-             primitives
-             (build-constants constant-context codes)))
-         (constant-symbols (map cdr (constant-context-constants constant-context)))
-         (symbols (append default-symbols (find-symbols constant-symbols codes))))
-    (encode-symbols
-      symbols
-      constant-symbols
-      (encode-codes
-        (make-encode-context
-          (append symbols constant-symbols)
-          constant-context)
-        codes
-        '()))))
+  (let ((context (make-encode-context '() '() (rib-car (rib-car codes)))))
+    (count-ribs! context codes)
+    (encode-context-set-counts!
+      context
+      (filter
+        (lambda (pair) (> (cdr pair) 1))
+        (encode-context-counts context)))
+    (encode-rib context codes)
+
+    (let ((size (length (encode-context-dictionary context))))
+      (unless (zero? size)
+        (error "dictionary not empty" size)))
+
+    (do ((counts (encode-context-counts context) (cdr counts)))
+      ((null? counts))
+      (unless (zero? (cdar counts))
+        (error "invalid constant count" (map cdr counts))))))
 
 ; Main
 
@@ -1497,18 +1495,20 @@
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
 
-  (write-target
-    (encode
-      (compile
-        (map-values
-          (lambda (library)
-            (filter-values
-              symbol?
-              (map-values
-                (lambda (name) (resolve-denotation macro-context name))
-                (library-exports library))))
-          (map-values library-state-library (library-context-libraries library-context)))
-        (reverse (macro-state-literals (macro-context-state macro-context)))
-        expression2))))
+  (encode
+    (marshal
+      (cons-rib
+        #f
+        (build-primitives
+          primitives
+          (compile
+            (map-values
+              library-exports
+              (map-values library-state-library (library-context-libraries library-context)))
+            (reverse
+              (filter
+                (lambda (pair) (library-symbol? (car pair)))
+                (macro-state-literals (macro-context-state macro-context))))
+            expression2))))))
 
 (main)

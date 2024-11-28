@@ -17,6 +17,29 @@ Feature: Number
       | 42    | A      |
       | -2045 | A      |
 
+  Scenario Outline: Check a number trait
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (<predicate> <value>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | predicate | value | output |
+      | zero?     | 0     | A      |
+      | zero?     | 1     | B      |
+      | positive? | 42    | A      |
+      | positive? | -42   | B      |
+      | negative? | -42   | A      |
+      | negative? | 42    | B      |
+      | even?     | 2     | A      |
+      | even?     | 3     | B      |
+      | odd?      | 3     | A      |
+      | odd?      | 2     | B      |
+
   Scenario Outline: Check a number class of integers
     Given a file named "main.scm" with:
       """scheme
@@ -242,7 +265,7 @@ Feature: Number
     Then the stdout should contain exactly "A"
 
   @float
-  Scenario Outline: Use a truncate function
+  Scenario Outline: Truncate a number
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -268,7 +291,7 @@ Feature: Number
       | -2.1  | -2     |
 
   @float
-  Scenario Outline: Use a floor function
+  Scenario Outline: Calculate a floor
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -294,7 +317,7 @@ Feature: Number
       | -2.1  | -3     |
 
   @float
-  Scenario Outline: Use a ceiling function
+  Scenario Outline: Calculate a ceiling
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -320,7 +343,7 @@ Feature: Number
       | -2.1  | -2     |
 
   @float
-  Scenario Outline: Use a round function
+  Scenario Outline: Round a number
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme inexact))
@@ -351,7 +374,7 @@ Feature: Number
       | -1.51 | -2     |
       | -1.9  | -2     |
 
-  Scenario Outline: Use a comparison operator
+  Scenario Outline: Compare numbers
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -372,7 +395,7 @@ Feature: Number
       | (>= 0 0)   |
 
   @guile @stak
-  Scenario Outline: Use comparison operators with an insufficient number of arguments
+  Scenario Outline: Compare numbers with an insufficient number of arguments
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
@@ -386,6 +409,44 @@ Feature: Number
       | values |
       |        |
       | 0      |
+
+  Scenario Outline: Calculate a minimum
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (min <values>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values | output |
+      | 0      | 0      |
+      | 1      | 1      |
+      | 1 2    | 1      |
+      | 1 2 3  | 1      |
+      | 2 3 1  | 1      |
+      | 3 1 2  | 1      |
+
+  Scenario Outline: Calculate a maximum
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (max <values>) <output>) 65 66))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | values | output |
+      | 0      | 0      |
+      | 1      | 1      |
+      | 1 2    | 2      |
+      | 1 2 3  | 3      |
+      | 2 3 1  | 3      |
+      | 3 1 2  | 3      |
 
   Scenario Outline: Convert a number to a string
     Given a file named "main.scm" with:

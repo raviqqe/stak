@@ -38,7 +38,7 @@ macro_rules! assert_heap_value {
 
 /// A memory on a virtual machine.
 pub struct Memory<'a> {
-    program_counter: Cons,
+    code: Cons,
     stack: Cons,
     r#false: Cons,
     register: Cons,
@@ -51,7 +51,7 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            program_counter: never(),
+            code: never(),
             stack: never(),
             r#false: never(),
             register: never(),
@@ -60,29 +60,21 @@ impl<'a> Memory<'a> {
             heap,
         };
 
-        let null = memory.allocate_unchecked(
-            never().set_tag(Type::Null as Tag).into(),
-            Default::default(),
-        )?;
-        // Do not use `never()` for `car` for an `equal?` procedure.
-        let r#true = memory.allocate_unchecked(
-            null.set_tag(Type::Boolean as Tag).into(),
-            Default::default(),
-        )?;
-        memory.r#false =
-            memory.allocate_unchecked(r#true.set_tag(Type::Boolean as Tag).into(), null.into())?;
+        // Initialize a fake false value.
+        let cons = memory.allocate_unchecked(Default::default(), Default::default())?;
+        memory.r#false = memory.allocate_unchecked(cons.into(), cons.into())?;
 
         Ok(memory)
     }
 
-    /// Returns a program counter.
-    pub const fn program_counter(&self) -> Cons {
-        self.program_counter
+    /// Returns a code.
+    pub const fn code(&self) -> Cons {
+        self.code
     }
 
-    /// Sets a program counter.
-    pub fn set_program_counter(&mut self, value: Cons) {
-        self.program_counter = value;
+    /// Sets a code.
+    pub fn set_code(&mut self, value: Cons) {
+        self.code = value;
     }
 
     /// Returns a register.
@@ -108,7 +100,7 @@ impl<'a> Memory<'a> {
     /// Returns a boolean value.
     pub fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.car(self.r#false).assume_cons()
+            self.cdr(self.r#false).assume_cons()
         } else {
             self.r#false
         }
@@ -116,7 +108,12 @@ impl<'a> Memory<'a> {
 
     /// Returns a null value.
     pub fn null(&self) -> Cons {
-        self.cdr(self.r#false).assume_cons()
+        self.car(self.r#false).assume_cons()
+    }
+
+    /// Sets a false value.
+    pub fn set_false(&mut self, cons: Cons) {
+        self.r#false = cons;
     }
 
     /// Pushes a value to a stack.
@@ -135,6 +132,30 @@ impl<'a> Memory<'a> {
         value
     }
 
+    /// Pops values from a stack.
+    pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
+        let mut values = [Default::default(); M];
+
+        for index in 0..M - 1 {
+            values[M - 1 - index] = self.pop();
+        }
+
+        values[0] = self.pop();
+
+        values
+    }
+
+    /// Pops numbers from a stack.
+    pub fn pop_numbers<const M: usize>(&mut self) -> [Number; M] {
+        let mut numbers = [Default::default(); M];
+
+        for (index, value) in self.pop_many::<M>().into_iter().enumerate() {
+            numbers[index] = value.assume_number();
+        }
+
+        numbers
+    }
+
     /// Peeks a value at the top of a stack.
     pub fn top(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
@@ -144,7 +165,7 @@ impl<'a> Memory<'a> {
 
     /// Allocates a cons.
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
-        self.allocate(car.set_tag(Type::Pair as Tag), cdr.into())
+        self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
     /// Allocates a cons on heap.
@@ -303,7 +324,7 @@ impl<'a> Memory<'a> {
         self.allocation_index = 0;
         self.space = !self.space;
 
-        self.program_counter = self.copy_cons(self.program_counter)?;
+        self.code = self.copy_cons(self.code)?;
         self.stack = self.copy_cons(self.stack)?;
         self.r#false = self.copy_cons(self.r#false)?;
         self.register = self.copy_cons(self.register)?;
@@ -334,16 +355,16 @@ impl<'a> Memory<'a> {
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
         Ok(if cons == never() {
             never()
-        } else if self.unchecked_cdr(cons) == never().into() {
+        } else if self.unchecked_car(cons) == never().into() {
             // Get a forward pointer.
-            self.unchecked_car(cons).assume_cons()
+            self.unchecked_cdr(cons).assume_cons()
         } else {
             let copy =
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, copy.into());
-            self.set_unchecked_cdr(cons, never().into());
+            self.set_unchecked_car(cons, never().into());
+            self.set_unchecked_cdr(cons, copy.into());
 
             copy
         }
@@ -353,7 +374,7 @@ impl<'a> Memory<'a> {
 
 impl<'a> Display for Memory<'a> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        writeln!(formatter, "program counter: {}", self.program_counter)?;
+        writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
 
         for index in 0..self.allocation_index / 2 {
@@ -368,8 +389,8 @@ impl<'a> Display for Memory<'a> {
                 self.cdr(cons)
             )?;
 
-            if index == self.program_counter.index() {
-                write!(formatter, " <- program counter")?;
+            if index == self.code.index() {
+                write!(formatter, " <- code")?;
             } else if index == self.stack.index() {
                 write!(formatter, " <- stack")?;
             } else if index == self.register.index() {
@@ -405,62 +426,62 @@ mod tests {
     #[test]
     fn create() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
-        assert_snapshot!(vm);
+        assert_snapshot!(memory);
     }
 
     #[test]
     fn create_list() {
         let mut heap = create_heap();
-        let mut vm = Memory::new(&mut heap).unwrap();
+        let mut memory = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(vm.car(vm.null()).tag(), Type::Null as Tag);
+        let list = memory
+            .cons(Number::from_i64(1).into(), memory.null())
+            .unwrap();
 
-        let list = vm.cons(Number::from_i64(1).into(), vm.null()).unwrap();
+        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(memory);
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        let list = memory.cons(Number::from_i64(2).into(), list).unwrap();
 
-        let list = vm.cons(Number::from_i64(2).into(), list).unwrap();
+        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(memory);
 
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        let list = memory.cons(Number::from_i64(3).into(), list).unwrap();
 
-        let list = vm.cons(Number::from_i64(3).into(), list).unwrap();
-
-        assert_eq!(vm.cdr(list).tag(), Type::Pair as Tag);
-        assert_snapshot!(vm);
+        assert_eq!(memory.cdr(list).tag(), Type::Pair as Tag);
+        assert_snapshot!(memory);
     }
 
     #[test]
     fn convert_false() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(vm.boolean(false)).to_cons().unwrap(),
-            vm.boolean(false)
+            Value::from(memory.boolean(false)).to_cons().unwrap(),
+            memory.boolean(false)
         );
     }
 
     #[test]
     fn convert_true() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
         assert_eq!(
-            Value::from(vm.boolean(true)).to_cons().unwrap(),
-            vm.boolean(true)
+            Value::from(memory.boolean(true)).to_cons().unwrap(),
+            memory.boolean(true)
         );
     }
 
     #[test]
     fn convert_null() {
         let mut heap = create_heap();
-        let vm = Memory::new(&mut heap).unwrap();
+        let memory = Memory::new(&mut heap).unwrap();
 
-        assert_eq!(Value::from(vm.null()).to_cons().unwrap(), vm.null());
+        assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
     }
 
     mod stack {
@@ -469,25 +490,25 @@ mod tests {
         #[test]
         fn push_and_pop() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(42).into()).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(42).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::from_i64(42).into());
+            assert_eq!(memory.pop(), Number::from_i64(42).into());
         }
 
         #[test]
         fn push_and_pop_twice() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(1).into()).unwrap();
-            vm.push(Number::from_i64(2).into()).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(1).into()).unwrap();
+            memory.push(Number::from_i64(2).into()).unwrap();
 
-            assert_eq!(vm.pop(), Number::from_i64(2).into());
-            assert_eq!(vm.pop(), Number::from_i64(1).into());
+            assert_eq!(memory.pop(), Number::from_i64(2).into());
+            assert_eq!(memory.pop(), Number::from_i64(1).into());
         }
     }
 
@@ -497,53 +518,54 @@ mod tests {
         #[test]
         fn collect_cons() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.allocate(Number::default().into(), Number::default().into())
+            memory
+                .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
-            vm.collect_garbages(None).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
 
         #[test]
         fn collect_stack() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(42).into()).unwrap();
-            vm.collect_garbages(None).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(42).into()).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
 
         #[test]
         fn collect_deep_stack() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            vm.stack = vm.null();
-            vm.push(Number::from_i64(1).into()).unwrap();
-            vm.push(Number::from_i64(2).into()).unwrap();
-            vm.collect_garbages(None).unwrap();
+            memory.stack = memory.null();
+            memory.push(Number::from_i64(1).into()).unwrap();
+            memory.push(Number::from_i64(2).into()).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
 
         #[test]
         fn collect_cycle() {
             let mut heap = create_heap();
-            let mut vm = Memory::new(&mut heap).unwrap();
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            let cons = vm
+            let cons = memory
                 .allocate(Number::default().into(), Number::default().into())
                 .unwrap();
-            vm.set_cdr(cons, cons.into());
+            memory.set_cdr(cons, cons.into());
 
-            vm.collect_garbages(None).unwrap();
+            memory.collect_garbages(None).unwrap();
 
-            assert_snapshot!(vm);
+            assert_snapshot!(memory);
         }
     }
 }

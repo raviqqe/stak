@@ -1,9 +1,8 @@
 ---
 source: vm/src/memory.rs
-expression: vm
+expression: memory
 ---
-program counter: !:0
+code: !:0
 stack: !:0
-100: c102:2 c104:0
-102: c104:2 n0
-104: !:1 n0
+100: c102:0 c102:0
+102: n0 n0

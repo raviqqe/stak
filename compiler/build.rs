@@ -1,10 +1,10 @@
 //! A build script.
 
+use core::error::Error;
 use std::{
     env,
-    error::Error,
     fs::{self, File},
-    io::{self, Write},
+    io::Write,
     path::Path,
     process::{Command, Stdio},
 };
@@ -38,10 +38,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         target_file.display()
     );
 
-    let mut command = Command::new(option_env!("STAK_HOST_INTERPRETER").unwrap_or("stak"))
+    let file = File::options()
+        .create(true)
+        .write(true)
+        .truncate(true)
+        .open(target_file)?;
+    let mut command = Command::new("stak")
         .arg(COMPILER_SOURCE_FILE)
         .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
+        .stdout(file)
         .spawn()?;
     let stdin = command.stdin.as_mut().expect("stdin");
 
@@ -49,15 +54,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     stdin.write_all(&fs::read(COMPILER_SOURCE_FILE)?)?;
 
     command.wait()?;
-
-    io::copy(
-        &mut command.stdout.expect("stdout"),
-        &mut File::options()
-            .create(true)
-            .write(true)
-            .truncate(true)
-            .open(target_file)?,
-    )?;
 
     Ok(())
 }

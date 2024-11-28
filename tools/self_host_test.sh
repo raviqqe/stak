@@ -40,11 +40,13 @@ for file in bench/*/main.scm cmd/*/src/*.scm; do
     bytecode_file=$(artifact_path $stage bc)
 
     cat prelude.scm $file | run_stage $stage >$bytecode_file
-    $target/stak-decode <$bytecode_file >${bytecode_file%.*}.md
+    # TODO Test a decoder.
+    # $target/stak-decode <$bytecode_file >${bytecode_file%.*}.md
   done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
-    for extension in md bc; do
+    # TODO Test a decoder.
+    for extension in bc; do
       log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
     done
   done

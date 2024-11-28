@@ -6,8 +6,9 @@
 //! use stak_device::FixedBufferDevice;
 //! use stak_file::VoidFileSystem;
 //! use stak_macro::compile_r7rs;
-//! use stak_primitive::SmallPrimitiveSet;
 //! use stak_process_context::VoidProcessContext;
+//! use stak_r7rs::SmallPrimitiveSet;
+//! use stak_time::VoidClock;
 //! use stak_vm::Vm;
 //!
 //! const HEAP_SIZE: usize = 1 << 16;
@@ -21,6 +22,7 @@
 //!         device,
 //!         VoidFileSystem::new(),
 //!         VoidProcessContext::new(),
+//!         VoidClock::new(),
 //!     ),
 //! ).unwrap();
 //!
@@ -41,18 +43,19 @@
 
 #[cfg(test)]
 extern crate alloc;
-#[cfg(any(feature = "std", feature = "trace_instruction", test))]
+#[cfg(any(feature = "trace_instruction", test))]
 extern crate std;
 
+mod code;
 mod cons;
 mod error;
+mod instruction;
 mod memory;
 mod mod_index;
 mod number;
 mod primitive_set;
 mod profiler;
 mod stack_slot;
-mod symbol_index;
 mod r#type;
 mod value;
 mod vm;

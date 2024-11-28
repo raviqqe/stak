@@ -2,12 +2,12 @@
 
 mod error;
 
+use core::error::Error;
 pub use error::BuildError;
 use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
 use std::{
     env,
-    error::Error,
     path::{Path, PathBuf},
 };
 use tokio::{

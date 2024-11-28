@@ -14,19 +14,16 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-14
-        interpreter:
-          - stak-interpret
-          - mstak-interpret
+          - macos-15
         options:
           -
           - -d
         exclude:
-          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-14' }}
+          - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./tools/ci/github/setup
+      - uses: ./.github/actions/setup
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"

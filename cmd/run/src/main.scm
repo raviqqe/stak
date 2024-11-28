@@ -1,15 +1,17 @@
+; We import all libraries here because the compiler strips any unimported libraries.
 (import
   (scheme base)
   (scheme char)
-  (scheme cxr)
-  (scheme eval)
+  (only (scheme cxr))
+  (only (scheme eval) eval)
   (scheme file)
-  (scheme inexact)
-  (scheme lazy)
-  (scheme process-context)
+  (only (scheme inexact))
+  (only (scheme lazy))
+  (only (scheme process-context) command-line)
   (scheme read)
   (scheme repl)
-  (scheme write))
+  (only (scheme time))
+  (only (scheme write)))
 
 (define (main)
   (define program (open-input-file (list-ref (command-line) 1)))

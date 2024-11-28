@@ -3,8 +3,9 @@
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
-use stak_primitive::SmallPrimitiveSet;
 use stak_process_context::VoidProcessContext;
+use stak_r7rs::SmallPrimitiveSet;
+use stak_time::VoidClock;
 use stak_vm::Vm;
 use wasm_bindgen::prelude::*;
 
@@ -29,6 +30,7 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
             ReadWriteDevice::new(input, &mut output, &mut error),
             VoidFileSystem::new(),
             VoidProcessContext::new(),
+            VoidClock::new(),
         ),
     )?;
 
@@ -36,10 +38,4 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
     vm.run()?;
 
     Ok(output)
-}
-
-/// Decodes bytecodes into its Markdown format.
-#[wasm_bindgen]
-pub fn decode(bytecodes: &[u8]) -> Result<String, JsError> {
-    Ok(stak_code::decode(bytecodes)?.to_string())
 }

@@ -1,3 +1,15 @@
+#[cfg(feature = "libc")]
+mod libc;
+#[cfg(feature = "std")]
+mod os;
+mod void;
+
+#[cfg(feature = "libc")]
+pub use libc::LibcProcessContext;
+#[cfg(feature = "std")]
+pub use os::OsProcessContext;
+pub use void::VoidProcessContext;
+
 /// A process context.
 pub trait ProcessContext {
     /// Returns a command name and its arguments in a reverse order.
