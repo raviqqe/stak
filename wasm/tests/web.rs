@@ -1,3 +1,4 @@
+#![expect(missing_docs)]
 #![cfg(target_arch = "wasm32")]
 
 use stak_configuration::DEFAULT_HEAP_SIZE;
