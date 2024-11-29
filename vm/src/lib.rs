@@ -51,7 +51,6 @@ mod cons;
 mod error;
 mod instruction;
 mod memory;
-mod mod_index;
 mod number;
 mod primitive_set;
 mod profiler;
