@@ -1,5 +1,5 @@
-#![cfg(target_arch = "wasm32")]
 #![expect(missing_docs)]
+#![cfg(target_arch = "wasm32")]
 
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_macro::compile_r7rs;
