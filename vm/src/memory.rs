@@ -371,7 +371,7 @@ impl<'a> Memory<'a> {
     }
 }
 
-impl<'a> Display for Memory<'a> {
+impl Display for Memory<'_> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;

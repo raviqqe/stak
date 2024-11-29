@@ -35,7 +35,7 @@ impl<'a, const O: usize, const E: usize> FixedBufferDevice<'a, O, E> {
     }
 }
 
-impl<'a, const O: usize, const E: usize> Device for FixedBufferDevice<'a, O, E> {
+impl<const O: usize, const E: usize> Device for FixedBufferDevice<'_, O, E> {
     type Error = BufferError;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
