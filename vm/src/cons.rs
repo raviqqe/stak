@@ -12,7 +12,7 @@ pub type Tag = u16;
 ///
 /// - in car, its cons is moved already on garbage collection.
 /// - in cdr, nothing.
-pub fn never() -> Cons {
+pub const fn never() -> Cons {
     Cons::new(u64::MAX)
 }
 
@@ -25,26 +25,26 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
-    pub fn new(index: u64) -> Self {
+    pub const fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
 
     /// Returns a memory address on heap.
-    pub fn index(self) -> usize {
+    pub const fn index(self) -> usize {
         (self.unbox() >> TAG_SIZE) as _
     }
 
     /// Returns a tag.
-    pub fn tag(self) -> Tag {
+    pub const fn tag(self) -> Tag {
         (self.unbox() & TAG_MASK) as _
     }
 
     /// Sets a tag.
-    pub fn set_tag(self, tag: Tag) -> Self {
+    pub const fn set_tag(self, tag: Tag) -> Self {
         Self::r#box(self.unbox() & !TAG_MASK | (tag as u64 & TAG_MASK))
     }
 
-    fn r#box(value: u64) -> Self {
+    const fn r#box(value: u64) -> Self {
         Self(feature!(if ("float") {
             nonbox::f64::u64::box_unsigned(value)
         } else {
@@ -52,7 +52,7 @@ impl Cons {
         }))
     }
 
-    fn unbox(self) -> u64 {
+    const fn unbox(self) -> u64 {
         feature!(if ("float") {
             nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
         } else {
