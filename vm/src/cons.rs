@@ -44,7 +44,7 @@ impl Cons {
         Self::r#box(self.unbox() & !TAG_MASK | (tag as u64 & TAG_MASK))
     }
 
-    fn r#box(value: u64) -> Self {
+    const fn r#box(value: u64) -> Self {
         Self(feature!(if ("float") {
             nonbox::f64::u64::box_unsigned(value)
         } else {
@@ -52,7 +52,7 @@ impl Cons {
         }))
     }
 
-    fn unbox(self) -> u64 {
+    const fn unbox(self) -> u64 {
         feature!(if ("float") {
             nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
         } else {
