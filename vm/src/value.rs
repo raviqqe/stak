@@ -69,7 +69,7 @@ impl Value {
     }
 
     /// Checks if it is a number.
-    pub fn is_number(&self) -> bool {
+    pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
 
