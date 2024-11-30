@@ -52,7 +52,7 @@ impl Number {
         self.to_representation() as _
     }
 
-    pub(crate) fn from_raw(raw: u64) -> Self {
+    pub(crate) const fn from_raw(raw: u64) -> Self {
         Self(feature!(if ("float") {
             f64::from_bits(raw)
         } else {
@@ -60,7 +60,7 @@ impl Number {
         }))
     }
 
-    pub(crate) fn to_raw(self) -> u64 {
+    pub(crate) const fn to_raw(self) -> u64 {
         feature!(if ("float") {
             self.0.to_bits()
         } else {
