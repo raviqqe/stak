@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
-    cons::{never, Cons},
+    cons::{Cons, NEVER},
     instruction::Instruction,
     memory::Memory,
     number::Number,
