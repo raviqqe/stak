@@ -1,10 +1,11 @@
 ---
 source: vm/src/memory.rs
 expression: memory
+snapshot_kind: text
 ---
-code: !:0
-stack: c100:0
-100: n2 c104:0 <- stack
-102: c106:0 c106:0
-104: n1 c106:0
+code: c7fffffffffff
+stack: c100
+100: n2 c104 <- stack
+102: c106 c106
+104: n1 c106
 106: n0 n0
