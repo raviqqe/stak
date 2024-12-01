@@ -12,9 +12,7 @@ pub type Tag = u16;
 ///
 /// - in car, its cons is moved already on garbage collection.
 /// - in cdr, nothing.
-pub const fn never() -> Cons {
-    Cons::new(u64::MAX)
-}
+pub const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -87,7 +85,7 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self == &never() {
+        if self == &NEVER {
             write!(formatter, "!")?;
         } else {
             write!(formatter, "c{:x}", self.index())?;
