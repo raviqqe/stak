@@ -123,7 +123,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cons::never, Type};
+    use crate::{cons::NEVER, Type};
 
     #[test]
     fn convert_cons() {
