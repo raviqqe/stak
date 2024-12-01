@@ -152,7 +152,7 @@ mod tests {
 
     #[test]
     fn convert_moved() {
-        assert_eq!(Value::from(never()).to_cons().unwrap(), never());
+        assert_eq!(Value::from(NEVER).to_cons().unwrap(), NEVER);
     }
 
     #[test]

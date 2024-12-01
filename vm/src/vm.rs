@@ -367,7 +367,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.memory.null().set_tag(StackSlot::Frame as _).into(),
         )?;
         self.memory.set_stack(stack);
-        self.memory.set_register(never());
+        self.memory.set_register(NEVER);
 
         profile_event!(self, "initialization_end");
 
