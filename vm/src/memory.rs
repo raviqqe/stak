@@ -1,5 +1,5 @@
 use crate::{
-    cons::{never, Cons, Tag},
+    cons::{Cons, Tag, NEVER},
     number::Number,
     r#type::Type,
     value::Value,
@@ -20,7 +20,7 @@ macro_rules! assert_heap_access {
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if $cons != never() {
+        if $cons != NEVER {
             debug_assert!($self.allocation_start() <= $cons.index());
             debug_assert!($cons.index() < $self.allocation_end());
         }
@@ -50,10 +50,10 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            code: never(),
-            stack: never(),
-            r#false: never(),
-            register: never(),
+            code: NEVER,
+            stack: NEVER,
+            r#false: NEVER,
+            register: NEVER,
             allocation_index: 0,
             space: false,
             heap,
@@ -360,9 +360,9 @@ impl<'a> Memory<'a> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == never() {
-            never()
-        } else if self.unchecked_car(cons) == never().into() {
+        Ok(if cons == NEVER {
+            NEVER
+        } else if self.unchecked_car(cons) == NEVER.into() {
             // Get a forward pointer.
             self.unchecked_cdr(cons).assume_cons()
         } else {
@@ -370,7 +370,7 @@ impl<'a> Memory<'a> {
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, never().into());
+            self.set_unchecked_car(cons, NEVER.into());
             self.set_unchecked_cdr(cons, copy.into());
 
             copy
