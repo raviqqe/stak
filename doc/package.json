@@ -17,10 +17,10 @@
     "@astrojs/starlight": "^0.29.2",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
-    "@raviqqe/loscore": "^0.2.7",
-    "@raviqqe/stak": "^0.3.2",
+    "@raviqqe/stak": "^0.3.3",
     "astro": "^4.16.16",
     "classnames": "^2.5.1",
+    "es-toolkit": "^1.29.0",
     "lucide-solid": "^0.462.0",
     "nanostores": "^0.11.3",
     "solid-js": "^1.9.3",
@@ -30,7 +30,7 @@
     "@raviqqe/biome-config": "^1.0.2",
     "@raviqqe/eslint-config": "^4.1.5",
     "@types/node": "^22.10.1",
-    "eslint": "^9.14.0",
+    "eslint": "^9.16.0",
     "eslint-plugin-solid": "^0.14.4",
     "typescript": "^5.7.2"
   }
