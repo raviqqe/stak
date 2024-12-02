@@ -35,6 +35,7 @@ EOF
   git add .
 }
 
+rustup default stable
 cargo install cargo-workspaces
 
 update_bytecode
