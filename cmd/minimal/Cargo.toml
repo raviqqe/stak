@@ -25,12 +25,10 @@ use_self = "deny"
 [profile.dev]
 lto = true
 opt-level = 3
-panic = "abort"
 
 [profile.release]
 codegen-units = 1
 lto = true
-panic = "abort"
 strip = true
 
 [profile.dev.build-override]
