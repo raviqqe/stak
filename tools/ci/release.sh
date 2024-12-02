@@ -51,6 +51,6 @@ git commit -m release
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo workspaces publish -y --from-git
+    cargo workspaces publish -y --from-git "$@"
   )
 done
