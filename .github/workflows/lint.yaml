@@ -52,6 +52,7 @@ jobs:
       - readme
       - rust_format
       - scheme_format
+      - gherkin_format
       - spell_check
       - unused_dependencies
     if: always()
