@@ -17,6 +17,7 @@ update_cargo_toml() {
 [profile.$profile]
 codegen-units = 1
 lto = true
+opt-level = 3
 panic = "abort"
 strip = true
 
