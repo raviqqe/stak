@@ -23,6 +23,11 @@ jobs:
       - uses: ./.github/actions/setup
       - run: cargo +nightly install schemat
       - run: schemat -cv $(git ls-files '**.scm')
+  gherkin_format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: go run github.com/raviqqe/gherkin-format@latest -check .
   spell_check:
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +52,7 @@ jobs:
       - readme
       - rust_format
       - scheme_format
+      - gherkin_format
       - spell_check
       - unused_dependencies
     if: always()

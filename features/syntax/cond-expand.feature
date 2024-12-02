@@ -49,7 +49,7 @@ Feature: cond-expand
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
 
-  @stak @chibi @gauche
+  @chibi @gauche @stak
   Scenario: Match a missing library
     Given a file named "main.scm" with:
       """scheme
