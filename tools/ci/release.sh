@@ -14,7 +14,8 @@ update_cargo_toml() {
   for main_file in $(git ls-files '*/src/main.rs'); do
     cargo_file=$(dirname $main_file)/../Cargo.toml
 
-    cat <<EOF >>$cargo_file
+    (
+      cat <<EOF
 [profile.release]
 codegen-units = 1
 lto = true
@@ -22,14 +23,15 @@ panic = "abort"
 strip = true
 EOF
 
-    for profile in dev release; do
-      cat <<EOF >>$cargo_file
+      for profile in dev release; do
+        cat <<EOF
 [profile.$profile.build-override]
 opt-level = 3
 debug-assertions = false
 overflow-checks = false
 EOF
-    done
+      done
+    ) >>$cargo_file
   done
 
   git add .
