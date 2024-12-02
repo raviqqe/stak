@@ -12,8 +12,6 @@ update_bytecode() {
 
 update_cargo_toml() {
   for main_file in $(git ls-files '*/src/main.rs'); do
-    cargo_file=$(dirname $main_file)/../Cargo.toml
-
     (
       cat <<EOF
 [profile.release]
@@ -31,7 +29,7 @@ debug-assertions = false
 overflow-checks = false
 EOF
       done
-    ) >>$cargo_file
+    ) >>$(dirname $main_file)/../Cargo.toml
   done
 
   git add .
