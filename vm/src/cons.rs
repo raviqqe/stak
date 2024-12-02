@@ -10,8 +10,8 @@ pub type Tag = u16;
 ///
 /// This value means:
 ///
-/// - in car, its cons is moved already on garbage collection.
-/// - in cdr, nothing.
+/// - In car, its cons is moved already on garbage collection.
+/// - In cdr, nothing.
 pub const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
