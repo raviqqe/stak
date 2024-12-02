@@ -17,7 +17,6 @@ update_cargo_toml() {
 [profile.release]
 codegen-units = 1
 lto = true
-panic = "abort"
 strip = true
 EOF
 
@@ -35,7 +34,6 @@ EOF
   git add .
 }
 
-rustup default stable
 cargo install cargo-workspaces
 
 update_bytecode
