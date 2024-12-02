@@ -12,24 +12,21 @@ update_bytecode() {
 
 update_cargo_toml() {
   for main_file in $(git ls-files '*/src/main.rs'); do
-    (
+    for profile in dev release; do
       cat <<EOF
-[profile.release]
+[profile.$profile]
 codegen-units = 1
 lto = true
+opt-level = 3
 panic = "abort"
 strip = true
-EOF
 
-      for profile in dev release; do
-        cat <<EOF
 [profile.$profile.build-override]
 opt-level = 3
 debug-assertions = false
 overflow-checks = false
 EOF
-      done
-    ) >>$(dirname $main_file)/../Cargo.toml
+    done >>$(dirname $main_file)/../Cargo.toml
   done
 
   git add .
