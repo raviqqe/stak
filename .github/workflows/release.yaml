@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: tools/ci/release.sh ${{ github.ref == 'refs/heads/main' && '' || '--dry-run' }}
+      - run: tools/ci/release.sh ${{ github.ref == 'refs/heads/main' && '--' || '--dry-run' }}
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
   wasm:
