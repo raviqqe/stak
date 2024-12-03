@@ -25,7 +25,7 @@ stak-time = { version = "0.1.15", path = "../time" }
 [dev-dependencies]
 stak-configuration = { path = "../configuration" }
 stak-macro = { path = "../macro" }
-wasm-bindgen-test = "0.3.45"
+wasm-bindgen-test = "0.3.47"
 
 [lints]
 workspace = true
