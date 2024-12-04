@@ -12,7 +12,7 @@ pub type Tag = u16;
 ///
 /// - in car, its cons is moved already on garbage collection.
 /// - in cdr, nothing.
-pub const NEVER: Cons = Cons::new(u64::MAX);
+pub const NEVER: Cons = Cons::new(0);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
