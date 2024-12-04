@@ -5,6 +5,8 @@ use core::fmt::{self, Display, Formatter};
 /// A tag.
 pub type Tag = u16;
 
+const DUMMY_INDEX: u64 = 0;
+
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
@@ -12,7 +14,7 @@ pub type Tag = u16;
 ///
 /// - In `car`, its cons is moved already on garbage collection.
 /// - In `cdr`, nothing.
-pub const NEVER: Cons = unsafe { Cons::new(0) }.set_tag(Tag::MAX);
+pub const NEVER: Cons = unsafe { Cons::new(DUMMY_INDEX) }.set_tag(Tag::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -60,7 +62,7 @@ impl Cons {
             if let Some(index) = nonbox::f64::u64::unbox_unsigned(self.0) {
                 index
             } else {
-                0 // A dummy value
+                DUMMY_INDEX
             }
         } else {
             self.0 >> 1
