@@ -395,11 +395,11 @@ impl Display for Memory<'_> {
                 self.cdr(cons)
             )?;
 
-            if index == self.code.index() {
+            if index == self.code.index() && !self.code.raw_eq(NEVER) {
                 write!(formatter, " <- code")?;
-            } else if index == self.stack.index() {
+            } else if index == self.stack.index() && !self.stack.raw_eq(NEVER) {
                 write!(formatter, " <- stack")?;
-            } else if index == self.register.index() {
+            } else if index == self.register.index() && !self.register.raw_eq(NEVER) {
                 write!(formatter, " <- register")?;
             }
 
