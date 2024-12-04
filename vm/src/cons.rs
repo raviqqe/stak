@@ -23,6 +23,11 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
+    ///
+    /// # Safety
+    ///
+    /// The given index must be valid in a heap passed to
+    /// [`Memory::new`](super::Memory::new).
     pub const unsafe fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
