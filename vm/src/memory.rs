@@ -11,10 +11,9 @@ const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
-        assert_heap_cons!(
-            $self,
+        assert_heap_cons!($self, unsafe {
             Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
-        );
+        });
     };
 }
 
@@ -188,7 +187,7 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = Cons::new(self.allocation_end() as u64);
+        let cons = unsafe { Cons::new(self.allocation_end() as u64) };
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_heap_cons!(self, cons);
@@ -360,9 +359,9 @@ impl<'a> Memory<'a> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == NEVER {
+        Ok(if cons.raw_eq(NEVER) {
             NEVER
-        } else if self.unchecked_car(cons) == NEVER.into() {
+        } else if self.unchecked_car(cons).raw_eq(NEVER.into()) {
             // Get a forward pointer.
             self.unchecked_cdr(cons).assume_cons()
         } else {
@@ -386,7 +385,7 @@ impl Display for Memory<'_> {
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
-            let cons = Cons::new(index as u64);
+            let cons = unsafe { Cons::new(index as u64) };
 
             write!(
                 formatter,
