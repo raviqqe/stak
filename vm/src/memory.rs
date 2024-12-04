@@ -188,7 +188,7 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = { Cons::new(self.allocation_end() as u64) };
+        let cons = Cons::new(self.allocation_end() as u64);
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_heap_cons!(self, cons);
