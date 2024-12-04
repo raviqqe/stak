@@ -52,7 +52,7 @@ impl Value {
         if self.is_number() {
             NEVER
         } else {
-            unsafe { Cons::from_raw(self.0) }
+            Cons::from_raw(self.0)
         }
     }
 
@@ -135,7 +135,7 @@ mod tests {
 
     #[test]
     fn convert_cons() {
-        let cons = unsafe { Cons::new(42) };
+        let cons = Cons::new(42);
 
         assert_eq!(Value::from(cons).to_cons().unwrap(), cons);
     }
@@ -144,7 +144,7 @@ mod tests {
     fn convert_tagged_cons() {
         const TAG: Tag = 0b111;
 
-        let cons = unsafe { Cons::new(42) }.set_tag(TAG);
+        let cons = Cons::new(42).set_tag(TAG);
         let converted = Value::from(cons).to_cons().unwrap();
 
         assert_eq!(converted, cons);
