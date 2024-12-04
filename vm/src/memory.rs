@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    cons::{Cons, Tag},
     number::Number,
     r#type::Type,
     value::Value,
@@ -11,16 +11,13 @@ const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
-        assert_heap_cons!(
-            $self,
-            Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
-        );
+        assert_heap_cons!($self, unsafe { Cons::new(round_by_cons($index) as u64) });
     };
 }
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if $cons != NEVER {
+        if $cons != $self.never() {
             debug_assert!($self.allocation_start() <= $cons.index());
             debug_assert!($cons.index() < $self.allocation_end());
         }
@@ -33,6 +30,10 @@ macro_rules! assert_heap_value {
             assert_heap_cons!($self, cons);
         }
     };
+}
+
+const fn round_by_cons(index: usize) -> usize {
+    index / CONS_FIELD_COUNT * CONS_FIELD_COUNT
 }
 
 /// A memory on a virtual machine.
@@ -50,10 +51,10 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            code: NEVER,
-            stack: NEVER,
-            r#false: NEVER,
-            register: NEVER,
+            code: unsafe { Cons::new(0) },
+            stack: unsafe { Cons::new(0) },
+            r#false: unsafe { Cons::new(0) },
+            register: unsafe { Cons::new(0) },
             allocation_index: 0,
             space: false,
             heap,
@@ -94,6 +95,17 @@ impl<'a> Memory<'a> {
     /// Sets a stack.
     pub fn set_stack(&mut self, value: Cons) {
         self.stack = value;
+    }
+
+    /// Returns a never value which is considered as a "null" pointer (but not
+    /// `null` in Scheme.)
+    ///
+    /// If this value is in `car`, it means that its cons is moved already on
+    /// garbage collection.
+    pub(crate) const fn never(&self) -> Cons {
+        // The last cons is never checked if they have "copied" marks on garbage
+        // collection.
+        unsafe { Cons::new(self.heap_size() as _) }
     }
 
     /// Returns a boolean value.
@@ -188,7 +200,7 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = Cons::new(self.allocation_end() as u64);
+        let cons = unsafe { Cons::new(self.allocation_end() as u64) };
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_heap_cons!(self, cons);
@@ -205,8 +217,12 @@ impl<'a> Memory<'a> {
         self.allocation_index >= self.space_size()
     }
 
+    const fn heap_size(&self) -> usize {
+        self.heap.len() - 2
+    }
+
     const fn space_size(&self) -> usize {
-        self.heap.len() / 2
+        self.heap_size() / 2
     }
 
     const fn allocation_start(&self) -> usize {
@@ -352,9 +368,9 @@ impl<'a> Memory<'a> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == NEVER {
-            NEVER
-        } else if self.unchecked_car(cons) == NEVER.into() {
+        Ok(if cons == self.never() {
+            self.never()
+        } else if self.unchecked_car(cons) == self.never().into() {
             // Get a forward pointer.
             self.unchecked_cdr(cons).assume_cons()
         } else {
@@ -362,7 +378,7 @@ impl<'a> Memory<'a> {
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, NEVER.into());
+            self.set_unchecked_car(cons, self.never().into());
             self.set_unchecked_cdr(cons, copy.into());
 
             copy
@@ -378,7 +394,7 @@ impl Display for Memory<'_> {
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
-            let cons = Cons::new(index as u64);
+            let cons = unsafe { Cons::new(index as u64) };
 
             write!(
                 formatter,
