@@ -76,13 +76,13 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self == &NEVER {
-            write!(formatter, "!")?;
-        } else {
-            write!(formatter, "c{:x}", self.index())?;
+        write!(formatter, "c{:x}", self.index())?;
+
+        if self.tag() > 0 {
+            write!(formatter, ":{}", self.tag())?;
         }
 
-        write!(formatter, ":{}", self.tag())
+        Ok(())
     }
 }
 
