@@ -57,7 +57,11 @@ impl Cons {
 
     const fn unbox(self) -> u64 {
         feature!(if ("float") {
-            nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
+            if let Some(index) = nonbox::f64::u64::unbox_unsigned(self.0) {
+                index
+            } else {
+                0 // A dummy value
+            }
         } else {
             self.0 >> 1
         })
