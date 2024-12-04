@@ -3,7 +3,7 @@ source: vm/src/memory.rs
 expression: memory
 snapshot_kind: text
 ---
-code: c7fffffffffff
-stack: c7fffffffffff
+code: !
+stack: !
 100: c102 c102
 102: n0 n0

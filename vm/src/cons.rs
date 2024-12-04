@@ -95,7 +95,7 @@ impl TryFrom<Value> for Cons {
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         if self.raw_eq(NEVER) {
-            return write!(formatter, "!")?;
+            return write!(formatter, "!");
         }
 
         write!(formatter, "c{:x}", self.index())?;

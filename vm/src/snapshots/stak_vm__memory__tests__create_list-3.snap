@@ -3,9 +3,9 @@ source: vm/src/memory.rs
 expression: memory
 snapshot_kind: text
 ---
-code: c7fffffffffff
-stack: c7fffffffffff
-00: n0 n0
+code: !
+stack: !
+00: n0 n0 <- code
 02: c0 c0
 04: n1 c0
 06: n2 c4
