@@ -5,15 +5,6 @@ use core::fmt::{self, Display, Formatter};
 /// A tag.
 pub type Tag = u16;
 
-/// An unreachable cons. In other words, it is a "null" pointer but not `null`
-/// in Scheme.
-///
-/// This value means:
-///
-/// - In car, its cons is moved already on garbage collection.
-/// - In cdr, nothing.
-pub const NEVER: Cons = Cons::new(u64::MAX);
-
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
 
@@ -23,7 +14,7 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
-    pub const fn new(index: u64) -> Self {
+    pub const unsafe fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
 
@@ -58,7 +49,7 @@ impl Cons {
         })
     }
 
-    pub(crate) const fn from_raw(raw: u64) -> Self {
+    pub(crate) const unsafe fn from_raw(raw: u64) -> Self {
         Self(raw)
     }
 
@@ -101,7 +92,7 @@ mod tests {
 
     #[test]
     fn tag() {
-        let cons = Cons::new(42);
+        let cons = unsafe { Cons::new(42) };
 
         assert_eq!(cons.index(), 42);
         assert_eq!(cons.tag(), 0);
@@ -119,12 +110,12 @@ mod tests {
 
     #[test]
     fn reset_tag() {
-        assert_eq!(Cons::new(42).set_tag(2).set_tag(1).tag(), 1);
+        assert_eq!(unsafe { Cons::new(42) }.set_tag(2).set_tag(1).tag(), 1);
     }
 
     #[test]
     fn set_too_large_tag() {
-        let cons = Cons::new(0).set_tag(Tag::MAX);
+        let cons = unsafe { Cons::new(0) }.set_tag(Tag::MAX);
 
         assert_eq!(cons.index(), 0);
         assert_eq!(cons.tag(), TAG_MASK as Tag);

@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
-    cons::{Cons, NEVER},
+    cons::Cons,
     instruction::Instruction,
     memory::Memory,
     number::Number,
@@ -367,7 +367,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.memory.null().set_tag(StackSlot::Frame as _).into(),
         )?;
         self.memory.set_stack(stack);
-        self.memory.set_register(NEVER);
+        self.memory.set_register(self.memory.never());
 
         profile_event!(self, "initialization_end");
 
