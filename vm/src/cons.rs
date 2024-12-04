@@ -58,7 +58,7 @@ impl Cons {
         })
     }
 
-    pub(crate) const fn raw_eq(self, cons: Cons) -> bool {
+    pub(crate) const fn raw_eq(self, cons: Self) -> bool {
         self.0 == cons.0
     }
 
