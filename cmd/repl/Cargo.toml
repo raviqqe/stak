@@ -1,7 +1,7 @@
 [package]
 name = "stak-repl"
 description = "Stak Scheme REPL"
-version = "0.2.9"
+version = "0.2.10"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -13,7 +13,7 @@ default = ["float"]
 float = ["stak-sac/float"]
 
 [dependencies]
-stak-sac = { version = "0.1.76", path = "../../sac", features = ["std"] }
+stak-sac = { version = "0.1.77", path = "../../sac", features = ["std"] }
 
 [lints]
 workspace = true
