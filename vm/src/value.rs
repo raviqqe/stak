@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    cons::{Cons, Tag},
     number::Number,
 };
 use cfg_exif::feature;
@@ -49,11 +49,7 @@ impl Value {
     pub fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
-        if self.is_number() {
-            NEVER
-        } else {
-            Cons::from_raw(self.0)
-        }
+        Cons::from_raw(self.0)
     }
 
     /// Converts a value to a number assuming its type.
@@ -131,7 +127,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Type;
+    use crate::{cons::NEVER, Type};
 
     #[test]
     fn convert_cons() {
