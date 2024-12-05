@@ -19,7 +19,7 @@ pub enum TypedValue {
 
 impl Value {
     /// Converts a value to a cons.
-    pub fn to_cons(self) -> Option<Cons> {
+    pub const fn to_cons(self) -> Option<Cons> {
         if let TypedValue::Cons(cons) = self.to_typed() {
             Some(cons)
         } else {
@@ -28,7 +28,7 @@ impl Value {
     }
 
     /// Converts a value to a number.
-    pub fn to_number(self) -> Option<Number> {
+    pub const fn to_number(self) -> Option<Number> {
         if let TypedValue::Number(number) = self.to_typed() {
             Some(number)
         } else {
@@ -37,7 +37,7 @@ impl Value {
     }
 
     /// Converts a value to a typed value.
-    pub fn to_typed(self) -> TypedValue {
+    pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
             TypedValue::Cons(self.assume_cons())
         } else {
@@ -46,14 +46,14 @@ impl Value {
     }
 
     /// Converts a value to a cons assuming its type.
-    pub fn assume_cons(self) -> Cons {
+    pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
         Cons::from_raw(self.0)
     }
 
     /// Converts a value to a number assuming its type.
-    pub fn assume_number(self) -> Number {
+    pub const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
         Number::from_raw(self.0)
@@ -74,17 +74,29 @@ impl Value {
     }
 
     /// Returns a tag.
-    pub fn tag(self) -> Tag {
-        self.to_cons().map_or(0, Cons::tag)
+    pub const fn tag(self) -> Tag {
+        if let Some(cons) = self.to_cons() {
+            cons.tag()
+        } else {
+            0
+        }
     }
 
     /// Sets a tag.
-    pub fn set_tag(self, tag: Tag) -> Self {
-        self.to_cons().map_or(self, |cons| cons.set_tag(tag).into())
+    pub const fn set_tag(self, tag: Tag) -> Self {
+        if let Some(cons) = self.to_cons() {
+            Self::from_cons(cons.set_tag(tag))
+        } else {
+            self
+        }
     }
 
     pub(crate) const fn raw_eq(self, value: Self) -> bool {
         self.0 == value.0
+    }
+
+    const fn from_cons(cons: Cons) -> Self {
+        Self(cons.to_raw())
     }
 }
 
