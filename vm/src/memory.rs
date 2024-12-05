@@ -20,7 +20,7 @@ macro_rules! assert_heap_access {
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if $cons != NEVER {
+        if $cons.raw_eq(NEVER) {
             debug_assert!($self.allocation_start() <= $cons.index());
             debug_assert!($cons.index() < $self.allocation_end());
         }
@@ -352,9 +352,9 @@ impl<'a> Memory<'a> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == NEVER {
+        Ok(if cons.raw_eq(NEVER) {
             NEVER
-        } else if self.unchecked_car(cons) == NEVER.into() {
+        } else if self.unchecked_car(cons).raw_eq(NEVER.into()) {
             // Get a forward pointer.
             self.unchecked_cdr(cons).assume_cons()
         } else {
@@ -388,12 +388,14 @@ impl Display for Memory<'_> {
                 self.cdr(cons)
             )?;
 
-            if index == self.code.index() {
-                write!(formatter, " <- code")?;
-            } else if index == self.stack.index() {
-                write!(formatter, " <- stack")?;
-            } else if index == self.register.index() {
-                write!(formatter, " <- register")?;
+            for (cons, name) in [
+                (self.code, "code"),
+                (self.register, "register"),
+                (self.stack, "stack"),
+            ] {
+                if index == cons.index() && !cons.raw_eq(NEVER) {
+                    write!(formatter, " <- {name}")?;
+                }
             }
 
             writeln!(formatter)?;

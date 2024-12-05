@@ -82,6 +82,10 @@ impl Value {
     pub fn set_tag(self, tag: Tag) -> Self {
         self.to_cons().map_or(self, |cons| cons.set_tag(tag).into())
     }
+
+    pub(crate) const fn raw_eq(self, value: Self) -> bool {
+        self.0 == value.0
+    }
 }
 
 impl Default for Value {
