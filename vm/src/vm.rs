@@ -295,7 +295,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     // (code . environment)
-    fn procedure(&self) -> Cons {
+    const fn procedure(&self) -> Cons {
         self.memory.car(self.operand_cons()).assume_cons()
     }
 
