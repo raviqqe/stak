@@ -103,7 +103,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a boolean value.
-    pub fn boolean(&self, value: bool) -> Cons {
+    pub const fn boolean(&self, value: bool) -> Cons {
         if value {
             self.cdr(self.r#false).assume_cons()
         } else {
@@ -112,7 +112,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a null value.
-    pub fn null(&self) -> Cons {
+    pub const fn null(&self) -> Cons {
         self.car(self.r#false).assume_cons()
     }
 
@@ -263,13 +263,13 @@ impl<'a> Memory<'a> {
 
     /// Returns a value of a `car` field in a value assumed as a cons.
     #[inline]
-    pub fn car_value(&self, cons: Value) -> Value {
+    pub const fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
     #[inline]
-    pub fn cdr_value(&self, cons: Value) -> Value {
+    pub const fn cdr_value(&self, cons: Value) -> Value {
         self.cdr(cons.assume_cons())
     }
 
@@ -332,7 +332,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a tail of a list.
-    pub fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
+    pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
         while index > 0 {
             list = self.cdr(list).assume_cons();
             index -= 1;
