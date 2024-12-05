@@ -279,15 +279,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.set_code(code);
     }
 
-    fn operand(&self) -> Value {
+    const fn operand(&self) -> Value {
         self.memory.car(self.memory.code())
     }
 
-    fn operand_cons(&self) -> Cons {
+    const fn operand_cons(&self) -> Cons {
         self.resolve_variable(self.operand())
     }
 
-    fn resolve_variable(&self, operand: Value) -> Cons {
+    const fn resolve_variable(&self, operand: Value) -> Cons {
         match operand.to_typed() {
             TypedValue::Cons(cons) => cons,
             TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
@@ -295,21 +295,21 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     // (code . environment)
-    fn procedure(&self) -> Cons {
+    const fn procedure(&self) -> Cons {
         self.memory.car(self.operand_cons()).assume_cons()
     }
 
     // (parameter-count . instruction-list) | primitive-id
-    fn code(&self, procedure: Cons) -> Value {
+    const fn code(&self, procedure: Cons) -> Value {
         self.memory.car(procedure)
     }
 
-    fn environment(&self, procedure: Cons) -> Cons {
+    const fn environment(&self, procedure: Cons) -> Cons {
         self.memory.cdr(procedure).assume_cons()
     }
 
     // (code . stack)
-    fn continuation(&self) -> Cons {
+    const fn continuation(&self) -> Cons {
         let mut stack = self.memory.stack();
 
         while self.memory.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
