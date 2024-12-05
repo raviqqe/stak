@@ -241,11 +241,11 @@ impl<'a> Memory<'a> {
         self.get(cons.index() + 1)
     }
 
-    fn unchecked_car(&self, cons: Cons) -> Value {
+    const fn unchecked_car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
-    fn unchecked_cdr(&self, cons: Cons) -> Value {
+    const fn unchecked_cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 
