@@ -241,13 +241,13 @@ impl<'a> Memory<'a> {
 
     /// Returns a value of a `car` field in a cons.
     #[inline]
-    pub fn car(&self, cons: Cons) -> Value {
+    pub const fn car(&self, cons: Cons) -> Value {
         self.get(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
     #[inline]
-    pub fn cdr(&self, cons: Cons) -> Value {
+    pub const fn cdr(&self, cons: Cons) -> Value {
         self.get(cons.index() + 1)
     }
 
