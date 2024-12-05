@@ -11,10 +11,9 @@ const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
-        assert_heap_cons!(
-            $self,
+        assert_heap_cons!($self, unsafe {
             Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
-        );
+        });
     };
 }
 
@@ -188,7 +187,7 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = Cons::new(self.allocation_end() as u64);
+        let cons = unsafe { Cons::new(self.allocation_end() as u64) };
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_heap_cons!(self, cons);
@@ -221,14 +220,22 @@ impl<'a> Memory<'a> {
         self.allocation_start() + self.allocation_index
     }
 
+    fn at(&self, index: usize) -> Value {
+        unsafe { *self.heap.as_ptr().add(index) }
+    }
+
+    fn at_mut(&mut self, index: usize) -> &mut Value {
+        unsafe { &mut *self.heap.as_mut_ptr().add(index) }
+    }
+
     fn get(&self, index: usize) -> Value {
         assert_heap_access!(self, index);
-        self.heap[index]
+        self.at(index)
     }
 
     fn set(&mut self, index: usize, value: Value) {
         assert_heap_access!(self, index);
-        self.heap[index] = value
+        *self.at_mut(index) = value
     }
 
     /// Returns a value of a `car` field in a cons.
@@ -242,11 +249,11 @@ impl<'a> Memory<'a> {
     }
 
     fn unchecked_car(&self, cons: Cons) -> Value {
-        self.heap[cons.index()]
+        self.at(cons.index())
     }
 
     fn unchecked_cdr(&self, cons: Cons) -> Value {
-        self.heap[cons.index() + 1]
+        self.at(cons.index() + 1)
     }
 
     /// Returns a value of a `car` field in a value assumed as a cons.
@@ -290,11 +297,11 @@ impl<'a> Memory<'a> {
     }
 
     fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index()] = value
+        *self.at_mut(cons.index()) = value
     }
 
     fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index() + 1] = value;
+        *self.at_mut(cons.index() + 1) = value;
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
@@ -378,7 +385,7 @@ impl Display for Memory<'_> {
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
-            let cons = Cons::new(index as u64);
+            let cons = unsafe { Cons::new(index as u64) };
 
             write!(
                 formatter,

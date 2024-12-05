@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, Tag},
+    cons::{Cons, Tag, NEVER},
     number::Number,
 };
 use cfg_exif::feature;
@@ -49,7 +49,11 @@ impl Value {
     pub fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
-        Cons::from_raw(self.0)
+        if self.is_number() {
+            NEVER
+        } else {
+            unsafe { Cons::from_raw(self.0) }
+        }
     }
 
     /// Converts a value to a number assuming its type.
@@ -127,11 +131,11 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cons::NEVER, Type};
+    use crate::Type;
 
     #[test]
     fn convert_cons() {
-        let cons = Cons::new(42);
+        let cons = unsafe { Cons::new(42) };
 
         assert_eq!(Value::from(cons).to_cons().unwrap(), cons);
     }
@@ -140,7 +144,7 @@ mod tests {
     fn convert_tagged_cons() {
         const TAG: Tag = 0b111;
 
-        let cons = Cons::new(42).set_tag(TAG);
+        let cons = unsafe { Cons::new(42) }.set_tag(TAG);
         let converted = Value::from(cons).to_cons().unwrap();
 
         assert_eq!(converted, cons);
