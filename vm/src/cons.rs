@@ -98,6 +98,7 @@ impl Eq for Cons {}
 impl TryFrom<Value> for Cons {
     type Error = Error;
 
+    #[inline]
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         value.to_cons().ok_or(Error::ConsExpected)
     }
