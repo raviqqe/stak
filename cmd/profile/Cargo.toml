@@ -13,7 +13,7 @@ default = ["float"]
 float = ["stak-vm/float"]
 
 [dependencies]
-clap = { version = "4.5.22", features = ["derive"] }
+clap = { version = "4.5.23", features = ["derive"] }
 main_error = "0.1.2"
 stak-configuration = { version = "0.1.71", path = "../../configuration" }
 stak-device = { version = "0.2.75", path = "../../device", features = ["std"] }
