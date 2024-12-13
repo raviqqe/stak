@@ -19,7 +19,8 @@ pub enum TypedValue {
 
 impl Value {
     /// Converts a value to a cons.
-    pub fn to_cons(self) -> Option<Cons> {
+    #[inline]
+    pub const fn to_cons(self) -> Option<Cons> {
         if let TypedValue::Cons(cons) = self.to_typed() {
             Some(cons)
         } else {
@@ -28,7 +29,8 @@ impl Value {
     }
 
     /// Converts a value to a number.
-    pub fn to_number(self) -> Option<Number> {
+    #[inline]
+    pub const fn to_number(self) -> Option<Number> {
         if let TypedValue::Number(number) = self.to_typed() {
             Some(number)
         } else {
@@ -37,7 +39,8 @@ impl Value {
     }
 
     /// Converts a value to a typed value.
-    pub fn to_typed(self) -> TypedValue {
+    #[inline]
+    pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
             TypedValue::Cons(self.assume_cons())
         } else {
@@ -46,7 +49,8 @@ impl Value {
     }
 
     /// Converts a value to a cons assuming its type.
-    pub fn assume_cons(self) -> Cons {
+    #[inline]
+    pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
         if self.is_number() {
@@ -57,13 +61,15 @@ impl Value {
     }
 
     /// Converts a value to a number assuming its type.
-    pub fn assume_number(self) -> Number {
+    #[inline]
+    pub const fn assume_number(self) -> Number {
         debug_assert!(self.is_number());
 
         Number::from_raw(self.0)
     }
 
     /// Checks if it is a cons.
+    #[inline]
     pub const fn is_cons(&self) -> bool {
         feature!(if ("float") {
             nonbox::f64::u64::unbox_unsigned(self.0).is_some()
@@ -73,32 +79,50 @@ impl Value {
     }
 
     /// Checks if it is a number.
+    #[inline]
     pub const fn is_number(&self) -> bool {
         !self.is_cons()
     }
 
     /// Returns a tag.
-    pub fn tag(self) -> Tag {
-        self.to_cons().map_or(0, Cons::tag)
+    #[inline]
+    pub const fn tag(self) -> Tag {
+        if let Some(cons) = self.to_cons() {
+            cons.tag()
+        } else {
+            0
+        }
     }
 
     /// Sets a tag.
-    pub fn set_tag(self, tag: Tag) -> Self {
-        self.to_cons().map_or(self, |cons| cons.set_tag(tag).into())
+    #[inline]
+    pub const fn set_tag(self, tag: Tag) -> Self {
+        if let Some(cons) = self.to_cons() {
+            Self::from_cons(cons.set_tag(tag))
+        } else {
+            self
+        }
     }
 
+    #[inline]
     pub(crate) const fn raw_eq(self, value: Self) -> bool {
         self.0 == value.0
+    }
+
+    const fn from_cons(cons: Cons) -> Self {
+        Self(cons.to_raw())
     }
 }
 
 impl Default for Value {
+    #[inline]
     fn default() -> Self {
         Number::default().into()
     }
 }
 
 impl PartialEq for Value {
+    #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.is_cons() && self.to_cons() == other.to_cons()
             || self.is_number() && self.to_number() == other.to_number()
@@ -108,12 +132,14 @@ impl PartialEq for Value {
 impl Eq for Value {}
 
 impl From<Cons> for Value {
+    #[inline]
     fn from(cons: Cons) -> Self {
         Self(cons.to_raw())
     }
 }
 
 impl From<Number> for Value {
+    #[inline]
     fn from(number: Number) -> Self {
         Self(number.to_raw())
     }
