@@ -1,3 +1,4 @@
+#![expect(missing_docs)]
 #![no_std]
 
 use stak_minifier_macro::{include_minified, minify};

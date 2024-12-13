@@ -3,8 +3,8 @@ import { join, parse } from "node:path";
 import sitemap from "@astrojs/sitemap";
 import solid from "@astrojs/solid-js";
 import starlight from "@astrojs/starlight";
-import { capitalize, sortBy } from "@raviqqe/loscore";
 import { defineConfig } from "astro/config";
+import { capitalize, sortBy } from "es-toolkit";
 import wasm from "vite-plugin-wasm";
 
 type Item = { label: string; link: string } | { label: string; items: Item[] };
@@ -37,7 +37,7 @@ const listItems = async (directory: string): Promise<Item[]> =>
               };
         }),
     ),
-    ({ label, link }) => [!link, label],
+    [({ label, link }) => [!link, label]],
   );
 
 export default defineConfig({

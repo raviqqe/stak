@@ -2,7 +2,7 @@
 use crate::profiler::Profiler;
 use crate::{
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
-    cons::{never, Cons},
+    cons::{Cons, NEVER},
     instruction::Instruction,
     memory::Memory,
     number::Number,
@@ -279,37 +279,37 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.set_code(code);
     }
 
-    fn operand(&self) -> Value {
+    const fn operand(&self) -> Value {
         self.memory.car(self.memory.code())
     }
 
-    fn operand_cons(&self) -> Cons {
+    const fn operand_cons(&self) -> Cons {
         self.resolve_variable(self.operand())
     }
 
-    fn resolve_variable(&self, operand: Value) -> Cons {
+    const fn resolve_variable(&self, operand: Value) -> Cons {
         match operand.to_typed() {
             TypedValue::Cons(cons) => cons,
-            TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index),
+            TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
         }
     }
 
     // (code . environment)
-    fn procedure(&self) -> Cons {
+    const fn procedure(&self) -> Cons {
         self.memory.car(self.operand_cons()).assume_cons()
     }
 
     // (parameter-count . instruction-list) | primitive-id
-    fn code(&self, procedure: Cons) -> Value {
+    const fn code(&self, procedure: Cons) -> Value {
         self.memory.car(procedure)
     }
 
-    fn environment(&self, procedure: Cons) -> Cons {
+    const fn environment(&self, procedure: Cons) -> Cons {
         self.memory.cdr(procedure).assume_cons()
     }
 
     // (code . stack)
-    fn continuation(&self) -> Cons {
+    const fn continuation(&self) -> Cons {
         let mut stack = self.memory.stack();
 
         while self.memory.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
@@ -367,7 +367,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.memory.null().set_tag(StackSlot::Frame as _).into(),
         )?;
         self.memory.set_stack(stack);
-        self.memory.set_register(never());
+        self.memory.set_register(NEVER);
 
         profile_event!(self, "initialization_end");
 
@@ -377,17 +377,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
-                self.memory.push(
-                    Self::decode_number(Self::decode_integer_tail(input, head >> 1, NUMBER_BASE)?)
-                        .into(),
-                )?;
-            } else if head & 0b10 == 0 {
                 let cdr = self.memory.pop();
-                let car = self.memory.pop();
-                let r#type = Self::decode_integer_tail(input, head >> 2, TAG_BASE)?;
-                let cons = self.memory.allocate(car, cdr.set_tag(r#type as _))?;
+                let cons = self
+                    .memory
+                    .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
                 self.memory.push(cons.into())?;
-            } else {
+            } else if head & 0b10 == 0 {
                 let head = head >> 2;
 
                 if head == 0 {
@@ -399,9 +394,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self
-                            .memory
-                            .tail(self.memory.code(), Number::from_i64((index - 1) as _));
+                        let cons = self.memory.tail(self.memory.code(), index as usize - 1);
                         let head = self.memory.cdr(cons).assume_cons();
                         let tail = self.memory.cdr(head);
                         self.memory.set_cdr(head, self.memory.code().into());
@@ -418,6 +411,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                     self.memory.push(value)?;
                 }
+            } else if head & 0b100 == 0 {
+                let cdr = self.memory.pop();
+                let car = self.memory.pop();
+                let r#type = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
+                let cons = self.memory.allocate(car, cdr.set_tag(r#type as _))?;
+                self.memory.push(cons.into())?;
+            } else {
+                self.memory.push(
+                    Self::decode_number(Self::decode_integer_tail(input, head >> 3, NUMBER_BASE)?)
+                        .into(),
+                )?;
             }
         }
 
@@ -459,7 +463,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 }
 
-impl<'a, T: PrimitiveSet> Display for Vm<'a, T> {
+impl<T: PrimitiveSet> Display for Vm<'_, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
     }

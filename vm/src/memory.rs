@@ -1,5 +1,5 @@
 use crate::{
-    cons::{never, Cons, Tag},
+    cons::{Cons, Tag, NEVER},
     number::Number,
     r#type::Type,
     value::Value,
@@ -20,7 +20,7 @@ macro_rules! assert_heap_access {
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if $cons != never() {
+        if $cons.raw_eq(NEVER) {
             debug_assert!($self.allocation_start() <= $cons.index());
             debug_assert!($cons.index() < $self.allocation_end());
         }
@@ -50,10 +50,10 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            code: never(),
-            stack: never(),
-            r#false: never(),
-            register: never(),
+            code: NEVER,
+            stack: NEVER,
+            r#false: NEVER,
+            register: NEVER,
             allocation_index: 0,
             space: false,
             heap,
@@ -97,7 +97,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a boolean value.
-    pub fn boolean(&self, value: bool) -> Cons {
+    pub const fn boolean(&self, value: bool) -> Cons {
         if value {
             self.cdr(self.r#false).assume_cons()
         } else {
@@ -106,7 +106,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a null value.
-    pub fn null(&self) -> Cons {
+    pub const fn null(&self) -> Cons {
         self.car(self.r#false).assume_cons()
     }
 
@@ -221,7 +221,7 @@ impl<'a> Memory<'a> {
         self.allocation_start() + self.allocation_index
     }
 
-    fn get(&self, index: usize) -> Value {
+    const fn get(&self, index: usize) -> Value {
         assert_heap_access!(self, index);
         self.heap[index]
     }
@@ -232,30 +232,30 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a value of a `car` field in a cons.
-    pub fn car(&self, cons: Cons) -> Value {
+    pub const fn car(&self, cons: Cons) -> Value {
         self.get(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
-    pub fn cdr(&self, cons: Cons) -> Value {
+    pub const fn cdr(&self, cons: Cons) -> Value {
         self.get(cons.index() + 1)
     }
 
-    fn unchecked_car(&self, cons: Cons) -> Value {
+    const fn unchecked_car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
-    fn unchecked_cdr(&self, cons: Cons) -> Value {
+    const fn unchecked_cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 
     /// Returns a value of a `car` field in a value assumed as a cons.
-    pub fn car_value(&self, cons: Value) -> Value {
+    pub const fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
-    pub fn cdr_value(&self, cons: Value) -> Value {
+    pub const fn cdr_value(&self, cons: Value) -> Value {
         self.cdr(cons.assume_cons())
     }
 
@@ -308,10 +308,10 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a tail of a list.
-    pub fn tail(&self, mut list: Cons, mut index: Number) -> Cons {
-        while index != Number::default() {
+    pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
+        while index > 0 {
             list = self.cdr(list).assume_cons();
-            index = index - Number::from_i64(1);
+            index -= 1;
         }
 
         list
@@ -352,9 +352,9 @@ impl<'a> Memory<'a> {
     }
 
     fn copy_cons(&mut self, cons: Cons) -> Result<Cons, Error> {
-        Ok(if cons == never() {
-            never()
-        } else if self.unchecked_car(cons) == never().into() {
+        Ok(if cons.raw_eq(NEVER) {
+            NEVER
+        } else if self.unchecked_car(cons).raw_eq(NEVER.into()) {
             // Get a forward pointer.
             self.unchecked_cdr(cons).assume_cons()
         } else {
@@ -362,7 +362,7 @@ impl<'a> Memory<'a> {
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;
 
             // Set a forward pointer.
-            self.set_unchecked_car(cons, never().into());
+            self.set_unchecked_car(cons, NEVER.into());
             self.set_unchecked_cdr(cons, copy.into());
 
             copy
@@ -371,7 +371,7 @@ impl<'a> Memory<'a> {
     }
 }
 
-impl<'a> Display for Memory<'a> {
+impl Display for Memory<'_> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
         writeln!(formatter, "stack: {}", self.stack)?;
@@ -388,12 +388,14 @@ impl<'a> Display for Memory<'a> {
                 self.cdr(cons)
             )?;
 
-            if index == self.code.index() {
-                write!(formatter, " <- code")?;
-            } else if index == self.stack.index() {
-                write!(formatter, " <- stack")?;
-            } else if index == self.register.index() {
-                write!(formatter, " <- register")?;
+            for (cons, name) in [
+                (self.code, "code"),
+                (self.register, "register"),
+                (self.stack, "stack"),
+            ] {
+                if index == cons.index() && !cons.raw_eq(NEVER) {
+                    write!(formatter, " <- {name}")?;
+                }
             }
 
             writeln!(formatter)?;

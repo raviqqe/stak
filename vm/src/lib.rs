@@ -39,7 +39,6 @@
 //! ```
 
 #![no_std]
-#![allow(clippy::missing_const_for_fn)]
 
 #[cfg(test)]
 extern crate alloc;

@@ -22,6 +22,11 @@ updates:
       interval: daily
   - package-ecosystem: npm
     directory: /doc
+    groups:
+      astro:
+        patterns:
+          - astro
+          - "@astrojs/*"
     schedule:
       interval: daily
       time: "02:00"

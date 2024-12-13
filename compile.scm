@@ -344,9 +344,9 @@
               (set-cdr! pair (cons (cons name renamed) names))
               renamed)))))))
 
-(define (expand-import-set context importer-id importer-symbols qualify set)
+(define (expand-import-set context importer-id qualify set)
   (define (expand qualify)
-    (expand-import-set context importer-id importer-symbols qualify (cadr set)))
+    (expand-import-set context importer-id qualify (cadr set)))
 
   (case (predicate set)
     ((except)
@@ -381,15 +381,6 @@
               (else
                 name))))))
 
-    ((shake)
-      (expand
-        (lambda (name)
-          (if (or
-               (not importer-symbols)
-               (memq name (force importer-symbols)))
-            (qualify name)
-            #f))))
-
     (else
       (let ((library (library-context-find context set)))
         (append
@@ -416,7 +407,17 @@
 
 (define (expand-import-sets context importer-id importer-symbols sets)
   (flat-map
-    (lambda (set) (expand-import-set context importer-id importer-symbols (lambda (x) x) set))
+    (lambda (set)
+      (expand-import-set
+        context
+        importer-id
+        (lambda (name)
+          (and
+            (or
+              (not importer-symbols)
+              (memq name (force importer-symbols)))
+            name))
+        set))
     sets))
 
 (define (expand-library-expression context body-symbols expression)
@@ -1111,12 +1112,15 @@
   (compile-expression
     (make-compilation-context
       '()
-      (unique
-        (append
-          (map car primitives)
-          (find-symbols expression)
-          (find-quoted-symbols libraries)
-          (find-quoted-symbols macros)))
+      (filter
+        (lambda (symbol)
+          (not (library-symbol? symbol)))
+        (unique
+          (append
+            (map car primitives)
+            (find-symbols expression)
+            (find-quoted-symbols libraries)
+            (find-quoted-symbols macros))))
       libraries
       macros)
     expression
@@ -1272,8 +1276,8 @@
 ;; Codes
 
 (define integer-base 128)
-(define number-base 64)
-(define tag-base 32)
+(define number-base 16)
+(define tag-base 16)
 (define share-base 31)
 
 (define (shared-value? value)
@@ -1406,6 +1410,15 @@
       (let* ((value (strip-nop-instructions value))
              (entry (encode-context-find-count context value)))
         (cond
+          ((and
+              (not entry)
+              (zero? (rib-tag value))
+              (number? (rib-car value))
+              (integer? (rib-car value))
+              (<= 0 (rib-car value) 127))
+            (encode-rib context (rib-cdr value))
+            (write-u8 (* 2 (rib-car value))))
+
           ((and entry (encode-context-position context value)) =>
             (lambda (index)
               (decrement-count! entry)
@@ -1417,7 +1430,7 @@
                                (encode-integer-parts
                                  (+ (* 2 index) (if removed 0 1))
                                  share-base)))
-                  (write-u8 (+ 3 (* 4 (+ 1 head))))
+                  (write-u8 (+ 1 (* 4 (+ 1 head))))
                   (encode-integer-tail tail)))))
 
           (else
@@ -1426,17 +1439,17 @@
               (encode-rib context (rib-cdr value))
 
               (let-values (((head tail) (encode-integer-parts tag tag-base)))
-                (write-u8 (+ 1 (* 4 head)))
+                (write-u8 (+ 3 (* 8 head)))
                 (encode-integer-tail tail))
 
               (when entry
                 (encode-context-push! context value)
                 (decrement-count! entry)
-                (write-u8 3)))))))
+                (write-u8 1)))))))
 
     (else
       (let-values (((head tail) (encode-integer-parts (encode-number value) number-base)))
-        (write-u8 (* 2 head))
+        (write-u8 (+ 7 (* 8 head)))
         (encode-integer-tail tail)))))
 
 ;; Primitives

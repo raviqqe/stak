@@ -5,16 +5,16 @@ use core::fmt::{self, Display, Formatter};
 /// A tag.
 pub type Tag = u16;
 
+const DUMMY_INDEX: u64 = 0;
+
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
 /// This value means:
 ///
-/// - in car, its cons is moved already on garbage collection.
-/// - in cdr, nothing.
-pub fn never() -> Cons {
-    Cons::new(u64::MAX)
-}
+/// - In `car`, its cons is moved already on garbage collection.
+/// - In `cdr`, nothing.
+pub const NEVER: Cons = Cons::new(DUMMY_INDEX).set_tag(Tag::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -25,26 +25,26 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
-    pub fn new(index: u64) -> Self {
+    pub const fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
 
     /// Returns a memory address on heap.
-    pub fn index(self) -> usize {
+    pub const fn index(self) -> usize {
         (self.unbox() >> TAG_SIZE) as _
     }
 
     /// Returns a tag.
-    pub fn tag(self) -> Tag {
+    pub const fn tag(self) -> Tag {
         (self.unbox() & TAG_MASK) as _
     }
 
     /// Sets a tag.
-    pub fn set_tag(self, tag: Tag) -> Self {
+    pub const fn set_tag(self, tag: Tag) -> Self {
         Self::r#box(self.unbox() & !TAG_MASK | (tag as u64 & TAG_MASK))
     }
 
-    fn r#box(value: u64) -> Self {
+    const fn r#box(value: u64) -> Self {
         Self(feature!(if ("float") {
             nonbox::f64::u64::box_unsigned(value)
         } else {
@@ -52,12 +52,20 @@ impl Cons {
         }))
     }
 
-    fn unbox(self) -> u64 {
+    const fn unbox(self) -> u64 {
         feature!(if ("float") {
-            nonbox::f64::u64::unbox_unsigned(self.0).unwrap()
+            if let Some(index) = nonbox::f64::u64::unbox_unsigned(self.0) {
+                index
+            } else {
+                DUMMY_INDEX
+            }
         } else {
             self.0 >> 1
         })
+    }
+
+    pub(crate) const fn raw_eq(self, cons: Self) -> bool {
+        self.0 == cons.0
     }
 
     pub(crate) const fn from_raw(raw: u64) -> Self {
@@ -87,13 +95,17 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self == &never() {
-            write!(formatter, "!")?;
-        } else {
-            write!(formatter, "c{:x}", self.index())?;
+        if self.raw_eq(NEVER) {
+            return write!(formatter, "!");
         }
 
-        write!(formatter, ":{}", self.tag())
+        write!(formatter, "c{:x}", self.index())?;
+
+        if self.tag() > 0 {
+            write!(formatter, ":{}", self.tag())?;
+        }
+
+        Ok(())
     }
 }
 

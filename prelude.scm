@@ -1573,7 +1573,7 @@
 
     write-value)
 
-  (import (shake (stak base)))
+  (import (stak base))
 
   (begin
     (define $halt (primitive 19))
@@ -1962,7 +1962,7 @@
     cdddar
     cddddr)
 
-  (import (shake (scheme base)))
+  (import (scheme base))
 
   (begin
     (define (caaar x) (car (caar x)))
@@ -1993,7 +1993,7 @@
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
-  (import (shake (scheme base)))
+  (import (scheme base))
 
   (begin
     (define special-chars
@@ -2013,7 +2013,7 @@
 (define-library (scheme read)
   (export read)
 
-  (import (shake (scheme base)) (scheme char) (only (stak base) boolean-or))
+  (import (scheme base) (scheme char) (only (stak base) boolean-or))
 
   (begin
     (define (read . rest)
@@ -2176,7 +2176,7 @@
 (define-library (scheme write)
   (export display write)
 
-  (import (shake (scheme base)) (shake (scheme char)))
+  (import (scheme base) (scheme char))
 
   (begin
     (define (get-output-port rest)
@@ -2332,7 +2332,7 @@
 (define-library (scheme lazy)
   (export delay delay-force force promise? make-promise)
 
-  (import (shake (scheme base)))
+  (import (scheme base))
 
   (begin
     (define-syntax delay
@@ -2372,7 +2372,7 @@
     get-environment-variables)
 
   (import
-    (shake (scheme base))
+    (scheme base)
     (scheme lazy)
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
@@ -2421,7 +2421,7 @@
     with-output-to-file)
 
   (import
-    (shake (scheme base))
+    (scheme base)
     (only (stak base) primitive string->code-points))
 
   (begin
@@ -2477,7 +2477,7 @@
     current-second
     jiffies-per-second)
 
-  (import (shake (stak base)))
+  (import (stak base))
 
   (begin
     (define current-jiffy (primitive 400))
@@ -2500,8 +2500,8 @@
   (export environment eval)
 
   (import
-    (shake (scheme base))
-    (shake (scheme cxr))
+    (scheme base)
+    (scheme cxr)
     (scheme repl)
     (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
 
