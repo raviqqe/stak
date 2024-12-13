@@ -67,31 +67,37 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a code.
+    #[inline]
     pub const fn code(&self) -> Cons {
         self.code
     }
 
     /// Sets a code.
+    #[inline]
     pub fn set_code(&mut self, value: Cons) {
         self.code = value;
     }
 
     /// Returns a register.
+    #[inline]
     pub const fn register(&self) -> Cons {
         self.register
     }
 
     /// Sets a register.
+    #[inline]
     pub fn set_register(&mut self, value: Cons) {
         self.register = value;
     }
 
     /// Returns a stack.
+    #[inline]
     pub const fn stack(&self) -> Cons {
         self.stack
     }
 
     /// Sets a stack.
+    #[inline]
     pub fn set_stack(&mut self, value: Cons) {
         self.stack = value;
     }
@@ -221,56 +227,68 @@ impl<'a> Memory<'a> {
         self.allocation_start() + self.allocation_index
     }
 
+    #[inline]
     const fn get(&self, index: usize) -> Value {
         assert_heap_access!(self, index);
         self.heap[index]
     }
 
+    #[inline]
     fn set(&mut self, index: usize, value: Value) {
         assert_heap_access!(self, index);
         self.heap[index] = value
     }
 
     /// Returns a value of a `car` field in a cons.
+    #[inline]
     pub const fn car(&self, cons: Cons) -> Value {
         self.get(cons.index())
     }
 
     /// Returns a value of a `cdr` field in a cons.
+    #[inline]
     pub const fn cdr(&self, cons: Cons) -> Value {
         self.get(cons.index() + 1)
     }
 
-    const fn unchecked_car(&self, cons: Cons) -> Value {
+    #[inline]
+    fn unchecked_car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
-    const fn unchecked_cdr(&self, cons: Cons) -> Value {
+    #[inline]
+    fn unchecked_cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 
     /// Returns a value of a `car` field in a value assumed as a cons.
+    #[inline]
     pub const fn car_value(&self, cons: Value) -> Value {
         self.car(cons.assume_cons())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
+    #[inline]
     pub const fn cdr_value(&self, cons: Value) -> Value {
         self.cdr(cons.assume_cons())
     }
 
+    #[inline]
     fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
         self.set(cons.index() + index, value);
     }
 
+    #[inline]
     fn set_raw_car(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 0, value)
     }
 
+    #[inline]
     fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 1, value)
     }
 
+    #[inline]
     fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
         self.set_raw_field(
             cons,
@@ -280,29 +298,35 @@ impl<'a> Memory<'a> {
     }
 
     /// Sets a value to a `car` field in a cons.
+    #[inline]
     pub fn set_car(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
+    #[inline]
     pub fn set_cdr(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 1, value)
     }
 
+    #[inline]
     fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
         self.heap[cons.index()] = value
     }
 
+    #[inline]
     fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
         self.heap[cons.index() + 1] = value;
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
+    #[inline]
     pub fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
+    #[inline]
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
