@@ -453,14 +453,14 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.3.10"
+version = "0.3.11"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-build"
-version = "0.1.34"
+version = "0.1.35"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -469,14 +469,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.79"
+version = "0.1.80"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -490,18 +490,18 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.71"
+version = "0.1.72"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.79"
+version = "0.1.80"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.2.75"
+version = "0.2.76"
 dependencies = [
  "libc",
  "stak-vm",
@@ -509,7 +509,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.4.33"
+version = "0.4.34"
 dependencies = [
  "heapless",
  "libc",
@@ -519,7 +519,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "clap",
  "main_error",
@@ -534,7 +534,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.76"
+version = "0.1.77"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -551,7 +551,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.52"
+version = "0.1.53"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -560,7 +560,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.1.53"
+version = "0.1.54"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
@@ -575,7 +575,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.1.53"
+version = "0.1.54"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -586,21 +586,21 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.1.53"
+version = "0.1.54"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.33"
+version = "0.2.34"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-profile"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "clap",
  "main_error",
@@ -616,7 +616,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -625,7 +625,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.8.10"
+version = "0.8.11"
 dependencies = [
  "libm",
  "stak-device",
@@ -637,14 +637,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.2.10"
+version = "0.2.11"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.1.77"
+version = "0.1.78"
 dependencies = [
  "clap",
  "libc",
@@ -662,7 +662,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.16"
+version = "0.1.17"
 dependencies = [
  "libc",
  "stak-vm",
@@ -670,14 +670,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.51"
+version = "0.1.52"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.4"
+version = "0.7.5"
 dependencies = [
  "cfg-exif",
  "insta",
@@ -692,7 +692,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.3.4"
+version = "0.3.5"
 dependencies = [
  "stak-compiler",
  "stak-configuration",
