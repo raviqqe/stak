@@ -286,11 +286,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     const fn operand_cons(&self) -> Cons {
-        self.resolve_variable(self.operand())
-    }
-
-    const fn resolve_variable(&self, operand: Value) -> Cons {
-        match operand.to_typed() {
+        match self.operand().to_typed() {
             TypedValue::Cons(cons) => cons,
             TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
         }
