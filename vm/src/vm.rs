@@ -251,6 +251,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
             count: Number::from_i64((info / 2) as _),
@@ -258,6 +259,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
+    #[inline]
     fn advance_code(&mut self) {
         let mut code = self.memory.cdr(self.memory.code()).assume_cons();
 

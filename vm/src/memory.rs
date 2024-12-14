@@ -103,6 +103,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a boolean value.
+    #[inline]
     pub const fn boolean(&self, value: bool) -> Cons {
         if value {
             self.cdr(self.r#false).assume_cons()
@@ -112,16 +113,19 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a null value.
+    #[inline]
     pub const fn null(&self) -> Cons {
         self.car(self.r#false).assume_cons()
     }
 
     /// Sets a false value.
+    #[inline]
     pub fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 
     /// Pushes a value to a stack.
+    #[inline]
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
@@ -129,6 +133,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Pops a value from a stack.
+    #[inline]
     pub fn pop(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
@@ -162,6 +167,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Peeks a value at the top of a stack.
+    #[inline]
     pub fn top(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
@@ -169,6 +175,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Allocates a cons.
+    #[inline]
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
@@ -207,14 +214,17 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
+    #[inline]
     const fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
+    #[inline]
     const fn space_size(&self) -> usize {
         self.heap.len() / 2
     }
 
+    #[inline]
     const fn allocation_start(&self) -> usize {
         if self.space {
             self.space_size()
@@ -223,6 +233,7 @@ impl<'a> Memory<'a> {
         }
     }
 
+    #[inline]
     const fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
