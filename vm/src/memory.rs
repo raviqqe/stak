@@ -103,16 +103,16 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a boolean value.
-    pub const fn boolean(&self, value: bool) -> Cons {
+    pub fn boolean(&self, value: bool) -> Result<Cons, Error> {
         if value {
             self.cdr(self.r#false).try_into()
         } else {
-            self.r#false
+            Ok(self.r#false)
         }
     }
 
     /// Returns a null value.
-    pub const fn null(&self) -> Cons {
+    pub fn null(&self) -> Result<Cons, Error> {
         self.car(self.r#false).try_into()
     }
 
@@ -129,41 +129,41 @@ impl<'a> Memory<'a> {
     }
 
     /// Pops a value from a stack.
-    pub fn pop(&mut self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
+    pub fn pop(&mut self) -> Result<Value, Error> {
+        debug_assert_ne!(self.stack, self.null()?);
 
         let value = self.car(self.stack);
-        self.stack = self.cdr(self.stack).try_into();
-        value
+        self.stack = self.cdr(self.stack).try_into()?;
+        Ok(value)
     }
 
     /// Pops values from a stack.
-    pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
+    pub fn pop_many<const M: usize>(&mut self) -> Result<[Value; M], Error> {
         let mut values = [Default::default(); M];
 
         for index in 0..M - 1 {
-            values[M - 1 - index] = self.pop();
+            values[M - 1 - index] = self.pop()?;
         }
 
-        values[0] = self.pop();
+        values[0] = self.pop()?;
 
-        values
+        Ok(values)
     }
 
     /// Pops numbers from a stack.
-    pub fn pop_numbers<const M: usize>(&mut self) -> [Number; M] {
+    pub fn pop_numbers<const M: usize>(&mut self) -> Result<[Number; M], Error> {
         let mut numbers = [Default::default(); M];
 
-        for (index, value) in self.pop_many::<M>().into_iter().enumerate() {
+        for (index, value) in self.pop_many::<M>()?.into_iter().enumerate() {
             numbers[index] = value.assume_number();
         }
 
-        numbers
+        Ok(numbers)
     }
 
     /// Peeks a value at the top of a stack.
     pub fn top(&mut self) -> Value {
-        debug_assert_ne!(self.stack, self.null());
+        debug_assert_ne!(self.stack, self.null().expect("cons"));
 
         self.car(self.stack)
     }
@@ -263,14 +263,14 @@ impl<'a> Memory<'a> {
 
     /// Returns a value of a `car` field in a value assumed as a cons.
     #[inline]
-    pub const fn car_value(&self, cons: Value) -> Value {
-        self.car(cons.try_into())
+    pub fn car_value(&self, cons: Value) -> Result<Value, Error> {
+        Ok(self.car(cons.try_into()?))
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
     #[inline]
-    pub const fn cdr_value(&self, cons: Value) -> Value {
-        self.cdr(cons.try_into())
+    pub fn cdr_value(&self, cons: Value) -> Result<Value, Error> {
+        Ok(self.cdr(cons.try_into()?))
     }
 
     #[inline]
@@ -321,24 +321,26 @@ impl<'a> Memory<'a> {
 
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline]
-    pub fn set_car_value(&mut self, cons: Value, value: Value) {
-        self.set_car(cons.try_into(), value);
+    pub fn set_car_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
+        self.set_car(cons.try_into()?, value);
+        Ok(())
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
     #[inline]
-    pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
-        self.set_cdr(cons.try_into(), value);
+    pub fn set_cdr_value(&mut self, cons: Value, value: Value) -> Result<(), Error> {
+        self.set_cdr(cons.try_into()?, value);
+        Ok(())
     }
 
     /// Returns a tail of a list.
-    pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
+    pub fn tail(&self, mut list: Cons, mut index: usize) -> Result<Cons, Error> {
         while index > 0 {
-            list = self.cdr(list).try_into();
+            list = self.cdr(list).try_into()?;
             index -= 1;
         }
 
-        list
+        Ok(list)
     }
 
     // Garbage collection
@@ -380,7 +382,7 @@ impl<'a> Memory<'a> {
             NEVER
         } else if self.unchecked_car(cons).raw_eq(NEVER.into()) {
             // Get a forward pointer.
-            self.unchecked_cdr(cons).try_into()
+            self.unchecked_cdr(cons).try_into()?
         } else {
             let copy =
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;

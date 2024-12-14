@@ -84,17 +84,17 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
-        while self.memory.code() != self.memory.null() {
-            let instruction = self.memory.cdr(self.memory.code()).try_into();
+        while self.memory.code() != self.memory.null()? {
+            let instruction: Cons = self.memory.cdr(self.memory.code()).try_into()?;
 
             trace!("instruction", instruction.tag());
 
             match instruction.tag() {
                 Instruction::CONSTANT => self.constant()?,
                 Instruction::GET => self.get()?,
-                Instruction::SET => self.set(),
-                Instruction::IF => self.r#if(),
-                Instruction::NOP => self.advance_code(),
+                Instruction::SET => self.set()?,
+                Instruction::IF => self.r#if()?,
+                Instruction::NOP => self.advance_code()?,
                 code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
 
@@ -116,7 +116,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn get(&mut self) -> Result<(), T::Error> {
-        let operand = self.operand_cons();
+        let operand = self.operand_cons()?;
         let value = self.memory.car(operand);
 
         trace!("operand", operand);
@@ -128,42 +128,46 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn set(&mut self) {
-        let operand = self.operand_cons();
-        let value = self.memory.pop();
+    fn set(&mut self) -> Result<(), T::Error> {
+        let operand = self.operand_cons()?;
+        let value = self.memory.pop()?;
 
         trace!("operand", operand);
         trace!("value", value);
 
         self.memory.set_car(operand, value);
         self.advance_code();
+
+        Ok(())
     }
 
-    fn r#if(&mut self) {
-        let value = self.memory.pop();
+    fn r#if(&mut self) -> Result<(), T::Error> {
+        let value = self.memory.pop()?;
 
         self.memory.set_code(
-            (if value == self.memory.boolean(false).into() {
+            (if value == self.memory.boolean(false)?.into() {
                 self.memory.cdr(self.memory.code())
             } else {
                 self.operand()
             })
-            .try_into(),
+            .try_into()?,
         );
+
+        Ok(())
     }
 
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
-        let r#return = instruction == self.memory.null();
-        let procedure = self.procedure();
+        let r#return = instruction == self.memory.null()?;
+        let procedure = self.procedure()?;
 
         trace!("procedure", procedure);
         trace!("return", r#return);
 
-        if self.environment(procedure).tag() != Type::Procedure as u16 {
+        if self.environment(procedure)?.tag() != Type::Procedure as u16 {
             return Err(Error::ProcedureExpected.into());
         }
 
-        match self.code(procedure).to_typed() {
+        match self.code(procedure).to_typed()? {
             TypedValue::Cons(code) => {
                 #[cfg(feature = "profile")]
                 self.profile_call(self.memory.code(), r#return);
@@ -180,13 +184,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.set_register(procedure);
 
                 let mut list = if arguments.variadic {
-                    self.memory.pop().try_into()
+                    self.memory.pop()?.try_into()?
                 } else {
-                    self.memory.null()
+                    self.memory.null()?
                 };
 
                 for _ in 0..arguments.count.to_i64() {
-                    let value = self.memory.pop();
+                    let value = self.memory.pop()?;
                     list = self.memory.cons(value, list)?;
                 }
 
@@ -196,49 +200,49 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.set_register(list);
 
                 let continuation = if r#return {
-                    self.continuation()
+                    self.continuation()?
                 } else {
                     self.memory
                         .allocate(code.into(), self.memory.stack().into())?
                 };
                 let stack = self.memory.allocate(
                     continuation.into(),
-                    self.environment(self.memory.code())
+                    self.environment(self.memory.code())?
                         .set_tag(StackSlot::Frame as _)
                         .into(),
                 )?;
                 self.memory.set_stack(stack);
                 self.memory.set_code(
                     self.memory
-                        .cdr(self.code(self.memory.code()).try_into())
-                        .try_into(),
+                        .cdr(self.code(self.memory.code()).try_into()?)
+                        .try_into()?,
                 );
 
                 for _ in 0..parameters.count.to_i64() {
-                    if self.memory.register() == self.memory.null() {
+                    if self.memory.register() == self.memory.null()? {
                         return Err(Error::ArgumentCount.into());
                     }
 
                     self.memory.push(self.memory.car(self.memory.register()))?;
                     self.memory
-                        .set_register(self.memory.cdr(self.memory.register()).try_into());
+                        .set_register(self.memory.cdr(self.memory.register()).try_into()?);
                 }
 
                 if parameters.variadic {
                     self.memory.push(self.memory.register().into())?;
-                } else if self.memory.register() != self.memory.null() {
+                } else if self.memory.register() != self.memory.null()? {
                     return Err(Error::ArgumentCount.into());
                 }
             }
             TypedValue::Number(primitive) => {
                 if Self::parse_arity(arity).variadic {
-                    let list = self.memory.pop().try_into();
+                    let list = self.memory.pop()?.try_into()?;
                     self.memory.set_register(list);
 
-                    while self.memory.register() != self.memory.null() {
+                    while self.memory.register() != self.memory.null()? {
                         self.memory.push(self.memory.car(self.memory.register()))?;
                         self.memory
-                            .set_register(self.memory.cdr(self.memory.register()).try_into());
+                            .set_register(self.memory.cdr(self.memory.register()).try_into()?);
                     }
                 }
 
@@ -258,45 +262,49 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
-    fn advance_code(&mut self) {
-        let mut code = self.memory.cdr(self.memory.code()).try_into();
+    fn advance_code(&mut self) -> Result<(), T::Error> {
+        let mut code = self.memory.cdr(self.memory.code()).try_into()?;
 
-        if code == self.memory.null() {
+        if code == self.memory.null()? {
             #[cfg(feature = "profile")]
             self.profile_return();
 
-            let continuation = self.continuation();
+            let continuation = self.continuation()?;
             // Keep a value at the top of a stack.
             self.memory
                 .set_cdr(self.memory.stack(), self.memory.cdr(continuation));
 
             code = self
                 .memory
-                .cdr(self.memory.car(continuation).try_into())
-                .try_into();
+                .cdr(self.memory.car(continuation).try_into()?)
+                .try_into()?;
         }
 
         self.memory.set_code(code);
+
+        Ok(())
     }
 
     const fn operand(&self) -> Value {
         self.memory.car(self.memory.code())
     }
 
-    const fn operand_cons(&self) -> Cons {
+    fn operand_cons(&self) -> Result<Cons, T::Error> {
         self.resolve_variable(self.operand())
     }
 
-    const fn resolve_variable(&self, operand: Value) -> Cons {
-        match operand.to_typed() {
+    fn resolve_variable(&self, operand: Value) -> Result<Cons, T::Error> {
+        Ok(match operand.to_typed()? {
             TypedValue::Cons(cons) => cons,
-            TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
-        }
+            TypedValue::Number(index) => {
+                self.memory.tail(self.memory.stack(), index.to_i64() as _)?
+            }
+        })
     }
 
     // (code . environment)
-    const fn procedure(&self) -> Cons {
-        self.memory.car(self.operand_cons()).try_into()
+    fn procedure(&self) -> Result<Cons, T::Error> {
+        Ok(self.memory.car(self.operand_cons()?).try_into()?)
     }
 
     // (parameter-count . instruction-list) | primitive-id
@@ -304,19 +312,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.car(procedure)
     }
 
-    const fn environment(&self, procedure: Cons) -> Cons {
-        self.memory.cdr(procedure).try_into()
+    fn environment(&self, procedure: Cons) -> Result<Cons, T::Error> {
+        Ok(self.memory.cdr(procedure).try_into()?)
     }
 
     // (code . stack)
-    const fn continuation(&self) -> Cons {
+    fn continuation(&self) -> Result<Cons, T::Error> {
         let mut stack = self.memory.stack();
 
-        while self.memory.cdr(stack).try_into().tag() != StackSlot::Frame as _ {
-            stack = self.memory.cdr(stack).try_into();
+        while Cons::try_from(self.memory.cdr(stack))?.tag() != StackSlot::Frame as _ {
+            stack = self.memory.cdr(stack).try_into()?;
         }
 
-        self.memory.car(stack).try_into()
+        Ok(self.memory.car(stack).try_into()?)
     }
 
     // Profiling
@@ -350,21 +358,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         profile_event!(self, "decode_start");
 
         let program = self.decode_ribs(&mut input.into_iter())?;
-        self.memory
-            .set_false(self.memory.car(program).try_into());
-        self.memory.set_code(self.memory.cdr(program).try_into());
+        self.memory.set_false(self.memory.car(program).try_into()?);
+        self.memory.set_code(self.memory.cdr(program).try_into()?);
 
         profile_event!(self, "decode_end");
 
         // Initialize an implicit top-level frame.
         let codes = self
             .memory
-            .cons(Number::default().into(), self.memory.null())?
+            .cons(Number::default().into(), self.memory.null()?)?
             .into();
-        let continuation = self.memory.cons(codes, self.memory.null())?.into();
+        let continuation = self.memory.cons(codes, self.memory.null()?)?.into();
         let stack = self.memory.allocate(
             continuation,
-            self.memory.null().set_tag(StackSlot::Frame as _).into(),
+            self.memory.null()?.set_tag(StackSlot::Frame as _).into(),
         )?;
         self.memory.set_stack(stack);
         self.memory.set_register(NEVER);
@@ -377,7 +384,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
-                let cdr = self.memory.pop();
+                let cdr = self.memory.pop()?;
                 let cons = self
                     .memory
                     .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
@@ -394,8 +401,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let index = integer >> 1;
 
                     if index > 0 {
-                        let cons = self.memory.tail(self.memory.code(), index as usize - 1);
-                        let head = self.memory.cdr(cons).try_into();
+                        let cons = self.memory.tail(self.memory.code(), index as usize - 1)?;
+                        let head = self.memory.cdr(cons).try_into()?;
                         let tail = self.memory.cdr(head);
                         self.memory.set_cdr(head, self.memory.code().into());
                         self.memory.set_cdr(cons, tail);
@@ -406,14 +413,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                     if integer & 1 == 0 {
                         self.memory
-                            .set_code(self.memory.cdr(self.memory.code()).try_into());
+                            .set_code(self.memory.cdr(self.memory.code()).try_into()?);
                     }
 
                     self.memory.push(value)?;
                 }
             } else if head & 0b100 == 0 {
-                let cdr = self.memory.pop();
-                let car = self.memory.pop();
+                let cdr = self.memory.pop()?;
+                let car = self.memory.pop()?;
                 let r#type = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
                 let cons = self.memory.allocate(car, cdr.set_tag(r#type as _))?;
                 self.memory.push(cons.into())?;
@@ -425,7 +432,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
         }
 
-        self.memory.pop().to_cons().ok_or(Error::BytecodeEnd)
+        self.memory.pop()?.to_cons().ok_or(Error::BytecodeEnd)
     }
 
     fn decode_number(integer: u128) -> Number {

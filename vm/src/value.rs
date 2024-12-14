@@ -1,6 +1,7 @@
 use crate::{
     cons::{Cons, Tag},
     number::Number,
+    Error,
 };
 use cfg_exif::feature;
 use core::fmt::{self, Display, Formatter};
@@ -40,12 +41,12 @@ impl Value {
 
     /// Converts a value to a typed value.
     #[inline]
-    pub const fn to_typed(self) -> TypedValue {
-        if self.is_cons() {
-            TypedValue::Cons(self.try_into())
+    pub fn to_typed(self) -> TypedValue {
+        Ok(if self.is_cons() {
+            TypedValue::Cons(self.raw())
         } else {
             TypedValue::Number(self.assume_number())
-        }
+        })
     }
 
     /// Converts a value to a number assuming its type.
