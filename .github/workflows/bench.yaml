@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: tools/bench.sh -i ${{ matrix.interpreter }} ${{ matrix.options }}
+      - run: tools/bench.sh ${{ matrix.options }}
   bench:
     needs:
       - interpret
