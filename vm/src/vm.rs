@@ -85,7 +85,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Runs a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
-            let instruction = self.memory.cdr(self.memory.code()).assume_cons();
+            let instruction = self.memory.cdr(self.memory.code()).try_into();
 
             trace!("instruction", instruction.tag());
 
@@ -148,7 +148,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             } else {
                 self.operand()
             })
-            .assume_cons(),
+            .try_into(),
         );
     }
 
@@ -180,7 +180,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.set_register(procedure);
 
                 let mut list = if arguments.variadic {
-                    self.memory.pop().assume_cons()
+                    self.memory.pop().try_into()
                 } else {
                     self.memory.null()
                 };
@@ -210,8 +210,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory.set_stack(stack);
                 self.memory.set_code(
                     self.memory
-                        .cdr(self.code(self.memory.code()).assume_cons())
-                        .assume_cons(),
+                        .cdr(self.code(self.memory.code()).try_into())
+                        .try_into(),
                 );
 
                 for _ in 0..parameters.count.to_i64() {
@@ -221,7 +221,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                     self.memory.push(self.memory.car(self.memory.register()))?;
                     self.memory
-                        .set_register(self.memory.cdr(self.memory.register()).assume_cons());
+                        .set_register(self.memory.cdr(self.memory.register()).try_into());
                 }
 
                 if parameters.variadic {
@@ -232,13 +232,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
             TypedValue::Number(primitive) => {
                 if Self::parse_arity(arity).variadic {
-                    let list = self.memory.pop().assume_cons();
+                    let list = self.memory.pop().try_into();
                     self.memory.set_register(list);
 
                     while self.memory.register() != self.memory.null() {
                         self.memory.push(self.memory.car(self.memory.register()))?;
                         self.memory
-                            .set_register(self.memory.cdr(self.memory.register()).assume_cons());
+                            .set_register(self.memory.cdr(self.memory.register()).try_into());
                     }
                 }
 
@@ -259,7 +259,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn advance_code(&mut self) {
-        let mut code = self.memory.cdr(self.memory.code()).assume_cons();
+        let mut code = self.memory.cdr(self.memory.code()).try_into();
 
         if code == self.memory.null() {
             #[cfg(feature = "profile")]
@@ -272,8 +272,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             code = self
                 .memory
-                .cdr(self.memory.car(continuation).assume_cons())
-                .assume_cons();
+                .cdr(self.memory.car(continuation).try_into())
+                .try_into();
         }
 
         self.memory.set_code(code);
@@ -296,7 +296,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     // (code . environment)
     const fn procedure(&self) -> Cons {
-        self.memory.car(self.operand_cons()).assume_cons()
+        self.memory.car(self.operand_cons()).try_into()
     }
 
     // (parameter-count . instruction-list) | primitive-id
@@ -305,18 +305,18 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     const fn environment(&self, procedure: Cons) -> Cons {
-        self.memory.cdr(procedure).assume_cons()
+        self.memory.cdr(procedure).try_into()
     }
 
     // (code . stack)
     const fn continuation(&self) -> Cons {
         let mut stack = self.memory.stack();
 
-        while self.memory.cdr(stack).assume_cons().tag() != StackSlot::Frame as _ {
-            stack = self.memory.cdr(stack).assume_cons();
+        while self.memory.cdr(stack).try_into().tag() != StackSlot::Frame as _ {
+            stack = self.memory.cdr(stack).try_into();
         }
 
-        self.memory.car(stack).assume_cons()
+        self.memory.car(stack).try_into()
     }
 
     // Profiling
@@ -351,8 +351,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
         let program = self.decode_ribs(&mut input.into_iter())?;
         self.memory
-            .set_false(self.memory.car(program).assume_cons());
-        self.memory.set_code(self.memory.cdr(program).assume_cons());
+            .set_false(self.memory.car(program).try_into());
+        self.memory.set_code(self.memory.cdr(program).try_into());
 
         profile_event!(self, "decode_end");
 
@@ -395,7 +395,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                     if index > 0 {
                         let cons = self.memory.tail(self.memory.code(), index as usize - 1);
-                        let head = self.memory.cdr(cons).assume_cons();
+                        let head = self.memory.cdr(cons).try_into();
                         let tail = self.memory.cdr(head);
                         self.memory.set_cdr(head, self.memory.code().into());
                         self.memory.set_cdr(cons, tail);
@@ -406,7 +406,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                     if integer & 1 == 0 {
                         self.memory
-                            .set_code(self.memory.cdr(self.memory.code()).assume_cons());
+                            .set_code(self.memory.cdr(self.memory.code()).try_into());
                     }
 
                     self.memory.push(value)?;

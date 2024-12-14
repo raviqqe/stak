@@ -105,7 +105,7 @@ impl<'a> Memory<'a> {
     /// Returns a boolean value.
     pub const fn boolean(&self, value: bool) -> Cons {
         if value {
-            self.cdr(self.r#false).assume_cons()
+            self.cdr(self.r#false).try_into()
         } else {
             self.r#false
         }
@@ -113,7 +113,7 @@ impl<'a> Memory<'a> {
 
     /// Returns a null value.
     pub const fn null(&self) -> Cons {
-        self.car(self.r#false).assume_cons()
+        self.car(self.r#false).try_into()
     }
 
     /// Sets a false value.
@@ -133,7 +133,7 @@ impl<'a> Memory<'a> {
         debug_assert_ne!(self.stack, self.null());
 
         let value = self.car(self.stack);
-        self.stack = self.cdr(self.stack).assume_cons();
+        self.stack = self.cdr(self.stack).try_into();
         value
     }
 
@@ -264,13 +264,13 @@ impl<'a> Memory<'a> {
     /// Returns a value of a `car` field in a value assumed as a cons.
     #[inline]
     pub const fn car_value(&self, cons: Value) -> Value {
-        self.car(cons.assume_cons())
+        self.car(cons.try_into())
     }
 
     /// Returns a value of a `cdr` field in a value assumed as a cons.
     #[inline]
     pub const fn cdr_value(&self, cons: Value) -> Value {
-        self.cdr(cons.assume_cons())
+        self.cdr(cons.try_into())
     }
 
     #[inline]
@@ -322,19 +322,19 @@ impl<'a> Memory<'a> {
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline]
     pub fn set_car_value(&mut self, cons: Value, value: Value) {
-        self.set_car(cons.assume_cons(), value);
+        self.set_car(cons.try_into(), value);
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
     #[inline]
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
-        self.set_cdr(cons.assume_cons(), value);
+        self.set_cdr(cons.try_into(), value);
     }
 
     /// Returns a tail of a list.
     pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
         while index > 0 {
-            list = self.cdr(list).assume_cons();
+            list = self.cdr(list).try_into();
             index -= 1;
         }
 
@@ -380,7 +380,7 @@ impl<'a> Memory<'a> {
             NEVER
         } else if self.unchecked_car(cons).raw_eq(NEVER.into()) {
             // Get a forward pointer.
-            self.unchecked_cdr(cons).assume_cons()
+            self.unchecked_cdr(cons).try_into()
         } else {
             let copy =
                 self.allocate_unchecked(self.unchecked_car(cons), self.unchecked_cdr(cons))?;

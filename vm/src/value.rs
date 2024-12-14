@@ -42,7 +42,7 @@ impl Value {
     #[inline]
     pub const fn to_typed(self) -> TypedValue {
         if self.is_cons() {
-            TypedValue::Cons(self.assume_cons())
+            TypedValue::Cons(self.try_into())
         } else {
             TypedValue::Number(self.assume_number())
         }
@@ -50,7 +50,7 @@ impl Value {
 
     /// Converts a value to a cons assuming its type.
     #[inline]
-    pub const fn assume_cons(self) -> Cons {
+    pub const fn try_into(self) -> Cons {
         debug_assert!(self.is_cons());
 
         Cons::from_raw(self.0)
