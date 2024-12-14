@@ -48,14 +48,6 @@ impl Value {
         }
     }
 
-    /// Converts a value to a cons assuming its type.
-    #[inline]
-    pub const fn try_into(self) -> Cons {
-        debug_assert!(self.is_cons());
-
-        Cons::from_raw(self.0)
-    }
-
     /// Converts a value to a number assuming its type.
     #[inline]
     pub const fn assume_number(self) -> Number {
