@@ -167,7 +167,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             return Err(Error::ProcedureExpected.into());
         }
 
-        match self.code(procedure).to_typed()? {
+        match self.code(procedure).to_typed() {
             TypedValue::Cons(code) => {
                 #[cfg(feature = "profile")]
                 self.profile_call(self.memory.code(), r#return);
@@ -294,7 +294,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     fn resolve_variable(&self, operand: Value) -> Result<Cons, T::Error> {
-        Ok(match operand.to_typed()? {
+        Ok(match operand.to_typed() {
             TypedValue::Cons(cons) => cons,
             TypedValue::Number(index) => {
                 self.memory.tail(self.memory.stack(), index.to_i64() as _)?
