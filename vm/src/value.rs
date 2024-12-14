@@ -42,11 +42,19 @@ impl Value {
     /// Converts a value to a typed value.
     #[inline]
     pub fn to_typed(self) -> TypedValue {
-        Ok(if self.is_cons() {
-            TypedValue::Cons(self.raw())
+        if self.is_cons() {
+            TypedValue::Cons(self.assume_cons())
         } else {
             TypedValue::Number(self.assume_number())
-        })
+        }
+    }
+
+    /// Converts a value to a cons assuming its type.
+    #[inline]
+    pub const fn assume_cons(self) -> Cons {
+        debug_assert!(self.is_cons());
+
+        Cons::from_raw(self.0)
     }
 
     /// Converts a value to a number assuming its type.
