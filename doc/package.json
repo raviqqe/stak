@@ -14,13 +14,13 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/solid-js": "^5.0.0",
-    "@astrojs/starlight": "^0.29.2",
+    "@astrojs/starlight": "^0.30.0",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
     "@raviqqe/stak": "^0.3.4",
-    "astro": "^4.16.16",
+    "astro": "^5.0.5",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.29.0",
+    "es-toolkit": "^1.30.0",
     "lucide-solid": "^0.468.0",
     "nanostores": "^0.11.3",
     "solid-js": "^1.9.3",
@@ -30,7 +30,7 @@
     "@raviqqe/biome-config": "^1.0.2",
     "@raviqqe/eslint-config": "^4.1.6",
     "@types/node": "^22.10.2",
-    "eslint": "^9.16.0",
+    "eslint": "^9.17.0",
     "eslint-plugin-solid": "^0.14.5",
     "typescript": "^5.7.2"
   }

@@ -25,25 +25,30 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
+    #[inline]
     pub const fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
 
     /// Returns a memory address on heap.
+    #[inline]
     pub const fn index(self) -> usize {
         (self.unbox() >> TAG_SIZE) as _
     }
 
     /// Returns a tag.
+    #[inline]
     pub const fn tag(self) -> Tag {
         (self.unbox() & TAG_MASK) as _
     }
 
     /// Sets a tag.
+    #[inline]
     pub const fn set_tag(self, tag: Tag) -> Self {
         Self::r#box(self.unbox() & !TAG_MASK | (tag as u64 & TAG_MASK))
     }
 
+    #[inline]
     const fn r#box(value: u64) -> Self {
         Self(feature!(if ("float") {
             nonbox::f64::u64::box_unsigned(value)
@@ -52,6 +57,7 @@ impl Cons {
         }))
     }
 
+    #[inline]
     const fn unbox(self) -> u64 {
         feature!(if ("float") {
             if let Some(index) = nonbox::f64::u64::unbox_unsigned(self.0) {
@@ -64,20 +70,24 @@ impl Cons {
         })
     }
 
+    #[inline]
     pub(crate) const fn raw_eq(self, cons: Self) -> bool {
         self.0 == cons.0
     }
 
+    #[inline]
     pub(crate) const fn from_raw(raw: u64) -> Self {
         Self(raw)
     }
 
+    #[inline]
     pub(crate) const fn to_raw(self) -> u64 {
         self.0
     }
 }
 
 impl PartialEq for Cons {
+    #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.index() == other.index()
     }
@@ -88,6 +98,7 @@ impl Eq for Cons {}
 impl TryFrom<Value> for Cons {
     type Error = Error;
 
+    #[inline]
     fn try_from(value: Value) -> Result<Self, Self::Error> {
         value.to_cons().ok_or(Error::ConsExpected)
     }
