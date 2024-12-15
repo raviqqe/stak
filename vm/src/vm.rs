@@ -159,7 +159,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("procedure", procedure);
         trace!("return", r#return);
 
-        if self.environment(procedure).tag() != Type::Procedure as u16 {
+        if self.environment(procedure).tag() != Type::Procedure as _ {
             return Err(Error::ProcedureExpected.into());
         }
 
