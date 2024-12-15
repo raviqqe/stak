@@ -181,6 +181,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Allocates a cons on heap.
+    #[inline]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
@@ -196,6 +197,7 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
+    #[inline]
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
