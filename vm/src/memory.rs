@@ -146,11 +146,9 @@ impl<'a> Memory<'a> {
     pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
         let mut values = [Default::default(); M];
 
-        for index in 0..M - 1 {
+        for index in 0..=M - 1 {
             values[M - 1 - index] = self.pop();
         }
-
-        values[0] = self.pop();
 
         values
     }
