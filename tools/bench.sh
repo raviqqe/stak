@@ -2,7 +2,7 @@
 
 set -ex
 
-while getopts d: option; do
+while getopts d option; do
   case $option in
   d)
     build_options=--no-default-features
