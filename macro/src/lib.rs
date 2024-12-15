@@ -31,7 +31,7 @@ fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_r7rs!("(define x 42)");
+/// static BYTECODES: &[u8] = stak_macro::compile_r7rs!("(define x 42)");
 /// ```
 #[proc_macro]
 pub fn compile_r7rs(input: TokenStream) -> TokenStream {
@@ -45,7 +45,7 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::include_r7rs!("foo.scm");
+/// static BYTECODES: &[u8] = stak_macro::include_r7rs!("foo.scm");
 /// ```
 #[proc_macro]
 pub fn include_r7rs(input: TokenStream) -> TokenStream {
@@ -65,7 +65,7 @@ fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::compile_bare!("($$define x 42)");
+/// static BYTECODES: &[u8] = stak_macro::compile_bare!("($$define x 42)");
 /// ```
 #[proc_macro]
 pub fn compile_bare(input: TokenStream) -> TokenStream {
@@ -79,7 +79,7 @@ pub fn compile_bare(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// let bytecodes = stak_macro::include_bare!("foo.scm");
+/// static BYTECODES: &[u8] = stak_macro::include_bare!("foo.scm");
 /// ```
 #[proc_macro]
 pub fn include_bare(input: TokenStream) -> TokenStream {
