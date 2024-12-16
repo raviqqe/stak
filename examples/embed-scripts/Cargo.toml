@@ -1,11 +1,8 @@
 [package]
 name = "embed-scripts"
 version = "0.1.0"
+publish = false
 edition.workspace = true
-keywords.workspace = true
-license-file.workspace = true
-readme.workspace = true
-repository.workspace = true
 
 [dependencies]
 stak-device = { version = "0.2.78", path = "../../device", features = ["std"] }
