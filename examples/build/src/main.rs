@@ -2,8 +2,9 @@
 
 use stak_macro::include_bytecode;
 
-static BYTECODES: &[u8] = include_bytecode!("src/main.scm");
+static BYTECODES: &[u8] = include_bytecode!("main.scm");
 
 fn main() {
     println!("Hello, world!");
+    dbg!(BYTECODES);
 }
