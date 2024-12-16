@@ -8,10 +8,10 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
-use std::error::Error;
+use std::{error::Error, ffi::CStr};
 
-const HEAP_SIZE: usize = 1 << 16;
-const BUFFER_SIZE: usize = 1 << 10;
+const HEAP_SIZE: usize = 1 << 20;
+const BUFFER_SIZE: usize = 1 << 6;
 const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
 
 #[tokio::main]
@@ -24,17 +24,27 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn sum() -> axum::response::Result<(StatusCode, Vec<u8>)> {
-    let mut output = vec![0u8; BUFFER_SIZE];
+async fn sum(input: String) -> axum::response::Result<(StatusCode, String)> {
+    let mut output = [0u8; BUFFER_SIZE];
     let mut error = vec![0u8; BUFFER_SIZE];
 
-    run(ROOT_BYTECODES, &[], &mut output, &mut error).map_err(|error| error.to_string())?;
+    run(ROOT_BYTECODES, input.as_bytes(), &mut output, &mut error)
+        .map_err(|error| error.to_string())?;
 
-    if !error.is_empty() {
-        return Ok((StatusCode::BAD_REQUEST, error));
-    }
+    let error = decode_buffer(&error)?;
 
-    Ok((StatusCode::OK, output))
+    Ok(if error.is_empty() {
+        (StatusCode::OK, decode_buffer(&output)?)
+    } else {
+        (StatusCode::BAD_REQUEST, error)
+    })
+}
+
+fn decode_buffer(buffer: &[u8]) -> axum::response::Result<String> {
+    Ok(CStr::from_bytes_until_nul(buffer)
+        .map_err(|error| error.to_string())?
+        .to_string_lossy()
+        .into())
 }
 
 fn run(
