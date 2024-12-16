@@ -14,10 +14,6 @@ const HEAP_SIZE: usize = 1 << 16;
 static BYTECODES: &[u8] = include_bytecode!("main.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    Ok(run(BYTECODES)?)
-}
-
-fn run(bytecodes: &[u8]) -> Result<(), stak_r7rs::SmallError> {
     let mut heap = vec![Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
@@ -29,6 +25,7 @@ fn run(bytecodes: &[u8]) -> Result<(), stak_r7rs::SmallError> {
         ),
     )?;
 
-    vm.initialize(bytecodes.iter().copied())?;
-    vm.run()
+    vm.initialize(BYTECODES.iter().copied())?;
+
+    Ok(vm.run()?)
 }
