@@ -1,3 +1,3 @@
-(import (scheme base))
+(import (scheme base) (scheme read) (scheme write))
 
-(write-string "Hello, world!\n")
+(write (apply + (read)))
