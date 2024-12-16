@@ -24,7 +24,7 @@ members = [
   "time",
   "util",
   "vm",
-  "wasm",
+  "wasm", "examples/build",
 ]
 
 [workspace.package]

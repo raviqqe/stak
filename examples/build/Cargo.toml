@@ -1,0 +1,17 @@
+[package]
+name = "build-example"
+version = "0.1.0"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+stak-macro = { version = "0.1.79", path = "../../macro" }
+
+[build-dependencies]
+stak-build = { version = "0.1.37", path = "../../build" }
+
+[lints]
+workspace = true
