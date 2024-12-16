@@ -16,10 +16,11 @@ const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let app = Router::new().route("/sum", post(sum));
-
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
-    axum::serve(listener, app).await?;
+    axum::serve(
+        tokio::net::TcpListener::bind("0.0.0.0:3000").await?,
+        Router::new().route("/sum", post(sum)),
+    )
+    .await?;
 
     Ok(())
 }
