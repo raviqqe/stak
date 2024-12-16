@@ -7,7 +7,7 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
-use std::error::Error;
+use core::error::Error;
 
 const HEAP_SIZE: usize = 1 << 16;
 const FOO_BYTECODES: &[u8] = include_bytecode!("foo.scm");

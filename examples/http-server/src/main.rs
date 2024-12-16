@@ -8,7 +8,7 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
-use std::{error::Error, ffi::CStr};
+use core::{error::Error, ffi::CStr};
 
 const HEAP_SIZE: usize = 1 << 20;
 const BUFFER_SIZE: usize = 1 << 6;
