@@ -10,8 +10,7 @@ use stak_vm::Vm;
 use std::error::Error;
 
 const HEAP_SIZE: usize = 1 << 16;
-
-static BYTECODES: &[u8] = include_bytecode!("main.scm");
+const BYTECODES: &[u8] = include_bytecode!("main.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     Ok(run(BYTECODES)?)
