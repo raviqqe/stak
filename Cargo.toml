@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "build",
   "cmd/compile",
   "cmd/decode",
   "cmd/interpret",
@@ -8,10 +9,11 @@ members = [
   "cmd/profile",
   "cmd/repl",
   "cmd/run",
-  "build",
   "compiler",
   "configuration",
   "device",
+  "examples/embedded-script",
+  "examples/http-server",
   "file",
   "macro",
   "macro-util",
@@ -25,8 +27,6 @@ members = [
   "util",
   "vm",
   "wasm",
-  "examples/embedded-script",
-  "examples/http-server",
 ]
 
 [workspace.package]
