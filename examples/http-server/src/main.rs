@@ -1,6 +1,7 @@
 //! A `stak-build` example.
 
-use axum::{http::StatusCode, routing::post, Router};
+use axum::{http::StatusCode, response, routing::post, serve, Router};
+use core::{error::Error, ffi::CStr};
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
 use stak_macro::include_bytecode;
@@ -8,7 +9,6 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
-use core::{error::Error, ffi::CStr};
 
 const HEAP_SIZE: usize = 1 << 20;
 const BUFFER_SIZE: usize = 1 << 6;
@@ -16,7 +16,7 @@ const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    axum::serve(
+    serve(
         tokio::net::TcpListener::bind("0.0.0.0:3000").await?,
         Router::new().route("/sum", post(sum)),
     )
@@ -25,7 +25,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn sum(input: String) -> axum::response::Result<(StatusCode, String)> {
+async fn sum(input: String) -> response::Result<(StatusCode, String)> {
     let mut output = [0u8; BUFFER_SIZE];
     let mut error = [0u8; BUFFER_SIZE];
 
@@ -41,7 +41,7 @@ async fn sum(input: String) -> axum::response::Result<(StatusCode, String)> {
     })
 }
 
-fn decode_buffer(buffer: &[u8]) -> axum::response::Result<String> {
+fn decode_buffer(buffer: &[u8]) -> response::Result<String> {
     Ok(CStr::from_bytes_until_nul(buffer)
         .map_err(|error| error.to_string())?
         .to_string_lossy()
