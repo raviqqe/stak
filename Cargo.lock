@@ -95,10 +95,10 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-process-context 0.2.36 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -496,10 +496,10 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -518,7 +518,7 @@ name = "stak-device"
 version = "0.2.78"
 dependencies = [
  "libc",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -527,7 +527,7 @@ version = "0.4.36"
 dependencies = [
  "heapless",
  "libc",
- "stak-vm 0.7.7",
+ "stak-vm",
  "tempfile",
 ]
 
@@ -540,10 +540,10 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -556,10 +556,10 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro-util",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
  "syn",
 ]
 
@@ -581,10 +581,10 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -609,16 +609,7 @@ dependencies = [
 name = "stak-process-context"
 version = "0.2.36"
 dependencies = [
- "stak-vm 0.7.7",
-]
-
-[[package]]
-name = "stak-process-context"
-version = "0.2.36"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7a5e22859771132a13d0453cf81b78b370f87ba508d5ac6c8551b9dd029aecd"
-dependencies = [
- "stak-vm 0.7.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "stak-vm",
 ]
 
 [[package]]
@@ -630,11 +621,11 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-profiler",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -643,7 +634,7 @@ version = "0.2.7"
 dependencies = [
  "indoc",
  "pretty_assertions",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -653,9 +644,9 @@ dependencies = [
  "libm",
  "stak-device",
  "stak-file",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -676,11 +667,11 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
  "stak-util",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -688,7 +679,7 @@ name = "stak-time"
 version = "0.1.19"
 dependencies = [
  "libc",
- "stak-vm 0.7.7",
+ "stak-vm",
 ]
 
 [[package]]
@@ -708,18 +699,9 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
-]
-
-[[package]]
-name = "stak-vm"
-version = "0.7.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b1b3b7305859c1bbb0a10b10731962a989045b6bb4bb10ecbba935d1f247f0ed"
-dependencies = [
- "cfg-exif",
 ]
 
 [[package]]
@@ -731,10 +713,10 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-process-context 0.2.36",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-vm 0.7.7",
+ "stak-vm",
  "wasm-bindgen",
  "wasm-bindgen-test",
 ]

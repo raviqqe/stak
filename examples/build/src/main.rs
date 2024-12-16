@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         ),
     )?;
 
-    vm.initialize(include_r7rs!($path).iter().copied())?;
+    vm.initialize(BYTECODES.iter().copied())?;
 
     Ok(vm.run()?)
 }
