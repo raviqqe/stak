@@ -11,4 +11,4 @@ The documentation is [here](https://raviqqe.github.io/stak).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/raviqqe/stak/blob/main/LICENSE)
