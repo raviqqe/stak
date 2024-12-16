@@ -11,7 +11,7 @@ use stak_time::VoidClock;
 use stak_vm::Vm;
 
 const HEAP_SIZE: usize = 1 << 20;
-const BUFFER_SIZE: usize = 1 << 6;
+const BUFFER_SIZE: usize = 1 << 8;
 const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
 
 #[tokio::main]
