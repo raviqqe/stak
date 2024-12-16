@@ -873,6 +873,7 @@ name = "stak"
 version = "0.3.13"
 dependencies = [
  "stak-sac",
+ "stak-vm",
 ]
 
 [[package]]

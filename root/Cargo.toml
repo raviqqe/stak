@@ -10,10 +10,11 @@ repository.workspace = true
 
 [features]
 default = ["float"]
-float = ["stak-sac/float"]
+float = ["stak-sac/float", "stak-vm/float"]
 
 [dependencies]
 stak-sac = { version = "0.1.80", path = "../sac", features = ["std"] }
+stak-vm = { version = "0.7.7", path = "../vm" }
 
 [lints]
 workspace = true
