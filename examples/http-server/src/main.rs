@@ -27,7 +27,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
 async fn sum(input: String) -> axum::response::Result<(StatusCode, String)> {
     let mut output = [0u8; BUFFER_SIZE];
-    let mut error = vec![0u8; BUFFER_SIZE];
+    let mut error = [0u8; BUFFER_SIZE];
 
     run(ROOT_BYTECODES, input.as_bytes(), &mut output, &mut error)
         .map_err(|error| error.to_string())?;
