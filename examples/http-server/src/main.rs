@@ -10,7 +10,7 @@ use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
 
-const HEAP_SIZE: usize = 1 << 20;
+const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
 const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
 
