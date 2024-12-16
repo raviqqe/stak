@@ -1,6 +1,6 @@
 # HTTP server
 
-This example shows how to change behaviour of an HTTP server dynamically embedding a Scheme script.
+This example shows how to change behavior of an HTTP server dynamically embedding a Scheme script.
 
 ## Usage
 
