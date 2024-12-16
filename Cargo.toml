@@ -24,7 +24,9 @@ members = [
   "time",
   "util",
   "vm",
-  "wasm", "examples/build",
+  "wasm",
+  "examples/embed-scripts",
+  "examples/http-server",
 ]
 
 [workspace.package]

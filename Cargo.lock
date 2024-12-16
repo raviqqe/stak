@@ -88,20 +88,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 
 [[package]]
-name = "build-example"
-version = "0.1.0"
-dependencies = [
- "stak-build",
- "stak-device",
- "stak-file",
- "stak-macro",
- "stak-process-context",
- "stak-r7rs",
- "stak-time",
- "stak-vm",
-]
-
-[[package]]
 name = "bumpalo"
 version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -199,6 +185,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56254986775e3233ffa9c4d7d3faaf6d36a2c09d30b20687e9f88bc8bafc16c8"
 
 [[package]]
+name = "embed-scripts"
+version = "0.1.0"
+dependencies = [
+ "stak-build",
+ "stak-device",
+ "stak-file",
+ "stak-macro",
+ "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
+ "stak-vm",
+]
+
+[[package]]
 name = "encode_unicode"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -256,6 +256,20 @@ name = "heck"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
+
+[[package]]
+name = "http-server"
+version = "0.1.0"
+dependencies = [
+ "stak-build",
+ "stak-device",
+ "stak-file",
+ "stak-macro",
+ "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
+ "stak-vm",
+]
 
 [[package]]
 name = "indoc"

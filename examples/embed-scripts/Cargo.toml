@@ -1,5 +1,5 @@
 [package]
-name = "build-example"
+name = "embed-scripts"
 version = "0.1.0"
 edition.workspace = true
 keywords.workspace = true
