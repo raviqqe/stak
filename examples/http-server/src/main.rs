@@ -1,6 +1,6 @@
 //! A `stak-build` example.
 
-use axum::{http::StatusCode, routing::get, Router};
+use axum::{http::StatusCode, routing::post, Router};
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
 use stak_macro::include_bytecode;
@@ -16,7 +16,7 @@ const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let app = Router::new().route("/sum", get(sum));
+    let app = Router::new().route("/sum", post(sum));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
     axum::serve(listener, app).await?;
