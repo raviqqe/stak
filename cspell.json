@@ -25,6 +25,7 @@
     "codegen",
     "cond",
     "coreutils",
+    "doctest",
     "embeddable",
     "exif",
     "expt",
