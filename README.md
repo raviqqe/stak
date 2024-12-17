@@ -49,7 +49,7 @@ With a Scheme script at `src/hello.scm`,
 
 and the build script at `build.rs`:
 
-```rust no_run
+```rust
 use stak_build::{build_r7rs, BuildError};
 
 fn main() -> Result<(), BuildError> {
