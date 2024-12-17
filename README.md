@@ -36,7 +36,41 @@ cargo install stak-interpret
 ## Examples
 
 ```rust
+use core::error::Error;
+use stak::{
+    build::include_bytecode,
+    device::StdioDevice,
+    file::VoidFileSystem,
+    process_context::VoidProcessContext,
+    r7rs::{SmallError, SmallPrimitiveSet},
+    time::VoidClock,
+    vm::Vm,
+};
 
+const HEAP_SIZE: usize = 1 << 16;
+const BYTECODES: &[u8] = include_bytecode!("hello.scm");
+
+fn main() -> Result<(), Box<dyn Error>> {
+    run(BYTECODES)?;
+
+    Ok(())
+}
+
+fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
+    let mut heap = [Default::default(); HEAP_SIZE];
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(
+            StdioDevice::new(),
+            VoidFileSystem::new(),
+            VoidProcessContext::new(),
+            VoidClock::new(),
+        ),
+    )?;
+
+    vm.initialize(bytecodes.iter().copied())?;
+    vm.run()
+}
 ```
 
 ## License
