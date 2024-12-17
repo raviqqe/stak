@@ -31,4 +31,4 @@ pub mod time {
 }
 
 pub use stak_build::*;
-pub use stak_macro::*;
+pub use stak_macro::include_bytecode;
