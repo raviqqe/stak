@@ -35,6 +35,8 @@ cargo install stak-interpret
 
 ## Examples
 
+### Running a Scheme script
+
 ```rust
 use core::error::Error;
 use stak::{
