@@ -8,23 +8,26 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
+[[bin]]
+name = "stak"
+required-features = ["sac"]
+
 [features]
 default = ["float", "libc", "std"]
-float = ["stak-sac/float", "stak-vm/float"]
+float = ["stak-vm/float"]
 libc = [
   "stak-device/libc",
   "stak-file/libc",
   "stak-process-context/libc",
-  "stak-sac/libc",
   "stak-time/libc",
 ]
 std = [
   "stak-device/std",
   "stak-file/std",
   "stak-process-context/std",
-  "stak-sac/std",
   "stak-time/std",
 ]
+sac = ["stak-sac"]
 
 [dependencies]
 stak-build = { version = "0.1.38", path = "../build" }
@@ -33,7 +36,10 @@ stak-file = { version = "0.4.37", path = "../file" }
 stak-macro = { version = "0.1.80", path = "../macro" }
 stak-process-context = { version = "0.2.37", path = "../process_context" }
 stak-r7rs = { version = "0.8.14", path = "../r7rs" }
-stak-sac = { version = "0.1.81", path = "../sac" }
+stak-sac = { version = "0.1.81", path = "../sac", features = [
+  "float",
+  "std",
+], optional = true }
 stak-time = { version = "0.1.20", path = "../time" }
 stak-vm = { version = "0.7.8", path = "../vm" }
 
