@@ -24,16 +24,14 @@ cargo add stak
 To install the Scheme interpreter and alike as command line tools, run:
 
 ```sh
-# The Scheme interpreter
+# Install the Scheme interpreter.
 cargo install stak
 
-# The minimal Scheme interpreter (5 times smaller!)
+# Install the minimal Scheme interpreter (6 times smaller!)
 cargo install mstak
 
-# The Scheme to bytecode compiler
+# Install the Scheme to bytecode compiler and bytecode interpreter.
 cargo install stak-compile
-
-# The bytecode interpreter
 cargo install stak-interpret
 ```
 
