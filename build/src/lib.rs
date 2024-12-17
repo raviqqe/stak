@@ -9,6 +9,7 @@
 //! use stak_build::build_r7rs;
 //!
 //! fn main() -> Result<(), Box<dyn Error>> {
+//! # unsafe { std::env::set_var("OUT_DIR", "target") };
 //!   build_r7rs()?;
 //!
 //!   Ok(())
