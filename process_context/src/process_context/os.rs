@@ -5,7 +5,7 @@ use std::{
     sync::LazyLock,
 };
 
-/// A process context provided by an OS.
+/// A process context provided by an operating system.
 pub struct OsProcessContext {
     arguments: LazyLock<Vec<String>>,
     environment_variables: LazyLock<Vec<(String, String)>>,

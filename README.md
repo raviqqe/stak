@@ -39,12 +39,32 @@ cargo install stak-interpret
 
 ### Running a Scheme script
 
+First, prepare a Scheme script at `src/hello.scm`.
+
+```scheme
+(import (scheme base))
+
+(write-string "Hello, world!\n")
+```
+
+Then, add a build script at `build.rs` to build the Scheme source file into bytecodes.
+
+```rust no_run
+use stak_build::{build_r7rs, BuildError};
+
+fn main() -> Result<(), BuildError> {
+    build_r7rs()
+}
+```
+
+Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak).
+
 ```rust
 use core::error::Error;
 use stak::{
-    build::include_bytecode,
     device::StdioDevice,
     file::VoidFileSystem,
+    include_bytecode,
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,

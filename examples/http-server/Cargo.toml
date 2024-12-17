@@ -10,7 +10,7 @@ stak = { version = "0.3.14", path = "../../root" }
 tokio = { version = "1.42.0", features = ["full"] }
 
 [build-dependencies]
-stak = { version = "0.3.14", path = "../../root" }
+stak-build = { version = "0.1.38", path = "../../build" }
 
 [lints]
 workspace = true

@@ -3,9 +3,9 @@
 use axum::{http::StatusCode, response, routing::post, serve, Router};
 use core::{error::Error, ffi::CStr};
 use stak::{
-    build::include_bytecode,
     device::ReadWriteDevice,
     file::VoidFileSystem,
+    include_bytecode,
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,

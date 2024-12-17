@@ -1,4 +1,22 @@
 //! Build scripts for Stak Scheme.
+//!
+//! # Examples
+//!
+//! To build all R7RS Scheme files into bytecodes, add the following
+//! [`build.rs` script](https://doc.rust-lang.org/cargo/reference/build-scripts.html)
+//! in your crate. Then, you can include them into source files in Rust
+//! using the [`stak::include_bytecode`][include_bytecode] macro.
+//!
+//! ```rust
+//! use stak_build::{build_r7rs, BuildError};
+//!
+//! fn main() -> Result<(), BuildError> {
+//! #   unsafe { std::env::set_var("OUT_DIR", "target/tmp") };
+//!     build_r7rs()
+//! }
+//! ```
+//!
+//! [include_bytecode]: https://docs.rs/stak/latest/stak/macro.include_bytecode.html
 
 mod error;
 
@@ -15,7 +33,11 @@ use tokio::{
     spawn,
 };
 
-/// Builds R7RS source files into bytecode target files.
+/// Builds R7RS Scheme source files into bytecode files.
+///
+/// This function builds all Scheme source files with the `.scm` file extension
+/// under the `src` directory. The resulting bytecode files are stored under the
+/// `target` directory.
 pub fn build_r7rs() -> Result<(), BuildError> {
     let runtime = Runtime::new()?;
     let _ = runtime.enter();

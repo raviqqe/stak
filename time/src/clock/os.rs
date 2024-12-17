@@ -2,7 +2,7 @@ use super::Clock;
 use stak_vm::Number;
 use std::time::{SystemTime, SystemTimeError, UNIX_EPOCH};
 
-/// A clock provided by an OS.
+/// A clock provided by an operating system.
 #[derive(Debug, Default)]
 pub struct OsClock {}
 
