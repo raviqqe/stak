@@ -30,9 +30,10 @@ use tokio::{
     spawn,
 };
 
-/// Builds R7RS source files into bytecode target files.
+/// Builds R7RS Scheme source files into bytecode files.
 ///
-/// This function builds all Scheme files with the `.scm` file extension under the `src` directory.
+/// This function builds all Scheme source files with the `.scm` file extension under the `src` directory.
+/// The resulting bytecode files are stored under the `target` directory.
 pub fn build_r7rs() -> Result<(), BuildError> {
     let runtime = Runtime::new()?;
     let _ = runtime.enter();
