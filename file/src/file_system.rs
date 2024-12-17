@@ -21,7 +21,7 @@ pub trait FileSystem {
     /// An error.
     type Error: Error;
 
-    /// Opens a file.
+    /// Opens a file and returns its descriptor.
     fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error>;
 
     /// Closes a file.
