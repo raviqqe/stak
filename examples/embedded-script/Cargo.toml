@@ -5,16 +5,10 @@ publish = false
 edition.workspace = true
 
 [dependencies]
-stak-device = { version = "0.2.78", path = "../../device", features = ["std"] }
-stak-file = { version = "0.4.36", path = "../../file", features = ["std"] }
-stak-macro = { version = "0.1.79", path = "../../macro" }
-stak-process-context = { version = "0.2.36", path = "../../process_context" }
-stak-r7rs = { version = "0.8.13", path = "../../r7rs" }
-stak-time = { version = "0.1.19", path = "../../time" }
-stak-vm = { version = "0.7.7", path = "../../vm" }
+stak = { version = "0.3.13", path = "../../root" }
 
 [build-dependencies]
-stak-build = { version = "0.1.37", path = "../../build" }
+stak = { version = "0.3.13", path = "../../root" }
 
 [lints]
 workspace = true

@@ -266,14 +266,7 @@ checksum = "56254986775e3233ffa9c4d7d3faaf6d36a2c09d30b20687e9f88bc8bafc16c8"
 name = "embedded-script"
 version = "0.1.0"
 dependencies = [
- "stak-build",
- "stak-device",
- "stak-file",
- "stak-macro",
- "stak-process-context",
- "stak-r7rs",
- "stak-time",
- "stak-vm",
+ "stak",
 ]
 
 [[package]]

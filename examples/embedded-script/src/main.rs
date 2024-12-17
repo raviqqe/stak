@@ -1,13 +1,14 @@
 //! A `stak-build` example.
 
-use core::error::Error;
-use stak_device::StdioDevice;
-use stak_file::VoidFileSystem;
-use stak_macro::include_bytecode;
-use stak_process_context::VoidProcessContext;
-use stak_r7rs::SmallPrimitiveSet;
-use stak_time::VoidClock;
-use stak_vm::Vm;
+use stak::{
+    build::include_bytecode,
+    device::StdioDevice,
+    file::VoidFileSystem,
+    process_context::VoidProcessContext,
+    r7rs::{SmallError, SmallPrimitiveSet},
+    time::VoidClock,
+    vm::Vm,
+};
 
 const HEAP_SIZE: usize = 1 << 16;
 const FOO_BYTECODES: &[u8] = include_bytecode!("foo.scm");
@@ -20,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run(bytecodes: &[u8]) -> Result<(), stak_r7rs::SmallError> {
+fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
     let mut heap = vec![Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
