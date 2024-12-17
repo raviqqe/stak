@@ -13,7 +13,7 @@ hero:
       icon: right-arrow
       variant: primary
     - text: Rust integration
-      link: rust/stak_vm
+      link: rust/stak
       icon: document
       variant: secondary
 ---
