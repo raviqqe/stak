@@ -8,13 +8,13 @@ hero:
     file: ../../../public/icon.svg
   tagline: The no-std and no-alloc Scheme implementation in Rust.
   actions:
-    - text: Examples
-      link: examples/continuation
-      icon: right-arrow
-      variant: primary
     - text: Rust integration
       link: rust/stak
       icon: document
+      variant: primary
+    - text: Examples
+      link: examples/continuation
+      icon: right-arrow
       variant: secondary
 ---
 
