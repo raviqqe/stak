@@ -22,8 +22,6 @@ hero:
 
 Stak Scheme is a miniature, embeddable [Scheme][scheme] implementation in Rust.
 
-This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
-
 ## Goals
 
 - Minimal implementation of [R7RS small][r7rs-small]
@@ -39,7 +37,7 @@ This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS im
 
 ## References
 
-- [Ribbit Scheme][ribbit]
+- This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
 - [R7RS small][r7rs-small]
 - [Scheme][scheme]
 
