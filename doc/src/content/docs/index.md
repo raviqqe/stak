@@ -1,6 +1,6 @@
 ---
 title: Miniature, embeddable Scheme
-description: No-std and no-alloc Scheme implementation in Rust.
+description: The `no-std` and no-alloc Scheme implementation in Rust.
 template: splash
 hero:
   image:

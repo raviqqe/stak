@@ -120,7 +120,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a false value.
     #[inline]
-    pub fn set_false(&mut self, cons: Cons) {
+    pub(crate) fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 
