@@ -1,5 +1,6 @@
 //! Devices to handle I/O.
 
+#![cfg_attr(all(doc, not(clippy), not(doctest)), feature(doc_cfg))]
 #![no_std]
 
 #[cfg(test)]
