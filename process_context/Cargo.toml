@@ -1,7 +1,7 @@
 [package]
 name = "stak-process-context"
 description = "Process context for Stak Scheme"
-version = "0.2.36"
+version = "0.2.37"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -16,4 +16,4 @@ std = []
 workspace = true
 
 [dependencies]
-stak-vm = { version = "0.7.7", path = "../vm" }
+stak-vm = { version = "0.7.8", path = "../vm" }

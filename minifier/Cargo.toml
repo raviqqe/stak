@@ -1,7 +1,7 @@
 [package]
 name = "stak-minifier"
 description = "Stak Scheme source code minifier"
-version = "0.1.56"
+version = "0.1.57"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,14 +9,14 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-configuration = { version = "0.1.74", path = "../configuration" }
-stak-device = { version = "0.2.78", path = "../device", features = ["std"] }
-stak-file = { version = "0.4.36", path = "../file" }
-stak-macro = { version = "0.1.79", path = "../macro" }
-stak-r7rs = { version = "0.8.13", path = "../r7rs" }
-stak-process-context = { version = "0.2.36", path = "../process_context" }
-stak-vm = { version = "0.7.7", path = "../vm" }
-stak-time = { version = "0.1.19", path = "../time" }
+stak-configuration = { version = "0.1.75", path = "../configuration" }
+stak-device = { version = "0.2.79", path = "../device", features = ["std"] }
+stak-file = { version = "0.4.37", path = "../file" }
+stak-macro = { version = "0.1.80", path = "../macro" }
+stak-r7rs = { version = "0.8.14", path = "../r7rs" }
+stak-process-context = { version = "0.2.37", path = "../process_context" }
+stak-vm = { version = "0.7.8", path = "../vm" }
+stak-time = { version = "0.1.20", path = "../time" }
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"
