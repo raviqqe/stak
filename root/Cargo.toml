@@ -47,3 +47,6 @@ stak-build = { version = "0.1.38", path = "../build" }
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+stak-build = { path = "../build" }

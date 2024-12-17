@@ -39,10 +39,30 @@ cargo install stak-interpret
 
 ### Running a Scheme script
 
+With a Scheme script at `src/hello.scm`,
+
+```scheme
+(import (scheme base))
+
+(write-string "Hello, world!\n")
+```
+
+and the build script at `build.rs`:
+
+```rust no_run
+use stak_build::{build_r7rs, BuildError};
+
+fn main() -> Result<(), BuildError> {
+    build_r7rs()
+}
+```
+
+and the main file in Rust at `src/main.rs`:
+
 ```rust
 use core::error::Error;
 use stak::{
-    build::include_bytecode,
+    include_bytecode,
     device::StdioDevice,
     file::VoidFileSystem,
     process_context::VoidProcessContext,
