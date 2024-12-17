@@ -2,7 +2,7 @@
 //!
 //! # Examples
 //!
-//! To build all R7RS Scheme files into bytecodes, add the following `build.rs` script in your crate. Then, you can include them into your Rust source files using [`stak::include_bytecode`][include_bytecode].
+//! To build all R7RS Scheme files into bytecodes, add the following `build.rs` script in your crate. Then, you can include them into source files in Rust using [`stak::include_bytecode`][include_bytecode].
 //!
 //! ```rust
 //! use stak_build::{build_r7rs, BuildError};
