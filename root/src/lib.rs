@@ -24,6 +24,12 @@ pub mod process_context {
     pub use stak_process_context::*;
 }
 
+pub mod r7rs {
+    //! Primitives for R7RS Scheme.
+
+    pub use stak_r7rs::*;
+}
+
 pub mod time {
     //! Time measurement.
 
