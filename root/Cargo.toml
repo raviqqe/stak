@@ -37,5 +37,8 @@ stak-sac = { version = "0.1.80", path = "../sac" }
 stak-time = { version = "0.1.19", path = "../time" }
 stak-vm = { version = "0.7.7", path = "../vm" }
 
+[build-dependencies]
+stak-build = { version = "0.1.37", path = "../build" }
+
 [lints]
 workspace = true
