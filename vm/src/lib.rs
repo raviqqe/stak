@@ -24,13 +24,16 @@
 //!         VoidProcessContext::new(),
 //!         VoidClock::new(),
 //!     ),
-//! ).unwrap();
+//! )
+//! .unwrap();
 //!
-//! const PROGRAM: &[u8] = compile_r7rs!(r#"
+//! const PROGRAM: &[u8] = compile_r7rs!(
+//!     r#"
 //!     (import (scheme write))
 //!
 //!     (display "Hello, world!")
-//! "#);
+//!     "#
+//! );
 //!
 //! vm.initialize(PROGRAM.iter().copied()).unwrap();
 //! vm.run().unwrap();
