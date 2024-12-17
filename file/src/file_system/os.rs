@@ -8,7 +8,7 @@ use std::{
     path::PathBuf,
 };
 
-/// An OS file system.
+/// A file system on an operating system.
 #[derive(Debug)]
 pub struct OsFileSystem {}
 
