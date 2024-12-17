@@ -5,14 +5,11 @@
 //! In `build.rs`,
 //!
 //! ```rust
-//! use core::error::Error;
-//! use stak_build::build_r7rs;
+//! use stak_build::{build_r7rs, BuildError};
 //!
-//! fn main() -> Result<(), Box<dyn Error>> {
+//! fn main() -> Result<(), BuildError> {
 //! # unsafe { std::env::set_var("OUT_DIR", "target") };
-//!   build_r7rs()?;
-//!
-//!   Ok(())
+//!   build_r7rs()
 //! }
 //! ```
 
