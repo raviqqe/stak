@@ -57,7 +57,7 @@ fn main() -> Result<(), BuildError> {
 }
 ```
 
-Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak/macro.include_bytecode.html).
+Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak).
 
 ```rust
 use core::error::Error;
