@@ -1,4 +1,5 @@
 #![doc = include_str!("../README.md")]
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 
 pub mod vm {
     //! A virtual machine and its runtime values.

@@ -38,6 +38,7 @@
 //! assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
 //! ```
 
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
 #[cfg(test)]

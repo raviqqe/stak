@@ -23,7 +23,7 @@ for file in $(find $directory -name '*.md'); do
   mv $new_file $file
 done
 
-cargo doc --all-features
+cargo +nightly doc --all-features
 
 cd doc
 
