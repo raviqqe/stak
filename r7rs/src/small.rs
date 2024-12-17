@@ -10,7 +10,7 @@ use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
 
-/// A primitive set that covers R7RS small.
+/// A primitive set that covers [the R7RS small](https://standards.scheme.org/corrected-r7rs/r7rs.html).
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clock> {
     device: DevicePrimitiveSet<D>,
     file: FilePrimitiveSet<F>,
