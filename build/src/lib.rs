@@ -1,4 +1,19 @@
 //! Build scripts for Stak Scheme.
+//!
+//! # Examples
+//!
+//! In `build.rs`,
+//!
+//! ```rust
+//! use core::error::Error;
+//! use stak_build::build_r7rs;
+//!
+//! fn main() -> Result<(), Box<dyn Error>> {
+//!   build_r7rs()?;
+//!
+//!   Ok(())
+//! }
+//! ```
 
 mod error;
 
