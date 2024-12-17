@@ -30,5 +30,9 @@ pub mod time {
     pub use stak_time::*;
 }
 
-pub use stak_build::*;
-pub use stak_macro::include_bytecode;
+pub mod build {
+    //! Building Scheme scripts into bytecodes for use by Rust programs.
+
+    pub use stak_build::*;
+    pub use stak_macro::include_bytecode;
+}
