@@ -8,8 +8,8 @@
 //! use stak_build::{build_r7rs, BuildError};
 //!
 //! fn main() -> Result<(), BuildError> {
-//! # unsafe { std::env::set_var("OUT_DIR", "target") };
-//!   build_r7rs()
+//! #   unsafe { std::env::set_var("OUT_DIR", "target") };
+//!     build_r7rs()
 //! }
 //! ```
 //!
