@@ -2,9 +2,9 @@
 
 use core::error::Error;
 use stak::{
-    build::include_bytecode,
     device::StdioDevice,
     file::VoidFileSystem,
+    include_bytecode,
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,

@@ -62,9 +62,9 @@ Now, you can include the Scheme script into a program in Rust using [the `stak::
 ```rust
 use core::error::Error;
 use stak::{
-    include_bytecode,
     device::StdioDevice,
     file::VoidFileSystem,
+    include_bytecode,
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
