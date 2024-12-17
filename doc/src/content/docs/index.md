@@ -20,7 +20,7 @@ hero:
 
 # Stak Scheme
 
-Stak Scheme is a no-`std` and no-`alloc` [Scheme][scheme] implementation in Rust.
+Stak Scheme is a miniature, embeddable [Scheme][scheme] implementation in Rust.
 
 This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
 
