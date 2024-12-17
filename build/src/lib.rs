@@ -3,7 +3,7 @@
 //! # Examples
 //!
 //! To build all R7RS Scheme files into bytecodes so that you can include the files using
-//! [`stak::include_bytecode`], add the following `build.rs` script in your crate.
+//! [`stak::include_bytecode`][include_bytecode], add the following `build.rs` script in your crate.
 //!
 //! ```rust
 //! use stak_build::{build_r7rs, BuildError};
@@ -13,6 +13,8 @@
 //!   build_r7rs()
 //! }
 //! ```
+//!
+//! [include_bytecode]: https://docs.rs/stak/latest/stak/macro.include_bytecode.html
 
 mod error;
 
