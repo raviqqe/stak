@@ -31,9 +31,9 @@ Stak Scheme is a miniature, embeddable [Scheme][scheme] implementation in Rust.
 ## Limitations
 
 - Number representation is either [a 64-bit floating point number (IEEE 754)](https://en.wikipedia.org/wiki/IEEE_754) or a 63-bit integer.
-- Only ASCII characters are supported.
-- Certain runtime errors are not raised.
-  - e.g. argument count and out-of-memory errors
+- Only ASCII characters are supported in strings.
+- Certain runtime errors are not raised as exceptions.
+  - e.g. argument count mismatch on procedure calls and out-of-memory errors
 
 ## References
 
