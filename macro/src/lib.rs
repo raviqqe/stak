@@ -9,8 +9,7 @@ use stak_macro_util::{convert_result, read_source_file};
 use std::path::{Path, MAIN_SEPARATOR_STR};
 use syn::{parse_macro_input, LitStr};
 
-/// Includes a program in R7RS Scheme as bytecodes built by the
-/// [`stak_build`][stak_build] crate.
+/// Includes bytecodes of a R7RS Scheme program built by the [`stak_build`][stak_build] crate.
 ///
 /// [stak_build]: https://docs.rs/stak-build
 #[proc_macro]
