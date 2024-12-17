@@ -39,7 +39,7 @@ cargo install stak-interpret
 
 ### Running a Scheme script
 
-With a Scheme script at `src/hello.scm`,
+First, prepare a Scheme script at `src/hello.scm`.
 
 ```scheme
 (import (scheme base))
@@ -47,7 +47,7 @@ With a Scheme script at `src/hello.scm`,
 (write-string "Hello, world!\n")
 ```
 
-and the build script at `build.rs`:
+Then, add a build script at `build.rs` to build the Scheme source file into bytecodes.
 
 ```rust
 use stak_build::{build_r7rs, BuildError};
@@ -57,7 +57,7 @@ fn main() -> Result<(), BuildError> {
 }
 ```
 
-and the main file in Rust at `src/main.rs`:
+Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak/macro.include_bytecode.html).
 
 ```rust
 use core::error::Error;
