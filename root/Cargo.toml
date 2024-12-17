@@ -9,11 +9,32 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-default = ["float"]
+default = ["float", "libc", "std"]
 float = ["stak-sac/float", "stak-vm/float"]
+libc = [
+  "stak-device/libc",
+  "stak-file/libc",
+  "stak-process-context/libc",
+  "stak-sac/libc",
+  "stak-time/libc",
+]
+std = [
+  "stak-device/std",
+  "stak-file/std",
+  "stak-process-context/std",
+  "stak-sac/std",
+  "stak-time/std",
+]
 
 [dependencies]
-stak-sac = { version = "0.1.80", path = "../sac", features = ["std"] }
+stak-build = { version = "0.1.37", path = "../build" }
+stak-device = { version = "0.2.78", path = "../device" }
+stak-file = { version = "0.4.36", path = "../file" }
+stak-macro = { version = "0.1.79", path = "../macro" }
+stak-process-context = { version = "0.2.36", path = "../process_context" }
+stak-r7rs = { version = "0.8.13", path = "../r7rs" }
+stak-sac = { version = "0.1.80", path = "../sac" }
+stak-time = { version = "0.1.19", path = "../time" }
 stak-vm = { version = "0.7.7", path = "../vm" }
 
 [lints]

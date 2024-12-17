@@ -872,7 +872,14 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 name = "stak"
 version = "0.3.13"
 dependencies = [
+ "stak-build",
+ "stak-device",
+ "stak-file",
+ "stak-macro",
+ "stak-process-context",
+ "stak-r7rs",
  "stak-sac",
+ "stak-time",
  "stak-vm",
 ]
 
