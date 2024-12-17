@@ -1,4 +1,5 @@
 mod error;
+#[doc(cfg(feature = "libc"))]
 #[cfg(feature = "libc")]
 mod libc;
 #[cfg(feature = "std")]

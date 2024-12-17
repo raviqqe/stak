@@ -1,5 +1,6 @@
 //! File systems.
 
+#![cfg_attr(doc, feature(doc_cfg))]
 #![no_std]
 
 #[cfg(test)]
