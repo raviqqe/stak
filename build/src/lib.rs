@@ -2,7 +2,8 @@
 //!
 //! # Examples
 //!
-//! In `build.rs`,
+//! To build all R7RS Scheme files into bytecodes so that you can include the files using
+//! [`stak::include_bytecode`], add the following `build.rs` script in your crate.
 //!
 //! ```rust
 //! use stak_build::{build_r7rs, BuildError};
