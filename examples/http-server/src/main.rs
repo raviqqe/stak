@@ -2,13 +2,15 @@
 
 use axum::{http::StatusCode, response, routing::post, serve, Router};
 use core::{error::Error, ffi::CStr};
-use stak_device::ReadWriteDevice;
-use stak_file::VoidFileSystem;
-use stak_macro::include_bytecode;
-use stak_process_context::VoidProcessContext;
-use stak_r7rs::SmallPrimitiveSet;
-use stak_time::VoidClock;
-use stak_vm::Vm;
+use stak::{
+    build::include_bytecode,
+    device::ReadWriteDevice,
+    file::VoidFileSystem,
+    process_context::VoidProcessContext,
+    r7rs::{SmallError, SmallPrimitiveSet},
+    time::VoidClock,
+    vm::Vm,
+};
 
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
@@ -53,7 +55,7 @@ fn run(
     input: &[u8],
     output: &mut [u8],
     error: &mut [u8],
-) -> Result<(), stak_r7rs::SmallError> {
+) -> Result<(), SmallError> {
     let mut heap = vec![Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,

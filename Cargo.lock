@@ -415,14 +415,7 @@ name = "http-server"
 version = "0.1.0"
 dependencies = [
  "axum",
- "stak-build",
- "stak-device",
- "stak-file",
- "stak-macro",
- "stak-process-context",
- "stak-r7rs",
- "stak-time",
- "stak-vm",
+ "stak",
  "tokio",
 ]
 

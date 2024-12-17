@@ -1,5 +1,6 @@
 //! A `stak-build` example.
 
+use core::error::Error;
 use stak::{
     build::include_bytecode,
     device::StdioDevice,
