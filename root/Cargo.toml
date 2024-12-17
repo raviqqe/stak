@@ -30,10 +30,8 @@ std = [
 sac = ["stak-sac"]
 
 [dependencies]
-stak-build = { version = "0.1.38", path = "../build" }
 stak-device = { version = "0.2.79", path = "../device" }
 stak-file = { version = "0.4.37", path = "../file" }
-stak-macro = { version = "0.1.80", path = "../macro" }
 stak-process-context = { version = "0.2.37", path = "../process_context" }
 stak-r7rs = { version = "0.8.14", path = "../r7rs" }
 stak-sac = { version = "0.1.81", path = "../sac", features = [
