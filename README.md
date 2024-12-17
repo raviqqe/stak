@@ -30,7 +30,7 @@ cargo install stak
 # Install the minimal Scheme interpreter (6 times smaller!)
 cargo install mstak
 
-# Install the Scheme to bytecode compiler and bytecode interpreter.
+# Install the Scheme-to-bytecode compiler and bytecode interpreter.
 cargo install stak-compile
 cargo install stak-interpret
 ```
