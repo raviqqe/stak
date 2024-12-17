@@ -69,6 +69,7 @@
     "uninterned",
     "unresolve",
     "unsync",
+    "usize",
     "uutils",
     "varint",
     "yota"

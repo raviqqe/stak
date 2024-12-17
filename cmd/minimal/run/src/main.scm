@@ -1,1 +1,1 @@
-../../../run/src/main.scm
+../../../../run.scm

@@ -9,8 +9,8 @@ use stak_macro_util::{convert_result, read_source_file};
 use std::path::{Path, MAIN_SEPARATOR_STR};
 use syn::{parse_macro_input, LitStr};
 
-/// Includes a program in R7RS Scheme as bytecodes built by the `stak-build`
-/// crate.
+/// Includes a program in R7RS Scheme as bytecodes built by the
+/// `stak::build::build_r7rs` function.
 #[proc_macro]
 pub fn include_bytecode(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);

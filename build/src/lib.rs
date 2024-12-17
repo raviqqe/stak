@@ -2,7 +2,6 @@
 
 mod error;
 
-use core::error::Error;
 pub use error::BuildError;
 use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
@@ -17,7 +16,7 @@ use tokio::{
 };
 
 /// Builds R7RS source files into bytecode target files.
-pub fn build_r7rs() -> Result<(), Box<dyn Error>> {
+pub fn build_r7rs() -> Result<(), BuildError> {
     let runtime = Runtime::new()?;
     let _ = runtime.enter();
 
@@ -26,7 +25,7 @@ pub fn build_r7rs() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn build(paths: Paths) -> Result<(), Box<dyn Error>> {
+async fn build(paths: Paths) -> Result<(), BuildError> {
     let out_directory_variable = env::var("OUT_DIR")?;
     let out_directory = Path::new(&out_directory_variable);
 
