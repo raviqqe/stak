@@ -56,7 +56,7 @@ fn run(
     output: &mut [u8],
     error: &mut [u8],
 ) -> Result<(), SmallError> {
-    let mut heap = vec![Default::default(); HEAP_SIZE];
+    let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
