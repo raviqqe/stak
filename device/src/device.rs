@@ -1,12 +1,9 @@
 mod buffer_error;
 mod fixed_buffer;
-#[doc(cfg(feature = "libc"))]
 #[cfg(feature = "libc")]
 pub mod libc;
-#[doc(cfg(feature = "std"))]
 #[cfg(feature = "std")]
 mod read_write;
-#[doc(cfg(feature = "std"))]
 #[cfg(feature = "std")]
 mod stdio;
 

@@ -1,6 +1,6 @@
 //! Time for Stak Scheme.
 
-#![cfg_attr(all(doc, not(clippy), not(doctest)), feature(doc_cfg))]
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
 #[cfg(feature = "std")]
