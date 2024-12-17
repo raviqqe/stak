@@ -7,7 +7,33 @@
 
 The no-`std` and no-`alloc` R7RS Scheme implementation in Rust
 
-The documentation is [here](https://raviqqe.github.io/stak).
+The full documentation is [here](https://raviqqe.github.io/stak).
+
+## Install
+
+### Library
+
+```sh
+cargo add stak
+```
+
+### Command line tools
+
+```sh
+# The Scheme interpreter
+cargo install stak
+
+# The minimal Scheme interpreter (5 times smaller!)
+cargo install mstak
+
+# The Scheme to bytecode compiler
+cargo install stak-compile
+
+# The bytecode interpreter
+cargo install stak-interpret
+```
+
+## Examples
 
 ## License
 
