@@ -120,7 +120,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a false value.
     #[inline]
-    pub fn set_false(&mut self, cons: Cons) {
+    pub(crate) fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 
@@ -172,13 +172,13 @@ impl<'a> Memory<'a> {
         self.car(self.stack)
     }
 
-    /// Allocates a cons.
+    /// Allocates a cons with a default tag of [`Type::Pair`].
     #[inline]
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
-    /// Allocates a cons on heap.
+    /// Allocates a cons.
     #[inline]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;

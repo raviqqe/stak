@@ -82,7 +82,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self.primitive_set
     }
 
-    /// Runs a virtual machine.
+    /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
