@@ -861,6 +861,7 @@ dependencies = [
  "stak-build",
  "stak-device",
  "stak-file",
+ "stak-macro",
  "stak-process-context",
  "stak-r7rs",
  "stak-sac",

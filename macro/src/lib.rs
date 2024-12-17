@@ -10,7 +10,7 @@ use std::path::{Path, MAIN_SEPARATOR_STR};
 use syn::{parse_macro_input, LitStr};
 
 /// Includes a program in R7RS Scheme as bytecodes built by the
-/// `stak::build::build_r7rs` function.
+/// [`stak_build::build_r7rs`] function.
 #[proc_macro]
 pub fn include_bytecode(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
