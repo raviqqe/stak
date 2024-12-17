@@ -2,6 +2,7 @@ mod error;
 #[doc(cfg(feature = "libc"))]
 #[cfg(feature = "libc")]
 mod libc;
+#[doc(cfg(feature = "std"))]
 #[cfg(feature = "std")]
 mod os;
 mod void;
