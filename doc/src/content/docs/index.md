@@ -38,8 +38,8 @@ Stak Scheme is a miniature, embeddable [Scheme][scheme] implementation in Rust.
 ## References
 
 - This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
-- [R7RS small][r7rs-small]
 - [Scheme][scheme]
+- [The R7RS-small standard][r7rs-small]
 
 ## License
 
