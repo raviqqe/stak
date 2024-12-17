@@ -13,11 +13,15 @@ The full documentation is [here](https://raviqqe.github.io/stak).
 
 ### Library
 
+To install Stak Scheme as a library in your Rust project, run:
+
 ```sh
 cargo add stak
 ```
 
 ### Command line tools
+
+To install the Scheme interpreter and alike as command line tools, run:
 
 ```sh
 # The Scheme interpreter
