@@ -97,7 +97,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 }
 ```
 
-### Handling input and output of a Scheme script
+### Communication between Scheme and Rust
 
 Currently, in-memory standard input (`stdin`) and output (`stdout`) to Scheme scripts are the only way to communicate information between Rust programs and Scheme scripts.
 
