@@ -122,7 +122,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut output = [0u8; BUFFER_SIZE];
     let mut error = [0u8; BUFFER_SIZE];
 
-
     run(BYTECODES, input.to_string().as_bytes(), &mut output, &mut error)?;
 
     let error = decode_buffer(&error)?;
