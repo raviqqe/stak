@@ -16,7 +16,7 @@ trace_instruction = []
 trace_memory = []
 
 [dependencies]
-cfg-exif = "0.3.0"
+cfg-exif = "0.3.1"
 nonbox = { version = "0.4.1", optional = true }
 
 [dev-dependencies]

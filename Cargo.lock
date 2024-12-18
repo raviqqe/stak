@@ -188,9 +188,9 @@ dependencies = [
 
 [[package]]
 name = "cfg-exif"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcdfe3b5f3997edf006fb6d77713fc63d4c6789adc50a44e7bfd074e7e8337b1"
+checksum = "f782369519ff0fef6ec4fcc325a7328ac0136950ddf0a0d55f4a54cddca743b4"
 
 [[package]]
 name = "cfg-if"
