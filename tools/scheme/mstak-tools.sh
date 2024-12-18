@@ -2,7 +2,7 @@
 
 set -e
 
-directory=$(dirname $0)/../../..
+directory=$(dirname $0)/../..
 raw_arguments="$@"
 
 arguments() {
