@@ -90,7 +90,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
         SmallPrimitiveSet::new(
             // Attach standard input, output, and error of this process to a virtual machine.
             StdioDevice::new(),
-            // Use void system interfaces for security because we don't need them.
+            // Use void system interfaces for security because we don't need them for this example.
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
