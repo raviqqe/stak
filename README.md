@@ -37,7 +37,7 @@ cargo install stak-interpret
 
 ## Examples
 
-### Embedding a Scheme script
+### Embedding Scheme scripts in Rust
 
 First, prepare a Scheme script at `src/hello.scm`.
 
