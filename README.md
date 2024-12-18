@@ -97,6 +97,66 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 }
 ```
 
+### Handling input and output of a Scheme script
+
+First, prepare a Scheme script at `src/hello.scm`.
+
+```scheme
+(import (scheme base))
+
+(write-string "Hello, world!\n")
+```
+
+Then, add a build script at `build.rs` to build the Scheme source file into bytecodes.
+
+```rust no_run
+use stak_build::{build_r7rs, BuildError};
+
+fn main() -> Result<(), BuildError> {
+    build_r7rs()
+}
+```
+
+Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak/macro.include_bytecode.html).
+
+```rust
+use core::error::Error;
+use stak::{
+    device::StdioDevice,
+    file::VoidFileSystem,
+    include_bytecode,
+    process_context::VoidProcessContext,
+    r7rs::{SmallError, SmallPrimitiveSet},
+    time::VoidClock,
+    vm::Vm,
+};
+
+const HEAP_SIZE: usize = 1 << 16;
+const BYTECODES: &[u8] = include_bytecode!("hello.scm");
+
+fn main() -> Result<(), Box<dyn Error>> {
+    run(BYTECODES)?;
+
+    Ok(())
+}
+
+fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
+    let mut heap = [Default::default(); HEAP_SIZE];
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(
+            StdioDevice::new(),
+            VoidFileSystem::new(),
+            VoidProcessContext::new(),
+            VoidClock::new(),
+        ),
+    )?;
+
+    vm.initialize(bytecodes.iter().copied())?;
+    vm.run()
+}
+```
+
 ## License
 
 [MIT](https://github.com/raviqqe/stak/blob/main/LICENSE)
