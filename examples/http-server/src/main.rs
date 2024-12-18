@@ -43,13 +43,6 @@ async fn sum(input: String) -> response::Result<(StatusCode, String)> {
     })
 }
 
-fn decode_buffer(buffer: &[u8]) -> response::Result<String> {
-    Ok(CStr::from_bytes_until_nul(buffer)
-        .map_err(|error| error.to_string())?
-        .to_string_lossy()
-        .into())
-}
-
 fn run(
     bytecodes: &[u8],
     input: &[u8],
@@ -69,4 +62,11 @@ fn run(
 
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()
+}
+
+fn decode_buffer(buffer: &[u8]) -> response::Result<String> {
+    Ok(CStr::from_bytes_until_nul(buffer)
+        .map_err(|error| error.to_string())?
+        .to_string_lossy()
+        .into())
 }
