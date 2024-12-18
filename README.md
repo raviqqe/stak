@@ -138,6 +138,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err(error.into());
     }
 
+    // Decode and print the output.
     println!("Answer: {}", isize::from_str(&decode_buffer(&output)?)?);
 
     Ok(())
