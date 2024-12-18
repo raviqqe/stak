@@ -118,7 +118,7 @@ const HEAP_SIZE: usize = 1 << 16;
 const BYTECODES: &[u8] = include_bytecode!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut input = 42;
+    let mut input = 24;
     let mut output = [0u8; BUFFER_SIZE];
     let mut error = [0u8; BUFFER_SIZE];
 
