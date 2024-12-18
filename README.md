@@ -85,14 +85,18 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
+            // Attach standard input, output, and error of this process to a virtual machine.
             StdioDevice::new(),
+            // Use void system interfaces for security because we don't need them.
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
     )?;
 
+    // Initialize a virtual machine with bytecodes.
     vm.initialize(bytecodes.iter().copied())?;
+    // Run bytecodes on a virtual machine.
     vm.run()
 }
 ```
