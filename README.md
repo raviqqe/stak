@@ -102,9 +102,9 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 Currently, in-memory standard input (`stdin`) and output (`stdout`) to Scheme scripts are the only way to communicate information between Rust programs and Scheme scripts.
 
 ```rust
-use core::error::Error;
+use core::{error::Error, ffi::CStr, str::FromStr};
 use stak::{
-    device::StdioDevice,
+    device::ReadWriteDevice,
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
@@ -114,7 +114,7 @@ use stak::{
 };
 
 const BUFFER_SIZE: usize = 1 << 8;
-const HEAP_SIZE: usize = 1 << 14;
+const HEAP_SIZE: usize = 1 << 16;
 const BYTECODES: &[u8] = include_bytecode!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -131,7 +131,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err(error.into());
     }
 
-    println!("Answer: {}", f64::parse(decode_buffer(&output)?)?);
+    println!("Answer: {}", isize::from_str(&decode_buffer(&output)?)?);
 
     Ok(())
 }
@@ -157,7 +157,7 @@ fn run(
     vm.run()
 }
 
-fn decode_buffer(buffer: &[u8]) -> response::Result<String> {
+fn decode_buffer(buffer: &[u8]) -> Result<String, Box<dyn Error>> {
     Ok(CStr::from_bytes_until_nul(buffer)
         .map_err(|error| error.to_string())?
         .to_string_lossy()
