@@ -9,7 +9,7 @@ hero:
   tagline: The no-std and no-alloc Scheme implementation in Rust.
   actions:
     - text: Rust integration
-      link: rust/stak
+      link: https://docs.rs/stak/
       icon: document
       variant: primary
     - text: Examples
