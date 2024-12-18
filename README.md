@@ -37,7 +37,7 @@ cargo install stak-interpret
 
 ## Examples
 
-### Running a Scheme script
+### Embedding a Scheme script
 
 First, prepare a Scheme script at `src/hello.scm`.
 
