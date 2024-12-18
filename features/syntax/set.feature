@@ -8,7 +8,7 @@ Feature: set!
       (set! x 65)
       (write-u8 x)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Set a local variable
@@ -20,5 +20,5 @@ Feature: set!
         (set! x 65)
         (write-u8 x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

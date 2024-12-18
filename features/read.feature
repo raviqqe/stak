@@ -11,7 +11,7 @@ Feature: Read
       """text
       A
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -30,7 +30,7 @@ Feature: Read
       """text
       ABC
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "ABC"
@@ -47,7 +47,7 @@ Feature: Read
       """text
       A
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -65,7 +65,7 @@ Feature: Read
       """text
       A
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "AA"
@@ -84,7 +84,7 @@ Feature: Read
       """text
       AB
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -100,7 +100,7 @@ Feature: Read
       """text
       A
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -116,7 +116,7 @@ Feature: Read
       """text
       A
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -133,7 +133,7 @@ Feature: Read
       """text
       A
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "AA"
@@ -151,7 +151,7 @@ Feature: Read
       """text
       AB
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -168,7 +168,7 @@ Feature: Read
       """text
       <value>
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -223,7 +223,7 @@ Feature: Read
       """text
       foo
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak  main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"

@@ -15,7 +15,7 @@ Feature: letrec*
 
       (write-u8 (f 0))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind two variables
@@ -31,5 +31,5 @@ Feature: letrec*
 
       (write-u8 (f 0))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

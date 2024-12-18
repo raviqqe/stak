@@ -9,7 +9,7 @@ Feature: Dynamic wind
         (lambda () (write-u8 66))
         (lambda () (write-u8 67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Call a before callback on an entrance into a dynamic extent
@@ -32,7 +32,7 @@ Feature: Dynamic wind
           (set! f #f)
           (g #f)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABAB"
 
   Scenario: Call an after callback on an exit from a dynamic extent
@@ -53,7 +53,7 @@ Feature: Dynamic wind
           (set! f k)
           (g)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Call callbacks for nested dynamic extents
@@ -80,7 +80,7 @@ Feature: Dynamic wind
           (set! f #f)
           (g #f)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDABCD"
 
@@ -119,6 +119,6 @@ Feature: Dynamic wind
           (set! f #f)
           (h #f)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDEFGHABCDEFGH"

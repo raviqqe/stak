@@ -6,7 +6,7 @@ Feature: and
 
       (write-u8 (if (and <values>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

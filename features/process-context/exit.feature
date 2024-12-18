@@ -9,7 +9,7 @@ Feature: Exit
 
         (write-u8 65)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly ""
 
     Scenario: Exit an interpreter with a true value
@@ -19,7 +19,7 @@ Feature: Exit
 
         (exit #t)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the exit status should be 0
 
     Scenario: Exit an interpreter with a false value
@@ -29,7 +29,7 @@ Feature: Exit
 
         (exit #f)
         """
-      When I run `scheme main.scm`
+      When I run `stak  main.scm`
       Then the exit status should not be 0
 
     Scenario: Leave a dynamic extent
@@ -42,7 +42,7 @@ Feature: Exit
           (lambda () (exit))
           (lambda () (write-u8 66)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "AB"
 
   Rule: `emergency-exit`
@@ -55,7 +55,7 @@ Feature: Exit
 
         (write-u8 65)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly ""
 
     Scenario: Exit an interpreter with a true value
@@ -65,7 +65,7 @@ Feature: Exit
 
         (emergency-exit #t)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the exit status should be 0
 
     Scenario: Exit an interpreter with a false value
@@ -75,7 +75,7 @@ Feature: Exit
 
         (emergency-exit #f)
         """
-      When I run `scheme main.scm`
+      When I run `stak  main.scm`
       Then the exit status should not be 0
 
     Scenario: Leave a dynamic extent
@@ -88,5 +88,5 @@ Feature: Exit
           (lambda () (emergency-exit))
           (lambda () (write-u8 65)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly ""

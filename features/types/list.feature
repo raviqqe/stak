@@ -6,7 +6,7 @@ Feature: List
 
       (define x '<value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
     Examples:
@@ -24,7 +24,7 @@ Feature: List
 
       (cons 42 '())
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Create a pair with a non-cons cdr
@@ -34,7 +34,7 @@ Feature: List
 
       (cons 1 2)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Create a list
@@ -44,7 +44,7 @@ Feature: List
 
       (list 1 2 3)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Use a `for-each` procedure
@@ -56,7 +56,7 @@ Feature: List
         (lambda (x) (write-u8 (+ 60 x)))
         '(5 6 7))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use a `for-each` procedure with two lists
@@ -69,7 +69,7 @@ Feature: List
         '(65 66 67)
         '(1 2 3))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "BDF"
 
   Scenario: Use a `for-each` procedure with three lists
@@ -83,7 +83,7 @@ Feature: List
         '(1 2 3)
         '(4 5 6))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "FIL"
 
   Scenario: Use a `map` procedure
@@ -97,7 +97,7 @@ Feature: List
           (lambda (x) (+ 60 x))
           '(5 6 7)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use a `map` procedure with two lists
@@ -112,7 +112,7 @@ Feature: List
           '(65 66 67)
           '(1 2 3)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "BDF"
 
   Scenario: Use a `map` procedure with three lists
@@ -128,7 +128,7 @@ Feature: List
           '(1 2 3)
           '(4 5 6)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "FIL"
 
   Scenario: Use a `map` procedure with uneven lists
@@ -143,7 +143,7 @@ Feature: List
           '(65 66 67 68)
           '(1 2 3)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "BDF"
 
   Scenario Outline: Use an `append` procedure
@@ -153,7 +153,7 @@ Feature: List
 
       (for-each write-u8 (append <values>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -178,7 +178,7 @@ Feature: List
 
       (for-each write-u8 y)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AAAB"
 
@@ -189,7 +189,7 @@ Feature: List
 
       (write-u8 (if (memq <value> '(<values>)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -210,7 +210,7 @@ Feature: List
 
       (write-u8 (if (memv <value> '(<values>)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -231,7 +231,7 @@ Feature: List
 
       (write-u8 (if (member <value> '(<values>)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -252,7 +252,7 @@ Feature: List
 
       (write-u8 (cdr (<procedure> 42 '((1 . 1) (42 . 65) (3 . 3)))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -268,7 +268,7 @@ Feature: List
 
       (write-u8 (cdr (<procedure> #\B '((#\A . 1) (#\B . 65) (#\C . 3)))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -283,7 +283,7 @@ Feature: List
 
       (write-u8 (if (pair? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -301,7 +301,7 @@ Feature: List
 
       (write-u8 (if (null? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -319,7 +319,7 @@ Feature: List
 
       (write-u8 (if (list? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -337,7 +337,7 @@ Feature: List
 
       (write-u8 (<procedure> '<value>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -365,7 +365,7 @@ Feature: List
 
       (write-u8 (if (equal? (list-copy <value>) <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:

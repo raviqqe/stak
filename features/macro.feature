@@ -11,7 +11,7 @@ Feature: Macro
 
       (write-u8 (foo 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match rules
@@ -28,7 +28,7 @@ Feature: Macro
 
       (write-u8 (foo 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Match a nested pattern
@@ -48,7 +48,7 @@ Feature: Macro
           (else
             66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Capture a free variable
@@ -70,7 +70,7 @@ Feature: Macro
       (modify)
       (write-u8 x)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Match an ellipsis pattern
@@ -85,7 +85,7 @@ Feature: Macro
 
       (foo write-u8 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match a preceding ellipsis pattern
@@ -100,7 +100,7 @@ Feature: Macro
 
       (foo 65 write-u8)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match a succeeding ellipsis pattern
@@ -115,7 +115,7 @@ Feature: Macro
 
       (foo write-u8 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match an ellipsis pattern with an empty list
@@ -130,7 +130,7 @@ Feature: Macro
 
       (foo)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match a nested ellipsis pattern
@@ -145,7 +145,7 @@ Feature: Macro
 
       (foo (write-u8 65) (write-u8 66 (current-output-port)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Match a deeply nested ellipsis pattern
@@ -162,7 +162,7 @@ Feature: Macro
         ((write-u8 65))
         ((write-u8 66) (write-u8 67 (current-output-port))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Expand an ellipsis pattern
@@ -179,7 +179,7 @@ Feature: Macro
         (write-u8 65)
         (write-char #\B))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Match two ellipses at different levels
@@ -198,7 +198,7 @@ Feature: Macro
           5
           "bar"))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match an improper list
@@ -213,7 +213,7 @@ Feature: Macro
 
       (write-u8 (foo (65 . 66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Match an ellipsis pattern and an improper list
@@ -228,7 +228,7 @@ Feature: Macro
 
       (write-u8 (foo (65 66 . 67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "C"
 
   Scenario: Expand an empty ellipsis pattern and an improper list
@@ -243,7 +243,7 @@ Feature: Macro
 
       (write-u8 (foo (65 . 66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Match an ellipsis pattern to an improper list
@@ -258,7 +258,7 @@ Feature: Macro
 
       (foo (1 . 2))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Expand an ellipsis pattern of an improper list
@@ -275,7 +275,7 @@ Feature: Macro
 
       (for-each write-u8 (f 65 66 67))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Expand a list with an ellipsis pattern
@@ -290,7 +290,7 @@ Feature: Macro
 
       (foo (write-u8 65))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Expand ellipsis and singleton patterns
@@ -305,7 +305,7 @@ Feature: Macro
 
       (foo write-u8 65 66 67)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Match a literal identifier
@@ -320,7 +320,7 @@ Feature: Macro
 
       (write-u8 (my-if #f then 65 else 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Expand a macro recursively
@@ -336,7 +336,7 @@ Feature: Macro
 
       (write-u8 (foo))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Expand a spread variable with a constant
@@ -352,7 +352,7 @@ Feature: Macro
 
       (write-u8 (foo x y z))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Throw an error if no rule matches
@@ -366,7 +366,7 @@ Feature: Macro
 
       (foo 42)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Define a local macro
@@ -381,7 +381,7 @@ Feature: Macro
               x))))
         (write-u8 (foo 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Define a local macro capturing a global value of the same name
@@ -398,7 +398,7 @@ Feature: Macro
               foo))))
         (write-u8 (foo)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Define a recursive local macro
@@ -415,7 +415,7 @@ Feature: Macro
               (foo y)))))
         (write-u8 (foo 65 66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Define a mutually recursive local macro
@@ -438,7 +438,7 @@ Feature: Macro
               (foo x ...)))))
         (write-u8 (foo 65 66 67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Define a recursive local macro in a body
@@ -456,7 +456,7 @@ Feature: Macro
 
         (write-u8 (foo 65 66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Define a mutually recursive local macro in a body
@@ -481,7 +481,7 @@ Feature: Macro
 
         (write-u8 (foo 65 66 67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Shadow a global value by a global macro
@@ -498,7 +498,7 @@ Feature: Macro
 
       (write-u8 (foo 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a global macro as a shadowed value
@@ -515,7 +515,7 @@ Feature: Macro
 
       (write-u8 foo)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Use a higher-order macro
@@ -535,7 +535,7 @@ Feature: Macro
                 x))))
         (write-u8 (foo bar 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Shadow a global macro by a global value
@@ -552,7 +552,7 @@ Feature: Macro
 
       (write-u8 foo)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Shadow a local value by a local macro
@@ -568,7 +568,7 @@ Feature: Macro
                 x))))
           (write-u8 (foo 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a local macro as a shadowed value
@@ -584,7 +584,7 @@ Feature: Macro
                 x))))
           (write-u8 foo)))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Shadow a local macro by a local value
@@ -600,7 +600,7 @@ Feature: Macro
         (let ((foo 65))
           (write-u8 foo)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Shadow a literal by a global value
@@ -617,7 +617,7 @@ Feature: Macro
 
       (write-u8 (foo bar 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Shadow a literal by a local value
@@ -633,7 +633,7 @@ Feature: Macro
       (let ((bar #f))
         (write-u8 (foo bar 65)))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Capture a local value in a local macro
@@ -650,7 +650,7 @@ Feature: Macro
           (let ((x 66))
             (write-u8 (foo)))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Capture a local macro in a local macro
@@ -671,7 +671,7 @@ Feature: Macro
           (let ((foo #f))
             (write-u8 (bar)))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Capture a local macro in a local macro of the same name
@@ -691,7 +691,7 @@ Feature: Macro
                   (foo)))))
           (write-u8 (foo))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Put a sequence in a body of `let-syntax`
@@ -703,7 +703,7 @@ Feature: Macro
         (write-u8 65)
         (write-u8 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Put a sequence in a body of `letrec-syntax`
@@ -715,7 +715,7 @@ Feature: Macro
         (write-u8 65)
         (write-u8 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   @chibi @guile @stak
@@ -731,7 +731,7 @@ Feature: Macro
 
       foo
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Resolve denotations recursively
@@ -752,7 +752,7 @@ Feature: Macro
 
       (write-u8 (bar 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Bind the same name as a global value
@@ -769,7 +769,7 @@ Feature: Macro
 
       (write-u8 (foo 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind the same name as a local value
@@ -785,7 +785,7 @@ Feature: Macro
                   (let ((x y)) x)))))
           (write-u8 (foo 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind the same name as a global macro
@@ -804,7 +804,7 @@ Feature: Macro
 
       (write-u8 (foo 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind the same name as a local macro
@@ -823,7 +823,7 @@ Feature: Macro
                   (let ((x y)) x)))))
           (write-u8 (foo 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Re-define `define-syntax`
@@ -835,7 +835,7 @@ Feature: Macro
 
       (write-u8 define-syntax)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Re-define `...`
@@ -847,7 +847,7 @@ Feature: Macro
 
       (write-u8 ...)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Define `_`
@@ -859,5 +859,5 @@ Feature: Macro
 
       (write-u8 _)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

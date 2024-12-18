@@ -6,7 +6,7 @@ Feature: Time
 
       (write-u8 (if (> (current-second) 1727447593) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   @chibi @stak
@@ -19,5 +19,5 @@ Feature: Time
 
       (write-u8 (if (>= (current-jiffy) (* (- seconds 1) (jiffies-per-second))) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

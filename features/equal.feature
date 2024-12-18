@@ -6,7 +6,7 @@ Feature: Equality
 
       (write-u8 (if (eq? <lhs> <rhs>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -27,7 +27,7 @@ Feature: Equality
 
       (write-u8 (if (eqv? <lhs> <rhs>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -50,7 +50,7 @@ Feature: Equality
 
       (write-u8 (if (equal? <lhs> <rhs>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -73,7 +73,7 @@ Feature: Equality
 
       (write-u8 (if (equal? <lhs> <rhs>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

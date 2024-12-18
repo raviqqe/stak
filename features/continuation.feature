@@ -6,7 +6,7 @@ Feature: Continuation
 
       (write-u8 (call/cc (lambda (k) (k 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a continuation with a global variable
@@ -18,7 +18,7 @@ Feature: Continuation
 
       (write-u8 (+ 60 (call/cc (lambda (k) (k x)))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a continuation with a local variable
@@ -30,7 +30,7 @@ Feature: Continuation
 
       (write-u8 (+ 60 (f 5)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return a value from a receiver
@@ -40,7 +40,7 @@ Feature: Continuation
 
       (write-u8 (call/cc (lambda (k) 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Modify environment
@@ -61,7 +61,7 @@ Feature: Continuation
           (backtrack #f)
           #f))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly:
       """
       ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -74,5 +74,5 @@ Feature: Continuation
 
       (write-u8 (call-with-current-continuation (lambda (k) (k 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

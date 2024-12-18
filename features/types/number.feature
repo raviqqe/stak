@@ -6,7 +6,7 @@ Feature: Number
 
       (write-u8 (if (number? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -24,7 +24,7 @@ Feature: Number
 
       (write-u8 (if (<predicate> <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -47,7 +47,7 @@ Feature: Number
 
       (write-u8 (if (<predicate> <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -76,7 +76,7 @@ Feature: Number
 
       (write-u8 (if (<predicate> <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -103,7 +103,7 @@ Feature: Number
 
       (write-u8 (if (<predicate> #f) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
     Examples:
@@ -121,7 +121,7 @@ Feature: Number
 
       (define x <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
     Examples:
@@ -139,7 +139,7 @@ Feature: Number
 
       (write-u8 (+ 66 -1))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use large (but not big) integers
@@ -149,7 +149,7 @@ Feature: Number
 
       (write-u8 (- 1065 1000))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Use integers around the encoding base
@@ -159,7 +159,7 @@ Feature: Number
 
       (write-u8 (- <value> 60))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -175,7 +175,7 @@ Feature: Number
 
       (write-u8 (if (= <expression> <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -199,7 +199,7 @@ Feature: Number
 
       (write-u8 (if (= <expression> <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -239,7 +239,7 @@ Feature: Number
 
       (write-u8 (if (= (/ 2) (/ 1 2)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   @float
@@ -250,7 +250,7 @@ Feature: Number
 
       (write-u8 (if (< (abs (- (expt 2 3) (exp (* (log 2) 3)))) 0.000001) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   @float
@@ -261,7 +261,7 @@ Feature: Number
 
       (write-u8 (if (< (abs (- (log 2 3) (/ (log 2) (log 3)))) 0.000001) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   @float
@@ -272,7 +272,7 @@ Feature: Number
 
       (write-u8 (if (= (truncate <input>) <output>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -298,7 +298,7 @@ Feature: Number
 
       (write-u8 (if (= (floor <input>) <output>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -324,7 +324,7 @@ Feature: Number
 
       (write-u8 (if (= (ceiling <input>) <output>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -350,7 +350,7 @@ Feature: Number
 
       (write-u8 (if (= (round <input>) <output>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -381,7 +381,7 @@ Feature: Number
 
       (write-u8 (if <expression> 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -402,7 +402,7 @@ Feature: Number
 
       (write-u8 (if (< <values>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -417,7 +417,7 @@ Feature: Number
 
       (write-u8 (if (= (min <values>) <output>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -436,7 +436,7 @@ Feature: Number
 
       (write-u8 (if (= (max <values>) <output>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -455,7 +455,7 @@ Feature: Number
 
       (write-string (number->string <value> <radix>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -492,7 +492,7 @@ Feature: Number
 
       (write-string (number->string <value>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     # TODO Use an `exactly` adverb.
     Then the stdout should contain "<value>"
 
@@ -512,7 +512,7 @@ Feature: Number
 
       (write-string (number->string (string->number "<value>" <radix>)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -553,7 +553,7 @@ Feature: Number
 
       (write-string (number->string (string->number "<value>")))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -571,7 +571,7 @@ Feature: Number
 
       (write-u8 (if (string->number "<value>") 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
     Examples:

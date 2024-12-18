@@ -5,7 +5,7 @@ Feature: Evaluation
       """scheme
       (import (scheme eval))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Evaluate false
@@ -15,7 +15,7 @@ Feature: Evaluation
 
       (write-u8 (if (eval #f (environment)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Evaluate a number
@@ -25,7 +25,7 @@ Feature: Evaluation
 
       (write-u8 (eval 65 (environment)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Evaluate a string
@@ -35,7 +35,7 @@ Feature: Evaluation
 
       (write-string (eval "foo" (environment)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "foo"
 
   Scenario: Use an environment
@@ -45,7 +45,7 @@ Feature: Evaluation
 
       (write-u8 (eval 65 (environment '(scheme base))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use two environments
@@ -55,7 +55,7 @@ Feature: Evaluation
 
       (write-u8 (eval 65 (environment '(scheme base) '(scheme write))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use an interaction environment
@@ -65,7 +65,7 @@ Feature: Evaluation
 
       (write-u8 (eval 65 (interaction-environment)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a `+` procedure
@@ -75,7 +75,7 @@ Feature: Evaluation
 
       (write-u8 (eval '(+ 60 5) (environment '(scheme base))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a `display` procedure
@@ -85,7 +85,7 @@ Feature: Evaluation
 
       (eval '(display "foo") (environment '(scheme write)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "foo"
 
   @gauche @guile @stak
@@ -100,7 +100,7 @@ Feature: Evaluation
           (write-u8 x))
         (environment '(scheme base)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   @gauche @guile @stak
@@ -116,7 +116,7 @@ Feature: Evaluation
           (write-u8 (f 1)))
         (environment '(scheme base)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario Outline: Use an `if` syntax
@@ -126,7 +126,7 @@ Feature: Evaluation
 
       (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -143,7 +143,7 @@ Feature: Evaluation
 
         (write-u8 (eval '($$begin 42 65) (environment)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Use a `$$if` primitive with a false condition
@@ -153,7 +153,7 @@ Feature: Evaluation
 
         (write-u8 (eval '($$if #f 65 66) (environment)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "B"
 
     Scenario: Use a `$$if` primitive with a true condition
@@ -163,7 +163,7 @@ Feature: Evaluation
 
         (write-u8 (eval '($$if #t 65 66) (environment)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Use a `$$lambda` primitive with no argument
@@ -173,7 +173,7 @@ Feature: Evaluation
 
         (write-u8 (eval '(($$lambda () 65)) (environment)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Use a `$$lambda` primitive with an argument
@@ -183,7 +183,7 @@ Feature: Evaluation
 
         (write-u8 (eval '(($$lambda (x) x) 65) (environment)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Use a `$$set!` primitive
@@ -193,5 +193,5 @@ Feature: Evaluation
 
         (write-u8 (eval '($$begin ($$set! x 65) x) (environment)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"

@@ -8,7 +8,7 @@ Feature: cond-expand
         (else
           (write-u8 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match an implemented feature
@@ -20,7 +20,7 @@ Feature: cond-expand
         (r7rs
           (write-u8 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Match a missing feature
@@ -34,7 +34,7 @@ Feature: cond-expand
         (else
           (write-u8 66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Match an implemented library
@@ -46,7 +46,7 @@ Feature: cond-expand
         ((library (scheme base))
           (write-u8 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   @chibi @gauche @stak
@@ -61,7 +61,7 @@ Feature: cond-expand
         (else
           (write-u8 66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Expand an empty clause
@@ -71,7 +71,7 @@ Feature: cond-expand
 
       (cond-expand (r7rs))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Expand an empty `else` clause
@@ -81,7 +81,7 @@ Feature: cond-expand
 
       (cond-expand (else))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Use a `not` requirement
@@ -93,7 +93,7 @@ Feature: cond-expand
         ((not foo)
           (write-u8 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Rule: `and`
@@ -106,7 +106,7 @@ Feature: cond-expand
           ((and)
             (write-u8 65)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Expand a requirement
@@ -118,7 +118,7 @@ Feature: cond-expand
           ((and r7rs)
             (write-u8 65)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Expand two requirements
@@ -130,7 +130,7 @@ Feature: cond-expand
           ((and r7rs r7rs)
             (write-u8 65)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
   Rule: `or`
@@ -145,7 +145,7 @@ Feature: cond-expand
           (else
             (write-u8 66)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "B"
 
     Scenario: Expand a requirement
@@ -157,7 +157,7 @@ Feature: cond-expand
           ((or r7rs)
             (write-u8 65)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Expand two requirements
@@ -169,5 +169,5 @@ Feature: cond-expand
           ((or foo r7rs)
             (write-u8 65)))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"

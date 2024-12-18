@@ -6,5 +6,5 @@ Feature: EOF object
 
       (write-u8 (if (eof-object? (eof-object)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

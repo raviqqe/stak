@@ -6,7 +6,7 @@ Feature: when
 
       (when #t (write-u8 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Do not evaluate a clause
@@ -16,5 +16,5 @@ Feature: when
 
       (when #f (write-u8 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly ""

@@ -6,7 +6,7 @@ Feature: Character
 
       (write-u8 (if (char? <expression>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -22,7 +22,7 @@ Feature: Character
 
       (write-u8 (if (char-whitespace? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -40,7 +40,7 @@ Feature: Character
 
       (write-char #\A)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Write a newline character
@@ -52,7 +52,7 @@ Feature: Character
       (newline)
       (write-char #\B)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly:
       """
       A
@@ -66,7 +66,7 @@ Feature: Character
 
       (write-u8 (if (<predicate> <characters>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

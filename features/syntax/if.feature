@@ -6,7 +6,7 @@ Feature: if
 
       (write-u8 (if <value> 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -21,7 +21,7 @@ Feature: if
 
       (write-u8 <expression>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -36,7 +36,7 @@ Feature: if
 
       (write-u8 <expression>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -51,7 +51,7 @@ Feature: if
 
       (if <value> (write-u8 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -74,7 +74,7 @@ Feature: if
         (write-u8 65)
         (write-u8 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -121,7 +121,7 @@ Feature: if
                   (write-u8 65)
                   (write-u8 66))))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -158,7 +158,7 @@ Feature: if
             (write-u8 65)
             (write-u8 66))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

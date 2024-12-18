@@ -6,7 +6,7 @@ Feature: Quasi-quote
 
       (write-u8 `65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Quote a list
@@ -16,7 +16,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(65 66 67))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote a number
@@ -30,7 +30,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(,x ,y ,z))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote a list
@@ -44,7 +44,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(,x ,y . ,z))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote and splice a list
@@ -56,7 +56,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(,@x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Unquote and splice two lists
@@ -69,7 +69,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(,@x ,@y))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Unquote and splice three lists
@@ -83,7 +83,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(,@x ,@y ,@z))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Unquote and splice an expression
@@ -95,7 +95,7 @@ Feature: Quasi-quote
 
       (for-each write-u8 `(,@(f 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Capture a local variable
@@ -108,5 +108,5 @@ Feature: Quasi-quote
 
       (for-each write-u8 (foo 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

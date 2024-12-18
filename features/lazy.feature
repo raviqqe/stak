@@ -6,7 +6,7 @@ Feature: Lazy
 
       (delay (write-u8 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly ""
 
   Scenario Outline: Check if a value is a promise
@@ -16,7 +16,7 @@ Feature: Lazy
 
       (write-u8 (if (promise? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -32,7 +32,7 @@ Feature: Lazy
 
       (force (delay (write-u8 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Force a promise twice
@@ -45,7 +45,7 @@ Feature: Lazy
       (force x)
       (force x)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Force and delay an expression
@@ -55,7 +55,7 @@ Feature: Lazy
 
       (delay-force (write-u8 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly ""
 
   Scenario: Force, delay, and force an expression
@@ -65,7 +65,7 @@ Feature: Lazy
 
       (write-u8 (force (delay-force (make-promise (+ 60 5)))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Force and delay expressions in a loop
@@ -80,7 +80,7 @@ Feature: Lazy
               (make-promise 65)
               (delay-force (loop (- i 1)))))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Make a promise
@@ -90,5 +90,5 @@ Feature: Lazy
 
       (write-u8 (force (make-promise 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

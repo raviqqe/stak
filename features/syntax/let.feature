@@ -6,7 +6,7 @@ Feature: let
 
       (write-u8 (let ((x 65)) x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind two variables
@@ -16,7 +16,7 @@ Feature: let
 
       (write-u8 (let ((x 60) (y 5)) (+ x y)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a bound procedure
@@ -32,7 +32,7 @@ Feature: let
 
       (write-u8 (g))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Cause a side effect in a body
@@ -45,7 +45,7 @@ Feature: let
           (write-u8 65)
           x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AB"
 
   Scenario: Do not corrupt a procedure environment
@@ -62,5 +62,5 @@ Feature: let
 
       (write-u8 ((f)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

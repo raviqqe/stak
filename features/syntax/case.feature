@@ -11,7 +11,7 @@ Feature: case
           (else
             66)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Evaluate the second clause
@@ -28,7 +28,7 @@ Feature: case
           (else
             67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Evaluate an `else` clause
@@ -45,5 +45,5 @@ Feature: case
           (else
             67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "C"

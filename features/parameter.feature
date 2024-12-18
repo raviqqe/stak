@@ -6,7 +6,7 @@ Feature: Parameter
 
       (write-u8 ((make-parameter 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Parameterize a procedure
@@ -20,7 +20,7 @@ Feature: Parameter
       (write-u8 (parameterize ((x 66)) (x)))
       (write-u8 (x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABA"
 
   Scenario: Parameterize nested procedures
@@ -38,7 +38,7 @@ Feature: Parameter
         (write-u8 (x)))
       (write-u8 (x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABCBA"
 
   Scenario: Use multiple parameters
@@ -57,6 +57,6 @@ Feature: Parameter
       (write-u8 (x))
       (write-u8 (y))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDAB"

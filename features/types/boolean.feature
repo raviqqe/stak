@@ -6,7 +6,7 @@ Feature: Boolean
 
       (write-u8 (if (boolean? <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -22,7 +22,7 @@ Feature: Boolean
 
       (write-u8 (if (not <value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

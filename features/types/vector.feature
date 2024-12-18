@@ -6,7 +6,7 @@ Feature: Vector
 
       (make-vector 42)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Make a vector with a fill value
@@ -16,7 +16,7 @@ Feature: Vector
 
       (make-vector 42 #t)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
   Scenario: Convert a vector to a list
@@ -26,7 +26,7 @@ Feature: Vector
 
       (for-each write-u8 (vector->list #(65 66 67)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario Outline: Get a length of a vector
@@ -36,7 +36,7 @@ Feature: Vector
 
       (write-u8 (if (= (vector-length <value>) <length>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -56,7 +56,7 @@ Feature: Vector
 
       (write-u8 (vector-ref <vector> <index>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -79,7 +79,7 @@ Feature: Vector
 
       (for-each write-u8 (vector->list xs))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

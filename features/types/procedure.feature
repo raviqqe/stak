@@ -8,7 +8,7 @@ Feature: Procedure
 
       (write-u8 (f 60))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a local procedure
@@ -19,7 +19,7 @@ Feature: Procedure
       (let ((f (lambda (x) (+ x 5))))
         (write-u8 (f 60)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call an immediate procedure
@@ -29,7 +29,7 @@ Feature: Procedure
 
       (write-u8 (+ 60 ((lambda (x) x) 5)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call nested immediate procedures
@@ -42,7 +42,7 @@ Feature: Procedure
 
       (write-u8 (f 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return a constant
@@ -53,7 +53,7 @@ Feature: Procedure
       (define (f) 65)
       (write-u8 (f))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return the first argument
@@ -64,7 +64,7 @@ Feature: Procedure
       (define (f x) x)
       (write-u8 (f 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return the second argument
@@ -75,7 +75,7 @@ Feature: Procedure
       (define (f x y) y)
       (write-u8 (f 66 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Compute a value with arguments
@@ -86,7 +86,7 @@ Feature: Procedure
       (define (f x y) (+ x y))
       (write-u8 (f 60 5))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Update a captured variable in a closure
@@ -101,7 +101,7 @@ Feature: Procedure
       (write-u8 (g))
       (write-u8 (g))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use variadic arguments
@@ -112,7 +112,7 @@ Feature: Procedure
       (define (f . xs) (for-each write-u8 xs))
       (f 65 66 67)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Use variadic arguments with a fixed argument
@@ -123,7 +123,7 @@ Feature: Procedure
       (define (f x . ys) (map (lambda (z) (write-u8 (+ x z))) ys))
       (f 65 0 1 2)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Call a fibonacci procedure
@@ -140,7 +140,7 @@ Feature: Procedure
 
       (write-u8 (+ 33 (fibonacci 10)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "X"
 
   Scenario Outline: Call an `apply` procedure
@@ -150,7 +150,7 @@ Feature: Procedure
 
       (write-u8 (+ 48 (apply + '(<values>))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -167,7 +167,7 @@ Feature: Procedure
 
       (for-each write-u8 (apply append '(<values>)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -191,7 +191,7 @@ Feature: Procedure
 
       (write-u8 (apply f '(60 5)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call an `apply` procedure twice with the same list
@@ -207,7 +207,7 @@ Feature: Procedure
       (write-u8 (apply f xs))
       (write-u8 (apply f xs))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "AA"
 
   Scenario: Call an `apply` procedure with extra arguments
@@ -217,7 +217,7 @@ Feature: Procedure
 
       (write-u8 (apply + 1 2 '(60 5)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "D"
 
   Scenario: Call an `apply` procedure with a primitive procedure
@@ -227,7 +227,7 @@ Feature: Procedure
 
       (write-u8 (cdr (apply cons '(66 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call immediate procedures capturing a local variable
@@ -246,7 +246,7 @@ Feature: Procedure
           (lambda () (f 66))
           (lambda () (f 67))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Call a procedure with too few arguments
@@ -258,7 +258,7 @@ Feature: Procedure
 
       (f)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Call a procedure with too many arguments
@@ -270,7 +270,7 @@ Feature: Procedure
 
       (f #f)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Do not modify environment of a reused closure with a primitive procedure
@@ -285,5 +285,5 @@ Feature: Procedure
       (write-u8 ((cdr (f 66))))
       (write-u8 ((cdr (f 67))))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the stdout should contain exactly "ABC"

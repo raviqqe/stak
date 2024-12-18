@@ -12,7 +12,7 @@ Feature: Smoke
 
       (define b #\B)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "BB"
 
   Scenario: Initialize a character in a list
@@ -24,7 +24,7 @@ Feature: Smoke
 
       (write-u8 (char->integer #\A))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Compile symbols in an if expression in a procedure
@@ -37,7 +37,7 @@ Feature: Smoke
 
       (write-string (symbol->string (foo)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "bar"
 
   @long
@@ -64,5 +64,5 @@ Feature: Smoke
       cat foo.scm >> main.scm
       """
     And the exit status should be 0
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
