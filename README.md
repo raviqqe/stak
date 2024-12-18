@@ -152,6 +152,7 @@ fn run(
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
+            // Create and attach an in-memory I/O device.
             ReadWriteDevice::new(input, output, error),
             VoidFileSystem::new(),
             VoidProcessContext::new(),
