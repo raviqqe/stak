@@ -84,7 +84,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
     // Prepare a heap memory of a virtual machine.
     let mut heap = [Default::default(); HEAP_SIZE];
-    // Create a virtual machine with primitive procedures.
+    // Create a virtual machine with its heap memory primitive procedures.
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
