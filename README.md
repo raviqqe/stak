@@ -99,25 +99,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 
 ### Handling input and output of a Scheme script
 
-First, prepare a Scheme script at `src/hello.scm`.
-
-```scheme
-(import (scheme base))
-
-(write-string "Hello, world!\n")
-```
-
-Then, add a build script at `build.rs` to build the Scheme source file into bytecodes.
-
-```rust no_run
-use stak_build::{build_r7rs, BuildError};
-
-fn main() -> Result<(), BuildError> {
-    build_r7rs()
-}
-```
-
-Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak/macro.include_bytecode.html).
+Currently, in-memory standard input (`stdin`) and output (`stdout`) to Scheme scripts are the only way to communicate information between Rust programs and Scheme scripts.
 
 ```rust
 use core::error::Error;
@@ -131,21 +113,40 @@ use stak::{
     vm::Vm,
 };
 
-const HEAP_SIZE: usize = 1 << 16;
-const BYTECODES: &[u8] = include_bytecode!("hello.scm");
+const BUFFER_SIZE: usize = 1 << 8;
+const HEAP_SIZE: usize = 1 << 14;
+const BYTECODES: &[u8] = include_bytecode!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(BYTECODES)?;
+    let mut input = 42;
+    let mut output = [0u8; BUFFER_SIZE];
+    let mut error = [0u8; BUFFER_SIZE];
+
+
+    run(BYTECODES, input.to_string().as_bytes(), &mut output, &mut error)?;
+
+    let error = decode_buffer(&error)?;
+
+    if !error.is_empty() {
+        return Err(error.into());
+    }
+
+    println!("Answer: {}", f64::parse(decode_buffer(&output)?)?);
 
     Ok(())
 }
 
-fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
+fn run(
+    bytecodes: &[u8],
+    input: &[u8],
+    output: &mut [u8],
+    error: &mut [u8],
+) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
-            StdioDevice::new(),
+            ReadWriteDevice::new(input, output, error),
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
@@ -154,6 +155,13 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()
+}
+
+fn decode_buffer(buffer: &[u8]) -> response::Result<String> {
+    Ok(CStr::from_bytes_until_nul(buffer)
+        .map_err(|error| error.to_string())?
+        .to_string_lossy()
+        .into())
 }
 ```
 
