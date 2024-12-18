@@ -72,6 +72,7 @@ use stak::{
 };
 
 const HEAP_SIZE: usize = 1 << 16;
+// Include a Scheme script in the bytecode format built by a build script above.
 const BYTECODES: &[u8] = include_bytecode!("hello.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
