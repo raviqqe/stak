@@ -133,6 +133,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let error = decode_buffer(&error)?;
 
+    // If stderr is not empty, we assume that some error has occurred.
     if !error.is_empty() {
         return Err(error.into());
     }
