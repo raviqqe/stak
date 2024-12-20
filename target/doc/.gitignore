@@ -1,2 +1,0 @@
-# We need to keep this directory to make a symbolic link always valid
-# during checkouts of a `stak/setup` GitHub Action somehow.
