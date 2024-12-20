@@ -9,12 +9,18 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          -
+          - --no-default-features
+          - --all-features
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: cargo build --locked
-      - run: cargo build --locked --all-features
+      - run: cargo build --locked ${{ matrix.options }}
   unit_test:
     strategy:
       fail-fast: false
