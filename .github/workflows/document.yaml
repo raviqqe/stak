@@ -26,7 +26,6 @@ jobs:
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
-      - run: rm doc/dist/rust/.lock
       - uses: actions/upload-pages-artifact@v3
         with:
           path: doc/dist
