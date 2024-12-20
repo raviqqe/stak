@@ -12,7 +12,7 @@ go run github.com/raviqqe/gherkin2markdown@latest features $directory
 rm $(find $directory -name '*smoke*')
 
 for file in $(find $directory -name '*.md'); do
-  new_file=$(dirname $file)/new_$(basename $file)
+  new_file=$(dirname $file)/$(basename $file).tmp
 
   (
     echo ---
@@ -22,8 +22,6 @@ for file in $(find $directory -name '*.md'); do
   ) >$new_file
   mv $new_file $file
 done
-
-cargo +nightly doc --all-features
 
 cd doc
 
