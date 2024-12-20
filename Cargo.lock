@@ -1167,6 +1167,7 @@ dependencies = [
 name = "stak-program"
 version = "0.1.0"
 dependencies = [
+ "cfg-exif",
  "hmr",
 ]
 
