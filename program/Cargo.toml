@@ -8,7 +8,6 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-cfg-exif = "0.3.1"
 hmr = "0.2.0"
 
 [lints]
