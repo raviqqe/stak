@@ -5,7 +5,7 @@
 //! To build all R7RS Scheme files into bytecodes, add the following
 //! [`build.rs` script](https://doc.rust-lang.org/cargo/reference/build-scripts.html)
 //! in your crate. Then, you can include them into source files in Rust
-//! using the [`stak::include_bytecode`][include_bytecode] macro.
+//! using the [`stak::include_module`][include_module] macro.
 //!
 //! ```rust
 //! use stak_build::{build_r7rs, BuildError};
@@ -16,7 +16,7 @@
 //! }
 //! ```
 //!
-//! [include_bytecode]: https://docs.rs/stak/latest/stak/macro.include_bytecode.html
+//! [include_module]: https://docs.rs/stak/latest/stak/macro.include_module.html
 
 mod error;
 

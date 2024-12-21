@@ -5,7 +5,7 @@ use core::{error::Error, ffi::CStr};
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
-    include_bytecode,
+    include_module,
     process_context::VoidProcessContext,
     module::{Module, UniversalModule},
     r7rs::{SmallError, SmallPrimitiveSet},
@@ -16,7 +16,7 @@ use stak::{
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
 
-static ROOT_MODULE: UniversalModule = include_bytecode!("handler.scm");
+static ROOT_MODULE: UniversalModule = include_module!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

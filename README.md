@@ -57,14 +57,14 @@ fn main() -> Result<(), BuildError> {
 }
 ```
 
-Now, you can include the Scheme script into a program in Rust using [the `stak::include_bytecode` macro](https://docs.rs/stak/latest/stak/macro.include_bytecode.html).
+Now, you can include the Scheme script into a program in Rust using [the `stak::include_module` macro](https://docs.rs/stak/latest/stak/macro.include_bytecode.html).
 
 ```rust
 use core::error::Error;
 use stak::{
     device::StdioDevice,
     file::VoidFileSystem,
-    include_bytecode,
+    include_module,
     process_context::VoidProcessContext,
     module::{Module, UniversalModule},
     r7rs::{SmallError, SmallPrimitiveSet},
@@ -75,7 +75,7 @@ use stak::{
 const HEAP_SIZE: usize = 1 << 16;
 
 // Include a Scheme script in the bytecode format built by the build script above.
-static MODULE: UniversalModule = include_bytecode!("hello.scm");
+static MODULE: UniversalModule = include_module!("hello.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     run(&MODULE.bytecode())?;
@@ -115,7 +115,7 @@ use core::{error::Error, ffi::CStr, str::FromStr};
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
-    include_bytecode,
+    include_module,
     process_context::VoidProcessContext,
     module::{Module, UniversalModule},
     r7rs::{SmallError, SmallPrimitiveSet},
@@ -126,7 +126,7 @@ use stak::{
 const BUFFER_SIZE: usize = 1 << 8;
 const HEAP_SIZE: usize = 1 << 16;
 
-static MODULE: UniversalModule = include_bytecode!("fibonacci.scm");
+static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut input = 24;

@@ -4,7 +4,7 @@ use core::error::Error;
 use stak::{
     device::StdioDevice,
     file::VoidFileSystem,
-    include_bytecode,
+    include_module,
     process_context::VoidProcessContext,
     module::{Module, UniversalModule},
     r7rs::{SmallError, SmallPrimitiveSet},
@@ -14,8 +14,8 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 
-static FOO_MODULE: UniversalModule = include_bytecode!("foo.scm");
-static BAR_MODULE: UniversalModule = include_bytecode!("bar.scm");
+static FOO_MODULE: UniversalModule = include_module!("foo.scm");
+static BAR_MODULE: UniversalModule = include_module!("bar.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     run(&FOO_MODULE.bytecode())?;

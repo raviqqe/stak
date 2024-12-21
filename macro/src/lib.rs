@@ -15,7 +15,7 @@ use syn::{parse_macro_input, LitStr};
 ///
 /// [stak_build]: https://docs.rs/stak-build
 #[proc_macro]
-pub fn include_bytecode(input: TokenStream) -> TokenStream {
+pub fn include_module(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result(include_result(&input.value())).into()
