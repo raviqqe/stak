@@ -1,4 +1,4 @@
-//! Guards against prorgrams.
+//! Guards against programs.
 
 use core::ops::Deref;
 

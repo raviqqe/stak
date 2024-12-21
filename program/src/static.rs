@@ -1,4 +1,4 @@
-//! Static rograms.
+//! Static programs.
 
 use crate::{Guard, Program};
 use core::ops::Deref;
