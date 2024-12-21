@@ -2,18 +2,17 @@
 
 use crate::{Guard, Module};
 use core::ops::Deref;
-use hmr::Module;
 
 /// A hot-reloaded module.
 pub struct HotReloadModule {
-    module: Module,
+    module: hmr::Module,
 }
 
 impl HotReloadModule {
     /// Creates a hot-reloaded module.
     pub const fn new(path: &'static str) -> Self {
         Self {
-            module: Module::new(path),
+            module: hmr::Module::new(path),
         }
     }
 }
