@@ -1,10 +1,10 @@
-//! Programs.
+//! Modules.
 
 use crate::Guard;
 
-/// A program.
-pub trait Program<'a> {
-    /// A guard against a program.
+/// A module.
+pub trait Module<'a> {
+    /// A guard against a module.
     type Guard: Guard;
 
     /// Returns bytecodes.

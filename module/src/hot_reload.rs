@@ -1,24 +1,23 @@
-//! Hot-reloaded programs.
+//! Hot-reloaded modules.
 
-use crate::{Guard, Program};
+use crate::{Guard, Module};
 use core::ops::Deref;
-use hmr::Module;
 
-/// A hot-reloaded program.
-pub struct HotReloadProgram {
-    module: Module,
+/// A hot-reloaded module.
+pub struct HotReloadModule {
+    module: hmr::Module,
 }
 
-impl HotReloadProgram {
-    /// Creates a hot-reloaded program.
+impl HotReloadModule {
+    /// Creates a hot-reloaded module.
     pub const fn new(path: &'static str) -> Self {
         Self {
-            module: Module::new(path),
+            module: hmr::Module::new(path),
         }
     }
 }
 
-impl Program<'static> for HotReloadProgram {
+impl Module<'static> for HotReloadModule {
     type Guard = HotReloadGuard;
 
     fn bytecode(&'static self) -> Self::Guard {
@@ -26,7 +25,7 @@ impl Program<'static> for HotReloadProgram {
     }
 }
 
-/// A read guard against a hot-reloaded program.
+/// A read guard against a hot-reloaded module.
 pub struct HotReloadGuard(hmr::Guard);
 
 impl Deref for HotReloadGuard {

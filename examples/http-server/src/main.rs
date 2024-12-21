@@ -5,9 +5,9 @@ use core::{error::Error, ffi::CStr};
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
-    include_bytecode,
+    include_module,
+    module::{Module, UniversalModule},
     process_context::VoidProcessContext,
-    program::{Program, UniversalProgram},
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
@@ -16,7 +16,7 @@ use stak::{
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
 
-static ROOT_PROGRAM: UniversalProgram = include_bytecode!("handler.scm");
+static MODULE: UniversalModule = include_module!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -34,7 +34,7 @@ async fn sum(input: String) -> response::Result<(StatusCode, String)> {
     let mut error = [0u8; BUFFER_SIZE];
 
     run(
-        &ROOT_PROGRAM.bytecode(),
+        &MODULE.bytecode(),
         input.as_bytes(),
         &mut output,
         &mut error,
