@@ -6,7 +6,7 @@ edition.workspace = true
 
 [dependencies]
 axum = "0.7.9"
-stak = { version = "0.3.16", path = "../../root", features = ["hot-reload"] }
+stak = { version = "0.4.0", path = "../../root", features = ["hot-reload"] }
 tokio = { version = "1.42.0", features = ["full"] }
 
 [build-dependencies]

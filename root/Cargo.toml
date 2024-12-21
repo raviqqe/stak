@@ -1,7 +1,7 @@
 [package]
 name = "stak"
 description = "Stak Scheme interpreter"
-version = "0.3.16"
+version = "0.4.0"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -31,7 +31,7 @@ main_error = "0.1.2"
 stak-configuration = { version = "0.1.77", path = "../configuration" }
 stak-device = { version = "0.2.81", path = "../device" }
 stak-file = { version = "0.4.39", path = "../file" }
-stak-macro = { version = "0.1.82", path = "../macro" }
+stak-macro = { version = "0.2.0", path = "../macro" }
 stak-process-context = { version = "0.2.39", path = "../process_context" }
 stak-module = { version = "0.1.1", path = "../module" }
 stak-r7rs = { version = "0.8.16", path = "../r7rs" }

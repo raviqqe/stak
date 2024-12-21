@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.82"
+version = "0.2.0"
 dependencies = [
  "cfg-exif",
  "proc-macro2",

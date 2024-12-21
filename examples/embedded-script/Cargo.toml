@@ -5,7 +5,7 @@ publish = false
 edition.workspace = true
 
 [dependencies]
-stak = { version = "0.3.16", path = "../../root" }
+stak = { version = "0.4.0", path = "../../root" }
 
 [build-dependencies]
 stak-build = { version = "0.1.40", path = "../../build" }
