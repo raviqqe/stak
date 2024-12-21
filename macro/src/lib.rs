@@ -1,6 +1,5 @@
 //! Macros to bundle and use Scheme programs.
 
-use cfg_exif::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
@@ -23,15 +22,10 @@ pub fn include_bytecode(input: TokenStream) -> TokenStream {
 
 fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     let path = format!("{}", Path::new("src").join(path).display());
-    let full_path = quote!(concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path));
 
-    Ok(feature!(if ("hot-reload") {
-        quote!(stak::program::Program::from_path(#full_path))
-    } else {
-        quote!(stak::program::Program::from_bytecode(
-            include_bytes!(#full_path)
-        ))
-    }))
+    Ok(quote!(stak::program::Program::new(include_bytes!(
+        concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path)
+    ))))
 }
 
 /// Compiles a program in R7RS Scheme into bytecodes.
