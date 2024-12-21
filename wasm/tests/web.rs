@@ -21,7 +21,7 @@ fn compile_source() {
 
 #[wasm_bindgen_test]
 fn run_bytecodes() {
-    const MODULE: &[u8] = compile_r7rs!(
+    const BYTECODE: &[u8] = compile_r7rs!(
         r#"
             (import (scheme write))
 
@@ -29,5 +29,5 @@ fn run_bytecodes() {
         "#
     );
 
-    interpret(MODULE, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
+    interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
 }
