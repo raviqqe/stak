@@ -77,7 +77,7 @@ const HEAP_SIZE: usize = 1 << 16;
 const PROGRAM: Program = include_bytecode!("hello.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(PROGRAM.bytecode())?;
+    run(&PROGRAM.bytecode())?;
 
     Ok(())
 }
@@ -131,7 +131,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut output = [0u8; BUFFER_SIZE];
     let mut error = [0u8; BUFFER_SIZE];
 
-    run(PROGRAM.bytecode(), input.to_string().as_bytes(), &mut output, &mut error)?;
+    run(&PROGRAM.bytecode(), input.to_string().as_bytes(), &mut output, &mut error)?;
 
     let error = decode_buffer(&error)?;
 
