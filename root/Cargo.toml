@@ -11,6 +11,7 @@ repository.workspace = true
 [features]
 default = ["float", "libc", "std"]
 float = ["stak-vm/float"]
+hot-reload = ["stak-macro/hot-reload"]
 libc = [
   "stak-device/libc",
   "stak-file/libc",
@@ -32,6 +33,7 @@ stak-device = { version = "0.2.80", path = "../device" }
 stak-file = { version = "0.4.38", path = "../file" }
 stak-macro = { version = "0.1.81", path = "../macro" }
 stak-process-context = { version = "0.2.38", path = "../process_context" }
+stak-program = { version = "0.1.0", path = "../program" }
 stak-r7rs = { version = "0.8.15", path = "../r7rs" }
 stak-time = { version = "0.1.21", path = "../time" }
 stak-vm = { version = "0.7.9", path = "../vm" }

@@ -7,6 +7,7 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
+    program::{Program, UniversalProgram},
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
@@ -14,7 +15,8 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
-const ROOT_BYTECODES: &[u8] = include_bytecode!("handler.scm");
+
+static ROOT_PROGRAM: UniversalProgram = include_bytecode!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -31,8 +33,13 @@ async fn sum(input: String) -> response::Result<(StatusCode, String)> {
     let mut output = [0u8; BUFFER_SIZE];
     let mut error = [0u8; BUFFER_SIZE];
 
-    run(ROOT_BYTECODES, input.as_bytes(), &mut output, &mut error)
-        .map_err(|error| error.to_string())?;
+    run(
+        &ROOT_PROGRAM.bytecode(),
+        input.as_bytes(),
+        &mut output,
+        &mut error,
+    )
+    .map_err(|error| error.to_string())?;
 
     let error = decode_buffer(&error)?;
 

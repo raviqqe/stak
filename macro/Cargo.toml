@@ -11,12 +11,16 @@ repository.workspace = true
 [lib]
 proc-macro = true
 
+[features]
+hot-reload = []
+
 [dependencies]
+cfg-exif = "0.3.1"
 proc-macro2 = { version = "1.0.92", features = ["proc-macro"] }
 quote = "1.0.37"
-syn = "2.0.90"
 stak-compiler = { version = "0.1.84", path = "../compiler" }
 stak-macro-util = { version = "0.1.57", path = "../macro-util" }
+syn = "2.0.90"
 
 [dev-dependencies]
 stak-device = { path = "../device" }

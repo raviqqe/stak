@@ -25,6 +25,12 @@ pub mod process_context {
     pub use stak_process_context::*;
 }
 
+pub mod program {
+    //! Programs.
+
+    pub use stak_program::*;
+}
+
 pub mod r7rs {
     //! Primitives for R7RS Scheme.
 

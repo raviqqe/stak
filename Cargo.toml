@@ -20,6 +20,7 @@ members = [
   "minifier_macro",
   "process_context",
   "profiler",
+  "program",
   "r7rs",
   "root",
   "sac",
