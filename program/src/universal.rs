@@ -2,7 +2,7 @@ use crate::{Guard, HotReloadGuard, HotReloadProgram, Program, StaticGuard, Stati
 use core::ops::Deref;
 
 /// A universal program.
-#[expect(clippy::large_enum_variant)]
+#[allow(clippy::large_enum_variant)]
 pub enum UniversalProgram {
     /// A hot-reloaded program.
     HotReload(HotReloadProgram),
