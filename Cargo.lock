@@ -1077,6 +1077,7 @@ dependencies = [
 name = "stak-macro"
 version = "0.1.81"
 dependencies = [
+ "cfg-exif",
  "proc-macro2",
  "quote",
  "stak-compiler",

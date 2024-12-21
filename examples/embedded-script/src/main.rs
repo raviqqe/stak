@@ -6,15 +6,16 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
-    program::Program,
+    program::{Program, UniversalProgram},
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
 };
 
 const HEAP_SIZE: usize = 1 << 16;
-const FOO_PROGRAM: Program = include_bytecode!("foo.scm");
-const BAR_PROGRAM: Program = include_bytecode!("bar.scm");
+
+static FOO_PROGRAM: UniversalProgram = include_bytecode!("foo.scm");
+static BAR_PROGRAM: UniversalProgram = include_bytecode!("bar.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     run(&FOO_PROGRAM.bytecode())?;

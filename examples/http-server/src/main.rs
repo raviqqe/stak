@@ -7,7 +7,7 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
-    program::Program,
+    program::{Program, UniversalProgram},
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
@@ -15,7 +15,8 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
-const ROOT_PROGRAM: impl Program = include_bytecode!("handler.scm");
+
+static ROOT_PROGRAM: UniversalProgram = include_bytecode!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

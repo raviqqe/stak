@@ -11,7 +11,7 @@ pub struct HotReloadProgram {
 
 impl HotReloadProgram {
     /// Creates a hot-reloaded program.
-    pub const fn with_hot_reload(path: &'static str) -> Self {
+    pub const fn new(path: &'static str) -> Self {
         Self {
             module: Module::new(path),
         }
@@ -19,7 +19,9 @@ impl HotReloadProgram {
 }
 
 impl Program<'static> for HotReloadProgram {
-    fn bytecode(&'static self) -> impl Guard {
+    type Guard = HotReloadGuard;
+
+    fn bytecode(&'static self) -> Self::Guard {
         HotReloadGuard(self.module.load())
     }
 }
@@ -31,7 +33,7 @@ impl Deref for HotReloadGuard {
     type Target = [u8];
 
     fn deref(&self) -> &Self::Target {
-        &*self.0
+        &self.0
     }
 }
 

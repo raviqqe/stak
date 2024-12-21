@@ -17,6 +17,7 @@ quote = "1.0.37"
 syn = "2.0.90"
 stak-compiler = { version = "0.1.84", path = "../compiler" }
 stak-macro-util = { version = "0.1.57", path = "../macro-util" }
+cfg-exif = "0.3.1"
 
 [dev-dependencies]
 stak-device = { path = "../device" }

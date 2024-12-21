@@ -4,6 +4,7 @@ use crate::{Guard, Program};
 use core::ops::Deref;
 
 /// A static program.
+#[derive(Debug)]
 pub struct StaticProgram {
     bytecode: &'static [u8],
 }
@@ -16,7 +17,9 @@ impl StaticProgram {
 }
 
 impl<'a> Program<'a> for StaticProgram {
-    fn bytecode(&'a self) -> impl Guard {
+    type Guard = StaticGuard;
+
+    fn bytecode(&'a self) -> Self::Guard {
         StaticGuard(self.bytecode)
     }
 }
