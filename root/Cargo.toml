@@ -11,6 +11,7 @@ repository.workspace = true
 [features]
 default = ["float", "libc", "std"]
 float = ["stak-vm/float"]
+hot-reload = ["stak-macro/hot-reload"]
 libc = [
   "stak-device/libc",
   "stak-file/libc",
