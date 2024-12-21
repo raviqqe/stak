@@ -16,7 +16,7 @@ pub struct Program {
 #[cfg(not(feature = "hot-reload"))]
 impl Program {
     /// Creates a program.
-    pub const fn new(bytecode: &'static [u8]) -> Self {
+    pub const fn from_bytecode(bytecode: &'static [u8]) -> Self {
         Self { bytecode }
     }
 
@@ -31,7 +31,7 @@ impl Program {
 #[cfg(feature = "hot-reload")]
 impl Program {
     /// Creates a program.
-    pub const fn new(path: &'static str) -> Self {
+    pub const fn from_path(path: &'static str) -> Self {
         Self {
             module: Module::new(path),
         }
