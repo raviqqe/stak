@@ -1,16 +1,16 @@
 [package]
 name = "http-server"
-version = "0.1.2"
+version = "0.1.3"
 publish = false
 edition.workspace = true
 
 [dependencies]
 axum = "0.7.9"
-stak = { version = "0.3.15", path = "../../root", features = ["hot-reload"] }
+stak = { version = "0.4.0", path = "../../root", features = ["hot-reload"] }
 tokio = { version = "1.42.0", features = ["full"] }
 
 [build-dependencies]
-stak-build = { version = "0.1.39", path = "../../build" }
+stak-build = { version = "0.1.40", path = "../../build" }
 
 [lints]
 workspace = true
