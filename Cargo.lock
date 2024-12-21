@@ -992,8 +992,8 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
- "stak-process-context",
  "stak-module",
+ "stak-process-context",
  "stak-r7rs",
  "stak-time",
  "stak-vm",
@@ -1134,6 +1134,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-module"
+version = "0.1.0"
+dependencies = [
+ "hmr",
+]
+
+[[package]]
 name = "stak-process-context"
 version = "0.2.38"
 dependencies = [
@@ -1163,13 +1170,6 @@ dependencies = [
  "indoc",
  "pretty_assertions",
  "stak-vm",
-]
-
-[[package]]
-name = "stak-module"
-version = "0.1.0"
-dependencies = [
- "hmr",
 ]
 
 [[package]]
