@@ -274,7 +274,6 @@ version = "0.1.2"
 dependencies = [
  "stak",
  "stak-build",
- "stak-program",
 ]
 
 [[package]]

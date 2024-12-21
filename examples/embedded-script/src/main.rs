@@ -17,8 +17,8 @@ const FOO_PROGRAM: Program = include_bytecode!("foo.scm");
 const BAR_PROGRAM: Program = include_bytecode!("bar.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(FOO_PROGRAM.bytecode())?;
-    run(BAR_PROGRAM.bytecode())?;
+    run(&FOO_PROGRAM.bytecode())?;
+    run(&BAR_PROGRAM.bytecode())?;
 
     Ok(())
 }
