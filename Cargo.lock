@@ -1084,7 +1084,6 @@ dependencies = [
  "stak-file",
  "stak-macro-util",
  "stak-process-context",
- "stak-program",
  "stak-r7rs",
  "stak-time",
  "stak-vm",
