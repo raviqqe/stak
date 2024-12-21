@@ -274,6 +274,7 @@ version = "0.1.2"
 dependencies = [
  "stak",
  "stak-build",
+ "stak-program",
 ]
 
 [[package]]
@@ -993,6 +994,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-process-context",
+ "stak-program",
  "stak-r7rs",
  "stak-time",
  "stak-vm",
@@ -1083,6 +1085,7 @@ dependencies = [
  "stak-file",
  "stak-macro-util",
  "stak-process-context",
+ "stak-program",
  "stak-r7rs",
  "stak-time",
  "stak-vm",

@@ -66,6 +66,7 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
+    program::Program,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
@@ -73,10 +74,10 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 // Include a Scheme script in the bytecode format built by the build script above.
-const BYTECODES: &[u8] = include_bytecode!("hello.scm");
+const PROGRAM: Program = include_bytecode!("hello.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(BYTECODES)?;
+    run(PROGRAM.bytecode())?;
 
     Ok(())
 }
@@ -115,6 +116,7 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
+    program::Program,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
@@ -122,14 +124,14 @@ use stak::{
 
 const BUFFER_SIZE: usize = 1 << 8;
 const HEAP_SIZE: usize = 1 << 16;
-const BYTECODES: &[u8] = include_bytecode!("fibonacci.scm");
+const PROGRAM: Program = include_bytecode!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut input = 24;
     let mut output = [0u8; BUFFER_SIZE];
     let mut error = [0u8; BUFFER_SIZE];
 
-    run(BYTECODES, input.to_string().as_bytes(), &mut output, &mut error)?;
+    run(PROGRAM.bytecode(), input.to_string().as_bytes(), &mut output, &mut error)?;
 
     let error = decode_buffer(&error)?;
 

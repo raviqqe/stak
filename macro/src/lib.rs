@@ -23,9 +23,9 @@ pub fn include_bytecode(input: TokenStream) -> TokenStream {
 fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     let path = format!("{}", Path::new("src").join(path).display());
 
-    Ok(quote!(include_bytes!(
+    Ok(quote!(stak_program::Program::new(include_bytes!(
         concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path)
-    )))
+    ))))
 }
 
 /// Compiles a program in R7RS Scheme into bytecodes.

@@ -6,18 +6,19 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
+    program::Program,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
 };
 
 const HEAP_SIZE: usize = 1 << 16;
-const FOO_BYTECODES: &[u8] = include_bytecode!("foo.scm");
-const BAR_BYTECODES: &[u8] = include_bytecode!("bar.scm");
+const FOO_PROGRAM: Program = include_bytecode!("foo.scm");
+const BAR_PROGRAM: Program = include_bytecode!("bar.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(FOO_BYTECODES)?;
-    run(BAR_BYTECODES)?;
+    run(FOO_PROGRAM.bytecode())?;
+    run(BAR_PROGRAM.bytecode())?;
 
     Ok(())
 }

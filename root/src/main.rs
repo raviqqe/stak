@@ -40,7 +40,7 @@ fn main() -> Result<(), MainError> {
         ),
     )?;
 
-    vm.initialize(include_bytecode!("main.scm").iter().copied())?;
+    vm.initialize(include_bytecode!("main.scm").bytecode().iter().copied())?;
 
     Ok(vm.run()?)
 }
