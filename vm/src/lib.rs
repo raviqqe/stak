@@ -27,7 +27,7 @@
 //! )
 //! .unwrap();
 //!
-//! const MODULE: &[u8] = compile_r7rs!(
+//! const BYTECODE: &[u8] = compile_r7rs!(
 //!     r#"
 //!     (import (scheme write))
 //!
@@ -35,7 +35,7 @@
 //!     "#
 //! );
 //!
-//! vm.initialize(MODULE.iter().copied()).unwrap();
+//! vm.initialize(BYTECODE.iter().copied()).unwrap();
 //! vm.run().unwrap();
 //!
 //! assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
