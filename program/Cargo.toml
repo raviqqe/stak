@@ -7,12 +7,9 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[features]
-hot-reload = ["dep:hmr"]
-
 [dependencies]
 cfg-exif = "0.3.1"
-hmr = { version = "0.2.0", optional = true }
+hmr = "0.2.0"
 
 [lints]
 workspace = true

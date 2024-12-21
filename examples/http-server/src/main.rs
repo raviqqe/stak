@@ -15,7 +15,7 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 const BUFFER_SIZE: usize = 1 << 10;
-const ROOT_PROGRAM: Program = include_bytecode!("handler.scm");
+const ROOT_PROGRAM: impl Program = include_bytecode!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

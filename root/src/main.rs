@@ -13,6 +13,7 @@ use stak_device::StdioDevice;
 use stak_file::OsFileSystem;
 use stak_macro::include_bytecode;
 use stak_process_context::OsProcessContext;
+use stak_program::Program;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::OsClock;
 use stak_vm::Vm;

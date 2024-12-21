@@ -23,7 +23,7 @@ pub fn include_bytecode(input: TokenStream) -> TokenStream {
 fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     let path = format!("{}", Path::new("src").join(path).display());
 
-    Ok(quote!(stak::program::Program::new(include_bytes!(
+    Ok(quote!(stak::program::StaticProgram::new(include_bytes!(
         concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path)
     ))))
 }
