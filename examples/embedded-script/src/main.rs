@@ -6,7 +6,7 @@ use stak::{
     file::VoidFileSystem,
     include_bytecode,
     process_context::VoidProcessContext,
-    program::{Program, UniversalProgram},
+    module::{Module, UniversalModule},
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
     vm::Vm,
@@ -14,12 +14,12 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 
-static FOO_PROGRAM: UniversalProgram = include_bytecode!("foo.scm");
-static BAR_PROGRAM: UniversalProgram = include_bytecode!("bar.scm");
+static FOO_MODULE: UniversalModule = include_bytecode!("foo.scm");
+static BAR_MODULE: UniversalModule = include_bytecode!("bar.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(&FOO_PROGRAM.bytecode())?;
-    run(&BAR_PROGRAM.bytecode())?;
+    run(&FOO_MODULE.bytecode())?;
+    run(&BAR_MODULE.bytecode())?;
 
     Ok(())
 }

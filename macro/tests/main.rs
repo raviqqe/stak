@@ -42,9 +42,9 @@ mod bare {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = compile_bare!("($$define x 42)");
+        const MODULE: &[u8] = compile_bare!("($$define x 42)");
 
-        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.initialize(MODULE.iter().copied()).unwrap();
         vm.run().unwrap();
     }
 
@@ -53,9 +53,9 @@ mod bare {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = include_bare!("../tests/empty.scm");
+        const MODULE: &[u8] = include_bare!("../tests/empty.scm");
 
-        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.initialize(MODULE.iter().copied()).unwrap();
         vm.run().unwrap();
     }
 }
@@ -68,7 +68,7 @@ mod r7rs {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = compile_r7rs!(
+        const MODULE: &[u8] = compile_r7rs!(
             r#"
             (import (scheme write))
 
@@ -76,7 +76,7 @@ mod r7rs {
             "#
         );
 
-        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.initialize(MODULE.iter().copied()).unwrap();
         vm.run().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
@@ -87,7 +87,7 @@ mod r7rs {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = compile_r7rs!(
+        const MODULE: &[u8] = compile_r7rs!(
             r#"
             (import (scheme write))
 
@@ -97,7 +97,7 @@ mod r7rs {
             "#
         );
 
-        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.initialize(MODULE.iter().copied()).unwrap();
         vm.run().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"A, ");
@@ -108,7 +108,7 @@ mod r7rs {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = compile_r7rs!(
+        const MODULE: &[u8] = compile_r7rs!(
             r#"
             (import (scheme base) (scheme write))
 
@@ -118,7 +118,7 @@ mod r7rs {
             "#
         );
 
-        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.initialize(MODULE.iter().copied()).unwrap();
         vm.run().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
@@ -129,9 +129,9 @@ mod r7rs {
         let mut heap = [Default::default(); HEAP_SIZE];
         let mut vm = create_vm(&mut heap);
 
-        const PROGRAM: &[u8] = include_r7rs!("../tests/empty.scm");
+        const MODULE: &[u8] = include_r7rs!("../tests/empty.scm");
 
-        vm.initialize(PROGRAM.iter().copied()).unwrap();
+        vm.initialize(MODULE.iter().copied()).unwrap();
         vm.run().unwrap();
     }
 }

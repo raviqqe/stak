@@ -12,7 +12,7 @@ use std::io::{empty, Read, Write};
 
 /// Minifies given source codes.
 pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
-    const PROGRAM: &[u8] = include_r7rs!("minify.scm");
+    const MODULE: &[u8] = include_r7rs!("minify.scm");
 
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut vm = Vm::new(
@@ -25,7 +25,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
         ),
     )?;
 
-    vm.initialize(PROGRAM.iter().copied())?;
+    vm.initialize(MODULE.iter().copied())?;
     vm.run()?;
 
     Ok(())

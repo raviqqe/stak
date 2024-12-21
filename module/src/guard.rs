@@ -1,6 +1,6 @@
-//! Guards against programs.
+//! Guards against modules.
 
 use core::ops::Deref;
 
-/// A read guard against a program.
+/// A read guard against a module.
 pub trait Guard: Deref<Target = [u8]> {}

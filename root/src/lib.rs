@@ -25,10 +25,10 @@ pub mod process_context {
     pub use stak_process_context::*;
 }
 
-pub mod program {
-    //! Programs.
+pub mod module {
+    //! Modules.
 
-    pub use stak_program::*;
+    pub use stak_module::*;
 }
 
 pub mod r7rs {

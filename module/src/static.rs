@@ -1,22 +1,22 @@
-//! Static programs.
+//! Static modules.
 
-use crate::{Guard, Program};
+use crate::{Guard, Module};
 use core::ops::Deref;
 
-/// A static program.
+/// A static module.
 #[derive(Debug)]
-pub struct StaticProgram {
+pub struct StaticModule {
     bytecode: &'static [u8],
 }
 
-impl StaticProgram {
-    /// Creates a static program.
+impl StaticModule {
+    /// Creates a static module.
     pub const fn new(bytecode: &'static [u8]) -> Self {
         Self { bytecode }
     }
 }
 
-impl<'a> Program<'a> for StaticProgram {
+impl<'a> Module<'a> for StaticModule {
     type Guard = StaticGuard;
 
     fn bytecode(&'a self) -> Self::Guard {
@@ -24,7 +24,7 @@ impl<'a> Program<'a> for StaticProgram {
     }
 }
 
-/// A read guard against a static program.
+/// A read guard against a static module.
 pub struct StaticGuard(&'static [u8]);
 
 impl Deref for StaticGuard {

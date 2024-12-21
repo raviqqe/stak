@@ -993,7 +993,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-process-context",
- "stak-program",
+ "stak-module",
  "stak-r7rs",
  "stak-time",
  "stak-vm",
@@ -1166,7 +1166,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "stak-program"
+name = "stak-module"
 version = "0.1.0"
 dependencies = [
  "hmr",

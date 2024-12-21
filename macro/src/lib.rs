@@ -10,7 +10,7 @@ use stak_macro_util::{convert_result, read_source_file};
 use std::path::{Path, MAIN_SEPARATOR_STR};
 use syn::{parse_macro_input, LitStr};
 
-/// Includes bytecodes of a R7RS Scheme program built by the
+/// Includes bytecodes of a R7RS Scheme module built by the
 /// [`stak_build`][stak_build] crate.
 ///
 /// [stak_build]: https://docs.rs/stak-build
@@ -26,15 +26,15 @@ fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>
     let full_path = quote!(concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path));
 
     Ok(feature!(if ("hot-reload") {
-        quote!(stak::program::UniversalProgram::from_hot_reload_path(#full_path))
+        quote!(stak::module::UniversalModule::from_hot_reload_path(#full_path))
     } else {
-        quote!(stak::program::UniversalProgram::from_bytecode(
+        quote!(stak::module::UniversalModule::from_bytecode(
             include_bytes!(#full_path)
         ))
     }))
 }
 
-/// Compiles a program in R7RS Scheme into bytecodes.
+/// Compiles a module in R7RS Scheme into bytecodes.
 ///
 /// # Examples
 ///
@@ -48,7 +48,7 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     convert_result(generate_r7rs(&input.value())).into()
 }
 
-/// Includes a program in R7RS Scheme as bytecodes.
+/// Includes a module in R7RS Scheme as bytecodes.
 ///
 /// # Examples
 ///
@@ -68,7 +68,7 @@ fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error
     })
 }
 
-/// Compiles a program in Scheme into bytecodes with only built-ins.
+/// Compiles a module in Scheme into bytecodes with only built-ins.
 ///
 /// # Examples
 ///
@@ -82,7 +82,7 @@ pub fn compile_bare(input: TokenStream) -> TokenStream {
     convert_result(generate_bare(&input.value())).into()
 }
 
-/// Includes a program in Scheme as bytecodes with only built-ins.
+/// Includes a module in Scheme as bytecodes with only built-ins.
 ///
 /// # Examples
 ///
