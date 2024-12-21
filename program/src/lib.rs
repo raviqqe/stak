@@ -2,18 +2,18 @@
 
 use cfg_exif::feature;
 use core::ops::Deref;
-#[cfg(feature = "hmr")]
+#[cfg(feature = "hot-reload")]
 use hmr::Module;
 
 /// A program.
 pub struct Program {
-    #[cfg(not(feature = "hmr"))]
+    #[cfg(not(feature = "hot-reload"))]
     bytecode: &'static [u8],
-    #[cfg(feature = "hmr")]
+    #[cfg(feature = "hot-reload")]
     module: Module,
 }
 
-#[cfg(not(feature = "hmr"))]
+#[cfg(not(feature = "hot-reload"))]
 impl Program {
     /// Creates a program.
     pub const fn new(bytecode: &'static [u8]) -> Self {
@@ -28,7 +28,7 @@ impl Program {
     }
 }
 
-#[cfg(feature = "hmr")]
+#[cfg(feature = "hot-reload")]
 impl Program {
     /// Creates a program.
     pub const fn new(path: &'static str) -> Self {
@@ -47,9 +47,9 @@ impl Program {
 
 /// A read guard against a program.
 pub struct Guard {
-    #[cfg(not(feature = "hmr"))]
+    #[cfg(not(feature = "hot-reload"))]
     bytecode: &'static [u8],
-    #[cfg(feature = "hmr")]
+    #[cfg(feature = "hot-reload")]
     guard: hmr::Guard,
 }
 
@@ -57,6 +57,10 @@ impl Deref for Guard {
     type Target = [u8];
 
     fn deref(&self) -> &Self::Target {
-        feature!(if ("hmr") { &*self.guard } else { self.bytecode })
+        feature!(if ("hot-reload") {
+            &*self.guard
+        } else {
+            self.bytecode
+        })
     }
 }

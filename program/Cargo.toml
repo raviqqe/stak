@@ -8,7 +8,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-hot-reload = ["hmr"]
+hot-reload = ["dep:hmr"]
 
 [dependencies]
 cfg-exif = "0.3.1"
