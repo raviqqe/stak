@@ -39,4 +39,4 @@ To install the other development tools of Stak Scheme, run:
 cargo install stak-compile stak-interpret
 ```
 
-The `stak-compile` command is a Scheme-to-bytecode compiler. The `stak-interpret` command is a bytecode compiler that intakes bytecode files built by the `stak-compile` command.
+The `stak-compile` command is a Scheme-to-bytecode compiler. The `stak-interpret` command is a bytecode interpreter that intakes bytecode files built by the `stak-compile` command.
