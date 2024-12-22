@@ -12,8 +12,8 @@ hero:
       link: https://docs.rs/stak/
       icon: document
       variant: primary
-    - text: Examples
-      link: examples/continuation
+    - text: Install
+      link: install
       icon: right-arrow
       variant: secondary
 ---
