@@ -1,5 +1,5 @@
 ---
-title: Hot module reloading of Scheme scripts in Rust
+title: Hot reloading of Scheme scripts in Rust
 description: How to reload Scheme scripts dynamically while Rust programs keep running
 ---
 
