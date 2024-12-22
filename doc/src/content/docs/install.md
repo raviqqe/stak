@@ -3,7 +3,7 @@ title: Install
 description: How to install Stak Scheme as libraries and command line tools
 ---
 
-This page explains how to install Stak Scheme for your projects. By reading this page, you would learn:
+This page explains how to install Stak Scheme for your projects. By reading this page, you will learn:
 
 - How to install Stak Scheme as a library in Rust projects.
 - How to install Stak Scheme as command line tools.
