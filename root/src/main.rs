@@ -24,7 +24,7 @@ static MODULE: UniversalModule = include_module!("main.scm");
 #[command(about, version)]
 struct Arguments {
     #[arg()]
-    script_files: Vec<String>,
+    paths: Vec<String>,
     #[arg(short = 's', long, default_value_t = DEFAULT_HEAP_SIZE)]
     heap_size: usize,
 }
