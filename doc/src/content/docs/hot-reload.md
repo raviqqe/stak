@@ -12,7 +12,6 @@ This page explains [hot reloading][hot-reload] of Stak Scheme scripts to change 
 
 # References
 
-- GitHub
-  - [`examples/hot-reload`](https://github.com/raviqqe/stak/tree/main/examples/hot-reload)
+- [`examples/hot-reload` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/hot-reload)
 
 [hot-reload]: https://en.wikipedia.org/wiki/Hot_swapping#Software
