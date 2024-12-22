@@ -1,6 +1,6 @@
 # Embedding scripts
 
-This example shows how to embed Scheme scripts into source files in Rust.
+This example shows how to embed Scheme scripts into Rust programs.
 
 ## Usage
 
