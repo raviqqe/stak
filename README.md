@@ -13,7 +13,7 @@ Stak Scheme aims to be:
 - The minimal implementation of [the R7RS-small standard][r7rs-small]
   - A subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
 
-The full documentation is [here](https://raviqqe.github.io/stak).
+For more information and usage, visit [the full documentation](https://raviqqe.github.io/stak).
 
 ## Install
 
