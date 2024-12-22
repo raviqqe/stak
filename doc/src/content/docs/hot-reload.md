@@ -6,7 +6,7 @@ description: How to reload Scheme scripts dynamically while Rust programs keep r
 This page explains [hot reloading][hot-reload] of Stak Scheme scripts to change behavior of Rust programs dynamically. By reading this page, you will learn:
 
 - How to enable [hot reloading][hot-reload] of Scheme scripts in Rust projects.
-- How to keep updating Scheme scripts in Rust programs with hot reloading.
+- How to keep updating Scheme scripts in Rust programs during hot reloading.
 
 > WIP
 
