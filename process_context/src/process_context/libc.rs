@@ -26,7 +26,7 @@ impl ProcessContext for LibcProcessContext {
         self.arguments
             .iter()
             .rev()
-            .map(|&argument| unsafe { CStr::from_ptr(argument) }.to_str().unwrap())
+            .map(|&argument| unsafe { CStr::from_ptr(argument as _) }.to_str().unwrap())
     }
 
     fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
