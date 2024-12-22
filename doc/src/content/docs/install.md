@@ -25,15 +25,20 @@ The crates have different roles:
 
 ### Command line tools
 
-To install the Scheme interpreter and alike as command line tools, run:
+#### Interpreters
+
+To install the Scheme interpreters as command line tools, run:
 
 ```sh
 # Install the Scheme interpreter.
 cargo install stak
-
-# Install the minimal Scheme interpreter (6 times smaller!)
+# Install the minimal Scheme interpreter.
 cargo install mstak
+```
 
+#### Development tools
+
+```sh
 # Install the Scheme-to-bytecode compiler and bytecode interpreter.
 cargo install stak-compile
 cargo install stak-interpret
