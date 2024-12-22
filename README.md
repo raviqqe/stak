@@ -111,7 +111,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 Currently, in-memory standard input (`stdin`) and output (`stdout`) to Scheme scripts are the only way to communicate information between Rust programs and Scheme scripts.
 
 ```rust
-use core::{error::Error, ffi::CStr, str::{self, FromStr}};
+use core::{error::Error, str::{self, FromStr}};
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
