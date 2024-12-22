@@ -30,18 +30,10 @@ For full examples, see [the `examples` directory](examples).
 
 ### Command line tools
 
-To install the Scheme interpreter and alike as command line tools, run:
+To install the Scheme interpreter as a command, run:
 
 ```sh
-# Install the Scheme interpreter.
 cargo install stak
-
-# Install the minimal Scheme interpreter (6 times smaller!)
-cargo install mstak
-
-# Install the Scheme-to-bytecode compiler and bytecode interpreter.
-cargo install stak-compile
-cargo install stak-interpret
 ```
 
 ## Examples
