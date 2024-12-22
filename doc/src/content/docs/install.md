@@ -15,8 +15,13 @@ This page explains how to install Stak Scheme for your projects. By reading this
 To install Stak Scheme as a library in your Rust project, run:
 
 ```sh
-cargo add stak
+cargo add stak stak-build
 ```
+
+The crates have different roles:
+
+- The `stak` crate
+- The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
 
 ### Command line tools
 
