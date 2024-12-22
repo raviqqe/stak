@@ -130,12 +130,10 @@ static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
     let mut input = 24;
-    let mut output = [0u8; BUFFER_SIZE];
-    let mut error = [0u8; BUFFER_SIZE];
+    let mut output = vec![];
+    let mut error = vec![];
 
     run(&MODULE.bytecode(), input.to_string().as_bytes(), &mut output, &mut error)?;
-
-    let error = decode_buffer(&error)?;
 
     // If stderr is not empty, we assume that some error has occurred.
     if !error.is_empty() {
@@ -143,7 +141,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     // Decode and print the output.
-    println!("Answer: {}", isize::from_str(&decode_buffer(&output)?)?);
+    println!("Answer: {}", isize::from_str(&str::from_utf8(&output)?)?);
 
     Ok(())
 }
@@ -168,13 +166,6 @@ fn run(
 
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()
-}
-
-fn decode_buffer(buffer: &[u8]) -> Result<String, Box<dyn Error>> {
-    Ok(CStr::from_bytes_until_nul(buffer)
-        .map_err(|error| error.to_string())?
-        .to_string_lossy()
-        .into())
 }
 ```
 
