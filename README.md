@@ -17,7 +17,7 @@ For more information and usage, visit [the full documentation](https://raviqqe.g
 
 ## Install
 
-### Library
+### Libraries
 
 To install Stak Scheme as a library in your Rust project, run:
 
