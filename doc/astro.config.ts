@@ -86,6 +86,10 @@ export default defineConfig({
           link: "/",
         },
         {
+          label: "Install",
+          link: "/install",
+        },
+        {
           label: "Examples",
           items: await listItems("examples"),
         },
