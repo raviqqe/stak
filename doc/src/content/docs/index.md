@@ -20,13 +20,7 @@ hero:
 
 # Stak Scheme
 
-Stak Scheme is a miniature, embeddable [Scheme][scheme] implementation in Rust.
-
-## Goals
-
-- The minimal implementation of [the R7RS-small standard][r7rs-small]
-- A subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
-- Very small memory footprint with reasonable performance
+Stak Scheme is a miniature, embeddable [Scheme](https://www.scheme.org/) implementation in Rust.
 
 ## License
 
