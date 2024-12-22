@@ -8,7 +8,7 @@ This page explains how to install Stak Scheme for your projects. By reading this
 - How to install Stak Scheme as a library in Rust projects.
 - How to install Stak Scheme as command line tools.
 
-### Library
+### Libraries
 
 To install Stak Scheme as a library in your Rust project, run:
 
