@@ -16,7 +16,7 @@ To install Stak Scheme as a library in your Rust project, run:
 cargo add stak stak-build
 ```
 
-The crates have different roles:
+The two crates have different roles:
 
 - The `stak` crate provides virtual machines and utilities to run Scheme programs in Rust.
 - The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
@@ -38,3 +38,5 @@ To install the other development tools of Stak Scheme, run:
 ```sh
 cargo install stak-compile stak-interpret
 ```
+
+The `stak-compile` command is a Scheme-to-bytecode compiler. The `stak-interpret` command is a bytecode compiler that intakes bytecode file built by the `stak-compile` command.
