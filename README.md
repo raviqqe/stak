@@ -26,6 +26,8 @@ cargo add stak
 cargo add --build stak-build
 ```
 
+For full examples, see [the `examples` directory](examples).
+
 ### Command line tools
 
 To install the Scheme interpreter and alike as command line tools, run:
