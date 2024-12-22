@@ -20,7 +20,7 @@ cargo add stak stak-build
 
 The crates have different roles:
 
-- The `stak` crate
+- The `stak` crate provides virtual machines and utilities to run Scheme programs in Rust.
 - The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
 
 ### Command line tools
