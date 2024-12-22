@@ -1,6 +1,6 @@
 //! Build scripts for Stak Scheme.
 //!
-//! See the [`stak`][stak] crate's documentation for full examples.
+//! See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
 //!
 //! # Examples
 //!
