@@ -1,6 +1,6 @@
-# HTTP server
+# Hot module reloading
 
-This example shows how to change behavior of an HTTP server dynamically embedding a Scheme script.
+This example shows how to use the feature of hot module reloading to change behavior of Rust programs dynamically embedding Scheme scripts.
 
 ## Usage
 
