@@ -170,6 +170,16 @@ fn run(
 }
 ```
 
+## References
+
+- This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
+- [Scheme][scheme]
+- [The R7RS-small standard][r7rs-small]
+
 ## License
 
 [MIT](https://github.com/raviqqe/stak/blob/main/LICENSE)
+
+[scheme]: https://www.scheme.org/
+[r7rs-small]: https://small.r7rs.org/
+[ribbit]: https://github.com/udem-dlteam/ribbit
