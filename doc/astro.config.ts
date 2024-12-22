@@ -86,6 +86,18 @@ export default defineConfig({
           link: "/",
         },
         {
+          label: "Install",
+          link: "/install",
+        },
+        {
+          label: "Embedding Scheme in Rust",
+          link: "/embedding-scripts",
+        },
+        {
+          label: "Hot reloading",
+          link: "/hot-reload",
+        },
+        {
           label: "Examples",
           items: await listItems("examples"),
         },

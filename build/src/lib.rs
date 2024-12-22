@@ -1,5 +1,7 @@
 //! Build scripts for Stak Scheme.
 //!
+//! See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
+//!
 //! # Examples
 //!
 //! To build all R7RS Scheme files into bytecodes, add the following
