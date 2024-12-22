@@ -1,7 +1,7 @@
 //! A `stak-build` example.
 
 use axum::{http::StatusCode, response, routing::post, serve, Router};
-use core::{error::Error, ffi::CStr};
+use core::error::Error;
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
@@ -14,7 +14,6 @@ use stak::{
 };
 
 const HEAP_SIZE: usize = 1 << 16;
-const BUFFER_SIZE: usize = 1 << 10;
 
 static MODULE: UniversalModule = include_module!("handler.scm");
 
@@ -30,8 +29,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 async fn sum(input: String) -> response::Result<(StatusCode, String)> {
-    let mut output = [0u8; BUFFER_SIZE];
-    let mut error = [0u8; BUFFER_SIZE];
+    let mut output = vec![];
+    let mut error = vec![];
 
     run(
         &MODULE.bytecode(),
@@ -41,10 +40,10 @@ async fn sum(input: String) -> response::Result<(StatusCode, String)> {
     )
     .map_err(|error| error.to_string())?;
 
-    let error = decode_buffer(&error)?;
+    let error = decode_buffer(error)?;
 
     Ok(if error.is_empty() {
-        (StatusCode::OK, decode_buffer(&output)?)
+        (StatusCode::OK, decode_buffer(output)?)
     } else {
         (StatusCode::BAD_REQUEST, error)
     })
@@ -53,8 +52,8 @@ async fn sum(input: String) -> response::Result<(StatusCode, String)> {
 fn run(
     bytecodes: &[u8],
     input: &[u8],
-    output: &mut [u8],
-    error: &mut [u8],
+    output: &mut Vec<u8>,
+    error: &mut Vec<u8>,
 ) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
@@ -71,9 +70,6 @@ fn run(
     vm.run()
 }
 
-fn decode_buffer(buffer: &[u8]) -> response::Result<String> {
-    Ok(CStr::from_bytes_until_nul(buffer)
-        .map_err(|error| error.to_string())?
-        .to_string_lossy()
-        .into())
+fn decode_buffer(buffer: Vec<u8>) -> response::Result<String> {
+    Ok(String::from_utf8(buffer).map_err(|error| error.to_string())?)
 }
