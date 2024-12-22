@@ -12,7 +12,7 @@ members = [
   "configuration",
   "device",
   "examples/embedded-script",
-  "examples/http-server",
+  "examples/hot-reload",
   "file",
   "macro",
   "macro-util",
