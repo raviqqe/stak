@@ -1,6 +1,6 @@
 ---
 title: Install
-description: How to install Stak Scheme as command line tools and libraries
+description: How to install Stak Scheme as libraries and command line tools
 ---
 
 This page explains how to install Stak Scheme for your projects. By reading this page, you would learn:
