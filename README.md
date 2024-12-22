@@ -17,6 +17,7 @@ To install Stak Scheme as a library in your Rust project, run:
 
 ```sh
 cargo add stak
+cargo add --build stak-build
 ```
 
 ### Command line tools
