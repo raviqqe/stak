@@ -11,12 +11,9 @@ use std::path::{Path, MAIN_SEPARATOR_STR};
 use syn::{parse_macro_input, LitStr};
 
 /// Includes bytecodes of a R7RS Scheme module built by the
-/// [`stak_build`][stak_build] crate.
+/// [`stak_build`](https://docs.rs/stak-build) crate.
 ///
-/// See the [`stak`][stak] crate's documentation for full examples.
-///
-/// [stak]: https://docs.rs/stak
-/// [stak_build]: https://docs.rs/stak-build
+/// See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
 #[proc_macro]
 pub fn include_module(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
