@@ -4,7 +4,7 @@ use crate::Guard;
 
 /// A module.
 pub trait Module<'a> {
-    /// A guard against a module.
+    /// A read guard against a module.
     type Guard: Guard;
 
     /// Returns bytecodes.

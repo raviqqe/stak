@@ -101,6 +101,10 @@ export default defineConfig({
           label: "Examples",
           items: await listItems("examples"),
         },
+        {
+          label: "Limitations",
+          link: "/limitations",
+        },
       ],
     }),
   ],

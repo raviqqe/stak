@@ -12,5 +12,4 @@ This page explains how to embed scripts written in Stak Scheme into Rust program
 
 # References
 
-- GitHub
-  - [`examples/embedded-script`](https://github.com/raviqqe/stak/tree/main/examples/embedded-script)
+- [`examples/embedded-script` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/embedded-script)

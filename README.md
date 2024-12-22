@@ -7,32 +7,33 @@
 
 The miniature, embeddable R7RS Scheme implementation in Rust
 
-The full documentation is [here](https://raviqqe.github.io/stak).
+Stak Scheme aims to be:
+
+- An embeddable Scheme interpreter for Rust with very small memory footprint and reasonable performance
+- The minimal implementation of [the R7RS-small standard][r7rs-small]
+  - A subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
+
+For more information and usage, visit [the full documentation](https://raviqqe.github.io/stak).
 
 ## Install
 
-### Library
+### Libraries
 
 To install Stak Scheme as a library in your Rust project, run:
 
 ```sh
 cargo add stak
+cargo add --build stak-build
 ```
+
+For full examples, see [the `examples` directory](./examples).
 
 ### Command line tools
 
-To install the Scheme interpreter and alike as command line tools, run:
+To install the Scheme interpreter as a command, run:
 
 ```sh
-# Install the Scheme interpreter.
 cargo install stak
-
-# Install the minimal Scheme interpreter (6 times smaller!)
-cargo install mstak
-
-# Install the Scheme-to-bytecode compiler and bytecode interpreter.
-cargo install stak-compile
-cargo install stak-interpret
 ```
 
 ## Examples
@@ -111,7 +112,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
 Currently, in-memory standard input (`stdin`) and output (`stdout`) to Scheme scripts are the only way to communicate information between Rust programs and Scheme scripts.
 
 ```rust
-use core::{error::Error, ffi::CStr, str::FromStr};
+use core::{error::Error, str::{self, FromStr}};
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
@@ -129,21 +130,19 @@ const HEAP_SIZE: usize = 1 << 16;
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut input = 24;
-    let mut output = [0u8; BUFFER_SIZE];
-    let mut error = [0u8; BUFFER_SIZE];
+    let input = 24;
+    let mut output = vec![];
+    let mut error = vec![];
 
     run(&MODULE.bytecode(), input.to_string().as_bytes(), &mut output, &mut error)?;
 
-    let error = decode_buffer(&error)?;
-
     // If stderr is not empty, we assume that some error has occurred.
     if !error.is_empty() {
-        return Err(error.into());
+        return Err(str::from_utf8(&error)?.into());
     }
 
     // Decode and print the output.
-    println!("Answer: {}", isize::from_str(&decode_buffer(&output)?)?);
+    println!("Answer: {}", isize::from_str(&str::from_utf8(&output)?)?);
 
     Ok(())
 }
@@ -151,8 +150,8 @@ fn main() -> Result<(), Box<dyn Error>> {
 fn run(
     bytecodes: &[u8],
     input: &[u8],
-    output: &mut [u8],
-    error: &mut [u8],
+    output: &mut Vec<u8>,
+    error: &mut Vec<u8>,
 ) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
@@ -169,15 +168,18 @@ fn run(
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()
 }
-
-fn decode_buffer(buffer: &[u8]) -> Result<String, Box<dyn Error>> {
-    Ok(CStr::from_bytes_until_nul(buffer)
-        .map_err(|error| error.to_string())?
-        .to_string_lossy()
-        .into())
-}
 ```
+
+## References
+
+- This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
+- [Scheme][scheme]
+- [The R7RS-small standard][r7rs-small]
 
 ## License
 
 [MIT](https://github.com/raviqqe/stak/blob/main/LICENSE)
+
+[scheme]: https://www.scheme.org/
+[r7rs-small]: https://small.r7rs.org/
+[ribbit]: https://github.com/udem-dlteam/ribbit

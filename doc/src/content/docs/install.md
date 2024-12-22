@@ -10,10 +10,11 @@ This page explains how to install Stak Scheme for your projects. By reading this
 
 ### Libraries
 
-To install Stak Scheme as a library in your Rust project, run:
+To install Stak Scheme as a library in your Rust project, run the following commands in your terminal:
 
 ```sh
-cargo add stak stak-build
+cargo add stak
+cargo add --build stak-build
 ```
 
 The two crates have different roles:
@@ -25,7 +26,7 @@ The two crates have different roles:
 
 #### Interpreters
 
-To install the Scheme interpreter, run:
+To install the Scheme interpreter, run the following command in your terminal:
 
 ```sh
 cargo install stak
@@ -33,7 +34,7 @@ cargo install stak
 
 #### Development tools
 
-To install the other development tools of Stak Scheme, run:
+To install the other development tools of Stak Scheme, run the following command in your terminal:
 
 ```sh
 cargo install stak-compile stak-interpret
