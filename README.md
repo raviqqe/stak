@@ -129,7 +129,7 @@ const HEAP_SIZE: usize = 1 << 16;
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut input = 24;
+    let input = 24;
     let mut output = vec![];
     let mut error = vec![];
 
