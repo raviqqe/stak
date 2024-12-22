@@ -137,7 +137,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     // If stderr is not empty, we assume that some error has occurred.
     if !error.is_empty() {
-        return Err(String::from_utf8(error)?.into());
+        return Err(str::from_utf8(&error)?.into());
     }
 
     // Decode and print the output.
