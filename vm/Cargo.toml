@@ -1,7 +1,7 @@
 [package]
 name = "stak-vm"
 description = "Virtual machines for Stak Scheme"
-version = "0.7.10"
+version = "0.7.11"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
