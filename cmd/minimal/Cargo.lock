@@ -47,14 +47,14 @@ checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "mstak"
-version = "0.3.16"
+version = "0.3.17"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.10"
+version = "0.4.11"
 dependencies = [
  "libc",
  "stak-device",
@@ -92,7 +92,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.85"
+version = "0.1.86"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -105,11 +105,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.77"
+version = "0.1.78"
 
 [[package]]
 name = "stak-device"
-version = "0.2.81"
+version = "0.2.82"
 dependencies = [
  "libc",
  "stak-vm",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.4.39"
+version = "0.4.40"
 dependencies = [
  "heapless",
  "libc",
@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "cfg-exif",
  "proc-macro2",
@@ -138,7 +138,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.58"
+version = "0.1.59"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -147,14 +147,14 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.39"
+version = "0.2.40"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.8.16"
+version = "0.8.17"
 dependencies = [
  "libm",
  "stak-device",
@@ -166,7 +166,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.83"
+version = "0.1.84"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -182,7 +182,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.22"
+version = "0.1.23"
 dependencies = [
  "libc",
  "stak-vm",
@@ -190,14 +190,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.57"
+version = "0.1.58"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.10"
+version = "0.7.11"
 dependencies = [
  "cfg-exif",
 ]
