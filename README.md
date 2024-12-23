@@ -26,7 +26,7 @@ cargo add stak
 cargo add --build stak-build
 ```
 
-For full examples, see [the `examples` directory](./examples).
+For full examples, see [the `examples` directory](https://github.com/raviqqe/stak/tree/main/examples).
 
 ### Command line tools
 
