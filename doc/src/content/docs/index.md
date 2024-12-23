@@ -18,10 +18,6 @@ hero:
       variant: secondary
 ---
 
-# Stak Scheme
+import Readme from "../../../../README.md";
 
-Stak Scheme is a miniature, embeddable [Scheme](https://www.scheme.org/) implementation in Rust.
-
-## License
-
-[MIT](https://github.com/raviqqe/stak/blob/main/LICENSE)
+<Readme
