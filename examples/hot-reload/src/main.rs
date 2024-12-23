@@ -21,14 +21,14 @@ static MODULE: UniversalModule = include_module!("handler.scm");
 async fn main() -> Result<(), Box<dyn Error>> {
     serve(
         tokio::net::TcpListener::bind("0.0.0.0:3000").await?,
-        Router::new().route("/sum", post(sum)),
+        Router::new().route("/calculate", post(calculate)),
     )
     .await?;
 
     Ok(())
 }
 
-async fn sum(input: String) -> response::Result<(StatusCode, String)> {
+async fn calculate(input: String) -> response::Result<(StatusCode, String)> {
     let mut output = vec![];
     let mut error = vec![];
 
