@@ -173,7 +173,7 @@ fn run(
 ## References
 
 - This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
-- [Scheme][scheme]
+- [Scheme programming language][scheme]
 - [The R7RS-small standard][r7rs-small]
 
 ## License
