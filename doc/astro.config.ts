@@ -57,6 +57,7 @@ export default defineConfig({
     solid(),
     starlight({
       title: "Stak Scheme",
+      customCss: ["./src/index.css"],
       favicon: "/icon.svg",
       head: [
         {

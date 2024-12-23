@@ -1,6 +1,6 @@
-# Hot module reloading
+# Hot reloading
 
-This example shows how to use the feature of hot module reloading to change behavior of Rust programs dynamically embedding Scheme scripts.
+This example shows how to use the feature of hot reloading to change behavior of Rust programs dynamically embedding Scheme scripts.
 
 ## Usage
 
