@@ -99,7 +99,7 @@ export default defineConfig({
           link: "/hot-reload",
         },
         {
-          label: "Writing your own Scheme subset",
+          label: "Writing a Scheme subset",
           link: "/writing-scheme-subset",
         },
         {
