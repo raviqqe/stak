@@ -87,20 +87,25 @@ export default defineConfig({
           link: "/",
         },
         {
-          label: "Install",
-          link: "/install",
-        },
-        {
-          label: "Embedding Scheme in Rust",
-          link: "/embedding-scripts",
-        },
-        {
-          label: "Hot reloading",
-          link: "/hot-reload",
-        },
-        {
-          label: "Writing a Scheme subset",
-          link: "/writing-scheme-subset",
+          label: "Guiles",
+          items: [
+            {
+              label: "Install",
+              link: "/guides/install",
+            },
+            {
+              label: "Embedding Scheme in Rust",
+              link: "/guides/embedding-scripts",
+            },
+            {
+              label: "Hot reloading",
+              link: "/guides/hot-reload",
+            },
+            {
+              label: "Writing a Scheme subset",
+              link: "/guides/writing-scheme-subset",
+            },
+          ],
         },
         {
           label: "Examples",
