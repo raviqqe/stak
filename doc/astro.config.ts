@@ -87,7 +87,7 @@ export default defineConfig({
           link: "/",
         },
         {
-          label: "Guiles",
+          label: "Guides",
           items: [
             {
               label: "Install",
