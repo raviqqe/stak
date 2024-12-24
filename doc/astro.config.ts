@@ -99,6 +99,10 @@ export default defineConfig({
           link: "/hot-reload",
         },
         {
+          label: "Writing your own Scheme subset",
+          link: "/writing-scheme-subset",
+        },
+        {
           label: "Examples",
           items: await listItems("examples"),
         },
