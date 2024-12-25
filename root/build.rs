@@ -3,5 +3,8 @@
 use stak_build::{build_r7rs, BuildError};
 
 fn main() -> Result<(), BuildError> {
-    build_r7rs()
+    #[cfg(any(test, feature = "cli"))]
+    build_r7rs()?;
+
+    Ok(())
 }

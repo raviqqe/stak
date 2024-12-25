@@ -8,8 +8,13 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
+[[bin]]
+name = "stak"
+required-features = ["cli"]
+
 [features]
 default = ["float", "libc", "std"]
+cli = []
 float = ["stak-vm/float"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
