@@ -26,6 +26,7 @@ use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
 use std::{
     env,
+    ffi::OsStr,
     path::{Path, PathBuf},
 };
 use tokio::{
@@ -56,6 +57,14 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
 
     for path in paths {
         let path = path?;
+
+        if path
+            .iter()
+            .any(|component| component == OsStr::new("target"))
+        {
+            continue;
+        }
+
         let out_path = out_directory.join(&path);
 
         println!("cargo::rerun-if-changed={}", path.display());
