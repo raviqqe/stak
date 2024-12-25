@@ -86,7 +86,9 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
 async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError> {
     let mut buffer = vec![];
 
-    if cfg!(feature = "external-compiler") {
+    if cfg!(feature = "internal-compiler") {
+        compile_r7rs(read_to_string(&src_path).await?.as_bytes(), &mut buffer)?;
+    } else {
         let mut command = Command::new(which("stak-compile")?)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
@@ -105,8 +107,6 @@ async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError>
             .expect("stdout")
             .read_to_end(&mut buffer)
             .await?;
-    } else {
-        compile_r7rs(read_to_string(&src_path).await?.as_bytes(), &mut buffer)?;
     }
 
     if let Some(path) = out_path.parent() {

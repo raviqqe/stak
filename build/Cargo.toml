@@ -9,8 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-default = ["external-compiler"]
-external-compiler = []
+internal-compiler = []
 
 [dependencies]
 glob = "0.3.1"
