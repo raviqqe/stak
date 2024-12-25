@@ -1,7 +1,12 @@
 //! A build script.
 
-use stak_build::{build_r7rs, BuildError};
+#[cfg(any(feature = "cli", test))]
+use stak_build::build_r7rs;
+use stak_build::BuildError;
 
 fn main() -> Result<(), BuildError> {
-    build_r7rs()
+    #[cfg(any(feature = "cli", test))]
+    build_r7rs()?;
+
+    Ok(())
 }
