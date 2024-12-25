@@ -86,8 +86,8 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
 async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError> {
     let mut buffer = vec![];
 
-    if let Ok(path) = which("stak-compile") {
-        let mut command = Command::new(path)
+    if cfg!(feature = "external-compiler") {
+        let mut command = Command::new(which("stak-compile")?)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .spawn()?;
