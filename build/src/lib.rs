@@ -28,12 +28,15 @@ use std::{
     env,
     ffi::OsStr,
     path::{Path, PathBuf},
+    process::Stdio,
 };
 use tokio::{
-    fs::{create_dir_all, read_to_string, write},
+    fs::{create_dir_all, read, read_to_string, write},
+    process::Command,
     runtime::Runtime,
     spawn,
 };
+use which::which;
 
 /// Builds R7RS Scheme source files into bytecode files.
 ///
@@ -83,7 +86,24 @@ async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError>
     let string = read_to_string(src_path).await?;
     let mut buffer = vec![];
 
-    compile_r7rs(string.as_bytes(), &mut buffer)?;
+    if which("stak-compile") {
+        let mut command = Command::new("stak-compile")
+            .stdin(Stdio::piped())
+            .stdout(
+                File::options()
+                    .create(true)
+                    .write(true)
+                    .truncate(true)
+                    .open(out_path)?,
+            )
+            .spawn();
+        let stdin = command.stdin.as_mut().expect("stdin");
+
+        stdin.write_all(include_str!("prelude.scm"));
+        stdin.write(read(src_path).await?);
+    } else {
+        compile_r7rs(string.as_bytes(), &mut buffer)?;
+    }
 
     if let Some(path) = out_path.parent() {
         create_dir_all(path).await?;
