@@ -27,7 +27,7 @@ use stak_compiler::compile_r7rs;
 use std::{
     env,
     ffi::OsStr,
-    path::{Component, Path, PathBuf},
+    path::{Path, PathBuf},
 };
 use tokio::{
     fs::{create_dir_all, read_to_string, write},
@@ -59,8 +59,8 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
         let path = path?;
 
         if path
-            .components()
-            .any(|component| component == Component::Normal(OsStr::new("target")))
+            .iter()
+            .any(|component| component == OsStr::new("target"))
         {
             continue;
         }
