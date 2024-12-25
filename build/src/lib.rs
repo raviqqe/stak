@@ -31,7 +31,8 @@ use std::{
     process::Stdio,
 };
 use tokio::{
-    fs::{create_dir_all, read, read_to_string, write},
+    fs::{create_dir_all, read, read_to_string, write, File},
+    io::AsyncWriteExt,
     process::Command,
     runtime::Runtime,
     spawn,
@@ -85,22 +86,24 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
 async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError> {
     let string = read_to_string(src_path).await?;
     let mut buffer = vec![];
+    let mut file = File::options()
+        .create(true)
+        .write(true)
+        .truncate(true)
+        .open(out_path)
+        .await?;
 
-    if which("stak-compile") {
-        let mut command = Command::new("stak-compile")
+    if let Some(path) = which("stak-compile").ok() {
+        let mut command = Command::new(path)
             .stdin(Stdio::piped())
-            .stdout(
-                File::options()
-                    .create(true)
-                    .write(true)
-                    .truncate(true)
-                    .open(out_path)?,
-            )
-            .spawn();
-        let stdin = command.stdin.as_mut().expect("stdin");
+            .stdout(&mut file)
+            .spawn()?;
+        let mut stdin = command.stdin.as_mut().expect("stdin");
 
-        stdin.write_all(include_str!("prelude.scm"));
-        stdin.write(read(src_path).await?);
+        stdin
+            .write_all(include_str!("prelude.scm").as_bytes())
+            .await?;
+        stdin.write_all(&read(src_path).await?).await?;
     } else {
         compile_r7rs(string.as_bytes(), &mut buffer)?;
     }
