@@ -79,6 +79,7 @@ impl Display for BuildError {
             Self::GlobPattern(error) => write!(formatter, "{error}"),
             Self::Io(error) => write!(formatter, "{error}"),
             Self::Join(error) => write!(formatter, "{error}"),
+            Self::Which(error) => write!(formatter, "{error}"),
         }
     }
 }
