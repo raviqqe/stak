@@ -31,14 +31,18 @@ impl<'a> FileSystem for MemoryFileSystem<'a> {
             return Err(FileError::Open);
         }
 
-        for (file_path, content) in self.files {
+        for (file_index, (file_path, _)) in self.files.iter().enumerate() {
             if &path == file_path {
-             for entry in  self.entries {
-                     Some(entry) = self.entries.get_mut(descriptor) ;
-                    return Err(FileError::Close);
-                }}
+                for (descriptor, entry) in self.entries.iter_mut().enumerate() {
+                    if entry.is_none() {
+                        *entry = Some(MemoryFileEntry {
+                            file_index,
+                            offset: 0,
+                        });
 
-                return Ok();
+                        return Ok(descriptor);
+                    }
+                }
             }
         }
 
@@ -55,8 +59,25 @@ impl<'a> FileSystem for MemoryFileSystem<'a> {
         Ok(())
     }
 
-    fn read(&mut self, path: FileDescriptor) -> Result<u8, Self::Error> {
-        Err(FileError::Read)
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+        let entry = &mut self
+            .entries
+            .get_mut(descriptor)
+            .map(Option::as_mut)
+            .flatten()
+            .ok_or(FileError::Read)?;
+
+        let byte = self
+            .files
+            .get(entry.file_index)
+            .ok_or(FileError::Read)?
+            .1
+            .get(entry.offset)
+            .ok_or(FileError::Read)?;
+
+        entry.offset += 1;
+
+        Ok(*byte)
     }
 
     fn write(&mut self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
