@@ -106,7 +106,7 @@ export default defineConfig({
               link: "/writing-scheme-subset",
             },
             {
-              label: "No-`std` and no-`alloc` support",
+              label: "No-std and no-alloc support",
               link: "/no-std-no-alloc",
             },
           ],
