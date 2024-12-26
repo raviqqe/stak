@@ -10,6 +10,7 @@ pub use self::error::FileError;
 use core::error::Error;
 #[cfg(feature = "libc")]
 pub use libc::LibcFileSystem;
+pub use memory::MemoryFileSystem;
 #[cfg(feature = "std")]
 pub use os::OsFileSystem;
 pub use void::VoidFileSystem;
