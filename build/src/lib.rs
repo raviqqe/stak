@@ -8,11 +8,10 @@
 //! in your crate. Then, you can include them into source files in Rust
 //! using the [`stak::include_module`][include_module] macro.
 //!
-//! ```rust
+//! ```rust no_run
 //! use stak_build::{build_r7rs, BuildError};
 //!
 //! fn main() -> Result<(), BuildError> {
-//! #   unsafe { std::env::set_var("OUT_DIR", "target/tmp") };
 //!     build_r7rs()
 //! }
 //! ```
