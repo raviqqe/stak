@@ -3,8 +3,6 @@
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
-use stak_macro::include_module;
-use stak_module::{Module, UniversalModule};
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
