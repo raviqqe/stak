@@ -29,6 +29,7 @@ use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
     process::Stdio,
+    sync::Arc,
 };
 use tokio::{
     fs::{create_dir_all, read, read_to_string, write},
@@ -54,7 +55,7 @@ pub fn build_r7rs() -> Result<(), BuildError> {
 }
 
 async fn build(paths: Paths) -> Result<(), BuildError> {
-    let compiler = which("stak-compile").ok();
+    let compiler = which("stak-compile").ok().map(Arc::new);
 
     if compiler.is_none() {
         println!("cargo::warning={}",
@@ -99,12 +100,12 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
 async fn compile(
     src_path: PathBuf,
     out_path: PathBuf,
-    compiler: Option<PathBuf>,
+    compiler: Option<Arc<PathBuf>>,
 ) -> Result<(), BuildError> {
     let mut buffer = vec![];
 
     if let Some(path) = compiler {
-        let mut command = Command::new(path)
+        let mut command = Command::new(&*path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .spawn()?;
