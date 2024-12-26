@@ -21,6 +21,8 @@ stak-process-context = { version = "0.2.42", path = "../process_context" }
 stak-vm = { version = "0.7.13", path = "../vm" }
 wasm-bindgen = "0.2.97"
 stak-time = { version = "0.1.25", path = "../time" }
+stak-macro = { path = "../macro" }
+stak-module = { version = "0.1.4", path = "../module" }
 
 [dev-dependencies]
 stak-configuration = { path = "../configuration" }
