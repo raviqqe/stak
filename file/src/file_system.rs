@@ -1,6 +1,7 @@
 mod error;
 #[cfg(feature = "libc")]
 mod libc;
+mod memory;
 #[cfg(feature = "std")]
 mod os;
 mod void;

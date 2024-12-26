@@ -1,10 +1,10 @@
 use crate::{FileDescriptor, FileError, FileSystem};
 
-/// A file system that does nothing and fails every operation.
+/// A read-only in-memory file system.
 #[derive(Debug)]
-pub struct VoidFileSystem {}
+pub struct MemoryFileSystem {}
 
-impl VoidFileSystem {
+impl MemoryFileSystem {
     /// Creates a file system.
     pub const fn new() -> Self {
         Self {}
@@ -36,11 +36,5 @@ impl FileSystem for MemoryFileSystem {
 
     fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
         Err(FileError::Exists)
-    }
-}
-
-impl Default for VoidFileSystem {
-    fn default() -> Self {
-        Self::new()
     }
 }
