@@ -60,7 +60,7 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
         println!("cargo::warning={}",
             [
                 "Using an internal compiler for Stak Scheme.",
-                "This can be very slow unless you modify `profile.<profile>.build-override` to set `opt-level = 3`.",
+                "This can be very slow unless you modify `profile.<profile>.build-override` in your `Cargo.toml` file to set `opt-level = 3`.",
                 "Consider installing the external compiler by running `cargo install stak-compile`.",
             ].join(" ")
         );
