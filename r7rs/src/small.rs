@@ -183,6 +183,12 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 memory.boolean(value == memory.null().into()).into()
             })?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
+            Primitive::MEMQ => Self::operate_top(memory, |memory, value| {
+                memory.boolean(value == memory.null().into()).into()
+            })?,
+            Primitive::ASSQ => Self::operate_top(memory, |memory, value| {
+                memory.boolean(value == memory.null().into()).into()
+            })?,
             // External APIs
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
