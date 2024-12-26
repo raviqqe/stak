@@ -583,6 +583,8 @@
     (define $log (primitive 18))
     (define null? (primitive 20))
     (define pair? (primitive 21))
+    (define memq (primitive 22))
+    (define assq (primitive 23))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -876,7 +878,6 @@
           (else
             (loop (cdr xs))))))
 
-    (define (memq x xs) (member x xs eq?))
     (define (memv x xs) (member x xs eqv?))
 
     (define (assoc x xs . rest)
@@ -893,7 +894,6 @@
               pair
               (loop (cdr xs)))))))
 
-    (define (assq x xs) (assoc x xs eq?))
     (define (assv x xs) (assoc x xs eqv?))
 
     (define (append . lists)
