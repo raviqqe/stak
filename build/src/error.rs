@@ -22,8 +22,6 @@ pub enum BuildError {
     Glob(GlobError),
     /// A file glob pattern error.
     GlobPattern(PatternError),
-    /// A which error.
-    Which(which::Error),
 }
 
 impl From<CompileError> for BuildError {
@@ -62,12 +60,6 @@ impl From<VarError> for BuildError {
     }
 }
 
-impl From<which::Error> for BuildError {
-    fn from(error: which::Error) -> Self {
-        Self::Which(error)
-    }
-}
-
 impl Error for BuildError {}
 
 impl Display for BuildError {
@@ -79,7 +71,6 @@ impl Display for BuildError {
             Self::GlobPattern(error) => write!(formatter, "{error}"),
             Self::Io(error) => write!(formatter, "{error}"),
             Self::Join(error) => write!(formatter, "{error}"),
-            Self::Which(error) => write!(formatter, "{error}"),
         }
     }
 }
