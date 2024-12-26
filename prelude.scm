@@ -583,8 +583,8 @@
     (define $log (primitive 18))
     (define null? (primitive 20))
     (define pair? (primitive 21))
-    (define memq (primitive 21))
-    (define assq (primitive 21))
+    (define memq (primitive 22))
+    (define assq (primitive 23))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
