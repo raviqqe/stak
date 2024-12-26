@@ -91,7 +91,7 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         let descriptor = file_system
             .open(create_path_string(&path).to_bytes_with_nul(), false)
@@ -104,7 +104,7 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         fs::write(&path, [42]).unwrap();
 
@@ -120,7 +120,7 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         let descriptor = file_system
             .open(create_path_string(&path).to_bytes_with_nul(), true)
@@ -142,7 +142,7 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         file_system
             .delete(create_path_string(&path).to_bytes_with_nul())

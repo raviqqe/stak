@@ -1,12 +1,12 @@
 use crate::{FileDescriptor, FileError, FileSystem};
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct MemoryFileEntry {
     file_index: usize,
     offset: usize,
 }
 
-/// A read-only in-memory file system.
+/// A in-memory file system.
 #[derive(Debug)]
 pub struct MemoryFileSystem<'a> {
     files: &'a [(&'a [u8], &'a [u8])],
@@ -32,7 +32,7 @@ impl<'a> FileSystem for MemoryFileSystem<'a> {
         }
 
         for (file_index, (file_path, _)) in self.files.iter().enumerate() {
-            if &path == file_path {
+            if path == *file_path {
                 for (descriptor, entry) in self.entries.iter_mut().enumerate() {
                     if entry.is_none() {
                         *entry = Some(MemoryFileEntry {
@@ -106,5 +106,30 @@ mod tests {
     #[test]
     fn create_file_system() {
         MemoryFileSystem::new(&[], &mut []);
+    }
+
+    #[test]
+    fn read() {
+        let mut entries = [Default::default(); 8];
+        let mut system = MemoryFileSystem::new(&[(b"foo", b"bar")], &mut entries);
+
+        let descriptor = system.open(b"foo", false).unwrap();
+
+        assert_eq!(system.read(descriptor).unwrap(), b'b');
+        assert_eq!(system.read(descriptor).unwrap(), b'a');
+        assert_eq!(system.read(descriptor).unwrap(), b'r');
+
+        system.close(descriptor).unwrap();
+
+        assert!(system.read(descriptor).is_err());
+    }
+
+    #[test]
+    fn exists() {
+        let mut entries = [Default::default(); 8];
+        let system = MemoryFileSystem::new(&[(b"foo", b"bar")], &mut entries);
+
+        assert!(system.exists(b"foo").unwrap());
+        assert!(!system.exists(b"bar").unwrap());
     }
 }

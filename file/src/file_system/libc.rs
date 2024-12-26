@@ -97,7 +97,7 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
         let descriptor = file_system
             .open(path.as_os_str().as_encoded_bytes(), false)
@@ -110,7 +110,7 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
         fs::write(&path, [42]).unwrap();
 
@@ -126,7 +126,7 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
         let descriptor = file_system
             .open(path.as_os_str().as_encoded_bytes(), true)
@@ -148,7 +148,7 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
         file_system
             .delete(path.as_os_str().as_encoded_bytes())
