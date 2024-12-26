@@ -185,21 +185,36 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
             Primitive::MEMQ => {
                 let [x, xs] = memory.pop_many();
-                let mut y = memory.boolean(false).into();
+                let mut xs = xs.assume_cons();
+                let mut y = memory.boolean(false);
 
-                while let Some(cons) = xs.to_cons() {
-                    if cons.tag() != Type::Pair as _ {
+                while xs.tag() != Type::Pair as _ {
+                    if x == memory.car(xs) {
+                        y = xs;
                         break;
                     }
 
-                    xs
+                    xs = memory.cdr(xs).assume_cons();
                 }
 
-                memory.push(y)?
+                memory.push(y.into())?
             }
-            Primitive::ASSQ => Self::operate_top(memory, |memory, value| {
-                memory.boolean(value == memory.null().into()).into()
-            })?,
+            Primitive::ASSQ => {
+                let [x, xs] = memory.pop_many();
+                let mut xs = xs.assume_cons();
+                let mut y = memory.boolean(false);
+
+                while xs.tag() != Type::Pair as _ {
+                    if x == memory.car(xs) {
+                        y = xs;
+                        break;
+                    }
+
+                    xs = memory.cdr(xs).assume_cons();
+                }
+
+                memory.push(y.into())?
+            }
             // External APIs
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
