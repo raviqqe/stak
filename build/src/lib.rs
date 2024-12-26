@@ -19,8 +19,11 @@
 //!
 //! [include_module]: https://docs.rs/stak/latest/stak/macro.include_module.html
 
+extern crate alloc;
+
 mod error;
 
+use alloc::sync::Arc;
 pub use error::BuildError;
 use glob::{glob, Paths};
 use stak_compiler::compile_r7rs;
@@ -29,7 +32,6 @@ use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
     process::Stdio,
-    sync::Arc,
 };
 use tokio::{
     fs::{create_dir_all, read, write},
