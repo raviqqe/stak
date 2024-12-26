@@ -14,9 +14,7 @@ impl MemoryFileSystem {
 impl FileSystem for MemoryFileSystem {
     type Error = FileError;
 
-    fn open(&self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
-        Err(FileError::Open)
-    }
+    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {}
 
     fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
         Err(FileError::Close)
