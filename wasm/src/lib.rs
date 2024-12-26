@@ -9,7 +9,7 @@ use stak_time::VoidClock;
 use stak_vm::Vm;
 use wasm_bindgen::prelude::*;
 
-/// Compiles a source code.
+/// Compiles source codes in Scheme.
 #[wasm_bindgen]
 pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
     let mut target = vec![];
@@ -17,7 +17,7 @@ pub fn compile(source: &str) -> Result<Vec<u8>, JsError> {
     Ok(target)
 }
 
-/// Interprets bytecodes with a standard input and returns its standard output.
+/// Interprets bytecodes with standard input and returns its standard output.
 #[wasm_bindgen]
 pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     let mut heap = vec![Default::default(); heap_size];

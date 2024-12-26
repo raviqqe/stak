@@ -4,11 +4,32 @@ use cfg_exif::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
-use quote::quote;
+use quote::{quote, ToTokens};
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
 use std::path::{Path, MAIN_SEPARATOR_STR};
-use syn::{parse_macro_input, LitStr};
+use syn::{parse::Parse, parse_macro_input, Ident, LitStr, Token};
+
+struct IncludeModuleInput {
+    path: LitStr,
+    module: Option<Ident>,
+}
+
+impl Parse for IncludeModuleInput {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        let path = input.parse()?;
+        let mut module = None;
+
+        if input.parse::<Option<Token![,]>>()?.is_some() {
+            if let Some(value) = input.parse()? {
+                input.parse::<Option<Token![,]>>()?;
+                module = Some(value);
+            }
+        };
+
+        Ok(Self { path, module })
+    }
+}
 
 /// Includes bytecodes of a R7RS Scheme module built by the
 /// [`stak_build`](https://docs.rs/stak-build) crate.
@@ -16,19 +37,23 @@ use syn::{parse_macro_input, LitStr};
 /// See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
 #[proc_macro]
 pub fn include_module(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
+    let input = parse_macro_input!(input as IncludeModuleInput);
 
-    convert_result(include_result(&input.value())).into()
+    convert_result(include_result(&input)).into()
 }
 
-fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
-    let path = format!("{}", Path::new("src").join(path).display());
+fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
+    let path = format!("{}", Path::new("src").join(input.path.value()).display());
     let full_path = quote!(concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path));
+    let module = input
+        .module
+        .as_ref()
+        .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
 
     Ok(feature!(if ("hot-reload") {
-        quote!(stak::module::UniversalModule::from_hot_reload_path(#full_path))
+        quote!(#module::UniversalModule::from_hot_reload_path(#full_path))
     } else {
-        quote!(stak::module::UniversalModule::from_bytecode(
+        quote!(#module::UniversalModule::from_bytecode(
             include_bytes!(#full_path)
         ))
     }))
