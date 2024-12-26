@@ -1,6 +1,6 @@
 [package]
 name = "stak-wasm"
-description = "Stak Scheme VM in WebAssembly"
+description = "Stak Scheme in WebAssembly"
 version = "0.3.13"
 edition.workspace = true
 keywords.workspace = true
