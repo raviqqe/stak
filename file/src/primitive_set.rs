@@ -20,7 +20,7 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
 
     fn operate_option<'a>(
         memory: &mut Memory<'a>,
-        operate: impl Fn(&mut Memory<'a>) -> Option<Value>,
+        mut operate: impl FnMut(&mut Memory<'a>) -> Option<Value>,
     ) -> Result<(), Error> {
         let value = operate(memory).unwrap_or_else(|| memory.boolean(false).into());
         memory.push(value)?;
@@ -29,7 +29,7 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
 
     fn operate_result<'a, E>(
         memory: &mut Memory<'a>,
-        operate: impl Fn(&mut Memory<'a>) -> Result<(), E>,
+        mut operate: impl FnMut(&mut Memory<'a>) -> Result<(), E>,
     ) -> Result<(), Error> {
         let result = operate(memory);
         memory.push(memory.boolean(result.is_ok()).into())?;

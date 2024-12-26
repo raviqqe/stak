@@ -27,7 +27,7 @@ impl OsFileSystem {
 impl FileSystem for OsFileSystem {
     type Error = io::Error;
 
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
         OpenOptions::new()
             .read(!output)
             .create(output)
@@ -37,13 +37,13 @@ impl FileSystem for OsFileSystem {
             .map(|file| file.into_raw_fd() as _)
     }
 
-    fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+    fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
         unsafe { File::from_raw_fd(descriptor as _) };
 
         Ok(())
     }
 
-    fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut file = unsafe { File::from_raw_fd(descriptor as _) };
         let mut buffer = [0u8; 1];
         file.read_exact(&mut buffer)?;
@@ -52,7 +52,7 @@ impl FileSystem for OsFileSystem {
         Ok(buffer[0])
     }
 
-    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         let mut file = unsafe { File::from_raw_fd(descriptor as _) };
         file.write_all(&[byte])?;
         forget(file);
@@ -60,7 +60,7 @@ impl FileSystem for OsFileSystem {
         Ok(())
     }
 
-    fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, path: &[u8]) -> Result<(), Self::Error> {
         remove_file(Self::create_path(path))
     }
 
@@ -91,7 +91,7 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         let descriptor = file_system
             .open(create_path_string(&path).to_bytes_with_nul(), false)
@@ -104,7 +104,7 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         fs::write(&path, [42]).unwrap();
 
@@ -120,7 +120,7 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         let descriptor = file_system
             .open(create_path_string(&path).to_bytes_with_nul(), true)
@@ -142,7 +142,7 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         file_system
             .delete(create_path_string(&path).to_bytes_with_nul())

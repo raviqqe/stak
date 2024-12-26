@@ -14,23 +14,23 @@ impl VoidFileSystem {
 impl FileSystem for VoidFileSystem {
     type Error = FileError;
 
-    fn open(&self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
         Err(FileError::Open)
     }
 
-    fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
+    fn close(&mut self, _: FileDescriptor) -> Result<(), Self::Error> {
         Err(FileError::Close)
     }
 
-    fn read(&self, _: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, _: FileDescriptor) -> Result<u8, Self::Error> {
         Err(FileError::Read)
     }
 
-    fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
         Err(FileError::Write)
     }
 
-    fn delete(&self, _: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, _: &[u8]) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }
 
