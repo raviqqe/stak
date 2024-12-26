@@ -32,7 +32,7 @@ use std::{
     sync::Arc,
 };
 use tokio::{
-    fs::{create_dir_all, read, read_to_string, write},
+    fs::{create_dir_all, read, write},
     io::{AsyncReadExt, AsyncWriteExt},
     process::Command,
     runtime::Runtime,
@@ -124,7 +124,7 @@ async fn compile(
             .read_to_end(&mut buffer)
             .await?;
     } else {
-        compile_r7rs(read_to_string(&src_path).await?.as_bytes(), &mut buffer)?;
+        compile_r7rs(&*read(&src_path).await?, &mut buffer)?;
     }
 
     if let Some(path) = out_path.parent() {
