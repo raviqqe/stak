@@ -18,15 +18,13 @@ struct IncludeModuleInput {
 impl Parse for IncludeModuleInput {
     fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
         let path = input.parse()?;
-        let module = if input.parse::<Option<Token![,]>>()?.is_some() {
-            if let Some(module) = input.parse()? {
+        let mut module = None;
+
+        if input.parse::<Option<Token![,]>>()?.is_some() {
+            if let Some(value) = input.parse()? {
                 input.parse::<Option<Token![,]>>()?;
-                Some(module)
-            } else {
-                None
+                module = Some(value);
             }
-        } else {
-            None
         };
 
         Ok(Self { path, module })
