@@ -57,9 +57,9 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
     let compiler = which("stak-compile").ok();
 
     if compiler.is_none() {
-        println!("{}",
+        println!("cargo::warning={}",
             [
-                "cargo::warning=Using an internal compiler.",
+                "Using an internal compiler for Stak Scheme.",
                 "This can be very slow unless you modify `profile.<profile>.build-override` and set `opt-level = 3`.",
                 "Consider installing the external compiler by running `cargo install stak-compile`.",
             ].join(" ")
