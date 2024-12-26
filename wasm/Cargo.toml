@@ -29,6 +29,3 @@ wasm-bindgen-test = "0.3.47"
 
 [lints]
 workspace = true
-
-[build-dependencies]
-stak-build = { version = "0.1.43", path = "../build" }
