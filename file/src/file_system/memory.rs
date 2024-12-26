@@ -23,7 +23,7 @@ impl<'a> MemoryFileSystem<'a> {
     }
 }
 
-impl<'a> FileSystem for MemoryFileSystem<'a> {
+impl FileSystem for MemoryFileSystem<'_> {
     type Error = FileError;
 
     fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
@@ -63,8 +63,7 @@ impl<'a> FileSystem for MemoryFileSystem<'a> {
         let entry = &mut self
             .entries
             .get_mut(descriptor)
-            .map(Option::as_mut)
-            .flatten()
+            .and_then(Option::as_mut)
             .ok_or(FileError::Read)?;
 
         let byte = self
