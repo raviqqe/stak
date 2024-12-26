@@ -188,7 +188,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 let mut xs = xs.assume_cons();
                 let mut y = memory.boolean(false);
 
-                while xs.tag() != Type::Pair as _ {
+                while xs.tag() == Type::Pair as _ {
                     if x == memory.car(xs) {
                         y = xs;
                         break;
@@ -204,7 +204,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 let mut xs = xs.assume_cons();
                 let mut y = memory.boolean(false);
 
-                while xs.tag() != Type::Pair as _ {
+                while xs.tag() == Type::Pair as _ {
                     let cons = memory.car(xs).assume_cons();
 
                     if x == memory.car(cons) {
