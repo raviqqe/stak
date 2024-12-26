@@ -131,7 +131,7 @@ const HEAP_SIZE: usize = 1 << 16;
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let input = 24;
+    let input = 15;
     let mut output = vec![];
     let mut error = vec![];
 
@@ -142,8 +142,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err(str::from_utf8(&error)?.into());
     }
 
-    // Decode and print the output.
-    println!("Answer: {}", isize::from_str(&str::from_utf8(&output)?)?);
+    // Decode and test the output.
+    assert_eq!(isize::from_str(&str::from_utf8(&output)?)?, 610);
 
     Ok(())
 }
