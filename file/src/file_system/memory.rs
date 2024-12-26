@@ -26,13 +26,18 @@ impl<'a> MemoryFileSystem<'a> {
 impl<'a> FileSystem for MemoryFileSystem<'a> {
     type Error = FileError;
 
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
         if output {
             return Err(FileError::Open);
         }
 
         for (file_path, content) in self.files {
-            if path == file_path {
+            if &path == file_path {
+             for entry in  self.entries {
+                     Some(entry) = self.entries.get_mut(descriptor) ;
+                    return Err(FileError::Close);
+                }}
+
                 return Ok();
             }
         }
@@ -50,15 +55,15 @@ impl<'a> FileSystem for MemoryFileSystem<'a> {
         Ok(())
     }
 
-    fn read(&self, path: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, path: FileDescriptor) -> Result<u8, Self::Error> {
         Err(FileError::Read)
     }
 
-    fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
         Err(FileError::Write)
     }
 
-    fn delete(&self, _: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, _: &[u8]) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }
 
