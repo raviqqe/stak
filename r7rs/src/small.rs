@@ -178,12 +178,12 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
             }
             Primitive::HALT => return Err(Error::Halt),
-            // Optimize type checks.
-            // TODO Use `Self::check_type()`.
+            // Optimized procedures
             Primitive::NULL => Self::operate_top(memory, |memory, value| {
                 memory.boolean(value == memory.null().into()).into()
             })?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
+            // External APIs
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }
