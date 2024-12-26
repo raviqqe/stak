@@ -41,28 +41,3 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
 
     Ok(output)
 }
-
-/// Runs a Scheme script with standard input and returns its standard output.
-#[wasm_bindgen]
-pub fn run(_source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
-    let mut heap = vec![Default::default(); heap_size];
-    let mut output = vec![];
-    let mut error = vec![];
-
-    let mut vm = Vm::new(
-        &mut heap,
-        SmallPrimitiveSet::new(
-            ReadWriteDevice::new(input, &mut output, &mut error),
-            VoidFileSystem::new(),
-            VoidProcessContext::new(),
-            VoidClock::new(),
-        ),
-    )?;
-
-    static MODULE: UniversalModule = include_module!("run.scm", stak_module);
-
-    vm.initialize(MODULE.bytecode().iter().copied())?;
-    vm.run()?;
-
-    Ok(output)
-}
