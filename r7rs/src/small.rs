@@ -178,7 +178,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
             }
             Primitive::HALT => return Err(Error::Halt),
-            // Optimized procedures
+            // TODO Add a `stak-optimal` crate.
             Primitive::NULL => Self::operate_top(memory, |memory, value| {
                 memory.boolean(value == memory.null().into()).into()
             })?,
@@ -217,7 +217,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
 
                 memory.push(y.into())?;
             }
-            // External APIs
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }
