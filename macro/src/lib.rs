@@ -45,11 +45,10 @@ pub fn include_module(input: TokenStream) -> TokenStream {
 fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
     let path = format!("{}", Path::new("src").join(input.path.value()).display());
     let full_path = quote!(concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path));
-    let module = if let Some(module) = &input.module {
-        module.to_token_stream()
-    } else {
-        quote!(stak::module)
-    };
+    let module = input
+        .module
+        .as_ref()
+        .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
 
     Ok(feature!(if ("hot-reload") {
         quote!(#module::UniversalModule::from_hot_reload_path(#full_path))
