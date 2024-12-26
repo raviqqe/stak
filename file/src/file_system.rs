@@ -24,19 +24,19 @@ pub trait FileSystem {
     type Error: Error;
 
     /// Opens a file and returns its descriptor.
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error>;
+    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error>;
 
     /// Closes a file.
-    fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error>;
+    fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error>;
 
     /// Reads a file.
-    fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error>;
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error>;
 
     /// Writes a file.
-    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error>;
+    fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error>;
 
     /// Deletes a file.
-    fn delete(&self, path: &[u8]) -> Result<(), Self::Error>;
+    fn delete(&mut self, path: &[u8]) -> Result<(), Self::Error>;
 
     /// Checks if a file exists.
     fn exists(&self, path: &[u8]) -> Result<bool, Self::Error>;

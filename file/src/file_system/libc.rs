@@ -25,7 +25,7 @@ impl LibcFileSystem {
 impl FileSystem for LibcFileSystem {
     type Error = FileError;
 
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
         let descriptor = unsafe {
             libc::open(
                 path as *const _ as _,
@@ -48,11 +48,11 @@ impl FileSystem for LibcFileSystem {
         }
     }
 
-    fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+    fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
         Self::execute(FileError::Close, || unsafe { libc::close(descriptor as _) })
     }
 
-    fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
         if unsafe { libc::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
@@ -62,14 +62,14 @@ impl FileSystem for LibcFileSystem {
         }
     }
 
-    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         Self::execute(FileError::Write, || {
             let buffer = [byte];
             (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
         })
     }
 
-    fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, path: &[u8]) -> Result<(), Self::Error> {
         Self::execute(FileError::Delete, || unsafe {
             libc::remove(path as *const _ as _)
         })
