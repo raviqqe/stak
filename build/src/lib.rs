@@ -61,7 +61,7 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
             [
                 "Using an internal compiler for Stak Scheme.",
                 "This can be very slow unless you modify `profile.<profile>.build-override` in your `Cargo.toml` file to set `opt-level = 3`. ",
-                "For more information, see https://doc.rust-lang.org/cargo/reference/profiles.html#build-dependencies.[]",
+                "For more information, see https://doc.rust-lang.org/cargo/reference/profiles.html#build-dependencies.",
                 "Consider installing the external compiler by running `cargo install stak-compile`.",
             ].join(" ")
         );
