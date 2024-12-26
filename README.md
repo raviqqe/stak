@@ -12,6 +12,7 @@ Stak Scheme aims to be:
 - An embeddable Scheme interpreter for Rust with very small memory footprint and reasonable performance
 - The minimal implementation of [the R7RS-small standard][r7rs-small]
   - A subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
+- A portable scripting environment that supports even no-`std` and no-`alloc` platforms
 
 For more information and usage, visit [the full documentation](https://raviqqe.github.io/stak/install).
 

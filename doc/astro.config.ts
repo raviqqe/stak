@@ -105,15 +105,19 @@ export default defineConfig({
               label: "Writing a Scheme subset",
               link: "/writing-scheme-subset",
             },
+            {
+              label: "No-std and no-alloc support",
+              link: "/no-std-no-alloc",
+            },
           ],
-        },
-        {
-          label: "Examples",
-          items: await listItems("examples"),
         },
         {
           label: "Limitations",
           link: "/limitations",
+        },
+        {
+          label: "Examples",
+          items: await listItems("examples"),
         },
       ],
     }),
