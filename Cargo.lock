@@ -1217,6 +1217,7 @@ dependencies = [
  "stak-device",
  "stak-file",
  "stak-macro",
+ "stak-module",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
