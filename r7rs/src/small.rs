@@ -178,12 +178,45 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
             }
             Primitive::HALT => return Err(Error::Halt),
-            // Optimize type checks.
-            // TODO Use `Self::check_type()`.
+            // TODO Add a `stak-optimal` crate.
             Primitive::NULL => Self::operate_top(memory, |memory, value| {
                 memory.boolean(value == memory.null().into()).into()
             })?,
             Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
+            Primitive::MEMQ => {
+                let [x, xs] = memory.pop_many();
+                let mut xs = xs.assume_cons();
+                let mut y = memory.boolean(false);
+
+                while xs != memory.null() {
+                    if x == memory.car(xs) {
+                        y = xs;
+                        break;
+                    }
+
+                    xs = memory.cdr(xs).assume_cons();
+                }
+
+                memory.push(y.into())?;
+            }
+            Primitive::ASSQ => {
+                let [x, xs] = memory.pop_many();
+                let mut xs = xs.assume_cons();
+                let mut y = memory.boolean(false);
+
+                while xs != memory.null() {
+                    let cons = memory.car(xs).assume_cons();
+
+                    if x == memory.car(cons) {
+                        y = cons;
+                        break;
+                    }
+
+                    xs = memory.cdr(xs).assume_cons();
+                }
+
+                memory.push(y.into())?;
+            }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }
