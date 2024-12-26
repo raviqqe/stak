@@ -83,10 +83,9 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
             continue;
         }
 
-        let out_path = out_directory.join(&path);
-
         println!("cargo::rerun-if-changed={}", path.display());
 
+        let out_path = out_directory.join(&path);
         handles.push(spawn(compile(path, out_path, compiler.clone())))
     }
 
