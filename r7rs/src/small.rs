@@ -197,7 +197,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                     xs = memory.cdr(xs).assume_cons();
                 }
 
-                memory.push(y.into())?
+                memory.push(y.into())?;
             }
             Primitive::ASSQ => {
                 let [x, xs] = memory.pop_many();
@@ -205,15 +205,17 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 let mut y = memory.boolean(false);
 
                 while xs.tag() != Type::Pair as _ {
-                    if x == memory.car(xs) {
-                        y = xs;
+                    let cons = memory.car(xs).assume_cons();
+
+                    if x == memory.car(cons) {
+                        y = cons;
                         break;
                     }
 
                     xs = memory.cdr(xs).assume_cons();
                 }
 
-                memory.push(y.into())?
+                memory.push(y.into())?;
             }
             // External APIs
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
