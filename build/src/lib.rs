@@ -54,6 +54,18 @@ pub fn build_r7rs() -> Result<(), BuildError> {
 }
 
 async fn build(paths: Paths) -> Result<(), BuildError> {
+    let compiler = which("stak-compile").ok();
+
+    if compiler.is_none() {
+        println!("{}",
+            [
+                "cargo::warning=Using an internal compiler.",
+                "This can be very slow unless you modify `profile.<profile>.build-override` and set `opt-level = 3`.",
+                "Consider installing the external compiler by running `cargo install stak-compile`.",
+            ].join(" ")
+        );
+    }
+
     let out_directory_variable = env::var("OUT_DIR")?;
     let out_directory = Path::new(&out_directory_variable);
 
@@ -73,7 +85,7 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
 
         println!("cargo::rerun-if-changed={}", path.display());
 
-        handles.push(spawn(compile(path, out_path)))
+        handles.push(spawn(compile(path, out_path, compiler.clone())))
     }
 
     for handle in handles {
@@ -83,13 +95,15 @@ async fn build(paths: Paths) -> Result<(), BuildError> {
     Ok(())
 }
 
-async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError> {
+async fn compile(
+    src_path: PathBuf,
+    out_path: PathBuf,
+    compiler: Option<PathBuf>,
+) -> Result<(), BuildError> {
     let mut buffer = vec![];
 
-    if cfg!(feature = "internal-compiler") {
-        compile_r7rs(read_to_string(&src_path).await?.as_bytes(), &mut buffer)?;
-    } else {
-        let mut command = Command::new(which("stak-compile")?)
+    if let Some(path) = compiler {
+        let mut command = Command::new(path)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .spawn()?;
@@ -107,6 +121,8 @@ async fn compile(src_path: PathBuf, out_path: PathBuf) -> Result<(), BuildError>
             .expect("stdout")
             .read_to_end(&mut buffer)
             .await?;
+    } else {
+        compile_r7rs(read_to_string(&src_path).await?.as_bytes(), &mut buffer)?;
     }
 
     if let Some(path) = out_path.parent() {
