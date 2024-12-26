@@ -2,19 +2,27 @@ use crate::{FileDescriptor, FileError, FileSystem};
 
 /// A read-only in-memory file system.
 #[derive(Debug)]
-pub struct MemoryFileSystem {}
+pub struct MemoryFileSystem<'a> {
+    files: &'a [(&'a [u8], &'a [u8])],
+}
 
-impl MemoryFileSystem {
+impl<'a> MemoryFileSystem<'a> {
     /// Creates a file system.
-    pub const fn new() -> Self {
-        Self {}
+    pub const fn new(files: &'a [(&'a [u8], &'a [u8])]) -> Self {
+        Self { files }
     }
 }
 
 impl FileSystem for MemoryFileSystem {
     type Error = FileError;
 
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {}
+    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+        if output {
+            return Err(FileError::Open);
+        }
+
+        Ok(0)
+    }
 
     fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
         Err(FileError::Close)
