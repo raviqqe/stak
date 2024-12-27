@@ -1,11 +1,13 @@
 #[cfg(feature = "libc")]
 mod libc;
+mod memory;
 #[cfg(feature = "std")]
 mod os;
 mod void;
 
 #[cfg(feature = "libc")]
 pub use libc::LibcProcessContext;
+pub use memory::MemoryProcessContext;
 #[cfg(feature = "std")]
 pub use os::OsProcessContext;
 pub use void::VoidProcessContext;
