@@ -10,7 +10,7 @@ const PATH_SIZE: usize = 128;
 pub struct CString(Vec<u8, PATH_SIZE>);
 
 impl CString {
-    fn new(vector: Vec<u8, PATH_SIZE>) -> Self {
+    const fn new(vector: Vec<u8, PATH_SIZE>) -> Self {
         Self(vector)
     }
 }
