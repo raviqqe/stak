@@ -117,6 +117,7 @@ mod tests {
         assert_eq!(system.read(descriptor).unwrap(), b'b');
         assert_eq!(system.read(descriptor).unwrap(), b'a');
         assert_eq!(system.read(descriptor).unwrap(), b'r');
+        assert!(system.read(descriptor).is_err());
 
         system.close(descriptor).unwrap();
 
