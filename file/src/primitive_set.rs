@@ -2,10 +2,7 @@ mod primitive;
 
 pub use self::primitive::Primitive;
 use crate::FileSystem;
-use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
-
-const PATH_SIZE: usize = 128;
 
 /// A primitive set for a file system.
 pub struct FilePrimitiveSet<T: FileSystem> {
@@ -35,20 +32,6 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
         memory.push(memory.boolean(result.is_ok()).into())?;
         Ok(())
     }
-
-    fn decode_path(memory: &mut Memory, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
-        let mut path = Vec::<_, PATH_SIZE>::new();
-
-        while list.assume_cons() != memory.null() {
-            path.push(memory.car_value(list).assume_number().to_i64() as u8)
-                .ok()?;
-            list = memory.cdr_value(list);
-        }
-
-        path.push(0).ok()?;
-
-        Some(path)
-    }
 }
 
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
@@ -58,11 +41,11 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
         match primitive {
             Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
                 let [list, output] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = T::decode_path(memory, list).ok()?;
                 let output = output != memory.boolean(false).into();
 
                 self.file_system
-                    .open(&path, output)
+                    .open(path.as_ref(), output)
                     .ok()
                     .map(|descriptor| Number::new(descriptor as _).into())
             })?,
@@ -87,19 +70,19 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             })?,
             Primitive::DELETE_FILE => Self::operate_option(memory, |memory| {
                 let [list] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = T::decode_path(memory, list).ok()?;
 
                 self.file_system
-                    .delete(&path)
+                    .delete(path.as_ref())
                     .ok()
                     .map(|_| memory.boolean(true).into())
             })?,
             Primitive::EXISTS_FILE => Self::operate_option(memory, |memory| {
                 let [list] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = T::decode_path(memory, list).ok()?;
 
                 self.file_system
-                    .exists(&path)
+                    .exists(path.as_ref())
                     .ok()
                     .map(|value| memory.boolean(value).into())
             })?,

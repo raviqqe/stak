@@ -1,4 +1,9 @@
+use super::utility::decode_path;
 use crate::{FileDescriptor, FileError, FileSystem};
+use heapless::Vec;
+use stak_vm::{Memory, Value};
+
+const PATH_SIZE: usize = 128;
 
 #[derive(Clone, Copy, Debug)]
 pub struct MemoryFileEntry {
@@ -24,9 +29,11 @@ impl<'a> MemoryFileSystem<'a> {
 }
 
 impl FileSystem for MemoryFileSystem<'_> {
+    type Path = [u8];
+    type PathBuf = Vec<u8, PATH_SIZE>;
     type Error = FileError;
 
-    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
         if output {
             return Err(FileError::Open);
         }
@@ -83,11 +90,11 @@ impl FileSystem for MemoryFileSystem<'_> {
         Err(FileError::Write)
     }
 
-    fn delete(&mut self, _: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, _: &Self::Path) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }
 
-    fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
+    fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
         for (file_path, _) in self.files {
             if &path == file_path {
                 return Ok(true);
@@ -95,6 +102,10 @@ impl FileSystem for MemoryFileSystem<'_> {
         }
 
         Ok(false)
+    }
+
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
+        decode_path(memory, list).ok_or(FileError::PathDecode)
     }
 }
 
