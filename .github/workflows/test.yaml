@@ -140,7 +140,7 @@ jobs:
       - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
-      - run: wasm-pack test --release --chrome --headless
+      - run: wasm-pack test --node --release
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
