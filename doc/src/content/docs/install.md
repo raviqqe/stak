@@ -22,7 +22,7 @@ The two crates have different roles:
 
 - The `stak` crate provides virtual machines and utilities to run Scheme programs in Rust.
 - The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
-- The `stak-compile` crate is an external Stak Scheme compiler to build Scheme scripts into bytecodes.
+- The `stak-compile` crate is a Stak Scheme compiler to compile Scheme scripts into bytecodes.
 
 ### Command line tools
 
