@@ -2,7 +2,7 @@
 
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
-use stak_file::VoidFileSystem;
+use stak_file::{MemoryFileSystem, VoidFileSystem};
 use stak_macro::include_module;
 use stak_module::{Module, UniversalModule};
 use stak_process_context::VoidProcessContext;
@@ -44,16 +44,18 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
 
 /// Runs a Scheme script with standard input and returns its standard output.
 #[wasm_bindgen]
-pub fn run(_source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
+pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
     let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
+    let files = [(b"main.scm".as_slice(), source.as_bytes())];
+    let mut file_entries = [Default::default(); 8];
 
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(input, &mut output, &mut error),
-            VoidFileSystem::new(),
+            MemoryFileSystem::new(&files, &mut file_entries),
             VoidProcessContext::new(),
             VoidClock::new(),
         ),
