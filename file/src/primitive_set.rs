@@ -2,7 +2,6 @@ mod primitive;
 
 pub use self::primitive::Primitive;
 use crate::FileSystem;
-use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
 
 const PATH_SIZE: usize = 128;
@@ -44,7 +43,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
         match primitive {
             Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
                 let [list, output] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = self.file_system.decode_path(memory, list).ok()?;
                 let output = output != memory.boolean(false).into();
 
                 self.file_system
@@ -73,7 +72,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             })?,
             Primitive::DELETE_FILE => Self::operate_option(memory, |memory| {
                 let [list] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = self.file_system.decode_path(memory, list).ok()?;
 
                 self.file_system
                     .delete(&path)
@@ -82,7 +81,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             })?,
             Primitive::EXISTS_FILE => Self::operate_option(memory, |memory| {
                 let [list] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = self.file_system.decode_path(memory, list).ok()?;
 
                 self.file_system
                     .exists(&path)
