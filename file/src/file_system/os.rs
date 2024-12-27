@@ -74,7 +74,7 @@ impl FileSystem for OsFileSystem {
         Ok(PathBuf::from(
             str::from_utf8(
                 &decode_path::<PATH_SIZE>(memory, list)
-                    .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "path decode failed"))?,
+                    .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "path too long"))?,
             )
             .map_err(|error| io::Error::new(ErrorKind::InvalidData, error))?,
         ))
