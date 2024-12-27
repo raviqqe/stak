@@ -2,8 +2,10 @@
 
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
-use stak_file::VoidFileSystem;
-use stak_process_context::VoidProcessContext;
+use stak_file::{MemoryFileSystem, VoidFileSystem};
+use stak_macro::include_module;
+use stak_module::{Module, UniversalModule};
+use stak_process_context::{MemoryProcessContext, VoidProcessContext};
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
@@ -35,6 +37,35 @@ pub fn interpret(bytecodes: &[u8], input: &[u8], heap_size: usize) -> Result<Vec
     )?;
 
     vm.initialize(bytecodes.iter().copied())?;
+    vm.run()?;
+
+    Ok(output)
+}
+
+/// Runs a Scheme script with standard input and returns its standard output.
+#[wasm_bindgen]
+pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsError> {
+    const MAIN_FILE: &str = "main.scm";
+
+    let mut heap = vec![Default::default(); heap_size];
+    let mut output = vec![];
+    let mut error = vec![];
+    let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
+    let mut file_entries = [Default::default(); 8];
+
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(input, &mut output, &mut error),
+            MemoryFileSystem::new(&files, &mut file_entries),
+            MemoryProcessContext::new(&["scheme", MAIN_FILE], &[]),
+            VoidClock::new(),
+        ),
+    )?;
+
+    static MODULE: UniversalModule = include_module!("run.scm", stak_module);
+
+    vm.initialize(MODULE.bytecode().iter().copied())?;
     vm.run()?;
 
     Ok(output)

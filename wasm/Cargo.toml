@@ -16,6 +16,8 @@ stak-compiler = { version = "0.1.89", path = "../compiler" }
 stak-configuration = { version = "0.1.81", path = "../configuration" }
 stak-device = { version = "0.2.85", path = "../device", features = ["std"] }
 stak-file = { version = "0.4.43", path = "../file" }
+stak-macro = { version = "0.2.4", path = "../macro" }
+stak-module = { version = "0.1.5", path = "../module" }
 stak-process-context = { version = "0.2.43", path = "../process_context" }
 stak-r7rs = { version = "0.8.20", path = "../r7rs" }
 stak-time = { version = "0.1.26", path = "../time" }
@@ -26,6 +28,9 @@ wasm-bindgen = "0.2.97"
 stak-configuration = { path = "../configuration" }
 stak-macro = { path = "../macro" }
 wasm-bindgen-test = "0.3.47"
+
+[build-dependencies]
+stak-build = { version = "0.1.43", path = "../build" }
 
 [lints]
 workspace = true
