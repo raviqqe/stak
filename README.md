@@ -25,6 +25,7 @@ To install Stak Scheme as a library in your Rust project, run:
 ```sh
 cargo add stak
 cargo add --build stak-build
+cargo install stak-compile
 ```
 
 For full examples, see [the `examples` directory](https://github.com/raviqqe/stak/tree/main/examples).
