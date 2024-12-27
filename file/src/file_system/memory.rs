@@ -114,9 +114,10 @@ mod tests {
 
         let descriptor = system.open(b"foo", false).unwrap();
 
-        assert_eq!(system.read(descriptor).unwrap(), b'b');
-        assert_eq!(system.read(descriptor).unwrap(), b'a');
-        assert_eq!(system.read(descriptor).unwrap(), b'r');
+        assert_eq!(system.read(descriptor), Ok(b'b'));
+        assert_eq!(system.read(descriptor), Ok(b'a'));
+        assert_eq!(system.read(descriptor), Ok(b'r'));
+        assert!(system.read(descriptor).is_err());
 
         system.close(descriptor).unwrap();
 

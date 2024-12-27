@@ -4,9 +4,7 @@
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_macro::compile_r7rs;
 use stak_wasm::{compile, interpret};
-use wasm_bindgen_test::{wasm_bindgen_test, wasm_bindgen_test_configure};
-
-wasm_bindgen_test_configure!(run_in_browser run_in_worker);
+use wasm_bindgen_test::wasm_bindgen_test;
 
 const SOURCE: &str = r#"
     (import (scheme write))
@@ -25,9 +23,12 @@ fn run_bytecodes() {
         r#"
             (import (scheme write))
 
-            (display "Hello, World!")
+            (display "Hello, world!")
         "#
     );
 
-    interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
+    assert_eq!(
+        interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap(),
+        b"Hello, world!"
+    );
 }
