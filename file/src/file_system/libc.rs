@@ -7,7 +7,7 @@ use libc::{F_OK, S_IRUSR, S_IWUSR};
 
 const PATH_SIZE: usize = 128;
 
-struct CString(Vec<u8, PATH_SIZE>);
+pub struct CString(Vec<u8, PATH_SIZE>);
 
 impl CString {
     pub fn new(vector: Vec<u8, PATH_SIZE>) -> Self {
