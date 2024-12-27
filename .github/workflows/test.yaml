@@ -136,7 +136,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
         with:
-          node-version: >=23.5.0
+          node-version: ">=23.5.0"
       - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
