@@ -1,8 +1,7 @@
+use super::utility::decode_path;
 use crate::{FileDescriptor, FileError, FileSystem};
 use heapless::Vec;
 use stak_vm::{Memory, Value};
-
-use super::utility::decode_path;
 
 const PATH_SIZE: usize = 128;
 
@@ -91,7 +90,7 @@ impl FileSystem for MemoryFileSystem<'_> {
         Err(FileError::Write)
     }
 
-    fn delete(&mut self, _: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, _: &Self::Path) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }
 

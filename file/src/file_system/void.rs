@@ -17,7 +17,7 @@ impl FileSystem for VoidFileSystem {
     type PathBuf = [u8; 0];
     type Error = FileError;
 
-    fn open(&mut self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, _: &Self::Path, _: bool) -> Result<FileDescriptor, Self::Error> {
         Err(FileError::Open)
     }
 
@@ -33,15 +33,15 @@ impl FileSystem for VoidFileSystem {
         Err(FileError::Write)
     }
 
-    fn delete(&mut self, _: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, _: &Self::Path) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }
 
-    fn exists(&self, _: &[u8]) -> Result<bool, Self::Error> {
+    fn exists(&self, _: &Self::Path) -> Result<bool, Self::Error> {
         Err(FileError::Exists)
     }
 
-    fn decode_path(&self, _memory: &Memory, _list: Value) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path(&self, _: &Memory, _: Value) -> Result<Self::PathBuf, Self::Error> {
         Err(FileError::PathDecode)
     }
 }

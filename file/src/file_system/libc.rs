@@ -1,7 +1,10 @@
-use super::{FileDescriptor, FileError, FileSystem};
-use core::ffi::c_int;
+use super::{utility::decode_path, FileDescriptor, FileError, FileSystem};
+use alloc::ffi::CString;
+use core::ffi::{c_int, CStr};
 // spell-checker: disable-next-line
 use libc::{F_OK, S_IRUSR, S_IWUSR};
+
+const PATH_SIZE: usize = 128;
 
 /// A file system based on the libc API.
 #[derive(Debug)]
@@ -23,12 +26,14 @@ impl LibcFileSystem {
 }
 
 impl FileSystem for LibcFileSystem {
+    type Path = CStr;
+    type PathBuf = CString;
     type Error = FileError;
 
-    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
         let descriptor = unsafe {
             libc::open(
-                path as *const _ as _,
+                path.as_ptr(),
                 if output {
                     // spell-checker: disable-next-line
                     libc::O_WRONLY | libc::O_CREAT | libc::O_TRUNC
@@ -69,14 +74,28 @@ impl FileSystem for LibcFileSystem {
         })
     }
 
-    fn delete(&mut self, path: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
         Self::execute(FileError::Delete, || unsafe {
             libc::remove(path as *const _ as _)
         })
     }
 
-    fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
+    fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
         Ok(unsafe { libc::access(path as *const _ as _, F_OK) } == 0)
+    }
+
+    fn decode_path(
+        &self,
+        memory: &stak_vm::Memory,
+        list: stak_vm::Value,
+    ) -> Result<Self::PathBuf, Self::Error> {
+        let mut path = decode_path::<PATH_SIZE>(memory, list).ok_or(FileError::PathDecode)?;
+
+        path.push(0);
+
+        Ok(CStr::from_bytes_with_nul(&path)
+            .map_err(|_| FileError::PathDecode)?
+            .into())
     }
 }
 
@@ -165,8 +184,6 @@ mod tests {
 
         let file_system = LibcFileSystem::new();
 
-        assert!(file_system
-            .exists(path.as_os_str().as_encoded_bytes())
-            .unwrap());
+        assert!(file_system.exists(path.as_os_str().as_c_sr()).unwrap());
     }
 }
