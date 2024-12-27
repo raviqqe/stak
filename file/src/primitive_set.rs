@@ -4,8 +4,6 @@ pub use self::primitive::Primitive;
 use crate::FileSystem;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
 
-const PATH_SIZE: usize = 128;
-
 /// A primitive set for a file system.
 pub struct FilePrimitiveSet<T: FileSystem> {
     file_system: T,
@@ -47,7 +45,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 let output = output != memory.boolean(false).into();
 
                 self.file_system
-                    .open(&path, output)
+                    .open(path.as_ref(), output)
                     .ok()
                     .map(|descriptor| Number::new(descriptor as _).into())
             })?,
@@ -75,7 +73,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 let path = self.file_system.decode_path(memory, list).ok()?;
 
                 self.file_system
-                    .delete(&path)
+                    .delete(path.as_ref())
                     .ok()
                     .map(|_| memory.boolean(true).into())
             })?,
@@ -84,7 +82,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 let path = self.file_system.decode_path(memory, list).ok()?;
 
                 self.file_system
-                    .exists(&path)
+                    .exists(path.as_ref())
                     .ok()
                     .map(|value| memory.boolean(value).into())
             })?,

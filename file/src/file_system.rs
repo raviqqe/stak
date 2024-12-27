@@ -22,7 +22,11 @@ pub type FileDescriptor = usize;
 
 /// A file system.
 pub trait FileSystem {
-    type Path;
+    /// A path.
+    type Path: ?Sized;
+
+    /// A path buffer.
+    type PathBuf: AsRef<Self::Path>;
 
     /// An error.
     type Error: Error;
@@ -46,5 +50,5 @@ pub trait FileSystem {
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error>;
 
     /// Decodes a path.
-    fn decode_path(&self, memory: &mut Memory, list: Value) -> Result<Self::Path, Self::Error>;
+    fn decode_path(&self, memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error>;
 }
