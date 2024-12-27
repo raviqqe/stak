@@ -1,6 +1,7 @@
 use super::utility::decode_path;
 use crate::{FileDescriptor, FileSystem};
 use core::{mem::forget, str};
+use stak_vm::{Memory, Value};
 use std::{
     fs::{remove_file, File, OpenOptions},
     io::{self, ErrorKind, Read, Write},
@@ -67,10 +68,7 @@ impl FileSystem for OsFileSystem {
         Ok(path.exists())
     }
 
-    fn decode_path(
-        memory: &stak_vm::Memory,
-        list: stak_vm::Value,
-    ) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
         Ok(PathBuf::from(
             str::from_utf8(
                 &decode_path::<PATH_SIZE>(memory, list)

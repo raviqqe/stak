@@ -1,6 +1,7 @@
 use super::{utility::decode_path, FileDescriptor, FileError, FileSystem};
 use alloc::ffi::CString;
 use core::ffi::{c_int, CStr};
+use stak_vm::{Memory, Value};
 // spell-checker: disable-next-line
 use libc::{F_OK, S_IRUSR, S_IWUSR};
 
@@ -84,10 +85,7 @@ impl FileSystem for LibcFileSystem {
         Ok(unsafe { libc::access(path as *const _ as _, F_OK) } == 0)
     }
 
-    fn decode_path(
-        memory: &stak_vm::Memory,
-        list: stak_vm::Value,
-    ) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
         let mut path = decode_path::<PATH_SIZE>(memory, list).ok_or(FileError::PathDecode)?;
 
         path.push(0).map_err(|_| FileError::PathDecode)?;
