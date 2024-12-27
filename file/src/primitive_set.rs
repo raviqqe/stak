@@ -45,8 +45,6 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
             list = memory.cdr_value(list);
         }
 
-        path.push(0).ok()?;
-
         Some(path)
     }
 }
