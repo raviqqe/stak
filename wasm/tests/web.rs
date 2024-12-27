@@ -29,5 +29,21 @@ fn run_bytecodes() {
         "#
     );
 
+    assert_eq!(
+        interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap(),
+        b"Hello, world!"
+    );
+}
+
+#[wasm_bindgen_test]
+fn run_script() {
+    const BYTECODE: &[u8] = compile_r7rs!(
+        r#"
+            (import (scheme write))
+
+            (display "Hello, World!")
+        "#
+    );
+
     interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
 }
