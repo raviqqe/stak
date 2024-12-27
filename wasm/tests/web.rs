@@ -23,9 +23,12 @@ fn run_bytecodes() {
         r#"
             (import (scheme write))
 
-            (display "Hello, World!")
+            (display "Hello, world!")
         "#
     );
 
-    interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap();
+    assert_eq!(
+        interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap(),
+        b"Hello, world!"
+    );
 }
