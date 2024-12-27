@@ -85,7 +85,6 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn decode_path(
-        &self,
         memory: &stak_vm::Memory,
         list: stak_vm::Value,
     ) -> Result<Self::PathBuf, Self::Error> {

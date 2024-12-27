@@ -68,7 +68,6 @@ impl FileSystem for OsFileSystem {
     }
 
     fn decode_path(
-        &self,
         memory: &stak_vm::Memory,
         list: stak_vm::Value,
     ) -> Result<Self::PathBuf, Self::Error> {

@@ -41,7 +41,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
         match primitive {
             Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
                 let [list, output] = memory.pop_many();
-                let path = self.file_system.decode_path(memory, list).ok()?;
+                let path = T::decode_path(memory, list).ok()?;
                 let output = output != memory.boolean(false).into();
 
                 self.file_system
@@ -70,7 +70,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             })?,
             Primitive::DELETE_FILE => Self::operate_option(memory, |memory| {
                 let [list] = memory.pop_many();
-                let path = self.file_system.decode_path(memory, list).ok()?;
+                let path = T::decode_path(memory, list).ok()?;
 
                 self.file_system
                     .delete(path.as_ref())
@@ -79,7 +79,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             })?,
             Primitive::EXISTS_FILE => Self::operate_option(memory, |memory| {
                 let [list] = memory.pop_many();
-                let path = self.file_system.decode_path(memory, list).ok()?;
+                let path = T::decode_path(memory, list).ok()?;
 
                 self.file_system
                     .exists(path.as_ref())

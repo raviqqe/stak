@@ -104,7 +104,7 @@ impl FileSystem for MemoryFileSystem<'_> {
         Ok(false)
     }
 
-    fn decode_path(&self, memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
         decode_path(memory, list).ok_or(FileError::PathDecode)
     }
 }

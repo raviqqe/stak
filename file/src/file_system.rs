@@ -50,5 +50,5 @@ pub trait FileSystem {
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error>;
 
     /// Decodes a path.
-    fn decode_path(&self, memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error>;
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error>;
 }

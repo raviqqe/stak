@@ -41,7 +41,7 @@ impl FileSystem for VoidFileSystem {
         Err(FileError::Exists)
     }
 
-    fn decode_path(&self, _: &Memory, _: Value) -> Result<Self::PathBuf, Self::Error> {
+    fn decode_path(_: &Memory, _: Value) -> Result<Self::PathBuf, Self::Error> {
         Err(FileError::PathDecode)
     }
 }
