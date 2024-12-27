@@ -3,7 +3,7 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
-#[cfg(any(feature = "libc", test))]
+#[cfg(test)]
 extern crate alloc;
 #[cfg(any(feature = "std", test))]
 extern crate std;

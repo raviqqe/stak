@@ -1,11 +1,25 @@
 use super::{utility::decode_path, FileDescriptor, FileError, FileSystem};
-use alloc::ffi::CString;
 use core::ffi::{c_int, CStr};
+use heapless::Vec;
 use stak_vm::{Memory, Value};
 // spell-checker: disable-next-line
 use libc::{F_OK, S_IRUSR, S_IWUSR};
 
 const PATH_SIZE: usize = 128;
+
+struct CString(Vec<u8, PATH_SIZE>);
+
+impl CString {
+    pub fn new(vector: Vec<u8, PATH_SIZE>) -> Self {
+        Self(vector)
+    }
+}
+
+impl AsRef<CStr> for CString {
+    fn as_ref(&self) -> &CStr {
+        CStr::from_bytes_with_nul(&self.0).expect("null-terminated string")
+    }
+}
 
 /// A file system based on the libc API.
 #[derive(Debug)]
@@ -90,9 +104,7 @@ impl FileSystem for LibcFileSystem {
 
         path.push(0).map_err(|_| FileError::PathDecode)?;
 
-        Ok(CStr::from_bytes_with_nul(&path)
-            .map_err(|_| FileError::PathDecode)?
-            .into())
+        Ok(CString::new(path))
     }
 }
 
@@ -105,6 +117,7 @@ impl Default for LibcFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use alloc::ffi::CString;
     use std::{fs, path::Path};
 
     fn decode_c_str(path: &Path) -> CString {
