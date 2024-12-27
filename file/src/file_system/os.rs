@@ -1,12 +1,14 @@
+use super::utility::decode_path;
 use crate::{FileDescriptor, FileSystem};
-use core::{ffi::CStr, mem::forget};
+use core::{mem::forget, str};
 use std::{
-    ffi::OsStr,
     fs::{remove_file, File, OpenOptions},
-    io::{self, Read, Write},
+    io::{self, ErrorKind, Read, Write},
     os::fd::{FromRawFd, IntoRawFd},
-    path::PathBuf,
+    path::{Path, PathBuf},
 };
+
+const PATH_SIZE: usize = 256;
 
 /// A file system on an operating system.
 #[derive(Debug)]
@@ -17,23 +19,20 @@ impl OsFileSystem {
     pub const fn new() -> Self {
         Self {}
     }
-
-    fn create_path(path: &[u8]) -> PathBuf {
-        let string = CStr::from_bytes_with_nul(path).unwrap();
-        PathBuf::from(unsafe { OsStr::from_encoded_bytes_unchecked(string.to_bytes()) })
-    }
 }
 
 impl FileSystem for OsFileSystem {
+    type Path = Path;
+    type PathBuf = PathBuf;
     type Error = io::Error;
 
-    fn open(&mut self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &Path, output: bool) -> Result<FileDescriptor, Self::Error> {
         OpenOptions::new()
             .read(!output)
             .create(output)
             .write(output)
             .truncate(output)
-            .open(Self::create_path(path))
+            .open(path)
             .map(|file| file.into_raw_fd() as _)
     }
 
@@ -60,12 +59,26 @@ impl FileSystem for OsFileSystem {
         Ok(())
     }
 
-    fn delete(&mut self, path: &[u8]) -> Result<(), Self::Error> {
-        remove_file(Self::create_path(path))
+    fn delete(&mut self, path: &Path) -> Result<(), Self::Error> {
+        remove_file(path)
     }
 
-    fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
-        Ok(Self::create_path(path).exists())
+    fn exists(&self, path: &Path) -> Result<bool, Self::Error> {
+        Ok(path.exists())
+    }
+
+    fn decode_path(
+        &self,
+        memory: &stak_vm::Memory,
+        list: stak_vm::Value,
+    ) -> Result<Self::PathBuf, Self::Error> {
+        Ok(PathBuf::from(
+            str::from_utf8(
+                &decode_path::<PATH_SIZE>(memory, list)
+                    .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "path decode failed"))?,
+            )
+            .map_err(|error| io::Error::new(ErrorKind::InvalidData, error))?,
+        ))
     }
 }
 

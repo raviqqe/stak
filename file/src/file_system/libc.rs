@@ -91,7 +91,7 @@ impl FileSystem for LibcFileSystem {
     ) -> Result<Self::PathBuf, Self::Error> {
         let mut path = decode_path::<PATH_SIZE>(memory, list).ok_or(FileError::PathDecode)?;
 
-        path.push(0);
+        path.push(0).map_err(|_| FileError::PathDecode)?;
 
         Ok(CStr::from_bytes_with_nul(&path)
             .map_err(|_| FileError::PathDecode)?
