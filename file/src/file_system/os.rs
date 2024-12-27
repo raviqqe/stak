@@ -90,12 +90,7 @@ impl Default for OsFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use alloc::ffi::CString;
-    use std::{fs, path::Path};
-
-    fn create_path_string(path: &Path) -> CString {
-        CString::new(path.as_os_str().as_encoded_bytes()).unwrap()
-    }
+    use std::fs;
 
     #[test]
     fn close() {
@@ -105,9 +100,7 @@ mod tests {
 
         let mut file_system = OsFileSystem::new();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), false)
-            .unwrap();
+        let descriptor = file_system.open(&path, false).unwrap();
         file_system.close(descriptor).unwrap();
     }
 
@@ -120,9 +113,7 @@ mod tests {
 
         fs::write(&path, [42]).unwrap();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), false)
-            .unwrap();
+        let descriptor = file_system.open(&path, false).unwrap();
 
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
     }
@@ -134,16 +125,12 @@ mod tests {
 
         let mut file_system = OsFileSystem::new();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), true)
-            .unwrap();
+        let descriptor = file_system.open(&path, true).unwrap();
 
         file_system.write(descriptor, 42).unwrap();
         file_system.close(descriptor).unwrap();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), false)
-            .unwrap();
+        let descriptor = file_system.open(&path, false).unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
         file_system.close(descriptor).unwrap();
     }
@@ -156,9 +143,7 @@ mod tests {
 
         let mut file_system = OsFileSystem::new();
 
-        file_system
-            .delete(create_path_string(&path).to_bytes_with_nul())
-            .unwrap();
+        file_system.delete(&path).unwrap();
 
         assert!(!path.exists());
     }
@@ -171,8 +156,6 @@ mod tests {
 
         let file_system = OsFileSystem::new();
 
-        assert!(file_system
-            .exists(create_path_string(&path).to_bytes_with_nul())
-            .unwrap());
+        assert!(file_system.exists(&path).unwrap());
     }
 }
