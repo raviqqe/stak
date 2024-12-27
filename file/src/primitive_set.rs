@@ -35,18 +35,6 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
         memory.push(memory.boolean(result.is_ok()).into())?;
         Ok(())
     }
-
-    fn decode_path(memory: &mut Memory, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
-        let mut path = Vec::<_, PATH_SIZE>::new();
-
-        while list.assume_cons() != memory.null() {
-            path.push(memory.car_value(list).assume_number().to_i64() as u8)
-                .ok()?;
-            list = memory.cdr_value(list);
-        }
-
-        Some(path)
-    }
 }
 
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
