@@ -14,7 +14,7 @@ const SOURCE: &str = r#"
 
 #[wasm_bindgen_test]
 fn compile_source() {
-    compile(SOURCE).ok().unwrap();
+    compile(SOURCE).unwrap();
 }
 
 #[wasm_bindgen_test]
@@ -28,7 +28,7 @@ fn run_bytecodes() {
     );
 
     assert_eq!(
-        interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).ok().unwrap(),
+        interpret(BYTECODE, &[], DEFAULT_HEAP_SIZE).unwrap(),
         b"Hello, world!"
     );
 }
@@ -42,7 +42,7 @@ fn run_script() {
     "#;
 
     assert_eq!(
-        run(SCRIPT, &[], DEFAULT_HEAP_SIZE).ok().unwrap(),
+        run(SCRIPT, &[], DEFAULT_HEAP_SIZE).unwrap(),
         b"Hello, world!"
     );
 }
