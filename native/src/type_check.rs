@@ -1,14 +1,16 @@
-use core::convert::Infallible;
-use stak_vm::Memory;
+use stak_vm::{Error, Memory, PrimitiveSet, Type, Value};
 
+/// A type check primitive.
 pub enum TypeCheckPrimitive {
+    /// A null type check.
     Null,
+    /// A pair type check.
     Pair,
 }
 
 impl TypeCheckPrimitive {
-    pub const NULL: usize = Self::Null as _;
-    pub const PAIR: usize = Self::Pair as _;
+    const NULL: usize = Self::Null as _;
+    const PAIR: usize = Self::Pair as _;
 }
 
 /// A type check primitive set.
@@ -20,18 +22,36 @@ impl TypeCheckPrimitiveSet {
     pub fn new() -> Self {
         Self::default()
     }
+
+    fn operate_top<'a>(
+        memory: &mut Memory<'a>,
+        operate: impl Fn(&Memory<'a>, Value) -> Value,
+    ) -> Result<(), Error> {
+        let x = memory.pop();
+        memory.push(operate(memory, x))?;
+        Ok(())
+    }
 }
 
 impl PrimitiveSet for TypeCheckPrimitiveSet {
-    type Error = Infallible;
+    type Error = Error;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            TypeCheckPrimitive::NULL => {
-                let value = memory.pop();
-                memory.push(memory.boolean(value == memory.null().into()).into())?;
-            }
-            TypeCheckPrimitive::PAIR => Self::check_type(memory, Type::Pair)?,
+            TypeCheckPrimitive::NULL => Self::operate_top(memory, |memory, value| {
+                memory.boolean(value == memory.null().into()).into()
+            })?,
+            TypeCheckPrimitive::PAIR => Self::operate_top(memory, |memory, value| {
+                memory
+                    .boolean(
+                        value
+                            .to_cons()
+                            .map(|cons| memory.cdr(cons).tag() == Type::Pair as _)
+                            .unwrap_or_default(),
+                    )
+                    .into()
+            })?,
+            _ => return Err(Error::IllegalPrimitive),
         }
 
         Ok(())
