@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: bencherdev/bencher@v0
+      - uses: bencherdev/bencher@main
       - run: >
           bencher run
           --adapter json
