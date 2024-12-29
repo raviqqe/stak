@@ -31,39 +31,21 @@ jobs:
   bencher:
     strategy:
       matrix:
-        bench:
-          - empty
-          - hello
-          - fibonacci
-          - tak
+        os:
+          - ubuntu-24.04
+          - macos-15
     permissions:
       checks: write
       pull-requests: write
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: bencherdev/bencher@main
       - uses: ./.github/actions/setup
-      - run: cargo build --release
-      - run: cargo build --release
-        working-directory: cmd/minimal
-      - run: echo PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH >>${{ github.env }}
-      - run: >
-          bencher run
-          --adapter shell_hyperfine
-          --branch ${{ github.head_ref }}
-          --err
-          --file results.json
-          --github-actions '${{ secrets.GITHUB_TOKEN }}'
-          --project stak
-          --testbed ubuntu-latest
-          --threshold-max-sample-size 10
-          --threshold-measure latency
-          --threshold-test t_test
-          --threshold-upper-boundary 0.99
-          --thresholds-reset
-          --token ${{ secrets.BENCHER_API_TOKEN }}
-          "hyperfine --export-json results.json -L bin stak,mstak '{bin} bench/${{ matrix.bench }}/main.scm'"
+      - run: tools/ci/bencher.sh -b ${{ github.head_ref }} -o ${{ matrix.os }}
+        env:
+          BENCHER_TOKEN: ${{ secrets.BENCHER_API_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bench:
     needs:
       - interpret
