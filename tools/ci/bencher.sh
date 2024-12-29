@@ -29,7 +29,7 @@ cargo install hyperfine
 for directory in . cmd/minimal; do
   (
     cd $directory
-    cargo build --release $build_options
+    cargo build --release
   )
 done
 
