@@ -47,9 +47,10 @@ jobs:
       - run: stak bench/${{ matrix.name }}/main.scm
       - run: >
           bencher run
-          --adapter json
+          --adapter shell_hyperfine
           --branch ${{ github.head_ref }}
           --err
+          --file results.json
           --github-actions '${{ secrets.GITHUB_TOKEN }}'
           --project stak
           --testbed ubuntu-latest
@@ -59,7 +60,7 @@ jobs:
           --threshold-upper-boundary 0.99
           --thresholds-reset
           --token ${{ secrets.BENCHER_API_TOKEN }}
-          stak bench/${{ matrix.name }}/main.scm
+          "hyperfine --export-json results.json 'stak bench/${{ matrix.name }}/main.scm'"
   bench:
     needs:
       - interpret
