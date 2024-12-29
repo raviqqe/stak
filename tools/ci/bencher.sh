@@ -23,7 +23,7 @@ hyperfine=$(which hyperfine)
 hyperfine() {
   bencher run \
     --adapter shell_hyperfine \
-    --branch $GITHUB_HEAD_REF \
+    --branch "$GITHUB_HEAD_REF" \
     --err \
     --file results.json \
     --github-actions $GITHUB_TOKEN \
