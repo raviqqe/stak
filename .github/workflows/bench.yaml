@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: tools/bench.sh ${{ matrix.options }}
-  benchmark:
+  bencher:
     permissions:
       checks: write
     runs-on: ubuntu-latest
