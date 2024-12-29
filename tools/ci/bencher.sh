@@ -28,7 +28,7 @@ cargo build --release
   cargo build --release
 )
 
-echo PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH >>$GITHUB_ENV
+export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
 for directory in bench/*; do
   bencher run \
