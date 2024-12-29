@@ -2,6 +2,8 @@
 
 #![no_std]
 
+mod list;
 mod type_check;
 
+pub use list::*;
 pub use type_check::*;
