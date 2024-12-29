@@ -15,7 +15,6 @@ done
 
 shift $(expr $OPTIND - 1)
 
-[ -n "$branch" ]
 [ -n "$os" ]
 [ $# -eq 0 ]
 
