@@ -28,6 +28,24 @@ jobs:
         with:
           python-version: "3.12"
       - run: tools/bench.sh ${{ matrix.options }}
+  bencher:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-24.04
+          - macos-15
+    permissions:
+      checks: write
+      pull-requests: write
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bencherdev/bencher@main
+      - uses: ./.github/actions/setup
+      - run: tools/ci/bencher.sh -b ${{ github.head_ref }} -o ${{ matrix.os }}
+        env:
+          BENCHER_TOKEN: ${{ secrets.BENCHER_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bench:
     needs:
       - interpret
