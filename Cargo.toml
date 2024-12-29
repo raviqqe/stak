@@ -19,6 +19,7 @@ members = [
   "minifier",
   "minifier_macro",
   "module",
+  "native",
   "process_context",
   "profiler",
   "r7rs",
