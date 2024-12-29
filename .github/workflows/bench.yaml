@@ -37,18 +37,18 @@ jobs:
       - uses: bencherdev/bencher@v0
       - run: >
           bencher run
-          --project save-walter-white-1234abcd
-          --token '${{ secrets.BENCHER_API_TOKEN }}'
-          --branch main
+          --adapter json
+          --branch ${{ github.ref_name }}
+          --err
+          --github-actions '${{ secrets.GITHUB_TOKEN }}'
+          --project stak
           --testbed ubuntu-latest
+          --threshold-max-sample-size 10
           --threshold-measure latency
           --threshold-test t_test
-          --threshold-max-sample-size 64
           --threshold-upper-boundary 0.99
           --thresholds-reset
-          --err
-          --adapter json
-          --github-actions '${{ secrets.GITHUB_TOKEN }}'
+          --token ${{ secrets.BENCHER_API_TOKEN }}
           bencher mock
   bench:
     needs:
