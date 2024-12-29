@@ -44,6 +44,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: cargo build --release
       - run: echo=PATH=$PWD/target/release:$PATH >>${{ github.env }}
+      - run: stak bench/${{ matrix.name }}/main.scm
       - run: >
           bencher run
           --adapter json
