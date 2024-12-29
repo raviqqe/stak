@@ -21,23 +21,6 @@ cargo install hyperfine
 hyperfine=$(which hyperfine)
 
 hyperfine() {
-  bencher run \
-    --adapter shell_hyperfine \
-    --branch "${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}" \
-    --err \
-    --file results.json \
-    --github-actions $GITHUB_TOKEN \
-    --project stak \
-    --start-point "$GITHUB_BASE_REF" \
-    --start-point-clone-thresholds \
-    --start-point-reset \
-    --testbed $os \
-    --threshold-measure latency \
-    --threshold-test t_test \
-    --threshold-upper-boundary 0.99 \
-    --thresholds-reset \
-    --token $BENCHER_TOKEN \
-    $hyperfine --export-json results.json "$@"
 }
 
 brew install chibi-scheme gambit-scheme gauche
@@ -68,6 +51,22 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"
   fi
-
-  hyperfine --sort command --input compile.scm -L script "$scripts" "{script}"
 done
+
+bencher run \
+  --adapter shell_hyperfine \
+  --branch "${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}" \
+  --err \
+  --file results.json \
+  --github-actions $GITHUB_TOKEN \
+  --project stak \
+  --start-point "$GITHUB_BASE_REF" \
+  --start-point-clone-thresholds \
+  --start-point-reset \
+  --testbed $os \
+  --threshold-measure latency \
+  --threshold-test t_test \
+  --threshold-upper-boundary 0.99 \
+  --thresholds-reset \
+  --token $BENCHER_TOKEN \
+  hyperfine --export-json results.json --sort command --input compile.scm -L script "$scripts" "{script}"
