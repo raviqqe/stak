@@ -12,7 +12,6 @@ repository.workspace = true
 libm = { version = "0.2.11", default-features = false }
 stak-device = { version = "0.2.86", path = "../device" }
 stak-file = { version = "0.5.0", path = "../file" }
-stak-native = { version = "0.1.0", path = "../native" }
 stak-process-context = { version = "0.2.44", path = "../process_context" }
 stak-time = { version = "0.1.27", path = "../time" }
 stak-vm = { version = "0.7.15", path = "../vm" }

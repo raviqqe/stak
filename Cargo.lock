@@ -1154,7 +1154,6 @@ dependencies = [
  "libm",
  "stak-device",
  "stak-file",
- "stak-native",
  "stak-process-context",
  "stak-time",
  "stak-vm",

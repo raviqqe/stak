@@ -36,7 +36,7 @@ GEM
     cucumber-messages (22.0.0)
     cucumber-tag-expressions (6.1.1)
     diff-lcs (1.5.1)
-    ffi (1.17.0)
+    ffi (1.17.0-arm64-darwin)
     mini_mime (1.1.5)
     multi_test (1.1.0)
     rspec-expectations (3.13.3)
