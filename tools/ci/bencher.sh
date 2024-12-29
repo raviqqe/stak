@@ -35,13 +35,7 @@ done
 
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
-filter=.
-
-if [ $# -gt 0 ]; then
-  filter="$@"
-fi
-
-for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
+for directory in bench/*; do
   base=${file%.scm}
 
   cat prelude.scm $file | stak-compile >$base.bc
