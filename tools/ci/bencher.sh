@@ -46,7 +46,7 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
 
   cat prelude.scm $file | stak-compile >$base.bc
 
-  scripts="${scripts:+$scripts,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
+  scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"
