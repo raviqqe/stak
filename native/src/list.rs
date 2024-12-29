@@ -1,6 +1,6 @@
 use stak_vm::{Error, Memory, PrimitiveSet};
 
-/// A type check primitive.
+/// A list primitive.
 pub enum ListPrimitive {
     /// A `assq` procedure.
     Assq,
@@ -13,7 +13,7 @@ impl ListPrimitive {
     const MEMQ: usize = Self::Memq as _;
 }
 
-/// A type check primitive set.
+/// A list primitive set.
 #[derive(Debug, Default)]
 pub struct ListPrimitiveSet {}
 
