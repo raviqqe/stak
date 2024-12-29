@@ -20,6 +20,7 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/../..
 
+cargo install hyperfine
 cargo build --release
 
 (
