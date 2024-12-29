@@ -29,6 +29,11 @@ jobs:
           python-version: "3.12"
       - run: tools/bench.sh ${{ matrix.options }}
   bencher:
+    strategy:
+      matrix:
+        name:
+          - fibonacci
+          - tak
     permissions:
       checks: write
       pull-requests: write
@@ -36,6 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: bencherdev/bencher@main
+      - uses: ./.github/actions/setup
+      - run: cargo build --release
+      - run: echo=PATH=$PWD/target/release:$PATH >>${{ github.env }}
       - run: >
           bencher run
           --adapter json
@@ -50,7 +58,7 @@ jobs:
           --threshold-upper-boundary 0.99
           --thresholds-reset
           --token ${{ secrets.BENCHER_API_TOKEN }}
-          bencher mock
+          stak bench/${{ matrix.name }}/main.scm
   bench:
     needs:
       - interpret
