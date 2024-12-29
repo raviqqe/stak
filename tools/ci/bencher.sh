@@ -2,8 +2,11 @@
 
 set -e
 
-while getopts o: option; do
+while getopts b:o: option; do
   case $option in
+  b)
+    branch=$OPTARG
+    ;;
   o)
     os=$OPTARG
     ;;
@@ -12,6 +15,7 @@ done
 
 shift $(expr $OPTIND - 1)
 
+[ -n "$branch" ]
 [ -n "$os" ]
 [ $# -eq 0 ]
 
@@ -23,15 +27,13 @@ hyperfine=$(which hyperfine)
 hyperfine() {
   bencher run \
     --adapter shell_hyperfine \
-    --branch $GITHUB_HEAD_REF \
+    --branch $branch \
     --err \
     --file results.json \
     --github-actions $GITHUB_TOKEN \
     --project stak \
-    --start-point "$GITHUB_BASE_REF" \
-    --start-point-clone-thresholds \
-    --start-point-reset \
     --testbed $os \
+    --threshold-max-sample-size 10 \
     --threshold-measure latency \
     --threshold-test t_test \
     --threshold-upper-boundary 0.99 \
