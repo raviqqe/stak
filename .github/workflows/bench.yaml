@@ -50,6 +50,7 @@ jobs:
   bench:
     needs:
       - interpret
+      - bencher
     if: always()
     runs-on: ubuntu-latest
     steps:
