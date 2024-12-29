@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -ex
 
 while getopts o: option; do
   case $option in
@@ -17,28 +17,31 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/../..
 
-cargo install hyperfine
-hyperfine=$(which hyperfine)
-
-hyperfine() {
-  bencher run \
-    --adapter shell_hyperfine \
-    --branch "${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}" \
-    --err \
-    --file results.json \
-    --github-actions $GITHUB_TOKEN \
-    --project stak \
-    --start-point "$GITHUB_BASE_REF" \
-    --start-point-clone-thresholds \
-    --start-point-reset \
-    --testbed $os \
-    --threshold-measure latency \
-    --threshold-test t_test \
-    --threshold-upper-boundary 0.99 \
-    --thresholds-reset \
-    --token $BENCHER_TOKEN \
-    $hyperfine --export-json results.json "$@"
-}
-
 . tools/utility.sh
-bench
+
+setup_bench
+
+for directory in bench/*; do
+  base=$directory/main
+  file=$base.scm
+
+  scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc"
+done
+
+bencher run \
+  --adapter shell_hyperfine \
+  --branch "${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}" \
+  --err \
+  --file results.json \
+  --github-actions $GITHUB_TOKEN \
+  --project stak \
+  --start-point "$GITHUB_BASE_REF" \
+  --start-point-clone-thresholds \
+  --start-point-reset \
+  --testbed $os \
+  --threshold-measure latency \
+  --threshold-test t_test \
+  --threshold-upper-boundary 0.99 \
+  --thresholds-reset \
+  --token $BENCHER_TOKEN \
+  hyperfine --export-json results.json -w 2 --input compile.scm -L script "$scripts" "{script}"
