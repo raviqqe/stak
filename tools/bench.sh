@@ -12,11 +12,28 @@ done
 
 shift $(expr $OPTIND - 1)
 
-if [ $# -ne 0 ]; then
-  exit 1
-fi
+[ $# -eq 0 ]
 
 cd $(dirname $0)/..
 
 . tools/utility.sh
-bench
+
+setup_bench $build_options
+
+filter=.
+
+if [ $# -gt 0 ]; then
+  filter="$@"
+fi
+
+for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
+  base=${file%.scm}
+
+  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
+
+  if [ -r $base.py ]; then
+    scripts="$scripts,python3 $base.py"
+  fi
+
+  hyperfine --sort command --input compile.scm -L script "$scripts" "{script}"
+done
