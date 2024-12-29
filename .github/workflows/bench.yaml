@@ -39,7 +39,7 @@ jobs:
       - run: >
           bencher run
           --adapter json
-          --branch ${{ github.ref_name }}
+          --branch ${{ github.head_ref }}
           --err
           --github-actions '${{ secrets.GITHUB_TOKEN }}'
           --project stak
