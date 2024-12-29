@@ -1,15 +1,18 @@
-use stak_vm::{Error, Memory, PrimitiveSet};
+use stak_vm::{Error, Memory, PrimitiveSet, Type};
 
 /// A list primitive.
 pub enum ListPrimitive {
     /// A `assq` procedure.
     Assq,
+    /// A `cons` procedure.
+    Cons,
     /// A `memq` procedure.
     Memq,
 }
 
 impl ListPrimitive {
     const ASSQ: usize = Self::Assq as _;
+    const CONS: usize = Self::Cons as _;
     const MEMQ: usize = Self::Memq as _;
 }
 
@@ -29,6 +32,12 @@ impl PrimitiveSet for ListPrimitiveSet {
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
+            ListPrimitive::CONS => {
+                let [car, cdr] = memory.pop_many();
+
+                let rib = memory.allocate(car, cdr.set_tag(Type::Pair as _))?;
+                memory.push(rib.into())?;
+            }
             ListPrimitive::MEMQ => {
                 let [x, xs] = memory.pop_many();
                 let mut xs = xs.assume_cons();
