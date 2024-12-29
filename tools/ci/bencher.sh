@@ -39,7 +39,7 @@ hyperfine() {
     --threshold-upper-boundary 0.99 \
     --thresholds-reset \
     --token $BENCHER_TOKEN \
-    "$hyperfine --export-json results.json $@"
+    $hyperfine --export-json results.json "$@"
 }
 
 . tools/utility.sh
