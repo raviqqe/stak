@@ -12,7 +12,7 @@ setup_bench() {
   export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
   for directory in bench/*; do
-    base=$directory/main.scm
+    base=$directory/main
 
     cat prelude.scm $base.scm | stak-compile >$base.bc
   done
