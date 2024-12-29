@@ -13,24 +13,18 @@ while getopts b:o: option; do
   esac
 done
 
+shift $(expr $OPTIND - 1)
+
 [ -n "$branch" ]
 [ -n "$os" ]
-
-shift $(expr $OPTIND - 1)
+[ $# -eq 0 ]
 
 cd $(dirname $0)/../..
 
 cargo install hyperfine
-cargo build --release
+hyperfine=$(which hyperfine)
 
-(
-  cd cmd/minimal
-  cargo build --release
-)
-
-export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
-
-for directory in bench/*; do
+hyperfine() {
   bencher run \
     --adapter shell_hyperfine \
     --branch $branch \
@@ -45,5 +39,7 @@ for directory in bench/*; do
     --threshold-upper-boundary 0.99 \
     --thresholds-reset \
     --token $BENCHER_TOKEN \
-    "hyperfine --export-json results.json -L bin stak,mstak '{bin} $directory/main.scm'"
-done
+    "$hyperfine --export-json results.json $@"
+}
+
+. tools/bench.sh
