@@ -17,12 +17,6 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/../..
 
-cargo install hyperfine
-hyperfine=$(which hyperfine)
-
-hyperfine() {
-}
-
 brew install chibi-scheme gambit-scheme gauche
 cargo install hyperfine
 
