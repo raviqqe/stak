@@ -47,7 +47,7 @@ jobs:
       - run: cargo build --release
       - run: cargo build --release
         working-directory: cmd/minimal
-      - run: echo=PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH >>${{ github.env }}
+      - run: echo PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH >>${{ github.env }}
       - run: >
           bencher run
           --adapter shell_hyperfine
