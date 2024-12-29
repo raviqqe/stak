@@ -36,7 +36,8 @@ done
 export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
 for directory in bench/*; do
-  base=${file%.scm}
+  base=$directory/main
+  file=$base.scm
 
   cat prelude.scm $file | stak-compile >$base.bc
 
