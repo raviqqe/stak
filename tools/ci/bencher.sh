@@ -42,4 +42,5 @@ hyperfine() {
     "$hyperfine --export-json results.json $@"
 }
 
-. tools/bench.sh
+. tools/utility.sh
+bench
