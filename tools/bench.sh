@@ -16,17 +16,9 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
-brew install chibi-scheme gambit-scheme gauche
-cargo install hyperfine
+. tools/utility.sh
 
-for directory in . cmd/minimal; do
-  (
-    cd $directory
-    cargo build --release $build_options
-  )
-done
-
-export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+setup_bench $build_options
 
 filter=.
 
@@ -36,8 +28,6 @@ fi
 
 for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
   base=${file%.scm}
-
-  cat prelude.scm $file | stak-compile >$base.bc
 
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
