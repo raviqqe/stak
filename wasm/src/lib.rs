@@ -51,7 +51,7 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
     let mut output = vec![];
     let mut error = vec![];
     let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
-    let mut file_entries = [Default::default(); 8];
+    let mut file_entries = [Default::default(); 1];
 
     let mut vm = Vm::new(
         &mut heap,
