@@ -44,7 +44,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/ci/bencher.sh -b ${{ github.head_ref }} -o ${{ matrix.os }}
         env:
-          BENCHER_TOKEN: ${{ secrets.BENCHER_API_TOKEN }}
+          BENCHER_TOKEN: ${{ secrets.BENCHER_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bench:
     needs:
