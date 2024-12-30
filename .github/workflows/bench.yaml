@@ -33,7 +33,8 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-          - macos-15
+          # TODO Enable benchmarks on macOS.
+          # - macos-15
     permissions:
       checks: write
       pull-requests: write
@@ -49,6 +50,7 @@ jobs:
   bench:
     needs:
       - interpret
+      - bencher
     if: always()
     runs-on: ubuntu-latest
     steps:
