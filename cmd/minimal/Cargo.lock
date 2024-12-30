@@ -146,6 +146,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-native"
+version = "0.1.0"
+dependencies = [
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-process-context"
 version = "0.2.44"
 dependencies = [
@@ -159,6 +166,7 @@ dependencies = [
  "libm",
  "stak-device",
  "stak-file",
+ "stak-native",
  "stak-process-context",
  "stak-time",
  "stak-vm",

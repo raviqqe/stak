@@ -6,6 +6,7 @@ use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
+use stak_native::{ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
@@ -16,6 +17,8 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clo
     file: FilePrimitiveSet<F>,
     process_context: ProcessContextPrimitiveSet<P>,
     time: TimePrimitiveSet<C>,
+    type_check: TypeCheckPrimitiveSet,
+    list: ListPrimitiveSet,
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D, F, P, C> {
@@ -26,6 +29,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             file: FilePrimitiveSet::new(file_system),
             process_context: ProcessContextPrimitiveSet::new(process_context),
             time: TimePrimitiveSet::new(clock),
+            type_check: Default::default(),
+            list: Default::default(),
         }
     }
 
@@ -110,19 +115,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
                 .into()
         })
     }
-
-    fn check_type(memory: &mut Memory, r#type: Type) -> Result<(), Error> {
-        Self::operate_top(memory, |memory, value| {
-            memory
-                .boolean(
-                    value
-                        .to_cons()
-                        .map(|cons| memory.cdr(cons).tag() == r#type as _)
-                        .unwrap_or_default(),
-                )
-                .into()
-        })
-    }
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
@@ -136,12 +128,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 let [car, cdr, tag] = memory.pop_many();
 
                 Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
-            }
-            // Optimize a cons.
-            Primitive::CONS => {
-                let [car, cdr] = memory.pop_many();
-
-                Self::rib(memory, car, cdr, Type::Pair as _)?;
             }
             Primitive::CLOSE => {
                 let closure = memory.pop();
@@ -178,44 +164,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
             }
             Primitive::HALT => return Err(Error::Halt),
-            // TODO Add a `stak-optimal` crate.
-            Primitive::NULL => Self::operate_top(memory, |memory, value| {
-                memory.boolean(value == memory.null().into()).into()
-            })?,
-            Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
-            Primitive::MEMQ => {
-                let [x, xs] = memory.pop_many();
-                let mut xs = xs.assume_cons();
-                let mut y = memory.boolean(false);
-
-                while xs != memory.null() {
-                    if x == memory.car(xs) {
-                        y = xs;
-                        break;
-                    }
-
-                    xs = memory.cdr(xs).assume_cons();
-                }
-
-                memory.push(y.into())?;
-            }
-            Primitive::ASSQ => {
-                let [x, xs] = memory.pop_many();
-                let mut xs = xs.assume_cons();
-                let mut y = memory.boolean(false);
-
-                while xs != memory.null() {
-                    let cons = memory.car(xs).assume_cons();
-
-                    if x == memory.car(cons) {
-                        y = cons;
-                        break;
-                    }
-
-                    xs = memory.cdr(xs).assume_cons();
-                }
-
-                memory.push(y.into())?;
+            Primitive::NULL | Primitive::PAIR => self
+                .type_check
+                .operate(memory, primitive - Primitive::NULL)?,
+            Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ => {
+                self.list.operate(memory, primitive - Primitive::ASSQ)?
             }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
