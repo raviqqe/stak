@@ -38,6 +38,7 @@
     "fstat",
     "ftell",
     "heapless",
+    "imag",
     "indoc",
     "insta",
     "isize",
