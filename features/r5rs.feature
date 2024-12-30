@@ -4,10 +4,10 @@ Feature: The R5RS library
       """scheme
       (import (scheme r5rs))
 
-      (write-u8 (+ 60 5))
+      (write (+ 40 2))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "42"
 
   Scenario: Read an S-expression
     Given a file named "main.scm" with:
@@ -40,7 +40,7 @@ Feature: The R5RS library
       """scheme
       (import (scheme r5rs))
 
-      (write-u8 (force (delay 65)))
+      (write-char (force (delay (integer->char 65))))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
@@ -50,10 +50,10 @@ Feature: The R5RS library
       """scheme
       (import (scheme r5rs))
 
-      (write-u8
+      (write
         (eval
-          '(+ 60 5)
+          '(+ 40 2)
           (environment '(scheme base))))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "42"
