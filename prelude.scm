@@ -3444,4 +3444,8 @@
     with-output-to-file
     write
     write-char
-    zero?))
+    zero?)
+
+  (begin
+    (define (scheme-report-environment version)
+      '((scheme r5rs)))))

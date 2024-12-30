@@ -53,7 +53,7 @@ Feature: The R5RS library
       (write
         (eval
           '(+ 40 2)
-          (environment '(scheme base))))
+          (scheme-report-environment 5)))
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "42"
