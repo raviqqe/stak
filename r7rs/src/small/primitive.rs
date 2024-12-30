@@ -5,8 +5,6 @@ pub(super) enum Primitive {
     IsRib,
     Car,
     Cdr,
-    #[expect(dead_code)]
-    Rib3, // deprecated
     Tag,
     SetCar,
     SetCdr,
@@ -19,7 +17,7 @@ pub(super) enum Primitive {
     Remainder,
     Exponentiation,
     Logarithm,
-    Halt,
+    Halt = 40,
     Null = 50,
     Pair,
     Assq = 60,
