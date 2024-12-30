@@ -6,7 +6,6 @@ use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
-use stak_native::TypeCheckPrimitiveSet;
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
@@ -17,7 +16,6 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clo
     file: FilePrimitiveSet<F>,
     process_context: ProcessContextPrimitiveSet<P>,
     time: TimePrimitiveSet<C>,
-    type_check: TypeCheckPrimitiveSet,
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D, F, P, C> {
@@ -113,6 +111,19 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
                 .into()
         })
     }
+
+    fn check_type(memory: &mut Memory, r#type: Type) -> Result<(), Error> {
+        Self::operate_top(memory, |memory, value| {
+            memory
+                .boolean(
+                    value
+                        .to_cons()
+                        .map(|cons| memory.cdr(cons).tag() == r#type as _)
+                        .unwrap_or_default(),
+                )
+                .into()
+        })
+    }
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
@@ -168,9 +179,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
             }
             Primitive::HALT => return Err(Error::Halt),
-            Primitive::NULL | Primitive::PAIR => self
-                .type_check
-                .operate(memory, primitive - Primitive::NULL)?,
+            // TODO Add a `stak-optimal` crate.
+            Primitive::NULL => Self::operate_top(memory, |memory, value| {
+                memory.boolean(value == memory.null().into()).into()
+            })?,
+            Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
             Primitive::MEMQ => {
                 let [x, xs] = memory.pop_many();
                 let mut xs = xs.assume_cons();
