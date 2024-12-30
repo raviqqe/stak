@@ -31,9 +31,9 @@ done
 branch=${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}
 
 if [ $branch = main ]; then
-  options="--start-point $GITHUB_BASE_REF --start-point-clone-thresholds --start-point-reset"
-else
   options="--threshold-measure latency --threshold-test t_test --threshold-upper-boundary 0.99 --thresholds-reset"
+else
+  options="--start-point $GITHUB_BASE_REF --start-point-clone-thresholds --start-point-reset"
 fi
 
 bencher run \
