@@ -1,4 +1,5 @@
 {
+  "ignorePaths": ["LICENSE"],
   "ignoreRegExpList": ["cxr"],
   "patterns": [
     {
@@ -75,7 +76,6 @@
     "unsync",
     "usize",
     "uutils",
-    "varint",
-    "yota"
+    "varint"
   ]
 }
