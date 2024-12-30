@@ -14,7 +14,7 @@ Feature: The R5RS library
       """scheme
       (import (scheme r5rs))
 
-      (read '(#f 42))
+      (write (read))
       """
     And a file named "input.txt" with:
       """text
