@@ -32,6 +32,8 @@ branch=${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}
 
 if [ $branch = main ]; then
   options="--start-point $GITHUB_BASE_REF --start-point-clone-thresholds --start-point-reset"
+else
+  options="--threshold-measure latency --threshold-test t_test --threshold-upper-boundary 0.99 --thresholds-reset"
 fi
 
 bencher run \
@@ -42,9 +44,6 @@ bencher run \
   --github-actions $GITHUB_TOKEN \
   --project stak \
   --testbed $os \
-  --threshold-measure latency \
-  --threshold-test t_test \
-  --threshold-upper-boundary 0.99 \
-  --thresholds-reset \
   --token $BENCHER_TOKEN \
+  $options \
   hyperfine --export-json results.json -w 2 --input compile.scm -L script "$scripts" "{script}"
