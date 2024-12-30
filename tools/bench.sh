@@ -35,5 +35,5 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
     scripts="$scripts,python3 $base.py"
   fi
 
-  hyperfine --sort command --input compile.scm -L script "$scripts" "{script}"
+  hyperfine -N --sort command --input compile.scm -L script "$scripts" "{script}"
 done
