@@ -3220,6 +3220,7 @@
     (scheme char)
     (scheme cxr)
     (scheme eval)
+    (scheme file)
     (scheme inexact)
     (scheme lazy)
     (scheme read)
