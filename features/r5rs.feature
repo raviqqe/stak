@@ -44,3 +44,16 @@ Feature: The R5RS library
       """
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario: Evaluate an S-expression
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme r5rs))
+
+      (write-u8
+        (eval
+          '(+ 60 5)
+          (environment '(scheme base))))
+      """
+    When I successfully run `scheme main.scm`
+    Then the stdout should contain exactly "A"
