@@ -44,4 +44,4 @@ bencher run \
   --threshold-upper-boundary 0.99 \
   --thresholds-reset \
   --token $BENCHER_TOKEN \
-  hyperfine --export-json results.json -w 2 --input compile.scm -L script "$scripts" "{script}"
+  hyperfine --export-json results.json -w 2 -N --input compile.scm -L script "$scripts" "{script}"
