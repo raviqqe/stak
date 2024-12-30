@@ -26,6 +26,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             file: FilePrimitiveSet::new(file_system),
             process_context: ProcessContextPrimitiveSet::new(process_context),
             time: TimePrimitiveSet::new(clock),
+            type_check: TypeCheckPrimitiveSet::new(),
         }
     }
 
