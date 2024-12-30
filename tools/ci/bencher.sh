@@ -28,16 +28,19 @@ for directory in bench/*; do
   scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc"
 done
 
+branch=${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}
+
+if [ $branch = main ]; then
+  options="--start-point $GITHUB_BASE_REF --start-point-clone-thresholds --start-point-reset"
+fi
+
 bencher run \
   --adapter shell_hyperfine \
-  --branch "${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}" \
+  --branch $branch \
   --err \
   --file results.json \
   --github-actions $GITHUB_TOKEN \
   --project stak \
-  --start-point "$GITHUB_BASE_REF" \
-  --start-point-clone-thresholds \
-  --start-point-reset \
   --testbed $os \
   --threshold-measure latency \
   --threshold-test t_test \
