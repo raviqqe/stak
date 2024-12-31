@@ -6,7 +6,7 @@ on:
   pull_request:
 concurrency:
   group: bench-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   interpret:
     strategy:
