@@ -15,15 +15,6 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
         Self { file_system }
     }
 
-    fn operate_option<'a>(
-        memory: &mut Memory<'a>,
-        mut operate: impl FnMut(&mut Memory<'a>) -> Option<Value>,
-    ) -> Result<(), Error> {
-        let value = operate(memory).unwrap_or_else(|| memory.boolean(false).into());
-        memory.push(value)?;
-        Ok(())
-    }
-
     fn operate_result<'a, E>(
         memory: &mut Memory<'a>,
         mut operate: impl FnMut(&mut Memory<'a>) -> Result<(), E>,
@@ -39,7 +30,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
+            Primitive::OPEN_FILE => memory.operate_option(|memory| {
                 let [list, output] = memory.pop_many();
                 let path = T::decode_path(memory, list).ok()?;
                 let output = output != memory.boolean(false).into();
@@ -54,7 +45,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
 
                 self.file_system.close(descriptor.to_i64() as _)
             })?,
-            Primitive::READ_FILE => Self::operate_option(memory, |memory| {
+            Primitive::READ_FILE => memory.operate_option(|memory| {
                 let [descriptor] = memory.pop_numbers();
 
                 self.file_system
@@ -68,7 +59,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 self.file_system
                     .write(descriptor.to_i64() as _, byte.to_i64() as _)
             })?,
-            Primitive::DELETE_FILE => Self::operate_option(memory, |memory| {
+            Primitive::DELETE_FILE => memory.operate_option(|memory| {
                 let [list] = memory.pop_many();
                 let path = T::decode_path(memory, list).ok()?;
 
@@ -77,7 +68,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                     .ok()
                     .map(|_| memory.boolean(true).into())
             })?,
-            Primitive::EXISTS_FILE => Self::operate_option(memory, |memory| {
+            Primitive::EXISTS_FILE => memory.operate_option(|memory| {
                 let [list] = memory.pop_many();
                 let path = T::decode_path(memory, list).ok()?;
 
