@@ -9,17 +9,15 @@ Feature: The R5RS library
     When I successfully run `scheme main.scm`
     Then the stdout should contain exactly "42"
 
-  Scenario: Unquote a variable
+  Scenario: Quote a list
     Given a file named "main.scm" with:
       """scheme
       (import (scheme r5rs))
 
-      (define x #\A)
-
-      (for-each write-char `(,x))
+      (for-each write-char '(#\A #\B #\C))
       """
     When I successfully run `scheme main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "ABC"
 
   Scenario: Read an S-expression
     Given a file named "main.scm" with:
