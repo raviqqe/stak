@@ -352,6 +352,16 @@ impl<'a> Memory<'a> {
         list
     }
 
+    /// Operates a top value on a stack.
+    pub fn operate_top<'a, E>(
+        memory: &mut Memory<'a>,
+        operate: impl Fn(&Memory<'a>, Value) -> Value,
+    ) -> Result<(), E> {
+        let value = memory.pop();
+        memory.push(operate(memory, value))?;
+        Ok(())
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {

@@ -44,15 +44,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         self.device.device_mut()
     }
 
-    fn operate_top<'a>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&Memory<'a>, Value) -> Value,
-    ) -> Result<(), Error> {
-        let x = memory.pop();
-        memory.push(operate(memory, x))?;
-        Ok(())
-    }
-
     fn operate_unary(memory: &mut Memory, operate: fn(Number) -> Number) -> Result<(), Error> {
         let [x] = memory.pop_numbers();
 
