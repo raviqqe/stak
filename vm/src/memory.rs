@@ -380,7 +380,7 @@ impl<'a> Memory<'a> {
     /// Executes an operation that returns `Option<Value>`.
     pub fn operate_option(
         &mut self,
-        mut operate: impl FnMut(&mut Memory<'a>) -> Option<Value>,
+        mut operate: impl FnMut(&mut Self) -> Option<Value>,
     ) -> Result<(), Error> {
         let value = operate(self).unwrap_or_else(|| self.boolean(false).into());
         self.push(value)?;
