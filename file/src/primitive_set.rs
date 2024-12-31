@@ -2,7 +2,7 @@ mod primitive;
 
 pub use self::primitive::Primitive;
 use crate::FileSystem;
-use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
+use stak_vm::{Error, Memory, Number, PrimitiveSet};
 
 /// A primitive set for a file system.
 pub struct FilePrimitiveSet<T: FileSystem> {
