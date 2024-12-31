@@ -47,14 +47,14 @@ checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "mstak"
-version = "0.3.21"
+version = "0.3.22"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.15"
+version = "0.4.16"
 dependencies = [
  "libc",
  "stak-device",
@@ -92,7 +92,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.90"
+version = "0.1.91"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -105,11 +105,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.82"
+version = "0.1.83"
 
 [[package]]
 name = "stak-device"
-version = "0.2.86"
+version = "0.2.87"
 dependencies = [
  "libc",
  "stak-vm",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "heapless",
  "libc",
@@ -126,7 +126,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.2.5"
+version = "0.2.6"
 dependencies = [
  "cfg-exif",
  "proc-macro2",
@@ -138,7 +138,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.63"
+version = "0.1.64"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -147,21 +147,21 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.44"
+version = "0.2.45"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "libm",
  "stak-device",
@@ -174,7 +174,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.88"
+version = "0.1.89"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -190,7 +190,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.27"
+version = "0.1.28"
 dependencies = [
  "libc",
  "stak-vm",
@@ -198,14 +198,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.62"
+version = "0.1.63"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.15"
+version = "0.7.16"
 dependencies = [
  "cfg-exif",
 ]
