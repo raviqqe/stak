@@ -1,4 +1,4 @@
-use stak_vm::{Error, Memory, PrimitiveSet, Type, Value};
+use stak_vm::{Error, Memory, PrimitiveSet, Type};
 
 /// A type check primitive.
 pub enum TypeCheckPrimitive {
