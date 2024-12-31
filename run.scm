@@ -8,6 +8,7 @@
   (only (scheme inexact))
   (only (scheme lazy))
   (only (scheme process-context) command-line)
+  (only (scheme r5rs))
   (scheme read)
   (scheme repl)
   (only (scheme time))
