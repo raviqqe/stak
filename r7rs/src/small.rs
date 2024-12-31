@@ -85,7 +85,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
                 .map(|cons| Number::new(cons.tag() as _))
                 .unwrap_or_default()
                 .into()
-        })
+        })?;
+
+        Ok(())
     }
 }
 
@@ -111,10 +113,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                     Type::Procedure as _,
                 )?;
             }
-            Primitive::IS_RIB => memory
-                .operate_top::<Error>(|memory, value| memory.boolean(value.is_cons()).into())?,
-            Primitive::CAR => memory.operate_top::<Error>(Memory::car_value)?,
-            Primitive::CDR => memory.operate_top::<Error>(Memory::cdr_value)?,
+            Primitive::IS_RIB => {
+                memory.operate_top(|memory, value| memory.boolean(value.is_cons()).into())?
+            }
+            Primitive::CAR => memory.operate_top(Memory::car_value)?,
+            Primitive::CDR => memory.operate_top(Memory::cdr_value)?,
             Primitive::TAG => Self::tag(memory, Memory::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,

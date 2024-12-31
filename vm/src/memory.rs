@@ -352,11 +352,8 @@ impl<'a> Memory<'a> {
         list
     }
 
-    /// Operates a top value on a stack.
-    pub fn operate_top<E: From<Error>>(
-        &mut self,
-        operate: impl Fn(&Self, Value) -> Value,
-    ) -> Result<(), E> {
+    /// Executes an operation against a value at the top of a stack.
+    pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
         let value = self.pop();
         self.push(operate(self, value))?;
         Ok(())
@@ -377,6 +374,16 @@ impl<'a> Memory<'a> {
 
         self.push(operate(x, y).into())?;
 
+        Ok(())
+    }
+
+    /// Executes an operation that returns `Option<Value>`.
+    pub fn operate_option(
+        &mut self,
+        mut operate: impl FnMut(&mut Memory<'a>) -> Option<Value>,
+    ) -> Result<(), Error> {
+        let value = operate(self).unwrap_or_else(|| self.boolean(false).into());
+        self.push(value)?;
         Ok(())
     }
 
