@@ -362,6 +362,24 @@ impl<'a> Memory<'a> {
         Ok(())
     }
 
+    /// Executes an unary number operation.
+    pub fn operate_unary(&mut self, operate: fn(Number) -> Number) -> Result<(), Error> {
+        let [x] = self.pop_numbers();
+
+        self.push(operate(x).into())?;
+
+        Ok(())
+    }
+
+    /// Executes a binary number operation.
+    pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
+        let [x, y] = self.pop_numbers();
+
+        self.push(operate(x, y).into())?;
+
+        Ok(())
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {

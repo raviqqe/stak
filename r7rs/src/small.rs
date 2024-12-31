@@ -44,25 +44,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         self.device.device_mut()
     }
 
-    fn operate_unary(memory: &mut Memory, operate: fn(Number) -> Number) -> Result<(), Error> {
-        let [x] = memory.pop_numbers();
-
-        memory.push(operate(x).into())?;
-
-        Ok(())
-    }
-
-    fn operate_binary(
-        memory: &mut Memory,
-        operate: fn(Number, Number) -> Number,
-    ) -> Result<(), Error> {
-        let [x, y] = memory.pop_numbers();
-
-        memory.push(operate(x, y).into())?;
-
-        Ok(())
-    }
-
     fn operate_comparison(
         memory: &mut Memory,
         operate: fn(NumberRepresentation, NumberRepresentation) -> bool,
@@ -142,16 +123,16 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 memory.push(memory.boolean(x == y).into())?;
             }
             Primitive::LESS_THAN => Self::operate_comparison(memory, |x, y| x < y)?,
-            Primitive::ADD => Self::operate_binary(memory, Add::add)?,
-            Primitive::SUBTRACT => Self::operate_binary(memory, Sub::sub)?,
-            Primitive::MULTIPLY => Self::operate_binary(memory, Mul::mul)?,
-            Primitive::DIVIDE => Self::operate_binary(memory, Div::div)?,
-            Primitive::REMAINDER => Self::operate_binary(memory, Rem::rem)?,
+            Primitive::ADD => memory.operate_binary(Add::add)?,
+            Primitive::SUBTRACT => memory.operate_binary(Sub::sub)?,
+            Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
+            Primitive::DIVIDE => memory.operate_binary(Div::div)?,
+            Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
             Primitive::EXPONENTIATION => {
-                Self::operate_unary(memory, |x| Number::from_f64(libm::exp(x.to_f64())))?
+                memory.operate_unary(|x| Number::from_f64(libm::exp(x.to_f64())))?
             }
             Primitive::LOGARITHM => {
-                Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
+                memory.operate_unary(|x| Number::from_f64(libm::log(x.to_f64())))?
             }
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => self
