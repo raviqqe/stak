@@ -353,12 +353,12 @@ impl<'a> Memory<'a> {
     }
 
     /// Operates a top value on a stack.
-    pub fn operate_top<'a, E>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&Memory<'a>, Value) -> Value,
+    pub fn operate_top<E: From<Error>>(
+        &mut self,
+        operate: impl Fn(&Self, Value) -> Value,
     ) -> Result<(), E> {
-        let value = memory.pop();
-        memory.push(operate(memory, value))?;
+        let value = self.pop();
+        self.push(operate(self, value))?;
         Ok(())
     }
 

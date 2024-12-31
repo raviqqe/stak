@@ -98,8 +98,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         memory: &mut Memory<'a>,
         field: impl Fn(&Memory<'a>, Value) -> Value,
     ) -> Result<(), Error> {
-        Self::operate_top(memory, |vm, value| {
-            field(vm, value)
+        memory.operate_top(|memory, value| {
+            field(memory, value)
                 .to_cons()
                 .map(|cons| Number::new(cons.tag() as _))
                 .unwrap_or_default()
@@ -130,11 +130,10 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                     Type::Procedure as _,
                 )?;
             }
-            Primitive::IS_RIB => Self::operate_top(memory, |memory, value| {
-                memory.boolean(value.is_cons()).into()
-            })?,
-            Primitive::CAR => Self::operate_top(memory, Memory::car_value)?,
-            Primitive::CDR => Self::operate_top(memory, Memory::cdr_value)?,
+            Primitive::IS_RIB => memory
+                .operate_top::<Error>(|memory, value| memory.boolean(value.is_cons()).into())?,
+            Primitive::CAR => memory.operate_top::<Error>(Memory::car_value)?,
+            Primitive::CDR => memory.operate_top::<Error>(Memory::cdr_value)?,
             Primitive::TAG => Self::tag(memory, Memory::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,
