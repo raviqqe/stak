@@ -541,7 +541,7 @@
       (cons
         ; `0` is always the library ID of `(stak base)`.
         (build-library-name 0 x)
-        (symbol-append '$$ x)))
+        (build-library-name 0 (symbol-append '$ x))))
     '(+ - * / <)))
 
 (define (optimize expression)
