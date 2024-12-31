@@ -24,20 +24,24 @@
 //!         VoidProcessContext::new(),
 //!         VoidClock::new(),
 //!     ),
-//! ).unwrap();
+//! )
+//! .unwrap();
 //!
-//! const PROGRAM: &[u8] = compile_r7rs!(r#"
+//! const BYTECODE: &[u8] = compile_r7rs!(
+//!     r#"
 //!     (import (scheme write))
 //!
 //!     (display "Hello, world!")
-//! "#);
+//!     "#
+//! );
 //!
-//! vm.initialize(PROGRAM.iter().copied()).unwrap();
+//! vm.initialize(BYTECODE.iter().copied()).unwrap();
 //! vm.run().unwrap();
 //!
 //! assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
 //! ```
 
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
 #[cfg(test)]

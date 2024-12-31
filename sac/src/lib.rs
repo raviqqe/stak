@@ -1,7 +1,9 @@
 //! Utilities to build executable binaries from bytecode files.
 
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
+#[doc(hidden)]
 #[cfg(feature = "std")]
 pub extern crate std;
 

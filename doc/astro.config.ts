@@ -57,6 +57,7 @@ export default defineConfig({
     solid(),
     starlight({
       title: "Stak Scheme",
+      customCss: ["./src/index.css"],
       favicon: "/icon.svg",
       head: [
         {
@@ -84,6 +85,35 @@ export default defineConfig({
         {
           label: "Home",
           link: "/",
+        },
+        {
+          label: "Guides",
+          items: [
+            {
+              label: "Install",
+              link: "/install",
+            },
+            {
+              label: "Embedding Scheme in Rust",
+              link: "/embedding-scripts",
+            },
+            {
+              label: "Hot reloading",
+              link: "/hot-reload",
+            },
+            {
+              label: "Writing a Scheme subset",
+              link: "/writing-scheme-subset",
+            },
+            {
+              label: "No-std and no-alloc support",
+              link: "/no-std-no-alloc",
+            },
+          ],
+        },
+        {
+          label: "Limitations",
+          link: "/limitations",
         },
         {
           label: "Examples",

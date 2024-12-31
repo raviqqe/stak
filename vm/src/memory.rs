@@ -103,6 +103,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a boolean value.
+    #[inline]
     pub const fn boolean(&self, value: bool) -> Cons {
         if value {
             self.cdr(self.r#false).assume_cons()
@@ -112,16 +113,19 @@ impl<'a> Memory<'a> {
     }
 
     /// Returns a null value.
+    #[inline]
     pub const fn null(&self) -> Cons {
         self.car(self.r#false).assume_cons()
     }
 
     /// Sets a false value.
-    pub fn set_false(&mut self, cons: Cons) {
+    #[inline]
+    pub(crate) fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 
     /// Pushes a value to a stack.
+    #[inline]
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
@@ -129,6 +133,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Pops a value from a stack.
+    #[inline]
     pub fn pop(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
@@ -141,11 +146,9 @@ impl<'a> Memory<'a> {
     pub fn pop_many<const M: usize>(&mut self) -> [Value; M] {
         let mut values = [Default::default(); M];
 
-        for index in 0..M - 1 {
+        for index in 0..=M - 1 {
             values[M - 1 - index] = self.pop();
         }
-
-        values[0] = self.pop();
 
         values
     }
@@ -162,18 +165,21 @@ impl<'a> Memory<'a> {
     }
 
     /// Peeks a value at the top of a stack.
+    #[inline]
     pub fn top(&mut self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
         self.car(self.stack)
     }
 
-    /// Allocates a cons.
+    /// Allocates a cons with a default tag of [`Type::Pair`].
+    #[inline]
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
         self.allocate(car, cdr.set_tag(Type::Pair as Tag).into())
     }
 
-    /// Allocates a cons on heap.
+    /// Allocates a cons.
+    #[inline]
     pub fn allocate(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         let mut cons = self.allocate_unchecked(car, cdr)?;
 
@@ -189,6 +195,7 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
+    #[inline]
     fn allocate_unchecked(&mut self, car: Value, cdr: Value) -> Result<Cons, Error> {
         if self.is_out_of_memory() {
             return Err(Error::OutOfMemory);
@@ -207,14 +214,17 @@ impl<'a> Memory<'a> {
         Ok(cons)
     }
 
+    #[inline]
     const fn is_out_of_memory(&self) -> bool {
         self.allocation_index >= self.space_size()
     }
 
+    #[inline]
     const fn space_size(&self) -> usize {
         self.heap.len() / 2
     }
 
+    #[inline]
     const fn allocation_start(&self) -> usize {
         if self.space {
             self.space_size()
@@ -223,6 +233,7 @@ impl<'a> Memory<'a> {
         }
     }
 
+    #[inline]
     const fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
@@ -252,12 +263,12 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn unchecked_car(&self, cons: Cons) -> Value {
+    const fn unchecked_car(&self, cons: Cons) -> Value {
         self.heap[cons.index()]
     }
 
     #[inline]
-    fn unchecked_cdr(&self, cons: Cons) -> Value {
+    const fn unchecked_cdr(&self, cons: Cons) -> Value {
         self.heap[cons.index() + 1]
     }
 

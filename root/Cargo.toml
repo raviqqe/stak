@@ -1,0 +1,48 @@
+[package]
+name = "stak"
+description = "Stak Scheme interpreter"
+version = "0.4.5"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[features]
+default = ["float", "libc", "std"]
+float = ["stak-vm/float"]
+hot-reload = ["stak-macro/hot-reload"]
+libc = [
+  "stak-device/libc",
+  "stak-file/libc",
+  "stak-process-context/libc",
+  "stak-time/libc",
+]
+std = [
+  "stak-device/std",
+  "stak-file/std",
+  "stak-process-context/std",
+  "stak-time/std",
+]
+
+[dependencies]
+clap = { version = "4.5.23", features = ["derive"] }
+main_error = "0.1.2"
+stak-configuration = { version = "0.1.82", path = "../configuration" }
+stak-device = { version = "0.2.86", path = "../device" }
+stak-file = { version = "0.5.0", path = "../file" }
+stak-macro = { version = "0.2.5", path = "../macro" }
+stak-process-context = { version = "0.2.44", path = "../process_context" }
+stak-module = { version = "0.1.6", path = "../module" }
+stak-r7rs = { version = "0.9.0", path = "../r7rs" }
+stak-time = { version = "0.1.27", path = "../time" }
+stak-vm = { version = "0.7.15", path = "../vm" }
+
+[dev-dependencies]
+stak-build = { path = "../build" }
+
+[build-dependencies]
+stak-build = { version = "0.1.45", path = "../build" }
+
+[lints]
+workspace = true

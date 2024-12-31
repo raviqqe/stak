@@ -1,14 +1,17 @@
+use super::utility::decode_path;
 use crate::{FileDescriptor, FileSystem};
-use core::{ffi::CStr, mem::forget};
+use core::{mem::forget, str};
+use stak_vm::{Memory, Value};
 use std::{
-    ffi::OsStr,
     fs::{remove_file, File, OpenOptions},
-    io::{self, Read, Write},
+    io::{self, ErrorKind, Read, Write},
     os::fd::{FromRawFd, IntoRawFd},
-    path::PathBuf,
+    path::{Path, PathBuf},
 };
 
-/// An OS file system.
+const PATH_SIZE: usize = 256;
+
+/// A file system on an operating system.
 #[derive(Debug)]
 pub struct OsFileSystem {}
 
@@ -17,33 +20,30 @@ impl OsFileSystem {
     pub const fn new() -> Self {
         Self {}
     }
-
-    fn create_path(path: &[u8]) -> PathBuf {
-        let string = CStr::from_bytes_with_nul(path).unwrap();
-        PathBuf::from(unsafe { OsStr::from_encoded_bytes_unchecked(string.to_bytes()) })
-    }
 }
 
 impl FileSystem for OsFileSystem {
+    type Path = Path;
+    type PathBuf = PathBuf;
     type Error = io::Error;
 
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, path: &Path, output: bool) -> Result<FileDescriptor, Self::Error> {
         OpenOptions::new()
             .read(!output)
             .create(output)
             .write(output)
             .truncate(output)
-            .open(Self::create_path(path))
+            .open(path)
             .map(|file| file.into_raw_fd() as _)
     }
 
-    fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+    fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
         unsafe { File::from_raw_fd(descriptor as _) };
 
         Ok(())
     }
 
-    fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut file = unsafe { File::from_raw_fd(descriptor as _) };
         let mut buffer = [0u8; 1];
         file.read_exact(&mut buffer)?;
@@ -52,7 +52,7 @@ impl FileSystem for OsFileSystem {
         Ok(buffer[0])
     }
 
-    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         let mut file = unsafe { File::from_raw_fd(descriptor as _) };
         file.write_all(&[byte])?;
         forget(file);
@@ -60,12 +60,22 @@ impl FileSystem for OsFileSystem {
         Ok(())
     }
 
-    fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
-        remove_file(Self::create_path(path))
+    fn delete(&mut self, path: &Path) -> Result<(), Self::Error> {
+        remove_file(path)
     }
 
-    fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
-        Ok(Self::create_path(path).exists())
+    fn exists(&self, path: &Path) -> Result<bool, Self::Error> {
+        Ok(path.exists())
+    }
+
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
+        Ok(PathBuf::from(
+            str::from_utf8(
+                &decode_path::<PATH_SIZE>(memory, list)
+                    .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "path too long"))?,
+            )
+            .map_err(|error| io::Error::new(ErrorKind::InvalidData, error))?,
+        ))
     }
 }
 
@@ -78,12 +88,7 @@ impl Default for OsFileSystem {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use alloc::ffi::CString;
-    use std::{fs, path::Path};
-
-    fn create_path_string(path: &Path) -> CString {
-        CString::new(path.as_os_str().as_encoded_bytes()).unwrap()
-    }
+    use std::fs;
 
     #[test]
     fn close() {
@@ -91,11 +96,9 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), false)
-            .unwrap();
+        let descriptor = file_system.open(&path, false).unwrap();
         file_system.close(descriptor).unwrap();
     }
 
@@ -104,13 +107,11 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
         fs::write(&path, [42]).unwrap();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), false)
-            .unwrap();
+        let descriptor = file_system.open(&path, false).unwrap();
 
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
     }
@@ -120,18 +121,14 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), true)
-            .unwrap();
+        let descriptor = file_system.open(&path, true).unwrap();
 
         file_system.write(descriptor, 42).unwrap();
         file_system.close(descriptor).unwrap();
 
-        let descriptor = file_system
-            .open(create_path_string(&path).to_bytes_with_nul(), false)
-            .unwrap();
+        let descriptor = file_system.open(&path, false).unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
         file_system.close(descriptor).unwrap();
     }
@@ -142,11 +139,9 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = OsFileSystem::new();
+        let mut file_system = OsFileSystem::new();
 
-        file_system
-            .delete(create_path_string(&path).to_bytes_with_nul())
-            .unwrap();
+        file_system.delete(&path).unwrap();
 
         assert!(!path.exists());
     }
@@ -159,8 +154,6 @@ mod tests {
 
         let file_system = OsFileSystem::new();
 
-        assert!(file_system
-            .exists(create_path_string(&path).to_bytes_with_nul())
-            .unwrap());
+        assert!(file_system.exists(&path).unwrap());
     }
 }

@@ -1,4 +1,5 @@
 use crate::{FileDescriptor, FileError, FileSystem};
+use stak_vm::{Memory, Value};
 
 /// A file system that does nothing and fails every operation.
 #[derive(Debug)]
@@ -12,30 +13,36 @@ impl VoidFileSystem {
 }
 
 impl FileSystem for VoidFileSystem {
+    type Path = [u8];
+    type PathBuf = [u8; 0];
     type Error = FileError;
 
-    fn open(&self, _: &[u8], _: bool) -> Result<FileDescriptor, Self::Error> {
+    fn open(&mut self, _: &Self::Path, _: bool) -> Result<FileDescriptor, Self::Error> {
         Err(FileError::Open)
     }
 
-    fn close(&self, _: FileDescriptor) -> Result<(), Self::Error> {
+    fn close(&mut self, _: FileDescriptor) -> Result<(), Self::Error> {
         Err(FileError::Close)
     }
 
-    fn read(&self, _: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, _: FileDescriptor) -> Result<u8, Self::Error> {
         Err(FileError::Read)
     }
 
-    fn write(&self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, _: FileDescriptor, _: u8) -> Result<(), Self::Error> {
         Err(FileError::Write)
     }
 
-    fn delete(&self, _: &[u8]) -> Result<(), Self::Error> {
+    fn delete(&mut self, _: &Self::Path) -> Result<(), Self::Error> {
         Err(FileError::Delete)
     }
 
-    fn exists(&self, _: &[u8]) -> Result<bool, Self::Error> {
+    fn exists(&self, _: &Self::Path) -> Result<bool, Self::Error> {
         Err(FileError::Exists)
+    }
+
+    fn decode_path(_: &Memory, _: Value) -> Result<Self::PathBuf, Self::Error> {
+        Err(FileError::PathDecode)
     }
 }
 

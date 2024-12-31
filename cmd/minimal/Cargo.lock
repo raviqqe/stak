@@ -10,9 +10,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "cfg-exif"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcdfe3b5f3997edf006fb6d77713fc63d4c6789adc50a44e7bfd074e7e8337b1"
+checksum = "f782369519ff0fef6ec4fcc325a7328ac0136950ddf0a0d55f4a54cddca743b4"
 
 [[package]]
 name = "hash32"
@@ -47,14 +47,14 @@ checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "mstak"
-version = "0.3.11"
+version = "0.3.21"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.5"
+version = "0.4.15"
 dependencies = [
  "libc",
  "stak-device",
@@ -77,9 +77,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.37"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5b9d34b8991d19d98081b46eacdd8eb58c6f2b201139f7c5f643cc155a633af"
+checksum = "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc"
 dependencies = [
  "proc-macro2",
 ]
@@ -92,7 +92,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.80"
+version = "0.1.90"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -105,11 +105,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.72"
+version = "0.1.82"
 
 [[package]]
 name = "stak-device"
-version = "0.2.76"
+version = "0.2.86"
 dependencies = [
  "libc",
  "stak-vm",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.4.34"
+version = "0.5.0"
 dependencies = [
  "heapless",
  "libc",
@@ -126,8 +126,9 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.1.77"
+version = "0.2.5"
 dependencies = [
+ "cfg-exif",
  "proc-macro2",
  "quote",
  "stak-compiler",
@@ -137,7 +138,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.53"
+version = "0.1.63"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -145,19 +146,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-native"
+version = "0.1.0"
+dependencies = [
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-process-context"
-version = "0.2.34"
+version = "0.2.44"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.8.11"
+version = "0.9.0"
 dependencies = [
  "libm",
  "stak-device",
  "stak-file",
+ "stak-native",
  "stak-process-context",
  "stak-time",
  "stak-vm",
@@ -165,7 +174,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.78"
+version = "0.1.88"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -181,7 +190,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.17"
+version = "0.1.27"
 dependencies = [
  "libc",
  "stak-vm",
@@ -189,23 +198,23 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.52"
+version = "0.1.62"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.5"
+version = "0.7.15"
 dependencies = [
  "cfg-exif",
 ]
 
 [[package]]
 name = "syn"
-version = "2.0.90"
+version = "2.0.93"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "919d3b74a5dd0ccd15aeb8f93e7006bd9e14c295087c9896a110f490752bcf31"
+checksum = "9c786062daee0d6db1132800e623df74274a0a87322d8e183338e01b3d98d058"
 dependencies = [
  "proc-macro2",
  "quote",

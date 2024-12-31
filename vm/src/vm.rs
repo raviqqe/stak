@@ -82,7 +82,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self.primitive_set
     }
 
-    /// Runs a virtual machine.
+    /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
@@ -159,7 +159,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("procedure", procedure);
         trace!("return", r#return);
 
-        if self.environment(procedure).tag() != Type::Procedure as u16 {
+        if self.environment(procedure).tag() != Type::Procedure as _ {
             return Err(Error::ProcedureExpected.into());
         }
 
@@ -251,6 +251,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
             count: Number::from_i64((info / 2) as _),
@@ -258,6 +259,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
+    #[inline]
     fn advance_code(&mut self) {
         let mut code = self.memory.cdr(self.memory.code()).assume_cons();
 
@@ -284,11 +286,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     const fn operand_cons(&self) -> Cons {
-        self.resolve_variable(self.operand())
-    }
-
-    const fn resolve_variable(&self, operand: Value) -> Cons {
-        match operand.to_typed() {
+        match self.operand().to_typed() {
             TypedValue::Cons(cons) => cons,
             TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
         }
