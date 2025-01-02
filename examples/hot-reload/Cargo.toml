@@ -9,7 +9,7 @@ default = ["hot-reload"]
 hot-reload = ["stak/hot-reload"]
 
 [dependencies]
-axum = "0.7.9"
+axum = "0.8.1"
 stak = { version = "0.4.6", path = "../../root" }
 tokio = { version = "1.42.0", features = ["rt-multi-thread"] }
 
