@@ -14,6 +14,7 @@ members = [
   "examples/embedded-script",
   "examples/hot-reload",
   "file",
+  "inexact",
   "macro",
   "macro-util",
   "minifier",
