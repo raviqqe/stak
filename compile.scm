@@ -881,6 +881,9 @@
     (let ((arguments (relaxed-map optimize-expression (cdr expression)))
           (predicate (car expression)))
       (cond
+        ((eq? predicate '$$define-optimizer)
+          #f)
+
         ((eq? predicate '$$begin)
           ; Omit top-level constants.
           (cons '$$begin
