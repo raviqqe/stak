@@ -679,7 +679,8 @@
 
     (define-syntax +
       (syntax-rules ()
-        ((+ x y) ($+ x y))))
+        ((+ x y)
+          ($+ x y))))
 
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
