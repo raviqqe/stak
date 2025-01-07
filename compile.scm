@@ -1505,7 +1505,7 @@
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
-  (define-values (expression3 optimization-context) (optimize expression2))
+  (define expression3 (optimize expression2))
 
   (encode
     (marshal
