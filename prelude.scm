@@ -211,6 +211,11 @@
         ((_ name value)
           ($$define-syntax name value))))
 
+    (define-syntax define-optimizer
+      (syntax-rules ()
+        ((_ name value)
+          ($$define-optimizer name value))))
+
     (define-syntax define
       (syntax-rules ()
         ((_ (name argument ... . rest) body1 body2 ...)
@@ -677,7 +682,7 @@
     (define * (arithmetic-operator $* 1))
     (define / (inverse-arithmetic-operator $/ 1))
 
-    (define-syntax +
+    (define-optimizer +
       (syntax-rules ()
         ((+ x y)
           ($+ x y))))

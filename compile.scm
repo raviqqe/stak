@@ -818,6 +818,17 @@
               (macro-context-set! context name name)
               (expand (cons '$$set! (cdr expression)))))
 
+          (($$define-optimizer)
+            (macro-context-set-last!
+              context
+              (cadr expression)
+              (make-transformer context (caddr expression)))
+            (macro-context-append-literal!
+              context
+              (cadr expression)
+              (caddr expression))
+            #f)
+
           (($$define-syntax)
             (macro-context-set-last!
               context
