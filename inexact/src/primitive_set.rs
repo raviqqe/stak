@@ -22,7 +22,7 @@ impl PrimitiveSet for SmallPrimitiveSet {
                 memory.operate_unary(|x| Number::from_f64(exp(x.to_f64())))?
             }
             Primitive::LOGARITHM => memory.operate_unary(|x| Number::from_f64(log(x.to_f64())))?,
-            _ => return Err(Error::IllegalPrimitive.into()),
+            _ => return Err(Error::IllegalPrimitive),
         }
 
         Ok(())
