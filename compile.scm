@@ -819,14 +819,7 @@
               (expand (cons '$$set! (cdr expression)))))
 
           (($$define-optimizer)
-            (macro-context-set-last!
-              context
-              (cadr expression)
-              (make-transformer context (caddr expression)))
-            (macro-context-append-literal!
-              context
-              (cadr expression)
-              (caddr expression))
+            (error "not implemented")
             #f)
 
           (($$define-syntax)
