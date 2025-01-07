@@ -540,46 +540,6 @@
 
 ;; Procedures
 
-(define primitive-procedures
-  (map
-    (lambda (x)
-      (cons
-        ; `0` is always the library ID of `(stak base)`.
-        (build-library-name 0 x)
-        (symbol-append '$$ x)))
-    '(+ - * / <)))
-
-(define (optimize expression)
-  (let ((predicate (predicate expression)))
-    (cond
-      ((eq? predicate '$$begin)
-        ; Omit top-level constants.
-        (cons '$$begin
-          (let loop ((expressions (cdr expression)))
-            (let ((expression (car expressions))
-                  (expressions (cdr expressions)))
-              (cond
-                ((null? expressions)
-                  (list expression))
-
-                ((pair? expression)
-                  (cons expression (loop expressions)))
-
-                (else
-                  (loop expressions)))))))
-
-      ((and
-          (list? expression)
-          (= (length expression) 3)
-          (symbol? predicate)
-          (assoc (symbol->string predicate) primitive-procedures))
-        =>
-        (lambda (pair)
-          (cons (cdr pair) (cdr expression))))
-
-      (else
-        expression))))
-
 (define (resolve-denotation context expression)
   (cond
     ((assq expression (macro-context-environment context)) =>
@@ -792,116 +752,160 @@
   (define (resolve name)
     (resolve-denotation context name))
 
-  (optimize
-    (cond
-      ((symbol? expression)
-        (let ((value (resolve expression)))
-          (when (procedure? value)
-            (error "invalid syntax" expression))
-          value))
+  (cond
+    ((symbol? expression)
+      (let ((value (resolve expression)))
+        (when (procedure? value)
+          (error "invalid syntax" expression))
+        value))
 
-      ((pair? expression)
-        (case (resolve (car expression))
-          (($$alias)
-            (macro-context-set-last!
+    ((pair? expression)
+      (case (resolve (car expression))
+        (($$alias)
+          (macro-context-set-last!
+            context
+            (cadr expression)
+            (resolve (caddr expression)))
+          (macro-context-append-literal!
+            context
+            (cadr expression)
+            (caddr expression))
+          #f)
+
+        (($$define)
+          (let ((name (cadr expression)))
+            (macro-context-set! context name name)
+            (expand (cons '$$set! (cdr expression)))))
+
+        (($$define-syntax)
+          (macro-context-set-last!
+            context
+            (cadr expression)
+            (make-transformer context (caddr expression)))
+          (macro-context-append-literal!
+            context
+            (cadr expression)
+            (caddr expression))
+          #f)
+
+        (($$lambda)
+          (let* ((parameters (cadr expression))
+                 (context
+                   (macro-context-append
+                     context
+                     (map
+                       (lambda (name) (cons name (rename-variable context name)))
+                       (parameter-names parameters))))
+                 ; We need to resolve parameter denotations before expanding a body.
+                 (parameters
+                   (relaxed-deep-map
+                     (lambda (name) (resolve-denotation context name))
+                     parameters)))
+            (list
+              '$$lambda
+              parameters
+              (expand-macro context (caddr expression)))))
+
+        (($$let-syntax)
+          (expand-macro
+            (macro-context-append
               context
-              (cadr expression)
-              (resolve (caddr expression)))
-            (macro-context-append-literal!
-              context
-              (cadr expression)
-              (caddr expression))
-            #f)
+              (map-values
+                (lambda (transformer)
+                  (make-transformer context (car transformer)))
+                (cadr expression)))
+            (caddr expression)))
 
-          (($$define)
-            (let ((name (cadr expression)))
-              (macro-context-set! context name name)
-              (expand (cons '$$set! (cdr expression)))))
+        (($$letrec-syntax)
+          (let* ((bindings (cadr expression))
+                 (context
+                   (macro-context-append
+                     context
+                     (map-values
+                       (lambda (value) #f)
+                       bindings))))
+            (for-each
+              (lambda (pair)
+                (macro-context-set!
+                  context
+                  (car pair)
+                  (make-transformer context (cadr pair))))
+              bindings)
+            (expand-macro context (caddr expression))))
 
-          (($$define-optimizer)
-            (error "not implemented")
-            #f)
+        (($$quote)
+          (cons
+            '$$quote
+            (relaxed-deep-map
+              (lambda (value)
+                (if (symbol? value)
+                  (resolve-library-symbol value)
+                  value))
+              (cdr expression))))
 
-          (($$define-syntax)
-            (macro-context-set-last!
-              context
-              (cadr expression)
-              (make-transformer context (caddr expression)))
-            (macro-context-append-literal!
-              context
-              (cadr expression)
-              (caddr expression))
-            #f)
+        (else =>
+          (lambda (value)
+            (if (procedure? value)
+              (let-values (((expression context) (value context expression)))
+                (expand-macro context expression))
+              (map expand expression))))))
 
-          (($$lambda)
-            (let* ((parameters (cadr expression))
-                   (context
-                     (macro-context-append
-                       context
-                       (map
-                         (lambda (name) (cons name (rename-variable context name)))
-                         (parameter-names parameters))))
-                   ; We need to resolve parameter denotations before expanding a body.
-                   (parameters
-                     (relaxed-deep-map
-                       (lambda (name) (resolve-denotation context name))
-                       parameters)))
-              (list
-                '$$lambda
-                parameters
-                (expand-macro context (caddr expression)))))
-
-          (($$let-syntax)
-            (expand-macro
-              (macro-context-append
-                context
-                (map-values
-                  (lambda (transformer)
-                    (make-transformer context (car transformer)))
-                  (cadr expression)))
-              (caddr expression)))
-
-          (($$letrec-syntax)
-            (let* ((bindings (cadr expression))
-                   (context
-                     (macro-context-append
-                       context
-                       (map-values
-                         (lambda (value) #f)
-                         bindings))))
-              (for-each
-                (lambda (pair)
-                  (macro-context-set!
-                    context
-                    (car pair)
-                    (make-transformer context (cadr pair))))
-                bindings)
-              (expand-macro context (caddr expression))))
-
-          (($$quote)
-            (cons
-              '$$quote
-              (relaxed-deep-map
-                (lambda (value)
-                  (if (symbol? value)
-                    (resolve-library-symbol value)
-                    value))
-                (cdr expression))))
-
-          (else =>
-            (lambda (value)
-              (if (procedure? value)
-                (let-values (((expression context) (value context expression)))
-                  (expand-macro context expression))
-                (map expand expression))))))
-
-      (else
-        expression))))
+    (else
+      expression)))
 
 (define (expand-macros expression)
   (let* ((context (make-macro-context (make-macro-state 0 '()) '()))
          (expression (expand-macro context expression)))
     (values expression context)))
+
+; Optimization
+
+(define primitive-procedures
+  (map
+    (lambda (x)
+      (cons
+        ; `0` is always the library ID of `(stak base)`.
+        (build-library-name 0 x)
+        (symbol-append '$$ x)))
+    '(+ - * / <)))
+
+(define (optimize-expression expression)
+  (if (pair? expression)
+    (let ((arguments (map optimize-expression (cdr expression)))
+          (predicate (car expression)))
+      (cond
+        ((eq? predicate '$$begin)
+          ; Omit top-level constants.
+          (cons '$$begin
+            (let loop ((expressions (cdr expression)))
+              (let ((expression (car expressions))
+                    (expressions (cdr expressions)))
+                (cond
+                  ((null? expressions)
+                    (list expression))
+
+                  ((pair? expression)
+                    (cons expression (loop expressions)))
+
+                  (else
+                    (loop expressions)))))))
+
+        ((and
+            (list? expression)
+            (= (length expression) 3)
+            (symbol? predicate)
+            (assoc (symbol->string predicate) primitive-procedures))
+          =>
+          (lambda (pair)
+            (cons (cdr pair) (cdr expression))))
+
+        (else
+          expression)))
+    expression))
+
+(define (optimize expression)
+  ; TODO Prepare a context.
+  (optimize-expression expression))
 
 ; Compilation
 
@@ -1501,6 +1505,7 @@
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
+  (define-values (expression3 optimization-context) (optimize expression2))
 
   (encode
     (marshal
