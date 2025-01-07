@@ -25,7 +25,7 @@ for directory in bench/*; do
   base=$directory/main
   file=$base.scm
 
-  scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,stak-compile < prelude.scm < $file"
+  scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc"
 done
 
 branch=${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}
@@ -47,3 +47,21 @@ bencher run \
   --token $BENCHER_TOKEN \
   $options \
   hyperfine --export-json results.json -w 2 -N --input compile.scm -L script "$scripts" "{script}"
+
+scripts=
+
+for directory in bench/*; do
+  scripts="$scripts${scripts:+,}stak-compile $directory/main.scm"
+done
+
+bencher run \
+  --adapter shell_hyperfine \
+  --branch $branch \
+  --err \
+  --file results.json \
+  --github-actions $GITHUB_TOKEN \
+  --project stak \
+  --testbed $os \
+  --token $BENCHER_TOKEN \
+  $options \
+  hyperfine --export-json results.json -w 2 --input compile.scm -L script "$scripts" "{script}"
