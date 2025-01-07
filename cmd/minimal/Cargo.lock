@@ -47,14 +47,14 @@ checksum = "8355be11b20d696c8f18f6cc018c4e372165b1fa8126cef092399c9951984ffa"
 
 [[package]]
 name = "mstak"
-version = "0.3.22"
+version = "0.3.23"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.16"
+version = "0.4.17"
 dependencies = [
  "libc",
  "stak-device",
@@ -92,7 +92,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.91"
+version = "0.1.92"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -105,11 +105,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.83"
+version = "0.1.84"
 
 [[package]]
 name = "stak-device"
-version = "0.2.87"
+version = "0.2.88"
 dependencies = [
  "libc",
  "stak-vm",
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.5.1"
+version = "0.5.2"
 dependencies = [
  "heapless",
  "libc",
@@ -125,8 +125,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-inexact"
+version = "0.1.1"
+dependencies = [
+ "libm",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-macro"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "cfg-exif",
  "proc-macro2",
@@ -138,7 +146,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.64"
+version = "0.1.65"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -147,25 +155,25 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.45"
+version = "0.2.46"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.9.1"
+version = "0.9.2"
 dependencies = [
- "libm",
  "stak-device",
  "stak-file",
+ "stak-inexact",
  "stak-native",
  "stak-process-context",
  "stak-time",
@@ -174,7 +182,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.89"
+version = "0.1.90"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -190,7 +198,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.28"
+version = "0.1.29"
 dependencies = [
  "libc",
  "stak-vm",
@@ -198,23 +206,23 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.63"
+version = "0.1.64"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.16"
+version = "0.7.17"
 dependencies = [
  "cfg-exif",
 ]
 
 [[package]]
 name = "syn"
-version = "2.0.93"
+version = "2.0.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c786062daee0d6db1132800e623df74274a0a87322d8e183338e01b3d98d058"
+checksum = "46f71c0377baf4ef1cc3e3402ded576dccc315800fbc62dfc7fe04b009773b4a"
 dependencies = [
  "proc-macro2",
  "quote",
