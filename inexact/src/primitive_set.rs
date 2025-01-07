@@ -1,4 +1,3 @@
-mod error;
 mod primitive;
 
 pub use self::error::Error;
