@@ -887,7 +887,7 @@
         ((eq? predicate '$$begin)
           ; Omit top-level constants.
           (cons '$$begin
-            (let loop ((expressions (cdr expression)))
+            (let loop ((expressions arguments))
               (let ((expression (car expressions))
                     (expressions (cdr expressions)))
                 (cond
@@ -907,10 +907,10 @@
             (assoc (symbol->string predicate) primitive-procedures))
           =>
           (lambda (pair)
-            (cons (cdr pair) (cdr expression))))
+            (cons (cdr pair) arguments)))
 
         (else
-          expression)))
+          (cons predicate arguments))))
     expression))
 
 (define (optimize expression)
