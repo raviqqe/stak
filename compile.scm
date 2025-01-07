@@ -882,6 +882,7 @@
           (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
+          ; TODO Define and use an optimizer.
           #f)
 
         ((eq? predicate '$$begin)
