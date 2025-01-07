@@ -25,7 +25,7 @@ for directory in bench/*; do
   base=$directory/main
   file=$base.scm
 
-  scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,stak compile.scm < prelude.scm < $file"
+  scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,stak-compile < prelude.scm < $file"
 done
 
 branch=${GITHUB_HEAD_REF:-$(basename $GITHUB_REF)}
