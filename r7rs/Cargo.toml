@@ -9,9 +9,9 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-libm = { version = "0.2.11", default-features = false }
 stak-device = { version = "0.2.87", path = "../device" }
 stak-file = { version = "0.5.1", path = "../file" }
+stak-inexact = { version = "0.1.0", path = "../inexact" }
 stak-native = { version = "0.1.1", path = "../native" }
 stak-process-context = { version = "0.2.45", path = "../process_context" }
 stak-time = { version = "0.1.28", path = "../time" }

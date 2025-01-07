@@ -1026,6 +1026,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-inexact"
+version = "0.1.0"
+dependencies = [
+ "libm",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-interpret"
 version = "0.3.16"
 dependencies = [
@@ -1150,9 +1158,9 @@ dependencies = [
 name = "stak-r7rs"
 version = "0.9.1"
 dependencies = [
- "libm",
  "stak-device",
  "stak-file",
+ "stak-inexact",
  "stak-native",
  "stak-process-context",
  "stak-time",
