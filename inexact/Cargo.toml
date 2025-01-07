@@ -1,5 +1,5 @@
 [package]
-name = "inexact"
+name = "stak-inexact"
 description = "Inexact number operations for Stak Scheme"
 version = "0.1.0"
 edition.workspace = true

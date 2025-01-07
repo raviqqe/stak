@@ -516,14 +516,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b248f5224d1d606005e02c97f5aa4e88eeb230488bcc03bc9ca4d7991399f2b5"
 
 [[package]]
-name = "inexact"
-version = "0.1.0"
-dependencies = [
- "libm",
- "stak-vm",
-]
-
-[[package]]
 name = "inotify"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1034,6 +1026,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-inexact"
+version = "0.1.0"
+dependencies = [
+ "libm",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-interpret"
 version = "0.3.16"
 dependencies = [
@@ -1158,9 +1158,9 @@ dependencies = [
 name = "stak-r7rs"
 version = "0.9.1"
 dependencies = [
- "libm",
  "stak-device",
  "stak-file",
+ "stak-inexact",
  "stak-native",
  "stak-process-context",
  "stak-time",

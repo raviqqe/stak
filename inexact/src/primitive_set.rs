@@ -4,16 +4,16 @@ use stak_vm::{Error, Memory, Number, PrimitiveSet};
 
 /// A primitive set for inexact number operations.
 #[derive(Debug, Default)]
-pub struct SmallPrimitiveSet {}
+pub struct InexactPrimitiveSet {}
 
-impl SmallPrimitiveSet {
+impl InexactPrimitiveSet {
     /// Creates a primitive set.
     pub fn new() -> Self {
         Self::default()
     }
 }
 
-impl PrimitiveSet for SmallPrimitiveSet {
+impl PrimitiveSet for InexactPrimitiveSet {
     type Error = Error;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {

@@ -6,6 +6,7 @@ use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
+use stak_inexact::InexactPrimitiveSet;
 use stak_native::{ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
@@ -17,6 +18,7 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clo
     file: FilePrimitiveSet<F>,
     process_context: ProcessContextPrimitiveSet<P>,
     time: TimePrimitiveSet<C>,
+    inexact: InexactPrimitiveSet,
     type_check: TypeCheckPrimitiveSet,
     list: ListPrimitiveSet,
 }
@@ -29,6 +31,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             file: FilePrimitiveSet::new(file_system),
             process_context: ProcessContextPrimitiveSet::new(process_context),
             time: TimePrimitiveSet::new(clock),
+            inexact: Default::default(),
             type_check: Default::default(),
             list: Default::default(),
         }
@@ -131,12 +134,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::EXPONENTIATION => {
-                memory.operate_unary(|x| Number::from_f64(libm::exp(x.to_f64())))?
-            }
-            Primitive::LOGARITHM => {
-                memory.operate_unary(|x| Number::from_f64(libm::log(x.to_f64())))?
-            }
+            Primitive::EXPONENTIATION | Primitive::LOGARITHM => self
+                .inexact
+                .operate(memory, primitive - Primitive::EXPONENTIATION)?,
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => self
                 .type_check
