@@ -160,6 +160,13 @@
     ((not (pair? xs))
       y)))
 
+(define (relaxed-map f xs)
+  (if (pair? xs)
+    (cons
+      (f (car xs))
+      (relaxed-map f (cdr xs)))
+    (f xs)))
+
 (define (relaxed-deep-map f xs)
   (if (pair? xs)
     (cons
@@ -871,7 +878,7 @@
 
 (define (optimize-expression expression)
   (if (pair? expression)
-    (let ((arguments (map optimize-expression (cdr expression)))
+    (let ((arguments (relaxed-map optimize-expression (cdr expression)))
           (predicate (car expression)))
       (cond
         ((eq? predicate '$$begin)
@@ -1521,6 +1528,6 @@
               (filter
                 (lambda (pair) (library-symbol? (car pair)))
                 (macro-state-literals (macro-context-state macro-context))))
-            expression2))))))
+            expression3))))))
 
 (main)
