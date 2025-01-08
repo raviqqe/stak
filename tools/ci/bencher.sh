@@ -12,9 +12,8 @@ setup_bench
 
 cd bench/src
 
-for directory in *; do
-  base=$directory/main
-  file=$base.scm
+for file in */main.scm; do
+  base=${file%.scm}
 
   scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc"
 done
