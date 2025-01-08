@@ -157,13 +157,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bench"
-version = "0.1.0"
-dependencies = [
- "codspeed-criterion-compat",
-]
-
-[[package]]
 name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1251,6 +1244,13 @@ dependencies = [
  "stak-r7rs",
  "stak-time",
  "stak-vm",
+]
+
+[[package]]
+name = "stak-bench"
+version = "0.1.0"
+dependencies = [
+ "codspeed-criterion-compat",
 ]
 
 [[package]]

@@ -1,5 +1,5 @@
 [package]
-name = "bench"
+name = "stak-bench"
 version = "0.1.0"
 publish = false
 edition.workspace = true
