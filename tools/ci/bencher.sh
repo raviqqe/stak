@@ -10,7 +10,7 @@ cd $(dirname $0)/../..
 
 setup_bench
 
-cd bench/scripts
+cd bench/src
 
 for directory in *; do
   base=$directory/main

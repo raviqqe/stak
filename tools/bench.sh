@@ -26,7 +26,7 @@ if [ $# -gt 0 ]; then
   filter="$@"
 fi
 
-cd bench/scripts
+cd bench/src
 
 for directory in $(ls | sort | grep $filter); do
   base=$directory/main
