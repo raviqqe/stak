@@ -11,3 +11,7 @@ workspace = true
 
 [dev-dependencies]
 criterion = { version = "2.7.2", package = "codspeed-criterion-compat" }
+
+[[bench]]
+name = "fibonacci"
+harness = false
