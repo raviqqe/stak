@@ -28,6 +28,16 @@ jobs:
         with:
           python-version: "3.12"
       - run: tools/bench.sh ${{ matrix.options }}
+  codspeed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cargo install cargo-codspeed
+      - run: cargo codspeed build
+      - uses: codspeedhq/action@v3
+        with:
+          run: cargo codspeed run
+          token: ${{ secrets.CODSPEED_TOKEN }}
   bencher:
     strategy:
       matrix:
