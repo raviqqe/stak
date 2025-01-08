@@ -21,7 +21,9 @@ cd $(dirname $0)/../..
 
 setup_bench
 
-for directory in bench/*; do
+cd bench/scripts
+
+for directory in *; do
   base=$directory/main
   file=$base.scm
 
