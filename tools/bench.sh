@@ -29,7 +29,8 @@ fi
 cd bench/scripts
 
 for directory in $(ls | sort | grep $filter); do
-  base=${file%.scm}
+  base=$directory/main
+  file=$base.scm
 
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
 
