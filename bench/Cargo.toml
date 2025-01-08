@@ -17,5 +17,5 @@ stak-build = { version = "0.1.47", path = "../build" }
 workspace = true
 
 [[bench]]
-name = "fibonacci"
+name = "main"
 harness = false
