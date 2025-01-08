@@ -38,5 +38,5 @@ for directory in $(ls | sort | grep $filter); do
     scripts="$scripts,python3 $base.py"
   fi
 
-  hyperfine -N --sort command --input compile.scm -L script "$scripts" "{script}"
+  hyperfine -N --sort command --input ../../compile.scm -L script "$scripts" "{script}"
 done

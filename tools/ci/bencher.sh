@@ -37,4 +37,4 @@ bencher run \
   --testbed $RUNNER_ARCH$RUNNER_OS \
   --token $BENCHER_TOKEN \
   $options \
-  hyperfine --export-json results.json -w 2 -N --input compile.scm -L script "$scripts" "{script}"
+  hyperfine --export-json results.json -w 2 -N --input ../../compile.scm -L script "$scripts" "{script}"
