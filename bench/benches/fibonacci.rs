@@ -34,13 +34,9 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 }
 
 fn stak(criterion: &mut Criterion) {
-    criterion.bench_function("empty", |bencher| {
-        bencher.iter(|| run(black_box(&EMPTY_MODULE)))
-    });
-
-    criterion.bench_function("fibonacci", |bencher| {
-        bencher.iter(|| run(black_box(&FIBONACCI_MODULE)))
-    });
+    for (name, module) in [("empty", &EMPTY_MODULE), ("fibonacci", &FIBONACCI_MODULE)] {
+        criterion.bench_function(name, |bencher| bencher.iter(|| run(black_box(module))));
+    }
 }
 
 criterion_group! {
