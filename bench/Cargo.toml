@@ -10,7 +10,7 @@ edition.workspace = true
 workspace = true
 
 [dev-dependencies]
-criterion = { version = "2.7.2", package = "codspeed-criterion-compat" }
+criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
 
 [[bench]]
 name = "fibonacci"
