@@ -26,7 +26,9 @@ if [ $# -gt 0 ]; then
   filter="$@"
 fi
 
-for file in $(find bench/src -type f -name '*.scm' | sort | grep $filter); do
+cd bench/scripts
+
+for directory in $(ls | sort | grep $filter); do
   base=${file%.scm}
 
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
