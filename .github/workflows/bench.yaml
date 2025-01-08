@@ -35,10 +35,12 @@ jobs:
       - uses: ./.github/actions/setup
       - run: cargo install --features vendored-openssl cargo-codspeed
       - run: cargo codspeed build
+        working-directory: bench
       - uses: codspeedhq/action@v3
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
+        working-directory: bench
   bencher:
     strategy:
       matrix:
