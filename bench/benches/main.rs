@@ -2,7 +2,7 @@
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use stak::{
-    device::StdioDevice,
+    device::{FixedBufferDevice, StdioDevice},
     file::VoidFileSystem,
     include_module,
     module::{Module, UniversalModule},
@@ -13,6 +13,7 @@ use stak::{
 };
 
 const HEAP_SIZE: usize = 1 << 18;
+const DEVICE_BUFFER_SIZE: usize = 1 << 8;
 
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 static FIBONACCI_MODULE: UniversalModule = include_module!("fibonacci/main.scm");
@@ -25,7 +26,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
-            StdioDevice::new(),
+            FixedBufferDevice::<DEVICE_BUFFER_SIZE, 0>::new(&[]),
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
