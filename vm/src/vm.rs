@@ -279,10 +279,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory
             .set_cdr(self.memory.stack(), self.memory.cdr(continuation));
 
-        return self
+        self
             .memory
             .cdr(self.memory.car(continuation).assume_cons())
-            .assume_cons();
+            .assume_cons()
     }
 
     const fn operand(&self) -> Value {
