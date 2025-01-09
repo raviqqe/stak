@@ -7,4 +7,4 @@
       (fibonacci (- x 1))
       (fibonacci (- x 2)))))
 
-(fibonacci 38)
+(fibonacci 32)
