@@ -2,7 +2,7 @@
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use stak::{
-    device::{FixedBufferDevice, StdioDevice},
+    device::FixedBufferDevice,
     file::VoidFileSystem,
     include_module,
     module::{Module, UniversalModule},
