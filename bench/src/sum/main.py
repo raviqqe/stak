@@ -7,4 +7,4 @@ def sum(x):
     return z
 
 
-sum(100000000)
+sum(10000000)
