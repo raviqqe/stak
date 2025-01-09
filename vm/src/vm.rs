@@ -264,21 +264,25 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         let mut code = self.memory.cdr(self.memory.code()).assume_cons();
 
         if code == self.memory.null() {
-            #[cfg(feature = "profile")]
-            self.profile_return();
-
-            let continuation = self.continuation();
-            // Keep a value at the top of a stack.
-            self.memory
-                .set_cdr(self.memory.stack(), self.memory.cdr(continuation));
-
-            code = self
-                .memory
-                .cdr(self.memory.car(continuation).assume_cons())
-                .assume_cons();
+            code = self.r#return();
         }
 
         self.memory.set_code(code);
+    }
+
+    fn r#return(&mut self) -> Cons {
+        #[cfg(feature = "profile")]
+        self.profile_return();
+
+        let continuation = self.continuation();
+        // Keep a value at the top of a stack.
+        self.memory
+            .set_cdr(self.memory.stack(), self.memory.cdr(continuation));
+
+        return self
+            .memory
+            .cdr(self.memory.car(continuation).assume_cons())
+            .assume_cons();
     }
 
     const fn operand(&self) -> Value {
