@@ -353,6 +353,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an operation against a value at the top of a stack.
+    #[inline]
     pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
         let value = self.pop();
         self.push(operate(self, value))?;
@@ -360,6 +361,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an unary number operation.
+    #[inline]
     pub fn operate_unary(&mut self, operate: fn(Number) -> Number) -> Result<(), Error> {
         let [x] = self.pop_numbers();
 
@@ -369,6 +371,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes a binary number operation.
+    #[inline]
     pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
         let [x, y] = self.pop_numbers();
 
@@ -378,6 +381,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an operation that returns `Option<Value>`.
+    #[inline]
     pub fn operate_option(
         &mut self,
         mut operate: impl FnMut(&mut Self) -> Option<Value>,
