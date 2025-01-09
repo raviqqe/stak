@@ -44,7 +44,9 @@ fn stak(criterion: &mut Criterion) {
         ("sum", &SUM_MODULE),
         ("tak", &TAK_MODULE),
     ] {
-        criterion.bench_function(name, |bencher| bencher.iter(|| run(black_box(module))));
+        criterion.bench_function(name, |bencher| {
+            bencher.iter(|| run(black_box(module)).unwrap())
+        });
     }
 }
 
