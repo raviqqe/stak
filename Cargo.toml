@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "bench",
   "build",
   "cmd/compile",
   "cmd/decode",
