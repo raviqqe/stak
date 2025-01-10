@@ -23,6 +23,7 @@
     "clippy",
     "codecov",
     "codegen",
+    "codspeed",
     "cond",
     "coreutils",
     "doctest",
