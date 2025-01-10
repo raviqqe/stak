@@ -11,7 +11,7 @@ repository.workspace = true
 [dependencies]
 glob = "0.3.2"
 stak-compiler = { version = "0.1.92", path = "../compiler" }
-tokio = { version = "1.42.0", features = [
+tokio = { version = "1.43.0", features = [
   "fs",
   "io-util",
   "process",
