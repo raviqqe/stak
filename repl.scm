@@ -6,7 +6,7 @@
   (only (scheme file))
   (only (scheme inexact))
   (only (scheme lazy))
-  (only (scheme process-context))
+  (scheme process-context)
   (scheme read)
   (scheme repl)
   (only (scheme time))
