@@ -7,6 +7,7 @@
   (scheme cxr)
   (scheme inexact)
   (scheme lazy)
+  (scheme process-context)
   (scheme read)
   (scheme write))
 
@@ -1511,5 +1512,13 @@
                 (lambda (pair) (library-symbol? (car pair)))
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
+
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "stak-compile, the Scheme-to-bytecode compiler for Stak Scheme.\n\n")
+    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (exit)))
 
 (main)
