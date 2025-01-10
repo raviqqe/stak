@@ -1517,7 +1517,8 @@
   (when (or
          (member "-h" arguments)
          (member "--help" arguments))
-    (write-string (string-append "Usage: " (car arguments) " < SOURCE_FILE > BYTECODE_FILE\n"))
+    (write-string "stak-compile, the Stak Scheme compiler.\n\n")
+    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
     (exit)))
 
 (main)
