@@ -1517,7 +1517,7 @@
   (when (or
          (member "-h" arguments)
          (member "--help" arguments))
-    (write-string (string-append "Usage: " (car arguments) " < SOURCE_FILE > BYTECODE_FILE"))
+    (write-string (string-append "Usage: " (car arguments) " < SOURCE_FILE > BYTECODE_FILE\n"))
     (exit)))
 
 (main)
