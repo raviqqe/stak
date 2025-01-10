@@ -56,7 +56,7 @@ macro_rules! main {
         };
 
         #[derive(clap::Parser)]
-        #[command(version, ignore_errors = true)]
+        #[command(disable_help_flag = true, ignore_errors = true, version)]
         struct Arguments {
             #[arg()]
             arguments: Vec<String>,
