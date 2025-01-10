@@ -1513,7 +1513,10 @@
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
 
-(unless (= (length (command-line)) 1)
-  (error (string-append "Usage: " (car (command-line)) " < SOURCE_FILE > BYTECODE_FILE")))
+(let ((arguments (command-line)))
+  (when (or
+         (memq "-h" arguments)
+         (memq "--help" arguments))
+    (error (string-append "Usage: " (car arguments) " < SOURCE_FILE > BYTECODE_FILE"))))
 
 (main)
