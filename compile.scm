@@ -1515,8 +1515,8 @@
 
 (let ((arguments (command-line)))
   (when (or
-         (memq "-h" arguments)
-         (memq "--help" arguments))
+         (member "-h" arguments)
+         (member "--help" arguments))
     (error (string-append "Usage: " (car arguments) " < SOURCE_FILE > BYTECODE_FILE"))))
 
 (main)
