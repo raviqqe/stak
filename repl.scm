@@ -30,4 +30,12 @@
           (newline)
           (main))))))
 
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "stak-repl, the Stak Scheme REPL interpreter.\n\n")
+    (write-string "Usage: stak-repl\n")
+    (exit)))
+
 (main)
