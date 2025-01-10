@@ -1513,7 +1513,7 @@
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
 
-(unless (zero? (length (command-line)))
-  (error "Invalid number of argument"))
+(unless (= (length (command-line)) 1)
+  (error (string-append "Usage: " (car (command-line)) " < SOURCE_FILE > BYTECODE_FILE")))
 
 (main)
