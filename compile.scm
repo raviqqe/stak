@@ -7,6 +7,7 @@
   (scheme cxr)
   (scheme inexact)
   (scheme lazy)
+  (scheme process-context)
   (scheme read)
   (scheme write))
 
@@ -1511,5 +1512,8 @@
                 (lambda (pair) (library-symbol? (car pair)))
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
+
+(unless (zero? (length (command-line)))
+  (error "Invalid number of argument"))
 
 (main)
