@@ -35,10 +35,6 @@ cargo build --profile release_test --features $features
   cargo build --release
 )
 
-rm -rf tmp/bin
-mkdir -p tmp/bin
-ln -s ../../tools/scheme/$interpreter.sh tmp/bin/stak
-
 export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
