@@ -7,6 +7,8 @@ on:
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
+env:
+  GUILE_AUTO_COMPILE: 0
 jobs:
   build:
     strategy:
@@ -64,7 +66,7 @@ jobs:
           - name: gauche
             tags: not @stak or @gauche
           - name: guile
-            tags: not @stak or @guile
+            tags: (not @stak or @guile) and not @library
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}

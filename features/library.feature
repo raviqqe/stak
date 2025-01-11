@@ -15,7 +15,11 @@ Feature: Library system
     And a file named "main.scm" with:
       """scheme
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the exit status should be 0
 
   Scenario: Import a library twice
@@ -32,7 +36,11 @@ Feature: Library system
       (import (foo))
       (import (foo))
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Import a procedure
@@ -53,7 +61,11 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Import a macro
@@ -76,7 +88,11 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Import procedures
@@ -101,7 +117,11 @@ Feature: Library system
       (foo 65)
       (bar 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "AB"
 
   Scenario: Import a procedure with a prefix
@@ -122,7 +142,11 @@ Feature: Library system
 
       (bar-foo 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Import only a symbol
@@ -143,7 +167,11 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Import only a symbol and use one of the others
@@ -167,7 +195,11 @@ Feature: Library system
 
       (bar)
       """
-    When I run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the exit status should not be 0
 
   Scenario: Import symbols except one
@@ -191,7 +223,11 @@ Feature: Library system
 
       (bar 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "B"
 
   Scenario: Import symbols except one and use it
@@ -215,7 +251,11 @@ Feature: Library system
 
       (foo)
       """
-    When I run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the exit status should not be 0
 
   Scenario: Import a renamed procedure
@@ -236,7 +276,11 @@ Feature: Library system
 
       (bar 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Nest import qualifiers
@@ -260,7 +304,11 @@ Feature: Library system
 
       (<symbol> 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -294,7 +342,11 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm bar.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Re-export a qualified imported procedure
@@ -322,7 +374,11 @@ Feature: Library system
 
       (foo 65)
       """
-    When I successfully run `scheme -l foo.scm -l bar.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm bar.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   @chibi @gauche @stak
@@ -344,7 +400,11 @@ Feature: Library system
 
       (bar 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "A"
 
   Scenario: Do not modify a library environment
@@ -372,7 +432,11 @@ Feature: Library system
       (foo 65)
       (bar 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     Then the stdout should contain exactly "BA"
 
   Scenario: Modify a library environment
@@ -402,6 +466,10 @@ Feature: Library system
       (foo 65)
       (bar 65)
       """
-    When I successfully run `scheme -l foo.scm main.scm`
+    When I run the following script:
+      """sh
+      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
+      """
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "AABB"

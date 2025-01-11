@@ -9,7 +9,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
 
@@ -22,7 +23,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -38,7 +40,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "B"
@@ -56,7 +59,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -78,7 +82,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -100,7 +105,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -119,7 +125,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -145,7 +152,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
@@ -181,7 +189,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
