@@ -39,5 +39,5 @@ export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 start=$(epoch)
-bundler exec cucumber --publish-quiet --strict-undefined "$@"
+bundler exec cucumber --publish-quiet --strict-undefined ${tags:+-t "$tags"} "$@"
 echo Duration: $(expr $(epoch) - $start)s
