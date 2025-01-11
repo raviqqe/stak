@@ -872,9 +872,11 @@
   (optimizers optimization-context-optimizers optimization-context-set-optimizers!))
 
 (define (optimization-context-append! context name optimizer)
-  (optimization-context-set-optimizers! context
-    (cons (cadr expression) transformer)
-    (optimization-context-optimizers context)))
+  (optimization-context-set-optimizers!
+    context
+    (cons
+      (cons name optimizer)
+      (optimization-context-optimizers context))))
 
 (define (make-optimizer optimizer)
   (lambda (expression)
@@ -885,8 +887,8 @@
     (optimize-expression context expression))
 
   (if (pair? expression)
-    (let ((expression (relaxed-map optimize expression))
-          (predicate (car expression)))
+    (let* ((expression (relaxed-map optimize expression))
+           (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
           (optimization-context-append! context (cadr expression) (make-optimizer (caddr expression)))
