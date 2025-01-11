@@ -907,10 +907,10 @@
             (assoc (symbol->string predicate) primitive-procedures))
           =>
           (lambda (pair)
-            (cons (cdr pair) arguments)))
+            (cons (cdr pair) (cdr expression))))
 
         (else
-          (cons predicate arguments))))
+          expression)))
     expression))
 
 (define (optimize expression)
