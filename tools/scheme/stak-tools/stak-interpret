@@ -1,1 +1,5 @@
-../stak/stak-interpret
+#!/bin/sh
+
+set -e
+
+$(dirname $0)/../../../target/release_test/stak-interpret "$@"
