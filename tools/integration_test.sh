@@ -39,11 +39,5 @@ export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 start=$(epoch)
-
-if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | xargs ls -S | parallel -q tools/cucumber.sh ${tags:+-t "$tags"}
-else
-  bundler exec cucumber --publish-quiet --strict-undefined "$@"
-fi
-
+bundler exec cucumber --publish-quiet --strict-undefined "$@"
 echo Duration: $(expr $(epoch) - $start)s
