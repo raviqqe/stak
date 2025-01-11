@@ -7,5 +7,5 @@ directory=$(dirname $0)/../../..
 if [ -n "$STAK_HOST_INTERPRETER" ]; then
   $STAK_HOST_INTERPRETER $directory/compile.scm
 else
-  $(dirname $0)/../../../target/release_test/stak-compile
+  $directory/target/release_test/stak-compile
 fi
