@@ -40,7 +40,7 @@ mkdir -p tmp/bin
 ln -s ../../tools/scheme/$interpreter.sh tmp/bin/stak
 
 export STAK_ROOT=$PWD
-export PATH=$PWD/tmp/bin:$PATH
+export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 start=$(epoch)
 
