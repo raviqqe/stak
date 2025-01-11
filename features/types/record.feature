@@ -10,7 +10,7 @@ Feature: Record
 
       (write-u8 (if (<predicate> (make-foo)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
     Examples:
@@ -38,7 +38,7 @@ Feature: Record
           (make-foo)
           foo?)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the exit status should be 0
 
     Scenario: Make a record
@@ -52,7 +52,7 @@ Feature: Record
 
         (make-foo)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the exit status should be 0
 
     Scenario: Check a record type
@@ -66,7 +66,7 @@ Feature: Record
 
         (write-u8 (if (foo? (make-foo)) 65 66))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
   Rule: Record with fields
@@ -81,7 +81,7 @@ Feature: Record
           (x foo-x)
           (y foo-y foo-set-y!))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the exit status should be 0
 
     Scenario: Make a record
@@ -97,7 +97,7 @@ Feature: Record
 
         (make-foo 1 2)
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the exit status should be 0
 
     Scenario: Check a record type
@@ -113,7 +113,7 @@ Feature: Record
 
         (write-u8 (if (foo? (make-foo 1 2)) 65 66))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "A"
 
     Scenario: Get a field
@@ -132,7 +132,7 @@ Feature: Record
         (write-u8 (foo-x record))
         (write-u8 (foo-y record))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "AB"
 
     Scenario: Set a field
@@ -153,5 +153,5 @@ Feature: Record
         (write-u8 (foo-x record))
         (write-u8 (foo-y record))
         """
-      When I successfully run `scheme main.scm`
+      When I successfully run `stak  main.scm`
       Then the stdout should contain exactly "AX"

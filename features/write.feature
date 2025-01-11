@@ -6,7 +6,7 @@ Feature: Write
 
       (write-u8 65)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Write a character
@@ -16,7 +16,7 @@ Feature: Write
 
       (write-char #\A)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Write an escaped character
@@ -26,7 +26,7 @@ Feature: Write
 
       (write <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -44,7 +44,7 @@ Feature: Write
 
       (write <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -66,7 +66,7 @@ Feature: Write
 
       (write-string "Hello, world!")
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario Outline: Write a special character in a string
@@ -76,7 +76,7 @@ Feature: Write
 
       (write-string "<value>")
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -92,7 +92,7 @@ Feature: Write
 
       (write <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -107,7 +107,7 @@ Feature: Write
 
       (write '<value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -127,7 +127,7 @@ Feature: Write
 
       (write <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -146,7 +146,7 @@ Feature: Write
 
       (write (lambda () #f))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "#procedure"
 
   @stak
@@ -161,7 +161,7 @@ Feature: Write
 
       (write (make-foo))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "#record"
 
   Scenario Outline: Write a string
@@ -171,7 +171,7 @@ Feature: Write
 
       (write "<value>")
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "\"<value>\""
 
     Examples:
@@ -191,7 +191,7 @@ Feature: Write
 
       (write 'foo)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "foo"
 
   Scenario Outline: Write a vector
@@ -201,7 +201,7 @@ Feature: Write
 
       (write <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -220,7 +220,7 @@ Feature: Write
 
       (write <value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -237,7 +237,7 @@ Feature: Write
 
       (write '(42 foo #f) (current-output-port))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "(42 foo #f)"
 
   @gauche @stak
@@ -248,7 +248,7 @@ Feature: Write
 
       (write '<value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<value>"
 
     Examples:
@@ -271,7 +271,7 @@ Feature: Write
 
       (write '<value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -297,7 +297,7 @@ Feature: Write
 
       (display '<value>)
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

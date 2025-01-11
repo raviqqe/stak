@@ -7,7 +7,7 @@ Feature: Command line
 
       (map write-string (command-line))
       """
-    When I successfully run `scheme main.scm hello`
+    When I successfully run `stak  main.scm hello`
     Then the stdout should contain "hello"
 
   Scenario: Get two arguments
@@ -17,6 +17,6 @@ Feature: Command line
 
       (map write-string (command-line))
       """
-    When I successfully run `scheme main.scm hello world`
+    When I successfully run `stak  main.scm hello world`
     Then the stdout should contain "hello"
     And the stdout should contain "world"

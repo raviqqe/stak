@@ -6,7 +6,7 @@ Feature: Quote
 
       (write-u8 (if (eq? <value> '<value>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -28,5 +28,5 @@ Feature: Quote
 
       (for-each write-u8 '(65 66 67))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"

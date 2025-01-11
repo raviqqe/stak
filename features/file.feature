@@ -9,7 +9,7 @@ Feature: File
     And a file named "foo.txt" with:
       """text
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
     Examples:
@@ -29,7 +29,7 @@ Feature: File
     And a file named "foo.txt" with:
       """text
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
     Examples:
@@ -49,7 +49,7 @@ Feature: File
     And a file named "foo.txt" with:
       """text
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
     Examples:
@@ -67,7 +67,7 @@ Feature: File
     And a file named "foo.txt" with:
       """text
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the exit status should be 0
 
     Examples:
@@ -87,7 +87,7 @@ Feature: File
       """text
       A
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a thunk with an output file
@@ -97,7 +97,7 @@ Feature: File
 
       (with-output-to-file "foo.txt" (lambda () (write-u8 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then a file named "foo.txt" should contain exactly:
       """
       A
@@ -114,7 +114,7 @@ Feature: File
       """text
       A
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Call a procedure with an output file
@@ -124,7 +124,7 @@ Feature: File
 
       (call-with-output-file "foo.txt" (lambda (port) (write-u8 65 port)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then a file named "foo.txt" should contain exactly:
       """
       A
@@ -140,7 +140,7 @@ Feature: File
     And a file named "foo.txt" with:
       """text
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then a file named "foo.txt" should not exist
 
   Scenario Outline: Check if a file exists
@@ -153,7 +153,7 @@ Feature: File
     And a file named "foo.txt" with:
       """text
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:

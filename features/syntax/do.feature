@@ -11,7 +11,7 @@ Feature: do
         ((null? xs)
           (write-u8 y)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Use a `do` syntax without a step
@@ -27,5 +27,5 @@ Feature: do
           (write-u8 y))
         (set! y (+ y (vector-ref xs i))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"

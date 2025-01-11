@@ -9,7 +9,7 @@ Feature: define
 
       (write-u8 (sum 11))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "B"
 
   Scenario: Use a local variable in a definition
@@ -24,5 +24,5 @@ Feature: define
 
       (write-u8 (f 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

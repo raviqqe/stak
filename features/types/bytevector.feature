@@ -6,7 +6,7 @@ Feature: Bytevector
 
       (write-bytevector #u8(65 66 67))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario Outline: Get a length of a bytevector
@@ -16,7 +16,7 @@ Feature: Bytevector
 
       (write-u8 (if (= (bytevector-length <value>) <length>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -33,7 +33,7 @@ Feature: Bytevector
 
       (write-u8 (bytevector-u8-ref <vector> <index>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:

@@ -6,7 +6,7 @@ Feature: Exception
 
       (error "Oh, no!")
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
 
@@ -17,7 +17,7 @@ Feature: Exception
 
       (error "Oh, no!" 42)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the stderr should contain "Oh, no!"
     And the exit status should not be 0
 
@@ -28,7 +28,7 @@ Feature: Exception
 
       (error "Oh, no!" 42)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the stderr should contain "Oh, no!"
     And the stderr should contain "42"
     And the exit status should not be 0
@@ -44,7 +44,7 @@ Feature: Exception
 
       (write-u8 66)
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly "A"
 
@@ -58,7 +58,7 @@ Feature: Exception
           (lambda (value) 65)
           (lambda () (raise #f))))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly ""
 
@@ -72,7 +72,7 @@ Feature: Exception
           (lambda (value) 65)
           (lambda () (raise-continuable #f))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Raise an exception in a handler
@@ -84,7 +84,7 @@ Feature: Exception
         (lambda (value) (raise #f))
         (lambda () (raise-continuable #f)))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
 
   Scenario: Raise an exception in nested handlers
@@ -101,7 +101,7 @@ Feature: Exception
               (raise #f))
             (lambda () (raise #f)))))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stderr should contain "foo"
     And the stdout should contain "bar"
@@ -125,7 +125,7 @@ Feature: Exception
                   (raise #f))
                 (lambda () (raise #f)))))))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stderr should contain "foo"
     And the stdout should contain "bar"
@@ -141,7 +141,7 @@ Feature: Exception
           (lambda (value) 65)
           (lambda () (raise #f))))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly ""
 
@@ -156,7 +156,7 @@ Feature: Exception
           (lambda (value) 65)
           (lambda () (raise #f))))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly ""
     And the stderr should contain "exception handler returned on a non-continuable exception"
@@ -172,7 +172,7 @@ Feature: Exception
         (lambda () (error ""))
         (lambda () (write-u8 66)))
       """
-    When I run `scheme main.scm`
+    When I run `stak  main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly "AB"
 
@@ -193,7 +193,7 @@ Feature: Exception
             #f))
         (raise 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use an `else` clause in a guard expression
@@ -213,7 +213,7 @@ Feature: Exception
             (write-u8 condition)))
         (raise 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use nested `guard` expressions
@@ -243,7 +243,7 @@ Feature: Exception
               #f))
           (raise 65)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Use a `guard` expression in a clause
@@ -273,7 +273,7 @@ Feature: Exception
             #f))
         (raise 65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return from a body in a `guard` expression
@@ -287,7 +287,7 @@ Feature: Exception
             (else 66))
           65))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Return from an `else` clause in a `guard` expression
@@ -301,5 +301,5 @@ Feature: Exception
             (else 65))
           (raise #f)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"

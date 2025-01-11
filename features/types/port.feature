@@ -6,7 +6,7 @@ Feature: Port
 
       (write-u8 (if (port? <expression>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -21,7 +21,7 @@ Feature: Port
 
       (write-u8 (if (input-port? (current-input-port)) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario Outline: Check if a value is an output port
@@ -31,7 +31,7 @@ Feature: Port
 
       (write-u8 (if (output-port? <expression>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:

@@ -6,7 +6,7 @@ Feature: let*
 
       (write-u8 (let* ((x 65)) x))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind two variables
@@ -16,7 +16,7 @@ Feature: let*
 
       (write-u8 (let* ((x 65) (y x)) y))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Bind three variables
@@ -26,5 +26,5 @@ Feature: let*
 
       (write-u8 (let* ((x 65) (y x) (z y)) z))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak  main.scm`
     Then the stdout should contain exactly "A"
