@@ -2,6 +2,4 @@
 
 set -e
 
-export PATH=$(dirname $0)/../../target/release_test
-
-stak "$@"
+$(dirname $0)/../../target/release_test/stak "$@"

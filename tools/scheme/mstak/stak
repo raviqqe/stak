@@ -2,6 +2,4 @@
 
 set -e
 
-export PATH=$(dirname $0)/../../cmd/minimal/target/release
-
-mstak "$@"
+$(dirname $0)/../../cmd/minimal/target/release/mstak "$@"
