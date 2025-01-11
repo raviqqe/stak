@@ -9,7 +9,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -23,7 +23,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -40,7 +40,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -59,7 +59,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -82,7 +82,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -105,7 +105,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -125,7 +125,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -152,7 +152,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -189,7 +189,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      stak-compile < $STAK_ROOT/prelude.scm < $STAK_ROOT/aa-tree.scm < main.scm > main.bc
+      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
