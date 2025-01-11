@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+directory=$(dirname $0)/../../..
+
+if [ -n "$STAK_HOST_INTERPRETER" ]; then
+  $STAK_HOST_INTERPRETER $directory/compile.scm
+else
+  $directory/target/release_test/stak-compile
+fi
