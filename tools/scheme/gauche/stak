@@ -2,4 +2,9 @@
 
 set -e
 
-gosh "$@"
+for index in $(seq $(expr $# - 2)); do
+  libraries="$libraries -l $1"
+  shift 1
+done
+
+gosh $libraries $@
