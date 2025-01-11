@@ -876,6 +876,10 @@
     (cons (cadr expression) transformer)
     (optimization-context-optimizers context)))
 
+(define (make-optimizer optimizer)
+  (lambda (expression)
+    expression))
+
 (define (optimize-expression context expression)
   (define (optimize expression)
     (optimize-expression context expression))
@@ -885,7 +889,7 @@
           (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
-          (optimization-context-append! context (cadr expression) optimizer)
+          (optimization-context-append! context (cadr expression) (make-optimizer (caddr expression)))
           #f)
 
         ((memq predicate (optimization-context-optimizers context))

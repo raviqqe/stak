@@ -683,7 +683,8 @@
     (define / (inverse-arithmetic-operator $/ 1))
 
     (define-optimizer +
-      (((+ x y)
+      (syntax-rules ()
+        ((_ x y)
           ($+ x y))))
 
     (define (quotient x y)
