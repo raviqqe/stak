@@ -11,6 +11,8 @@ use stak::{
     time::VoidClock,
     vm::Vm,
 };
+use stak_compiler::compile_r7rs;
+use std::{fs::read, io::Sink, path::Path};
 
 const HEAP_SIZE: usize = 1 << 18;
 const DEVICE_BUFFER_SIZE: usize = 1 << 8;
@@ -51,9 +53,20 @@ fn stak(criterion: &mut Criterion) {
     }
 }
 
+fn stak_compiler(criterion: &mut Criterion) {
+    for name in ["empty", "fibonacci", "hello", "sum", "tak"] {
+        let source = read(Path::new("src").join(name).join("main.scm")).unwrap();
+        let source = source.as_slice();
+
+        criterion.bench_function(&format!("compile_{name}"), |bencher| {
+            bencher.iter(|| compile_r7rs(black_box(source), Sink::default()).unwrap())
+        });
+    }
+}
+
 criterion_group! {
     name = benches;
     config = Criterion::default().sample_size(10);
-    targets = stak
+    targets = stak, stak_compiler
 }
 criterion_main!(benches);
