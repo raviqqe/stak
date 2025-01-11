@@ -877,7 +877,7 @@
 
 (define (optimize-expression expression)
   (if (pair? expression)
-    (let ((arguments (relaxed-map optimize-expression (cdr expression)))
+    (let ((expression (relaxed-map optimize-expression expression))
           (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
@@ -887,7 +887,7 @@
         ((eq? predicate '$$begin)
           ; Omit top-level constants.
           (cons '$$begin
-            (let loop ((expressions arguments))
+            (let loop ((expressions (cdr expression)))
               (let ((expression (car expressions))
                     (expressions (cdr expressions)))
                 (cond
