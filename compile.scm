@@ -879,6 +879,7 @@
       (optimization-context-optimizers context))))
 
 (define (make-optimizer optimizer)
+  ; TODO
   (lambda (expression)
     expression))
 
