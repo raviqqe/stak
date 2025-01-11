@@ -1,7 +1,7 @@
 @library
 Feature: AA tree
   Background:
-    When I run the following script:
+    Given I run the following script:
       """sh
       cp $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm .
       """
