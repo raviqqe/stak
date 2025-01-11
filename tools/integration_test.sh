@@ -29,7 +29,6 @@ cd $(dirname $0)/..
 
 bundler install
 
-brew install chibi-scheme gauche guile
 cargo build --profile release_test --features $features
 (
   cd cmd/minimal
@@ -40,5 +39,11 @@ export STAK_ROOT=$PWD
 export PATH=$PWD/tools/scheme/$interpreter:$PATH
 
 start=$(epoch)
-bundler exec cucumber --publish-quiet --strict-undefined ${tags:+-t "$tags"} "$@"
+
+if [ $# -eq 0 ]; then
+  git ls-files '**/*.feature' | xargs ls -S | parallel -q tools/cucumber.sh ${tags:+-t "$tags"}
+else
+  bundler exec cucumber --publish-quiet --strict-undefined "$@"
+fi
+
 echo Duration: $(expr $(epoch) - $start)s
