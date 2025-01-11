@@ -2,4 +2,4 @@
 
 set -e
 
-$(dirname $0)/../../../target/release_test/stak-compile "$@"
+$(dirname $0)/../../../target/release_test/stak-compile
