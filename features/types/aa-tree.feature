@@ -1,5 +1,16 @@
 @library
 Feature: AA tree
+  Background:
+    Given a file named "pen.json" with:
+      """json
+      {
+        "type": "application",
+        "dependencies": {
+          "Os": "pen:///os"
+        }
+      }
+      """
+
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
