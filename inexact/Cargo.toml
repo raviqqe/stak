@@ -1,0 +1,16 @@
+[package]
+name = "stak-inexact"
+description = "Inexact number operations for Stak Scheme"
+version = "0.1.2"
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+libm = { version = "0.2.11", default-features = false }
+stak-vm = { version = "0.7.18", path = "../vm" }
+
+[lints]
+workspace = true

@@ -25,6 +25,12 @@ pub mod process_context {
     pub use stak_process_context::*;
 }
 
+pub mod module {
+    //! Modules.
+
+    pub use stak_module::*;
+}
+
 pub mod r7rs {
     //! Primitives for R7RS Scheme.
 
@@ -37,4 +43,4 @@ pub mod time {
     pub use stak_time::*;
 }
 
-pub use stak_macro::include_bytecode;
+pub use stak_macro::include_module;

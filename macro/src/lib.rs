@@ -1,39 +1,70 @@
 //! Macros to bundle and use Scheme programs.
 
+use cfg_exif::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
-use quote::quote;
+use quote::{quote, ToTokens};
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
 use std::path::{Path, MAIN_SEPARATOR_STR};
-use syn::{parse_macro_input, LitStr};
+use syn::{parse::Parse, parse_macro_input, Ident, LitStr, Token};
 
-/// Includes bytecodes of a R7RS Scheme program built by the
-/// [`stak_build`][stak_build] crate.
+struct IncludeModuleInput {
+    path: LitStr,
+    module: Option<Ident>,
+}
+
+impl Parse for IncludeModuleInput {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        let path = input.parse()?;
+        let mut module = None;
+
+        if input.parse::<Option<Token![,]>>()?.is_some() {
+            if let Some(value) = input.parse()? {
+                input.parse::<Option<Token![,]>>()?;
+                module = Some(value);
+            }
+        };
+
+        Ok(Self { path, module })
+    }
+}
+
+/// Includes bytecodes of a R7RS Scheme module built by the
+/// [`stak_build`](https://docs.rs/stak-build) crate.
 ///
-/// [stak_build]: https://docs.rs/stak-build
+/// See the [`stak`](https://docs.rs/stak) crate's documentation for full examples.
 #[proc_macro]
-pub fn include_bytecode(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as LitStr);
+pub fn include_module(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as IncludeModuleInput);
 
-    convert_result(include_result(&input.value())).into()
+    convert_result(include_result(&input)).into()
 }
 
-fn include_result(path: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
-    let path = format!("{}", Path::new("src").join(path).display());
+fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
+    let path = format!("{}", Path::new("src").join(input.path.value()).display());
+    let full_path = quote!(concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path));
+    let module = input
+        .module
+        .as_ref()
+        .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
 
-    Ok(quote!(include_bytes!(
-        concat!(env!("OUT_DIR"), #MAIN_SEPARATOR_STR, #path)
-    )))
+    Ok(feature!(if ("hot-reload") {
+        quote!(#module::UniversalModule::from_hot_reload_path(#full_path))
+    } else {
+        quote!(#module::UniversalModule::from_bytecode(
+            include_bytes!(#full_path)
+        ))
+    }))
 }
 
-/// Compiles a program in R7RS Scheme into bytecodes.
+/// Compiles a module in R7RS Scheme into bytecodes.
 ///
 /// # Examples
 ///
 /// ```rust
-/// const BYTECODES: &[u8] = stak_macro::compile_r7rs!("(define x 42)");
+/// const BYTECODE: &[u8] = stak_macro::compile_r7rs!("(define x 42)");
 /// ```
 #[proc_macro]
 pub fn compile_r7rs(input: TokenStream) -> TokenStream {
@@ -42,12 +73,12 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
     convert_result(generate_r7rs(&input.value())).into()
 }
 
-/// Includes a program in R7RS Scheme as bytecodes.
+/// Includes a module in R7RS Scheme as bytecodes.
 ///
 /// # Examples
 ///
 /// ```rust
-/// const BYTECODES: &[u8] = stak_macro::include_r7rs!("foo.scm");
+/// const BYTECODE: &[u8] = stak_macro::include_r7rs!("foo.scm");
 /// ```
 #[proc_macro]
 pub fn include_r7rs(input: TokenStream) -> TokenStream {
@@ -62,12 +93,12 @@ fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error
     })
 }
 
-/// Compiles a program in Scheme into bytecodes with only built-ins.
+/// Compiles a module in Scheme into bytecodes with only built-ins.
 ///
 /// # Examples
 ///
 /// ```rust
-/// const BYTECODES: &[u8] = stak_macro::compile_bare!("($$define x 42)");
+/// const BYTECODE: &[u8] = stak_macro::compile_bare!("($$define x 42)");
 /// ```
 #[proc_macro]
 pub fn compile_bare(input: TokenStream) -> TokenStream {
@@ -76,12 +107,12 @@ pub fn compile_bare(input: TokenStream) -> TokenStream {
     convert_result(generate_bare(&input.value())).into()
 }
 
-/// Includes a program in Scheme as bytecodes with only built-ins.
+/// Includes a module in Scheme as bytecodes with only built-ins.
 ///
 /// # Examples
 ///
 /// ```rust
-/// const BYTECODES: &[u8] = stak_macro::include_bare!("foo.scm");
+/// const BYTECODE: &[u8] = stak_macro::include_bare!("foo.scm");
 /// ```
 #[proc_macro]
 pub fn include_bare(input: TokenStream) -> TokenStream {

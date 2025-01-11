@@ -12,7 +12,13 @@ concurrency:
   group: document-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
+  rust_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: cargo +nightly doc --all-features
+  web_build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,13 +26,12 @@ jobs:
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
       - run: tools/document.sh
-      - run: rm doc/dist/rust/.lock
       - uses: actions/upload-pages-artifact@v3
         with:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
-  document_lint:
+  web_lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +43,9 @@ jobs:
         working-directory: doc
   document:
     needs:
-      - build
-      - document_lint
+      - rust_build
+      - web_build
+      - web_lint
     if: always()
     runs-on: ubuntu-latest
     steps:

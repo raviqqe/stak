@@ -7,6 +7,7 @@
   (scheme cxr)
   (scheme inexact)
   (scheme lazy)
+  (scheme process-context)
   (scheme read)
   (scheme write))
 
@@ -44,12 +45,12 @@
 
 (define primitives
   '(($$rib 0)
-    ($$close 2)
-    ($$< 11)
-    ($$+ 12)
-    ($$- 13)
-    ($$* 14)
-    ($$/ 15)))
+    ($$close 1)
+    ($$< 9)
+    ($$+ 10)
+    ($$- 11)
+    ($$* 12)
+    ($$/ 13)))
 
 ; Types
 
@@ -305,9 +306,7 @@
 (define library-symbol-separator #\%)
 
 (define (library-symbol? name)
-  (memv-position
-    library-symbol-separator
-    (string->list (symbol->string name))))
+  (memv library-symbol-separator (string->list (symbol->string name))))
 
 (define (build-library-name id name)
   (string-append
@@ -923,7 +922,7 @@
 
 ; If a variable is not in environment, it is considered to be global.
 (define (compilation-context-resolve context variable)
-  (or (memv-position variable (compilation-context-environment context)) variable))
+  (or (memq-position variable (compilation-context-environment context)) variable))
 
 ;; Procedures
 
@@ -1513,5 +1512,13 @@
                 (lambda (pair) (library-symbol? (car pair)))
                 (macro-state-literals (macro-context-state macro-context))))
             expression2))))))
+
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "stak-compile, the Scheme-to-bytecode compiler for Stak Scheme.\n\n")
+    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (exit)))
 
 (main)

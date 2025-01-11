@@ -18,6 +18,8 @@ pub enum FileError {
     Delete,
     /// A existence check failure.
     Exists,
+    /// A path decode failure.
+    PathDecode,
 }
 
 impl error::Error for FileError {}
@@ -31,6 +33,7 @@ impl Display for FileError {
             Self::Write => write!(formatter, "cannot write file"),
             Self::Delete => write!(formatter, "cannot delete file"),
             Self::Exists => write!(formatter, "cannot check file existence"),
+            Self::PathDecode => write!(formatter, "cannot decode path"),
         }
     }
 }

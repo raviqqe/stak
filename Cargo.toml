@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "bench",
   "build",
   "cmd/compile",
   "cmd/decode",
@@ -12,12 +13,15 @@ members = [
   "configuration",
   "device",
   "examples/embedded-script",
-  "examples/http-server",
+  "examples/hot-reload",
   "file",
+  "inexact",
   "macro",
   "macro-util",
   "minifier",
   "minifier_macro",
+  "module",
+  "native",
   "process_context",
   "profiler",
   "r7rs",

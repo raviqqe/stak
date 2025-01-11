@@ -564,25 +564,27 @@
       ($$rib id '() procedure-type))
 
     (define rib $$rib)
-    (define cons (primitive 1))
-    (define close (primitive 2))
-    (define rib? (primitive 3))
-    (define rib-car (primitive 4))
-    (define rib-cdr (primitive 5))
-    (define rib-tag (primitive 7))
-    (define rib-set-car! (primitive 8))
-    (define rib-set-cdr! (primitive 9))
-    (define eq? (primitive 10))
-    (define $< (primitive 11))
-    (define $+ (primitive 12))
-    (define $- (primitive 13))
-    (define $* (primitive 14))
-    (define $/ (primitive 15))
-    (define remainder (primitive 16))
-    (define exp (primitive 17))
-    (define $log (primitive 18))
-    (define null? (primitive 20))
-    (define pair? (primitive 21))
+    (define close (primitive 1))
+    (define rib? (primitive 2))
+    (define rib-car (primitive 3))
+    (define rib-cdr (primitive 4))
+    (define rib-tag (primitive 5))
+    (define rib-set-car! (primitive 6))
+    (define rib-set-cdr! (primitive 7))
+    (define eq? (primitive 8))
+    (define $< (primitive 9))
+    (define $+ (primitive 10))
+    (define $- (primitive 11))
+    (define $* (primitive 12))
+    (define $/ (primitive 13))
+    (define remainder (primitive 14))
+    (define exp (primitive 15))
+    (define $log (primitive 16))
+    (define null? (primitive 50))
+    (define pair? (primitive 51))
+    (define assq (primitive 60))
+    (define cons (primitive 61))
+    (define memq (primitive 62))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -876,7 +878,6 @@
           (else
             (loop (cdr xs))))))
 
-    (define (memq x xs) (member x xs eq?))
     (define (memv x xs) (member x xs eqv?))
 
     (define (assoc x xs . rest)
@@ -893,7 +894,6 @@
               pair
               (loop (cdr xs)))))))
 
-    (define (assq x xs) (assoc x xs eq?))
     (define (assv x xs) (assoc x xs eqv?))
 
     (define (append . lists)
@@ -1576,7 +1576,7 @@
   (import (stak base))
 
   (begin
-    (define $halt (primitive 19))
+    (define $halt (primitive 40))
     (define $read-input (primitive 100))
     (define $write-output (primitive 101))
     (define $write-error (primitive 102))
@@ -2377,7 +2377,7 @@
     (only (stak base) data-rib code-points->string primitive procedure-type))
 
   (begin
-    (define $halt (primitive 19))
+    (define $halt (primitive 40))
     (define $command-line (primitive 300))
     (define $get-environment-variables (primitive 301))
 

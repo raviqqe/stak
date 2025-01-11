@@ -9,11 +9,18 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          -
+          - --no-default-features
+          - --all-features
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: cargo build --locked
+      - run: cargo build --locked ${{ matrix.options }}
   unit_test:
     strategy:
       fail-fast: false
@@ -83,11 +90,10 @@ jobs:
           - name: stak
             tags: not @library
           - name: stak-tools
-            tags: "@stak or @library or @float"
           - name: mstak
             tags: not @environment-variable and not @float and not @library
           - name: mstak-tools
-            tags: "@stak or @library"
+            tags: not @environment-variable and not @float
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
@@ -127,10 +133,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ">=23.5.0"
       - run: cargo install wasm-pack
       - run: wasm-pack build
         working-directory: wasm
-      - run: wasm-pack test --release --chrome --headless
+      - run: wasm-pack test --node --release
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
