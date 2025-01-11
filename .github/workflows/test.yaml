@@ -88,10 +88,9 @@ jobs:
           - macos-15
         interpreter:
           - name: stak
-            tags: not @library
           - name: stak-tools
           - name: mstak
-            tags: not @environment-variable and not @float and not @library
+            tags: not @environment-variable and not @float
           - name: mstak-tools
             tags: not @environment-variable and not @float
         exclude:
