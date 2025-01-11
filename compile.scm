@@ -866,56 +866,38 @@
 
 ; Optimization
 
-(define primitive-procedures
-  (map
-    (lambda (x)
-      (cons
-        ; `0` is always the library ID of `(stak base)`.
-        (build-library-name 0 x)
-        (symbol-append '$$ x)))
-    '(+ - * / <)))
+(define-record-type optimization-context
+  (make-optimization-context optimizers)
+  optimization-context?
+  (optimizers optimization-context-optimizers optimization-context-set-optimizers!))
 
-(define (optimize-expression expression)
+(define (optimization-context-append! context name optimizer)
+  (optimization-context-set-optimizers! context
+    (cons (cadr expression) transformer)
+    (optimization-context-optimizers context)))
+
+(define (optimize-expression context expression)
+  (define (optimize expression)
+    (optimize-expression context expression))
+
   (if (pair? expression)
-    (let ((expression (relaxed-map optimize-expression expression))
+    (let ((expression (relaxed-map optimize expression))
           (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
-          ; TODO Define and use an optimizer.
+          (optimization-context-append! context (cadr expression) optimizer)
           #f)
 
-        ((eq? predicate '$$begin)
-          ; Omit top-level constants.
-          (cons '$$begin
-            (let loop ((expressions (cdr expression)))
-              (let ((expression (car expressions))
-                    (expressions (cdr expressions)))
-                (cond
-                  ((null? expressions)
-                    (list expression))
-
-                  ((pair? expression)
-                    (cons expression (loop expressions)))
-
-                  (else
-                    (loop expressions)))))))
-
-        ((and
-            (list? expression)
-            (= (length expression) 3)
-            (symbol? predicate)
-            (assoc (symbol->string predicate) primitive-procedures))
-          =>
+        ((memq predicate (optimization-context-optimizers context))
           (lambda (pair)
-            (cons (cdr pair) (cdr expression))))
+            ((cdr pair) expression)))
 
         (else
           expression)))
     expression))
 
 (define (optimize expression)
-  ; TODO Prepare a context.
-  (optimize-expression expression))
+  (optimize-expression (make-optimization-context '()) expression))
 
 ; Compilation
 
