@@ -29,6 +29,7 @@ cd $(dirname $0)/..
 
 bundler install
 
+brew install chibi-scheme gauche guile
 cargo build --profile release_test --features $features
 (
   cd cmd/minimal
