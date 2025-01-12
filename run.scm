@@ -13,10 +13,6 @@
   (only (scheme time))
   (only (scheme write)))
 
-(define (usage)
-  (write-string "The Stak Scheme interpreter.\n\n")
-  (write-string "Usage: stak SOURCE_FILE\n"))
-
 (define (main)
   (define program (open-input-file (list-ref (command-line) 1)))
 
@@ -29,12 +25,12 @@
 
 (let ((arguments (command-line)))
   (when (> (length arguments) 2)
-    (usage)
     (error "Too many script files"))
   (when (or
          (member "-h" arguments)
          (member "--help" arguments))
-    (usage)
+    (write-string "The Stak Scheme interpreter.\n\n")
+    (write-string "Usage: stak SOURCE_FILE\n")
     (exit)))
 
 (main)
