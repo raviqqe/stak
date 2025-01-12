@@ -1,5 +1,12 @@
 @library
 Feature: AA tree
+  Background:
+    Given I run the following script:
+      """sh
+      cp $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm .
+      """
+    And the exit status should be 0
+
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
@@ -9,7 +16,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -23,7 +30,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -40,7 +47,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -59,7 +66,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -82,7 +89,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -105,7 +112,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -125,7 +132,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -152,7 +159,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -189,7 +196,7 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm main.scm | stak-compile > main.bc
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
