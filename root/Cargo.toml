@@ -8,6 +8,10 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
+[[bin]]
+name = "stak"
+required-features = ["float", "sac"]
+
 [features]
 default = ["float", "libc", "std"]
 float = ["stak-sac/float", "stak-vm/float"]
