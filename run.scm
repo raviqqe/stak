@@ -7,7 +7,7 @@
   (scheme file)
   (only (scheme inexact))
   (only (scheme lazy))
-  (only (scheme process-context) command-line)
+  (scheme process-context)
   (scheme read)
   (scheme repl)
   (only (scheme time))
@@ -22,5 +22,13 @@
     (if (char-whitespace? (peek-char program))
       (read-char program)
       (eval (read program) (interaction-environment)))))
+
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "The Stak Scheme interpreter.\n\n")
+    (write-string "Usage: stak SOURCE_FILE [ARGUMENTS]...\n")
+    (exit)))
 
 (main)
