@@ -870,9 +870,10 @@
 ; Optimization
 
 (define-record-type optimization-context
-  (make-optimization-context optimizers)
+  (make-optimization-context optimizers literals)
   optimization-context?
-  (optimizers optimization-context-optimizers optimization-context-set-optimizers!))
+  (optimizers optimization-context-optimizers optimization-context-set-optimizers!)
+  (literals optimization-context-literals optimization-context-set-literals!))
 
 (define (optimization-context-append! context name optimizer)
   (optimization-context-set-optimizers!
@@ -880,6 +881,13 @@
     (cons
       (cons name optimizer)
       (optimization-context-optimizers context))))
+
+(define (optimization-context-append-literal! context name literal)
+  (optimization-context-set-literals!
+    context
+    (cons
+      (cons name literal)
+      (optimization-context-literals context))))
 
 (define (make-optimizer name optimizer)
   (define (match-pattern pattern expression)
@@ -940,7 +948,8 @@
       (cond
         ((eq? predicate '$$define-optimizer)
           (let ((name (cadr expression)))
-            (optimization-context-append! context name (make-optimizer name (caddr expression))))
+            (optimization-context-append! context name (make-optimizer name (caddr expression)))
+            (optimization-context-append-literal! context name (caddr expression)))
           #f)
 
         ((eq? predicate '$$begin)
@@ -968,26 +977,30 @@
     expression))
 
 (define (optimize expression)
-  (optimize-expression (make-optimization-context '()) expression))
+  (let* ((context (make-optimization-context '() '()))
+         (expression (optimize-expression context expression)))
+    (values expression (optimization-context-literals context))))
 
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment symbols libraries macros)
+  (make-compilation-context environment symbols libraries macros optimizers)
   compilation-context?
   (environment compilation-context-environment)
   (symbols compilation-context-symbols)
   (libraries compilation-context-libraries)
-  (macros compilation-context-macros))
+  (macros compilation-context-macros)
+  (optimizers compilation-context-optimizers))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
     (append variables (compilation-context-environment context))
     (compilation-context-symbols context)
     (compilation-context-libraries context)
-    (compilation-context-macros context)))
+    (compilation-context-macros context)
+    (compilation-context-optimizers context)))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
@@ -1156,6 +1169,9 @@
         (($$macros)
           (constant-rib (compilation-context-macros context) continuation))
 
+        (($$optimizers)
+          (constant-rib (compilation-context-optimizers context) continuation))
+
         (($$quote)
           (constant-rib (cadr expression) continuation))
 
@@ -1179,7 +1195,7 @@
     (else
       (constant-rib expression continuation))))
 
-(define (compile libraries macros expression)
+(define (compile libraries macros optimizers expression)
   (compile-expression
     (make-compilation-context
       '()
@@ -1191,9 +1207,11 @@
             (map car primitives)
             (find-symbols expression)
             (find-quoted-symbols libraries)
-            (find-quoted-symbols macros))))
+            (find-quoted-symbols macros)
+            (find-quoted-symbols optimizers))))
       libraries
-      macros)
+      macros
+      optimizers)
     expression
     '()))
 
@@ -1568,7 +1586,7 @@
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
-  (define expression3 (optimize expression2))
+  (define-values (expression3 optimizers) (optimize expression2))
 
   (encode
     (marshal
@@ -1584,6 +1602,7 @@
               (filter
                 (lambda (pair) (library-symbol? (car pair)))
                 (macro-state-literals (macro-context-state macro-context))))
+            optimizers
             expression3))))))
 
 (let ((arguments (command-line)))
