@@ -870,9 +870,10 @@
 ; Optimization
 
 (define-record-type optimization-context
-  (make-optimization-context optimizers)
+  (make-optimization-context optimizers literals)
   optimization-context?
-  (optimizers optimization-context-optimizers optimization-context-set-optimizers!))
+  (optimizers optimization-context-optimizers optimization-context-set-optimizers!)
+  (literals optimization-context-literals optimization-context-set-literals!))
 
 (define (optimization-context-append! context name optimizer)
   (optimization-context-set-optimizers!
@@ -880,6 +881,13 @@
     (cons
       (cons name optimizer)
       (optimization-context-optimizers context))))
+
+(define (optimization-context-append-literal! context name literal)
+  (optimization-context-set-literals!
+    context
+    (cons
+      (cons name literal)
+      (optimization-context-literals context))))
 
 (define (make-optimizer name optimizer)
   (define (match-pattern pattern expression)
@@ -940,7 +948,8 @@
       (cond
         ((eq? predicate '$$define-optimizer)
           (let ((name (cadr expression)))
-            (optimization-context-append! context name (make-optimizer name (caddr expression))))
+            (optimization-context-append! context name (make-optimizer name (caddr expression)))
+            (optimization-context-append-literal! context name (caddr expression)))
           #f)
 
         ((eq? predicate '$$begin)
@@ -968,7 +977,9 @@
     expression))
 
 (define (optimize expression)
-  (optimize-expression (make-optimization-context '()) expression))
+  (let* ((context (make-optimization-context '()))
+         (expression (optimize-expression context expression)))
+    (values expression (optimization-context-literals context))))
 
 ; Compilation
 
@@ -1568,7 +1579,7 @@
 (define (main)
   (define-values (expression1 library-context) (expand-libraries (read-source)))
   (define-values (expression2 macro-context) (expand-macros expression1))
-  (define expression3 (optimize expression2))
+  (define-values (expression3 optimizers) (optimize expression2))
 
   (encode
     (marshal
