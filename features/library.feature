@@ -1,5 +1,12 @@
 @library
 Feature: Library system
+  Background:
+    Given I run the following script:
+      """sh
+      cp $STAK_ROOT/prelude.scm .
+      """
+    And the exit status should be 0
+
   Scenario: Define a library
     Given a file named "foo.scm" with:
       """scheme
@@ -17,7 +24,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should be 0
@@ -38,7 +45,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -63,7 +70,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -90,7 +97,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -119,7 +126,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "AB"
@@ -144,7 +151,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -169,7 +176,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -197,7 +204,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should not be 0
@@ -225,7 +232,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "B"
@@ -253,7 +260,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the exit status should not be 0
@@ -278,7 +285,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -306,7 +313,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "<output>"
@@ -344,7 +351,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm bar.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm bar.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -376,7 +383,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm bar.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm bar.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -402,7 +409,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "A"
@@ -434,7 +441,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     Then the stdout should contain exactly "BA"
@@ -468,7 +475,7 @@ Feature: Library system
       """
     When I run the following script:
       """sh
-      cat $STAK_ROOT/prelude.scm foo.scm main.scm | stak-compile > main.bc
+      cat prelude.scm foo.scm main.scm | stak-compile > main.bc
       stak-interpret main.bc
       """
     # spell-checker: disable-next-line
