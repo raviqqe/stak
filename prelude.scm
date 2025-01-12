@@ -645,6 +645,11 @@
     (define (not x)
       (eq? x #f))
 
+    (define-optimizer not
+      (syntax-rules ()
+        ((_ x)
+          (eq? x #f))))
+
     ;; Number
 
     (define (number? x)
