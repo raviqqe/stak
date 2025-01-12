@@ -13,6 +13,10 @@
   (only (scheme time))
   (only (scheme write)))
 
+(define (usage)
+  (write-string "stak-compile, the Scheme-to-bytecode compiler for Stak Scheme.\n\n")
+  (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"))
+
 (define (main)
   (define program (open-input-file (list-ref (command-line) 1)))
 
@@ -22,5 +26,15 @@
     (if (char-whitespace? (peek-char program))
       (read-char program)
       (eval (read program) (interaction-environment)))))
+
+(let ((arguments (command-line)))
+  (when (> (length arguments) 2)
+    (usage)
+    (error "Too many script files"))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (usage)
+    (exit)))
 
 (main)
