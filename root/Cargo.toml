@@ -13,7 +13,7 @@ name = "stak"
 required-features = ["float", "sac"]
 
 [features]
-default = ["float", "libc", "std"]
+default = ["float", "libc", "sac", "std"]
 float = ["stak-sac/float", "stak-vm/float"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
@@ -44,7 +44,7 @@ stak-module = { version = "0.1.9", path = "../module" }
 stak-r7rs = { version = "0.9.3", path = "../r7rs" }
 stak-time = { version = "0.1.30", path = "../time" }
 stak-vm = { version = "0.7.18", path = "../vm" }
-stak-sac = { version = "0.1.91", path = "../sac", optional = true }
+stak-sac = { version = "0.1.91", path = "../sac" }
 
 [dev-dependencies]
 stak-build = { path = "../build" }
