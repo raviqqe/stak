@@ -15,6 +15,7 @@ libc = [
   "dep:stak-util",
   "stak-device/libc",
   "stak-file/libc",
+  "stak-process-context/libc",
   "stak-time/libc",
 ]
 std = [
@@ -34,9 +35,7 @@ stak-configuration = { version = "0.1.85", path = "../configuration" }
 stak-device = { version = "0.2.89", path = "../device" }
 stak-file = { version = "0.5.3", path = "../file" }
 stak-macro = { version = "0.2.8", path = "../macro" }
-stak-process-context = { version = "0.2.47", path = "../process_context", features = [
-  "libc",
-] }
+stak-process-context = { version = "0.2.47", path = "../process_context" }
 stak-r7rs = { version = "0.9.3", path = "../r7rs" }
 stak-time = { version = "0.1.30", path = "../time" }
 stak-util = { version = "0.1.65", path = "../util", optional = true }
