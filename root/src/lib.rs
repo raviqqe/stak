@@ -37,7 +37,6 @@ pub mod r7rs {
     pub use stak_r7rs::*;
 }
 
-#[cfg(feature = "sac")]
 pub mod sac {
     //! Standalone complex.
 

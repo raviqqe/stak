@@ -8,12 +8,8 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
-[[bin]]
-name = "stak"
-required-features = ["float", "sac"]
-
 [features]
-default = ["float", "libc", "sac", "std"]
+default = ["float", "libc", "std"]
 float = ["stak-sac/float", "stak-vm/float"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
@@ -23,7 +19,6 @@ libc = [
   "stak-sac/libc",
   "stak-time/libc",
 ]
-sac = ["dep:stak-sac"]
 std = [
   "stak-device/std",
   "stak-file/std",
