@@ -684,7 +684,7 @@
 
     (define-optimizer +
       (syntax-rules ()
-        ((_ x y)
+        ((+ x y)
           ($+ x y))))
 
     (define (quotient x y)

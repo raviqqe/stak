@@ -175,6 +175,9 @@
       (relaxed-deep-map f (cdr xs)))
     (f xs)))
 
+(define (maybe-append xs ys)
+  (and xs ys (append xs ys)))
+
 (define (unique xs)
   (if (null? xs)
     '()
@@ -880,19 +883,49 @@
 
 (define (make-optimizer name optimizer)
   (define (match-pattern pattern expression)
-    expression)
+    (cond
+      ((and (pair? pattern) (pair? expression))
+        (maybe-append
+          (match-pattern (car pattern) (car expression))
+          (match-pattern (cdr pattern) (cdr expression))))
+
+      ((symbol? pattern)
+        (list (cons pattern expression)))
+
+      ((equal? pattern expression)
+        '())
+
+      (else
+        #f)))
+
+  (define (fill-template matches template)
+    (cond
+      ((pair? template)
+        (cons
+          (fill-template matches (car template))
+          (fill-template matches (cdr template))))
+
+      ((and (symbol? template) (assq template matches)) =>
+        cdr)
+
+      (else
+        template)))
 
   (case (car optimizer)
     (($$syntax-rules)
-      (let ((rules (caddr optimizer)))
+      (let ((rules (cdddr optimizer)))
         (lambda (expression)
           (let loop ((rules rules))
             (if (null? rules)
               expression
-              (cond
-                ; TODO Match a pattern.
-                (else
-                  expression)))))))
+              (let ((rule (car rules)))
+                (cond
+                  ((match-pattern (car rule) expression) =>
+                    (lambda (matches)
+                      (fill-template matches (cdr rule))))
+
+                  (else
+                    (loop (cdr rules))))))))))
 
     (else
       (error "unsupported optimizer" optimizer))))
