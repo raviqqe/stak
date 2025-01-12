@@ -977,7 +977,7 @@
     expression))
 
 (define (optimize expression)
-  (let* ((context (make-optimization-context '()))
+  (let* ((context (make-optimization-context '() '()))
          (expression (optimize-expression context expression)))
     (values expression (optimization-context-literals context))))
 
