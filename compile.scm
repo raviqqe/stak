@@ -922,7 +922,7 @@
                 (cond
                   ((match-pattern (car rule) expression) =>
                     (lambda (matches)
-                      (fill-template matches (cdr rule))))
+                      (fill-template matches (cadr rule))))
 
                   (else
                     (loop (cdr rules))))))))))
