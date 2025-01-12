@@ -19,6 +19,7 @@ libc = [
   "stak-sac/libc",
   "stak-time/libc",
 ]
+sac = ["dep:stak-sac"]
 std = [
   "stak-device/std",
   "stak-file/std",
@@ -26,7 +27,6 @@ std = [
   "stak-sac/std",
   "stak-time/std",
 ]
-sac = ["dep:stak-sac"]
 
 [dependencies]
 clap = { version = "4.5.26", features = ["derive"] }
