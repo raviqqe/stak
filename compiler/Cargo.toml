@@ -1,7 +1,7 @@
 [package]
 name = "stak-compiler"
 description = "Stak Scheme bytecode compiler"
-version = "0.1.90"
+version = "0.1.93"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,13 +9,13 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-configuration = { version = "0.1.82", path = "../configuration" }
-stak-device = { version = "0.2.86", path = "../device", features = ["std"] }
-stak-file = { version = "0.5.0", path = "../file" }
-stak-process-context = { version = "0.2.44", path = "../process_context" }
-stak-r7rs = { version = "0.9.0", path = "../r7rs" }
-stak-time = { version = "0.1.27", path = "../time" }
-stak-vm = { version = "0.7.15", path = "../vm" }
+stak-configuration = { version = "0.1.85", path = "../configuration" }
+stak-device = { version = "0.2.89", path = "../device", features = ["std"] }
+stak-file = { version = "0.5.3", path = "../file" }
+stak-process-context = { version = "0.2.47", path = "../process_context" }
+stak-r7rs = { version = "0.9.3", path = "../r7rs" }
+stak-time = { version = "0.1.30", path = "../time" }
+stak-vm = { version = "0.7.18", path = "../vm" }
 
 [dev-dependencies]
 indoc = "2.0.5"

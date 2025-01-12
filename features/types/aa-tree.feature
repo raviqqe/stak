@@ -1,5 +1,12 @@
 @library
 Feature: AA tree
+  Background:
+    Given I run the following script:
+      """sh
+      cp $STAK_ROOT/prelude.scm $STAK_ROOT/aa-tree.scm .
+      """
+    And the exit status should be 0
+
   Scenario: Create an empty tree
     Given a file named "main.scm" with:
       """scheme
@@ -9,7 +16,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
 
@@ -22,7 +30,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -38,7 +47,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "B"
@@ -56,7 +66,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -78,7 +89,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -100,7 +112,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "AAB"
@@ -119,7 +132,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
@@ -145,7 +159,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "<output>"
@@ -181,7 +196,8 @@ Feature: AA tree
       """
     When I run the following script:
       """sh
-      scheme -l $STAK_ROOT/aa-tree.scm main.scm
+      cat prelude.scm aa-tree.scm main.scm | stak-compile > main.bc
+      stak-interpret main.bc
       """
     Then the exit status should be 0
     And the stdout should contain exactly "A"
