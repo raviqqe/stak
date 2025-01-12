@@ -1590,7 +1590,7 @@
   (when (or
          (member "-h" arguments)
          (member "--help" arguments))
-    (write-string "stak-compile, the Scheme-to-bytecode compiler for Stak Scheme.\n\n")
+    (write-string "The Stak Scheme bytecode compiler.\n\n")
     (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
     (exit)))
 
