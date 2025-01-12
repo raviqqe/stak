@@ -943,6 +943,22 @@
             (optimization-context-append! context name (make-optimizer name (caddr expression))))
           #f)
 
+        ((eq? predicate '$$begin)
+          ; Omit top-level constants.
+          (cons '$$begin
+            (let loop ((expressions (cdr expression)))
+              (let ((expression (car expressions))
+                    (expressions (cdr expressions)))
+                (cond
+                  ((null? expressions)
+                    (list expression))
+
+                  ((pair? expression)
+                    (cons expression (loop expressions)))
+
+                  (else
+                    (loop expressions)))))))
+
         ((assq predicate (optimization-context-optimizers context)) =>
           (lambda (pair)
             ((cdr pair) expression)))
