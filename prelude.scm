@@ -668,6 +668,11 @@
     (define (even? x) (zero? (modulo x 2)))
     (define (odd? x) (not (even? x)))
 
+    (define-optimizer zero?
+      (syntax-rules ()
+        ((_ x)
+          (eq? x 0))))
+
     (define (arithmetic-operator f y)
       (lambda xs (fold-left f y xs)))
 
