@@ -684,22 +684,22 @@
 
     (define-optimizer +
       (syntax-rules ()
-        ((+ x y)
+        ((_ x y)
           ($+ x y))))
 
     (define-optimizer -
       (syntax-rules ()
-        ((- x y)
+        ((_ x y)
           ($- x y))))
 
     (define-optimizer *
       (syntax-rules ()
-        ((* x y)
+        ((_ x y)
           ($* x y))))
 
     (define-optimizer /
       (syntax-rules ()
-        ((/ x y)
+        ((_ x y)
           ($/ x y))))
 
     (define (quotient x y)
@@ -771,17 +771,17 @@
 
     (define-optimizer =
       (syntax-rules ()
-        ((= x y)
+        ((_ x y)
           (eq? x y))))
 
     (define-optimizer <
       (syntax-rules ()
-        ((< x y)
+        ((_ x y)
           ($< x y))))
 
     (define-optimizer >
       (syntax-rules ()
-        ((> x y)
+        ((_ x y)
           ($< y x))))
 
     (define (extremum f)
