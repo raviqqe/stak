@@ -910,7 +910,7 @@
             (optimization-context-append! context name (make-optimizer name (caddr expression))))
           #f)
 
-        ((memq predicate (optimization-context-optimizers context))
+        ((assq predicate (optimization-context-optimizers context))
           (lambda (pair)
             ((cdr pair) expression)))
 
