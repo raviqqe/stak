@@ -14,8 +14,8 @@
   (only (scheme write)))
 
 (define (usage)
-  (write-string "stak-compile, the Scheme-to-bytecode compiler for Stak Scheme.\n\n")
-  (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"))
+  (write-string "The Stak Scheme interpreter.\n\n")
+  (write-string "Usage: stak SOURCE_FILE\n"))
 
 (define (main)
   (define program (open-input-file (list-ref (command-line) 1)))
