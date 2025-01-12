@@ -687,6 +687,21 @@
         ((+ x y)
           ($+ x y))))
 
+    (define-optimizer -
+      (syntax-rules ()
+        ((- x y)
+          ($- x y))))
+
+    (define-optimizer *
+      (syntax-rules ()
+        ((* x y)
+          ($* x y))))
+
+    (define-optimizer /
+      (syntax-rules ()
+        ((/ x y)
+          ($/ x y))))
+
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
 
@@ -753,6 +768,21 @@
     (define > (comparison-operator (lambda (x y) ($< y x))))
     (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
     (define >= (comparison-operator (lambda (x y) (not ($< x y)))))
+
+    (define-optimizer =
+      (syntax-rules ()
+        ((= x y)
+          (eq? x y))))
+
+    (define-optimizer <
+      (syntax-rules ()
+        ((< x y)
+          ($< x y))))
+
+    (define-optimizer >
+      (syntax-rules ()
+        ((> x y)
+          ($< y x))))
 
     (define (extremum f)
       (lambda (x . xs)
