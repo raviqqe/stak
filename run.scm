@@ -7,7 +7,7 @@
   (scheme file)
   (only (scheme inexact))
   (only (scheme lazy))
-  (only (scheme process-context) command-line)
+  (scheme process-context)
   (scheme read)
   (scheme repl)
   (only (scheme time))
