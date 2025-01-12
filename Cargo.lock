@@ -1242,6 +1242,7 @@ dependencies = [
  "stak-module",
  "stak-process-context",
  "stak-r7rs",
+ "stak-sac",
  "stak-time",
  "stak-vm",
 ]

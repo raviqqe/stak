@@ -10,20 +10,23 @@ repository.workspace = true
 
 [features]
 default = ["float", "libc", "std"]
-float = ["stak-vm/float"]
+float = ["stak-sac/float", "stak-vm/float"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
   "stak-device/libc",
   "stak-file/libc",
   "stak-process-context/libc",
+  "stak-sac/libc",
   "stak-time/libc",
 ]
 std = [
   "stak-device/std",
   "stak-file/std",
   "stak-process-context/std",
+  "stak-sac/std",
   "stak-time/std",
 ]
+sac = ["dep:stak-sac"]
 
 [dependencies]
 clap = { version = "4.5.26", features = ["derive"] }
@@ -37,6 +40,7 @@ stak-module = { version = "0.1.9", path = "../module" }
 stak-r7rs = { version = "0.9.3", path = "../r7rs" }
 stak-time = { version = "0.1.30", path = "../time" }
 stak-vm = { version = "0.7.18", path = "../vm" }
+stak-sac = { version = "0.1.91", path = "../sac", optional = true }
 
 [dev-dependencies]
 stak-build = { path = "../build" }
