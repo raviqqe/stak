@@ -24,13 +24,11 @@
       (eval (read program) (interaction-environment)))))
 
 (let ((arguments (command-line)))
-  (when (> (length arguments) 2)
-    (error "Too many script files"))
   (when (or
          (member "-h" arguments)
          (member "--help" arguments))
     (write-string "The Stak Scheme interpreter.\n\n")
-    (write-string "Usage: stak SOURCE_FILE\n")
+    (write-string "Usage: stak SOURCE_FILE [ARGUMENTS]...\n")
     (exit)))
 
 (main)
