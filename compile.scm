@@ -878,10 +878,24 @@
       (cons name optimizer)
       (optimization-context-optimizers context))))
 
-(define (make-optimizer optimizer)
-  ; TODO
-  (lambda (expression)
-    expression))
+(define (make-optimizer name optimizer)
+  (define (match-pattern pattern expression)
+    expression)
+
+  (case (car optimizer)
+    (($$syntax-rules)
+      (let ((rules (caddr optimizer)))
+        (lambda (expression)
+          (let loop ((rules rules))
+            (if (null? rules)
+              expression
+              (cond
+                ; TODO Match a pattern.
+                (else
+                  expression)))))))
+
+    (else
+      (error "unsupported optimizer" optimizer))))
 
 (define (optimize-expression context expression)
   (define (optimize expression)
@@ -892,7 +906,8 @@
            (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
-          (optimization-context-append! context (cadr expression) (make-optimizer (caddr expression)))
+          (let ((name (cadr expression)))
+            (optimization-context-append! context name (make-optimizer name (caddr expression))))
           #f)
 
         ((memq predicate (optimization-context-optimizers context))
