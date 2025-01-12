@@ -3203,6 +3203,7 @@
             other))
 
         (define libraries ($$libraries))
+        (define optimizers ($$optimizers))
         (define macro-context (make-macro-context (make-macro-state 0) '()))
 
         (for-each
