@@ -1593,9 +1593,9 @@
 ; Main
 
 (define (main)
-  (define-values (expression1 libraries) (expand-libraries (read-source)))
-  (define-values (expression2 macros) (expand-macros expression1))
-  (define-values (expression3 optimizers) (optimize expression2))
+  (define-values (expression libraries) (expand-libraries (read-source)))
+  (define-values (expression macros) (expand-macros expression))
+  (define-values (expression optimizers) (optimize expression))
 
   (encode
     (marshal
@@ -1603,11 +1603,7 @@
         #f
         (build-primitives
           primitives
-          (compile
-            libraries
-            macros
-            optimizers
-            expression3))))))
+          (compile libraries macros optimizers expression))))))
 
 (let ((arguments (command-line)))
   (when (or
