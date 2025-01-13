@@ -34,7 +34,7 @@
   (when (or
          (member "-h" arguments)
          (member "--help" arguments))
-    (write-string "stak-repl, the Stak Scheme REPL interpreter.\n\n")
+    (write-string "The Stak Scheme REPL interpreter.\n\n")
     (write-string "Usage: stak-repl\n")
     (exit)))
 

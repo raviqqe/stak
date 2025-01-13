@@ -10,7 +10,7 @@ GEM
     bigdecimal (3.1.9)
     builder (3.3.0)
     contracts (0.17.2)
-    cucumber (9.2.0)
+    cucumber (9.2.1)
       builder (~> 3.2)
       cucumber-ci-environment (> 9, < 11)
       cucumber-core (> 13, < 14)
@@ -58,4 +58,4 @@ DEPENDENCIES
   aruba (~> 2.3.0)
 
 BUNDLED WITH
-   2.5.9
+   2.6.2

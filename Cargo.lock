@@ -411,7 +411,7 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "embedded-script"
-version = "0.1.11"
+version = "0.1.12"
 dependencies = [
  "stak",
  "stak-build",
@@ -589,7 +589,7 @@ dependencies = [
 
 [[package]]
 name = "hot-reload"
-version = "0.1.11"
+version = "0.1.12"
 dependencies = [
  "axum",
  "stak",
@@ -1230,25 +1230,23 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.4.8"
+version = "0.5.0"
 dependencies = [
- "clap",
- "main_error",
  "stak-build",
- "stak-configuration",
  "stak-device",
  "stak-file",
  "stak-macro",
  "stak-module",
  "stak-process-context",
  "stak-r7rs",
+ "stak-sac",
  "stak-time",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-bench"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "codspeed-criterion-compat",
  "stak",
@@ -1258,7 +1256,7 @@ dependencies = [
 
 [[package]]
 name = "stak-build"
-version = "0.1.48"
+version = "0.1.49"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -1268,14 +1266,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.3.18"
+version = "0.4.0"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.1.93"
+version = "0.2.0"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -1289,18 +1287,18 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.85"
+version = "0.1.86"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.93"
+version = "0.1.94"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.2.89"
+version = "0.2.90"
 dependencies = [
  "libc",
  "stak-vm",
@@ -1308,7 +1306,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.5.3"
+version = "0.5.4"
 dependencies = [
  "heapless",
  "libc",
@@ -1318,7 +1316,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "libm",
  "stak-vm",
@@ -1326,7 +1324,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.3.18"
+version = "0.3.19"
 dependencies = [
  "clap",
  "main_error",
@@ -1341,7 +1339,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.2.8"
+version = "0.2.9"
 dependencies = [
  "cfg-exif",
  "proc-macro2",
@@ -1359,7 +1357,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.66"
+version = "0.1.67"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1368,7 +1366,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.1.67"
+version = "0.1.68"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
@@ -1383,7 +1381,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.1.67"
+version = "0.1.68"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1394,35 +1392,35 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.1.67"
+version = "0.1.68"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-module"
-version = "0.1.9"
+version = "0.1.10"
 dependencies = [
  "hmr",
 ]
 
 [[package]]
 name = "stak-native"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.47"
+version = "0.2.48"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-profile"
-version = "0.3.18"
+version = "0.3.19"
 dependencies = [
  "clap",
  "main_error",
@@ -1438,7 +1436,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.2.18"
+version = "0.2.19"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -1447,7 +1445,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.9.3"
+version = "0.9.4"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -1460,14 +1458,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.2.24"
+version = "0.2.25"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.1.91"
+version = "0.1.92"
 dependencies = [
  "clap",
  "libc",
@@ -1485,7 +1483,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.30"
+version = "0.1.31"
 dependencies = [
  "libc",
  "stak-vm",
@@ -1493,14 +1491,14 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.65"
+version = "0.1.66"
 dependencies = [
  "libc",
 ]
 
 [[package]]
 name = "stak-vm"
-version = "0.7.18"
+version = "0.7.19"
 dependencies = [
  "cfg-exif",
  "insta",
@@ -1515,7 +1513,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.3.18"
+version = "0.3.19"
 dependencies = [
  "stak-build",
  "stak-compiler",
