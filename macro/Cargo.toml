@@ -16,7 +16,7 @@ hot-reload = []
 
 [dependencies]
 cfg-exif = "0.3.1"
-proc-macro2 = { version = "1.0.92", features = ["proc-macro"] }
+proc-macro2 = { version = "1.0.93", features = ["proc-macro"] }
 quote = "1.0.38"
 stak-compiler = { version = "0.2.0", path = "../compiler" }
 stak-macro-util = { version = "0.1.67", path = "../macro-util" }
