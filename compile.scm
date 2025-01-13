@@ -517,7 +517,11 @@
                (lambda (expression)
                  (expand-library-expression context body-symbols expression))
                (cdr expression)))))
-    (values expression context)))
+    (values
+      expression
+      (map-values
+        library-exports
+        (map-values library-state-library (library-context-libraries context))))))
 
 ; Macro system
 
@@ -895,7 +899,12 @@
 (define (expand-macros expression)
   (let* ((context (make-macro-context (make-macro-state 0 '()) '()))
          (expression (expand-macro context expression)))
-    (values expression context)))
+    (values
+      expression
+      (reverse
+        (filter
+          (lambda (pair) (library-symbol? (car pair)))
+          (macro-state-literals (macro-context-state context)))))))
 
 ; Optimization
 
@@ -984,6 +993,7 @@
 
         ((eq? predicate '$$begin)
           ; Omit top-level constants.
+          ; TODO Define this pass by `define-optimizer`.
           (cons '$$begin
             (let loop ((expressions (cdr expression)))
               (let ((expression (car expressions))
@@ -1615,8 +1625,8 @@
 
 (define (main)
   (define expression0 (incept (read-source)))
-  (define-values (expression1 library-context) (expand-libraries expression0))
-  (define-values (expression2 macro-context) (expand-macros expression1))
+  (define-values (expression1 libraries) (expand-libraries expression0))
+  (define-values (expression2 macros) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
 
   (encode
@@ -1625,16 +1635,7 @@
         #f
         (build-primitives
           primitives
-          (compile
-            (map-values
-              library-exports
-              (map-values library-state-library (library-context-libraries library-context)))
-            (reverse
-              (filter
-                (lambda (pair) (library-symbol? (car pair)))
-                (macro-state-literals (macro-context-state macro-context))))
-            optimizers
-            expression3))))))
+          (compile libraries macros optimizers expression3))))))
 
 (let ((arguments (command-line)))
   (when (or
