@@ -1603,11 +1603,7 @@
         #f
         (build-primitives
           primitives
-          (compile
-            libraries
-            macros
-            optimizers
-            expression3))))))
+          (compile libraries macros optimizers expression3))))))
 
 (let ((arguments (command-line)))
   (when (or
