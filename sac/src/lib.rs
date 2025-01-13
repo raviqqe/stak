@@ -99,17 +99,6 @@ macro_rules! main {
 /// The R7RS standard libraries are based on [the `libc` crate](https://docs.rs/libc).
 ///
 /// The given source file is compiled into bytecodes and bundled into a resulting binary.
-///
-/// # Examples
-///
-/// ```rust
-/// #![no_std]
-/// #![cfg_attr(not(test), no_main)]
-///
-/// use stak::sac::libc_main;
-///
-/// libc_main!("main.scm");
-/// ```
 #[cfg(feature = "libc")]
 #[macro_export]
 macro_rules! libc_main {
