@@ -374,6 +374,9 @@
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
+        ((_ () (define-values content ...) body1 body2 ...)
+          ((lambda () (define-values content ...) body1 body2 ...)))
+
         ((_ () (define-syntax content ...) body1 body2 ...)
           ((lambda () (define-syntax content ...) body1 body2 ...)))
 
@@ -1324,7 +1327,7 @@
     (define-syntax let-values
       (syntax-rules ()
         ((_ (binding ...) body1 body2 ...)
-          (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
+          (let-values "multiple" (binding ...) () (let () body1 body2 ...)))
 
         ((_ "multiple" () singles body)
           (let singles body))
