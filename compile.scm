@@ -963,6 +963,7 @@
 
         ((eq? predicate '$$begin)
           ; Omit top-level constants.
+          ; TODO Define this pass by `define-optimizer`.
           (cons '$$begin
             (let loop ((expressions (cdr expression)))
               (let ((expression (car expressions))
