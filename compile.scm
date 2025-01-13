@@ -1588,22 +1588,7 @@
   (define-values (expression2 macro-context) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
 
-  (encode
-    (marshal
-      (cons-rib
-        #f
-        (build-primitives
-          primitives
-          (compile
-            (map-values
-              library-exports
-              (map-values library-state-library (library-context-libraries library-context)))
-            (reverse
-              (filter
-                (lambda (pair) (library-symbol? (car pair)))
-                (macro-state-literals (macro-context-state macro-context))))
-            optimizers
-            expression3))))))
+  (write expression3))
 
 (let ((arguments (command-line)))
   (when (or
