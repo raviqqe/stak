@@ -256,6 +256,26 @@
     ; Keep an invariant that a `begin` body must not be empty.
     (cons #f (read-all))))
 
+; Inception
+
+(define (incept-expression inceptions expression)
+  (if (pair? expression)
+    (let ((expression
+            (relaxed-map
+              (lambda (expression)
+                (incept-expression inceptions expression))
+              expression)))
+      (cond
+        ((and (= (length expression) 1) (assq (car expression) inceptions)) =>
+          cdr)
+
+        (else
+          expression)))
+    expression))
+
+(define (incept expression)
+  (incept-expression '() expression))
+
 ; Library system
 
 ;; Types
@@ -1584,7 +1604,8 @@
 ; Main
 
 (define (main)
-  (define-values (expression1 library-context) (expand-libraries (read-source)))
+  (define-values (expression0 library-context) (incept (read-source)))
+  (define-values (expression1 library-context) (expand-libraries expression0))
   (define-values (expression2 macro-context) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
 
