@@ -40,3 +40,6 @@ stak-r7rs = { version = "0.9.4", path = "../r7rs" }
 stak-time = { version = "0.1.31", path = "../time" }
 stak-util = { version = "0.1.66", path = "../util", optional = true }
 stak-vm = { version = "0.7.19", path = "../vm" }
+
+[dev-dependencies]
+stak = { path = "../root" }
