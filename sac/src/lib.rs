@@ -38,7 +38,7 @@ pub mod __private {
 /// # Examples
 ///
 /// ```rust
-/// use stac::sac::main;
+/// use stak::sac::main;
 ///
 /// main!("main.scm");
 /// ```
@@ -106,7 +106,7 @@ macro_rules! main {
 /// #![no_std]
 /// #![cfg_attr(not(test), no_main)]
 ///
-/// use stac::sac::libc_main;
+/// use stak::sac::libc_main;
 ///
 /// libc_main!("main.scm");
 /// ```
