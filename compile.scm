@@ -266,7 +266,7 @@
                 (incept-expression inceptions expression))
               expression)))
       (cond
-        ((and (= (length expression) 1) (assq (car expression) inceptions)) =>
+        ((and (= (relaxed-length expression) 1) (assq (car expression) inceptions)) =>
           cdr)
 
         (else
@@ -1604,7 +1604,7 @@
 ; Main
 
 (define (main)
-  (define-values (expression0 library-context) (incept (read-source)))
+  (define expression0 (incept (read-source)))
   (define-values (expression1 library-context) (expand-libraries expression0))
   (define-values (expression2 macro-context) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
