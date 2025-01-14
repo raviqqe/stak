@@ -266,7 +266,7 @@
                 (incept-expression inceptions expression))
               expression)))
       (cond
-        ((and (= (relaxed-length expression) 1) (assq (car expression) inceptions)) =>
+        ((and (null? (cdr expression)) (assq (car expression) inceptions)) =>
           cdr)
 
         (else
