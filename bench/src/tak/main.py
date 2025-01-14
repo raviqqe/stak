@@ -5,4 +5,4 @@ def tak(x, y, z):
         return z
 
 
-tak(32, 16, 8)
+tak(16, 8, 0)

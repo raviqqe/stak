@@ -2,17 +2,6 @@
 
 set -ex
 
-while getopts o: option; do
-  case $option in
-  o)
-    os=$OPTARG
-    ;;
-  esac
-done
-
-shift $(expr $OPTIND - 1)
-
-[ -n "$os" ]
 [ $# -eq 0 ]
 
 cd $(dirname $0)/../..
@@ -21,9 +10,10 @@ cd $(dirname $0)/../..
 
 setup_bench
 
-for directory in bench/*; do
-  base=$directory/main
-  file=$base.scm
+cd bench/src
+
+for file in */main.scm; do
+  base=${file%.scm}
 
   scripts="$scripts${scripts:+,}stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc"
 done
@@ -43,7 +33,7 @@ bencher run \
   --file results.json \
   --github-actions $GITHUB_TOKEN \
   --project stak \
-  --testbed $os \
+  --testbed $RUNNER_ARCH$RUNNER_OS \
   --token $BENCHER_TOKEN \
   $options \
-  hyperfine --export-json results.json -w 2 -N --input compile.scm -L script "$scripts" "{script}"
+  hyperfine --export-json results.json -w 2 -N --input ../../compile.scm -L script "$scripts" "{script}"

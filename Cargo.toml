@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "bench",
   "build",
   "cmd/compile",
   "cmd/decode",
@@ -14,6 +15,7 @@ members = [
   "examples/embedded-script",
   "examples/hot-reload",
   "file",
+  "inexact",
   "macro",
   "macro-util",
   "minifier",

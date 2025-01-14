@@ -1,4 +1,4 @@
-use stak_vm::{Error, Memory, PrimitiveSet, Type, Value};
+use stak_vm::{Error, Memory, PrimitiveSet, Type};
 
 /// A type check primitive.
 pub enum TypeCheckPrimitive {
@@ -22,15 +22,6 @@ impl TypeCheckPrimitiveSet {
     pub fn new() -> Self {
         Self::default()
     }
-
-    fn operate_top<'a>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&Memory<'a>, Value) -> Value,
-    ) -> Result<(), Error> {
-        let x = memory.pop();
-        memory.push(operate(memory, x))?;
-        Ok(())
-    }
 }
 
 impl PrimitiveSet for TypeCheckPrimitiveSet {
@@ -38,10 +29,10 @@ impl PrimitiveSet for TypeCheckPrimitiveSet {
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            TypeCheckPrimitive::NULL => Self::operate_top(memory, |memory, value| {
+            TypeCheckPrimitive::NULL => memory.operate_top(|memory, value| {
                 memory.boolean(value == memory.null().into()).into()
             })?,
-            TypeCheckPrimitive::PAIR => Self::operate_top(memory, |memory, value| {
+            TypeCheckPrimitive::PAIR => memory.operate_top(|memory, value| {
                 memory
                     .boolean(
                         value

@@ -26,7 +26,9 @@ if [ $# -gt 0 ]; then
   filter="$@"
 fi
 
-for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
+cd bench/src
+
+for file in $(ls */main.scm | sort | grep $filter); do
   base=${file%.scm}
 
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,gsi $file,chibi-scheme $file,gosh $file"
@@ -35,5 +37,5 @@ for file in $(find bench -type f -name '*.scm' | sort | grep $filter); do
     scripts="$scripts,python3 $base.py"
   fi
 
-  hyperfine -N --sort command --input compile.scm -L script "$scripts" "{script}"
+  hyperfine -N --sort command --input ../../compile.scm -L script "$scripts" "{script}"
 done

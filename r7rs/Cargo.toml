@@ -1,7 +1,7 @@
 [package]
 name = "stak-r7rs"
 description = "Stak Scheme primitives for R7RS"
-version = "0.9.1"
+version = "0.9.5"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,10 +9,10 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-libm = { version = "0.2.11", default-features = false }
-stak-device = { version = "0.2.87", path = "../device" }
-stak-file = { version = "0.5.1", path = "../file" }
-stak-native = { version = "0.1.1", path = "../native" }
-stak-process-context = { version = "0.2.45", path = "../process_context" }
-stak-time = { version = "0.1.28", path = "../time" }
-stak-vm = { version = "0.7.16", path = "../vm" }
+stak-device = { version = "0.2.91", path = "../device" }
+stak-file = { version = "0.5.5", path = "../file" }
+stak-inexact = { version = "0.1.4", path = "../inexact" }
+stak-native = { version = "0.1.5", path = "../native" }
+stak-process-context = { version = "0.2.49", path = "../process_context" }
+stak-time = { version = "0.1.32", path = "../time" }
+stak-vm = { version = "0.7.20", path = "../vm" }

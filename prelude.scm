@@ -211,6 +211,11 @@
         ((_ name value)
           ($$define-syntax name value))))
 
+    (define-syntax define-optimizer
+      (syntax-rules ()
+        ((_ name value)
+          ($$define-optimizer name value))))
+
     (define-syntax define
       (syntax-rules ()
         ((_ (name argument ... . rest) body1 body2 ...)
@@ -368,6 +373,9 @@
       (syntax-rules (define define-syntax)
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
+
+        ((_ () (define-values content ...) body1 body2 ...)
+          ((lambda () (define-values content ...) body1 body2 ...)))
 
         ((_ () (define-syntax content ...) body1 body2 ...)
           ((lambda () (define-syntax content ...) body1 body2 ...)))
@@ -640,6 +648,11 @@
     (define (not x)
       (eq? x #f))
 
+    (define-optimizer not
+      (syntax-rules ()
+        ((_ x)
+          (eq? x #f))))
+
     ;; Number
 
     (define (number? x)
@@ -663,6 +676,11 @@
     (define (even? x) (zero? (modulo x 2)))
     (define (odd? x) (not (even? x)))
 
+    (define-optimizer zero?
+      (syntax-rules ()
+        ((_ x)
+          (eq? x 0))))
+
     (define (arithmetic-operator f y)
       (lambda xs (fold-left f y xs)))
 
@@ -676,6 +694,26 @@
     (define - (inverse-arithmetic-operator $- 0))
     (define * (arithmetic-operator $* 1))
     (define / (inverse-arithmetic-operator $/ 1))
+
+    (define-optimizer +
+      (syntax-rules ()
+        ((_ x y)
+          ($+ x y))))
+
+    (define-optimizer -
+      (syntax-rules ()
+        ((_ x y)
+          ($- x y))))
+
+    (define-optimizer *
+      (syntax-rules ()
+        ((_ x y)
+          ($* x y))))
+
+    (define-optimizer /
+      (syntax-rules ()
+        ((_ x y)
+          ($/ x y))))
 
     (define (quotient x y)
       (/ (- x (remainder x y)) y))
@@ -743,6 +781,21 @@
     (define > (comparison-operator (lambda (x y) ($< y x))))
     (define <= (comparison-operator (lambda (x y) (not ($< y x)))))
     (define >= (comparison-operator (lambda (x y) (not ($< x y)))))
+
+    (define-optimizer =
+      (syntax-rules ()
+        ((_ x y)
+          (eq? x y))))
+
+    (define-optimizer <
+      (syntax-rules ()
+        ((_ x y)
+          ($< x y))))
+
+    (define-optimizer >
+      (syntax-rules ()
+        ((_ x y)
+          ($< y x))))
 
     (define (extremum f)
       (lambda (x . xs)
@@ -1274,7 +1327,7 @@
     (define-syntax let-values
       (syntax-rules ()
         ((_ (binding ...) body1 body2 ...)
-          (let-values "multiple" (binding ...) () (begin body1 body2 ...)))
+          (let-values "multiple" (binding ...) () (let () body1 body2 ...)))
 
         ((_ "multiple" () singles body)
           (let singles body))
@@ -2525,12 +2578,22 @@
             ((not (pair? xs))
               y)))
 
+        (define (relaxed-map f xs)
+          (if (pair? xs)
+            (cons
+              (f (car xs))
+              (relaxed-map f (cdr xs)))
+            (f xs)))
+
         (define (relaxed-deep-map f xs)
           (if (pair? xs)
             (cons
               (relaxed-deep-map f (car xs))
               (relaxed-deep-map f (cdr xs)))
             (f xs)))
+
+        (define (maybe-append xs ys)
+          (and xs ys (append xs ys)))
 
         (define (map-values f xs)
           (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
@@ -2600,44 +2663,6 @@
           (literals rule-context-literals))
 
         ;; Procedures
-
-        (define primitive-procedures
-          ; TODO Check the predicates are actually from the `(stak base)` library.
-          (map
-            (lambda (x)
-              (cons (symbol->string x) (symbol-append '$$ x)))
-            '(+ - * / <)))
-
-        (define (optimize expression)
-          (let ((predicate (predicate expression)))
-            (cond
-              ((eq? predicate '$$begin)
-                ; Omit top-level constants.
-                (cons '$$begin
-                  (let loop ((expressions (cdr expression)))
-                    (let ((expression (car expressions))
-                          (expressions (cdr expressions)))
-                      (cond
-                        ((null? expressions)
-                          (list expression))
-
-                        ((pair? expression)
-                          (cons expression (loop expressions)))
-
-                        (else
-                          (loop expressions)))))))
-
-              ((and
-                  (list? expression)
-                  (= (length expression) 3)
-                  (symbol? predicate)
-                  (assoc (symbol->string predicate) primitive-procedures))
-                =>
-                (lambda (pair)
-                  (cons (cdr pair) (cdr expression))))
-
-              (else
-                expression))))
 
         (define (resolve-denotation context expression)
           (cond
@@ -2851,92 +2876,200 @@
           (define (resolve name)
             (resolve-denotation context name))
 
-          (optimize
-            (cond
-              ((symbol? expression)
-                (let ((value (resolve expression)))
-                  (when (procedure? value)
-                    (error "invalid syntax" expression))
-                  value))
+          (cond
+            ((symbol? expression)
+              (let ((value (resolve expression)))
+                (when (procedure? value)
+                  (error "invalid syntax" expression))
+                value))
 
-              ((pair? expression)
-                (case (resolve (car expression))
-                  (($$define)
-                    (let ((name (cadr expression)))
-                      (macro-context-set! context name name)
-                      (expand (cons '$$set! (cdr expression)))))
+            ((pair? expression)
+              (case (resolve (car expression))
+                (($$define)
+                  (let ((name (cadr expression)))
+                    (macro-context-set! context name name)
+                    (expand (cons '$$set! (cdr expression)))))
 
-                  (($$define-syntax)
-                    (macro-context-set-last!
+                (($$define-syntax)
+                  (macro-context-set-last!
+                    context
+                    (cadr expression)
+                    (make-transformer context (caddr expression)))
+                  #f)
+
+                (($$lambda)
+                  (let* ((parameters (cadr expression))
+                         (context
+                           (macro-context-append
+                             context
+                             (map
+                               (lambda (name) (cons name (rename-variable context name)))
+                               (parameter-names parameters))))
+                         ; We need to resolve parameter denotations before expanding a body.
+                         (parameters
+                           (relaxed-deep-map
+                             (lambda (name) (resolve-denotation context name))
+                             parameters)))
+                    (list
+                      '$$lambda
+                      parameters
+                      (expand-macro context (caddr expression)))))
+
+                (($$let-syntax)
+                  (expand-macro
+                    (macro-context-append
                       context
-                      (cadr expression)
-                      (make-transformer context (caddr expression)))
-                    #f)
+                      (map-values
+                        (lambda (transformer)
+                          (make-transformer context (car transformer)))
+                        (cadr expression)))
+                    (caddr expression)))
 
-                  (($$lambda)
-                    (let* ((parameters (cadr expression))
-                           (context
-                             (macro-context-append
-                               context
-                               (map
-                                 (lambda (name) (cons name (rename-variable context name)))
-                                 (parameter-names parameters))))
-                           ; We need to resolve parameter denotations before expanding a body.
-                           (parameters
-                             (relaxed-deep-map
-                               (lambda (name) (resolve-denotation context name))
-                               parameters)))
-                      (list
-                        '$$lambda
-                        parameters
-                        (expand-macro context (caddr expression)))))
+                (($$letrec-syntax)
+                  (let* ((bindings (cadr expression))
+                         (context
+                           (macro-context-append
+                             context
+                             (map-values
+                               (lambda (value) #f)
+                               bindings))))
+                    (for-each
+                      (lambda (pair)
+                        (macro-context-set!
+                          context
+                          (car pair)
+                          (make-transformer context (cadr pair))))
+                      bindings)
+                    (expand-macro context (caddr expression))))
 
-                  (($$let-syntax)
-                    (expand-macro
-                      (macro-context-append
-                        context
-                        (map-values
-                          (lambda (transformer)
-                            (make-transformer context (car transformer)))
-                          (cadr expression)))
-                      (caddr expression)))
+                (($$quote)
+                  (cons
+                    '$$quote
+                    (relaxed-deep-map
+                      (lambda (value)
+                        (if (symbol? value)
+                          (resolve-library-symbol value)
+                          value))
+                      (cdr expression))))
 
-                  (($$letrec-syntax)
-                    (let* ((bindings (cadr expression))
-                           (context
-                             (macro-context-append
-                               context
-                               (map-values
-                                 (lambda (value) #f)
-                                 bindings))))
-                      (for-each
-                        (lambda (pair)
-                          (macro-context-set!
-                            context
-                            (car pair)
-                            (make-transformer context (cadr pair))))
-                        bindings)
-                      (expand-macro context (caddr expression))))
+                (else =>
+                  (lambda (value)
+                    (if (procedure? value)
+                      (let-values (((expression context) (value context expression)))
+                        (expand-macro context expression))
+                      (map expand expression))))))
 
-                  (($$quote)
-                    (cons
-                      '$$quote
-                      (relaxed-deep-map
-                        (lambda (value)
-                          (if (symbol? value)
-                            (resolve-library-symbol value)
-                            value))
-                        (cdr expression))))
+            (else
+              expression)))
 
-                  (else =>
-                    (lambda (value)
-                      (if (procedure? value)
-                        (let-values (((expression context) (value context expression)))
-                          (expand-macro context expression))
-                        (map expand expression))))))
+        ; Optimization
+
+        (define-record-type optimization-context
+          (make-optimization-context optimizers literals)
+          optimization-context?
+          (optimizers optimization-context-optimizers optimization-context-set-optimizers!)
+          (literals optimization-context-literals optimization-context-set-literals!))
+
+        (define (optimization-context-append! context name optimizer)
+          (optimization-context-set-optimizers!
+            context
+            (cons
+              (cons name optimizer)
+              (optimization-context-optimizers context))))
+
+        (define (optimization-context-append-literal! context name literal)
+          (optimization-context-set-literals!
+            context
+            (cons
+              (cons name literal)
+              (optimization-context-literals context))))
+
+        (define (make-optimizer name optimizer)
+          (define (match-pattern pattern expression)
+            (cond
+              ((and (pair? pattern) (pair? expression))
+                (maybe-append
+                  (match-pattern (car pattern) (car expression))
+                  (match-pattern (cdr pattern) (cdr expression))))
+
+              ((symbol? pattern)
+                (list (cons pattern expression)))
+
+              ((equal? pattern expression)
+                '())
 
               (else
-                expression))))
+                #f)))
+
+          (define (fill-template matches template)
+            (cond
+              ((pair? template)
+                (cons
+                  (fill-template matches (car template))
+                  (fill-template matches (cdr template))))
+
+              ((and (symbol? template) (assq template matches)) =>
+                cdr)
+
+              (else
+                template)))
+
+          (case (car optimizer)
+            (($$syntax-rules)
+              (let ((rules (cdddr optimizer)))
+                (lambda (expression)
+                  (let loop ((rules rules))
+                    (if (null? rules)
+                      expression
+                      (let ((rule (car rules)))
+                        (cond
+                          ((match-pattern (car rule) expression) =>
+                            (lambda (matches)
+                              (fill-template matches (cadr rule))))
+
+                          (else
+                            (loop (cdr rules))))))))))
+
+            (else
+              (error "unsupported optimizer" optimizer))))
+
+        (define (optimize-expression context expression)
+          (define (optimize expression)
+            (optimize-expression context expression))
+
+          (if (pair? expression)
+            (let* ((expression (relaxed-map optimize expression))
+                   (predicate (car expression)))
+              (cond
+                ((eq? predicate '$$define-optimizer)
+                  (let ((name (cadr expression)))
+                    (optimization-context-append! context name (make-optimizer name (caddr expression)))
+                    (optimization-context-append-literal! context name (caddr expression)))
+                  #f)
+
+                ((eq? predicate '$$begin)
+                  ; Omit top-level constants.
+                  (cons '$$begin
+                    (let loop ((expressions (cdr expression)))
+                      (let ((expression (car expressions))
+                            (expressions (cdr expressions)))
+                        (cond
+                          ((null? expressions)
+                            (list expression))
+
+                          ((pair? expression)
+                            (cons expression (loop expressions)))
+
+                          (else
+                            (loop expressions)))))))
+
+                ((assq predicate (optimization-context-optimizers context)) =>
+                  (lambda (pair)
+                    ((cdr pair) expression)))
+
+                (else
+                  expression)))
+            expression))
 
         ; Compilation
 
@@ -3163,6 +3296,12 @@
             other))
 
         (define libraries ($$libraries))
+        (define optimization-context
+          (make-optimization-context
+            (map
+              (lambda (pair) (make-optimizer (car pair) (cdr pair)))
+              ($$optimizers))
+            '()))
         (define macro-context (make-macro-context (make-macro-state 0) '()))
 
         (for-each
@@ -3188,27 +3327,29 @@
                   (compile-arity 0 #f)
                   (compile-expression
                     (make-compilation-context '())
-                    (expand-macro
-                      macro-context
-                      (let ((names
-                              (apply
-                                append
-                                (map
-                                  (lambda (name)
-                                    (let ((pair (assoc name libraries)))
-                                      (unless pair
-                                        (error "unknown library" name))
-                                      (cdr pair)))
-                                  environment))))
-                        (relaxed-deep-map
-                          (lambda (x)
-                            (cond
-                              ((assq x names) =>
-                                cdr)
+                    (optimize-expression
+                      optimization-context
+                      (expand-macro
+                        macro-context
+                        (let ((names
+                                (apply
+                                  append
+                                  (map
+                                    (lambda (name)
+                                      (let ((pair (assoc name libraries)))
+                                        (unless pair
+                                          (error "unknown library" name))
+                                        (cdr pair)))
+                                    environment))))
+                          (relaxed-deep-map
+                            (lambda (x)
+                              (cond
+                                ((assq x names) =>
+                                  cdr)
 
-                              (else
-                                x)))
-                          expression)))
+                                (else
+                                  x)))
+                            expression))))
                     '())
                   '())))))))
 

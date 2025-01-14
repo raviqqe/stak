@@ -352,6 +352,41 @@ impl<'a> Memory<'a> {
         list
     }
 
+    /// Executes an operation against a value at the top of a stack.
+    pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
+        let value = self.pop();
+        self.push(operate(self, value))?;
+        Ok(())
+    }
+
+    /// Executes an unary number operation.
+    pub fn operate_unary(&mut self, operate: fn(Number) -> Number) -> Result<(), Error> {
+        let [x] = self.pop_numbers();
+
+        self.push(operate(x).into())?;
+
+        Ok(())
+    }
+
+    /// Executes a binary number operation.
+    pub fn operate_binary(&mut self, operate: fn(Number, Number) -> Number) -> Result<(), Error> {
+        let [x, y] = self.pop_numbers();
+
+        self.push(operate(x, y).into())?;
+
+        Ok(())
+    }
+
+    /// Executes an operation that returns `Option<Value>`.
+    pub fn operate_option(
+        &mut self,
+        mut operate: impl FnMut(&mut Self) -> Option<Value>,
+    ) -> Result<(), Error> {
+        let value = operate(self).unwrap_or_else(|| self.boolean(false).into());
+        self.push(value)?;
+        Ok(())
+    }
+
     // Garbage collection
 
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {
