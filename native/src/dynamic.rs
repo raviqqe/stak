@@ -1,5 +1,7 @@
+mod error;
 mod function;
 
+pub use self::error::DynamicError;
 pub use self::function::DynamicFunction;
 use alloc::boxed::Box;
 use core::any::Any;
@@ -25,7 +27,7 @@ impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
 }
 
 impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
-    type Error = Error;
+    type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         let function: &mut dyn DynamicFunction = *self
@@ -34,16 +36,16 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
             .ok_or(Error::IllegalPrimitive)?;
 
         let (value, index) = {
-            let mut arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+            let mut arguments = Vec::<&dyn Any, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.parameter_count() {
                 let value = memory.pop();
                 let value = self.objects
                     [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
                     .as_ref()
-                    .ok_or(Error::OutOfMemory)?;
+                    .ok_or(DynamicError::ObjectIndex)?;
                 // TODO Handle an error.
-                arguments.push(value).unwrap();
+                arguments.push(&*value).unwrap();
             }
 
             let value = function.call(arguments.as_slice());

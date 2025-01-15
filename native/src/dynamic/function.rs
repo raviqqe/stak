@@ -7,5 +7,5 @@ pub trait DynamicFunction {
     fn parameter_count(&self) -> usize;
 
     /// Calls a function.
-    fn call(&mut self, arguments: &[&Box<dyn Any>]) -> Box<dyn Any>;
+    fn call(&mut self, arguments: &[&dyn Any]) -> Box<dyn Any>;
 }
