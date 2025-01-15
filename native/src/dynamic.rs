@@ -47,9 +47,7 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
                     .as_ref()
                     .ok_or(DynamicError::ObjectIndex)?;
 
-                arguments
-                    .push(&*value)
-                    .map_err(|_| DynamicError::TooManyArguments)?;
+                arguments.push(&*value).map_err(|_| Error::ArgumentCount)?;
             }
 
             let value = function.call(arguments.as_slice());
