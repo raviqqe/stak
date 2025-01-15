@@ -21,6 +21,7 @@ impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
     pub fn new(functions: &'a mut [&'a mut dyn DynamicFunction]) -> Self {
         Self {
             functions,
+            // TODO Garbage-collect foreign objects.
             objects: [const { None }; N],
         }
     }
