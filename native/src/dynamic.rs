@@ -40,6 +40,7 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
 
             for _ in 0..function.parameter_count() {
                 let value = memory.pop();
+                // TODO Convert Scheme values into Rust values automatically?
                 let value = self.objects
                     [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
                     .as_ref()
