@@ -9,3 +9,5 @@ pub trait DynamicFunction {
     /// Calls a function.
     fn call(&mut self, arguments: &[&dyn Any]) -> Box<dyn Any>;
 }
+
+// TODO Implement the `DynamicFunction` trait for the `Fn` types.

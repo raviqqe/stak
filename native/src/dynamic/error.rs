@@ -8,6 +8,8 @@ use core::{
 pub enum DynamicError {
     /// A object index error.
     ObjectIndex,
+    /// A too many argument error.
+    TooManyArguments,
     /// A virtual machine error.
     Vm(stak_vm::Error),
 }
@@ -24,6 +26,7 @@ impl Display for DynamicError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::ObjectIndex => write!(formatter, "invalid object index"),
+            Self::TooManyArguments => write!(formatter, "too many arguments"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
     }

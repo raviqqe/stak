@@ -44,8 +44,10 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
                     [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
                     .as_ref()
                     .ok_or(DynamicError::ObjectIndex)?;
-                // TODO Handle an error.
-                arguments.push(&*value).unwrap();
+
+                arguments
+                    .push(&*value)
+                    .map_err(|_| DynamicError::TooManyArguments)?;
             }
 
             let value = function.call(arguments.as_slice());
