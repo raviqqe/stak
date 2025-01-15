@@ -22,4 +22,6 @@ pub enum Type {
     ByteVector,
     /// A record.
     Record,
+    /// A foreign object
+    Foreign,
 }
