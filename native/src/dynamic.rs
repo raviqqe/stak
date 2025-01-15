@@ -41,8 +41,8 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
             );
         }
 
-        let foo = function.call(&arguments);
-        memory.push(foo);
+        let value = function.call(&arguments);
+        memory.push(value);
 
         Ok(())
     }
