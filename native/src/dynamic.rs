@@ -56,7 +56,7 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
                 value,
                 self.objects
                     .iter()
-                    .position(|object| matches!(object, None))
+                    .position(Option::is_none)
                     .ok_or(Error::OutOfMemory)?,
             )
         };
