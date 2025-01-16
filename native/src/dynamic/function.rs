@@ -1,6 +1,5 @@
 use alloc::boxed::Box;
-use core::any::Any;
-use core::mem::size_of;
+use core::{any::Any, mem::size_of};
 
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
