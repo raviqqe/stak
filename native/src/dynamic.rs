@@ -1,4 +1,4 @@
-//! Natvie functions dynamically defined.
+//! Native functions dynamically defined.
 
 mod error;
 mod function;
