@@ -4,6 +4,7 @@ use core::any::{Any, TypeId};
 /// A dynamic function.
 pub struct DynamicFunction {
     arity: usize,
+    #[expect(clippy::type_complexity)]
     function: Box<dyn Fn(&[&dyn Any]) -> Box<dyn Any>>,
 }
 
@@ -17,7 +18,7 @@ impl DynamicFunction {
     }
 
     /// Returns an arity.
-    pub fn arity(&self) -> usize {
+    pub const fn arity(&self) -> usize {
         self.arity
     }
 
