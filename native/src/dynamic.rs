@@ -2,7 +2,7 @@ mod error;
 mod function;
 
 pub use self::error::DynamicError;
-pub use self::function::DynamicFunction;
+pub use self::function::{DynamicFunction, IntoDynamicFunction};
 use alloc::boxed::Box;
 use core::any::Any;
 use heapless::Vec;

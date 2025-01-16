@@ -28,16 +28,16 @@ impl DynamicFunction {
 }
 
 /// A native function dynamically defined.
-pub trait DynamicFn<T, R> {
+pub trait IntoDynamicFunction<T, R> {
     /// Converts itself into a dynamic function.
-    fn into_function(self) -> DynamicFunction;
+    fn into_dynamic(self) -> DynamicFunction;
 }
 
 macro_rules! impl_fn {
     ($($type:ident),*) => {
-        impl<F: Fn($(&$type),*) -> R + 'static, $($type: Any),*, R: Any> DynamicFn<($($type),*), R> for F {
+        impl<F: Fn($(&$type),*) -> R + 'static, $($type: Any),*, R: Any> IntoDynamicFunction<($($type),*), R> for F {
             #[allow(non_snake_case)]
-            fn into_function(self) -> DynamicFunction {
+            fn into_dynamic(self) -> DynamicFunction {
                 let arity = [$(TypeId::of::<$type>()),*].len();
 
                 DynamicFunction::new(
