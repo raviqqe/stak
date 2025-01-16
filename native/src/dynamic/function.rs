@@ -5,12 +5,12 @@ use core::any::{Any, TypeId};
 pub struct DynamicFunction<'a> {
     arity: usize,
     #[expect(clippy::type_complexity)]
-    function: Box<dyn Fn(&[&dyn Any]) -> Box<dyn Any> + 'a>,
+    function: Box<dyn FnMut(&[&dyn Any]) -> Box<dyn Any> + 'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
-    pub fn new(arity: usize, function: impl Fn(&[&dyn Any]) -> Box<dyn Any> + 'a) -> Self {
+    pub fn new(arity: usize, function: impl FnMut(&[&dyn Any]) -> Box<dyn Any> + 'a) -> Self {
         Self {
             arity,
             function: Box::new(function),
@@ -36,9 +36,9 @@ pub trait IntoDynamicFunction<'a, T, S> {
 
 macro_rules! impl_function {
     ($($type:ident),*; $tuple:ty) => {
-        impl<'a, T1: Fn($(&$type),*) -> T2 + 'a, T2: Any, $($type: Any),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
+        impl<'a, T1: FnMut($(&$type),*) -> T2 + 'a, T2: Any, $($type: Any),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
             #[allow(non_snake_case)]
-            fn into_dynamic(self) -> DynamicFunction<'a> {
+            fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 let arity = (&[$(TypeId::of::<$type>()),*] as &[TypeId]).len();
 
                 #[allow(unused, unused_mut)]
