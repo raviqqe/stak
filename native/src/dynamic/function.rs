@@ -35,12 +35,13 @@ pub trait IntoDynamicFunction<T, S> {
 }
 
 macro_rules! impl_function {
-    ($($type:ident),*) => {
-        impl<T1: Fn($(&$type),*) -> T2 + 'static, $($type: Any),*, T2: Any> IntoDynamicFunction<($($type),*,), Z> for T1 {
+    ($($type:ident),*; $tuple:ty) => {
+        impl<T1: Fn($(&$type),*) -> T2 + 'static, T2: Any, $($type: Any),*> IntoDynamicFunction<$tuple, T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(self) -> DynamicFunction {
-                let arity = [$(TypeId::of::<$type>()),*].len();
+                let arity = (&[$(TypeId::of::<$type>()),*] as &[TypeId]).len();
 
+                #[allow(unused, unused_mut)]
                 DynamicFunction::new(
                     arity,
                     move |arguments: &[&dyn Any]| {
@@ -56,11 +57,12 @@ macro_rules! impl_function {
 
 macro_rules! impl_functions {
     ($first:ident, $($type:ident),*) => {
-        impl_function!($first, $($type),*);
+        impl_function!($first, $($type),*; ($first, $($type),*));
         impl_functions!($($type),*);
     };
     ($type:ident) => {
-        impl_function!($type);
+        impl_function!($type; ($type,));
+        impl_function!(; ());
     }
 }
 
