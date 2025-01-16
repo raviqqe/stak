@@ -1,3 +1,4 @@
+use super::error::DynamicError;
 use alloc::boxed::Box;
 use core::{any::Any, mem::size_of};
 
@@ -5,12 +6,15 @@ use core::{any::Any, mem::size_of};
 pub struct DynamicFunction<'a> {
     arity: usize,
     #[expect(clippy::type_complexity)]
-    function: Box<dyn FnMut(&[&dyn Any]) -> Box<dyn Any> + 'a>,
+    function: Box<dyn FnMut(&[&dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
-    pub fn new(arity: usize, function: impl FnMut(&[&dyn Any]) -> Box<dyn Any> + 'a) -> Self {
+    pub fn new(
+        arity: usize,
+        function: impl FnMut(&[&dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a,
+    ) -> Self {
         Self {
             arity,
             function: Box::new(function),
@@ -23,7 +27,7 @@ impl<'a> DynamicFunction<'a> {
     }
 
     /// Calls a function.
-    pub fn call(&mut self, arguments: &[&dyn Any]) -> Box<dyn Any> {
+    pub fn call(&mut self, arguments: &[&dyn Any]) -> Result<Box<dyn Any>, DynamicError> {
         (self.function)(arguments)
     }
 }
@@ -39,15 +43,16 @@ macro_rules! impl_function {
         impl<'a, T1: FnMut($(&$type),*) -> T2 + 'a, T2: Any, $($type: Any),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
-                let arity = (&[$(size_of::<$type>()),*] as &[usize]).len();
-
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
-                    arity,
+                    (&[$(size_of::<$type>()),*] as &[usize]).len(),
                     move |arguments: &[&dyn Any]| {
-                        let mut iter = 0..arity;
-                        $(let $type: &$type = arguments[iter.next().unwrap()].downcast_ref().unwrap();)*
-                        Box::new(self($($type),*))
+                        let mut iter = 0..;
+                        $(let $type: &$type =
+                            arguments[iter.next().unwrap_or_default()]
+                            .downcast_ref().ok_or(DynamicError::Downcast)?;)*
+
+                        Ok(Box::new(self($($type),*)))
                     },
                 )
             }
