@@ -32,6 +32,7 @@ stak-device = { version = "0.2.91", path = "../device" }
 stak-file = { version = "0.5.5", path = "../file" }
 stak-macro = { version = "0.2.10", path = "../macro" }
 stak-module = { version = "0.1.11", path = "../module" }
+stak-native = { version = "0.1.5", path = "../native" }
 stak-process-context = { version = "0.2.49", path = "../process_context" }
 stak-r7rs = { version = "0.9.5", path = "../r7rs" }
 stak-sac = { version = "0.1.93", path = "../sac" }
