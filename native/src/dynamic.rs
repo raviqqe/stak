@@ -1,3 +1,5 @@
+//! Natvie functions dynamically defined.
+
 mod error;
 mod function;
 
