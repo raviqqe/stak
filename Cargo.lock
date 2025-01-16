@@ -1225,6 +1225,7 @@ dependencies = [
  "stak-file",
  "stak-macro",
  "stak-module",
+ "stak-native",
  "stak-process-context",
  "stak-r7rs",
  "stak-sac",
@@ -1396,6 +1397,7 @@ dependencies = [
 name = "stak-native"
 version = "0.1.5"
 dependencies = [
+ "heapless",
  "stak-vm",
 ]
 
