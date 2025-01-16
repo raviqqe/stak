@@ -27,7 +27,7 @@ impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
     }
 }
 
-impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
+impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
@@ -47,7 +47,7 @@ impl<'a, const N: usize> PrimitiveSet for DynamicPrimitiveSet<'a, N> {
                     .as_ref()
                     .ok_or(DynamicError::ObjectIndex)?;
 
-                arguments.push(&*value).map_err(|_| Error::ArgumentCount)?;
+                arguments.push(&**value).map_err(|_| Error::ArgumentCount)?;
             }
 
             let value = function.call(arguments.as_slice());
