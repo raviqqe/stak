@@ -1,5 +1,6 @@
 use alloc::boxed::Box;
-use core::any::{Any, TypeId};
+use core::any::Any;
+use core::mem::size_of;
 
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
@@ -39,7 +40,7 @@ macro_rules! impl_function {
         impl<'a, T1: FnMut($(&$type),*) -> T2 + 'a, T2: Any, $($type: Any),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
-                let arity = (&[$(TypeId::of::<$type>()),*] as &[TypeId]).len();
+                let arity = (&[$(size_of::<$type>()),*] as &[usize]).len();
 
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
