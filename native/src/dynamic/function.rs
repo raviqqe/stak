@@ -35,7 +35,7 @@ pub trait IntoDynamicFunction<T, S> {
 
 macro_rules! impl_function {
     ($($type:ident),*) => {
-        impl<F: Fn($(&$type),*) -> Z + 'static, $($type: Any),*, Z: Any> IntoDynamicFunction<($($type),*,), Z> for F {
+        impl<T1: Fn($(&$type),*) -> T2 + 'static, $($type: Any),*, T2: Any> IntoDynamicFunction<($($type),*,), Z> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(self) -> DynamicFunction {
                 let arity = [$(TypeId::of::<$type>()),*].len();
@@ -63,4 +63,4 @@ macro_rules! impl_functions {
     }
 }
 
-impl_functions!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y);
+impl_functions!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z);
