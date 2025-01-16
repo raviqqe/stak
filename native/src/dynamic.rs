@@ -12,13 +12,13 @@ const MAXIMUM_ARGUMENT_COUNT: usize = 32;
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, const N: usize> {
-    functions: &'a mut [&'a mut dyn DynamicFunction],
+    functions: &'a mut [DynamicFunction],
     objects: [Option<Box<dyn Any>>; N],
 }
 
 impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
     /// Creates a primitive set.
-    pub fn new(functions: &'a mut [&'a mut dyn DynamicFunction]) -> Self {
+    pub fn new(functions: &'a mut [DynamicFunction]) -> Self {
         Self {
             functions,
             // TODO Garbage-collect foreign objects.
@@ -31,7 +31,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        let function: &mut dyn DynamicFunction = *self
+        let function: &mut DynamicFunction = self
             .functions
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
@@ -39,7 +39,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
         let (value, index) = {
             let mut arguments = Vec::<&dyn Any, MAXIMUM_ARGUMENT_COUNT>::new();
 
-            for _ in 0..function.parameter_count() {
+            for _ in 0..function.arity() {
                 let value = memory.pop();
                 // TODO Convert Scheme values into Rust values automatically?
                 let value = self.objects

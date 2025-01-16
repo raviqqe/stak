@@ -1,28 +1,53 @@
 use alloc::boxed::Box;
-use core::any::Any;
+use core::any::{Any, TypeId};
 
-/// A native function dynamically defined.
-pub trait DynamicFunction {
-    /// Returns a number of parameters.
-    fn parameter_count(&self) -> usize;
+/// A dynamic function.
+pub struct DynamicFunction {
+    arity: usize,
+    function: Box<dyn Fn(&[&dyn Any]) -> Box<dyn Any>>,
+}
+
+impl DynamicFunction {
+    /// Creates a dynamic function.
+    pub fn new(arity: usize, function: impl Fn(&[&dyn Any]) -> Box<dyn Any> + 'static) -> Self {
+        Self {
+            arity,
+            function: Box::new(function),
+        }
+    }
+
+    /// Returns an arity.
+    pub fn arity(&self) -> usize {
+        self.arity
+    }
 
     /// Calls a function.
-    fn call(&mut self, arguments: &[&dyn Any]) -> Box<dyn Any>;
+    pub fn call(&mut self, arguments: &[&dyn Any]) -> Box<dyn Any> {
+        (self.function)(arguments)
+    }
+}
+
+/// A native function dynamically defined.
+pub trait DynamicFn<T, R> {
+    /// Converts itself into a dynamic function.
+    fn into_function(self) -> DynamicFunction;
 }
 
 macro_rules! impl_fn {
     ($($type:ident),*) => {
-        impl<F: Fn($(&$type),*) -> R, $($type: Any),*, R: Any> DynamicFunction for F {
-            fn parameter_count(&self) -> usize {
-                $(let $type = 0;)*
-                [$($type),*].len()
-            }
+        impl<F: Fn($(&$type),*) -> R + 'static, $($type: Any),*, R: Any> DynamicFn<($($type),*), R> for F {
+            #[allow(non_snake_case)]
+            fn into_function(self) -> DynamicFunction {
+                let arity = [$(TypeId::of::<$type>()),*].len();
 
-            fn call(&mut self, arguments: &[&dyn Any]) -> Box<dyn Any> {
-                let mut iter = 0..self.parameter_count();
-                $(let $type: &$type = arguments[iter.next().unwrap()].downcast_ref().unwrap();)*
-
-                Box::new(self($($type),*))
+                DynamicFunction::new(
+                    arity,
+                    move |arguments: &[&dyn Any]| {
+                        let mut iter = 0..arity;
+                        $(let $type: &$type = arguments[iter.next().unwrap()].downcast_ref().unwrap();)*
+                        Box::new(self($($type),*))
+                    },
+                )
             }
         }
     };
