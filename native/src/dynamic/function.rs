@@ -33,7 +33,7 @@ pub trait IntoDynamicFunction<T, S> {
     fn into_dynamic(self) -> DynamicFunction;
 }
 
-macro_rules! impl_fn {
+macro_rules! impl_function {
     ($($type:ident),*) => {
         impl<F: Fn($(&$type),*) -> Z + 'static, $($type: Any),*, Z: Any> IntoDynamicFunction<($($type),*,), Z> for F {
             #[allow(non_snake_case)]
@@ -53,6 +53,14 @@ macro_rules! impl_fn {
     };
 }
 
-impl_fn!(A);
-impl_fn!(A, B);
-impl_fn!(A, B, C);
+macro_rules! impl_functions {
+    ($first:ident, $($type:ident),*) => {
+        impl_function!($first, $($type),*);
+        impl_functions!($($type),*);
+    };
+    ($type:ident) => {
+        impl_function!($type);
+    }
+}
+
+impl_functions!(A, B, C);
