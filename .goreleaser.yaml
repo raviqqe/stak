@@ -5,36 +5,35 @@ builds:
     builder: rust
     flags:
       - --release
-      - -p
-      - stak
-  - id: stak_compile
-    binary: stak-compile
-    builder: rust
-    flags:
-      - --release
-      - -p
-      - stak-compile
-  - id: stak_interpret
-    binary: stak-interpret
-    builder: rust
-    flags:
-      - --release
-      - -p
-      - stak-interpret
-  - id: stak_repl
-    binary: stak-repl
-    builder: rust
-    flags:
-      - --release
-      - -p
-      - stak-repl
-  - id: mstak
-    binary: mstak
-    builder: rust
-    dir: cmd/minimal
-    flags: --release -p mstak
-  - id: mstak_interpret
-    binary: mstak-interpret
-    builder: rust
-    dir: cmd/minimal
-    flags: --release -p mstak-interpret
+      - -p=stak
+  # - id: stak_compile
+  #   binary: stak-compile
+  #   builder: rust
+  #   flags:
+  #     - --release
+  #     - -p
+  #     - stak-compile
+  # - id: stak_interpret
+  #   binary: stak-interpret
+  #   builder: rust
+  #   flags:
+  #     - --release
+  #     - -p
+  #     - stak-interpret
+  # - id: stak_repl
+  #   binary: stak-repl
+  #   builder: rust
+  #   flags:
+  #     - --release
+  #     - -p
+  #     - stak-repl
+  # - id: mstak
+  #   binary: mstak
+  #   builder: rust
+  #   dir: cmd/minimal
+  #   flags: --release -p mstak
+  # - id: mstak_interpret
+  #   binary: mstak-interpret
+  #   builder: rust
+  #   dir: cmd/minimal
+  #   flags: --release -p mstak-interpret
