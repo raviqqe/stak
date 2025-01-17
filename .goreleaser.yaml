@@ -4,38 +4,18 @@ builds:
     binary: stak
     builder: rust
     flags: --release -p=stak
-    targets:
-      - aarch64-apple-darwin
-      - aarch64-unknown-linux-gnu
-      - x86_64-apple-darwin
-      - x86_64-unknown-linux-gnu
   - id: stak-compile
     binary: stak-compile
     builder: rust
     flags: --release -p=stak-compile
-    targets:
-      - aarch64-apple-darwin
-      - aarch64-unknown-linux-gnu
-      - x86_64-apple-darwin
-      - x86_64-unknown-linux-gnu
   - id: stak-interpret
     binary: stak-interpret
     builder: rust
     flags: --release -p=stak-interpret
-    targets:
-      - aarch64-apple-darwin
-      - aarch64-unknown-linux-gnu
-      - x86_64-apple-darwin
-      - x86_64-unknown-linux-gnu
   - id: stak-repl
     binary: stak-repl
     builder: rust
     flags: --release -p=stak-repl
-    targets:
-      - aarch64-apple-darwin
-      - aarch64-unknown-linux-gnu
-      - x86_64-apple-darwin
-      - x86_64-unknown-linux-gnu
   - id: mstak
     binary: mstak
     builder: rust
