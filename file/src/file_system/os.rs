@@ -23,6 +23,12 @@ impl OsFileSystem {
     pub fn new() -> Self {
         Self::default()
     }
+
+    fn file_mut(&mut self, descriptor: FileDescriptor) -> Result<&mut File, io::Error> {
+        self.files
+            .get_mut(&descriptor)
+            .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "corrupted file descriptor"))
+    }
 }
 
 impl FileSystem for OsFileSystem {
@@ -52,10 +58,7 @@ impl FileSystem for OsFileSystem {
     }
 
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
-        let file = self.files.get_mut(&descriptor).ok_or(io::Error::new(
-            ErrorKind::InvalidData,
-            "corrupted file descriptor",
-        ))?;
+        let file = self.file_mut(descriptor)?;
         let mut buffer = [0u8; 1];
         file.read_exact(&mut buffer)?;
 
@@ -63,10 +66,7 @@ impl FileSystem for OsFileSystem {
     }
 
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        let file = self.files.get_mut(&descriptor).ok_or(io::Error::new(
-            ErrorKind::InvalidData,
-            "corrupted file descriptor",
-        ))?;
+        let file = self.file_mut(descriptor)?;
         file.write_all(&[byte])?;
 
         Ok(())
