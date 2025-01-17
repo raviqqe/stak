@@ -5,7 +5,7 @@ builds:
     builder: rust
     flags:
       - --release
-      - -p=stak
+      - -p stak
   # - id: stak_compile
   #   binary: stak-compile
   #   builder: rust

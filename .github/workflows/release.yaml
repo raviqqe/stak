@@ -49,7 +49,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup
-      - run: brew install zig
+      - uses: mlugg/setup-zig@v1
       - run: cargo install --locked cargo-zigbuild
       - id: version
         run: echo version=v$(cargo run --bin stak -- --version | grep -o '[0-9.]*') > ${{ github.output }}
