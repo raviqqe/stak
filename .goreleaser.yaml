@@ -4,17 +4,22 @@ before:
     - cargo install --locked cargo-zigbuild
 builds:
   - id: stak
+    binary: stak
     builder: rust
     dir: root
-  - id: stak-compile
+  - id: stak_compile
+    binary: stak-compile
     builder: rust
     dir: cmd/compile
-  - id: stak-interpret
+  - id: stak_interpret
+    binary: stak-interpret
     builder: rust
     dir: cmd/interpret
-  - id: stak-repl
+  - id: stak_repl
+    binary: stak-repl
     builder: rust
     dir: cmd/repl
   - id: mstak
+    binary: mstak
     builder: rust
     dir: cmd/minimal/run
