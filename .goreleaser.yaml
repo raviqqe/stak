@@ -4,18 +4,38 @@ builds:
     binary: stak
     builder: rust
     flags: --release -p=stak
-  - id: stak_compile
+    targets:
+      - aarch64-apple-darwin
+      - aarch64-unknown-linux-gnu
+      - x86_64-apple-darwin
+      - x86_64-unknown-linux-gnu
+  - id: stak-compile
     binary: stak-compile
     builder: rust
     flags: --release -p=stak-compile
-  - id: stak_interpret
+    targets:
+      - aarch64-apple-darwin
+      - aarch64-unknown-linux-gnu
+      - x86_64-apple-darwin
+      - x86_64-unknown-linux-gnu
+  - id: stak-interpret
     binary: stak-interpret
     builder: rust
     flags: --release -p=stak-interpret
-  - id: stak_repl
+    targets:
+      - aarch64-apple-darwin
+      - aarch64-unknown-linux-gnu
+      - x86_64-apple-darwin
+      - x86_64-unknown-linux-gnu
+  - id: stak-repl
     binary: stak-repl
     builder: rust
     flags: --release -p=stak-repl
+    targets:
+      - aarch64-apple-darwin
+      - aarch64-unknown-linux-gnu
+      - x86_64-apple-darwin
+      - x86_64-unknown-linux-gnu
   - id: mstak
     binary: mstak
     builder: rust
@@ -26,7 +46,7 @@ builds:
       - aarch64-unknown-linux-gnu
       - x86_64-apple-darwin
       - x86_64-unknown-linux-gnu
-  - id: mstak_interpret
+  - id: mstak-interpret
     binary: mstak-interpret
     builder: rust
     dir: cmd/minimal
