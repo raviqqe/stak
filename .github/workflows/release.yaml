@@ -40,9 +40,20 @@ jobs:
           provenance: true
           token: ${{ secrets.NPM_TOKEN }}
         if: github.ref == 'refs/heads/main'
+  goreleaser:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: goreleaser/goreleaser-action@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
     needs:
       - cargo
+      - goreleaser
       - wasm
     if: always()
     runs-on: ubuntu-latest
