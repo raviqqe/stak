@@ -1,0 +1,16 @@
+builds:
+  - binary: stak
+    builder: rust
+    dir: root
+  - binary: stak-compile
+    builder: rust
+    dir: cmd/compile
+  - binary: stak-interpret
+    builder: rust
+    dir: cmd/interpret
+  - binary: stak-repl
+    builder: rust
+    dir: cmd/repl
+  - binary: mstak
+    builder: rust
+    dir: cmd/minimal/run
