@@ -46,12 +46,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: ./.github/actions/setup
       - run: brew install zig
       - run: cargo install --locked cargo-zigbuild
-      - uses: goreleaser/goreleaser-action@v6
+      - id: version
+        run: echo version=v$(cargo run --bin stak -- --version) > ${{ github.output }}
+      - uses: raviqqe/goreleaser-action@v1
         with:
-          args: release ${{ github.ref == 'refs/heads/main' && '--' || '--snapshot' }}
+          version: ${{ steps.version.outputs.version }}
+          snapshot: ${{ github.ref != 'refs/heads/main' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
