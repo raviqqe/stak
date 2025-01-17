@@ -33,7 +33,7 @@ jobs:
           mv /tmp/package.json pkg
         working-directory: wasm
       - run: wasm-pack pack wasm
-      - uses: JS-DevTools/npm-publish@v3
+      - uses: js-devtools/npm-publish@v3
         with:
           access: public
           package: wasm/pkg
