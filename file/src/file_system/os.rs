@@ -46,8 +46,8 @@ impl FileSystem for OsFileSystem {
         let descriptor = self.descriptor;
 
         self.files.insert(descriptor, file);
+        self.descriptor = self.descriptor.wrapping_add(1);
 
-        self.descriptor += 1;
         Ok(descriptor)
     }
 
