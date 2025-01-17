@@ -49,7 +49,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: goreleaser/goreleaser-action@v6
         with:
-          args: release ${{ github.ref == 'refs/heads/main' && '--snapshot' }}
+          args: release ${{ github.ref == 'refs/heads/main' && '--snapshot' || '--' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
