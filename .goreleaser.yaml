@@ -1,4 +1,7 @@
 version: 2
+before:
+  hooks:
+    - cargo install --locked cargo-zigbuild
 builds:
   - id: stak
     builder: rust
