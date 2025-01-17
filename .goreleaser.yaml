@@ -1,7 +1,4 @@
 version: 2
-before:
-  hooks:
-    - cargo install --locked cargo-zigbuild
 builds:
   - id: stak
     binary: stak
@@ -23,3 +20,7 @@ builds:
     binary: mstak
     builder: rust
     dir: cmd/minimal/run
+  - id: mstak_interpret
+    binary: mstak-interpret
+    builder: rust
+    dir: cmd/minimal/interpret

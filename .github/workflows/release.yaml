@@ -47,6 +47,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - run: brew install zig
+      - run: cargo install --locked cargo-zigbuild
       - uses: goreleaser/goreleaser-action@v6
         with:
           args: release ${{ github.ref == 'refs/heads/main' && '--' || '--snapshot' }}
