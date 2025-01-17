@@ -78,6 +78,11 @@ opt-level = 3
 debug-assertions = false
 overflow-checks = false
 
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
 [profile.release.build-override]
 opt-level = 3
 debug-assertions = false
