@@ -1,26 +1,22 @@
 version: 2
 builds:
-  # - id: stak
-  #   binary: stak
-  #   builder: rust
-  #   dir: root
+  - id: stak
+    binary: stak
+    builder: rust
   - id: stak_compile
     binary: stak-compile
     builder: rust
-    dir: cmd/compile
   - id: stak_interpret
     binary: stak-interpret
     builder: rust
-    dir: cmd/interpret
   - id: stak_repl
     binary: stak-repl
     builder: rust
-    dir: cmd/repl
   - id: mstak
     binary: mstak
     builder: rust
-    dir: cmd/minimal/run
+    dir: cmd/minimal
   - id: mstak_interpret
     binary: mstak-interpret
     builder: rust
-    dir: cmd/minimal/interpret
+    dir: cmd/minimal
