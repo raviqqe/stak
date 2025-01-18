@@ -1,5 +1,9 @@
-use crate::{read_file_size, validate};
+use crate::read_file_size;
 use core::{ffi::CStr, ptr::null_mut, slice};
+use rustix::{
+    fs::{self, Mode, OFlags},
+    mm::{mmap, munmap, MapFlags, ProtFlags},
+};
 
 /// A mmap.
 pub struct Mmap {
@@ -14,15 +18,16 @@ impl Mmap {
 
         Self {
             ptr: unsafe {
-                libc::mmap(
+                mmap(
                     null_mut(),
                     len,
-                    libc::PROT_READ,
-                    libc::MAP_PRIVATE,
+                    ProtFlags::READ,
+                    MapFlags::PRIVATE,
                     // spell-checker: disable-next-line
-                    libc::open(path.as_ptr(), libc::O_RDONLY),
+                    fs::open(path, OFlags::RDONLY, Mode::RUSR).unwrap(),
                     0,
                 )
+                .unwrap()
             } as _,
             len,
         }
@@ -37,7 +42,7 @@ impl Mmap {
 impl Drop for Mmap {
     fn drop(&mut self) {
         unsafe {
-            validate(libc::munmap(self.ptr as _, self.len));
+            munmap(self.ptr as _, self.len).unwrap();
         }
     }
 }
