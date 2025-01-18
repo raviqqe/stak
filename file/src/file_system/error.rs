@@ -10,7 +10,7 @@ pub enum FileError {
     Open,
     /// A close failure.
     Close,
-    /// A invalid file descriptor.
+    /// An invalid file descriptor.
     InvalidFileDescriptor,
     /// A read failure.
     Read,
