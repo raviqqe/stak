@@ -1,6 +1,6 @@
 use super::Clock;
 use core::convert::Infallible;
-use rustix::time::{time, ClockId};
+use rustix::time::{clock_gettime, ClockId};
 use stak_vm::Number;
 
 /// A clock based on libc.
@@ -18,8 +18,8 @@ impl Clock for LibcClock {
     type Error = Infallible;
 
     fn current_jiffy(&self) -> Result<Number, Self::Error> {
-        Ok(Number::from_i64(
-            unsafe { time(ClockId::default()) } * 1_000_000_000,
-        ))
+        let time = clock_gettime(ClockId::Realtime);
+
+        Ok(Number::from_i64(time.tv_sec * 1_000_000_000 + time.tv_nsec))
     }
 }

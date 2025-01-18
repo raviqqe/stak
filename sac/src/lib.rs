@@ -11,10 +11,10 @@ pub extern crate std;
 pub mod __private {
     #[cfg(feature = "std")]
     pub use clap;
-    #[cfg(feature = "libc")]
-    pub use libc;
     #[cfg(feature = "std")]
     pub use main_error;
+    #[cfg(feature = "libc")]
+    pub use rustix;
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
@@ -112,7 +112,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
-            libc::exit,
+            rustix::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,
