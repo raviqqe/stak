@@ -157,6 +157,7 @@ dependencies = [
 name = "stak-native"
 version = "0.1.5"
 dependencies = [
+ "heapless",
  "stak-vm",
 ]
 

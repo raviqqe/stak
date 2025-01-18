@@ -6,6 +6,7 @@ runs:
   using: composite
   steps:
     - uses: swatinem/rust-cache@v2
+    - run: rustup install nightly
     - uses: ruby/setup-ruby@v1
     - uses: homebrew/actions/setup-homebrew@master
       with:
