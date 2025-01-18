@@ -37,8 +37,12 @@ impl LibcFileSystem {
         Self::default()
     }
 
-    fn file(&mut self, descriptor: FileDescriptor) -> BorrowedFd {
-        self.files[&descriptor].as_fd()
+    fn file(&mut self, descriptor: FileDescriptor) -> Result<BorrowedFd, FileError> {
+        Ok(self
+            .files
+            .get(&descriptor)
+            .ok_or(FileError::InvalidFileDescriptor)?
+            .as_fd())
     }
 }
 
@@ -81,7 +85,7 @@ impl FileSystem for LibcFileSystem {
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        io::read(self.file(descriptor), &mut buffer).map_err(|_| FileError::Read)?;
+        io::read(self.file(descriptor)?, &mut buffer).map_err(|_| FileError::Read)?;
 
         Ok(buffer[0])
     }
@@ -89,7 +93,7 @@ impl FileSystem for LibcFileSystem {
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         let buffer = [byte];
 
-        io::write(self.file(descriptor), &buffer).map_err(|_| FileError::Write)?;
+        io::write(self.file(descriptor)?, &buffer).map_err(|_| FileError::Write)?;
 
         Ok(())
     }

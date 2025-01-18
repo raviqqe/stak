@@ -10,6 +10,8 @@ pub enum FileError {
     Open,
     /// A close failure.
     Close,
+    /// A invalid file descriptor.
+    InvalidFileDescriptor,
     /// A read failure.
     Read,
     /// A write failure.
@@ -29,6 +31,7 @@ impl Display for FileError {
         match self {
             Self::Open => write!(formatter, "cannot open file"),
             Self::Close => write!(formatter, "cannot close file"),
+            Self::InvalidFileDescriptor => write!(formatter, "invalid file descriptor"),
             Self::Read => write!(formatter, "cannot read file"),
             Self::Write => write!(formatter, "cannot write file"),
             Self::Delete => write!(formatter, "cannot delete file"),
