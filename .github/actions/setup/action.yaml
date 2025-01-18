@@ -10,5 +10,7 @@ runs:
     - uses: homebrew/actions/setup-homebrew@master
       with:
         stable: true
+      if: ${{ runner.os != 'Windows' }}
     - run: tools/ci/setup.sh
       shell: bash
+      if: ${{ runner.os != 'Windows' }}
