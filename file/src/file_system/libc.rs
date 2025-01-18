@@ -70,7 +70,7 @@ impl FileSystem for LibcFileSystem {
 
         self.files
             .insert(descriptor, file)
-            .map_err(|_| FileError::Open)?;
+            .map_err(|_| FileError::InvalidFileDescriptor)?;
         self.descriptor = self.descriptor.wrapping_add(1);
 
         Ok(descriptor)
