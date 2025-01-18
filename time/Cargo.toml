@@ -9,11 +9,12 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-libc = ["dep:libc"]
+libc = ["dep:rustix"]
 std = []
+rustix = ["dep:rustix"]
 
 [dependencies]
-libc = { version = "0.2", default-features = false, optional = true }
+rustix = { version = "0.38.43", default-features = false, optional = true }
 stak-vm = { version = "0.7.21", path = "../vm" }
 
 [lints]

@@ -146,7 +146,7 @@ version = "0.1.88"
 name = "stak-device"
 version = "0.2.92"
 dependencies = [
- "libc",
+ "rustix",
  "stak-vm",
 ]
 
@@ -220,7 +220,7 @@ dependencies = [
 name = "stak-sac"
 version = "0.1.94"
 dependencies = [
- "libc",
+ "rustix",
  "stak-configuration",
  "stak-device",
  "stak-file",
@@ -236,7 +236,7 @@ dependencies = [
 name = "stak-time"
 version = "0.1.33"
 dependencies = [
- "libc",
+ "rustix",
  "stak-vm",
 ]
 
