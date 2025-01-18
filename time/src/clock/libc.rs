@@ -20,6 +20,7 @@ impl Clock for LibcClock {
     fn current_jiffy(&self) -> Result<Number, Self::Error> {
         let time = clock_gettime(ClockId::Realtime);
 
+        // spell-checker: disable-next-line
         Ok(Number::from_i64(time.tv_sec * 1_000_000_000 + time.tv_nsec))
     }
 }

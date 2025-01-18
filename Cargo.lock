@@ -1458,8 +1458,8 @@ name = "stak-sac"
 version = "0.1.94"
 dependencies = [
  "clap",
+ "libc",
  "main_error",
- "rustix",
  "stak",
  "stak-configuration",
  "stak-device",
