@@ -881,6 +881,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "mstak"
+version = "0.3.27"
+dependencies = [
+ "stak-sac",
+]
+
+[[package]]
+name = "mstak-interpret"
+version = "0.4.21"
+dependencies = [
+ "libc",
+ "stak-device",
+ "stak-file",
+ "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
+ "stak-util",
+ "stak-vm",
+]
+
+[[package]]
 name = "nonbox"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
