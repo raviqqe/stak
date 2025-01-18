@@ -4,7 +4,7 @@ use core::{
 };
 
 /// An error.
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum LibcError {
     /// A stdin error.
     Stdin,

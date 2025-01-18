@@ -4,12 +4,10 @@
 
 mod heap;
 mod mmap;
-mod validate;
 
 use core::ffi::CStr;
 pub use heap::Heap;
 pub use mmap::Mmap;
-pub use validate::validate;
 
 /// Reads a file size at a path.
 pub fn read_file_size(path: &CStr) -> usize {
