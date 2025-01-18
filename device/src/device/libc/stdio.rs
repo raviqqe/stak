@@ -71,9 +71,7 @@ impl Write for Stderr {
 }
 
 fn write(fd: BorrowedFd, byte: u8, error: LibcError) -> Result<(), LibcError> {
-    let bytes = [byte];
-
-    if io::write(fd, &bytes).map_err(|_| error)? == 1 {
+    if io::write(fd, &[byte]).map_err(|_| error)? == 1 {
         Ok(())
     } else {
         Err(error)
