@@ -14,3 +14,6 @@ runs:
     - run: tools/ci/setup.sh
       shell: bash
       if: ${{ runner.os != 'Windows' }}
+    - run: cargo install stak
+      shell: bash
+      if: ${{ runner.os == 'Windows' }}
