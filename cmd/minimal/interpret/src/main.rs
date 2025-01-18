@@ -23,7 +23,7 @@ const HEAP_SIZE: usize = 1 << 19;
 #[cfg(not(test))]
 #[panic_handler]
 fn panic(_info: &core::panic::PanicInfo) -> ! {
-    unsafe { libc::exit(1) }
+    rustix::exit(1)
 }
 
 #[cfg_attr(not(test), no_mangle)]

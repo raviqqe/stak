@@ -78,7 +78,6 @@ dependencies = [
 name = "mstak-interpret"
 version = "0.4.21"
 dependencies = [
- "libc",
  "rustix",
  "stak-device",
  "stak-file",
