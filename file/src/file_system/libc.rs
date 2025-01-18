@@ -86,9 +86,11 @@ impl FileSystem for LibcFileSystem {
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        io::read(self.file(descriptor)?, &mut buffer).map_err(|_| FileError::Read)?;
-
-        Ok(buffer[0])
+        if io::read(self.file(descriptor)?, &mut buffer).map_err(|_| FileError::Read)? == 0 {
+            Err(FileError::Read)
+        } else {
+            Ok(buffer[0])
+        }
     }
 
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
