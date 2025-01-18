@@ -1,9 +1,12 @@
 use super::{utility::decode_path, FileDescriptor, FileError, FileSystem};
 use core::ffi::{c_int, CStr};
 use heapless::Vec;
+use rustix::{
+    fd::{AsRawFd, BorrowedFd, FromRawFd, OwnedFd},
+    fs::Access,
+    io::Errno,
+};
 use stak_vm::{Memory, Value};
-// spell-checker: disable-next-line
-use rustix::{F_OK, S_IRUSR, S_IWUSR};
 
 const PATH_SIZE: usize = 128;
 
@@ -46,59 +49,65 @@ impl FileSystem for LibcFileSystem {
     type Error = FileError;
 
     fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
-        let descriptor = unsafe {
-            rustix::open(
-                path.as_ptr(),
-                if output {
-                    // spell-checker: disable-next-line
-                    rustix::O_WRONLY | rustix::O_CREAT | rustix::O_TRUNC
-                } else {
-                    // spell-checker: disable-next-line
-                    rustix::O_RDONLY
-                },
+        let descriptor = rustix::fs::open(
+            path,
+            if output {
                 // spell-checker: disable-next-line
-                (S_IRUSR | S_IWUSR) as c_int,
-            )
-        };
+                rustix::O_WRONLY | rustix::O_CREAT | rustix::O_TRUNC
+            } else {
+                // spell-checker: disable-next-line
+                rustix::O_RDONLY
+            },
+            // spell-checker: disable-next-line
+            (S_IRUSR | S_IWUSR) as c_int,
+        )
+        .map_err(|_| FileError::Open)?;
+
+        forget(descriptor);
+        let descriptor = descriptor.as_raw_fd() as _;
 
         if descriptor >= 0 {
-            Ok(descriptor as _)
+            Ok(descriptor)
         } else {
             Err(FileError::Open)
         }
     }
 
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        Self::execute(FileError::Close, || unsafe {
-            rustix::close(descriptor as _)
-        })
+        unsafe { OwnedFd::from_raw_fd(descriptor) }
     }
 
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        if unsafe { rustix::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
-            Ok(buffer[0])
-        } else {
-            Err(FileError::Read)
-        }
+        rustix::io::read(BorrowedFd::from_raw_fd(descriptor), &mut buffer)
+            .map_err(|_| FileError::Read)?;
+
+        Ok(buffer[0])
     }
 
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        Self::execute(FileError::Write, || {
-            let buffer = [byte];
-            (unsafe { rustix::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
-        })
+        let buffer = [byte];
+
+
+        rustix::io::write(usnsafe { BorrowedFd::from_raw_fd(descriptor as _)}, &buffer)
+            .map_err(|_| FileError::Write)?;
+
+        Ok(())
     }
 
     fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
-        Self::execute(FileError::Delete, || unsafe {
-            rustix::remove(path as *const _ as _)
-        })
+        rustix::fs::unlink(path).map_err(|_| FileError::Delete);
+
+        Ok(())
     }
 
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
-        Ok(unsafe { rustix::access(path as *const _ as _, F_OK) } == 0)
+        match rustix::fs::access(path, Access::EXISTS) {
+            Ok(()) => Ok(true),
+            Err(number) if number == Errno::ACCESS => Ok(false),
+            Err(_) => Err(FileError::Exists),
+        }
     }
 
     fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
