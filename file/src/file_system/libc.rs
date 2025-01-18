@@ -3,7 +3,7 @@ use core::ffi::{c_int, CStr};
 use heapless::Vec;
 use stak_vm::{Memory, Value};
 // spell-checker: disable-next-line
-use libc::{F_OK, S_IRUSR, S_IWUSR};
+use rustix::{F_OK, S_IRUSR, S_IWUSR};
 
 const PATH_SIZE: usize = 128;
 
@@ -47,14 +47,14 @@ impl FileSystem for LibcFileSystem {
 
     fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
         let descriptor = unsafe {
-            libc::open(
+            rustix::open(
                 path.as_ptr(),
                 if output {
                     // spell-checker: disable-next-line
-                    libc::O_WRONLY | libc::O_CREAT | libc::O_TRUNC
+                    rustix::O_WRONLY | rustix::O_CREAT | rustix::O_TRUNC
                 } else {
                     // spell-checker: disable-next-line
-                    libc::O_RDONLY
+                    rustix::O_RDONLY
                 },
                 // spell-checker: disable-next-line
                 (S_IRUSR | S_IWUSR) as c_int,
@@ -69,13 +69,15 @@ impl FileSystem for LibcFileSystem {
     }
 
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        Self::execute(FileError::Close, || unsafe { libc::close(descriptor as _) })
+        Self::execute(FileError::Close, || unsafe {
+            rustix::close(descriptor as _)
+        })
     }
 
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        if unsafe { libc::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
+        if unsafe { rustix::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
             Ok(buffer[0])
         } else {
             Err(FileError::Read)
@@ -85,18 +87,18 @@ impl FileSystem for LibcFileSystem {
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         Self::execute(FileError::Write, || {
             let buffer = [byte];
-            (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
+            (unsafe { rustix::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
         })
     }
 
     fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
         Self::execute(FileError::Delete, || unsafe {
-            libc::remove(path as *const _ as _)
+            rustix::remove(path as *const _ as _)
         })
     }
 
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
-        Ok(unsafe { libc::access(path as *const _ as _, F_OK) } == 0)
+        Ok(unsafe { rustix::access(path as *const _ as _, F_OK) } == 0)
     }
 
     fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
