@@ -1,10 +1,10 @@
 use super::{utility::decode_path, FileDescriptor, FileError, FileSystem};
-use core::ffi::{c_int, CStr};
-use heapless::Vec;
+use core::ffi::CStr;
+use heapless::{FnvIndexMap, Vec};
 use rustix::{
-    fd::{AsRawFd, BorrowedFd, FromRawFd, OwnedFd},
-    fs::Access,
-    io::Errno,
+    fd::{AsFd, BorrowedFd, OwnedFd},
+    fs::{self, Access, Mode, OFlags},
+    io::{self, Errno},
 };
 use stak_vm::{Memory, Value};
 
@@ -25,21 +25,20 @@ impl AsRef<CStr> for CString {
 }
 
 /// A file system based on the libc API.
-#[derive(Debug)]
-pub struct LibcFileSystem {}
+#[derive(Debug, Default)]
+pub struct LibcFileSystem {
+    descriptor: FileDescriptor,
+    files: FnvIndexMap<FileDescriptor, OwnedFd, 32>,
+}
 
 impl LibcFileSystem {
     /// Creates a file system.
-    pub const fn new() -> Self {
-        Self {}
+    pub fn new() -> Self {
+        Self::default()
     }
 
-    fn execute(error: FileError, callback: impl Fn() -> c_int) -> Result<(), FileError> {
-        if callback() == 0 {
-            Ok(())
-        } else {
-            Err(error)
-        }
+    fn file(&mut self, descriptor: FileDescriptor) -> BorrowedFd {
+        self.files[&descriptor].as_fd()
     }
 }
 
@@ -49,39 +48,40 @@ impl FileSystem for LibcFileSystem {
     type Error = FileError;
 
     fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
-        let descriptor = rustix::fs::open(
+        let file = fs::open(
             path,
             if output {
                 // spell-checker: disable-next-line
-                rustix::O_WRONLY | rustix::O_CREAT | rustix::O_TRUNC
+                OFlags::WRONLY | OFlags::CREATE | OFlags::TRUNC
             } else {
                 // spell-checker: disable-next-line
-                rustix::O_RDONLY
+                OFlags::RDONLY
             },
             // spell-checker: disable-next-line
-            (S_IRUSR | S_IWUSR) as c_int,
+            Mode::RUSR | Mode::WUSR,
         )
         .map_err(|_| FileError::Open)?;
 
-        forget(descriptor);
-        let descriptor = descriptor.as_raw_fd() as _;
+        let descriptor = self.descriptor;
 
-        if descriptor >= 0 {
-            Ok(descriptor)
-        } else {
-            Err(FileError::Open)
-        }
+        self.files
+            .insert(descriptor, file)
+            .map_err(|_| FileError::Open)?;
+        self.descriptor = self.descriptor.wrapping_add(1);
+
+        Ok(descriptor)
     }
 
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        unsafe { OwnedFd::from_raw_fd(descriptor) }
+        self.files.remove(&descriptor);
+
+        Ok(())
     }
 
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        rustix::io::read(BorrowedFd::from_raw_fd(descriptor), &mut buffer)
-            .map_err(|_| FileError::Read)?;
+        io::read(self.file(descriptor), &mut buffer).map_err(|_| FileError::Read)?;
 
         Ok(buffer[0])
     }
@@ -89,21 +89,17 @@ impl FileSystem for LibcFileSystem {
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
         let buffer = [byte];
 
-
-        rustix::io::write(usnsafe { BorrowedFd::from_raw_fd(descriptor as _)}, &buffer)
-            .map_err(|_| FileError::Write)?;
+        io::write(self.file(descriptor), &buffer).map_err(|_| FileError::Write)?;
 
         Ok(())
     }
 
     fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
-        rustix::fs::unlink(path).map_err(|_| FileError::Delete);
-
-        Ok(())
+        fs::unlink(path).map_err(|_| FileError::Delete)
     }
 
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
-        match rustix::fs::access(path, Access::EXISTS) {
+        match fs::access(path, Access::EXISTS) {
             Ok(()) => Ok(true),
             Err(number) if number == Errno::ACCESS => Ok(false),
             Err(_) => Err(FileError::Exists),
@@ -116,12 +112,6 @@ impl FileSystem for LibcFileSystem {
         path.push(0).map_err(|_| FileError::PathDecode)?;
 
         Ok(CString::new(path))
-    }
-}
-
-impl Default for LibcFileSystem {
-    fn default() -> Self {
-        Self::new()
     }
 }
 

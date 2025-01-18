@@ -13,8 +13,10 @@ libc = ["dep:rustix"]
 std = []
 
 [dependencies]
-heapless = "0.8.0"
-rustix = { version = "0.38.43", default-features = false, optional = true }
+heapless = { version = "0.8.0", default-features = false }
+rustix = { version = "0.38.43", default-features = false, features = [
+  "fs",
+], optional = true }
 stak-vm = { version = "0.7.21", path = "../vm" }
 
 [dev-dependencies]
