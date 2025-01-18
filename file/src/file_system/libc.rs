@@ -9,6 +9,7 @@ use rustix::{
 use stak_vm::{Memory, Value};
 
 const PATH_SIZE: usize = 128;
+const DEFAULT_FILE_CAPACITY: usize = 32;
 
 pub struct CString(Vec<u8, PATH_SIZE>);
 
@@ -26,9 +27,9 @@ impl AsRef<CStr> for CString {
 
 /// A file system based on the libc API.
 #[derive(Debug, Default)]
-pub struct LibcFileSystem {
+pub struct LibcFileSystem<const N: usize = DEFAULT_FILE_CAPACITY> {
     descriptor: FileDescriptor,
-    files: FnvIndexMap<FileDescriptor, OwnedFd, 32>,
+    files: FnvIndexMap<FileDescriptor, OwnedFd, N>,
 }
 
 impl LibcFileSystem {
