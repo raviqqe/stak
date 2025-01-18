@@ -1,5 +1,6 @@
 use super::Clock;
-use core::{convert::Infallible, ptr::null_mut};
+use core::convert::Infallible;
+use rustix::time::{time, ClockId};
 use stak_vm::Number;
 
 /// A clock based on libc.
@@ -18,7 +19,7 @@ impl Clock for LibcClock {
 
     fn current_jiffy(&self) -> Result<Number, Self::Error> {
         Ok(Number::from_i64(
-            unsafe { libc::time(null_mut()) } * 1_000_000_000,
+            unsafe { time(ClockId::default()) } * 1_000_000_000,
         ))
     }
 }

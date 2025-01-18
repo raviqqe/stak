@@ -1,7 +1,8 @@
 use super::{error::LibcError, Read, Write};
 use rustix::{
+    fd::BorrowedFd,
     io,
-    stdio::{stdin, stdout},
+    stdio::{stderr, stdin, stdout},
 };
 
 /// A stdin.
@@ -70,7 +71,7 @@ impl Write for Stderr {
 }
 
 fn write(fd: BorrowedFd, byte: u8, error: LibcError) -> Result<(), LibcError> {
-    let mut bytes = [byte];
+    let bytes = [byte];
 
     if io::write(fd, &bytes).map_err(|_| error)? == 1 {
         Ok(())
