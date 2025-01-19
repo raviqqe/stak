@@ -21,6 +21,7 @@ impl<'a> DynamicFunction<'a> {
         >,
     ) -> Self {
         Self {
+            arity,
             arity_mut,
             function,
         }
@@ -33,7 +34,7 @@ impl<'a> DynamicFunction<'a> {
 
     /// Returns an arity of mutable reference arguments.
     pub const fn arity_mut(&self) -> usize {
-        self.arity
+        self.arity_mut
     }
 
     /// Calls a function.
@@ -60,6 +61,7 @@ macro_rules! impl_function {
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
+                    0,
                     Box::new(move |arguments: &[&dyn Any], arguments_mut: &[&mut dyn Any]| {
                         let mut iter = 0..;
 
