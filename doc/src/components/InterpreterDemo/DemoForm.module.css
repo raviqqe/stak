@@ -1,0 +1,13 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  min-height: 20rem;
+
+  > * {
+    flex: 1;
+  }
+}
+
+.textArea {
+  flex: 1;
+}

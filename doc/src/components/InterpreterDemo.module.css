@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  gap: 1.5rem;
+
+  @media (max-width: 42rem) {
+    flex-direction: column;
+  }
+
+  > astro-island > * {
+    flex: 1;
+  }
+}

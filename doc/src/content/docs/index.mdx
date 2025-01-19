@@ -19,5 +19,10 @@ hero:
 ---
 
 import Readme from "../../../../README.md";
+import InterpreterDemo from "../../components/InterpreterDemo.astro";
+import styles from "./index.module.css";
 
-<Readme />
+<div class={styles.root}>
+  <InterpreterDemo />
+  <Readme />
+</div>
