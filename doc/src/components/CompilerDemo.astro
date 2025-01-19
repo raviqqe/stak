@@ -1,0 +1,10 @@
+---
+import styles from "./CompilerDemo.module.css";
+import { CompilerDemoForm } from "./CompilerDemoForm.jsx";
+import { CompilerDemoIo } from "./CompilerDemoIo.jsx";
+---
+
+<div class={styles.container}>
+  <CompilerDemoForm client:visible />
+  <CompilerDemoIo client:visible />
+</div>
