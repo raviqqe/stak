@@ -40,7 +40,7 @@ pub trait IntoDynamicFunction<'a, T, S> {
 
 macro_rules! impl_function {
     ($($type:ident),*; $tuple:ty) => {
-        impl<'a, T1: FnMut($(&$type),*) -> T2 + 'a, T2: Any, $($type: Any),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
+        impl<'a, T1: FnMut($($type),*) -> T2 + 'a, T2: Any, $($type: Any + Clone),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 #[allow(unused, unused_mut)]
@@ -48,11 +48,13 @@ macro_rules! impl_function {
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
                     move |arguments: &[&dyn Any]| {
                         let mut iter = 0..;
-                        $(let $type: &$type =
-                            arguments[iter.next().unwrap_or_default()]
-                            .downcast_ref().ok_or(DynamicError::Downcast)?;)*
 
-                        Ok(Box::new(self($($type),*)))
+                        Ok(Box::new(self($(
+                            arguments[iter.next().unwrap_or_default()]
+                            .downcast_ref::<$type>()
+                            .ok_or(DynamicError::Downcast)?
+                            .clone()
+                        ),*)))
                     },
                 )
             }
@@ -72,3 +74,38 @@ macro_rules! impl_functions {
 }
 
 impl_functions!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use alloc::{format, string::String};
+
+    #[derive(Clone, Debug)]
+    struct Foo {}
+
+    fn foo(x: usize, y: usize) -> usize {
+        x + y
+    }
+
+    fn bar(name: String, value: Option<Foo>) -> String {
+        format!("{name}: {value:?}")
+    }
+
+    #[test]
+    fn create_dynamic_function() {
+        foo.into_dynamic();
+        bar.into_dynamic();
+    }
+
+    #[test]
+    fn call_dynamic_function() {
+        assert_eq!(
+            *foo.into_dynamic()
+                .call(&[&1usize, &2usize])
+                .unwrap()
+                .downcast::<usize>()
+                .unwrap(),
+            3
+        );
+    }
+}
