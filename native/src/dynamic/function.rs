@@ -79,17 +79,20 @@ macro_rules! impl_function {
 }
 
 macro_rules! impl_functions {
-    ($first:ident, $($type:ident),*) => {
+    ([$first:ident, $($type:ident),*], [$($ref:ident),*]) => {
         impl_function!([$first, $($type),*], ($first, $($type),*));
-        impl_functions!($($type),*);
+        impl_functions!([$($type),*], [$($ref),*]);
     };
-    ($type:ident) => {
+    ([$type:ident], [$($ref:ident),*]) => {
         impl_function!([$type], ($type,));
         impl_function!([], ());
     }
 }
 
-impl_functions!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z);
+impl_functions!(
+    [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z],
+    [い, ろ, は, に, お, へ, と, ち, り, ぬ, る, を]
+);
 
 #[cfg(test)]
 mod tests {
