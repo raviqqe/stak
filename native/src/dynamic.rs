@@ -2,7 +2,9 @@
 
 mod error;
 mod function;
+mod r#mut;
 
+use self::r#mut::Mut;
 pub use self::{
     error::DynamicError,
     function::{DynamicFunction, IntoDynamicFunction},
@@ -54,26 +56,17 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
 
-            let mut argument_refs = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+            let mut mutable_arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity_mut() {
                 let value = memory.pop();
                 let value = self.objects
                     [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
                     .as_ref()
-                    .ok_or(DynamicError::ObjectIndex)?
-                    .borrow_mut();
+                    .ok_or(DynamicError::ObjectIndex)?;
 
-                argument_refs
-                    .push(value)
-                    .map_err(|_| Error::ArgumentCount)?;
-            }
-
-            let mut mutable_arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
-
-            for reference in &mut argument_refs {
                 mutable_arguments
-                    .push(&mut ***reference)
+                    .push(Mut::new(&value))
                     .map_err(|_| Error::ArgumentCount)?;
             }
 
