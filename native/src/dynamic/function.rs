@@ -7,7 +7,7 @@ type AnyCell<'a> = &'a RefCell<Box<dyn Any>>;
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
     arity: usize,
-    arity_mut: usize,
+    cell_arity: usize,
     #[expect(clippy::type_complexity)]
     function: Box<dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
 }
@@ -16,14 +16,14 @@ impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
     pub fn new(
         arity: usize,
-        arity_mut: usize,
+        cell_arity: usize,
         function: Box<
             dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a,
         >,
     ) -> Self {
         Self {
             arity,
-            arity_mut,
+            cell_arity,
             function,
         }
     }
@@ -34,8 +34,8 @@ impl<'a> DynamicFunction<'a> {
     }
 
     /// Returns an arity of mutable reference arguments.
-    pub const fn arity_mut(&self) -> usize {
-        self.arity_mut
+    pub const fn cell_arity(&self) -> usize {
+        self.cell_arity
     }
 
     /// Calls a function.

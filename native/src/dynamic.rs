@@ -56,7 +56,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
 
             let mut mutable_arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
 
-            for _ in 0..function.arity_mut() {
+            for _ in 0..function.cell_arity() {
                 let value = memory.pop();
                 let value = self.objects
                     [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
