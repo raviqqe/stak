@@ -74,7 +74,7 @@ macro_rules! impl_function {
                                 .clone(),
                             )*
                             $(
-                                arguments[ref_iter.next().unwrap_or_default()]
+                                arguments_mut[ref_iter.next().unwrap_or_default()]
                                 .downcast_mut::<$ref>()
                                 .ok_or(DynamicError::Downcast)?,
                             )*
