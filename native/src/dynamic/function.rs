@@ -157,7 +157,7 @@ mod tests {
 
     #[test]
     fn call_dynamic_function_with_mutable_reference() {
-        let x: RefCell<Box<dyn Any>> = RefCell::new(Box::new(0));
+        let x: RefCell<Box<dyn Any>> = RefCell::new(Box::new(0usize));
 
         assert_eq!(
             *baz.into_dynamic()
