@@ -54,23 +54,31 @@ pub trait IntoDynamicFunction<'a, T, S> {
 }
 
 macro_rules! impl_function {
-    ([$($type:ident),*], [$($ref:ident),*], $tuple:ty) => {
-        impl<'a, T1: FnMut($($type),*) -> T2 + 'a, T2: Any, $($type: Any + Clone),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
+    ([$($type:ident),*], [$($ref:ident),*]) => {
+        impl<'a, T1: FnMut($($type,)* $(&mut $ref,)*) -> T2 + 'a, T2: Any, $($type: Any + Clone,)* $($ref: Any,)*> IntoDynamicFunction<'a, ($($type,)* $(&mut $ref,)*), T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
-                    0,
+                    (&[$(size_of::<$ref>()),*] as &[usize]).len(),
                     Box::new(move |arguments: &[&dyn Any], arguments_mut: &[&mut dyn Any]| {
                         let mut iter = 0..;
+                        let mut ref_iter = 0..;
 
-                        Ok(Box::new(self($(
-                            arguments[iter.next().unwrap_or_default()]
-                            .downcast_ref::<$type>()
-                            .ok_or(DynamicError::Downcast)?
-                            .clone()
-                        ),*)))
+                        Ok(Box::new(self(
+                            $(
+                                arguments[iter.next().unwrap_or_default()]
+                                .downcast_ref::<$type>()
+                                .ok_or(DynamicError::Downcast)?
+                                .clone(),
+                            )*
+                            $(
+                                arguments[ref_iter.next().unwrap_or_default()]
+                                .downcast_mut::<$ref>()
+                                .ok_or(DynamicError::Downcast)?,
+                            )*
+                        )))
                     }),
                 )
             }
@@ -78,14 +86,25 @@ macro_rules! impl_function {
     };
 }
 
+macro_rules! impl_ref_functions {
+    ([$($type:ident),*], [$first_ref:ident, $($ref:ident),*]) => {
+        impl_function!([$($type),*], [$first_ref, $($ref),*]);
+        impl_ref_functions!([$($type),*], [$($ref),*]);
+    };
+    ([$($type:ident),*], [$ref:ident]) => {
+        impl_function!([$($type),*], [$ref]);
+        impl_function!([$($type),*], []);
+    }
+}
+
 macro_rules! impl_functions {
     ([$first_type:ident, $($type:ident),*], [$($ref:ident),*]) => {
-        impl_function!([$first_type, $($type),*], [$($ref),*], ($first_type, $($type),*));
+        impl_ref_functions!([$first_type, $($type),*], [$($ref),*]);
         impl_functions!([$($type),*], [$($ref),*]);
     };
     ([$type:ident], [$($ref:ident),*]) => {
-        impl_function!([$type], [], ($type,));
-        impl_function!([], [], ());
+        impl_ref_functions!([$type], [$($ref),*]);
+        impl_ref_functions!([], [$($ref),*]);
     }
 }
 
