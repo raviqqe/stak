@@ -51,9 +51,8 @@ macro_rules! impl_function {
                         $(let $type: &$type =
                             arguments[iter.next().unwrap_or_default()]
                             .downcast_ref().ok_or(DynamicError::Downcast)?;)*
-                        $(let $type: $type = $type.clone();)*
 
-                        Ok(Box::new(self($($type),*)))
+                        Ok(Box::new(self($($type.clone()),*)))
                     },
                 )
             }
