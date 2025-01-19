@@ -94,10 +94,6 @@ export default defineConfig({
               link: "/install",
             },
             {
-              label: "Interpreter demo",
-              link: "/demo",
-            },
-            {
               label: "Embedding Scheme in Rust",
               link: "/embedding-scripts",
             },
@@ -114,6 +110,10 @@ export default defineConfig({
               link: "/no-std-no-alloc",
             },
           ],
+        },
+        {
+          label: "Interpreter demo",
+          link: "/demo",
         },
         {
           label: "Limitations",
