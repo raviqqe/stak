@@ -73,3 +73,26 @@ macro_rules! impl_functions {
 }
 
 impl_functions!(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use alloc::{format, string::String};
+
+    #[derive(Clone, Debug)]
+    struct Foo {}
+
+    fn foo(x: usize, y: usize) -> usize {
+        x + y
+    }
+
+    fn bar(name: String, value: Option<Foo>) -> String {
+        format!("{name}: {value:?}")
+    }
+
+    #[test]
+    fn create_dynamic_function() {
+        foo.into_dynamic();
+        bar.into_dynamic();
+    }
+}
