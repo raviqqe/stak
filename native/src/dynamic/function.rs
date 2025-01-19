@@ -10,7 +10,6 @@ type BoxedFunction<'a> =
 pub struct DynamicFunction<'a> {
     arity: usize,
     cell_arity: usize,
-    #[expect(clippy::type_complexity)]
     function: BoxedFunction<'a>,
 }
 
