@@ -1,14 +1,8 @@
 ---
 import classNames from "classnames";
 import styles from "./Demo.module.css";
-
-interface Props {
-  class?: string;
-}
-
-const props = Astro.props;
 ---
 
-<div class={classNames(styles.root, props.class, "not-content")}>
+<div class={classNames(styles.root, "not-content")}>
   <slot />
 </div>

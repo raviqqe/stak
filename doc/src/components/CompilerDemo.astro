@@ -1,11 +1,10 @@
 ---
-import styles from "./CompilerDemo.module.css";
 import { DemoForm } from "./CompilerDemo/DemoForm.jsx";
 import { DemoIo } from "./CompilerDemo/DemoIo.jsx";
 import Demo from "./Demo.astro";
 ---
 
-<Demo class={styles.root}>
+<Demo>
   <DemoForm client:visible />
   <DemoIo client:visible />
 </Demo>
