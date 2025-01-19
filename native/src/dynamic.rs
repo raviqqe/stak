@@ -8,16 +8,16 @@ pub use self::{
     function::{DynamicFunction, IntoDynamicFunction},
 };
 use alloc::boxed::Box;
-use core::any::Any;
+use core::{any::Any, cell::RefCell};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
-const MAXIMUM_ARGUMENT_COUNT: usize = 32;
+const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, const N: usize> {
     functions: &'a mut [DynamicFunction<'a>],
-    objects: [Option<Box<dyn Any>>; N],
+    objects: [Option<RefCell<Box<dyn Any>>>; N],
 }
 
 impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
@@ -35,7 +35,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        let function: &mut DynamicFunction = self
+        let function = self
             .functions
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
@@ -54,7 +54,21 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
 
-            let value = function.call(arguments.as_slice())?;
+            let mut mutable_arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+
+            for _ in 0..function.cell_arity() {
+                let value = memory.pop();
+                let value = self.objects
+                    [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
+                    .as_ref()
+                    .ok_or(DynamicError::ObjectIndex)?;
+
+                mutable_arguments
+                    .push(value)
+                    .map_err(|_| Error::ArgumentCount)?;
+            }
+
+            let value = function.call(arguments.as_slice(), mutable_arguments.as_slice())?;
 
             (
                 value,
@@ -65,7 +79,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
             )
         };
 
-        self.objects[index] = Some(value);
+        self.objects[index] = Some(RefCell::new(value));
 
         let cons = memory.cons(
             Number::from_i64(index as _).into(),
