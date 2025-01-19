@@ -94,6 +94,10 @@ export default defineConfig({
               link: "/install",
             },
             {
+              label: "Interpreter demo",
+              link: "/demo",
+            },
+            {
               label: "Embedding Scheme in Rust",
               link: "/embedding-scripts",
             },
