@@ -48,11 +48,13 @@ macro_rules! impl_function {
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
                     move |arguments: &[&dyn Any]| {
                         let mut iter = 0..;
-                        $(let $type: &$type =
-                            arguments[iter.next().unwrap_or_default()]
-                            .downcast_ref().ok_or(DynamicError::Downcast)?;)*
 
-                        Ok(Box::new(self($($type.clone()),*)))
+                        Ok(Box::new(self($(
+                            arguments[iter.next().unwrap_or_default()]
+                            .downcast_ref::<$type>()
+                            .ok_or(DynamicError::Downcast)?
+                            .clone()
+                        ),*)))
                     },
                 )
             }
