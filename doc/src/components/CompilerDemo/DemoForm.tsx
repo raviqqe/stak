@@ -18,7 +18,7 @@ export const DemoForm = (): JSX.Element => {
   const error = useStore(store.compilerError);
 
   return (
-    <form class={styles.container}>
+    <form class={styles.root}>
       <Field style={{ flex: 1 }}>
         <Label for="source">Program</Label>
         <TextArea

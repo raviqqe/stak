@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Label = (props: Props): JSX.Element => (
-  <label class={styles.container} for={props.for}>
+  <label class={styles.root} for={props.for}>
     {props.children}
   </label>
 );

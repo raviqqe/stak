@@ -12,7 +12,7 @@ interface Props {
 
 export const TextArea = (props: Props): JSX.Element => (
   <textarea
-    class={classNames(styles.container, props.class)}
+    class={classNames(styles.root, props.class)}
     id={props.id}
     onInput={(event) => props.onChange(event.currentTarget.value)}
     style={props.style}

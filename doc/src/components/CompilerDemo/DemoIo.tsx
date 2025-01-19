@@ -15,7 +15,7 @@ export const DemoIo = (): JSX.Element => {
   const error = useStore(store.interpreterError);
 
   return (
-    <div class={styles.container}>
+    <div class={styles.root}>
       <Field style={{ flex: 1 }}>
         <Label for="input">stdin</Label>
         <TextArea
