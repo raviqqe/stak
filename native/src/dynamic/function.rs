@@ -114,7 +114,10 @@ macro_rules! impl_functions {
     }
 }
 
-impl_functions!([A, B, C], [い, ろ, は]);
+impl_functions!(
+    [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z],
+    [い, ろ, は, に, お, へ, と, ち, り, ぬ, る, を]
+);
 
 #[cfg(test)]
 mod tests {
