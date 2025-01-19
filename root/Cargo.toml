@@ -10,6 +10,7 @@ repository.workspace = true
 
 [features]
 default = ["float", "std"]
+alloc = ["stak-native/alloc"]
 float = ["stak-sac/float", "stak-vm/float"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
@@ -20,6 +21,7 @@ libc = [
   "stak-time/libc",
 ]
 std = [
+  "alloc",
   "stak-device/std",
   "stak-file/std",
   "stak-process-context/std",
