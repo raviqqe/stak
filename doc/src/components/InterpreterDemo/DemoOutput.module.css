@@ -1,8 +1,11 @@
-.container {
+.root {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   min-height: 20rem;
+
+  > * {
+    flex: 1;
+  }
 }
 
 .output {

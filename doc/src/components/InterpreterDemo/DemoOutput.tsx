@@ -11,7 +11,7 @@ export const DemoOutput = (): JSX.Element => {
   const error = useStore(store.error);
 
   return (
-    <div class={styles.container}>
+    <div class={styles.root}>
       <Field>
         <Label for="output">Output</Label>
         <pre class={styles.output} id="output">
