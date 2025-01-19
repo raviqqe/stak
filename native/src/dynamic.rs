@@ -8,7 +8,7 @@ pub use self::{
     function::{DynamicFunction, IntoDynamicFunction},
 };
 use alloc::boxed::Box;
-use core::{any::Any, cell::RefCell, ops::DerefMut};
+use core::{any::Any, cell::RefCell};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
@@ -73,7 +73,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
 
             for reference in &mut argument_refs {
                 mutable_arguments
-                    .push(&mut **reference.deref_mut())
+                    .push(&mut ***reference)
                     .map_err(|_| Error::ArgumentCount)?;
             }
 
