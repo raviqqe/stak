@@ -159,13 +159,10 @@ mod tests {
     fn call_dynamic_function_with_mutable_reference() {
         let x: RefCell<Box<dyn Any>> = RefCell::new(Box::new(0usize));
 
-        assert_eq!(
-            *baz.into_dynamic()
-                .call(&[&42usize], &[Mut::new(&x)])
-                .unwrap()
-                .downcast::<usize>()
-                .unwrap(),
-            3
-        );
+        baz.into_dynamic()
+            .call(&[&42usize], &[Mut::new(&x)])
+            .unwrap();
+
+        assert_eq!(*x.borrow().downcast_ref::<usize>().unwrap(), 42);
     }
 }
