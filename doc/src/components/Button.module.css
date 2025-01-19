@@ -1,4 +1,4 @@
-.container {
+.root {
   composes: boxShadow from "../system.module.css";
   display: flex;
   align-items: center;
