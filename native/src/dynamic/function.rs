@@ -54,13 +54,9 @@ pub trait IntoDynamicFunction<'a, T, S> {
     fn into_dynamic(self) -> DynamicFunction<'a>;
 }
 
-trait Sealed {}
-
-impl<T: Clone> Sealed for T {}
-
 macro_rules! impl_function {
     ([$($type:ident),*], [$($ref:ident),*]) => {
-        impl<'a, T1: FnMut($($type,)* $(&mut $ref,)*) -> T2 + 'a, T2: Any, $($type: Any + Sealed + Clone,)* $($ref: Any,)*> IntoDynamicFunction<'a, ($($type,)* $(Mut<'a, $ref>,)*), T2> for T1 {
+        impl<'a, T1: FnMut($($type,)* $(&mut $ref,)*) -> T2 + 'a, T2: Any, $($type: Any + Clone,)* $($ref: Any,)*> IntoDynamicFunction<'a, ($($type,)* $(Mut<'a, $ref>,)*), T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 #[allow(unused, unused_mut)]
