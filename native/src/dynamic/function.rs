@@ -42,9 +42,9 @@ impl<'a> DynamicFunction<'a> {
     pub fn call(
         &mut self,
         arguments: &[&dyn Any],
-        arguments_mut: &[AnyCell],
+        cell_arguments: &[AnyCell],
     ) -> Result<Box<dyn Any>, DynamicError> {
-        (self.function)(arguments, arguments_mut)
+        (self.function)(arguments, cell_arguments)
     }
 }
 
@@ -67,7 +67,7 @@ macro_rules! impl_function {
                 DynamicFunction::new(
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
                     (&[$(size_of::<$ref>()),*] as &[usize]).len(),
-                    Box::new(move |arguments: &[&dyn Any], arguments_mut: &[AnyCell]| {
+                    Box::new(move |arguments: &[&dyn Any], cell_arguments: &[AnyCell]| {
                         let mut iter = 0..;
                         let mut ref_iter = 0..;
 
@@ -79,7 +79,7 @@ macro_rules! impl_function {
                                 .clone(),
                             )*
                             $(
-                                arguments_mut[ref_iter.next().unwrap_or_default()]
+                                cell_arguments[ref_iter.next().unwrap_or_default()]
                                 .borrow_mut()
                                 .downcast_mut::<$ref>()
                                 .ok_or(DynamicError::Downcast)?,
