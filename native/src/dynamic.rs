@@ -8,11 +8,11 @@ pub use self::{
     function::{DynamicFunction, IntoDynamicFunction},
 };
 use alloc::boxed::Box;
-use core::{any::Any, cell::RefCell};
+use core::{any::Any, cell::RefCell, ops::DerefMut};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
-const MAXIMUM_ARGUMENT_COUNT: usize = 32;
+const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, const N: usize> {
@@ -40,7 +40,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
-        let (value, index) = {
+        let (value, index): (Box<dyn Any>, _) = {
             let mut arguments = Vec::<&dyn Any, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity() {
@@ -54,7 +54,30 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
 
-            let value = function.call(arguments.as_slice(), &[])?;
+            let mut argument_refs = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+
+            for _ in 0..function.arity_mut() {
+                let value = memory.pop();
+                let value = self.objects
+                    [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
+                    .as_ref()
+                    .ok_or(DynamicError::ObjectIndex)?
+                    .borrow_mut();
+
+                argument_refs
+                    .push(value)
+                    .map_err(|_| Error::ArgumentCount)?;
+            }
+
+            let mut mutable_arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+
+            for reference in &mut argument_refs {
+                mutable_arguments
+                    .push(&mut **reference.deref_mut())
+                    .map_err(|_| Error::ArgumentCount)?;
+            }
+
+            let value = function.call(arguments.as_slice(), mutable_arguments.as_slice())?;
 
             (
                 value,
