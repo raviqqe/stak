@@ -40,7 +40,7 @@ pub trait IntoDynamicFunction<'a, T, S> {
 
 macro_rules! impl_function {
     ($($type:ident),*; $tuple:ty) => {
-        impl<'a, T1: FnMut($(&$type),*) -> T2 + 'a, T2: Any, $($type: Any),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
+        impl<'a, T1: FnMut($($type),*) -> T2 + 'a, T2: Any, $($type: Any + Clone),*> IntoDynamicFunction<'a, $tuple, T2> for T1 {
             #[allow(non_snake_case)]
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 #[allow(unused, unused_mut)]
@@ -51,6 +51,7 @@ macro_rules! impl_function {
                         $(let $type: &$type =
                             arguments[iter.next().unwrap_or_default()]
                             .downcast_ref().ok_or(DynamicError::Downcast)?;)*
+                        $(let $type: $type = $type.clone();)*
 
                         Ok(Box::new(self($($type),*)))
                     },
