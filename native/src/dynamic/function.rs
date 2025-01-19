@@ -5,6 +5,7 @@ use core::{any::Any, mem::size_of};
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
     arity: usize,
+    arity_mut: usize,
     #[expect(clippy::type_complexity)]
     function:
         Box<dyn FnMut(&[&dyn Any], &[&mut dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
@@ -14,15 +15,24 @@ impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
     pub fn new(
         arity: usize,
+        arity_mut: usize,
         function: Box<
             dyn FnMut(&[&dyn Any], &[&mut dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a,
         >,
     ) -> Self {
-        Self { arity, function }
+        Self {
+            arity_mut,
+            function,
+        }
     }
 
-    /// Returns an arity.
+    /// Returns an arity of unboxed arguments.
     pub const fn arity(&self) -> usize {
+        self.arity
+    }
+
+    /// Returns an arity of mutable reference arguments.
+    pub const fn arity_mut(&self) -> usize {
         self.arity
     }
 
