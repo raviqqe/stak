@@ -1,15 +1,15 @@
 use super::error::DynamicError;
-use super::r#mut::Mut;
 use alloc::boxed::Box;
-use core::{any::Any, marker::PhantomData, mem::size_of};
+use core::{any::Any, cell::RefCell, marker::PhantomData, mem::size_of};
+
+type AnyCell<'a> = &'a RefCell<Box<dyn Any>>;
 
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
     arity: usize,
     arity_mut: usize,
     #[expect(clippy::type_complexity)]
-    function:
-        Box<dyn FnMut(&[&dyn Any], &[Mut<dyn Any>]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
+    function: Box<dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
@@ -18,7 +18,7 @@ impl<'a> DynamicFunction<'a> {
         arity: usize,
         arity_mut: usize,
         function: Box<
-            dyn FnMut(&[&dyn Any], &[Mut<dyn Any>]) -> Result<Box<dyn Any>, DynamicError> + 'a,
+            dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a,
         >,
     ) -> Self {
         Self {
@@ -42,7 +42,7 @@ impl<'a> DynamicFunction<'a> {
     pub fn call(
         &mut self,
         arguments: &[&dyn Any],
-        arguments_mut: &[Mut<dyn Any>],
+        arguments_mut: &[AnyCell],
     ) -> Result<Box<dyn Any>, DynamicError> {
         (self.function)(arguments, arguments_mut)
     }
@@ -67,7 +67,7 @@ macro_rules! impl_function {
                 DynamicFunction::new(
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
                     (&[$(size_of::<$ref>()),*] as &[usize]).len(),
-                    Box::new(move |arguments: &[&dyn Any], arguments_mut: &[Mut<dyn Any>]| {
+                    Box::new(move |arguments: &[&dyn Any], arguments_mut: &[AnyCell]| {
                         let mut iter = 0..;
                         let mut ref_iter = 0..;
 
@@ -162,9 +162,7 @@ mod tests {
     fn call_dynamic_function_with_mutable_reference() {
         let x: RefCell<Box<dyn Any>> = RefCell::new(Box::new(0usize));
 
-        baz.into_dynamic()
-            .call(&[&42usize], &[Mut::new(&x)])
-            .unwrap();
+        baz.into_dynamic().call(&[&42usize], &[&x]).unwrap();
 
         assert_eq!(*x.borrow().downcast_ref::<usize>().unwrap(), 42);
     }

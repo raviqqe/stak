@@ -2,9 +2,7 @@
 
 mod error;
 mod function;
-mod r#mut;
 
-use self::r#mut::Mut;
 pub use self::{
     error::DynamicError,
     function::{DynamicFunction, IntoDynamicFunction},
@@ -66,7 +64,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
                     .ok_or(DynamicError::ObjectIndex)?;
 
                 mutable_arguments
-                    .push(Mut::new(&value))
+                    .push(value)
                     .map_err(|_| Error::ArgumentCount)?;
             }
 
