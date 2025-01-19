@@ -35,7 +35,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        let function: &mut DynamicFunction = self
+        let function = self
             .functions
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
