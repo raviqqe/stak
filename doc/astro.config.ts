@@ -112,6 +112,10 @@ export default defineConfig({
           ],
         },
         {
+          label: "Interpreter demo",
+          link: "/demo",
+        },
+        {
           label: "Limitations",
           link: "/limitations",
         },

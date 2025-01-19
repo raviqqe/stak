@@ -1,0 +1,18 @@
+.root {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    flex: 1;
+  }
+}
+
+.output {
+  composes: textArea from "../../system.module.css";
+  flex: 1;
+  margin: 0;
+
+  > pre {
+    margin: 0;
+  }
+}
