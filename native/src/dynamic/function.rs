@@ -96,4 +96,16 @@ mod tests {
         foo.into_dynamic();
         bar.into_dynamic();
     }
+
+    #[test]
+    fn call_dynamic_function() {
+        assert_eq!(
+            *foo.into_dynamic()
+                .call(&[&1usize, &2usize])
+                .unwrap()
+                .downcast::<usize>()
+                .unwrap(),
+            3
+        );
+    }
 }
