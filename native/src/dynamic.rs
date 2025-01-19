@@ -40,7 +40,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
-        let (value, index): (Box<dyn Any>, _) = {
+        let (value, index) = {
             let mut arguments = Vec::<&dyn Any, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity() {
