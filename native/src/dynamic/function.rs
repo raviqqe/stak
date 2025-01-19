@@ -3,24 +3,20 @@ use alloc::boxed::Box;
 use core::{any::Any, cell::RefCell, marker::PhantomData, mem::size_of};
 
 type AnyCell<'a> = &'a RefCell<Box<dyn Any>>;
+type BoxedFunction<'a> =
+    Box<dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>;
 
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
     arity: usize,
     cell_arity: usize,
     #[expect(clippy::type_complexity)]
-    function: Box<dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
+    function: BoxedFunction<'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
-    pub fn new(
-        arity: usize,
-        cell_arity: usize,
-        function: Box<
-            dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a,
-        >,
-    ) -> Self {
+    pub fn new(arity: usize, cell_arity: usize, function: BoxedFunction<'a>) -> Self {
         Self {
             arity,
             cell_arity,
@@ -128,7 +124,7 @@ mod tests {
     #[derive(Clone, Debug)]
     struct Foo {}
 
-    fn foo(x: usize, y: usize) -> usize {
+    const fn foo(x: usize, y: usize) -> usize {
         x + y
     }
 
