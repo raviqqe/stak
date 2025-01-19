@@ -8,8 +8,7 @@ pub use self::{
     function::{DynamicFunction, IntoDynamicFunction},
 };
 use alloc::boxed::Box;
-use core::any::Any;
-use core::cell::RefCell;
+use core::{any::Any, cell::RefCell};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
@@ -55,7 +54,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
 
-            let value = function.call(arguments.as_slice())?;
+            let value = function.call(arguments.as_slice(), &[])?;
 
             (
                 value,

@@ -6,19 +6,19 @@ use core::{any::Any, mem::size_of};
 pub struct DynamicFunction<'a> {
     arity: usize,
     #[expect(clippy::type_complexity)]
-    function: Box<dyn FnMut(&[&dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
+    function:
+        Box<dyn FnMut(&[&dyn Any], &[&mut dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
     pub fn new(
         arity: usize,
-        function: impl FnMut(&[&dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a,
+        function: Box<
+            dyn FnMut(&[&dyn Any], &[&mut dyn Any]) -> Result<Box<dyn Any>, DynamicError> + 'a,
+        >,
     ) -> Self {
-        Self {
-            arity,
-            function: Box::new(function),
-        }
+        Self { arity, function }
     }
 
     /// Returns an arity.
@@ -27,8 +27,12 @@ impl<'a> DynamicFunction<'a> {
     }
 
     /// Calls a function.
-    pub fn call(&mut self, arguments: &[&dyn Any]) -> Result<Box<dyn Any>, DynamicError> {
-        (self.function)(arguments)
+    pub fn call(
+        &mut self,
+        arguments: &[&dyn Any],
+        arguments_mut: &[&mut dyn Any],
+    ) -> Result<Box<dyn Any>, DynamicError> {
+        (self.function)(arguments, arguments_mut)
     }
 }
 
@@ -46,7 +50,7 @@ macro_rules! impl_function {
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
-                    move |arguments: &[&dyn Any]| {
+                    Box::new(move |arguments: &[&dyn Any], arguments_mut: &[&mut dyn Any]| {
                         let mut iter = 0..;
 
                         Ok(Box::new(self($(
@@ -55,7 +59,7 @@ macro_rules! impl_function {
                             .ok_or(DynamicError::Downcast)?
                             .clone()
                         ),*)))
-                    },
+                    }),
                 )
             }
         }
@@ -101,7 +105,7 @@ mod tests {
     fn call_dynamic_function() {
         assert_eq!(
             *foo.into_dynamic()
-                .call(&[&1usize, &2usize])
+                .call(&[&1usize, &2usize], &[])
                 .unwrap()
                 .downcast::<usize>()
                 .unwrap(),
