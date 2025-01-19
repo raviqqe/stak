@@ -79,8 +79,8 @@ macro_rules! impl_function {
 }
 
 macro_rules! impl_functions {
-    ([$first:ident, $($type:ident),*], [$($ref:ident),*]) => {
-        impl_function!([$first, $($type),*], [$($ref),*], ($first, $($type),*));
+    ([$first_type:ident, $($type:ident),*], [$($ref:ident),*]) => {
+        impl_function!([$first_type, $($type),*], [$($ref),*], ($first_type, $($type),*));
         impl_functions!([$($type),*], [$($ref),*]);
     };
     ([$type:ident], [$($ref:ident),*]) => {
