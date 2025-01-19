@@ -14,7 +14,7 @@ export const TextArea = (props: Props): JSX.Element => (
   <textarea
     class={classNames(styles.container, props.class)}
     id={props.id}
-    onChange={(event) => props.onChange(event.currentTarget.value)}
+    onInput={(event) => props.onChange(event.currentTarget.value)}
     style={props.style}
     value={props.value}
   >

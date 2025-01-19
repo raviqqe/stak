@@ -5,7 +5,14 @@ export const source = atom(
   `
 (import (scheme base) (scheme write))
 
-(display "Hello, world!\\n")
+(define (fibonacci x)
+  (if (<= x 1)
+     1
+     (+ (fibonacci (- x 1)) (fibonacci (- x 2)))))
+
+(display "Answer: ")
+(write (fibonacci 10))
+(newline)
   `.trim(),
 );
 

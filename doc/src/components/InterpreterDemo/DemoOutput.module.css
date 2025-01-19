@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  min-height: 20rem;
+  min-height: 24rem;
 
   > * {
     flex: 1;
