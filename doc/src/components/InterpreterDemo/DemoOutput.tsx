@@ -13,7 +13,7 @@ export const DemoOutput = (): JSX.Element => {
   return (
     <div class={styles.container}>
       <Field>
-        <Label for="output">stdout</Label>
+        <Label for="output">Output</Label>
         <pre class={styles.output} id="output">
           {output()}
         </pre>
