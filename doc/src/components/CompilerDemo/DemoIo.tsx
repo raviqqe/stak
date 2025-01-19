@@ -1,14 +1,14 @@
 import { useStore } from "@nanostores/solid";
 import type { JSX } from "solid-js";
-import * as store from "../stores/compiler-demo.js";
-import styles from "./CompilerDemoIo.module.css";
-import { ErrorMessage } from "./ErrorMessage.jsx";
-import { Field } from "./Field.jsx";
-import { Label } from "./Label.jsx";
-import { Link } from "./Link.jsx";
-import { TextArea } from "./TextArea.jsx";
+import * as store from "../../stores/compiler-demo.js";
+import styles from "./DemoIo.module.css";
+import { ErrorMessage } from "../ErrorMessage.jsx";
+import { Field } from "../Field.jsx";
+import { Label } from "../Label.jsx";
+import { Link } from "../Link.jsx";
+import { TextArea } from "../TextArea.jsx";
 
-export const CompilerDemoIo = (): JSX.Element => {
+export const DemoIo = (): JSX.Element => {
   const input = useStore(store.input);
   const output = useStore(store.textOutput);
   const outputUrl = useStore(store.outputUrlStore);
