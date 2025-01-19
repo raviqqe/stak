@@ -1,6 +1,6 @@
+import classNames from "classnames";
 import type { JSX } from "solid-js";
 import styles from "./TextArea.module.css";
-import classNames from "classnames";
 
 interface Props {
   class?: string;
