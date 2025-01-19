@@ -9,6 +9,7 @@
 
 .output {
   composes: textArea from "../../system.module.css";
+  min-height: 8rem;
   flex: 1;
   margin: 0;
 
