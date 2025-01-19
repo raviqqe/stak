@@ -9,6 +9,7 @@ pub use self::{
 };
 use alloc::boxed::Box;
 use core::any::Any;
+use core::cell::RefCell;
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
@@ -17,7 +18,7 @@ const MAXIMUM_ARGUMENT_COUNT: usize = 32;
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, const N: usize> {
     functions: &'a mut [DynamicFunction<'a>],
-    objects: [Option<Box<dyn Any>>; N],
+    objects: [Option<RefCell<Box<dyn Any>>>; N],
 }
 
 impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
@@ -65,7 +66,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
             )
         };
 
-        self.objects[index] = Some(value);
+        self.objects[index] = Some(RefCell::new(value));
 
         let cons = memory.cons(
             Number::from_i64(index as _).into(),
