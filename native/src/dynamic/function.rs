@@ -22,18 +22,9 @@ impl<'a> DynamicFunction<'a> {
         self.arity
     }
 
-    /// Returns an arity of mutable reference arguments.
-    pub const fn cell_arity(&self) -> usize {
-        self.cell_arity
-    }
-
     /// Calls a function.
-    pub fn call(
-        &mut self,
-        arguments: &[&dyn Any],
-        cell_arguments: &[AnyCell],
-    ) -> Result<Box<dyn Any>, DynamicError> {
-        (self.function)(arguments, cell_arguments)
+    pub fn call(&mut self, arguments: &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> {
+        (self.function)(arguments)
     }
 }
 
@@ -56,9 +47,8 @@ macro_rules! impl_function {
                 DynamicFunction::new(
                     (&[$(size_of::<$type>()),*] as &[usize]).len(),
                     (&[$(size_of::<$ref>()),*] as &[usize]).len(),
-                    Box::new(move |arguments: &[&dyn Any], cell_arguments: &[AnyCell]| {
+                    Box::new(move |arguments: &[AnyCell]| {
                         let mut iter = 0..;
-                        let mut ref_iter = 0..;
 
                         Ok(Box::new(self(
                             $(
@@ -68,7 +58,7 @@ macro_rules! impl_function {
                                 .clone(),
                             )*
                             $(
-                                cell_arguments[ref_iter.next().unwrap_or_default()]
+                                arguments[iter.next().unwrap_or_default()]
                                 .borrow_mut()
                                 .downcast_mut::<$ref>()
                                 .ok_or(DynamicError::Downcast)?,
