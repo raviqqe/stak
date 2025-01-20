@@ -119,6 +119,10 @@ mod tests {
         *y = x;
     }
 
+    fn wrap<T>(x: T) -> RefCell<Box<dyn Any>> {
+        Box::new(x).into()
+    }
+
     #[test]
     fn create_dynamic_function() {
         foo.into_dynamic();
@@ -129,7 +133,7 @@ mod tests {
     fn call_dynamic_function() {
         assert_eq!(
             *foo.into_dynamic()
-                .call(&[&1usize, &2usize], &[])
+                .call(&[&wrap(1usize), &wrap(2usize)], &[])
                 .unwrap()
                 .downcast::<usize>()
                 .unwrap(),
