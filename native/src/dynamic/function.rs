@@ -3,24 +3,18 @@ use alloc::boxed::Box;
 use core::{any::Any, cell::RefCell, marker::PhantomData, mem::size_of};
 
 type AnyCell<'a> = &'a RefCell<Box<dyn Any>>;
-type BoxedFunction<'a> =
-    Box<dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>;
+type BoxedFunction<'a> = Box<dyn FnMut(&[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>;
 
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
     arity: usize,
-    cell_arity: usize,
     function: BoxedFunction<'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
-    pub fn new(arity: usize, cell_arity: usize, function: BoxedFunction<'a>) -> Self {
-        Self {
-            arity,
-            cell_arity,
-            function,
-        }
+    pub fn new(arity: usize, function: BoxedFunction<'a>) -> Self {
+        Self { arity, function }
     }
 
     /// Returns an arity of unboxed arguments.
