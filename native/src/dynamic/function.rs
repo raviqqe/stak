@@ -3,24 +3,18 @@ use alloc::boxed::Box;
 use core::{any::Any, cell::RefCell, marker::PhantomData, mem::size_of};
 
 type AnyCell<'a> = &'a RefCell<Box<dyn Any>>;
-type BoxedFunction<'a> =
-    Box<dyn FnMut(&[&dyn Any], &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>;
+type BoxedFunction<'a> = Box<dyn FnMut(&[AnyCell]) -> Result<Box<dyn Any>, DynamicError> + 'a>;
 
 /// A dynamic function.
 pub struct DynamicFunction<'a> {
     arity: usize,
-    cell_arity: usize,
     function: BoxedFunction<'a>,
 }
 
 impl<'a> DynamicFunction<'a> {
     /// Creates a dynamic function.
-    pub fn new(arity: usize, cell_arity: usize, function: BoxedFunction<'a>) -> Self {
-        Self {
-            arity,
-            cell_arity,
-            function,
-        }
+    pub fn new(arity: usize, function: BoxedFunction<'a>) -> Self {
+        Self { arity, function }
     }
 
     /// Returns an arity of unboxed arguments.
@@ -28,18 +22,9 @@ impl<'a> DynamicFunction<'a> {
         self.arity
     }
 
-    /// Returns an arity of mutable reference arguments.
-    pub const fn cell_arity(&self) -> usize {
-        self.cell_arity
-    }
-
     /// Calls a function.
-    pub fn call(
-        &mut self,
-        arguments: &[&dyn Any],
-        cell_arguments: &[AnyCell],
-    ) -> Result<Box<dyn Any>, DynamicError> {
-        (self.function)(arguments, cell_arguments)
+    pub fn call(&mut self, arguments: &[AnyCell]) -> Result<Box<dyn Any>, DynamicError> {
+        (self.function)(arguments)
     }
 }
 
@@ -60,21 +45,20 @@ macro_rules! impl_function {
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
-                    (&[$(size_of::<$type>()),*] as &[usize]).len(),
-                    (&[$(size_of::<$ref>()),*] as &[usize]).len(),
-                    Box::new(move |arguments: &[&dyn Any], cell_arguments: &[AnyCell]| {
+                    (&[$(size_of::<$type>(),)* $(size_of::<$ref>(),)*] as &[usize]).len(),
+                    Box::new(move |arguments: &[AnyCell]| {
                         let mut iter = 0..;
-                        let mut ref_iter = 0..;
 
                         Ok(Box::new(self(
                             $(
                                 arguments[iter.next().unwrap_or_default()]
+                                .borrow()
                                 .downcast_ref::<$type>()
                                 .ok_or(DynamicError::Downcast)?
                                 .clone(),
                             )*
                             $(
-                                cell_arguments[ref_iter.next().unwrap_or_default()]
+                                arguments[iter.next().unwrap_or_default()]
                                 .borrow_mut()
                                 .downcast_mut::<$ref>()
                                 .ok_or(DynamicError::Downcast)?,
@@ -135,6 +119,10 @@ mod tests {
         *y = x;
     }
 
+    fn wrap<T: 'static>(x: T) -> RefCell<Box<dyn Any>> {
+        RefCell::new(Box::new(x))
+    }
+
     #[test]
     fn create_dynamic_function() {
         foo.into_dynamic();
@@ -145,7 +133,7 @@ mod tests {
     fn call_dynamic_function() {
         assert_eq!(
             *foo.into_dynamic()
-                .call(&[&1usize, &2usize], &[])
+                .call(&[&wrap(1usize), &wrap(2usize)])
                 .unwrap()
                 .downcast::<usize>()
                 .unwrap(),
@@ -157,7 +145,7 @@ mod tests {
     fn call_dynamic_function_with_mutable_reference() {
         let x: RefCell<Box<dyn Any>> = RefCell::new(Box::new(0usize));
 
-        baz.into_dynamic().call(&[&42usize], &[&x]).unwrap();
+        baz.into_dynamic().call(&[&wrap(42usize), &x]).unwrap();
 
         assert_eq!(*x.borrow().downcast_ref::<usize>().unwrap(), 42);
     }

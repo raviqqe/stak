@@ -41,7 +41,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
             .ok_or(Error::IllegalPrimitive)?;
 
         let (value, index) = {
-            let mut arguments = Vec::<&dyn Any, MAXIMUM_ARGUMENT_COUNT>::new();
+            let mut arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity() {
                 let value = memory.pop();
@@ -54,21 +54,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
 
-            let mut mutable_arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
-
-            for _ in 0..function.cell_arity() {
-                let value = memory.pop();
-                let value = self.objects
-                    [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
-                    .as_ref()
-                    .ok_or(DynamicError::ObjectIndex)?;
-
-                mutable_arguments
-                    .push(value)
-                    .map_err(|_| Error::ArgumentCount)?;
-            }
-
-            let value = function.call(arguments.as_slice(), mutable_arguments.as_slice())?;
+            let value = function.call(arguments.as_slice())?;
 
             (
                 value,
