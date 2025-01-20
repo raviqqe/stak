@@ -119,8 +119,8 @@ mod tests {
         *y = x;
     }
 
-    fn wrap<T>(x: T) -> RefCell<Box<dyn Any>> {
-        Box::new(x).into()
+    fn wrap<T: 'static>(x: T) -> RefCell<Box<dyn Any>> {
+        RefCell::new(Box::new(x))
     }
 
     #[test]
@@ -133,7 +133,7 @@ mod tests {
     fn call_dynamic_function() {
         assert_eq!(
             *foo.into_dynamic()
-                .call(&[&wrap(1usize), &wrap(2usize)], &[])
+                .call(&[&wrap(1usize), &wrap(2usize)])
                 .unwrap()
                 .downcast::<usize>()
                 .unwrap(),
@@ -145,7 +145,7 @@ mod tests {
     fn call_dynamic_function_with_mutable_reference() {
         let x: RefCell<Box<dyn Any>> = RefCell::new(Box::new(0usize));
 
-        baz.into_dynamic().call(&[&42usize], &[&x]).unwrap();
+        baz.into_dynamic().call(&[&wrap(42usize), &x]).unwrap();
 
         assert_eq!(*x.borrow().downcast_ref::<usize>().unwrap(), 42);
     }
