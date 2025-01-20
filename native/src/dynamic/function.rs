@@ -45,7 +45,7 @@ macro_rules! impl_function {
             fn into_dynamic(mut self) -> DynamicFunction<'a> {
                 #[allow(unused, unused_mut)]
                 DynamicFunction::new(
-                    (&[$(size_of::<$type>()),*] as &[usize]).len() + (&[$(size_of::<$ref>()),*] as &[usize]).len(),
+                    (&[$(size_of::<$type>(),)* $(size_of::<$ref>(),)*] as &[usize]).len(),
                     Box::new(move |arguments: &[AnyCell]| {
                         let mut iter = 0..;
 
