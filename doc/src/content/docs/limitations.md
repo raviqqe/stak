@@ -1,5 +1,5 @@
 ---
-title: Limitations on the current implementation of Stak Scheme
+title: Limitations on the current implementation
 description: Limitations on the current implementation of Stak Scheme
 ---
 
