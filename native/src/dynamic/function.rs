@@ -52,6 +52,7 @@ macro_rules! impl_function {
                         Ok(Box::new(self(
                             $(
                                 arguments[iter.next().unwrap_or_default()]
+                                .borrow()
                                 .downcast_ref::<$type>()
                                 .ok_or(DynamicError::Downcast)?
                                 .clone(),
