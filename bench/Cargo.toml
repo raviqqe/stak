@@ -1,18 +1,18 @@
 [package]
 name = "stak-bench"
-version = "0.1.2"
+version = "0.1.4"
 publish = false
 edition.workspace = true
 
 [dependencies]
-stak = { version = "0.5.0", path = "../root" }
-stak-compiler = { version = "0.2.0", path = "../compiler" }
+stak = { version = "0.5.2", path = "../root" }
+stak-compiler = { version = "0.2.2", path = "../compiler" }
 
 [dev-dependencies]
 criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
 
 [build-dependencies]
-stak-build = { version = "0.1.49", path = "../build" }
+stak-build = { version = "0.1.51", path = "../build" }
 
 [lints]
 workspace = true

@@ -42,10 +42,10 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 fn stak(criterion: &mut Criterion) {
     for (name, module) in [
         ("empty", &EMPTY_MODULE),
-        ("fibonacci", &FIBONACCI_MODULE),
+        ("fibonacci_32", &FIBONACCI_MODULE),
         ("hello", &HELLO_MODULE),
-        ("sum", &SUM_MODULE),
-        ("tak", &TAK_MODULE),
+        ("sum_10000000", &SUM_MODULE),
+        ("tak_16_8_0", &TAK_MODULE),
     ] {
         criterion.bench_function(name, |bencher| {
             bencher.iter(|| run(black_box(module)).unwrap())

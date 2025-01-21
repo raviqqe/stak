@@ -7,12 +7,7 @@ interface Props {
 }
 
 export const Link = (props: Props): JSX.Element => (
-  <a
-    class={styles.container}
-    href={props.href}
-    rel="noreferrer"
-    target="_blank"
-  >
+  <a class={styles.root} href={props.href} rel="noreferrer" target="_blank">
     {props.children}
   </a>
 );

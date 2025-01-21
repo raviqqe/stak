@@ -33,16 +33,36 @@ jobs:
           mv /tmp/package.json pkg
         working-directory: wasm
       - run: wasm-pack pack wasm
-      - uses: JS-DevTools/npm-publish@v3
+      - uses: js-devtools/npm-publish@v3
         with:
           access: public
           package: wasm/pkg
           provenance: true
           token: ${{ secrets.NPM_TOKEN }}
         if: github.ref == 'refs/heads/main'
+  goreleaser:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/setup
+      - uses: mlugg/setup-zig@v1
+      - run: cargo install --locked cargo-zigbuild
+      - id: version
+        run: echo version=v$(cargo run --bin stak -- --version | grep -o '[0-9.]*') > ${{ github.output }}
+      - uses: raviqqe/goreleaser-action@v1
+        with:
+          version: ${{ steps.version.outputs.version }}
+          snapshot: ${{ github.ref != 'refs/heads/main' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   release:
     needs:
       - cargo
+      - goreleaser
       - wasm
     if: always()
     runs-on: ubuntu-latest

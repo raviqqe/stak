@@ -3,8 +3,8 @@
 #![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
-#[doc(hidden)]
 #[cfg(feature = "std")]
+#[doc(hidden)]
 pub extern crate std;
 
 #[doc(hidden)]
@@ -29,10 +29,20 @@ pub mod __private {
     pub use std;
 }
 
-/// Defines a `main` function that executes a source file at a given path.
+/// Defines a `main` function that runs a given source file.
+///
+/// The R7RS standard libraries are based on [the `std` crate](https://doc.rust-lang.org/std/).
 ///
 /// The given source file is compiled into bytecodes and bundled into a
 /// resulting binary.
+///
+/// # Examples
+///
+/// ```rust
+/// use stak::sac::main;
+///
+/// main!("main.scm");
+/// ```
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! main {
@@ -85,7 +95,9 @@ macro_rules! main {
     };
 }
 
-/// Defines a `main` function that executes a source file at a given path.
+/// Defines a `main` function that runs a given source file.
+///
+/// The R7RS standard libraries are based on [the `libc` crate](https://docs.rs/libc).
 ///
 /// The given source file is compiled into bytecodes and bundled into a
 /// resulting binary.

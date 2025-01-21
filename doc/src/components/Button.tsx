@@ -10,7 +10,7 @@ interface Props {
 
 export const Button = (props: Props): JSX.Element => (
   <button
-    class={styles.container}
+    class={styles.root}
     disabled={props.disabled}
     onClick={() => props.onClick()}
     type="button"

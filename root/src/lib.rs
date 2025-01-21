@@ -19,16 +19,22 @@ pub mod file {
     pub use stak_file::*;
 }
 
-pub mod process_context {
-    //! Process context.
-
-    pub use stak_process_context::*;
-}
-
 pub mod module {
     //! Modules.
 
     pub use stak_module::*;
+}
+
+pub mod native {
+    //! Native functions and objects in Rust.
+
+    pub use stak_native::*;
+}
+
+pub mod process_context {
+    //! Process context.
+
+    pub use stak_process_context::*;
 }
 
 pub mod r7rs {

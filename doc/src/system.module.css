@@ -4,6 +4,7 @@
 
 .textArea {
   composes: boxShadow;
+  font-family: monospace;
   padding: 1rem;
   box-sizing: border-box;
   overflow: auto;
