@@ -1,12 +1,8 @@
 //! Native functions dynamically defined.
 
 mod error;
-mod function;
 
-pub use self::{
-    error::DynamicError,
-    function::{DynamicFunction, IntoDynamicFunction},
-};
+pub use self::error::DynamicError;
 use alloc::boxed::Box;
 use core::{any::Any, cell::RefCell};
 use heapless::Vec;
