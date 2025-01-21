@@ -82,6 +82,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "any-fn"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "59cda56fb5cafae83fa51209e5121c394e1a1e054b2818806d44d2609420305a"
+
+[[package]]
 name = "autocfg"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1397,6 +1403,7 @@ dependencies = [
 name = "stak-native"
 version = "0.1.6"
 dependencies = [
+ "any-fn",
  "heapless",
  "stak-vm",
 ]
