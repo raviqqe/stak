@@ -12,7 +12,7 @@ repository.workspace = true
 stak-device = { version = "0.2.93", path = "../device" }
 stak-file = { version = "0.5.7", path = "../file" }
 stak-inexact = { version = "0.1.6", path = "../inexact" }
-stak-native = { version = "0.1.7", path = "../native" }
+stak-native = { version = "0.2.0", path = "../native" }
 stak-process-context = { version = "0.2.51", path = "../process_context" }
 stak-time = { version = "0.1.34", path = "../time" }
 stak-vm = { version = "0.7.22", path = "../vm" }

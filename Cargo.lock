@@ -1401,7 +1401,7 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.1.7"
+version = "0.2.0"
 dependencies = [
  "any-fn",
  "heapless",
