@@ -1,24 +1,33 @@
 use super::utility::decode_path;
 use crate::{FileDescriptor, FileSystem};
-use core::{mem::forget, str};
+use core::str;
 use stak_vm::{Memory, Value};
 use std::{
+    collections::HashMap,
     fs::{remove_file, File, OpenOptions},
     io::{self, ErrorKind, Read, Write},
-    os::fd::{FromRawFd, IntoRawFd},
     path::{Path, PathBuf},
 };
 
 const PATH_SIZE: usize = 256;
 
 /// A file system on an operating system.
-#[derive(Debug)]
-pub struct OsFileSystem {}
+#[derive(Debug, Default)]
+pub struct OsFileSystem {
+    descriptor: FileDescriptor,
+    files: HashMap<FileDescriptor, File>,
+}
 
 impl OsFileSystem {
     /// Creates a file system.
-    pub const fn new() -> Self {
-        Self {}
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    fn file_mut(&mut self, descriptor: FileDescriptor) -> Result<&mut File, io::Error> {
+        self.files
+            .get_mut(&descriptor)
+            .ok_or_else(|| io::Error::new(ErrorKind::InvalidData, "corrupted file descriptor"))
     }
 }
 
@@ -28,34 +37,37 @@ impl FileSystem for OsFileSystem {
     type Error = io::Error;
 
     fn open(&mut self, path: &Path, output: bool) -> Result<FileDescriptor, Self::Error> {
-        OpenOptions::new()
+        let file = OpenOptions::new()
             .read(!output)
             .create(output)
             .write(output)
             .truncate(output)
-            .open(path)
-            .map(|file| file.into_raw_fd() as _)
+            .open(path)?;
+        let descriptor = self.descriptor;
+
+        self.files.insert(descriptor, file);
+        self.descriptor = self.descriptor.wrapping_add(1);
+
+        Ok(descriptor)
     }
 
     fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        unsafe { File::from_raw_fd(descriptor as _) };
+        self.files.remove(&descriptor);
 
         Ok(())
     }
 
     fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
-        let mut file = unsafe { File::from_raw_fd(descriptor as _) };
+        let file = self.file_mut(descriptor)?;
         let mut buffer = [0u8; 1];
         file.read_exact(&mut buffer)?;
-        forget(file);
 
         Ok(buffer[0])
     }
 
     fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        let mut file = unsafe { File::from_raw_fd(descriptor as _) };
+        let file = self.file_mut(descriptor)?;
         file.write_all(&[byte])?;
-        forget(file);
 
         Ok(())
     }
@@ -76,12 +88,6 @@ impl FileSystem for OsFileSystem {
             )
             .map_err(|error| io::Error::new(ErrorKind::InvalidData, error))?,
         ))
-    }
-}
-
-impl Default for OsFileSystem {
-    fn default() -> Self {
-        Self::new()
     }
 }
 

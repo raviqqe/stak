@@ -39,29 +39,10 @@ jobs:
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
-  bencher:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-24.04
-          # TODO Enable benchmarks on macOS.
-          # - macos-15
-    permissions:
-      checks: write
-      pull-requests: write
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: bencherdev/bencher@main
-      - uses: ./.github/actions/setup
-      - run: tools/ci/bencher.sh
-        env:
-          BENCHER_TOKEN: ${{ secrets.BENCHER_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   bench:
     needs:
       - interpret
-      - bencher
+      - codspeed
     if: always()
     runs-on: ubuntu-latest
     steps:
