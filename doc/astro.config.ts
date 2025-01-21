@@ -112,13 +112,19 @@ export default defineConfig({
           ],
         },
         {
-          label: "Interpreter demo",
-          link: "/demo",
-        },
-        {
           label: "Limitations",
           link: "/limitations",
         },
+        {
+          label: "Demo",
+          items: [
+            {
+              label: "Interpreter",
+              link: "/interpreter-demo",
+            },
+          ],
+        },
+
         {
           label: "Examples",
           items: await listItems("examples"),
