@@ -1,13 +1,14 @@
+use any_fn::AnyFnError;
 use core::{
-    error,
+    error::Error,
     fmt::{self, Display, Formatter},
 };
 
 /// An error.
 #[derive(Debug)]
 pub enum DynamicError {
-    /// A object downcast error.
-    Downcast,
+    /// An `AnyFn` error.
+    AnyFn(AnyFnError),
     /// A object index error.
     ObjectIndex,
     /// A virtual machine error.
@@ -20,12 +21,12 @@ impl From<stak_vm::Error> for DynamicError {
     }
 }
 
-impl error::Error for DynamicError {}
+impl Error for DynamicError {}
 
 impl Display for DynamicError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Self::Downcast => write!(formatter, "cannot downcast object"),
+            Self::AnyFn(error) => write!(formatter, "{error}"),
             Self::ObjectIndex => write!(formatter, "invalid object index"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
