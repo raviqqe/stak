@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Field = (props: Props): JSX.Element => (
-  <div class={styles.container} style={props.style}>
+  <div class={styles.root} style={props.style}>
     {props.children}
   </div>
 );

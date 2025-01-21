@@ -1,5 +1,5 @@
-.container {
-  composes: boxShadow from "../system.css";
+.root {
+  composes: boxShadow from "../system.module.css";
   display: flex;
   align-items: center;
   gap: 0.5rem;

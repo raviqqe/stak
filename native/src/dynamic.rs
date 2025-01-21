@@ -1,28 +1,25 @@
 //! Native functions dynamically defined.
 
 mod error;
-mod function;
 
-pub use self::{
-    error::DynamicError,
-    function::{DynamicFunction, IntoDynamicFunction},
-};
+pub use self::error::DynamicError;
 use alloc::boxed::Box;
-use core::any::Any;
+use any_fn::AnyFn;
+use core::{any::Any, cell::RefCell};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
-const MAXIMUM_ARGUMENT_COUNT: usize = 32;
+const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, const N: usize> {
-    functions: &'a mut [DynamicFunction<'a>],
-    objects: [Option<Box<dyn Any>>; N],
+    functions: &'a mut [AnyFn<'a>],
+    objects: [Option<RefCell<Box<dyn Any>>>; N],
 }
 
 impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
     /// Creates a primitive set.
-    pub fn new(functions: &'a mut [DynamicFunction<'a>]) -> Self {
+    pub fn new(functions: &'a mut [AnyFn<'a>]) -> Self {
         Self {
             functions,
             // TODO Garbage-collect foreign objects.
@@ -35,13 +32,13 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        let function: &mut DynamicFunction = self
+        let function = self
             .functions
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
         let (value, index) = {
-            let mut arguments = Vec::<&dyn Any, MAXIMUM_ARGUMENT_COUNT>::new();
+            let mut arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity() {
                 let value = memory.pop();
@@ -65,7 +62,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
             )
         };
 
-        self.objects[index] = Some(value);
+        self.objects[index] = Some(RefCell::new(value));
 
         let cons = memory.cons(
             Number::from_i64(index as _).into(),
