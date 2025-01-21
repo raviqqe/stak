@@ -4,6 +4,7 @@ mod error;
 
 pub use self::error::DynamicError;
 use alloc::boxed::Box;
+use any_fn::AnyFn;
 use core::{any::Any, cell::RefCell};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
@@ -12,13 +13,13 @@ const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, const N: usize> {
-    functions: &'a mut [DynamicFunction<'a>],
+    functions: &'a mut [AnyFn<'a>],
     objects: [Option<RefCell<Box<dyn Any>>>; N],
 }
 
 impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
     /// Creates a primitive set.
-    pub fn new(functions: &'a mut [DynamicFunction<'a>]) -> Self {
+    pub fn new(functions: &'a mut [AnyFn<'a>]) -> Self {
         Self {
             functions,
             // TODO Garbage-collect foreign objects.

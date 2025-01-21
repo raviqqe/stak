@@ -15,6 +15,12 @@ pub enum DynamicError {
     Vm(stak_vm::Error),
 }
 
+impl From<AnyFnError> for DynamicError {
+    fn from(error: AnyFnError) -> Self {
+        Self::AnyFn(error)
+    }
+}
+
 impl From<stak_vm::Error> for DynamicError {
     fn from(error: stak_vm::Error) -> Self {
         Self::Vm(error)
