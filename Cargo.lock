@@ -1300,6 +1300,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-engine"
+version = "0.1.0"
+dependencies = [
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-file"
 version = "0.5.7"
 dependencies = [
