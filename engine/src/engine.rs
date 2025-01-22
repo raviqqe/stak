@@ -6,13 +6,13 @@ use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::{Error, Value, Vm};
 
-cfg_if!(
+cfg_if! {
     if #[cfg(feature = "std")] {
         type Device = stak_device::StdioDevice;
     } else {
         type Device = stak_device::VoidDevice;
     }
-);
+}
 
 /// A scripting engine.
 pub struct Engine<'a> {
