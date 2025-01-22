@@ -1305,6 +1305,7 @@ version = "0.1.0"
 dependencies = [
  "stak-device",
  "stak-file",
+ "stak-r7rs",
  "stak-time",
  "stak-vm",
 ]
