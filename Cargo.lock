@@ -1303,6 +1303,9 @@ dependencies = [
 name = "stak-engine"
 version = "0.1.0"
 dependencies = [
+ "stak-device",
+ "stak-file",
+ "stak-time",
  "stak-vm",
 ]
 
