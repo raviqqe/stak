@@ -12,6 +12,7 @@ repository.workspace = true
 std = ["stak-device/std"]
 
 [dependencies]
+cfg-if = "1.0.0"
 stak-device = { version = "0.2.93", path = "../device" }
 stak-file = { version = "0.5.7", path = "../file" }
 stak-process-context = { version = "0.2.51", path = "../process_context" }
