@@ -27,6 +27,7 @@ members = [
   "r7rs",
   "root",
   "sac",
+  "stak-engine",
   "time",
   "util",
   "vm",
