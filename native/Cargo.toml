@@ -18,6 +18,3 @@ stak-vm = { version = "0.7.21", path = "../vm" }
 
 [lints]
 workspace = true
-
-[dev-dependencies]
-stak = { path = "../root" }
