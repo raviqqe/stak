@@ -1,5 +1,5 @@
 use crate::{value::Value, Error};
-use cfg_exif::feature;
+use cfg_elif::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A tag.
