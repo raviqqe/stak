@@ -2,7 +2,7 @@ use crate::{
     cons::{Cons, Tag},
     number::Number,
 };
-use cfg_elif::feature;
+use cfg_elif::expr::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
