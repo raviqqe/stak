@@ -1,6 +1,6 @@
 //! Macros to bundle and use Scheme programs.
 
-use cfg_elif::feature;
+use cfg_elif::expr::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
