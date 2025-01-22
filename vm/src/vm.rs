@@ -54,7 +54,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
 // volatile variables live across garbage collections.
 impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Creates a virtual machine.
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, T::Error> {
+    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
         Ok(Self {
             primitive_set,
             memory: Memory::new(heap)?,
