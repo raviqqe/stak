@@ -1405,6 +1405,7 @@ version = "0.1.6"
 dependencies = [
  "any-fn",
  "heapless",
+ "stak",
  "stak-vm",
 ]
 
