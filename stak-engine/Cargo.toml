@@ -8,6 +8,9 @@ license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
 
+[features]
+std = ["stak-device/std"]
+
 [dependencies]
 stak-device = { version = "0.2.93", path = "../device" }
 stak-file = { version = "0.5.7", path = "../file" }
