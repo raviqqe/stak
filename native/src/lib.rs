@@ -1,9 +1,4 @@
 //! Stak Scheme primitive sets for optimized primitives of native functions.
-//!
-//! # Examples
-//!
-//! ```rust
-//! ```
 
 #![no_std]
 
