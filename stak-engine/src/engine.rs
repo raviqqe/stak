@@ -1,5 +1,6 @@
 use stak_device::StdioDevice;
 use stak_file::VoidFileSystem;
+use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
