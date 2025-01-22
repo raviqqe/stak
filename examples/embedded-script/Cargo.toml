@@ -1,14 +1,14 @@
 [package]
 name = "embedded-script"
-version = "0.1.14"
+version = "0.1.15"
 publish = false
 edition.workspace = true
 
 [dependencies]
-stak = { version = "0.5.2", path = "../../root" }
+stak = { version = "0.5.3", path = "../../root" }
 
 [build-dependencies]
-stak-build = { version = "0.1.51", path = "../../build" }
+stak-build = { version = "0.1.52", path = "../../build" }
 
 [lints]
 workspace = true
