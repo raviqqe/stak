@@ -11,7 +11,7 @@
 //! use rand::random;
 //! use stak::{
 //!     device::ReadWriteDevice,
-//!     engine::{Engine, ScriptError},
+//!     engine::{Engine, EngineError},
 //!     file::VoidFileSystem,
 //!     include_module,
 //!     module::{Module, UniversalModule},
@@ -59,7 +59,7 @@
 //!     Ok(())
 //! }
 //!
-//! fn run(module: &'static UniversalModule) -> Result<(), ScriptError> {
+//! fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
 //!     let mut primitives: [AnyFn; 2] =
 //!         [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];

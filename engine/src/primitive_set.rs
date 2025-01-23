@@ -1,4 +1,4 @@
-use crate::ScriptError;
+use crate::EngineError;
 use any_fn::AnyFn;
 use cfg_elif::item;
 use stak_file::VoidFileSystem;
@@ -19,12 +19,12 @@ item::feature!(if ("std") {
 });
 
 /// A type check primitive set.
-pub struct ScriptPrimitiveSet<'a, 'b, const N: usize> {
+pub struct EnginePrimitiveSet<'a, 'b, const N: usize> {
     small: SmallPrimitiveSet<Device, VoidFileSystem, VoidProcessContext, VoidClock>,
     dynamic: DynamicPrimitiveSet<'a, 'b, N>,
 }
 
-impl<'a, 'b, const N: usize> ScriptPrimitiveSet<'a, 'b, N> {
+impl<'a, 'b, const N: usize> EnginePrimitiveSet<'a, 'b, N> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
@@ -39,8 +39,8 @@ impl<'a, 'b, const N: usize> ScriptPrimitiveSet<'a, 'b, N> {
     }
 }
 
-impl<'a, 'b, const N: usize> PrimitiveSet for ScriptPrimitiveSet<'a, 'b, N> {
-    type Error = ScriptError;
+impl<'a, 'b, const N: usize> PrimitiveSet for EnginePrimitiveSet<'a, 'b, N> {
+    type Error = EngineError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         if primitive >= DYNAMIC_PRIMITIVE_OFFSET {

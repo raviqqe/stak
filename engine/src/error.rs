@@ -5,9 +5,9 @@ use core::{
 use stak_native::dynamic::DynamicError;
 use stak_r7rs::SmallError;
 
-/// A script error
+/// A engine error
 #[derive(Debug)]
-pub enum ScriptError {
+pub enum EngineError {
     /// An R7RS-small error.
     Small(SmallError),
     /// A dynamic primitive error.
@@ -16,27 +16,27 @@ pub enum ScriptError {
     Vm(stak_vm::Error),
 }
 
-impl From<stak_vm::Error> for ScriptError {
+impl From<stak_vm::Error> for EngineError {
     fn from(error: stak_vm::Error) -> Self {
         Self::Vm(error)
     }
 }
 
-impl From<SmallError> for ScriptError {
+impl From<SmallError> for EngineError {
     fn from(error: SmallError) -> Self {
         Self::Small(error)
     }
 }
 
-impl From<DynamicError> for ScriptError {
+impl From<DynamicError> for EngineError {
     fn from(error: DynamicError) -> Self {
         Self::Dynamic(error)
     }
 }
 
-impl Error for ScriptError {}
+impl Error for EngineError {}
 
-impl Display for ScriptError {
+impl Display for EngineError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Small(error) => write!(formatter, "{error}"),
