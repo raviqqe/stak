@@ -43,7 +43,7 @@ impl<'a, const N: usize> PrimitiveSet for ScriptPrimitiveSet<'a, N> {
     type Error = ScriptError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        if primitive > 1000 {
+        if primitive >= DYNAMIC_PRIMITIVE_OFFSET {
             self.dynamic
                 .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)?
         } else {
