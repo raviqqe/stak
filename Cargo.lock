@@ -208,10 +208,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "cfg-exif"
-version = "0.3.1"
+name = "cfg-elif"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f782369519ff0fef6ec4fcc325a7328ac0136950ddf0a0d55f4a54cddca743b4"
+checksum = "1a86fdde19924340ffa833dd033b700d817916d4f1b4f582631816e32bec6383"
 
 [[package]]
 name = "cfg-if"
@@ -1087,9 +1087,9 @@ checksum = "719b953e2095829ee67db738b3bfa9fa368c94900df327b3f07fe6e794d2fe1f"
 
 [[package]]
 name = "rustix"
-version = "0.38.43"
+version = "0.38.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a78891ee6bf2340288408954ac787aa063d8e8817e9f53abb37c695c6d834ef6"
+checksum = "fdb5bc1ae2baa591800df16c9ca78619bf65c0488b41b96ccec5d11220d8c154"
 dependencies = [
  "bitflags 2.7.0",
  "errno",
@@ -1352,7 +1352,7 @@ dependencies = [
 name = "stak-macro"
 version = "0.2.12"
 dependencies = [
- "cfg-exif",
+ "cfg-elif",
  "proc-macro2",
  "quote",
  "stak-compiler",
@@ -1515,7 +1515,7 @@ dependencies = [
 name = "stak-vm"
 version = "0.7.22"
 dependencies = [
- "cfg-exif",
+ "cfg-elif",
  "insta",
  "nonbox",
  "stak-device",
