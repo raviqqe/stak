@@ -9,6 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
+libc = ["stak-device/libc"]
 std = ["stak-device/std"]
 
 [dependencies]

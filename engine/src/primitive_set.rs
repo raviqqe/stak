@@ -1,6 +1,6 @@
 use crate::ScriptError;
 use any_fn::AnyFn;
-use cfg_if::cfg_if;
+use cfg_elif::item;
 use stak_file::VoidFileSystem;
 use stak_native::dynamic::DynamicPrimitiveSet;
 use stak_process_context::VoidProcessContext;
@@ -10,14 +10,13 @@ use stak_vm::{Memory, PrimitiveSet};
 
 const DYNAMIC_PRIMITIVE_OFFSET: usize = 1024;
 
-// TODO Use `cfg-elif`.
-cfg_if! {
-    if #[cfg(feature = "std")] {
-        type Device = stak_device::StdioDevice;
-    } else {
-        type Device = stak_device::VoidDevice;
-    }
-}
+item::feature!(if ("std") {
+    type Device = stak_device::StdioDevice;
+} else if ("libc") {
+    type Device = stak_device::LibcDevice;
+} else {
+    type Device = stak_device::VoidDevice;
+});
 
 /// A type check primitive set.
 pub struct ScriptPrimitiveSet<'a, const N: usize> {
