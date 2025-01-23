@@ -1,12 +1,14 @@
-use stak_device::Device;
+use crate::ScriptError;
+use any_fn::AnyFn;
+use cfg_if::cfg_if;
 use stak_file::VoidFileSystem;
 use stak_native::dynamic::DynamicPrimitiveSet;
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
-use stak_vm::{Error, Memory, PrimitiveSet, Type};
+use stak_vm::{Memory, PrimitiveSet};
 
-const DYNAMIC_PRIMITIVE_COUNT: usize = 128;
+const DYNAMIC_PRIMITIVE_OFFSET: usize = 1024;
 
 // TODO Use `cfg-elif`.
 cfg_if! {
@@ -18,31 +20,35 @@ cfg_if! {
 }
 
 /// A type check primitive set.
-#[derive(Debug, Default)]
-pub struct ScriptPrimitiveSet<const N : usize> {
-    small: SmallPrimitiveSet<Device, VoidFileSystem, VoidProcessContext, VoidClock>
-    dynamic: DynamicPrimitiveSet<N>
+pub struct ScriptPrimitiveSet<'a, const N: usize> {
+    small: SmallPrimitiveSet<Device, VoidFileSystem, VoidProcessContext, VoidClock>,
+    dynamic: DynamicPrimitiveSet<'a, N>,
 }
 
-impl ScriptPrimitiveSet {
+impl<'a, const N: usize> ScriptPrimitiveSet<'a, N> {
     /// Creates a primitive set.
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(functions: &'a mut [AnyFn<'a>]) -> Self {
+        Self {
+            small: SmallPrimitiveSet::new(
+                Default::default(),
+                Default::default(),
+                Default::default(),
+                Default::default(),
+            ),
+            dynamic: DynamicPrimitiveSet::new(functions),
+        }
     }
 }
 
-impl PrimitiveSet for ScriptPrimitiveSet {
-    type Error = Error;
+impl<'a, const N: usize> PrimitiveSet for ScriptPrimitiveSet<'a, N> {
+    type Error = ScriptError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         if primitive > 1000 {
-             self
-                .small
-                .operate(memory, primitive - Primitive::CURRENT_JIFFY)?
-    } else {
-             self
-                .small
-                .operate(memory, primitive - Primitive::CURRENT_JIFFY)?
+            self.dynamic
+                .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)?
+        } else {
+            self.small.operate(memory, primitive)?
         }
 
         Ok(())
