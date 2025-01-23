@@ -133,5 +133,8 @@ export default defineConfig({
     }),
   ],
   prefetch: { prefetchAll: true },
+  redirects: {
+    "/demo": "/interpreter-demo",
+  },
   site: "https://raviqqe.github.io/stak",
 });
