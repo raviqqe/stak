@@ -1,6 +1,5 @@
 use crate::{value::Value, Error};
-use cfg_elif::expr::feature;
-use cfg_elif::item;
+use cfg_elif::{expr::feature, item};
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
