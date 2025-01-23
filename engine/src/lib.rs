@@ -52,8 +52,8 @@
 //!
 //! fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
-//!     let mut primitives = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
-//!     let mut engine = Engine::<0>::new(&mut heap, &mut primitives)?;
+//!     let mut functions = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
+//!     let mut engine = Engine::<0>::new(&mut heap, &mut functions)?;
 //!
 //!     engine.run(module)
 //! }
