@@ -6,6 +6,7 @@ use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::{Error, Value, Vm};
 
+// TODO Use `cfg-elif`.
 cfg_if! {
     if #[cfg(feature = "std")] {
         type Device = stak_device::StdioDevice;
