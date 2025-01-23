@@ -39,8 +39,8 @@ impl Error for EngineError {}
 impl Display for EngineError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
-            Self::Small(error) => write!(formatter, "{error}"),
             Self::Dynamic(error) => write!(formatter, "{error}"),
+            Self::Small(error) => write!(formatter, "{error}"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
     }
