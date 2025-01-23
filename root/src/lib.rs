@@ -1,16 +1,16 @@
 #![doc = include_str!("../README.md")]
 #![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 
-pub mod vm {
-    //! A virtual machine and its runtime values.
-
-    pub use stak_vm::*;
-}
-
 pub mod device {
     //! I/O devices.
 
     pub use stak_device::*;
+}
+
+pub mod engine {
+    //! A scripting engine.
+
+    pub use stak_engine::*;
 }
 
 pub mod file {
@@ -53,6 +53,12 @@ pub mod time {
     //! Time measurement.
 
     pub use stak_time::*;
+}
+
+pub mod vm {
+    //! A virtual machine and its runtime values.
+
+    pub use stak_vm::*;
 }
 
 pub use stak_macro::include_module;

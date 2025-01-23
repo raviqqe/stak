@@ -9,6 +9,7 @@
 //! };
 //! use stak::{
 //!     device::ReadWriteDevice,
+//!     engine::{Engine, ScriptError},
 //!     file::VoidFileSystem,
 //!     include_module,
 //!     module::{Module, UniversalModule},
@@ -21,15 +22,10 @@
 //! const BUFFER_SIZE: usize = 1 << 8;
 //! const HEAP_SIZE: usize = 1 << 16;
 //!
-//! static MODULE: UniversalModule = include_module!("fibonacci.scm");
+//! static MODULE: UniversalModule = include_module!("main.scm");
 //!
 //! fn main() -> Result<(), Box<dyn Error>> {
-//!     run(
-//!         &MODULE.bytecode(),
-//!         input.to_string().as_bytes(),
-//!         &mut output,
-//!         &mut error,
-//!     )?;
+//!     run(&MODULE)?;
 //!
 //!     // If stderr is not empty, we assume that some error has occurred.
 //!     if !error.is_empty() {
@@ -42,26 +38,11 @@
 //!     Ok(())
 //! }
 //!
-//! fn run(
-//!     bytecodes: &[u8],
-//!     input: &[u8],
-//!     output: &mut Vec<u8>,
-//!     error: &mut Vec<u8>,
-//! ) -> Result<(), SmallError> {
+//! fn run(module: &UniversalModule) -> Result<(), ScriptError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
-//!     let mut vm = Vm::new(
-//!         &mut heap,
-//!         SmallPrimitiveSet::new(
-//!             // Create and attach an in-memory I/O device.
-//!             ReadWriteDevice::new(input, output, error),
-//!             VoidFileSystem::new(),
-//!             VoidProcessContext::new(),
-//!             VoidClock::new(),
-//!         ),
-//!     )?;
+//!     let mut engine = Engine::new(&mut heap, &mut [])?;
 //!
-//!     vm.initialize(bytecodes.iter().copied())?;
-//!     vm.run()
+//!     engine.run(module)
 //! }
 //! ```
 
