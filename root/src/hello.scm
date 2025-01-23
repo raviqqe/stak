@@ -1,3 +1,1 @@
-(import (scheme base))
-
-(write-string "Hello, world!\n")
+../../bench/src/hello/main.scm

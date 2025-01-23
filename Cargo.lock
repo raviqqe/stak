@@ -1305,6 +1305,7 @@ version = "0.1.0"
 dependencies = [
  "any-fn",
  "cfg-elif",
+ "stak-build",
  "stak-device",
  "stak-file",
  "stak-module",
