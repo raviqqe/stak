@@ -1,7 +1,7 @@
 (import (stak base))
 (import (scheme base))
 
-(define debug (primitive 1000))
-(define make-foo (primitive 1001))
+(define make-person (primitive 1000))
+(define throw-pie (primitive 1001))
 
-(debug (make-foo))
+(make-person 42 42)
