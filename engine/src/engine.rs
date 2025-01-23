@@ -6,13 +6,13 @@ use stak_vm::{Error, Value, Vm};
 const DEFAULT_VALUE_COUNT: usize = 1 << 10;
 
 /// A scripting engine.
-pub struct Engine<'a, const N: usize = DEFAULT_VALUE_COUNT> {
-    vm: Vm<'a, ScriptPrimitiveSet<'a, N>>,
+pub struct Engine<'a, 'b, const N: usize = DEFAULT_VALUE_COUNT> {
+    vm: Vm<'a, ScriptPrimitiveSet<'a, 'b, N>>,
 }
 
-impl<'a, const N: usize> Engine<'a, N> {
+impl<'a, 'b, const N: usize> Engine<'a, 'b, N> {
     /// Creates a scripting engine.
-    pub fn new(heap: &'a mut [Value], functions: &'a mut [AnyFn<'a>]) -> Result<Self, Error> {
+    pub fn new(heap: &'a mut [Value], functions: &'a mut [AnyFn<'b>]) -> Result<Self, Error> {
         Ok(Self {
             vm: Vm::new(heap, ScriptPrimitiveSet::new(functions))?,
         })

@@ -19,14 +19,14 @@ item::feature!(if ("std") {
 });
 
 /// A type check primitive set.
-pub struct ScriptPrimitiveSet<'a, const N: usize> {
+pub struct ScriptPrimitiveSet<'a, 'b, const N: usize> {
     small: SmallPrimitiveSet<Device, VoidFileSystem, VoidProcessContext, VoidClock>,
-    dynamic: DynamicPrimitiveSet<'a, N>,
+    dynamic: DynamicPrimitiveSet<'a, 'b, N>,
 }
 
-impl<'a, const N: usize> ScriptPrimitiveSet<'a, N> {
+impl<'a, 'b, const N: usize> ScriptPrimitiveSet<'a, 'b, N> {
     /// Creates a primitive set.
-    pub fn new(functions: &'a mut [AnyFn<'a>]) -> Self {
+    pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
             small: SmallPrimitiveSet::new(
                 Default::default(),
@@ -39,7 +39,7 @@ impl<'a, const N: usize> ScriptPrimitiveSet<'a, N> {
     }
 }
 
-impl<'a, const N: usize> PrimitiveSet for ScriptPrimitiveSet<'a, N> {
+impl<'a, 'b, const N: usize> PrimitiveSet for ScriptPrimitiveSet<'a, 'b, N> {
     type Error = ScriptError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {

@@ -3,7 +3,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use any_fn::IntoAnyFn;
+//! use any_fn::{AnyFn, IntoAnyFn};
 //! use core::{
 //!     error::Error,
 //!     str::{self, FromStr},
@@ -61,7 +61,8 @@
 //!
 //! fn run(module: &'static UniversalModule) -> Result<(), ScriptError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
-//!     let mut primitives = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
+//!     let mut primitives: [AnyFn; 2] =
+//!         [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
 //!     let mut engine = Engine::<0>::new(&mut heap, &mut primitives)?;
 //!
 //!     engine.run(module)
