@@ -24,6 +24,12 @@
 //!
 //! static MODULE: UniversalModule = include_module!("main.scm");
 //!
+//! struct Person {
+//!     pies: usize,
+//!     dodge: f64,
+//!     wasted: bool,
+//! }
+//!
 //! fn main() -> Result<(), Box<dyn Error>> {
 //!     run(&MODULE)?;
 //!
