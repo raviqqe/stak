@@ -13,6 +13,7 @@
 //! };
 //!
 //! const HEAP_SIZE: usize = 1 << 16;
+//! const FOREIGN_VALUE_CAPACITY: usize = 1 << 10;
 //!
 //! struct Person {
 //!     pies: usize,
@@ -53,7 +54,7 @@
 //! fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
 //!     let mut functions = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
-//!     let mut engine = Engine::<0>::new(&mut heap, &mut functions)?;
+//!     let mut engine = Engine::<FOREIGN_VALUE_CAPACITY>::new(&mut heap, &mut functions)?;
 //!
 //!     engine.run(module)
 //! }
