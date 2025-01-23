@@ -39,7 +39,7 @@ impl<'a, 'b, const N: usize> EnginePrimitiveSet<'a, 'b, N> {
     }
 }
 
-impl<'a, 'b, const N: usize> PrimitiveSet for EnginePrimitiveSet<'a, 'b, N> {
+impl<const N: usize> PrimitiveSet for EnginePrimitiveSet<'_, '_, N> {
     type Error = EngineError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {

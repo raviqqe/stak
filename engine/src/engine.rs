@@ -20,7 +20,7 @@ impl<'a, 'b, const N: usize> Engine<'a, 'b, N> {
 
     /// Runs a module.
     pub fn run(&mut self, module: &'static impl Module<'static>) -> Result<(), EngineError> {
-        self.vm.initialize(module.bytecode().into_iter().copied())?;
+        self.vm.initialize(module.bytecode().iter().copied())?;
         self.vm.run()
     }
 }
