@@ -5,20 +5,20 @@ use core::{
 use stak_native::dynamic::DynamicError;
 use stak_r7rs::SmallError;
 
-/// A engine error
+/// An engine error
 #[derive(Debug)]
 pub enum EngineError {
-    /// An R7RS-small error.
-    Small(SmallError),
     /// A dynamic primitive error.
     Dynamic(DynamicError),
+    /// An R7RS-small error.
+    Small(SmallError),
     /// A virtual machine error.
     Vm(stak_vm::Error),
 }
 
-impl From<stak_vm::Error> for EngineError {
-    fn from(error: stak_vm::Error) -> Self {
-        Self::Vm(error)
+impl From<DynamicError> for EngineError {
+    fn from(error: DynamicError) -> Self {
+        Self::Dynamic(error)
     }
 }
 
@@ -28,9 +28,9 @@ impl From<SmallError> for EngineError {
     }
 }
 
-impl From<DynamicError> for EngineError {
-    fn from(error: DynamicError) -> Self {
-        Self::Dynamic(error)
+impl From<stak_vm::Error> for EngineError {
+    fn from(error: stak_vm::Error) -> Self {
+        Self::Vm(error)
     }
 }
 
