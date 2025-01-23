@@ -104,7 +104,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn constant(&mut self) -> Result<(), T::Error> {
+    fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand();
 
         trace!("constant", constant);
@@ -115,7 +115,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn get(&mut self) -> Result<(), T::Error> {
+    fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons();
         let value = self.memory.car(operand);
 
