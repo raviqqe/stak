@@ -8,7 +8,7 @@ use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::{Memory, PrimitiveSet};
 
-const DYNAMIC_PRIMITIVE_OFFSET: usize = 1024;
+const DYNAMIC_PRIMITIVE_OFFSET: usize = 1000;
 
 item::feature!(if ("std") {
     type Device = stak_device::StdioDevice;
