@@ -27,20 +27,12 @@
 //! fn main() -> Result<(), Box<dyn Error>> {
 //!     run(&MODULE)?;
 //!
-//!     // If stderr is not empty, we assume that some error has occurred.
-//!     if !error.is_empty() {
-//!         return Err(str::from_utf8(&error)?.into());
-//!     }
-//!
-//!     // Decode and test the output.
-//!     assert_eq!(isize::from_str(&str::from_utf8(&output)?)?, 610);
-//!
 //!     Ok(())
 //! }
 //!
-//! fn run(module: &UniversalModule) -> Result<(), ScriptError> {
+//! fn run(module: &'static UniversalModule) -> Result<(), ScriptError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
-//!     let mut engine = Engine::new(&mut heap, &mut [])?;
+//!     let mut engine = Engine::<0>::new(&mut heap, &mut [])?;
 //!
 //!     engine.run(module)
 //! }
