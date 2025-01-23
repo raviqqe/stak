@@ -1,17 +1,18 @@
 use crate::{value::Value, Error};
 use cfg_elif::expr::feature;
+use cfg_elif::item;
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
 };
 
-/// A number representation.
-#[cfg(feature = "float")]
-pub type NumberRepresentation = f64;
-
-/// A number representation.
-#[cfg(not(feature = "float"))]
-pub type NumberRepresentation = i64;
+item::feature!(if ("float") {
+    /// A number representation.
+    pub type NumberRepresentation = f64;
+} else {
+    /// A number representation.
+    pub type NumberRepresentation = i64;
+});
 
 /// A number.
 ///
