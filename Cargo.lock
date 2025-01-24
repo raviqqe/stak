@@ -83,9 +83,9 @@ dependencies = [
 
 [[package]]
 name = "any-fn"
-version = "0.4.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59cda56fb5cafae83fa51209e5121c394e1a1e054b2818806d44d2609420305a"
+checksum = "a2407f22918f13d4ba8a68f54af616efd3cd19df3bfeea7396c41d633a90cf04"
 
 [[package]]
 name = "autocfg"
