@@ -13,7 +13,7 @@ libc = ["stak-device/libc"]
 std = ["stak-device/std"]
 
 [dependencies]
-any-fn = "0.5.2"
+any-fn = "0.6.0"
 cfg-elif = "0.6.1"
 stak-device = { version = "0.2.93", path = "../device" }
 stak-file = { version = "0.5.7", path = "../file" }
