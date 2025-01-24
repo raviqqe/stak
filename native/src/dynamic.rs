@@ -3,9 +3,7 @@
 mod error;
 
 pub use self::error::DynamicError;
-use alloc::boxed::Box;
 use any_fn::AnyFn;
-use core::{any::Any, cell::RefCell};
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 
@@ -14,7 +12,7 @@ const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
     functions: &'a mut [AnyFn<'b>],
-    objects: [Option<RefCell<Box<dyn Any>>>; N],
+    values: [Option<any_fn::Value>; N],
 }
 
 impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
@@ -22,8 +20,8 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
             functions,
-            // TODO Garbage-collect foreign objects.
-            objects: [const { None }; N],
+            // TODO Garbage-collect foreign values.
+            values: [const { None }; N],
         }
     }
 }
@@ -42,8 +40,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 
             for _ in 0..function.arity() {
                 let value = memory.pop();
-                // TODO Convert Scheme values into Rust values automatically?
-                let value = self.objects
+                let value = self.values
                     [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
                     .as_ref()
                     .ok_or(DynamicError::ObjectIndex)?;
@@ -55,14 +52,14 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 
             (
                 value,
-                self.objects
+                self.values
                     .iter()
                     .position(Option::is_none)
                     .ok_or(Error::OutOfMemory)?,
             )
         };
 
-        self.objects[index] = Some(RefCell::new(value));
+        self.values[index] = Some(value);
 
         let cons = memory.cons(
             Number::from_i64(index as _).into(),
