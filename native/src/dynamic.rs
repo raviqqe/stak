@@ -12,14 +12,14 @@ use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 /// A dynamic primitive set equipped with native functions in Rust.
-pub struct DynamicPrimitiveSet<'a, const N: usize> {
-    functions: &'a mut [AnyFn<'a>],
+pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
+    functions: &'a mut [AnyFn<'b>],
     values: [Option<RefCell<Box<dyn Any>>>; N],
 }
 
-impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
+impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     /// Creates a primitive set.
-    pub fn new(functions: &'a mut [AnyFn<'a>]) -> Self {
+    pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
             functions,
             // TODO Garbage-collect foreign values.
@@ -28,7 +28,7 @@ impl<'a, const N: usize> DynamicPrimitiveSet<'a, N> {
     }
 }
 
-impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, N> {
+impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {

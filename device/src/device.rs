@@ -6,6 +6,7 @@ pub mod libc;
 mod read_write;
 #[cfg(feature = "std")]
 mod stdio;
+mod void;
 
 pub use buffer_error::BufferError;
 use core::error::Error;
@@ -14,6 +15,7 @@ pub use fixed_buffer::FixedBufferDevice;
 pub use read_write::ReadWriteDevice;
 #[cfg(feature = "std")]
 pub use stdio::StdioDevice;
+pub use void::*;
 
 /// A device.
 pub trait Device {

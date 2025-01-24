@@ -208,10 +208,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "cfg-exif"
-version = "0.3.1"
+name = "cfg-elif"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f782369519ff0fef6ec4fcc325a7328ac0136950ddf0a0d55f4a54cddca743b4"
+checksum = "1a86fdde19924340ffa833dd033b700d817916d4f1b4f582631816e32bec6383"
 
 [[package]]
 name = "cfg-if"
@@ -417,7 +417,7 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "embedded-script"
-version = "0.1.14"
+version = "0.1.15"
 dependencies = [
  "stak",
  "stak-build",
@@ -595,7 +595,7 @@ dependencies = [
 
 [[package]]
 name = "hot-reload"
-version = "0.1.14"
+version = "0.1.15"
 dependencies = [
  "axum",
  "stak",
@@ -994,6 +994,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ppv-lite86"
+version = "0.2.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77957b295656769bb8ad2b6a6b09d897d94f05c41b069aede1fcdaa675eaea04"
+dependencies = [
+ "zerocopy",
+]
+
+[[package]]
 name = "pretty_assertions"
 version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1019,6 +1028,36 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "rand"
+version = "0.8.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "34af8d1a0e25924bc5b7c43c079c942339d8f0a8b57c39049bef581b46327404"
+dependencies = [
+ "libc",
+ "rand_chacha",
+ "rand_core",
+]
+
+[[package]]
+name = "rand_chacha"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e6c10a63a0fa32252be49d21e7709d4d4baf8d231c2dbce1eaa8141b9b127d88"
+dependencies = [
+ "ppv-lite86",
+ "rand_core",
+]
+
+[[package]]
+name = "rand_core"
+version = "0.6.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec0be4795e2f6a28069bec0b5ff3e2ac9bafc99e6a9a7dc3547996c5c816922c"
+dependencies = [
+ "getrandom",
 ]
 
 [[package]]
@@ -1087,9 +1126,9 @@ checksum = "719b953e2095829ee67db738b3bfa9fa368c94900df327b3f07fe6e794d2fe1f"
 
 [[package]]
 name = "rustix"
-version = "0.38.43"
+version = "0.38.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a78891ee6bf2340288408954ac787aa063d8e8817e9f53abb37c695c6d834ef6"
+checksum = "fdb5bc1ae2baa591800df16c9ca78619bf65c0488b41b96ccec5d11220d8c154"
 dependencies = [
  "bitflags 2.7.0",
  "errno",
@@ -1224,10 +1263,11 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "stak-build",
  "stak-device",
+ "stak-engine",
  "stak-file",
  "stak-macro",
  "stak-module",
@@ -1241,7 +1281,7 @@ dependencies = [
 
 [[package]]
 name = "stak-bench"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "codspeed-criterion-compat",
  "stak",
@@ -1251,7 +1291,7 @@ dependencies = [
 
 [[package]]
 name = "stak-build"
-version = "0.1.51"
+version = "0.1.52"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -1261,14 +1301,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.4.2"
+version = "0.4.3"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -1282,26 +1322,45 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.88"
+version = "0.1.89"
 
 [[package]]
 name = "stak-decode"
-version = "0.1.96"
+version = "0.1.97"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.2.92"
+version = "0.2.93"
 dependencies = [
  "rustix",
  "stak-vm",
 ]
 
 [[package]]
+name = "stak-engine"
+version = "0.1.0"
+dependencies = [
+ "any-fn",
+ "cfg-elif",
+ "rand",
+ "stak",
+ "stak-build",
+ "stak-device",
+ "stak-file",
+ "stak-module",
+ "stak-native",
+ "stak-process-context",
+ "stak-r7rs",
+ "stak-time",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-file"
-version = "0.5.6"
+version = "0.5.7"
 dependencies = [
  "heapless",
  "rustix",
@@ -1311,7 +1370,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "libm",
  "stak-vm",
@@ -1319,7 +1378,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.3.21"
+version = "0.3.22"
 dependencies = [
  "clap",
  "main_error",
@@ -1334,9 +1393,9 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.2.11"
+version = "0.2.12"
 dependencies = [
- "cfg-exif",
+ "cfg-elif",
  "proc-macro2",
  "quote",
  "stak-compiler",
@@ -1352,7 +1411,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.69"
+version = "0.1.70"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1361,7 +1420,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.1.70"
+version = "0.1.71"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
@@ -1376,7 +1435,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.1.70"
+version = "0.1.71"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1387,21 +1446,21 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.1.70"
+version = "0.1.71"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-module"
-version = "0.1.12"
+version = "0.1.13"
 dependencies = [
  "hmr",
 ]
 
 [[package]]
 name = "stak-native"
-version = "0.1.6"
+version = "0.2.0"
 dependencies = [
  "any-fn",
  "heapless",
@@ -1411,14 +1470,14 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.50"
+version = "0.2.51"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-profile"
-version = "0.3.21"
+version = "0.3.22"
 dependencies = [
  "clap",
  "main_error",
@@ -1434,7 +1493,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.2.21"
+version = "0.2.22"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -1443,7 +1502,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.9.6"
+version = "0.9.7"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -1456,14 +1515,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.2.27"
+version = "0.2.28"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.1.94"
+version = "0.1.95"
 dependencies = [
  "clap",
  "libc",
@@ -1482,7 +1541,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.33"
+version = "0.1.34"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -1490,7 +1549,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.68"
+version = "0.1.69"
 dependencies = [
  "libc",
  "rustix",
@@ -1498,9 +1557,9 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.7.21"
+version = "0.7.22"
 dependencies = [
- "cfg-exif",
+ "cfg-elif",
  "insta",
  "nonbox",
  "stak-device",
@@ -1513,7 +1572,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.3.21"
+version = "0.3.22"
 dependencies = [
  "stak-build",
  "stak-compiler",
@@ -1899,3 +1958,24 @@ name = "yansi"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cfe53a6657fd280eaa890a3bc59152892ffa3e30101319d168b781ed6529b049"
+
+[[package]]
+name = "zerocopy"
+version = "0.7.35"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b9b4fd18abc82b8136838da5d50bae7bdea537c574d8dc1a34ed098d6c166f0"
+dependencies = [
+ "byteorder",
+ "zerocopy-derive",
+]
+
+[[package]]
+name = "zerocopy-derive"
+version = "0.7.35"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
