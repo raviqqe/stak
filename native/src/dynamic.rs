@@ -101,6 +101,7 @@ mod tests {
             r#fn::<(Ref<_>,), _>(Foo::bar),
             r#fn(Foo::baz),
         ];
-        let _ = DynamicPrimitiveSet::<0>::new(&mut functions);
+
+        DynamicPrimitiveSet::<0>::new(&mut functions);
     }
 }
