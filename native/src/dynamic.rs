@@ -64,7 +64,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
-        let (value, _) = {
+        let value = {
             let mut arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity() {
@@ -77,15 +77,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
 
-            let value = function.call(arguments.as_slice())?;
-
-            (
-                value,
-                self.values
-                    .iter()
-                    .position(Option::is_none)
-                    .ok_or(Error::OutOfMemory)?,
-            )
+            function.call(arguments.as_slice())?
         };
 
         let value = self.into_scheme(memory, value, TypeId::of::<()>())?;
