@@ -29,6 +29,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     }
 
     fn convert_from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
+        // TODO Support more types.
         if type_id == TypeId::of::<f32>() {
             Some(any_fn::value(value.assume_number().to_f64() as f32))
         } else if type_id == TypeId::of::<f64>() {
@@ -51,6 +52,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         memory: &mut Memory,
         value: any_fn::Value,
     ) -> Result<Value, DynamicError> {
+        // TODO Support more types.
         Ok(if value.type_id()? == TypeId::of::<bool>() {
             memory.boolean(value.downcast::<bool>()?).into()
         } else if value.type_id()? == TypeId::of::<f64>() {
