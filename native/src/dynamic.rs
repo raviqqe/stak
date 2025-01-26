@@ -29,7 +29,9 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     }
 
     fn from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
-        if type_id == TypeId::of::<f64>() {
+        if type_id == TypeId::of::<f32>() {
+            Some(any_fn::value(value.assume_number().to_f64() as f32))
+        } else if type_id == TypeId::of::<f64>() {
             Some(any_fn::value(value.assume_number().to_f64()))
         } else if type_id == TypeId::of::<usize>() {
             Some(any_fn::value(value.assume_number().to_i64() as usize))
