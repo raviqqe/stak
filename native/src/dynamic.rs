@@ -146,11 +146,11 @@ mod tests {
     }
 
     impl Foo {
-        fn new(bar: usize) -> Self {
+        const fn new(bar: usize) -> Self {
             Self { bar }
         }
 
-        fn bar(&self) -> usize {
+        const fn bar(&self) -> usize {
             self.bar
         }
 
