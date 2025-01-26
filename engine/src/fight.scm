@@ -8,6 +8,6 @@
 (define you (make-person 2 0.6))
 
 (throw-pie me you)
-(throw-pie you you)
+(throw-pie you me)
 (throw-pie me you)
-(throw-pie you you)
+(throw-pie you me)
