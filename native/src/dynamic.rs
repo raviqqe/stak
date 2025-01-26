@@ -109,7 +109,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                     .map_err(|_| Error::ArgumentCount)?;
             }
 
-            let x = function.call(
+            let value = function.call(
                 copied_values
                     .into_iter()
                     .enumerate()
@@ -123,7 +123,8 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                     .collect::<ArgumentVec<_>>()
                     .as_slice(),
             )?;
-            x
+
+            value
         };
 
         let value = self.into_scheme(memory, value, TypeId::of::<()>())?;
