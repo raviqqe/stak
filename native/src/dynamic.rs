@@ -27,7 +27,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
 
     fn into_scheme(value: any_fn::Value) -> Value {}
 
-    fn from_scheme(value: Value) {}
+    fn from_scheme(value: Value) -> any_fn::Value {}
 }
 
 impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
