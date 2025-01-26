@@ -121,11 +121,13 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 .into_iter()
                 .enumerate()
                 .map(|(index, value)| {
-                    cloned_arguments[index]
-                        .as_ref()
-                        .unwrap_or_else(|| value.unwrap())
+                    if let Some(value) = &cloned_arguments[index] {
+                        Ok(value)
+                    } else {
+                        value.ok_or(DynamicError::ForeignValueExpected)
+                    }
                 })
-                .collect::<ArgumentVec<_>>()
+                .collect::<Result<ArgumentVec<_>, DynamicError>>()?
                 .as_slice(),
         )?;
 
