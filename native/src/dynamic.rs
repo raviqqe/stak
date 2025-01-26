@@ -10,6 +10,8 @@ use stak_vm::{Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
+type ArgumentVec<T> = Vec<T, MAXIMUM_ARGUMENT_COUNT>;
+
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
     functions: &'a mut [AnyFn<'b>],
@@ -69,15 +71,15 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
         let value = {
             let arguments = (0..function.arity())
                 .map(|_| memory.pop())
-                .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>();
+                .collect::<ArgumentVec<_>>();
 
             let cloned_values = arguments
                 .iter()
                 .enumerate()
                 .map(|(index, &value)| Self::from_scheme(value, function.parameter_types()[index]))
-                .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>();
+                .collect::<ArgumentVec<_>>();
 
-            let mut copied_values = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+            let mut copied_values = ArgumentVec::new();
 
             for value in &arguments {
                 let value = if value.tag() == Type::Foreign as _ {
@@ -108,7 +110,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                             value.unwrap()
                         }
                     })
-                    .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>()
+                    .collect::<ArgumentVec<_>>()
                     .as_slice(),
             )?;
             x
