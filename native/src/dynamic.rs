@@ -88,13 +88,8 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             )
         };
 
-        self.values[index] = Some(value);
-
-        let cons = memory.cons(
-            Number::from_i64(index as _).into(),
-            memory.null().set_tag(Type::Foreign as _),
-        )?;
-        memory.push(cons.into())?;
+        let value = self.into_scheme(memory, value, TypeId::of::<()>())?;
+        memory.push(value)?;
 
         Ok(())
     }
