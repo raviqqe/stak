@@ -74,39 +74,33 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use any_fn::IntoAnyFn;
+    use any_fn::{r#fn, Ref};
 
-    struct Person {
-        pies: usize,
-        dodge: f64,
-        wasted: bool,
+    struct Foo {
+        bar: usize,
     }
 
-    impl Person {
-        pub fn new(pies: usize, dodge: f64) -> Self {
-            Self {
-                pies,
-                dodge,
-                wasted: false,
-            }
+    impl Foo {
+        fn new(bar: usize) -> Self {
+            Self { bar }
         }
 
-        pub fn throw_pie(&mut self, other: &mut Person) {
-            if self.wasted {
-                return;
-            }
+        fn bar(&self) -> usize {
+            self.bar
+        }
 
-            self.pies -= 1;
-
-            if random::<f64>() > other.dodge {
-                other.wasted = true;
-            }
+        fn baz(&mut self, value: usize) {
+            self.bar += value;
         }
     }
 
     #[test]
     fn create() {
-        let mut functions = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
-        let mut engine = DynamicPrimitiveSet::new(&mut functions)?;
+        let mut functions = [
+            r#fn(Foo::new),
+            r#fn::<(Ref<_>,), _>(Foo::bar),
+            r#fn(Foo::baz),
+        ];
+        let _ = DynamicPrimitiveSet::<0>::new(&mut functions);
     }
 }
