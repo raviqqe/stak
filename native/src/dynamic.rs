@@ -27,16 +27,23 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         }
     }
 
-    fn from_scheme(_value: any_fn::Value) -> Value {
-        // TODO
-        Number::from_i64(0).into()
+    fn from_scheme<'c>(
+        values: &'c [Option<any_fn::Value>],
+        memory: &mut Memory,
+        value: Value,
+    ) -> Result<&'c any_fn::Value, DynamicError> {
+        Ok(
+            values[memory.car(value.assume_cons()).assume_number().to_i64() as usize]
+                .as_ref()
+                .ok_or(DynamicError::ObjectIndex)?,
+        )
     }
 
     fn into_scheme(
         &mut self,
         memory: &mut Memory,
         value: any_fn::Value,
-        type_id: TypeId,
+        _type_id: TypeId,
     ) -> Result<Value, DynamicError> {
         let index = self
             .values
@@ -69,10 +76,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 
             for _ in 0..function.arity() {
                 let value = memory.pop();
-                let value = self.values
-                    [memory.car(value.assume_cons()).assume_number().to_i64() as usize]
-                    .as_ref()
-                    .ok_or(DynamicError::ObjectIndex)?;
+                let value = Self::from_scheme(&self.values, memory, value)?;
 
                 arguments.push(value).map_err(|_| Error::ArgumentCount)?;
             }
