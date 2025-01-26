@@ -5,7 +5,7 @@ mod error;
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
 use heapless::Vec;
-use stak_vm::{Error, Memory, Number, PrimitiveSet, Type};
+use stak_vm::{Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
@@ -24,6 +24,10 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             values: [const { None }; N],
         }
     }
+
+    fn into_scheme(value: any_fn::Value) -> Value {}
+
+    fn from_scheme(value: Value) {}
 }
 
 impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
