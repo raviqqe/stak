@@ -13,10 +13,5 @@
 (person-throw-pie me you)
 (person-throw-pie you me)
 
-(display "Me: ")
-(write (person-wasted me))
-(newline)
-
-(display "You ")
-(write (person-wasted you))
-(newline)
+(when (person-wasted me)
+  (display "Oh, no!"))
