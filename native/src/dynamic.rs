@@ -83,57 +83,51 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
-        let value = {
-            let mut arguments = (0..function.arity())
-                .map(|_| memory.pop())
-                .collect::<ArgumentVec<_>>();
-            arguments.reverse();
+        let mut arguments = (0..function.arity())
+            .map(|_| memory.pop())
+            .collect::<ArgumentVec<_>>();
+        arguments.reverse();
 
-            let cloned_values = arguments
-                .iter()
+        let cloned_arguments = arguments
+            .iter()
+            .enumerate()
+            .map(|(index, &value)| Self::from_scheme(value, function.parameter_types()[index]))
+            .collect::<ArgumentVec<_>>();
+
+        let mut copied_arguments = ArgumentVec::new();
+
+        for &value in &arguments {
+            let value = if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
+                Some(
+                    self.values
+                        .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
+                        .ok_or(DynamicError::ObjectIndex)?
+                        .as_ref()
+                        .ok_or(DynamicError::ObjectIndex)?,
+                )
+            } else {
+                None
+            };
+
+            copied_arguments
+                .push(value)
+                .map_err(|_| Error::ArgumentCount)?;
+        }
+
+        let value = function.call(
+            copied_arguments
+                .into_iter()
                 .enumerate()
-                .map(|(index, &value)| Self::from_scheme(value, function.parameter_types()[index]))
-                .collect::<ArgumentVec<_>>();
-
-            let mut copied_values = ArgumentVec::new();
-
-            for &value in &arguments {
-                let value = if value.is_cons()
-                    && memory.cdr_value(value).tag() == Type::Foreign as _
-                {
-                    Some(
-                        self.values
-                            .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
-                            .ok_or(DynamicError::ObjectIndex)?
-                            .as_ref()
-                            .ok_or(DynamicError::ObjectIndex)?,
-                    )
-                } else {
-                    None
-                };
-
-                copied_values
-                    .push(value)
-                    .map_err(|_| Error::ArgumentCount)?;
-            }
-
-            let value = function.call(
-                copied_values
-                    .into_iter()
-                    .enumerate()
-                    .map(|(index, value)| {
-                        if let Some(value) = &cloned_values[index] {
-                            value
-                        } else {
-                            value.unwrap()
-                        }
-                    })
-                    .collect::<ArgumentVec<_>>()
-                    .as_slice(),
-            )?;
-
-            value
-        };
+                .map(|(index, value)| {
+                    if let Some(value) = &cloned_arguments[index] {
+                        value
+                    } else {
+                        value.unwrap()
+                    }
+                })
+                .collect::<ArgumentVec<_>>()
+                .as_slice(),
+        )?;
 
         let value = self.into_scheme(memory, value)?;
         memory.push(value)?;
