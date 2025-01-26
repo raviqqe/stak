@@ -32,11 +32,11 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         memory: &mut Memory,
         value: Value,
     ) -> Result<&'c any_fn::Value, DynamicError> {
-        Ok(
-            values[memory.car(value.assume_cons()).assume_number().to_i64() as usize]
-                .as_ref()
-                .ok_or(DynamicError::ObjectIndex)?,
-        )
+        Ok(values
+            .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
+            .ok_or(DynamicError::ObjectIndex)?
+            .as_ref()
+            .ok_or(DynamicError::ObjectIndex)?)
     }
 
     fn into_scheme(
