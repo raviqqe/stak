@@ -2,6 +2,8 @@
 
 mod error;
 
+use core::any::TypeId;
+
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
 use heapless::Vec;
@@ -27,7 +29,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
 
     fn into_scheme(value: any_fn::Value) -> Value {}
 
-    fn from_scheme(value: Value) -> any_fn::Value {}
+    fn from_scheme(value: Value, type_id: TypeId) -> any_fn::Value {}
 }
 
 impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
