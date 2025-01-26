@@ -32,7 +32,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         Number::from_i64(0).into()
     }
 
-    fn into_scheme<E>(
+    fn into_scheme(
         &mut self,
         memory: &mut Memory,
         value: any_fn::Value,
@@ -64,7 +64,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
-        let (value, index) = {
+        let (value, _) = {
             let mut arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
 
             for _ in 0..function.arity() {
