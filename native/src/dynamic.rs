@@ -27,11 +27,12 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         }
     }
 
-    fn into_scheme(value: any_fn::Value) -> Value {
+    fn from_scheme(_value: any_fn::Value) -> Value {
+        // TODO
         Number::from_i64(0).into()
     }
 
-    fn from_scheme<E>(
+    fn into_scheme<E>(
         &mut self,
         memory: &mut Memory,
         value: Value,
