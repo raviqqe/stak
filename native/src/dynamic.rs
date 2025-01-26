@@ -73,9 +73,8 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 
             let cloned_values = arguments
                 .iter()
-                .copied()
                 .enumerate()
-                .map(|(index, value)| Self::from_scheme(value, function.parameter_types()[index]))
+                .map(|(index, &value)| Self::from_scheme(value, function.parameter_types()[index]))
                 .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>();
 
             let mut copied_values = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
