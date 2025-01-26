@@ -51,8 +51,10 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         memory: &mut Memory,
         value: any_fn::Value,
     ) -> Result<Value, DynamicError> {
-        if value.type_id()? == TypeId::of::<bool>() {
-            Ok(memory.boolean(value.downcast::<bool>()?).into())
+        Ok(if value.type_id()? == TypeId::of::<bool>() {
+            memory.boolean(value.downcast::<bool>()?).into()
+        } else if value.type_id()? == TypeId::of::<f64>() {
+            Number::from_f64(value.downcast::<f64>()?).into()
         } else {
             let index = self
                 .values
@@ -67,8 +69,8 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
                 memory.null().set_tag(Type::Foreign as _).into(),
             )?;
 
-            Ok(cons.into())
-        }
+            cons.into()
+        })
     }
 }
 
