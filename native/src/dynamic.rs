@@ -2,9 +2,9 @@
 
 mod error;
 
-use core::any::TypeId;
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
+use core::any::TypeId;
 use heapless::Vec;
 use stak_vm::{Error, Memory, Number, PrimitiveSet, Type, Value};
 
@@ -26,16 +26,12 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         }
     }
 
-    fn from_scheme<'c>(
-        values: &'c [Option<any_fn::Value>],
-        memory: &mut Memory,
-        value: Value,
-    ) -> Result<&'c any_fn::Value, DynamicError> {
-        Ok(values
-            .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
-            .ok_or(DynamicError::ObjectIndex)?
-            .as_ref()
-            .ok_or(DynamicError::ObjectIndex)?)
+    fn from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
+        if type_id == TypeId::of::<usize>() {
+            Some(any_fn::value(value.assume_number().to_i64() as usize))
+        } else {
+            None
+        }
     }
 
     fn into_scheme(
@@ -71,16 +67,52 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .ok_or(Error::IllegalPrimitive)?;
 
         let value = {
-            let mut arguments = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+            let arguments = (0..function.arity())
+                .map(|_| memory.pop())
+                .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>();
 
-            for _ in 0..function.arity() {
-                let value = memory.pop();
-                let value = Self::from_scheme(&self.values, memory, value)?;
+            let cloned_values = arguments
+                .iter()
+                .copied()
+                .enumerate()
+                .map(|(index, value)| Self::from_scheme(value, function.parameter_types()[index]))
+                .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>();
 
-                arguments.push(value).map_err(|_| Error::ArgumentCount)?;
+            let mut copied_values = Vec::<_, MAXIMUM_ARGUMENT_COUNT>::new();
+
+            for value in &arguments {
+                let value = if value.tag() == Type::Foreign as _ {
+                    Some(
+                        self.values
+                            .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
+                            .ok_or(DynamicError::ObjectIndex)?
+                            .as_ref()
+                            .ok_or(DynamicError::ObjectIndex)?,
+                    )
+                } else {
+                    None
+                };
+
+                copied_values
+                    .push(value)
+                    .map_err(|_| Error::ArgumentCount)?;
             }
 
-            function.call(arguments.as_slice())?
+            let x = function.call(
+                copied_values
+                    .into_iter()
+                    .enumerate()
+                    .map(|(index, value)| {
+                        if let Some(value) = &cloned_values[index] {
+                            value
+                        } else {
+                            value.unwrap()
+                        }
+                    })
+                    .collect::<Vec<_, MAXIMUM_ARGUMENT_COUNT>>()
+                    .as_slice(),
+            )?;
+            x
         };
 
         let value = self.into_scheme(memory, value, TypeId::of::<()>())?;
