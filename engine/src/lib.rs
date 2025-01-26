@@ -3,7 +3,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use any_fn::IntoAnyFn;
+//! use any_fn::{r#fn, Ref};
 //! use core::error::Error;
 //! use rand::random;
 //! use stak::{
@@ -30,6 +30,10 @@
 //!         }
 //!     }
 //!
+//!     pub fn wasted(&self) -> bool {
+//!         self.wasted
+//!     }
+//!
 //!     pub fn throw_pie(&mut self, other: &mut Person) {
 //!         if self.wasted {
 //!             return;
@@ -53,7 +57,11 @@
 //!
 //! fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
 //!     let mut heap = [Default::default(); HEAP_SIZE];
-//!     let mut functions = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
+//!     let mut functions = [
+//!         r#fn(Person::new),
+//!         r#fn(Person::throw_pie),
+//!         r#fn::<(Ref<_>,), _>(Person::wasted),
+//!     ];
 //!     let mut engine = Engine::<FOREIGN_VALUE_CAPACITY>::new(&mut heap, &mut functions)?;
 //!
 //!     engine.run(module)
