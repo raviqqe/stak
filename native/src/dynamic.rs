@@ -28,7 +28,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         }
     }
 
-    fn from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
+    fn convert_from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
         if type_id == TypeId::of::<f32>() {
             Some(any_fn::value(value.assume_number().to_f64() as f32))
         } else if type_id == TypeId::of::<f64>() {
@@ -46,7 +46,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         }
     }
 
-    fn into_scheme(
+    fn convert_into_scheme(
         &mut self,
         memory: &mut Memory,
         value: any_fn::Value,
@@ -91,7 +91,9 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
         let cloned_arguments = arguments
             .iter()
             .enumerate()
-            .map(|(index, &value)| Self::from_scheme(value, function.parameter_types()[index]))
+            .map(|(index, &value)| {
+                Self::convert_from_scheme(value, function.parameter_types()[index])
+            })
             .collect::<ArgumentVec<_>>();
 
         let mut copied_arguments = ArgumentVec::new();
@@ -119,17 +121,15 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 .into_iter()
                 .enumerate()
                 .map(|(index, value)| {
-                    if let Some(value) = &cloned_arguments[index] {
-                        value
-                    } else {
-                        value.unwrap()
-                    }
+                    cloned_arguments[index]
+                        .as_ref()
+                        .unwrap_or_else(|| value.unwrap())
                 })
                 .collect::<ArgumentVec<_>>()
                 .as_slice(),
         )?;
 
-        let value = self.into_scheme(memory, value)?;
+        let value = self.convert_into_scheme(memory, value)?;
         memory.push(value)?;
 
         Ok(())
