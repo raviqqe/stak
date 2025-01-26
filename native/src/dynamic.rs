@@ -3,7 +3,6 @@
 mod error;
 
 use core::any::TypeId;
-
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
 use heapless::Vec;
