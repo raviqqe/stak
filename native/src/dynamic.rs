@@ -31,7 +31,27 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         Number::from_i64(0).into()
     }
 
-    fn from_scheme(value: Value, type_id: TypeId) -> any_fn::Value {}
+    fn from_scheme<E>(
+        &mut self,
+        memory: &mut Memory,
+        value: Value,
+        type_id: TypeId,
+    ) -> Result<any_fn::Value, DynamicError> {
+        let index = self
+            .values
+            .iter()
+            .position(Option::is_none)
+            .ok_or(Error::OutOfMemory)?;
+
+        self.values[index] = Some(value);
+
+        let cons = memory.cons(
+            Number::from_i64(index as _).into(),
+            memory.null().set_tag(Type::Foreign as _),
+        )?;
+
+        cons.into()
+    }
 }
 
 impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
