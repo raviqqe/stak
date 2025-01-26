@@ -35,9 +35,9 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     fn into_scheme<E>(
         &mut self,
         memory: &mut Memory,
-        value: Value,
+        value: any_fn::Value,
         type_id: TypeId,
-    ) -> Result<any_fn::Value, DynamicError> {
+    ) -> Result<Value, DynamicError> {
         let index = self
             .values
             .iter()
