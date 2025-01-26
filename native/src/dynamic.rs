@@ -70,3 +70,43 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use any_fn::IntoAnyFn;
+
+    struct Person {
+        pies: usize,
+        dodge: f64,
+        wasted: bool,
+    }
+
+    impl Person {
+        pub fn new(pies: usize, dodge: f64) -> Self {
+            Self {
+                pies,
+                dodge,
+                wasted: false,
+            }
+        }
+
+        pub fn throw_pie(&mut self, other: &mut Person) {
+            if self.wasted {
+                return;
+            }
+
+            self.pies -= 1;
+
+            if random::<f64>() > other.dodge {
+                other.wasted = true;
+            }
+        }
+    }
+
+    #[test]
+    fn create() {
+        let mut functions = [Person::new.into_any_fn(), Person::throw_pie.into_any_fn()];
+        let mut engine = DynamicPrimitiveSet::new(&mut functions)?;
+    }
+}
