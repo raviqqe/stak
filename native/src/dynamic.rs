@@ -33,6 +33,12 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             Some(any_fn::value(value.assume_number().to_f64() as f32))
         } else if type_id == TypeId::of::<f64>() {
             Some(any_fn::value(value.assume_number().to_f64()))
+        } else if type_id == TypeId::of::<i8>() {
+            Some(any_fn::value(value.assume_number().to_i64() as i8))
+        } else if type_id == TypeId::of::<u8>() {
+            Some(any_fn::value(value.assume_number().to_i64() as u8))
+        } else if type_id == TypeId::of::<isize>() {
+            Some(any_fn::value(value.assume_number().to_i64() as isize))
         } else if type_id == TypeId::of::<usize>() {
             Some(any_fn::value(value.assume_number().to_i64() as usize))
         } else {
