@@ -1,5 +1,4 @@
-(import (stak base))
-(import (scheme base) (scheme write))
+(import (scheme base) (stak base))
 
 (define make-person (primitive 1000))
 (define person-throw-pie (primitive 1001))
@@ -14,4 +13,4 @@
 (person-throw-pie you me)
 
 (when (person-wasted me)
-  (display "Oh, no!"))
+  (write-string "Oh, no!"))
