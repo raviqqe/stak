@@ -1,5 +1,5 @@
 (import (stak base))
-(import (scheme base))
+(import (scheme base) (scheme write))
 
 (define make-person (primitive 1000))
 (define person-throw-pie (primitive 1001))

@@ -50,22 +50,25 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         &mut self,
         memory: &mut Memory,
         value: any_fn::Value,
-        _type_id: TypeId,
     ) -> Result<Value, DynamicError> {
-        let index = self
-            .values
-            .iter()
-            .position(Option::is_none)
-            .ok_or(Error::OutOfMemory)?;
+        if value.type_id()? == TypeId::of::<bool>() {
+            Ok(memory.boolean(value.downcast::<bool>()?).into())
+        } else {
+            let index = self
+                .values
+                .iter()
+                .position(Option::is_none)
+                .ok_or(Error::OutOfMemory)?;
 
-        self.values[index] = Some(value);
+            self.values[index] = Some(value);
 
-        let cons = memory.allocate(
-            Number::from_i64(index as _).into(),
-            memory.null().set_tag(Type::Foreign as _).into(),
-        )?;
+            let cons = memory.allocate(
+                Number::from_i64(index as _).into(),
+                memory.null().set_tag(Type::Foreign as _).into(),
+            )?;
 
-        Ok(cons.into())
+            Ok(cons.into())
+        }
     }
 }
 
@@ -130,7 +133,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             value
         };
 
-        let value = self.into_scheme(memory, value, TypeId::of::<()>())?;
+        let value = self.into_scheme(memory, value)?;
         memory.push(value)?;
 
         Ok(())
