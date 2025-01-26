@@ -50,7 +50,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             memory.null().set_tag(Type::Foreign as _),
         )?;
 
-        cons.into()
+        Ok(cons.into())
     }
 }
 
