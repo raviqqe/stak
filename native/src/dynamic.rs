@@ -79,9 +79,10 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .ok_or(Error::IllegalPrimitive)?;
 
         let value = {
-            let arguments = (0..function.arity())
+            let mut arguments = (0..function.arity())
                 .map(|_| memory.pop())
                 .collect::<ArgumentVec<_>>();
+            arguments.reverse();
 
             let cloned_values = arguments
                 .iter()
