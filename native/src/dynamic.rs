@@ -70,3 +70,38 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use any_fn::{r#fn, Ref};
+
+    struct Foo {
+        bar: usize,
+    }
+
+    impl Foo {
+        fn new(bar: usize) -> Self {
+            Self { bar }
+        }
+
+        fn bar(&self) -> usize {
+            self.bar
+        }
+
+        fn baz(&mut self, value: usize) {
+            self.bar += value;
+        }
+    }
+
+    #[test]
+    fn create() {
+        let mut functions = [
+            r#fn(Foo::new),
+            r#fn::<(Ref<_>,), _>(Foo::bar),
+            r#fn(Foo::baz),
+        ];
+
+        DynamicPrimitiveSet::<0>::new(&mut functions);
+    }
+}
