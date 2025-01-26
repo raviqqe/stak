@@ -91,8 +91,10 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 
             let mut copied_values = ArgumentVec::new();
 
-            for value in &arguments {
-                let value = if value.tag() == Type::Foreign as _ {
+            for &value in &arguments {
+                let value = if value.is_cons()
+                    && memory.cdr_value(value).tag() == Type::Foreign as _
+                {
                     Some(
                         self.values
                             .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
