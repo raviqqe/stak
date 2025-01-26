@@ -2,7 +2,7 @@
 //!
 //! # Examples
 //!
-//! ```rust no_run
+//! ```rust
 //! use any_fn::IntoAnyFn;
 //! use core::error::Error;
 //! use rand::random;
