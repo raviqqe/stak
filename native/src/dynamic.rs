@@ -1,6 +1,7 @@
 //! Native functions dynamically defined.
 
 mod error;
+mod value;
 
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
