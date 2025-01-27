@@ -224,7 +224,7 @@ mod tests {
         #[test]
         fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
-            let mut functions = [r#fn(|| 42usize)];
+            let mut functions = [r#fn(|| Foo { bar: 42 })];
             let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
