@@ -90,9 +90,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         } else if value.type_id()? == TypeId::of::<f64>() {
             Number::from_f64(value.downcast::<f64>()?).into()
         } else {
-            let index = self.find_free();
-
-            let index = if let Some(index) = index {
+            let index = if let Some(index) = self.find_free() {
                 index
             } else {
                 self.collect_garbages(memory)?;
