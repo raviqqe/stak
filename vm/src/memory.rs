@@ -226,7 +226,7 @@ impl<'a> Memory<'a> {
 
     /// Returns an allocation index relative an allocation start index.
     #[inline]
-    pub fn allocation_index(&self) -> usize {
+    pub const fn allocation_index(&self) -> usize {
         self.allocation_index
     }
 
