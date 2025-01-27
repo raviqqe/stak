@@ -6,7 +6,7 @@ pub use self::error::DynamicError;
 use any_fn::AnyFn;
 use core::any::TypeId;
 use heapless::Vec;
-use stak_vm::{Error, Memory, Number, PrimitiveSet, Type, Value};
+use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
@@ -26,6 +26,23 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             // TODO Garbage-collect foreign values.
             values: [const { None }; N],
         }
+    }
+
+    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
+        for index in 0..(memory.allocation_index() / 2) {
+            let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
+
+            if memory.cdr(cons).tag() == Type::Foreign as _ {
+                memory.car(cons);
+            }
+        }
+
+        Ok(())
+    }
+
+    // TODO Optimize this.
+    fn find_free(&self) -> Option<usize> {
+        self.values.iter().position(Option::is_none)
     }
 
     fn convert_from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
@@ -58,11 +75,15 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         } else if value.type_id()? == TypeId::of::<f64>() {
             Number::from_f64(value.downcast::<f64>()?).into()
         } else {
-            let index = self
-                .values
-                .iter()
-                .position(Option::is_none)
-                .ok_or(Error::OutOfMemory)?;
+            let index = self.find_free();
+
+            let index = if let Some(index) = index {
+                index
+            } else {
+                self.collect_garbages(memory)?;
+
+                self.find_free().ok_or(Error::OutOfMemory)?
+            };
 
             self.values[index] = Some(value);
 
