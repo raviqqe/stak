@@ -24,7 +24,6 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
             functions,
-            // TODO Garbage-collect foreign values.
             values: [const { None }; N],
         }
     }
