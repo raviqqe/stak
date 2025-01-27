@@ -81,7 +81,6 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
                 index
             } else {
                 self.collect_garbages(memory)?;
-
                 self.find_free().ok_or(Error::OutOfMemory)?
             };
 
