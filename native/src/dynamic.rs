@@ -205,4 +205,23 @@ mod tests {
 
         DynamicPrimitiveSet::<0>::new(&mut functions);
     }
+
+    mod garbage_collection {
+        use super::*;
+
+        #[test]
+        fn collect_none() {
+            let mut heap = [];
+            let mut primitive_set = DynamicPrimitiveSet::<42>::new(&mut []);
+
+            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
+        }
+
+        #[test]
+        fn collect_one() {
+            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut [r#fn(Foo::new)]);
+
+            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
+        }
+    }
 }
