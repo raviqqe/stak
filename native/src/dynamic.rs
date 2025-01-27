@@ -37,16 +37,17 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             if memory.cdr(cons).tag() == Type::Foreign as _ {
                 let index = memory.car(cons).assume_number().to_i64() as _;
 
+                // Run conservative garbage collection as foreign type tags can be used for something else.
                 if index >= self.values.len() {
-                    return Err(DynamicError::ValueIndex);
+                    continue;
                 }
 
                 marks.insert(index, true);
             }
         }
 
-        for (index, mark) in marks.into_iter().enumerate() {
-            if mark {
+        for (index, mark) in marks.into_iter().enumerate().take(N) {
+            if !mark {
                 self.values[index] = None;
             }
         }
@@ -232,9 +233,29 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
+            memory.set_car(
+                Cons::new((memory.allocation_index() - 4) as _),
+                Number::from_i64(42).into(),
+            );
             primitive_set.collect_garbages(&memory).unwrap();
 
             assert_eq!(primitive_set.find_free(), Some(0));
+        }
+
+        #[test]
+        fn keep_one() {
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut functions = [r#fn(|| Foo { bar: 42 })];
+            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut memory = Memory::new(&mut heap).unwrap();
+
+            primitive_set.operate(&mut memory, 0).unwrap();
+
+            assert_eq!(primitive_set.find_free(), None);
+
+            primitive_set.collect_garbages(&memory).unwrap();
+
+            assert_eq!(primitive_set.find_free(), None);
         }
     }
 }
