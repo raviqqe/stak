@@ -11,8 +11,8 @@ pub enum DynamicError {
     AnyFn(AnyFnError),
     /// A foreign value expected.
     ForeignValueExpected,
-    /// A object index error.
-    ObjectIndex,
+    /// A value index error.
+    ValueIndex,
     /// A virtual machine error.
     Vm(stak_vm::Error),
 }
@@ -36,7 +36,7 @@ impl Display for DynamicError {
         match self {
             Self::AnyFn(error) => write!(formatter, "{error}"),
             Self::ForeignValueExpected => write!(formatter, "foreign value expected"),
-            Self::ObjectIndex => write!(formatter, "invalid object index"),
+            Self::ValueIndex => write!(formatter, "invalid value index"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
     }

@@ -4,6 +4,7 @@ mod error;
 
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
+use bitvec::bitvec;
 use core::any::TypeId;
 use heapless::Vec;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
@@ -29,11 +30,25 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     }
 
     fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
+        let mut marks = bitvec![0; N];
+
         for index in 0..(memory.allocation_index() / 2) {
             let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
 
             if memory.cdr(cons).tag() == Type::Foreign as _ {
-                memory.car(cons);
+                let index = memory.car(cons).assume_number().to_i64() as _;
+
+                if index >= self.values.len() {
+                    return Err(DynamicError::ValueIndex);
+                }
+
+                marks.insert(index, true);
+            }
+        }
+
+        for (index, mark) in marks.into_iter().enumerate() {
+            if mark {
+                self.values[index] = None;
             }
         }
 
@@ -125,9 +140,9 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 Some(
                     self.values
                         .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
-                        .ok_or(DynamicError::ObjectIndex)?
+                        .ok_or(DynamicError::ValueIndex)?
                         .as_ref()
-                        .ok_or(DynamicError::ObjectIndex)?,
+                        .ok_or(DynamicError::ValueIndex)?,
                 )
             } else {
                 None
