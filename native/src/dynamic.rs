@@ -40,7 +40,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
 
             let index = memory.car(cons).assume_number().to_i64() as _;
 
-            // Run conservative garbage collection as foreign type tags can be used for something else.
+            // Be conservative as foreign type tags can be used for something else.
             if index >= self.values.len() {
                 continue;
             }
