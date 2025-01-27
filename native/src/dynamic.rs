@@ -46,6 +46,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             }
         }
 
+        // Why do we need `take`??
         for (index, mark) in marks.into_iter().enumerate().take(N) {
             if !mark {
                 self.values[index] = None;
