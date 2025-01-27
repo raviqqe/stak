@@ -55,7 +55,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         Ok(())
     }
 
-    // TODO Optimize this with `BitSlice::find_one()`.
+    // TODO Optimize this with `BitSlice::first_zero()`.
     fn find_free(&self) -> Option<usize> {
         self.values.iter().position(Option::is_none)
     }
