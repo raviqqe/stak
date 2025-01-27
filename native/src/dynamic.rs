@@ -24,6 +24,14 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             values: [const { None }; N],
         }
     }
+
+    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
+        for foo in memory {
+            foo;
+        }
+
+        Ok(())
+    }
 }
 
 impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {

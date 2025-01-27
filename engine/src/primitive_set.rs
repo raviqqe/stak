@@ -52,9 +52,4 @@ impl<const N: usize> PrimitiveSet for EnginePrimitiveSet<'_, '_, N> {
 
         Ok(())
     }
-
-    fn collect_garbages(&mut self, memory: &mut Memory) -> Result<(), Self::Error> {
-        self.dynamic.collect_garbages(memory)?;
-        Ok(())
-    }
 }

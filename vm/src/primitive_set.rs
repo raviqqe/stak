@@ -12,9 +12,4 @@ pub trait PrimitiveSet: Sized {
 
     /// Runs a primitive on a virtual machine.
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error>;
-
-    /// Collects garbages of resources managed by a primitive set.
-    fn collect_garbages(&mut self, _memory: &mut Memory) -> Result<(), Self::Error> {
-        Ok(())
-    }
 }
