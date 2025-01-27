@@ -224,12 +224,17 @@ mod tests {
         #[test]
         fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
-            let mut functions = [r#fn(Foo::new)];
+            let mut functions = [r#fn(|| 42usize)];
             let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set
-                .collect_garbages(&Memory::new(&mut heap).unwrap())
-                .unwrap();
+            primitive_set.operate(&mut memory, 0).unwrap();
+
+            assert_eq!(primitive_set.find_free(), None);
+
+            primitive_set.collect_garbages(&memory).unwrap();
+
+            assert_eq!(primitive_set.find_free(), Some(0));
         }
     }
 }
