@@ -177,6 +177,8 @@ mod tests {
     use super::*;
     use any_fn::{r#fn, Ref};
 
+    const HEAP_SIZE: usize = 1 << 8;
+
     struct Foo {
         bar: usize,
     }
@@ -211,17 +213,23 @@ mod tests {
 
         #[test]
         fn collect_none() {
-            let mut heap = [];
+            let mut heap = [Default::default(); HEAP_SIZE];
             let mut primitive_set = DynamicPrimitiveSet::<42>::new(&mut []);
 
-            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
+            primitive_set
+                .collect_garbages(&Memory::new(&mut heap).unwrap())
+                .unwrap();
         }
 
         #[test]
         fn collect_one() {
-            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut [r#fn(Foo::new)]);
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut functions = [r#fn(Foo::new)];
+            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
 
-            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
+            primitive_set
+                .collect_garbages(&Memory::new(&mut heap).unwrap())
+                .unwrap();
         }
     }
 }
