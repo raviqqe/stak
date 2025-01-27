@@ -83,9 +83,9 @@ dependencies = [
 
 [[package]]
 name = "any-fn"
-version = "0.6.0"
+version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f4885fe7295a354470225f0f95050e4efe39930f3ecf81072d4e65782058a0b"
+checksum = "d377ccaf91b251c22c0087108fd7a82f633cec8ffa47c261336b1f6fafd191db"
 
 [[package]]
 name = "autocfg"
@@ -712,13 +712,14 @@ dependencies = [
 
 [[package]]
 name = "insta"
-version = "1.42.0"
+version = "1.42.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6513e4067e16e69ed1db5ab56048ed65db32d10ba5fc1217f5393f8f17d8b5a5"
+checksum = "71c1b125e30d93896b365e156c33dadfffab45ee8400afcbba4752f59de08a86"
 dependencies = [
  "console",
  "linked-hash-map",
  "once_cell",
+ "pin-project",
  "similar",
 ]
 
@@ -952,6 +953,26 @@ name = "percent-encoding"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
+
+[[package]]
+name = "pin-project"
+version = "1.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e2ec53ad785f4d35dac0adea7f7dc6f1bb277ad84a680c7afefeae05d1f5916"
+dependencies = [
+ "pin-project-internal",
+]
+
+[[package]]
+name = "pin-project-internal"
+version = "1.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d56a66c0c55993aa927429d0f8a0abfd74f084e4d9c192cffed01e418d83eefb"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "pin-project-lite"
