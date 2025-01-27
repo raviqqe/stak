@@ -224,7 +224,7 @@ impl<'a> Memory<'a> {
         self.heap.len() / 2
     }
 
-    /// Returns an allocation index relative an allocation start index.
+    /// Returns the current allocation index relative an allocation start index.
     #[inline]
     pub const fn allocation_index(&self) -> usize {
         self.allocation_index
