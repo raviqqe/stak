@@ -34,16 +34,18 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         for index in 0..(memory.allocation_index() / 2) {
             let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
 
-            if memory.cdr(cons).tag() == Type::Foreign as _ {
-                let index = memory.car(cons).assume_number().to_i64() as _;
-
-                // Run conservative garbage collection as foreign type tags can be used for something else.
-                if index >= self.values.len() {
-                    continue;
-                }
-
-                marks.insert(index, true);
+            if memory.cdr(cons).tag() != Type::Foreign as _ {
+                continue;
             }
+
+            let index = memory.car(cons).assume_number().to_i64() as _;
+
+            // Run conservative garbage collection as foreign type tags can be used for something else.
+            if index >= self.values.len() {
+                continue;
+            }
+
+            marks.insert(index, true);
         }
 
         // Why do we need `take`??
