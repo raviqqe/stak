@@ -3365,8 +3365,8 @@
   (begin
     (define-syntax define-rust
       (syntax-rules ()
-        ((_ (name1 name2 ...))
+        ((_ name1 name2 ...)
           (eqv? key 'atom))
 
-        ((_ key (atom ...))
-          (memv key '(atom ...)))))))
+        ((_)
+          #f)))))
