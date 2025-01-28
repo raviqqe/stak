@@ -3354,3 +3354,19 @@
                   '())))))))
 
     (define environment list)))
+
+(define-library (stak rust)
+  (export define-rust)
+
+  (import (scheme base))
+
+  (begin
+    (define-syntax case-match
+      (syntax-rules ()
+        ((_ key (atom))
+          (eqv? key 'atom))
+
+        ((_ key (atom ...))
+          (memv key '(atom ...)))))
+
+    (define interaction-environment (make-parameter '()))))
