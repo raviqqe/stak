@@ -3358,12 +3358,14 @@
 (define-library (stak rust)
   (export define-rust)
 
-  (import (scheme base))
+  (import
+    (only (stak base) primitive)
+    (scheme base))
 
   (begin
-    (define-syntax case-match
+    (define-syntax define-rust
       (syntax-rules ()
-        ((_ key (atom))
+        ((_ (name1 name2 ...))
           (eqv? key 'atom))
 
         ((_ key (atom ...))
