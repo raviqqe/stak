@@ -3369,6 +3369,4 @@
           (eqv? key 'atom))
 
         ((_ key (atom ...))
-          (memv key '(atom ...)))))
-
-    (define interaction-environment (make-parameter '()))))
+          (memv key '(atom ...)))))))
