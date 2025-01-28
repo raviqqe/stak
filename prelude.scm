@@ -3365,8 +3365,11 @@
   (begin
     (define-syntax define-rust
       (syntax-rules ()
-        ((_ name1 name2 ...)
-          (eqv? key 'atom))
+        ((_ "define" name1 name2 ...)
+          (define "define" 1000 name1 1000))
 
-        ((_)
+        ((_ "define" name1 name2 ...)
+          (define name1 (primitive 1000)))
+
+        ((_ "define")
           #f)))))
