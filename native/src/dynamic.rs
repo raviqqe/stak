@@ -199,6 +199,16 @@ mod tests {
         }
     }
 
+    fn unmark_foreign_values(memory: &mut Memory) {
+        for index in 0..(memory.size() / 2) {
+            let cons = Cons::new((2 * index) as _);
+
+            if memory.cdr(cons).tag() == Type::Foreign as _ {
+                memory.set_car(cons, Number::from_i64(42).into());
+            }
+        }
+    }
+
     #[test]
     fn create() {
         let mut functions = [
@@ -234,13 +244,7 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            for index in 0..(memory.size() / 2) {
-                let cons = Cons::new((2 * index) as _);
-
-                if memory.cdr(cons).tag() == Type::Foreign as _ {
-                    memory.set_car(cons, Number::from_i64(42).into());
-                }
-            }
+            unmark_foreign_values(memory);
 
             primitive_set.collect_garbages(&memory).unwrap();
 
