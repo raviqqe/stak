@@ -4,9 +4,10 @@ mod error;
 
 pub use self::error::DynamicError;
 use any_fn::AnyFn;
+use bitvec::bitvec;
 use core::any::TypeId;
 use heapless::Vec;
-use stak_vm::{Error, Memory, Number, PrimitiveSet, Type, Value};
+use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
@@ -23,9 +24,43 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
             functions,
-            // TODO Garbage-collect foreign values.
             values: [const { None }; N],
         }
+    }
+
+    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
+        let mut marks = bitvec![0; N];
+
+        for index in 0..(memory.allocation_index() / 2) {
+            let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
+
+            if memory.cdr(cons).tag() != Type::Foreign as _ {
+                continue;
+            }
+
+            let index = memory.car(cons).assume_number().to_i64() as _;
+
+            // Be conservative as foreign type tags can be used for something else.
+            if index >= self.values.len() {
+                continue;
+            }
+
+            marks.insert(index, true);
+        }
+
+        // Why do we need `take`??
+        for (index, mark) in marks.into_iter().enumerate().take(N) {
+            if !mark {
+                self.values[index] = None;
+            }
+        }
+
+        Ok(())
+    }
+
+    // TODO Optimize this with `BitSlice::first_zero()`.
+    fn find_free(&self) -> Option<usize> {
+        self.values.iter().position(Option::is_none)
     }
 
     fn convert_from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
@@ -58,11 +93,12 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         } else if value.type_id()? == TypeId::of::<f64>() {
             Number::from_f64(value.downcast::<f64>()?).into()
         } else {
-            let index = self
-                .values
-                .iter()
-                .position(Option::is_none)
-                .ok_or(Error::OutOfMemory)?;
+            let index = if let Some(index) = self.find_free() {
+                index
+            } else {
+                self.collect_garbages(memory)?;
+                self.find_free().ok_or(Error::OutOfMemory)?
+            };
 
             self.values[index] = Some(value);
 
@@ -105,9 +141,9 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 Some(
                     self.values
                         .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
-                        .ok_or(DynamicError::ObjectIndex)?
+                        .ok_or(DynamicError::ValueIndex)?
                         .as_ref()
-                        .ok_or(DynamicError::ObjectIndex)?,
+                        .ok_or(DynamicError::ValueIndex)?,
                 )
             } else {
                 None
@@ -143,6 +179,8 @@ mod tests {
     use super::*;
     use any_fn::{r#fn, Ref};
 
+    const HEAP_SIZE: usize = 1 << 8;
+
     struct Foo {
         bar: usize,
     }
@@ -161,6 +199,16 @@ mod tests {
         }
     }
 
+    fn invalidate_foreign_values(memory: &mut Memory) {
+        for index in 0..(memory.size() / 2) {
+            let cons = Cons::new((2 * index) as _);
+
+            if memory.cdr(cons).tag() == Type::Foreign as _ {
+                memory.set_car(cons, Number::from_i64(1 << 16).into());
+            }
+        }
+    }
+
     #[test]
     fn create() {
         let mut functions = [
@@ -170,5 +218,53 @@ mod tests {
         ];
 
         DynamicPrimitiveSet::<0>::new(&mut functions);
+    }
+
+    mod garbage_collection {
+        use super::*;
+
+        #[test]
+        fn collect_none() {
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut primitive_set = DynamicPrimitiveSet::<42>::new(&mut []);
+
+            primitive_set
+                .collect_garbages(&Memory::new(&mut heap).unwrap())
+                .unwrap();
+        }
+
+        #[test]
+        fn collect_one() {
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut functions = [r#fn(|| Foo { bar: 42 })];
+            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut memory = Memory::new(&mut heap).unwrap();
+
+            primitive_set.operate(&mut memory, 0).unwrap();
+
+            assert_eq!(primitive_set.find_free(), None);
+
+            invalidate_foreign_values(&mut memory);
+
+            primitive_set.collect_garbages(&memory).unwrap();
+
+            assert_eq!(primitive_set.find_free(), Some(0));
+        }
+
+        #[test]
+        fn keep_one() {
+            let mut heap = [Default::default(); HEAP_SIZE];
+            let mut functions = [r#fn(|| Foo { bar: 42 })];
+            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut memory = Memory::new(&mut heap).unwrap();
+
+            primitive_set.operate(&mut memory, 0).unwrap();
+
+            assert_eq!(primitive_set.find_free(), None);
+
+            primitive_set.collect_garbages(&memory).unwrap();
+
+            assert_eq!(primitive_set.find_free(), None);
+        }
     }
 }

@@ -17,6 +17,7 @@
     "astro",
     "astrojs",
     "bindgen",
+    "bitvec",
     "bytecodes",
     "bytevector",
     "cdylib",
