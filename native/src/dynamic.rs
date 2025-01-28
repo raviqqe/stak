@@ -244,7 +244,7 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            unmark_foreign_values(memory);
+            unmark_foreign_values(&mut memory);
 
             primitive_set.collect_garbages(&memory).unwrap();
 
