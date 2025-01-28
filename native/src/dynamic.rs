@@ -199,7 +199,7 @@ mod tests {
         }
     }
 
-    fn unmark_foreign_values(memory: &mut Memory) {
+    fn invalidate_foreign_values(memory: &mut Memory) {
         for index in 0..(memory.size() / 2) {
             let cons = Cons::new((2 * index) as _);
 
@@ -244,7 +244,7 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            unmark_foreign_values(&mut memory);
+            invalidate_foreign_values(&mut memory);
 
             primitive_set.collect_garbages(&memory).unwrap();
 
