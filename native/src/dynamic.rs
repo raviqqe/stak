@@ -204,7 +204,7 @@ mod tests {
             let cons = Cons::new((2 * index) as _);
 
             if memory.cdr(cons).tag() == Type::Foreign as _ {
-                memory.set_car(cons, Number::from_i64(42).into());
+                memory.set_car(cons, Number::from_i64(1 << 16).into());
             }
         }
     }
