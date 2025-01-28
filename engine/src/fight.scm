@@ -1,8 +1,9 @@
-(import (scheme base) (stak base))
+(import (scheme base) (stak rust))
 
-(define make-person (primitive 1000))
-(define person-throw-pie (primitive 1001))
-(define person-wasted (primitive 1002))
+(define-rust
+  make-person
+  person-throw-pie
+  person-wasted)
 
 (define me (make-person 4 0.2))
 (define you (make-person 2 0.6))
