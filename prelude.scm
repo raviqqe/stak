@@ -3372,5 +3372,5 @@
           (define name1 (primitive 1000))
           (define-rust "count"))
 
-        ((_ "count")
+        ((_ "count" idnex)
           #f)))))
