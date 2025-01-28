@@ -3365,13 +3365,13 @@
   (begin
     (define-syntax define-rust
       (syntax-rules ()
-        ((_ name1 name2 ...)
-          (define-rust "count" 1000 name1 name2 ...))
-
         ((_ "count" index name1 name2 ...)
           (begin
             (define name1 (primitive index))
             (define-rust "count" (+ index 1) name2 ...)))
 
         ((_ "count" index)
-          #f)))))
+          #f)
+
+        ((_ name1 name2 ...)
+          (define-rust "count" 1000 name1 name2 ...))))))
