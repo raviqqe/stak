@@ -219,9 +219,15 @@ impl<'a> Memory<'a> {
         self.allocation_index >= self.space_size()
     }
 
+    /// Returns a heap size.
+    #[inline]
+    pub const fn size(&self) -> usize {
+        self.heap.len()
+    }
+
     #[inline]
     const fn space_size(&self) -> usize {
-        self.heap.len() / 2
+        self.size() / 2
     }
 
     /// Returns the current allocation index relative an allocation start index.

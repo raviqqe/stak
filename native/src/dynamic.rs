@@ -234,10 +234,14 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            memory.set_car(
-                Cons::new((memory.allocation_index() - 4) as _),
-                Number::from_i64(42).into(),
-            );
+            for index in 0..(memory.size() / 2) {
+                let cons = Cons::new((2 * index) as _);
+
+                if memory.cdr(cons).tag() == Type::Foreign as _ {
+                    memory.set_car(cons, Number::from_i64(42).into());
+                }
+            }
+
             primitive_set.collect_garbages(&memory).unwrap();
 
             assert_eq!(primitive_set.find_free(), Some(0));
