@@ -3369,8 +3369,9 @@
           (define-rust "count" 1000 name1 name2 ...))
 
         ((_ "count" index name1 name2 ...)
-          (define name1 (primitive index))
-          (define-rust "count" (+ index 1) name2 ...))
+          (begin
+            (define name1 (primitive index))
+            (define-rust "count" (+ index 1) name2 ...)))
 
         ((_ "count" index)
           #f)))))
