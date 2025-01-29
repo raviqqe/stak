@@ -9,57 +9,59 @@ use alloc::string::String;
 use alloc::{vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
-use core::any::{Any, TypeId};
+use core::any::TypeId;
 pub use scheme_value::SchemeValue;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 type ArgumentVec<T> = heapless::Vec<T, MAXIMUM_ARGUMENT_COUNT>;
-type SchemeType = (
-    TypeId,
-    Box<dyn Fn(&Memory, Value) -> Option<any_fn::Value>>,
-    Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
-);
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
     functions: &'a mut [AnyFn<'b>],
-    types: Vec<SchemeType>,
+    types: Vec<(
+        TypeId,
+        Box<dyn Fn(&Memory, Value) -> Option<any_fn::Value>>,
+        Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
+    )>,
     values: [Option<any_fn::Value>; N],
 }
 
 impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
-        Self {
+        let mut set = Self {
             functions,
-            types: vec![
-                Self::create_type::<bool>(),
-                Self::create_type::<i8>(),
-                Self::create_type::<u8>(),
-                Self::create_type::<i16>(),
-                Self::create_type::<u16>(),
-                Self::create_type::<i32>(),
-                Self::create_type::<u32>(),
-                Self::create_type::<i64>(),
-                Self::create_type::<u64>(),
-                Self::create_type::<f32>(),
-                Self::create_type::<f64>(),
-                Self::create_type::<isize>(),
-                Self::create_type::<usize>(),
-                Self::create_type::<String>(),
-            ],
+            types: vec![],
             values: [const { None }; N],
-        }
+        };
+
+        set.register_type::<bool>();
+        set.register_type::<i8>();
+        set.register_type::<u8>();
+        set.register_type::<i16>();
+        set.register_type::<u16>();
+        set.register_type::<i32>();
+        set.register_type::<u32>();
+        set.register_type::<i64>();
+        set.register_type::<u64>();
+        set.register_type::<f32>();
+        set.register_type::<f64>();
+        set.register_type::<isize>();
+        set.register_type::<usize>();
+        set.register_type::<String>();
+
+        set
     }
 
-    fn create_type<T: SchemeValue + Any>() -> SchemeType {
-        (
+    /// Registers a type compatible between Scheme and Rust.
+    pub fn register_type<T: SchemeValue + 'static>(&mut self) {
+        self.types.push((
             TypeId::of::<T>(),
             Box::new(|memory, value| T::from_scheme(memory, value).map(any_fn::value)),
             Box::new(|memory, value| T::into_scheme(value.downcast()?, memory)),
-        )
+        ));
     }
 
     fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
