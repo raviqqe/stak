@@ -1,6 +1,8 @@
 use crate::{primitive_set::EnginePrimitiveSet, EngineError};
 use any_fn::AnyFn;
 use stak_module::Module;
+#[cfg(doc)]
+use stak_native::dynamic::DynamicPrimitiveSet;
 use stak_native::dynamic::SchemeValue;
 use stak_vm::{Error, Value, Vm};
 
