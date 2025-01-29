@@ -37,6 +37,10 @@ impl<'a, 'b, const N: usize> EnginePrimitiveSet<'a, 'b, N> {
             dynamic: DynamicPrimitiveSet::new(functions),
         }
     }
+
+    pub(crate) fn dynamic_mut(&mut self) -> &mut DynamicPrimitiveSet<'a, 'b, N> {
+        &mut self.dynamic
+    }
 }
 
 impl<const N: usize> PrimitiveSet for EnginePrimitiveSet<'_, '_, N> {
