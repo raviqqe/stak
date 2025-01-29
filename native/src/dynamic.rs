@@ -14,15 +14,16 @@ use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
 type ArgumentVec<T> = heapless::Vec<T, MAXIMUM_ARGUMENT_COUNT>;
+type SchemeType = (
+    TypeId,
+    Box<dyn Fn(&Memory, Value) -> Option<any_fn::Value>>,
+    Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
+);
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
     functions: &'a mut [AnyFn<'b>],
-    types: Vec<(
-        TypeId,
-        Box<dyn Fn(&Memory, Value) -> Option<any_fn::Value>>,
-        Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
-    )>,
+    types: Vec<SchemeType>,
     values: [Option<any_fn::Value>; N],
 }
 
@@ -110,7 +111,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     ) -> Option<any_fn::Value> {
         for (id, from, _) in &self.types {
             if type_id == *id {
-                return Some(from(memory, value)?);
+                return from(memory, value);
             }
         }
 
@@ -124,7 +125,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     ) -> Result<Value, DynamicError> {
         for (id, _, into) in &self.types {
             if value.type_id()? == *id {
-                return Ok(into(memory, value)?);
+                return into(memory, value);
             }
         }
 
