@@ -102,14 +102,29 @@ impl SchemeValue for String {
 mod tests {
     use super::*;
 
-    #[test]
-    fn string() {
-        let mut heap = [Default::default(); 256];
-        let mut memory = Memory::new(&mut heap).unwrap();
-        let string = "tomato";
+    mod string {
+        use super::*;
 
-        let value = String::from(string).into_scheme(&mut memory).unwrap();
+        #[test]
+        fn ascii() {
+            let mut heap = [Default::default(); 256];
+            let mut memory = Memory::new(&mut heap).unwrap();
+            let string = "tomato";
 
-        assert_eq!(&String::from_scheme(&memory, value).unwrap(), string);
+            let value = String::from(string).into_scheme(&mut memory).unwrap();
+
+            assert_eq!(&String::from_scheme(&memory, value).unwrap(), string);
+        }
+
+        #[test]
+        fn unicode() {
+            let mut heap = [Default::default(); 256];
+            let mut memory = Memory::new(&mut heap).unwrap();
+            let string = "あ阿😄";
+
+            let value = String::from(string).into_scheme(&mut memory).unwrap();
+
+            assert_eq!(&String::from_scheme(&memory, value).unwrap(), string);
+        }
     }
 }
