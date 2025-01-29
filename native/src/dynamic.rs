@@ -5,6 +5,7 @@ mod scheme_value;
 
 pub use self::error::DynamicError;
 use alloc::boxed::Box;
+use alloc::string::String;
 use alloc::{vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
@@ -47,6 +48,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
                 Self::create_type::<f64>(),
                 Self::create_type::<isize>(),
                 Self::create_type::<usize>(),
+                Self::create_type::<String>(),
             ],
             values: [const { None }; N],
         }
@@ -56,7 +58,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         (
             TypeId::of::<T>(),
             Box::new(|memory, value| T::from_scheme(memory, value).map(any_fn::value)),
-            Box::new(|memory, value| Ok(T::into_scheme(value.downcast()?, memory)?)),
+            Box::new(|memory, value| T::into_scheme(value.downcast()?, memory)),
         )
     }
 
@@ -95,23 +97,19 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         self.values.iter().position(Option::is_none)
     }
 
-    fn convert_from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
-        // TODO Support more types.
-        if type_id == TypeId::of::<f32>() {
-            Some(any_fn::value(value.assume_number().to_f64() as f32))
-        } else if type_id == TypeId::of::<f64>() {
-            Some(any_fn::value(value.assume_number().to_f64()))
-        } else if type_id == TypeId::of::<i8>() {
-            Some(any_fn::value(value.assume_number().to_i64() as i8))
-        } else if type_id == TypeId::of::<u8>() {
-            Some(any_fn::value(value.assume_number().to_i64() as u8))
-        } else if type_id == TypeId::of::<isize>() {
-            Some(any_fn::value(value.assume_number().to_i64() as isize))
-        } else if type_id == TypeId::of::<usize>() {
-            Some(any_fn::value(value.assume_number().to_i64() as usize))
-        } else {
-            None
+    fn convert_from_scheme(
+        &self,
+        memory: &Memory,
+        value: Value,
+        type_id: TypeId,
+    ) -> Option<any_fn::Value> {
+        for (id, from, _) in &self.types {
+            if type_id == *id {
+                return Some(from(memory, value)?);
+            }
         }
+
+        None
     }
 
     fn convert_into_scheme(
@@ -119,28 +117,27 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         memory: &mut Memory,
         value: any_fn::Value,
     ) -> Result<Value, DynamicError> {
-        // TODO Support more types.
-        Ok(if value.type_id()? == TypeId::of::<bool>() {
-            memory.boolean(value.downcast::<bool>()?).into()
-        } else if value.type_id()? == TypeId::of::<f64>() {
-            Number::from_f64(value.downcast::<f64>()?).into()
+        for (id, _, into) in &self.types {
+            if value.type_id()? == *id {
+                return Ok(into(memory, value)?);
+            }
+        }
+
+        let index = if let Some(index) = self.find_free() {
+            index
         } else {
-            let index = if let Some(index) = self.find_free() {
-                index
-            } else {
-                self.collect_garbages(memory)?;
-                self.find_free().ok_or(Error::OutOfMemory)?
-            };
+            self.collect_garbages(memory)?;
+            self.find_free().ok_or(Error::OutOfMemory)?
+        };
 
-            self.values[index] = Some(value);
+        self.values[index] = Some(value);
 
-            let cons = memory.allocate(
-                Number::from_i64(index as _).into(),
-                memory.null().set_tag(Type::Foreign as _).into(),
-            )?;
+        let cons = memory.allocate(
+            Number::from_i64(index as _).into(),
+            memory.null().set_tag(Type::Foreign as _).into(),
+        )?;
 
-            cons.into()
-        })
+        Ok(cons.into())
     }
 }
 
@@ -150,7 +147,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         let function = self
             .functions
-            .get_mut(primitive)
+            .get(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
         let mut arguments = (0..function.arity())
@@ -158,13 +155,15 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .collect::<ArgumentVec<_>>();
         arguments.reverse();
 
-        let cloned_arguments = arguments
-            .iter()
-            .enumerate()
-            .map(|(index, &value)| {
-                Self::convert_from_scheme(value, function.parameter_types()[index])
-            })
-            .collect::<ArgumentVec<_>>();
+        let cloned_arguments = {
+            arguments
+                .iter()
+                .enumerate()
+                .map(|(index, &value)| {
+                    self.convert_from_scheme(memory, value, function.parameter_types()[index])
+                })
+                .collect::<ArgumentVec<_>>()
+        };
 
         let mut copied_arguments = ArgumentVec::new();
 
@@ -186,18 +185,22 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 .map_err(|_| Error::ArgumentCount)?;
         }
 
-        let value = function.call(
-            copied_arguments
-                .into_iter()
-                .enumerate()
-                .map(|(index, value)| {
-                    cloned_arguments[index]
-                        .as_ref()
-                        .map_or_else(|| value.ok_or(DynamicError::ForeignValueExpected), Ok)
-                })
-                .collect::<Result<ArgumentVec<_>, DynamicError>>()?
-                .as_slice(),
-        )?;
+        let value = self
+            .functions
+            .get_mut(primitive)
+            .ok_or(Error::IllegalPrimitive)?
+            .call(
+                copied_arguments
+                    .into_iter()
+                    .enumerate()
+                    .map(|(index, value)| {
+                        cloned_arguments[index]
+                            .as_ref()
+                            .map_or_else(|| value.ok_or(DynamicError::ForeignValueExpected), Ok)
+                    })
+                    .collect::<Result<ArgumentVec<_>, DynamicError>>()?
+                    .as_slice(),
+            )?;
 
         let value = self.convert_into_scheme(memory, value)?;
         memory.push(value)?;

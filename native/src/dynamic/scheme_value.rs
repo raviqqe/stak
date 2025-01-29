@@ -67,7 +67,7 @@ implement_float!(f64);
 impl SchemeValue for String {
     fn from_scheme(memory: &Memory, value: Value) -> Option<Self> {
         let cons = value.assume_cons();
-        let mut string = String::with_capacity(memory.car(cons).assume_number().to_i64() as _);
+        let mut string = Self::with_capacity(memory.car(cons).assume_number().to_i64() as _);
         let mut cons = memory.cdr(cons).assume_cons();
 
         while cons != memory.null() {
