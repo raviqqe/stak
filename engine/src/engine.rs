@@ -26,6 +26,8 @@ impl<'a, 'b, const N: usize> Engine<'a, 'b, N> {
     }
 
     /// Registers a type compatible between Scheme and Rust.
+    ///
+    /// Such types are automatically marshalled when we pass their values from
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.vm
             .primitive_set_mut()
