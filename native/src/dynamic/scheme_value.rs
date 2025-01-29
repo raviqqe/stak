@@ -36,16 +36,16 @@ macro_rules! implement_integer {
     };
 }
 
-implement_integer!(u8);
 implement_integer!(i8);
+implement_integer!(u8);
 implement_integer!(u16);
 implement_integer!(i16);
-implement_integer!(u32);
 implement_integer!(i32);
-implement_integer!(u64);
+implement_integer!(u32);
 implement_integer!(i64);
-implement_integer!(usize);
+implement_integer!(u64);
 implement_integer!(isize);
+implement_integer!(usize);
 
 macro_rules! implement_float {
     ($type:ty) => {
