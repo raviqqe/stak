@@ -27,10 +27,10 @@ impl<'a, 'b, const N: usize> Engine<'a, 'b, N> {
 
     /// Registers a type compatible between Scheme and Rust.
     ///
-    /// Values of such types are automatically marshalled when we pass them from Scheme to Rust, and
-    /// vice versa.
+    /// We register all types that this crate implements [`SchemeValue`] for to
+    /// the engines by default.
     ///
-    /// We register all types that this crate implements [`SchemeValue`] for to the engines by default.
+    /// For more information, see [`DynamicPrimitiveSet::register_type`].
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.vm
             .primitive_set_mut()

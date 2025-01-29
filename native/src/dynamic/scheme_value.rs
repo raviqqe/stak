@@ -1,7 +1,6 @@
 use super::DynamicError;
 use alloc::string::String;
-use stak_vm::{Memory, Type};
-use stak_vm::{Number, Value};
+use stak_vm::{Memory, Number, Type, Value};
 
 /// A trait to convert Rust values from and into Scheme values.
 pub trait SchemeValue: Sized {

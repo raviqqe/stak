@@ -4,9 +4,7 @@ mod error;
 mod scheme_value;
 
 pub use self::error::DynamicError;
-use alloc::boxed::Box;
-use alloc::string::String;
-use alloc::{vec, vec::Vec};
+use alloc::{boxed::Box, string::String, vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
 use core::any::TypeId;
@@ -56,6 +54,11 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     }
 
     /// Registers a type compatible between Scheme and Rust.
+    ///
+    /// Values of such types are automatically marshalled when we pass them from
+    /// Scheme to Rust, and vice versa. Marshalling can lead to loss of
+    /// information (e.g. floating-point numbers in Scheme converted into
+    /// integers in Rust.)
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.types.push((
             TypeId::of::<T>(),
