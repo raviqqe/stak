@@ -20,7 +20,7 @@ rustix = { version = "0.38.44", default-features = false, features = [
 stak-vm = { version = "0.7.22", path = "../vm" }
 
 [dev-dependencies]
-tempfile = "3.15.0"
+tempfile = "3.16.0"
 
 [lints]
 workspace = true
