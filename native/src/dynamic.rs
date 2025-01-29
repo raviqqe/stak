@@ -56,9 +56,9 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     /// Registers a type compatible between Scheme and Rust.
     ///
     /// Values of such types are automatically marshalled when we pass them from
-    /// Scheme to Rust, and vice versa. Marshalling can lead to loss of
-    /// information (e.g. floating-point numbers in Scheme converted into
-    /// integers in Rust.)
+    /// Scheme to Rust, and vice versa. Marshalling values can lead to the loss
+    /// of information (e.g. floating-point numbers in Scheme marshalled
+    /// into integers in Rust.)
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.types.push((
             TypeId::of::<T>(),
