@@ -1,31 +1,71 @@
 //! Native functions dynamically defined.
 
 mod error;
+mod scheme_value;
 
 pub use self::error::DynamicError;
+use alloc::{boxed::Box, string::String, vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
 use core::any::TypeId;
-use heapless::Vec;
+pub use scheme_value::SchemeValue;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
-type ArgumentVec<T> = Vec<T, MAXIMUM_ARGUMENT_COUNT>;
+type ArgumentVec<T> = heapless::Vec<T, MAXIMUM_ARGUMENT_COUNT>;
+type SchemeType = (
+    TypeId,
+    Box<dyn Fn(&Memory, Value) -> Option<any_fn::Value>>,
+    Box<dyn Fn(&mut Memory, any_fn::Value) -> Result<Value, DynamicError>>,
+);
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
     functions: &'a mut [AnyFn<'b>],
+    types: Vec<SchemeType>,
     values: [Option<any_fn::Value>; N],
 }
 
 impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
-        Self {
+        let mut set = Self {
             functions,
+            types: vec![],
             values: [const { None }; N],
-        }
+        };
+
+        set.register_type::<bool>();
+        set.register_type::<i8>();
+        set.register_type::<u8>();
+        set.register_type::<i16>();
+        set.register_type::<u16>();
+        set.register_type::<i32>();
+        set.register_type::<u32>();
+        set.register_type::<i64>();
+        set.register_type::<u64>();
+        set.register_type::<f32>();
+        set.register_type::<f64>();
+        set.register_type::<isize>();
+        set.register_type::<usize>();
+        set.register_type::<String>();
+
+        set
+    }
+
+    /// Registers a type compatible between Scheme and Rust.
+    ///
+    /// Values of such types are automatically marshalled when we pass them from
+    /// Scheme to Rust, and vice versa. Marshalling values can lead to the loss
+    /// of information (e.g. floating-point numbers in Scheme marshalled
+    /// into integers in Rust.)
+    pub fn register_type<T: SchemeValue + 'static>(&mut self) {
+        self.types.push((
+            TypeId::of::<T>(),
+            Box::new(|memory, value| T::from_scheme(memory, value).map(any_fn::value)),
+            Box::new(|memory, value| T::into_scheme(value.downcast()?, memory)),
+        ));
     }
 
     fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
@@ -63,23 +103,19 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         self.values.iter().position(Option::is_none)
     }
 
-    fn convert_from_scheme(value: Value, type_id: TypeId) -> Option<any_fn::Value> {
-        // TODO Support more types.
-        if type_id == TypeId::of::<f32>() {
-            Some(any_fn::value(value.assume_number().to_f64() as f32))
-        } else if type_id == TypeId::of::<f64>() {
-            Some(any_fn::value(value.assume_number().to_f64()))
-        } else if type_id == TypeId::of::<i8>() {
-            Some(any_fn::value(value.assume_number().to_i64() as i8))
-        } else if type_id == TypeId::of::<u8>() {
-            Some(any_fn::value(value.assume_number().to_i64() as u8))
-        } else if type_id == TypeId::of::<isize>() {
-            Some(any_fn::value(value.assume_number().to_i64() as isize))
-        } else if type_id == TypeId::of::<usize>() {
-            Some(any_fn::value(value.assume_number().to_i64() as usize))
-        } else {
-            None
+    fn convert_from_scheme(
+        &self,
+        memory: &Memory,
+        value: Value,
+        type_id: TypeId,
+    ) -> Option<any_fn::Value> {
+        for (id, from, _) in &self.types {
+            if type_id == *id {
+                return from(memory, value);
+            }
         }
+
+        None
     }
 
     fn convert_into_scheme(
@@ -87,28 +123,27 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         memory: &mut Memory,
         value: any_fn::Value,
     ) -> Result<Value, DynamicError> {
-        // TODO Support more types.
-        Ok(if value.type_id()? == TypeId::of::<bool>() {
-            memory.boolean(value.downcast::<bool>()?).into()
-        } else if value.type_id()? == TypeId::of::<f64>() {
-            Number::from_f64(value.downcast::<f64>()?).into()
+        for (id, _, into) in &self.types {
+            if value.type_id()? == *id {
+                return into(memory, value);
+            }
+        }
+
+        let index = if let Some(index) = self.find_free() {
+            index
         } else {
-            let index = if let Some(index) = self.find_free() {
-                index
-            } else {
-                self.collect_garbages(memory)?;
-                self.find_free().ok_or(Error::OutOfMemory)?
-            };
+            self.collect_garbages(memory)?;
+            self.find_free().ok_or(Error::OutOfMemory)?
+        };
 
-            self.values[index] = Some(value);
+        self.values[index] = Some(value);
 
-            let cons = memory.allocate(
+        Ok(memory
+            .allocate(
                 Number::from_i64(index as _).into(),
                 memory.null().set_tag(Type::Foreign as _).into(),
-            )?;
-
-            cons.into()
-        })
+            )?
+            .into())
     }
 }
 
@@ -118,7 +153,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         let function = self
             .functions
-            .get_mut(primitive)
+            .get(primitive)
             .ok_or(Error::IllegalPrimitive)?;
 
         let mut arguments = (0..function.arity())
@@ -126,13 +161,15 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             .collect::<ArgumentVec<_>>();
         arguments.reverse();
 
-        let cloned_arguments = arguments
-            .iter()
-            .enumerate()
-            .map(|(index, &value)| {
-                Self::convert_from_scheme(value, function.parameter_types()[index])
-            })
-            .collect::<ArgumentVec<_>>();
+        let cloned_arguments = {
+            arguments
+                .iter()
+                .enumerate()
+                .map(|(index, &value)| {
+                    self.convert_from_scheme(memory, value, function.parameter_types()[index])
+                })
+                .collect::<ArgumentVec<_>>()
+        };
 
         let mut copied_arguments = ArgumentVec::new();
 
@@ -154,18 +191,22 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
                 .map_err(|_| Error::ArgumentCount)?;
         }
 
-        let value = function.call(
-            copied_arguments
-                .into_iter()
-                .enumerate()
-                .map(|(index, value)| {
-                    cloned_arguments[index]
-                        .as_ref()
-                        .map_or_else(|| value.ok_or(DynamicError::ForeignValueExpected), Ok)
-                })
-                .collect::<Result<ArgumentVec<_>, DynamicError>>()?
-                .as_slice(),
-        )?;
+        let value = self
+            .functions
+            .get_mut(primitive)
+            .ok_or(Error::IllegalPrimitive)?
+            .call(
+                copied_arguments
+                    .into_iter()
+                    .enumerate()
+                    .map(|(index, value)| {
+                        cloned_arguments[index]
+                            .as_ref()
+                            .map_or_else(|| value.ok_or(DynamicError::ForeignValueExpected), Ok)
+                    })
+                    .collect::<Result<ArgumentVec<_>, DynamicError>>()?
+                    .as_slice(),
+            )?;
 
         let value = self.convert_into_scheme(memory, value)?;
         memory.push(value)?;
