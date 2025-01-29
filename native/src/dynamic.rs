@@ -137,12 +137,12 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
 
         self.values[index] = Some(value);
 
-        let cons = memory.allocate(
-            Number::from_i64(index as _).into(),
-            memory.null().set_tag(Type::Foreign as _).into(),
-        )?;
-
-        Ok(cons.into())
+        Ok(memory
+            .allocate(
+                Number::from_i64(index as _).into(),
+                memory.null().set_tag(Type::Foreign as _).into(),
+            )?
+            .into())
     }
 }
 
