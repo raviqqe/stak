@@ -1,5 +1,6 @@
 use super::DynamicError;
-use stak_vm::Memory;
+use alloc::string::String;
+use stak_vm::{Memory, Type};
 use stak_vm::{Number, Value};
 
 /// A trait to convert Rust values from and into Scheme values.
@@ -8,7 +9,7 @@ pub trait SchemeValue: Sized {
     fn from_scheme(memory: &Memory, value: Value) -> Option<Self>;
 
     /// Converts a Rust value into a Scheme value.
-    fn into_scheme(memory: &mut Memory, value: Self) -> Result<Value, DynamicError>;
+    fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError>;
 }
 
 impl SchemeValue for bool {
@@ -16,8 +17,8 @@ impl SchemeValue for bool {
         Some(value == memory.boolean(false).into())
     }
 
-    fn into_scheme(memory: &mut Memory, value: Self) -> Result<Value, DynamicError> {
-        Ok(memory.boolean(value).into())
+    fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError> {
+        Ok(memory.boolean(self).into())
     }
 }
 
@@ -28,8 +29,8 @@ macro_rules! implement_integer {
                 Some(value.assume_number().to_i64() as _)
             }
 
-            fn into_scheme(_memory: &mut Memory, value: Self) -> Result<Value, DynamicError> {
-                Ok(Number::from_i64(value as _).into())
+            fn into_scheme(self, _memory: &mut Memory) -> Result<Value, DynamicError> {
+                Ok(Number::from_i64(self as _).into())
             }
         }
     };
@@ -53,8 +54,8 @@ macro_rules! implement_float {
                 Some(value.assume_number().to_f64() as _)
             }
 
-            fn into_scheme(_memory: &mut Memory, value: Self) -> Result<Value, DynamicError> {
-                Ok(Number::from_f64(value as _).into())
+            fn into_scheme(self, _memory: &mut Memory) -> Result<Value, DynamicError> {
+                Ok(Number::from_f64(self as _).into())
             }
         }
     };
@@ -62,3 +63,53 @@ macro_rules! implement_float {
 
 implement_float!(f32);
 implement_float!(f64);
+
+impl SchemeValue for String {
+    fn from_scheme(memory: &Memory, value: Value) -> Option<Self> {
+        let cons = value.assume_cons();
+        let mut string = String::with_capacity(memory.car(cons).assume_number().to_i64() as _);
+        let mut cons = memory.cdr(cons).assume_cons();
+
+        while cons != memory.null() {
+            string.push(char::from_u32(
+                memory.car(cons).assume_number().to_i64() as _
+            )?);
+            cons = memory.cdr(cons).assume_cons();
+        }
+
+        Some(string)
+    }
+
+    fn into_scheme(self, memory: &mut Memory) -> Result<Value, DynamicError> {
+        let mut length = 0;
+        let mut cons = memory.null();
+
+        for character in self.chars().rev() {
+            cons = memory.cons(Number::from_i64(character as _).into(), cons)?;
+            length += 1;
+        }
+
+        Ok(memory
+            .allocate(
+                Number::from_i64(length).into(),
+                cons.set_tag(Type::String as _).into(),
+            )?
+            .into())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn string() {
+        let mut heap = [Default::default(); 256];
+        let mut memory = Memory::new(&mut heap).unwrap();
+        let string = "tomato";
+
+        let value = String::from(string).into_scheme(&mut memory).unwrap();
+
+        assert_eq!(&String::from_scheme(&memory, value).unwrap(), string);
+    }
+}
