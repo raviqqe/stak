@@ -12,6 +12,7 @@ members = [
   "compiler",
   "configuration",
   "device",
+  "dynamic",
   "engine",
   "examples/embedded-script",
   "examples/hot-reload",
