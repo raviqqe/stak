@@ -10,7 +10,7 @@ repository.workspace = true
 
 [features]
 default = ["float", "std"]
-alloc = ["dep:stak-engine", "stak-native/alloc"]
+alloc = ["dep:stak-dynamic", "dep:stak-engine"]
 float = ["stak-sac/float", "stak-vm/float"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
@@ -33,11 +33,11 @@ std = [
 
 [dependencies]
 stak-device = { version = "0.2.93", path = "../device" }
+stak-dynamic = { version = "0.1.0", path = "../dynamic", optional = true }
 stak-engine = { version = "0.1.0", path = "../engine", optional = true }
 stak-file = { version = "0.5.7", path = "../file" }
 stak-macro = { version = "0.2.12", path = "../macro" }
 stak-module = { version = "0.1.13", path = "../module" }
-stak-native = { version = "0.2.0", path = "../native" }
 stak-process-context = { version = "0.2.51", path = "../process_context" }
 stak-r7rs = { version = "0.9.7", path = "../r7rs" }
 stak-sac = { version = "0.1.95", path = "../sac" }
