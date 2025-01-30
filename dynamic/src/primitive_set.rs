@@ -1,5 +1,4 @@
-use crate::error::DynamicError;
-use crate::scheme_value::SchemeValue;
+use crate::{error::DynamicError, scheme_value::SchemeValue};
 use alloc::{boxed::Box, string::String, vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
