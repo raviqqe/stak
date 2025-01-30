@@ -1409,7 +1409,6 @@ dependencies = [
  "stak-dynamic",
  "stak-file",
  "stak-module",
- "stak-native",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
@@ -1520,8 +1519,6 @@ dependencies = [
 name = "stak-native"
 version = "0.2.0"
 dependencies = [
- "bitvec",
- "heapless",
  "stak-vm",
 ]
 
