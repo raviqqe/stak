@@ -1387,6 +1387,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-dynamic"
+version = "0.1.0"
+dependencies = [
+ "any-fn",
+ "bitvec",
+ "heapless",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-engine"
 version = "0.1.0"
 dependencies = [
