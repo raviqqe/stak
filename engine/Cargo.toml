@@ -16,9 +16,9 @@ std = ["stak-device/std"]
 any-fn = "0.6.1"
 cfg-elif = "0.6.1"
 stak-device = { version = "0.2.93", path = "../device" }
+stak-dynamic = { version = "0.1.0", path = "../dynamic" }
 stak-file = { version = "0.5.7", path = "../file" }
 stak-module = { version = "0.1.13", path = "../module" }
-stak-native = { version = "0.2.0", path = "../native", features = ["alloc"] }
 stak-process-context = { version = "0.2.51", path = "../process_context" }
 stak-r7rs = { version = "0.9.7", path = "../r7rs" }
 stak-time = { version = "0.1.34", path = "../time" }

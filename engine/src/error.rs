@@ -2,7 +2,7 @@ use core::{
     error::Error,
     fmt::{self, Display, Formatter},
 };
-use stak_native::dynamic::DynamicError;
+use stak_dynamic::DynamicError;
 use stak_r7rs::SmallError;
 
 /// An engine error

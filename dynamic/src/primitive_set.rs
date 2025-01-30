@@ -1,14 +1,8 @@
-//! Native functions dynamically defined.
-
-mod error;
-mod scheme_value;
-
-pub use self::error::DynamicError;
+use crate::{error::DynamicError, scheme_value::SchemeValue};
 use alloc::{boxed::Box, string::String, vec, vec::Vec};
 use any_fn::AnyFn;
 use bitvec::bitvec;
 use core::any::TypeId;
-pub use scheme_value::SchemeValue;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;

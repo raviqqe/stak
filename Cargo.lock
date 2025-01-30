@@ -1314,11 +1314,11 @@ version = "0.5.3"
 dependencies = [
  "stak-build",
  "stak-device",
+ "stak-dynamic",
  "stak-engine",
  "stak-file",
  "stak-macro",
  "stak-module",
- "stak-native",
  "stak-process-context",
  "stak-r7rs",
  "stak-sac",
@@ -1387,6 +1387,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-dynamic"
+version = "0.1.0"
+dependencies = [
+ "any-fn",
+ "bitvec",
+ "heapless",
+ "stak-vm",
+]
+
+[[package]]
 name = "stak-engine"
 version = "0.1.0"
 dependencies = [
@@ -1396,9 +1406,9 @@ dependencies = [
  "stak",
  "stak-build",
  "stak-device",
+ "stak-dynamic",
  "stak-file",
  "stak-module",
- "stak-native",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
@@ -1509,9 +1519,6 @@ dependencies = [
 name = "stak-native"
 version = "0.2.0"
 dependencies = [
- "any-fn",
- "bitvec",
- "heapless",
  "stak-vm",
 ]
 

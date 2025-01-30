@@ -1,9 +1,9 @@
 use crate::{primitive_set::EnginePrimitiveSet, EngineError};
 use any_fn::AnyFn;
-use stak_module::Module;
 #[cfg(doc)]
-use stak_native::dynamic::DynamicPrimitiveSet;
-use stak_native::dynamic::SchemeValue;
+use stak_dynamic::DynamicPrimitiveSet;
+use stak_dynamic::SchemeValue;
+use stak_module::Module;
 use stak_vm::{Error, Value, Vm};
 
 const DEFAULT_VALUE_COUNT: usize = 1 << 10;

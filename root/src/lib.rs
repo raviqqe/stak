@@ -7,6 +7,12 @@ pub mod device {
     pub use stak_device::*;
 }
 
+pub mod dynamic {
+    //! Dynamically-defined primitives.
+
+    pub use stak_dynamic::*;
+}
+
 pub mod engine {
     //! A scripting engine.
 
@@ -23,12 +29,6 @@ pub mod module {
     //! Modules.
 
     pub use stak_module::*;
-}
-
-pub mod native {
-    //! Native functions and objects in Rust.
-
-    pub use stak_native::*;
 }
 
 pub mod process_context {
