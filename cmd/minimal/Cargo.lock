@@ -69,14 +69,14 @@ checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
 name = "mstak"
-version = "0.3.28"
+version = "0.3.29"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.22"
+version = "0.4.23"
 dependencies = [
  "libc",
  "stak-device",
@@ -127,7 +127,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.2.3"
+version = "0.2.4"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -140,11 +140,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.89"
+version = "0.1.90"
 
 [[package]]
 name = "stak-device"
-version = "0.2.93"
+version = "0.2.94"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.5.7"
+version = "0.5.8"
 dependencies = [
  "heapless",
  "rustix",
@@ -161,7 +161,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.1.6"
+version = "0.1.7"
 dependencies = [
  "libm",
  "stak-vm",
@@ -169,7 +169,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.2.12"
+version = "0.2.13"
 dependencies = [
  "cfg-elif",
  "proc-macro2",
@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.70"
+version = "0.1.71"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -190,22 +190,21 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
- "heapless",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.51"
+version = "0.2.52"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.9.7"
+version = "0.9.8"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -218,7 +217,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.95"
+version = "0.1.96"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -234,7 +233,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.34"
+version = "0.1.35"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -242,7 +241,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.69"
+version = "0.1.70"
 dependencies = [
  "libc",
  "rustix",
@@ -250,7 +249,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.7.22"
+version = "0.7.23"
 dependencies = [
  "cfg-elif",
 ]
