@@ -9,8 +9,6 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-bitvec = "1.0.1"
-heapless = { version = "0.8.0", default-features = false }
 stak-vm = { version = "0.7.22", path = "../vm" }
 
 [lints]
