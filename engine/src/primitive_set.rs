@@ -2,7 +2,7 @@ use crate::EngineError;
 use any_fn::AnyFn;
 use cfg_elif::item;
 use stak_file::VoidFileSystem;
-use stak_native::dynamic::DynamicPrimitiveSet;
+use stak_dynamic::DynamicPrimitiveSet;
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
