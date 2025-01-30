@@ -1,7 +1,7 @@
 [package]
 name = "stak-engine"
 description = "Stak Scheme scripting engine for Rust"
-version = "0.1.0"
+version = "0.1.1"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -15,21 +15,21 @@ std = ["stak-device/std"]
 [dependencies]
 any-fn = "0.6.1"
 cfg-elif = "0.6.1"
-stak-device = { version = "0.2.93", path = "../device" }
-stak-dynamic = { version = "0.1.0", path = "../dynamic" }
-stak-file = { version = "0.5.7", path = "../file" }
-stak-module = { version = "0.1.13", path = "../module" }
-stak-process-context = { version = "0.2.51", path = "../process_context" }
-stak-r7rs = { version = "0.9.7", path = "../r7rs" }
-stak-time = { version = "0.1.34", path = "../time" }
-stak-vm = { version = "0.7.22", path = "../vm" }
+stak-device = { version = "0.2.94", path = "../device" }
+stak-dynamic = { version = "0.1.1", path = "../dynamic" }
+stak-file = { version = "0.5.8", path = "../file" }
+stak-module = { version = "0.1.14", path = "../module" }
+stak-process-context = { version = "0.2.52", path = "../process_context" }
+stak-r7rs = { version = "0.9.8", path = "../r7rs" }
+stak-time = { version = "0.1.35", path = "../time" }
+stak-vm = { version = "0.7.23", path = "../vm" }
 
 [dev-dependencies]
 rand = "0.9.0"
 stak = { path = "../root" }
 
 [build-dependencies]
-stak-build = { version = "0.1.52", path = "../build" }
+stak-build = { version = "0.1.53", path = "../build" }
 
 [lints]
 workspace = true
