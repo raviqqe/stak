@@ -14,7 +14,7 @@ proc-macro = true
 [dependencies]
 proc-macro2 = { version = "1.0.93", features = ["proc-macro"] }
 quote = "1.0.38"
-syn = "2.0.96"
+syn = "2.0.98"
 stak-minifier = { version = "0.1.72", path = "../minifier" }
 stak-macro-util = { version = "0.1.71", path = "../macro-util" }
 
