@@ -38,12 +38,12 @@ impl<'a, 'b> EnginePrimitiveSet<'a, 'b> {
         }
     }
 
-    pub(crate) fn dynamic_mut(&mut self) -> &mut DynamicPrimitiveSet<'a, 'b, N> {
+    pub(crate) fn dynamic_mut(&mut self) -> &mut DynamicPrimitiveSet<'a, 'b> {
         &mut self.dynamic
     }
 }
 
-impl<const N: usize> PrimitiveSet for EnginePrimitiveSet<'_, '_, N> {
+impl PrimitiveSet for EnginePrimitiveSet<'_, '_> {
     type Error = EngineError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {

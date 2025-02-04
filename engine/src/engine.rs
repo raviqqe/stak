@@ -6,8 +6,6 @@ use stak_dynamic::SchemeValue;
 use stak_module::Module;
 use stak_vm::{Error, Value, Vm};
 
-const DEFAULT_VALUE_COUNT: usize = 1 << 10;
-
 /// A scripting engine.
 pub struct Engine<'a, 'b> {
     vm: Vm<'a, EnginePrimitiveSet<'a, 'b>>,
