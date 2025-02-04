@@ -83,7 +83,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         }
 
         // Why do we need `take`??
-        for (index, mark) in marks.into_iter().enumerate().take(N) {
+        for (index, mark) in marks.into_iter().enumerate().take(self.values.len()) {
             if !mark {
                 self.values[index] = None;
             }
@@ -141,7 +141,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     }
 }
 
-impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
+impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
