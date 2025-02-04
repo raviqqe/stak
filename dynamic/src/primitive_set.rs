@@ -79,7 +79,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
                 continue;
             }
 
-            marks.insert(index, true);
+            marks.set(index, true);
         }
 
         // Why do we need `take`??
