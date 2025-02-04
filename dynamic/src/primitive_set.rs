@@ -178,7 +178,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
             let value = if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
                 Some(
                     self.values
-                        .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
+                        .get(memory.car_value(value).assume_number().to_i64() as usize)
                         .ok_or(DynamicError::ValueIndex)?
                         .as_ref()
                         .ok_or(DynamicError::ValueIndex)?,
