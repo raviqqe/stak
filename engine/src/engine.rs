@@ -9,11 +9,11 @@ use stak_vm::{Error, Value, Vm};
 const DEFAULT_VALUE_COUNT: usize = 1 << 10;
 
 /// A scripting engine.
-pub struct Engine<'a, 'b, const N: usize = DEFAULT_VALUE_COUNT> {
-    vm: Vm<'a, EnginePrimitiveSet<'a, 'b, N>>,
+pub struct Engine<'a, 'b> {
+    vm: Vm<'a, EnginePrimitiveSet<'a, 'b>>,
 }
 
-impl<'a, 'b, const N: usize> Engine<'a, 'b, N> {
+impl<'a, 'b> Engine<'a, 'b> {
     /// Creates a scripting engine.
     pub fn new(heap: &'a mut [Value], functions: &'a mut [AnyFn<'b>]) -> Result<Self, Error> {
         Ok(Self {

@@ -15,10 +15,10 @@ type SchemeType = (
 );
 
 /// A dynamic primitive set equipped with native functions in Rust.
-pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
+pub struct DynamicPrimitiveSet<'a, 'b> {
     functions: &'a mut [AnyFn<'b>],
     types: Vec<SchemeType>,
-    values: [Option<any_fn::Value>; N],
+    values: Vec<Option<any_fn::Value>>,
 }
 
 impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
@@ -27,7 +27,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         let mut set = Self {
             functions,
             types: vec![],
-            values: [const { None }; N],
+            values: vec![],
         };
 
         set.register_type::<bool>();
