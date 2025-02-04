@@ -62,7 +62,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         ));
     }
 
-    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
+    fn collect_garbages(&mut self, memory: &Memory) {
         let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
@@ -88,16 +88,22 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
                 self.values[index] = None;
             }
         }
-
-        Ok(())
     }
 
     // TODO Optimize this with `BitSlice::first_zero()`.
-    fn find_free(&mut self) -> usize {
-        if let Some(index) = self.values.iter().position(Option::is_none) {
+    fn find_free(&self) -> Option<usize> {
+        self.values.iter().position(Option::is_none)
+    }
+
+    fn allocate(&mut self, memory: &Memory) -> usize {
+        if let Some(index) = self.find_free() {
+            index
+        } else if let Some(index) = {
+            self.collect_garbages(memory);
+            self.find_free()
+        } {
             index
         } else {
-            self.collect_garbages(memory)?;
             self.values.push(None);
             self.values.len() - 1
         }
@@ -129,7 +135,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             }
         }
 
-        let index = self.find_free();
+        let index = self.allocate(memory);
 
         self.values[index] = Some(value);
 
@@ -264,9 +270,7 @@ mod tests {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
-            primitive_set
-                .collect_garbages(&Memory::new(&mut heap).unwrap())
-                .unwrap();
+            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
         }
 
         #[test]
@@ -282,7 +286,7 @@ mod tests {
 
             invalidate_foreign_values(&mut memory);
 
-            primitive_set.collect_garbages(&memory).unwrap();
+            primitive_set.collect_garbages(&memory);
 
             assert_eq!(primitive_set.find_free(), Some(0));
         }
@@ -298,7 +302,7 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            primitive_set.collect_garbages(&memory).unwrap();
+            primitive_set.collect_garbages(&memory);
 
             assert_eq!(primitive_set.find_free(), None);
         }
