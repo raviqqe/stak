@@ -15,19 +15,19 @@ type SchemeType = (
 );
 
 /// A dynamic primitive set equipped with native functions in Rust.
-pub struct DynamicPrimitiveSet<'a, 'b, const N: usize> {
+pub struct DynamicPrimitiveSet<'a, 'b> {
     functions: &'a mut [AnyFn<'b>],
     types: Vec<SchemeType>,
-    values: [Option<any_fn::Value>; N],
+    values: Vec<Option<any_fn::Value>>,
 }
 
-impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
+impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         let mut set = Self {
             functions,
             types: vec![],
-            values: [const { None }; N],
+            values: vec![],
         };
 
         set.register_type::<bool>();
@@ -62,8 +62,8 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
         ));
     }
 
-    fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
-        let mut marks = bitvec![0; N];
+    fn collect_garbages(&mut self, memory: &Memory) {
+        let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
             let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
@@ -79,22 +79,33 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
                 continue;
             }
 
-            marks.insert(index, true);
+            marks.set(index, true);
         }
 
-        // Why do we need `take`??
-        for (index, mark) in marks.into_iter().enumerate().take(N) {
+        for (index, mark) in marks.into_iter().enumerate() {
             if !mark {
                 self.values[index] = None;
             }
         }
-
-        Ok(())
     }
 
     // TODO Optimize this with `BitSlice::first_zero()`.
     fn find_free(&self) -> Option<usize> {
         self.values.iter().position(Option::is_none)
+    }
+
+    fn allocate(&mut self, memory: &Memory) -> usize {
+        if let Some(index) = self.find_free() {
+            index
+        } else if let Some(index) = {
+            self.collect_garbages(memory);
+            self.find_free()
+        } {
+            index
+        } else {
+            self.values.push(None);
+            self.values.len() - 1
+        }
     }
 
     fn convert_from_scheme(
@@ -123,12 +134,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
             }
         }
 
-        let index = if let Some(index) = self.find_free() {
-            index
-        } else {
-            self.collect_garbages(memory)?;
-            self.find_free().ok_or(Error::OutOfMemory)?
-        };
+        let index = self.allocate(memory);
 
         self.values[index] = Some(value);
 
@@ -141,7 +147,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     }
 }
 
-impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
+impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
@@ -171,7 +177,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
             let value = if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
                 Some(
                     self.values
-                        .get(memory.car(value.assume_cons()).assume_number().to_i64() as usize)
+                        .get(memory.car_value(value).assume_number().to_i64() as usize)
                         .ok_or(DynamicError::ValueIndex)?
                         .as_ref()
                         .ok_or(DynamicError::ValueIndex)?,
@@ -212,7 +218,7 @@ impl<const N: usize> PrimitiveSet for DynamicPrimitiveSet<'_, '_, N> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use any_fn::{r#fn, Ref};
+    use any_fn::{r#fn, value, Ref};
 
     const HEAP_SIZE: usize = 1 << 8;
 
@@ -252,7 +258,32 @@ mod tests {
             r#fn(Foo::baz),
         ];
 
-        DynamicPrimitiveSet::<0>::new(&mut functions);
+        DynamicPrimitiveSet::new(&mut functions);
+    }
+
+    #[test]
+    fn allocate_two() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        let index = primitive_set.allocate(&mut memory);
+        primitive_set.values[index] = Some(value(42usize));
+        assert_eq!(index, 0);
+        assert_eq!(primitive_set.find_free(), None);
+
+        let cons = memory
+            .allocate(
+                Number::from_i64(index as _).into(),
+                memory.null().set_tag(Type::Foreign as _).into(),
+            )
+            .unwrap();
+        memory.push(cons.into()).unwrap();
+
+        let index = primitive_set.allocate(&mut memory);
+        primitive_set.values[index] = Some(value(42usize));
+        assert_eq!(index, 1);
+        assert_eq!(primitive_set.find_free(), None);
     }
 
     mod garbage_collection {
@@ -261,18 +292,16 @@ mod tests {
         #[test]
         fn collect_none() {
             let mut heap = [Default::default(); HEAP_SIZE];
-            let mut primitive_set = DynamicPrimitiveSet::<42>::new(&mut []);
+            let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
-            primitive_set
-                .collect_garbages(&Memory::new(&mut heap).unwrap())
-                .unwrap();
+            primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
         }
 
         #[test]
         fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [r#fn(|| Foo { bar: 42 })];
-            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
             primitive_set.operate(&mut memory, 0).unwrap();
@@ -281,7 +310,7 @@ mod tests {
 
             invalidate_foreign_values(&mut memory);
 
-            primitive_set.collect_garbages(&memory).unwrap();
+            primitive_set.collect_garbages(&memory);
 
             assert_eq!(primitive_set.find_free(), Some(0));
         }
@@ -290,14 +319,14 @@ mod tests {
         fn keep_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [r#fn(|| Foo { bar: 42 })];
-            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
             primitive_set.operate(&mut memory, 0).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
-            primitive_set.collect_garbages(&memory).unwrap();
+            primitive_set.collect_garbages(&memory);
 
             assert_eq!(primitive_set.find_free(), None);
         }

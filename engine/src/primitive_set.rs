@@ -19,12 +19,12 @@ item::feature!(if ("std") {
 });
 
 /// A type check primitive set.
-pub struct EnginePrimitiveSet<'a, 'b, const N: usize> {
+pub struct EnginePrimitiveSet<'a, 'b> {
     small: SmallPrimitiveSet<Device, VoidFileSystem, VoidProcessContext, VoidClock>,
-    dynamic: DynamicPrimitiveSet<'a, 'b, N>,
+    dynamic: DynamicPrimitiveSet<'a, 'b>,
 }
 
-impl<'a, 'b, const N: usize> EnginePrimitiveSet<'a, 'b, N> {
+impl<'a, 'b> EnginePrimitiveSet<'a, 'b> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         Self {
@@ -38,12 +38,12 @@ impl<'a, 'b, const N: usize> EnginePrimitiveSet<'a, 'b, N> {
         }
     }
 
-    pub(crate) fn dynamic_mut(&mut self) -> &mut DynamicPrimitiveSet<'a, 'b, N> {
+    pub(crate) fn dynamic_mut(&mut self) -> &mut DynamicPrimitiveSet<'a, 'b> {
         &mut self.dynamic
     }
 }
 
-impl<const N: usize> PrimitiveSet for EnginePrimitiveSet<'_, '_, N> {
+impl PrimitiveSet for EnginePrimitiveSet<'_, '_> {
     type Error = EngineError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {

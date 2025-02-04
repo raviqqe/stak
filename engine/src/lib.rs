@@ -13,7 +13,6 @@
 //! };
 //!
 //! const HEAP_SIZE: usize = 1 << 16;
-//! const FOREIGN_VALUE_CAPACITY: usize = 1 << 10;
 //!
 //! struct Person {
 //!     pies: usize,
@@ -62,7 +61,7 @@
 //!         r#fn(Person::throw_pie),
 //!         r#fn::<(Ref<_>,), _>(Person::wasted),
 //!     ];
-//!     let mut engine = Engine::<FOREIGN_VALUE_CAPACITY>::new(&mut heap, &mut functions)?;
+//!     let mut engine = Engine::new(&mut heap, &mut functions)?;
 //!
 //!     engine.run(module)
 //! }
