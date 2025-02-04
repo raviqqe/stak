@@ -21,7 +21,7 @@ pub struct DynamicPrimitiveSet<'a, 'b> {
     values: Vec<Option<any_fn::Value>>,
 }
 
-impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
+impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     /// Creates a primitive set.
     pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
         let mut set = Self {
@@ -63,7 +63,7 @@ impl<'a, 'b, const N: usize> DynamicPrimitiveSet<'a, 'b, N> {
     }
 
     fn collect_garbages(&mut self, memory: &Memory) -> Result<(), DynamicError> {
-        let mut marks = bitvec![0; N];
+        let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
             let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
@@ -252,7 +252,7 @@ mod tests {
             r#fn(Foo::baz),
         ];
 
-        DynamicPrimitiveSet::<0>::new(&mut functions);
+        DynamicPrimitiveSet::new(&mut functions);
     }
 
     mod garbage_collection {
@@ -261,7 +261,7 @@ mod tests {
         #[test]
         fn collect_none() {
             let mut heap = [Default::default(); HEAP_SIZE];
-            let mut primitive_set = DynamicPrimitiveSet::<42>::new(&mut []);
+            let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
 
             primitive_set
                 .collect_garbages(&Memory::new(&mut heap).unwrap())
@@ -272,7 +272,7 @@ mod tests {
         fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [r#fn(|| Foo { bar: 42 })];
-            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
             primitive_set.operate(&mut memory, 0).unwrap();
@@ -290,7 +290,7 @@ mod tests {
         fn keep_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [r#fn(|| Foo { bar: 42 })];
-            let mut primitive_set = DynamicPrimitiveSet::<1>::new(&mut functions);
+            let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
             primitive_set.operate(&mut memory, 0).unwrap();
