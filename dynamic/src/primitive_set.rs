@@ -262,6 +262,31 @@ mod tests {
         DynamicPrimitiveSet::new(&mut functions);
     }
 
+    #[test]
+    fn allocate_two() {
+        let mut heap = [Default::default(); HEAP_SIZE];
+        let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        let index = primitive_set.allocate(&mut memory);
+        primitive_set.values[index] = Some(value(42usize));
+        assert_eq!(index, 0);
+        assert_eq!(primitive_set.find_free(), None);
+
+        let cons = memory
+            .allocate(
+                Number::from_i64(index as _).into(),
+                memory.null().set_tag(Type::Foreign as _).into(),
+            )
+            .unwrap();
+        memory.push(cons.into()).unwrap();
+
+        let index = primitive_set.allocate(&mut memory);
+        primitive_set.values[index] = Some(value(42usize));
+        assert_eq!(index, 1);
+        assert_eq!(primitive_set.find_free(), None);
+    }
+
     mod garbage_collection {
         use super::*;
 
@@ -304,31 +329,6 @@ mod tests {
 
             primitive_set.collect_garbages(&memory);
 
-            assert_eq!(primitive_set.find_free(), None);
-        }
-
-        #[test]
-        fn allocate_two() {
-            let mut heap = [Default::default(); HEAP_SIZE];
-            let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
-            let mut memory = Memory::new(&mut heap).unwrap();
-
-            let index = primitive_set.allocate(&mut memory);
-            primitive_set.values[index] = Some(value(42usize));
-            assert_eq!(index, 0);
-            assert_eq!(primitive_set.find_free(), None);
-
-            let cons = memory
-                .allocate(
-                    Number::from_i64(index as _).into(),
-                    memory.null().set_tag(Type::Foreign as _).into(),
-                )
-                .unwrap();
-            memory.push(cons.into()).unwrap();
-
-            let index = primitive_set.allocate(&mut memory);
-            primitive_set.values[index] = Some(value(42usize));
-            assert_eq!(index, 1);
             assert_eq!(primitive_set.find_free(), None);
         }
     }
