@@ -93,8 +93,14 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     }
 
     // TODO Optimize this with `BitSlice::first_zero()`.
-    fn find_free(&self) -> Option<usize> {
-        self.values.iter().position(Option::is_none)
+    fn find_free(&mut self) -> usize {
+        if let Some(index) = self.values.iter().position(Option::is_none) {
+            index
+        } else {
+            self.collect_garbages(memory)?;
+            self.values.push(None);
+            self.values.len() - 1
+        }
     }
 
     fn convert_from_scheme(
@@ -123,12 +129,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             }
         }
 
-        let index = if let Some(index) = self.find_free() {
-            index
-        } else {
-            self.collect_garbages(memory)?;
-            self.find_free().ok_or(Error::OutOfMemory)?
-        };
+        let index = self.find_free();
 
         self.values[index] = Some(value);
 
