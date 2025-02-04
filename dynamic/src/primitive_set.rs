@@ -82,8 +82,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             marks.set(index, true);
         }
 
-        // Why do we need `take`??
-        for (index, mark) in marks.into_iter().enumerate().take(self.values.len()) {
+        for (index, mark) in marks.into_iter().enumerate() {
             if !mark {
                 self.values[index] = None;
             }
