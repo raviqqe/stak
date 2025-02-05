@@ -76,7 +76,7 @@ pub enum FibonacciError {
     ParseInt(ParseIntError),
     /// A failure in R7RS-small primitives.
     Small(SmallError),
-    /// An unkown error.
+    /// An unknown error.
     Unknown,
     /// UTF-8 parse failure.
     Utf8(Utf8Error),
