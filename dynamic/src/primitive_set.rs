@@ -267,7 +267,7 @@ mod tests {
         let mut primitive_set = DynamicPrimitiveSet::new(&mut []);
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        let index = primitive_set.allocate(&mut memory);
+        let index = primitive_set.allocate(&memory);
         primitive_set.values[index] = Some(value(42usize));
         assert_eq!(index, 0);
         assert_eq!(primitive_set.find_free(), None);
@@ -280,7 +280,7 @@ mod tests {
             .unwrap();
         memory.push(cons.into()).unwrap();
 
-        let index = primitive_set.allocate(&mut memory);
+        let index = primitive_set.allocate(&memory);
         primitive_set.values[index] = Some(value(42usize));
         assert_eq!(index, 1);
         assert_eq!(primitive_set.find_free(), None);
