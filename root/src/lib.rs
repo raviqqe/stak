@@ -81,12 +81,14 @@ pub mod device {
     pub use stak_device::*;
 }
 
+#[cfg(feature = "alloc")]
 pub mod dynamic {
     //! Dynamically-defined primitives.
 
     pub use stak_dynamic::*;
 }
 
+#[cfg(feature = "alloc")]
 pub mod engine {
     //! A scripting engine.
 

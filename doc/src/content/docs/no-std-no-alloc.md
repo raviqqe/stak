@@ -23,15 +23,17 @@ stak = { version = "SOME_VERSION", default-features = false, features = [
 
 # Running Scheme virtual machines
 
-To run Scheme virtual machines without `std` and `alloc` features, you might initiailze the virtual machines with custom sets of primitive sets. In the following Rust program, you use an in-memory I/O devices for communication between Rust and Scheme. And, you disable all the other primitives using `Void` data structures that do not run any real operations.
+To run Scheme virtual machines without `std` and `alloc` features, you might initiailze the virtual machines with custom sets of primitive sets. In the following Rust program, you use an in-memory I/O device for communication between Rust and Scheme. And, you disable all the other primitives using `Void` data structures that do not run any real operations.
 
 ```rust
+#![no_std]
+
 use core::{
-    error::Error,
-    str::{self, FromStr},
+    num::ParseIntError,
+    str::{self, FromStr, Utf8Error},
 };
 use stak::{
-    device::ReadWriteDevice,
+    device::FixedBufferDevice,
     file::VoidFileSystem,
     include_module,
     module::{Module, UniversalModule},
@@ -46,38 +48,34 @@ const HEAP_SIZE: usize = 1 << 16;
 
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
-pub fn run_script(input: &str) -> Result<isize, SmallError> {
-    let mut output = vec![];
-    let mut error = vec![];
+/// Calculates the Fibonacci number.
+pub fn fibonacci(input: &str) -> Result<isize, MyError> {
+    // Initialize an in-memory I/O device.
+    let mut device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE>::new(input.as_bytes());
 
-    run_vm(
-        &MODULE.bytecode(),
-        input.as_bytes(),
-        &mut output,
-        &mut error,
-    )?;
+    run_vm(&MODULE.bytecode(), &mut device)?;
 
     // If stderr is not empty, we assume that some error has occurred.
-    if !error.is_empty() {
-        return Err(str::from_utf8(&error)?.into());
+    if !device.error().is_empty() {
+        return Err(MyError::InvalidInput);
     }
 
     // Decode the output.
-    Ok(isize::from_str(&str::from_utf8(&output)?)?, 610))
+    Ok(isize::from_str(&str::from_utf8(device.output())?)?)
 }
 
 fn run_vm(
     bytecodes: &[u8],
-    input: &[u8],
-    output: &mut Vec<u8>,
-    error: &mut Vec<u8>,
+    device: &mut FixedBufferDevice<BUFFER_SIZE, BUFFER_SIZE>,
 ) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
-            // Create and attach an in-memory I/O device.
-            ReadWriteDevice::new(input, output, error),
+            // Attach an I/O device.
+            device,
+            // For the rest, you use "void" interfaces because they are not
+            // needed.
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
@@ -88,3 +86,5 @@ fn run_vm(
     vm.run()
 }
 ```
+
+For the full example, see [the example crate in the Stak Scheme repository](https://github.com/raviqqe/stak/blob/main/examples).

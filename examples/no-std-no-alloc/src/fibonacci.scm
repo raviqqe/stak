@@ -1,0 +1,1 @@
+../../../bench/src/fibonacci/main.scm

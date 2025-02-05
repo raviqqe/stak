@@ -15,7 +15,7 @@ members = [
   "dynamic",
   "engine",
   "examples/embedded-script",
-  "examples/hot-reload",
+  "examples/hot-reload", "examples/no-std-no-alloc",
   "file",
   "inexact",
   "macro",

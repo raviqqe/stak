@@ -29,3 +29,17 @@ pub trait Device {
     /// Writes to standard error.
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error>;
 }
+
+impl<T: Device> Device for &mut T {
+    type Error = T::Error;
+
+    fn read(&mut self) -> Result<Option<u8>, Self::Error> {
+        (**self).read()
+    }
+    fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
+        (**self).write(byte)
+    }
+    fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
+        (**self).write_error(byte)
+    }
+}
