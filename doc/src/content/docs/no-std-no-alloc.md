@@ -25,7 +25,7 @@ stak = { version = "SOME_VERSION", default-features = false, features = [
 
 To run Scheme virtual machines without `std` and `alloc` features, you might initialize the virtual machines with custom sets of primitive sets.
 
-In the following Rust program, you use an in-memory I/O device for communication between Rust and Scheme. And, you disable all the other primitives using `Void` data structures that do not run any real operations.
+In the following Rust program, you use an in-memory I/O device for communication between Rust and Scheme. And, you disable all the other primitives using `Void` interfaces that do not run any real operations.
 
 ```rust
 #![no_std]
