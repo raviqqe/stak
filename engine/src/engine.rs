@@ -1,7 +1,5 @@
 use crate::{primitive_set::EnginePrimitiveSet, EngineError};
 use any_fn::AnyFn;
-#[cfg(doc)]
-use stak_dynamic::DynamicPrimitiveSet;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
 use stak_vm::{Error, Value, Vm};
@@ -30,7 +28,8 @@ impl<'a, 'b> Engine<'a, 'b> {
     /// We register all types that this crate implements [`SchemeValue`] for to
     /// the engines by default.
     ///
-    /// For more information, see [`DynamicPrimitiveSet::register_type`].
+    /// For more information, see
+    /// [`DynamicPrimitiveSet`][stak_dynamic::DynamicPrimitiveSet].
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.vm
             .primitive_set_mut()

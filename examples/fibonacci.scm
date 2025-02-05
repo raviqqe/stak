@@ -1,4 +1,7 @@
-(import (scheme base) (scheme write))
+(import
+  (scheme base)
+  (scheme read)
+  (scheme write))
 
 (define (fibonacci x)
   (if (< x 2)
@@ -7,4 +10,4 @@
       (fibonacci (- x 1))
       (fibonacci (- x 2)))))
 
-(write (fibonacci 32))
+(write (fibonacci (read)))
