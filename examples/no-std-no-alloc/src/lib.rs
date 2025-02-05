@@ -67,7 +67,8 @@ fn run_vm(
     vm.run()
 }
 
-/// My error.
+/// A fibonacci calculation error.
+#[derive(Debug)]
 pub enum FibonacciError {
     /// A value format error.
     Format(fmt::Error),
@@ -102,5 +103,20 @@ impl From<SmallError> for FibonacciError {
 impl From<Utf8Error> for FibonacciError {
     fn from(error: Utf8Error) -> Self {
         Self::Utf8(error)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn calculate() {
+        assert_eq!(fibonacci(0).unwrap(), 0);
+        assert_eq!(fibonacci(1).unwrap(), 1);
+        assert_eq!(fibonacci(2).unwrap(), 1);
+        assert_eq!(fibonacci(3).unwrap(), 2);
+        assert_eq!(fibonacci(4).unwrap(), 3);
+        assert_eq!(fibonacci(5).unwrap(), 5);
     }
 }
