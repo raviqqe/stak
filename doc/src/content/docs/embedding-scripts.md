@@ -10,7 +10,7 @@ This page explains how to embed scripts written in Stak Scheme into Rust program
 
 ## Installing dependencies
 
-First, follow [the install instruction](install) to add Stak Scheme as dependencies in your Rust projects.
+First, create a Rust crate. Then, follow [the install instruction](install) to add Stak Scheme as dependencies in your Rust crate.
 
 ## Preparing a Scheme script
 
