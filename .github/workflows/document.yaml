@@ -60,7 +60,7 @@ jobs:
         working-directory: doc
       - run: npm run preview &
         working-directory: doc
-      - run: go run github.com/raviqqe/muffet/v2@latest http://localhost:4321/stak/
+      - run: go run github.com/raviqqe/muffet/v2@latest --buffer-size 8192 http://localhost:4321/stak/
   document:
     needs:
       - rust_build
