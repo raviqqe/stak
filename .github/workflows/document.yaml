@@ -46,7 +46,7 @@ jobs:
       - run: npm run lint
         working-directory: doc
   web_test:
-    requires:
+    needs:
       - web_build
     runs-on: ubuntu-latest
     steps:
