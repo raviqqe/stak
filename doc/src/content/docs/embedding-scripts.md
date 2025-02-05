@@ -115,8 +115,10 @@ impl Person {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
+    // Import a Scheme module of the script.
     static MODULE: UniversalModule = include_module!("fight.scm");
 
+    // Run the Scheme module.
     run(&MODULE)?;
 
     Ok(())
