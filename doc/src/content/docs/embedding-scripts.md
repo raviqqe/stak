@@ -11,28 +11,41 @@ This page explains how to embed scripts written in Stak Scheme into Rust program
 
 ## Preparing a Scheme script
 
-First, prepare a Scheme script named `src/fight.scm`:
+First, prepare a Scheme script named `src/fight.scm` as follows.
 
 ```scheme
+; Import the special library named `(stak rust)`.
 (import (scheme base) (stak rust))
 
+; Use the `define-rust` procedure to import native functions written in Rust.
+; The order of the functions should match the ones passed into the `Engine::new()`
+; function in Rust.
 (define-rust
   make-person
   person-throw-pie
   person-wasted)
 
+; Make two people with a number of pies they have and their dodge rates.
 (define me (make-person 4 0.2))
 (define you (make-person 2 0.6))
 
+; The fight begins. Let's throw pies to each other!
 (person-throw-pie me you)
 (person-throw-pie you me)
 (person-throw-pie me you)
 (person-throw-pie you me)
 
+; Output the winner.
 (when (person-wasted you)
   (write-string "Congrats!"))
 (when (person-wasted me)
   (write-string "Oh, no!"))
+```
+
+The main part of the Rust integration is importing the `(stak rust)` library and importing Rust native functions using the `define-rust` procedure.
+
+```scheme
+
 ```
 
 ## Adding a build script
