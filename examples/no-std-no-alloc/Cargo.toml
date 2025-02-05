@@ -11,8 +11,8 @@ repository.workspace = true
 heapless = "0.8.0"
 stak = { version = "0.6.0", path = "../../root", default-features = false }
 
-[lints]
-workspace = true
-
 [build-dependencies]
 stak-build = { version = "0.1.53", path = "../../build" }
+
+[lints]
+workspace = true
