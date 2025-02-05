@@ -8,6 +8,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
+heapless = "0.8.0"
 stak = { version = "0.6.0", path = "../../root", default-features = false }
 
 [lints]

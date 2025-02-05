@@ -910,6 +910,7 @@ dependencies = [
 name = "no-std-no-alloc"
 version = "0.1.0"
 dependencies = [
+ "heapless",
  "stak",
  "stak-build",
 ]
