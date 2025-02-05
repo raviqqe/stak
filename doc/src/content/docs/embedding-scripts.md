@@ -76,7 +76,8 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 
-// Define a person data structure and associated functions which we include into the Scheme script.
+// Define a person data structure and associated functions which we include
+// into the Scheme script.
 struct Person {
     pies: usize,
     dodge: f64,
