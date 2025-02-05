@@ -8,7 +8,7 @@ This page explains how to install Stak Scheme for your projects. By reading this
 - How to install Stak Scheme as a library in Rust projects.
 - How to install Stak Scheme as command line tools.
 
-### Libraries
+# Libraries
 
 To install Stak Scheme as a library in your Rust project, run the following commands in your terminal:
 
@@ -24,9 +24,9 @@ The crates have different roles:
 - The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
 - The `stak-compile` crate is a Stak Scheme compiler to compile Scheme scripts into bytecodes.
 
-### Command line tools
+# Command line tools
 
-#### Interpreters
+## Interpreters
 
 To install the Scheme interpreter, run the following command in your terminal:
 
@@ -34,7 +34,7 @@ To install the Scheme interpreter, run the following command in your terminal:
 cargo install stak
 ```
 
-#### Development tools
+## Development tools
 
 To install the other development tools of Stak Scheme, run the following command in your terminal:
 
