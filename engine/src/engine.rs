@@ -30,7 +30,7 @@ impl<'a, 'b> Engine<'a, 'b> {
     /// We register all types that this crate implements [`SchemeValue`] for to
     /// the engines by default.
     ///
-    /// For more information, see [`DynamicPrimitiveSet::register_type`].
+    /// For more information, see [`DynamicPrimitiveSet`].
     pub fn register_type<T: SchemeValue + 'static>(&mut self) {
         self.vm
             .primitive_set_mut()
