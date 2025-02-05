@@ -18,7 +18,7 @@ cargo add --build stak-build
 cargo install stak-compile
 ```
 
-The two crates have different roles:
+The crates have different roles:
 
 - The `stak` crate provides virtual machines and utilities to run Scheme programs in Rust.
 - The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
