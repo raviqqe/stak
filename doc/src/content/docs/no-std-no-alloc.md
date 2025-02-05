@@ -7,7 +7,7 @@ This page explains how to enable or disable `std` and `alloc` features of Stak S
 
 - How to disable `std` and `alloc` features for the Stak Scheme library in Rust crates.
 
-## Installing the Stak Scheme library without `std` and `alloc` features
+# Installing the Stak Scheme library without `std` and `alloc` features
 
 To disable `std` and `alloc` features for the Stak Scheme library, you need to disable its default features first in your crate's `Cargo.toml` file. This is because the Stak Scheme library enables the features by default. In the `features` field of the dependency entry, list up all the features you need.
 
@@ -20,7 +20,7 @@ stak = { version = "0.7.0", default-features = false, features = [
 ] }
 ```
 
-## Running Scheme virtual machines
+# Running Scheme virtual machines
 
 # References
 
