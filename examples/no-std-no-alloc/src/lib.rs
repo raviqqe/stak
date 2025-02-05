@@ -42,7 +42,7 @@ pub fn fibonacci(number: usize) -> Result<usize, FibonacciError> {
     }
 
     // Decode the output.
-    Ok(usize::from_str(&str::from_utf8(device.output())?)?)
+    Ok(usize::from_str(str::from_utf8(device.output())?)?)
 }
 
 fn run_vm(
