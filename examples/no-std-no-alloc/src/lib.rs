@@ -4,9 +4,11 @@
 #![no_std]
 
 use core::{
+    fmt::{self, Write},
     num::ParseIntError,
     str::{self, FromStr, Utf8Error},
 };
+use heapless::String;
 use stak::{
     device::FixedBufferDevice,
     file::VoidFileSystem,
@@ -24,8 +26,11 @@ const HEAP_SIZE: usize = 1 << 16;
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 /// Calculates the Fibonacci number.
-// TODO Accept an `usize` argument.
-pub fn fibonacci(input: &str) -> Result<usize, MyError> {
+pub fn fibonacci(number: usize) -> Result<usize, FibonacciError> {
+    let mut input = String::<8>::new();
+
+    write!(&mut input, "{number}")?;
+
     // Initialize an in-memory I/O device.
     let mut device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE>::new(input.as_bytes());
 
@@ -33,7 +38,7 @@ pub fn fibonacci(input: &str) -> Result<usize, MyError> {
 
     // If stderr is not empty, we assume that some error has occurred.
     if !device.error().is_empty() {
-        return Err(MyError::InvalidInput);
+        return Err(FibonacciError::Unknown);
     }
 
     // Decode the output.
@@ -63,30 +68,38 @@ fn run_vm(
 }
 
 /// My error.
-pub enum MyError {
-    /// Invalid input.
-    InvalidInput,
+pub enum FibonacciError {
+    /// A value format error.
+    Format(fmt::Error),
     /// Integer parse failure.
     ParseInt(ParseIntError),
     /// A failure in R7RS-small primitives.
     Small(SmallError),
+    /// An unkown error.
+    Unknown,
     /// UTF-8 parse failure.
     Utf8(Utf8Error),
 }
 
-impl From<ParseIntError> for MyError {
+impl From<fmt::Error> for FibonacciError {
+    fn from(error: fmt::Error) -> Self {
+        Self::Format(error)
+    }
+}
+
+impl From<ParseIntError> for FibonacciError {
     fn from(error: ParseIntError) -> Self {
         Self::ParseInt(error)
     }
 }
 
-impl From<SmallError> for MyError {
+impl From<SmallError> for FibonacciError {
     fn from(error: SmallError) -> Self {
         Self::Small(error)
     }
 }
 
-impl From<Utf8Error> for MyError {
+impl From<Utf8Error> for FibonacciError {
     fn from(error: Utf8Error) -> Self {
         Self::Utf8(error)
     }
