@@ -118,5 +118,6 @@ mod tests {
         assert_eq!(fibonacci(3).unwrap(), 2);
         assert_eq!(fibonacci(4).unwrap(), 3);
         assert_eq!(fibonacci(5).unwrap(), 5);
+        assert_eq!(fibonacci(6).unwrap(), 8);
     }
 }
