@@ -45,6 +45,8 @@ stak-time = { version = "0.1.35", path = "../time" }
 stak-vm = { version = "0.7.23", path = "../vm" }
 
 [dev-dependencies]
+any-fn = "0.6.1"
+rand = "0.9.0"
 stak-build = { path = "../build" }
 
 [build-dependencies]
