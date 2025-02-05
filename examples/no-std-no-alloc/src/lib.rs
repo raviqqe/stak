@@ -23,7 +23,8 @@ const HEAP_SIZE: usize = 1 << 16;
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
 /// Calculates the Fibonacci number.
-pub fn fibonacci(input: &str) -> Result<isize, MyError> {
+// TODO Accept an `usize` argument.
+pub fn fibonacci(input: &str) -> Result<usize, MyError> {
     // Initialize an in-memory I/O device.
     let mut device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE>::new(input.as_bytes());
 
@@ -35,7 +36,7 @@ pub fn fibonacci(input: &str) -> Result<isize, MyError> {
     }
 
     // Decode the output.
-    Ok(isize::from_str(&str::from_utf8(device.output())?)?)
+    Ok(usize::from_str(&str::from_utf8(device.output())?)?)
 }
 
 fn run_vm(
