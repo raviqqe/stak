@@ -66,6 +66,7 @@ jobs:
       - rust_build
       - web_build
       - web_lint
+      - web_test
     if: always()
     runs-on: ubuntu-latest
     steps:
