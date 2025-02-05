@@ -1,4 +1,5 @@
-//! An exampe library to run the Stak Scheme virtual machines without `std` and `alloc` crates.
+//! An example library to run the Stak Scheme virtual machines without `std` and
+//! `alloc` crates.
 
 #![no_std]
 
