@@ -62,7 +62,7 @@ pub mod vm {
     //!
     //! ## Embedding Scheme scripts
     //!
-    //! First, prepare a Scheme script at `src/hello.scm`.
+    //! First, prepare a Scheme script named `src/hello.scm`.
     //!
     //! ```scheme
     //! (import (scheme base))
@@ -81,8 +81,8 @@ pub mod vm {
     //! }
     //! ```
     //!
-    //! Finally, you can include the Scheme script into a program using
-    //! [`stak::include_module`] macro.
+    //! Finally, you can include the Scheme script into a Rust program using
+    //! [`stak::include_module`] macro and run the script.
     //!
     //! ```rust
     //! use core::error::Error;
