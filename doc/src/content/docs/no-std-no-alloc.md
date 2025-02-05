@@ -21,3 +21,72 @@ stak = { version = "0.7.0", default-features = false, features = [
 ```
 
 # Running Scheme virtual machines
+
+To run Scheme virtual machines without `std` and `alloc` features, you might initiailze the virtual machines with custom sets of primitive sets. In the following example we disable all the primitive sets using an in-memory I/O primitive set and `Void*` primitive sets that do not run any real operations.
+
+```rust
+use core::{
+    error::Error,
+    str::{self, FromStr},
+};
+use stak::{
+    device::ReadWriteDevice,
+    file::VoidFileSystem,
+    include_module,
+    module::{Module, UniversalModule},
+    process_context::VoidProcessContext,
+    r7rs::{SmallError, SmallPrimitiveSet},
+    time::VoidClock,
+    vm::Vm,
+};
+
+const BUFFER_SIZE: usize = 1 << 8;
+const HEAP_SIZE: usize = 1 << 16;
+
+static MODULE: UniversalModule = include_module!("fibonacci.scm");
+
+fn main() -> Result<(), Box<dyn Error>> {
+    let input = 15;
+    let mut output = vec![];
+    let mut error = vec![];
+
+    run(
+        &MODULE.bytecode(),
+        input.to_string().as_bytes(),
+        &mut output,
+        &mut error,
+    )?;
+
+    // If stderr is not empty, we assume that some error has occurred.
+    if !error.is_empty() {
+        return Err(str::from_utf8(&error)?.into());
+    }
+
+    // Decode and test the output.
+    assert_eq!(isize::from_str(&str::from_utf8(&output)?)?, 610);
+
+    Ok(())
+}
+
+fn run(
+    bytecodes: &[u8],
+    input: &[u8],
+    output: &mut Vec<u8>,
+    error: &mut Vec<u8>,
+) -> Result<(), SmallError> {
+    let mut heap = [Default::default(); HEAP_SIZE];
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(
+            // Create and attach an in-memory I/O device.
+            ReadWriteDevice::new(input, output, error),
+            VoidFileSystem::new(),
+            VoidProcessContext::new(),
+            VoidClock::new(),
+        ),
+    )?;
+
+    vm.initialize(bytecodes.iter().copied())?;
+    vm.run()
+}
+```
