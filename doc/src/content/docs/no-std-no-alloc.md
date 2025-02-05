@@ -6,6 +6,7 @@ description: How to enable and disable std and alloc features of Stak Scheme for
 This page explains how to enable or disable `std` and `alloc` features of Stak Scheme for specific environments in Rust. By reading this page, you will learn:
 
 - How to disable `std` and `alloc` features for the Stak Scheme library in Rust crates.
+- How to run the Stak Scheme virtual machines without `std` and `alloc` features in Rust.
 
 # Installing the Stak Scheme library without `std` and `alloc` features
 
