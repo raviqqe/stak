@@ -45,7 +45,7 @@ First, prepare a Scheme script named `src/fight.scm` as follows.
   (write-string "Oh, no!"))
 ```
 
-The main part of the Rust integration is importing the `(stak rust)` library and importing Rust native functions using the `define-rust` procedure.
+The main part for Rust integration is importing the `(stak rust)` library and importing Rust native functions using the `define-rust` procedure.
 
 ## Adding a build script
 
