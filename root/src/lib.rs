@@ -158,7 +158,7 @@ pub mod vm {
     //! ```
     //!
     //! Finally, you can include the Scheme script into a Rust program using
-    //! [`stak::include_module`] macro and run the script.
+    //! [`include_module`][super::include_module] macro and run the script.
     //!
     //! ```rust
     //! use core::error::Error;
