@@ -8,7 +8,7 @@ This page explains how to embed scripts written in Stak Scheme into Rust program
 - How to add Stak Scheme as a dependency in your Rust projects.
 - How to embed scripts written in Stak Scheme in Rust programs.
 
-# Preparing a Scheme script
+## Preparing a Scheme script
 
 First, prepare a Scheme script named `src/fight.scm`:
 
@@ -34,7 +34,7 @@ First, prepare a Scheme script named `src/fight.scm`:
   (write-string "Oh, no!"))
 ```
 
-# Adding a build script
+## Adding a build script
 
 Then, add a build script at `build.rs` to build the Scheme source file
 into bytecodes.
@@ -47,7 +47,7 @@ fn main() -> Result<(), BuildError> {
 }
 ```
 
-# Embedding a Scheme script in a Rust program
+## Embedding a Scheme script in a Rust program
 
 Finally, you can embed and run the Scheme script in a Rust program.
 
