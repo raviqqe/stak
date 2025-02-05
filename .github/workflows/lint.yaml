@@ -46,6 +46,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: raviqqe/markdown-link-check@v1
+        with:
+          files: README.md examples
   lint:
     needs:
       - clippy
