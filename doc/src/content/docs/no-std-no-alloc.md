@@ -45,12 +45,12 @@ const HEAP_SIZE: usize = 1 << 16;
 
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn run_script() -> Result<(), Box<dyn Error>> {
     let input = 15;
     let mut output = vec![];
     let mut error = vec![];
 
-    run(
+    run_vm(
         &MODULE.bytecode(),
         input.to_string().as_bytes(),
         &mut output,
@@ -68,7 +68,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn run(
+fn run_vm(
     bytecodes: &[u8],
     input: &[u8],
     output: &mut Vec<u8>,
