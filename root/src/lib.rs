@@ -133,8 +133,8 @@ pub mod vm {
     //!
     //! ## Communication via standard I/O
     //!
-    //! You can pass in-memory standard input (`stdin`) and output (`stdout`) to
-    //! Scheme scripts to communicate information between Rust and Scheme.
+    //! You can pass in-memory standard input and output to Scheme scripts for
+    //! communicate information between Rust and Scheme.
     //!
     //! ```rust
     //! use core::{
