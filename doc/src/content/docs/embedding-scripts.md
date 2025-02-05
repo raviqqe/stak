@@ -6,6 +6,7 @@ description: How to embed Scheme scripts in Rust
 This page explains how to embed scripts written in Stak Scheme into Rust programs. By reading this page, you will learn:
 
 - How to add Stak Scheme as a dependency in your Rust projects.
+- How to compile Scheme scripts for Rust programs to include.
 - How to embed scripts written in Stak Scheme in Rust programs.
 
 ## Preparing a Scheme script
