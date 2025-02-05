@@ -61,6 +61,8 @@ First, prepare a Scheme script named `src/fight.scm`:
 (person-throw-pie me you)
 (person-throw-pie you me)
 
+(when (person-wasted you)
+  (write-string "Congrats!"))
 (when (person-wasted me)
   (write-string "Oh, no!"))
 ```
