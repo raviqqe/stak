@@ -15,7 +15,7 @@ To disable `std` and `alloc` features for the Stak Scheme library, you need to d
 For a full list of features available, see [the Rust documentation of the `stak` crate](https://docs.rs/stak).
 
 ```toml
-stak = { version = "0.7.0", default-features = false, features = [
+stak = { version = "SOME_VERSION", default-features = false, features = [
   # List all the features you need.
   "float",
 ] }
@@ -46,14 +46,13 @@ const HEAP_SIZE: usize = 1 << 16;
 
 static MODULE: UniversalModule = include_module!("fibonacci.scm");
 
-pub fn run_script() -> Result<(), SmallError> {
-    let input = 15;
+pub fn run_script(input: &str) -> Result<isize, SmallError> {
     let mut output = vec![];
     let mut error = vec![];
 
     run_vm(
         &MODULE.bytecode(),
-        input.to_string().as_bytes(),
+        input.as_bytes(),
         &mut output,
         &mut error,
     )?;
@@ -63,10 +62,8 @@ pub fn run_script() -> Result<(), SmallError> {
         return Err(str::from_utf8(&error)?.into());
     }
 
-    // Decode and test the output.
-    assert_eq!(isize::from_str(&str::from_utf8(&output)?)?, 610);
-
-    Ok(())
+    // Decode the output.
+    Ok(isize::from_str(&str::from_utf8(&output)?)?, 610))
 }
 
 fn run_vm(
