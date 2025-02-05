@@ -27,16 +27,16 @@ First, prepare a Scheme script named `src/fight.scm` as follows.
 
 ; Make two people with a number of pies they have and their dodge rates.
 (define me (make-person 4 0.2))
-(define you (make-person 2 0.6))
+(define rival (make-person 2 0.6))
 
 ; The fight begins. Let's throw pies to each other!
-(person-throw-pie me you)
-(person-throw-pie you me)
-(person-throw-pie me you)
-(person-throw-pie you me)
+(person-throw-pie me rival)
+(person-throw-pie rival me)
+(person-throw-pie me rival)
+(person-throw-pie rival me)
 
 ; Output the winner.
-(when (person-wasted you)
+(when (person-wasted rival)
   (write-string "Congrats!"))
 (when (person-wasted me)
   (write-string "Oh, no!"))
