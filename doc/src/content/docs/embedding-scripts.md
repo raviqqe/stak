@@ -12,6 +12,8 @@ This page explains how to embed scripts written in Stak Scheme into Rust program
 
 First, follow [the install instruction](install#libraries) to add Stak Scheme as dependencies in your Rust crate.
 
+To use native functions in Rust later, install [the `any-fn` crate](https://crates.io/crates/any-fn) which converts statically-typed functions in Rust into dynamically-typed functions as well.
+
 ## Preparing a Scheme script
 
 First, prepare a Scheme script named `src/fight.scm` as follows.
