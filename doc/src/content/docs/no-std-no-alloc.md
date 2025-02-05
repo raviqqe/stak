@@ -21,7 +21,3 @@ stak = { version = "0.7.0", default-features = false, features = [
 ```
 
 # Running Scheme virtual machines
-
-# References
-
-- [`examples/embedded-script` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/embedded-script)
