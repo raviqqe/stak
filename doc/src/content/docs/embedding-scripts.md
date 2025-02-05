@@ -85,6 +85,7 @@ struct Person {
 }
 
 impl Person {
+    /// Creates a person.
     pub fn new(pies: usize, dodge: f64) -> Self {
         Self {
             pies,
@@ -93,10 +94,12 @@ impl Person {
         }
     }
 
+    /// Returns `true` if a person is wasted.
     pub fn wasted(&self) -> bool {
         self.wasted
     }
 
+    /// Throws a pie to another person.
     pub fn throw_pie(&mut self, other: &mut Person) {
         if self.wasted {
             return;
@@ -104,6 +107,7 @@ impl Person {
 
         self.pies -= 1;
 
+        // The other person dodges a pie at a certain rate.
         if random::<f64>() > other.dodge {
             other.wasted = true;
         }
