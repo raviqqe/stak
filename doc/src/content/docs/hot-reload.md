@@ -10,7 +10,7 @@ This page explains [hot reloading][hot-reload] of Stak Scheme scripts to change 
 
 > WIP
 
-# References
+## References
 
 - [`examples/hot-reload` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/hot-reload)
 
