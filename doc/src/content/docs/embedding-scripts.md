@@ -143,6 +143,6 @@ fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
 }
 ```
 
-# References
+## References
 
 - [`examples/embedded-script` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/embedded-script)
