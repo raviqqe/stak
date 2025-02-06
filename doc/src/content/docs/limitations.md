@@ -1,6 +1,6 @@
 ---
-title: Limitations on the current implementation
-description: Limitations on the current implementation of Stak Scheme
+title: Limitations in the current implementation
+description: Limitations in the current implementation of Stak Scheme
 ---
 
 This page describes the limitations on the current implementation of Stak Scheme. These limitations are considered transient although some of them do not have any concrete resolution plans right now; we hopefully remove these limitations in the future versions of Stak Scheme without incurring too much complexity.
