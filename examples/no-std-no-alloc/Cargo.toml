@@ -1,6 +1,7 @@
 [package]
 name = "no-std-no-alloc"
 version = "0.1.1"
+publish = false
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
