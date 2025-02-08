@@ -31,24 +31,34 @@ First, prepare a Scheme script named `src/fight.scm` as follows.
 ; function in Rust.
 (define-rust
   make-person
-  person-throw-pie
-  person-wasted)
+  person-pies
+  person-wasted
+  person-throw-pie)
 
 ; Make two people with a number of pies they have and their dodge rates.
 (define me (make-person 4 0.2))
 (define friend (make-person 2 0.6))
 
 ; The fight begins. Let's throw pies to each other!
-(person-throw-pie me friend)
-(person-throw-pie friend me)
-(person-throw-pie me friend)
-(person-throw-pie friend me)
+(do ()
+  ((or
+      (person-wasted me)
+      (person-wasted friend)
+      (and
+        (zero? (person-pies me))
+        (zero? (person-pies friend)))))
+  (person-throw-pie me friend)
+  (person-throw-pie friend me))
 
 ; Output the winner.
-(when (person-wasted friend)
-  (write-string "Congrats!"))
-(when (person-wasted me)
-  (write-string "Oh, no!"))
+(write-string
+  (cond
+    ((person-wasted friend)
+      "You won!")
+    ((person-wasted me)
+      "You lost...")
+    (else
+      "Draw...")))
 ```
 
 The main part for Rust integration is importing the `(stak rust)` library and defining Rust native functions using the `define-rust` procedure.
@@ -78,6 +88,7 @@ use rand::random;
 
 // Define a person data structure and its associated functions which you include
 // into the Scheme script.
+
 struct Person {
     pies: usize,
     dodge: f64,
@@ -94,6 +105,11 @@ impl Person {
         }
     }
 
+    /// Returns a number of pies the person has.
+    pub fn pies(&self) -> usize {
+        self.pies
+    }
+
     /// Returns `true` if a person is wasted.
     pub fn wasted(&self) -> bool {
         self.wasted
@@ -101,7 +117,7 @@ impl Person {
 
     /// Throws a pie to another person.
     pub fn throw_pie(&mut self, other: &mut Person) {
-        if self.wasted {
+        if self.pies == 0 || self.wasted {
             return;
         }
 
@@ -132,8 +148,9 @@ fn run_scheme(module: &'static UniversalModule) -> Result<(), EngineError> {
     // Define Rust functions to pass to the engine.
     let mut functions = [
         r#fn(Person::new),
-        r#fn(Person::throw_pie),
+        r#fn::<(Ref<_>,), _>(Person::pies),
         r#fn::<(Ref<_>,), _>(Person::wasted),
+        r#fn(Person::throw_pie),
     ];
     // Initialize the engine.
     let mut engine = Engine::new(&mut heap, &mut functions)?;
