@@ -19,6 +19,14 @@ For more information and usage, visit [the full documentation](https://raviqqe.g
 
 ## Install
 
+### Interpreter
+
+To install the Scheme interpreter as a command, run:
+
+```sh
+cargo install stak
+```
+
 ### Libraries
 
 To install Stak Scheme as a library in your Rust project, run:
@@ -30,14 +38,6 @@ cargo install stak-compile
 ```
 
 For full examples, see [the `examples` directory](https://github.com/raviqqe/stak/tree/main/examples).
-
-### Command line tools
-
-To install the Scheme interpreter as a command, run:
-
-```sh
-cargo install stak
-```
 
 ## Examples
 
