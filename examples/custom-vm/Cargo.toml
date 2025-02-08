@@ -1,6 +1,6 @@
 [package]
-name = "embedded-script"
-version = "0.1.17"
+name = "custom-vm"
+version = "0.1.0"
 publish = false
 edition.workspace = true
 
