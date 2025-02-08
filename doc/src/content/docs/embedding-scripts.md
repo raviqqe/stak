@@ -55,8 +55,9 @@ The main part for Rust integration is importing the `(stak rust)` library and de
 
 ## Adding a build script
 
-Then, add a build script at `build.rs` to build the Scheme source file
-into bytecodes.
+Then, add a build script at `build.rs` to build the Scheme source file into bytecodes.
+
+The bytecodes are compact codes that describe programs written in Scheme. It is just like machine codes but for a Stak Scheme virtual machine.
 
 ```rust no_run
 use stak_build::{build_r7rs, BuildError};
