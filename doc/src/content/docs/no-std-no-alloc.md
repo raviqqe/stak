@@ -1,5 +1,5 @@
 ---
-title: Running on no-std and no-alloc environment in Rust
+title: Running in no-std and no-alloc environment in Rust
 description: How to enable and disable std and alloc features of Stak Scheme for specific environments in Rust
 ---
 
