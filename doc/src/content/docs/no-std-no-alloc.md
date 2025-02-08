@@ -32,7 +32,7 @@ First, declare that your crate does not use `std` or `alloc` crates in `lib.rs`.
 #![no_std]
 ```
 
-Then, import data structures to initialize virtual machines of Stak Scheme with.
+Then, import data structures that we initialize virtual machines of Stak Scheme with from the `stak` crate.
 
 ```rust
 use stak::{
