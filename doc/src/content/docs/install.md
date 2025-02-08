@@ -18,7 +18,7 @@ To install the Stak Scheme interpreter, run the following command in your termin
 cargo install stak
 ```
 
-Now, you can run programs written in R7RS Scheme with the `stak` command as follows.
+Now, you can run programs written in [R7RS Scheme][r7rs] with the `stak` command as follows.
 
 ```sh
 stak hello.scm
@@ -57,3 +57,5 @@ The crates have different roles:
 - The `stak` crate provides virtual machines and utilities to run Scheme programs in Rust.
 - The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
 - The `stak-compile` crate is a Stak Scheme compiler to compile Scheme scripts into bytecodes.
+
+[r7rs]: https://r7rs.org/
