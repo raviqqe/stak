@@ -89,6 +89,7 @@ use rand::random;
 // Define a person data structure and its associated functions which you include
 // into the Scheme script.
 
+/// A person who holds pies to throw.
 struct Person {
     pies: usize,
     dodge: f64,
