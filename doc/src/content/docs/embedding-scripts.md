@@ -23,7 +23,7 @@ cargo add any-fn
 First, prepare a Scheme script named `src/fight.scm` as follows.
 
 ```scheme
-; Import the special library named `(stak rust)`.
+; Import a base library and the library named `(stak rust)` for Rust integration.
 (import (scheme base) (stak rust))
 
 ; Use the `define-rust` procedure to import native functions written in Rust.
