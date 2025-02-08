@@ -1,1 +1,1 @@
-../../../examples/fight.scm
+../../fight.scm
