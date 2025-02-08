@@ -175,7 +175,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     static MODULE: UniversalModule = include_module!("fight.scm");
 
     // Run the Scheme module.
-    run(&MODULE)?;
+    run_scheme(&MODULE)?;
 
     Ok(())
 }
