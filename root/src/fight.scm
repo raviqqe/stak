@@ -1,1 +1,1 @@
-../../engine/src/fight.scm
+../../examples/fight.scm
