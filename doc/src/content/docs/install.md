@@ -12,7 +12,7 @@ This page explains how to install Stak Scheme as command line tools or libraries
 
 ### Interpreters
 
-To install the Scheme interpreter, run the following command in your terminal.
+To install the Stak Scheme interpreter, run the following command in your terminal.
 
 ```sh
 cargo install stak
