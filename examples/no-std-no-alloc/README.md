@@ -5,6 +5,7 @@ This example shows how to embed and run Stak Scheme in a crate without `std` and
 ## Usage
 
 ```sh
+cargo build
 cargo test
 ```
 
