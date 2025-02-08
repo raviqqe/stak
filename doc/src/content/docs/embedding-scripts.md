@@ -115,28 +115,18 @@ impl Person {
 }
 ```
 
+Secondly, define a `run_scheme` function which runs a Scheme program.
+
 ```rust
 use any_fn::{r#fn, Ref};
-use core::error::Error;
 use stak::{
     engine::{Engine, EngineError},
-    include_module,
     module::UniversalModule,
 };
 
 const HEAP_SIZE: usize = 1 << 16;
 
-fn main() -> Result<(), Box<dyn Error>> {
-    // Import a Scheme module of the script.
-    static MODULE: UniversalModule = include_module!("fight.scm");
-
-    // Run the Scheme module.
-    run(&MODULE)?;
-
-    Ok(())
-}
-
-fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
+fn run_scheme(module: &'static UniversalModule) -> Result<(), EngineError> {
     // Initialize a heap memory for a Scheme scripting engine.
     let mut heap = [Default::default(); HEAP_SIZE];
     // Define Rust functions to pass to the engine.
@@ -150,6 +140,26 @@ fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
 
     // Finally, run the module!
     engine.run(module)
+}
+```
+
+Finally, call the `run_scheme` function in the `main` function.
+
+```rust
+use core::error::Error;
+use stak::{
+    include_module,
+    module::UniversalModule,
+};
+
+fn main() -> Result<(), Box<dyn Error>> {
+    // Import a Scheme module of the script.
+    static MODULE: UniversalModule = include_module!("fight.scm");
+
+    // Run the Scheme module.
+    run(&MODULE)?;
+
+    Ok(())
 }
 ```
 
