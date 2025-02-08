@@ -44,7 +44,7 @@ The `stak-compile` command is a Scheme-to-bytecode compiler. The `stak-interpret
 
 ## Libraries
 
-To install Stak Scheme as a library in your Rust project, run the following commands in your terminal:
+To install Stak Scheme as a library in your Rust crate, run the following commands in your terminal.
 
 ```sh
 cargo add stak
