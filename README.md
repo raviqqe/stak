@@ -50,21 +50,31 @@ First, prepare a Scheme script named `src/fight.scm`:
 
 (define-rust
   make-person
-  person-throw-pie
-  person-wasted)
+  person-pies
+  person-wasted
+  person-throw-pie)
 
 (define me (make-person 4 0.2))
-(define you (make-person 2 0.6))
+(define friend (make-person 2 0.6))
 
-(person-throw-pie me you)
-(person-throw-pie you me)
-(person-throw-pie me you)
-(person-throw-pie you me)
+(do ()
+  ((or
+      (person-wasted me)
+      (person-wasted friend)
+      (and
+        (zero? (person-pies me))
+        (zero? (person-pies friend)))))
+  (person-throw-pie me friend)
+  (person-throw-pie friend me))
 
-(when (person-wasted you)
-  (write-string "Congrats!"))
-(when (person-wasted me)
-  (write-string "Oh, no!"))
+(write-string
+  (cond
+    ((person-wasted friend)
+      "You won!")
+    ((person-wasted me)
+      "You lost...")
+    (else
+      "Draw...")))
 ```
 
 Then, add a build script at `build.rs` to build the Scheme source file
@@ -107,12 +117,16 @@ impl Person {
         }
     }
 
+    pub fn pies(&self) -> usize {
+        self.pies
+    }
+
     pub fn wasted(&self) -> bool {
         self.wasted
     }
 
     pub fn throw_pie(&mut self, other: &mut Person) {
-        if self.wasted {
+        if self.pies == 0 || self.wasted {
             return;
         }
 
@@ -136,8 +150,9 @@ fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut functions = [
         r#fn(Person::new),
-        r#fn(Person::throw_pie),
+        r#fn::<(Ref<_>,), _>(Person::pies),
         r#fn::<(Ref<_>,), _>(Person::wasted),
+        r#fn(Person::throw_pie),
     ];
     let mut engine = Engine::new(&mut heap, &mut functions)?;
 
