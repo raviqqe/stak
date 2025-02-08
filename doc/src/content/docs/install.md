@@ -55,7 +55,7 @@ cargo install stak-compile
 The crates have different roles:
 
 - The `stak` crate provides scripting engines, virtual machines, and utilities to run Scheme programs embedded in Rust.
-- The `stak-build` crate builds Scheme scripts in `build.rs` build scripts.
+- The `stak-build` crate compiles Scheme programs in `build.rs` build scripts in Rust crates.
 - The `stak-compile` crate is a Stak Scheme compiler to compile Scheme scripts into bytecodes.
 
 [r7rs]: https://r7rs.org/
