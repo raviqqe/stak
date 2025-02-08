@@ -63,7 +63,8 @@ fn run_vm(
         SmallPrimitiveSet::new(
             // Attach an I/O device.
             device,
-            // For the rest, you use "void" interfaces because they are not needed.
+            // For the rest, you use "void" interfaces because they are not
+            // needed.
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
