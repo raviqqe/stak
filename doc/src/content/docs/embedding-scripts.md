@@ -183,7 +183,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 When you run the crate with the following command, you will see a result of the fight changing every time you run the command.
 
 ```sh
-cargo run # -> Congrats!
+cargo run # -> You won!
 ```
 
 ## References
