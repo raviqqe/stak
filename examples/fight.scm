@@ -24,6 +24,6 @@
     ((person-wasted friend)
       "You won!")
     ((person-wasted me)
-      "You lost ;(")
+      "You lost...")
     (else
       "Draw...")))
