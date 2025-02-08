@@ -1,0 +1,1 @@
+../../../examples/fight.scm
