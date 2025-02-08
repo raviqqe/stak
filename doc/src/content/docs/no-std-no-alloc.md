@@ -25,46 +25,36 @@ stak = { version = "SOME_VERSION", default-features = false, features = [
 
 To run virtual machines of Stak Scheme without `std` and `alloc` features, you would initialize them with custom sets of primitive sets.
 
-In the following Rust program, you use an in-memory I/O device for communication between Rust and Scheme. And, you use "void" file system, clock, etc. that do not run any real operations to disable all the other primitives.
+First, declare that your crate does not use `std` or `alloc` crates in `lib.rs`.
 
 ```rust
+// At the top of your `lib.rs` file.
 #![no_std]
+```
 
-use core::{
-    num::ParseIntError,
-    str::{self, FromStr, Utf8Error},
-};
+Then, import data structures to initialize virtual machines of Stak Scheme with.
+
+```rust
 use stak::{
+    // In-memory fixed buffer I/O device.
     device::FixedBufferDevice,
+    // "Void" data structures with disabled operations.
     file::VoidFileSystem,
-    include_module,
-    module::{Module, UniversalModule},
     process_context::VoidProcessContext,
-    r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
+};
+```
+
+Finally, you initialize and run a virtual machine of Stak Scheme configuring the [R7RS-small][r7rs-small] primitive set with the imported data structures. You use the in-memory I/O device for communication between Rust and Scheme, and "void" file system, clock, etc. that do not run any real operations to disable all the other primitives.
+
+```rust
+use stak::{
+    r7rs::{SmallError, SmallPrimitiveSet},
     vm::Vm,
 };
 
 const BUFFER_SIZE: usize = 1 << 8;
 const HEAP_SIZE: usize = 1 << 16;
-
-static MODULE: UniversalModule = include_module!("fibonacci.scm");
-
-/// Calculates the Fibonacci number.
-pub fn fibonacci(input: &str) -> Result<isize, MyError> {
-    // Initialize an in-memory I/O device.
-    let mut device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE>::new(input.as_bytes());
-
-    run_vm(&MODULE.bytecode(), &mut device)?;
-
-    // If stderr is not empty, we assume that some error has occurred.
-    if !device.error().is_empty() {
-        return Err(MyError::InvalidInput);
-    }
-
-    // Decode the output.
-    Ok(isize::from_str(&str::from_utf8(device.output())?)?)
-}
 
 fn run_vm(
     bytecodes: &[u8],
@@ -94,3 +84,5 @@ For the full example, see [the example crate in the Stak Scheme repository](http
 ## References
 
 - [`examples/no-std-no-alloc` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/no-std-no-alloc)
+
+[r7rs-small]: https://small.r7rs.org/
