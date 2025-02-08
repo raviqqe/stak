@@ -163,6 +163,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 }
 ```
 
+When you run the crate with the following command, you will see a result of the fight changing every time you run the command.
+
+```sh
+cargo run # -> Congrats!
+```
+
 ## References
 
 - [`examples/embedded-script` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/embedded-script)
