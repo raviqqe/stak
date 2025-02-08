@@ -1,4 +1,4 @@
-//! A `stak-build` example.
+//! An example of customized virtual machines.
 
 use core::error::Error;
 use stak::{
