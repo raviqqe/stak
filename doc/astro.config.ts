@@ -98,16 +98,16 @@ export default defineConfig({
               link: "/embedding-scripts",
             },
             {
+              label: "Running in no-std and no-alloc environment",
+              link: "/no-std-no-alloc",
+            },
+            {
               label: "Hot reloading",
               link: "/hot-reload",
             },
             {
               label: "Writing a Scheme subset",
               link: "/writing-scheme-subset",
-            },
-            {
-              label: "Running in no-std and no-alloc environment",
-              link: "/no-std-no-alloc",
             },
           ],
         },
