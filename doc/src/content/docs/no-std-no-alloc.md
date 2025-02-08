@@ -77,10 +77,11 @@ fn run_vm(
 }
 ```
 
-For the full example, see [the example crate in the Stak Scheme repository](https://github.com/raviqqe/stak/blob/main/examples/no-std-no-alloc).
+For the full example, see [the example crate in the Stak Scheme repository][example-crate].
 
 ## References
 
-- [`examples/no-std-no-alloc` directory on GitHub](https://github.com/raviqqe/stak/tree/main/examples/no-std-no-alloc)
+- [`examples/no-std-no-alloc` directory on GitHub][example-crate]
 
 [r7rs-small]: https://small.r7rs.org/
+[example-crate]: https://github.com/raviqqe/stak/tree/main/examples/no-std-no-alloc
