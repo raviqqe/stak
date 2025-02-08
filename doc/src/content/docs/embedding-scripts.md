@@ -193,4 +193,4 @@ cargo run # -> You won!
 
 - [`examples/embedded-script` directory on GitHub][source]
 
-[source]: (https://github.com/raviqqe/stak/tree/main/examples/embedded-script)
+[source]: https://github.com/raviqqe/stak/tree/main/examples/embedded-script
