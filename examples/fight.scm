@@ -18,6 +18,6 @@
     ((person-wasted friend)
       "Congrats!")
     ((person-wasted me)
-       "Oh, no!")
+      "Oh, no!")
     (else
-      "Draw..."))))
+      "Draw...")))
