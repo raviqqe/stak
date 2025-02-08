@@ -26,12 +26,16 @@ impl Person {
         }
     }
 
+    pub fn pies(&self) -> usize {
+        self.pies
+    }
+
     pub fn wasted(&self) -> bool {
         self.wasted
     }
 
     pub fn throw_pie(&mut self, other: &mut Person) {
-        if self.wasted {
+        if self.pies == 0 || self.wasted {
             return;
         }
 
@@ -55,8 +59,9 @@ fn run(module: &'static UniversalModule) -> Result<(), EngineError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut functions = [
         r#fn(Person::new),
-        r#fn(Person::throw_pie),
+        r#fn::<(Ref<_>,), _>(Person::pies),
         r#fn::<(Ref<_>,), _>(Person::wasted),
+        r#fn(Person::throw_pie),
     ];
     let mut engine = Engine::new(&mut heap, &mut functions)?;
 

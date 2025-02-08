@@ -2,22 +2,28 @@
 
 (define-rust
   make-person
-  person-throw-pie
-  person-wasted)
+  person-pies
+  person-wasted
+  person-throw-pie)
 
 (define me (make-person 4 0.2))
 (define friend (make-person 2 0.6))
 
-(person-throw-pie me friend)
-(person-throw-pie friend me)
-(person-throw-pie me friend)
-(person-throw-pie friend me)
+(do ()
+  ((or
+      (person-wasted me)
+      (person-wasted friend)
+      (and
+        (zero? (person-pies me))
+        (zero? (person-pies friend)))))
+  (person-throw-pie me friend)
+  (person-throw-pie friend me))
 
 (write-string
   (cond
     ((person-wasted friend)
-      "Congrats!")
+      "You won!")
     ((person-wasted me)
-      "Oh, no!")
+      "You lost ;(")
     (else
       "Draw...")))
