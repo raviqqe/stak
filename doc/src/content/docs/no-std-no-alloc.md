@@ -10,7 +10,7 @@ This page explains how to use Stak Scheme as a scripting environment in Rust wit
 
 ## Installing the Stak Scheme library without `std` and `alloc` features
 
-To disable `std` and `alloc` features of the Stak Scheme library, you need to disable its default features first in your crate's `Cargo.toml` file. This is because the Stak Scheme library enables the features by default. In the `features` field of the dependency entry, list up all the features you need.
+To disable `std` and `alloc` features of the Stak Scheme library, you need to disable its default features first in your crate's `Cargo.toml` file. This is because the Stak Scheme library enables these features by default. After that, list up all the other features you need in the `features` field of the dependency entry.
 
 For a full list of features available, see [the Rust documentation of the `stak` crate](https://docs.rs/stak).
 
