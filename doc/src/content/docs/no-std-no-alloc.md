@@ -3,10 +3,10 @@ title: Running in no-std and no-alloc environment in Rust
 description: How to enable and disable std and alloc features of Stak Scheme for specific environments in Rust
 ---
 
-This page explains how to enable or disable `std` and `alloc` features of Stak Scheme for specific environments in Rust. By reading this page, you will learn:
+This page explains how to use Stak Scheme as a scripting environment in Rust with neither `std` nor `alloc` crates. By reading this page, you will learn:
 
 - How to disable `std` and `alloc` features for the Stak Scheme library in Rust crates.
-- How to run the Stak Scheme virtual machines without `std` and `alloc` features in Rust.
+- How to run the Stak Scheme virtual machines without `std` and `alloc` crates in Rust.
 
 ## Installing the Stak Scheme library without `std` and `alloc` features
 
