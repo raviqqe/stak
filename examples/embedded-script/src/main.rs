@@ -20,7 +20,7 @@ struct Person {
 
 impl Person {
     /// Creates a person.
-    pub fn new(pies: usize, dodge: f64) -> Self {
+    pub const fn new(pies: usize, dodge: f64) -> Self {
         Self {
             pies,
             dodge,
@@ -29,17 +29,17 @@ impl Person {
     }
 
     /// Returns a number of pies the person has.
-    pub fn pies(&self) -> usize {
+    pub const fn pies(&self) -> usize {
         self.pies
     }
 
     /// Returns `true` if a person is wasted.
-    pub fn wasted(&self) -> bool {
+    pub const fn wasted(&self) -> bool {
         self.wasted
     }
 
     /// Throws a pie to another person.
-    pub fn throw_pie(&mut self, other: &mut Person) {
+    pub fn throw_pie(&mut self, other: &mut Self) {
         if self.pies == 0 || self.wasted {
             return;
         }
