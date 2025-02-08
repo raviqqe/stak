@@ -45,7 +45,7 @@ use stak::{
 };
 ```
 
-Finally, you initialize and run a virtual machine of Stak Scheme configuring the [R7RS-small][r7rs-small] primitive set with the imported data structures. You use the in-memory I/O device for communication between Rust and Scheme, and "void" file system, clock, etc. that do not run any real operations to disable all the other primitives.
+Finally, you initialize and run a virtual machine of Stak Scheme configuring the [R7RS-small][r7rs-small] primitive set with the imported data structures. You use the in-memory I/O device for communication between Rust and Scheme, and "void" file system, clock, etc. which do not run any real operations to disable all the other primitives.
 
 ```rust
 use stak::{
