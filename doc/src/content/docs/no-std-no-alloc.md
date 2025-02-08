@@ -60,6 +60,7 @@ fn run_vm(
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
+        // Initialize the R7RS-small primitive set.
         SmallPrimitiveSet::new(
             // Attach an I/O device.
             device,
