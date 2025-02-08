@@ -69,19 +69,12 @@ fn main() -> Result<(), BuildError> {
 
 ## Embedding a Scheme script in a Rust program
 
-Finally, you can embed and run the Scheme script in a Rust program.
+Now, you can embed and run the Scheme script in a Rust program.
+
+First, define a `Person` data structure and its associated functions.
 
 ```rust
-use any_fn::{r#fn, Ref};
-use core::error::Error;
 use rand::random;
-use stak::{
-    engine::{Engine, EngineError},
-    include_module,
-    module::UniversalModule,
-};
-
-const HEAP_SIZE: usize = 1 << 16;
 
 // Define a person data structure and its associated functions which you include
 // into the Scheme script.
@@ -120,6 +113,18 @@ impl Person {
         }
     }
 }
+```
+
+```rust
+use any_fn::{r#fn, Ref};
+use core::error::Error;
+use stak::{
+    engine::{Engine, EngineError},
+    include_module,
+    module::UniversalModule,
+};
+
+const HEAP_SIZE: usize = 1 << 16;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Import a Scheme module of the script.
