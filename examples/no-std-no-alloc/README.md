@@ -8,5 +8,3 @@ This example shows how to embed and run Stak Scheme in a crate without `std` and
 cargo build
 cargo test
 ```
-
-Then, you can modify the Scheme script at `src/handler.scm` and run `cargo build`. It should change the behavior of the HTTP server while it keeps running.
