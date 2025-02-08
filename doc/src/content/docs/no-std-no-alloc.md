@@ -8,7 +8,7 @@ This page explains how to use Stak Scheme for dynamic scripting with neither `st
 - How to disable `std` and `alloc` features for the Stak Scheme library in Rust crates.
 - How to run the Stak Scheme virtual machines without `std` and `alloc` crates in Rust.
 
-The full source codes used in this page is available at [the example crate in the Stak Scheme repository][source].
+The full source codes used in this guide is available at [the example crate in the Stak Scheme repository][source].
 
 ## Installing the Stak Scheme library without `std` and `alloc` features
 

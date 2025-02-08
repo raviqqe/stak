@@ -8,7 +8,7 @@ This page explains how to embed scripts written in Stak Scheme into Rust program
 - How to compile Scheme scripts into bytecodes in Rust crates to embed the scripts.
 - How to embed and run scripts written in Stak Scheme in Rust programs.
 
-The full source codes used in this page is available at the [`examples/embedded-script` directory on GitHub][source]
+The full source codes used in this guide is available at the [`examples/embedded-script` directory on GitHub][source]
 
 ## Installing dependencies
 
