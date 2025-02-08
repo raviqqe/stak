@@ -11,6 +11,7 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 
+/// A person who has pies to throw.
 struct Person {
     pies: usize,
     dodge: f64,
