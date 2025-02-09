@@ -56,7 +56,7 @@ fn stak(criterion: &mut Criterion) {
 }
 
 fn stak_compiler(criterion: &mut Criterion) {
-    for name in ["empty", "fibonacci", "hello", "sum", "tak"] {
+    for name in ["empty", "eval", "fibonacci", "hello", "sum", "tak"] {
         let source = read(Path::new("src").join(name).join("main.scm")).unwrap();
         let source = source.as_slice();
 
