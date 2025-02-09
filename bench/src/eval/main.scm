@@ -7,6 +7,6 @@
        (if (zero? x)
         y
         (loop (- x 1) (+ x y)))))
-    '((scheme base))))
+    (environment '(scheme base))))
 
 (write (sum 10000000))
