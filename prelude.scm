@@ -2142,7 +2142,7 @@
           (let ((char (peek-non-whitespace-char)))
             (cond
               ((eof-object? char)
-                (error "unexpected end of input"))
+                (error "unexpected end of input instead of a closing parenthesis"))
 
               ((eqv? char #\))
                 (read-char)
