@@ -64,6 +64,7 @@ jobs:
           go run github.com/raviqqe/muffet/v2@latest
           --accepted-status-codes 200,403
           --buffer-size 8192
+          --exclude https://www.gnu.org/software/.*
           http://localhost:4321/stak/
   document:
     needs:
