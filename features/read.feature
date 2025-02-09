@@ -243,4 +243,4 @@ Feature: Read
     And I pipe in the file "input.txt"
     Then the exit status should be 1
     And the stdout should contain exactly ""
-    And the stderr should contain "error"
+    And the stderr should contain "unexpected end of input"
