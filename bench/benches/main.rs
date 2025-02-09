@@ -18,6 +18,7 @@ const HEAP_SIZE: usize = 1 << 18;
 const DEVICE_BUFFER_SIZE: usize = 1 << 8;
 
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
+static EVAL_MODULE: UniversalModule = include_module!("eval/main.scm");
 static FIBONACCI_MODULE: UniversalModule = include_module!("fibonacci/main.scm");
 static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
 static SUM_MODULE: UniversalModule = include_module!("sum/main.scm");
@@ -42,6 +43,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 fn stak(criterion: &mut Criterion) {
     for (name, module) in [
         ("empty", &EMPTY_MODULE),
+        ("eval", &EVAL_MODULE),
         ("fibonacci_32", &FIBONACCI_MODULE),
         ("hello", &HELLO_MODULE),
         ("sum_10000000", &SUM_MODULE),
