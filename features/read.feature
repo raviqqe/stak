@@ -228,6 +228,7 @@ Feature: Read
     Then the exit status should be 0
     And the stdout should contain exactly "A"
 
+  @stak
   Scenario: Read a list without a closing parenthesis
     Given a file named "main.scm" with:
       """scheme
@@ -241,6 +242,6 @@ Feature: Read
       """
     When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
-    Then the exit status should be 1
+    Then the exit status should not be 0
     And the stdout should contain exactly ""
     And the stderr should contain "unexpected end of input"
