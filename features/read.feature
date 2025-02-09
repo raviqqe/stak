@@ -227,3 +227,20 @@ Feature: Read
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "A"
+
+  Scenario: Read a list without a closing parenthesis
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme read))
+
+      (read)
+      """
+    And a file named "input.txt" with:
+      """text
+      (foo
+      """
+    When I run `stak main.scm` interactively
+    And I pipe in the file "input.txt"
+    Then the exit status should be 1
+    And the stdout should contain exactly ""
+    And the stderr should contain "error"
