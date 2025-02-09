@@ -1,3 +1,4 @@
+exec("""
 def sum(x):
     z = 0
 
@@ -6,5 +7,5 @@ def sum(x):
 
     return z
 
-
 print(sum(10000000))
+""")
