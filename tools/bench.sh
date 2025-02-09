@@ -31,7 +31,7 @@ cd bench/src
 for file in $(ls */main.scm | sort | grep $filter); do
   base=${file%.scm}
 
-  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,guile main.scm,chibi-scheme $file,gosh $file"
+  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,guile $file,chibi-scheme $file,gosh $file"
 
   if [ -r $base.py ]; then
     scripts="$scripts,python3 $base.py"
