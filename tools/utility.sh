@@ -1,5 +1,5 @@
 setup_bench() {
-  brew install chibi-scheme gambit-scheme gauche
+  brew install chibi-scheme gauche guile
   cargo install hyperfine
 
   for directory in . cmd/minimal; do
