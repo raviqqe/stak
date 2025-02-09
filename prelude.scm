@@ -3034,11 +3034,12 @@
               (error "unsupported optimizer" optimizer))))
 
         (define (optimize-expression context expression)
-          (define (optimize expression)
-            (optimize-expression context expression))
-
           (if (pair? expression)
-            (let* ((expression (relaxed-map optimize expression))
+            (let* ((expression
+                     (relaxed-map
+                       (lambda (expression)
+                         (optimize-expression context expression))
+                       expression))
                    (predicate (car expression)))
               (cond
                 ((eq? predicate '$$define-optimizer)
@@ -3299,7 +3300,10 @@
         (define optimization-context
           (make-optimization-context
             (map
-              (lambda (pair) (make-optimizer (car pair) (cdr pair)))
+              (lambda (pair)
+                (cons
+                  (car pair)
+                  (make-optimizer (car pair) (cdr pair))))
               ($$optimizers))
             '()))
         (define macro-context (make-macro-context (make-macro-state 0) '()))
