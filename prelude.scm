@@ -2139,16 +2139,22 @@
 
       (define (read-list)
         (define (read-tail)
-          (if (eqv? (peek-non-whitespace-char) #\))
-            (begin
-              (read-char)
-              '())
-            (let ((x (read-raw)))
-              (if (and (symbol? x) (equal? (symbol->string x) "."))
+          (let ((char (peek-non-whitespace-char)))
+            (cond
+              ((eof-object? char)
+                (error "unexpected end of input instead of closing parenthesis"))
+
+              ((eqv? char #\))
+                (read-char)
+                '())
+
+              (else
                 (let ((x (read-raw)))
-                  (read-char)
-                  x)
-                (cons x (read-tail))))))
+                  (if (and (symbol? x) (equal? (symbol->string x) "."))
+                    (let ((x (read-raw)))
+                      (read-char)
+                      x)
+                    (cons x (read-tail))))))))
 
         (unless (eqv? (read-char) #\()
           (error "( expected"))
@@ -2170,7 +2176,7 @@
           (let ((char (read-char)))
             (cond
               ((eof-object? char)
-                (error "unexpected end of input"))
+                (error "unexpected end of input instead of closing double quote"))
 
               ((eqv? char #\")
                 (list->string (reverse xs)))
@@ -3354,3 +3360,24 @@
                   '())))))))
 
     (define environment list)))
+
+(define-library (stak rust)
+  (export define-rust)
+
+  (import
+    (only (stak base) primitive)
+    (scheme base))
+
+  (begin
+    (define-syntax define-rust
+      (syntax-rules ()
+        ((_ "count" index name1 name2 ...)
+          (begin
+            (define name1 (primitive index))
+            (define-rust "count" (+ index 1) name2 ...)))
+
+        ((_ "count" index)
+          #f)
+
+        ((_ name1 name2 ...)
+          (define-rust "count" 1000 name1 name2 ...))))))

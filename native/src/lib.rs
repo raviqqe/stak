@@ -2,11 +2,6 @@
 
 #![no_std]
 
-#[cfg(feature = "alloc")]
-extern crate alloc;
-
-#[cfg(feature = "alloc")]
-pub mod dynamic;
 mod list;
 mod type_check;
 

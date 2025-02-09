@@ -9,8 +9,10 @@ use core::{
 pub enum DynamicError {
     /// An `AnyFn` error.
     AnyFn(AnyFnError),
-    /// A object index error.
-    ObjectIndex,
+    /// A foreign value expected.
+    ForeignValueExpected,
+    /// A value index error.
+    ValueIndex,
     /// A virtual machine error.
     Vm(stak_vm::Error),
 }
@@ -33,7 +35,8 @@ impl Display for DynamicError {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::AnyFn(error) => write!(formatter, "{error}"),
-            Self::ObjectIndex => write!(formatter, "invalid object index"),
+            Self::ForeignValueExpected => write!(formatter, "foreign value expected"),
+            Self::ValueIndex => write!(formatter, "invalid value index"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
     }

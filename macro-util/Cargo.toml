@@ -1,7 +1,7 @@
 [package]
 name = "stak-macro-util"
 description = "Macro utilities for Stak Scheme"
-version = "0.1.69"
+version = "0.1.72"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -11,7 +11,7 @@ repository.workspace = true
 [dependencies]
 proc-macro2 = "1.0.93"
 quote = "1.0.38"
-syn = "2.0.96"
+syn = "2.0.98"
 
 [lints]
 workspace = true

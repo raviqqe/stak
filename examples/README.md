@@ -4,3 +4,5 @@ These are examples of how to integrate Stak Scheme in Rust programs. The example
 
 - [Embedding Scheme scripts in Rust](embedded-script)
 - [Hot reloading of Scheme scripts](hot-reload)
+- [Customized virtual machine](custom-vm)
+- [Running Scheme without `std` and `alloc` crates](no-std-no-alloc)
