@@ -6,8 +6,8 @@ export const source = atom(
 (import (scheme base) (scheme write))
 
 (define (fibonacci x)
-  (if (<= x 1)
-     1
+  (if (< x 2)
+     x
      (+ (fibonacci (- x 1)) (fibonacci (- x 2)))))
 
 (display "Answer: ")
