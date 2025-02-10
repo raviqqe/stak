@@ -23,7 +23,7 @@ pub struct DynamicPrimitiveSet<'a, 'b> {
 
 impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
     /// Creates a primitive set.
-    pub fn new(functions: &'a mut [AnyFn<'b>]) -> Self {
+    pub fn new(functions: &'a mut [(&'a str, AnyFn<'b>)]) -> Self {
         let mut set = Self {
             functions,
             types: vec![],
@@ -318,7 +318,7 @@ mod tests {
         #[test]
         fn keep_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
-            let mut functions = [r#fn(|| Foo { bar: 42 })];
+            let mut functions = [("create-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
