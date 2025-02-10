@@ -948,11 +948,12 @@
       (error "unsupported optimizer" optimizer))))
 
 (define (optimize-expression context expression)
-  (define (optimize expression)
-    (optimize-expression context expression))
-
   (if (pair? expression)
-    (let* ((expression (relaxed-map optimize expression))
+    (let* ((expression
+             (relaxed-map
+               (lambda (expression)
+                 (optimize-expression context expression))
+               expression))
            (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
