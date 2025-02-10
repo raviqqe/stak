@@ -18,7 +18,7 @@ impl<'a, 'b> Engine<'a, 'b> {
     }
 
     /// Runs a module.
-    pub fn run(&mut self, module: &'static impl Module<'static>) -> Result<(), EngineError> {
+    pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
         self.vm.run()
     }
