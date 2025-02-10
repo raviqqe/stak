@@ -253,9 +253,9 @@ mod tests {
     #[test]
     fn create() {
         let mut functions = [
-            r#fn(Foo::new),
-            r#fn::<(Ref<_>,), _>(Foo::bar),
-            r#fn(Foo::baz),
+            ("create-foo", r#fn(Foo::new)),
+            ("foo-bar", r#fn::<(Ref<_>,), _>(Foo::bar)),
+            ("foo-baz", r#fn(Foo::baz)),
         ];
 
         DynamicPrimitiveSet::new(&mut functions);
@@ -300,7 +300,7 @@ mod tests {
         #[test]
         fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
-            let mut functions = [r#fn(|| Foo { bar: 42 })];
+            let mut functions = [("create-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
