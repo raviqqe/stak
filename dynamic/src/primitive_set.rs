@@ -156,6 +156,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
 
             Ok(())
         } else {
+            let primitive = primitive - 1;
             let (_, function) = self
                 .functions
                 .get(primitive)
