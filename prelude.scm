@@ -3384,4 +3384,4 @@
           #f)
 
         ((_ name1 name2 ...)
-          (define-rust "count" 1000 name1 name2 ...))))))
+          (define-rust "count" 1001 name1 name2 ...))))))

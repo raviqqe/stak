@@ -151,68 +151,75 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        let (_, function) = self
-            .functions
-            .get(primitive)
-            .ok_or(Error::IllegalPrimitive)?;
+        if primitive == 0 {
+            // TODO Return primitive names.
 
-        let mut arguments = (0..function.arity())
-            .map(|_| memory.pop())
-            .collect::<ArgumentVec<_>>();
-        arguments.reverse();
+            Ok(())
+        } else {
+            let (_, function) = self
+                .functions
+                .get(primitive)
+                .ok_or(Error::IllegalPrimitive)?;
 
-        let cloned_arguments = {
-            arguments
-                .iter()
-                .enumerate()
-                .map(|(index, &value)| {
-                    self.convert_from_scheme(memory, value, function.parameter_types()[index])
-                })
-                .collect::<ArgumentVec<_>>()
-        };
+            let mut arguments = (0..function.arity())
+                .map(|_| memory.pop())
+                .collect::<ArgumentVec<_>>();
+            arguments.reverse();
 
-        let mut copied_arguments = ArgumentVec::new();
-
-        for &value in &arguments {
-            let value = if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
-                Some(
-                    self.values
-                        .get(memory.car_value(value).assume_number().to_i64() as usize)
-                        .ok_or(DynamicError::ValueIndex)?
-                        .as_ref()
-                        .ok_or(DynamicError::ValueIndex)?,
-                )
-            } else {
-                None
+            let cloned_arguments = {
+                arguments
+                    .iter()
+                    .enumerate()
+                    .map(|(index, &value)| {
+                        self.convert_from_scheme(memory, value, function.parameter_types()[index])
+                    })
+                    .collect::<ArgumentVec<_>>()
             };
 
-            copied_arguments
-                .push(value)
-                .map_err(|_| Error::ArgumentCount)?;
-        }
+            let mut copied_arguments = ArgumentVec::new();
 
-        let value = self
-            .functions
-            .get_mut(primitive)
-            .ok_or(Error::IllegalPrimitive)?
-            .1
-            .call(
+            for &value in &arguments {
+                let value =
+                    if value.is_cons() && memory.cdr_value(value).tag() == Type::Foreign as _ {
+                        Some(
+                            self.values
+                                .get(memory.car_value(value).assume_number().to_i64() as usize)
+                                .ok_or(DynamicError::ValueIndex)?
+                                .as_ref()
+                                .ok_or(DynamicError::ValueIndex)?,
+                        )
+                    } else {
+                        None
+                    };
+
                 copied_arguments
-                    .into_iter()
-                    .enumerate()
-                    .map(|(index, value)| {
-                        cloned_arguments[index]
-                            .as_ref()
-                            .map_or_else(|| value.ok_or(DynamicError::ForeignValueExpected), Ok)
-                    })
-                    .collect::<Result<ArgumentVec<_>, DynamicError>>()?
-                    .as_slice(),
-            )?;
+                    .push(value)
+                    .map_err(|_| Error::ArgumentCount)?;
+            }
 
-        let value = self.convert_into_scheme(memory, value)?;
-        memory.push(value)?;
+            let value = self
+                .functions
+                .get_mut(primitive)
+                .ok_or(Error::IllegalPrimitive)?
+                .1
+                .call(
+                    copied_arguments
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, value)| {
+                            cloned_arguments[index]
+                                .as_ref()
+                                .map_or_else(|| value.ok_or(DynamicError::ForeignValueExpected), Ok)
+                        })
+                        .collect::<Result<ArgumentVec<_>, DynamicError>>()?
+                        .as_slice(),
+                )?;
 
-        Ok(())
+            let value = self.convert_into_scheme(memory, value)?;
+            memory.push(value)?;
+
+            Ok(())
+        }
     }
 }
 
