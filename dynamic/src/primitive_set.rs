@@ -16,7 +16,7 @@ type SchemeType = (
 
 /// A dynamic primitive set equipped with native functions in Rust.
 pub struct DynamicPrimitiveSet<'a, 'b> {
-    functions: &'a mut [AnyFn<'b>],
+    functions: &'a mut [(&'a str, AnyFn<'b>)],
     types: Vec<SchemeType>,
     values: Vec<Option<any_fn::Value>>,
 }
