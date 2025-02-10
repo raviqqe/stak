@@ -151,7 +151,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
-        let function = self
+        let (_, function) = self
             .functions
             .get(primitive)
             .ok_or(Error::IllegalPrimitive)?;
@@ -195,6 +195,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
             .functions
             .get_mut(primitive)
             .ok_or(Error::IllegalPrimitive)?
+            .1
             .call(
                 copied_arguments
                     .into_iter()
