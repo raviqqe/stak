@@ -30,6 +30,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             values: vec![],
         };
 
+        // TODO Support more types including `()` and `Vec<u8>`.
         set.register_type::<bool>();
         set.register_type::<i8>();
         set.register_type::<u8>();
