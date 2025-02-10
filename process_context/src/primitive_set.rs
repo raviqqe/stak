@@ -2,7 +2,7 @@ mod primitive;
 
 pub use self::primitive::Primitive;
 use crate::ProcessContext;
-use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet};
+use stak_vm::{Error, Memory, PrimitiveSet};
 
 /// A primitive set for process context.
 pub struct ProcessContextPrimitiveSet<T: ProcessContext> {
@@ -25,7 +25,7 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
                 memory.set_register(memory.null());
 
                 for argument in self.process_context.command_line_rev() {
-                    let string = Self::build_string(memory, argument)?;
+                    let string = memory.build_string(argument)?;
                     let list = memory.cons(string.into(), memory.register())?;
                     memory.set_register(list);
                 }
