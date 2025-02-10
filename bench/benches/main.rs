@@ -24,7 +24,7 @@ static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
 static SUM_MODULE: UniversalModule = include_module!("sum/main.scm");
 static TAK_MODULE: UniversalModule = include_module!("tak/main.scm");
 
-fn run(module: &UniversalModule) -> Result<(), SmallError> {
+fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
         &mut heap,
