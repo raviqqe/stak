@@ -146,17 +146,6 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
             )?
             .into())
     }
-
-    // TODO Move this into `Memory`.
-    fn build_string(memory: &mut Memory, string: &str) -> Result<Cons, Error> {
-        let mut list = memory.null();
-
-        for character in string.chars().rev() {
-            list = memory.cons(Number::from_i64(character as _).into(), list)?;
-        }
-
-        Ok(list)
-    }
 }
 
 impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
@@ -170,7 +159,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
                 let list = memory.cons(memory.null().into(), memory.register())?;
                 memory.set_register(list);
 
-                let string = Self::build_string(memory, name)?;
+                let string = memory.build_string(name)?;
 
                 memory.set_car(memory.register(), string.into());
             }
