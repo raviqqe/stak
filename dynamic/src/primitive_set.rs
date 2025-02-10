@@ -313,7 +313,7 @@ mod tests {
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 0).unwrap();
+            primitive_set.operate(&mut memory, 1).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
@@ -331,7 +331,7 @@ mod tests {
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 0).unwrap();
+            primitive_set.operate(&mut memory, 1).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
