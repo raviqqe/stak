@@ -54,7 +54,7 @@ First, prepare a Scheme script named `src/fight.scm` as follows.
       "Draw...")))
 ```
 
-The main part for Rust integration is importing the `(stak rust)` library and defining Rust native functions at the top level.
+The main part for Rust integration is importing the `(stak rust)` library which imports and defines native functions in Rust at the top level.
 
 ## Adding a build script
 
