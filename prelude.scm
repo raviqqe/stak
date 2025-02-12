@@ -3366,8 +3366,6 @@
     (define environment list)))
 
 (define-library (stak rust)
-  (export)
-
   (import
     (only (stak base) primitive)
     (scheme base)
