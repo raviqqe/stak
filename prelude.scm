@@ -1259,7 +1259,7 @@
           (list-set! (rib-cdr record) index value))))
 
     (define (field-index type field)
-      (memv-position field (cdr type)))
+      (memq-position field (cdr type)))
 
     ;; Tuple
 
