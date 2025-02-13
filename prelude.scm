@@ -21,9 +21,6 @@
     let*
     letrec
     letrec*
-    define-values
-    let-values
-    let*-values
     if
     cond
     case
@@ -193,9 +190,6 @@
     symbol?
     symbol->string
     string->uninterned-symbol
-
-    define-record-type
-    record?
 
     values
     call-with-values)
@@ -1205,10 +1199,43 @@
     (define symbol->string rib-cdr)
 
     (define (string->uninterned-symbol x)
-      (data-rib symbol-type #f x))
+      (data-rib symbol-type #f x))))
 
-    ;; Record
+(define-library (stak list)
+  (export memq-position memv-position member-position)
 
+  (import (stak base))
+
+  (begin
+    (define (member-position x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
+      (let loop ((xs xs) (index 0))
+        (cond
+          ((null? xs)
+            #f)
+
+          ((eq? x (car xs))
+            index)
+
+          (else
+            (loop (cdr xs) (+ index 1))))))
+
+    (define (memq-position x xs)
+      (member-position x xs eq?))
+
+    (define (memv-position x xs)
+      (member-position x xs eqv?))))
+
+(define (stak record)
+  (export define-record-type record?)
+
+  (import (stak base) (stak list))
+
+  (begin
     ; We use record types only for certain built-in types not to degrade space
     ; efficiency of their values.
     (define-syntax define-record-type
@@ -1259,8 +1286,14 @@
           (list-set! (rib-cdr record) index value))))
 
     (define (field-index type field)
-      (memq-position field (cdr type)))
+      (memq-position field (cdr type)))))
 
+(define (stak values)
+  (export define-values let-values let*-values values call-with-values)
+
+  (import (stak base) (stak record))
+
+  (begin
     ;; Tuple
 
     ; A tuple is primarily used to represent multiple values.
@@ -1268,6 +1301,8 @@
       (make-tuple values)
       tuple?
       (values tuple-values))
+
+    ; TODO
 
     ; Control
 
@@ -1360,35 +1395,6 @@
         (if (tuple? xs)
           (apply consumer (tuple-values xs))
           (consumer xs))))))
-
-(define-library (stak list)
-  (export memq-position memv-position member-position)
-
-  (import (stak base))
-
-  (begin
-    (define (member-position x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
-
-      (let loop ((xs xs) (index 0))
-        (cond
-          ((null? xs)
-            #f)
-
-          ((eq? x (car xs))
-            index)
-
-          (else
-            (loop (cdr xs) (+ index 1))))))
-
-    (define (memq-position x xs)
-      (member-position x xs eq?))
-
-    (define (memv-position x xs)
-      (member-position x xs eqv?))))
 
 (define-library (scheme base)
   (export
@@ -1639,7 +1645,7 @@
 
     write-value)
 
-  (import (stak base) (stak list))
+  (import (stak base) (stak list) (stak record) (stak values))
 
   (begin
     (define $halt (primitive 40))
