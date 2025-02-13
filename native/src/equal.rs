@@ -31,12 +31,12 @@ impl PrimitiveSet for EqualPrimitiveSet {
 
                 self.push(memory.boolean(
                     x == y
-                        || if let (Some(x), Some(y)) = (x.to_cons, y.to_cons()) {
+                        || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
+                            memory.car(x) == memory.car(y)
                         } else {
+                            false
                         },
                 ))?;
-
-                Ok(())
             }
             _ => return Err(Error::IllegalPrimitive),
         }
