@@ -2892,9 +2892,7 @@
             ((pair? expression)
               (case (resolve (car expression))
                 (($$define)
-                  (let ((name (cadr expression)))
-                    (macro-context-set! context name name)
-                    (expand (cons '$$set! (cdr expression)))))
+                  (expand (cons '$$set! (cdr expression))))
 
                 (($$define-syntax)
                   (macro-context-set-last!
