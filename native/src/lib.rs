@@ -2,6 +2,7 @@
 
 #![no_std]
 
+mod equal;
 mod list;
 mod type_check;
 
