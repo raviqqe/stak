@@ -157,8 +157,6 @@
     fold-left
     fold-right
     reduce-right
-    member-position
-    memv-position
     list-copy
 
     bytevector?
@@ -991,26 +989,6 @@
             (car xs)
             (f (loop (cdr xs)) (car xs))))))
 
-    (define (member-position x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
-
-      (let loop ((xs xs) (index 0))
-        (cond
-          ((null? xs)
-            #f)
-
-          ((eq? x (car xs))
-            index)
-
-          (else
-            (loop (cdr xs) (+ index 1))))))
-
-    (define (memv-position x xs)
-      (member-position x xs eqv?))
-
     (define (list-copy xs . rest)
       (define start (if (null? rest) 0 (car rest)))
       (define end (if (or (null? rest) (null? (cdr rest))) #f (cadr rest)))
@@ -1523,8 +1501,6 @@
     fold-left
     fold-right
     reduce-right
-    member-position
-    memv-position
     list-copy
 
     bytevector?
@@ -1990,6 +1966,32 @@
     ; Dummy implementation
     (define (write-value value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
+
+(define-library (stak list)
+  (export memq-position memv-position member-position)
+
+  (import (stak base))
+
+  (begin
+    (define (member-position x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
+      (let loop ((xs xs) (index 0))
+        (cond
+          ((null? xs)
+            #f)
+
+          ((eq? x (car xs))
+            index)
+
+          (else
+            (loop (cdr xs) (+ index 1))))))
+
+    (define (memv-position x xs)
+      (member-position x xs eqv?))))
 
 (define-library (scheme inexact)
   (export exp log)
