@@ -43,7 +43,15 @@
     stak
 
     pair-type
+    null-type
+    boolean-type
     procedure-type
+    symbol-type
+    string-type
+    char-type
+    vector-type
+    bytevector-type
+    record-type
 
     primitive
     rib
