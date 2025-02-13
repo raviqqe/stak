@@ -3366,10 +3366,7 @@
     (define environment list)))
 
 (define-library (stak rust)
-  (import
-    (only (stak base) primitive)
-    (scheme base)
-    (scheme base))
+  (import (only (stak base) primitive) (scheme base))
 
   (begin
     (do ((names ((primitive 1000)) (cdr names))
