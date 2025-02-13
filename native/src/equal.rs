@@ -29,16 +29,20 @@ impl PrimitiveSet for EqualPrimitiveSet {
             EqualPrimitive::EQV => {
                 let [x, y] = memory.pop_many();
 
-                self.push(memory.boolean(
-                    x == y
-                        || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
-                            memory.cdr(x).tag() == Type::Character as _
-                                && memory.cdr(y).tag() == Type::Character as _
-                                && memory.car(x) == memory.car(y)
-                        } else {
-                            false
-                        },
-                ))?;
+                memory.push(
+                    memory
+                        .boolean(
+                            x == y
+                                || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
+                                    memory.cdr(x).tag() == Type::Character as _
+                                        && memory.cdr(y).tag() == Type::Character as _
+                                        && memory.car(x) == memory.car(y)
+                                } else {
+                                    false
+                                },
+                        )
+                        .into(),
+                )?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }

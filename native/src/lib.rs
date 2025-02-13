@@ -6,5 +6,6 @@ mod equal;
 mod list;
 mod type_check;
 
+pub use equal::*;
 pub use list::*;
 pub use type_check::*;
