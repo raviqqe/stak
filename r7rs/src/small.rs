@@ -7,7 +7,7 @@ use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
 use stak_inexact::InexactPrimitiveSet;
-use stak_native::{ListPrimitiveSet, TypeCheckPrimitiveSet};
+use stak_native::{EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
@@ -19,6 +19,7 @@ pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clo
     process_context: ProcessContextPrimitiveSet<P>,
     time: TimePrimitiveSet<C>,
     inexact: InexactPrimitiveSet,
+    equal: EqualPrimitiveSet,
     type_check: TypeCheckPrimitiveSet,
     list: ListPrimitiveSet,
 }
@@ -32,6 +33,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             process_context: ProcessContextPrimitiveSet::new(process_context),
             time: TimePrimitiveSet::new(clock),
             inexact: Default::default(),
+            equal: Default::default(),
             type_check: Default::default(),
             list: Default::default(),
         }
@@ -144,6 +146,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ => {
                 self.list.operate(memory, primitive - Primitive::ASSQ)?
             }
+            Primitive::EQV => self.equal.operate(memory, primitive - Primitive::EQV)?,
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }

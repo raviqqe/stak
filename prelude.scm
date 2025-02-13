@@ -601,6 +601,7 @@
     (define assq (primitive 60))
     (define cons (primitive 61))
     (define memq (primitive 62))
+    (define eqv? (primitive 70))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -620,14 +621,6 @@
         (and
           (rib? x)
           (eq? (rib-tag x) type))))
-
-    (define (eqv? x y)
-      (boolean-or
-        (eq? x y)
-        (and
-          (char? x)
-          (char? y)
-          (eq? (char->integer x) (char->integer y)))))
 
     (define (equal? x y)
       (boolean-or
