@@ -1361,6 +1361,35 @@
           (apply consumer (tuple-values xs))
           (consumer xs))))))
 
+(define-library (stak list)
+  (export memq-position memv-position member-position)
+
+  (import (stak base))
+
+  (begin
+    (define (member-position x xs . rest)
+      (define eq?
+        (if (null? rest)
+          equal?
+          (car rest)))
+
+      (let loop ((xs xs) (index 0))
+        (cond
+          ((null? xs)
+            #f)
+
+          ((eq? x (car xs))
+            index)
+
+          (else
+            (loop (cdr xs) (+ index 1))))))
+
+    (define (memq-position x xs)
+      (member-position x xs eq?))
+
+    (define (memv-position x xs)
+      (member-position x xs eqv?))))
+
 (define-library (scheme base)
   (export
     syntax-rules
@@ -1610,7 +1639,7 @@
 
     write-value)
 
-  (import (stak base))
+  (import (stak base) (stak list))
 
   (begin
     (define $halt (primitive 40))
@@ -1966,35 +1995,6 @@
     ; Dummy implementation
     (define (write-value value . rest)
       (write-string "<unknown>" (get-output-port rest)))))
-
-(define-library (stak list)
-  (export memq-position memv-position member-position)
-
-  (import (stak base))
-
-  (begin
-    (define (member-position x xs . rest)
-      (define eq?
-        (if (null? rest)
-          equal?
-          (car rest)))
-
-      (let loop ((xs xs) (index 0))
-        (cond
-          ((null? xs)
-            #f)
-
-          ((eq? x (car xs))
-            index)
-
-          (else
-            (loop (cdr xs) (+ index 1))))))
-
-    (define (memq-position x xs)
-      (member-position x xs eq?))
-
-    (define (memv-position x xs)
-      (member-position x xs eqv?))))
 
 (define-library (scheme inexact)
   (export exp log)
@@ -2575,7 +2575,8 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
+    (only (stak base) data-rib filter list-head pair-type procedure-type rib)
+    (stak list))
 
   (begin
     (define eval
