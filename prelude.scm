@@ -189,10 +189,7 @@
 
     symbol?
     symbol->string
-    string->uninterned-symbol
-
-    values
-    call-with-values)
+    string->uninterned-symbol)
 
   (begin
     ; Syntax
