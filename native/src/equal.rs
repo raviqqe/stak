@@ -32,7 +32,9 @@ impl PrimitiveSet for EqualPrimitiveSet {
                 self.push(memory.boolean(
                     x == y
                         || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
-                            memory.car(x) == memory.car(y)
+                            memory.cdr(x).tag() == Type::Character as _
+                                && memory.cdr(y).tag() == Type::Character as _
+                                && memory.car(x) == memory.car(y)
                         } else {
                             false
                         },
