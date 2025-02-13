@@ -3110,7 +3110,7 @@
 
         ; If a variable is not in environment, it is considered to be global.
         (define (compilation-context-resolve context variable)
-          (or (memv-position variable (compilation-context-environment context)) variable))
+          (or (memq-position variable (compilation-context-environment context)) variable))
 
         ;; Procedures
 
