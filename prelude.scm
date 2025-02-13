@@ -1299,8 +1299,6 @@
       tuple?
       (values tuple-values))
 
-    ; TODO
-
     ; Control
 
     ;; Multi-value
