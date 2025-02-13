@@ -1990,6 +1990,9 @@
           (else
             (loop (cdr xs) (+ index 1))))))
 
+    (define (memq-position x xs)
+      (member-position x xs eq?))
+
     (define (memv-position x xs)
       (member-position x xs eqv?))))
 
