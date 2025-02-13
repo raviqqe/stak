@@ -2,7 +2,7 @@ use stak_vm::{Error, Memory, PrimitiveSet, Type};
 
 /// A list primitive.
 pub enum ListPrimitive {
-    /// A `assq` procedure.
+    /// An `assq` procedure.
     Assq,
     /// A `cons` procedure.
     Cons,
