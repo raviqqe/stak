@@ -4,10 +4,13 @@ use stak_vm::{Error, Memory, PrimitiveSet, Type};
 pub enum EqualPrimitive {
     /// An `eqv` procedure.
     Eqv,
+    /// A primitive to check equality of rib inners.
+    EqualInner,
 }
 
 impl EqualPrimitive {
     const EQV: usize = Self::Eqv as _;
+    const EQUAL_INNER: usize = Self::EqualInner as _;
 }
 
 /// An equality primitive set.
@@ -44,6 +47,25 @@ impl PrimitiveSet for EqualPrimitiveSet {
                         .into(),
                 )?;
             }
+            EqualPrimitive::EQUAL_INNER => {
+                let [x, y] = memory.pop_many();
+
+                memory.push(
+                    memory
+                        .boolean(
+                            x.is_cons() && y.is_cons() && x.tag() == y.tag()
+                                || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
+                                    memory.cdr(x).tag() == Type::Character as _
+                                        && memory.cdr(y).tag() == Type::Character as _
+                                        && memory.car(x) == memory.car(y)
+                                } else {
+                                    false
+                                },
+                        )
+                        .into(),
+                )?;
+            }
+
             _ => return Err(Error::IllegalPrimitive),
         }
 
