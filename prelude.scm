@@ -157,8 +157,9 @@
     fold-left
     fold-right
     reduce-right
-    member-position
+    memq-position
     memv-position
+    member-position
     list-copy
 
     bytevector?
@@ -1519,9 +1520,6 @@
     fold-left
     fold-right
     reduce-right
-    memq-position
-    memv-position
-    member-position
     list-copy
 
     bytevector?
