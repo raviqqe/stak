@@ -52,16 +52,16 @@ impl PrimitiveSet for EqualPrimitiveSet {
 
                 memory.push(
                     memory
-                        .boolean(
-                            x.is_cons() && y.is_cons() && x.tag() == y.tag()
-                                || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
-                                    memory.cdr(x).tag() == memory.cdr(y).tag()
-                                        && (memory.car(x).is_cons()
-                                            || memory.car(x) == memory.car(y))
-                                } else {
-                                    false
-                                },
-                        )
+                        .boolean(if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
+                            // - Optimize checks for unique values.
+                            // - Optimize checks for strings and vectors where `car`s are length integers.
+                            memory.cdr(x).tag() == memory.cdr(y).tag()
+                                && ![Type::Boolean as _, Type::Null as _, Type::Symbol as _]
+                                    .contains(&memory.cdr(x).tag())
+                                && (memory.car(x).is_cons() || memory.car(x) == memory.car(y))
+                        } else {
+                            false
+                        })
                         .into(),
                 )?;
             }

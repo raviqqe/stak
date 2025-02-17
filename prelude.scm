@@ -602,6 +602,7 @@
     (define cons (primitive 61))
     (define memq (primitive 62))
     (define eqv? (primitive 70))
+    (define equal-inner? (primitive 71))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -626,15 +627,7 @@
       (boolean-or
         (eq? x y)
         (and
-          (rib? x)
-          (rib? y)
-          (eq? (rib-tag x) (rib-tag y))
-          ; Avoid checking values in global variables.
-          (not (eq? (rib-tag x) symbol-type))
-          ; Optimize for the cases of strings and vectors where `car`s are integers.
-          (boolean-or
-            (rib? (rib-car x))
-            (eq? (rib-car x) (rib-car y)))
+          (equal-inner? x y)
           (equal? (rib-car x) (rib-car y))
           (equal? (rib-cdr x) (rib-cdr y)))))
 
