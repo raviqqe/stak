@@ -55,9 +55,9 @@ impl PrimitiveSet for EqualPrimitiveSet {
                         .boolean(
                             x.is_cons() && y.is_cons() && x.tag() == y.tag()
                                 || if let (Some(x), Some(y)) = (x.to_cons(), y.to_cons()) {
-                                    memory.cdr(x).tag() == Type::Character as _
-                                        && memory.cdr(y).tag() == Type::Character as _
-                                        && memory.car(x) == memory.car(y)
+                                    memory.cdr(x).tag() == memory.cdr(y).tag()
+                                        && (memory.cdr(y).tag() == Type::Character as _
+                                            || memory.car(x) == memory.car(y))
                                 } else {
                                     false
                                 },
