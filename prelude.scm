@@ -1001,6 +1001,9 @@
           (else
             (loop (cdr xs) (+ index 1))))))
 
+    (define (memq-position x xs)
+      (member-position x xs eq?))
+
     (define (memv-position x xs)
       (member-position x xs eqv?))
 
@@ -1274,7 +1277,7 @@
           (list-set! (rib-cdr record) index value))))
 
     (define (field-index type field)
-      (memv-position field (cdr type)))
+      (memq-position field (cdr type)))
 
     ;; Tuple
 
@@ -1516,8 +1519,9 @@
     fold-left
     fold-right
     reduce-right
-    member-position
+    memq-position
     memv-position
+    member-position
     list-copy
 
     bytevector?
@@ -2563,7 +2567,7 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
+    (only (stak base) data-rib filter list-head memq-position pair-type procedure-type rib))
 
   (begin
     (define eval
@@ -3097,7 +3101,7 @@
 
         ; If a variable is not in environment, it is considered to be global.
         (define (compilation-context-resolve context variable)
-          (or (memv-position variable (compilation-context-environment context)) variable))
+          (or (memq-position variable (compilation-context-environment context)) variable))
 
         ;; Procedures
 
