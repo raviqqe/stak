@@ -43,7 +43,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 fn stak(criterion: &mut Criterion) {
     for (name, module) in [
         ("empty", &EMPTY_MODULE),
-        ("eval", &EVAL_MODULE),
+        ("eval_sum_10000000", &EVAL_MODULE),
         ("fibonacci_32", &FIBONACCI_MODULE),
         ("hello", &HELLO_MODULE),
         ("sum_10000000", &SUM_MODULE),
