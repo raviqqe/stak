@@ -1,4 +1,4 @@
-use crate::{primitive_set::EnginePrimitiveSet, EngineError};
+use crate::{EngineError, primitive_set::EnginePrimitiveSet};
 use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;

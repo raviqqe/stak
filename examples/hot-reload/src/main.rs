@@ -1,6 +1,6 @@
 //! A `stak-build` example.
 
-use axum::{http::StatusCode, response, routing::post, serve, Router};
+use axum::{Router, http::StatusCode, response, routing::post, serve};
 use core::error::Error;
 use stak::{
     device::ReadWriteDevice,

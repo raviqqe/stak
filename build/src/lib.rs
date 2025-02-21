@@ -24,7 +24,7 @@ mod error;
 
 use alloc::sync::Arc;
 pub use error::BuildError;
-use glob::{glob, Paths};
+use glob::{Paths, glob};
 use stak_compiler::compile_r7rs;
 use std::{
     env,

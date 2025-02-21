@@ -13,15 +13,15 @@ use stak_device::StdioDevice;
 use stak_file::OsFileSystem;
 use stak_process_context::OsProcessContext;
 use stak_profiler::{
-    calculate_durations, calculate_flamegraph, collapse_stacks, read_records, reverse_stacks,
-    write_records, DurationRecord, ProcedureRecord, StackProfiler,
+    DurationRecord, ProcedureRecord, StackProfiler, calculate_durations, calculate_flamegraph,
+    collapse_stacks, read_records, reverse_stacks, write_records,
 };
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::OsClock;
 use stak_vm::Vm;
 use std::{
-    fs::{read, OpenOptions},
-    io::{stdin, stdout, BufWriter},
+    fs::{OpenOptions, read},
+    io::{BufWriter, stdin, stdout},
     path::PathBuf,
 };
 
