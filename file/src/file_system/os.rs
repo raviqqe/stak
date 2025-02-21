@@ -4,7 +4,7 @@ use core::str;
 use stak_vm::{Memory, Value};
 use std::{
     collections::HashMap,
-    fs::{remove_file, File, OpenOptions},
+    fs::{File, OpenOptions, remove_file},
     io::{self, ErrorKind, Read, Write},
     path::{Path, PathBuf},
 };

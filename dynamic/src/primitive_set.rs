@@ -218,7 +218,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use any_fn::{r#fn, value, Ref};
+    use any_fn::{Ref, r#fn, value};
 
     const HEAP_SIZE: usize = 1 << 8;
 

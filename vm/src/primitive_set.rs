@@ -1,4 +1,4 @@
-use crate::{memory::Memory, Error};
+use crate::{Error, memory::Memory};
 use core::error;
 
 /// A primitive set.
