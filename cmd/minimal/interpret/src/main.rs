@@ -26,29 +26,31 @@ fn panic(_info: &core::panic::PanicInfo) -> ! {
     unsafe { libc::exit(1) }
 }
 
-#[cfg_attr(not(test), no_mangle)]
+#[cfg_attr(not(test), unsafe(no_mangle))]
 unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
-    let Some(&file) = &slice::from_raw_parts(argv, argc as _).get(1) else {
+    let Some(&file) = unsafe { slice::from_raw_parts(argv, argc as _) }.get(1) else {
         return 1;
     };
 
-    let heap = slice::from_raw_parts_mut(
-        libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,
-        HEAP_SIZE,
-    );
+    let heap = unsafe {
+        slice::from_raw_parts_mut(
+            libc::malloc(size_of::<Value>() * HEAP_SIZE) as *mut Value,
+            HEAP_SIZE,
+        )
+    };
 
     let mut vm = Vm::new(
         heap,
         SmallPrimitiveSet::new(
             ReadWriteDevice::new(Stdin::new(), Stdout::new(), Stderr::new()),
             LibcFileSystem::new(),
-            LibcProcessContext::new(argc, argv),
+            unsafe { LibcProcessContext::new(argc, argv) },
             LibcClock::new(),
         ),
     )
     .unwrap();
 
-    let mmap = Mmap::new(CStr::from_ptr(file as _));
+    let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) });
 
     vm.initialize(mmap.as_slice().iter().copied()).unwrap();
     vm.run().unwrap();
