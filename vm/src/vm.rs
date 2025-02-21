@@ -1,6 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
+    Error, StackSlot,
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
@@ -9,7 +10,6 @@ use crate::{
     primitive_set::PrimitiveSet,
     r#type::Type,
     value::{TypedValue, Value},
-    Error, StackSlot,
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;

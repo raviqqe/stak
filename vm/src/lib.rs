@@ -68,7 +68,7 @@ pub use memory::Memory;
 pub use number::{Number, NumberRepresentation};
 pub use primitive_set::PrimitiveSet;
 pub use profiler::Profiler;
-pub use r#type::Type;
 pub use stack_slot::StackSlot;
+pub use r#type::Type;
 pub use value::Value;
 pub use vm::Vm;

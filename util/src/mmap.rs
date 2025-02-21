@@ -2,7 +2,7 @@ use crate::read_file_size;
 use core::{ffi::CStr, ptr::null_mut, slice};
 use rustix::{
     fs::{self, Mode, OFlags},
-    mm::{mmap, munmap, MapFlags, ProtFlags},
+    mm::{MapFlags, ProtFlags, mmap, munmap},
 };
 
 /// A mmap.

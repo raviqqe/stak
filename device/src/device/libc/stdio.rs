@@ -1,4 +1,4 @@
-use super::{error::LibcError, Read, Write};
+use super::{Read, Write, error::LibcError};
 use rustix::{
     fd::BorrowedFd,
     io,

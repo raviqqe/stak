@@ -1,4 +1,4 @@
-use crate::{value::Value, Error};
+use crate::{Error, value::Value};
 use cfg_elif::{expr::feature, item};
 use core::{
     fmt::{self, Display, Formatter},
@@ -25,7 +25,7 @@ impl Number {
     /// Creates a number.
     #[inline]
     pub const fn new(number: NumberRepresentation) -> Self {
-        Self(feature!(if ("float") { number } else { number << 1 | 1 }))
+        Self(feature!(if ("float") { number } else { (number << 1) | 1 }))
     }
 
     /// Converts a number to a number representation.

@@ -4,11 +4,11 @@ use cfg_elif::expr::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
-use std::path::{Path, MAIN_SEPARATOR_STR};
-use syn::{parse::Parse, parse_macro_input, Ident, LitStr, Token};
+use std::path::{MAIN_SEPARATOR_STR, Path};
+use syn::{Ident, LitStr, Token, parse::Parse, parse_macro_input};
 
 struct IncludeModuleInput {
     path: LitStr,

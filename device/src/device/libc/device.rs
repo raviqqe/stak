@@ -1,4 +1,4 @@
-use super::{error::LibcError, Read, Write};
+use super::{Read, Write, error::LibcError};
 use crate::Device;
 
 /// A device composed of objects implementing `Read` and `Write` traits.

@@ -1,6 +1,6 @@
 #![allow(missing_docs)]
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use stak::{
     device::FixedBufferDevice,
     file::VoidFileSystem,

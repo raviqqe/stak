@@ -1,5 +1,5 @@
 use super::{Record, StackedRecord};
-use crate::{Error, ProcedureOperation, Stack, COLUMN_SEPARATOR};
+use crate::{COLUMN_SEPARATOR, Error, ProcedureOperation, Stack};
 use core::{
     fmt::{self, Display, Formatter},
     str::FromStr,

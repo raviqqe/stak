@@ -1,4 +1,4 @@
-use crate::{ProcedureOperation, COLUMN_SEPARATOR, FRAME_SEPARATOR};
+use crate::{COLUMN_SEPARATOR, FRAME_SEPARATOR, ProcedureOperation};
 use stak_vm::{Cons, Memory, Profiler, StackSlot};
 use std::{io::Write, time::Instant};
 
