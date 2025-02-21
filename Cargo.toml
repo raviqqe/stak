@@ -38,7 +38,7 @@ members = [
 ]
 
 [workspace.package]
-edition = "2021"
+edition = "2024"
 keywords = ["interpreter", "language", "scheme"]
 license-file = "LICENSE"
 readme = "README.md"
