@@ -1,4 +1,4 @@
-use super::{utility::decode_path, FileDescriptor, FileError, FileSystem};
+use super::{FileDescriptor, FileError, FileSystem, utility::decode_path};
 use core::ffi::CStr;
 use heapless::{FnvIndexMap, Vec};
 use rustix::{

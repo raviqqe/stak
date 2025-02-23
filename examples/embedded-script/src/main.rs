@@ -1,6 +1,6 @@
 //! The pie-throwing duel.
 
-use any_fn::{r#fn, Ref};
+use any_fn::{Ref, r#fn};
 use core::error::Error;
 use rand::random;
 use stak::{

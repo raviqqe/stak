@@ -146,7 +146,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ => {
                 self.list.operate(memory, primitive - Primitive::ASSQ)?
             }
-            Primitive::EQV => self.equal.operate(memory, primitive - Primitive::EQV)?,
+            Primitive::EQV | Primitive::EQUAL_INNER => {
+                self.equal.operate(memory, primitive - Primitive::EQV)?
+            }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }

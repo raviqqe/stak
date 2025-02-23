@@ -1,6 +1,6 @@
 //! A build script.
 
-use stak_build::{build_r7rs, BuildError};
+use stak_build::{BuildError, build_r7rs};
 
 fn main() -> Result<(), BuildError> {
     build_r7rs()

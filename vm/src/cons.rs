@@ -1,4 +1,4 @@
-use crate::{value::Value, Error};
+use crate::{Error, value::Value};
 use cfg_elif::expr::feature;
 use core::fmt::{self, Display, Formatter};
 
