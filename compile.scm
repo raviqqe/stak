@@ -498,10 +498,11 @@
 ;; Types
 
 (define-record-type macro-state
-  (make-macro-state id literals)
+  (make-macro-state id literals dynamic-symbols)
   macro-state?
   (id macro-state-id macro-state-set-id!)
-  (literals macro-state-literals macro-state-set-literals!))
+  (literals macro-state-literals macro-state-set-literals!)
+  (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
 (define-record-type macro-context
   (make-macro-context state environment)
@@ -542,6 +543,13 @@
     (cons
       (cons name syntax)
       (macro-state-literals state))))
+
+(define (macro-context-append-dynamic-symbol! context symbol)
+  (define state (macro-context-state context))
+  (define symbols (macro-state-dynamic-symbols state))
+
+  (unless (memq symbol symbols)
+    (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -767,6 +775,8 @@
 
   (cond
     ((symbol? expression)
+      (unless (assq expression (macro-context-environment context))
+        (macro-context-append-dynamic-symbol! context expression))
       (let ((value (resolve expression)))
         (when (procedure? value)
           (error "invalid syntax" expression))
@@ -867,14 +877,15 @@
       expression)))
 
 (define (expand-macros expression)
-  (let* ((context (make-macro-context (make-macro-state 0 '()) '()))
+  (let* ((context (make-macro-context (make-macro-state 0 '() '()) '()))
          (expression (expand-macro context expression)))
     (values
       expression
       (reverse
         (filter
           (lambda (pair) (library-symbol? (car pair)))
-          (macro-state-literals (macro-context-state context)))))))
+          (macro-state-literals (macro-context-state context))))
+      (macro-state-dynamic-symbols (macro-context-state context)))))
 
 ; Optimization
 
@@ -997,10 +1008,11 @@
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment symbols libraries macros optimizers)
+  (make-compilation-context environment symbols dynamic-symbols libraries macros optimizers)
   compilation-context?
   (environment compilation-context-environment)
   (symbols compilation-context-symbols)
+  (dynamic-symbols compilation-context-dynamic-symbols)
   (libraries compilation-context-libraries)
   (macros compilation-context-macros)
   (optimizers compilation-context-optimizers))
@@ -1009,6 +1021,7 @@
   (make-compilation-context
     (append variables (compilation-context-environment context))
     (compilation-context-symbols context)
+    (compilation-context-dynamic-symbols context)
     (compilation-context-libraries context)
     (compilation-context-macros context)
     (compilation-context-optimizers context)))
@@ -1200,13 +1213,16 @@
         (($$symbols)
           (constant-rib (compilation-context-symbols context) continuation))
 
+        (($$dynamic-symbols)
+          (constant-rib (compilation-context-dynamic-symbols context) continuation))
+
         (else
           (compile-call context expression #f continuation))))
 
     (else
       (constant-rib expression continuation))))
 
-(define (compile libraries macros optimizers expression)
+(define (compile libraries macros optimizers dynamic-symbols expression)
   (compile-expression
     (make-compilation-context
       '()
@@ -1220,6 +1236,7 @@
             (find-quoted-symbols libraries)
             (find-quoted-symbols macros)
             (find-quoted-symbols optimizers))))
+      dynamic-symbols
       libraries
       macros
       optimizers)
@@ -1596,7 +1613,7 @@
 
 (define (main)
   (define-values (expression1 libraries) (expand-libraries (read-source)))
-  (define-values (expression2 macros) (expand-macros expression1))
+  (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
 
   (encode
@@ -1605,7 +1622,7 @@
         #f
         (build-primitives
           primitives
-          (compile libraries macros optimizers expression3))))))
+          (compile libraries macros optimizers dynamic-symbols expression3))))))
 
 (let ((arguments (command-line)))
   (when (or

@@ -3370,5 +3370,9 @@
       ((null? names))
       (let ((name (car names)))
         (set-car!
-          (string->symbol (data-rib string-type (length name) name))
+          (car
+            (member
+              (data-rib string-type (length name) name)
+              ($$dynamic-symbols)
+              (lambda (x y) (equal? x (symbol->string y)))))
           (primitive (+ 1000 index)))))))
