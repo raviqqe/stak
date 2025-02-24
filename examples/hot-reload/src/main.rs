@@ -15,8 +15,6 @@ use stak::{
 
 const HEAP_SIZE: usize = 1 << 16;
 
-static MODULE: UniversalModule = include_module!("handler.scm");
-
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     serve(
@@ -33,7 +31,7 @@ async fn calculate(input: String) -> response::Result<(StatusCode, String)> {
     let mut error = vec![];
 
     run(
-        &MODULE.bytecode(),
+        &include_module!("handler.scm").bytecode(),
         input.as_bytes(),
         &mut output,
         &mut error,

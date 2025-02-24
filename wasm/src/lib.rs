@@ -63,9 +63,7 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
         ),
     )?;
 
-    static MODULE: UniversalModule = include_module!("run.scm", stak_module);
-
-    vm.initialize(MODULE.bytecode().iter().copied())?;
+    vm.initialize(include_module!("run.scm", stak_module).bytecode().iter().copied())?;
     vm.run()?;
 
     Ok(output)
