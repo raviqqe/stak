@@ -1078,6 +1078,9 @@
 
     (define substring string-copy)
 
+    (define (make-string length . rest)
+      (code-points->string (make-list length (if (null? rest) 0 (char->integer rest)))))
+
     (define string=? (comparison-operator equal?))
 
     (define string<?
