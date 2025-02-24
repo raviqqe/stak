@@ -65,13 +65,13 @@
     ((eof-object? byte))
     (cond
       ((even? byte)
-        (stack-push! (decode-number (decode-integer-tail byte number-base)) stack))
+        (stack-push! stack (decode-number (decode-integer-tail byte number-base))))
 
       ((even? (quotient byte 2))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
                (tag (decode-integer-tail (quotient byte 4) tag-base)))
-          (stack-push! (rib a d tag) stack)))
+          (stack-push! stack (rib a d tag))))
 
       (else
         (let* ((head (quotient byte 4))
