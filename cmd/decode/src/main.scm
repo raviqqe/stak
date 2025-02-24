@@ -8,14 +8,17 @@
 (define call-instruction 5)
 
 (define integer-base 128)
-(define number-base 64)
-(define tag-base 32)
+(define number-base 16)
+(define tag-base 16)
 (define share-base 31)
 
 (define-record-type stack
   (make-stack values)
   stack?
   (values stack-values stack-set-values!))
+
+(define (stack-top stack)
+  (car (stack-values stack)))
 
 (define (stack-push! stack value)
   (stack-set-values! stack (cons value stack)))
@@ -27,7 +30,7 @@
 
 (define (stack-swap! stack index)
   (let ((values (stack-values stack))
-        (pair (tail values (- index 1)))
+        (pair (list-tail values (- index 1)))
         (head (cdr pair))
         (tail (cdr head)))
     (set-cdr! head stack)
@@ -68,20 +71,28 @@
         (stack-push! stack (cons (quotient byte 2) (stack-pop! stack))))
 
       ((even? (quotient byte 2))
+        (let ((head (quotient byte 4)))
+          (if (zero? head)
+            (stack-push! dictionary (stack-top stack))
+            (let* ((head (quotient byte 4))
+                   (integer (decode-integer-tail (- head 1) share-base))
+                   (index (quotient integer 2)))
+              (when (> index 0)
+                (stack-swap! dictionary index))
+              (let ((value (stack-top dictionary)))
+                (when (even? integer)
+                  (stack-pop! dictionary))
+                (stack-push! stack value))))))
+
+      ((even? (quotient byte 4))
         (let* ((d (stack-pop! stack))
                (a (stack-pop! stack))
-               (tag (decode-integer-tail (quotient byte 4) tag-base)))
+               (tag (decode-integer-tail (quotient byte 8) tag-base)))
           (stack-push! stack (rib a d tag))))
 
       (else
-        (let* ((head (quotient byte 4))
-               (integer (decode-integer-tail (- head 1) share-base))
-               (index (quotient integer 2)))
-          (when (> index 0)
-            (stack-swap! dictionary index))
-          (let ((value (car dictionary)))
-            (when (even? integer)
-              (stack-pop! dictionary))
-            (stack-push! stack value)))))))
+        (stack-push!
+          stack
+          (decode-number (decode-integer-tail (quotient byte 8) number-base)))))))
 
 (define codes (decode-ribs))
