@@ -51,11 +51,14 @@ fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream
         .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
 
     Ok(feature!(if ("hot-reload") {
-        quote!(#module::UniversalModule::from_hot_reload_path(#full_path))
+        quote! {
+            {
+                static MODULE: HotReloadModule = HotReloadModule::new(#full_path);
+                #module::UniversalModule::HotReload(&MODULE)
+            }
+        }
     } else {
-        quote!(#module::UniversalModule::from_bytecode(
-            include_bytes!(#full_path)
-        ))
+        quote!(#module::UniversalModule::Static(StaticModule::new(include_bytes!(#full_path))))
     }))
 }
 
