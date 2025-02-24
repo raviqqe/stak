@@ -53,16 +53,13 @@ impl Person {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Import a Scheme module of the script.
-    static MODULE: UniversalModule = include_module!("fight.scm");
-
-    // Run the Scheme module.
-    run_scheme(&MODULE)?;
+    // Include and run the Scheme module.
+    run_scheme(&include_module!("fight.scm"))?;
 
     Ok(())
 }
 
-fn run_scheme(module: &'static UniversalModule) -> Result<(), EngineError> {
+fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
     // Initialize a heap memory for a Scheme scripting engine.
     let mut heap = [Default::default(); HEAP_SIZE];
     // Define Rust functions to pass to the engine.
