@@ -53,12 +53,12 @@ fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream
     Ok(feature!(if ("hot-reload") {
         quote! {
             {
-                static MODULE: HotReloadModule = HotReloadModule::new(#full_path);
+                static MODULE: #module::HotReloadModule = #module::HotReloadModule::new(#full_path);
                 #module::UniversalModule::HotReload(&MODULE)
             }
         }
     } else {
-        quote!(#module::UniversalModule::Static(StaticModule::new(include_bytes!(#full_path))))
+        quote!(#module::UniversalModule::Static(#module::StaticModule::new(include_bytes!(#full_path))))
     }))
 }
 
