@@ -13,7 +13,7 @@ use stak::{
     device::FixedBufferDevice,
     file::VoidFileSystem,
     include_module,
-    module::Module,
+    module::{Module, UniversalModule},
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
