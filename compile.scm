@@ -318,6 +318,10 @@
 (define (library-symbol? name)
   (memv library-symbol-separator (string->list (symbol->string name))))
 
+(define (built-in-symbol? name)
+  (let ((name (symbol->string name)))
+    (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+
 (define (build-library-name id name)
   (string-append
     (id->string id)
@@ -333,10 +337,7 @@
       name)))
 
 (define (rename-library-symbol context id name)
-  (if (or
-       (not id)
-       (let ((name (symbol->string name)))
-         (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+  (if (or (not id) (built-in-symbol? name))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
@@ -897,7 +898,10 @@
           (macro-state-literals state)))
       (filter
         (lambda (name)
-          (not (memq name (macro-state-static-symbols state))))
+          (not
+            (or
+              (memq name (macro-state-static-symbols state))
+              (built-in-symbol? name))))
         (macro-state-dynamic-symbols state)))))
 
 ; Optimization
