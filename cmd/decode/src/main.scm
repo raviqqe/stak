@@ -65,7 +65,7 @@
     ((eof-object? byte))
     (cond
       ((even? byte)
-        (stack-push! stack (decode-number (decode-integer-tail byte number-base))))
+        (stack-push! stack (cons (quotient byte 2) (stack-pop! stack))))
 
       ((even? (quotient byte 2))
         (let* ((d (stack-pop! stack))
