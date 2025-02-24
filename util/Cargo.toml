@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-libc = { version = "0.2.169", default-features = false }
+libc = { version = "0.2.170", default-features = false }
 rustix = { version = "0.38.44", default-features = false, features = [
   "fs",
   "mm",
