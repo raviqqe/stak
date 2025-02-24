@@ -498,10 +498,11 @@
 ;; Types
 
 (define-record-type macro-state
-  (make-macro-state id literals dynamic-symbols)
+  (make-macro-state id literals static-symbols dynamic-symbols)
   macro-state?
   (id macro-state-id macro-state-set-id!)
   (literals macro-state-literals macro-state-set-literals!)
+  (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
   (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
 (define-record-type macro-context
@@ -543,6 +544,13 @@
     (cons
       (cons name syntax)
       (macro-state-literals state))))
+
+(define (macro-context-append-static-symbol! context symbol)
+  (define state (macro-context-state context))
+  (define symbols (macro-state-static-symbols state))
+
+  (unless (memq symbol symbols)
+    (macro-state-set-static-symbols! state (cons symbol symbols))))
 
 (define (macro-context-append-dynamic-symbol! context symbol)
   (define state (macro-context-state context))
@@ -798,18 +806,21 @@
         (($$define)
           (let ((name (cadr expression)))
             (macro-context-set! context name name)
+            (macro-context-append-static-symbol! context name)
             (expand (cons '$$set! (cdr expression)))))
 
         (($$define-syntax)
-          (macro-context-set-last!
-            context
-            (cadr expression)
-            (make-transformer context (caddr expression)))
-          (macro-context-append-literal!
-            context
-            (cadr expression)
-            (caddr expression))
-          #f)
+          (let ((name (cadr expression)))
+            (macro-context-set-last!
+              context
+              name
+              (make-transformer context (caddr expression)))
+            (macro-context-append-literal!
+              context
+              name
+              (caddr expression))
+            (macro-context-append-static-symbol! context name)
+            #f))
 
         (($$lambda)
           (let* ((parameters (cadr expression))
@@ -877,15 +888,19 @@
       expression)))
 
 (define (expand-macros expression)
-  (let* ((context (make-macro-context (make-macro-state 0 '() '()) '()))
-         (expression (expand-macro context expression)))
+  (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '()))
+         (expression (expand-macro context expression))
+         (state (macro-context-state context)))
     (values
       expression
       (reverse
         (filter
           (lambda (pair) (library-symbol? (car pair)))
-          (macro-state-literals (macro-context-state context))))
-      (macro-state-dynamic-symbols (macro-context-state context)))))
+          (macro-state-literals state)))
+      (filter
+        (lambda (name)
+          (not (memq name (macro-state-static-symbols state))))
+        (macro-state-dynamic-symbols state)))))
 
 ; Optimization
 
