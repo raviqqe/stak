@@ -110,6 +110,23 @@ Feature: String
       | abc   | 1     | 3   | bc     |
       | abc   | 0     | 3   | abc    |
 
+  Scenario Outline: Make a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (equal? (make-string <length> <character>) "<output>") 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | length | character | output |
+      | 0      |           |        |
+      | 1      | #\\A      | A      |
+      | 2      | #\\A      | AA     |
+      | 3      | #\\A      | AAA    |
+
   Scenario Outline: Check string equality
     Given a file named "main.scm" with:
       """scheme
