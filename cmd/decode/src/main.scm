@@ -1,4 +1,4 @@
-(import (scheme base) (scheme write))
+(import (scheme base) (scheme write) (stak base))
 
 (define constant-instruction 0)
 (define get-instruction 1)
