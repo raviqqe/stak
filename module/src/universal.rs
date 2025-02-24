@@ -5,27 +5,15 @@ use core::ops::Deref;
 #[allow(clippy::large_enum_variant)]
 pub enum UniversalModule {
     /// A hot-reloaded module.
-    HotReload(HotReloadModule),
+    HotReload(&'static HotReloadModule),
     /// A static module.
     Static(StaticModule),
 }
 
-impl UniversalModule {
-    /// Creates a module from bytecodes.
-    pub const fn from_bytecode(bytecode: &'static [u8]) -> Self {
-        Self::Static(StaticModule::new(bytecode))
-    }
-
-    /// Creates a module from a hot-reloaded path.
-    pub const fn from_hot_reload_path(path: &'static str) -> Self {
-        Self::HotReload(HotReloadModule::new(path))
-    }
-}
-
-impl Module<'static> for UniversalModule {
+impl<'a> Module<'a> for UniversalModule {
     type Guard = UniversalGuard;
 
-    fn bytecode(&'static self) -> Self::Guard {
+    fn bytecode(&'a self) -> Self::Guard {
         match self {
             Self::HotReload(module) => UniversalGuard::HotReload(module.bytecode()),
             Self::Static(module) => UniversalGuard::Static(module.bytecode()),
