@@ -164,11 +164,8 @@ use stak::{
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Import a Scheme module of the script.
-    static MODULE: UniversalModule = include_module!("fight.scm");
-
-    // Run the Scheme module.
-    run_scheme(&MODULE)?;
+    // Include and run the Scheme module.
+    run_scheme(&include_module!("fight.scm"))?;
 
     Ok(())
 }

@@ -142,7 +142,7 @@ impl Person {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Import and run the Scheme module.
+    // Include and run the Scheme module.
     run_scheme(&include_module!("fight.scm"))?;
 
     Ok(())
