@@ -95,4 +95,13 @@
           stack
           (decode-number (decode-integer-tail (quotient byte 8) number-base)))))))
 
-(define codes (decode-ribs))
+(define (display-deep-ribs codes depth)
+  (do ((codes (rib-cdr codes) (rib-cdr codes)))
+    ((null? codes))
+    (display "- ")
+    (newline)))
+
+(define (display-ribs codes)
+  (display-deep-ribs codes 0))
+
+(display-ribs (decode-ribs))
