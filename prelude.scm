@@ -189,6 +189,7 @@
     string->number
     string-copy
     substring
+    make-string
     string=?
     string<?
     string>?
@@ -1078,6 +1079,12 @@
 
     (define substring string-copy)
 
+    (define (make-string length . rest)
+      (code-points->string
+        (make-list
+          length
+          (if (null? rest) 0 (char->integer (car rest))))))
+
     (define string=? (comparison-operator equal?))
 
     (define string<?
@@ -1540,6 +1547,7 @@
     string->number
     string-copy
     substring
+    make-string
     string=?
     string<?
     string>?
