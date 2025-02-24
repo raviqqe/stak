@@ -810,15 +810,13 @@
             (expand (cons '$$set! (cdr expression)))))
 
         (($$define-syntax)
-          (let ((name (cadr expression)))
+          (let ((name (cadr expression))
+                (transformer (caddr expression)))
             (macro-context-set-last!
               context
               name
-              (make-transformer context (caddr expression)))
-            (macro-context-append-literal!
-              context
-              name
-              (caddr expression))
+              (make-transformer context transformer))
+            (macro-context-append-literal! context name transformer)
             (macro-context-append-static-symbol! context name)
             #f))
 
