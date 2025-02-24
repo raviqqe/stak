@@ -20,7 +20,7 @@ pub mod device {
     //!     device::ReadWriteDevice,
     //!     file::VoidFileSystem,
     //!     include_module,
-    //!     module::{Module, UniversalModule},
+    //!     module::Module,
     //!     process_context::VoidProcessContext,
     //!     r7rs::{SmallError, SmallPrimitiveSet},
     //!     time::VoidClock,
@@ -30,15 +30,13 @@ pub mod device {
     //! const BUFFER_SIZE: usize = 1 << 8;
     //! const HEAP_SIZE: usize = 1 << 16;
     //!
-    //! static MODULE: UniversalModule = include_module!("fibonacci.scm");
-    //!
     //! fn main() -> Result<(), Box<dyn Error>> {
     //!     let input = 15;
     //!     let mut output = vec![];
     //!     let mut error = vec![];
     //!
     //!     run(
-    //!         &MODULE.bytecode(),
+    //!         &include_module!("fibonacci.scm").bytecode(),
     //!         input.to_string().as_bytes(),
     //!         &mut output,
     //!         &mut error,
@@ -167,7 +165,7 @@ pub mod vm {
     //!     file::VoidFileSystem,
     //!     include_module,
     //!     process_context::VoidProcessContext,
-    //!     module::{Module, UniversalModule},
+    //!     module::Module,
     //!     r7rs::{SmallError, SmallPrimitiveSet},
     //!     time::VoidClock,
     //!     vm::Vm,
@@ -175,11 +173,9 @@ pub mod vm {
     //!
     //! const HEAP_SIZE: usize = 1 << 16;
     //!
-    //! // Include a Scheme script in the bytecode format built by the build script above.
-    //! static MODULE: UniversalModule = include_module!("hello.scm");
-    //!
     //! fn main() -> Result<(), Box<dyn Error>> {
-    //!     run(&MODULE.bytecode())?;
+    //!     // Include and run a Scheme script in the bytecode format built by the build script above.
+    //!     run(&include_module!("hello.scm").bytecode())?;
     //!
     //!     Ok(())
     //! }

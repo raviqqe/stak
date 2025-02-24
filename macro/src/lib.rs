@@ -4,11 +4,11 @@ use cfg_elif::expr::feature;
 use core::error::Error;
 use proc_macro::TokenStream;
 use proc_macro2::Literal;
-use quote::{quote, ToTokens};
+use quote::{ToTokens, quote};
 use stak_compiler::CompileError;
 use stak_macro_util::{convert_result, read_source_file};
-use std::path::{Path, MAIN_SEPARATOR_STR};
-use syn::{parse::Parse, parse_macro_input, Ident, LitStr, Token};
+use std::path::{MAIN_SEPARATOR_STR, Path};
+use syn::{Ident, LitStr, Token, parse::Parse, parse_macro_input};
 
 struct IncludeModuleInput {
     path: LitStr,
@@ -51,11 +51,14 @@ fn include_result(input: &IncludeModuleInput) -> Result<proc_macro2::TokenStream
         .map_or_else(|| quote!(stak::module), |module| module.to_token_stream());
 
     Ok(feature!(if ("hot-reload") {
-        quote!(#module::UniversalModule::from_hot_reload_path(#full_path))
+        quote! {
+            {
+                static MODULE: #module::HotReloadModule = #module::HotReloadModule::new(#full_path);
+                #module::UniversalModule::HotReload(&MODULE)
+            }
+        }
     } else {
-        quote!(#module::UniversalModule::from_bytecode(
-            include_bytes!(#full_path)
-        ))
+        quote!(#module::UniversalModule::Static(#module::StaticModule::new(include_bytes!(#full_path))))
     }))
 }
 

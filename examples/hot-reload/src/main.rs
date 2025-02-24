@@ -1,12 +1,12 @@
 //! A `stak-build` example.
 
-use axum::{http::StatusCode, response, routing::post, serve, Router};
+use axum::{Router, http::StatusCode, response, routing::post, serve};
 use core::error::Error;
 use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
     include_module,
-    module::{Module, UniversalModule},
+    module::Module,
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
@@ -14,8 +14,6 @@ use stak::{
 };
 
 const HEAP_SIZE: usize = 1 << 16;
-
-static MODULE: UniversalModule = include_module!("handler.scm");
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -33,7 +31,7 @@ async fn calculate(input: String) -> response::Result<(StatusCode, String)> {
     let mut error = vec![];
 
     run(
-        &MODULE.bytecode(),
+        &include_module!("handler.scm").bytecode(),
         input.as_bytes(),
         &mut output,
         &mut error,

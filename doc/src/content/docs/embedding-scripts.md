@@ -28,15 +28,6 @@ First, prepare a Scheme script named `src/fight.scm` as follows.
 ; Import a base library and the library named `(stak rust)` for Rust integration.
 (import (scheme base) (stak rust))
 
-; Use the `define-rust` procedure to import native functions written in Rust.
-; The order of the functions should match the ones passed into the `Engine::new()`
-; function in Rust.
-(define-rust
-  make-person
-  person-pies
-  person-wasted
-  person-throw-pie)
-
 ; Make two people with a number of pies they have and their dodge rates.
 (define me (make-person 4 0.2))
 (define friend (make-person 2 0.6))
@@ -63,7 +54,7 @@ First, prepare a Scheme script named `src/fight.scm` as follows.
       "Draw...")))
 ```
 
-The main part for Rust integration is importing the `(stak rust)` library and defining Rust native functions using the `define-rust` procedure.
+The main part for Rust integration is importing the `(stak rust)` library which imports and defines native functions in Rust at the top level.
 
 ## Adding a build script
 
@@ -173,11 +164,8 @@ use stak::{
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Import a Scheme module of the script.
-    static MODULE: UniversalModule = include_module!("fight.scm");
-
-    // Run the Scheme module.
-    run_scheme(&MODULE)?;
+    // Include and run the Scheme module.
+    run_scheme(&include_module!("fight.scm"))?;
 
     Ok(())
 }

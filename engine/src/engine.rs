@@ -1,4 +1,4 @@
-use crate::{primitive_set::EnginePrimitiveSet, EngineError};
+use crate::{EngineError, primitive_set::EnginePrimitiveSet};
 use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
@@ -11,14 +11,17 @@ pub struct Engine<'a, 'b> {
 
 impl<'a, 'b> Engine<'a, 'b> {
     /// Creates a scripting engine.
-    pub fn new(heap: &'a mut [Value], functions: &'a mut [AnyFn<'b>]) -> Result<Self, Error> {
+    pub fn new(
+        heap: &'a mut [Value],
+        functions: &'a mut [(&'a str, AnyFn<'b>)],
+    ) -> Result<Self, Error> {
         Ok(Self {
             vm: Vm::new(heap, EnginePrimitiveSet::new(functions))?,
         })
     }
 
     /// Runs a module.
-    pub fn run(&mut self, module: &'static impl Module<'static>) -> Result<(), EngineError> {
+    pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
         self.vm.run()
     }

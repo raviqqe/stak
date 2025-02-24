@@ -43,7 +43,15 @@
     stak
 
     pair-type
+    null-type
+    boolean-type
     procedure-type
+    symbol-type
+    string-type
+    char-type
+    vector-type
+    bytevector-type
+    record-type
 
     primitive
     rib
@@ -149,8 +157,9 @@
     fold-left
     fold-right
     reduce-right
-    member-position
+    memq-position
     memv-position
+    member-position
     list-copy
 
     bytevector?
@@ -593,6 +602,8 @@
     (define assq (primitive 60))
     (define cons (primitive 61))
     (define memq (primitive 62))
+    (define eqv? (primitive 70))
+    (define equal-inner? (primitive 71))
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -613,27 +624,11 @@
           (rib? x)
           (eq? (rib-tag x) type))))
 
-    (define (eqv? x y)
-      (boolean-or
-        (eq? x y)
-        (and
-          (char? x)
-          (char? y)
-          (eq? (char->integer x) (char->integer y)))))
-
     (define (equal? x y)
       (boolean-or
         (eq? x y)
         (and
-          (rib? x)
-          (rib? y)
-          (eq? (rib-tag x) (rib-tag y))
-          ; Avoid checking values in global variables.
-          (not (eq? (rib-tag x) symbol-type))
-          ; Optimize for the cases of strings and vectors where `car`s are integers.
-          (boolean-or
-            (rib? (rib-car x))
-            (eq? (rib-car x) (rib-car y)))
+          (equal-inner? x y)
           (equal? (rib-car x) (rib-car y))
           (equal? (rib-cdr x) (rib-cdr y)))))
 
@@ -1000,6 +995,9 @@
           (else
             (loop (cdr xs) (+ index 1))))))
 
+    (define (memq-position x xs)
+      (member-position x xs eq?))
+
     (define (memv-position x xs)
       (member-position x xs eqv?))
 
@@ -1273,7 +1271,7 @@
           (list-set! (rib-cdr record) index value))))
 
     (define (field-index type field)
-      (memv-position field (cdr type)))
+      (memq-position field (cdr type)))
 
     ;; Tuple
 
@@ -1515,8 +1513,6 @@
     fold-left
     fold-right
     reduce-right
-    member-position
-    memv-position
     list-copy
 
     bytevector?
@@ -2562,7 +2558,7 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base) data-rib filter list-head memv-position pair-type procedure-type rib))
+    (only (stak base) data-rib filter list-head memq-position pair-type procedure-type rib))
 
   (begin
     (define eval
@@ -3040,11 +3036,12 @@
               (error "unsupported optimizer" optimizer))))
 
         (define (optimize-expression context expression)
-          (define (optimize expression)
-            (optimize-expression context expression))
-
           (if (pair? expression)
-            (let* ((expression (relaxed-map optimize expression))
+            (let* ((expression
+                     (relaxed-map
+                       (lambda (expression)
+                         (optimize-expression context expression))
+                       expression))
                    (predicate (car expression)))
               (cond
                 ((eq? predicate '$$define-optimizer)
@@ -3095,7 +3092,7 @@
 
         ; If a variable is not in environment, it is considered to be global.
         (define (compilation-context-resolve context variable)
-          (or (memv-position variable (compilation-context-environment context)) variable))
+          (or (memq-position variable (compilation-context-environment context)) variable))
 
         ;; Procedures
 
@@ -3305,7 +3302,10 @@
         (define optimization-context
           (make-optimization-context
             (map
-              (lambda (pair) (make-optimizer (car pair) (cdr pair)))
+              (lambda (pair)
+                (cons
+                  (car pair)
+                  (make-optimizer (car pair) (cdr pair))))
               ($$optimizers))
             '()))
         (define macro-context (make-macro-context (make-macro-state 0) '()))
@@ -3362,22 +3362,17 @@
     (define environment list)))
 
 (define-library (stak rust)
-  (export define-rust)
-
-  (import
-    (only (stak base) primitive)
-    (scheme base))
+  (import (stak base) (scheme base))
 
   (begin
-    (define-syntax define-rust
-      (syntax-rules ()
-        ((_ "count" index name1 name2 ...)
-          (begin
-            (define name1 (primitive index))
-            (define-rust "count" (+ index 1) name2 ...)))
-
-        ((_ "count" index)
-          #f)
-
-        ((_ name1 name2 ...)
-          (define-rust "count" 1000 name1 name2 ...))))))
+    (do ((names ((primitive 1000)) (cdr names))
+         (index 1 (+ index 1)))
+      ((null? names))
+      (let ((name (car names)))
+        (set-car!
+          (car
+            (member
+              (data-rib string-type (length name) name)
+              ($$dynamic-symbols)
+              (lambda (x y) (equal? x (symbol->string y)))))
+          (primitive (+ 1000 index)))))))

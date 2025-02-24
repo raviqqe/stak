@@ -1,9 +1,9 @@
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    Error,
+    cons::{Cons, NEVER, Tag},
     number::Number,
     r#type::Type,
     value::Value,
-    Error,
 };
 use core::fmt::{self, Display, Formatter};
 
@@ -239,11 +239,7 @@ impl<'a> Memory<'a> {
     /// Returns an allocation start index.
     #[inline]
     pub const fn allocation_start(&self) -> usize {
-        if self.space {
-            self.space_size()
-        } else {
-            0
-        }
+        if self.space { self.space_size() } else { 0 }
     }
 
     /// Returns an allocation end index.
@@ -364,6 +360,17 @@ impl<'a> Memory<'a> {
         }
 
         list
+    }
+
+    /// Builds a string.
+    pub fn build_string(&mut self, string: &str) -> Result<Cons, Error> {
+        let mut list = self.null();
+
+        for character in string.chars().rev() {
+            list = self.cons(Number::from_i64(character as _).into(), list)?;
+        }
+
+        Ok(list)
     }
 
     /// Executes an operation against a value at the top of a stack.

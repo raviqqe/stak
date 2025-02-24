@@ -4,7 +4,7 @@ use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::{MemoryFileSystem, VoidFileSystem};
 use stak_macro::include_module;
-use stak_module::{Module, UniversalModule};
+use stak_module::Module;
 use stak_process_context::{MemoryProcessContext, VoidProcessContext};
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
@@ -63,9 +63,12 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
         ),
     )?;
 
-    static MODULE: UniversalModule = include_module!("run.scm", stak_module);
-
-    vm.initialize(MODULE.bytecode().iter().copied())?;
+    vm.initialize(
+        include_module!("run.scm", stak_module)
+            .bytecode()
+            .iter()
+            .copied(),
+    )?;
     vm.run()?;
 
     Ok(output)
