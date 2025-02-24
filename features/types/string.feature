@@ -110,7 +110,7 @@ Feature: String
       | abc   | 1     | 3   | bc     |
       | abc   | 0     | 3   | abc    |
 
-  Scenario Outline: Make a string without a character
+  Scenario Outline: Make a string
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
