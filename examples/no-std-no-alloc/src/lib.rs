@@ -23,8 +23,6 @@ use stak::{
 const BUFFER_SIZE: usize = 1 << 8;
 const HEAP_SIZE: usize = 1 << 16;
 
-static MODULE: UniversalModule = include_module!("fibonacci.scm");
-
 /// Calculates the Fibonacci number.
 pub fn fibonacci(number: usize) -> Result<usize, FibonacciError> {
     let mut input = String::<8>::new();
@@ -34,7 +32,7 @@ pub fn fibonacci(number: usize) -> Result<usize, FibonacciError> {
     // Initialize an in-memory I/O device.
     let mut device = FixedBufferDevice::<BUFFER_SIZE, BUFFER_SIZE>::new(input.as_bytes());
 
-    run_vm(&MODULE.bytecode(), &mut device)?;
+    run_vm(&include_module!("fibonacci.scm").bytecode(), &mut device)?;
 
     // If stderr is not empty, we assume that some error has occurred.
     if !device.error().is_empty() {
