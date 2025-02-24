@@ -6,7 +6,7 @@ use stak::{
     device::ReadWriteDevice,
     file::VoidFileSystem,
     include_module,
-    module::{Module, UniversalModule},
+    module::Module,
     process_context::VoidProcessContext,
     r7rs::{SmallError, SmallPrimitiveSet},
     time::VoidClock,
