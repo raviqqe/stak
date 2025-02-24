@@ -57,7 +57,7 @@
              (e (- (modulo (quotient integer 2) 2048) 1023)))
         (* m (expt 2 e))))))
 
-(define (decode-ribs data)
+(define (decode-ribs)
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
 
@@ -84,4 +84,4 @@
               (stack-pop! dictionary))
             (stack-push! stack value)))))))
 
-(define codes (decode-ribs #f))
+(define codes (decode-ribs))
