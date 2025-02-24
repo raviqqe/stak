@@ -30,15 +30,13 @@ pub mod device {
     //! const BUFFER_SIZE: usize = 1 << 8;
     //! const HEAP_SIZE: usize = 1 << 16;
     //!
-    //! static MODULE: UniversalModule = include_module!("fibonacci.scm");
-    //!
     //! fn main() -> Result<(), Box<dyn Error>> {
     //!     let input = 15;
     //!     let mut output = vec![];
     //!     let mut error = vec![];
     //!
     //!     run(
-    //!         &MODULE.bytecode(),
+    //!         &include_module!("fibonacci.scm").bytecode(),
     //!         input.to_string().as_bytes(),
     //!         &mut output,
     //!         &mut error,
