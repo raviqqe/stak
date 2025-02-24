@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-hmr = "0.2.2"
+hmr = "0.2.3"
 
 [lints]
 workspace = true

@@ -615,9 +615,9 @@ checksum = "fbf6a919d6cf397374f7dfeeea91d974c7c0a7221d0d0f4f20d859d329e53fcc"
 
 [[package]]
 name = "hmr"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ddefe9f648423b130f4b259c7ffd2fceb005904a6448017d6255299dd03e7b2d"
+checksum = "eb1dcc552ab8bc72558b0c76ff751b2404fef4bfa605221bbb022b5f0908b4c4"
 dependencies = [
  "notify",
 ]
