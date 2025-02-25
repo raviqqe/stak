@@ -16,7 +16,7 @@ trace_instruction = ["stak-vm/trace_instruction"]
 trace_memory = ["stak-vm/trace_memory"]
 
 [dependencies]
-clap = { version = "4.5.30", features = ["derive"] }
+clap = { version = "4.5.31", features = ["derive"] }
 main_error = "0.1.2"
 stak-configuration = { version = "0.1.94", path = "../../configuration" }
 stak-device = { version = "0.2.98", path = "../../device", features = ["std"] }
