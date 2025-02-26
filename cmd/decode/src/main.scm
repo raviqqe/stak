@@ -98,8 +98,16 @@
 (define (display-deep-ribs codes depth)
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
     ((null? codes))
+    (write-string (make-string depth #\space))
     (display "- ")
-    (newline)))
+    (let ((a (rib-car codes)))
+      (if (number? a)
+        (begin
+          (display a)
+          (newline))
+        (begin
+          (newline)
+          (display-deep-ribs a (+ depth 2)))))))
 
 (define (display-ribs codes)
   (display-deep-ribs codes 0))
