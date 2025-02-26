@@ -24,8 +24,8 @@
   (stack-set-values! stack (cons value stack)))
 
 (define (stack-pop! stack)
-  (let ((value (car stack)))
-    (stack-set-values! stack (cdr stack))
+  (let ((value (car (stack-values stack))))
+    (stack-set-values! stack (cdr (stack-values stack)))
     value))
 
 (define (stack-swap! stack index)
