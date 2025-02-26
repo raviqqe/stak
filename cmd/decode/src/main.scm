@@ -93,7 +93,9 @@
       (else
         (stack-push!
           stack
-          (decode-number (decode-integer-tail (quotient byte 8) number-base)))))))
+          (decode-number (decode-integer-tail (quotient byte 8) number-base))))))
+
+  (stack-pop! stack))
 
 (define (display-deep-ribs codes depth)
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
@@ -101,6 +103,8 @@
     (write-string (make-string depth #\space))
     (display "- ")
     (let ((a (rib-car codes)))
+      (display (rib-tag codes))
+      (write-char #\space)
       (if (number? a)
         (begin
           (display a)
