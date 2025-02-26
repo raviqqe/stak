@@ -343,10 +343,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Initializes a virtual machine with bytecodes of a program.
-    pub fn initialize<'b>(
-        &mut self,
-        input: impl IntoIterator<Item = u8> + 'b,
-    ) -> Result<(), super::Error> {
+    pub fn initialize(&mut self, input: impl IntoIterator<Item = u8>) -> Result<(), super::Error> {
         profile_event!(self, "initialization_start");
         profile_event!(self, "decode_start");
 
