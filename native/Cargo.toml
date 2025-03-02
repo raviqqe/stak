@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-vm = { version = "0.7.27", path = "../vm" }
+stak-vm = { version = "0.10.0", path = "../vm" }
 
 [lints]
 workspace = true
