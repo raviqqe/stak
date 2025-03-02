@@ -1,7 +1,7 @@
 [package]
 name = "stak-minifier-macro"
 description = "Macros to minify Stak Scheme source codes"
-version = "0.1.76"
+version.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true

@@ -1,6 +1,6 @@
 [package]
 name = "hot-reload"
-version = "0.1.20"
+version.workspace = true
 publish = false
 edition.workspace = true
 
