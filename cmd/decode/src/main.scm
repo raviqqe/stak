@@ -1,4 +1,4 @@
-(import (scheme base) (scheme write) (stak base))
+(import (scheme base) (scheme write))
 
 (define constant-instruction 0)
 (define get-instruction 1)
@@ -21,7 +21,7 @@
   (car (stack-values stack)))
 
 (define (stack-push! stack value)
-  (stack-set-values! stack (cons value stack)))
+  (stack-set-values! stack (cons value (stack-values stack))))
 
 (define (stack-pop! stack)
   (let ((value (car (stack-values stack))))
@@ -29,11 +29,11 @@
     value))
 
 (define (stack-swap! stack index)
-  (let ((values (stack-values stack))
-        (pair (list-tail values (- index 1)))
-        (head (cdr pair))
-        (tail (cdr head)))
-    (set-cdr! head stack)
+  (let* ((values (stack-values stack))
+         (pair (list-tail values (- index 1)))
+         (head (cdr pair))
+         (tail (cdr head)))
+    (set-cdr! head values)
     (set-cdr! pair tail)
     (stack-set-values! stack head)))
 
