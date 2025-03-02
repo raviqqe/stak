@@ -1,7 +1,7 @@
 [package]
 name = "stak-wasm"
 description = "Stak Scheme in WebAssembly"
-version.workspace = true
+version = "0.3.28"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -12,16 +12,16 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stak-compiler = { version.workspace = true}
-stak-configuration = { version.workspace = true}
-stak-device = { version.workspace = true}
-stak-file = { version.workspace = true}
-stak-macro = { version.workspace = true}
-stak-module = { version.workspace = true}
-stak-process-context = { version.workspace = true}
-stak-r7rs = { version.workspace = true}
-stak-time = { version.workspace = true}
-stak-vm = { version.workspace = true}
+stak-compiler = { version = "0.2.9", path = "../compiler" }
+stak-configuration = { version = "0.1.95", path = "../configuration" }
+stak-device = { version = "0.2.99", path = "../device", features = ["std"] }
+stak-file = { version = "0.5.13", path = "../file" }
+stak-macro = { version = "0.2.18", path = "../macro" }
+stak-module = { version = "0.1.19", path = "../module" }
+stak-process-context = { version = "0.2.57", path = "../process_context" }
+stak-r7rs = { version = "0.9.13", path = "../r7rs" }
+stak-time = { version = "0.1.40", path = "../time" }
+stak-vm = { version = "0.7.28", path = "../vm", features = ["float"] }
 wasm-bindgen = "0.2.97"
 
 [dev-dependencies]
@@ -30,7 +30,7 @@ stak-macro = { path = "../macro" }
 wasm-bindgen-test = "0.3.47"
 
 [build-dependencies]
-stak-build = { version.workspace = true}
+stak-build = { version = "0.1.58", path = "../build" }
 
 [lints]
 workspace = true

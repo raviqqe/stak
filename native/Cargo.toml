@@ -1,7 +1,7 @@
 [package]
 name = "stak-native"
 description = "Optimized primitives of native functions for Stak Scheme"
-version.workspace = true
+version = "0.2.6"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-vm = { version.workspace = true}
+stak-vm = { version = "0.7.28", path = "../vm" }
 
 [lints]
 workspace = true

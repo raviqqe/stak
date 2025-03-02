@@ -1,6 +1,6 @@
 [package]
 name = "no-std-no-alloc"
-version.workspace = true
+version = "0.1.5"
 publish = false
 edition.workspace = true
 keywords.workspace = true
@@ -10,10 +10,10 @@ repository.workspace = true
 
 [dependencies]
 heapless = "0.8.0"
-stak = { version.workspace = true}
+stak = { version = "0.8.1", path = "../../root", default-features = false }
 
 [build-dependencies]
-stak-build = { version.workspace = true}
+stak-build = { version = "0.1.58", path = "../../build" }
 
 [lints]
 workspace = true

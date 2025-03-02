@@ -1,7 +1,7 @@
 [package]
 name = "stak-macro"
 description = "Macros to integrate Stak Scheme"
-version.workspace = true
+version = "0.2.18"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -16,10 +16,10 @@ hot-reload = []
 
 [dependencies]
 cfg-elif = "0.6.1"
-proc-macro2 = { version.workspace = true}
+proc-macro2 = { version = "1.0.93", features = ["proc-macro"] }
 quote = "1.0.38"
-stak-compiler = { version.workspace = true}
-stak-macro-util = { version.workspace = true}
+stak-compiler = { version = "0.2.9", path = "../compiler" }
+stak-macro-util = { version = "0.1.76", path = "../macro-util" }
 syn = "2.0.98"
 
 [dev-dependencies]

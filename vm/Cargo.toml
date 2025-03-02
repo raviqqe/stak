@@ -1,7 +1,7 @@
 [package]
 name = "stak-vm"
 description = "Virtual machines for Stak Scheme"
-version.workspace = true
+version = "0.7.28"
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -17,7 +17,7 @@ trace_memory = []
 
 [dependencies]
 cfg-elif = "0.6.1"
-nonbox = { version.workspace = true}
+nonbox = { version = "0.4.1", optional = true }
 
 [dev-dependencies]
 insta = "1.42.1"
