@@ -42,10 +42,6 @@ const listItems = async (directory: string): Promise<Item[]> =>
 
 export default defineConfig({
   base: "/stak",
-  image: {
-    service: { entrypoint: "astro/assets/services/sharp" },
-    remotePatterns: [{ protocol: "https" }],
-  },
   vite: {
     plugins: [wasm()],
     worker: {
