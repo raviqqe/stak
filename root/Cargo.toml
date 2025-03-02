@@ -1,7 +1,7 @@
 [package]
 name = "stak"
 description = "Stak Scheme interpreter"
-version = "0.8.1"
+version.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -32,17 +32,17 @@ std = [
 ]
 
 [dependencies]
-stak-device = { version = "0.2.99", path = "../device" }
-stak-dynamic = { version = "0.2.1", path = "../dynamic", optional = true }
-stak-engine = { version = "0.2.1", path = "../engine", optional = true }
-stak-file = { version = "0.5.13", path = "../file" }
-stak-macro = { version = "0.2.18", path = "../macro" }
-stak-module = { version = "0.1.19", path = "../module" }
-stak-process-context = { version = "0.2.57", path = "../process_context" }
-stak-r7rs = { version = "0.9.13", path = "../r7rs" }
-stak-sac = { version = "0.1.101", path = "../sac" }
-stak-time = { version = "0.1.40", path = "../time" }
-stak-vm = { version = "0.7.28", path = "../vm" }
+stak-device = { version.workspace = true}
+stak-dynamic = { version.workspace = true}
+stak-engine = { version.workspace = true}
+stak-file = { version.workspace = true}
+stak-macro = { version.workspace = true}
+stak-module = { version.workspace = true}
+stak-process-context = { version.workspace = true}
+stak-r7rs = { version.workspace = true}
+stak-sac = { version.workspace = true}
+stak-time = { version.workspace = true}
+stak-vm = { version.workspace = true}
 
 [dev-dependencies]
 any-fn = "0.6.1"
@@ -50,7 +50,7 @@ rand = "0.9.0"
 stak-build = { path = "../build" }
 
 [build-dependencies]
-stak-build = { version = "0.1.58", path = "../build" }
+stak-build = { version.workspace = true}
 
 [lints]
 workspace = true

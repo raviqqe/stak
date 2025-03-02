@@ -1,7 +1,7 @@
 [package]
 name = "stak-device"
 description = "Devices for Stak Scheme"
-version = "0.2.99"
+version.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -13,10 +13,10 @@ libc = ["dep:rustix"]
 std = []
 
 [dependencies]
-rustix = { version = "0.38.44", default-features = false, features = [
+rustix = { version.workspace = true[
   "stdio",
 ], optional = true }
-stak-vm = { version = "0.7.28", path = "../vm" }
+stak-vm = { version.workspace = true}
 
 [lints]
 workspace = true

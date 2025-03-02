@@ -1,7 +1,7 @@
 [package]
 name = "stak-interpret"
 description = "Stak Scheme bytecode interpreter"
-version = "0.3.28"
+version.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -16,17 +16,17 @@ trace_instruction = ["stak-vm/trace_instruction"]
 trace_memory = ["stak-vm/trace_memory"]
 
 [dependencies]
-clap = { version = "4.5.31", features = ["derive"] }
+clap = { version.workspace = true}
 main_error = "0.1.2"
-stak-configuration = { version = "0.1.95", path = "../../configuration" }
-stak-device = { version = "0.2.99", path = "../../device", features = ["std"] }
-stak-file = { version = "0.5.13", path = "../../file", features = ["std"] }
-stak-process-context = { version = "0.2.57", path = "../../process_context", features = [
+stak-configuration = { version.workspace = true}
+stak-device = { version.workspace = true}
+stak-file = { version.workspace = true}
+stak-process-context = { version.workspace = true[
   "std",
 ] }
-stak-r7rs = { version = "0.9.13", path = "../../r7rs" }
-stak-time = { version = "0.1.40", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.7.28", path = "../../vm" }
+stak-r7rs = { version.workspace = true}
+stak-time = { version.workspace = true}
+stak-vm = { version.workspace = true}
 
 [lints]
 workspace = true
