@@ -1,0 +1,15 @@
+- constant primitive 0
+- set $$rib
+- constant primitive 1
+- set $$close
+- constant primitive 9
+- set $$<
+- constant primitive 10
+- set $$+
+- constant primitive 11
+- set $$-
+- constant primitive 12
+- set $$\*
+- constant primitive 13
+- set $$/
+- constant #f
