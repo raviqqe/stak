@@ -14,7 +14,7 @@ std = ["stak-device/std"]
 
 [dependencies]
 any-fn = "0.6.1"
-cfg-elif = "0.6.1"
+cfg-elif = "0.6.3"
 stak-device = { version = "0.10.0", path = "../device" }
 stak-dynamic = { version = "0.10.0", path = "../dynamic" }
 stak-file = { version = "0.10.0", path = "../file" }
