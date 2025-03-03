@@ -2333,7 +2333,7 @@
             (write-vector x))
 
           (else
-            (error "unknown type")))))
+            (error "unknown type to display")))))
 
     (define current-write (make-parameter write))
 
