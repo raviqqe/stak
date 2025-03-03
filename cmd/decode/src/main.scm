@@ -115,7 +115,18 @@
 
   (stack-pop! stack))
 
-(define (display-data data)
+(define-record-type display-context
+  (make-display-context false)
+  display-context?
+  (false display-context-false))
+
+(define (display-context-true context)
+  (cdr (display-context-false context)))
+
+(define (display-context-null context)
+  (car (display-context-false context)))
+
+(define (display-data context data)
   (if (number? data)
     (write data)
     (case (rib-tag data)
@@ -126,10 +137,9 @@
       (else
         (write data)))))
 
-(define (display-codes codes depth)
-  ; TODO Handle the triforce.
+(define (display-codes context codes depth)
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
-    ((null? codes))
+    ((eq? codes (display-context-null context)))
     (write-string (make-string depth #\space))
     (display "- ")
     (let ((a (rib-car codes)))
@@ -138,12 +148,12 @@
       (if (= (rib-tag codes) if-instruction)
         (begin
           (newline)
-          (display-codes a (+ depth 2)))
+          (display-codes context a (+ depth 2)))
         (begin
-          (display-data a)
+          (display-data context a)
           (newline))))))
 
 (define (display-ribs codes)
-  (display-codes codes 0))
+  (display-codes (make-display-context (car codes)) codes 0))
 
 (display-ribs (decode-ribs))
