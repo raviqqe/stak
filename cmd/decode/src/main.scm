@@ -29,7 +29,7 @@
         "nop")
       (else
         (string-append
-          "call-"
+          "call "
           (number->string (- instruction call-instruction)))))))
 
 (define-record-type stack
