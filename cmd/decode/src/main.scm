@@ -202,6 +202,6 @@
 (define (display-ribs code)
   (display-code (cdr code) 0))
 
-(define ribs (decode))
-(marshal! ribs)
-(display-ribs ribs)
+(let ((ribs (decode)))
+  (marshal! ribs)
+  (display-ribs ribs))

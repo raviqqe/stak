@@ -3665,16 +3665,8 @@
 - set write-vector
 - get write
 - set write-value
-- constant 0
-- set constant-instruction
-- constant 1
-- set get-instruction
-- constant 2
-- set set-instruction
 - constant 3
 - set if-instruction
-- constant 4
-- set nop-instruction
 - constant 5
 - set call-instruction
 - constant 3
@@ -4161,15 +4153,6 @@
 - call 1 #f $$close
 - set marshal!
 - constant procedure 1 #f
-  - constant 2
-  - get 1
-  - call 2 #f $\*
-  - constant #\space
-  - call 2 #f make-string
-  - call 1 #f write-string
-- call 1 #f $$close
-- set display-indent
-- constant procedure 1 #f
   - get 0
   - constant 0
   - call 2 #f eqv?
@@ -4296,8 +4279,12 @@
       - call 1 #f null?
       - if
         - constant #f
-      - get 4
-      - call 1 #f display-indent
+      - constant 2
+      - get 5
+      - call 2 #f $\*
+      - constant #\space
+      - call 2 #f make-string
+      - call 1 #f write-string
       - set 0
       - constant "- "
       - call 1 #f display
@@ -4352,10 +4339,12 @@
   - call 2 #f display-code
 - call 1 #f $$close
 - set display-ribs
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f marshal!
+  - set 0
+  - get 0
+  - call 1 #f display-ribs
+- call 1 #f $$close
 - call 0 #f decode
-- set ribs
-- get ribs
-- call 1 #f marshal!
-- set 0
-- get ribs
-- call 1 #f display-ribs
+- call 1 #f 1
