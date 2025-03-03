@@ -98,6 +98,7 @@
   (stack-pop! stack))
 
 (define (display-deep-ribs codes depth)
+  ; TODO Handle the triforce.
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
     ((null? codes))
     (write-string (make-string depth #\space))
