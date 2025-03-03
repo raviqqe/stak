@@ -130,11 +130,11 @@
   (if (number? data)
     (write data)
     (cond
-      ((eq? (display-context-null context) data)
+      ((eq? data (display-context-null context))
         (write-string "()"))
-      ((eq? (display-context-false context) data)
+      ((eq? data (display-context-false context))
         (write-string "#f"))
-      ((eq? (display-context-true context) data)
+      ((eq? data (display-context-true context))
         (write-string "#t"))
       (else
         (write data)))))
