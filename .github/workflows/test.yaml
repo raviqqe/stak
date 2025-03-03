@@ -145,6 +145,12 @@ jobs:
         working-directory: wasm
       - run: wasm-pack pack
         working-directory: wasm
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/decode_test.sh
   profile:
     runs-on: ubuntu-latest
     steps:
@@ -159,6 +165,7 @@ jobs:
       - self_host_test
       - wasm
       - minimal
+      - decode
       - profile
     if: always()
     runs-on: ubuntu-latest
