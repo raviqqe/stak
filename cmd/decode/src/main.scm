@@ -126,7 +126,7 @@
 (define (display-context-null context)
   (car (display-context-false context)))
 
-(define (display-data context data)
+(define (display-data context data depth)
   (if (number? data)
     (write data)
     (cond
@@ -152,7 +152,7 @@
           (newline)
           (display-codes context a (+ depth 1)))
         (begin
-          (display-data context a)
+          (display-data context a (+ depth 1))
           (newline))))))
 
 (define (display-ribs codes)
