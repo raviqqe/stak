@@ -129,11 +129,13 @@
 (define (display-data context data)
   (if (number? data)
     (write data)
-    (case (rib-tag data)
-      ((1)
-        (display '()))
-      ((2)
-        (write-string "#boolean"))
+    (cond
+      ((eq? (display-context-null context) data)
+        (write-string "()"))
+      ((eq? (display-context-false context) data)
+        (write-string "#f"))
+      ((eq? (display-context-true context) data)
+        (write-string "#t"))
       (else
         (write data)))))
 
