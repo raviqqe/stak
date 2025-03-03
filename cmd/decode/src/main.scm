@@ -152,7 +152,7 @@
           (display-indent depth)
           (display "code:")
           (newline)
-          (display-code context (cdr code) depth))))))
+          (display-code context (cdr code) (+ depth 1)))))))
 
 (define (display-data context data depth)
   (if (number? data)
