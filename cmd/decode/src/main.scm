@@ -7,6 +7,8 @@
 (define nop-instruction 4)
 (define call-instruction 5)
 
+(define procedure-type 3)
+
 (define integer-base 128)
 (define number-base 16)
 (define tag-base 16)
@@ -126,6 +128,22 @@
 (define (display-context-null context)
   (car (display-context-false context)))
 
+(define (display-indent depth)
+  (write-string (make-string (* 2 depth) #\space)))
+
+(define (display-procedure context procedure depth)
+  (newline)
+  (display-indent depth)
+  (let ((code (car procedure)))
+    (if (number? code)
+      (begin
+        (display "- primitive: ")
+        (write code))
+      (begin
+        (display "- arity: ")
+        (write (car code))
+        (display-codes context (cdr code) depth)))))
+
 (define (display-data context data depth)
   (if (number? data)
     (write data)
@@ -136,13 +154,15 @@
         (write-string "#f"))
       ((eq? data (display-context-true context))
         (write-string "#t"))
+      ((eq? (rib-tag data) procedure-type)
+        (display-procedure context data depth))
       (else
         (write data)))))
 
 (define (display-codes context codes depth)
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
     ((eq? codes (display-context-null context)))
-    (write-string (make-string (* 2 depth) #\space))
+    (display-indent depth)
     (display "- ")
     (let ((a (rib-car codes)))
       (display-instruction (rib-tag codes))
