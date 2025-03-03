@@ -139,8 +139,7 @@
         (display "- primitive: ")
         (write code)
         (newline))
-      (let ((arity (car code))
-            (code (cdr code)))
+      (let ((arity (car code)))
         (display-indent depth)
         (display "- arity: ")
         (write (quotient arity 2))
@@ -148,13 +147,14 @@
         (display-indent depth)
         (display "- variadic: ")
         (write (odd? arity))
-        (unless (eq? code (display-context-null context))
-          (newline)
-          (display-code context code depth))))))
+        (newline)
+        (display-code context (cdr code) depth)))))
 
 (define (display-data context data depth)
   (if (number? data)
-    (write data)
+    (begin
+      (write data)
+      (newline))
     (cond
       ((eq? data (display-context-null context))
         (write-string "()")
