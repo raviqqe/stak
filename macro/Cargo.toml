@@ -15,7 +15,7 @@ proc-macro = true
 hot-reload = []
 
 [dependencies]
-cfg-elif = "0.6.1"
+cfg-elif = "0.6.3"
 proc-macro2 = { version = "1.0.93", features = ["proc-macro"] }
 quote = "1.0.38"
 stak-compiler = { version = "0.10.0", path = "../compiler" }

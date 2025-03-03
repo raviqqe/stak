@@ -221,9 +221,9 @@ dependencies = [
 
 [[package]]
 name = "cfg-elif"
-version = "0.6.1"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a86fdde19924340ffa833dd033b700d817916d4f1b4f582631816e32bec6383"
+checksum = "48e4c88374f9089549688b990b079b53e13178ba952757332da543601c8f2313"
 
 [[package]]
 name = "cfg-if"
