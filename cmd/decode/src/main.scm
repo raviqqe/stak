@@ -12,6 +12,21 @@
 (define tag-base 16)
 (define share-base 31)
 
+(define (display-instruction instruction)
+  (case instruction
+    ((0)
+      "constant")
+    ((1)
+      "get")
+    ((2)
+      "set")
+    ((3)
+      "if")
+    ((4)
+      "nop")
+    (else
+      "call")))
+
 (define-record-type stack
   (make-stack values)
   stack?
@@ -97,7 +112,7 @@
 
   (stack-pop! stack))
 
-(define (display-deep-ribs codes depth)
+(define (display-codes codes depth)
   ; TODO Handle the triforce.
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
     ((null? codes))
@@ -112,9 +127,9 @@
           (newline))
         (begin
           (newline)
-          (display-deep-ribs a (+ depth 2)))))))
+          (display-codes a (+ depth 2)))))))
 
 (define (display-ribs codes)
-  (display-deep-ribs codes 0))
+  (display-codes codes 0))
 
 (display-ribs (decode-ribs))
