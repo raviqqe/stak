@@ -28,9 +28,12 @@
       ((4)
         "nop")
       (else
-        (string-append
-          "call "
-          (number->string (- instruction call-instruction)))))))
+        (let ((arity (- instruction call-instruction)))
+          (string-append
+            "call "
+            (number->string (quotient arity 2))
+            " #"
+            (if (even? arity) "f" "t")))))))
 
 (define-record-type stack
   (make-stack values)
