@@ -64,7 +64,7 @@
              (e (- (modulo (quotient integer 2) 2048) 1023)))
         (* m (expt 2 e))))))
 
-(define (decode-ribs)
+(define (decode)
   (define dictionary (make-stack '()))
   (define stack (make-stack '()))
 
@@ -101,18 +101,44 @@
 
   (stack-pop! stack))
 
+; Marshalling
+
+(define-record-type marshal-context
+  (make-marshal-context false true null)
+  marshal-context?
+  (false marshal-context-false)
+  (true marshal-context-true)
+  (null marshal-context-null))
+
+(define (marshal-value context value)
+  (cond
+    ((eq? value (marshal-context-false context))
+      #f)
+    ((eq? value (marshal-context-true context))
+      #t)
+    ((eq? value (marshal-context-null context))
+      '())
+    (else
+      ; 0 as a false value
+      0)))
+
+(define (marshal-value! context value)
+  (when (rib? value)
+    (let ((a (marshal-value context (car value)))
+          (d (marshal-value context (cdr value))))
+      (if (eq? a 0)
+        (marshal-value! context (car value))
+        (set-car! value a))
+      (if (eq? d 0)
+        (marshal-value! context (cdr value))
+        (set-cdr! value d)))))
+
+(define (marshal! rib)
+  (marshal-value!
+    (make-marshal-context (car rib) (cdar rib) (caar rib))
+    rib))
+
 ; Display
-
-(define-record-type display-context
-  (make-display-context false)
-  display-context?
-  (false display-context-false))
-
-(define (display-context-true context)
-  (cdr (display-context-false context)))
-
-(define (display-context-null context)
-  (car (display-context-false context)))
 
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
@@ -138,7 +164,7 @@
             " #"
             (if (even? arity) "f" "t")))))))
 
-(define (display-procedure context procedure depth)
+(define (display-procedure procedure depth)
   (let ((code (car procedure)))
     (if (number? code)
       (begin
@@ -159,33 +185,24 @@
           (display-indent depth)
           (display "code:")
           (newline)
-          (display-code context (cdr code) (+ depth 1)))))))
+          (display-code (cdr code) (+ depth 1)))))))
 
-(define (display-data context data depth)
+(define (display-data data depth)
   (if (number? data)
     (begin
       (write data)
       (newline))
     (cond
-      ((eq? data (display-context-null context))
-        (write-string "()")
-        (newline))
-      ((eq? data (display-context-false context))
-        (write-string "#f")
-        (newline))
-      ((eq? data (display-context-true context))
-        (write-string "#t")
-        (newline))
       ((eq? (rib-tag data) procedure-type)
         (newline)
-        (display-procedure context data depth))
+        (display-procedure data depth))
       (else
         (write data)
         (newline)))))
 
-(define (display-code context code depth)
+(define (display-code code depth)
   (do ((code code (rib-cdr code)))
-    ((eq? code (display-context-null context)))
+    ((null? code))
     (display-indent depth)
     (display "- ")
     (let ((a (rib-car code)))
@@ -193,12 +210,14 @@
       (if (= (rib-tag code) if-instruction)
         (begin
           (newline)
-          (display-code context a (+ depth 1)))
+          (display-code a (+ depth 1)))
         (begin
           (write-char #\space)
-          (display-data context a (+ depth 1)))))))
+          (display-data a (+ depth 1)))))))
 
 (define (display-ribs code)
-  (display-code (make-display-context (car code)) (cdr code) 0))
+  (display-code (cdr code) 0))
 
-(display-ribs (decode-ribs))
+(define ribs (decode))
+(marshal! ribs)
+(display-ribs ribs)
