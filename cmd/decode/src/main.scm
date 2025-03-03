@@ -13,19 +13,22 @@
 (define share-base 31)
 
 (define (display-instruction instruction)
-  (case instruction
-    ((0)
-      "constant")
-    ((1)
-      "get")
-    ((2)
-      "set")
-    ((3)
-      "if")
-    ((4)
-      "nop")
-    (else
-      "call")))
+  (write-string
+    (case instruction
+      ((0)
+        "constant")
+      ((1)
+        "get")
+      ((2)
+        "set")
+      ((3)
+        "if")
+      ((4)
+        "nop")
+      (else
+        (string-append
+          "call-"
+          (number->string (- instruction call-instruction)))))))
 
 (define-record-type stack
   (make-stack values)
@@ -119,7 +122,7 @@
     (write-string (make-string depth #\space))
     (display "- ")
     (let ((a (rib-car codes)))
-      (display (rib-tag codes))
+      (display-instruction (rib-tag codes))
       (write-char #\space)
       (if (number? a)
         (begin
