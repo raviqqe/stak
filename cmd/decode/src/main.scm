@@ -115,6 +115,17 @@
 
   (stack-pop! stack))
 
+(define (display-data data)
+  (if (number? data)
+    (write data)
+    (case (rib-tag data)
+      ((1)
+        (display '()))
+      ((2)
+        (write-string "#boolean"))
+      (else
+        (write data)))))
+
 (define (display-codes codes depth)
   ; TODO Handle the triforce.
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
@@ -124,13 +135,13 @@
     (let ((a (rib-car codes)))
       (display-instruction (rib-tag codes))
       (write-char #\space)
-      (if (number? a)
-        (begin
-          (display a)
-          (newline))
+      (if (= (rib-tag codes) if-instruction)
         (begin
           (newline)
-          (display-codes a (+ depth 2)))))))
+          (display-codes a (+ depth 2)))
+        (begin
+          (display-data a)
+          (newline))))))
 
 (define (display-ribs codes)
   (display-codes codes 0))
