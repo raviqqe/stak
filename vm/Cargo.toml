@@ -20,7 +20,7 @@ cfg-elif = "0.6.1"
 nonbox = { version = "0.4.1", optional = true }
 
 [dev-dependencies]
-insta = "1.42.1"
+insta = "1.42.2"
 stak-device = { path = "../device" }
 stak-file = { path = "../file" }
 stak-macro = { path = "../macro" }
