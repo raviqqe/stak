@@ -1,10 +1,6 @@
 (import (scheme base) (scheme write) (stak base))
 
-(define constant-instruction 0)
-(define get-instruction 1)
-(define set-instruction 2)
 (define if-instruction 3)
-(define nop-instruction 4)
 (define call-instruction 5)
 
 (define procedure-type 3)
@@ -140,9 +136,6 @@
 
 ; Display
 
-(define (display-indent depth)
-  (write-string (make-string (* 2 depth) #\space)))
-
 (define (display-instruction instruction)
   (write-string
     (case instruction
@@ -194,7 +187,7 @@
 (define (display-code code depth)
   (do ((code code (rib-cdr code)))
     ((null? code))
-    (display-indent depth)
+    (write-string (make-string (* 2 depth) #\space))
     (display "- ")
     (let ((a (rib-car code)))
       (display-instruction (rib-tag code))
