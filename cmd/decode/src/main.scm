@@ -14,26 +14,7 @@
 (define tag-base 16)
 (define share-base 31)
 
-(define (display-instruction instruction)
-  (write-string
-    (case instruction
-      ((0)
-        "constant")
-      ((1)
-        "get")
-      ((2)
-        "set")
-      ((3)
-        "if")
-      ((4)
-        "nop")
-      (else
-        (let ((arity (- instruction call-instruction)))
-          (string-append
-            "call "
-            (number->string (quotient arity 2))
-            " #"
-            (if (even? arity) "f" "t")))))))
+; Decoding
 
 (define-record-type stack
   (make-stack values)
@@ -120,6 +101,8 @@
 
   (stack-pop! stack))
 
+; Display
+
 (define-record-type display-context
   (make-display-context false)
   display-context?
@@ -133,6 +116,27 @@
 
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
+
+(define (display-instruction instruction)
+  (write-string
+    (case instruction
+      ((0)
+        "constant")
+      ((1)
+        "get")
+      ((2)
+        "set")
+      ((3)
+        "if")
+      ((4)
+        "nop")
+      (else
+        (let ((arity (- instruction call-instruction)))
+          (string-append
+            "call "
+            (number->string (quotient arity 2))
+            " #"
+            (if (even? arity) "f" "t")))))))
 
 (define (display-procedure context procedure depth)
   (let ((code (car procedure)))
