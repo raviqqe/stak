@@ -142,7 +142,7 @@
 (define (display-codes context codes depth)
   (do ((codes (rib-cdr codes) (rib-cdr codes)))
     ((eq? codes (display-context-null context)))
-    (write-string (make-string depth #\space))
+    (write-string (make-string (* 2 depth) #\space))
     (display "- ")
     (let ((a (rib-car codes)))
       (display-instruction (rib-tag codes))
@@ -150,7 +150,7 @@
       (if (= (rib-tag codes) if-instruction)
         (begin
           (newline)
-          (display-codes context a (+ depth 2)))
+          (display-codes context a (+ depth 1)))
         (begin
           (display-data context a)
           (newline))))))
