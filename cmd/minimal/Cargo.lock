@@ -16,9 +16,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "cfg-elif"
-version = "0.6.1"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a86fdde19924340ffa833dd033b700d817916d4f1b4f582631816e32bec6383"
+checksum = "48e4c88374f9089549688b990b079b53e13178ba952757332da543601c8f2313"
 
 [[package]]
 name = "errno"
@@ -69,14 +69,14 @@ checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
 name = "mstak"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "libc",
  "stak-device",
@@ -90,9 +90,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.93"
+version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60946a68e5f9d28b0dc1c21bb8a97ee7d018a8b322fa57838ba31cc878e22d99"
+checksum = "a31971752e70b8b2686d7e46ec17fb38dad4051d94024c88df49b667caea9c84"
 dependencies = [
  "unicode-ident",
 ]
@@ -127,7 +127,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -140,11 +140,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.10.0"
+version = "0.10.1"
 
 [[package]]
 name = "stak-device"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "heapless",
  "rustix",
@@ -161,7 +161,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "libm",
  "stak-vm",
@@ -169,7 +169,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "cfg-elif",
  "proc-macro2",
@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -190,21 +190,21 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -217,7 +217,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -233,7 +233,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -241,7 +241,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "libc",
  "rustix",
@@ -249,7 +249,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "cfg-elif",
 ]

@@ -13,7 +13,7 @@ default = ["float"]
 float = ["stak-sac/float"]
 
 [dependencies]
-stak-sac = { version = "0.10.0", path = "../../sac", features = ["std"] }
+stak-sac = { version = "0.10.1", path = "../../sac", features = ["std"] }
 
 [lints]
 workspace = true

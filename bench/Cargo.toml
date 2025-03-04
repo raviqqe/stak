@@ -5,14 +5,14 @@ publish = false
 edition.workspace = true
 
 [dependencies]
-stak = { version = "0.10.0", path = "../root" }
-stak-compiler = { version = "0.10.0", path = "../compiler" }
+stak = { version = "0.10.1", path = "../root" }
+stak-compiler = { version = "0.10.1", path = "../compiler" }
 
 [dev-dependencies]
 criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
 
 [build-dependencies]
-stak-build = { version = "0.10.0", path = "../build" }
+stak-build = { version = "0.10.1", path = "../build" }
 
 [lints]
 workspace = true
