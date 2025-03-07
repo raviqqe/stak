@@ -10,7 +10,7 @@ repository.workspace = true
 
 [dependencies]
 libc = { version = "0.2.170", default-features = false }
-rustix = { version = "0.38.44", default-features = false, features = [
+rustix = { version = "1.0.0", default-features = false, features = [
   "fs",
   "mm",
 ] }
