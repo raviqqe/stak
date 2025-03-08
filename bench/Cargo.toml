@@ -5,6 +5,7 @@ publish = false
 edition.workspace = true
 
 [dependencies]
+mlua = { version = "0.10.3", features = ["lua54"] }
 stak = { version = "0.10.1", path = "../root" }
 stak-compiler = { version = "0.10.1", path = "../compiler" }
 
@@ -19,4 +20,8 @@ workspace = true
 
 [[bench]]
 name = "main"
+harness = false
+
+[[bench]]
+name = "embed"
 harness = false

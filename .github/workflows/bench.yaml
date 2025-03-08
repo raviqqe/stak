@@ -30,6 +30,12 @@ jobs:
         with:
           python-version: "3.12"
       - run: tools/bench.sh ${{ matrix.options }}
+  code_size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/code_size_bench.sh
   codspeed:
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +50,7 @@ jobs:
   bench:
     needs:
       - interpret
+      - code_size
       - codspeed
     if: always()
     runs-on: ubuntu-latest

@@ -11,6 +11,7 @@ The miniature, embeddable R7RS Scheme implementation in Rust
 Stak Scheme aims to be:
 
 - An embeddable Scheme interpreter for Rust with very small memory footprint and reasonable performance
+  - Its virtual machine (VM) is written in only 1.2 KLOC in Rust.
 - The minimal implementation of [the R7RS-small standard][r7rs-small]
   - A subset of [Chibi Scheme](https://github.com/ashinn/chibi-scheme), [Gauche](https://github.com/shirok/Gauche), and [Guile](https://www.gnu.org/software/guile/)
 - A portable scripting environment that supports even no-`std` and no-`alloc` platforms
@@ -165,6 +166,38 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
     engine.run(module)
 }
 ```
+
+## Performance
+
+### Computational benchmarks
+
+The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For all the benchmark results, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
+
+- Baseline: Python 3.12
+- Environment: Ubuntu 24.04, x86-64
+
+| Benchmark        | Stak (minimal [^1]) | Stak (full [^2]) |
+| ---------------- | ------------------: | ---------------: |
+| Fibonacci number |        2.09x slower |     3.19x slower |
+| Integer sum      |        2.26x slower |     3.97x slower |
+| Tak function     |        2.41x slower |     4.79x slower |
+
+### Startup benchmarks
+
+Although Stak Scheme's minimality comes at the cost of speed, it is very fast at startup.
+
+This means that Stak Scheme is suitable for embedding many small pieces of Scheme programs in Rust due to its tiny overhead on program initialization.
+
+- Baseline: Python 3.12
+- Environment: Ubuntu 24.04, x86-64
+
+| Benchmark     | Stak (full [^2]) | Lua 5.4 |
+| ------------- | ---------------: | ------: |
+| Empty program |         0.568 us | 26.3 us |
+
+[^1]: Minimal: Integer-only support + standard libraries based on libc
+
+[^2]: Full: Floating-point number support + standard libraries based on the `std` library in Rust
 
 ## References
 
