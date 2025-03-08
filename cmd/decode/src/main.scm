@@ -1,4 +1,8 @@
-(import (scheme base) (scheme write) (stak base))
+(import
+  (scheme base)
+  (scheme process-context)
+  (scheme write)
+  (stak base))
 
 (define if-instruction 3)
 (define call-instruction 5)
