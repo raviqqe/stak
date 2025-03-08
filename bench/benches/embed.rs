@@ -55,10 +55,6 @@ fn embed(criterion: &mut Criterion) {
     }
 }
 
-criterion_group! {
-    name = benches;
-    config = Criterion::default().sample_size(10);
-    targets = embed
-}
+criterion_group!(benches, embed);
 
 criterion_main!(benches);
