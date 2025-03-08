@@ -202,6 +202,17 @@
 (define (display-ribs code)
   (display-code (cdr code) 0))
 
-(let ((ribs (decode)))
-  (marshal! ribs)
-  (display-ribs ribs))
+(define (main)
+  (let ((ribs (decode)))
+    (marshal! ribs)
+    (display-ribs ribs)))
+
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "The Stak Scheme bytecode decoder.\n\n")
+    (write-string "Usage: stak-decode < BYTECODE_FILE\n")
+    (exit)))
+
+(main)
