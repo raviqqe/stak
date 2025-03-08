@@ -3,5 +3,5 @@
 set -e
 
 brew install --overwrite pkgconf
-brew install uutils-coreutils uutils-findutils
+brew install lua@5.4 uutils-coreutils uutils-findutils
 cargo install stak
