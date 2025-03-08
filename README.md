@@ -167,6 +167,20 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
 }
 ```
 
+## Performance
+
+The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For full benchmarks, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
+
+| Benchmark        | Minimal [^1] |    Full [^2] |
+| ---------------- | -----------: | -----------: |
+| Fibonacci number | 2.07x slower | 3.19x slower |
+| Integer sum      | 2.16x slower | 4.19x slower |
+| Tak function     | 2.52x slower | 4.40x slower |
+
+[^1]: Minimal: Integer-only support + standard libraries based on libc
+
+[^2]: Full: Floating-point number support + standard libraries based on the `std` library in Rust
+
 ## References
 
 - This project is based on [Ribbit Scheme][ribbit], the small and portable R4RS implementation.
