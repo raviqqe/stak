@@ -48,6 +48,7 @@
     "indoc",
     "insta",
     "isize",
+    "kloc",
     "lcov",
     "letrec",
     "libc",
