@@ -6,7 +6,7 @@ set -e
 
 brew install comby
 
-comby -in-place 'mod tests { :[1] }' '' .rs
+comby -in-place 'mod tests { ... }' '' .rs
 cargo install tokei
 cargo fmt --all
 
