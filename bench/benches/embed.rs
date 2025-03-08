@@ -56,5 +56,4 @@ fn embed(criterion: &mut Criterion) {
 }
 
 criterion_group!(benches, embed);
-
 criterion_main!(benches);
