@@ -3265,6 +3265,125 @@
   - call 2 #f write-string
 - call 1 #f $$close
 - set write-value
+- constant procedure 1 #f
+  - call 0 #f 0
+- call 1 #f $$close
+- set force
+- get procedure?
+- set promise?
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f promise?
+  - if
+    - get 0
+  - constant procedure 0 #f
+    - get 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- set make-promise
+- constant 40
+- call 1 #f primitive
+- set $halt
+- constant 300
+- call 1 #f primitive
+- set $command-line
+- constant 301
+- call 1 #f primitive
+- set $get-environment-variables
+- constant procedure 2 #f
+  - constant procedure 0 #f
+    - get 2
+    - if
+      - get 1
+    - get code-points->string
+    - call 0 #f $command-line
+    - call 2 #f map
+    - set 2
+    - constant #t
+    - set 3
+    - get 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- constant #f
+- constant #f
+- call 2 #f 2
+- set 1
+- set command-line
+- constant procedure 2 #f
+  - constant procedure 0 #f
+    - get 2
+    - if
+      - get 1
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f car
+      - call 1 #f code-points->string
+      - get 1
+      - call 1 #f cdr
+      - call 1 #f code-points->string
+      - call 2 #f cons
+    - call 1 #f $$close
+    - call 0 #f $get-environment-variables
+    - call 2 #f map
+    - set 2
+    - constant #t
+    - set 3
+    - get 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- constant #f
+- constant #f
+- call 2 #f 2
+- set 1
+- set get-environment-variables
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+      - call 1 #f cdr
+    - constant #f
+  - call 1 #f $$close
+  - get 1
+  - call 0 #f get-environment-variables
+  - call 2 #f assoc
+  - call 1 #f 1
+- call 1 #f $$close
+- set get-environment-variable
+- constant procedure 0 #t
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - get 2
+    - call 1 #f car
+    - constant #t
+    - call 2 #f eq?
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f null?
+  - call 1 #f 1
+  - set 1
+  - if
+    - get procedure-type
+    - constant 0
+    - constant ()
+    - call 2 #f cons
+    - constant ()
+    - call 3 #f data-rib
+    - call 0 #f 0
+  - call 0 #f $halt
+- call 1 #f $$close
+- set emergency-exit
+- constant procedure 0 #t
+  - constant procedure 0 #f
+    - get emergency-exit
+    - get 2
+    - call 2 #f apply
+  - call 1 #f $$close
+  - call 1 #f unwind
+- call 1 #f $$close
+- set exit
 - constant (("alarm" . #\alarm) ("backspace" . #\backspace) ("delete" . #\delete) ("escape" . #\escape) ("newline" . #\newline) ("null" . #\null) ("return" . #\return) ("space" . #\space) ("tab" . #\tab))
 - set special-chars
 - constant procedure 1 #f
@@ -4339,12 +4458,44 @@
   - call 2 #f display-code
 - call 1 #f $$close
 - set display-ribs
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f marshal!
-  - set 0
-  - get 0
-  - call 1 #f display-ribs
+- constant procedure 0 #f
+  - constant procedure 1 #f
+    - get 0
+    - call 1 #f marshal!
+    - set 0
+    - get 0
+    - call 1 #f display-ribs
+  - call 1 #f $$close
+  - call 0 #f decode
+  - call 1 #f 1
 - call 1 #f $$close
-- call 0 #f decode
+- set main
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - constant "--help"
+    - get 3
+    - call 2 #f member
+  - call 1 #f $$close
+  - constant "-h"
+  - get 2
+  - call 2 #f member
+  - call 1 #f 1
+  - set 1
+  - if
+    - constant "The Stak Scheme bytecode decoder.\n\n"
+    - call 1 #f write-string
+    - set 0
+    - constant "Usage: stak-decode < BYTECODE_FILE\n"
+    - call 1 #f write-string
+    - set 0
+    - call 0 #f exit
+  - constant #f
+- call 1 #f $$close
+- call 0 #f command-line
 - call 1 #f 1
+- set 1
+- set 0
+- call 0 #f main
