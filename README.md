@@ -193,7 +193,7 @@ This means that Stak Scheme is suitable for embedding many small pieces of Schem
 
 | Benchmark     | Stak (full [^2]) | Lua 5.4 |
 | ------------- | ---------------: | ------: |
-| Empty program |          18.9 us | 26.0 us |
+| Empty program |         0.568 us | 26.3 us |
 
 [^1]: Minimal: Integer-only support + standard libraries based on libc
 
