@@ -174,6 +174,7 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
 The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For full benchmarks, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
 
 - Baseline: Python 3.12
+- Environment: Ubuntu 24.04, x86-64
 
 | Benchmark        | Minimal [^1] |    Full [^2] |
 | ---------------- | -----------: | -----------: |
@@ -188,6 +189,7 @@ Although Stak Scheme's minimality comes at the cost of speed, it is extremely fa
 This means that Stak Scheme is suitable for embedding many pieces of small Scheme programs in Rust due to its tiny overhead on program initialization.
 
 - Baseline: Python 3.12
+- Environment: Ubuntu 24.04, x86-64
 
 | Benchmark     | Minimal [^1] |   Full [^2] |
 | ------------- | -----------: | ----------: |
