@@ -7959,18 +7959,15 @@
     - constant #f
     - call 2 #f eq?
   - call 1 #f $$close
-  - get car
-  - get primitives
-  - call 2 #f map
-  - get 3
+  - get 2
   - call 1 #f find-symbols
-  - get 8
+  - get 7
   - call 1 #f find-quoted-symbols
-  - get 8
+  - get 7
   - call 1 #f find-quoted-symbols
-  - get 8
+  - get 7
   - call 1 #f find-quoted-symbols
-  - call 5 #f append
+  - call 4 #f append
   - call 1 #f unique
   - call 2 #f filter
   - get 3
