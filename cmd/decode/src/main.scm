@@ -4,10 +4,9 @@
   (scheme write)
   (stak base))
 
+(define constant-instruction 0)
 (define if-instruction 3)
 (define call-instruction 5)
-
-(define procedure-type 3)
 
 (define integer-base 128)
 (define number-base 16)
@@ -177,16 +176,15 @@
         (display-code (cdr code) depth)))))
 
 (define (display-data data depth)
-  (if (number? data)
-    (begin
+  (cond
+    ((number? data)
       (write data)
       (newline))
-    (cond
-      ((eq? (rib-tag data) procedure-type)
-        (display-procedure data depth))
-      (else
-        (write data)
-        (newline)))))
+    ((procedure? data)
+      (display-procedure data depth))
+    (else
+      (write data)
+      (newline))))
 
 (define (display-code code depth)
   (do ((code code (rib-cdr code)))
