@@ -50,6 +50,7 @@ jobs:
   bench:
     needs:
       - interpret
+      - code_size
       - codspeed
     if: always()
     runs-on: ubuntu-latest
