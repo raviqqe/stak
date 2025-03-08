@@ -193,8 +193,8 @@ This means that Stak Scheme is suitable for embedding many pieces of small Schem
 
 | Benchmark     | Minimal [^1] |   Full [^2] |
 | ------------- | -----------: | ----------: |
-| Hello, world! |  TODO slower | TODO slower |
-| Empty program |  TODO slower | TODO slower |
+| Empty program |  TODO faster | TODO faster |
+| Hello, world! |  TODO faster | TODO faster |
 
 [^1]: Minimal: Integer-only support + standard libraries based on libc
 
