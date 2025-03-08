@@ -3784,12 +3784,12 @@
 - set write-vector
 - get write
 - set write-value
+- constant 0
+- set constant-instruction
 - constant 3
 - set if-instruction
 - constant 5
 - set call-instruction
-- constant 3
-- set procedure-type
 - constant 128
 - set integer-base
 - constant 16
@@ -4378,9 +4378,7 @@
     - set 0
     - call 0 #f newline
   - get 1
-  - call 1 #f rib-tag
-  - get procedure-type
-  - call 2 #f eq?
+  - call 1 #f procedure?
   - if
     - get 1
     - get 1
