@@ -13,12 +13,13 @@ use stak::{
     vm::Vm,
 };
 
-const HEAP_SIZE: usize = 1 << 18;
-
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 
-fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
-    let mut heap = [Default::default(); HEAP_SIZE];
+// Interesting observation here is that startup latencies get higher
+// significantly as we increase heap sizes. So we should keep bytecode sizes of
+// Scheme programs as small as possible to minimize the latencies.
+fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallError> {
+    let mut heap = [Default::default(); N];
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
@@ -35,7 +36,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 
 fn stak_empty(bencher: &mut Bencher) {
     bencher.iter(|| {
-        run(black_box(&EMPTY_MODULE)).unwrap();
+        run::<{ 1 << 10 }>(black_box(&EMPTY_MODULE)).unwrap();
     })
 }
 
