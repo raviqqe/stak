@@ -191,7 +191,7 @@ This means that Stak Scheme is suitable for embedding many small pieces of Schem
 - Baseline: Python 3.12
 - Environment: Ubuntu 24.04, x86-64
 
-| Benchmark     | Stak (full [^1]) | Lua 5.4 |
+| Benchmark     | Stak (full [^2]) | Lua 5.4 |
 | ------------- | ---------------: | ------: |
 | Empty program |          18.9 us | 26.0 us |
 
