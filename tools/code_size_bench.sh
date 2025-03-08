@@ -5,9 +5,9 @@ set -e
 [ -n "$CI" ]
 
 brew install comby
+cargo install tokei
 
 comby -in-place '#[cfg(test)] mod tests { ... }' '' .rs
-cargo install tokei
 cargo fmt --all
 
 for cargo_file in $(find . -name Cargo.toml); do
