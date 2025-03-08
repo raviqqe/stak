@@ -56,6 +56,7 @@
     "memq",
     "memv",
     "minifier",
+    "mlua",
     "mmap",
     "mmaps",
     "mrun",
