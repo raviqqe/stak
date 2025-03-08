@@ -176,11 +176,11 @@ The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computatio
 - Baseline: Python 3.12
 - Environment: Ubuntu 24.04, x86-64
 
-| Benchmark        | Minimal [^1] |    Full [^2] |
-| ---------------- | -----------: | -----------: |
-| Fibonacci number | 2.09x slower | 3.19x slower |
-| Integer sum      | 2.26x slower | 3.97x slower |
-| Tak function     | 2.41x slower | 4.79x slower |
+| Benchmark        | Stak (minimal [^1]) | Stak (full [^2]) |
+| ---------------- | ------------------: | ---------------: |
+| Fibonacci number |        2.09x slower |     3.19x slower |
+| Integer sum      |        2.26x slower |     3.97x slower |
+| Tak function     |        2.41x slower |     4.79x slower |
 
 ### Startup benchmarks
 
@@ -191,10 +191,9 @@ This means that Stak Scheme is suitable for embedding many pieces of small Schem
 - Baseline: Python 3.12
 - Environment: Ubuntu 24.04, x86-64
 
-| Benchmark     | Minimal [^1] |   Full [^2] |
-| ------------- | -----------: | ----------: |
-| Empty program |  TODO faster | TODO faster |
-| Hello, world! |  TODO faster | TODO faster |
+| Benchmark     | Stak (full [^1]) | Lua 5.4 |
+| ------------- | ---------------: | ------: |
+| Empty program |          18.9 us | 26.0 us |
 
 [^1]: Minimal: Integer-only support + standard libraries based on libc
 

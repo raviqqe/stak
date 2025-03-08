@@ -71,4 +71,5 @@ criterion_group! {
     config = Criterion::default().sample_size(10);
     targets = stak, stak_compiler
 }
+
 criterion_main!(benches);
