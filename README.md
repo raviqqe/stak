@@ -184,7 +184,7 @@ The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computatio
 
 ### Startup benchmarks
 
-Although Stak Scheme's minimality comes at the cost of speed, it is extremely fast at startup.
+Although Stak Scheme's minimality comes at the cost of speed, it is very fast at startup.
 
 This means that Stak Scheme is suitable for embedding many pieces of small Scheme programs in Rust due to its tiny overhead on program initialization.
 
