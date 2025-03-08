@@ -169,13 +169,28 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
 
 ## Performance
 
+### Computational benchmarks
+
 The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For full benchmarks, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
+
+- Against Python 3
 
 | Benchmark        | Minimal [^1] |    Full [^2] |
 | ---------------- | -----------: | -----------: |
 | Fibonacci number | 2.07x slower | 3.19x slower |
 | Integer sum      | 2.16x slower | 4.19x slower |
 | Tak function     | 2.52x slower | 4.40x slower |
+
+### Startup benchmarks
+
+Although Stak Scheme's minimality comes at the cost of speed, it is extremely fast at startup.
+
+This means that Stak Scheme is suitable for embedding many pieces of small Scheme programs in Rust due to its tiny overhead on program initialization.
+
+| Benchmark     | Minimal [^1] |   Full [^2] |
+| ------------- | -----------: | ----------: |
+| Hello, world! |  TODO slower | TODO slower |
+| Empty program |  TODO slower | TODO slower |
 
 [^1]: Minimal: Integer-only support + standard libraries based on libc
 
