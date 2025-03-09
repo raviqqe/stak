@@ -115,14 +115,6 @@
         (cons x xs)
         xs))))
 
-(define (fold-left f y xs)
-  (if (null? xs)
-    y
-    (fold-left
-      f
-      (f y (car xs))
-      (cdr xs))))
-
 (define (list-head xs n)
   (if (zero? n)
     '()
@@ -1020,6 +1012,24 @@
          (expression (optimize-expression context expression)))
     (values expression (optimization-context-literals context))))
 
+; Feature detection
+
+(define (detect-features expression)
+  (cond
+    ((and
+        (pair? expression)
+        (null? (cdr expression))
+        (memq (car expression) '($$dynamic-symbols $$libraries $$macros $$symbols)))
+      (list (car expression)))
+    ((pair? expression)
+      (let loop ((expression expression) (features '()))
+        (let ((features (unique (append features (detect-features (car expression))))))
+          (if (pair? (cdr expression))
+            (loop (cdr expression) features)
+            features))))
+    (else
+      '())))
+
 ; Compilation
 
 ;; Context
@@ -1631,6 +1641,8 @@
   (define-values (expression1 libraries) (expand-libraries (read-source)))
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
+
+  (debug (detect-features expression3))
 
   (encode
     (marshal
