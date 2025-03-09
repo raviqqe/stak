@@ -1651,8 +1651,6 @@
   (define-values (expression3 optimizers) (optimize expression2))
   (define features (detect-features expression3))
 
-  (debug features)
-
   (encode
     (marshal
       (cons-rib
