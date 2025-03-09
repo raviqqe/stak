@@ -16,7 +16,7 @@ std = []
 rustix = { version = "1.0.0", default-features = false, features = [
   "time",
 ], optional = true }
-stak-vm = { version = "0.10.1", path = "../vm" }
+stak-vm = { version = "0.10.2", path = "../vm" }
 
 [lints]
 workspace = true

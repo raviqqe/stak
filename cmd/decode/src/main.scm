@@ -7,8 +7,6 @@
 (define if-instruction 3)
 (define call-instruction 5)
 
-(define procedure-type 3)
-
 (define integer-base 128)
 (define number-base 16)
 (define tag-base 16)
@@ -140,6 +138,9 @@
 
 ; Display
 
+(define (display-indent depth)
+  (write-string (make-string (* 2 depth) #\space)))
+
 (define (display-instruction instruction)
   (write-string
     (case instruction
@@ -169,7 +170,7 @@
         (write code)
         (newline))
       (let ((arity (car code)))
-        (display "procedure ")
+        (write-string "procedure ")
         (write (quotient arity 2))
         (write-char #\space)
         (write (odd? arity))
@@ -177,31 +178,45 @@
         (display-code (cdr code) depth)))))
 
 (define (display-data data depth)
-  (if (number? data)
-    (begin
+  (cond
+    ((number? data)
       (write data)
       (newline))
-    (cond
-      ((eq? (rib-tag data) procedure-type)
-        (display-procedure data depth))
-      (else
-        (write data)
-        (newline)))))
+    ((procedure? data)
+      (display-procedure data depth))
+    (else
+      (write data)
+      (newline))))
+
+(define (display-list xs depth)
+  (do ((xs xs (cdr xs)))
+    ((null? xs))
+    (display-indent depth)
+    (display "- ")
+    (display-top-data (car xs) depth)))
+
+(define (display-top-data data depth)
+  (if (and (pair? data) (list? data))
+    (begin
+      (write-string "list")
+      (newline)
+      (display-list data (+ depth 1)))
+    (display-data data depth)))
 
 (define (display-code code depth)
   (do ((code code (rib-cdr code)))
     ((null? code))
-    (write-string (make-string (* 2 depth) #\space))
+    (display-indent depth)
     (display "- ")
-    (let ((a (rib-car code)))
+    (let ((operand (rib-car code)))
       (display-instruction (rib-tag code))
       (if (= (rib-tag code) if-instruction)
         (begin
           (newline)
-          (display-code a (+ depth 1)))
+          (display-code operand (+ depth 1)))
         (begin
           (write-char #\space)
-          (display-data a (+ depth 1)))))))
+          (display-top-data operand (+ depth 1)))))))
 
 (define (display-ribs code)
   (display-code (cdr code) 0))
