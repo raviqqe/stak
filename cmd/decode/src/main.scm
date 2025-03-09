@@ -185,19 +185,22 @@
       (write data)
       (newline))))
 
+(define (multi-line-list? value)
+  (and (pair? value) (list? value)))
+
 (define (display-list xs depth)
   (do ((xs xs (cdr xs)))
     ((null? xs))
     (write-string (make-string (* 2 depth) #\space))
     (display "- ")
-    (display-data (car xs) depth)))
+    (display-top-data (car xs) depth)))
 
-(define (display-operand data depth)
-  (if (and (pair? data) (list? data))
+(define (display-top-data data depth)
+  (if (multi-line-list? data)
     (begin
       (write-string "list")
       (newline)
-      (display-list data depth))
+      (display-list data (+ depth 1)))
     (display-data data depth)))
 
 (define (display-code code depth)
@@ -213,7 +216,7 @@
           (display-code operand (+ depth 1)))
         (begin
           (write-char #\space)
-          (display-operand operand (+ depth 1)))))))
+          (display-top-data operand (+ depth 1)))))))
 
 (define (display-ribs code)
   (display-code (cdr code) 0))
