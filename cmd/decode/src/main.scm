@@ -138,6 +138,9 @@
 
 ; Display
 
+(define (display-indent depth)
+  (write-string (make-string (* 2 depth) #\space)))
+
 (define (display-instruction instruction)
   (write-string
     (case instruction
@@ -185,18 +188,15 @@
       (write data)
       (newline))))
 
-(define (multi-line-list? value)
-  (and (pair? value) (list? value)))
-
 (define (display-list xs depth)
   (do ((xs xs (cdr xs)))
     ((null? xs))
-    (write-string (make-string (* 2 depth) #\space))
+    (display-indent depth)
     (display "- ")
     (display-top-data (car xs) depth)))
 
 (define (display-top-data data depth)
-  (if (multi-line-list? data)
+  (if (and (pair? data) (list? data))
     (begin
       (write-string "list")
       (newline)
@@ -206,7 +206,7 @@
 (define (display-code code depth)
   (do ((code code (rib-cdr code)))
     ((null? code))
-    (write-string (make-string (* 2 depth) #\space))
+    (display-indent depth)
     (display "- ")
     (let ((operand (rib-car code)))
       (display-instruction (rib-tag code))

@@ -4644,6 +4644,15 @@
 - call 1 #f $$close
 - set marshal!
 - constant procedure 1 #f
+  - constant 2
+  - get 1
+  - call 2 #f $\*
+  - constant #\space
+  - call 2 #f make-string
+  - call 1 #f write-string
+- call 1 #f $$close
+- set display-indent
+- constant procedure 1 #f
   - get 0
   - constant 0
   - call 2 #f eqv?
@@ -4761,15 +4770,6 @@
   - call 0 #f newline
 - call 1 #f $$close
 - set display-data
-- constant procedure 1 #f
-  - get 0
-  - call 1 #f pair?
-  - if
-    - get 0
-    - call 1 #f list?
-  - constant #f
-- call 1 #f $$close
-- set multi-line-list?
 - constant procedure 2 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -4777,12 +4777,8 @@
       - call 1 #f null?
       - if
         - constant #f
-      - constant 2
-      - get 5
-      - call 2 #f $\*
-      - constant #\space
-      - call 2 #f make-string
-      - call 1 #f write-string
+      - get 4
+      - call 1 #f display-indent
       - set 0
       - constant "- "
       - call 1 #f display
@@ -4806,7 +4802,25 @@
 - set display-list
 - constant procedure 2 #f
   - get 1
-  - call 1 #f multi-line-list?
+  - call 1 #f pair?
+  - if
+    - get 1
+    - call 1 #f list?
+    - if
+      - constant "list"
+      - call 1 #f write-string
+      - set 0
+      - call 0 #f newline
+      - set 0
+      - get 1
+      - get 1
+      - constant 1
+      - call 2 #f $+
+      - call 2 #f display-list
+    - get 1
+    - get 1
+    - call 2 #f display-data
+  - constant #f
   - if
     - constant "list"
     - call 1 #f write-string
@@ -4830,12 +4844,8 @@
       - call 1 #f null?
       - if
         - constant #f
-      - constant 2
-      - get 5
-      - call 2 #f $\*
-      - constant #\space
-      - call 2 #f make-string
-      - call 1 #f write-string
+      - get 4
+      - call 1 #f display-indent
       - set 0
       - constant "- "
       - call 1 #f display
