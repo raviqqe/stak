@@ -1014,13 +1014,21 @@
 
 ; Feature detection
 
+(define features
+  '(($$dynamic-symbols . dynamic-symbols)
+    ($$libraries . libraries)
+    ($$macros . macros)
+    ($$symbols . symbols)))
+
 (define (detect-features expression)
   (cond
     ((and
         (pair? expression)
         (null? (cdr expression))
-        (memq (car expression) '($$dynamic-symbols $$libraries $$macros $$symbols)))
-      (list (car expression)))
+        (assq (car expression) features))
+      =>
+      (lambda (pair)
+        (list (cdr pair))))
     ((pair? expression)
       (let loop ((expression expression) (features '()))
         (let ((features (unique (append features (detect-features (car expression))))))
@@ -1249,7 +1257,7 @@
     (else
       (constant-rib expression continuation))))
 
-(define (compile libraries macros optimizers dynamic-symbols expression)
+(define (compile features libraries macros optimizers dynamic-symbols expression)
   (compile-expression
     (make-compilation-context
       '()
@@ -1643,13 +1651,15 @@
   (define-values (expression3 optimizers) (optimize expression2))
   (define features (detect-features expression3))
 
+  (debug features)
+
   (encode
     (marshal
       (cons-rib
         #f
         (build-primitives
           primitives
-          (compile libraries macros optimizers dynamic-symbols expression3))))))
+          (compile features libraries macros optimizers dynamic-symbols expression3))))))
 
 (let ((arguments (command-line)))
   (when (or
