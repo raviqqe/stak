@@ -194,7 +194,7 @@
     (display-data (car xs) depth)))
 
 (define (display-operand data depth)
-  (if (list? data)
+  (if (and (pair? data) (list? data))
     (begin
       (write-string "list")
       (newline)
