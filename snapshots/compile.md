@@ -4837,13 +4837,27 @@
 - constant 5
 - set call-instruction
 - constant list
-  - ($$rib 0)
-  - ($$close 1)
-  - ($$< 9)
-  - ($$+ 10)
-  - ($$- 11)
-  - ($$\* 12)
-  - ($$/ 13)
+  - list
+    - $$rib
+    - 0
+  - list
+    - $$close
+    - 1
+  - list
+    - $$<
+    - 9
+  - list
+    - $$+
+    - 10
+  - list
+    - $$-
+    - 11
+  - list
+    - $$\*
+    - 12
+  - list
+    - $$/
+    - 13
 - set primitives
 - constant 0
 - set pair-type

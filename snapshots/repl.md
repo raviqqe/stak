@@ -6009,20 +6009,522 @@
     - call 1 #f $$close
     - set merge-environments
     - constant list
-      - ((stak rust))
-      - ((scheme eval) (environment . environment) (eval . eval))
-      - ((scheme repl) (interaction-environment . interaction-environment))
-      - ((scheme time) (current-jiffy . current-jiffy) (current-second . current-second) (jiffies-per-second . jiffies-per-second))
-      - ((scheme file) (call-with-input-file . call-with-input-file) (call-with-output-file . call-with-output-file) (delete-file . delete-file) (file-exists? . file-exists?) (open-binary-input-file . open-binary-input-file) (open-binary-output-file . open-binary-output-file) (open-input-file . open-input-file) (open-output-file . open-output-file) (with-input-from-file . with-input-from-file) (with-output-to-file . with-output-to-file))
-      - ((scheme process-context) (command-line . command-line) (emergency-exit . emergency-exit) (exit . exit) (get-environment-variable . get-environment-variable) (get-environment-variables . get-environment-variables))
-      - ((scheme lazy) (delay . delay) (delay-force . delay-force) (force . force) (promise? . promise?) (make-promise . make-promise))
-      - ((scheme write) (display . display) (write . write))
-      - ((scheme read) (read . read))
-      - ((scheme char) (char-whitespace? . char-whitespace?) (special-chars . special-chars))
-      - ((scheme cxr) (caaar . caaar) (caadr . caadr) (cadar . cadar) (caddr . caddr) (cdaar . cdaar) (cdadr . cdadr) (cddar . cddar) (cdddr . cdddr) (caaaar . caaaar) (caaadr . caaadr) (caadar . caadar) (caaddr . caaddr) (cadaar . cadaar) (cadadr . cadadr) (caddar . caddar) (cadddr . cadddr) (cdaaar . cdaaar) (cdaadr . cdaadr) (cdadar . cdadar) (cdaddr . cdaddr) (cddaar . cddaar) (cddadr . cddadr) (cdddar . cdddar) (cddddr . cddddr))
-      - ((scheme inexact) (exp . exp) (log . log))
-      - ((scheme base) (syntax-rules . syntax-rules) (define-syntax . define-syntax) (_ . _) (... . ...) (define . define) (lambda . lambda) (let-syntax . let-syntax) (letrec-syntax . letrec-syntax) (begin . begin) (quasiquote . quasiquote) (unquote . unquote) (unquote-splicing . unquote-splicing) (quote . quote) (set! . set!) (cond-expand . cond-expand) (let . let) (let* . let*) (letrec . letrec) (letrec* . letrec*) (define-values . define-values) (let-values . let-values) (let*-values . let*-values) (if . if) (cond . cond) (case . case) (else . else) (=> . =>) (and . and) (or . or) (when . when) (unless . unless) (do . do) (base . base) (library . library) (r7rs . r7rs) (scheme . scheme) (stak . stak) (rib . rib) (cons . cons) (close . close) (rib? . rib?) (rib-car . rib-car) (rib-cdr . rib-cdr) (rib-tag . rib-tag) (rib-set-car! . rib-set-car!) (rib-set-cdr! . rib-set-cdr!) (eq? . eq?) (apply . apply) (data-rib . data-rib) (eqv? . eqv?) (equal? . equal?) (procedure? . procedure?) (boolean? . boolean?) (not . not) (integer? . integer?) (rational? . rational?) (real? . real?) (complex? . complex?) (number? . number?) (exact? . exact?) (inexact? . inexact?) (zero? . zero?) (positive? . positive?) (negative? . negative?) (even? . even?) (odd? . odd?) (+ . +) (- . -) (_ . _) (/ . /) (remainder . remainder) (quotient . quotient) (truncate-remainder . truncate-remainder) (truncate-quotient . truncate-quotient) (modulo . modulo) (floor-remainder . floor-remainder) (truncate . truncate) (floor . floor) (ceiling . ceiling) (round . round) (exact . exact) (inexact . inexact) (abs . abs) (expt . expt) (= . =) (< . <) (> . >) (<= . <=) (>= . >=) (min . min) (max . max) (char? . char?) (integer->char . integer->char) (char->integer . char->integer) (char=? . char=?) (char<? . char<?) (char<=? . char<=?) (char>? . char>?) (char>=? . char>=?) (null? . null?) (pair? . pair?) (list? . list?) (car . car) (cdr . cdr) (set-car! . set-car!) (set-cdr! . set-cdr!) (caar . caar) (cadr . cadr) (cdar . cdar) (cddr . cddr) (list . list) (make-list . make-list) (length . length) (map . map) (for-each . for-each) (list-ref . list-ref) (list-set! . list-set!) (list-tail . list-tail) (member . member) (memq . memq) (memv . memv) (assoc . assoc) (assq . assq) (assv . assv) (append . append) (reverse . reverse) (fold-left . fold-left) (fold-right . fold-right) (reduce-right . reduce-right) (list-copy . list-copy) (bytevector? . bytevector?) (bytevector-length . bytevector-length) (bytevector-u8-ref . bytevector-u8-ref) (list->bytevector . list->bytevector) (bytevector->list . bytevector->list) (vector? . vector?) (vector . vector) (make-vector . make-vector) (vector-length . vector-length) (vector-ref . vector-ref) (vector-set! . vector-set!) (list->vector . list->vector) (vector->list . vector->list) (string? . string?) (list->string . list->string) (string->list . string->list) (string-append . string-append) (string-length . string-length) (string-ref . string-ref) (number->string . number->string) (string->number . string->number) (string-copy . string-copy) (substring . substring) (make-string . make-string) (string=? . string=?) (string<? . string<?) (string>? . string>?) (symbol? . symbol?) (symbol->string . symbol->string) (string->uninterned-symbol . string->uninterned-symbol) (string->symbol . string->symbol) (define-record-type . define-record-type) (record? . record?) (values . values) (call-with-values . call-with-values) (call/cc . call/cc) (call-with-current-continuation . call-with-current-continuation) (make-point . make-point) (point? . point?) (point-depth . point-depth) (point-before . point-before) (point-after . point-after) (point-parent . point-parent) (current-point . current-point) (set-current-point! . set-current-point!) (dynamic-wind . dynamic-wind) (make-parameter . make-parameter) (parameterize . parameterize) (error-object? . error-object?) (error-object-message . error-object-message) (error-object-irritants . error-object-irritants) (with-exception-handler . with-exception-handler) (raise . raise) (raise-continuable . raise-continuable) (error . error) (read-error . read-error) (file-error . file-error) (read-error? . read-error?) (file-error? . file-error?) (guard . guard) (unwind . unwind) (eof-object . eof-object) (eof-object? . eof-object?) (make-port . make-port) (make-input-port . make-input-port) (make-output-port . make-output-port) (port? . port?) (input-port? . input-port?) (output-port? . output-port?) (textual-port? . textual-port?) (binary-port? . binary-port?) (current-input-port . current-input-port) (current-output-port . current-output-port) (current-error-port . current-error-port) (close-port . close-port) (close-input-port . close-input-port) (close-output-port . close-output-port) (call-with-port . call-with-port) (read-u8 . read-u8) (peek-u8 . peek-u8) (read-char . read-char) (peek-char . peek-char) (write-u8 . write-u8) (write-char . write-char) (write-string . write-string) (write-bytevector . write-bytevector) (newline . newline) (write-value . write-value))
-      - ((stak base) (syntax-rules . syntax-rules) (define-syntax . define-syntax) (_ . _) (... . ...) (define . define) (lambda . lambda) (let-syntax . let-syntax) (letrec-syntax . letrec-syntax) (begin . begin) (quasiquote . quasiquote) (unquote . unquote) (unquote-splicing . unquote-splicing) (quote . quote) (set! . set!) (cond-expand . cond-expand) (let . let) (let* . let*) (letrec . letrec) (letrec* . letrec*) (define-values . define-values) (let-values . let-values) (let*-values . let*-values) (if . if) (cond . cond) (case . case) (else . else) (=> . =>) (and . and) (or . or) (boolean-or . boolean-or) (when . when) (unless . unless) (do . do) (base . base) (library . library) (r7rs . r7rs) (scheme . scheme) (stak . stak) (pair-type . pair-type) (null-type . null-type) (boolean-type . boolean-type) (procedure-type . procedure-type) (symbol-type . symbol-type) (string-type . string-type) (char-type . char-type) (vector-type . vector-type) (bytevector-type . bytevector-type) (record-type . record-type) (primitive . primitive) (rib . rib) (cons . cons) (close . close) (rib? . rib?) (rib-car . rib-car) (rib-cdr . rib-cdr) (rib-tag . rib-tag) (rib-set-car! . rib-set-car!) (rib-set-cdr! . rib-set-cdr!) (eq? . eq?) (apply . apply) (data-rib . data-rib) (eqv? . eqv?) (equal? . equal?) (procedure? . procedure?) (boolean? . boolean?) (not . not) (integer? . integer?) (rational? . rational?) (real? . real?) (complex? . complex?) (number? . number?) (exact? . exact?) (inexact? . inexact?) (zero? . zero?) (positive? . positive?) (negative? . negative?) (even? . even?) (odd? . odd?) (+ . +) (- . -) (_ . _) (/ . /) (remainder . remainder) (quotient . quotient) (truncate-remainder . truncate-remainder) (truncate-quotient . truncate-quotient) (modulo . modulo) (floor-remainder . floor-remainder) (truncate . truncate) (floor . floor) (ceiling . ceiling) (round . round) (exact . exact) (inexact . inexact) (abs . abs) (exp . exp) (expt . expt) (log . log) (= . =) (< . <) (> . >) (<= . <=) (>= . >=) (min . min) (max . max) (char? . char?) (integer->char . integer->char) (char->integer . char->integer) (char=? . char=?) (char<? . char<?) (char<=? . char<=?) (char>? . char>?) (char>=? . char>=?) (null? . null?) (pair? . pair?) (list? . list?) (car . car) (cdr . cdr) (set-car! . set-car!) (set-cdr! . set-cdr!) (caar . caar) (cadr . cadr) (cdar . cdar) (cddr . cddr) (list . list) (make-list . make-list) (length . length) (map . map) (for-each . for-each) (filter . filter) (list-ref . list-ref) (list-set! . list-set!) (list-head . list-head) (list-tail . list-tail) (member . member) (memq . memq) (memv . memv) (assoc . assoc) (assq . assq) (assv . assv) (append . append) (reverse . reverse) (fold-left . fold-left) (fold-right . fold-right) (reduce-right . reduce-right) (memq-position . memq-position) (memv-position . memv-position) (member-position . member-position) (list-copy . list-copy) (bytevector? . bytevector?) (bytevector-length . bytevector-length) (bytevector-u8-ref . bytevector-u8-ref) (list->bytevector . list->bytevector) (bytevector->list . bytevector->list) (vector? . vector?) (vector . vector) (make-vector . make-vector) (vector-length . vector-length) (vector-ref . vector-ref) (vector-set! . vector-set!) (list->vector . list->vector) (vector->list . vector->list) (string? . string?) (list->string . list->string) (string->code-points . string->code-points) (code-points->string . code-points->string) (string->list . string->list) (string-append . string-append) (string-length . string-length) (string-ref . string-ref) (number->string . number->string) (string->number . string->number) (string-copy . string-copy) (substring . substring) (make-string . make-string) (string=? . string=?) (string<? . string<?) (string>? . string>?) (symbol? . symbol?) (symbol->string . symbol->string) (string->uninterned-symbol . string->uninterned-symbol) (define-record-type . define-record-type) (record? . record?) (values . values) (call-with-values . call-with-values))
+      - list
+        - list
+          - stak
+          - rust
+      - list
+        - list
+          - scheme
+          - eval
+        - (environment . environment)
+        - (eval . eval)
+      - list
+        - list
+          - scheme
+          - repl
+        - (interaction-environment . interaction-environment)
+      - list
+        - list
+          - scheme
+          - time
+        - (current-jiffy . current-jiffy)
+        - (current-second . current-second)
+        - (jiffies-per-second . jiffies-per-second)
+      - list
+        - list
+          - scheme
+          - file
+        - (call-with-input-file . call-with-input-file)
+        - (call-with-output-file . call-with-output-file)
+        - (delete-file . delete-file)
+        - (file-exists? . file-exists?)
+        - (open-binary-input-file . open-binary-input-file)
+        - (open-binary-output-file . open-binary-output-file)
+        - (open-input-file . open-input-file)
+        - (open-output-file . open-output-file)
+        - (with-input-from-file . with-input-from-file)
+        - (with-output-to-file . with-output-to-file)
+      - list
+        - list
+          - scheme
+          - process-context
+        - (command-line . command-line)
+        - (emergency-exit . emergency-exit)
+        - (exit . exit)
+        - (get-environment-variable . get-environment-variable)
+        - (get-environment-variables . get-environment-variables)
+      - list
+        - list
+          - scheme
+          - lazy
+        - (delay . delay)
+        - (delay-force . delay-force)
+        - (force . force)
+        - (promise? . promise?)
+        - (make-promise . make-promise)
+      - list
+        - list
+          - scheme
+          - write
+        - (display . display)
+        - (write . write)
+      - list
+        - list
+          - scheme
+          - read
+        - (read . read)
+      - list
+        - list
+          - scheme
+          - char
+        - (char-whitespace? . char-whitespace?)
+        - (special-chars . special-chars)
+      - list
+        - list
+          - scheme
+          - cxr
+        - (caaar . caaar)
+        - (caadr . caadr)
+        - (cadar . cadar)
+        - (caddr . caddr)
+        - (cdaar . cdaar)
+        - (cdadr . cdadr)
+        - (cddar . cddar)
+        - (cdddr . cdddr)
+        - (caaaar . caaaar)
+        - (caaadr . caaadr)
+        - (caadar . caadar)
+        - (caaddr . caaddr)
+        - (cadaar . cadaar)
+        - (cadadr . cadadr)
+        - (caddar . caddar)
+        - (cadddr . cadddr)
+        - (cdaaar . cdaaar)
+        - (cdaadr . cdaadr)
+        - (cdadar . cdadar)
+        - (cdaddr . cdaddr)
+        - (cddaar . cddaar)
+        - (cddadr . cddadr)
+        - (cdddar . cdddar)
+        - (cddddr . cddddr)
+      - list
+        - list
+          - scheme
+          - inexact
+        - (exp . exp)
+        - (log . log)
+      - list
+        - list
+          - scheme
+          - base
+        - (syntax-rules . syntax-rules)
+        - (define-syntax . define-syntax)
+        - (_ . _)
+        - (... . ...)
+        - (define . define)
+        - (lambda . lambda)
+        - (let-syntax . let-syntax)
+        - (letrec-syntax . letrec-syntax)
+        - (begin . begin)
+        - (quasiquote . quasiquote)
+        - (unquote . unquote)
+        - (unquote-splicing . unquote-splicing)
+        - (quote . quote)
+        - (set! . set!)
+        - (cond-expand . cond-expand)
+        - (let . let)
+        - (let* . let*)
+        - (letrec . letrec)
+        - (letrec* . letrec*)
+        - (define-values . define-values)
+        - (let-values . let-values)
+        - (let*-values . let*-values)
+        - (if . if)
+        - (cond . cond)
+        - (case . case)
+        - (else . else)
+        - (=> . =>)
+        - (and . and)
+        - (or . or)
+        - (when . when)
+        - (unless . unless)
+        - (do . do)
+        - (base . base)
+        - (library . library)
+        - (r7rs . r7rs)
+        - (scheme . scheme)
+        - (stak . stak)
+        - (rib . rib)
+        - (cons . cons)
+        - (close . close)
+        - (rib? . rib?)
+        - (rib-car . rib-car)
+        - (rib-cdr . rib-cdr)
+        - (rib-tag . rib-tag)
+        - (rib-set-car! . rib-set-car!)
+        - (rib-set-cdr! . rib-set-cdr!)
+        - (eq? . eq?)
+        - (apply . apply)
+        - (data-rib . data-rib)
+        - (eqv? . eqv?)
+        - (equal? . equal?)
+        - (procedure? . procedure?)
+        - (boolean? . boolean?)
+        - (not . not)
+        - (integer? . integer?)
+        - (rational? . rational?)
+        - (real? . real?)
+        - (complex? . complex?)
+        - (number? . number?)
+        - (exact? . exact?)
+        - (inexact? . inexact?)
+        - (zero? . zero?)
+        - (positive? . positive?)
+        - (negative? . negative?)
+        - (even? . even?)
+        - (odd? . odd?)
+        - (+ . +)
+        - (- . -)
+        - (_ . _)
+        - (/ . /)
+        - (remainder . remainder)
+        - (quotient . quotient)
+        - (truncate-remainder . truncate-remainder)
+        - (truncate-quotient . truncate-quotient)
+        - (modulo . modulo)
+        - (floor-remainder . floor-remainder)
+        - (truncate . truncate)
+        - (floor . floor)
+        - (ceiling . ceiling)
+        - (round . round)
+        - (exact . exact)
+        - (inexact . inexact)
+        - (abs . abs)
+        - (expt . expt)
+        - (= . =)
+        - (< . <)
+        - (> . >)
+        - (<= . <=)
+        - (>= . >=)
+        - (min . min)
+        - (max . max)
+        - (char? . char?)
+        - (integer->char . integer->char)
+        - (char->integer . char->integer)
+        - (char=? . char=?)
+        - (char<? . char<?)
+        - (char<=? . char<=?)
+        - (char>? . char>?)
+        - (char>=? . char>=?)
+        - (null? . null?)
+        - (pair? . pair?)
+        - (list? . list?)
+        - (car . car)
+        - (cdr . cdr)
+        - (set-car! . set-car!)
+        - (set-cdr! . set-cdr!)
+        - (caar . caar)
+        - (cadr . cadr)
+        - (cdar . cdar)
+        - (cddr . cddr)
+        - (list . list)
+        - (make-list . make-list)
+        - (length . length)
+        - (map . map)
+        - (for-each . for-each)
+        - (list-ref . list-ref)
+        - (list-set! . list-set!)
+        - (list-tail . list-tail)
+        - (member . member)
+        - (memq . memq)
+        - (memv . memv)
+        - (assoc . assoc)
+        - (assq . assq)
+        - (assv . assv)
+        - (append . append)
+        - (reverse . reverse)
+        - (fold-left . fold-left)
+        - (fold-right . fold-right)
+        - (reduce-right . reduce-right)
+        - (list-copy . list-copy)
+        - (bytevector? . bytevector?)
+        - (bytevector-length . bytevector-length)
+        - (bytevector-u8-ref . bytevector-u8-ref)
+        - (list->bytevector . list->bytevector)
+        - (bytevector->list . bytevector->list)
+        - (vector? . vector?)
+        - (vector . vector)
+        - (make-vector . make-vector)
+        - (vector-length . vector-length)
+        - (vector-ref . vector-ref)
+        - (vector-set! . vector-set!)
+        - (list->vector . list->vector)
+        - (vector->list . vector->list)
+        - (string? . string?)
+        - (list->string . list->string)
+        - (string->list . string->list)
+        - (string-append . string-append)
+        - (string-length . string-length)
+        - (string-ref . string-ref)
+        - (number->string . number->string)
+        - (string->number . string->number)
+        - (string-copy . string-copy)
+        - (substring . substring)
+        - (make-string . make-string)
+        - (string=? . string=?)
+        - (string<? . string<?)
+        - (string>? . string>?)
+        - (symbol? . symbol?)
+        - (symbol->string . symbol->string)
+        - (string->uninterned-symbol . string->uninterned-symbol)
+        - (string->symbol . string->symbol)
+        - (define-record-type . define-record-type)
+        - (record? . record?)
+        - (values . values)
+        - (call-with-values . call-with-values)
+        - (call/cc . call/cc)
+        - (call-with-current-continuation . call-with-current-continuation)
+        - (make-point . make-point)
+        - (point? . point?)
+        - (point-depth . point-depth)
+        - (point-before . point-before)
+        - (point-after . point-after)
+        - (point-parent . point-parent)
+        - (current-point . current-point)
+        - (set-current-point! . set-current-point!)
+        - (dynamic-wind . dynamic-wind)
+        - (make-parameter . make-parameter)
+        - (parameterize . parameterize)
+        - (error-object? . error-object?)
+        - (error-object-message . error-object-message)
+        - (error-object-irritants . error-object-irritants)
+        - (with-exception-handler . with-exception-handler)
+        - (raise . raise)
+        - (raise-continuable . raise-continuable)
+        - (error . error)
+        - (read-error . read-error)
+        - (file-error . file-error)
+        - (read-error? . read-error?)
+        - (file-error? . file-error?)
+        - (guard . guard)
+        - (unwind . unwind)
+        - (eof-object . eof-object)
+        - (eof-object? . eof-object?)
+        - (make-port . make-port)
+        - (make-input-port . make-input-port)
+        - (make-output-port . make-output-port)
+        - (port? . port?)
+        - (input-port? . input-port?)
+        - (output-port? . output-port?)
+        - (textual-port? . textual-port?)
+        - (binary-port? . binary-port?)
+        - (current-input-port . current-input-port)
+        - (current-output-port . current-output-port)
+        - (current-error-port . current-error-port)
+        - (close-port . close-port)
+        - (close-input-port . close-input-port)
+        - (close-output-port . close-output-port)
+        - (call-with-port . call-with-port)
+        - (read-u8 . read-u8)
+        - (peek-u8 . peek-u8)
+        - (read-char . read-char)
+        - (peek-char . peek-char)
+        - (write-u8 . write-u8)
+        - (write-char . write-char)
+        - (write-string . write-string)
+        - (write-bytevector . write-bytevector)
+        - (newline . newline)
+        - (write-value . write-value)
+      - list
+        - list
+          - stak
+          - base
+        - (syntax-rules . syntax-rules)
+        - (define-syntax . define-syntax)
+        - (_ . _)
+        - (... . ...)
+        - (define . define)
+        - (lambda . lambda)
+        - (let-syntax . let-syntax)
+        - (letrec-syntax . letrec-syntax)
+        - (begin . begin)
+        - (quasiquote . quasiquote)
+        - (unquote . unquote)
+        - (unquote-splicing . unquote-splicing)
+        - (quote . quote)
+        - (set! . set!)
+        - (cond-expand . cond-expand)
+        - (let . let)
+        - (let* . let*)
+        - (letrec . letrec)
+        - (letrec* . letrec*)
+        - (define-values . define-values)
+        - (let-values . let-values)
+        - (let*-values . let*-values)
+        - (if . if)
+        - (cond . cond)
+        - (case . case)
+        - (else . else)
+        - (=> . =>)
+        - (and . and)
+        - (or . or)
+        - (boolean-or . boolean-or)
+        - (when . when)
+        - (unless . unless)
+        - (do . do)
+        - (base . base)
+        - (library . library)
+        - (r7rs . r7rs)
+        - (scheme . scheme)
+        - (stak . stak)
+        - (pair-type . pair-type)
+        - (null-type . null-type)
+        - (boolean-type . boolean-type)
+        - (procedure-type . procedure-type)
+        - (symbol-type . symbol-type)
+        - (string-type . string-type)
+        - (char-type . char-type)
+        - (vector-type . vector-type)
+        - (bytevector-type . bytevector-type)
+        - (record-type . record-type)
+        - (primitive . primitive)
+        - (rib . rib)
+        - (cons . cons)
+        - (close . close)
+        - (rib? . rib?)
+        - (rib-car . rib-car)
+        - (rib-cdr . rib-cdr)
+        - (rib-tag . rib-tag)
+        - (rib-set-car! . rib-set-car!)
+        - (rib-set-cdr! . rib-set-cdr!)
+        - (eq? . eq?)
+        - (apply . apply)
+        - (data-rib . data-rib)
+        - (eqv? . eqv?)
+        - (equal? . equal?)
+        - (procedure? . procedure?)
+        - (boolean? . boolean?)
+        - (not . not)
+        - (integer? . integer?)
+        - (rational? . rational?)
+        - (real? . real?)
+        - (complex? . complex?)
+        - (number? . number?)
+        - (exact? . exact?)
+        - (inexact? . inexact?)
+        - (zero? . zero?)
+        - (positive? . positive?)
+        - (negative? . negative?)
+        - (even? . even?)
+        - (odd? . odd?)
+        - (+ . +)
+        - (- . -)
+        - (_ . _)
+        - (/ . /)
+        - (remainder . remainder)
+        - (quotient . quotient)
+        - (truncate-remainder . truncate-remainder)
+        - (truncate-quotient . truncate-quotient)
+        - (modulo . modulo)
+        - (floor-remainder . floor-remainder)
+        - (truncate . truncate)
+        - (floor . floor)
+        - (ceiling . ceiling)
+        - (round . round)
+        - (exact . exact)
+        - (inexact . inexact)
+        - (abs . abs)
+        - (exp . exp)
+        - (expt . expt)
+        - (log . log)
+        - (= . =)
+        - (< . <)
+        - (> . >)
+        - (<= . <=)
+        - (>= . >=)
+        - (min . min)
+        - (max . max)
+        - (char? . char?)
+        - (integer->char . integer->char)
+        - (char->integer . char->integer)
+        - (char=? . char=?)
+        - (char<? . char<?)
+        - (char<=? . char<=?)
+        - (char>? . char>?)
+        - (char>=? . char>=?)
+        - (null? . null?)
+        - (pair? . pair?)
+        - (list? . list?)
+        - (car . car)
+        - (cdr . cdr)
+        - (set-car! . set-car!)
+        - (set-cdr! . set-cdr!)
+        - (caar . caar)
+        - (cadr . cadr)
+        - (cdar . cdar)
+        - (cddr . cddr)
+        - (list . list)
+        - (make-list . make-list)
+        - (length . length)
+        - (map . map)
+        - (for-each . for-each)
+        - (filter . filter)
+        - (list-ref . list-ref)
+        - (list-set! . list-set!)
+        - (list-head . list-head)
+        - (list-tail . list-tail)
+        - (member . member)
+        - (memq . memq)
+        - (memv . memv)
+        - (assoc . assoc)
+        - (assq . assq)
+        - (assv . assv)
+        - (append . append)
+        - (reverse . reverse)
+        - (fold-left . fold-left)
+        - (fold-right . fold-right)
+        - (reduce-right . reduce-right)
+        - (memq-position . memq-position)
+        - (memv-position . memv-position)
+        - (member-position . member-position)
+        - (list-copy . list-copy)
+        - (bytevector? . bytevector?)
+        - (bytevector-length . bytevector-length)
+        - (bytevector-u8-ref . bytevector-u8-ref)
+        - (list->bytevector . list->bytevector)
+        - (bytevector->list . bytevector->list)
+        - (vector? . vector?)
+        - (vector . vector)
+        - (make-vector . make-vector)
+        - (vector-length . vector-length)
+        - (vector-ref . vector-ref)
+        - (vector-set! . vector-set!)
+        - (list->vector . list->vector)
+        - (vector->list . vector->list)
+        - (string? . string?)
+        - (list->string . list->string)
+        - (string->code-points . string->code-points)
+        - (code-points->string . code-points->string)
+        - (string->list . string->list)
+        - (string-append . string-append)
+        - (string-length . string-length)
+        - (string-ref . string-ref)
+        - (number->string . number->string)
+        - (string->number . string->number)
+        - (string-copy . string-copy)
+        - (substring . substring)
+        - (make-string . make-string)
+        - (string=? . string=?)
+        - (string<? . string<?)
+        - (string>? . string>?)
+        - (symbol? . symbol?)
+        - (symbol->string . symbol->string)
+        - (string->uninterned-symbol . string->uninterned-symbol)
+        - (define-record-type . define-record-type)
+        - (record? . record?)
+        - (values . values)
+        - (call-with-values . call-with-values)
     - set libraries
     - constant procedure 1 #f
       - get 0
@@ -6035,15 +6537,130 @@
       - call 2 #f cons
     - call 1 #f $$close
     - constant list
-      - (> $$syntax-rules ... () ((_ x y) ($< y x)))
-      - (< $$syntax-rules ... () ((_ x y) ($< x y)))
-      - (= $$syntax-rules ... () ((\_ x y) (eq? x y)))
-      - (/ $$syntax-rules ... () ((_ x y) ($/ x y)))
-      - (_ $$syntax-rules ... () ((_ x y) ($_ x y)))
-      - (- $$syntax-rules ... () ((_ x y) ($- x y)))
-      - (+ $$syntax-rules ... () ((_ x y) ($+ x y)))
-      - (zero? $$syntax-rules ... () ((\_ x) (eq? x 0)))
-      - (not $$syntax-rules ... () ((\_ x) (eq? x #f)))
+      - list
+        - >
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - $<
+            - y
+            - x
+      - list
+        - <
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - $<
+            - x
+            - y
+      - list
+        - =
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - eq?
+            - x
+            - y
+      - list
+        - /
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - $/
+            - x
+            - y
+      - list
+        - -
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - $\*
+            - x
+            - y
+      - list
+        - -
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - $-
+            - x
+            - y
+      - list
+        - -
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+            - y
+          - list
+            - $+
+            - x
+            - y
+      - list
+        - zero?
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+          - list
+            - eq?
+            - x
+            - 0
+      - list
+        - not
+        - $$syntax-rules
+        - ...
+        - ()
+        - list
+          - list
+            - \_
+            - x
+          - list
+            - eq?
+            - x
+            - #f
     - call 2 #f map
     - constant ()
     - call 2 #f make-optimization-context
@@ -6073,38 +6690,1829 @@
       - call 3 #f macro-context-set-last!
     - call 1 #f $$close
     - constant list
-      - (syntax-rules $$syntax-rules $$... () ((_ (literal $$...) (pattern body) $$...) ($$syntax-rules ... (literal $$...) (pattern body) $$...)))
-      - (define-syntax syntax-rules () ((\_ name value) ($$define-syntax name value)))
-      - (define-optimizer syntax-rules () ((\_ name value) ($$define-optimizer name value)))
-      - (define syntax-rules () ((_ (name argument ... . rest) body1 body2 ...) (define name (lambda (argument ... . rest) body1 body2 ...))) ((_ name value) ($$define name value)))
-      - (lambda syntax-rules (define define-values define-syntax) ((_ arguments body) ($$lambda arguments body)) ((_ arguments (define content ...) body1 body2 ...) (lambda "value" arguments () (define content ...) body1 body2 ...)) ((_ "value" arguments ((name value) ...) (define (new-name argument ... . rest) body1 body2 ...) body3 body4 ...) (lambda "value" arguments ((name value) ... (new-name (lambda (argument ... . rest) body1 body2 ...))) body3 body4 ...)) ((_ "value" arguments ((name value) ...) (define new-name new-value) body1 body2 ...) (lambda "value" arguments ((name value) ... (new-name new-value)) body1 body2 ...)) ((_ "value" arguments ((name value) ...) body1 body2 ...) (lambda arguments (letrec\* ((name value) ...) body1 body2 ...))) ((_ arguments (define-values names value) body1 body2 ...) (lambda arguments (let-values ((names value)) body1 body2 ...))) ((_ arguments (define-syntax name value) body1 body2 ...) (lambda "syntax" arguments ((name value)) body1 body2 ...)) ((_ "syntax" arguments ((name value) ...) (define-syntax new-name new-value) body1 body2 ...) (lambda "syntax" arguments ((name value) ... (new-name new-value)) body1 body2 ...)) ((_ "syntax" arguments ((name value) ...) body1 body2 ...) (lambda arguments (letrec-syntax ((name value) ...) body1 body2 ...))) ((_ arguments body1 body2 ...) ($$lambda arguments (begin body1 body2 ...))))
-      - (let-syntax syntax-rules () ((\_ ((name value) ...) body1 body2 ...) ($$let-syntax ((name value) ...) (let () body1 body2 ...))))
-      - (letrec-syntax syntax-rules () ((\_ ((name value) ...) body1 body2 ...) ($$letrec-syntax ((name value) ...) (let () body1 body2 ...))))
-      - (begin syntax-rules () ((_ value) value) ((_ value1 value2 ...) ($$begin value1 value2 ...)))
-      - (relaxed-begin syntax-rules () ((_) #f) ((_ body ...) (begin body ...)))
-      - (quasiquote syntax-rules (unquote unquote-splicing) ((_ (unquote value)) value) ((_ ((unquote-splicing value1) value2 ...)) (append value1 (quasiquote (value2 ...)))) ((_ (value1 value2 ...)) (cons (quasiquote value1) (quasiquote (value2 ...)))) ((_ value) (quote value)))
-      - (quote syntax-rules () ((\_ value) ($$quote value)))
-      - (set! syntax-rules () ((\_ name value) ($$set! name value)))
-      - (cond-expand syntax-rules (and or not else r7rs library scheme base stak) ((_ (else body ...)) (relaxed-begin body ...)) ((_ ((and) body ...) clause ...) (relaxed-begin body ...)) ((_ ((and requirement1 requirement2 ...) body ...) clause ...) (cond-expand (requirement1 (cond-expand ((and requirement2 ...) body ...) clause ...)) clause ...)) ((_ ((or) body ...) clause ...) (cond-expand clause ...)) ((_ ((or requirement1 requirement2 ...) body ...) clause ...) (cond-expand (requirement1 body ...) ((or requirement2 ...) body ...) clause ...)) ((_ ((not requirement) body ...) clause ...) (cond-expand (requirement (cond-expand clause ...)) (else body ...))) ((_ ((library (scheme base)) body ...) clause ...) (relaxed-begin body ...)) ((_ ((library (name ...)) body ...) clause ...) (cond-expand clause ...)) ((_ (r7rs body ...) clause ...) (relaxed-begin body ...)) ((_ (stak body ...) clause ...) (relaxed-begin body ...)) ((\_ (feature body ...) clause ...) (cond-expand clause ...)))
-      - (let syntax-rules (define define-syntax) ((_ () (define content ...) body1 body2 ...) ((lambda () (define content ...) body1 body2 ...))) ((_ () (define-values content ...) body1 body2 ...) ((lambda () (define-values content ...) body1 body2 ...))) ((_ () (define-syntax content ...) body1 body2 ...) ((lambda () (define-syntax content ...) body1 body2 ...))) ((_ () body1 body2 ...) (begin body1 body2 ...)) ((_ ((name value) ...) body1 body2 ...) ((lambda (name ...) body1 body2 ...) value ...)) ((_ tag ((name value) ...) body1 body2 ...) (letrec ((tag (lambda (name ...) body1 body2 ...))) (tag value ...))))
-      - (let* syntax-rules () ((* () body1 body2 ...) (let () body1 body2 ...)) ((* ((name1 value1) (name2 value2) ...) body1 body2 ...) (let ((name1 value1)) (let* ((name2 value2) ...) body1 body2 ...))))
-      - (letrec syntax-rules () ((\_ ((name value) ...) body1 body2 ...) (letrec\* ((name value) ...) body1 body2 ...)))
-      - (letrec\* syntax-rules () ((\_ ((name value) ...) body1 body2 ...) (let ((name #f) ...) (set! name value) ... body1 body2 ...)))
-      - (if syntax-rules () ((_ test clause1 clause2) ($$if test clause1 clause2)) ((_ test clause) (if test clause #f)))
-      - (cond syntax-rules (else =>) ((_ (else result1 result2 ...)) (begin result1 result2 ...)) ((_ (test => result) clause ...) (let ((temp test)) (if temp (result temp) (cond clause ...)))) ((_ (test) clause ...) (or test (cond clause ...))) ((_ (test result1 result2 ...) clause ...) (if test (begin result1 result2 ...) (cond clause ...))) ((\_) #f))
-      - (case syntax-rules (else =>) ((_ (key ...) clause ...) (let ((value (key ...))) (case value clause ...))) ((_ key (else => result)) (result key)) ((_ key (else result1 result2 ...)) (begin result1 result2 ...)) ((_ key ((atom ...) => result) clause ...) (if (case-match key (atom ...)) (result key) (case key clause ...))) ((_ key ((atom ...) result1 result2 ...) clause ...) (if (case-match key (atom ...)) (begin result1 result2 ...) (case key clause ...))) ((_ key) #f))
-      - (case-match syntax-rules () ((_ key (atom)) (eqv? key (quote atom))) ((_ key (atom ...)) (memv key (quote (atom ...)))))
-      - (and syntax-rules () ((_) #t) ((_ test) test) ((\_ test1 test2 ...) (if test1 (and test2 ...) #f)))
-      - (or syntax-rules () ((_) #f) ((_ test) test) ((\_ test1 test2 ...) (let ((x test1)) (if x x (or test2 ...)))))
-      - (boolean-or syntax-rules () ((_) #f) ((_ test) test) ((\_ test1 test2 ...) (if test1 #t (boolean-or test2 ...))))
-      - (when syntax-rules () ((\_ test result1 result2 ...) (if test (begin result1 result2 ...))))
-      - (unless syntax-rules () ((\_ test result1 result2 ...) (when (not test) result1 result2 ...)))
-      - (do syntax-rules () ((_ ((name initial step ...) ...) (test expression ...) command ...) (let loop ((name initial) ...) (if test (begin #f expression ...) (begin command ... (loop (do "step" name step ...) ...))))) ((_ "step" x) x) ((\_ "step" x y) y))
-      - (define-record-type syntax-rules () ((\_ id (constructor field ...) predicate (field getter . rest) ...) (begin (define id (cons (quote id) (quote (field ...)))) (define constructor (record-constructor id)) (define predicate (record-predicate id)) (define-record-field id field getter . rest) ...)))
-      - (define-record-field syntax-rules () ((_ type field getter) (define getter (record-getter type (quote field)))) ((_ type field getter setter) (begin (define-record-field type field getter) (define setter (record-setter type (quote field))))))
-      - (define-values syntax-rules () ((_ () value) value) ((_ (name) value) (define name (call-with-values (lambda () value) (lambda (x) x)))) ((_ (name1 name2 ... last-name) value) (begin (define name1 (call-with-values (lambda () value) list)) (define name2 (let ((x (cadr name1))) (set-cdr! name1 (cddr name1)) x)) ... (define last-name (let ((x (cadr name1))) (set! name1 (car name1)) x)))) ((_ (name1 name2 ... . last-name) value) (begin (define name1 (call-with-values (lambda () value) list)) (define name2 (let ((x (cadr name1))) (set-cdr! name1 (cddr name1)) x)) ... (define last-name (let ((x (cdr name1))) (set! name1 (car name1)) x)))) ((\_ name value) (define name (call-with-values (lambda () value) list))))
-      - (let-values syntax-rules () ((_ (binding ...) body1 body2 ...) (let-values "multiple" (binding ...) () (let () body1 body2 ...))) ((_ "multiple" () singles body) (let singles body)) ((_ "multiple" ((names value) binding ...) singles body) (let-values "single" names value () (binding ...) singles body)) ((_ "single" () value arguments bindings singles body) (call-with-values (lambda () value) (lambda arguments (let-values "multiple" bindings singles body)))) ((_ "single" (name . names) value (argument ...) bindings (single ...) body) (let-values "single" names value (argument ... x) bindings (single ... (name x)) body)) ((_ "single" name value (argument ...) bindings (single ...) body) (call-with-values (lambda () value) (lambda (argument ... . x) (let-values "multiple" bindings (single ... (name x)) body)))))
-      - (let*-values syntax-rules () ((* () body1 body2 ...) (let () body1 body2 ...)) ((* (binding1 binding2 ...) body1 body2 ...) (let-values (binding1) (let*-values (binding2 ...) body1 body2 ...))))
+      - list
+        - syntax-rules
+        - $$syntax-rules
+        - $$...
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - literal
+              - $$...
+            - list
+              - pattern
+              - body
+            - $$...
+          - list
+            - $$syntax-rules
+            - ...
+            - list
+              - literal
+              - $$...
+            - list
+              - pattern
+              - body
+            - $$...
+      - list
+        - define-syntax
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - name
+            - value
+          - list
+            - $$define-syntax
+            - name
+            - value
+      - list
+        - define-optimizer
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - name
+            - value
+          - list
+            - $$define-optimizer
+            - name
+            - value
+      - list
+        - define
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - (name argument ... . rest)
+            - body1
+            - body2
+            - ...
+          - list
+            - define
+            - name
+            - list
+              - lambda
+              - (argument ... . rest)
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - name
+            - value
+          - list
+            - $$define
+            - name
+            - value
+      - list
+        - lambda
+        - syntax-rules
+        - list
+          - define
+          - define-values
+          - define-syntax
+        - list
+          - list
+            - \_
+            - arguments
+            - body
+          - list
+            - $$lambda
+            - arguments
+            - body
+        - list
+          - list
+            - \_
+            - arguments
+            - list
+              - define
+              - content
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - "value"
+            - arguments
+            - ()
+            - list
+              - define
+              - content
+              - ...
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - "value"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - list
+              - define
+              - (new-name argument ... . rest)
+              - body1
+              - body2
+              - ...
+            - body3
+            - body4
+            - ...
+          - list
+            - lambda
+            - "value"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+              - list
+                - new-name
+                - list
+                  - lambda
+                  - (argument ... . rest)
+                  - body1
+                  - body2
+                  - ...
+            - body3
+            - body4
+            - ...
+        - list
+          - list
+            - \_
+            - "value"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - list
+              - define
+              - new-name
+              - new-value
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - "value"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+              - list
+                - new-name
+                - new-value
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - "value"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - arguments
+            - list
+              - letrec\*
+              - list
+                - list
+                  - name
+                  - value
+                - ...
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - arguments
+            - list
+              - define-values
+              - names
+              - value
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - arguments
+            - list
+              - let-values
+              - list
+                - list
+                  - names
+                  - value
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - arguments
+            - list
+              - define-syntax
+              - name
+              - value
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - "syntax"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - "syntax"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - list
+              - define-syntax
+              - new-name
+              - new-value
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - "syntax"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+              - list
+                - new-name
+                - new-value
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - "syntax"
+            - arguments
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - lambda
+            - arguments
+            - list
+              - letrec-syntax
+              - list
+                - list
+                  - name
+                  - value
+                - ...
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - arguments
+            - body1
+            - body2
+            - ...
+          - list
+            - $$lambda
+            - arguments
+            - list
+              - begin
+              - body1
+              - body2
+              - ...
+      - list
+        - let-syntax
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - $$let-syntax
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - list
+              - let
+              - ()
+              - body1
+              - body2
+              - ...
+      - list
+        - letrec-syntax
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - $$letrec-syntax
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - list
+              - let
+              - ()
+              - body1
+              - body2
+              - ...
+      - list
+        - begin
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - value
+          - value
+        - list
+          - list
+            - \_
+            - value1
+            - value2
+            - ...
+          - list
+            - $$begin
+            - value1
+            - value2
+            - ...
+      - list
+        - relaxed-begin
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+          - #f
+        - list
+          - list
+            - \_
+            - body
+            - ...
+          - list
+            - begin
+            - body
+            - ...
+      - list
+        - quasiquote
+        - syntax-rules
+        - list
+          - unquote
+          - unquote-splicing
+        - list
+          - list
+            - \_
+            - list
+              - unquote
+              - value
+          - value
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - unquote-splicing
+                - value1
+              - value2
+              - ...
+          - list
+            - append
+            - value1
+            - list
+              - quasiquote
+              - list
+                - value2
+                - ...
+        - list
+          - list
+            - \_
+            - list
+              - value1
+              - value2
+              - ...
+          - list
+            - cons
+            - list
+              - quasiquote
+              - value1
+            - list
+              - quasiquote
+              - list
+                - value2
+                - ...
+        - list
+          - list
+            - \_
+            - value
+          - list
+            - quote
+            - value
+      - list
+        - quote
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - value
+          - list
+            - $$quote
+            - value
+      - list
+        - set!
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - name
+            - value
+          - list
+            - $$set!
+            - name
+            - value
+      - list
+        - cond-expand
+        - syntax-rules
+        - list
+          - and
+          - or
+          - not
+          - else
+          - r7rs
+          - library
+          - scheme
+          - base
+          - stak
+        - list
+          - list
+            - \_
+            - list
+              - else
+              - body
+              - ...
+          - list
+            - relaxed-begin
+            - body
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - and
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - relaxed-begin
+            - body
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - and
+                - requirement1
+                - requirement2
+                - ...
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - cond-expand
+            - list
+              - requirement1
+              - list
+                - cond-expand
+                - list
+                  - list
+                    - and
+                    - requirement2
+                    - ...
+                  - body
+                  - ...
+                - clause
+                - ...
+            - clause
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - or
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - cond-expand
+            - clause
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - or
+                - requirement1
+                - requirement2
+                - ...
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - cond-expand
+            - list
+              - requirement1
+              - body
+              - ...
+            - list
+              - list
+                - or
+                - requirement2
+                - ...
+              - body
+              - ...
+            - clause
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - not
+                - requirement
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - cond-expand
+            - list
+              - requirement
+              - list
+                - cond-expand
+                - clause
+                - ...
+            - list
+              - else
+              - body
+              - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - library
+                - list
+                  - scheme
+                  - base
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - relaxed-begin
+            - body
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - library
+                - list
+                  - name
+                  - ...
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - cond-expand
+            - clause
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - r7rs
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - relaxed-begin
+            - body
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - stak
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - relaxed-begin
+            - body
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - feature
+              - body
+              - ...
+            - clause
+            - ...
+          - list
+            - cond-expand
+            - clause
+            - ...
+      - list
+        - let
+        - syntax-rules
+        - list
+          - define
+          - define-syntax
+        - list
+          - list
+            - \_
+            - ()
+            - list
+              - define
+              - content
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - list
+              - lambda
+              - ()
+              - list
+                - define
+                - content
+                - ...
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - ()
+            - list
+              - define-values
+              - content
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - list
+              - lambda
+              - ()
+              - list
+                - define-values
+                - content
+                - ...
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - ()
+            - list
+              - define-syntax
+              - content
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - list
+              - lambda
+              - ()
+              - list
+                - define-syntax
+                - content
+                - ...
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - ()
+            - body1
+            - body2
+            - ...
+          - list
+            - begin
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - list
+              - lambda
+              - list
+                - name
+                - ...
+              - body1
+              - body2
+              - ...
+            - value
+            - ...
+        - list
+          - list
+            - \_
+            - tag
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - letrec
+            - list
+              - list
+                - tag
+                - list
+                  - lambda
+                  - list
+                    - name
+                    - ...
+                  - body1
+                  - body2
+                  - ...
+            - list
+              - tag
+              - value
+              - ...
+      - list
+        - let\*
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - ()
+            - body1
+            - body2
+            - ...
+          - list
+            - let
+            - ()
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name1
+                - value1
+              - list
+                - name2
+                - value2
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - name1
+                - value1
+            - list
+              - let\*
+              - list
+                - list
+                  - name2
+                  - value2
+                - ...
+              - body1
+              - body2
+              - ...
+      - list
+        - letrec
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - letrec\*
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+      - list
+        - letrec\*
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name
+                - value
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - name
+                - #f
+              - ...
+            - list
+              - set!
+              - name
+              - value
+            - ...
+            - body1
+            - body2
+            - ...
+      - list
+        - if
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - test
+            - clause1
+            - clause2
+          - list
+            - $$if
+            - test
+            - clause1
+            - clause2
+        - list
+          - list
+            - \_
+            - test
+            - clause
+          - list
+            - if
+            - test
+            - clause
+            - #f
+      - list
+        - cond
+        - syntax-rules
+        - list
+          - else
+          - =>
+        - list
+          - list
+            - \_
+            - list
+              - else
+              - result1
+              - result2
+              - ...
+          - list
+            - begin
+            - result1
+            - result2
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - test
+              - =>
+              - result
+            - clause
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - temp
+                - test
+            - list
+              - if
+              - temp
+              - list
+                - result
+                - temp
+              - list
+                - cond
+                - clause
+                - ...
+        - list
+          - list
+            - \_
+            - list
+              - test
+            - clause
+            - ...
+          - list
+            - or
+            - test
+            - list
+              - cond
+              - clause
+              - ...
+        - list
+          - list
+            - \_
+            - list
+              - test
+              - result1
+              - result2
+              - ...
+            - clause
+            - ...
+          - list
+            - if
+            - test
+            - list
+              - begin
+              - result1
+              - result2
+              - ...
+            - list
+              - cond
+              - clause
+              - ...
+        - list
+          - list
+            - \_
+          - #f
+      - list
+        - case
+        - syntax-rules
+        - list
+          - else
+          - =>
+        - list
+          - list
+            - \_
+            - list
+              - key
+              - ...
+            - clause
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - value
+                - list
+                  - key
+                  - ...
+            - list
+              - case
+              - value
+              - clause
+              - ...
+        - list
+          - list
+            - \_
+            - key
+            - list
+              - else
+              - =>
+              - result
+          - list
+            - result
+            - key
+        - list
+          - list
+            - \_
+            - key
+            - list
+              - else
+              - result1
+              - result2
+              - ...
+          - list
+            - begin
+            - result1
+            - result2
+            - ...
+        - list
+          - list
+            - \_
+            - key
+            - list
+              - list
+                - atom
+                - ...
+              - =>
+              - result
+            - clause
+            - ...
+          - list
+            - if
+            - list
+              - case-match
+              - key
+              - list
+                - atom
+                - ...
+            - list
+              - result
+              - key
+            - list
+              - case
+              - key
+              - clause
+              - ...
+        - list
+          - list
+            - \_
+            - key
+            - list
+              - list
+                - atom
+                - ...
+              - result1
+              - result2
+              - ...
+            - clause
+            - ...
+          - list
+            - if
+            - list
+              - case-match
+              - key
+              - list
+                - atom
+                - ...
+            - list
+              - begin
+              - result1
+              - result2
+              - ...
+            - list
+              - case
+              - key
+              - clause
+              - ...
+        - list
+          - list
+            - \_
+            - key
+          - #f
+      - list
+        - case-match
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - key
+            - list
+              - atom
+          - list
+            - eqv?
+            - key
+            - list
+              - quote
+              - atom
+        - list
+          - list
+            - \_
+            - key
+            - list
+              - atom
+              - ...
+          - list
+            - memv
+            - key
+            - list
+              - quote
+              - list
+                - atom
+                - ...
+      - list
+        - and
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+          - #t
+        - list
+          - list
+            - \_
+            - test
+          - test
+        - list
+          - list
+            - \_
+            - test1
+            - test2
+            - ...
+          - list
+            - if
+            - test1
+            - list
+              - and
+              - test2
+              - ...
+            - #f
+      - list
+        - or
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+          - #f
+        - list
+          - list
+            - \_
+            - test
+          - test
+        - list
+          - list
+            - \_
+            - test1
+            - test2
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - x
+                - test1
+            - list
+              - if
+              - x
+              - x
+              - list
+                - or
+                - test2
+                - ...
+      - list
+        - boolean-or
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+          - #f
+        - list
+          - list
+            - \_
+            - test
+          - test
+        - list
+          - list
+            - \_
+            - test1
+            - test2
+            - ...
+          - list
+            - if
+            - test1
+            - #t
+            - list
+              - boolean-or
+              - test2
+              - ...
+      - list
+        - when
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - test
+            - result1
+            - result2
+            - ...
+          - list
+            - if
+            - test
+            - list
+              - begin
+              - result1
+              - result2
+              - ...
+      - list
+        - unless
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - test
+            - result1
+            - result2
+            - ...
+          - list
+            - when
+            - list
+              - not
+              - test
+            - result1
+            - result2
+            - ...
+      - list
+        - do
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - name
+                - initial
+                - step
+                - ...
+              - ...
+            - list
+              - test
+              - expression
+              - ...
+            - command
+            - ...
+          - list
+            - let
+            - loop
+            - list
+              - list
+                - name
+                - initial
+              - ...
+            - list
+              - if
+              - test
+              - list
+                - begin
+                - #f
+                - expression
+                - ...
+              - list
+                - begin
+                - command
+                - ...
+                - list
+                  - loop
+                  - list
+                    - do
+                    - "step"
+                    - name
+                    - step
+                    - ...
+                  - ...
+        - list
+          - list
+            - \_
+            - "step"
+            - x
+          - x
+        - list
+          - list
+            - \_
+            - "step"
+            - x
+            - y
+          - y
+      - list
+        - define-record-type
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - id
+            - list
+              - constructor
+              - field
+              - ...
+            - predicate
+            - (field getter . rest)
+            - ...
+          - list
+            - begin
+            - list
+              - define
+              - id
+              - list
+                - cons
+                - list
+                  - quote
+                  - id
+                - list
+                  - quote
+                  - list
+                    - field
+                    - ...
+            - list
+              - define
+              - constructor
+              - list
+                - record-constructor
+                - id
+            - list
+              - define
+              - predicate
+              - list
+                - record-predicate
+                - id
+            - (define-record-field id field getter . rest)
+            - ...
+      - list
+        - define-record-field
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - type
+            - field
+            - getter
+          - list
+            - define
+            - getter
+            - list
+              - record-getter
+              - type
+              - list
+                - quote
+                - field
+        - list
+          - list
+            - \_
+            - type
+            - field
+            - getter
+            - setter
+          - list
+            - begin
+            - list
+              - define-record-field
+              - type
+              - field
+              - getter
+            - list
+              - define
+              - setter
+              - list
+                - record-setter
+                - type
+                - list
+                  - quote
+                  - field
+      - list
+        - define-values
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - ()
+            - value
+          - value
+        - list
+          - list
+            - \_
+            - list
+              - name
+            - value
+          - list
+            - define
+            - name
+            - list
+              - call-with-values
+              - list
+                - lambda
+                - ()
+                - value
+              - list
+                - lambda
+                - list
+                  - x
+                - x
+        - list
+          - list
+            - \_
+            - list
+              - name1
+              - name2
+              - ...
+              - last-name
+            - value
+          - list
+            - begin
+            - list
+              - define
+              - name1
+              - list
+                - call-with-values
+                - list
+                  - lambda
+                  - ()
+                  - value
+                - list
+            - list
+              - define
+              - name2
+              - list
+                - let
+                - list
+                  - list
+                    - x
+                    - list
+                      - cadr
+                      - name1
+                - list
+                  - set-cdr!
+                  - name1
+                  - list
+                    - cddr
+                    - name1
+                - x
+            - ...
+            - list
+              - define
+              - last-name
+              - list
+                - let
+                - list
+                  - list
+                    - x
+                    - list
+                      - cadr
+                      - name1
+                - list
+                  - set!
+                  - name1
+                  - list
+                    - car
+                    - name1
+                - x
+        - list
+          - list
+            - \_
+            - (name1 name2 ... . last-name)
+            - value
+          - list
+            - begin
+            - list
+              - define
+              - name1
+              - list
+                - call-with-values
+                - list
+                  - lambda
+                  - ()
+                  - value
+                - list
+            - list
+              - define
+              - name2
+              - list
+                - let
+                - list
+                  - list
+                    - x
+                    - list
+                      - cadr
+                      - name1
+                - list
+                  - set-cdr!
+                  - name1
+                  - list
+                    - cddr
+                    - name1
+                - x
+            - ...
+            - list
+              - define
+              - last-name
+              - list
+                - let
+                - list
+                  - list
+                    - x
+                    - list
+                      - cdr
+                      - name1
+                - list
+                  - set!
+                  - name1
+                  - list
+                    - car
+                    - name1
+                - x
+        - list
+          - list
+            - \_
+            - name
+            - value
+          - list
+            - define
+            - name
+            - list
+              - call-with-values
+              - list
+                - lambda
+                - ()
+                - value
+              - list
+      - list
+        - let-values
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - binding
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - let-values
+            - "multiple"
+            - list
+              - binding
+              - ...
+            - ()
+            - list
+              - let
+              - ()
+              - body1
+              - body2
+              - ...
+        - list
+          - list
+            - \_
+            - "multiple"
+            - ()
+            - singles
+            - body
+          - list
+            - let
+            - singles
+            - body
+        - list
+          - list
+            - \_
+            - "multiple"
+            - list
+              - list
+                - names
+                - value
+              - binding
+              - ...
+            - singles
+            - body
+          - list
+            - let-values
+            - "single"
+            - names
+            - value
+            - ()
+            - list
+              - binding
+              - ...
+            - singles
+            - body
+        - list
+          - list
+            - \_
+            - "single"
+            - ()
+            - value
+            - arguments
+            - bindings
+            - singles
+            - body
+          - list
+            - call-with-values
+            - list
+              - lambda
+              - ()
+              - value
+            - list
+              - lambda
+              - arguments
+              - list
+                - let-values
+                - "multiple"
+                - bindings
+                - singles
+                - body
+        - list
+          - list
+            - \_
+            - "single"
+            - (name . names)
+            - value
+            - list
+              - argument
+              - ...
+            - bindings
+            - list
+              - single
+              - ...
+            - body
+          - list
+            - let-values
+            - "single"
+            - names
+            - value
+            - list
+              - argument
+              - ...
+              - x
+            - bindings
+            - list
+              - single
+              - ...
+              - list
+                - name
+                - x
+            - body
+        - list
+          - list
+            - \_
+            - "single"
+            - name
+            - value
+            - list
+              - argument
+              - ...
+            - bindings
+            - list
+              - single
+              - ...
+            - body
+          - list
+            - call-with-values
+            - list
+              - lambda
+              - ()
+              - value
+            - list
+              - lambda
+              - (argument ... . x)
+              - list
+                - let-values
+                - "multiple"
+                - bindings
+                - list
+                  - single
+                  - ...
+                  - list
+                    - name
+                    - x
+                - body
+      - list
+        - let\*-values
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - ()
+            - body1
+            - body2
+            - ...
+          - list
+            - let
+            - ()
+            - body1
+            - body2
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - binding1
+              - binding2
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - let-values
+            - list
+              - binding1
+            - list
+              - let\*-values
+              - list
+                - binding2
+                - ...
+              - body1
+              - body2
+              - ...
       - (syntax-rules . syntax-rules)
       - (define-syntax . define-syntax)
       - (_ . _)
@@ -6270,9 +8678,294 @@
       - (record? . record?)
       - (values . values)
       - (call-with-values . call-with-values)
-      - (parameterize syntax-rules () ((_ () body ...) (begin body ...)) ((_ ((parameter1 value1) (parameter2 value2) ...) body ...) (let\* ((parameter parameter1) (old (parameter))) (dynamic-wind (lambda () (parameter value1)) (lambda () (parameterize ((parameter2 value2) ...) body ...)) (lambda () (parameter old))))))
-      - (guard syntax-rules () ((\_ (name clause ...) body1 body2 ...) ((call/cc (lambda (continue-guard) (with-exception-handler (lambda (exception) ((call/cc (lambda (continue-handler) (continue-guard (lambda () (let ((name exception)) (guard\* (continue-handler (lambda () (raise-continuable name))) clause ...)))))))) (lambda () (let ((x (begin body1 body2 ...))) (continue-guard (lambda () x))))))))))
-      - (guard* syntax-rules (else =>) ((* re-raise (else result1 result2 ...)) (begin result1 result2 ...)) ((* re-raise (test => result)) (let ((temp test)) (if temp (result temp) re-raise))) ((\_ re-raise (test => result) clause1 clause2 ...) (let ((temp test)) (if temp (result temp) (guard* re-raise clause1 clause2 ...)))) ((_ re-raise (test)) (or test re-raise)) ((_ re-raise (test) clause1 clause2 ...) (let ((temp test)) (if temp temp (guard* re-raise clause1 clause2 ...)))) ((* re-raise (test result1 result2 ...)) (if test (begin result1 result2 ...) re-raise)) ((* re-raise (test result1 result2 ...) clause1 clause2 ...) (if test (begin result1 result2 ...) (guard* re-raise clause1 clause2 ...))))
+      - list
+        - parameterize
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - ()
+            - body
+            - ...
+          - list
+            - begin
+            - body
+            - ...
+        - list
+          - list
+            - \_
+            - list
+              - list
+                - parameter1
+                - value1
+              - list
+                - parameter2
+                - value2
+              - ...
+            - body
+            - ...
+          - list
+            - let\*
+            - list
+              - list
+                - parameter
+                - parameter1
+              - list
+                - old
+                - list
+                  - parameter
+            - list
+              - dynamic-wind
+              - list
+                - lambda
+                - ()
+                - list
+                  - parameter
+                  - value1
+              - list
+                - lambda
+                - ()
+                - list
+                  - parameterize
+                  - list
+                    - list
+                      - parameter2
+                      - value2
+                    - ...
+                  - body
+                  - ...
+              - list
+                - lambda
+                - ()
+                - list
+                  - parameter
+                  - old
+      - list
+        - guard
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - list
+              - name
+              - clause
+              - ...
+            - body1
+            - body2
+            - ...
+          - list
+            - list
+              - call/cc
+              - list
+                - lambda
+                - list
+                  - continue-guard
+                - list
+                  - with-exception-handler
+                  - list
+                    - lambda
+                    - list
+                      - exception
+                    - list
+                      - list
+                        - call/cc
+                        - list
+                          - lambda
+                          - list
+                            - continue-handler
+                          - list
+                            - continue-guard
+                            - list
+                              - lambda
+                              - ()
+                              - list
+                                - let
+                                - list
+                                  - list
+                                    - name
+                                    - exception
+                                - list
+                                  - guard\*
+                                  - list
+                                    - continue-handler
+                                    - list
+                                      - lambda
+                                      - ()
+                                      - list
+                                        - raise-continuable
+                                        - name
+                                  - clause
+                                  - ...
+                  - list
+                    - lambda
+                    - ()
+                    - list
+                      - let
+                      - list
+                        - list
+                          - x
+                          - list
+                            - begin
+                            - body1
+                            - body2
+                            - ...
+                      - list
+                        - continue-guard
+                        - list
+                          - lambda
+                          - ()
+                          - x
+      - list
+        - guard\*
+        - syntax-rules
+        - list
+          - else
+          - =>
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - else
+              - result1
+              - result2
+              - ...
+          - list
+            - begin
+            - result1
+            - result2
+            - ...
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - test
+              - =>
+              - result
+          - list
+            - let
+            - list
+              - list
+                - temp
+                - test
+            - list
+              - if
+              - temp
+              - list
+                - result
+                - temp
+              - re-raise
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - test
+              - =>
+              - result
+            - clause1
+            - clause2
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - temp
+                - test
+            - list
+              - if
+              - temp
+              - list
+                - result
+                - temp
+              - list
+                - guard\*
+                - re-raise
+                - clause1
+                - clause2
+                - ...
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - test
+          - list
+            - or
+            - test
+            - re-raise
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - test
+            - clause1
+            - clause2
+            - ...
+          - list
+            - let
+            - list
+              - list
+                - temp
+                - test
+            - list
+              - if
+              - temp
+              - temp
+              - list
+                - guard\*
+                - re-raise
+                - clause1
+                - clause2
+                - ...
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - test
+              - result1
+              - result2
+              - ...
+          - list
+            - if
+            - test
+            - list
+              - begin
+              - result1
+              - result2
+              - ...
+            - re-raise
+        - list
+          - list
+            - \_
+            - re-raise
+            - list
+              - test
+              - result1
+              - result2
+              - ...
+            - clause1
+            - clause2
+            - ...
+          - list
+            - if
+            - test
+            - list
+              - begin
+              - result1
+              - result2
+              - ...
+            - list
+              - guard\*
+              - re-raise
+              - clause1
+              - clause2
+              - ...
       - (define . define)
       - (quote . quote)
       - (memv . memv)
@@ -6384,8 +9077,55 @@
       - (let . let)
       - (if . if)
       - (procedure? . procedure?)
-      - (delay syntax-rules () ((\_ body) (let ((done #f) (value #f)) (lambda () (if done value (begin (set! value body) (set! done #t) value))))))
-      - (delay-force syntax-rules () ((\_ promise) (lambda () (force promise))))
+      - list
+        - delay
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - body
+          - list
+            - let
+            - list
+              - list
+                - done
+                - #f
+              - list
+                - value
+                - #f
+            - list
+              - lambda
+              - ()
+              - list
+                - if
+                - done
+                - value
+                - list
+                  - begin
+                  - list
+                    - set!
+                    - value
+                    - body
+                  - list
+                    - set!
+                    - done
+                    - #t
+                  - value
+      - list
+        - delay-force
+        - syntax-rules
+        - ()
+        - list
+          - list
+            - \_
+            - promise
+          - list
+            - lambda
+            - ()
+            - list
+              - force
+              - promise
       - (define . define)
       - (lambda . lambda)
       - (quote . quote)

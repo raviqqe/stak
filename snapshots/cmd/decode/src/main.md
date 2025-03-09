@@ -4761,6 +4761,15 @@
   - call 0 #f newline
 - call 1 #f $$close
 - set display-data
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f pair?
+  - if
+    - get 0
+    - call 1 #f list?
+  - constant #f
+- call 1 #f $$close
+- set multi-line-list?
 - constant procedure 2 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -4781,7 +4790,7 @@
       - get 0
       - call 1 #f car
       - get 5
-      - call 2 #f display-data
+      - call 2 #f display-top-data
       - set 0
       - get 0
       - call 1 #f cdr
@@ -4797,23 +4806,7 @@
 - set display-list
 - constant procedure 2 #f
   - get 1
-  - call 1 #f pair?
-  - if
-    - get 1
-    - call 1 #f list?
-    - if
-      - constant "list"
-      - call 1 #f write-string
-      - set 0
-      - call 0 #f newline
-      - set 0
-      - get 1
-      - get 1
-      - call 2 #f display-list
-    - get 1
-    - get 1
-    - call 2 #f display-data
-  - constant #f
+  - call 1 #f multi-line-list?
   - if
     - constant "list"
     - call 1 #f write-string
@@ -4822,12 +4815,14 @@
     - set 0
     - get 1
     - get 1
+    - constant 1
+    - call 2 #f $+
     - call 2 #f display-list
   - get 1
   - get 1
   - call 2 #f display-data
 - call 1 #f $$close
-- set display-operand
+- set display-top-data
 - constant procedure 2 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
@@ -4869,7 +4864,7 @@
         - get 7
         - constant 1
         - call 2 #f $+
-        - call 2 #f display-operand
+        - call 2 #f display-top-data
       - call 1 #f $$close
       - get 1
       - call 1 #f rib-car
