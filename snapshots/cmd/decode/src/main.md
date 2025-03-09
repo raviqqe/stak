@@ -4154,8 +4154,6 @@
 - set write-vector
 - get write
 - set write-value
-- constant 0
-- set constant-instruction
 - constant 3
 - set if-instruction
 - constant 5

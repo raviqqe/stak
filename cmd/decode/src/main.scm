@@ -4,7 +4,6 @@
   (scheme write)
   (stak base))
 
-(define constant-instruction 0)
 (define if-instruction 3)
 (define call-instruction 5)
 
