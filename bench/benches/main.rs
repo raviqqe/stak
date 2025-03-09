@@ -83,7 +83,7 @@ fn stak_initialize(criterion: &mut Criterion) {
         ("sum_10000000", &SUM_MODULE),
         ("tak_16_8_0", &TAK_MODULE),
     ] {
-        criterion.bench_function(name, |bencher| {
+        criterion.bench_function(&format!("init_{name}"), |bencher| {
             bencher.iter(|| {
                 initialize(black_box(module)).unwrap();
             })
