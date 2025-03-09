@@ -57,17 +57,17 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     vm.run()
 }
 
-static BENCHMARKS: &[(&str, &UniversalModule)] = &[
-    ("empty", &EMPTY_MODULE),
-    ("eval_sum_10000000", &EVAL_MODULE),
-    ("fibonacci_32", &FIBONACCI_MODULE),
-    ("hello", &HELLO_MODULE),
-    ("sum_10000000", &SUM_MODULE),
-    ("tak_16_8_0", &TAK_MODULE),
+static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
+    ("empty", "empty", &EMPTY_MODULE),
+    ("eval", "eval_sum_10000000", &EVAL_MODULE),
+    ("fibonacci", "fibonacci_32", &FIBONACCI_MODULE),
+    ("hello", "hello", &HELLO_MODULE),
+    ("sum", "sum_10000000", &SUM_MODULE),
+    ("tak", "tak_16_8_0", &TAK_MODULE),
 ];
 
 fn stak_run(criterion: &mut Criterion) {
-    for (name, module) in BENCHMARKS {
+    for (_, name, module) in BENCHMARKS {
         criterion.bench_function(name, |bencher| {
             bencher.iter(|| {
                 run(black_box(module)).unwrap();
@@ -77,7 +77,7 @@ fn stak_run(criterion: &mut Criterion) {
 }
 
 fn stak_initialize(criterion: &mut Criterion) {
-    for (name, module) in BENCHMARKS {
+    for (name, _, module) in BENCHMARKS {
         criterion.bench_function(&format!("init_{name}"), |bencher| {
             bencher.iter(|| {
                 initialize(black_box(module)).unwrap();
@@ -87,7 +87,7 @@ fn stak_initialize(criterion: &mut Criterion) {
 }
 
 fn stak_compile(criterion: &mut Criterion) {
-    for name in ["empty", "eval", "fibonacci", "hello", "sum", "tak"] {
+    for (name, _, _) in BENCHMARKS {
         let source = read(Path::new("src").join(name).join("main.scm")).unwrap();
         let source = source.as_slice();
 
