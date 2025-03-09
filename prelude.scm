@@ -3604,7 +3604,7 @@
   (begin
     (define (scheme-report-environment version)
       '((scheme r5rs)))))
-                     
+
 (define-library (stak rust)
   (import (stak base) (scheme base))
 
