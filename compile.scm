@@ -1258,11 +1258,11 @@
     (else
       (constant-rib expression continuation))))
 
-(define (compile features libraries macros optimizers dynamic-symbols expression)
-  (define libraries (if (memq 'libraries features) libraries '()))
-  (define macros (if (memq 'macros features) macros '()))
-  (define optimizers (if (memq 'optimizers features) optimizers '()))
-  (define dynamic-symbols (if (memq 'dynamic-symbols features) dynamic-symbols '()))
+(define (compile features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
+  (define libraries (if (memq 'libraries features) raw-libraries '()))
+  (define macros (if (memq 'macros features) raw-macros '()))
+  (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
+  (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
 
   (compile-expression
     (make-compilation-context
