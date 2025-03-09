@@ -168,7 +168,7 @@
         (write code)
         (newline))
       (let ((arity (car code)))
-        (display "procedure ")
+        (write-string "procedure ")
         (write (quotient arity 2))
         (write-char #\space)
         (write (odd? arity))
@@ -186,20 +186,35 @@
       (write data)
       (newline))))
 
+(define (display-list xs depth)
+  (do ((xs xs (cdr xs)))
+    ((null? xs))
+    (write-string (make-string (* 2 depth) #\space))
+    (display "- ")
+    (display-data (car xs) depth)))
+
+(define (display-operand data depth)
+  (if (list? data)
+    (begin
+      (write-string "list")
+      (newline)
+      (display-list data depth))
+    (display-data data depth)))
+
 (define (display-code code depth)
   (do ((code code (rib-cdr code)))
     ((null? code))
     (write-string (make-string (* 2 depth) #\space))
     (display "- ")
-    (let ((a (rib-car code)))
+    (let ((operand (rib-car code)))
       (display-instruction (rib-tag code))
       (if (= (rib-tag code) if-instruction)
         (begin
           (newline)
-          (display-code a (+ depth 1)))
+          (display-code operand (+ depth 1)))
         (begin
           (write-char #\space)
-          (display-data a (+ depth 1)))))))
+          (display-operand operand (+ depth 1)))))))
 
 (define (display-ribs code)
   (display-code (cdr code) 0))
