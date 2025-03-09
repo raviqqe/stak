@@ -2510,6 +2510,7 @@
 - call 1 #f $$close
 - constant list
   - tuple
+  - values
   - point
   - depth
   - before
@@ -2519,8 +2520,17 @@
   - type
   - message
   - irritants
+  - file
+  - eof-object
   - port
+  - read
+  - write
+  - close
   - last-byte
+  - unquote-splicing
+  - quote
+  - quasiquote
+  - unquote
   - $$rib
   - $$<
   - $$+
@@ -2532,6 +2542,7 @@
   - imports
   - body
   - library-state
+  - library
   - imported
   - library-context
   - name-maps
@@ -2539,6 +2550,7 @@
   - only
   - prefix
   - rename
+  - begin
   - export
   - define-library
   - import
@@ -2557,22 +2569,34 @@
   - element
   - variables
   - $$alias
+  - $$define
+  - $$define-syntax
+  - $$let-syntax
+  - $$letrec-syntax
   - optimization-context
   - literals
+  - $$syntax-rules
+  - $$define-optimizer
   - compilation-context
+  - environment
   - symbols
-  - dynamic-symbols
-  - libraries
-  - macros
-  - optimizers
   - $procedure
   - $$apply
+  - $$begin
+  - $$if
+  - $$lambda
   - $$close
   - $$libraries
   - $$macros
   - $$optimizers
+  - $$quote
+  - $$set!
   - $$symbols
   - $$dynamic-symbols
+  - libraries
+  - macros
+  - optimizers
+  - dynamic-symbols
   - marshal-context
   - constants
   - continuations
@@ -2580,320 +2604,6 @@
   - dictionary
   - counts
   - null
-  - rust
-  - environment
-  - eval
-  - repl
-  - interaction-environment
-  - time
-  - current-jiffy
-  - current-second
-  - jiffies-per-second
-  - file
-  - call-with-input-file
-  - call-with-output-file
-  - delete-file
-  - file-exists?
-  - open-binary-input-file
-  - open-binary-output-file
-  - open-input-file
-  - open-output-file
-  - with-input-from-file
-  - with-output-to-file
-  - process-context
-  - command-line
-  - emergency-exit
-  - exit
-  - get-environment-variable
-  - get-environment-variables
-  - lazy
-  - delay
-  - delay-force
-  - force
-  - promise?
-  - make-promise
-  - display
-  - write
-  - read
-  - char
-  - char-whitespace?
-  - special-chars
-  - cxr
-  - caaar
-  - caadr
-  - cadar
-  - caddr
-  - cdaar
-  - cdadr
-  - cddar
-  - cdddr
-  - caaaar
-  - caaadr
-  - caadar
-  - caaddr
-  - cadaar
-  - cadadr
-  - caddar
-  - cadddr
-  - cdaaar
-  - cdaadr
-  - cdadar
-  - cdaddr
-  - cddaar
-  - cddadr
-  - cdddar
-  - cddddr
-  - string->symbol
-  - call/cc
-  - call-with-current-continuation
-  - make-point
-  - point?
-  - point-depth
-  - point-before
-  - point-after
-  - point-parent
-  - current-point
-  - set-current-point!
-  - dynamic-wind
-  - make-parameter
-  - parameterize
-  - error-object?
-  - error-object-message
-  - error-object-irritants
-  - with-exception-handler
-  - raise
-  - raise-continuable
-  - error
-  - read-error
-  - file-error
-  - read-error?
-  - file-error?
-  - guard
-  - unwind
-  - eof-object
-  - eof-object?
-  - make-port
-  - make-input-port
-  - make-output-port
-  - port?
-  - input-port?
-  - output-port?
-  - textual-port?
-  - binary-port?
-  - current-input-port
-  - current-output-port
-  - current-error-port
-  - close-port
-  - close-input-port
-  - close-output-port
-  - call-with-port
-  - read-u8
-  - peek-u8
-  - read-char
-  - peek-char
-  - write-u8
-  - write-char
-  - write-string
-  - write-bytevector
-  - newline
-  - write-value
-  - syntax-rules
-  - define-syntax
-  - \_
-  - ...
-  - define
-  - lambda
-  - let-syntax
-  - letrec-syntax
-  - begin
-  - quasiquote
-  - unquote
-  - unquote-splicing
-  - quote
-  - set!
-  - cond-expand
-  - let
-  - let\*
-  - letrec
-  - letrec\*
-  - define-values
-  - let-values
-  - let\*-values
-  - if
-  - cond
-  - case
-  - else
-  - =>
-  - and
-  - or
-  - boolean-or
-  - when
-  - unless
-  - do
-  - base
-  - library
-  - r7rs
-  - scheme
-  - stak
-  - pair-type
-  - null-type
-  - boolean-type
-  - procedure-type
-  - symbol-type
-  - string-type
-  - char-type
-  - vector-type
-  - bytevector-type
-  - record-type
-  - primitive
-  - rib
-  - cons
-  - close
-  - rib?
-  - rib-car
-  - rib-cdr
-  - rib-tag
-  - rib-set-car!
-  - rib-set-cdr!
-  - eq?
-  - apply
-  - data-rib
-  - eqv?
-  - equal?
-  - procedure?
-  - boolean?
-  - not
-  - integer?
-  - rational?
-  - real?
-  - complex?
-  - number?
-  - exact?
-  - inexact?
-  - zero?
-  - positive?
-  - negative?
-  - even?
-  - odd?
-  - -
-  - -
-  - -
-  - /
-  - remainder
-  - quotient
-  - truncate-remainder
-  - truncate-quotient
-  - modulo
-  - floor-remainder
-  - truncate
-  - floor
-  - ceiling
-  - round
-  - exact
-  - inexact
-  - abs
-  - exp
-  - expt
-  - log
-  - =
-  - <
-  - >
-  - <=
-  - > =
-  - min
-  - max
-  - char?
-  - integer->char
-  - char->integer
-  - char=?
-  - char<?
-  - char<=?
-  - char>?
-  - char>=?
-  - null?
-  - pair?
-  - list?
-  - car
-  - cdr
-  - set-car!
-  - set-cdr!
-  - caar
-  - cadr
-  - cdar
-  - cddr
-  - list
-  - make-list
-  - length
-  - map
-  - for-each
-  - filter
-  - list-ref
-  - list-set!
-  - list-head
-  - list-tail
-  - member
-  - memq
-  - memv
-  - assoc
-  - assq
-  - assv
-  - append
-  - reverse
-  - fold-left
-  - fold-right
-  - reduce-right
-  - memq-position
-  - memv-position
-  - member-position
-  - list-copy
-  - bytevector?
-  - bytevector-length
-  - bytevector-u8-ref
-  - list->bytevector
-  - bytevector->list
-  - vector?
-  - vector
-  - make-vector
-  - vector-length
-  - vector-ref
-  - vector-set!
-  - list->vector
-  - vector->list
-  - string?
-  - list->string
-  - string->code-points
-  - code-points->string
-  - string->list
-  - string-append
-  - string-length
-  - string-ref
-  - number->string
-  - string->number
-  - string-copy
-  - substring
-  - make-string
-  - string=?
-  - string<?
-  - string>?
-  - symbol?
-  - symbol->string
-  - string->uninterned-symbol
-  - define-record-type
-  - record?
-  - values
-  - call-with-values
-  - $$...
-  - $$define-syntax
-  - $$define-optimizer
-  - $$define
-  - $$lambda
-  - $$let-syntax
-  - $$letrec-syntax
-  - $$begin
-  - $$quote
-  - $$set!
-  - $$if
-  - $$syntax-rules
 - call 1 #f 1
 - set 1
 - set string->symbol
@@ -5006,21 +4716,6 @@
   - call 2 #f 2
 - call 1 #f $$close
 - set filter
-- constant procedure 3 #f
-  - get 0
-  - call 1 #f null?
-  - if
-    - get 1
-  - get 2
-  - get 2
-  - get 2
-  - call 1 #f car
-  - call 2 #f 5
-  - get 2
-  - call 1 #f cdr
-  - call 3 #f fold-left
-- call 1 #f $$close
-- set fold-left
 - constant procedure 2 #f
   - get 0
   - constant 0
@@ -7944,6 +7639,75 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set optimize
+- constant list
+  - ($$dynamic-symbols . dynamic-symbols)
+  - ($$libraries . libraries)
+  - ($$macros . macros)
+  - ($$optimizers . optimizers)
+  - ($$symbols . symbols)
+- set features
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f cdr
+        - call 1 #f list
+      - call 1 #f $$close
+      - get 1
+      - call 1 #f 1
+    - get 2
+    - call 1 #f pair?
+    - if
+      - constant procedure 1 #f
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - get 3
+            - call 1 #f cdr
+            - call 1 #f pair?
+            - if
+              - get 3
+              - call 1 #f cdr
+              - get 1
+              - call 2 #f 7
+            - get 0
+          - call 1 #f $$close
+          - get 1
+          - get 3
+          - call 1 #f car
+          - call 1 #f detect-features
+          - call 2 #f append
+          - call 1 #f unique
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - get 4
+        - constant ()
+        - call 2 #f 2
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - constant ()
+  - call 1 #f $$close
+  - get 1
+  - call 1 #f pair?
+  - if
+    - get 1
+    - call 1 #f cdr
+    - call 1 #f null?
+    - if
+      - get 1
+      - call 1 #f car
+      - get features
+      - call 2 #f assq
+      - call 1 #f 1
+    - constant #f
+    - call 1 #f 1
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set detect-features
 - constant compilation-context
 - constant list
   - environment
@@ -8431,33 +8195,550 @@
   - call 2 #f constant-rib
 - call 1 #f $$close
 - set compile-expression
-- constant procedure 5 #f
-  - constant ()
-  - constant procedure 1 #f
-    - get 0
-    - call 1 #f library-symbol?
-    - constant #f
-    - call 2 #f eq?
+- constant procedure 6 #f
+  - constant procedure 4 #f
+    - constant libraries
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 9
+      - set 4
+      - constant macros
+      - get 11
+      - call 2 #f memq
+      - if
+        - get 8
+        - set 3
+        - constant optimizers
+        - get 11
+        - call 2 #f memq
+        - if
+          - get 7
+          - set 2
+          - constant dynamic-symbols
+          - get 11
+          - call 2 #f memq
+          - if
+            - get 6
+            - set 1
+            - constant ()
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f library-symbol?
+              - constant #f
+              - call 2 #f eq?
+            - call 1 #f $$close
+            - get 7
+            - call 1 #f find-symbols
+            - get 6
+            - call 1 #f find-quoted-symbols
+            - get 6
+            - call 1 #f find-quoted-symbols
+            - get 6
+            - call 1 #f find-quoted-symbols
+            - call 4 #f append
+            - call 1 #f unique
+            - call 2 #f filter
+            - get 2
+            - get 6
+            - get 6
+            - get 6
+            - call 6 #f make-compilation-context
+            - get 6
+            - constant ()
+            - call 3 #f compile-expression
+          - constant ()
+          - set 1
+          - constant ()
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f library-symbol?
+            - constant #f
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 7
+          - call 1 #f find-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - call 4 #f append
+          - call 1 #f unique
+          - call 2 #f filter
+          - get 2
+          - get 6
+          - get 6
+          - get 6
+          - call 6 #f make-compilation-context
+          - get 6
+          - constant ()
+          - call 3 #f compile-expression
+        - constant ()
+        - set 2
+        - constant dynamic-symbols
+        - get 11
+        - call 2 #f memq
+        - if
+          - get 6
+          - set 1
+          - constant ()
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f library-symbol?
+            - constant #f
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 7
+          - call 1 #f find-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - call 4 #f append
+          - call 1 #f unique
+          - call 2 #f filter
+          - get 2
+          - get 6
+          - get 6
+          - get 6
+          - call 6 #f make-compilation-context
+          - get 6
+          - constant ()
+          - call 3 #f compile-expression
+        - constant ()
+        - set 1
+        - constant ()
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f library-symbol?
+          - constant #f
+          - call 2 #f eq?
+        - call 1 #f $$close
+        - get 7
+        - call 1 #f find-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - call 4 #f append
+        - call 1 #f unique
+        - call 2 #f filter
+        - get 2
+        - get 6
+        - get 6
+        - get 6
+        - call 6 #f make-compilation-context
+        - get 6
+        - constant ()
+        - call 3 #f compile-expression
+      - constant ()
+      - set 3
+      - constant optimizers
+      - get 11
+      - call 2 #f memq
+      - if
+        - get 7
+        - set 2
+        - constant dynamic-symbols
+        - get 11
+        - call 2 #f memq
+        - if
+          - get 6
+          - set 1
+          - constant ()
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f library-symbol?
+            - constant #f
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 7
+          - call 1 #f find-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - call 4 #f append
+          - call 1 #f unique
+          - call 2 #f filter
+          - get 2
+          - get 6
+          - get 6
+          - get 6
+          - call 6 #f make-compilation-context
+          - get 6
+          - constant ()
+          - call 3 #f compile-expression
+        - constant ()
+        - set 1
+        - constant ()
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f library-symbol?
+          - constant #f
+          - call 2 #f eq?
+        - call 1 #f $$close
+        - get 7
+        - call 1 #f find-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - call 4 #f append
+        - call 1 #f unique
+        - call 2 #f filter
+        - get 2
+        - get 6
+        - get 6
+        - get 6
+        - call 6 #f make-compilation-context
+        - get 6
+        - constant ()
+        - call 3 #f compile-expression
+      - constant ()
+      - set 2
+      - constant dynamic-symbols
+      - get 11
+      - call 2 #f memq
+      - if
+        - get 6
+        - set 1
+        - constant ()
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f library-symbol?
+          - constant #f
+          - call 2 #f eq?
+        - call 1 #f $$close
+        - get 7
+        - call 1 #f find-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - call 4 #f append
+        - call 1 #f unique
+        - call 2 #f filter
+        - get 2
+        - get 6
+        - get 6
+        - get 6
+        - call 6 #f make-compilation-context
+        - get 6
+        - constant ()
+        - call 3 #f compile-expression
+      - constant ()
+      - set 1
+      - constant ()
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f library-symbol?
+        - constant #f
+        - call 2 #f eq?
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f find-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - call 4 #f append
+      - call 1 #f unique
+      - call 2 #f filter
+      - get 2
+      - get 6
+      - get 6
+      - get 6
+      - call 6 #f make-compilation-context
+      - get 6
+      - constant ()
+      - call 3 #f compile-expression
+    - constant ()
+    - set 4
+    - constant macros
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 8
+      - set 3
+      - constant optimizers
+      - get 11
+      - call 2 #f memq
+      - if
+        - get 7
+        - set 2
+        - constant dynamic-symbols
+        - get 11
+        - call 2 #f memq
+        - if
+          - get 6
+          - set 1
+          - constant ()
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f library-symbol?
+            - constant #f
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 7
+          - call 1 #f find-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - get 6
+          - call 1 #f find-quoted-symbols
+          - call 4 #f append
+          - call 1 #f unique
+          - call 2 #f filter
+          - get 2
+          - get 6
+          - get 6
+          - get 6
+          - call 6 #f make-compilation-context
+          - get 6
+          - constant ()
+          - call 3 #f compile-expression
+        - constant ()
+        - set 1
+        - constant ()
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f library-symbol?
+          - constant #f
+          - call 2 #f eq?
+        - call 1 #f $$close
+        - get 7
+        - call 1 #f find-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - call 4 #f append
+        - call 1 #f unique
+        - call 2 #f filter
+        - get 2
+        - get 6
+        - get 6
+        - get 6
+        - call 6 #f make-compilation-context
+        - get 6
+        - constant ()
+        - call 3 #f compile-expression
+      - constant ()
+      - set 2
+      - constant dynamic-symbols
+      - get 11
+      - call 2 #f memq
+      - if
+        - get 6
+        - set 1
+        - constant ()
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f library-symbol?
+          - constant #f
+          - call 2 #f eq?
+        - call 1 #f $$close
+        - get 7
+        - call 1 #f find-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - call 4 #f append
+        - call 1 #f unique
+        - call 2 #f filter
+        - get 2
+        - get 6
+        - get 6
+        - get 6
+        - call 6 #f make-compilation-context
+        - get 6
+        - constant ()
+        - call 3 #f compile-expression
+      - constant ()
+      - set 1
+      - constant ()
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f library-symbol?
+        - constant #f
+        - call 2 #f eq?
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f find-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - call 4 #f append
+      - call 1 #f unique
+      - call 2 #f filter
+      - get 2
+      - get 6
+      - get 6
+      - get 6
+      - call 6 #f make-compilation-context
+      - get 6
+      - constant ()
+      - call 3 #f compile-expression
+    - constant ()
+    - set 3
+    - constant optimizers
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 7
+      - set 2
+      - constant dynamic-symbols
+      - get 11
+      - call 2 #f memq
+      - if
+        - get 6
+        - set 1
+        - constant ()
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f library-symbol?
+          - constant #f
+          - call 2 #f eq?
+        - call 1 #f $$close
+        - get 7
+        - call 1 #f find-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - get 6
+        - call 1 #f find-quoted-symbols
+        - call 4 #f append
+        - call 1 #f unique
+        - call 2 #f filter
+        - get 2
+        - get 6
+        - get 6
+        - get 6
+        - call 6 #f make-compilation-context
+        - get 6
+        - constant ()
+        - call 3 #f compile-expression
+      - constant ()
+      - set 1
+      - constant ()
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f library-symbol?
+        - constant #f
+        - call 2 #f eq?
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f find-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - call 4 #f append
+      - call 1 #f unique
+      - call 2 #f filter
+      - get 2
+      - get 6
+      - get 6
+      - get 6
+      - call 6 #f make-compilation-context
+      - get 6
+      - constant ()
+      - call 3 #f compile-expression
+    - constant ()
+    - set 2
+    - constant dynamic-symbols
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 6
+      - set 1
+      - constant ()
+      - constant procedure 1 #f
+        - get 0
+        - call 1 #f library-symbol?
+        - constant #f
+        - call 2 #f eq?
+      - call 1 #f $$close
+      - get 7
+      - call 1 #f find-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - get 6
+      - call 1 #f find-quoted-symbols
+      - call 4 #f append
+      - call 1 #f unique
+      - call 2 #f filter
+      - get 2
+      - get 6
+      - get 6
+      - get 6
+      - call 6 #f make-compilation-context
+      - get 6
+      - constant ()
+      - call 3 #f compile-expression
+    - constant ()
+    - set 1
+    - constant ()
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f library-symbol?
+      - constant #f
+      - call 2 #f eq?
+    - call 1 #f $$close
+    - get 7
+    - call 1 #f find-symbols
+    - get 6
+    - call 1 #f find-quoted-symbols
+    - get 6
+    - call 1 #f find-quoted-symbols
+    - get 6
+    - call 1 #f find-quoted-symbols
+    - call 4 #f append
+    - call 1 #f unique
+    - call 2 #f filter
+    - get 2
+    - get 6
+    - get 6
+    - get 6
+    - call 6 #f make-compilation-context
+    - get 6
+    - constant ()
+    - call 3 #f compile-expression
   - call 1 #f $$close
-  - get 2
-  - call 1 #f find-symbols
-  - get 7
-  - call 1 #f find-quoted-symbols
-  - get 7
-  - call 1 #f find-quoted-symbols
-  - get 7
-  - call 1 #f find-quoted-symbols
-  - call 4 #f append
-  - call 1 #f unique
-  - call 2 #f filter
-  - get 3
-  - get 7
-  - get 7
-  - get 7
-  - call 6 #f make-compilation-context
-  - get 1
-  - constant ()
-  - call 3 #f compile-expression
+  - constant #f
+  - constant #f
+  - constant #f
+  - constant #f
+  - call 4 #f 4
 - call 1 #f $$close
 - set compile
 - constant marshal-context
@@ -10533,18 +10814,29 @@
               - call 1 #f $$close
               - constant procedure 2 #f
                 - constant procedure 2 #f
-                  - constant #f
-                  - get primitives
-                  - get 20
-                  - get 12
-                  - get 4
-                  - get 13
-                  - get 7
-                  - call 5 #f compile
-                  - call 2 #f build-primitives
-                  - call 2 #f cons-rib
-                  - call 1 #f marshal
-                  - call 1 #f encode
+                  - constant procedure 0 #f
+                    - constant procedure 1 #f
+                      - get 4
+                      - call 1 #f detect-features
+                      - set 1
+                      - constant #f
+                      - get primitives
+                      - get 2
+                      - get 24
+                      - get 16
+                      - get 8
+                      - get 17
+                      - get 11
+                      - call 6 #f compile
+                      - call 2 #f build-primitives
+                      - call 2 #f cons-rib
+                      - call 1 #f marshal
+                      - call 1 #f encode
+                    - call 1 #f $$close
+                    - constant #f
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - call 0 #f 0
                 - call 1 #f $$close
                 - get 2
                 - get 2

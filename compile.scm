@@ -115,14 +115,6 @@
         (cons x xs)
         xs))))
 
-(define (fold-left f y xs)
-  (if (null? xs)
-    y
-    (fold-left
-      f
-      (f y (car xs))
-      (cdr xs))))
-
 (define (list-head xs n)
   (if (zero? n)
     '()
@@ -1020,6 +1012,33 @@
          (expression (optimize-expression context expression)))
     (values expression (optimization-context-literals context))))
 
+; Feature detection
+
+(define features
+  '(($$dynamic-symbols . dynamic-symbols)
+    ($$libraries . libraries)
+    ($$macros . macros)
+    ($$optimizers . optimizers)
+    ($$symbols . symbols)))
+
+(define (detect-features expression)
+  (cond
+    ((and
+        (pair? expression)
+        (null? (cdr expression))
+        (assq (car expression) features))
+      =>
+      (lambda (pair)
+        (list (cdr pair))))
+    ((pair? expression)
+      (let loop ((expression expression) (features '()))
+        (let ((features (unique (append features (detect-features (car expression))))))
+          (if (pair? (cdr expression))
+            (loop (cdr expression) features)
+            features))))
+    (else
+      '())))
+
 ; Compilation
 
 ;; Context
@@ -1239,7 +1258,12 @@
     (else
       (constant-rib expression continuation))))
 
-(define (compile libraries macros optimizers dynamic-symbols expression)
+(define (compile features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
+  (define libraries (if (memq 'libraries features) raw-libraries '()))
+  (define macros (if (memq 'macros features) raw-macros '()))
+  (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
+  (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
+
   (compile-expression
     (make-compilation-context
       '()
@@ -1631,6 +1655,7 @@
   (define-values (expression1 libraries) (expand-libraries (read-source)))
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
+  (define features (detect-features expression3))
 
   (encode
     (marshal
@@ -1638,7 +1663,7 @@
         #f
         (build-primitives
           primitives
-          (compile libraries macros optimizers dynamic-symbols expression3))))))
+          (compile features libraries macros optimizers dynamic-symbols expression3))))))
 
 (let ((arguments (command-line)))
   (when (or
