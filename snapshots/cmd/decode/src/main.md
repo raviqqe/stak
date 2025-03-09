@@ -4339,7 +4339,7 @@
       - call 0 #f newline
     - constant procedure 1 #f
       - constant "procedure "
-      - call 1 #f display
+      - call 1 #f write-string
       - set 0
       - get 0
       - constant 2
@@ -4406,6 +4406,57 @@
       - constant "- "
       - call 1 #f display
       - set 0
+      - get 0
+      - call 1 #f car
+      - get 5
+      - call 2 #f display-data
+      - set 0
+      - get 0
+      - call 1 #f cdr
+      - call 1 #f 3
+    - call 1 #f $$close
+    - set 1
+    - get 3
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set display-list
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f list?
+  - if
+    - constant "list"
+    - call 1 #f write-string
+    - set 0
+    - call 0 #f newline
+    - set 0
+    - get 1
+    - get 1
+    - call 2 #f display-list
+  - get 1
+  - get 1
+  - call 2 #f display-data
+- call 1 #f $$close
+- set display-operand
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f null?
+      - if
+        - constant #f
+      - constant 2
+      - get 5
+      - call 2 #f $\*
+      - constant #\space
+      - call 2 #f make-string
+      - call 1 #f write-string
+      - set 0
+      - constant "- "
+      - call 1 #f display
+      - set 0
       - constant procedure 1 #f
         - get 2
         - call 1 #f rib-tag
@@ -4430,7 +4481,7 @@
         - get 7
         - constant 1
         - call 2 #f $+
-        - call 2 #f display-data
+        - call 2 #f display-operand
       - call 1 #f $$close
       - get 1
       - call 1 #f rib-car
