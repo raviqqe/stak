@@ -57,7 +57,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     vm.run()
 }
 
-const BENCHMARKS: &[(&str, &UniversalModule)] = &[
+static BENCHMARKS: &[(&str, &UniversalModule)] = &[
     ("empty", &EMPTY_MODULE),
     ("eval_sum_10000000", &EVAL_MODULE),
     ("fibonacci_32", &FIBONACCI_MODULE),
