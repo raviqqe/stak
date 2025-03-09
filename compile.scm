@@ -1641,8 +1641,7 @@
   (define-values (expression1 libraries) (expand-libraries (read-source)))
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
-
-  (debug (detect-features expression3))
+  (define features (detect-features expression3))
 
   (encode
     (marshal
