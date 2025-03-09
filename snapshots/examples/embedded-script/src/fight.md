@@ -1907,7 +1907,10 @@
         - call 1 #f cdr
         - call 2 #f cons
       - call 1 #f $$close
-      - constant (((#\0 . #\9) . 0) ((#\A . #\Z) . 10) ((#\a . #\z) . 10))
+      - constant list
+        - ((#\0 . #\9) . 0)
+        - ((#\A . #\Z) . 10)
+        - ((#\a . #\z) . 10)
       - call 2 #f map
       - set 4
       - constant procedure 1 #f
@@ -2131,7 +2134,10 @@
       - call 1 #f cdr
       - call 2 #f cons
     - call 1 #f $$close
-    - constant (((#\0 . #\9) . 0) ((#\A . #\Z) . 10) ((#\a . #\z) . 10))
+    - constant list
+      - ((#\0 . #\9) . 0)
+      - ((#\A . #\Z) . 10)
+      - ((#\a . #\z) . 10)
     - call 2 #f map
     - set 4
     - constant procedure 1 #f
@@ -2425,7 +2431,8 @@
 - call 1 #f $$close
 - set field-index
 - constant tuple
-- constant (values)
+- constant list
+  - values
 - call 2 #f cons
 - set tuple
 - get tuple
@@ -2501,7 +2508,333 @@
     - call 1 #f 1
   - call 1 #f $$close
 - call 1 #f $$close
-- constant (tuple point depth before after parent error-object type message irritants port last-byte rust environment eval repl interaction-environment time current-jiffy current-second jiffies-per-second file call-with-input-file call-with-output-file delete-file file-exists? open-binary-input-file open-binary-output-file open-input-file open-output-file with-input-from-file with-output-to-file process-context command-line emergency-exit exit get-environment-variable get-environment-variables lazy delay delay-force force promise? make-promise display write read char char-whitespace? special-chars cxr caaar caadr cadar caddr cdaar cdadr cddar cdddr caaaar caaadr caadar caaddr cadaar cadadr caddar cadddr cdaaar cdaadr cdadar cdaddr cddaar cddadr cdddar cddddr string->symbol call/cc call-with-current-continuation make-point point? point-depth point-before point-after point-parent current-point set-current-point! dynamic-wind make-parameter parameterize error-object? error-object-message error-object-irritants with-exception-handler raise raise-continuable error read-error file-error read-error? file-error? guard unwind eof-object eof-object? make-port make-input-port make-output-port port? input-port? output-port? textual-port? binary-port? current-input-port current-output-port current-error-port close-port close-input-port close-output-port call-with-port read-u8 peek-u8 read-char peek-char write-u8 write-char write-string write-bytevector newline write-value syntax-rules define-syntax \_ ... define lambda let-syntax letrec-syntax begin quasiquote unquote unquote-splicing quote set! cond-expand let let* letrec letrec* define-values let-values let*-values if cond case else => and or boolean-or when unless do base library r7rs scheme stak pair-type null-type boolean-type procedure-type symbol-type string-type char-type vector-type bytevector-type record-type primitive rib cons close rib? rib-car rib-cdr rib-tag rib-set-car! rib-set-cdr! eq? apply data-rib eqv? equal? procedure? boolean? not integer? rational? real? complex? number? exact? inexact? zero? positive? negative? even? odd? + - * / remainder quotient truncate-remainder truncate-quotient modulo floor-remainder truncate floor ceiling round exact inexact abs exp expt log = < > <= >= min max char? integer->char char->integer char=? char<? char<=? char>? char>=? null? pair? list? car cdr set-car! set-cdr! caar cadr cdar cddr list make-list length map for-each filter list-ref list-set! list-head list-tail member memq memv assoc assq assv append reverse fold-left fold-right reduce-right memq-position memv-position member-position list-copy bytevector? bytevector-length bytevector-u8-ref list->bytevector bytevector->list vector? vector make-vector vector-length vector-ref vector-set! list->vector vector->list string? list->string string->code-points code-points->string string->list string-append string-length string-ref number->string string->number string-copy substring make-string string=? string<? string>? symbol? symbol->string string->uninterned-symbol define-record-type record? values call-with-values $$... $$define-syntax $$define-optimizer $$define $$lambda $$let-syntax $$letrec-syntax $$begin $$quote $$set! $$if $$syntax-rules)
+- constant list
+  - tuple
+  - point
+  - depth
+  - before
+  - after
+  - parent
+  - error-object
+  - type
+  - message
+  - irritants
+  - port
+  - last-byte
+  - rust
+  - environment
+  - eval
+  - repl
+  - interaction-environment
+  - time
+  - current-jiffy
+  - current-second
+  - jiffies-per-second
+  - file
+  - call-with-input-file
+  - call-with-output-file
+  - delete-file
+  - file-exists?
+  - open-binary-input-file
+  - open-binary-output-file
+  - open-input-file
+  - open-output-file
+  - with-input-from-file
+  - with-output-to-file
+  - process-context
+  - command-line
+  - emergency-exit
+  - exit
+  - get-environment-variable
+  - get-environment-variables
+  - lazy
+  - delay
+  - delay-force
+  - force
+  - promise?
+  - make-promise
+  - display
+  - write
+  - read
+  - char
+  - char-whitespace?
+  - special-chars
+  - cxr
+  - caaar
+  - caadr
+  - cadar
+  - caddr
+  - cdaar
+  - cdadr
+  - cddar
+  - cdddr
+  - caaaar
+  - caaadr
+  - caadar
+  - caaddr
+  - cadaar
+  - cadadr
+  - caddar
+  - cadddr
+  - cdaaar
+  - cdaadr
+  - cdadar
+  - cdaddr
+  - cddaar
+  - cddadr
+  - cdddar
+  - cddddr
+  - string->symbol
+  - call/cc
+  - call-with-current-continuation
+  - make-point
+  - point?
+  - point-depth
+  - point-before
+  - point-after
+  - point-parent
+  - current-point
+  - set-current-point!
+  - dynamic-wind
+  - make-parameter
+  - parameterize
+  - error-object?
+  - error-object-message
+  - error-object-irritants
+  - with-exception-handler
+  - raise
+  - raise-continuable
+  - error
+  - read-error
+  - file-error
+  - read-error?
+  - file-error?
+  - guard
+  - unwind
+  - eof-object
+  - eof-object?
+  - make-port
+  - make-input-port
+  - make-output-port
+  - port?
+  - input-port?
+  - output-port?
+  - textual-port?
+  - binary-port?
+  - current-input-port
+  - current-output-port
+  - current-error-port
+  - close-port
+  - close-input-port
+  - close-output-port
+  - call-with-port
+  - read-u8
+  - peek-u8
+  - read-char
+  - peek-char
+  - write-u8
+  - write-char
+  - write-string
+  - write-bytevector
+  - newline
+  - write-value
+  - syntax-rules
+  - define-syntax
+  - \_
+  - ...
+  - define
+  - lambda
+  - let-syntax
+  - letrec-syntax
+  - begin
+  - quasiquote
+  - unquote
+  - unquote-splicing
+  - quote
+  - set!
+  - cond-expand
+  - let
+  - let\*
+  - letrec
+  - letrec\*
+  - define-values
+  - let-values
+  - let\*-values
+  - if
+  - cond
+  - case
+  - else
+  - =>
+  - and
+  - or
+  - boolean-or
+  - when
+  - unless
+  - do
+  - base
+  - library
+  - r7rs
+  - scheme
+  - stak
+  - pair-type
+  - null-type
+  - boolean-type
+  - procedure-type
+  - symbol-type
+  - string-type
+  - char-type
+  - vector-type
+  - bytevector-type
+  - record-type
+  - primitive
+  - rib
+  - cons
+  - close
+  - rib?
+  - rib-car
+  - rib-cdr
+  - rib-tag
+  - rib-set-car!
+  - rib-set-cdr!
+  - eq?
+  - apply
+  - data-rib
+  - eqv?
+  - equal?
+  - procedure?
+  - boolean?
+  - not
+  - integer?
+  - rational?
+  - real?
+  - complex?
+  - number?
+  - exact?
+  - inexact?
+  - zero?
+  - positive?
+  - negative?
+  - even?
+  - odd?
+  - -
+  - -
+  - -
+  - /
+  - remainder
+  - quotient
+  - truncate-remainder
+  - truncate-quotient
+  - modulo
+  - floor-remainder
+  - truncate
+  - floor
+  - ceiling
+  - round
+  - exact
+  - inexact
+  - abs
+  - exp
+  - expt
+  - log
+  - =
+  - <
+  - >
+  - <=
+  - > =
+  - min
+  - max
+  - char?
+  - integer->char
+  - char->integer
+  - char=?
+  - char<?
+  - char<=?
+  - char>?
+  - char>=?
+  - null?
+  - pair?
+  - list?
+  - car
+  - cdr
+  - set-car!
+  - set-cdr!
+  - caar
+  - cadr
+  - cdar
+  - cddr
+  - list
+  - make-list
+  - length
+  - map
+  - for-each
+  - filter
+  - list-ref
+  - list-set!
+  - list-head
+  - list-tail
+  - member
+  - memq
+  - memv
+  - assoc
+  - assq
+  - assv
+  - append
+  - reverse
+  - fold-left
+  - fold-right
+  - reduce-right
+  - memq-position
+  - memv-position
+  - member-position
+  - list-copy
+  - bytevector?
+  - bytevector-length
+  - bytevector-u8-ref
+  - list->bytevector
+  - bytevector->list
+  - vector?
+  - vector
+  - make-vector
+  - vector-length
+  - vector-ref
+  - vector-set!
+  - list->vector
+  - vector->list
+  - string?
+  - list->string
+  - string->code-points
+  - code-points->string
+  - string->list
+  - string-append
+  - string-length
+  - string-ref
+  - number->string
+  - string->number
+  - string-copy
+  - substring
+  - make-string
+  - string=?
+  - string<?
+  - string>?
+  - symbol?
+  - symbol->string
+  - string->uninterned-symbol
+  - define-record-type
+  - record?
+  - values
+  - call-with-values
+  - $$...
+  - $$define-syntax
+  - $$define-optimizer
+  - $$define
+  - $$lambda
+  - $$let-syntax
+  - $$letrec-syntax
+  - $$begin
+  - $$quote
+  - $$set!
+  - $$if
+  - $$syntax-rules
 - call 1 #f 1
 - set 1
 - set string->symbol
@@ -2543,7 +2876,11 @@
 - get call/cc
 - set call-with-current-continuation
 - constant point
-- constant (depth before after parent)
+- constant list
+  - depth
+  - before
+  - after
+  - parent
 - call 2 #f cons
 - set point
 - get point
@@ -2686,7 +3023,10 @@
 - call 1 #f $$close
 - set make-parameter
 - constant error-object
-- constant (type message irritants)
+- constant list
+  - type
+  - message
+  - irritants
 - call 2 #f cons
 - set error-object
 - get error-object
@@ -2926,7 +3266,11 @@
 - set 1
 - set eof-object
 - constant port
-- constant (read write close last-byte)
+- constant list
+  - read
+  - write
+  - close
+  - last-byte
 - call 2 #f cons
 - set port
 - get port
@@ -3277,7 +3621,14 @@
       - call 1 #f length
       - get 2
       - call 3 #f data-rib
-      - constant (person-throw-pie person-wasted person-pies make-person y x \_)
+      - constant list
+        - person-throw-pie
+        - person-wasted
+        - person-pies
+        - make-person
+        - y
+        - x
+        - \_
       - constant procedure 2 #f
         - get 1
         - get 1
