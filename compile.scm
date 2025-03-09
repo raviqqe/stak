@@ -1018,6 +1018,7 @@
   '(($$dynamic-symbols . dynamic-symbols)
     ($$libraries . libraries)
     ($$macros . macros)
+    ($$optimizers . optimizers)
     ($$symbols . symbols)))
 
 (define (detect-features expression)
@@ -1258,6 +1259,11 @@
       (constant-rib expression continuation))))
 
 (define (compile features libraries macros optimizers dynamic-symbols expression)
+  (define libraries (if (memq 'libraries features) libraries '()))
+  (define macros (if (memq 'macros features) macros '()))
+  (define optimizers (if (memq 'optimizers features) optimizers '()))
+  (define dynamic-symbols (if (memq 'dynamic-symbols features) dynamic-symbols '()))
+
   (compile-expression
     (make-compilation-context
       '()
