@@ -24,6 +24,23 @@ static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
 static SUM_MODULE: UniversalModule = include_module!("sum/main.scm");
 static TAK_MODULE: UniversalModule = include_module!("tak/main.scm");
 
+fn initialize(module: &'static UniversalModule) -> Result<(), SmallError> {
+    let mut heap = [Default::default(); HEAP_SIZE];
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(
+            FixedBufferDevice::<DEVICE_BUFFER_SIZE, 0>::new(&[]),
+            VoidFileSystem::new(),
+            VoidProcessContext::new(),
+            VoidClock::new(),
+        ),
+    )?;
+
+    vm.initialize(module.bytecode().iter().copied())?;
+
+    Ok(())
+}
+
 fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     let mut heap = [Default::default(); HEAP_SIZE];
     let mut vm = Vm::new(
@@ -40,7 +57,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
     vm.run()
 }
 
-fn stak(criterion: &mut Criterion) {
+fn stak_run(criterion: &mut Criterion) {
     for (name, module) in [
         ("empty", &EMPTY_MODULE),
         ("eval_sum_10000000", &EVAL_MODULE),
@@ -50,12 +67,31 @@ fn stak(criterion: &mut Criterion) {
         ("tak_16_8_0", &TAK_MODULE),
     ] {
         criterion.bench_function(name, |bencher| {
-            bencher.iter(|| run(black_box(module)).unwrap())
+            bencher.iter(|| {
+                run(black_box(module)).unwrap();
+            })
         });
     }
 }
 
-fn stak_compiler(criterion: &mut Criterion) {
+fn stak_initialize(criterion: &mut Criterion) {
+    for (name, module) in [
+        ("empty", &EMPTY_MODULE),
+        ("eval_sum_10000000", &EVAL_MODULE),
+        ("fibonacci_32", &FIBONACCI_MODULE),
+        ("hello", &HELLO_MODULE),
+        ("sum_10000000", &SUM_MODULE),
+        ("tak_16_8_0", &TAK_MODULE),
+    ] {
+        criterion.bench_function(name, |bencher| {
+            bencher.iter(|| {
+                initialize(black_box(module)).unwrap();
+            })
+        });
+    }
+}
+
+fn stak_compile(criterion: &mut Criterion) {
     for name in ["empty", "eval", "fibonacci", "hello", "sum", "tak"] {
         let source = read(Path::new("src").join(name).join("main.scm")).unwrap();
         let source = source.as_slice();
@@ -69,7 +105,7 @@ fn stak_compiler(criterion: &mut Criterion) {
 criterion_group! {
     name = benches;
     config = Criterion::default().sample_size(10);
-    targets = stak, stak_compiler
+    targets = stak_run, stak_initialize, stak_compile
 }
 
 criterion_main!(benches);
