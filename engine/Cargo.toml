@@ -1,0 +1,35 @@
+[package]
+name = "stak-engine"
+description = "Stak Scheme scripting engine for Rust"
+version.workspace = true
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[features]
+libc = ["stak-device/libc"]
+std = ["stak-device/std"]
+
+[dependencies]
+any-fn = "0.6.1"
+cfg-elif = "0.6.3"
+stak-device = { version = "0.10.1", path = "../device" }
+stak-dynamic = { version = "0.10.1", path = "../dynamic" }
+stak-file = { version = "0.10.1", path = "../file" }
+stak-module = { version = "0.10.1", path = "../module" }
+stak-process-context = { version = "0.10.1", path = "../process_context" }
+stak-r7rs = { version = "0.10.1", path = "../r7rs" }
+stak-time = { version = "0.10.1", path = "../time" }
+stak-vm = { version = "0.10.1", path = "../vm" }
+
+[dev-dependencies]
+rand = "0.9.0"
+stak = { path = "../root" }
+
+[build-dependencies]
+stak-build = { version = "0.10.1", path = "../build" }
+
+[lints]
+workspace = true

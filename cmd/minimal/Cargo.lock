@@ -15,10 +15,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
-name = "cfg-exif"
-version = "0.3.1"
+name = "cfg-elif"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f782369519ff0fef6ec4fcc325a7328ac0136950ddf0a0d55f4a54cddca743b4"
+checksum = "48e4c88374f9089549688b990b079b53e13178ba952757332da543601c8f2313"
 
 [[package]]
 name = "errno"
@@ -51,9 +51,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.169"
+version = "0.2.170"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5aba8db14291edd000dfcc4d620c7ebfb122c613afb886ca8803fa4e128a20a"
+checksum = "875b3680cb2f8f71bdcf9a30f38d48282f5d3c95cbf9b3fa57269bb5d5c06828"
 
 [[package]]
 name = "libm"
@@ -69,14 +69,14 @@ checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
 name = "mstak"
-version = "0.3.28"
+version = "0.5.1"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.4.22"
+version = "0.5.1"
 dependencies = [
  "libc",
  "stak-device",
@@ -90,9 +90,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.93"
+version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60946a68e5f9d28b0dc1c21bb8a97ee7d018a8b322fa57838ba31cc878e22d99"
+checksum = "a31971752e70b8b2686d7e46ec17fb38dad4051d94024c88df49b667caea9c84"
 dependencies = [
  "unicode-ident",
 ]
@@ -108,9 +108,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.43"
+version = "0.38.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a78891ee6bf2340288408954ac787aa063d8e8817e9f53abb37c695c6d834ef6"
+checksum = "fdb5bc1ae2baa591800df16c9ca78619bf65c0488b41b96ccec5d11220d8c154"
 dependencies = [
  "bitflags",
  "errno",
@@ -127,7 +127,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.2.3"
+version = "0.10.1"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -140,11 +140,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.1.89"
+version = "0.10.1"
 
 [[package]]
 name = "stak-device"
-version = "0.2.93"
+version = "0.10.1"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.5.7"
+version = "0.10.1"
 dependencies = [
  "heapless",
  "rustix",
@@ -161,7 +161,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.1.6"
+version = "0.10.1"
 dependencies = [
  "libm",
  "stak-vm",
@@ -169,9 +169,9 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.2.12"
+version = "0.10.1"
 dependencies = [
- "cfg-exif",
+ "cfg-elif",
  "proc-macro2",
  "quote",
  "stak-compiler",
@@ -181,7 +181,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.1.70"
+version = "0.10.1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -190,22 +190,21 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.2.0"
+version = "0.10.1"
 dependencies = [
- "heapless",
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.2.51"
+version = "0.10.1"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-r7rs"
-version = "0.9.7"
+version = "0.10.1"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -218,7 +217,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.1.95"
+version = "0.10.1"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -234,7 +233,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.1.34"
+version = "0.10.1"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -242,7 +241,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.1.69"
+version = "0.10.1"
 dependencies = [
  "libc",
  "rustix",
@@ -250,16 +249,16 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.7.22"
+version = "0.10.1"
 dependencies = [
- "cfg-exif",
+ "cfg-elif",
 ]
 
 [[package]]
 name = "syn"
-version = "2.0.96"
+version = "2.0.98"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5d0adab1ae378d7f53bdebc67a39f1f151407ef230f0ce2883572f5d8985c80"
+checksum = "36147f1a48ae0ec2b5b3bc5b537d267457555a10dc06f3dbc8cb11ba3006d3b1"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -1,6 +1,6 @@
 [package]
 name = "hot-reload"
-version = "0.1.15"
+version.workspace = true
 publish = false
 edition.workspace = true
 
@@ -10,11 +10,11 @@ hot-reload = ["stak/hot-reload"]
 
 [dependencies]
 axum = "0.8.1"
-stak = { version = "0.5.3", path = "../../root" }
+stak = { version = "0.10.1", path = "../../root" }
 tokio = { version = "1.43.0", features = ["rt-multi-thread"] }
 
 [build-dependencies]
-stak-build = { version = "0.1.52", path = "../../build" }
+stak-build = { version = "0.10.1", path = "../../build" }
 
 [lints]
 workspace = true

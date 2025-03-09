@@ -1,6 +1,6 @@
 #![allow(missing_docs)]
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use stak::{
     device::FixedBufferDevice,
     file::VoidFileSystem,
@@ -18,6 +18,7 @@ const HEAP_SIZE: usize = 1 << 18;
 const DEVICE_BUFFER_SIZE: usize = 1 << 8;
 
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
+static EVAL_MODULE: UniversalModule = include_module!("eval/main.scm");
 static FIBONACCI_MODULE: UniversalModule = include_module!("fibonacci/main.scm");
 static HELLO_MODULE: UniversalModule = include_module!("hello/main.scm");
 static SUM_MODULE: UniversalModule = include_module!("sum/main.scm");
@@ -42,6 +43,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 fn stak(criterion: &mut Criterion) {
     for (name, module) in [
         ("empty", &EMPTY_MODULE),
+        ("eval_sum_10000000", &EVAL_MODULE),
         ("fibonacci_32", &FIBONACCI_MODULE),
         ("hello", &HELLO_MODULE),
         ("sum_10000000", &SUM_MODULE),
@@ -54,7 +56,7 @@ fn stak(criterion: &mut Criterion) {
 }
 
 fn stak_compiler(criterion: &mut Criterion) {
-    for name in ["empty", "fibonacci", "hello", "sum", "tak"] {
+    for name in ["empty", "eval", "fibonacci", "hello", "sum", "tak"] {
         let source = read(Path::new("src").join(name).join("main.scm")).unwrap();
         let source = source.as_slice();
 
@@ -69,4 +71,5 @@ criterion_group! {
     config = Criterion::default().sample_size(10);
     targets = stak, stak_compiler
 }
+
 criterion_main!(benches);

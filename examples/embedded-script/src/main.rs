@@ -1,41 +1,77 @@
-//! A `stak-build` example.
+//! The pie-throwing duel.
 
+use any_fn::{Ref, r#fn};
 use core::error::Error;
+use rand::random;
 use stak::{
-    device::StdioDevice,
-    file::VoidFileSystem,
+    engine::{Engine, EngineError},
     include_module,
-    module::{Module, UniversalModule},
-    process_context::VoidProcessContext,
-    r7rs::{SmallError, SmallPrimitiveSet},
-    time::VoidClock,
-    vm::Vm,
+    module::UniversalModule,
 };
 
 const HEAP_SIZE: usize = 1 << 16;
 
-static FOO_MODULE: UniversalModule = include_module!("foo.scm");
-static BAR_MODULE: UniversalModule = include_module!("bar.scm");
+/// A person who holds pies to throw.
+struct Person {
+    pies: usize,
+    dodge: f64,
+    wasted: bool,
+}
+
+impl Person {
+    /// Creates a person.
+    pub const fn new(pies: usize, dodge: f64) -> Self {
+        Self {
+            pies,
+            dodge,
+            wasted: false,
+        }
+    }
+
+    /// Returns a number of pies the person has.
+    pub const fn pies(&self) -> usize {
+        self.pies
+    }
+
+    /// Returns `true` if a person is wasted.
+    pub const fn wasted(&self) -> bool {
+        self.wasted
+    }
+
+    /// Throws a pie to another person.
+    pub fn throw_pie(&mut self, other: &mut Self) {
+        if self.pies == 0 || self.wasted {
+            return;
+        }
+
+        self.pies -= 1;
+
+        if random::<f64>() > other.dodge {
+            other.wasted = true;
+        }
+    }
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
-    run(&FOO_MODULE.bytecode())?;
-    run(&BAR_MODULE.bytecode())?;
+    // Include and run the Scheme module.
+    run_scheme(&include_module!("fight.scm"))?;
 
     Ok(())
 }
 
-fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
-    let mut heap = vec![Default::default(); HEAP_SIZE];
-    let mut vm = Vm::new(
-        &mut heap,
-        SmallPrimitiveSet::new(
-            StdioDevice::new(),
-            VoidFileSystem::new(),
-            VoidProcessContext::new(),
-            VoidClock::new(),
-        ),
-    )?;
+fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
+    // Initialize a heap memory for a Scheme scripting engine.
+    let mut heap = [Default::default(); HEAP_SIZE];
+    // Define Rust functions to pass to the engine.
+    let mut functions = [
+        ("make-person", r#fn(Person::new)),
+        ("person-pies", r#fn::<(Ref<_>,), _>(Person::pies)),
+        ("person-wasted", r#fn::<(Ref<_>,), _>(Person::wasted)),
+        ("person-throw-pie", r#fn(Person::throw_pie)),
+    ];
+    // Initialize the engine.
+    let mut engine = Engine::new(&mut heap, &mut functions)?;
 
-    vm.initialize(bytecodes.iter().copied())?;
-    vm.run()
+    // Finally, run the module!
+    engine.run(module)
 }

@@ -1,4 +1,4 @@
-(import (scheme base))
+(import (scheme base) (scheme write))
 
 (define (tak x y z)
   (if (< y x)
@@ -8,4 +8,4 @@
       (tak (- z 1) x y))
     z))
 
-(tak 16 8 0)
+(write (tak 16 8 0))

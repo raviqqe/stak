@@ -1,0 +1,1 @@
+../../examples/embedded-script/src/fight.scm

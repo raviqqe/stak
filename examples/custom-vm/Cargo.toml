@@ -1,0 +1,14 @@
+[package]
+name = "custom-vm"
+version.workspace = true
+publish = false
+edition.workspace = true
+
+[dependencies]
+stak = { version = "0.10.1", path = "../../root" }
+
+[build-dependencies]
+stak-build = { version = "0.10.1", path = "../../build" }
+
+[lints]
+workspace = true

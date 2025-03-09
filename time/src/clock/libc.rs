@@ -1,6 +1,6 @@
 use super::Clock;
 use core::convert::Infallible;
-use rustix::time::{clock_gettime, ClockId};
+use rustix::time::{ClockId, clock_gettime};
 use stak_vm::Number;
 
 /// A clock based on libc.
