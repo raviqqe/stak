@@ -138,6 +138,8 @@
 
 ; Display
 
+(define maximum-continuation-distance 64)
+
 (define (find-continuation then else)
   foo)
 
