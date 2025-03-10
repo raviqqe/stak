@@ -1658,7 +1658,7 @@
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
   (define features (detect-features expression3))
-  (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression))
+  (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
 
   (encode
     (marshal
