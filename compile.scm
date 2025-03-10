@@ -1288,8 +1288,9 @@
 ; Marshalling
 
 (define-record-type marshal-context
-  (make-marshal-context constants continuations)
+  (make-marshal-context symbols constants continuations)
   marshal-context?
+  (symbols marshal-context-symbols)
   (constants marshal-context-constants marshal-context-set-constants!)
   (continuations marshal-context-continuations marshal-context-set-continuations!))
 
@@ -1399,8 +1400,8 @@
         (marshal (rib-cdr value) data)
         (rib-tag value)))))
 
-(define (marshal codes)
-  (marshal-rib (make-marshal-context '() '()) codes #f))
+(define (marshal metadata codes)
+  (marshal-rib (make-marshal-context (metadata-symbols metadata) '() '()) codes #f))
 
 ; Encoding
 
@@ -1662,6 +1663,7 @@
 
   (encode
     (marshal
+      metadata
       (cons-rib
         #f
         (build-primitives
