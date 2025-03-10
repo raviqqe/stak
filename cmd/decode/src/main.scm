@@ -138,6 +138,21 @@
 
 ; Display
 
+(define maximum-continuation-distance 64)
+
+(define (find-continuation branch code)
+  (let branch-loop ((branch branch))
+    (if (null? branch)
+      '()
+      (let code-loop ((code code) (index 0))
+        (cond
+          ((or (null? code) (= index maximum-continuation-distance))
+            (branch-loop (cdr branch)))
+          ((eq? branch code)
+            branch)
+          (else
+            (code-loop (cdr code) (+ index 1))))))))
+
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
 
@@ -175,7 +190,7 @@
         (write-char #\space)
         (write (odd? arity))
         (newline)
-        (display-code (cdr code) depth)))))
+        (display-code (cdr code) '() depth)))))
 
 (define (display-data data depth)
   (cond
@@ -203,23 +218,27 @@
       (display-list data (+ depth 1)))
     (display-data data depth)))
 
-(define (display-code code depth)
-  (do ((code code (rib-cdr code)))
-    ((null? code))
-    (display-indent depth)
-    (display "- ")
-    (let ((operand (rib-car code)))
-      (display-instruction (rib-tag code))
-      (if (= (rib-tag code) if-instruction)
+(define (display-code code continuation depth)
+  (let loop ((code code))
+    (unless (null? code)
+      (display-indent depth)
+      (display "- ")
+      (if (eq? code continuation)
+        (write-string "continue\n")
         (begin
-          (newline)
-          (display-code operand (+ depth 1)))
-        (begin
-          (write-char #\space)
-          (display-top-data operand (+ depth 1)))))))
+          (let ((operand (rib-car code)))
+            (display-instruction (rib-tag code))
+            (if (= (rib-tag code) if-instruction)
+              (begin
+                (newline)
+                (display-code operand (find-continuation operand (cdr code)) (+ depth 1)))
+              (begin
+                (write-char #\space)
+                (display-top-data operand (+ depth 1))))
+            (loop (cdr code))))))))
 
 (define (display-ribs code)
-  (display-code (cdr code) 0))
+  (display-code (cdr code) '() 0))
 
 (define (main)
   (let ((ribs (decode)))
