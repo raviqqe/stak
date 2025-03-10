@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-sac = { version = "0.10.3", path = "../../sac", features = [
+stak-sac = { version = "0.10.4", path = "../../sac", features = [
   "float",
   "std",
 ] }
