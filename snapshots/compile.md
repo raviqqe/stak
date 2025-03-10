@@ -1931,9 +1931,14 @@
   - literals
   - $$syntax-rules
   - $$define-optimizer
+  - symbols
+  - libraries
+  - macros
+  - optimizers
+  - dynamic-symbols
   - compilation-context
   - environment
-  - symbols
+  - metadata
   - $procedure
   - $$apply
   - $$begin
@@ -1947,10 +1952,6 @@
   - $$set!
   - $$symbols
   - $$dynamic-symbols
-  - libraries
-  - macros
-  - optimizers
-  - dynamic-symbols
   - marshal-context
   - constants
   - continuations
@@ -6554,14 +6555,109 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set detect-features
-- constant compilation-context
+- constant metadata
 - constant list
-  - environment
   - symbols
-  - dynamic-symbols
   - libraries
   - macros
   - optimizers
+  - dynamic-symbols
+- call 2 #f cons
+- set metadata
+- get metadata
+- call 1 #f record-constructor
+- set make-metadata
+- get metadata
+- call 1 #f record-predicate
+- set metadata?
+- get metadata
+- constant symbols
+- call 2 #f record-getter
+- set metadata-symbols
+- get metadata
+- constant libraries
+- call 2 #f record-getter
+- set metadata-libraries
+- get metadata
+- constant macros
+- call 2 #f record-getter
+- set metadata-macros
+- get metadata
+- constant optimizers
+- call 2 #f record-getter
+- set metadata-optimizers
+- get metadata
+- constant dynamic-symbols
+- call 2 #f record-getter
+- set metadata-dynamic-symbols
+- constant procedure 6 #f
+  - constant procedure 4 #f
+    - constant libraries
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 9
+      - continue
+    - constant ()
+    - set 4
+    - constant macros
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 8
+      - continue
+    - constant ()
+    - set 3
+    - constant optimizers
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 7
+      - continue
+    - constant ()
+    - set 2
+    - constant dynamic-symbols
+    - get 11
+    - call 2 #f memq
+    - if
+      - get 6
+      - continue
+    - constant ()
+    - set 1
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f library-symbol?
+      - constant #f
+      - call 2 #f eq?
+    - call 1 #f $$close
+    - get 6
+    - call 1 #f find-symbols
+    - get 5
+    - call 1 #f find-quoted-symbols
+    - get 5
+    - call 1 #f find-quoted-symbols
+    - get 5
+    - call 1 #f find-quoted-symbols
+    - call 4 #f append
+    - call 1 #f unique
+    - call 2 #f filter
+    - get 4
+    - get 4
+    - get 4
+    - get 4
+    - call 5 #f make-metadata
+  - call 1 #f $$close
+  - constant #f
+  - constant #f
+  - constant #f
+  - constant #f
+  - call 4 #f 4
+- call 1 #f $$close
+- set compile-metadata
+- constant compilation-context
+- constant list
+  - environment
+  - metadata
 - call 2 #f cons
 - set compilation-context
 - get compilation-context
@@ -6575,41 +6671,17 @@
 - call 2 #f record-getter
 - set compilation-context-environment
 - get compilation-context
-- constant symbols
+- constant metadata
 - call 2 #f record-getter
-- set compilation-context-symbols
-- get compilation-context
-- constant dynamic-symbols
-- call 2 #f record-getter
-- set compilation-context-dynamic-symbols
-- get compilation-context
-- constant libraries
-- call 2 #f record-getter
-- set compilation-context-libraries
-- get compilation-context
-- constant macros
-- call 2 #f record-getter
-- set compilation-context-macros
-- get compilation-context
-- constant optimizers
-- call 2 #f record-getter
-- set compilation-context-optimizers
+- set compilation-context-metadata
 - constant procedure 2 #f
   - get 0
   - get 2
   - call 1 #f compilation-context-environment
   - call 2 #f append
   - get 2
-  - call 1 #f compilation-context-symbols
-  - get 3
-  - call 1 #f compilation-context-dynamic-symbols
-  - get 4
-  - call 1 #f compilation-context-libraries
-  - get 5
-  - call 1 #f compilation-context-macros
-  - get 6
-  - call 1 #f compilation-context-optimizers
-  - call 6 #f make-compilation-context
+  - call 1 #f compilation-context-metadata
+  - call 2 #f make-compilation-context
 - call 1 #f $$close
 - set compilation-context-append-locals
 - constant procedure 2 #f
@@ -6960,7 +7032,8 @@
       - call 2 #f eqv?
       - if
         - get 4
-        - call 1 #f compilation-context-libraries
+        - call 1 #f compilation-context-metadata
+        - call 1 #f metadata-libraries
         - get 3
         - call 2 #f constant-rib
       - get 0
@@ -6968,7 +7041,8 @@
       - call 2 #f eqv?
       - if
         - get 4
-        - call 1 #f compilation-context-macros
+        - call 1 #f compilation-context-metadata
+        - call 1 #f metadata-macros
         - get 3
         - call 2 #f constant-rib
       - get 0
@@ -6976,7 +7050,8 @@
       - call 2 #f eqv?
       - if
         - get 4
-        - call 1 #f compilation-context-optimizers
+        - call 1 #f compilation-context-metadata
+        - call 1 #f metadata-optimizers
         - get 3
         - call 2 #f constant-rib
       - get 0
@@ -7010,7 +7085,8 @@
       - call 2 #f eqv?
       - if
         - get 4
-        - call 1 #f compilation-context-symbols
+        - call 1 #f compilation-context-metadata
+        - call 1 #f metadata-symbols
         - get 3
         - call 2 #f constant-rib
       - get 0
@@ -7018,7 +7094,8 @@
       - call 2 #f eqv?
       - if
         - get 4
-        - call 1 #f compilation-context-dynamic-symbols
+        - call 1 #f compilation-context-metadata
+        - call 1 #f metadata-dynamic-symbols
         - get 3
         - call 2 #f constant-rib
       - get 4
@@ -7035,72 +7112,13 @@
   - call 2 #f constant-rib
 - call 1 #f $$close
 - set compile-expression
-- constant procedure 6 #f
-  - constant procedure 4 #f
-    - constant libraries
-    - get 11
-    - call 2 #f memq
-    - if
-      - get 9
-      - continue
-    - constant ()
-    - set 4
-    - constant macros
-    - get 11
-    - call 2 #f memq
-    - if
-      - get 8
-      - continue
-    - constant ()
-    - set 3
-    - constant optimizers
-    - get 11
-    - call 2 #f memq
-    - if
-      - get 7
-      - continue
-    - constant ()
-    - set 2
-    - constant dynamic-symbols
-    - get 11
-    - call 2 #f memq
-    - if
-      - get 6
-      - continue
-    - constant ()
-    - set 1
-    - constant ()
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f library-symbol?
-      - constant #f
-      - call 2 #f eq?
-    - call 1 #f $$close
-    - get 7
-    - call 1 #f find-symbols
-    - get 6
-    - call 1 #f find-quoted-symbols
-    - get 6
-    - call 1 #f find-quoted-symbols
-    - get 6
-    - call 1 #f find-quoted-symbols
-    - call 4 #f append
-    - call 1 #f unique
-    - call 2 #f filter
-    - get 2
-    - get 6
-    - get 6
-    - get 6
-    - call 6 #f make-compilation-context
-    - get 6
-    - constant ()
-    - call 3 #f compile-expression
-  - call 1 #f $$close
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - call 4 #f 4
+- constant procedure 2 #f
+  - constant ()
+  - get 2
+  - call 2 #f make-compilation-context
+  - get 1
+  - constant ()
+  - call 3 #f compile-expression
 - call 1 #f $$close
 - set compile
 - constant marshal-context
@@ -8269,26 +8287,31 @@
               - constant procedure 2 #f
                 - constant procedure 2 #f
                   - constant procedure 0 #f
-                    - constant procedure 1 #f
-                      - get 4
+                    - constant procedure 2 #f
+                      - get 5
                       - call 1 #f detect-features
+                      - set 2
+                      - get 1
+                      - get 23
+                      - get 15
+                      - get 7
+                      - get 16
+                      - get 10
+                      - call 6 #f compile-metadata
                       - set 1
                       - constant #f
                       - get primitives
                       - get 2
-                      - get 24
-                      - get 16
                       - get 8
-                      - get 17
-                      - get 11
-                      - call 6 #f compile
+                      - call 2 #f compile
                       - call 2 #f build-primitives
                       - call 2 #f cons-rib
                       - call 1 #f marshal
                       - call 1 #f encode
                     - call 1 #f $$close
                     - constant #f
-                    - call 1 #f 1
+                    - constant #f
+                    - call 2 #f 2
                   - call 1 #f $$close
                   - call 0 #f 0
                 - call 1 #f $$close
