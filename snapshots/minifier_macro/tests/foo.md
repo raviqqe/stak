@@ -1,18 +1,18 @@
 - constant primitive 0
-- set $$rib
+- set ||
 - constant primitive 1
-- set $$close
+- set ||
 - constant primitive 9
-- set $$<
+- set ||
 - constant primitive 10
-- set $$+
+- set ||
 - constant primitive 11
-- set $$-
+- set ||
 - constant primitive 12
-- set $$\*
+- set ||
 - constant primitive 13
-- set $$/
-- get bar
-- call 1 #f foo
+- set ||
+- get ||
+- call 1 #f ||
 - set 0
-- call 0 #f baz
+- call 0 #f ||
