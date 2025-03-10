@@ -140,8 +140,12 @@
 
 (define maximum-continuation-distance 64)
 
-(define (find-continuation then else)
-  foo)
+(define (find-continuation branch code)
+  (let branch-loop ((branch branch))
+    (if (null? branch)
+      '()
+      (let else-loop ((else else))
+        foo))))
 
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
