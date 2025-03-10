@@ -4338,6 +4338,61 @@
   - call 2 #f marshal-value!
 - call 1 #f $$close
 - set marshal!
+- constant 64
+- set maximum-continuation-distance
+- constant procedure 2 #f
+  - constant procedure 1 #f
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f null?
+      - if
+        - constant ()
+      - constant procedure 1 #f
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 2
+            - get maximum-continuation-distance
+            - call 2 #f eq?
+          - call 1 #f $$close
+          - get 2
+          - call 1 #f null?
+          - call 1 #f 1
+          - set 1
+          - if
+            - get 5
+            - call 1 #f cdr
+            - call 1 #f 8
+          - get 5
+          - get 2
+          - call 2 #f eq?
+          - if
+            - get 5
+          - get 1
+          - call 1 #f cdr
+          - get 1
+          - constant 1
+          - call 2 #f $+
+          - call 2 #f 5
+        - call 1 #f $$close
+        - set 1
+        - get 6
+        - constant 0
+        - call 2 #f 2
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set 1
+    - get 3
+    - call 1 #f 1
+  - call 1 #f $$close
+  - constant #f
+  - call 1 #f 1
+- call 1 #f $$close
+- set find-continuation
 - constant procedure 1 #f
   - constant 2
   - get 1
@@ -4433,8 +4488,9 @@
       - set 0
       - get 2
       - call 1 #f cdr
-      - get 5
-      - call 2 #f display-code
+      - constant ()
+      - get 6
+      - call 3 #f display-code
     - call 1 #f $$close
     - get 1
     - call 1 #f car
@@ -4532,7 +4588,7 @@
   - call 2 #f display-data
 - call 1 #f $$close
 - set display-top-data
-- constant procedure 2 #f
+- constant procedure 3 #f
   - constant procedure 1 #f
     - constant procedure 1 #f
       - get 0
@@ -4558,10 +4614,15 @@
           - call 0 #f newline
           - set 0
           - get 0
-          - get 7
+          - get 3
+          - call 1 #f car
+          - get 4
+          - call 1 #f cdr
+          - call 2 #f find-continuation
+          - get 8
           - constant 1
           - call 2 #f $+
-          - call 2 #f display-code
+          - call 3 #f display-code
         - constant #\space
         - call 1 #f write-char
         - set 0
@@ -4581,7 +4642,7 @@
       - call 1 #f 3
     - call 1 #f $$close
     - set 1
-    - get 3
+    - get 4
     - call 1 #f 1
   - call 1 #f $$close
   - constant #f
@@ -4591,8 +4652,9 @@
 - constant procedure 1 #f
   - get 0
   - call 1 #f cdr
+  - constant ()
   - constant 0
-  - call 2 #f display-code
+  - call 3 #f display-code
 - call 1 #f $$close
 - set display-ribs
 - constant procedure 0 #f
