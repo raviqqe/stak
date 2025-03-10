@@ -8073,6 +8073,7 @@
       - (procedure? . procedure?)
       - (not . not)
       - (number? . number?)
+      - (zero? . zero?)
       - (char? . char?)
       - (null? . null?)
       - (pair? . pair?)
@@ -8090,6 +8091,7 @@
       - (vector->list . vector->list)
       - (string? . string?)
       - (string->list . string->list)
+      - (string-length . string-length)
       - (number->string . number->string)
       - (symbol? . symbol?)
       - (symbol->string . symbol->string)
@@ -8448,9 +8450,20 @@
               - get 13
               - call 1 #f symbol?
               - if
-                - get 13
+                - constant procedure 1 #f
+                  - get 0
+                  - call 1 #f string-length
+                  - constant 0
+                  - call 2 #f eq?
+                  - if
+                    - constant "||"
+                    - continue
+                  - get 0
+                  - call 1 #f display
+                - call 1 #f $$close
+                - get 14
                 - call 1 #f symbol->string
-                - call 1 #f display
+                - call 1 #f 1
               - get 13
               - call 1 #f vector?
               - if
