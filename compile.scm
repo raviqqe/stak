@@ -1316,7 +1316,10 @@
       (data-rib
         symbol-type
         (marshal #f)
-        (marshal (symbol->string (resolve-library-symbol value)))))
+        (marshal
+          (if (memq value (marshal-context-symbols context))
+            (symbol->string (resolve-library-symbol value))
+            ""))))
 
     ((char? value)
       (data-rib char-type (char->integer value) (marshal '())))
