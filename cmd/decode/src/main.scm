@@ -190,7 +190,7 @@
         (write-char #\space)
         (write (odd? arity))
         (newline)
-        (display-code (cdr code) depth)))))
+        (display-code (cdr code) '() depth)))))
 
 (define (display-data data depth)
   (cond
@@ -218,7 +218,7 @@
       (display-list data (+ depth 1)))
     (display-data data depth)))
 
-(define (display-code code depth)
+(define (display-code code continuation depth)
   (do ((code code (rib-cdr code)))
     ((null? code))
     (display-indent depth)
@@ -226,15 +226,15 @@
     (let ((operand (rib-car code)))
       (display-instruction (rib-tag code))
       (if (= (rib-tag code) if-instruction)
-        (let ((continuation (find-continuation (car code) (cdr code))))
+        (begin
           (newline)
-          (display-code operand (+ depth 1)))
+          (display-code operand (find-continuation (car code) (cdr code)) (+ depth 1)))
         (begin
           (write-char #\space)
           (display-top-data operand (+ depth 1)))))))
 
 (define (display-ribs code)
-  (display-code (cdr code) 0))
+  (display-code (cdr code) '() 0))
 
 (define (main)
   (let ((ribs (decode)))
