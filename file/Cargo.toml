@@ -14,7 +14,7 @@ std = []
 
 [dependencies]
 heapless = { version = "0.8.0", default-features = false }
-rustix = { version = "1.0.0", default-features = false, features = [
+rustix = { version = "1.0.1", default-features = false, features = [
   "fs",
 ], optional = true }
 stak-vm = { version = "0.10.4", path = "../vm" }
