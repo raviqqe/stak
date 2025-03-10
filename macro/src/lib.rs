@@ -88,13 +88,13 @@ pub fn include_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
     convert_result((|| {
-        let source = generate_r7rs(&read_source_file(input)?)?;
+        let source = generate_r7rs(&read_source_file(input.clone())?)?;
 
-        Ok(quote! {
+        Ok(quote!({
             // Detect source changes.
-            static _SOURCE: &str = include_str!($path);
+            static _SOURCE: &str = include_str!(#input);
             #source
-        })
+        }))
     })())
     .into()
 }
