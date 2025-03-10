@@ -219,19 +219,23 @@
     (display-data data depth)))
 
 (define (display-code code continuation depth)
-  (do ((code code (rib-cdr code)))
-    ((null? code))
-    (display-indent depth)
-    (display "- ")
-    (let ((operand (rib-car code)))
-      (display-instruction (rib-tag code))
-      (if (= (rib-tag code) if-instruction)
+  (let loop ((code code))
+    (unless (null? code)
+      (display-indent depth)
+      (display "- ")
+      (if (eq? code continuation)
+        (write-string "continue\n")
         (begin
-          (newline)
-          (display-code operand (find-continuation (car code) (cdr code)) (+ depth 1)))
-        (begin
-          (write-char #\space)
-          (display-top-data operand (+ depth 1)))))))
+          (let ((operand (rib-car code)))
+            (display-instruction (rib-tag code))
+            (if (= (rib-tag code) if-instruction)
+              (begin
+                (newline)
+                (display-code operand (find-continuation operand (cdr code)) (+ depth 1)))
+              (begin
+                (write-char #\space)
+                (display-top-data operand (+ depth 1))))
+            (loop (cdr code))))))))
 
 (define (display-ribs code)
   (display-code (cdr code) '() 0))

@@ -4601,6 +4601,16 @@
       - constant "- "
       - call 1 #f display
       - set 0
+      - get 0
+      - get 6
+      - call 2 #f eq?
+      - if
+        - constant "continue\n"
+        - call 1 #f write-string
+        - set 0
+        - get 0
+        - call 1 #f rib-cdr
+        - call 1 #f 3
       - constant procedure 1 #f
         - get 2
         - call 1 #f rib-tag
