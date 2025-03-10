@@ -2327,7 +2327,8 @@
             (write-string x))
 
           ((symbol? x)
-            (display (symbol->string x)))
+            (let ((string (symbol->string x)))
+              (display (if (zero? (string-length string)) "||" string))))
 
           ((vector? x)
             (write-vector x))
