@@ -144,10 +144,10 @@
   (let branch-loop ((branch branch))
     (if (null? branch)
       '()
-      (let code-loop ((code code))
+      (let code-loop ((code code) (index 0))
         (cond
-          ((null? code)
-            foo)
+          ((or (null? code) (= index maximum-continuation-distance))
+            (branch-loop (cdr branch)))
           ((eq? branch code)
             branch)
           (else
