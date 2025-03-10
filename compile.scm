@@ -1039,6 +1039,38 @@
     (else
       '())))
 
+; Metadata compilation
+
+(define-record-type metadata
+  (make-metadata symbols dynamic-symbols libraries macros optimizers)
+  metadata?
+  (symbols metadata-symbols)
+  (dynamic-symbols metadata-dynamic-symbols)
+  (libraries metadata-libraries)
+  (macros metadata-macros)
+  (optimizers metadata-optimizers))
+
+(define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols)
+  (define libraries (if (memq 'libraries features) raw-libraries '()))
+  (define macros (if (memq 'macros features) raw-macros '()))
+  (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
+  (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
+
+  (make-metadata
+    (filter
+      (lambda (symbol)
+        (not (library-symbol? symbol)))
+      (unique
+        (append
+          (find-symbols expression)
+          (find-quoted-symbols libraries)
+          (find-quoted-symbols macros)
+          (find-quoted-symbols optimizers))))
+    dynamic-symbols
+    libraries
+    macros
+    optimizers))
+
 ; Compilation
 
 ;; Context
