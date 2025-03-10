@@ -149,7 +149,7 @@
           ((null? code)
             foo)
           ((eq? branch code)
-            #f)
+            branch)
           (else
             (branch-loop (cdr branch))))))))
 
