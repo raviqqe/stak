@@ -116,14 +116,6 @@
         (cons x xs)
         xs))))
 
-(define (fold-left f y xs)
-  (if (null? xs)
-    y
-    (fold-left
-      f
-      (f y (car xs))
-      (cdr xs))))
-
 (define (list-head xs n)
   (if (zero? n)
     '()
@@ -349,6 +341,10 @@
 (define (library-symbol? name)
   (memv library-symbol-separator (string->list (symbol->string name))))
 
+(define (built-in-symbol? name)
+  (let ((name (symbol->string name)))
+    (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+
 (define (build-library-name id name)
   (string-append
     (id->string id)
@@ -364,10 +360,7 @@
       name)))
 
 (define (rename-library-symbol context id name)
-  (if (or
-       (not id)
-       (let ((name (symbol->string name)))
-         (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+  (if (or (not id) (built-in-symbol? name))
     name
     (let* ((maps (library-context-name-maps context))
            (pair (or (assq id maps) (cons id '())))
@@ -529,10 +522,12 @@
 ;; Types
 
 (define-record-type macro-state
-  (make-macro-state id literals)
+  (make-macro-state id literals static-symbols dynamic-symbols)
   macro-state?
   (id macro-state-id macro-state-set-id!)
-  (literals macro-state-literals macro-state-set-literals!))
+  (literals macro-state-literals macro-state-set-literals!)
+  (static-symbols macro-state-static-symbols macro-state-set-static-symbols!)
+  (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
 (define-record-type macro-context
   (make-macro-context state environment)
@@ -573,6 +568,20 @@
     (cons
       (cons name syntax)
       (macro-state-literals state))))
+
+(define (macro-context-append-static-symbol! context symbol)
+  (define state (macro-context-state context))
+  (define symbols (macro-state-static-symbols state))
+
+  (unless (memq symbol symbols)
+    (macro-state-set-static-symbols! state (cons symbol symbols))))
+
+(define (macro-context-append-dynamic-symbol! context symbol)
+  (define state (macro-context-state context))
+  (define symbols (macro-state-dynamic-symbols state))
+
+  (unless (memq symbol symbols)
+    (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
 (define-record-type rule-context
   (make-rule-context definition-context use-context ellipsis literals)
@@ -798,6 +807,8 @@
 
   (cond
     ((symbol? expression)
+      (unless (assq expression (macro-context-environment context))
+        (macro-context-append-dynamic-symbol! context expression))
       (let ((value (resolve expression)))
         (when (procedure? value)
           (error "invalid syntax" expression))
@@ -819,18 +830,19 @@
         (($$define)
           (let ((name (cadr expression)))
             (macro-context-set! context name name)
+            (macro-context-append-static-symbol! context name)
             (expand (cons '$$set! (cdr expression)))))
 
         (($$define-syntax)
-          (macro-context-set-last!
-            context
-            (cadr expression)
-            (make-transformer context (caddr expression)))
-          (macro-context-append-literal!
-            context
-            (cadr expression)
-            (caddr expression))
-          #f)
+          (let ((name (cadr expression))
+                (transformer (caddr expression)))
+            (macro-context-set-last!
+              context
+              name
+              (make-transformer context transformer))
+            (macro-context-append-literal! context name transformer)
+            (macro-context-append-static-symbol! context name)
+            #f))
 
         (($$lambda)
           (let* ((parameters (cadr expression))
@@ -898,14 +910,22 @@
       expression)))
 
 (define (expand-macros expression)
-  (let* ((context (make-macro-context (make-macro-state 0 '()) '()))
-         (expression (expand-macro context expression)))
+  (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '()))
+         (expression (expand-macro context expression))
+         (state (macro-context-state context)))
     (values
       expression
       (reverse
         (filter
           (lambda (pair) (library-symbol? (car pair)))
-          (macro-state-literals (macro-context-state context)))))))
+          (macro-state-literals state)))
+      (filter
+        (lambda (name)
+          (not
+            (or
+              (memq name (macro-state-static-symbols state))
+              (built-in-symbol? name))))
+        (macro-state-dynamic-symbols state)))))
 
 ; Optimization
 
@@ -979,11 +999,12 @@
       (error "unsupported optimizer" optimizer))))
 
 (define (optimize-expression context expression)
-  (define (optimize expression)
-    (optimize-expression context expression))
-
   (if (pair? expression)
-    (let* ((expression (relaxed-map optimize expression))
+    (let* ((expression
+             (relaxed-map
+               (lambda (expression)
+                 (optimize-expression context expression))
+               expression))
            (predicate (car expression)))
       (cond
         ((eq? predicate '$$define-optimizer)
@@ -1029,15 +1050,43 @@
       (optimize ',optimizers ',expression))
     '((scheme base))))
 
+; Feature detection
+
+(define features
+  '(($$dynamic-symbols . dynamic-symbols)
+    ($$libraries . libraries)
+    ($$macros . macros)
+    ($$optimizers . optimizers)
+    ($$symbols . symbols)))
+
+(define (detect-features expression)
+  (cond
+    ((and
+        (pair? expression)
+        (null? (cdr expression))
+        (assq (car expression) features))
+      =>
+      (lambda (pair)
+        (list (cdr pair))))
+    ((pair? expression)
+      (let loop ((expression expression) (features '()))
+        (let ((features (unique (append features (detect-features (car expression))))))
+          (if (pair? (cdr expression))
+            (loop (cdr expression) features)
+            features))))
+    (else
+      '())))
+
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment symbols libraries macros optimizers)
+  (make-compilation-context environment symbols dynamic-symbols libraries macros optimizers)
   compilation-context?
   (environment compilation-context-environment)
   (symbols compilation-context-symbols)
+  (dynamic-symbols compilation-context-dynamic-symbols)
   (libraries compilation-context-libraries)
   (macros compilation-context-macros)
   (optimizers compilation-context-optimizers))
@@ -1046,6 +1095,7 @@
   (make-compilation-context
     (append variables (compilation-context-environment context))
     (compilation-context-symbols context)
+    (compilation-context-dynamic-symbols context)
     (compilation-context-libraries context)
     (compilation-context-macros context)
     (compilation-context-optimizers context)))
@@ -1237,13 +1287,21 @@
         (($$symbols)
           (constant-rib (compilation-context-symbols context) continuation))
 
+        (($$dynamic-symbols)
+          (constant-rib (compilation-context-dynamic-symbols context) continuation))
+
         (else
           (compile-call context expression #f continuation))))
 
     (else
       (constant-rib expression continuation))))
 
-(define (compile libraries macros optimizers expression)
+(define (compile features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
+  (define libraries (if (memq 'libraries features) raw-libraries '()))
+  (define macros (if (memq 'macros features) raw-macros '()))
+  (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
+  (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
+
   (compile-expression
     (make-compilation-context
       '()
@@ -1252,11 +1310,11 @@
           (not (library-symbol? symbol)))
         (unique
           (append
-            (map car primitives)
             (find-symbols expression)
             (find-quoted-symbols libraries)
             (find-quoted-symbols macros)
             (find-quoted-symbols optimizers))))
+      dynamic-symbols
       libraries
       macros
       optimizers)
@@ -1634,8 +1692,9 @@
 (define (main)
   (define expression0 (incept (read-source)))
   (define-values (expression1 libraries) (expand-libraries expression0))
-  (define-values (expression2 macros) (expand-macros expression1))
+  (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize2 '() expression2))
+  (define features (detect-features expression3))
 
   (encode
     (marshal
@@ -1643,7 +1702,7 @@
         #f
         (build-primitives
           primitives
-          (compile libraries macros optimizers expression3))))))
+          (compile features libraries macros optimizers dynamic-symbols expression3))))))
 
 (let ((arguments (command-line)))
   (when (or

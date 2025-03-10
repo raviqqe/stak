@@ -1,7 +1,7 @@
 [package]
 name = "stak-util"
 description = "Stak Scheme utilities"
-version = "0.1.68"
+version.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -9,8 +9,8 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-libc = { version = "0.2.169", default-features = false }
-rustix = { version = "0.38.43", default-features = false, features = [
+libc = { version = "0.2.170", default-features = false }
+rustix = { version = "1.0.0", default-features = false, features = [
   "fs",
   "mm",
 ] }

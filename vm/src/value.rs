@@ -2,7 +2,7 @@ use crate::{
     cons::{Cons, Tag},
     number::Number,
 };
-use cfg_exif::feature;
+use cfg_elif::expr::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -153,7 +153,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{cons::NEVER, Type};
+    use crate::{Type, cons::NEVER};
 
     #[test]
     fn convert_cons() {

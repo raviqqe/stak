@@ -1,7 +1,7 @@
 [package]
 name = "stak-file"
 description = "File system for Stak Scheme"
-version = "0.5.6"
+version.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
@@ -14,13 +14,13 @@ std = []
 
 [dependencies]
 heapless = { version = "0.8.0", default-features = false }
-rustix = { version = "0.38.43", default-features = false, features = [
+rustix = { version = "1.0.0", default-features = false, features = [
   "fs",
 ], optional = true }
-stak-vm = { version = "0.7.21", path = "../vm" }
+stak-vm = { version = "0.10.3", path = "../vm" }
 
 [dev-dependencies]
-tempfile = "3.15.0"
+tempfile = "3.18.0"
 
 [lints]
 workspace = true

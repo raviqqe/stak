@@ -1,6 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
+    Error, StackSlot,
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
@@ -9,7 +10,6 @@ use crate::{
     primitive_set::PrimitiveSet,
     r#type::Type,
     value::{TypedValue, Value},
-    Error, StackSlot,
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
@@ -54,7 +54,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
 // volatile variables live across garbage collections.
 impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Creates a virtual machine.
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, T::Error> {
+    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
         Ok(Self {
             primitive_set,
             memory: Memory::new(heap)?,
@@ -104,7 +104,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn constant(&mut self) -> Result<(), T::Error> {
+    fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand();
 
         trace!("constant", constant);
@@ -115,7 +115,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn get(&mut self) -> Result<(), T::Error> {
+    fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons();
         let value = self.memory.car(operand);
 

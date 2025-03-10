@@ -29,5 +29,3 @@ updates:
           - "@astrojs/*"
     schedule:
       interval: daily
-      time: "02:00"
-      timezone: Asia/Tokyo

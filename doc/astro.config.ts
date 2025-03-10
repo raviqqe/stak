@@ -42,10 +42,6 @@ const listItems = async (directory: string): Promise<Item[]> =>
 
 export default defineConfig({
   base: "/stak",
-  image: {
-    service: { entrypoint: "astro/assets/services/sharp" },
-    remotePatterns: [{ protocol: "https" }],
-  },
   vite: {
     plugins: [wasm()],
     worker: {
@@ -98,16 +94,16 @@ export default defineConfig({
               link: "/embedding-scripts",
             },
             {
+              label: "Running in no-std and no-alloc environment",
+              link: "/no-std-no-alloc",
+            },
+            {
               label: "Hot reloading",
               link: "/hot-reload",
             },
             {
               label: "Writing a Scheme subset",
               link: "/writing-scheme-subset",
-            },
-            {
-              label: "No-std and no-alloc support",
-              link: "/no-std-no-alloc",
             },
           ],
         },
@@ -133,5 +129,8 @@ export default defineConfig({
     }),
   ],
   prefetch: { prefetchAll: true },
+  redirects: {
+    "/demo": "/interpreter-demo",
+  },
   site: "https://raviqqe.github.io/stak",
 });

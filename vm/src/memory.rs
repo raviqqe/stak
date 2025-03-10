@@ -1,9 +1,9 @@
 use crate::{
-    cons::{Cons, Tag, NEVER},
+    Error,
+    cons::{Cons, NEVER, Tag},
     number::Number,
     r#type::Type,
     value::Value,
-    Error,
 };
 use core::fmt::{self, Display, Formatter};
 
@@ -219,22 +219,32 @@ impl<'a> Memory<'a> {
         self.allocation_index >= self.space_size()
     }
 
+    /// Returns a heap size.
+    #[inline]
+    pub const fn size(&self) -> usize {
+        self.heap.len()
+    }
+
     #[inline]
     const fn space_size(&self) -> usize {
-        self.heap.len() / 2
+        self.size() / 2
     }
 
+    /// Returns the current allocation index relative an allocation start index.
     #[inline]
-    const fn allocation_start(&self) -> usize {
-        if self.space {
-            self.space_size()
-        } else {
-            0
-        }
+    pub const fn allocation_index(&self) -> usize {
+        self.allocation_index
     }
 
+    /// Returns an allocation start index.
     #[inline]
-    const fn allocation_end(&self) -> usize {
+    pub const fn allocation_start(&self) -> usize {
+        if self.space { self.space_size() } else { 0 }
+    }
+
+    /// Returns an allocation end index.
+    #[inline]
+    pub const fn allocation_end(&self) -> usize {
         self.allocation_start() + self.allocation_index
     }
 
@@ -350,6 +360,17 @@ impl<'a> Memory<'a> {
         }
 
         list
+    }
+
+    /// Builds a string.
+    pub fn build_string(&mut self, string: &str) -> Result<Cons, Error> {
+        let mut list = self.null();
+
+        for character in string.chars().rev() {
+            list = self.cons(Number::from_i64(character as _).into(), list)?;
+        }
+
+        Ok(list)
     }
 
     /// Executes an operation against a value at the top of a stack.

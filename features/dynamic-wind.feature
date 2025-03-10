@@ -84,7 +84,7 @@ Feature: Dynamic wind
     # spell-checker: disable-next-line
     Then the stdout should contain exactly "ABCDABCD"
 
-  Scenario: Call callbacks for nested dynamic extents
+  Scenario: Call callbacks for a pair of nested dynamic extents
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))

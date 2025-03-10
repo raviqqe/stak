@@ -1,5 +1,5 @@
 use crate::{Device, ReadWriteDevice};
-use std::io::{stderr, stdin, stdout, Error, Stderr, Stdin, Stdout};
+use std::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
