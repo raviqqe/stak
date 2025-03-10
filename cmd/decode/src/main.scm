@@ -145,7 +145,13 @@
     (if (null? branch)
       '()
       (let code-loop ((code code))
-        ()))))
+        (cond
+          ((null? code)
+            foo)
+          ((eq? branch code)
+            #f)
+          (else
+            (branch-loop (cdr branch))))))))
 
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
