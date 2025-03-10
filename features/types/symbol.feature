@@ -19,7 +19,6 @@ Feature: Symbol
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  @chibi @gauche @stak
   Scenario: Convert a string to a new symbol
     Given a file named "main.scm" with:
       """scheme
