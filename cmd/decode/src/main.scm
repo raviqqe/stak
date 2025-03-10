@@ -151,7 +151,7 @@
           ((eq? branch code)
             branch)
           (else
-            (branch-loop (cdr branch))))))))
+            (code-loop (cdr code) (+ index 1))))))))
 
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
