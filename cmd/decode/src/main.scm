@@ -138,6 +138,9 @@
 
 ; Display
 
+(define (find-continuation then else)
+  foo)
+
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
 
