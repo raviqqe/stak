@@ -1931,7 +1931,6 @@
   - literals
   - $$syntax-rules
   - $$define-optimizer
-  - symbols
   - libraries
   - macros
   - optimizers
@@ -1953,6 +1952,7 @@
   - $$symbols
   - $$dynamic-symbols
   - marshal-context
+  - symbols
   - constants
   - continuations
   - encode-context
@@ -7134,6 +7134,7 @@
 - set compile
 - constant marshal-context
 - constant list
+  - symbols
   - constants
   - continuations
 - call 2 #f cons
@@ -7144,6 +7145,10 @@
 - get marshal-context
 - call 1 #f record-predicate
 - set marshal-context?
+- get marshal-context
+- constant symbols
+- call 2 #f record-getter
+- set marshal-context-symbols
 - get marshal-context
 - constant constants
 - call 2 #f record-getter
@@ -7470,10 +7475,12 @@
   - call 1 #f 1
 - call 1 #f $$close
 - set marshal-rib
-- constant procedure 1 #f
+- constant procedure 2 #f
+  - get 1
+  - call 1 #f metadata-symbols
   - constant ()
   - constant ()
-  - call 2 #f make-marshal-context
+  - call 3 #f make-marshal-context
   - get 1
   - constant #f
   - call 3 #f marshal-rib
@@ -8310,14 +8317,15 @@
                       - get 10
                       - call 6 #f compile-metadata
                       - set 1
+                      - get 0
                       - constant #f
                       - get primitives
-                      - get 2
-                      - get 8
+                      - get 3
+                      - get 9
                       - call 2 #f compile
                       - call 2 #f build-primitives
                       - call 2 #f cons-rib
-                      - call 1 #f marshal
+                      - call 2 #f marshal
                       - call 1 #f encode
                     - call 1 #f $$close
                     - constant #f
