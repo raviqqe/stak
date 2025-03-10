@@ -145,7 +145,7 @@
     (if (null? branch)
       '()
       (let else-loop ((else else))
-        foo))))
+        ()))))
 
 (define (display-indent depth)
   (write-string (make-string (* 2 depth) #\space)))
