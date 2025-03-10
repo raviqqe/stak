@@ -65,8 +65,6 @@ macro_rules! main {
             stak_vm::Vm,
         };
 
-        static _SOURCE: &str = include_str!($path);
-
         #[derive(clap::Parser)]
         #[command(disable_help_flag = true, ignore_errors = true, version)]
         struct Arguments {
@@ -124,8 +122,6 @@ macro_rules! libc_main {
             stak_util::Heap,
             stak_vm::Vm,
         };
-
-        static _SOURCE: &str = include_str!($path);
 
         #[cfg(not(test))]
         #[panic_handler]
