@@ -1050,7 +1050,7 @@
   (optimizers metadata-optimizers)
   (dynamic-symbols metadata-dynamic-symbols))
 
-(define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols)
+(define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
   (define libraries (if (memq 'libraries features) raw-libraries '()))
   (define macros (if (memq 'macros features) raw-macros '()))
   (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
@@ -1658,7 +1658,7 @@
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
   (define features (detect-features expression3))
-  (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols))
+  (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression))
 
   (encode
     (marshal
