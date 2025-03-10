@@ -15,21 +15,21 @@ std = ["stak-device/std"]
 [dependencies]
 any-fn = "0.6.1"
 cfg-elif = "0.6.3"
-stak-device = { version = "0.10.3", path = "../device" }
-stak-dynamic = { version = "0.10.3", path = "../dynamic" }
-stak-file = { version = "0.10.3", path = "../file" }
-stak-module = { version = "0.10.3", path = "../module" }
-stak-process-context = { version = "0.10.3", path = "../process_context" }
-stak-r7rs = { version = "0.10.3", path = "../r7rs" }
-stak-time = { version = "0.10.3", path = "../time" }
-stak-vm = { version = "0.10.3", path = "../vm" }
+stak-device = { version = "0.10.4", path = "../device" }
+stak-dynamic = { version = "0.10.4", path = "../dynamic" }
+stak-file = { version = "0.10.4", path = "../file" }
+stak-module = { version = "0.10.4", path = "../module" }
+stak-process-context = { version = "0.10.4", path = "../process_context" }
+stak-r7rs = { version = "0.10.4", path = "../r7rs" }
+stak-time = { version = "0.10.4", path = "../time" }
+stak-vm = { version = "0.10.4", path = "../vm" }
 
 [dev-dependencies]
 rand = "0.9.0"
 stak = { path = "../root" }
 
 [build-dependencies]
-stak-build = { version = "0.10.3", path = "../build" }
+stak-build = { version = "0.10.4", path = "../build" }
 
 [lints]
 workspace = true

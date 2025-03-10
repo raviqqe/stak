@@ -9,13 +9,13 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-configuration = { version = "0.10.3", path = "../configuration" }
-stak-device = { version = "0.10.3", path = "../device", features = ["std"] }
-stak-file = { version = "0.10.3", path = "../file" }
-stak-process-context = { version = "0.10.3", path = "../process_context" }
-stak-r7rs = { version = "0.10.3", path = "../r7rs" }
-stak-time = { version = "0.10.3", path = "../time" }
-stak-vm = { version = "0.10.3", path = "../vm" }
+stak-configuration = { version = "0.10.4", path = "../configuration" }
+stak-device = { version = "0.10.4", path = "../device", features = ["std"] }
+stak-file = { version = "0.10.4", path = "../file" }
+stak-process-context = { version = "0.10.4", path = "../process_context" }
+stak-r7rs = { version = "0.10.4", path = "../r7rs" }
+stak-time = { version = "0.10.4", path = "../time" }
+stak-vm = { version = "0.10.4", path = "../vm" }
 
 [dev-dependencies]
 indoc = "2.0.6"
