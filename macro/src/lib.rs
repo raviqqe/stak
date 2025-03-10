@@ -87,7 +87,16 @@ pub fn compile_r7rs(input: TokenStream) -> TokenStream {
 pub fn include_r7rs(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
 
-    convert_result((|| generate_r7rs(&read_source_file(input)?))()).into()
+    convert_result((|| {
+        let source = generate_r7rs(&read_source_file(input)?)?;
+
+        Ok(quote! {
+            // Detect source changes.
+            static _SOURCE: &str = include_str!($path);
+            #source
+        })
+    })())
+    .into()
 }
 
 fn generate_r7rs(source: &str) -> Result<proc_macro2::TokenStream, Box<dyn Error>> {
