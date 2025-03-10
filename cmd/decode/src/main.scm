@@ -226,7 +226,7 @@
     (let ((operand (rib-car code)))
       (display-instruction (rib-tag code))
       (if (= (rib-tag code) if-instruction)
-        (begin
+        (let ((continuation (find-continuation (car code) (cdr code))))
           (newline)
           (display-code operand (+ depth 1)))
         (begin
