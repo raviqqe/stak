@@ -144,7 +144,7 @@
   (let branch-loop ((branch branch))
     (if (null? branch)
       '()
-      (let else-loop ((else else))
+      (let code-loop ((code code))
         ()))))
 
 (define (display-indent depth)
