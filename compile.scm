@@ -1039,7 +1039,7 @@
     (else
       '())))
 
-; Metadata compilation
+; Metadata
 
 (define-record-type metadata
   (make-metadata symbols libraries macros optimizers dynamic-symbols)
