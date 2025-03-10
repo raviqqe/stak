@@ -1042,13 +1042,13 @@
 ; Metadata compilation
 
 (define-record-type metadata
-  (make-metadata symbols dynamic-symbols libraries macros optimizers)
+  (make-metadata symbols libraries macros optimizers dynamic-symbols)
   metadata?
   (symbols metadata-symbols)
-  (dynamic-symbols metadata-dynamic-symbols)
   (libraries metadata-libraries)
   (macros metadata-macros)
-  (optimizers metadata-optimizers))
+  (optimizers metadata-optimizers)
+  (dynamic-symbols metadata-dynamic-symbols))
 
 (define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols)
   (define libraries (if (memq 'libraries features) raw-libraries '()))
@@ -1066,10 +1066,10 @@
           (find-quoted-symbols libraries)
           (find-quoted-symbols macros)
           (find-quoted-symbols optimizers))))
-    dynamic-symbols
     libraries
     macros
-    optimizers))
+    optimizers
+    dynamic-symbols))
 
 ; Compilation
 
@@ -1688,6 +1688,7 @@
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
   (define features (detect-features expression3))
+  (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols))
 
   (encode
     (marshal
