@@ -2572,6 +2572,8 @@
   (begin
     (define eval
       (let ()
+        (define libraries ($$libraries))
+
         ; Utilities
 
         (define (last-cdr xs)
@@ -3307,7 +3309,6 @@
             one
             other))
 
-        (define libraries ($$libraries))
         (define optimization-context
           (make-optimization-context
             (map
