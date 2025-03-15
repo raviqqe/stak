@@ -1065,7 +1065,8 @@
           (find-symbols expression)
           (find-quoted-symbols libraries)
           (find-quoted-symbols macros)
-          (find-quoted-symbols optimizers))))
+          (find-quoted-symbols optimizers)
+          (find-quoted-symbols dynamic-symbols))))
     libraries
     macros
     optimizers

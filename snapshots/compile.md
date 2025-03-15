@@ -6649,7 +6649,9 @@
     - call 1 #f ||
     - get 5
     - call 1 #f ||
-    - call 4 #f ||
+    - get 5
+    - call 1 #f ||
+    - call 5 #f ||
     - call 1 #f ||
     - call 2 #f ||
     - get 4
