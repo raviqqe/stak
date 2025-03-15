@@ -6649,7 +6649,9 @@
     - call 1 #f find-quoted-symbols
     - get 5
     - call 1 #f find-quoted-symbols
-    - call 4 #f append
+    - get 5
+    - call 1 #f find-quoted-symbols
+    - call 5 #f append
     - call 1 #f unique
     - call 2 #f filter
     - get 4
