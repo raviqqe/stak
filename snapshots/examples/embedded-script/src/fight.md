@@ -1881,6 +1881,10 @@
   - write
   - close
   - last-byte
+  - person-throw-pie
+  - person-wasted
+  - person-pies
+  - make-person
 - call 1 #f 1
 - set 1
 - set string->symbol
