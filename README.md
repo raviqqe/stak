@@ -188,7 +188,6 @@ Although Stak Scheme's minimality comes at the cost of speed, it is very fast at
 
 This means that Stak Scheme is suitable for embedding many small pieces of Scheme programs in Rust due to its tiny overhead on program initialization.
 
-- Baseline: Python 3.12
 - Environment: Ubuntu 24.04, x86-64
 
 | Benchmark     | Stak (full [^2]) | Lua 5.4 |
