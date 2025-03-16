@@ -6,7 +6,7 @@ Feature: The R5RS library
 
       (write (+ 40 2))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "42"
 
   Scenario: Quote a list
@@ -16,7 +16,7 @@ Feature: The R5RS library
 
       (for-each write-char '(#\A #\B #\C))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "ABC"
 
   Scenario: Read an S-expression
@@ -30,7 +30,7 @@ Feature: The R5RS library
       """text
       (1 2 3)
       """
-    When I run `scheme main.scm` interactively
+    When I run `stak main.scm` interactively
     And I pipe in the file "input.txt"
     Then the exit status should be 0
     And the stdout should contain exactly "(1 2 3)"
@@ -42,7 +42,7 @@ Feature: The R5RS library
 
       (write '(1 2 3))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "(1 2 3)"
 
   Scenario: Force a promise
@@ -52,7 +52,7 @@ Feature: The R5RS library
 
       (write-char (force (delay (integer->char 65))))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
   Scenario: Evaluate an S-expression
@@ -65,5 +65,5 @@ Feature: The R5RS library
           '(+ 40 2)
           (scheme-report-environment 5)))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "42"
