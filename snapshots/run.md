@@ -1900,6 +1900,53 @@
   - $$close
   - import
   - rust
+  - r5rs
+  - acos
+  - angle
+  - asin
+  - atan
+  - char-alphabetic?
+  - char-ci<=?
+  - char-ci<?
+  - char-ci=?
+  - char-ci>=?
+  - char-ci>?
+  - char-downcase
+  - char-lower-case?
+  - char-numeric?
+  - char-ready?
+  - char-upcase
+  - char-upper-case?
+  - cos
+  - denominator
+  - exact->inexact
+  - gcd
+  - imag-part
+  - inexact->exact
+  - lcm
+  - load
+  - magnitude
+  - make-polar
+  - make-rectangular
+  - null-environment
+  - numerator
+  - rationalize
+  - real-part
+  - scheme-report-environment
+  - sin
+  - sqrt
+  - string
+  - string-ci<=?
+  - string-ci<?
+  - string-ci=?
+  - string-ci>=?
+  - string-ci>?
+  - string-fill!
+  - string-set!
+  - string<=?
+  - string>=?
+  - tan
+  - vector-fill!
   - environment
   - eval
   - repl
@@ -3133,6 +3180,227 @@
         - list
           - stak
           - rust
+      - list
+        - list
+          - scheme
+          - r5rs
+        - (\* . ||)
+        - (+ . ||)
+        - (- . ||)
+        - (/ . ||)
+        - (< . ||)
+        - (<= . ||)
+        - (= . ||)
+        - (> . ||)
+        - (>= . ||)
+        - (abs . ||)
+        - (acos . ||)
+        - (and . ||)
+        - (angle . ||)
+        - (append . ||)
+        - (apply . ||)
+        - (asin . ||)
+        - (assoc . ||)
+        - (assq . ||)
+        - (assv . ||)
+        - (atan . ||)
+        - (begin . ||)
+        - (boolean? . ||)
+        - (caaaar . ||)
+        - (caaadr . ||)
+        - (caaar . ||)
+        - (caadar . ||)
+        - (caaddr . ||)
+        - (caadr . ||)
+        - (caar . ||)
+        - (cadaar . ||)
+        - (cadadr . ||)
+        - (cadar . ||)
+        - (caddar . ||)
+        - (cadddr . ||)
+        - (caddr . ||)
+        - (cadr . ||)
+        - (call-with-current-continuation . ||)
+        - (call-with-input-file . ||)
+        - (call-with-output-file . ||)
+        - (call-with-values . ||)
+        - (car . ||)
+        - (case . ||)
+        - (cdaaar . ||)
+        - (cdaadr . ||)
+        - (cdaar . ||)
+        - (cdadar . ||)
+        - (cdaddr . ||)
+        - (cdadr . ||)
+        - (cdar . ||)
+        - (cddaar . ||)
+        - (cddadr . ||)
+        - (cddar . ||)
+        - (cdddar . ||)
+        - (cddddr . ||)
+        - (cdddr . ||)
+        - (cddr . ||)
+        - (cdr . ||)
+        - (ceiling . ||)
+        - (char->integer . ||)
+        - (char-alphabetic? . ||)
+        - (char-ci<=? . ||)
+        - (char-ci<? . ||)
+        - (char-ci=? . ||)
+        - (char-ci>=? . ||)
+        - (char-ci>? . ||)
+        - (char-downcase . ||)
+        - (char-lower-case? . ||)
+        - (char-numeric? . ||)
+        - (char-ready? . ||)
+        - (char-upcase . ||)
+        - (char-upper-case? . ||)
+        - (char-whitespace? . ||)
+        - (char<=? . ||)
+        - (char<? . ||)
+        - (char=? . ||)
+        - (char>=? . ||)
+        - (char>? . ||)
+        - (char? . ||)
+        - (close-input-port . ||)
+        - (close-output-port . ||)
+        - (complex? . ||)
+        - (cond . ||)
+        - (cons . ||)
+        - (cos . ||)
+        - (current-input-port . ||)
+        - (current-output-port . ||)
+        - (define . ||)
+        - (define-syntax . ||)
+        - (delay . ||)
+        - (denominator . ||)
+        - (display . ||)
+        - (do . ||)
+        - (dynamic-wind . ||)
+        - (eof-object? . ||)
+        - (eq? . ||)
+        - (equal? . ||)
+        - (eqv? . ||)
+        - (eval . ||)
+        - (even? . ||)
+        - (exact->inexact . ||)
+        - (exact? . ||)
+        - (exp . ||)
+        - (expt . ||)
+        - (floor . ||)
+        - (for-each . ||)
+        - (force . ||)
+        - (gcd . ||)
+        - (if . ||)
+        - (imag-part . ||)
+        - (inexact->exact . ||)
+        - (inexact? . ||)
+        - (input-port? . ||)
+        - (integer->char . ||)
+        - (integer? . ||)
+        - (interaction-environment . ||)
+        - (lambda . ||)
+        - (lcm . ||)
+        - (length . ||)
+        - (let . ||)
+        - (let\* . ||)
+        - (let-syntax . ||)
+        - (letrec . ||)
+        - (letrec-syntax . ||)
+        - (list . ||)
+        - (list->string . ||)
+        - (list->vector . ||)
+        - (list-ref . ||)
+        - (list-tail . ||)
+        - (list? . ||)
+        - (load . ||)
+        - (log . ||)
+        - (magnitude . ||)
+        - (make-polar . ||)
+        - (make-rectangular . ||)
+        - (make-string . ||)
+        - (make-vector . ||)
+        - (map . ||)
+        - (max . ||)
+        - (member . ||)
+        - (memq . ||)
+        - (memv . ||)
+        - (min . ||)
+        - (modulo . ||)
+        - (negative? . ||)
+        - (newline . ||)
+        - (not . ||)
+        - (null-environment . ||)
+        - (null? . ||)
+        - (number->string . ||)
+        - (number? . ||)
+        - (numerator . ||)
+        - (odd? . ||)
+        - (open-input-file . ||)
+        - (open-output-file . ||)
+        - (or . ||)
+        - (output-port? . ||)
+        - (pair? . ||)
+        - (peek-char . ||)
+        - (positive? . ||)
+        - (procedure? . ||)
+        - (quasiquote . ||)
+        - (quote . ||)
+        - (quotient . ||)
+        - (rational? . ||)
+        - (rationalize . ||)
+        - (read . ||)
+        - (read-char . ||)
+        - (real-part . ||)
+        - (real? . ||)
+        - (remainder . ||)
+        - (reverse . ||)
+        - (round . ||)
+        - (scheme-report-environment . ||)
+        - (set! . ||)
+        - (set-car! . ||)
+        - (set-cdr! . ||)
+        - (sin . ||)
+        - (sqrt . ||)
+        - (string . ||)
+        - (string->list . ||)
+        - (string->number . ||)
+        - (string->symbol . ||)
+        - (string-append . ||)
+        - (string-ci<=? . ||)
+        - (string-ci<? . ||)
+        - (string-ci=? . ||)
+        - (string-ci>=? . ||)
+        - (string-ci>? . ||)
+        - (string-copy . ||)
+        - (string-fill! . ||)
+        - (string-length . ||)
+        - (string-ref . ||)
+        - (string-set! . ||)
+        - (string<=? . ||)
+        - (string<? . ||)
+        - (string=? . ||)
+        - (string>=? . ||)
+        - (string>? . ||)
+        - (string? . ||)
+        - (substring . ||)
+        - (symbol->string . ||)
+        - (symbol? . ||)
+        - (tan . ||)
+        - (truncate . ||)
+        - (values . ||)
+        - (vector . ||)
+        - (vector->list . ||)
+        - (vector-fill! . ||)
+        - (vector-length . ||)
+        - (vector-ref . ||)
+        - (vector-set! . ||)
+        - (vector? . ||)
+        - (with-input-from-file . ||)
+        - (with-output-to-file . ||)
+        - (write . ||)
+        - (write-char . ||)
+        - (zero? . ||)
       - list
         - list
           - scheme
@@ -8306,6 +8574,178 @@
       - (|| . ||)
       - (|| . ||)
       - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
+      - (|| . ||)
     - call 2 #f ||
     - set 0
     - constant procedure 2 #f
@@ -9055,19 +9495,6 @@
   - call 6 #f 6
 - call 1 #f $$close
 - set ||
-- constant 400
-- call 1 #f ||
-- set ||
-- constant procedure 0 #f
-  - constant 1000000000
-- call 1 #f $$close
-- set ||
-- constant procedure 0 #f
-  - call 0 #f ||
-  - call 0 #f ||
-  - call 2 #f ||
-- call 1 #f $$close
-- set ||
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
@@ -9476,6 +9903,26 @@
 - call 1 #f $$close
 - set ||
 - get ||
+- set ||
+- constant procedure 1 #f
+  - constant list
+    - list
+      - scheme
+      - r5rs
+- call 1 #f $$close
+- set ||
+- constant 400
+- call 1 #f ||
+- set ||
+- constant procedure 0 #f
+  - constant 1000000000
+- call 1 #f $$close
+- set ||
+- constant procedure 0 #f
+  - call 0 #f ||
+  - call 0 #f ||
+  - call 2 #f ||
+- call 1 #f $$close
 - set ||
 - constant procedure 0 #f
   - constant procedure 1 #f
