@@ -14,13 +14,13 @@ std = []
 
 [dependencies]
 heapless = { version = "0.8.0", default-features = false }
-rustix = { version = "1.0.0", default-features = false, features = [
+rustix = { version = "1.0.2", default-features = false, features = [
   "fs",
 ], optional = true }
-stak-vm = { version = "0.10.3", path = "../vm" }
+stak-vm = { version = "0.10.5", path = "../vm" }
 
 [dev-dependencies]
-tempfile = "3.18.0"
+tempfile = "3.19.0"
 
 [lints]
 workspace = true

@@ -13,10 +13,10 @@ libc = ["dep:rustix"]
 std = []
 
 [dependencies]
-rustix = { version = "1.0.0", default-features = false, features = [
+rustix = { version = "1.0.2", default-features = false, features = [
   "time",
 ], optional = true }
-stak-vm = { version = "0.10.3", path = "../vm" }
+stak-vm = { version = "0.10.5", path = "../vm" }
 
 [lints]
 workspace = true

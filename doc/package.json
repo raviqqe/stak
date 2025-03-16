@@ -17,11 +17,11 @@
     "@astrojs/starlight": "^0.32.2",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
-    "@raviqqe/stak": "^0.10.1",
-    "astro": "^5.4.2",
+    "@raviqqe/stak": "^0.10.4",
+    "astro": "^5.5.2",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.32.0",
-    "lucide-solid": "^0.477.0",
+    "es-toolkit": "^1.33.0",
+    "lucide-solid": "^0.479.0",
     "nanostores": "^0.11.4",
     "solid-js": "^1.9.5",
     "vite-plugin-wasm": "^3.4.1"
@@ -29,8 +29,8 @@
   "devDependencies": {
     "@raviqqe/biome-config": "^1.0.2",
     "@raviqqe/eslint-config": "^4.1.15",
-    "@types/node": "^22.13.9",
-    "eslint": "^9.21.0",
+    "@types/node": "^22.13.10",
+    "eslint": "^9.22.0",
     "eslint-plugin-solid": "^0.14.5",
     "typescript": "^5.8.2"
   }

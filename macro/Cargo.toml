@@ -17,10 +17,10 @@ hot-reload = []
 [dependencies]
 cfg-elif = "0.6.3"
 proc-macro2 = { version = "1.0.94", features = ["proc-macro"] }
-quote = "1.0.39"
-stak-compiler = { version = "0.10.3", path = "../compiler" }
-stak-macro-util = { version = "0.10.3", path = "../macro-util" }
-syn = "2.0.99"
+quote = "1.0.40"
+stak-compiler = { version = "0.10.5", path = "../compiler" }
+stak-macro-util = { version = "0.10.5", path = "../macro-util" }
+syn = "2.0.100"
 
 [dev-dependencies]
 stak-device = { path = "../device" }
