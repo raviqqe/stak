@@ -1039,28 +1039,53 @@
     (else
       '())))
 
+; Metadata
+
+(define-record-type metadata
+  (make-metadata symbols libraries macros optimizers dynamic-symbols)
+  metadata?
+  (symbols metadata-symbols)
+  (libraries metadata-libraries)
+  (macros metadata-macros)
+  (optimizers metadata-optimizers)
+  (dynamic-symbols metadata-dynamic-symbols))
+
+(define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
+  (define libraries (if (memq 'libraries features) raw-libraries '()))
+  (define macros (if (memq 'macros features) raw-macros '()))
+  (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
+  (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
+
+  (make-metadata
+    (filter
+      (lambda (symbol)
+        (not (library-symbol? symbol)))
+      (unique
+        (append
+          (find-symbols expression)
+          (find-quoted-symbols libraries)
+          (find-quoted-symbols macros)
+          (find-quoted-symbols optimizers)
+          (find-quoted-symbols dynamic-symbols))))
+    libraries
+    macros
+    optimizers
+    dynamic-symbols))
+
 ; Compilation
 
 ;; Context
 
 (define-record-type compilation-context
-  (make-compilation-context environment symbols dynamic-symbols libraries macros optimizers)
+  (make-compilation-context environment metadata)
   compilation-context?
   (environment compilation-context-environment)
-  (symbols compilation-context-symbols)
-  (dynamic-symbols compilation-context-dynamic-symbols)
-  (libraries compilation-context-libraries)
-  (macros compilation-context-macros)
-  (optimizers compilation-context-optimizers))
+  (metadata compilation-context-metadata))
 
 (define (compilation-context-append-locals context variables)
   (make-compilation-context
     (append variables (compilation-context-environment context))
-    (compilation-context-symbols context)
-    (compilation-context-dynamic-symbols context)
-    (compilation-context-libraries context)
-    (compilation-context-macros context)
-    (compilation-context-optimizers context)))
+    (compilation-context-metadata context)))
 
 (define (compilation-context-push-local context variable)
   (compilation-context-append-locals context (list variable)))
@@ -1224,13 +1249,13 @@
               (call-rib (compile-arity 1 #f) '$$close continuation))))
 
         (($$libraries)
-          (constant-rib (compilation-context-libraries context) continuation))
+          (constant-rib (metadata-libraries (compilation-context-metadata context)) continuation))
 
         (($$macros)
-          (constant-rib (compilation-context-macros context) continuation))
+          (constant-rib (metadata-macros (compilation-context-metadata context)) continuation))
 
         (($$optimizers)
-          (constant-rib (compilation-context-optimizers context) continuation))
+          (constant-rib (metadata-optimizers (compilation-context-metadata context)) continuation))
 
         (($$quote)
           (constant-rib (cadr expression) continuation))
@@ -1247,10 +1272,10 @@
               (compile-unspecified continuation))))
 
         (($$symbols)
-          (constant-rib (compilation-context-symbols context) continuation))
+          (constant-rib (metadata-symbols (compilation-context-metadata context)) continuation))
 
         (($$dynamic-symbols)
-          (constant-rib (compilation-context-dynamic-symbols context) continuation))
+          (constant-rib (metadata-dynamic-symbols (compilation-context-metadata context)) continuation))
 
         (else
           (compile-call context expression #f continuation))))
@@ -1258,36 +1283,15 @@
     (else
       (constant-rib expression continuation))))
 
-(define (compile features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
-  (define libraries (if (memq 'libraries features) raw-libraries '()))
-  (define macros (if (memq 'macros features) raw-macros '()))
-  (define optimizers (if (memq 'optimizers features) raw-optimizers '()))
-  (define dynamic-symbols (if (memq 'dynamic-symbols features) raw-dynamic-symbols '()))
-
-  (compile-expression
-    (make-compilation-context
-      '()
-      (filter
-        (lambda (symbol)
-          (not (library-symbol? symbol)))
-        (unique
-          (append
-            (find-symbols expression)
-            (find-quoted-symbols libraries)
-            (find-quoted-symbols macros)
-            (find-quoted-symbols optimizers))))
-      dynamic-symbols
-      libraries
-      macros
-      optimizers)
-    expression
-    '()))
+(define (compile metadata expression)
+  (compile-expression (make-compilation-context '() metadata) expression '()))
 
 ; Marshalling
 
 (define-record-type marshal-context
-  (make-marshal-context constants continuations)
+  (make-marshal-context symbols constants continuations)
   marshal-context?
+  (symbols marshal-context-symbols)
   (constants marshal-context-constants marshal-context-set-constants!)
   (continuations marshal-context-continuations marshal-context-set-continuations!))
 
@@ -1313,7 +1317,10 @@
       (data-rib
         symbol-type
         (marshal #f)
-        (marshal (symbol->string (resolve-library-symbol value)))))
+        (marshal
+          (if (memq value (marshal-context-symbols context))
+            (symbol->string (resolve-library-symbol value))
+            ""))))
 
     ((char? value)
       (data-rib char-type (char->integer value) (marshal '())))
@@ -1397,8 +1404,8 @@
         (marshal (rib-cdr value) data)
         (rib-tag value)))))
 
-(define (marshal codes)
-  (marshal-rib (make-marshal-context '() '()) codes #f))
+(define (marshal metadata codes)
+  (marshal-rib (make-marshal-context (metadata-symbols metadata) '() '()) codes #f))
 
 ; Encoding
 
@@ -1656,14 +1663,16 @@
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
   (define-values (expression3 optimizers) (optimize expression2))
   (define features (detect-features expression3))
+  (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
 
   (encode
     (marshal
+      metadata
       (cons-rib
         #f
         (build-primitives
           primitives
-          (compile features libraries macros optimizers dynamic-symbols expression3))))))
+          (compile metadata expression3))))))
 
 (let ((arguments (command-line)))
   (when (or

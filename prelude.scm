@@ -2327,7 +2327,8 @@
             (write-string x))
 
           ((symbol? x)
-            (display (symbol->string x)))
+            (let ((string (symbol->string x)))
+              (display (if (zero? (string-length string)) "||" string))))
 
           ((vector? x)
             (write-vector x))
@@ -2571,6 +2572,8 @@
   (begin
     (define eval
       (let ()
+        (define libraries ($$libraries))
+
         ; Utilities
 
         (define (last-cdr xs)
@@ -2621,8 +2624,20 @@
           (number->string id 32))
 
         (define (resolve-library-symbol name)
-          ; Symbols can be from a different library environment.
-          (string->symbol (symbol->string name)))
+          (let loop ((libraries libraries))
+            (cond
+              ((null? libraries)
+                name)
+              ((let ((names (cdar libraries)))
+                  (member
+                    name
+                    names
+                    (lambda (name pair)
+                      (eq? name (cdr pair)))))
+                =>
+                caar)
+              (else
+                (loop (cdr libraries))))))
 
         ; Macro system
 
@@ -3306,7 +3321,6 @@
             one
             other))
 
-        (define libraries ($$libraries))
         (define optimization-context
           (make-optimization-context
             (map
