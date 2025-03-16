@@ -171,16 +171,16 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
 
 ### Computational benchmarks
 
-The Stak Scheme interpreter runs 2 to 5 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For all the benchmark results, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
+The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For all the benchmark results, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
 
 - Baseline: Python 3.12
 - Environment: Ubuntu 24.04, x86-64
 
 | Benchmark        | Stak (minimal [^1]) | Stak (full [^2]) |
 | ---------------- | ------------------: | ---------------: |
-| Fibonacci number |        2.09x slower |     3.19x slower |
-| Integer sum      |        2.26x slower |     3.97x slower |
-| Tak function     |        2.41x slower |     4.79x slower |
+| Fibonacci number |        2.04x slower |     3.19x slower |
+| Integer sum      |        2.23x slower |     3.96x slower |
+| Tak function     |        2.31x slower |     3.73x slower |
 
 ### Startup benchmarks
 
