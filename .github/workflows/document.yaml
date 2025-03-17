@@ -25,7 +25,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
-      - run: tools/document.sh
+      - run: tools/document.sh -l
       - uses: actions/upload-artifact@v4
         with:
           name: document
