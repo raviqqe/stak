@@ -12,7 +12,7 @@ The full source codes used in this guide is available at the [`examples/embedded
 
 ## Installing dependencies
 
-First, follow [the install instruction](install#libraries) to add Stak Scheme as dependencies in your Rust crate.
+First, follow [the install instruction](/stak/install#libraries) to add Stak Scheme as dependencies in your Rust crate.
 
 In addition, to use native functions written in Rust in Scheme scripts, install [the `any-fn` crate](https://crates.io/crates/any-fn) which converts statically-typed functions in Rust into dynamically-typed functions by running the following command.
 
