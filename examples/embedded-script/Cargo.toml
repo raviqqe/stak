@@ -7,10 +7,10 @@ edition.workspace = true
 [dependencies]
 any-fn = "0.6.1"
 rand = "0.9.0"
-stak = { version = "0.10.5", path = "../../root" }
+stak = { version = "0.10.6", path = "../../root" }
 
 [build-dependencies]
-stak-build = { version = "0.10.5", path = "../../build" }
+stak-build = { version = "0.10.6", path = "../../build" }
 
 [lints]
 workspace = true
