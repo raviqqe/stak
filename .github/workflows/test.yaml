@@ -7,8 +7,6 @@ on:
 concurrency:
   group: test-${{ github.ref }}
   cancel-in-progress: true
-env:
-  GUILE_AUTO_COMPILE: 0
 jobs:
   build:
     strategy:

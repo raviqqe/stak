@@ -2,6 +2,14 @@
 
 set -ex
 
+while getopts l option; do
+  case $option in
+  l)
+    localhost=true
+    ;;
+  esac
+done
+
 cd $(dirname $0)/..
 
 directory=doc/src/content/docs/examples
@@ -26,4 +34,4 @@ done
 cd doc
 
 npm ci
-npm run build
+npm run build -- ${localhost:+--site http://localhost:4321/stak}
