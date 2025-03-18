@@ -37,7 +37,7 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/code_size_bench.sh
   codspeed:
-    runs-on: ubuntu-latest
+    runs-on: codspeed-macro
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
