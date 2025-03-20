@@ -41,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
+      - run: curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
       - run: cargo install --features vendored-openssl cargo-codspeed
       - run: cargo codspeed build
       - uses: codspeedhq/action@v3
