@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (scheme cxr)
+  (scheme eval)
   (scheme inexact)
   (scheme lazy)
   (scheme process-context)
@@ -247,6 +248,36 @@
     '$$begin
     ; Keep an invariant that a `begin` body must not be empty.
     (cons #f (read-all))))
+
+; Inception
+
+(define (incept-expression inceptions expression)
+  (if (pair? expression)
+    (let ((expression
+            (relaxed-map
+              (lambda (expression)
+                (incept-expression inceptions expression))
+              expression)))
+      (cond
+        ((and (null? (cdr expression)) (assq (car expression) inceptions)) =>
+          cdr)
+
+        (else
+          expression)))
+    expression))
+
+(define (incept expression)
+  (incept-expression
+    (list
+      (cons
+        '$$relaxed-map
+        '(define (relaxed-map f xs)
+          (if (pair? xs)
+           (cons
+            (f (car xs))
+            (relaxed-map f (cdr xs)))
+           (f xs)))))
+    expression))
 
 ; Library system
 
@@ -1007,10 +1038,17 @@
           expression)))
     expression))
 
-(define (optimize expression)
-  (let* ((context (make-optimization-context '() '()))
+(define (optimize optimizers expression)
+  (let* ((context (make-optimization-context optimizers '()))
          (expression (optimize-expression context expression)))
     (values expression (optimization-context-literals context))))
+
+(define (optimize2 optimizers expression)
+  (eval
+    `(begin
+      ,@optimization-codes
+      (optimize ',optimizers ',expression))
+    '((scheme base))))
 
 ; Feature detection
 
@@ -1659,9 +1697,10 @@
 ; Main
 
 (define (main)
-  (define-values (expression1 libraries) (expand-libraries (read-source)))
+  (define expression0 (incept (read-source)))
+  (define-values (expression1 libraries) (expand-libraries expression0))
   (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
-  (define-values (expression3 optimizers) (optimize expression2))
+  (define-values (expression3 optimizers) (optimize2 '() expression2))
   (define features (detect-features expression3))
   (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
 
