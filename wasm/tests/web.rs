@@ -46,3 +46,14 @@ fn run_script() {
         b"Hello, world!"
     );
 }
+
+#[wasm_bindgen_test]
+fn emit_error() {
+    const SCRIPT: &str = r#"
+        (import (scheme base))
+
+        (error "Oh, no!")
+    "#;
+
+    assert!(format!("{:?}", run(SCRIPT, &[], DEFAULT_HEAP_SIZE).unwrap_err()).contains("Oh, no!"));
+}
