@@ -50,13 +50,10 @@ fn run_script() {
 #[wasm_bindgen_test]
 fn emit_error() {
     const SCRIPT: &str = r#"
-        (import (scheme write))
+        (import (scheme base))
 
-        (display "Oh, no!" (current-error-port))
+        (error "Oh, no!")
     "#;
 
-    assert_eq!(
-        run(SCRIPT, &[], DEFAULT_HEAP_SIZE).unwrap_err(),
-        b"Hello, world!"
-    );
+    assert!(format!("{:?}", run(SCRIPT, &[], DEFAULT_HEAP_SIZE).unwrap_err()).contains("Oh, no!"));
 }
