@@ -88,4 +88,4 @@ Feature: Smoke
       (write-u8 (cadr (cdr xs)))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "ab"
+    Then the stdout should contain exactly "AB"
