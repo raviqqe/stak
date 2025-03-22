@@ -2,7 +2,15 @@
 ;
 ; All compiler-internal variables contain at least one `$` or `%` character in their names.
 
-(import (scheme base) (scheme eval))
+(import
+  (scheme base)
+  (only (scheme cxr))
+  (scheme eval)
+  (only (scheme inexact))
+  (only (scheme lazy))
+  (only (scheme process-context))
+  (only (scheme read))
+  (only (scheme write)))
 
 (define compiler
   '(begin
