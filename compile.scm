@@ -5,6 +5,7 @@
 (import
   (scheme base)
   (scheme cxr)
+  (scheme eval)
   (scheme inexact)
   (scheme lazy)
   (scheme process-context)
