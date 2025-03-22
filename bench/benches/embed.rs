@@ -36,7 +36,7 @@ fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallErro
 
 fn stak_empty(bencher: &mut Bencher) {
     bencher.iter(|| {
-        run::<{ 1 << 10 }>(black_box(&EMPTY_MODULE)).unwrap();
+        run::<{ 1 << 8 }>(black_box(&EMPTY_MODULE)).unwrap();
     })
 }
 
