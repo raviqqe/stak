@@ -2,10 +2,10 @@
 ;
 ; All compiler-internal variables contain at least one `$` or `%` character in their names.
 
-(import (scheme eval))
+(import (scheme base) (scheme eval))
 
 (define compiler
-  '(
+  '(begin
     (cond-expand
      (stak
       (define cons-rib cons)
@@ -1681,10 +1681,11 @@
 
 (eval
   compiler
-  '((scheme base)
-    (scheme cxr)
-    (scheme inexact)
-    (scheme lazy)
-    (scheme process-context)
-    (scheme read)
-    (scheme write)))
+  (environment
+    '(scheme base)
+    '(scheme cxr)
+    '(scheme inexact)
+    '(scheme lazy)
+    '(scheme process-context)
+    '(scheme read)
+    '(scheme write)))
