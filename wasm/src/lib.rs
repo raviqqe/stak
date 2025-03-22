@@ -69,7 +69,13 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
             .iter()
             .copied(),
     )?;
-    vm.run().map_err(|error| JsError::from(error))?;
+    vm.run().map_err(|other| {
+        if error.is_empty() {
+            JsError::from(other)
+        } else {
+            JsError::new(error)
+        }
+    })?;
 
     Ok(output)
 }
