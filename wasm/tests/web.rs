@@ -56,7 +56,7 @@ fn emit_error() {
     "#;
 
     assert_eq!(
-        run(SCRIPT, &[], DEFAULT_HEAP_SIZE).unwrap(),
+        run(SCRIPT, &[], DEFAULT_HEAP_SIZE).unwrap_err(),
         b"Hello, world!"
     );
 }
