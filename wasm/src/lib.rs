@@ -1,5 +1,6 @@
 //! A Stak Scheme interpreter in WASM.
 
+use core::str;
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::{MemoryFileSystem, VoidFileSystem};
@@ -69,12 +70,9 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
             .iter()
             .copied(),
     )?;
-    vm.run().map_err(|other| {
-        if error.is_empty() {
-            JsError::from(other)
-        } else {
-            JsError::new(error)
-        }
+    vm.run().map_err(|other| match str::from_utf8(error) {
+        Ok(error) if !error.is_empty() => JsError::new(error),
+        Err(_) => JsError::from(other),
     })?;
 
     Ok(output)
