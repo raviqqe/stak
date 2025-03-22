@@ -3059,7 +3059,8 @@
               (error "unsupported optimizer" optimizer))))
 
         (define (optimize-expression context expression)
-          (if (pair? expression)
+          (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
+            expression
             (let* ((expression
                      (relaxed-map
                        (lambda (expression)
@@ -3094,8 +3095,7 @@
                     ((cdr pair) expression)))
 
                 (else
-                  expression)))
-            expression))
+                  expression)))))
 
         ; Compilation
 

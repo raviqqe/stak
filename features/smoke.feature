@@ -66,3 +66,26 @@ Feature: Smoke
     And the exit status should be 0
     When I successfully run `stak main.scm`
     Then the exit status should be 0
+
+  Scenario: Escape a `$$begin` symbol in a list
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define x '($$begin))
+      """
+    When I successfully run `stak main.scm`
+    Then the exit status should be 0
+
+  Scenario: Escape a `$$begin` symbol in a list with other elements
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define xs '($$begin 65 66))
+
+      (write-u8 (cadr xs))
+      (write-u8 (cadr (cdr xs)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "AB"

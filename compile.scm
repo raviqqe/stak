@@ -968,7 +968,8 @@
       (error "unsupported optimizer" optimizer))))
 
 (define (optimize-expression context expression)
-  (if (pair? expression)
+  (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
+    expression
     (let* ((expression
              (relaxed-map
                (lambda (expression)
@@ -981,7 +982,6 @@
             (optimization-context-append! context name (make-optimizer name (caddr expression)))
             (optimization-context-append-literal! context name (caddr expression)))
           #f)
-
         ((eq? predicate '$$begin)
           ; Omit top-level constants.
           ; TODO Define this pass by `define-optimizer`.
@@ -1002,10 +1002,8 @@
         ((assq predicate (optimization-context-optimizers context)) =>
           (lambda (pair)
             ((cdr pair) expression)))
-
         (else
-          expression)))
-    expression))
+          expression)))))
 
 (define (optimize expression)
   (let* ((context (make-optimization-context '() '()))
