@@ -14,7 +14,7 @@
   (scheme write))
 
 (define compiler
-  '(begin
+  '(let ()
     (cond-expand
      (stak
       (define cons-rib cons)
