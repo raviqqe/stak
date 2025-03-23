@@ -22,15 +22,13 @@ setup_bench() {
 }
 
 list_scheme_files() {
-  (
-    cd $1
+  [ $# -eq 0 ]
 
-    for file in $(git ls-files '*.scm' | grep -v prelude); do
-      if [ -L $file ]; then
-        continue
-      fi
+  for file in $(git ls-files '*.scm' | grep -v prelude); do
+    if [ -L $file ]; then
+      continue
+    fi
 
-      echo $file
-    done
-  )
+    echo $file
+  done
 }

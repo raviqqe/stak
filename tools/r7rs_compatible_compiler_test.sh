@@ -24,6 +24,3 @@ for file in $(list_scheme_files); do
     diff stak.bc $interpreter.bc
   done
 done
-
-npx prettier --write snapshots
-git diff --exit-code
