@@ -6,8 +6,8 @@ set -e
 
 cd $(dirname $0)/..
 
-interpreters='chibi-scheme gauche guile'
-brew install $interpreters
+brew install chibi-scheme gauche guile
+interpreters='chibi-scheme gosh guile'
 
 cargo build --release
 export PATH=$PWD/target/release:$PATH
