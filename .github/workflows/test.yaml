@@ -170,6 +170,7 @@ jobs:
       - wasm
       - minimal
       - decode
+      - r7rs_compatible_compiler
       - profile
     if: always()
     runs-on: ubuntu-latest
