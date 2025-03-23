@@ -10,6 +10,10 @@ while getopts l option; do
   esac
 done
 
+shift $(expr $OPTIND - 1)
+
+[ $# -eq 0 ]
+
 cd $(dirname $0)/..
 
 directory=doc/src/content/docs/examples

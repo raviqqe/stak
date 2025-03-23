@@ -1747,7 +1747,7 @@
         (let* ((exception (cdr pair))
                (value (handler exception)))
           (unless (car pair)
-            (error "exception handler returned on a non-continuable exception" exception))
+            (error "exception handler returned on non-continuable exception" exception))
           value)))
 
     (define current-exception-handler
@@ -2146,7 +2146,7 @@
           (let ((char (peek-non-whitespace-char)))
             (cond
               ((eof-object? char)
-                (error "unexpected end of input instead of closing parenthesis"))
+                (error ") expected"))
 
               ((eqv? char #\))
                 (read-char)
@@ -2175,12 +2175,12 @@
 
       (define (read-string)
         (unless (eqv? (read-char) #\")
-          (error "\" expected"))
+          (error "opening \" expected"))
         (let loop ((xs '()))
           (let ((char (read-char)))
             (cond
               ((eof-object? char)
-                (error "unexpected end of input instead of closing double quote"))
+                (error "closing \" expected"))
 
               ((eqv? char #\")
                 (list->string (reverse xs)))

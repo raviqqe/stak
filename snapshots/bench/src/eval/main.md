@@ -2471,7 +2471,7 @@
           - constant #f
           - call 2 #f ||
           - if
-            - constant "exception handler returned on a non-continuable exception"
+            - constant "exception handler returned on non-continuable exception"
             - get 4
             - call 2 #f ||
             - continue
