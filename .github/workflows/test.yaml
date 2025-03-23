@@ -149,6 +149,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: tools/decode_test.sh
+  r7rs_compatible_compiler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/r7rs_compatible_compiler_test.sh
   profile:
     runs-on: ubuntu-latest
     steps:
