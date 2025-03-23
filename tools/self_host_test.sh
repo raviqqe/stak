@@ -4,10 +4,7 @@ set -e
 
 stage_count=3
 
-log() {
-  echo "$@" >&2
-  "$@"
-}
+. $(dirname $0)/utility.sh
 
 run_stage() {
   if [ $1 -eq 0 ]; then
