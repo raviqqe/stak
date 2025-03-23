@@ -16,8 +16,8 @@ for file in $(list_scheme_files); do
   echo '>>>' $file
 
   for interpreter in $interpreters stak; do
-    echo '>>>>>>' $interpreter
-    $interpreter compile.scm <prelude.scm <$file >$interpreter.bc
+    echo '>>>>>>' $interpreter $file
+    cat prelude.scm $file | $interpreter compile.scm >$interpreter.bc
   done
 
   for interpreter in $interpreters; do
