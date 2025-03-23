@@ -2093,7 +2093,7 @@
           - constant #f
           - call 2 #f ||
           - if
-            - constant "exception handler returned on a non-continuable exception"
+            - constant "exception handler returned on non-continuable exception"
             - get 4
             - call 2 #f ||
             - continue
@@ -2802,7 +2802,7 @@
             - get 0
             - call 1 #f ||
             - if
-              - constant "unexpected end of input instead of closing parenthesis"
+              - constant ") expected"
               - call 1 #f ||
             - get 0
             - constant #\)
@@ -2891,7 +2891,7 @@
       - constant #f
       - call 2 #f ||
       - if
-        - constant "\" expected"
+        - constant "opening \" expected"
         - call 1 #f ||
         - continue
       - constant #f
@@ -2902,7 +2902,7 @@
             - get 0
             - call 1 #f ||
             - if
-              - constant "unexpected end of input instead of closing double quote"
+              - constant "closing \" expected"
               - call 1 #f ||
             - get 0
             - constant #\"

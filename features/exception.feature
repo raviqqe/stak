@@ -159,7 +159,7 @@ Feature: Exception
     When I run `stak main.scm`
     Then the exit status should not be 0
     And the stdout should contain exactly ""
-    And the stderr should contain "exception handler returned on a non-continuable exception"
+    And the stderr should contain "exception handler returned on non-continuable exception"
 
   @gauche @guile @stak
   Scenario: Leave a dynamic extent
