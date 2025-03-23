@@ -4079,14 +4079,18 @@
   - get 0
   - call 1 #f ||
   - if
-    - get 0
+    - constant procedure 1 #f
+      - get 0
+      - get 4
+      - get 4
+      - call 1 #f ||
+      - call 2 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - get 1
     - call 1 #f ||
-    - call 1 #f 2
-    - get 2
-    - get 2
-    - call 1 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
+    - call 1 #f 3
+    - call 1 #f 1
   - get 0
   - call 1 #f 2
 - call 1 #f $$close
