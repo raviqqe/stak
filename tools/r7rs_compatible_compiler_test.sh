@@ -2,9 +2,9 @@
 
 set -e
 
-cd $(dirname $0)/..
-
 . $(dirname $0)/utility.sh
+
+cd $(dirname $0)/..
 
 interpreters='chibi-scheme gauche guile'
 brew install $interpreters
@@ -18,6 +18,10 @@ for file in $(list_scheme_files); do
   for interpreter in $interpreters stak; do
     echo '>>>>>>' $interpreter
     $interpreter compile.scm <prelude.scm <$file >$interpreter.bc
+  done
+
+  for interpreter in $interpreters; do
+    diff stak.bc $interpreter.bc
   done
 done
 

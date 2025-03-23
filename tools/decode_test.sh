@@ -2,9 +2,9 @@
 
 set -e
 
-cd $(dirname $0)/..
-
 . $(dirname $0)/utility.sh
+
+cd $(dirname $0)/..
 
 cargo build --release
 

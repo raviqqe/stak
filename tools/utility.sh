@@ -1,3 +1,8 @@
+log() {
+  echo '>>>' "$@" >&2
+  "$@"
+}
+
 setup_bench() {
   brew install chibi-scheme gauche guile
   cargo install hyperfine
