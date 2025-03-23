@@ -6,16 +6,19 @@ cd $(dirname $0)/..
 
 . $(dirname $0)/utility.sh
 
-cargo build --release
+interpreters='chibi-scheme gauche guile'
+brew install $interpreters
 
+cargo build --release
 export PATH=$PWD/target/release:$PATH
 
 for file in $(list_scheme_files); do
   echo '>>>' $file
-  snapshot_file=snapshots/${file%.scm}.md
-  mkdir -p $(dirname $snapshot_file)
-  cat prelude.scm $file | stak-compile >main.bc
-  stak-decode <main.bc >$snapshot_file
+
+  for scheme in $schemes stak; do
+    echo '>>>>>>' $scheme
+    $scheme compile.scm <prelude.scm <$file >$scheme.bc
+  done
 done
 
 npx prettier --write snapshots

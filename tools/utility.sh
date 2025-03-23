@@ -15,3 +15,17 @@ setup_bench() {
     cat prelude.scm $file | stak-compile >${file%.scm}.bc
   done
 }
+
+list_scheme_files() {
+  (
+    cd $1
+
+    for file in $(git ls-files '*.scm' | grep -v prelude); do
+      if [ -L $file ]; then
+        continue
+      fi
+
+      echo $file
+    done
+  )
+}
