@@ -15,9 +15,9 @@ export PATH=$PWD/target/release:$PATH
 for file in $(list_scheme_files); do
   echo '>>>' $file
 
-  for scheme in $schemes stak; do
-    echo '>>>>>>' $scheme
-    $scheme compile.scm <prelude.scm <$file >$scheme.bc
+  for interpreter in $interpreters stak; do
+    echo '>>>>>>' $interpreter
+    $interpreter compile.scm <prelude.scm <$file >$interpreter.bc
   done
 done
 
