@@ -2574,54 +2574,9 @@
       (let ()
         (define libraries ($$libraries))
 
+        ($$compiler)
+
         ; Utilities
-
-        (define (last-cdr xs)
-          (if (pair? xs)
-            (last-cdr (cdr xs))
-            xs))
-
-        (define (set-last-cdr! xs x)
-          (if (pair? (cdr xs))
-            (set-last-cdr! (cdr xs) x)
-            (set-cdr! xs x)))
-
-        (define (relaxed-length xs)
-          (do ((xs xs (cdr xs)) (y 0 (+ y 1)))
-            ((not (pair? xs))
-              y)))
-
-        (define (relaxed-map f xs)
-          (if (pair? xs)
-            (cons
-              (f (car xs))
-              (relaxed-map f (cdr xs)))
-            (f xs)))
-
-        (define (relaxed-deep-map f xs)
-          (if (pair? xs)
-            (cons
-              (relaxed-deep-map f (car xs))
-              (relaxed-deep-map f (cdr xs)))
-            (f xs)))
-
-        (define (maybe-append xs ys)
-          (and xs ys (append xs ys)))
-
-        (define (map-values f xs)
-          (map (lambda (pair) (cons (car pair) (f (cdr pair)))) xs))
-
-        (define (filter-values f xs)
-          (filter (lambda (pair) (f (cdr pair))) xs))
-
-        (define (predicate expression)
-          (and (pair? expression) (car expression)))
-
-        (define (symbol-append . xs)
-          (string->symbol (apply string-append (map symbol->string xs))))
-
-        (define (id->string id)
-          (number->string id 32))
 
         (define (resolve-library-symbol name)
           (let loop ((libraries libraries))
@@ -3141,25 +3096,6 @@
           (+
             (* 2 argument-count)
             (if variadic 1 0)))
-
-        (define (parameter-names parameters)
-          (cond
-            ((pair? parameters)
-              (cons (car parameters) (parameter-names (cdr parameters))))
-
-            ((symbol? parameters)
-              (list parameters))
-
-            ((null? parameters)
-              '())
-
-            (else
-              (error "invalid variadic parameter" parameters))))
-
-        (define (count-parameters parameters)
-          (if (pair? parameters)
-            (+ 1 (count-parameters (cdr parameters)))
-            0))
 
         (define (compile-primitive-call name continuation)
           (call-rib
