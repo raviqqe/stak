@@ -2,17 +2,15 @@
 
 set -e
 
+. $(dirname $0)/utility.sh
+
 cd $(dirname $0)/..
 
 cargo build --release
 
 export PATH=$PWD/target/release:$PATH
 
-for file in $(git ls-files '*.scm' | grep -v prelude); do
-  if [ -L $file ]; then
-    continue
-  fi
-
+for file in $(list_scheme_files); do
   echo '>>>' $file
   snapshot_file=snapshots/${file%.scm}.md
   mkdir -p $(dirname $snapshot_file)
