@@ -159,9 +159,8 @@
 
     (define (relaxed-map f xs)
      (if (pair? xs)
-      (cons
-       (f (car xs))
-       (relaxed-map f (cdr xs)))
+      (let ((x (f (car xs))))
+       (cons x (relaxed-map f (cdr xs))))
       (f xs)))
 
     (define (relaxed-deep-map f xs)

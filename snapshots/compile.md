@@ -10433,18 +10433,24 @@
         - pair?
         - xs
       - list
-        - cons
+        - let
         - list
-          - f
           - list
-            - car
-            - xs
+            - x
+            - list
+              - f
+              - list
+                - car
+                - xs
         - list
-          - relaxed-map
-          - f
+          - cons
+          - x
           - list
-            - cdr
-            - xs
+            - relaxed-map
+            - f
+            - list
+              - cdr
+              - xs
       - list
         - f
         - xs
