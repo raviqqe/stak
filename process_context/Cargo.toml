@@ -16,4 +16,4 @@ std = []
 workspace = true
 
 [dependencies]
-stak-vm = { version = "0.10.7", path = "../vm" }
+stak-vm = { version = "0.10.8", path = "../vm" }
