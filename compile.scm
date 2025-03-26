@@ -1686,24 +1686,19 @@
 
 ; Inception
 
-(define (incept-expression inceptions expression)
+(define (incept expression)
   (cond
     ((not (pair? expression))
       expression)
     ((and
         (pair? (car expression))
         (null? (cdar expression))
-        (assq (caar expression) inceptions))
-      =>
-      (lambda (pair)
-        (append (cdr pair) (cdr expression))))
+        (eq? (caar expression) '$$compiler))
+      (append compiler-utilities (cdr expression)))
     (else
       (cons
-        (incept-expression inceptions (car expression))
-        (incept-expression inceptions (cdr expression))))))
-
-(define (incept expression)
-  (incept-expression (list (cons '$$compiler compiler-utilities)) expression))
+        (incept (car expression))
+        (incept (cdr expression))))))
 
 ; Main
 
