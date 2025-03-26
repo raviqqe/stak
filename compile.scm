@@ -13,29 +13,8 @@
   (scheme read)
   (scheme write))
 
-(define compiler
-  '(let ()
-    (cond-expand
-     (stak
-      (define cons-rib cons)
-      (define target-procedure? procedure?))
-
-     (else
-      (define-record-type *rib*
-       (rib car cdr tag)
-       rib?
-       (car rib-car)
-       (cdr rib-cdr)
-       (tag rib-tag))
-
-      (define (cons-rib car cdr)
-       (rib car cdr pair-type))
-
-      (define (target-procedure? value)
-       (and (rib? value) (eq? (rib-tag value) procedure-type)))
-
-      (define string->uninterned-symbol string->symbol)))
-
+(define compiler-utilities
+  '(
     ; Instructions
 
     (define constant-instruction 0)
@@ -235,8 +214,10 @@
      (string->symbol (apply string-append (map symbol->string xs))))
 
     (define (id->string id)
-     (number->string id 32))
+     (number->string id 32))))
 
+(define compiler-body
+  '(
     ; Library system
 
     ;; Types
@@ -1662,6 +1643,32 @@
          (compile metadata expression3))))))
 
     main))
+
+(define compiler
+  `(let ()
+    (cond-expand
+     (stak
+      (define cons-rib cons)
+      (define target-procedure? procedure?))
+
+     (else
+      (define-record-type *rib*
+       (rib car cdr tag)
+       rib?
+       (car rib-car)
+       (cdr rib-cdr)
+       (tag rib-tag))
+
+      (define (cons-rib car cdr)
+       (rib car cdr pair-type))
+
+      (define (target-procedure? value)
+       (and (rib? value) (eq? (rib-tag value) procedure-type)))
+
+      (define string->uninterned-symbol string->symbol)))
+
+    ,@compiler-utilities
+    ,@compiler-body))
 
 ; Source code reading
 
