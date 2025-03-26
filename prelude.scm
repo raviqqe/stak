@@ -2574,6 +2574,8 @@
       (let ()
         (define libraries ($$libraries))
 
+        ($$compiler)
+
         ; Utilities
 
         (define (last-cdr xs)

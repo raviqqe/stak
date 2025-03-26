@@ -1684,6 +1684,27 @@
     ; Keep an invariant that a `begin` body must not be empty.
     (cons #f (read-all))))
 
+; Inception
+
+(define (incept-expression inceptions expression)
+  (cond
+    ((or (not (pair? expression)) (eq? (car expression) '$$quote))
+      expression)
+    ((and
+        (pair? (car expression))
+        (null? (cdar expression))
+        (assq (caar expression) inceptions))
+      =>
+      (lambda (pair)
+        (append (cdr pair) (cdr expression))))
+    (else
+      (cons
+        (incept-expression inceptions (car expression))
+        (incept-expression inceptions (cdr expression))))))
+
+(define (incept expression)
+  (incept-expression (list (cons '$$compiler compiler-utilities)) expression))
+
 ; Main
 
 (define (main)
@@ -1706,6 +1727,6 @@
       (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
       (exit)))
 
-  (compile-all (read-source)))
+  (compile-all (incept (read-source))))
 
 (main)
