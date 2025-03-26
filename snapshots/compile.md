@@ -15900,55 +15900,64 @@
               - compile
               - metadata
               - expression3
-  - list
-    - main
+  - main
 - set ||
-- constant procedure 1 #f
+- constant procedure 0 #f
   - constant procedure 1 #f
-    - get 0
-    - if
-      - get 0
-    - constant "--help"
-    - get 3
+    - get ||
+    - constant list
+      - scheme
+      - base
+    - constant list
+      - scheme
+      - cxr
+    - constant list
+      - scheme
+      - inexact
+    - constant list
+      - scheme
+      - lazy
+    - constant list
+      - scheme
+      - read
+    - constant list
+      - scheme
+      - write
+    - call 6 #f ||
     - call 2 #f ||
-  - call 1 #f $$close
-  - constant "-h"
-  - get 2
-  - call 2 #f ||
-  - call 1 #f 1
-  - set 1
-  - if
-    - constant "The Stak Scheme bytecode compiler.\n\n"
-    - call 1 #f ||
-    - set 0
-    - constant "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"
-    - call 1 #f ||
-    - set 0
+    - set 1
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - constant "--help"
+        - get 3
+        - call 2 #f ||
+      - call 1 #f $$close
+      - constant "-h"
+      - get 2
+      - call 2 #f ||
+      - call 1 #f 1
+      - set 1
+      - if
+        - constant "The Stak Scheme bytecode compiler.\n\n"
+        - call 1 #f ||
+        - set 0
+        - constant "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"
+        - call 1 #f ||
+        - set 0
+        - call 0 #f ||
+      - constant #f
+    - call 1 #f $$close
     - call 0 #f ||
+    - call 1 #f 1
+    - set 1
+    - set 0
+    - call 0 #f 0
+  - call 1 #f $$close
   - constant #f
+  - call 1 #f 1
 - call 1 #f $$close
-- call 0 #f ||
-- call 1 #f 1
-- set 1
-- set 0
-- get ||
-- constant list
-  - scheme
-  - base
-- constant list
-  - scheme
-  - cxr
-- constant list
-  - scheme
-  - inexact
-- constant list
-  - scheme
-  - lazy
-- constant list
-  - scheme
-  - read
-- constant list
-  - scheme
-  - write
-- call 6 #f ||
-- call 2 #f ||
+- set main
+- call 0 #f main

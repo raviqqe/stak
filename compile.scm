@@ -1675,22 +1675,29 @@
          primitives
          (compile metadata expression3))))))
 
-    (main)))
+    main))
 
-(let ((arguments (command-line)))
-  (when (or
-         (member "-h" arguments)
-         (member "--help" arguments))
-    (write-string "The Stak Scheme bytecode compiler.\n\n")
-    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
-    (exit)))
+(define (main)
+  ; TODO Name this function `compile` when `eval` environments are segregated.
+  (define compile-all
+    (eval
+      compiler
+      (environment
+        '(scheme base)
+        '(scheme cxr)
+        '(scheme inexact)
+        '(scheme lazy)
+        '(scheme read)
+        '(scheme write))))
 
-(eval
-  compiler
-  (environment
-    '(scheme base)
-    '(scheme cxr)
-    '(scheme inexact)
-    '(scheme lazy)
-    '(scheme read)
-    '(scheme write)))
+  (let ((arguments (command-line)))
+    (when (or
+           (member "-h" arguments)
+           (member "--help" arguments))
+      (write-string "The Stak Scheme bytecode compiler.\n\n")
+      (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+      (exit)))
+
+  (compile-all))
+
+(main)
