@@ -1675,15 +1675,15 @@
          primitives
          (compile metadata expression3))))))
 
-    (let ((arguments (command-line)))
-     (when (or
-            (member "-h" arguments)
-            (member "--help" arguments))
-      (write-string "The Stak Scheme bytecode compiler.\n\n")
-      (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
-      (exit)))
-
     (main)))
+
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "The Stak Scheme bytecode compiler.\n\n")
+    (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
+    (exit)))
 
 (eval
   compiler
@@ -1692,6 +1692,5 @@
     '(scheme cxr)
     '(scheme inexact)
     '(scheme lazy)
-    '(scheme process-context)
     '(scheme read)
     '(scheme write)))
