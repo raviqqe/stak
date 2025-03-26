@@ -6,6 +6,9 @@ stage_count=3
 
 . $(dirname $0)/utility.sh
 
+profile=release_test
+target=target/$profile
+
 run_stage() {
   if [ $1 -eq 0 ]; then
     log stak compile.scm
@@ -19,9 +22,6 @@ artifact_path() {
 }
 
 cd $(dirname $0)/..
-
-profile=release_test
-target=target/$profile
 
 mkdir -p tmp
 cargo build --profile $profile
