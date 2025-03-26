@@ -13,7 +13,7 @@ log() {
 
   (
     for _ in $(seq $level); do
-      echo '>>> \c'
+      echo '>>> '
     done
 
     echo "$@"
