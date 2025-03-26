@@ -1688,7 +1688,7 @@
 
 (define (incept-expression inceptions expression)
   (cond
-    ((or (not (pair? expression)) (eq? (car expression) '$$quote))
+    ((not (pair? expression))
       expression)
     ((and
         (pair? (car expression))
