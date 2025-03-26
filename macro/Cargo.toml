@@ -18,8 +18,8 @@ hot-reload = []
 cfg-elif = "0.6.3"
 proc-macro2 = { version = "1.0.94", features = ["proc-macro"] }
 quote = "1.0.40"
-stak-compiler = { version = "0.10.7", path = "../compiler" }
-stak-macro-util = { version = "0.10.7", path = "../macro-util" }
+stak-compiler = { version = "0.10.8", path = "../compiler" }
+stak-macro-util = { version = "0.10.8", path = "../macro-util" }
 syn = "2.0.100"
 
 [dev-dependencies]
