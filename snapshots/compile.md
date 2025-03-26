@@ -1894,7 +1894,6 @@
   - ys
   - f
   - xs
-  - read-all
   - library?
   - imports
   - library-state
@@ -2201,7 +2200,7 @@
   - context
   - counts
   - expand-libraries
-  - read-source
+  - source
   - expand-macros
   - expression1
   - optimize
@@ -10750,44 +10749,6 @@
       - id
       - 32
   - list
-    - define
-    - list
-      - read-all
-    - list
-      - let
-      - list
-        - list
-          - x
-          - list
-            - read
-      - list
-        - if
-        - list
-          - eof-object?
-          - x
-        - list
-          - quote
-          - ()
-        - list
-          - cons
-          - x
-          - list
-            - read-all
-  - list
-    - define
-    - list
-      - read-source
-    - list
-      - cons
-      - list
-        - quote
-        - $$begin
-      - list
-        - cons
-        - #f
-        - list
-          - read-all
-  - list
     - define-record-type
     - library
     - list
@@ -15842,6 +15803,7 @@
     - define
     - list
       - main
+      - source
     - list
       - define-values
       - list
@@ -15849,8 +15811,7 @@
         - libraries
       - list
         - expand-libraries
-        - list
-          - read-source
+        - source
     - list
       - define-values
       - list
@@ -15904,6 +15865,28 @@
 - set ||
 - constant procedure 0 #f
   - constant procedure 1 #f
+    - get 0
+    - call 1 #f ||
+    - if
+      - constant ()
+    - get 0
+    - call 0 #f ||
+    - call 2 #f ||
+  - call 1 #f $$close
+  - call 0 #f ||
+  - call 1 #f 1
+- call 1 #f $$close
+- set ||
+- constant procedure 0 #f
+  - constant $$begin
+  - constant #f
+  - call 0 #f ||
+  - call 2 #f ||
+  - call 2 #f ||
+- call 1 #f $$close
+- set ||
+- constant procedure 0 #f
+  - constant procedure 1 #f
     - get ||
     - constant list
       - scheme
@@ -15919,11 +15902,8 @@
       - lazy
     - constant list
       - scheme
-      - read
-    - constant list
-      - scheme
       - write
-    - call 6 #f ||
+    - call 5 #f ||
     - call 2 #f ||
     - set 1
     - constant procedure 1 #f
@@ -15954,7 +15934,8 @@
     - call 1 #f 1
     - set 1
     - set 0
-    - call 0 #f 0
+    - call 0 #f ||
+    - call 1 #f 1
   - call 1 #f $$close
   - constant #f
   - call 1 #f 1
