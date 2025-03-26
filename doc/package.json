@@ -17,11 +17,11 @@
     "@astrojs/starlight": "^0.32.4",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
-    "@raviqqe/stak": "^0.10.7",
+    "@raviqqe/stak": "^0.10.8",
     "astro": "^5.5.4",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.33.0",
-    "lucide-solid": "^0.483.0",
+    "lucide-solid": "^0.484.0",
     "nanostores": "^0.11.4",
     "solid-js": "^1.9.5",
     "vite-plugin-wasm": "^3.4.1"
