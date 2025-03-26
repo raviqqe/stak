@@ -1,5 +1,23 @@
 log() {
-  echo '>>>' "$@" >&2
+  level=1
+
+  while getopts l: option; do
+    case $option in
+    l)
+      level=$OPTARG
+      ;;
+    esac
+  done
+
+  shift $(expr $OPTIND - 1)
+
+  (
+    for _ in $(seq $level); do
+      echo '>>> \c'
+    done
+
+    echo "$@"
+  ) >&2
   "$@"
 }
 
