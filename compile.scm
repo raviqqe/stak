@@ -237,20 +237,6 @@
     (define (id->string id)
      (number->string id 32))
 
-    ; Source code reading
-
-    (define (read-all)
-     (let ((x (read)))
-      (if (eof-object? x)
-       '()
-       (cons x (read-all)))))
-
-    (define (read-source)
-     (cons
-      '$$begin
-      ; Keep an invariant that a `begin` body must not be empty.
-      (cons #f (read-all))))
-
     ; Library system
 
     ;; Types
@@ -1659,8 +1645,8 @@
 
     ; Main
 
-    (define (main)
-     (define-values (expression1 libraries) (expand-libraries (read-source)))
+    (define (main source)
+     (define-values (expression1 libraries) (expand-libraries source))
      (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
      (define-values (expression3 optimizers) (optimize expression2))
      (define features (detect-features expression3))
@@ -1677,6 +1663,22 @@
 
     main))
 
+; Source code reading
+
+(define (read-all)
+  (let ((x (read)))
+    (if (eof-object? x)
+      '()
+      (cons x (read-all)))))
+
+(define (read-source)
+  (cons
+    '$$begin
+    ; Keep an invariant that a `begin` body must not be empty.
+    (cons #f (read-all))))
+
+; Main
+
 (define (main)
   ; TODO Name this function `compile` when `eval` environments are segregated.
   (define compile-all
@@ -1687,7 +1689,6 @@
         '(scheme cxr)
         '(scheme inexact)
         '(scheme lazy)
-        '(scheme read)
         '(scheme write))))
 
   (let ((arguments (command-line)))
@@ -1698,6 +1699,6 @@
       (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
       (exit)))
 
-  (compile-all))
+  (compile-all (read-source)))
 
 (main)
