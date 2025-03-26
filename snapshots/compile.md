@@ -2082,6 +2082,7 @@
   - expressions
   - arity
   - compile-raw-call
+  - arguments
   - variadic
   - procedure
   - continue
@@ -2220,7 +2221,6 @@
   - compile
   - metadata
   - expression3
-  - arguments
   - main
   - rust
   - r5rs
@@ -15901,35 +15901,36 @@
               - metadata
               - expression3
   - list
-    - let
-    - list
-      - list
-        - arguments
-        - list
-          - command-line
-    - list
-      - when
-      - list
-        - or
-        - list
-          - member
-          - "-h"
-          - arguments
-        - list
-          - member
-          - "--help"
-          - arguments
-      - list
-        - write-string
-        - "The Stak Scheme bytecode compiler.\n\n"
-      - list
-        - write-string
-        - "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"
-      - list
-        - exit
-  - list
     - main
 - set ||
+- constant procedure 1 #f
+  - constant procedure 1 #f
+    - get 0
+    - if
+      - get 0
+    - constant "--help"
+    - get 3
+    - call 2 #f ||
+  - call 1 #f $$close
+  - constant "-h"
+  - get 2
+  - call 2 #f ||
+  - call 1 #f 1
+  - set 1
+  - if
+    - constant "The Stak Scheme bytecode compiler.\n\n"
+    - call 1 #f ||
+    - set 0
+    - constant "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n"
+    - call 1 #f ||
+    - set 0
+    - call 0 #f ||
+  - constant #f
+- call 1 #f $$close
+- call 0 #f ||
+- call 1 #f 1
+- set 1
+- set 0
 - get ||
 - constant list
   - scheme
@@ -15945,12 +15946,9 @@
   - lazy
 - constant list
   - scheme
-  - process-context
-- constant list
-  - scheme
   - read
 - constant list
   - scheme
   - write
-- call 7 #f ||
+- call 6 #f ||
 - call 2 #f ||
