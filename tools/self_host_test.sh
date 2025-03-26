@@ -41,7 +41,7 @@ for file in $(list_scheme_files); do
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
     for extension in bc; do
-      log log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
+      log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
     done
   done
 done
