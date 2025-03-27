@@ -2944,113 +2944,18 @@
 
         ; Optimization
 
-        (define-record-type optimization-context
-          (make-optimization-context optimizers literals)
-          optimization-context?
-          (optimizers optimization-context-optimizers optimization-context-set-optimizers!)
-          (literals optimization-context-literals optimization-context-set-literals!))
-
-        (define (optimization-context-append! context name optimizer)
-          (optimization-context-set-optimizers!
-            context
-            (cons
-              (cons name optimizer)
-              (optimization-context-optimizers context))))
-
-        (define (optimization-context-append-literal! context name literal)
-          (optimization-context-set-literals!
-            context
-            (cons
-              (cons name literal)
-              (optimization-context-literals context))))
-
-        (define (make-optimizer name optimizer)
-          (define (match-pattern pattern expression)
-            (cond
-              ((and (pair? pattern) (pair? expression))
-                (maybe-append
-                  (match-pattern (car pattern) (car expression))
-                  (match-pattern (cdr pattern) (cdr expression))))
-
-              ((symbol? pattern)
-                (list (cons pattern expression)))
-
-              ((equal? pattern expression)
-                '())
-
-              (else
-                #f)))
-
-          (define (fill-template matches template)
-            (cond
-              ((pair? template)
-                (cons
-                  (fill-template matches (car template))
-                  (fill-template matches (cdr template))))
-
-              ((and (symbol? template) (assq template matches)) =>
-                cdr)
-
-              (else
-                template)))
-
-          (case (car optimizer)
-            (($$syntax-rules)
-              (let ((rules (cdddr optimizer)))
-                (lambda (expression)
-                  (let loop ((rules rules))
-                    (if (null? rules)
-                      expression
-                      (let ((rule (car rules)))
-                        (cond
-                          ((match-pattern (car rule) expression) =>
-                            (lambda (matches)
-                              (fill-template matches (cadr rule))))
-
-                          (else
-                            (loop (cdr rules))))))))))
-
-            (else
-              (error "unsupported optimizer" optimizer))))
-
-        (define (optimize-expression context expression)
-          (if (or (not (pair? expression)) (eq? (car expression) '$$quote))
-            expression
-            (let* ((expression
-                     (relaxed-map
-                       (lambda (expression)
-                         (optimize-expression context expression))
-                       expression))
-                   (predicate (car expression)))
-              (cond
-                ((eq? predicate '$$define-optimizer)
-                  (let ((name (cadr expression)))
-                    (optimization-context-append! context name (make-optimizer name (caddr expression)))
-                    (optimization-context-append-literal! context name (caddr expression)))
-                  #f)
-
-                ((eq? predicate '$$begin)
-                  ; Omit top-level constants.
-                  (cons '$$begin
-                    (let loop ((expressions (cdr expression)))
-                      (let ((expression (car expressions))
-                            (expressions (cdr expressions)))
-                        (cond
-                          ((null? expressions)
-                            (list expression))
-
-                          ((pair? expression)
-                            (cons expression (loop expressions)))
-
-                          (else
-                            (loop expressions)))))))
-
-                ((assq predicate (optimization-context-optimizers context)) =>
-                  (lambda (pair)
-                    ((cdr pair) expression)))
-
-                (else
-                  expression)))))
+        (define optimize
+          (let ((context
+                  (make-optimization-context
+                    (map
+                      (lambda (pair)
+                        (cons
+                          (car pair)
+                          (make-optimizer (car pair) (cdr pair))))
+                      ($$optimizers))
+                    '())))
+            (lambda (expression)
+              (optimize-expression context expression))))
 
         ; Compilation
 
@@ -3257,15 +3162,6 @@
             one
             other))
 
-        (define optimization-context
-          (make-optimization-context
-            (map
-              (lambda (pair)
-                (cons
-                  (car pair)
-                  (make-optimizer (car pair) (cdr pair))))
-              ($$optimizers))
-            '()))
         (define macro-context (make-macro-context (make-macro-state 0) '()))
 
         (for-each
@@ -3291,8 +3187,7 @@
                   (compile-arity 0 #f)
                   (compile-expression
                     (make-compilation-context '())
-                    (optimize-expression
-                      optimization-context
+                    (optimize
                       (expand-macro
                         macro-context
                         (let ((names
