@@ -4,6 +4,8 @@ set -e
 
 [ -n "$CI" ]
 
+. $(dirname $0)/utility.sh
+
 brew install comby
 cargo install tokei
 
@@ -13,9 +15,5 @@ cargo fmt --all
 for cargo_file in $(find . -name Cargo.toml | sort); do
   directory=$(dirname $cargo_file)
 
-  echo '>>>' $directory
-  (
-    cd $directory
-    tokei
-  )
+  log tokei $directory
 done
