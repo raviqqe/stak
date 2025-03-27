@@ -1,19 +1,5 @@
 log() {
-  level=0
-
-  if [ $1 -gt 0 ] 2>/dev/null; then
-    level=$1
-    shift
-  fi
-
-  (
-    for _ in $(seq $(expr $level + 1)); do
-      echo '>>>\c'
-    done
-
-    echo '' "$@"
-  ) >&2
-
+  echo '>>>' "$@" >&2
   "$@"
 }
 
