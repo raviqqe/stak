@@ -21,6 +21,6 @@ for file in $(list_scheme_files); do
   done
 
   for interpreter in $interpreters; do
-    log 1 diff stak.bc $interpreter.bc
+    log diff stak.bc $interpreter.bc
   done
 done
