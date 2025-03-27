@@ -6,6 +6,9 @@ stage_count=3
 
 . $(dirname $0)/utility.sh
 
+profile=release_test
+target=target/$profile
+
 run_stage() {
   if [ $1 -eq 0 ]; then
     log stak compile.scm
@@ -20,9 +23,6 @@ artifact_path() {
 
 cd $(dirname $0)/..
 
-profile=release_test
-target=target/$profile
-
 mkdir -p tmp
 cargo build --profile $profile
 
@@ -30,19 +30,16 @@ for stage in $(seq 0 $(expr $stage_count - 1)); do
   cat prelude.scm compile.scm | run_stage $stage >stage$(expr $stage + 1).bc
 done
 
-for file in bench/src/*/main.scm cmd/*/src/*.scm; do
+for file in $(list_scheme_files); do
   echo '>>>' $file
 
   for stage in $(seq 0 $stage_count); do
     bytecode_file=$(artifact_path $stage bc)
 
     cat prelude.scm $file | run_stage $stage >$bytecode_file
-    # TODO Test a decoder.
-    # $target/stak-decode <$bytecode_file >${bytecode_file%.*}.md
   done
 
   for stage in $(seq 0 $(expr $stage_count - 1)); do
-    # TODO Test a decoder.
     for extension in bc; do
       log diff $(artifact_path $stage $extension) $(artifact_path $(expr $stage + 1) $extension)
     done

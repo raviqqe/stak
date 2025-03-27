@@ -16,11 +16,10 @@ for file in $(list_scheme_files); do
   echo '>>>' $file
 
   for interpreter in $interpreters stak; do
-    echo '>>>>>>' $interpreter $file
-    cat prelude.scm $file | $interpreter compile.scm >$interpreter.bc
+    cat prelude.scm $file | log $interpreter compile.scm >$interpreter.bc
   done
 
   for interpreter in $interpreters; do
-    diff stak.bc $interpreter.bc
+    log diff stak.bc $interpreter.bc
   done
 done
