@@ -1,5 +1,5 @@
 log() {
-  level=1
+  level=0
 
   if [ $1 -gt 0 ] 2>/dev/null; then
     level=$1
@@ -7,7 +7,7 @@ log() {
   fi
 
   (
-    for _ in $(seq $level); do
+    for _ in $(seq $(expr $level + 1)); do
       echo '>>>\c'
     done
 
