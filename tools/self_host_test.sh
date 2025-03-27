@@ -11,9 +11,9 @@ target=target/$profile
 
 run_stage() {
   if [ $1 -eq 0 ]; then
-    log stak compile.scm
+    log 1 stak compile.scm
   else
-    log $target/stak-interpret stage$1.bc
+    log 1 $target/stak-interpret stage$1.bc
   fi
 }
 
