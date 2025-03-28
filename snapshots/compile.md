@@ -1892,7 +1892,6 @@
   - list-position
   - ys
   - f
-  - xs
   - macro-state
   - macro-state?
   - static-symbols
@@ -1904,10 +1903,7 @@
   - set-last-cdr!
   - macro-state-id
   - macro-state-set-id!
-  - macro-state-set-literals!
   - syntax
-  - macro-state-set-static-symbols!
-  - macro-state-set-dynamic-symbols!
   - rule-context?
   - rule-context-ellipsis
   - macro-context-generate-id!
@@ -1960,7 +1956,6 @@
   - optimization-context?
   - literals
   - optimization-context-set-optimizers!
-  - optimization-context-set-literals!
   - literal
   - maybe-append
   - pattern
@@ -2222,6 +2217,12 @@
   - target-procedure?
   - value
   - $$compiler
+  - xs
+  - macro-state-set-literals!
+  - macro-state-set-static-symbols!
+  - macro-state-set-dynamic-symbols!
+  - optimization-context-set-literals!
+  - dummy
   - rust
   - r5rs
   - acos
@@ -6179,6 +6180,18 @@
       - call 2 #f 18
       - call 1 #f 1
     - call 1 #f $$close
+    - set ||
+    - constant procedure 0 #t
+      - constant #f
+    - call 1 #f $$close
+    - set ||
+    - get ||
+    - set ||
+    - get ||
+    - set ||
+    - get ||
+    - set ||
+    - get ||
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
@@ -16523,9 +16536,30 @@
   - constant #f
   - if
     - get ||
-    - get 1
+    - constant list
+      - list
+        - define
+        - (dummy . xs)
+        - #f
+      - list
+        - define
+        - macro-state-set-literals!
+        - dummy
+      - list
+        - define
+        - macro-state-set-static-symbols!
+        - dummy
+      - list
+        - define
+        - macro-state-set-dynamic-symbols!
+        - dummy
+      - list
+        - define
+        - optimization-context-set-literals!
+        - dummy
+    - get 2
     - call 1 #f ||
-    - call 2 #f ||
+    - call 3 #f ||
   - get 0
   - call 1 #f ||
   - call 1 #f ||

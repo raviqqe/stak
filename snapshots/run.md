@@ -5885,6 +5885,18 @@
       - call 1 #f 1
     - call 1 #f $$close
     - set ||
+    - constant procedure 0 #t
+      - constant #f
+    - call 1 #f $$close
+    - set ||
+    - get ||
+    - set ||
+    - get ||
+    - set ||
+    - get ||
+    - set ||
+    - get ||
+    - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 1 #f
