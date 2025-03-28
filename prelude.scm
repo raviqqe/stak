@@ -2606,7 +2606,17 @@
 
         (define expand-macros
           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
-            (lambda (expression) (expand-macro context expression))))
+            (for-each
+              (lambda (pair)
+                (macro-context-set-last!
+                  context
+                  (car pair)
+                  (if (symbol? (cdr pair))
+                    (resolve-denotation context (cdr pair))
+                    (make-transformer context (cdr pair)))))
+              ($$macros))
+            (lambda (expression)
+              (expand-macro context expression))))
 
         ; Optimization
 
@@ -2819,6 +2829,8 @@
             (else
               (constant-rib expression continuation))))
 
+        ; Evaluation
+
         (define (merge-environments one other)
           (fold-left
             (lambda (names name)
@@ -2827,16 +2839,6 @@
                 (cons name names)))
             one
             other))
-
-        (for-each
-          (lambda (pair)
-            (macro-context-set-last!
-              macro-context
-              (car pair)
-              (if (symbol? (cdr pair))
-                (resolve-denotation macro-context (cdr pair))
-                (make-transformer macro-context (cdr pair)))))
-          ($$macros))
 
         (lambda (expression environment)
           (case (predicate expression)
