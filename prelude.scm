@@ -2567,7 +2567,15 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base) data-rib filter list-head memq-position pair-type procedure-type rib))
+    (only (stak base)
+      data-rib
+      filter
+      list-head
+      memq-position
+      pair-type
+      procedure-type
+      rib
+      string->uninterned-symbol))
 
   (begin
     (define eval
@@ -2654,7 +2662,7 @@
 
         (define (rename-variable context name)
           ; Share tails when appending strings.
-          (string->symbol
+          (string->uninterned-symbol
             (string-append
               (id->string (macro-context-generate-id! context))
               "$"
