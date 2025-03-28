@@ -13,7 +13,7 @@
   (scheme read)
   (scheme write))
 
-(define compiler-utilities
+(define frontend
   '(
     ; Instructions
 
@@ -325,7 +325,7 @@
         (else
          expression)))))))
 
-(define compiler-body
+(define backend
   '(
     ; Library system
 
@@ -1669,8 +1669,8 @@
 
       (define string->uninterned-symbol string->symbol)))
 
-    ,@compiler-utilities
-    ,@compiler-body))
+    ,@frontend
+    ,@backend))
 
 ; Source code reading
 
@@ -1696,7 +1696,7 @@
         (pair? (car expression))
         (null? (cdar expression))
         (eq? (caar expression) '$$compiler))
-      (append compiler-utilities (cdr expression)))
+      (append frontend (cdr expression)))
     (else
       (cons
         (incept (car expression))
