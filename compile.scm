@@ -1698,7 +1698,14 @@
         (pair? (car expression))
         (null? (cdar expression))
         (eq? (caar expression) '$$compiler))
-      (append frontend (cdr expression)))
+      (append
+        frontend
+        '((define (dummy . xs) #f)
+          (define macro-state-set-literals! dummy)
+          (define macro-state-set-static-symbols! dummy)
+          (define macro-state-set-dynamic-symbols! dummy)
+          (define optimization-context-set-literals! dummy))
+        (cdr expression)))
     (else
       (cons
         (incept (car expression))
