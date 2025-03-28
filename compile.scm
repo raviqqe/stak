@@ -1700,7 +1700,8 @@
         (eq? (caar expression) '$$compiler))
       (append
         frontend
-        '((define (dummy . xs) #f)
+        '((define cons-rib cons)
+          (define (dummy . xs) #f)
           (define macro-state-set-literals! dummy)
           (define macro-state-set-static-symbols! dummy)
           (define macro-state-set-dynamic-symbols! dummy)
