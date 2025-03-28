@@ -2606,7 +2606,7 @@
 
         (define expand-macros
           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
-            (lambda (expression) (expand-macros context expression))))
+            (lambda (expression) (expand-macro context expression))))
 
         ; Optimization
 
