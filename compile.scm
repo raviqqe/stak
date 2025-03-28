@@ -1022,6 +1022,34 @@
      (optimizers metadata-optimizers)
      (dynamic-symbols metadata-dynamic-symbols))
 
+    (define (find-quoted-symbols expression)
+     (cond
+      ((symbol? expression)
+       (list expression))
+
+      ((vector? expression)
+       (find-quoted-symbols (vector->list expression)))
+
+      ((pair? expression)
+       (append (find-quoted-symbols (car expression)) (find-quoted-symbols (cdr expression))))
+
+      (else
+       '())))
+
+    (define (find-symbols expression)
+     (define (find expression)
+      (cond
+       ((not (pair? expression))
+        '())
+
+       ((eq? (car expression) '$$quote)
+        (find-quoted-symbols (cadr expression)))
+
+       (else
+        (append (find (car expression)) (find (cdr expression))))))
+
+     (unique (find expression)))
+
     (define (compile-metadata features raw-libraries raw-macros raw-optimizers raw-dynamic-symbols expression)
      (define libraries (if (memq 'libraries features) raw-libraries '()))
      (define macros (if (memq 'macros features) raw-macros '()))
@@ -1067,34 +1095,6 @@
      (or (memq-position variable (compilation-context-environment context)) variable))
 
     ;; Procedures
-
-    (define (find-quoted-symbols expression)
-     (cond
-      ((symbol? expression)
-       (list expression))
-
-      ((vector? expression)
-       (find-quoted-symbols (vector->list expression)))
-
-      ((pair? expression)
-       (append (find-quoted-symbols (car expression)) (find-quoted-symbols (cdr expression))))
-
-      (else
-       '())))
-
-    (define (find-symbols expression)
-     (define (find expression)
-      (cond
-       ((not (pair? expression))
-        '())
-
-       ((eq? (car expression) '$$quote)
-        (find-quoted-symbols (cadr expression)))
-
-       (else
-        (append (find (car expression)) (find (cdr expression))))))
-
-     (unique (find expression)))
 
     (define (compile-arity argument-count variadic)
      (+
@@ -1700,7 +1700,8 @@
         (eq? (caar expression) '$$compiler))
       (append
         frontend
-        '((define (dummy . xs) #f)
+        '((define cons-rib cons)
+          (define (dummy . xs) #f)
           (define macro-state-set-literals! dummy)
           (define macro-state-set-static-symbols! dummy)
           (define macro-state-set-dynamic-symbols! dummy)
