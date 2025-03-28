@@ -20,7 +20,7 @@
     "@raviqqe/stak": "^0.10.8",
     "astro": "^5.5.5",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.33.0",
+    "es-toolkit": "^1.34.1",
     "lucide-solid": "^0.484.0",
     "nanostores": "^0.11.4",
     "solid-js": "^1.9.5",
