@@ -1893,77 +1893,6 @@
   - ys
   - f
   - xs
-  - optimization-context
-  - optimization-context?
-  - optimization-context-set-optimizers!
-  - optimization-context-set-literals!
-  - literal
-  - maybe-append
-  - optimizer
-  - relaxed-map
-  - optimization-context-append!
-  - make-optimizer
-  - optimization-context-append-literal!
-  - optimization-context-optimizers
-  - library?
-  - imports
-  - library-state
-  - library-state?
-  - library-context
-  - library-context?
-  - name-maps
-  - library-context-set-libraries!
-  - library-name
-  - make-library-state
-  - library-context-assoc
-  - library-state-imported
-  - library-state-set-imported!
-  - imported
-  - library-symbol-separator
-  - position
-  - library-context-name-maps
-  - library-context-set-name-maps!
-  - maps
-  - build-library-name
-  - renamed
-  - except
-  - only
-  - prefix
-  - symbol-append
-  - library-context-find
-  - library-context-import!
-  - library-id
-  - library-symbols
-  - library-imports
-  - library-body
-  - qualify
-  - expand-import-set
-  - importer-id
-  - importer-symbols
-  - set
-  - sets
-  - body
-  - library-context-id
-  - export
-  - library-context-add!
-  - make-library
-  - rename
-  - collect-bodies
-  - rename-library-symbol
-  - exports
-  - bodies
-  - expand-import-sets
-  - define-library
-  - import
-  - make-library-context
-  - deep-unique
-  - library-predicates
-  - flat-map
-  - expand-library-expression
-  - body-symbols
-  - library-exports
-  - library-state-library
-  - library-context-libraries
   - macro-state
   - macro-state?
   - static-symbols
@@ -1975,14 +1904,12 @@
   - set-last-cdr!
   - macro-state-id
   - macro-state-set-id!
-  - id
   - macro-state-set-literals!
   - syntax
   - macro-state-set-static-symbols!
   - macro-state-set-dynamic-symbols!
   - rule-context?
   - rule-context-ellipsis
-  - id->string
   - macro-context-generate-id!
   - bound-variables
   - excluded-variables
@@ -2008,27 +1935,16 @@
   - fill-ellipsis-template
   - first
   - fill
-  - predicate
   - compile-pattern
-  - pattern
   - make-rule-context
-  - rules
-  - match-pattern
-  - rule
   - find-pattern-variables
   - ellipsis
-  - literals
-  - fill-template
   - rule-context
-  - matches
-  - template
   - use-context
   - definition-context
-  - names
   - expand-outer-macro
   - macro-context-environment
   - macro-context-append-dynamic-symbol!
-  - $$alias
   - resolve
   - macro-context-set-last!
   - macro-context-append-literal!
@@ -2037,12 +1953,96 @@
   - resolve-denotation
   - transformer
   - macro-context-append
-  - map-values
   - macro-context-set!
   - make-transformer
   - bindings
-  - relaxed-deep-map
+  - optimization-context
+  - optimization-context?
+  - literals
+  - optimization-context-set-optimizers!
+  - optimization-context-set-literals!
+  - literal
+  - maybe-append
+  - pattern
+  - template
+  - match-pattern
+  - fill-template
+  - matches
+  - rule
+  - rules
+  - optimizer
+  - relaxed-map
+  - optimization-context-append!
+  - make-optimizer
+  - optimization-context-append-literal!
+  - optimization-context-optimizers
+  - library?
+  - imports
+  - library-state
+  - library-state?
+  - library-context
+  - library-context?
+  - name-maps
+  - library-context-set-libraries!
+  - library-name
+  - make-library-state
+  - library-context-assoc
+  - library-state-imported
+  - library-state-set-imported!
+  - imported
+  - id->string
+  - library-symbol-separator
+  - position
+  - library-context-name-maps
+  - library-context-set-name-maps!
+  - maps
+  - build-library-name
+  - renamed
+  - except
+  - only
+  - prefix
+  - symbol-append
   - expand
+  - library-context-find
+  - library-context-import!
+  - library-id
+  - library-symbols
+  - library-imports
+  - library-body
+  - qualify
+  - $$alias
+  - names
+  - expand-import-set
+  - importer-id
+  - importer-symbols
+  - set
+  - sets
+  - body
+  - library-context-id
+  - export
+  - library-context-add!
+  - make-library
+  - predicate
+  - rename
+  - collect-bodies
+  - relaxed-deep-map
+  - rename-library-symbol
+  - id
+  - exports
+  - bodies
+  - expand-import-sets
+  - define-library
+  - import
+  - make-library-context
+  - deep-unique
+  - library-predicates
+  - flat-map
+  - expand-library-expression
+  - body-symbols
+  - library-exports
+  - map-values
+  - library-state-library
+  - library-context-libraries
   - make-macro-context
   - make-macro-state
   - expand-macro
@@ -4718,347 +4718,12 @@
       - call 2 #f ||
     - call 1 #f $$close
     - set 1
-    - constant optimization-context
-    - constant list
-      - optimizers
-      - literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant optimizers
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant optimizers
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - get 4
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - get 4
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - constant procedure 2 #f
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 0
-            - call 1 #f ||
-            - continue
-          - constant #f
-          - if
-            - get 1
-            - call 1 #f ||
-            - get 1
-            - call 1 #f ||
-            - call 2 #f 6
-            - get 2
-            - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 2 #f 7
-            - call 2 #f 21
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 1
-            - call 2 #f ||
-            - call 1 #f ||
-          - get 1
-          - get 1
-          - call 2 #f ||
-          - if
-            - constant ()
-          - constant #f
-        - call 1 #f $$close
-        - set 2
-        - constant procedure 2 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 1
-            - call 1 #f ||
-            - call 2 #f 5
-            - get 2
-            - get 2
-            - call 1 #f ||
-            - call 2 #f 6
-            - call 2 #f ||
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-          - call 1 #f $$close
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 3
-            - call 2 #f ||
-            - continue
-          - constant #f
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - constant procedure 1 #f
-          - get 0
-          - constant $$syntax-rules
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 1 #f
-                  - constant procedure 1 #f
-                    - get 0
-                    - call 1 #f ||
-                    - if
-                      - get 4
-                    - constant procedure 1 #f
-                      - constant procedure 1 #f
-                        - get 0
-                        - if
-                          - constant procedure 1 #f
-                            - get 0
-                            - get 5
-                            - call 1 #f ||
-                            - call 2 #f 18
-                          - call 1 #f $$close
-                          - get 1
-                          - call 1 #f 1
-                        - get 4
-                        - call 1 #f ||
-                        - call 1 #f 7
-                      - call 1 #f $$close
-                      - get 1
-                      - call 1 #f ||
-                      - get 8
-                      - call 2 #f 16
-                      - call 1 #f 1
-                    - call 1 #f $$close
-                    - get 1
-                    - call 1 #f ||
-                    - call 1 #f 1
-                  - call 1 #f $$close
-                  - set 1
-                  - get 4
-                  - call 1 #f 1
-                - call 1 #f $$close
-                - constant #f
-                - call 1 #f 1
-              - call 1 #f $$close
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - constant "unsupported optimizer"
-          - get 6
-          - call 2 #f ||
-        - call 1 #f $$close
-        - get 4
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - constant #f
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - get 2
-        - call 1 #f ||
-        - constant $$quote
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - constant #f
-      - call 2 #f ||
-      - call 1 #f 1
-      - set 1
-      - if
-        - get 0
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - constant $$define-optimizer
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 7
-              - get 1
-              - get 2
-              - get 7
-              - call 1 #f ||
-              - call 2 #f ||
-              - call 3 #f ||
-              - set 0
-              - get 7
-              - get 1
-              - get 6
-              - call 1 #f ||
-              - call 3 #f ||
-            - call 1 #f $$close
-            - get 3
-            - call 1 #f ||
-            - call 1 #f 1
-            - set 1
-            - set 0
-            - constant #f
-          - get 0
-          - constant $$begin
-          - call 2 #f ||
-          - if
-            - constant $$begin
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 2 #f
-                  - get 0
-                  - call 1 #f ||
-                  - if
-                    - get 1
-                    - call 1 #f ||
-                  - get 1
-                  - call 1 #f ||
-                  - if
-                    - get 1
-                    - get 1
-                    - call 1 #f 7
-                    - call 2 #f ||
-                  - get 0
-                  - call 1 #f 6
-                - call 1 #f $$close
-                - get 1
-                - call 1 #f ||
-                - get 2
-                - call 1 #f ||
-                - call 2 #f 2
-              - call 1 #f $$close
-              - set 1
-              - get 5
-              - call 1 #f ||
-              - call 1 #f 1
-            - call 1 #f $$close
-            - constant #f
-            - call 1 #f 1
-            - set 1
-            - call 2 #f ||
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - constant procedure 1 #f
-                - get 0
-                - call 1 #f ||
-                - get 7
-                - call 1 #f 1
-              - call 1 #f $$close
-              - get 1
-              - call 1 #f 1
-            - get 4
-          - call 1 #f $$close
-          - get 1
-          - get 7
-          - call 1 #f ||
-          - call 2 #f ||
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant procedure 1 #f
-        - get 4
-        - get 1
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 2
-      - call 2 #f 18
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 4
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 1 #f 5
-          - call 1 #f $$close
-          - constant procedure 1 #f
-            - get 7
-            - get 1
-            - constant procedure 2 #f
-              - get 1
-              - get 1
-              - call 1 #f ||
-              - call 2 #f ||
-            - call 1 #f $$close
-            - call 3 #f ||
-          - call 1 #f $$close
-          - get 2
-          - call 1 #f ||
-          - call 1 #f 1
-          - set 1
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - get 51
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
     - constant macro-state
     - constant list
       - id
+      - literals
+      - static-symbols
+      - dynamic-symbols
     - call 2 #f ||
     - set ||
     - get ||
@@ -5073,6 +4738,30 @@
     - set ||
     - get ||
     - constant id
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant static-symbols
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant static-symbols
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant dynamic-symbols
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant dynamic-symbols
     - call 2 #f ||
     - set ||
     - constant macro-context
@@ -5185,6 +4874,76 @@
       - get 1
       - call 1 #f ||
       - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 3 #f
+      - constant procedure 1 #f
+        - get 4
+        - call 1 #f ||
+        - set 1
+        - get 0
+        - get 4
+        - get 4
+        - call 2 #f ||
+        - get 2
+        - call 1 #f ||
+        - call 2 #f ||
+        - call 2 #f ||
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 2 #f
+        - get 4
+        - call 1 #f ||
+        - set 2
+        - get 1
+        - call 1 #f ||
+        - set 1
+        - get 3
+        - get 1
+        - call 2 #f ||
+        - constant #f
+        - call 2 #f ||
+        - if
+          - get 1
+          - get 4
+          - get 2
+          - call 2 #f ||
+          - call 2 #f ||
+        - constant #f
+      - call 1 #f $$close
+      - constant #f
+      - constant #f
+      - call 2 #f 2
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 2 #f
+        - get 4
+        - call 1 #f ||
+        - set 2
+        - get 1
+        - call 1 #f ||
+        - set 1
+        - get 3
+        - get 1
+        - call 2 #f ||
+        - constant #f
+        - call 2 #f ||
+        - if
+          - get 1
+          - get 4
+          - get 2
+          - call 2 #f ||
+          - call 2 #f ||
+        - constant #f
+      - call 1 #f $$close
+      - constant #f
+      - constant #f
+      - call 2 #f 2
     - call 1 #f $$close
     - set ||
     - constant rule-context
@@ -5868,6 +5627,19 @@
         - get 3
         - call 1 #f ||
         - if
+          - get 3
+          - get 5
+          - call 1 #f ||
+          - call 2 #f ||
+          - constant #f
+          - call 2 #f ||
+          - if
+            - get 4
+            - get 4
+            - call 2 #f ||
+            - continue
+          - constant #f
+          - set 0
           - constant procedure 1 #f
             - get 0
             - call 1 #f ||
@@ -5888,6 +5660,26 @@
         - if
           - constant procedure 1 #f
             - get 0
+            - constant $$alias
+            - call 2 #f ||
+            - if
+              - get 6
+              - get 6
+              - call 1 #f ||
+              - get 7
+              - call 1 #f ||
+              - call 1 #f 5
+              - call 3 #f ||
+              - set 0
+              - get 6
+              - get 6
+              - call 1 #f ||
+              - get 7
+              - call 1 #f ||
+              - call 3 #f ||
+              - set 0
+              - constant #f
+            - get 0
             - constant $$define
             - call 2 #f ||
             - if
@@ -5896,6 +5688,10 @@
                 - get 1
                 - get 2
                 - call 3 #f ||
+                - set 0
+                - get 8
+                - get 1
+                - call 2 #f ||
                 - set 0
                 - constant $$set!
                 - get 8
@@ -5910,16 +5706,30 @@
             - constant $$define-syntax
             - call 2 #f ||
             - if
-              - get 6
+              - constant procedure 2 #f
+                - get 9
+                - get 2
+                - get 11
+                - get 3
+                - call 2 #f ||
+                - call 3 #f ||
+                - set 0
+                - get 9
+                - get 2
+                - get 2
+                - call 3 #f ||
+                - set 0
+                - get 9
+                - get 2
+                - call 2 #f ||
+                - set 0
+                - constant #f
+              - call 1 #f $$close
               - get 6
               - call 1 #f ||
-              - get 8
-              - get 8
+              - get 7
               - call 1 #f ||
-              - call 2 #f ||
-              - call 3 #f ||
-              - set 0
-              - constant #f
+              - call 2 #f 2
             - get 0
             - constant $$lambda
             - call 2 #f ||
@@ -6072,6 +5882,2934 @@
       - constant #f
       - call 2 #f 2
     - call 1 #f $$close
+    - set ||
+    - constant optimization-context
+    - constant list
+      - optimizers
+      - literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - call 1 #f ||
+    - set ||
+    - get ||
+    - call 1 #f ||
+    - set ||
+    - get ||
+    - constant optimizers
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant optimizers
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - constant procedure 3 #f
+      - get 2
+      - get 2
+      - get 2
+      - call 2 #f ||
+      - get 4
+      - call 1 #f ||
+      - call 2 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 3 #f
+      - get 2
+      - get 2
+      - get 2
+      - call 2 #f ||
+      - get 4
+      - call 1 #f ||
+      - call 2 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 2 #f
+        - constant procedure 2 #f
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - continue
+          - constant #f
+          - if
+            - get 1
+            - call 1 #f ||
+            - get 1
+            - call 1 #f ||
+            - call 2 #f 6
+            - get 2
+            - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 2 #f 7
+            - call 2 #f 21
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 1
+            - call 2 #f ||
+            - call 1 #f ||
+          - get 1
+          - get 1
+          - call 2 #f ||
+          - if
+            - constant ()
+          - constant #f
+        - call 1 #f $$close
+        - set 2
+        - constant procedure 2 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 1
+            - call 1 #f ||
+            - call 2 #f 5
+            - get 2
+            - get 2
+            - call 1 #f ||
+            - call 2 #f 6
+            - call 2 #f ||
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 3
+            - call 2 #f ||
+            - continue
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - constant procedure 1 #f
+          - get 0
+          - constant $$syntax-rules
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - call 1 #f ||
+                    - if
+                      - get 4
+                    - constant procedure 1 #f
+                      - constant procedure 1 #f
+                        - get 0
+                        - if
+                          - constant procedure 1 #f
+                            - get 0
+                            - get 5
+                            - call 1 #f ||
+                            - call 2 #f 18
+                          - call 1 #f $$close
+                          - get 1
+                          - call 1 #f 1
+                        - get 4
+                        - call 1 #f ||
+                        - call 1 #f 7
+                      - call 1 #f $$close
+                      - get 1
+                      - call 1 #f ||
+                      - get 8
+                      - call 2 #f 16
+                      - call 1 #f 1
+                    - call 1 #f $$close
+                    - get 1
+                    - call 1 #f ||
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - set 1
+                  - get 4
+                  - call 1 #f 1
+                - call 1 #f $$close
+                - constant #f
+                - call 1 #f 1
+              - call 1 #f $$close
+            - call 1 #f $$close
+            - get 6
+            - call 1 #f ||
+            - call 1 #f 1
+          - constant "unsupported optimizer"
+          - get 6
+          - call 2 #f ||
+        - call 1 #f $$close
+        - get 4
+        - call 1 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - constant #f
+      - call 2 #f 2
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - get 2
+        - call 1 #f ||
+        - constant $$quote
+        - call 2 #f ||
+      - call 1 #f $$close
+      - get 1
+      - call 1 #f ||
+      - constant #f
+      - call 2 #f ||
+      - call 1 #f 1
+      - set 1
+      - if
+        - get 0
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - constant $$define-optimizer
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - get 7
+              - get 1
+              - get 2
+              - get 7
+              - call 1 #f ||
+              - call 2 #f ||
+              - call 3 #f ||
+              - set 0
+              - get 7
+              - get 1
+              - get 6
+              - call 1 #f ||
+              - call 3 #f ||
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f ||
+            - call 1 #f 1
+            - set 1
+            - set 0
+            - constant #f
+          - get 0
+          - constant $$begin
+          - call 2 #f ||
+          - if
+            - constant $$begin
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - constant procedure 2 #f
+                  - get 0
+                  - call 1 #f ||
+                  - if
+                    - get 1
+                    - call 1 #f ||
+                  - get 1
+                  - call 1 #f ||
+                  - if
+                    - get 1
+                    - get 1
+                    - call 1 #f 7
+                    - call 2 #f ||
+                  - get 0
+                  - call 1 #f 6
+                - call 1 #f $$close
+                - get 1
+                - call 1 #f ||
+                - get 2
+                - call 1 #f ||
+                - call 2 #f 2
+              - call 1 #f $$close
+              - set 1
+              - get 5
+              - call 1 #f ||
+              - call 1 #f 1
+            - call 1 #f $$close
+            - constant #f
+            - call 1 #f 1
+            - set 1
+            - call 2 #f ||
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - constant procedure 1 #f
+                - get 0
+                - call 1 #f ||
+                - get 7
+                - call 1 #f 1
+              - call 1 #f $$close
+              - get 1
+              - call 1 #f 1
+            - get 4
+          - call 1 #f $$close
+          - get 1
+          - get 7
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 1
+        - call 1 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant procedure 1 #f
+        - get 4
+        - get 1
+        - call 2 #f ||
+      - call 1 #f $$close
+      - get 2
+      - call 2 #f 18
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 4
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 5
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 7
+            - get 1
+            - constant procedure 2 #f
+              - get 1
+              - get 1
+              - call 1 #f ||
+              - call 2 #f ||
+            - call 1 #f $$close
+            - call 3 #f ||
+          - call 1 #f $$close
+          - get 2
+          - call 1 #f ||
+          - call 1 #f 1
+          - set 1
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - get 51
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 2
+        - get 1
+        - call 1 #f ||
+        - get 2
+        - call 1 #f ||
+        - call 1 #f ||
+        - if
+          - get 4
+          - get 3
+          - call 1 #f ||
+          - call 2 #f ||
+          - continue
+        - get 4
+        - get 3
+        - call 1 #f ||
+        - call 2 #f ||
+        - call 3 #f ||
+      - call 1 #f $$close
+      - constant list
+        - list
+          - ||
+          - $$syntax-rules
+          - $$...
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - $$...
+              - list
+                - ||
+                - ||
+              - $$...
+            - list
+              - $$syntax-rules
+              - ||
+              - list
+                - ||
+                - $$...
+              - list
+                - ||
+                - ||
+              - $$...
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$define-syntax
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$define-optimizer
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - (|| || || . ||)
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - (|| || . ||)
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$define
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$lambda
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "value"
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - (|| || || . ||)
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - (|| || . ||)
+                    - ||
+                    - ||
+                    - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$lambda
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$let-syntax
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ()
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$letrec-syntax
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ()
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$begin
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #f
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+            - list
+              - $$quote
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$set!
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - #f
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$if
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - #f
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+            - #f
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+            - #f
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #t
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - #f
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #f
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #f
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - #t
+              - list
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - #f
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - "step"
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+          - list
+            - list
+              - ||
+              - "step"
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - "step"
+              - ||
+              - ||
+            - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - (|| || . ||)
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - (|| || || || . ||)
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ()
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - (|| || || . ||)
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ()
+                  - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "multiple"
+              - list
+                - ||
+                - ||
+              - ()
+              - list
+                - ||
+                - ()
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - "multiple"
+              - ()
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "multiple"
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "single"
+              - ||
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "single"
+              - ()
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ()
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - "multiple"
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - "single"
+              - (|| . ||)
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+            - list
+              - ||
+              - "single"
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "single"
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ()
+                - ||
+              - list
+                - ||
+                - (|| || . ||)
+                - list
+                  - ||
+                  - "multiple"
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - list
+                      - list
+                        - ||
+                        - ||
+                      - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - ||
+                      - list
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - list
+                              - ||
+                            - list
+                              - ||
+                              - list
+                                - ||
+                                - ()
+                                - list
+                                  - ||
+                                  - list
+                                    - list
+                                      - ||
+                                      - ||
+                                  - list
+                                    - ||
+                                    - list
+                                      - ||
+                                      - list
+                                        - ||
+                                        - ()
+                                        - list
+                                          - ||
+                                          - ||
+                                    - ||
+                                    - ||
+                    - list
+                      - ||
+                      - ()
+                      - list
+                        - ||
+                        - list
+                          - list
+                            - ||
+                            - list
+                              - ||
+                              - ||
+                              - ||
+                              - ||
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - ()
+                            - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - #f
+                - list
+                  - ||
+                  - #f
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                      - #t
+                    - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+      - call 2 #f ||
+      - set 0
+      - constant procedure 1 #f
+        - get 2
+        - get 1
+        - call 2 #f ||
+      - call 1 #f $$close
+    - call 1 #f $$close
+    - constant 0
+    - constant ()
+    - constant ()
+    - constant ()
+    - call 4 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 1 #f 1
+    - set 1
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
@@ -6641,2584 +9379,6 @@
       - call 3 #f ||
     - call 1 #f $$close
     - set ||
-    - constant 0
-    - call 1 #f ||
-    - constant ()
-    - call 2 #f ||
-    - set ||
-    - constant procedure 1 #f
-      - get ||
-      - get 1
-      - call 1 #f ||
-      - get 2
-      - call 1 #f ||
-      - call 1 #f ||
-      - if
-        - get ||
-        - get 3
-        - call 1 #f ||
-        - call 2 #f ||
-        - continue
-      - get ||
-      - get 3
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 3 #f ||
-    - call 1 #f $$close
-    - constant list
-      - list
-        - ||
-        - $$syntax-rules
-        - $$...
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - $$...
-            - list
-              - ||
-              - ||
-            - $$...
-          - list
-            - $$syntax-rules
-            - ||
-            - list
-              - ||
-              - $$...
-            - list
-              - ||
-              - ||
-            - $$...
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$define-syntax
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$define-optimizer
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - (|| || || . ||)
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - (|| || . ||)
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$define
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$lambda
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "value"
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - (|| || || . ||)
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - (|| || . ||)
-                  - ||
-                  - ||
-                  - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$lambda
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$let-syntax
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$letrec-syntax
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$begin
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #f
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - $$quote
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$set!
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - ||
-                    - ||
-                  - ||
-                  - ||
-                - ||
-                - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                  - ||
-                  - ||
-                  - ||
-            - list
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - #f
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$if
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - #f
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-          - #f
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-          - #f
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #t
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - #f
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #f
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #f
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - #t
-            - list
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - #f
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - "step"
-                    - ||
-                    - ||
-                    - ||
-                  - ||
-        - list
-          - list
-            - ||
-            - "step"
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - "step"
-            - ||
-            - ||
-          - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - (|| || . ||)
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - (|| || || || . ||)
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - ||
-              - list
-                - ||
-                - list
-                  - ||
-                - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ()
-                  - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-        - list
-          - list
-            - ||
-            - (|| || || . ||)
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ()
-                  - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "multiple"
-            - list
-              - ||
-              - ||
-            - ()
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - "multiple"
-            - ()
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "multiple"
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "single"
-            - ||
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "single"
-            - ()
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ()
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - "multiple"
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - "single"
-            - (|| . ||)
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - ||
-            - "single"
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "single"
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ()
-              - ||
-            - list
-              - ||
-              - (|| || . ||)
-              - list
-                - ||
-                - "multiple"
-                - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - list
-                  - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - list
-                    - list
-                      - ||
-                      - ||
-                    - ||
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - list
-                      - ||
-                    - list
-                      - list
-                        - ||
-                        - list
-                          - ||
-                          - list
-                            - ||
-                          - list
-                            - ||
-                            - list
-                              - ||
-                              - ()
-                              - list
-                                - ||
-                                - list
-                                  - list
-                                    - ||
-                                    - ||
-                                - list
-                                  - ||
-                                  - list
-                                    - ||
-                                    - list
-                                      - ||
-                                      - ()
-                                      - list
-                                        - ||
-                                        - ||
-                                  - ||
-                                  - ||
-                  - list
-                    - ||
-                    - ()
-                    - list
-                      - ||
-                      - list
-                        - list
-                          - ||
-                          - list
-                            - ||
-                            - ||
-                            - ||
-                            - ||
-                      - list
-                        - ||
-                        - list
-                          - ||
-                          - ()
-                          - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - #f
-              - list
-                - ||
-                - #f
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                    - ||
-                  - list
-                    - ||
-                    - ||
-                    - #t
-                  - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-    - call 2 #f ||
-    - set 0
     - constant procedure 2 #f
       - constant procedure 1 #f
         - get 0
@@ -9246,7 +9406,6 @@
         - call 2 #f ||
         - constant ()
         - call 1 #f ||
-        - get ||
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -9261,8 +9420,8 @@
             - call 2 #f ||
             - call 1 #f 1
           - call 1 #f $$close
-          - get 9
-          - call 2 #f 23
+          - get 8
+          - call 2 #f 22
         - call 1 #f $$close
         - get ||
         - constant procedure 1 #f
@@ -9281,16 +9440,16 @@
             - call 1 #f ||
           - call 1 #f $$close
           - get 1
-          - get 61
+          - get 60
           - call 2 #f ||
           - call 1 #f 1
         - call 1 #f $$close
-        - get 8
+        - get 7
         - call 2 #f ||
         - call 2 #f ||
         - call 1 #f 1
         - set 1
-        - call 2 #f ||
+        - call 1 #f ||
         - call 1 #f ||
         - constant ()
         - call 3 #f ||
@@ -11066,1233 +11225,6 @@
       - 32
   - list
     - define-record-type
-    - optimization-context
-    - list
-      - make-optimization-context
-      - optimizers
-      - literals
-    - optimization-context?
-    - list
-      - optimizers
-      - optimization-context-optimizers
-      - optimization-context-set-optimizers!
-    - list
-      - literals
-      - optimization-context-literals
-      - optimization-context-set-literals!
-  - list
-    - define
-    - list
-      - optimization-context-append!
-      - context
-      - name
-      - optimizer
-    - list
-      - optimization-context-set-optimizers!
-      - context
-      - list
-        - cons
-        - list
-          - cons
-          - name
-          - optimizer
-        - list
-          - optimization-context-optimizers
-          - context
-  - list
-    - define
-    - list
-      - optimization-context-append-literal!
-      - context
-      - name
-      - literal
-    - list
-      - optimization-context-set-literals!
-      - context
-      - list
-        - cons
-        - list
-          - cons
-          - name
-          - literal
-        - list
-          - optimization-context-literals
-          - context
-  - list
-    - define
-    - list
-      - make-optimizer
-      - name
-      - optimizer
-    - list
-      - define
-      - list
-        - match-pattern
-        - pattern
-        - expression
-      - list
-        - cond
-        - list
-          - list
-            - and
-            - list
-              - pair?
-              - pattern
-            - list
-              - pair?
-              - expression
-          - list
-            - maybe-append
-            - list
-              - match-pattern
-              - list
-                - car
-                - pattern
-              - list
-                - car
-                - expression
-            - list
-              - match-pattern
-              - list
-                - cdr
-                - pattern
-              - list
-                - cdr
-                - expression
-        - list
-          - list
-            - symbol?
-            - pattern
-          - list
-            - list
-            - list
-              - cons
-              - pattern
-              - expression
-        - list
-          - list
-            - equal?
-            - pattern
-            - expression
-          - list
-            - quote
-            - ()
-        - list
-          - else
-          - #f
-    - list
-      - define
-      - list
-        - fill-template
-        - matches
-        - template
-      - list
-        - cond
-        - list
-          - list
-            - pair?
-            - template
-          - list
-            - cons
-            - list
-              - fill-template
-              - matches
-              - list
-                - car
-                - template
-            - list
-              - fill-template
-              - matches
-              - list
-                - cdr
-                - template
-        - list
-          - list
-            - and
-            - list
-              - symbol?
-              - template
-            - list
-              - assq
-              - template
-              - matches
-          - =>
-          - cdr
-        - list
-          - else
-          - template
-    - list
-      - case
-      - list
-        - car
-        - optimizer
-      - list
-        - list
-          - $$syntax-rules
-        - list
-          - let
-          - list
-            - list
-              - rules
-              - list
-                - cdddr
-                - optimizer
-          - list
-            - lambda
-            - list
-              - expression
-            - list
-              - let
-              - loop
-              - list
-                - list
-                  - rules
-                  - rules
-              - list
-                - if
-                - list
-                  - null?
-                  - rules
-                - expression
-                - list
-                  - let
-                  - list
-                    - list
-                      - rule
-                      - list
-                        - car
-                        - rules
-                  - list
-                    - cond
-                    - list
-                      - list
-                        - match-pattern
-                        - list
-                          - car
-                          - rule
-                        - expression
-                      - =>
-                      - list
-                        - lambda
-                        - list
-                          - matches
-                        - list
-                          - fill-template
-                          - matches
-                          - list
-                            - cadr
-                            - rule
-                    - list
-                      - else
-                      - list
-                        - loop
-                        - list
-                          - cdr
-                          - rules
-      - list
-        - else
-        - list
-          - error
-          - "unsupported optimizer"
-          - optimizer
-  - list
-    - define
-    - list
-      - optimize-expression
-      - context
-      - expression
-    - list
-      - if
-      - list
-        - or
-        - list
-          - not
-          - list
-            - pair?
-            - expression
-        - list
-          - eq?
-          - list
-            - car
-            - expression
-          - list
-            - quote
-            - $$quote
-      - expression
-      - list
-        - let\*
-        - list
-          - list
-            - expression
-            - list
-              - relaxed-map
-              - list
-                - lambda
-                - list
-                  - expression
-                - list
-                  - optimize-expression
-                  - context
-                  - expression
-              - expression
-          - list
-            - predicate
-            - list
-              - car
-              - expression
-        - list
-          - cond
-          - list
-            - list
-              - eq?
-              - predicate
-              - list
-                - quote
-                - $$define-optimizer
-            - list
-              - let
-              - list
-                - list
-                  - name
-                  - list
-                    - cadr
-                    - expression
-              - list
-                - optimization-context-append!
-                - context
-                - name
-                - list
-                  - make-optimizer
-                  - name
-                  - list
-                    - caddr
-                    - expression
-              - list
-                - optimization-context-append-literal!
-                - context
-                - name
-                - list
-                  - caddr
-                  - expression
-            - #f
-          - list
-            - list
-              - eq?
-              - predicate
-              - list
-                - quote
-                - $$begin
-            - list
-              - cons
-              - list
-                - quote
-                - $$begin
-              - list
-                - let
-                - loop
-                - list
-                  - list
-                    - expressions
-                    - list
-                      - cdr
-                      - expression
-                - list
-                  - let
-                  - list
-                    - list
-                      - expression
-                      - list
-                        - car
-                        - expressions
-                    - list
-                      - expressions
-                      - list
-                        - cdr
-                        - expressions
-                  - list
-                    - cond
-                    - list
-                      - list
-                        - null?
-                        - expressions
-                      - list
-                        - list
-                        - expression
-                    - list
-                      - list
-                        - pair?
-                        - expression
-                      - list
-                        - cons
-                        - expression
-                        - list
-                          - loop
-                          - expressions
-                    - list
-                      - else
-                      - list
-                        - loop
-                        - expressions
-          - list
-            - list
-              - assq
-              - predicate
-              - list
-                - optimization-context-optimizers
-                - context
-            - =>
-            - list
-              - lambda
-              - list
-                - pair
-              - list
-                - list
-                  - cdr
-                  - pair
-                - expression
-          - list
-            - else
-            - expression
-- set ||
-- constant list
-  - list
-    - define-record-type
-    - library
-    - list
-      - make-library
-      - id
-      - name
-      - exports
-      - imports
-      - body
-      - symbols
-    - library?
-    - list
-      - id
-      - library-id
-    - list
-      - name
-      - library-name
-    - list
-      - exports
-      - library-exports
-    - list
-      - imports
-      - library-imports
-    - list
-      - body
-      - library-body
-    - list
-      - symbols
-      - library-symbols
-  - list
-    - define-record-type
-    - library-state
-    - list
-      - make-library-state
-      - library
-      - imported
-    - library-state?
-    - list
-      - library
-      - library-state-library
-    - list
-      - imported
-      - library-state-imported
-      - library-state-set-imported!
-  - list
-    - define-record-type
-    - library-context
-    - list
-      - make-library-context
-      - libraries
-      - name-maps
-    - library-context?
-    - list
-      - libraries
-      - library-context-libraries
-      - library-context-set-libraries!
-    - list
-      - name-maps
-      - library-context-name-maps
-      - library-context-set-name-maps!
-  - list
-    - define
-    - list
-      - library-context-assoc
-      - context
-      - name
-    - list
-      - cond
-      - list
-        - list
-          - assoc
-          - name
-          - list
-            - library-context-libraries
-            - context
-        - =>
-        - cdr
-      - list
-        - else
-        - list
-          - error
-          - "unknown library"
-          - name
-  - list
-    - define
-    - list
-      - library-context-id
-      - context
-    - list
-      - length
-      - list
-        - library-context-libraries
-        - context
-  - list
-    - define
-    - list
-      - library-context-find
-      - context
-      - name
-    - list
-      - library-state-library
-      - list
-        - library-context-assoc
-        - context
-        - name
-  - list
-    - define
-    - list
-      - library-context-add!
-      - context
-      - library
-    - list
-      - library-context-set-libraries!
-      - context
-      - list
-        - cons
-        - list
-          - cons
-          - list
-            - library-name
-            - library
-          - list
-            - make-library-state
-            - library
-            - #f
-        - list
-          - library-context-libraries
-          - context
-  - list
-    - define
-    - list
-      - library-context-import!
-      - context
-      - name
-    - list
-      - let\*
-      - list
-        - list
-          - state
-          - list
-            - library-context-assoc
-            - context
-            - name
-        - list
-          - imported
-          - list
-            - library-state-imported
-            - state
-      - list
-        - library-state-set-imported!
-        - state
-        - #t
-      - imported
-  - list
-    - define
-    - library-symbol-separator
-    - #\%
-  - list
-    - define
-    - list
-      - library-symbol?
-      - name
-    - list
-      - memv
-      - library-symbol-separator
-      - list
-        - string->list
-        - list
-          - symbol->string
-          - name
-  - list
-    - define
-    - list
-      - built-in-symbol?
-      - name
-    - list
-      - let
-      - list
-        - list
-          - name
-          - list
-            - symbol->string
-            - name
-      - list
-        - equal?
-        - list
-          - substring
-          - name
-          - 0
-          - list
-            - min
-            - 2
-            - list
-              - string-length
-              - name
-        - "$$"
-  - list
-    - define
-    - list
-      - build-library-name
-      - id
-      - name
-    - list
-      - string-append
-      - list
-        - id->string
-        - id
-      - list
-        - list->string
-        - list
-          - list
-          - library-symbol-separator
-      - list
-        - symbol->string
-        - name
-  - list
-    - define
-    - list
-      - resolve-library-symbol
-      - name
-    - list
-      - let\*
-      - list
-        - list
-          - string
-          - list
-            - symbol->string
-            - name
-        - list
-          - position
-          - list
-            - memv-position
-            - library-symbol-separator
-            - list
-              - string->list
-              - string
-      - list
-        - if
-        - position
-        - list
-          - string->symbol
-          - list
-            - string-copy
-            - string
-            - list
-              - -
-              - position
-              - 1
-        - name
-  - list
-    - define
-    - list
-      - rename-library-symbol
-      - context
-      - id
-      - name
-    - list
-      - if
-      - list
-        - or
-        - list
-          - not
-          - id
-        - list
-          - built-in-symbol?
-          - name
-      - name
-      - list
-        - let\*
-        - list
-          - list
-            - maps
-            - list
-              - library-context-name-maps
-              - context
-          - list
-            - pair
-            - list
-              - or
-              - list
-                - assq
-                - id
-                - maps
-              - list
-                - cons
-                - id
-                - list
-                  - quote
-                  - ()
-          - list
-            - names
-            - list
-              - cdr
-              - pair
-        - list
-          - when
-          - list
-            - null?
-            - names
-          - list
-            - library-context-set-name-maps!
-            - context
-            - list
-              - cons
-              - pair
-              - maps
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cdr
-                - pair
-          - list
-            - cond
-            - list
-              - list
-                - assq
-                - name
-                - names
-              - =>
-              - cdr
-            - list
-              - else
-              - list
-                - let
-                - list
-                  - list
-                    - renamed
-                    - list
-                      - string->uninterned-symbol
-                      - list
-                        - build-library-name
-                        - id
-                        - name
-                - list
-                  - set-cdr!
-                  - pair
-                  - list
-                    - cons
-                    - list
-                      - cons
-                      - name
-                      - renamed
-                    - names
-                - renamed
-  - list
-    - define
-    - list
-      - expand-import-set
-      - context
-      - importer-id
-      - qualify
-      - set
-    - list
-      - define
-      - list
-        - expand
-        - qualify
-      - list
-        - expand-import-set
-        - context
-        - importer-id
-        - qualify
-        - list
-          - cadr
-          - set
-    - list
-      - case
-      - list
-        - predicate
-        - set
-      - list
-        - list
-          - except
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - expand
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - #f
-                - list
-                  - qualify
-                  - name
-      - list
-        - list
-          - only
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - expand
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - list
-                  - qualify
-                  - name
-                - #f
-      - list
-        - list
-          - prefix
-        - list
-          - expand
-          - list
-            - lambda
-            - list
-              - name
-            - list
-              - qualify
-              - list
-                - symbol-append
-                - list
-                  - caddr
-                  - set
-                - name
-      - list
-        - list
-          - rename
-        - list
-          - expand
-          - list
-            - lambda
-            - list
-              - name
-            - list
-              - qualify
-              - list
-                - cond
-                - list
-                  - list
-                    - assq
-                    - name
-                    - list
-                      - cddr
-                      - set
-                  - =>
-                  - cadr
-                - list
-                  - else
-                  - name
-      - list
-        - else
-        - list
-          - let
-          - list
-            - list
-              - library
-              - list
-                - library-context-find
-                - context
-                - set
-          - list
-            - append
-            - list
-              - if
-              - list
-                - library-context-import!
-                - context
-                - set
-              - list
-                - quote
-                - ()
-              - list
-                - append
-                - list
-                  - expand-import-sets
-                  - context
-                  - list
-                    - library-id
-                    - library
-                  - list
-                    - library-symbols
-                    - library
-                  - list
-                    - library-imports
-                    - library
-                - list
-                  - library-body
-                  - library
-            - list
-              - flat-map
-              - list
-                - lambda
-                - list
-                  - names
-                - list
-                  - let
-                  - list
-                    - list
-                      - name
-                      - list
-                        - qualify
-                        - list
-                          - car
-                          - names
-                  - list
-                    - if
-                    - name
-                    - list
-                      - list
-                      - list
-                        - list
-                        - list
-                          - quote
-                          - $$alias
-                        - list
-                          - rename-library-symbol
-                          - context
-                          - importer-id
-                          - name
-                        - list
-                          - cdr
-                          - names
-                    - list
-                      - quote
-                      - ()
-              - list
-                - library-exports
-                - library
-  - list
-    - define
-    - list
-      - expand-import-sets
-      - context
-      - importer-id
-      - importer-symbols
-      - sets
-    - list
-      - flat-map
-      - list
-        - lambda
-        - list
-          - set
-        - list
-          - expand-import-set
-          - context
-          - importer-id
-          - list
-            - lambda
-            - list
-              - name
-            - list
-              - and
-              - list
-                - or
-                - list
-                  - not
-                  - importer-symbols
-                - list
-                  - memq
-                  - name
-                  - list
-                    - force
-                    - importer-symbols
-              - name
-          - set
-      - sets
-  - list
-    - define
-    - list
-      - expand-library-expression
-      - context
-      - body-symbols
-      - expression
-    - list
-      - case
-      - list
-        - and
-        - list
-          - pair?
-          - expression
-        - list
-          - car
-          - expression
-      - list
-        - list
-          - define-library
-        - list
-          - let\*
-          - list
-            - list
-              - collect-bodies
-              - list
-                - lambda
-                - list
-                  - predicate
-                - list
-                  - flat-map
-                  - cdr
-                  - list
-                    - filter
-                    - list
-                      - lambda
-                      - list
-                        - body
-                      - list
-                        - eq?
-                        - list
-                          - car
-                          - body
-                        - predicate
-                    - list
-                      - cddr
-                      - expression
-            - list
-              - id
-              - list
-                - library-context-id
-                - context
-            - list
-              - exports
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - export
-            - list
-              - bodies
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - begin
-          - list
-            - library-context-add!
-            - context
-            - list
-              - make-library
-              - id
-              - list
-                - cadr
-                - expression
-              - list
-                - map
-                - list
-                  - lambda
-                  - list
-                    - name
-                  - list
-                    - if
-                    - list
-                      - eq?
-                      - list
-                        - predicate
-                        - name
-                      - list
-                        - quote
-                        - rename
-                    - list
-                      - cons
-                      - list
-                        - caddr
-                        - name
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - list
-                          - cadr
-                          - name
-                    - list
-                      - cons
-                      - name
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - name
-                - exports
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - import
-              - list
-                - relaxed-deep-map
-                - list
-                  - lambda
-                  - list
-                    - value
-                  - list
-                    - if
-                    - list
-                      - symbol?
-                      - value
-                    - list
-                      - rename-library-symbol
-                      - context
-                      - id
-                      - value
-                    - value
-                - bodies
-              - list
-                - delay
-                - list
-                  - deep-unique
-                  - list
-                    - cons
-                    - exports
-                    - bodies
-          - list
-            - quote
-            - ()
-      - list
-        - list
-          - import
-        - list
-          - expand-import-sets
-          - context
-          - #f
-          - body-symbols
-          - list
-            - cdr
-            - expression
-      - list
-        - else
-        - list
-          - list
-          - expression
-  - list
-    - define
-    - library-predicates
-    - list
-      - quote
-      - list
-        - define-library
-        - import
-  - list
-    - define
-    - list
-      - expand-libraries
-      - expression
-    - list
-      - let\*
-      - list
-        - list
-          - context
-          - list
-            - make-library-context
-            - list
-              - quote
-              - ()
-            - list
-              - quote
-              - ()
-        - list
-          - body-symbols
-          - list
-            - delay
-            - list
-              - deep-unique
-              - list
-                - filter
-                - list
-                  - lambda
-                  - list
-                    - expression
-                  - list
-                    - not
-                    - list
-                      - and
-                      - list
-                        - pair?
-                        - expression
-                      - list
-                        - memq
-                        - list
-                          - car
-                          - expression
-                        - library-predicates
-                - list
-                  - cdr
-                  - expression
-        - list
-          - expression
-          - list
-            - cons
-            - list
-              - car
-              - expression
-            - list
-              - flat-map
-              - list
-                - lambda
-                - list
-                  - expression
-                - list
-                  - expand-library-expression
-                  - context
-                  - body-symbols
-                  - expression
-              - list
-                - cdr
-                - expression
-      - list
-        - values
-        - expression
-        - list
-          - map-values
-          - library-exports
-          - list
-            - map-values
-            - library-state-library
-            - list
-              - library-context-libraries
-              - context
-  - list
-    - define-record-type
     - macro-state
     - list
       - make-macro-state
@@ -13709,6 +12641,1233 @@
       - list
         - else
         - expression
+  - list
+    - define-record-type
+    - optimization-context
+    - list
+      - make-optimization-context
+      - optimizers
+      - literals
+    - optimization-context?
+    - list
+      - optimizers
+      - optimization-context-optimizers
+      - optimization-context-set-optimizers!
+    - list
+      - literals
+      - optimization-context-literals
+      - optimization-context-set-literals!
+  - list
+    - define
+    - list
+      - optimization-context-append!
+      - context
+      - name
+      - optimizer
+    - list
+      - optimization-context-set-optimizers!
+      - context
+      - list
+        - cons
+        - list
+          - cons
+          - name
+          - optimizer
+        - list
+          - optimization-context-optimizers
+          - context
+  - list
+    - define
+    - list
+      - optimization-context-append-literal!
+      - context
+      - name
+      - literal
+    - list
+      - optimization-context-set-literals!
+      - context
+      - list
+        - cons
+        - list
+          - cons
+          - name
+          - literal
+        - list
+          - optimization-context-literals
+          - context
+  - list
+    - define
+    - list
+      - make-optimizer
+      - name
+      - optimizer
+    - list
+      - define
+      - list
+        - match-pattern
+        - pattern
+        - expression
+      - list
+        - cond
+        - list
+          - list
+            - and
+            - list
+              - pair?
+              - pattern
+            - list
+              - pair?
+              - expression
+          - list
+            - maybe-append
+            - list
+              - match-pattern
+              - list
+                - car
+                - pattern
+              - list
+                - car
+                - expression
+            - list
+              - match-pattern
+              - list
+                - cdr
+                - pattern
+              - list
+                - cdr
+                - expression
+        - list
+          - list
+            - symbol?
+            - pattern
+          - list
+            - list
+            - list
+              - cons
+              - pattern
+              - expression
+        - list
+          - list
+            - equal?
+            - pattern
+            - expression
+          - list
+            - quote
+            - ()
+        - list
+          - else
+          - #f
+    - list
+      - define
+      - list
+        - fill-template
+        - matches
+        - template
+      - list
+        - cond
+        - list
+          - list
+            - pair?
+            - template
+          - list
+            - cons
+            - list
+              - fill-template
+              - matches
+              - list
+                - car
+                - template
+            - list
+              - fill-template
+              - matches
+              - list
+                - cdr
+                - template
+        - list
+          - list
+            - and
+            - list
+              - symbol?
+              - template
+            - list
+              - assq
+              - template
+              - matches
+          - =>
+          - cdr
+        - list
+          - else
+          - template
+    - list
+      - case
+      - list
+        - car
+        - optimizer
+      - list
+        - list
+          - $$syntax-rules
+        - list
+          - let
+          - list
+            - list
+              - rules
+              - list
+                - cdddr
+                - optimizer
+          - list
+            - lambda
+            - list
+              - expression
+            - list
+              - let
+              - loop
+              - list
+                - list
+                  - rules
+                  - rules
+              - list
+                - if
+                - list
+                  - null?
+                  - rules
+                - expression
+                - list
+                  - let
+                  - list
+                    - list
+                      - rule
+                      - list
+                        - car
+                        - rules
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - match-pattern
+                        - list
+                          - car
+                          - rule
+                        - expression
+                      - =>
+                      - list
+                        - lambda
+                        - list
+                          - matches
+                        - list
+                          - fill-template
+                          - matches
+                          - list
+                            - cadr
+                            - rule
+                    - list
+                      - else
+                      - list
+                        - loop
+                        - list
+                          - cdr
+                          - rules
+      - list
+        - else
+        - list
+          - error
+          - "unsupported optimizer"
+          - optimizer
+  - list
+    - define
+    - list
+      - optimize-expression
+      - context
+      - expression
+    - list
+      - if
+      - list
+        - or
+        - list
+          - not
+          - list
+            - pair?
+            - expression
+        - list
+          - eq?
+          - list
+            - car
+            - expression
+          - list
+            - quote
+            - $$quote
+      - expression
+      - list
+        - let\*
+        - list
+          - list
+            - expression
+            - list
+              - relaxed-map
+              - list
+                - lambda
+                - list
+                  - expression
+                - list
+                  - optimize-expression
+                  - context
+                  - expression
+              - expression
+          - list
+            - predicate
+            - list
+              - car
+              - expression
+        - list
+          - cond
+          - list
+            - list
+              - eq?
+              - predicate
+              - list
+                - quote
+                - $$define-optimizer
+            - list
+              - let
+              - list
+                - list
+                  - name
+                  - list
+                    - cadr
+                    - expression
+              - list
+                - optimization-context-append!
+                - context
+                - name
+                - list
+                  - make-optimizer
+                  - name
+                  - list
+                    - caddr
+                    - expression
+              - list
+                - optimization-context-append-literal!
+                - context
+                - name
+                - list
+                  - caddr
+                  - expression
+            - #f
+          - list
+            - list
+              - eq?
+              - predicate
+              - list
+                - quote
+                - $$begin
+            - list
+              - cons
+              - list
+                - quote
+                - $$begin
+              - list
+                - let
+                - loop
+                - list
+                  - list
+                    - expressions
+                    - list
+                      - cdr
+                      - expression
+                - list
+                  - let
+                  - list
+                    - list
+                      - expression
+                      - list
+                        - car
+                        - expressions
+                    - list
+                      - expressions
+                      - list
+                        - cdr
+                        - expressions
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - null?
+                        - expressions
+                      - list
+                        - list
+                        - expression
+                    - list
+                      - list
+                        - pair?
+                        - expression
+                      - list
+                        - cons
+                        - expression
+                        - list
+                          - loop
+                          - expressions
+                    - list
+                      - else
+                      - list
+                        - loop
+                        - expressions
+          - list
+            - list
+              - assq
+              - predicate
+              - list
+                - optimization-context-optimizers
+                - context
+            - =>
+            - list
+              - lambda
+              - list
+                - pair
+              - list
+                - list
+                  - cdr
+                  - pair
+                - expression
+          - list
+            - else
+            - expression
+- set ||
+- constant list
+  - list
+    - define-record-type
+    - library
+    - list
+      - make-library
+      - id
+      - name
+      - exports
+      - imports
+      - body
+      - symbols
+    - library?
+    - list
+      - id
+      - library-id
+    - list
+      - name
+      - library-name
+    - list
+      - exports
+      - library-exports
+    - list
+      - imports
+      - library-imports
+    - list
+      - body
+      - library-body
+    - list
+      - symbols
+      - library-symbols
+  - list
+    - define-record-type
+    - library-state
+    - list
+      - make-library-state
+      - library
+      - imported
+    - library-state?
+    - list
+      - library
+      - library-state-library
+    - list
+      - imported
+      - library-state-imported
+      - library-state-set-imported!
+  - list
+    - define-record-type
+    - library-context
+    - list
+      - make-library-context
+      - libraries
+      - name-maps
+    - library-context?
+    - list
+      - libraries
+      - library-context-libraries
+      - library-context-set-libraries!
+    - list
+      - name-maps
+      - library-context-name-maps
+      - library-context-set-name-maps!
+  - list
+    - define
+    - list
+      - library-context-assoc
+      - context
+      - name
+    - list
+      - cond
+      - list
+        - list
+          - assoc
+          - name
+          - list
+            - library-context-libraries
+            - context
+        - =>
+        - cdr
+      - list
+        - else
+        - list
+          - error
+          - "unknown library"
+          - name
+  - list
+    - define
+    - list
+      - library-context-id
+      - context
+    - list
+      - length
+      - list
+        - library-context-libraries
+        - context
+  - list
+    - define
+    - list
+      - library-context-find
+      - context
+      - name
+    - list
+      - library-state-library
+      - list
+        - library-context-assoc
+        - context
+        - name
+  - list
+    - define
+    - list
+      - library-context-add!
+      - context
+      - library
+    - list
+      - library-context-set-libraries!
+      - context
+      - list
+        - cons
+        - list
+          - cons
+          - list
+            - library-name
+            - library
+          - list
+            - make-library-state
+            - library
+            - #f
+        - list
+          - library-context-libraries
+          - context
+  - list
+    - define
+    - list
+      - library-context-import!
+      - context
+      - name
+    - list
+      - let\*
+      - list
+        - list
+          - state
+          - list
+            - library-context-assoc
+            - context
+            - name
+        - list
+          - imported
+          - list
+            - library-state-imported
+            - state
+      - list
+        - library-state-set-imported!
+        - state
+        - #t
+      - imported
+  - list
+    - define
+    - library-symbol-separator
+    - #\%
+  - list
+    - define
+    - list
+      - library-symbol?
+      - name
+    - list
+      - memv
+      - library-symbol-separator
+      - list
+        - string->list
+        - list
+          - symbol->string
+          - name
+  - list
+    - define
+    - list
+      - built-in-symbol?
+      - name
+    - list
+      - let
+      - list
+        - list
+          - name
+          - list
+            - symbol->string
+            - name
+      - list
+        - equal?
+        - list
+          - substring
+          - name
+          - 0
+          - list
+            - min
+            - 2
+            - list
+              - string-length
+              - name
+        - "$$"
+  - list
+    - define
+    - list
+      - build-library-name
+      - id
+      - name
+    - list
+      - string-append
+      - list
+        - id->string
+        - id
+      - list
+        - list->string
+        - list
+          - list
+          - library-symbol-separator
+      - list
+        - symbol->string
+        - name
+  - list
+    - define
+    - list
+      - resolve-library-symbol
+      - name
+    - list
+      - let\*
+      - list
+        - list
+          - string
+          - list
+            - symbol->string
+            - name
+        - list
+          - position
+          - list
+            - memv-position
+            - library-symbol-separator
+            - list
+              - string->list
+              - string
+      - list
+        - if
+        - position
+        - list
+          - string->symbol
+          - list
+            - string-copy
+            - string
+            - list
+              - -
+              - position
+              - 1
+        - name
+  - list
+    - define
+    - list
+      - rename-library-symbol
+      - context
+      - id
+      - name
+    - list
+      - if
+      - list
+        - or
+        - list
+          - not
+          - id
+        - list
+          - built-in-symbol?
+          - name
+      - name
+      - list
+        - let\*
+        - list
+          - list
+            - maps
+            - list
+              - library-context-name-maps
+              - context
+          - list
+            - pair
+            - list
+              - or
+              - list
+                - assq
+                - id
+                - maps
+              - list
+                - cons
+                - id
+                - list
+                  - quote
+                  - ()
+          - list
+            - names
+            - list
+              - cdr
+              - pair
+        - list
+          - when
+          - list
+            - null?
+            - names
+          - list
+            - library-context-set-name-maps!
+            - context
+            - list
+              - cons
+              - pair
+              - maps
+        - list
+          - let
+          - list
+            - list
+              - names
+              - list
+                - cdr
+                - pair
+          - list
+            - cond
+            - list
+              - list
+                - assq
+                - name
+                - names
+              - =>
+              - cdr
+            - list
+              - else
+              - list
+                - let
+                - list
+                  - list
+                    - renamed
+                    - list
+                      - string->uninterned-symbol
+                      - list
+                        - build-library-name
+                        - id
+                        - name
+                - list
+                  - set-cdr!
+                  - pair
+                  - list
+                    - cons
+                    - list
+                      - cons
+                      - name
+                      - renamed
+                    - names
+                - renamed
+  - list
+    - define
+    - list
+      - expand-import-set
+      - context
+      - importer-id
+      - qualify
+      - set
+    - list
+      - define
+      - list
+        - expand
+        - qualify
+      - list
+        - expand-import-set
+        - context
+        - importer-id
+        - qualify
+        - list
+          - cadr
+          - set
+    - list
+      - case
+      - list
+        - predicate
+        - set
+      - list
+        - list
+          - except
+        - list
+          - let
+          - list
+            - list
+              - names
+              - list
+                - cddr
+                - set
+          - list
+            - expand
+            - list
+              - lambda
+              - list
+                - name
+              - list
+                - if
+                - list
+                  - memq
+                  - name
+                  - names
+                - #f
+                - list
+                  - qualify
+                  - name
+      - list
+        - list
+          - only
+        - list
+          - let
+          - list
+            - list
+              - names
+              - list
+                - cddr
+                - set
+          - list
+            - expand
+            - list
+              - lambda
+              - list
+                - name
+              - list
+                - if
+                - list
+                  - memq
+                  - name
+                  - names
+                - list
+                  - qualify
+                  - name
+                - #f
+      - list
+        - list
+          - prefix
+        - list
+          - expand
+          - list
+            - lambda
+            - list
+              - name
+            - list
+              - qualify
+              - list
+                - symbol-append
+                - list
+                  - caddr
+                  - set
+                - name
+      - list
+        - list
+          - rename
+        - list
+          - expand
+          - list
+            - lambda
+            - list
+              - name
+            - list
+              - qualify
+              - list
+                - cond
+                - list
+                  - list
+                    - assq
+                    - name
+                    - list
+                      - cddr
+                      - set
+                  - =>
+                  - cadr
+                - list
+                  - else
+                  - name
+      - list
+        - else
+        - list
+          - let
+          - list
+            - list
+              - library
+              - list
+                - library-context-find
+                - context
+                - set
+          - list
+            - append
+            - list
+              - if
+              - list
+                - library-context-import!
+                - context
+                - set
+              - list
+                - quote
+                - ()
+              - list
+                - append
+                - list
+                  - expand-import-sets
+                  - context
+                  - list
+                    - library-id
+                    - library
+                  - list
+                    - library-symbols
+                    - library
+                  - list
+                    - library-imports
+                    - library
+                - list
+                  - library-body
+                  - library
+            - list
+              - flat-map
+              - list
+                - lambda
+                - list
+                  - names
+                - list
+                  - let
+                  - list
+                    - list
+                      - name
+                      - list
+                        - qualify
+                        - list
+                          - car
+                          - names
+                  - list
+                    - if
+                    - name
+                    - list
+                      - list
+                      - list
+                        - list
+                        - list
+                          - quote
+                          - $$alias
+                        - list
+                          - rename-library-symbol
+                          - context
+                          - importer-id
+                          - name
+                        - list
+                          - cdr
+                          - names
+                    - list
+                      - quote
+                      - ()
+              - list
+                - library-exports
+                - library
+  - list
+    - define
+    - list
+      - expand-import-sets
+      - context
+      - importer-id
+      - importer-symbols
+      - sets
+    - list
+      - flat-map
+      - list
+        - lambda
+        - list
+          - set
+        - list
+          - expand-import-set
+          - context
+          - importer-id
+          - list
+            - lambda
+            - list
+              - name
+            - list
+              - and
+              - list
+                - or
+                - list
+                  - not
+                  - importer-symbols
+                - list
+                  - memq
+                  - name
+                  - list
+                    - force
+                    - importer-symbols
+              - name
+          - set
+      - sets
+  - list
+    - define
+    - list
+      - expand-library-expression
+      - context
+      - body-symbols
+      - expression
+    - list
+      - case
+      - list
+        - and
+        - list
+          - pair?
+          - expression
+        - list
+          - car
+          - expression
+      - list
+        - list
+          - define-library
+        - list
+          - let\*
+          - list
+            - list
+              - collect-bodies
+              - list
+                - lambda
+                - list
+                  - predicate
+                - list
+                  - flat-map
+                  - cdr
+                  - list
+                    - filter
+                    - list
+                      - lambda
+                      - list
+                        - body
+                      - list
+                        - eq?
+                        - list
+                          - car
+                          - body
+                        - predicate
+                    - list
+                      - cddr
+                      - expression
+            - list
+              - id
+              - list
+                - library-context-id
+                - context
+            - list
+              - exports
+              - list
+                - collect-bodies
+                - list
+                  - quote
+                  - export
+            - list
+              - bodies
+              - list
+                - collect-bodies
+                - list
+                  - quote
+                  - begin
+          - list
+            - library-context-add!
+            - context
+            - list
+              - make-library
+              - id
+              - list
+                - cadr
+                - expression
+              - list
+                - map
+                - list
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - if
+                    - list
+                      - eq?
+                      - list
+                        - predicate
+                        - name
+                      - list
+                        - quote
+                        - rename
+                    - list
+                      - cons
+                      - list
+                        - caddr
+                        - name
+                      - list
+                        - rename-library-symbol
+                        - context
+                        - id
+                        - list
+                          - cadr
+                          - name
+                    - list
+                      - cons
+                      - name
+                      - list
+                        - rename-library-symbol
+                        - context
+                        - id
+                        - name
+                - exports
+              - list
+                - collect-bodies
+                - list
+                  - quote
+                  - import
+              - list
+                - relaxed-deep-map
+                - list
+                  - lambda
+                  - list
+                    - value
+                  - list
+                    - if
+                    - list
+                      - symbol?
+                      - value
+                    - list
+                      - rename-library-symbol
+                      - context
+                      - id
+                      - value
+                    - value
+                - bodies
+              - list
+                - delay
+                - list
+                  - deep-unique
+                  - list
+                    - cons
+                    - exports
+                    - bodies
+          - list
+            - quote
+            - ()
+      - list
+        - list
+          - import
+        - list
+          - expand-import-sets
+          - context
+          - #f
+          - body-symbols
+          - list
+            - cdr
+            - expression
+      - list
+        - else
+        - list
+          - list
+          - expression
+  - list
+    - define
+    - library-predicates
+    - list
+      - quote
+      - list
+        - define-library
+        - import
+  - list
+    - define
+    - list
+      - expand-libraries
+      - expression
+    - list
+      - let\*
+      - list
+        - list
+          - context
+          - list
+            - make-library-context
+            - list
+              - quote
+              - ()
+            - list
+              - quote
+              - ()
+        - list
+          - body-symbols
+          - list
+            - delay
+            - list
+              - deep-unique
+              - list
+                - filter
+                - list
+                  - lambda
+                  - list
+                    - expression
+                  - list
+                    - not
+                    - list
+                      - and
+                      - list
+                        - pair?
+                        - expression
+                      - list
+                        - memq
+                        - list
+                          - car
+                          - expression
+                        - library-predicates
+                - list
+                  - cdr
+                  - expression
+        - list
+          - expression
+          - list
+            - cons
+            - list
+              - car
+              - expression
+            - list
+              - flat-map
+              - list
+                - lambda
+                - list
+                  - expression
+                - list
+                  - expand-library-expression
+                  - context
+                  - body-symbols
+                  - expression
+              - list
+                - cdr
+                - expression
+      - list
+        - values
+        - expression
+        - list
+          - map-values
+          - library-exports
+          - list
+            - map-values
+            - library-state-library
+            - list
+              - library-context-libraries
+              - context
   - list
     - define
     - list

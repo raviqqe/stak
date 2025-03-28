@@ -1879,22 +1879,25 @@
   - $$+
   - $$\*
   - $$/
-  - optimization-context
-  - optimizers
   - macro-state
   - id
+  - static-symbols
+  - dynamic-symbols
   - macro-context
   - state
   - rule-context
   - definition-context
   - use-context
   - ellipsis
-  - literals
   - ellipsis-match
   - value
   - ellipsis-pattern
   - element
   - variables
+  - $$alias
+  - optimization-context
+  - optimizers
+  - literals
   - compilation-context
   - $$cons
   - $$-
@@ -4402,347 +4405,12 @@
       - call 2 #f ||
     - call 1 #f $$close
     - set 1
-    - constant optimization-context
-    - constant list
-      - optimizers
-      - literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant optimizers
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant optimizers
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - get 4
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - get 4
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - constant procedure 2 #f
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 0
-            - call 1 #f ||
-            - continue
-          - constant #f
-          - if
-            - get 1
-            - call 1 #f ||
-            - get 1
-            - call 1 #f ||
-            - call 2 #f 6
-            - get 2
-            - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 2 #f 7
-            - call 2 #f 21
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 1
-            - call 2 #f ||
-            - call 1 #f ||
-          - get 1
-          - get 1
-          - call 2 #f ||
-          - if
-            - constant ()
-          - constant #f
-        - call 1 #f $$close
-        - set 2
-        - constant procedure 2 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 1
-            - call 1 #f ||
-            - call 2 #f 5
-            - get 2
-            - get 2
-            - call 1 #f ||
-            - call 2 #f 6
-            - call 2 #f ||
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-          - call 1 #f $$close
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 3
-            - call 2 #f ||
-            - continue
-          - constant #f
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - constant procedure 1 #f
-          - get 0
-          - constant $$syntax-rules
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 1 #f
-                  - constant procedure 1 #f
-                    - get 0
-                    - call 1 #f ||
-                    - if
-                      - get 4
-                    - constant procedure 1 #f
-                      - constant procedure 1 #f
-                        - get 0
-                        - if
-                          - constant procedure 1 #f
-                            - get 0
-                            - get 5
-                            - call 1 #f ||
-                            - call 2 #f 18
-                          - call 1 #f $$close
-                          - get 1
-                          - call 1 #f 1
-                        - get 4
-                        - call 1 #f ||
-                        - call 1 #f 7
-                      - call 1 #f $$close
-                      - get 1
-                      - call 1 #f ||
-                      - get 8
-                      - call 2 #f 16
-                      - call 1 #f 1
-                    - call 1 #f $$close
-                    - get 1
-                    - call 1 #f ||
-                    - call 1 #f 1
-                  - call 1 #f $$close
-                  - set 1
-                  - get 4
-                  - call 1 #f 1
-                - call 1 #f $$close
-                - constant #f
-                - call 1 #f 1
-              - call 1 #f $$close
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - constant "unsupported optimizer"
-          - get 6
-          - call 2 #f ||
-        - call 1 #f $$close
-        - get 4
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - constant #f
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - get 2
-        - call 1 #f ||
-        - constant $$quote
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - constant #f
-      - call 2 #f ||
-      - call 1 #f 1
-      - set 1
-      - if
-        - get 0
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - constant $$define-optimizer
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 7
-              - get 1
-              - get 2
-              - get 7
-              - call 1 #f ||
-              - call 2 #f ||
-              - call 3 #f ||
-              - set 0
-              - get 7
-              - get 1
-              - get 6
-              - call 1 #f ||
-              - call 3 #f ||
-            - call 1 #f $$close
-            - get 3
-            - call 1 #f ||
-            - call 1 #f 1
-            - set 1
-            - set 0
-            - constant #f
-          - get 0
-          - constant $$begin
-          - call 2 #f ||
-          - if
-            - constant $$begin
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 2 #f
-                  - get 0
-                  - call 1 #f ||
-                  - if
-                    - get 1
-                    - call 1 #f ||
-                  - get 1
-                  - call 1 #f ||
-                  - if
-                    - get 1
-                    - get 1
-                    - call 1 #f 7
-                    - call 2 #f ||
-                  - get 0
-                  - call 1 #f 6
-                - call 1 #f $$close
-                - get 1
-                - call 1 #f ||
-                - get 2
-                - call 1 #f ||
-                - call 2 #f 2
-              - call 1 #f $$close
-              - set 1
-              - get 5
-              - call 1 #f ||
-              - call 1 #f 1
-            - call 1 #f $$close
-            - constant #f
-            - call 1 #f 1
-            - set 1
-            - call 2 #f ||
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - constant procedure 1 #f
-                - get 0
-                - call 1 #f ||
-                - get 7
-                - call 1 #f 1
-              - call 1 #f $$close
-              - get 1
-              - call 1 #f 1
-            - get 4
-          - call 1 #f $$close
-          - get 1
-          - get 7
-          - call 1 #f ||
-          - call 2 #f ||
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant procedure 1 #f
-        - get 4
-        - get 1
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 2
-      - call 2 #f 18
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 4
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 1 #f 5
-          - call 1 #f $$close
-          - constant procedure 1 #f
-            - get 7
-            - get 1
-            - constant procedure 2 #f
-              - get 1
-              - get 1
-              - call 1 #f ||
-              - call 2 #f ||
-            - call 1 #f $$close
-            - call 3 #f ||
-          - call 1 #f $$close
-          - get 2
-          - call 1 #f ||
-          - call 1 #f 1
-          - set 1
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - get 51
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
     - constant macro-state
     - constant list
       - id
+      - literals
+      - static-symbols
+      - dynamic-symbols
     - call 2 #f ||
     - set ||
     - get ||
@@ -4757,6 +4425,30 @@
     - set ||
     - get ||
     - constant id
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant static-symbols
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant static-symbols
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant dynamic-symbols
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant dynamic-symbols
     - call 2 #f ||
     - set ||
     - constant macro-context
@@ -4869,6 +4561,76 @@
       - get 1
       - call 1 #f ||
       - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 3 #f
+      - constant procedure 1 #f
+        - get 4
+        - call 1 #f ||
+        - set 1
+        - get 0
+        - get 4
+        - get 4
+        - call 2 #f ||
+        - get 2
+        - call 1 #f ||
+        - call 2 #f ||
+        - call 2 #f ||
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 2 #f
+        - get 4
+        - call 1 #f ||
+        - set 2
+        - get 1
+        - call 1 #f ||
+        - set 1
+        - get 3
+        - get 1
+        - call 2 #f ||
+        - constant #f
+        - call 2 #f ||
+        - if
+          - get 1
+          - get 4
+          - get 2
+          - call 2 #f ||
+          - call 2 #f ||
+        - constant #f
+      - call 1 #f $$close
+      - constant #f
+      - constant #f
+      - call 2 #f 2
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 2 #f
+        - get 4
+        - call 1 #f ||
+        - set 2
+        - get 1
+        - call 1 #f ||
+        - set 1
+        - get 3
+        - get 1
+        - call 2 #f ||
+        - constant #f
+        - call 2 #f ||
+        - if
+          - get 1
+          - get 4
+          - get 2
+          - call 2 #f ||
+          - call 2 #f ||
+        - constant #f
+      - call 1 #f $$close
+      - constant #f
+      - constant #f
+      - call 2 #f 2
     - call 1 #f $$close
     - set ||
     - constant rule-context
@@ -5552,6 +5314,19 @@
         - get 3
         - call 1 #f ||
         - if
+          - get 3
+          - get 5
+          - call 1 #f ||
+          - call 2 #f ||
+          - constant #f
+          - call 2 #f ||
+          - if
+            - get 4
+            - get 4
+            - call 2 #f ||
+            - continue
+          - constant #f
+          - set 0
           - constant procedure 1 #f
             - get 0
             - call 1 #f ||
@@ -5572,6 +5347,26 @@
         - if
           - constant procedure 1 #f
             - get 0
+            - constant $$alias
+            - call 2 #f ||
+            - if
+              - get 6
+              - get 6
+              - call 1 #f ||
+              - get 7
+              - call 1 #f ||
+              - call 1 #f 5
+              - call 3 #f ||
+              - set 0
+              - get 6
+              - get 6
+              - call 1 #f ||
+              - get 7
+              - call 1 #f ||
+              - call 3 #f ||
+              - set 0
+              - constant #f
+            - get 0
             - constant $$define
             - call 2 #f ||
             - if
@@ -5580,6 +5375,10 @@
                 - get 1
                 - get 2
                 - call 3 #f ||
+                - set 0
+                - get 8
+                - get 1
+                - call 2 #f ||
                 - set 0
                 - constant $$set!
                 - get 8
@@ -5594,16 +5393,30 @@
             - constant $$define-syntax
             - call 2 #f ||
             - if
-              - get 6
+              - constant procedure 2 #f
+                - get 9
+                - get 2
+                - get 11
+                - get 3
+                - call 2 #f ||
+                - call 3 #f ||
+                - set 0
+                - get 9
+                - get 2
+                - get 2
+                - call 3 #f ||
+                - set 0
+                - get 9
+                - get 2
+                - call 2 #f ||
+                - set 0
+                - constant #f
+              - call 1 #f $$close
               - get 6
               - call 1 #f ||
-              - get 8
-              - get 8
+              - get 7
               - call 1 #f ||
-              - call 2 #f ||
-              - call 3 #f ||
-              - set 0
-              - constant #f
+              - call 2 #f 2
             - get 0
             - constant $$lambda
             - call 2 #f ||
@@ -5756,6 +5569,2808 @@
       - constant #f
       - call 2 #f 2
     - call 1 #f $$close
+    - set ||
+    - constant optimization-context
+    - constant list
+      - optimizers
+      - literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - call 1 #f ||
+    - set ||
+    - get ||
+    - call 1 #f ||
+    - set ||
+    - get ||
+    - constant optimizers
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant optimizers
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant literals
+    - call 2 #f ||
+    - set ||
+    - constant procedure 3 #f
+      - get 2
+      - get 2
+      - get 2
+      - call 2 #f ||
+      - get 4
+      - call 1 #f ||
+      - call 2 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 3 #f
+      - get 2
+      - get 2
+      - get 2
+      - call 2 #f ||
+      - get 4
+      - call 1 #f ||
+      - call 2 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 2 #f
+        - constant procedure 2 #f
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - continue
+          - constant #f
+          - if
+            - get 1
+            - call 1 #f ||
+            - get 1
+            - call 1 #f ||
+            - call 2 #f 6
+            - get 2
+            - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 2 #f 7
+            - call 2 #f 21
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 1
+            - call 2 #f ||
+            - call 1 #f ||
+          - get 1
+          - get 1
+          - call 2 #f ||
+          - if
+            - constant ()
+          - constant #f
+        - call 1 #f $$close
+        - set 2
+        - constant procedure 2 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 1
+            - call 1 #f ||
+            - call 2 #f 5
+            - get 2
+            - get 2
+            - call 1 #f ||
+            - call 2 #f 6
+            - call 2 #f ||
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 3
+            - call 2 #f ||
+            - continue
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - constant procedure 1 #f
+          - get 0
+          - constant $$syntax-rules
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - call 1 #f ||
+                    - if
+                      - get 4
+                    - constant procedure 1 #f
+                      - constant procedure 1 #f
+                        - get 0
+                        - if
+                          - constant procedure 1 #f
+                            - get 0
+                            - get 5
+                            - call 1 #f ||
+                            - call 2 #f 18
+                          - call 1 #f $$close
+                          - get 1
+                          - call 1 #f 1
+                        - get 4
+                        - call 1 #f ||
+                        - call 1 #f 7
+                      - call 1 #f $$close
+                      - get 1
+                      - call 1 #f ||
+                      - get 8
+                      - call 2 #f 16
+                      - call 1 #f 1
+                    - call 1 #f $$close
+                    - get 1
+                    - call 1 #f ||
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - set 1
+                  - get 4
+                  - call 1 #f 1
+                - call 1 #f $$close
+                - constant #f
+                - call 1 #f 1
+              - call 1 #f $$close
+            - call 1 #f $$close
+            - get 6
+            - call 1 #f ||
+            - call 1 #f 1
+          - constant "unsupported optimizer"
+          - get 6
+          - call 2 #f ||
+        - call 1 #f $$close
+        - get 4
+        - call 1 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - constant #f
+      - call 2 #f 2
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - get 2
+        - call 1 #f ||
+        - constant $$quote
+        - call 2 #f ||
+      - call 1 #f $$close
+      - get 1
+      - call 1 #f ||
+      - constant #f
+      - call 2 #f ||
+      - call 1 #f 1
+      - set 1
+      - if
+        - get 0
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - constant $$define-optimizer
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - get 7
+              - get 1
+              - get 2
+              - get 7
+              - call 1 #f ||
+              - call 2 #f ||
+              - call 3 #f ||
+              - set 0
+              - get 7
+              - get 1
+              - get 6
+              - call 1 #f ||
+              - call 3 #f ||
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f ||
+            - call 1 #f 1
+            - set 1
+            - set 0
+            - constant #f
+          - get 0
+          - constant $$begin
+          - call 2 #f ||
+          - if
+            - constant $$begin
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - constant procedure 2 #f
+                  - get 0
+                  - call 1 #f ||
+                  - if
+                    - get 1
+                    - call 1 #f ||
+                  - get 1
+                  - call 1 #f ||
+                  - if
+                    - get 1
+                    - get 1
+                    - call 1 #f 7
+                    - call 2 #f ||
+                  - get 0
+                  - call 1 #f 6
+                - call 1 #f $$close
+                - get 1
+                - call 1 #f ||
+                - get 2
+                - call 1 #f ||
+                - call 2 #f 2
+              - call 1 #f $$close
+              - set 1
+              - get 5
+              - call 1 #f ||
+              - call 1 #f 1
+            - call 1 #f $$close
+            - constant #f
+            - call 1 #f 1
+            - set 1
+            - call 2 #f ||
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - constant procedure 1 #f
+                - get 0
+                - call 1 #f ||
+                - get 7
+                - call 1 #f 1
+              - call 1 #f $$close
+              - get 1
+              - call 1 #f 1
+            - get 4
+          - call 1 #f $$close
+          - get 1
+          - get 7
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 1
+        - call 1 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant procedure 1 #f
+        - get 4
+        - get 1
+        - call 2 #f ||
+      - call 1 #f $$close
+      - get 2
+      - call 2 #f 18
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 4
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 5
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 7
+            - get 1
+            - constant procedure 2 #f
+              - get 1
+              - get 1
+              - call 1 #f ||
+              - call 2 #f ||
+            - call 1 #f $$close
+            - call 3 #f ||
+          - call 1 #f $$close
+          - get 2
+          - call 1 #f ||
+          - call 1 #f 1
+          - set 1
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - get 51
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - get 2
+        - get 1
+        - call 1 #f ||
+        - get 2
+        - call 1 #f ||
+        - call 1 #f ||
+        - if
+          - get 4
+          - get 3
+          - call 1 #f ||
+          - call 2 #f ||
+          - continue
+        - get 4
+        - get 3
+        - call 1 #f ||
+        - call 2 #f ||
+        - call 3 #f ||
+      - call 1 #f $$close
+      - constant list
+        - list
+          - ||
+          - $$syntax-rules
+          - $$...
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - $$...
+              - list
+                - ||
+                - ||
+              - $$...
+            - list
+              - $$syntax-rules
+              - ||
+              - list
+                - ||
+                - $$...
+              - list
+                - ||
+                - ||
+              - $$...
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$define-syntax
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$define-optimizer
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - (|| || || . ||)
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - (|| || . ||)
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$define
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$lambda
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "value"
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - (|| || || . ||)
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - (|| || . ||)
+                    - ||
+                    - ||
+                    - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "value"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "syntax"
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$lambda
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$let-syntax
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ()
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$letrec-syntax
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ()
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$begin
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #f
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+            - list
+              - $$quote
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - $$set!
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - ()
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - list
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - #f
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - $$if
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - #f
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+            - #f
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+            - #f
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #t
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - #f
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #f
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+            - #f
+          - list
+            - list
+              - ||
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - #t
+              - list
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - #f
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - "step"
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+          - list
+            - list
+              - ||
+              - "step"
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - "step"
+              - ||
+              - ||
+            - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - (|| || . ||)
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - (|| || || || . ||)
+              - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+            - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ()
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - (|| || || . ||)
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ()
+                  - ||
+                - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "multiple"
+              - list
+                - ||
+                - ||
+              - ()
+              - list
+                - ||
+                - ()
+                - ||
+                - ||
+                - ||
+          - list
+            - list
+              - ||
+              - "multiple"
+              - ()
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "multiple"
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - "single"
+              - ||
+              - ||
+              - ()
+              - list
+                - ||
+                - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "single"
+              - ()
+              - ||
+              - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ()
+                - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - "multiple"
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - "single"
+              - (|| . ||)
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+            - list
+              - ||
+              - "single"
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+              - ||
+          - list
+            - list
+              - ||
+              - "single"
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+                - ()
+                - ||
+              - list
+                - ||
+                - (|| || . ||)
+                - list
+                  - ||
+                  - "multiple"
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+                - ||
+                - ||
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - ()
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+              - list
+                - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - list
+                      - list
+                        - ||
+                        - ||
+                      - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+        - list
+          - ||
+          - ||
+          - ()
+          - list
+            - list
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - list
+                - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - ||
+                      - list
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - list
+                              - ||
+                            - list
+                              - ||
+                              - list
+                                - ||
+                                - ()
+                                - list
+                                  - ||
+                                  - list
+                                    - list
+                                      - ||
+                                      - ||
+                                  - list
+                                    - ||
+                                    - list
+                                      - ||
+                                      - list
+                                        - ||
+                                        - ()
+                                        - list
+                                          - ||
+                                          - ||
+                                    - ||
+                                    - ||
+                    - list
+                      - ||
+                      - ()
+                      - list
+                        - ||
+                        - list
+                          - list
+                            - ||
+                            - list
+                              - ||
+                              - ||
+                              - ||
+                              - ||
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - ()
+                            - ||
+        - list
+          - ||
+          - ||
+          - list
+            - ||
+            - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+            - list
+              - ||
+              - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - list
+                - list
+                  - ||
+                  - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+          - list
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - ||
+              - ||
+              - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+        - (|| . ||)
+      - call 2 #f ||
+      - set 0
+      - constant procedure 1 #f
+        - get 2
+        - get 1
+        - call 2 #f ||
+      - call 1 #f $$close
+    - call 1 #f $$close
+    - constant 0
+    - constant ()
+    - constant ()
+    - constant ()
+    - call 4 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 1 #f 1
+    - set 1
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
@@ -6325,2458 +8940,6 @@
       - call 3 #f ||
     - call 1 #f $$close
     - set ||
-    - constant 0
-    - call 1 #f ||
-    - constant ()
-    - call 2 #f ||
-    - set ||
-    - constant procedure 1 #f
-      - get ||
-      - get 1
-      - call 1 #f ||
-      - get 2
-      - call 1 #f ||
-      - call 1 #f ||
-      - if
-        - get ||
-        - get 3
-        - call 1 #f ||
-        - call 2 #f ||
-        - continue
-      - get ||
-      - get 3
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 3 #f ||
-    - call 1 #f $$close
-    - constant list
-      - list
-        - ||
-        - $$syntax-rules
-        - $$...
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - $$...
-            - list
-              - ||
-              - ||
-            - $$...
-          - list
-            - $$syntax-rules
-            - ||
-            - list
-              - ||
-              - $$...
-            - list
-              - ||
-              - ||
-            - $$...
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$define-syntax
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$define-optimizer
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - (|| || || . ||)
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - (|| || . ||)
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$define
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$lambda
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "value"
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - (|| || || . ||)
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - (|| || . ||)
-                  - ||
-                  - ||
-                  - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "value"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "syntax"
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$lambda
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$let-syntax
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$letrec-syntax
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$begin
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #f
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - $$quote
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - $$set!
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - ||
-                    - ||
-                  - ||
-                  - ||
-                - ||
-                - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                  - ||
-                  - ||
-                  - ||
-            - list
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - #f
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - $$if
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - #f
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-          - #f
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-          - #f
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #t
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - #f
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #f
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-          - #f
-        - list
-          - list
-            - ||
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - #t
-            - list
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - #f
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - "step"
-                    - ||
-                    - ||
-                    - ||
-                  - ||
-        - list
-          - list
-            - ||
-            - "step"
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - "step"
-            - ||
-            - ||
-          - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - (|| || . ||)
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - (|| || || || . ||)
-            - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-          - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - ||
-              - list
-                - ||
-                - list
-                  - ||
-                - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ()
-                  - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-        - list
-          - list
-            - ||
-            - (|| || || . ||)
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ()
-                  - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - ||
-              - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "multiple"
-            - list
-              - ||
-              - ||
-            - ()
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-        - list
-          - list
-            - ||
-            - "multiple"
-            - ()
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "multiple"
-            - list
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - "single"
-            - ||
-            - ||
-            - ()
-            - list
-              - ||
-              - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "single"
-            - ()
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ()
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - "multiple"
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - "single"
-            - (|| . ||)
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - ||
-            - "single"
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-        - list
-          - list
-            - ||
-            - "single"
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-              - ()
-              - ||
-            - list
-              - ||
-              - (|| || . ||)
-              - list
-                - ||
-                - "multiple"
-                - ||
-                - list
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ()
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - list
-                  - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - list
-                    - list
-                      - ||
-                      - ||
-                    - ||
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-      - list
-        - ||
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - list
-                      - ||
-                    - list
-                      - list
-                        - ||
-                        - list
-                          - ||
-                          - list
-                            - ||
-                          - list
-                            - ||
-                            - list
-                              - ||
-                              - ()
-                              - list
-                                - ||
-                                - list
-                                  - list
-                                    - ||
-                                    - ||
-                                - list
-                                  - ||
-                                  - list
-                                    - ||
-                                    - list
-                                      - ||
-                                      - ()
-                                      - list
-                                        - ||
-                                        - ||
-                                  - ||
-                                  - ||
-                  - list
-                    - ||
-                    - ()
-                    - list
-                      - ||
-                      - list
-                        - list
-                          - ||
-                          - list
-                            - ||
-                            - ||
-                            - ||
-                            - ||
-                      - list
-                        - ||
-                        - list
-                          - ||
-                          - ()
-                          - ||
-      - list
-        - ||
-        - ||
-        - list
-          - ||
-          - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-          - list
-            - ||
-            - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - list
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-        - list
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-      - (|| . ||)
-    - call 2 #f ||
-    - set 0
     - constant procedure 2 #f
       - constant procedure 1 #f
         - get 0
@@ -8804,7 +8967,6 @@
         - call 2 #f ||
         - constant ()
         - call 1 #f ||
-        - get ||
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -8819,8 +8981,8 @@
             - call 2 #f ||
             - call 1 #f 1
           - call 1 #f $$close
-          - get 9
-          - call 2 #f 23
+          - get 8
+          - call 2 #f 22
         - call 1 #f $$close
         - get ||
         - constant procedure 1 #f
@@ -8839,16 +9001,16 @@
             - call 1 #f ||
           - call 1 #f $$close
           - get 1
-          - get 61
+          - get 60
           - call 2 #f ||
           - call 1 #f 1
         - call 1 #f $$close
-        - get 8
+        - get 7
         - call 2 #f ||
         - call 2 #f ||
         - call 1 #f 1
         - set 1
-        - call 2 #f ||
+        - call 1 #f ||
         - call 1 #f ||
         - constant ()
         - call 3 #f ||
