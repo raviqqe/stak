@@ -2655,24 +2655,6 @@
 
         ;; Procedures
 
-        (define constant-instruction 0)
-        (define get-instruction 1)
-        (define set-instruction 2)
-        (define if-instruction 3)
-        (define call-instruction 5)
-
-        (define (code-rib tag car cdr)
-          (rib car cdr tag))
-
-        (define (call-rib arity procedure continuation)
-          (code-rib (+ call-instruction arity) procedure continuation))
-
-        (define (constant-rib constant continuation)
-          (code-rib constant-instruction constant continuation))
-
-        (define (make-procedure arity code environment)
-          (data-rib procedure-type (cons arity code) environment))
-
         (define (compile-arity argument-count variadic)
           (+
             (* 2 argument-count)
