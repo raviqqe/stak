@@ -21,7 +21,7 @@
     (define get-instruction 1)
     (define set-instruction 2)
     (define if-instruction 3)
-    (define call-instruction 5)
+    (define call-instruction 4)
     (define nop-instruction 1024)
 
     ; Primitives
