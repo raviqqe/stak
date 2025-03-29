@@ -129,6 +129,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    #[inline]
     fn set(&mut self) {
         let operand = self.operand_cons();
         let value = self.memory.pop();
