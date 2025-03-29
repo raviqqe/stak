@@ -62,6 +62,9 @@
     (define (constant-rib constant continuation)
      (code-rib constant-instruction constant continuation))
 
+    (define (nop-rib continuation)
+     (code-rib nop-instruction 0 continuation))
+
     (define (data-rib type car cdr)
      (rib car cdr type))
 
@@ -839,7 +842,7 @@
           (let ((continuation
                  (if (null? continuation)
                   '()
-                  (code-rib nop-instruction 0 continuation))))
+                  (nop-rib continuation))))
            (code-rib
             if-instruction
             (compile-expression
@@ -1703,6 +1706,7 @@
       (append
         frontend
         '((define cons-rib cons)
+          (define (nop-rib continuation) continuation)
           (define (dummy . xs) #f)
           (define macro-state-set-literals! dummy)
           (define macro-state-set-static-symbols! dummy)
