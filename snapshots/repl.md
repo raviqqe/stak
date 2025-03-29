@@ -6319,47 +6319,6 @@
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 4
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 1 #f 5
-          - call 1 #f $$close
-          - constant procedure 1 #f
-            - get 7
-            - get 1
-            - constant procedure 2 #f
-              - get 1
-              - get 1
-              - call 1 #f ||
-              - call 2 #f ||
-            - call 1 #f $$close
-            - call 3 #f ||
-          - call 1 #f $$close
-          - get 2
-          - call 1 #f ||
-          - call 1 #f 1
-          - set 1
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - get 52
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
         - get 2
         - get 1
         - call 1 #f ||
@@ -9124,6 +9083,92 @@
       - call 3 #f ||
     - call 1 #f $$close
     - set ||
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 4
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 5
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 7
+            - get 1
+            - constant procedure 2 #f
+              - get 1
+              - get 1
+              - call 1 #f ||
+              - call 2 #f ||
+            - call 1 #f $$close
+            - call 3 #f ||
+          - call 1 #f $$close
+          - get 2
+          - call 1 #f ||
+          - call 1 #f 1
+          - set 1
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - get 52
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+          - call 1 #f $$close
+          - get 1
+          - get 4
+          - call 2 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 3
+        - call 2 #f 18
+      - call 1 #f $$close
+      - get ||
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - constant #f
+          - call 2 #f ||
+          - if
+            - constant "unknown library"
+            - get 3
+            - call 2 #f ||
+            - continue
+          - constant #f
+          - set 0
+          - get 0
+          - call 1 #f ||
+        - call 1 #f $$close
+        - get 1
+        - get 57
+        - call 2 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - get 4
+      - call 2 #f ||
+      - call 2 #f ||
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
     - constant procedure 2 #f
       - constant procedure 2 #f
         - get 0
@@ -9165,49 +9210,9 @@
         - constant 0
         - constant #f
         - call 2 #f ||
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - get 0
-              - if
-                - get 0
-                - call 1 #f ||
-              - get 2
-            - call 1 #f $$close
-            - get 1
-            - get 4
-            - call 2 #f ||
-            - call 1 #f 1
-          - call 1 #f $$close
-          - get 7
-          - call 2 #f 21
-        - call 1 #f $$close
-        - get ||
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - get 0
-            - constant #f
-            - call 2 #f ||
-            - if
-              - constant "unknown library"
-              - get 3
-              - call 2 #f ||
-              - continue
-            - constant #f
-            - set 0
-            - get 0
-            - call 1 #f ||
-          - call 1 #f $$close
-          - get 1
-          - get 60
-          - call 2 #f ||
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 6
+        - get 3
+        - get 5
         - call 2 #f ||
-        - call 2 #f ||
-        - call 1 #f 1
-        - set 1
         - call 1 #f ||
         - call 1 #f ||
         - call 1 #f ||

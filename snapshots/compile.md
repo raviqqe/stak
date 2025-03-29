@@ -1941,15 +1941,12 @@
   - macro-context-environment
   - macro-context-append-dynamic-symbol!
   - resolve
-  - macro-context-set-last!
   - macro-context-append-literal!
   - macro-context-append-static-symbol!
   - rename-variable
-  - resolve-denotation
   - transformer
   - macro-context-append
   - macro-context-set!
-  - make-transformer
   - bindings
   - optimization-context
   - optimization-context?
@@ -1967,7 +1964,6 @@
   - optimizer
   - relaxed-map
   - optimization-context-append!
-  - make-optimizer
   - optimization-context-append-literal!
   - optimization-context-optimizers
   - compilation-context
@@ -2072,9 +2068,6 @@
   - map-values
   - library-state-library
   - library-context-libraries
-  - make-macro-context
-  - make-macro-state
-  - expand-macro
   - macro-context-state
   - macro-state-literals
   - macro-state-static-symbols
@@ -2082,13 +2075,9 @@
   - name
   - macro-state-dynamic-symbols
   - state
-  - make-optimization-context
-  - optimize-expression
   - optimization-context-literals
   - $$dynamic-symbols
   - $$libraries
-  - $$macros
-  - $$optimizers
   - $$symbols
   - loop
   - metadata?
@@ -2107,9 +2096,6 @@
   - unique
   - find-symbols
   - find-quoted-symbols
-  - compile-expression
-  - make-compilation-context
-  - expression
   - marshal-context
   - marshal-context?
   - symbols
@@ -2180,19 +2166,15 @@
   - make-encode-context
   - count-ribs!
   - encode-context-set-counts!
-  - pair
   - encode-rib
   - codes
   - encode-context-dictionary
   - size
   - encode-context-counts
-  - context
   - counts
   - expand-libraries
   - source
-  - expand-macros
   - expression1
-  - optimize
   - expression2
   - detect-features
   - compile-metadata
@@ -2205,7 +2187,6 @@
   - marshal
   - build-primitives
   - primitives
-  - compile
   - metadata
   - expression3
   - main
@@ -2224,6 +2205,25 @@
   - macro-state-set-dynamic-symbols!
   - optimization-context-set-literals!
   - set-nothing
+  - expand-macros
+  - make-macro-context
+  - make-macro-state
+  - macro-context-set-last!
+  - resolve-denotation
+  - make-transformer
+  - $$macros
+  - expand-macro
+  - optimize
+  - make-optimization-context
+  - make-optimizer
+  - pair
+  - $$optimizers
+  - optimize-expression
+  - context
+  - compile
+  - compile-expression
+  - make-compilation-context
+  - expression
   - rust
   - r5rs
   - acos
@@ -6611,47 +6611,6 @@
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 4
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 1 #f 5
-          - call 1 #f $$close
-          - constant procedure 1 #f
-            - get 7
-            - get 1
-            - constant procedure 2 #f
-              - get 1
-              - get 1
-              - call 1 #f ||
-              - call 2 #f ||
-            - call 1 #f $$close
-            - call 3 #f ||
-          - call 1 #f $$close
-          - get 2
-          - call 1 #f ||
-          - call 1 #f 1
-          - set 1
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - get 52
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
         - get 2
         - get 1
         - call 1 #f ||
@@ -9398,6 +9357,92 @@
       - call 3 #f ||
     - call 1 #f $$close
     - set ||
+    - constant procedure 1 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 4
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 5
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 7
+            - get 1
+            - constant procedure 2 #f
+              - get 1
+              - get 1
+              - call 1 #f ||
+              - call 2 #f ||
+            - call 1 #f $$close
+            - call 3 #f ||
+          - call 1 #f $$close
+          - get 2
+          - call 1 #f ||
+          - call 1 #f 1
+          - set 1
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 1
+        - get 52
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+          - call 1 #f $$close
+          - get 1
+          - get 4
+          - call 2 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 3
+        - call 2 #f 18
+      - call 1 #f $$close
+      - get ||
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 0
+          - constant #f
+          - call 2 #f ||
+          - if
+            - constant "unknown library"
+            - get 3
+            - call 2 #f ||
+            - continue
+          - constant #f
+          - set 0
+          - get 0
+          - call 1 #f ||
+        - call 1 #f $$close
+        - get 1
+        - get 57
+        - call 2 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - get 4
+      - call 2 #f ||
+      - call 2 #f ||
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
     - constant procedure 2 #f
       - constant procedure 2 #f
         - get 0
@@ -9439,49 +9484,9 @@
         - constant 0
         - constant #f
         - call 2 #f ||
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - get 0
-              - if
-                - get 0
-                - call 1 #f ||
-              - get 2
-            - call 1 #f $$close
-            - get 1
-            - get 4
-            - call 2 #f ||
-            - call 1 #f 1
-          - call 1 #f $$close
-          - get 7
-          - call 2 #f 21
-        - call 1 #f $$close
-        - get ||
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - get 0
-            - constant #f
-            - call 2 #f ||
-            - if
-              - constant "unknown library"
-              - get 3
-              - call 2 #f ||
-              - continue
-            - constant #f
-            - set 0
-            - get 0
-            - call 1 #f ||
-          - call 1 #f $$close
-          - get 1
-          - get 60
-          - call 2 #f ||
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 6
+        - get 3
+        - get 5
         - call 2 #f ||
-        - call 2 #f ||
-        - call 1 #f 1
-        - set 1
         - call 1 #f ||
         - call 1 #f ||
         - call 1 #f ||
@@ -16598,6 +16603,131 @@
             - optimization-context-set-literals!
             - set-nothing
           - #f
+      - list
+        - define
+        - expand-macros
+        - list
+          - let
+          - list
+            - list
+              - context
+              - list
+                - make-macro-context
+                - list
+                  - make-macro-state
+                  - 0
+                  - list
+                    - quote
+                    - ()
+                  - list
+                    - quote
+                    - ()
+                  - list
+                    - quote
+                    - ()
+                - list
+                  - quote
+                  - ()
+          - list
+            - for-each
+            - list
+              - lambda
+              - list
+                - pair
+              - list
+                - macro-context-set-last!
+                - context
+                - list
+                  - car
+                  - pair
+                - list
+                  - if
+                  - list
+                    - symbol?
+                    - list
+                      - cdr
+                      - pair
+                  - list
+                    - resolve-denotation
+                    - context
+                    - list
+                      - cdr
+                      - pair
+                  - list
+                    - make-transformer
+                    - context
+                    - list
+                      - cdr
+                      - pair
+            - list
+              - $$macros
+          - list
+            - lambda
+            - list
+              - expression
+            - list
+              - expand-macro
+              - context
+              - expression
+      - list
+        - define
+        - optimize
+        - list
+          - let
+          - list
+            - list
+              - context
+              - list
+                - make-optimization-context
+                - list
+                  - map
+                  - list
+                    - lambda
+                    - list
+                      - pair
+                    - list
+                      - cons
+                      - list
+                        - car
+                        - pair
+                      - list
+                        - make-optimizer
+                        - list
+                          - car
+                          - pair
+                        - list
+                          - cdr
+                          - pair
+                  - list
+                    - $$optimizers
+                - list
+                  - quote
+                  - ()
+          - list
+            - lambda
+            - list
+              - expression
+            - list
+              - optimize-expression
+              - context
+              - expression
+      - list
+        - define
+        - list
+          - compile
+          - expression
+        - list
+          - compile-expression
+          - list
+            - make-compilation-context
+            - list
+              - quote
+              - ()
+            - #f
+          - expression
+          - list
+            - quote
+            - ()
     - get 2
     - call 1 #f ||
     - call 3 #f ||
