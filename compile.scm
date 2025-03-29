@@ -21,8 +21,8 @@
     (define get-instruction 1)
     (define set-instruction 2)
     (define if-instruction 3)
-    (define nop-instruction 4)
     (define call-instruction 5)
+    (define nop-instruction 65536)
 
     ; Primitives
 
@@ -1275,7 +1275,7 @@
     (define (nop-code? codes)
      (and
       (rib? codes)
-      (eq? (rib-tag codes) nop-instruction)))
+      (= (rib-tag codes) nop-instruction)))
 
     (define (marshal-constant context value)
      (define (marshal value)
@@ -1427,18 +1427,15 @@
       (memq
        (rib-tag value)
        (list
+        nop-instruction ; for continuations
         boolean-type
         char-type
         null-type
         string-type
-        symbol-type
-        ; This is technically equivalent to `symbol-type`. But we include this check for sanity.
-        nop-instruction))))
+        symbol-type))))
 
     (define (strip-nop-instructions codes)
-     ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
-     ; all `#f` and nop instructions' are `0`.
-     (if (and (nop-code? codes) (eq? (rib-car codes) 0))
+     (if (and (nop-code? codes))
       (strip-nop-instructions (rib-cdr codes))
       codes))
 
