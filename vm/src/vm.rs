@@ -94,7 +94,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instruction::GET => self.get()?,
                 Instruction::SET => self.set(),
                 Instruction::IF => self.r#if(),
-                Instruction::NOP => self.advance_code(),
+                Instruction::NOP => unreachable!(),
                 code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
 

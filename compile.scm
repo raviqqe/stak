@@ -1369,7 +1369,7 @@
          cdr)
 
         (else
-         (let ((continuation (code-rib nop-instruction 0 (marshal (rib-cdr value) #f))))
+         (let ((continuation (nop-rib (marshal (rib-cdr value) #f))))
           (marshal-context-set-continuations!
            context
            (cons (cons value continuation) (marshal-context-continuations context)))
@@ -1705,13 +1705,15 @@
         (eq? (caar expression) '$$compiler))
       (append
         frontend
-        '((define cons-rib cons)
-          (define (nop-rib continuation) continuation)
-          (define (dummy . xs) #f)
-          (define macro-state-set-literals! dummy)
-          (define macro-state-set-static-symbols! dummy)
-          (define macro-state-set-dynamic-symbols! dummy)
-          (define optimization-context-set-literals! dummy))
+        '((define dummy
+           (let ((set-nothing (lambda xs #f)))
+            (set! cons-rib cons)
+            (set! nop-rib (lambda (continuation) continuation))
+            (set! macro-state-set-literals! set-nothing)
+            (set! macro-state-set-static-symbols! set-nothing)
+            (set! macro-state-set-dynamic-symbols! set-nothing)
+            (set! optimization-context-set-literals! set-nothing)
+            #f)))
         (cdr expression)))
     (else
       (cons
