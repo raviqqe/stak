@@ -97,6 +97,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
 
+            self.advance_code();
+
             trace_memory!(self);
         }
 
@@ -109,7 +111,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("constant", constant);
 
         self.memory.push(constant)?;
-        self.advance_code();
 
         Ok(())
     }
@@ -122,7 +123,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.push(value)?;
-        self.advance_code();
 
         Ok(())
     }
@@ -135,7 +135,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.set_car(operand, value);
-        self.advance_code();
     }
 
     fn r#if(&mut self) {
@@ -243,7 +242,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 self.primitive_set
                     .operate(&mut self.memory, primitive.to_i64() as _)?;
-                self.advance_code();
             }
         }
 
