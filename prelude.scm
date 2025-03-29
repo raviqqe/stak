@@ -2635,181 +2635,8 @@
 
         ; Compilation
 
-        ;; Context
-
-        (define-record-type compilation-context
-          (make-compilation-context environment)
-          compilation-context?
-          (environment compilation-context-environment))
-
-        (define (compilation-context-append-locals context variables)
-          (make-compilation-context
-            (append variables (compilation-context-environment context))))
-
-        (define (compilation-context-push-local context variable)
-          (compilation-context-append-locals context (list variable)))
-
-        ; If a variable is not in environment, it is considered to be global.
-        (define (compilation-context-resolve context variable)
-          (or (memq-position variable (compilation-context-environment context)) variable))
-
-        ;; Procedures
-
-        (define (compile-arity argument-count variadic)
-          (+
-            (* 2 argument-count)
-            (if variadic 1 0)))
-
-        (define (compile-primitive-call name continuation)
-          (call-rib
-            (compile-arity
-              (case name
-                (($$close)
-                  1)
-
-                (($$cons $$-)
-                  2)
-
-                (($$rib)
-                  3)
-
-                (else
-                  (error "unknown primitive" name)))
-              #f)
-            name
-            continuation))
-
-        (define (drop? codes)
-          (and
-            (rib? codes)
-            (not (null? codes))
-            (eq? (rib-tag codes) set-instruction)
-            (eq? (rib-car codes) 0)))
-
-        (define (compile-unspecified continuation)
-          (if (drop? continuation)
-            ; Skip a "drop" instruction.
-            (rib-cdr continuation)
-            (constant-rib #f continuation)))
-
-        (define (compile-drop continuation)
-          (if (null? continuation)
-            continuation
-            (code-rib set-instruction 0 continuation)))
-
-        (define (compile-sequence context expressions continuation)
-          (compile-expression
-            context
-            (car expressions)
-            (if (null? (cdr expressions))
-              continuation
-              (compile-drop (compile-sequence context (cdr expressions) continuation)))))
-
-        (define (compile-raw-call context procedure arguments arity continuation)
-          (if (null? arguments)
-            (call-rib
-              arity
-              (compilation-context-resolve context procedure)
-              continuation)
-            (compile-expression
-              context
-              (car arguments)
-              (compile-raw-call
-                (compilation-context-push-local context #f)
-                procedure
-                (cdr arguments)
-                arity
-                continuation))))
-
-        (define (compile-call context expression variadic continuation)
-          (let* ((procedure (car expression))
-                 (arguments (cdr expression))
-                 (continue
-                   (lambda (context procedure continuation)
-                     (compile-raw-call
-                       context
-                       procedure
-                       arguments
-                       (compile-arity
-                         (- (length arguments) (if variadic 1 0))
-                         variadic)
-                       continuation))))
-            (if (symbol? procedure)
-              (continue context procedure continuation)
-              (compile-expression
-                context
-                procedure
-                (continue
-                  (compilation-context-push-local context '$procedure)
-                  '$procedure
-                  (compile-unbind continuation))))))
-
-        (define (compile-unbind continuation)
-          (if (null? continuation)
-            continuation
-            (code-rib set-instruction 1 continuation)))
-
-        (define (compile-expression context expression continuation)
-          (cond
-            ((symbol? expression)
-              (code-rib
-                get-instruction
-                (compilation-context-resolve context expression)
-                continuation))
-
-            ((pair? expression)
-              (case (car expression)
-                (($$apply)
-                  (compile-call context (cdr expression) #t continuation))
-
-                (($$begin)
-                  (compile-sequence context (cdr expression) continuation))
-
-                (($$if)
-                  (compile-expression
-                    context
-                    (cadr expression)
-                    (code-rib
-                      if-instruction
-                      (compile-expression context (caddr expression) continuation)
-                      (compile-expression context (cadddr expression) continuation))))
-
-                (($$lambda)
-                  (let ((parameters (cadr expression)))
-                    (constant-rib
-                      (make-procedure
-                        (compile-arity
-                          (count-parameters parameters)
-                          (symbol? (last-cdr parameters)))
-                        (compile-sequence
-                          (compilation-context-append-locals
-                            context
-                            ; #f is for a frame.
-                            (reverse (cons #f (parameter-names parameters))))
-                          (cddr expression)
-                          '())
-                        '())
-                      (compile-primitive-call '$$close continuation))))
-
-                (($$quote)
-                  (constant-rib (cadr expression) continuation))
-
-                (($$set!)
-                  (compile-expression
-                    context
-                    (caddr expression)
-                    (code-rib
-                      set-instruction
-                      (compilation-context-resolve
-                        (compilation-context-push-local context #f)
-                        (cadr expression))
-                      (compile-unspecified continuation))))
-
-                (else
-                  (compile-call context expression #f continuation))))
-
-            (else
-              (constant-rib expression continuation))))
+        (define (compile expression)
+          (compile-expression (make-compilation-context '() #f) expression '()))
 
         ; Evaluation
 
@@ -2833,8 +2660,7 @@
             (else
               ((make-procedure
                   (compile-arity 0 #f)
-                  (compile-expression
-                    (make-compilation-context '())
+                  (compile
                     (optimize
                       (expand-macros
                         (let ((names
@@ -2855,8 +2681,7 @@
 
                                 (else
                                   x)))
-                            expression))))
-                    '())
+                            expression)))))
                   '())))))))
 
     (define environment list)))

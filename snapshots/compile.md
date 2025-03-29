@@ -1874,7 +1874,6 @@
   - irritants
   - port
   - last-byte
-  - $$cons
   - $$rib
   - $$<
   - $$+
@@ -1971,6 +1970,41 @@
   - make-optimizer
   - optimization-context-append-literal!
   - optimization-context-optimizers
+  - compilation-context
+  - compilation-context?
+  - variables
+  - compilation-context-environment
+  - variable
+  - argument-count
+  - drop?
+  - compile-drop
+  - expressions
+  - arity
+  - compile-raw-call
+  - arguments
+  - variadic
+  - procedure
+  - continue
+  - $procedure
+  - compile-unbind
+  - get-instruction
+  - $$apply
+  - make-procedure
+  - count-parameters
+  - last-cdr
+  - compile-sequence
+  - compilation-context-append-locals
+  - parameter-names
+  - parameters
+  - call-rib
+  - compile-arity
+  - $$close
+  - compilation-context-resolve
+  - compilation-context-push-local
+  - compile-unspecified
+  - compilation-context-metadata
+  - compile-call
+  - constant-rib
   - library?
   - imports
   - library-state
@@ -2051,8 +2085,17 @@
   - make-optimization-context
   - optimize-expression
   - optimization-context-literals
+  - $$dynamic-symbols
+  - $$libraries
+  - $$macros
+  - $$optimizers
+  - $$symbols
   - loop
   - metadata?
+  - metadata-libraries
+  - metadata-macros
+  - metadata-optimizers
+  - metadata-dynamic-symbols
   - find
   - raw-libraries
   - raw-macros
@@ -2064,50 +2107,6 @@
   - unique
   - find-symbols
   - find-quoted-symbols
-  - compilation-context
-  - compilation-context?
-  - variables
-  - compilation-context-environment
-  - variable
-  - argument-count
-  - drop?
-  - compile-drop
-  - expressions
-  - arity
-  - compile-raw-call
-  - arguments
-  - variadic
-  - procedure
-  - continue
-  - $procedure
-  - compile-unbind
-  - get-instruction
-  - $$apply
-  - make-procedure
-  - count-parameters
-  - last-cdr
-  - compile-sequence
-  - compilation-context-append-locals
-  - parameter-names
-  - parameters
-  - call-rib
-  - compile-arity
-  - $$close
-  - $$libraries
-  - metadata-libraries
-  - $$macros
-  - metadata-macros
-  - $$optimizers
-  - metadata-optimizers
-  - compilation-context-resolve
-  - compilation-context-push-local
-  - compile-unspecified
-  - $$symbols
-  - $$dynamic-symbols
-  - metadata-dynamic-symbols
-  - compilation-context-metadata
-  - compile-call
-  - constant-rib
   - compile-expression
   - make-compilation-context
   - expression
@@ -2178,7 +2177,6 @@
   - code-rib
   - set-instruction
   - build-primitive
-  - continuation
   - make-encode-context
   - count-ribs!
   - encode-context-set-counts!
@@ -2217,6 +2215,8 @@
   - value
   - $$compiler
   - cons-rib
+  - nop-rib
+  - continuation
   - xs
   - macro-state-set-literals!
   - macro-state-set-static-symbols!
@@ -3477,7 +3477,7 @@
 - call 1 #f ||
 - set ||
 - constant procedure 0 #f
-  - constant procedure 48 #f
+  - constant procedure 49 #f
     - constant list
       - list
         - list
@@ -4216,19 +4216,19 @@
         - (record? . ||)
         - (values . ||)
         - (call-with-values . ||)
-    - set 48
+    - set 49
     - constant 0
-    - set 47
+    - set 48
     - constant 1
-    - set 46
+    - set 47
     - constant 2
-    - set 45
+    - set 46
     - constant 3
-    - set 44
+    - set 45
     - constant 4
-    - set 43
+    - set 44
     - constant 5
-    - set 42
+    - set 43
     - constant list
       - list
         - $$rib
@@ -4251,25 +4251,25 @@
       - list
         - $$/
         - 13
-    - set 41
+    - set 42
     - constant 0
-    - set 40
+    - set 41
     - constant 1
-    - set 39
+    - set 40
     - constant 2
-    - set 38
+    - set 39
     - constant 3
-    - set 37
+    - set 38
     - constant 4
-    - set 36
+    - set 37
     - constant 5
-    - set 35
+    - set 36
     - constant 6
-    - set 34
+    - set 35
     - constant 7
-    - set 33
+    - set 34
     - constant 8
-    - set 32
+    - set 33
     - constant procedure 0 #t
       - get 0
       - call 0 #f ||
@@ -4278,26 +4278,33 @@
       - call 0 #f ||
       - call 1 #f ||
     - call 1 #f $$close
-    - set 31
+    - set 32
     - constant procedure 3 #f
       - get 1
       - get 1
       - get 4
       - call 3 #f ||
     - call 1 #f $$close
-    - set 30
+    - set 31
     - constant procedure 3 #f
-      - get 45
+      - get 46
       - get 3
       - call 2 #f ||
+      - get 2
+      - get 2
+      - call 3 #f 37
+    - call 1 #f $$close
+    - set 30
+    - constant procedure 2 #f
+      - get 50
       - get 2
       - get 2
       - call 3 #f 36
     - call 1 #f $$close
     - set 29
-    - constant procedure 2 #f
-      - get 49
-      - get 2
+    - constant procedure 1 #f
+      - get 45
+      - constant 0
       - get 2
       - call 3 #f 35
     - call 1 #f $$close
@@ -4310,7 +4317,7 @@
     - call 1 #f $$close
     - set 27
     - constant procedure 3 #f
-      - get 40
+      - get 41
       - get 3
       - get 3
       - call 2 #f ||
@@ -6181,7 +6188,408 @@
       - call 1 #f 1
     - call 1 #f $$close
     - set ||
+    - constant compilation-context
+    - constant list
+      - environment
+      - metadata
+    - call 2 #f ||
+    - set ||
     - get ||
+    - call 1 #f ||
+    - set ||
+    - get ||
+    - call 1 #f ||
+    - set ||
+    - get ||
+    - constant environment
+    - call 2 #f ||
+    - set ||
+    - get ||
+    - constant metadata
+    - call 2 #f ||
+    - set ||
+    - constant procedure 2 #f
+      - get 0
+      - get 2
+      - call 1 #f ||
+      - call 2 #f ||
+      - get 2
+      - call 1 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - get 1
+      - get 1
+      - call 1 #f ||
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - get 0
+        - if
+          - get 0
+        - get 2
+      - call 1 #f $$close
+      - get 1
+      - get 3
+      - call 1 #f ||
+      - call 2 #f 21
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 2 #f
+      - constant 2
+      - get 2
+      - call 2 #f ||
+      - get 1
+      - if
+        - constant 1
+        - continue
+      - constant 0
+      - call 2 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - get 0
+        - call 1 #f ||
+        - constant #f
+        - call 2 #f ||
+        - if
+          - get 0
+          - call 1 #f ||
+          - get 48
+          - call 2 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - constant 0
+            - call 2 #f ||
+          - constant #f
+        - constant #f
+      - constant #f
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - get 0
+        - call 1 #f ||
+      - constant #f
+      - get 1
+      - call 2 #f 32
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - get 0
+      - get 47
+      - constant 0
+      - get 2
+      - call 3 #f 35
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 3 #f
+      - get 2
+      - get 2
+      - call 1 #f ||
+      - get 3
+      - call 1 #f ||
+      - call 1 #f ||
+      - if
+        - get 2
+        - continue
+      - get 4
+      - get 4
+      - call 1 #f ||
+      - get 4
+      - call 3 #f ||
+      - call 1 #f ||
+      - call 3 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 5 #f
+      - get 2
+      - call 1 #f ||
+      - if
+        - get 1
+        - get 5
+        - get 5
+        - call 2 #f ||
+        - get 2
+        - call 3 #f 38
+      - get 4
+      - get 3
+      - call 1 #f ||
+      - get 6
+      - constant #f
+      - call 2 #f ||
+      - get 6
+      - get 6
+      - call 1 #f ||
+      - get 6
+      - get 6
+      - call 5 #f ||
+      - call 3 #f ||
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 4 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 4
+            - call 1 #f ||
+            - if
+              - get 9
+              - get 5
+              - get 8
+              - call 3 #f 3
+            - get 9
+            - get 5
+            - get 11
+            - constant $procedure
+            - call 2 #f ||
+            - constant $procedure
+            - get 10
+            - call 1 #f ||
+            - call 3 #f 5
+            - call 3 #f ||
+          - call 1 #f $$close
+          - constant procedure 3 #f
+            - get 2
+            - get 2
+            - get 7
+            - get 8
+            - call 1 #f ||
+            - get 14
+            - if
+              - constant 1
+              - continue
+            - constant 0
+            - call 2 #f ||
+            - get 14
+            - call 2 #f ||
+            - get 4
+            - call 5 #f ||
+          - call 1 #f $$close
+          - call 1 #f 1
+        - call 1 #f $$close
+        - get 5
+        - call 1 #f ||
+        - call 1 #f 1
+      - call 1 #f $$close
+      - get 3
+      - call 1 #f ||
+      - call 1 #f 1
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 1 #f
+      - get 0
+      - call 1 #f ||
+      - if
+        - get 0
+      - get 47
+      - constant 1
+      - get 2
+      - call 3 #f 35
+    - call 1 #f $$close
+    - set ||
+    - constant procedure 3 #f
+      - get 1
+      - call 1 #f ||
+      - if
+        - get 50
+        - get 3
+        - get 3
+        - call 2 #f ||
+        - get 2
+        - call 3 #f 37
+      - get 1
+      - call 1 #f ||
+      - if
+        - constant procedure 1 #f
+          - get 0
+          - constant $$apply
+          - call 2 #f ||
+          - if
+            - get 4
+            - get 4
+            - call 1 #f ||
+            - constant #t
+            - get 5
+            - call 4 #f ||
+          - get 0
+          - constant $$begin
+          - call 2 #f ||
+          - if
+            - get 4
+            - get 4
+            - call 1 #f ||
+            - get 4
+            - call 3 #f ||
+          - get 0
+          - constant $$if
+          - call 2 #f ||
+          - if
+            - get 4
+            - get 4
+            - call 1 #f ||
+            - constant procedure 1 #f
+              - get 54
+              - get 9
+              - get 9
+              - call 1 #f ||
+              - get 3
+              - call 3 #f ||
+              - get 10
+              - get 10
+              - call 1 #f ||
+              - get 4
+              - call 3 #f ||
+              - call 3 #f 43
+            - call 1 #f $$close
+            - get 5
+            - call 1 #f ||
+            - if
+              - constant ()
+              - continue
+            - get 5
+            - call 1 #f 37
+            - call 1 #f 1
+            - set 1
+            - call 3 #f ||
+          - get 0
+          - constant $$lambda
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f 12
+              - get 1
+              - call 1 #f 32
+              - call 1 #f ||
+              - call 2 #f ||
+              - get 7
+              - constant #f
+              - get 3
+              - call 1 #f 14
+              - call 2 #f ||
+              - call 1 #f ||
+              - call 2 #f ||
+              - get 7
+              - call 1 #f ||
+              - constant ()
+              - call 3 #f ||
+              - constant ()
+              - call 3 #f 36
+              - constant 1
+              - constant #f
+              - call 2 #f ||
+              - constant $$close
+              - get 7
+              - call 3 #f 41
+              - call 2 #f 38
+            - call 1 #f $$close
+            - get 4
+            - call 1 #f ||
+            - call 1 #f 1
+          - get 0
+          - constant $$libraries
+          - call 2 #f ||
+          - if
+            - get 4
+            - call 1 #f ||
+            - call 1 #f ||
+            - get 3
+            - call 2 #f 36
+          - get 0
+          - constant $$macros
+          - call 2 #f ||
+          - if
+            - get 4
+            - call 1 #f ||
+            - call 1 #f ||
+            - get 3
+            - call 2 #f 36
+          - get 0
+          - constant $$optimizers
+          - call 2 #f ||
+          - if
+            - get 4
+            - call 1 #f ||
+            - call 1 #f ||
+            - get 3
+            - call 2 #f 36
+          - get 0
+          - constant $$quote
+          - call 2 #f ||
+          - if
+            - get 3
+            - call 1 #f ||
+            - get 3
+            - call 2 #f 36
+          - get 0
+          - constant $$set!
+          - call 2 #f ||
+          - if
+            - get 4
+            - get 4
+            - call 1 #f ||
+            - get 53
+            - get 7
+            - constant #f
+            - call 2 #f ||
+            - get 7
+            - call 1 #f ||
+            - call 2 #f ||
+            - get 6
+            - call 1 #f ||
+            - call 3 #f 41
+            - call 3 #f ||
+          - get 0
+          - constant $$symbols
+          - call 2 #f ||
+          - if
+            - get 4
+            - call 1 #f ||
+            - call 1 #f ||
+            - get 3
+            - call 2 #f 36
+          - get 0
+          - constant $$dynamic-symbols
+          - call 2 #f ||
+          - if
+            - get 4
+            - call 1 #f ||
+            - call 1 #f ||
+            - get 3
+            - call 2 #f 36
+          - get 4
+          - get 4
+          - constant #f
+          - get 5
+          - call 4 #f ||
+        - call 1 #f $$close
+        - get 2
+        - call 1 #f ||
+        - call 1 #f 1
+      - get 1
+      - get 1
+      - call 2 #f 34
+    - call 1 #f $$close
+    - set ||
+    - get ||
+    - set ||
+    - constant procedure 1 #f
+      - get 0
+    - call 1 #f $$close
     - set ||
     - constant procedure 0 #t
       - constant #f
@@ -6229,7 +6637,7 @@
           - call 1 #f 1
         - call 1 #f $$close
         - set 1
-        - get 51
+        - get 52
         - call 1 #f 1
       - call 1 #f $$close
       - constant #f
@@ -8974,366 +9382,13 @@
     - call 1 #f 1
     - set 1
     - set ||
-    - constant compilation-context
-    - constant list
-      - environment
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant environment
-    - call 2 #f ||
-    - set ||
-    - constant procedure 2 #f
-      - get 0
-      - get 2
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 1 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - get 1
-      - get 1
-      - call 1 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - get 2
-      - call 1 #f $$close
-      - get 1
-      - get 3
-      - call 1 #f ||
-      - call 2 #f 21
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant 2
-      - get 2
-      - call 2 #f ||
-      - get 1
-      - if
-        - constant 1
-        - continue
-      - constant 0
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - get 1
-      - constant $$close
-      - call 2 #f ||
-      - if
-        - constant 1
-        - continue
-      - get 1
-      - constant list
-        - $$cons
-        - $$-
-      - call 2 #f ||
-      - if
-        - constant 2
-        - continue
-      - get 1
-      - constant $$rib
-      - call 2 #f ||
-      - if
-        - constant 3
-        - continue
-      - constant "unknown primitive"
-      - get 2
-      - call 2 #f ||
+    - constant procedure 1 #f
+      - constant ()
       - constant #f
       - call 2 #f ||
-      - get 2
-      - get 2
-      - call 3 #f 34
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-        - constant #f
-        - call 2 #f ||
-        - if
-          - get 0
-          - call 1 #f ||
-          - get 47
-          - call 2 #f ||
-          - if
-            - get 0
-            - call 1 #f ||
-            - constant 0
-            - call 2 #f ||
-          - constant #f
-        - constant #f
-      - constant #f
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-      - constant #f
       - get 1
-      - call 2 #f 31
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-      - get 46
-      - constant 0
-      - get 2
-      - call 3 #f 34
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - call 1 #f ||
-      - get 3
-      - call 1 #f ||
-      - call 1 #f ||
-      - if
-        - get 2
-        - continue
-      - get 4
-      - get 4
-      - call 1 #f ||
-      - get 4
+      - constant ()
       - call 3 #f ||
-      - call 1 #f ||
-      - call 3 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 5 #f
-      - get 2
-      - call 1 #f ||
-      - if
-        - get 1
-        - get 5
-        - get 5
-        - call 2 #f ||
-        - get 2
-        - call 3 #f 37
-      - get 4
-      - get 3
-      - call 1 #f ||
-      - get 6
-      - constant #f
-      - call 2 #f ||
-      - get 6
-      - get 6
-      - call 1 #f ||
-      - get 6
-      - get 6
-      - call 5 #f ||
-      - call 3 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 4 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - get 4
-            - call 1 #f ||
-            - if
-              - get 9
-              - get 5
-              - get 8
-              - call 3 #f 3
-            - get 9
-            - get 5
-            - get 11
-            - constant $procedure
-            - call 2 #f ||
-            - constant $procedure
-            - get 10
-            - call 1 #f ||
-            - call 3 #f 5
-            - call 3 #f ||
-          - call 1 #f $$close
-          - constant procedure 3 #f
-            - get 2
-            - get 2
-            - get 7
-            - get 8
-            - call 1 #f ||
-            - get 14
-            - if
-              - constant 1
-              - continue
-            - constant 0
-            - call 2 #f ||
-            - get 14
-            - call 2 #f ||
-            - get 4
-            - call 5 #f ||
-          - call 1 #f $$close
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 5
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 3
-      - call 1 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-      - get 46
-      - constant 1
-      - get 2
-      - call 3 #f 34
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 1
-      - call 1 #f ||
-      - if
-        - get 49
-        - get 3
-        - get 3
-        - call 2 #f ||
-        - get 2
-        - call 3 #f 36
-      - get 1
-      - call 1 #f ||
-      - if
-        - constant procedure 1 #f
-          - get 0
-          - constant $$apply
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - constant #t
-            - get 5
-            - call 4 #f ||
-          - get 0
-          - constant $$begin
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - get 4
-            - call 3 #f ||
-          - get 0
-          - constant $$if
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - get 51
-            - get 7
-            - get 7
-            - call 1 #f ||
-            - get 7
-            - call 3 #f ||
-            - get 8
-            - get 8
-            - call 1 #f ||
-            - get 8
-            - call 3 #f ||
-            - call 3 #f 40
-            - call 3 #f ||
-          - get 0
-          - constant $$lambda
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 0
-              - call 1 #f 12
-              - get 1
-              - call 1 #f 32
-              - call 1 #f ||
-              - call 2 #f ||
-              - get 7
-              - constant #f
-              - get 3
-              - call 1 #f 14
-              - call 2 #f ||
-              - call 1 #f ||
-              - call 2 #f ||
-              - get 7
-              - call 1 #f ||
-              - constant ()
-              - call 3 #f ||
-              - constant ()
-              - call 3 #f 36
-              - constant $$close
-              - get 6
-              - call 2 #f ||
-              - call 2 #f 37
-            - call 1 #f $$close
-            - get 4
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant $$quote
-          - call 2 #f ||
-          - if
-            - get 3
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 35
-          - get 0
-          - constant $$set!
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - get 52
-            - get 7
-            - constant #f
-            - call 2 #f ||
-            - get 7
-            - call 1 #f ||
-            - call 2 #f ||
-            - get 6
-            - call 1 #f ||
-            - call 3 #f 40
-            - call 3 #f ||
-          - get 4
-          - get 4
-          - constant #f
-          - get 5
-          - call 4 #f ||
-        - call 1 #f $$close
-        - get 2
-        - call 1 #f ||
-        - call 1 #f 1
-      - get 1
-      - get 1
-      - call 2 #f 33
     - call 1 #f $$close
     - set ||
     - constant procedure 2 #f
@@ -9377,8 +9432,6 @@
         - constant 0
         - constant #f
         - call 2 #f ||
-        - constant ()
-        - call 1 #f ||
         - constant procedure 1 #f
           - constant procedure 1 #f
             - constant procedure 1 #f
@@ -9393,8 +9446,8 @@
             - call 2 #f ||
             - call 1 #f 1
           - call 1 #f $$close
-          - get 8
-          - call 2 #f 22
+          - get 7
+          - call 2 #f 21
         - call 1 #f $$close
         - get ||
         - constant procedure 1 #f
@@ -9417,15 +9470,14 @@
           - call 2 #f ||
           - call 1 #f 1
         - call 1 #f $$close
-        - get 7
+        - get 6
         - call 2 #f ||
         - call 2 #f ||
         - call 1 #f 1
         - set 1
         - call 1 #f ||
         - call 1 #f ||
-        - constant ()
-        - call 3 #f ||
+        - call 1 #f ||
         - constant ()
         - call 3 #f 33
         - call 0 #f 0
@@ -9483,7 +9535,8 @@
   - constant #f
   - constant #f
   - constant #f
-  - call 48 #f 48
+  - constant #f
+  - call 49 #f 49
 - call 1 #f $$close
 - call 0 #f 0
 - set 1
@@ -10554,6 +10607,16 @@
       - code-rib
       - constant-instruction
       - constant
+      - continuation
+  - list
+    - define
+    - list
+      - nop-rib
+      - continuation
+    - list
+      - code-rib
+      - nop-instruction
+      - 0
       - continuation
   - list
     - define
@@ -13003,6 +13066,555 @@
           - list
             - else
             - expression
+  - list
+    - define-record-type
+    - compilation-context
+    - list
+      - make-compilation-context
+      - environment
+      - metadata
+    - compilation-context?
+    - list
+      - environment
+      - compilation-context-environment
+    - list
+      - metadata
+      - compilation-context-metadata
+  - list
+    - define
+    - list
+      - compilation-context-append-locals
+      - context
+      - variables
+    - list
+      - make-compilation-context
+      - list
+        - append
+        - variables
+        - list
+          - compilation-context-environment
+          - context
+      - list
+        - compilation-context-metadata
+        - context
+  - list
+    - define
+    - list
+      - compilation-context-push-local
+      - context
+      - variable
+    - list
+      - compilation-context-append-locals
+      - context
+      - list
+        - list
+        - variable
+  - list
+    - define
+    - list
+      - compilation-context-resolve
+      - context
+      - variable
+    - list
+      - or
+      - list
+        - memq-position
+        - variable
+        - list
+          - compilation-context-environment
+          - context
+      - variable
+  - list
+    - define
+    - list
+      - compile-arity
+      - argument-count
+      - variadic
+    - list
+      - -
+      - list
+        - -
+        - 2
+        - argument-count
+      - list
+        - if
+        - variadic
+        - 1
+        - 0
+  - list
+    - define
+    - list
+      - drop?
+      - codes
+    - list
+      - and
+      - list
+        - rib?
+        - codes
+      - list
+        - not
+        - list
+          - null?
+          - codes
+      - list
+        - eq?
+        - list
+          - rib-tag
+          - codes
+        - set-instruction
+      - list
+        - eq?
+        - list
+          - rib-car
+          - codes
+        - 0
+  - list
+    - define
+    - list
+      - compile-unspecified
+      - continuation
+    - list
+      - if
+      - list
+        - drop?
+        - continuation
+      - list
+        - rib-cdr
+        - continuation
+      - list
+        - constant-rib
+        - #f
+        - continuation
+  - list
+    - define
+    - list
+      - compile-drop
+      - continuation
+    - list
+      - if
+      - list
+        - null?
+        - continuation
+      - continuation
+      - list
+        - code-rib
+        - set-instruction
+        - 0
+        - continuation
+  - list
+    - define
+    - list
+      - compile-sequence
+      - context
+      - expressions
+      - continuation
+    - list
+      - compile-expression
+      - context
+      - list
+        - car
+        - expressions
+      - list
+        - if
+        - list
+          - null?
+          - list
+            - cdr
+            - expressions
+        - continuation
+        - list
+          - compile-drop
+          - list
+            - compile-sequence
+            - context
+            - list
+              - cdr
+              - expressions
+            - continuation
+  - list
+    - define
+    - list
+      - compile-raw-call
+      - context
+      - procedure
+      - arguments
+      - arity
+      - continuation
+    - list
+      - if
+      - list
+        - null?
+        - arguments
+      - list
+        - call-rib
+        - arity
+        - list
+          - compilation-context-resolve
+          - context
+          - procedure
+        - continuation
+      - list
+        - compile-expression
+        - context
+        - list
+          - car
+          - arguments
+        - list
+          - compile-raw-call
+          - list
+            - compilation-context-push-local
+            - context
+            - #f
+          - procedure
+          - list
+            - cdr
+            - arguments
+          - arity
+          - continuation
+  - list
+    - define
+    - list
+      - compile-call
+      - context
+      - expression
+      - variadic
+      - continuation
+    - list
+      - let\*
+      - list
+        - list
+          - procedure
+          - list
+            - car
+            - expression
+        - list
+          - arguments
+          - list
+            - cdr
+            - expression
+        - list
+          - continue
+          - list
+            - lambda
+            - list
+              - context
+              - procedure
+              - continuation
+            - list
+              - compile-raw-call
+              - context
+              - procedure
+              - arguments
+              - list
+                - compile-arity
+                - list
+                  - -
+                  - list
+                    - length
+                    - arguments
+                  - list
+                    - if
+                    - variadic
+                    - 1
+                    - 0
+                - variadic
+              - continuation
+      - list
+        - if
+        - list
+          - symbol?
+          - procedure
+        - list
+          - continue
+          - context
+          - procedure
+          - continuation
+        - list
+          - compile-expression
+          - context
+          - procedure
+          - list
+            - continue
+            - list
+              - compilation-context-push-local
+              - context
+              - list
+                - quote
+                - $procedure
+            - list
+              - quote
+              - $procedure
+            - list
+              - compile-unbind
+              - continuation
+  - list
+    - define
+    - list
+      - compile-unbind
+      - continuation
+    - list
+      - if
+      - list
+        - null?
+        - continuation
+      - continuation
+      - list
+        - code-rib
+        - set-instruction
+        - 1
+        - continuation
+  - list
+    - define
+    - list
+      - compile-expression
+      - context
+      - expression
+      - continuation
+    - list
+      - cond
+      - list
+        - list
+          - symbol?
+          - expression
+        - list
+          - code-rib
+          - get-instruction
+          - list
+            - compilation-context-resolve
+            - context
+            - expression
+          - continuation
+      - list
+        - list
+          - pair?
+          - expression
+        - list
+          - case
+          - list
+            - car
+            - expression
+          - list
+            - list
+              - $$apply
+            - list
+              - compile-call
+              - context
+              - list
+                - cdr
+                - expression
+              - #t
+              - continuation
+          - list
+            - list
+              - $$begin
+            - list
+              - compile-sequence
+              - context
+              - list
+                - cdr
+                - expression
+              - continuation
+          - list
+            - list
+              - $$if
+            - list
+              - compile-expression
+              - context
+              - list
+                - cadr
+                - expression
+              - list
+                - let
+                - list
+                  - list
+                    - continuation
+                    - list
+                      - if
+                      - list
+                        - null?
+                        - continuation
+                      - list
+                        - quote
+                        - ()
+                      - list
+                        - nop-rib
+                        - continuation
+                - list
+                  - code-rib
+                  - if-instruction
+                  - list
+                    - compile-expression
+                    - context
+                    - list
+                      - caddr
+                      - expression
+                    - continuation
+                  - list
+                    - compile-expression
+                    - context
+                    - list
+                      - cadddr
+                      - expression
+                    - continuation
+          - list
+            - list
+              - $$lambda
+            - list
+              - let
+              - list
+                - list
+                  - parameters
+                  - list
+                    - cadr
+                    - expression
+              - list
+                - constant-rib
+                - list
+                  - make-procedure
+                  - list
+                    - compile-arity
+                    - list
+                      - count-parameters
+                      - parameters
+                    - list
+                      - symbol?
+                      - list
+                        - last-cdr
+                        - parameters
+                  - list
+                    - compile-sequence
+                    - list
+                      - compilation-context-append-locals
+                      - context
+                      - list
+                        - reverse
+                        - list
+                          - cons
+                          - #f
+                          - list
+                            - parameter-names
+                            - parameters
+                    - list
+                      - cddr
+                      - expression
+                    - list
+                      - quote
+                      - ()
+                  - list
+                    - quote
+                    - ()
+                - list
+                  - call-rib
+                  - list
+                    - compile-arity
+                    - 1
+                    - #f
+                  - list
+                    - quote
+                    - $$close
+                  - continuation
+          - list
+            - list
+              - $$libraries
+            - list
+              - constant-rib
+              - list
+                - metadata-libraries
+                - list
+                  - compilation-context-metadata
+                  - context
+              - continuation
+          - list
+            - list
+              - $$macros
+            - list
+              - constant-rib
+              - list
+                - metadata-macros
+                - list
+                  - compilation-context-metadata
+                  - context
+              - continuation
+          - list
+            - list
+              - $$optimizers
+            - list
+              - constant-rib
+              - list
+                - metadata-optimizers
+                - list
+                  - compilation-context-metadata
+                  - context
+              - continuation
+          - list
+            - list
+              - $$quote
+            - list
+              - constant-rib
+              - list
+                - cadr
+                - expression
+              - continuation
+          - list
+            - list
+              - $$set!
+            - list
+              - compile-expression
+              - context
+              - list
+                - caddr
+                - expression
+              - list
+                - code-rib
+                - set-instruction
+                - list
+                  - compilation-context-resolve
+                  - list
+                    - compilation-context-push-local
+                    - context
+                    - #f
+                  - list
+                    - cadr
+                    - expression
+                - list
+                  - compile-unspecified
+                  - continuation
+          - list
+            - list
+              - $$symbols
+            - list
+              - constant-rib
+              - list
+                - metadata-symbols
+                - list
+                  - compilation-context-metadata
+                  - context
+              - continuation
+          - list
+            - list
+              - $$dynamic-symbols
+            - list
+              - constant-rib
+              - list
+                - metadata-dynamic-symbols
+                - list
+                  - compilation-context-metadata
+                  - context
+              - continuation
+          - list
+            - else
+            - list
+              - compile-call
+              - context
+              - expression
+              - #f
+              - continuation
+      - list
+        - else
+        - list
+          - constant-rib
+          - expression
+          - continuation
 - set ||
 - constant list
   - list
@@ -14275,557 +14887,6 @@
       - macros
       - optimizers
       - dynamic-symbols
-  - list
-    - define-record-type
-    - compilation-context
-    - list
-      - make-compilation-context
-      - environment
-      - metadata
-    - compilation-context?
-    - list
-      - environment
-      - compilation-context-environment
-    - list
-      - metadata
-      - compilation-context-metadata
-  - list
-    - define
-    - list
-      - compilation-context-append-locals
-      - context
-      - variables
-    - list
-      - make-compilation-context
-      - list
-        - append
-        - variables
-        - list
-          - compilation-context-environment
-          - context
-      - list
-        - compilation-context-metadata
-        - context
-  - list
-    - define
-    - list
-      - compilation-context-push-local
-      - context
-      - variable
-    - list
-      - compilation-context-append-locals
-      - context
-      - list
-        - list
-        - variable
-  - list
-    - define
-    - list
-      - compilation-context-resolve
-      - context
-      - variable
-    - list
-      - or
-      - list
-        - memq-position
-        - variable
-        - list
-          - compilation-context-environment
-          - context
-      - variable
-  - list
-    - define
-    - list
-      - compile-arity
-      - argument-count
-      - variadic
-    - list
-      - -
-      - list
-        - -
-        - 2
-        - argument-count
-      - list
-        - if
-        - variadic
-        - 1
-        - 0
-  - list
-    - define
-    - list
-      - drop?
-      - codes
-    - list
-      - and
-      - list
-        - rib?
-        - codes
-      - list
-        - not
-        - list
-          - null?
-          - codes
-      - list
-        - eq?
-        - list
-          - rib-tag
-          - codes
-        - set-instruction
-      - list
-        - eq?
-        - list
-          - rib-car
-          - codes
-        - 0
-  - list
-    - define
-    - list
-      - compile-unspecified
-      - continuation
-    - list
-      - if
-      - list
-        - drop?
-        - continuation
-      - list
-        - rib-cdr
-        - continuation
-      - list
-        - constant-rib
-        - #f
-        - continuation
-  - list
-    - define
-    - list
-      - compile-drop
-      - continuation
-    - list
-      - if
-      - list
-        - null?
-        - continuation
-      - continuation
-      - list
-        - code-rib
-        - set-instruction
-        - 0
-        - continuation
-  - list
-    - define
-    - list
-      - compile-sequence
-      - context
-      - expressions
-      - continuation
-    - list
-      - compile-expression
-      - context
-      - list
-        - car
-        - expressions
-      - list
-        - if
-        - list
-          - null?
-          - list
-            - cdr
-            - expressions
-        - continuation
-        - list
-          - compile-drop
-          - list
-            - compile-sequence
-            - context
-            - list
-              - cdr
-              - expressions
-            - continuation
-  - list
-    - define
-    - list
-      - compile-raw-call
-      - context
-      - procedure
-      - arguments
-      - arity
-      - continuation
-    - list
-      - if
-      - list
-        - null?
-        - arguments
-      - list
-        - call-rib
-        - arity
-        - list
-          - compilation-context-resolve
-          - context
-          - procedure
-        - continuation
-      - list
-        - compile-expression
-        - context
-        - list
-          - car
-          - arguments
-        - list
-          - compile-raw-call
-          - list
-            - compilation-context-push-local
-            - context
-            - #f
-          - procedure
-          - list
-            - cdr
-            - arguments
-          - arity
-          - continuation
-  - list
-    - define
-    - list
-      - compile-call
-      - context
-      - expression
-      - variadic
-      - continuation
-    - list
-      - let\*
-      - list
-        - list
-          - procedure
-          - list
-            - car
-            - expression
-        - list
-          - arguments
-          - list
-            - cdr
-            - expression
-        - list
-          - continue
-          - list
-            - lambda
-            - list
-              - context
-              - procedure
-              - continuation
-            - list
-              - compile-raw-call
-              - context
-              - procedure
-              - arguments
-              - list
-                - compile-arity
-                - list
-                  - -
-                  - list
-                    - length
-                    - arguments
-                  - list
-                    - if
-                    - variadic
-                    - 1
-                    - 0
-                - variadic
-              - continuation
-      - list
-        - if
-        - list
-          - symbol?
-          - procedure
-        - list
-          - continue
-          - context
-          - procedure
-          - continuation
-        - list
-          - compile-expression
-          - context
-          - procedure
-          - list
-            - continue
-            - list
-              - compilation-context-push-local
-              - context
-              - list
-                - quote
-                - $procedure
-            - list
-              - quote
-              - $procedure
-            - list
-              - compile-unbind
-              - continuation
-  - list
-    - define
-    - list
-      - compile-unbind
-      - continuation
-    - list
-      - if
-      - list
-        - null?
-        - continuation
-      - continuation
-      - list
-        - code-rib
-        - set-instruction
-        - 1
-        - continuation
-  - list
-    - define
-    - list
-      - compile-expression
-      - context
-      - expression
-      - continuation
-    - list
-      - cond
-      - list
-        - list
-          - symbol?
-          - expression
-        - list
-          - code-rib
-          - get-instruction
-          - list
-            - compilation-context-resolve
-            - context
-            - expression
-          - continuation
-      - list
-        - list
-          - pair?
-          - expression
-        - list
-          - case
-          - list
-            - car
-            - expression
-          - list
-            - list
-              - $$apply
-            - list
-              - compile-call
-              - context
-              - list
-                - cdr
-                - expression
-              - #t
-              - continuation
-          - list
-            - list
-              - $$begin
-            - list
-              - compile-sequence
-              - context
-              - list
-                - cdr
-                - expression
-              - continuation
-          - list
-            - list
-              - $$if
-            - list
-              - compile-expression
-              - context
-              - list
-                - cadr
-                - expression
-              - list
-                - let
-                - list
-                  - list
-                    - continuation
-                    - list
-                      - if
-                      - list
-                        - null?
-                        - continuation
-                      - list
-                        - quote
-                        - ()
-                      - list
-                        - code-rib
-                        - nop-instruction
-                        - 0
-                        - continuation
-                - list
-                  - code-rib
-                  - if-instruction
-                  - list
-                    - compile-expression
-                    - context
-                    - list
-                      - caddr
-                      - expression
-                    - continuation
-                  - list
-                    - compile-expression
-                    - context
-                    - list
-                      - cadddr
-                      - expression
-                    - continuation
-          - list
-            - list
-              - $$lambda
-            - list
-              - let
-              - list
-                - list
-                  - parameters
-                  - list
-                    - cadr
-                    - expression
-              - list
-                - constant-rib
-                - list
-                  - make-procedure
-                  - list
-                    - compile-arity
-                    - list
-                      - count-parameters
-                      - parameters
-                    - list
-                      - symbol?
-                      - list
-                        - last-cdr
-                        - parameters
-                  - list
-                    - compile-sequence
-                    - list
-                      - compilation-context-append-locals
-                      - context
-                      - list
-                        - reverse
-                        - list
-                          - cons
-                          - #f
-                          - list
-                            - parameter-names
-                            - parameters
-                    - list
-                      - cddr
-                      - expression
-                    - list
-                      - quote
-                      - ()
-                  - list
-                    - quote
-                    - ()
-                - list
-                  - call-rib
-                  - list
-                    - compile-arity
-                    - 1
-                    - #f
-                  - list
-                    - quote
-                    - $$close
-                  - continuation
-          - list
-            - list
-              - $$libraries
-            - list
-              - constant-rib
-              - list
-                - metadata-libraries
-                - list
-                  - compilation-context-metadata
-                  - context
-              - continuation
-          - list
-            - list
-              - $$macros
-            - list
-              - constant-rib
-              - list
-                - metadata-macros
-                - list
-                  - compilation-context-metadata
-                  - context
-              - continuation
-          - list
-            - list
-              - $$optimizers
-            - list
-              - constant-rib
-              - list
-                - metadata-optimizers
-                - list
-                  - compilation-context-metadata
-                  - context
-              - continuation
-          - list
-            - list
-              - $$quote
-            - list
-              - constant-rib
-              - list
-                - cadr
-                - expression
-              - continuation
-          - list
-            - list
-              - $$set!
-            - list
-              - compile-expression
-              - context
-              - list
-                - caddr
-                - expression
-              - list
-                - code-rib
-                - set-instruction
-                - list
-                  - compilation-context-resolve
-                  - list
-                    - compilation-context-push-local
-                    - context
-                    - #f
-                  - list
-                    - cadr
-                    - expression
-                - list
-                  - compile-unspecified
-                  - continuation
-          - list
-            - list
-              - $$symbols
-            - list
-              - constant-rib
-              - list
-                - metadata-symbols
-                - list
-                  - compilation-context-metadata
-                  - context
-              - continuation
-          - list
-            - list
-              - $$dynamic-symbols
-            - list
-              - constant-rib
-              - list
-                - metadata-dynamic-symbols
-                - list
-                  - compilation-context-metadata
-                  - context
-              - continuation
-          - list
-            - else
-            - list
-              - compile-call
-              - context
-              - expression
-              - #f
-              - continuation
-      - list
-        - else
-        - list
-          - constant-rib
-          - expression
-          - continuation
   - list
     - define
     - list
@@ -16501,6 +16562,12 @@
         - define
         - cons-rib
         - cons
+      - list
+        - define
+        - list
+          - nop-rib
+          - continuation
+        - continuation
       - list
         - define
         - (dummy . xs)
