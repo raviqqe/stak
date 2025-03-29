@@ -2567,15 +2567,7 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base)
-      data-rib
-      filter
-      list-head
-      memq-position
-      pair-type
-      procedure-type
-      rib
-      string->uninterned-symbol))
+    (only (stak base) fold-left rib string->uninterned-symbol))
 
   (begin
     (define eval
