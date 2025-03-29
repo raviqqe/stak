@@ -1985,7 +1985,6 @@
   - compile-unbind
   - get-instruction
   - $$apply
-  - make-procedure
   - count-parameters
   - last-cdr
   - compile-sequence
@@ -1993,7 +1992,6 @@
   - parameter-names
   - parameters
   - call-rib
-  - compile-arity
   - $$close
   - compilation-context-resolve
   - compilation-context-push-local
@@ -2199,13 +2197,11 @@
   - $$libraries
   - resolve-library-symbol
   - loop
-  - expand-libraries
   - libraries
   - name
   - relaxed-deep-map
   - names
   - x
-  - expand-macros
   - make-macro-context
   - make-macro-state
   - macro-context-set-last!
@@ -2213,16 +2209,20 @@
   - make-transformer
   - $$macros
   - expand-macro
-  - optimize
   - make-optimization-context
   - make-optimizer
   - pair
   - $$optimizers
   - optimize-expression
   - context
-  - compile
   - compile-expression
   - make-compilation-context
+  - make-procedure
+  - compile-arity
+  - compile
+  - optimize
+  - expand-macros
+  - expand-libraries
   - expression
   - rust
   - r5rs
@@ -3478,1650 +3478,1383 @@
 - call 1 #f ||
 - set ||
 - constant procedure 0 #f
-  - constant procedure 48 #f
-    - constant 0
-    - set 48
-    - constant 1
-    - set 47
-    - constant 2
-    - set 46
-    - constant 3
-    - set 45
-    - constant 4
-    - set 44
-    - constant 65535
-    - set 43
-    - constant list
-      - list
-        - $$rib
-        - 0
-      - list
-        - $$close
-        - 1
-      - list
-        - $$<
-        - 9
-      - list
-        - $$+
-        - 10
-      - list
-        - $$-
-        - 11
-      - list
-        - $$\*
-        - 12
-      - list
-        - $$/
-        - 13
-    - set 42
-    - constant 0
-    - set 41
-    - constant 1
-    - set 40
-    - constant 2
-    - set 39
-    - constant 3
-    - set 38
-    - constant 4
-    - set 37
-    - constant 5
-    - set 36
-    - constant 6
-    - set 35
-    - constant 7
-    - set 34
-    - constant 8
-    - set 33
-    - constant procedure 0 #t
-      - get 0
-      - call 0 #f ||
-      - call 2 #f ||
-      - set 0
-      - call 0 #f ||
-      - call 1 #f ||
-    - call 1 #f $$close
-    - set 32
-    - constant procedure 3 #f
-      - get 1
-      - get 1
-      - get 4
-      - call 3 #f ||
-    - call 1 #f $$close
-    - set 31
-    - constant procedure 3 #f
-      - get 47
-      - get 3
-      - call 2 #f ||
-      - get 2
-      - get 2
-      - call 3 #f 37
-    - call 1 #f $$close
-    - set 30
-    - constant procedure 2 #f
-      - get 50
-      - get 2
-      - get 2
-      - call 3 #f 36
-    - call 1 #f $$close
-    - set 29
-    - constant procedure 1 #f
-      - get 44
-      - constant 0
-      - get 2
-      - call 3 #f 35
-    - call 1 #f $$close
-    - set 28
-    - constant procedure 3 #f
-      - get 1
-      - get 1
-      - get 4
-      - call 3 #f ||
-    - call 1 #f $$close
-    - set 27
-    - constant procedure 3 #f
-      - get 41
-      - get 3
-      - get 3
-      - call 2 #f ||
-      - get 2
-      - call 3 #f 33
-    - call 1 #f $$close
-    - set 26
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - call 1 #f ||
-    - call 1 #f $$close
-    - set 25
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 2 #f
-          - get 1
-          - get 6
-          - call 1 #f ||
-          - call 2 #f ||
-          - if
-            - get 5
-            - get 2
-            - call 2 #f ||
-            - constant 1
-            - get 3
-            - call 2 #f ||
-            - get 2
-            - call 2 #f 6
-            - call 2 #f ||
-          - get 0
-        - call 1 #f $$close
-        - set 1
+  - constant procedure 2 #f
+    - constant procedure 0 #f
+      - constant procedure 48 #f
         - constant 0
-        - constant ()
-        - call 2 #f 2
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set 24
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-        - call 1 #f 25
-      - get 0
-    - call 1 #f $$close
-    - set 23
-    - constant procedure 2 #f
-      - get 1
-      - call 1 #f ||
-      - call 1 #f ||
-      - if
-        - get 1
-        - call 1 #f ||
-        - get 1
-        - call 2 #f 26
-      - get 1
-      - get 1
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 22
-    - constant procedure 2 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant ()
-      - constant procedure 2 #f
-        - get 1
-        - call 1 #f 5
-        - if
-          - get 1
-          - get 1
-          - call 2 #f ||
-        - get 0
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - get 3
-      - get 3
-      - call 1 #f ||
-      - call 2 #f 27
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set 21
-    - constant procedure 2 #f
-      - get 0
-      - constant 0
-      - call 2 #f ||
-      - if
-        - constant ()
-      - get 1
-      - call 1 #f ||
-      - get 2
-      - call 1 #f ||
-      - get 2
-      - constant 1
-      - call 2 #f ||
-      - call 2 #f 25
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 20
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - constant procedure 2 #f
-          - get 1
-          - call 1 #f ||
-          - if
-            - constant #f
-          - get 1
-          - call 1 #f ||
-          - call 1 #f 7
-          - if
-            - get 0
-          - get 1
-          - call 1 #f ||
-          - get 1
-          - constant 1
-          - call 2 #f ||
-          - call 2 #f 5
-        - call 1 #f $$close
-        - set 1
-        - get 2
-        - constant 0
-        - call 2 #f 2
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set 19
-    - constant procedure 2 #t
-      - constant procedure 1 #f
-        - get 2
-        - call 1 #f ||
-        - if
-          - get ||
-          - continue
-        - get 2
-        - call 1 #f ||
-        - set 1
-        - constant procedure 1 #f
-          - get 6
-          - get 1
-          - call 2 #f 4
-        - call 1 #f $$close
-        - get 4
-        - call 2 #f 26
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set 18
-    - constant procedure 2 #f
-      - get 1
-      - get 1
-      - get ||
-      - call 3 #f 23
-    - call 1 #f $$close
-    - set 17
-    - constant procedure 2 #f
-      - get 1
-      - get 1
-      - get ||
-      - call 3 #f 23
-    - call 1 #f $$close
-    - set 16
-    - constant procedure 2 #f
-      - get ||
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 15
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 2 #f
-          - get 1
-          - call 1 #f ||
-          - constant #f
-          - call 2 #f ||
-          - if
-            - get 0
-          - get 1
-          - call 1 #f ||
-          - get 1
-          - constant 1
-          - call 2 #f ||
-          - call 2 #f 5
-        - call 1 #f $$close
-        - set 1
-        - get 2
-        - constant 0
-        - call 2 #f 2
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set 14
-    - constant procedure 2 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant procedure 1 #f
-          - get 0
-          - get 4
-          - get 4
-          - call 1 #f ||
-          - call 2 #f 20
-          - call 2 #f ||
-        - call 1 #f $$close
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 3
-        - call 1 #f 1
-      - get 0
-      - call 1 #f 2
-    - call 1 #f $$close
-    - set 13
-    - constant procedure 2 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 1
-        - get 1
-        - call 1 #f ||
-        - call 2 #f 16
-        - get 2
-        - get 2
-        - call 1 #f ||
-        - call 2 #f 17
-        - call 2 #f ||
-      - get 0
-      - call 1 #f 2
-    - call 1 #f $$close
-    - set 12
-    - constant procedure 2 #f
-      - get 1
-      - if
-        - get 0
-        - if
-          - get 1
-          - get 1
-          - call 2 #f ||
-        - constant #f
-      - constant #f
-    - call 1 #f $$close
-    - set 11
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant ()
-      - constant procedure 1 #f
-        - get 2
-        - call 1 #f ||
-        - get 1
-        - call 2 #f ||
-        - if
-          - get 0
-        - get 2
-        - call 1 #f ||
-        - get 1
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - call 1 #f 13
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set 10
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-        - call 1 #f ||
-        - continue
-      - constant #f
-      - if
-        - get 0
-        - call 1 #f ||
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 12
-        - call 2 #f ||
-        - call 1 #f 12
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-        - call 1 #f 11
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 12
-        - call 2 #f ||
-        - call 1 #f 11
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-      - constant ()
-    - call 1 #f $$close
-    - set 9
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - call 1 #f ||
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 5
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 1
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 8
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - call 1 #f ||
-        - call 1 #f 4
-      - call 1 #f $$close
-      - get 1
-      - call 2 #f 25
-    - call 1 #f $$close
-    - set 7
-    - constant procedure 1 #f
-      - get 0
-      - constant 0
-      - call 2 #f ||
-      - if
+        - set 48
         - constant 1
-      - get 0
-    - call 1 #f $$close
-    - constant 1
-    - constant 10000000
-    - constant 100000000
-    - call 3 #f ||
-    - call 1 #f 1
-    - set 1
-    - set 6
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-      - constant #f
-    - call 1 #f $$close
-    - set 5
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
+        - set 47
+        - constant 2
+        - set 46
+        - constant 3
+        - set 45
+        - constant 4
+        - set 44
+        - constant 65535
+        - set 43
+        - constant list
+          - list
+            - $$rib
+            - 0
+          - list
+            - $$close
+            - 1
+          - list
+            - $$<
+            - 9
+          - list
+            - $$+
+            - 10
+          - list
+            - $$-
+            - 11
+          - list
+            - $$\*
+            - 12
+          - list
+            - $$/
+            - 13
+        - set 42
+        - constant 0
+        - set 41
         - constant 1
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 7
-        - call 2 #f ||
-      - constant 0
-    - call 1 #f $$close
-    - set 4
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 6
-        - call 2 #f ||
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant ()
-      - constant "invalid variadic parameter"
-      - get 1
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 3
-    - constant procedure 0 #t
-      - get ||
-      - get ||
-      - get 2
-      - call 2 #f ||
-      - call 2 #f ||
-      - call 1 #f ||
-    - call 1 #f $$close
-    - set 2
-    - constant procedure 1 #f
-      - get 0
-      - constant 32
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 1
-    - constant macro-state
-    - constant list
-      - id
-      - literals
-      - static-symbols
-      - dynamic-symbols
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant id
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant id
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant static-symbols
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant static-symbols
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant dynamic-symbols
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant dynamic-symbols
-    - call 2 #f ||
-    - set ||
-    - constant macro-context
-    - constant list
-      - state
-      - environment
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant state
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant environment
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant environment
-    - call 2 #f ||
-    - set ||
-    - constant procedure 2 #f
-      - get 1
-      - call 1 #f ||
-      - get 1
-      - get 3
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - constant procedure 1 #f
+        - set 40
+        - constant 2
+        - set 39
+        - constant 3
+        - set 38
+        - constant 4
+        - set 37
+        - constant 5
+        - set 36
+        - constant 6
+        - set 35
+        - constant 7
+        - set 34
+        - constant 8
+        - set 33
+        - constant procedure 0 #t
+          - get 0
+          - call 0 #f ||
+          - call 2 #f ||
+          - set 0
+          - call 0 #f ||
+          - call 1 #f ||
+        - call 1 #f $$close
+        - set 32
+        - constant procedure 3 #f
+          - get 1
+          - get 1
+          - get 4
+          - call 3 #f ||
+        - call 1 #f $$close
+        - set 31
+        - constant procedure 3 #f
+          - get 47
+          - get 3
+          - call 2 #f ||
+          - get 2
+          - get 2
+          - call 3 #f 37
+        - call 1 #f $$close
+        - set 30
+        - constant procedure 2 #f
+          - get 50
+          - get 2
+          - get 2
+          - call 3 #f 36
+        - call 1 #f $$close
+        - set 29
         - constant procedure 1 #f
-          - constant procedure 0 #f
-            - get 1
-            - if
+          - get 44
+          - constant 0
+          - get 2
+          - call 3 #f 35
+        - call 1 #f $$close
+        - set 28
+        - constant procedure 3 #f
+          - get 1
+          - get 1
+          - get 4
+          - call 3 #f ||
+        - call 1 #f $$close
+        - set 27
+        - constant procedure 3 #f
+          - get 41
+          - get 3
+          - get 3
+          - call 2 #f ||
+          - get 2
+          - call 3 #f 33
+        - call 1 #f $$close
+        - set 26
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - call 1 #f ||
+        - call 1 #f $$close
+        - set 25
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - constant procedure 2 #f
               - get 1
               - get 6
+              - call 1 #f ||
               - call 2 #f ||
-              - continue
-            - constant #f
-            - set 0
-            - get 1
+              - if
+                - get 5
+                - get 2
+                - call 2 #f ||
+                - constant 1
+                - get 3
+                - call 2 #f ||
+                - get 2
+                - call 2 #f 6
+                - call 2 #f ||
+              - get 0
+            - call 1 #f $$close
+            - set 1
+            - constant 0
+            - constant ()
+            - call 2 #f 2
           - call 1 #f $$close
-          - call 0 #f 0
+          - constant #f
+          - call 1 #f 1
         - call 1 #f $$close
-        - get 4
-        - get 2
-        - call 2 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 3
-      - call 1 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 3 #f ||
-      - constant #f
-      - call 2 #f ||
-      - if
+        - set 24
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - call 1 #f 25
+          - get 0
+        - call 1 #f $$close
+        - set 23
         - constant procedure 2 #f
           - get 1
           - call 1 #f ||
+          - call 1 #f ||
           - if
-            - get 5
             - get 1
-            - call 2 #f ||
-          - get 1
-          - get 1
-          - call 2 #f 30
-        - call 1 #f $$close
-        - get 3
-        - call 1 #f ||
-        - get 3
-        - get 3
-        - call 2 #f ||
-        - call 1 #f ||
-        - call 2 #f 2
-      - constant #f
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - constant procedure 0 #f
-            - get 3
-            - get 2
-            - constant 1
-            - call 2 #f ||
-            - call 2 #f ||
-            - set 0
+            - call 1 #f ||
             - get 1
-          - call 1 #f $$close
-          - call 0 #f 0
+            - call 2 #f 26
+          - get 1
+          - get 1
+          - call 2 #f ||
         - call 1 #f $$close
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - constant procedure 1 #f
-        - get 4
-        - call 1 #f ||
-        - set 1
-        - get 0
-        - get 4
-        - get 4
-        - call 2 #f ||
-        - get 2
-        - call 1 #f ||
-        - call 2 #f ||
-        - call 2 #f ||
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - get 4
-        - call 1 #f ||
-        - set 2
-        - get 1
-        - call 1 #f ||
-        - set 1
-        - get 3
-        - get 1
-        - call 2 #f ||
-        - constant #f
-        - call 2 #f ||
-        - if
-          - get 1
-          - get 4
-          - get 2
-          - call 2 #f ||
-          - call 2 #f ||
-        - constant #f
-      - call 1 #f $$close
-      - constant #f
-      - constant #f
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - get 4
-        - call 1 #f ||
-        - set 2
-        - get 1
-        - call 1 #f ||
-        - set 1
-        - get 3
-        - get 1
-        - call 2 #f ||
-        - constant #f
-        - call 2 #f ||
-        - if
-          - get 1
-          - get 4
-          - get 2
-          - call 2 #f ||
-          - call 2 #f ||
-        - constant #f
-      - call 1 #f $$close
-      - constant #f
-      - constant #f
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set ||
-    - constant rule-context
-    - constant list
-      - definition-context
-      - use-context
-      - ellipsis
-      - literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant definition-context
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant use-context
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant ellipsis
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
+        - set 22
+        - constant procedure 2 #f
           - get 0
           - call 1 #f ||
-        - get 2
-      - call 1 #f $$close
-      - get 1
-      - get 3
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - get 1
-      - call 1 #f ||
-      - call 1 #f 4
-      - constant "$"
-      - get 2
-      - call 1 #f ||
-      - call 3 #f ||
-      - call 1 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - constant procedure 1 #f
-        - get 4
-        - get 4
-        - call 2 #f ||
-        - set 1
-        - constant procedure 1 #f
+          - if
+            - constant ()
           - constant procedure 2 #f
             - get 1
-            - call 1 #f ||
-            - if
-              - get 1
-              - call 1 #f ||
-              - get 2
-              - call 1 #f ||
-              - get 2
-              - call 2 #f 6
-              - call 2 #f 5
-            - get 1
-            - call 1 #f ||
-            - if
-              - get 1
-              - get 6
-              - call 2 #f ||
-              - constant #f
-              - call 2 #f ||
-              - continue
-            - constant #f
+            - call 1 #f 5
             - if
               - get 1
               - get 1
               - call 2 #f ||
             - get 0
           - call 1 #f $$close
-          - set 1
-          - get 4
-          - constant ()
+          - get 1
+          - call 1 #f ||
+          - get 3
+          - get 3
+          - call 1 #f ||
+          - call 2 #f 27
           - call 2 #f 2
         - call 1 #f $$close
-        - constant #f
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant ellipsis-match
-    - constant list
-      - value
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant value
-    - call 2 #f ||
-    - set ||
-    - constant ellipsis-pattern
-    - constant list
-      - element
-      - variables
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant element
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant variables
-    - call 2 #f ||
-    - set ||
-    - constant procedure 4 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 7
-          - get 7
-          - get 7
-          - get 3
-          - call 4 #f ||
-        - call 1 #f $$close
-        - set 1
-        - get 2
-        - call 1 #f ||
-        - constant #f
-        - call 2 #f ||
-        - if
-          - get 2
-        - get 2
-        - call 1 #f ||
-        - call 1 #f ||
-        - if
-          - get 4
-          - get 6
-          - get 4
-          - call 1 #f ||
-          - call 2 #f ||
-          - call 2 #f ||
-          - continue
-        - constant #f
-        - if
-          - get 2
-          - call 1 #f ||
-          - call 1 #f 1
-          - get 5
-          - get 5
-          - get 5
-          - call 1 #f ||
-          - call 3 #f ||
-          - call 2 #f ||
-          - get 3
-          - call 1 #f ||
-          - call 1 #f 2
-          - call 2 #f ||
-        - get 2
-        - call 1 #f ||
-        - call 1 #f 1
-        - get 3
-        - call 1 #f ||
-        - call 1 #f 2
-        - call 2 #f ||
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get ||
-      - get ||
-      - get ||
-      - get 4
-      - call 1 #f ||
-      - constant procedure 1 #f
-        - get 8
-        - get 8
-        - call 1 #f ||
-        - get 2
-        - call 3 #f ||
-      - call 1 #f $$close
-      - get 5
-      - call 2 #f ||
-      - call 4 #f ||
-      - call 2 #f 13
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - constant procedure 1 #f
+        - set 21
         - constant procedure 2 #f
-          - get 7
-          - get 2
-          - get 2
-          - call 3 #f ||
-        - call 1 #f $$close
-        - set 1
-        - get 3
-        - call 1 #f ||
-        - if
-          - get 3
-          - get 5
-          - call 1 #f ||
-          - call 2 #f ||
-          - continue
-        - constant #f
-        - if
-          - get 4
-          - call 1 #f ||
-          - get 3
-          - call 2 #f ||
-          - get 5
-          - call 1 #f ||
-          - get 5
-          - call 2 #f ||
-          - call 2 #f ||
-          - constant #f
+          - get 0
+          - constant 0
           - call 2 #f ||
           - if
-            - constant #f
-            - call 1 #f ||
-            - continue
-          - constant #f
-          - set 0
-          - constant ()
-        - get 3
-        - call 1 #f ||
-        - if
-          - get 3
-          - get 3
+            - constant ()
+          - get 1
+          - call 1 #f ||
+          - get 2
+          - call 1 #f ||
+          - get 2
+          - constant 1
           - call 2 #f ||
-          - call 1 #f ||
-        - get 3
-        - call 1 #f ||
-        - if
-          - get 3
-          - call 1 #f ||
+          - call 2 #f 25
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set 20
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 2 #f
+              - get 1
+              - call 1 #f ||
+              - if
+                - constant #f
+              - get 1
+              - call 1 #f ||
+              - call 1 #f 7
+              - if
+                - get 0
+              - get 1
+              - call 1 #f ||
+              - get 1
+              - constant 1
+              - call 2 #f ||
+              - call 2 #f 5
+            - call 1 #f $$close
+            - set 1
+            - get 2
+            - constant 0
+            - call 2 #f 2
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 19
+        - constant procedure 2 #t
+          - constant procedure 1 #f
+            - get 2
+            - call 1 #f ||
+            - if
+              - get ||
+              - continue
+            - get 2
+            - call 1 #f ||
+            - set 1
+            - constant procedure 1 #f
+              - get 6
+              - get 1
+              - call 2 #f 4
+            - call 1 #f $$close
+            - get 4
+            - call 2 #f 26
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 18
+        - constant procedure 2 #f
+          - get 1
+          - get 1
+          - get ||
+          - call 3 #f 23
+        - call 1 #f $$close
+        - set 17
+        - constant procedure 2 #f
+          - get 1
+          - get 1
+          - get ||
+          - call 3 #f 23
+        - call 1 #f $$close
+        - set 16
+        - constant procedure 2 #f
+          - get ||
+          - get 2
+          - get 2
+          - call 2 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set 15
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - constant procedure 2 #f
+              - get 1
+              - call 1 #f ||
+              - constant #f
+              - call 2 #f ||
+              - if
+                - get 0
+              - get 1
+              - call 1 #f ||
+              - get 1
+              - constant 1
+              - call 2 #f ||
+              - call 2 #f 5
+            - call 1 #f $$close
+            - set 1
+            - get 2
+            - constant 0
+            - call 2 #f 2
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 14
+        - constant procedure 2 #f
+          - get 0
           - call 1 #f ||
           - if
             - constant procedure 1 #f
               - get 0
+              - get 4
+              - get 4
               - call 1 #f ||
+              - call 2 #f 20
+              - call 2 #f ||
+            - call 1 #f $$close
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 3
+            - call 1 #f 1
+          - get 0
+          - call 1 #f 2
+        - call 1 #f $$close
+        - set 13
+        - constant procedure 2 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 1
+            - call 1 #f ||
+            - call 2 #f 16
+            - get 2
+            - get 2
+            - call 1 #f ||
+            - call 2 #f 17
+            - call 2 #f ||
+          - get 0
+          - call 1 #f 2
+        - call 1 #f $$close
+        - set 12
+        - constant procedure 2 #f
+          - get 1
+          - if
+            - get 0
+            - if
+              - get 1
+              - get 1
+              - call 2 #f ||
+            - constant #f
+          - constant #f
+        - call 1 #f $$close
+        - set 11
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - constant ()
+          - constant procedure 1 #f
+            - get 2
+            - call 1 #f ||
+            - get 1
+            - call 2 #f ||
+            - if
+              - get 0
+            - get 2
+            - call 1 #f ||
+            - get 1
+            - call 2 #f ||
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f ||
+          - call 1 #f 13
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set 10
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - call 1 #f ||
+            - continue
+          - constant #f
+          - if
+            - get 0
+            - call 1 #f ||
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 12
+            - call 2 #f ||
+            - call 1 #f 12
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - call 1 #f 11
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 12
+            - call 2 #f ||
+            - call 1 #f 11
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+          - constant ()
+        - call 1 #f $$close
+        - set 9
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f ||
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 5
+            - call 2 #f ||
+          - call 1 #f $$close
+          - get 1
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set 8
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f ||
+            - call 1 #f 4
+          - call 1 #f $$close
+          - get 1
+          - call 2 #f 25
+        - call 1 #f $$close
+        - set 7
+        - constant procedure 1 #f
+          - get 0
+          - constant 0
+          - call 2 #f ||
+          - if
+            - constant 1
+          - get 0
+        - call 1 #f $$close
+        - constant 1
+        - constant 10000000
+        - constant 100000000
+        - call 3 #f ||
+        - call 1 #f 1
+        - set 1
+        - set 6
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+          - constant #f
+        - call 1 #f $$close
+        - set 5
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - constant 1
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 7
+            - call 2 #f ||
+          - constant 0
+        - call 1 #f $$close
+        - set 4
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 6
+            - call 2 #f ||
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+          - get 0
+          - call 1 #f ||
+          - if
+            - constant ()
+          - constant "invalid variadic parameter"
+          - get 1
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set 3
+        - constant procedure 0 #t
+          - get ||
+          - get ||
+          - get 2
+          - call 2 #f ||
+          - call 2 #f ||
+          - call 1 #f ||
+        - call 1 #f $$close
+        - set 2
+        - constant procedure 1 #f
+          - get 0
+          - constant 32
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set 1
+        - constant macro-state
+        - constant list
+          - id
+          - literals
+          - static-symbols
+          - dynamic-symbols
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant id
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant id
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant literals
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant literals
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant static-symbols
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant static-symbols
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant dynamic-symbols
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant dynamic-symbols
+        - call 2 #f ||
+        - set ||
+        - constant macro-context
+        - constant list
+          - state
+          - environment
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant state
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant environment
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant environment
+        - call 2 #f ||
+        - set ||
+        - constant procedure 2 #f
+          - get 1
+          - call 1 #f ||
+          - get 1
+          - get 3
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 0 #f
+                - get 1
+                - if
+                  - get 1
+                  - get 6
+                  - call 2 #f ||
+                  - continue
+                - constant #f
+                - set 0
+                - get 1
+              - call 1 #f $$close
+              - call 0 #f 0
+            - call 1 #f $$close
+            - get 4
+            - get 2
+            - call 2 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - get 3
+          - call 1 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - get 2
+          - get 2
+          - get 2
+          - call 3 #f ||
+          - constant #f
+          - call 2 #f ||
+          - if
+            - constant procedure 2 #f
+              - get 1
+              - call 1 #f ||
+              - if
+                - get 5
+                - get 1
+                - call 2 #f ||
+              - get 1
+              - get 1
+              - call 2 #f 30
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f ||
+            - get 3
+            - get 3
+            - call 2 #f ||
+            - call 1 #f ||
+            - call 2 #f 2
+          - constant #f
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 0 #f
+                - get 3
+                - get 2
+                - constant 1
+                - call 2 #f ||
+                - call 2 #f ||
+                - set 0
+                - get 1
+              - call 1 #f $$close
+              - call 0 #f 0
+            - call 1 #f $$close
+            - get 1
+            - call 1 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - constant procedure 1 #f
+            - get 4
+            - call 1 #f ||
+            - set 1
+            - get 0
+            - get 4
+            - get 4
+            - call 2 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 2 #f ||
+            - call 2 #f ||
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 2 #f
+            - get 4
+            - call 1 #f ||
+            - set 2
+            - get 1
+            - call 1 #f ||
+            - set 1
+            - get 3
+            - get 1
+            - call 2 #f ||
+            - constant #f
+            - call 2 #f ||
+            - if
+              - get 1
+              - get 4
+              - get 2
+              - call 2 #f ||
+              - call 2 #f ||
+            - constant #f
+          - call 1 #f $$close
+          - constant #f
+          - constant #f
+          - call 2 #f 2
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 2 #f
+            - get 4
+            - call 1 #f ||
+            - set 2
+            - get 1
+            - call 1 #f ||
+            - set 1
+            - get 3
+            - get 1
+            - call 2 #f ||
+            - constant #f
+            - call 2 #f ||
+            - if
+              - get 1
+              - get 4
+              - get 2
+              - call 2 #f ||
+              - call 2 #f ||
+            - constant #f
+          - call 1 #f $$close
+          - constant #f
+          - constant #f
+          - call 2 #f 2
+        - call 1 #f $$close
+        - set ||
+        - constant rule-context
+        - constant list
+          - definition-context
+          - use-context
+          - ellipsis
+          - literals
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant definition-context
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant use-context
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant ellipsis
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant literals
+        - call 2 #f ||
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+              - call 1 #f ||
+            - get 2
+          - call 1 #f $$close
+          - get 1
+          - get 3
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - get 1
+          - call 1 #f ||
+          - call 1 #f 4
+          - constant "$"
+          - get 2
+          - call 1 #f ||
+          - call 3 #f ||
+          - call 1 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - constant procedure 1 #f
+            - get 4
+            - get 4
+            - call 2 #f ||
+            - set 1
+            - constant procedure 1 #f
+              - constant procedure 2 #f
+                - get 1
+                - call 1 #f ||
+                - if
+                  - get 1
+                  - call 1 #f ||
+                  - get 2
+                  - call 1 #f ||
+                  - get 2
+                  - call 2 #f 6
+                  - call 2 #f 5
+                - get 1
+                - call 1 #f ||
+                - if
+                  - get 1
+                  - get 6
+                  - call 2 #f ||
+                  - constant #f
+                  - call 2 #f ||
+                  - continue
+                - constant #f
+                - if
+                  - get 1
+                  - get 1
+                  - call 2 #f ||
+                - get 0
+              - call 1 #f $$close
+              - set 1
+              - get 4
+              - constant ()
+              - call 2 #f 2
+            - call 1 #f $$close
+            - constant #f
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant ellipsis-match
+        - constant list
+          - value
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant value
+        - call 2 #f ||
+        - set ||
+        - constant ellipsis-pattern
+        - constant list
+          - element
+          - variables
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant element
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant variables
+        - call 2 #f ||
+        - set ||
+        - constant procedure 4 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 7
+              - get 7
+              - get 7
+              - get 3
+              - call 4 #f ||
+            - call 1 #f $$close
+            - set 1
+            - get 2
+            - call 1 #f ||
+            - constant #f
+            - call 2 #f ||
+            - if
+              - get 2
+            - get 2
+            - call 1 #f ||
+            - call 1 #f ||
+            - if
+              - get 4
+              - get 6
+              - get 4
+              - call 1 #f ||
+              - call 2 #f ||
+              - call 2 #f ||
+              - continue
+            - constant #f
+            - if
+              - get 2
+              - call 1 #f ||
+              - call 1 #f 1
+              - get 5
+              - get 5
+              - get 5
+              - call 1 #f ||
+              - call 3 #f ||
+              - call 2 #f ||
+              - get 3
+              - call 1 #f ||
+              - call 1 #f 2
+              - call 2 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 1
+            - get 3
+            - call 1 #f ||
+            - call 1 #f 2
+            - call 2 #f ||
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - get ||
+          - get ||
+          - get ||
+          - get 4
+          - call 1 #f ||
+          - constant procedure 1 #f
+            - get 8
+            - get 8
+            - call 1 #f ||
+            - get 2
+            - call 3 #f ||
+          - call 1 #f $$close
+          - get 5
+          - call 2 #f ||
+          - call 4 #f ||
+          - call 2 #f 13
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - constant procedure 1 #f
+            - constant procedure 2 #f
+              - get 7
+              - get 2
+              - get 2
+              - call 3 #f ||
+            - call 1 #f $$close
+            - set 1
+            - get 3
+            - call 1 #f ||
+            - if
+              - get 3
+              - get 5
+              - call 1 #f ||
+              - call 2 #f ||
+              - continue
+            - constant #f
+            - if
+              - get 4
+              - call 1 #f ||
+              - get 3
+              - call 2 #f ||
+              - get 5
+              - call 1 #f ||
+              - get 5
+              - call 2 #f ||
+              - call 2 #f ||
+              - constant #f
+              - call 2 #f ||
               - if
                 - constant #f
                 - call 1 #f ||
                 - continue
               - constant #f
               - set 0
-              - get 6
-              - get 6
-              - call 1 #f ||
-              - get 6
+              - constant ()
+            - get 3
+            - call 1 #f ||
+            - if
               - get 3
-              - call 2 #f 31
-              - call 3 #f ||
-              - get 6
-              - call 1 #f ||
-              - get 6
               - get 3
               - call 2 #f ||
-              - call 2 #f 5
-              - call 2 #f ||
-            - call 1 #f $$close
-            - get 3
-            - call 1 #f 21
-            - get 5
-            - call 1 #f ||
-            - call 1 #f 22
-            - call 2 #f ||
-            - call 1 #f 1
-          - get 2
-          - call 1 #f ||
-          - if
+              - call 1 #f ||
             - get 3
             - call 1 #f ||
-            - get 3
-            - call 1 #f ||
-            - call 2 #f 2
-            - get 4
-            - call 1 #f ||
-            - get 4
-            - call 1 #f ||
-            - call 2 #f 3
-            - call 2 #f ||
-          - constant #f
-          - call 1 #f ||
-        - get 3
-        - get 3
-        - call 2 #f ||
-        - if
-          - constant ()
-        - constant #f
-        - call 1 #f ||
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 0 #f
-                  - get 1
+            - if
+              - get 3
+              - call 1 #f ||
+              - call 1 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 0
                   - call 1 #f ||
                   - if
-                    - constant "no ellipsis pattern variables"
-                    - get 8
-                    - call 2 #f ||
+                    - constant #f
+                    - call 1 #f ||
                     - continue
                   - constant #f
                   - set 0
-                  - get ||
-                  - constant procedure 0 #t
-                    - get 16
-                    - get 1
-                    - get 8
-                    - call 2 #f ||
-                    - get 12
-                    - call 3 #f ||
-                  - call 1 #f $$close
-                  - constant procedure 1 #f
-                    - get 0
-                    - call 1 #f ||
-                    - call 1 #f ||
-                  - call 1 #f $$close
-                  - get 4
-                  - call 2 #f ||
+                  - get 6
+                  - get 6
+                  - call 1 #f ||
+                  - get 6
+                  - get 3
+                  - call 2 #f 31
                   - call 3 #f ||
+                  - get 6
+                  - call 1 #f ||
+                  - get 6
+                  - get 3
+                  - call 2 #f ||
+                  - call 2 #f 5
+                  - call 2 #f ||
                 - call 1 #f $$close
-                - call 0 #f 0
-              - call 1 #f $$close
-              - get ||
-              - get 4
-              - call 2 #f 21
-              - call 1 #f 1
-            - call 1 #f $$close
-            - constant procedure 1 #f
-              - get 0
-              - call 1 #f ||
-              - constant #f
-              - call 2 #f ||
-            - call 1 #f $$close
-            - get 2
-            - call 2 #f 19
-            - call 1 #f 1
-          - call 1 #f $$close
-          - constant procedure 1 #f
-            - get 0
-            - call 1 #f ||
-            - get 6
-            - call 2 #f ||
-          - call 1 #f $$close
-          - get 7
-          - call 2 #f 31
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 3
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 6
-          - get 6
-          - get 2
-          - call 3 #f ||
-        - call 1 #f $$close
-        - set 1
-        - constant procedure 1 #f
-          - get 0
-          - if
-            - get 0
-            - call 1 #f ||
-          - get 4
-          - call 1 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 0
+                - get 3
+                - call 1 #f 21
+                - get 5
+                - call 1 #f ||
+                - call 1 #f 22
+                - call 2 #f ||
+                - call 1 #f 1
+              - get 2
               - call 1 #f ||
               - if
-                - get 8
-                - get 8
-                - get 2
-                - call 3 #f ||
-              - get 0
-              - call 1 #f 5
+                - get 3
+                - call 1 #f ||
+                - get 3
+                - call 1 #f ||
+                - call 2 #f 2
+                - get 4
+                - call 1 #f ||
+                - get 4
+                - call 1 #f ||
+                - call 2 #f 3
+                - call 2 #f ||
+              - constant #f
               - call 1 #f ||
-            - call 1 #f $$close
-            - get 5
-            - call 1 #f ||
-            - call 1 #f 1
-            - set 1
-            - get 5
-            - call 1 #f ||
-            - call 1 #f 4
-            - call 2 #f ||
-          - get 4
-        - call 1 #f $$close
-        - get 3
-        - call 1 #f ||
-        - if
-          - get 3
-          - get 5
-          - call 2 #f ||
-          - continue
-        - constant #f
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 0 #f
-        - get 2
-        - get 2
-        - call 2 #f ||
-      - call 1 #f $$close
-      - constant procedure 2 #f
-        - constant procedure 2 #f
-          - constant procedure 1 #f
-            - get 0
-            - constant $$syntax-rules
+            - get 3
+            - get 3
             - call 2 #f ||
             - if
+              - constant ()
+            - constant #f
+            - call 1 #f ||
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
               - constant procedure 1 #f
                 - constant procedure 1 #f
                   - constant procedure 1 #f
-                    - constant procedure 2 #f
+                    - constant procedure 0 #f
+                      - get 1
+                      - call 1 #f ||
+                      - if
+                        - constant "no ellipsis pattern variables"
+                        - get 8
+                        - call 2 #f ||
+                        - continue
+                      - constant #f
+                      - set 0
+                      - get ||
+                      - constant procedure 0 #t
+                        - get 16
+                        - get 1
+                        - get 8
+                        - call 2 #f ||
+                        - get 12
+                        - call 3 #f ||
+                      - call 1 #f $$close
                       - constant procedure 1 #f
-                        - constant procedure 1 #f
-                          - get 0
-                          - call 1 #f ||
-                          - constant #f
-                          - call 2 #f ||
-                          - if
-                            - constant "invalid syntax"
-                            - get 5
-                            - call 2 #f ||
-                            - continue
-                          - constant #f
-                          - set 0
-                          - constant procedure 2 #f
+                        - get 0
+                        - call 1 #f ||
+                        - call 1 #f ||
+                      - call 1 #f $$close
+                      - get 4
+                      - call 2 #f ||
+                      - call 3 #f ||
+                    - call 1 #f $$close
+                    - call 0 #f 0
+                  - call 1 #f $$close
+                  - get ||
+                  - get 4
+                  - call 2 #f 21
+                  - call 1 #f 1
+                - call 1 #f $$close
+                - constant procedure 1 #f
+                  - get 0
+                  - call 1 #f ||
+                  - constant #f
+                  - call 2 #f ||
+                - call 1 #f $$close
+                - get 2
+                - call 2 #f 19
+                - call 1 #f 1
+              - call 1 #f $$close
+              - constant procedure 1 #f
+                - get 0
+                - call 1 #f ||
+                - get 6
+                - call 2 #f ||
+              - call 1 #f $$close
+              - get 7
+              - call 2 #f 31
+              - call 1 #f 1
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 6
+              - get 6
+              - get 2
+              - call 3 #f ||
+            - call 1 #f $$close
+            - set 1
+            - constant procedure 1 #f
+              - get 0
+              - if
+                - get 0
+                - call 1 #f ||
+              - get 4
+              - call 1 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 0
+                  - call 1 #f ||
+                  - if
+                    - get 8
+                    - get 8
+                    - get 2
+                    - call 3 #f ||
+                  - get 0
+                  - call 1 #f 5
+                  - call 1 #f ||
+                - call 1 #f $$close
+                - get 5
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - get 5
+                - call 1 #f ||
+                - call 1 #f 4
+                - call 2 #f ||
+              - get 4
+            - call 1 #f $$close
+            - get 3
+            - call 1 #f ||
+            - if
+              - get 3
+              - get 5
+              - call 2 #f ||
+              - continue
+            - constant #f
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 0 #f
+            - get 2
+            - get 2
+            - call 2 #f ||
+          - call 1 #f $$close
+          - constant procedure 2 #f
+            - constant procedure 2 #f
+              - constant procedure 1 #f
+                - get 0
+                - constant $$syntax-rules
+                - call 2 #f ||
+                - if
+                  - constant procedure 1 #f
+                    - constant procedure 1 #f
+                      - constant procedure 1 #f
+                        - constant procedure 2 #f
+                          - constant procedure 1 #f
                             - constant procedure 1 #f
-                              - constant procedure 1 #f
+                              - get 0
+                              - call 1 #f ||
+                              - constant #f
+                              - call 2 #f ||
+                              - if
+                                - constant "invalid syntax"
+                                - get 5
+                                - call 2 #f ||
+                                - continue
+                              - constant #f
+                              - set 0
+                              - constant procedure 2 #f
                                 - constant procedure 1 #f
+                                  - constant procedure 1 #f
+                                    - constant procedure 1 #f
+                                      - constant procedure 0 #f
+                                        - constant procedure 1 #f
+                                          - get 0
+                                          - constant #f
+                                          - call 2 #f ||
+                                          - if
+                                            - get 12
+                                            - call 1 #f ||
+                                            - call 1 #f 15
+                                          - constant procedure 0 #f
+                                            - get 1
+                                            - call 1 #f ||
+                                          - call 1 #f $$close
+                                          - call 1 #f 4
+                                        - call 1 #f $$close
+                                        - get 4
+                                        - call 1 #f 1
+                                      - call 1 #f $$close
+                                      - call 1 #f 5
+                                    - call 1 #f $$close
+                                    - call 1 #f ||
+                                    - call 0 #f 0
+                                  - call 1 #f $$close
                                   - constant procedure 0 #f
                                     - constant procedure 1 #f
-                                      - get 0
-                                      - constant #f
-                                      - call 2 #f ||
-                                      - if
-                                        - get 12
-                                        - call 1 #f ||
-                                        - call 1 #f 15
                                       - constant procedure 0 #f
                                         - get 1
-                                        - call 1 #f ||
                                       - call 1 #f $$close
-                                      - call 1 #f 4
+                                      - call 1 #f 5
                                     - call 1 #f $$close
-                                    - get 4
+                                    - constant procedure 1 #f
+                                      - constant procedure 1 #f
+                                        - constant procedure 1 #f
+                                          - get 11
+                                          - get 1
+                                          - get 6
+                                          - call 2 #f ||
+                                          - get 4
+                                          - call 3 #f ||
+                                          - get 20
+                                          - constant procedure 1 #f
+                                            - get 0
+                                            - call 1 #f ||
+                                            - get 34
+                                            - get 2
+                                            - call 1 #f ||
+                                            - call 2 #f ||
+                                            - call 2 #f ||
+                                          - call 1 #f $$close
+                                          - get 3
+                                          - call 2 #f ||
+                                          - call 2 #f ||
+                                          - call 2 #f ||
+                                        - call 1 #f $$close
+                                        - constant procedure 1 #f
+                                          - get 0
+                                          - get 21
+                                          - get 2
+                                          - call 2 #f ||
+                                          - call 2 #f ||
+                                        - call 1 #f $$close
+                                        - get 25
+                                        - get 24
+                                        - get ||
+                                        - get 7
+                                        - call 2 #f ||
+                                        - call 2 #f ||
+                                        - get 4
+                                        - call 3 #f ||
+                                        - call 2 #f ||
+                                        - call 1 #f 1
+                                      - call 1 #f $$close
+                                      - get 9
+                                      - call 1 #f ||
+                                      - call 1 #f 1
+                                    - call 1 #f $$close
+                                    - get 6
+                                    - get 8
+                                    - call 1 #f ||
+                                    - get 15
+                                    - call 3 #f ||
+                                    - call 1 #f 1
+                                    - set 1
                                     - call 1 #f 1
                                   - call 1 #f $$close
-                                  - call 1 #f 5
+                                  - call 2 #f ||
                                 - call 1 #f $$close
                                 - call 1 #f ||
                                 - call 0 #f 0
                               - call 1 #f $$close
-                              - constant procedure 0 #f
-                                - constant procedure 1 #f
-                                  - constant procedure 0 #f
-                                    - get 1
-                                  - call 1 #f $$close
-                                  - call 1 #f 5
-                                - call 1 #f $$close
-                                - constant procedure 1 #f
-                                  - constant procedure 1 #f
-                                    - constant procedure 1 #f
-                                      - get 11
-                                      - get 1
-                                      - get 6
-                                      - call 2 #f ||
-                                      - get 4
-                                      - call 3 #f ||
-                                      - get 20
-                                      - constant procedure 1 #f
-                                        - get 0
-                                        - call 1 #f ||
-                                        - get 34
-                                        - get 2
-                                        - call 1 #f ||
-                                        - call 2 #f ||
-                                        - call 2 #f ||
-                                      - call 1 #f $$close
-                                      - get 3
-                                      - call 2 #f ||
-                                      - call 2 #f ||
-                                      - call 2 #f ||
-                                    - call 1 #f $$close
-                                    - constant procedure 1 #f
-                                      - get 0
-                                      - get 21
-                                      - get 2
-                                      - call 2 #f ||
-                                      - call 2 #f ||
-                                    - call 1 #f $$close
-                                    - get 25
-                                    - get 24
-                                    - get ||
-                                    - get 7
-                                    - call 2 #f ||
-                                    - call 2 #f ||
-                                    - get 4
-                                    - call 3 #f ||
-                                    - call 2 #f ||
-                                    - call 1 #f 1
-                                  - call 1 #f $$close
-                                  - get 9
-                                  - call 1 #f ||
-                                  - call 1 #f 1
-                                - call 1 #f $$close
-                                - get 6
-                                - get 8
-                                - call 1 #f ||
-                                - get 15
-                                - call 3 #f ||
-                                - call 1 #f 1
-                                - set 1
-                                - call 1 #f 1
-                              - call 1 #f $$close
-                              - call 2 #f ||
+                              - get 1
+                              - call 1 #f ||
+                              - get 17
+                              - get 8
+                              - get 15
+                              - get 14
+                              - call 4 #f ||
+                              - call 2 #f 2
                             - call 1 #f $$close
-                            - call 1 #f ||
-                            - call 0 #f 0
+                            - set 1
+                            - get 5
+                            - call 1 #f 1
                           - call 1 #f $$close
-                          - get 1
-                          - call 1 #f ||
-                          - get 17
-                          - get 8
-                          - get 15
-                          - get 14
-                          - call 4 #f ||
-                          - call 2 #f 2
+                          - constant #f
+                          - call 1 #f 1
                         - call 1 #f $$close
-                        - set 1
-                        - get 5
-                        - call 1 #f 1
                       - call 1 #f $$close
-                      - constant #f
+                      - constant procedure 1 #f
+                        - constant procedure 1 #f
+                          - get 11
+                          - get 8
+                          - get 7
+                          - get 3
+                          - call 4 #f ||
+                        - call 1 #f $$close
+                        - get 1
+                        - call 2 #f ||
+                      - call 1 #f $$close
+                      - get 9
+                      - call 1 #f ||
+                      - call 2 #f ||
                       - call 1 #f 1
                     - call 1 #f $$close
+                    - get 6
+                    - call 1 #f ||
+                    - call 1 #f 1
                   - call 1 #f $$close
-                  - constant procedure 1 #f
-                    - constant procedure 1 #f
-                      - get 11
-                      - get 8
-                      - get 7
-                      - get 3
-                      - call 4 #f ||
-                    - call 1 #f $$close
-                    - get 1
-                    - call 2 #f ||
-                  - call 1 #f $$close
-                  - get 9
+                  - get 3
+                  - get 5
                   - call 1 #f ||
                   - call 2 #f ||
                   - call 1 #f 1
-                - call 1 #f $$close
-                - get 6
-                - call 1 #f ||
-                - call 1 #f 1
+                - constant "unsupported macro transformer"
+                - get 4
+                - call 2 #f ||
               - call 1 #f $$close
+              - get 1
               - get 3
-              - get 5
-              - call 1 #f ||
+              - call 1 #f 17
               - call 2 #f ||
               - call 1 #f 1
-            - constant "unsupported macro transformer"
-            - get 4
-            - call 2 #f ||
+            - call 1 #f $$close
+            - get 2
+            - get 2
+            - call 2 #f 2
           - call 1 #f $$close
-          - get 1
-          - get 3
-          - call 1 #f 17
           - call 2 #f ||
-          - call 1 #f 1
         - call 1 #f $$close
-        - get 2
-        - get 2
-        - call 2 #f 2
-      - call 1 #f $$close
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - constant procedure 1 #f
+        - set ||
+        - constant procedure 2 #f
           - get 0
           - call 1 #f ||
           - if
-            - constant procedure 0 #f
-              - get 4
-              - get 4
-              - call 2 #f 3
-            - call 1 #f $$close
-            - constant procedure 2 #f
-              - constant procedure 2 #f
-                - get 0
-                - get 2
-                - call 2 #f ||
-              - call 1 #f $$close
-              - get 2
-              - get 2
-              - call 2 #f 2
-            - call 1 #f $$close
-            - call 2 #f ||
-          - get 2
-          - get 4
-          - call 2 #f ||
-        - call 1 #f $$close
-        - get 2
-        - get 2
-        - call 1 #f ||
-        - call 2 #f ||
-        - call 1 #f 1
-      - get 0
-      - get 2
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - constant procedure 1 #f
-          - get 6
-          - get 1
-          - call 2 #f ||
-        - call 1 #f $$close
-        - set 2
-        - constant procedure 1 #f
-          - get 6
-          - get 1
-          - call 2 #f ||
-        - call 1 #f $$close
-        - set 1
-        - get 3
-        - call 1 #f ||
-        - if
-          - get 3
-          - get 5
-          - call 1 #f ||
-          - call 2 #f ||
-          - constant #f
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 2 #f ||
-            - continue
-          - constant #f
-          - set 0
-          - constant procedure 1 #f
-            - get 0
-            - call 1 #f ||
-            - if
-              - constant "invalid syntax"
-              - get 6
-              - call 2 #f ||
-              - continue
-            - constant #f
-            - set 0
-            - get 0
-          - call 1 #f $$close
-          - get 4
-          - call 1 #f 2
-          - call 1 #f 1
-        - get 3
-        - call 1 #f ||
-        - if
-          - constant procedure 1 #f
-            - get 0
-            - constant $$alias
-            - call 2 #f ||
-            - if
-              - get 6
-              - get 6
-              - call 1 #f ||
-              - get 7
-              - call 1 #f ||
-              - call 1 #f 5
-              - call 3 #f ||
-              - set 0
-              - get 6
-              - get 6
-              - call 1 #f ||
-              - get 7
-              - call 1 #f ||
-              - call 3 #f ||
-              - set 0
-              - constant #f
-            - get 0
-            - constant $$define
-            - call 2 #f ||
-            - if
-              - constant procedure 1 #f
-                - get 8
-                - get 1
-                - get 2
-                - call 3 #f ||
-                - set 0
-                - get 8
-                - get 1
-                - call 2 #f ||
-                - set 0
-                - constant $$set!
-                - get 8
-                - call 1 #f ||
-                - call 2 #f ||
-                - call 1 #f 6
-              - call 1 #f $$close
-              - get 6
-              - call 1 #f ||
-              - call 1 #f 1
-            - get 0
-            - constant $$define-syntax
-            - call 2 #f ||
-            - if
-              - constant procedure 2 #f
-                - get 9
-                - get 2
-                - get 11
-                - get 3
-                - call 2 #f ||
-                - call 3 #f ||
-                - set 0
-                - get 9
-                - get 2
-                - get 2
-                - call 3 #f ||
-                - set 0
-                - get 9
-                - get 2
-                - call 2 #f ||
-                - set 0
-                - constant #f
-              - call 1 #f $$close
-              - get 6
-              - call 1 #f ||
-              - get 7
-              - call 1 #f ||
-              - call 2 #f 2
-            - get 0
-            - constant $$lambda
-            - call 2 #f ||
-            - if
-              - constant procedure 1 #f
-                - constant procedure 1 #f
-                  - constant procedure 1 #f
-                    - constant $$lambda
-                    - get 1
-                    - get 4
-                    - get 14
-                    - call 1 #f ||
-                    - call 2 #f ||
-                    - call 3 #f ||
-                  - call 1 #f $$close
-                  - constant procedure 1 #f
-                    - get 3
-                    - get 1
-                    - call 2 #f ||
-                  - call 1 #f $$close
-                  - get 4
-                  - call 2 #f 26
-                  - call 1 #f 1
-                - call 1 #f $$close
-                - get 9
-                - constant procedure 1 #f
-                  - get 0
-                  - get 13
-                  - get 2
-                  - call 2 #f ||
-                  - call 2 #f ||
-                - call 1 #f $$close
-                - get 3
-                - call 1 #f 16
-                - call 2 #f ||
-                - call 2 #f ||
-                - call 1 #f 1
-              - call 1 #f $$close
-              - get 6
-              - call 1 #f ||
-              - call 1 #f 1
-            - get 0
-            - constant $$let-syntax
-            - call 2 #f ||
-            - if
-              - get 6
-              - constant procedure 1 #f
-                - get 9
-                - get 1
-                - call 1 #f ||
-                - call 2 #f ||
-              - call 1 #f $$close
-              - get 7
-              - call 1 #f ||
-              - call 2 #f 18
-              - call 2 #f ||
-              - get 6
-              - call 1 #f ||
-              - call 2 #f ||
-            - get 0
-            - constant $$letrec-syntax
-            - call 2 #f ||
-            - if
-              - constant procedure 1 #f
-                - constant procedure 1 #f
-                  - constant procedure 0 #f
-                    - constant procedure 1 #f
-                      - get 3
-                      - get 1
-                      - call 1 #f ||
-                      - get 5
-                      - get 3
-                      - call 1 #f ||
-                      - call 2 #f ||
-                      - call 3 #f ||
-                    - call 1 #f $$close
-                    - get 4
-                    - call 2 #f ||
-                    - set 0
-                    - get 1
-                    - get 11
-                    - call 1 #f ||
-                    - call 2 #f ||
-                  - call 1 #f $$close
-                  - call 0 #f 0
-                - call 1 #f $$close
-                - get 9
-                - constant procedure 1 #f
-                  - constant #f
-                - call 1 #f $$close
-                - get 3
-                - call 2 #f 21
-                - call 2 #f ||
-                - call 1 #f 1
-              - call 1 #f $$close
-              - get 6
-              - call 1 #f ||
-              - call 1 #f 1
-            - get 0
-            - constant $$quote
-            - call 2 #f ||
-            - if
-              - constant $$quote
-              - constant procedure 1 #f
-                - get 0
-                - call 1 #f ||
-                - if
-                  - get 0
-                  - call 1 #f ||
-                - get 0
-              - call 1 #f $$close
-              - get 7
-              - call 1 #f ||
-              - call 2 #f 22
-              - call 2 #f ||
             - constant procedure 1 #f
               - get 0
               - call 1 #f ||
               - if
                 - constant procedure 0 #f
-                  - get 9
-                  - get 9
+                  - get 4
+                  - get 4
                   - call 2 #f 3
                 - call 1 #f $$close
                 - constant procedure 2 #f
@@ -5135,1735 +4868,1920 @@
                   - call 2 #f 2
                 - call 1 #f $$close
                 - call 2 #f ||
-              - get 5
-              - get 8
+              - get 2
+              - get 4
               - call 2 #f ||
             - call 1 #f $$close
-            - get 1
+            - get 2
+            - get 2
+            - call 1 #f ||
+            - call 2 #f ||
             - call 1 #f 1
-          - call 1 #f $$close
-          - get 4
-          - call 1 #f ||
-          - call 1 #f 2
-          - call 1 #f 1
-        - get 3
-      - call 1 #f $$close
-      - constant #f
-      - constant #f
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set ||
-    - constant optimization-context
-    - constant list
-      - optimizers
-      - literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant optimizers
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant optimizers
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant literals
-    - call 2 #f ||
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - get 4
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - get 4
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - constant procedure 2 #f
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 0
-            - call 1 #f ||
-            - continue
-          - constant #f
-          - if
-            - get 1
-            - call 1 #f ||
-            - get 1
-            - call 1 #f ||
-            - call 2 #f 6
-            - get 2
-            - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 2 #f 7
-            - call 2 #f 21
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 1
-            - call 2 #f ||
-            - call 1 #f ||
-          - get 1
-          - get 1
-          - call 2 #f ||
-          - if
-            - constant ()
-          - constant #f
-        - call 1 #f $$close
-        - set 2
-        - constant procedure 2 #f
           - get 0
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 1
-            - call 1 #f ||
-            - call 2 #f 5
-            - get 2
-            - get 2
-            - call 1 #f ||
-            - call 2 #f 6
-            - call 2 #f ||
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-          - call 1 #f $$close
-          - get 1
-          - call 1 #f ||
-          - if
-            - get 1
-            - get 3
-            - call 2 #f ||
-            - continue
-          - constant #f
-          - call 1 #f 1
-        - call 1 #f $$close
-        - set 1
-        - constant procedure 1 #f
-          - get 0
-          - constant $$syntax-rules
+          - get 2
           - call 2 #f ||
-          - if
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 2 #f
             - constant procedure 1 #f
+              - get 6
+              - get 1
+              - call 2 #f ||
+            - call 1 #f $$close
+            - set 2
+            - constant procedure 1 #f
+              - get 6
+              - get 1
+              - call 2 #f ||
+            - call 1 #f $$close
+            - set 1
+            - get 3
+            - call 1 #f ||
+            - if
+              - get 3
+              - get 5
+              - call 1 #f ||
+              - call 2 #f ||
+              - constant #f
+              - call 2 #f ||
+              - if
+                - get 4
+                - get 4
+                - call 2 #f ||
+                - continue
+              - constant #f
+              - set 0
               - constant procedure 1 #f
-                - constant procedure 1 #f
+                - get 0
+                - call 1 #f ||
+                - if
+                  - constant "invalid syntax"
+                  - get 6
+                  - call 2 #f ||
+                  - continue
+                - constant #f
+                - set 0
+                - get 0
+              - call 1 #f $$close
+              - get 4
+              - call 1 #f 2
+              - call 1 #f 1
+            - get 3
+            - call 1 #f ||
+            - if
+              - constant procedure 1 #f
+                - get 0
+                - constant $$alias
+                - call 2 #f ||
+                - if
+                  - get 6
+                  - get 6
+                  - call 1 #f ||
+                  - get 7
+                  - call 1 #f ||
+                  - call 1 #f 5
+                  - call 3 #f ||
+                  - set 0
+                  - get 6
+                  - get 6
+                  - call 1 #f ||
+                  - get 7
+                  - call 1 #f ||
+                  - call 3 #f ||
+                  - set 0
+                  - constant #f
+                - get 0
+                - constant $$define
+                - call 2 #f ||
+                - if
+                  - constant procedure 1 #f
+                    - get 8
+                    - get 1
+                    - get 2
+                    - call 3 #f ||
+                    - set 0
+                    - get 8
+                    - get 1
+                    - call 2 #f ||
+                    - set 0
+                    - constant $$set!
+                    - get 8
+                    - call 1 #f ||
+                    - call 2 #f ||
+                    - call 1 #f 6
+                  - call 1 #f $$close
+                  - get 6
+                  - call 1 #f ||
+                  - call 1 #f 1
+                - get 0
+                - constant $$define-syntax
+                - call 2 #f ||
+                - if
+                  - constant procedure 2 #f
+                    - get 9
+                    - get 2
+                    - get 11
+                    - get 3
+                    - call 2 #f ||
+                    - call 3 #f ||
+                    - set 0
+                    - get 9
+                    - get 2
+                    - get 2
+                    - call 3 #f ||
+                    - set 0
+                    - get 9
+                    - get 2
+                    - call 2 #f ||
+                    - set 0
+                    - constant #f
+                  - call 1 #f $$close
+                  - get 6
+                  - call 1 #f ||
+                  - get 7
+                  - call 1 #f ||
+                  - call 2 #f 2
+                - get 0
+                - constant $$lambda
+                - call 2 #f ||
+                - if
+                  - constant procedure 1 #f
+                    - constant procedure 1 #f
+                      - constant procedure 1 #f
+                        - constant $$lambda
+                        - get 1
+                        - get 4
+                        - get 14
+                        - call 1 #f ||
+                        - call 2 #f ||
+                        - call 3 #f ||
+                      - call 1 #f $$close
+                      - constant procedure 1 #f
+                        - get 3
+                        - get 1
+                        - call 2 #f ||
+                      - call 1 #f $$close
+                      - get 4
+                      - call 2 #f 26
+                      - call 1 #f 1
+                    - call 1 #f $$close
+                    - get 9
+                    - constant procedure 1 #f
+                      - get 0
+                      - get 13
+                      - get 2
+                      - call 2 #f ||
+                      - call 2 #f ||
+                    - call 1 #f $$close
+                    - get 3
+                    - call 1 #f 16
+                    - call 2 #f ||
+                    - call 2 #f ||
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - get 6
+                  - call 1 #f ||
+                  - call 1 #f 1
+                - get 0
+                - constant $$let-syntax
+                - call 2 #f ||
+                - if
+                  - get 6
+                  - constant procedure 1 #f
+                    - get 9
+                    - get 1
+                    - call 1 #f ||
+                    - call 2 #f ||
+                  - call 1 #f $$close
+                  - get 7
+                  - call 1 #f ||
+                  - call 2 #f 18
+                  - call 2 #f ||
+                  - get 6
+                  - call 1 #f ||
+                  - call 2 #f ||
+                - get 0
+                - constant $$letrec-syntax
+                - call 2 #f ||
+                - if
+                  - constant procedure 1 #f
+                    - constant procedure 1 #f
+                      - constant procedure 0 #f
+                        - constant procedure 1 #f
+                          - get 3
+                          - get 1
+                          - call 1 #f ||
+                          - get 5
+                          - get 3
+                          - call 1 #f ||
+                          - call 2 #f ||
+                          - call 3 #f ||
+                        - call 1 #f $$close
+                        - get 4
+                        - call 2 #f ||
+                        - set 0
+                        - get 1
+                        - get 11
+                        - call 1 #f ||
+                        - call 2 #f ||
+                      - call 1 #f $$close
+                      - call 0 #f 0
+                    - call 1 #f $$close
+                    - get 9
+                    - constant procedure 1 #f
+                      - constant #f
+                    - call 1 #f $$close
+                    - get 3
+                    - call 2 #f 21
+                    - call 2 #f ||
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - get 6
+                  - call 1 #f ||
+                  - call 1 #f 1
+                - get 0
+                - constant $$quote
+                - call 2 #f ||
+                - if
+                  - constant $$quote
                   - constant procedure 1 #f
                     - get 0
                     - call 1 #f ||
                     - if
-                      - get 4
+                      - get 0
+                      - call 1 #f ||
+                    - get 0
+                  - call 1 #f $$close
+                  - get 7
+                  - call 1 #f ||
+                  - call 2 #f 22
+                  - call 2 #f ||
+                - constant procedure 1 #f
+                  - get 0
+                  - call 1 #f ||
+                  - if
+                    - constant procedure 0 #f
+                      - get 9
+                      - get 9
+                      - call 2 #f 3
+                    - call 1 #f $$close
+                    - constant procedure 2 #f
+                      - constant procedure 2 #f
+                        - get 0
+                        - get 2
+                        - call 2 #f ||
+                      - call 1 #f $$close
+                      - get 2
+                      - get 2
+                      - call 2 #f 2
+                    - call 1 #f $$close
+                    - call 2 #f ||
+                  - get 5
+                  - get 8
+                  - call 2 #f ||
+                - call 1 #f $$close
+                - get 1
+                - call 1 #f 1
+              - call 1 #f $$close
+              - get 4
+              - call 1 #f ||
+              - call 1 #f 2
+              - call 1 #f 1
+            - get 3
+          - call 1 #f $$close
+          - constant #f
+          - constant #f
+          - call 2 #f 2
+        - call 1 #f $$close
+        - set ||
+        - constant optimization-context
+        - constant list
+          - optimizers
+          - literals
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant optimizers
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant optimizers
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant literals
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant literals
+        - call 2 #f ||
+        - set ||
+        - constant procedure 3 #f
+          - get 2
+          - get 2
+          - get 2
+          - call 2 #f ||
+          - get 4
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - get 2
+          - get 2
+          - get 2
+          - call 2 #f ||
+          - get 4
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 2 #f
+            - constant procedure 2 #f
+              - get 1
+              - call 1 #f ||
+              - if
+                - get 0
+                - call 1 #f ||
+                - continue
+              - constant #f
+              - if
+                - get 1
+                - call 1 #f ||
+                - get 1
+                - call 1 #f ||
+                - call 2 #f 6
+                - get 2
+                - call 1 #f ||
+                - get 2
+                - call 1 #f ||
+                - call 2 #f 7
+                - call 2 #f 21
+              - get 1
+              - call 1 #f ||
+              - if
+                - get 1
+                - get 1
+                - call 2 #f ||
+                - call 1 #f ||
+              - get 1
+              - get 1
+              - call 2 #f ||
+              - if
+                - constant ()
+              - constant #f
+            - call 1 #f $$close
+            - set 2
+            - constant procedure 2 #f
+              - get 0
+              - call 1 #f ||
+              - if
+                - get 1
+                - get 1
+                - call 1 #f ||
+                - call 2 #f 5
+                - get 2
+                - get 2
+                - call 1 #f ||
+                - call 2 #f 6
+                - call 2 #f ||
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 0
+                  - call 1 #f ||
+                - get 2
+              - call 1 #f $$close
+              - get 1
+              - call 1 #f ||
+              - if
+                - get 1
+                - get 3
+                - call 2 #f ||
+                - continue
+              - constant #f
+              - call 1 #f 1
+            - call 1 #f $$close
+            - set 1
+            - constant procedure 1 #f
+              - get 0
+              - constant $$syntax-rules
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
                     - constant procedure 1 #f
                       - constant procedure 1 #f
                         - get 0
+                        - call 1 #f ||
                         - if
+                          - get 4
+                        - constant procedure 1 #f
                           - constant procedure 1 #f
                             - get 0
-                            - get 5
+                            - if
+                              - constant procedure 1 #f
+                                - get 0
+                                - get 5
+                                - call 1 #f ||
+                                - call 2 #f 18
+                              - call 1 #f $$close
+                              - get 1
+                              - call 1 #f 1
+                            - get 4
                             - call 1 #f ||
-                            - call 2 #f 18
+                            - call 1 #f 7
                           - call 1 #f $$close
                           - get 1
+                          - call 1 #f ||
+                          - get 8
+                          - call 2 #f 16
                           - call 1 #f 1
-                        - get 4
+                        - call 1 #f $$close
+                        - get 1
                         - call 1 #f ||
-                        - call 1 #f 7
+                        - call 1 #f 1
                       - call 1 #f $$close
+                      - set 1
+                      - get 4
+                      - call 1 #f 1
+                    - call 1 #f $$close
+                    - constant #f
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+              - constant "unsupported optimizer"
+              - get 6
+              - call 2 #f ||
+            - call 1 #f $$close
+            - get 4
+            - call 1 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - constant #f
+          - call 2 #f 2
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - get 0
+            - if
+              - get 0
+            - get 2
+            - call 1 #f ||
+            - constant $$quote
+            - call 2 #f ||
+          - call 1 #f $$close
+          - get 1
+          - call 1 #f ||
+          - constant #f
+          - call 2 #f ||
+          - call 1 #f 1
+          - set 1
+          - if
+            - get 0
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - constant $$define-optimizer
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 7
+                  - get 1
+                  - get 2
+                  - get 7
+                  - call 1 #f ||
+                  - call 2 #f ||
+                  - call 3 #f ||
+                  - set 0
+                  - get 7
+                  - get 1
+                  - get 6
+                  - call 1 #f ||
+                  - call 3 #f ||
+                - call 1 #f $$close
+                - get 3
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - set 0
+                - constant #f
+              - get 0
+              - constant $$begin
+              - call 2 #f ||
+              - if
+                - constant $$begin
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - constant procedure 2 #f
+                      - get 0
+                      - call 1 #f ||
+                      - if
+                        - get 1
+                        - call 1 #f ||
                       - get 1
                       - call 1 #f ||
-                      - get 8
-                      - call 2 #f 16
-                      - call 1 #f 1
+                      - if
+                        - get 1
+                        - get 1
+                        - call 1 #f 7
+                        - call 2 #f ||
+                      - get 0
+                      - call 1 #f 6
                     - call 1 #f $$close
                     - get 1
                     - call 1 #f ||
-                    - call 1 #f 1
+                    - get 2
+                    - call 1 #f ||
+                    - call 2 #f 2
                   - call 1 #f $$close
                   - set 1
-                  - get 4
+                  - get 5
+                  - call 1 #f ||
                   - call 1 #f 1
                 - call 1 #f $$close
                 - constant #f
                 - call 1 #f 1
-              - call 1 #f $$close
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - constant "unsupported optimizer"
-          - get 6
-          - call 2 #f ||
-        - call 1 #f $$close
-        - get 4
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - constant #f
-      - call 2 #f 2
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - get 2
-        - call 1 #f ||
-        - constant $$quote
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 1
-      - call 1 #f ||
-      - constant #f
-      - call 2 #f ||
-      - call 1 #f 1
-      - set 1
-      - if
-        - get 0
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - constant $$define-optimizer
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 7
-              - get 1
-              - get 2
-              - get 7
-              - call 1 #f ||
-              - call 2 #f ||
-              - call 3 #f ||
-              - set 0
-              - get 7
-              - get 1
-              - get 6
-              - call 1 #f ||
-              - call 3 #f ||
-            - call 1 #f $$close
-            - get 3
-            - call 1 #f ||
-            - call 1 #f 1
-            - set 1
-            - set 0
-            - constant #f
-          - get 0
-          - constant $$begin
-          - call 2 #f ||
-          - if
-            - constant $$begin
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - constant procedure 2 #f
-                  - get 0
-                  - call 1 #f ||
-                  - if
-                    - get 1
-                    - call 1 #f ||
-                  - get 1
-                  - call 1 #f ||
-                  - if
-                    - get 1
-                    - get 1
-                    - call 1 #f 7
-                    - call 2 #f ||
-                  - get 0
-                  - call 1 #f 6
-                - call 1 #f $$close
-                - get 1
-                - call 1 #f ||
-                - get 2
-                - call 1 #f ||
-                - call 2 #f 2
-              - call 1 #f $$close
-              - set 1
-              - get 5
-              - call 1 #f ||
-              - call 1 #f 1
-            - call 1 #f $$close
-            - constant #f
-            - call 1 #f 1
-            - set 1
-            - call 2 #f ||
-          - constant procedure 1 #f
-            - get 0
-            - if
+                - set 1
+                - call 2 #f ||
               - constant procedure 1 #f
                 - get 0
-                - call 1 #f ||
-                - get 7
-                - call 1 #f 1
+                - if
+                  - constant procedure 1 #f
+                    - get 0
+                    - call 1 #f ||
+                    - get 7
+                    - call 1 #f 1
+                  - call 1 #f $$close
+                  - get 1
+                  - call 1 #f 1
+                - get 4
               - call 1 #f $$close
               - get 1
+              - get 7
+              - call 1 #f ||
+              - call 2 #f ||
               - call 1 #f 1
-            - get 4
-          - call 1 #f $$close
-          - get 1
-          - get 7
-          - call 1 #f ||
-          - call 2 #f ||
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 1
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant procedure 1 #f
-        - get 4
-        - get 1
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 2
-      - call 2 #f 18
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant compilation-context
-    - constant list
-      - environment
-      - metadata
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - call 1 #f ||
-    - set ||
-    - get ||
-    - constant environment
-    - call 2 #f ||
-    - set ||
-    - get ||
-    - constant metadata
-    - call 2 #f ||
-    - set ||
-    - constant procedure 2 #f
-      - get 0
-      - get 2
-      - call 1 #f ||
-      - call 2 #f ||
-      - get 2
-      - call 1 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - get 1
-      - get 1
-      - call 1 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - get 0
-        - if
-          - get 0
-        - get 2
-      - call 1 #f $$close
-      - get 1
-      - get 3
-      - call 1 #f ||
-      - call 2 #f 21
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant 2
-      - get 2
-      - call 2 #f ||
-      - get 1
-      - if
-        - constant 1
-        - continue
-      - constant 0
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-        - constant #f
-        - call 2 #f ||
-        - if
-          - get 0
-          - call 1 #f ||
-          - get 48
-          - call 2 #f ||
-          - if
-            - get 0
-            - call 1 #f ||
-            - constant 0
-            - call 2 #f ||
-          - constant #f
-        - constant #f
-      - constant #f
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-        - call 1 #f ||
-      - constant #f
-      - get 1
-      - call 2 #f 32
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-      - get 47
-      - constant 0
-      - get 2
-      - call 3 #f 35
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 2
-      - get 2
-      - call 1 #f ||
-      - get 3
-      - call 1 #f ||
-      - call 1 #f ||
-      - if
-        - get 2
-        - continue
-      - get 4
-      - get 4
-      - call 1 #f ||
-      - get 4
-      - call 3 #f ||
-      - call 1 #f ||
-      - call 3 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 5 #f
-      - get 2
-      - call 1 #f ||
-      - if
-        - get 1
-        - get 5
-        - get 5
-        - call 2 #f ||
-        - get 2
-        - call 3 #f 38
-      - get 4
-      - get 3
-      - call 1 #f ||
-      - get 6
-      - constant #f
-      - call 2 #f ||
-      - get 6
-      - get 6
-      - call 1 #f ||
-      - get 6
-      - get 6
-      - call 5 #f ||
-      - call 3 #f ||
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 4 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - get 4
-            - call 1 #f ||
-            - if
-              - get 9
-              - get 5
-              - get 8
-              - call 3 #f 3
-            - get 9
-            - get 5
-            - get 11
-            - constant $procedure
-            - call 2 #f ||
-            - constant $procedure
-            - get 10
-            - call 1 #f ||
-            - call 3 #f 5
-            - call 3 #f ||
-          - call 1 #f $$close
-          - constant procedure 3 #f
-            - get 2
-            - get 2
-            - get 7
-            - get 8
-            - call 1 #f ||
-            - get 14
-            - if
-              - constant 1
-              - continue
-            - constant 0
-            - call 2 #f ||
-            - get 14
-            - call 2 #f ||
-            - get 4
-            - call 5 #f ||
-          - call 1 #f $$close
-          - call 1 #f 1
-        - call 1 #f $$close
-        - get 5
-        - call 1 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 3
-      - call 1 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - if
-        - get 0
-      - get 47
-      - constant 1
-      - get 2
-      - call 3 #f 35
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 3 #f
-      - get 1
-      - call 1 #f ||
-      - if
-        - get 50
-        - get 3
-        - get 3
-        - call 2 #f ||
-        - get 2
-        - call 3 #f 37
-      - get 1
-      - call 1 #f ||
-      - if
-        - constant procedure 1 #f
-          - get 0
-          - constant $$apply
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - constant #t
-            - get 5
-            - call 4 #f ||
-          - get 0
-          - constant $$begin
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - get 4
-            - call 3 #f ||
-          - get 0
-          - constant $$if
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - constant procedure 1 #f
-              - get 54
-              - get 9
-              - get 9
-              - call 1 #f ||
-              - get 3
-              - call 3 #f ||
-              - get 10
-              - get 10
-              - call 1 #f ||
-              - get 4
-              - call 3 #f ||
-              - call 3 #f 43
             - call 1 #f $$close
-            - get 5
-            - call 1 #f ||
-            - if
-              - constant ()
-              - continue
-            - get 5
-            - call 1 #f 37
-            - call 1 #f 1
-            - set 1
-            - call 3 #f ||
-          - get 0
-          - constant $$lambda
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 0
-              - call 1 #f 12
-              - get 1
-              - call 1 #f 32
-              - call 1 #f ||
-              - call 2 #f ||
-              - get 7
-              - constant #f
-              - get 3
-              - call 1 #f 14
-              - call 2 #f ||
-              - call 1 #f ||
-              - call 2 #f ||
-              - get 7
-              - call 1 #f ||
-              - constant ()
-              - call 3 #f ||
-              - constant ()
-              - call 3 #f 36
-              - constant 1
-              - constant #f
-              - call 2 #f ||
-              - constant $$close
-              - get 7
-              - call 3 #f 41
-              - call 2 #f 38
-            - call 1 #f $$close
-            - get 4
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant $$libraries
-          - call 2 #f ||
-          - if
-            - get 4
-            - call 1 #f ||
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 36
-          - get 0
-          - constant $$macros
-          - call 2 #f ||
-          - if
-            - get 4
-            - call 1 #f ||
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 36
-          - get 0
-          - constant $$optimizers
-          - call 2 #f ||
-          - if
-            - get 4
-            - call 1 #f ||
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 36
-          - get 0
-          - constant $$quote
-          - call 2 #f ||
-          - if
-            - get 3
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 36
-          - get 0
-          - constant $$set!
-          - call 2 #f ||
-          - if
-            - get 4
-            - get 4
-            - call 1 #f ||
-            - get 53
-            - get 7
-            - constant #f
-            - call 2 #f ||
-            - get 7
-            - call 1 #f ||
-            - call 2 #f ||
-            - get 6
-            - call 1 #f ||
-            - call 3 #f 41
-            - call 3 #f ||
-          - get 0
-          - constant $$symbols
-          - call 2 #f ||
-          - if
-            - get 4
-            - call 1 #f ||
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 36
-          - get 0
-          - constant $$dynamic-symbols
-          - call 2 #f ||
-          - if
-            - get 4
-            - call 1 #f ||
-            - call 1 #f ||
-            - get 3
-            - call 2 #f 36
-          - get 4
-          - get 4
-          - constant #f
-          - get 5
-          - call 4 #f ||
-        - call 1 #f $$close
-        - get 2
-        - call 1 #f ||
-        - call 1 #f 1
-      - get 1
-      - get 1
-      - call 2 #f 34
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - get ||
-      - set ||
-      - constant procedure 1 #f
-        - get 0
-      - call 1 #f $$close
-      - set 30
-      - get 0
-      - set ||
-      - get 0
-      - set ||
-      - get 0
-      - set ||
-      - get 0
-      - set ||
-      - constant #f
-    - call 1 #f $$close
-    - constant procedure 0 #t
-      - constant #f
-    - call 1 #f $$close
-    - call 1 #f 1
-    - set 1
-    - set ||
-    - constant list
-      - list
-        - list
-          - stak
-          - rust
-      - list
-        - list
-          - scheme
-          - r5rs
-        - (\* . ||)
-        - (+ . ||)
-        - (- . ||)
-        - (/ . ||)
-        - (< . ||)
-        - (<= . ||)
-        - (= . ||)
-        - (> . ||)
-        - (>= . ||)
-        - (abs . ||)
-        - (acos . ||)
-        - (and . ||)
-        - (angle . ||)
-        - (append . ||)
-        - (apply . ||)
-        - (asin . ||)
-        - (assoc . ||)
-        - (assq . ||)
-        - (assv . ||)
-        - (atan . ||)
-        - (begin . ||)
-        - (boolean? . ||)
-        - (caaaar . ||)
-        - (caaadr . ||)
-        - (caaar . ||)
-        - (caadar . ||)
-        - (caaddr . ||)
-        - (caadr . ||)
-        - (caar . ||)
-        - (cadaar . ||)
-        - (cadadr . ||)
-        - (cadar . ||)
-        - (caddar . ||)
-        - (cadddr . ||)
-        - (caddr . ||)
-        - (cadr . ||)
-        - (call-with-current-continuation . ||)
-        - (call-with-input-file . ||)
-        - (call-with-output-file . ||)
-        - (call-with-values . ||)
-        - (car . ||)
-        - (case . ||)
-        - (cdaaar . ||)
-        - (cdaadr . ||)
-        - (cdaar . ||)
-        - (cdadar . ||)
-        - (cdaddr . ||)
-        - (cdadr . ||)
-        - (cdar . ||)
-        - (cddaar . ||)
-        - (cddadr . ||)
-        - (cddar . ||)
-        - (cdddar . ||)
-        - (cddddr . ||)
-        - (cdddr . ||)
-        - (cddr . ||)
-        - (cdr . ||)
-        - (ceiling . ||)
-        - (char->integer . ||)
-        - (char-alphabetic? . ||)
-        - (char-ci<=? . ||)
-        - (char-ci<? . ||)
-        - (char-ci=? . ||)
-        - (char-ci>=? . ||)
-        - (char-ci>? . ||)
-        - (char-downcase . ||)
-        - (char-lower-case? . ||)
-        - (char-numeric? . ||)
-        - (char-ready? . ||)
-        - (char-upcase . ||)
-        - (char-upper-case? . ||)
-        - (char-whitespace? . ||)
-        - (char<=? . ||)
-        - (char<? . ||)
-        - (char=? . ||)
-        - (char>=? . ||)
-        - (char>? . ||)
-        - (char? . ||)
-        - (close-input-port . ||)
-        - (close-output-port . ||)
-        - (complex? . ||)
-        - (cond . ||)
-        - (cons . ||)
-        - (cos . ||)
-        - (current-input-port . ||)
-        - (current-output-port . ||)
-        - (define . ||)
-        - (define-syntax . ||)
-        - (delay . ||)
-        - (denominator . ||)
-        - (display . ||)
-        - (do . ||)
-        - (dynamic-wind . ||)
-        - (eof-object? . ||)
-        - (eq? . ||)
-        - (equal? . ||)
-        - (eqv? . ||)
-        - (eval . ||)
-        - (even? . ||)
-        - (exact->inexact . ||)
-        - (exact? . ||)
-        - (exp . ||)
-        - (expt . ||)
-        - (floor . ||)
-        - (for-each . ||)
-        - (force . ||)
-        - (gcd . ||)
-        - (if . ||)
-        - (imag-part . ||)
-        - (inexact->exact . ||)
-        - (inexact? . ||)
-        - (input-port? . ||)
-        - (integer->char . ||)
-        - (integer? . ||)
-        - (interaction-environment . ||)
-        - (lambda . ||)
-        - (lcm . ||)
-        - (length . ||)
-        - (let . ||)
-        - (let\* . ||)
-        - (let-syntax . ||)
-        - (letrec . ||)
-        - (letrec-syntax . ||)
-        - (list . ||)
-        - (list->string . ||)
-        - (list->vector . ||)
-        - (list-ref . ||)
-        - (list-tail . ||)
-        - (list? . ||)
-        - (load . ||)
-        - (log . ||)
-        - (magnitude . ||)
-        - (make-polar . ||)
-        - (make-rectangular . ||)
-        - (make-string . ||)
-        - (make-vector . ||)
-        - (map . ||)
-        - (max . ||)
-        - (member . ||)
-        - (memq . ||)
-        - (memv . ||)
-        - (min . ||)
-        - (modulo . ||)
-        - (negative? . ||)
-        - (newline . ||)
-        - (not . ||)
-        - (null-environment . ||)
-        - (null? . ||)
-        - (number->string . ||)
-        - (number? . ||)
-        - (numerator . ||)
-        - (odd? . ||)
-        - (open-input-file . ||)
-        - (open-output-file . ||)
-        - (or . ||)
-        - (output-port? . ||)
-        - (pair? . ||)
-        - (peek-char . ||)
-        - (positive? . ||)
-        - (procedure? . ||)
-        - (quasiquote . ||)
-        - (quote . ||)
-        - (quotient . ||)
-        - (rational? . ||)
-        - (rationalize . ||)
-        - (read . ||)
-        - (read-char . ||)
-        - (real-part . ||)
-        - (real? . ||)
-        - (remainder . ||)
-        - (reverse . ||)
-        - (round . ||)
-        - (scheme-report-environment . ||)
-        - (set! . ||)
-        - (set-car! . ||)
-        - (set-cdr! . ||)
-        - (sin . ||)
-        - (sqrt . ||)
-        - (string . ||)
-        - (string->list . ||)
-        - (string->number . ||)
-        - (string->symbol . ||)
-        - (string-append . ||)
-        - (string-ci<=? . ||)
-        - (string-ci<? . ||)
-        - (string-ci=? . ||)
-        - (string-ci>=? . ||)
-        - (string-ci>? . ||)
-        - (string-copy . ||)
-        - (string-fill! . ||)
-        - (string-length . ||)
-        - (string-ref . ||)
-        - (string-set! . ||)
-        - (string<=? . ||)
-        - (string<? . ||)
-        - (string=? . ||)
-        - (string>=? . ||)
-        - (string>? . ||)
-        - (string? . ||)
-        - (substring . ||)
-        - (symbol->string . ||)
-        - (symbol? . ||)
-        - (tan . ||)
-        - (truncate . ||)
-        - (values . ||)
-        - (vector . ||)
-        - (vector->list . ||)
-        - (vector-fill! . ||)
-        - (vector-length . ||)
-        - (vector-ref . ||)
-        - (vector-set! . ||)
-        - (vector? . ||)
-        - (with-input-from-file . ||)
-        - (with-output-to-file . ||)
-        - (write . ||)
-        - (write-char . ||)
-        - (zero? . ||)
-      - list
-        - list
-          - scheme
-          - eval
-        - (environment . ||)
-        - (eval . ||)
-      - list
-        - list
-          - scheme
-          - repl
-        - (interaction-environment . ||)
-      - list
-        - list
-          - scheme
-          - time
-        - (current-jiffy . ||)
-        - (current-second . ||)
-        - (jiffies-per-second . ||)
-      - list
-        - list
-          - scheme
-          - file
-        - (call-with-input-file . ||)
-        - (call-with-output-file . ||)
-        - (delete-file . ||)
-        - (file-exists? . ||)
-        - (open-binary-input-file . ||)
-        - (open-binary-output-file . ||)
-        - (open-input-file . ||)
-        - (open-output-file . ||)
-        - (with-input-from-file . ||)
-        - (with-output-to-file . ||)
-      - list
-        - list
-          - scheme
-          - process-context
-        - (command-line . ||)
-        - (emergency-exit . ||)
-        - (exit . ||)
-        - (get-environment-variable . ||)
-        - (get-environment-variables . ||)
-      - list
-        - list
-          - scheme
-          - lazy
-        - (delay . ||)
-        - (delay-force . ||)
-        - (force . ||)
-        - (promise? . ||)
-        - (make-promise . ||)
-      - list
-        - list
-          - scheme
-          - write
-        - (display . ||)
-        - (write . ||)
-      - list
-        - list
-          - scheme
-          - read
-        - (read . ||)
-      - list
-        - list
-          - scheme
-          - char
-        - (char-whitespace? . ||)
-        - (special-chars . ||)
-      - list
-        - list
-          - scheme
-          - cxr
-        - (caaar . ||)
-        - (caadr . ||)
-        - (cadar . ||)
-        - (caddr . ||)
-        - (cdaar . ||)
-        - (cdadr . ||)
-        - (cddar . ||)
-        - (cdddr . ||)
-        - (caaaar . ||)
-        - (caaadr . ||)
-        - (caadar . ||)
-        - (caaddr . ||)
-        - (cadaar . ||)
-        - (cadadr . ||)
-        - (caddar . ||)
-        - (cadddr . ||)
-        - (cdaaar . ||)
-        - (cdaadr . ||)
-        - (cdadar . ||)
-        - (cdaddr . ||)
-        - (cddaar . ||)
-        - (cddadr . ||)
-        - (cdddar . ||)
-        - (cddddr . ||)
-      - list
-        - list
-          - scheme
-          - inexact
-        - (exp . ||)
-        - (log . ||)
-      - list
-        - list
-          - scheme
-          - base
-        - (syntax-rules . ||)
-        - (define-syntax . ||)
-        - (\_ . ||)
-        - (... . ||)
-        - (define . ||)
-        - (lambda . ||)
-        - (let-syntax . ||)
-        - (letrec-syntax . ||)
-        - (begin . ||)
-        - (quasiquote . ||)
-        - (unquote . ||)
-        - (unquote-splicing . ||)
-        - (quote . ||)
-        - (set! . ||)
-        - (cond-expand . ||)
-        - (let . ||)
-        - (let\* . ||)
-        - (letrec . ||)
-        - (letrec\* . ||)
-        - (define-values . ||)
-        - (let-values . ||)
-        - (let\*-values . ||)
-        - (if . ||)
-        - (cond . ||)
-        - (case . ||)
-        - (else . ||)
-        - (=> . ||)
-        - (and . ||)
-        - (or . ||)
-        - (when . ||)
-        - (unless . ||)
-        - (do . ||)
-        - (base . ||)
-        - (library . ||)
-        - (r7rs . ||)
-        - (scheme . ||)
-        - (stak . ||)
-        - (rib . ||)
-        - (cons . ||)
-        - (close . ||)
-        - (rib? . ||)
-        - (rib-car . ||)
-        - (rib-cdr . ||)
-        - (rib-tag . ||)
-        - (rib-set-car! . ||)
-        - (rib-set-cdr! . ||)
-        - (eq? . ||)
-        - (apply . ||)
-        - (data-rib . ||)
-        - (eqv? . ||)
-        - (equal? . ||)
-        - (procedure? . ||)
-        - (boolean? . ||)
-        - (not . ||)
-        - (integer? . ||)
-        - (rational? . ||)
-        - (real? . ||)
-        - (complex? . ||)
-        - (number? . ||)
-        - (exact? . ||)
-        - (inexact? . ||)
-        - (zero? . ||)
-        - (positive? . ||)
-        - (negative? . ||)
-        - (even? . ||)
-        - (odd? . ||)
-        - (+ . ||)
-        - (- . ||)
-        - (\* . ||)
-        - (/ . ||)
-        - (remainder . ||)
-        - (quotient . ||)
-        - (truncate-remainder . ||)
-        - (truncate-quotient . ||)
-        - (modulo . ||)
-        - (floor-remainder . ||)
-        - (truncate . ||)
-        - (floor . ||)
-        - (ceiling . ||)
-        - (round . ||)
-        - (exact . ||)
-        - (inexact . ||)
-        - (abs . ||)
-        - (expt . ||)
-        - (= . ||)
-        - (< . ||)
-        - (> . ||)
-        - (<= . ||)
-        - (>= . ||)
-        - (min . ||)
-        - (max . ||)
-        - (char? . ||)
-        - (integer->char . ||)
-        - (char->integer . ||)
-        - (char=? . ||)
-        - (char<? . ||)
-        - (char<=? . ||)
-        - (char>? . ||)
-        - (char>=? . ||)
-        - (null? . ||)
-        - (pair? . ||)
-        - (list? . ||)
-        - (car . ||)
-        - (cdr . ||)
-        - (set-car! . ||)
-        - (set-cdr! . ||)
-        - (caar . ||)
-        - (cadr . ||)
-        - (cdar . ||)
-        - (cddr . ||)
-        - (list . ||)
-        - (make-list . ||)
-        - (length . ||)
-        - (map . ||)
-        - (for-each . ||)
-        - (list-ref . ||)
-        - (list-set! . ||)
-        - (list-tail . ||)
-        - (member . ||)
-        - (memq . ||)
-        - (memv . ||)
-        - (assoc . ||)
-        - (assq . ||)
-        - (assv . ||)
-        - (append . ||)
-        - (reverse . ||)
-        - (fold-left . ||)
-        - (fold-right . ||)
-        - (reduce-right . ||)
-        - (list-copy . ||)
-        - (bytevector? . ||)
-        - (bytevector-length . ||)
-        - (bytevector-u8-ref . ||)
-        - (list->bytevector . ||)
-        - (bytevector->list . ||)
-        - (vector? . ||)
-        - (vector . ||)
-        - (make-vector . ||)
-        - (vector-length . ||)
-        - (vector-ref . ||)
-        - (vector-set! . ||)
-        - (list->vector . ||)
-        - (vector->list . ||)
-        - (string? . ||)
-        - (list->string . ||)
-        - (string->list . ||)
-        - (string-append . ||)
-        - (string-length . ||)
-        - (string-ref . ||)
-        - (number->string . ||)
-        - (string->number . ||)
-        - (string-copy . ||)
-        - (substring . ||)
-        - (make-string . ||)
-        - (string=? . ||)
-        - (string<? . ||)
-        - (string>? . ||)
-        - (symbol? . ||)
-        - (symbol->string . ||)
-        - (string->uninterned-symbol . ||)
-        - (string->symbol . ||)
-        - (define-record-type . ||)
-        - (record? . ||)
-        - (values . ||)
-        - (call-with-values . ||)
-        - (call/cc . ||)
-        - (call-with-current-continuation . ||)
-        - (make-point . ||)
-        - (point? . ||)
-        - (point-depth . ||)
-        - (point-before . ||)
-        - (point-after . ||)
-        - (point-parent . ||)
-        - (current-point . ||)
-        - (set-current-point! . ||)
-        - (dynamic-wind . ||)
-        - (make-parameter . ||)
-        - (parameterize . ||)
-        - (error-object? . ||)
-        - (error-object-message . ||)
-        - (error-object-irritants . ||)
-        - (with-exception-handler . ||)
-        - (raise . ||)
-        - (raise-continuable . ||)
-        - (error . ||)
-        - (read-error . ||)
-        - (file-error . ||)
-        - (read-error? . ||)
-        - (file-error? . ||)
-        - (guard . ||)
-        - (unwind . ||)
-        - (eof-object . ||)
-        - (eof-object? . ||)
-        - (make-port . ||)
-        - (make-input-port . ||)
-        - (make-output-port . ||)
-        - (port? . ||)
-        - (input-port? . ||)
-        - (output-port? . ||)
-        - (textual-port? . ||)
-        - (binary-port? . ||)
-        - (current-input-port . ||)
-        - (current-output-port . ||)
-        - (current-error-port . ||)
-        - (close-port . ||)
-        - (close-input-port . ||)
-        - (close-output-port . ||)
-        - (call-with-port . ||)
-        - (read-u8 . ||)
-        - (peek-u8 . ||)
-        - (read-char . ||)
-        - (peek-char . ||)
-        - (write-u8 . ||)
-        - (write-char . ||)
-        - (write-string . ||)
-        - (write-bytevector . ||)
-        - (newline . ||)
-        - (write-value . ||)
-      - list
-        - list
-          - stak
-          - base
-        - (syntax-rules . ||)
-        - (define-syntax . ||)
-        - (\_ . ||)
-        - (... . ||)
-        - (define . ||)
-        - (lambda . ||)
-        - (let-syntax . ||)
-        - (letrec-syntax . ||)
-        - (begin . ||)
-        - (quasiquote . ||)
-        - (unquote . ||)
-        - (unquote-splicing . ||)
-        - (quote . ||)
-        - (set! . ||)
-        - (cond-expand . ||)
-        - (let . ||)
-        - (let\* . ||)
-        - (letrec . ||)
-        - (letrec\* . ||)
-        - (define-values . ||)
-        - (let-values . ||)
-        - (let\*-values . ||)
-        - (if . ||)
-        - (cond . ||)
-        - (case . ||)
-        - (else . ||)
-        - (=> . ||)
-        - (and . ||)
-        - (or . ||)
-        - (boolean-or . ||)
-        - (when . ||)
-        - (unless . ||)
-        - (do . ||)
-        - (base . ||)
-        - (library . ||)
-        - (r7rs . ||)
-        - (scheme . ||)
-        - (stak . ||)
-        - (pair-type . ||)
-        - (null-type . ||)
-        - (boolean-type . ||)
-        - (procedure-type . ||)
-        - (symbol-type . ||)
-        - (string-type . ||)
-        - (char-type . ||)
-        - (vector-type . ||)
-        - (bytevector-type . ||)
-        - (record-type . ||)
-        - (primitive . ||)
-        - (rib . ||)
-        - (cons . ||)
-        - (close . ||)
-        - (rib? . ||)
-        - (rib-car . ||)
-        - (rib-cdr . ||)
-        - (rib-tag . ||)
-        - (rib-set-car! . ||)
-        - (rib-set-cdr! . ||)
-        - (eq? . ||)
-        - (apply . ||)
-        - (data-rib . ||)
-        - (eqv? . ||)
-        - (equal? . ||)
-        - (procedure? . ||)
-        - (boolean? . ||)
-        - (not . ||)
-        - (integer? . ||)
-        - (rational? . ||)
-        - (real? . ||)
-        - (complex? . ||)
-        - (number? . ||)
-        - (exact? . ||)
-        - (inexact? . ||)
-        - (zero? . ||)
-        - (positive? . ||)
-        - (negative? . ||)
-        - (even? . ||)
-        - (odd? . ||)
-        - (+ . ||)
-        - (- . ||)
-        - (\* . ||)
-        - (/ . ||)
-        - (remainder . ||)
-        - (quotient . ||)
-        - (truncate-remainder . ||)
-        - (truncate-quotient . ||)
-        - (modulo . ||)
-        - (floor-remainder . ||)
-        - (truncate . ||)
-        - (floor . ||)
-        - (ceiling . ||)
-        - (round . ||)
-        - (exact . ||)
-        - (inexact . ||)
-        - (abs . ||)
-        - (exp . ||)
-        - (expt . ||)
-        - (log . ||)
-        - (= . ||)
-        - (< . ||)
-        - (> . ||)
-        - (<= . ||)
-        - (>= . ||)
-        - (min . ||)
-        - (max . ||)
-        - (char? . ||)
-        - (integer->char . ||)
-        - (char->integer . ||)
-        - (char=? . ||)
-        - (char<? . ||)
-        - (char<=? . ||)
-        - (char>? . ||)
-        - (char>=? . ||)
-        - (null? . ||)
-        - (pair? . ||)
-        - (list? . ||)
-        - (car . ||)
-        - (cdr . ||)
-        - (set-car! . ||)
-        - (set-cdr! . ||)
-        - (caar . ||)
-        - (cadr . ||)
-        - (cdar . ||)
-        - (cddr . ||)
-        - (list . ||)
-        - (make-list . ||)
-        - (length . ||)
-        - (map . ||)
-        - (for-each . ||)
-        - (filter . ||)
-        - (list-ref . ||)
-        - (list-set! . ||)
-        - (list-head . ||)
-        - (list-tail . ||)
-        - (member . ||)
-        - (memq . ||)
-        - (memv . ||)
-        - (assoc . ||)
-        - (assq . ||)
-        - (assv . ||)
-        - (append . ||)
-        - (reverse . ||)
-        - (fold-left . ||)
-        - (fold-right . ||)
-        - (reduce-right . ||)
-        - (memq-position . ||)
-        - (memv-position . ||)
-        - (member-position . ||)
-        - (list-copy . ||)
-        - (bytevector? . ||)
-        - (bytevector-length . ||)
-        - (bytevector-u8-ref . ||)
-        - (list->bytevector . ||)
-        - (bytevector->list . ||)
-        - (vector? . ||)
-        - (vector . ||)
-        - (make-vector . ||)
-        - (vector-length . ||)
-        - (vector-ref . ||)
-        - (vector-set! . ||)
-        - (list->vector . ||)
-        - (vector->list . ||)
-        - (string? . ||)
-        - (list->string . ||)
-        - (string->code-points . ||)
-        - (code-points->string . ||)
-        - (string->list . ||)
-        - (string-append . ||)
-        - (string-length . ||)
-        - (string-ref . ||)
-        - (number->string . ||)
-        - (string->number . ||)
-        - (string-copy . ||)
-        - (substring . ||)
-        - (make-string . ||)
-        - (string=? . ||)
-        - (string<? . ||)
-        - (string>? . ||)
-        - (symbol? . ||)
-        - (symbol->string . ||)
-        - (string->uninterned-symbol . ||)
-        - (define-record-type . ||)
-        - (record? . ||)
-        - (values . ||)
-        - (call-with-values . ||)
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 0
-          - call 1 #f ||
-          - if
-            - get 4
-          - constant procedure 1 #f
-            - get 0
-            - if
-              - get 0
-              - call 1 #f ||
-            - get 2
-            - call 1 #f ||
-            - call 1 #f 5
-          - call 1 #f $$close
-          - constant procedure 1 #f
-            - get 7
             - get 1
-            - constant procedure 2 #f
-              - get 1
-              - get 1
-              - call 1 #f ||
-              - call 2 #f ||
-            - call 1 #f $$close
-            - call 3 #f ||
+            - call 1 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 4
+            - get 1
+            - call 2 #f ||
           - call 1 #f $$close
           - get 2
-          - call 1 #f ||
-          - call 1 #f 1
-          - set 1
+          - call 2 #f 18
           - call 1 #f 1
         - call 1 #f $$close
-        - set 1
+        - set ||
+        - constant compilation-context
+        - constant list
+          - environment
+          - metadata
+        - call 2 #f ||
+        - set ||
         - get ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - constant #f
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 2 #f
-      - constant procedure 1 #f
-        - constant procedure 1 #f
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - call 1 #f ||
+        - set ||
+        - get ||
+        - constant environment
+        - call 2 #f ||
+        - set ||
+        - get ||
+        - constant metadata
+        - call 2 #f ||
+        - set ||
+        - constant procedure 2 #f
+          - get 0
+          - get 2
+          - call 1 #f ||
+          - call 2 #f ||
+          - get 2
+          - call 1 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - get 1
+          - get 1
+          - call 1 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
           - constant procedure 1 #f
             - get 0
             - if
               - get 0
-              - call 1 #f ||
             - get 2
           - call 1 #f $$close
           - get 1
-          - get 4
-          - call 2 #f ||
+          - get 3
+          - call 1 #f ||
+          - call 2 #f 21
           - call 1 #f 1
         - call 1 #f $$close
-        - get 3
-        - call 2 #f 18
-      - call 1 #f $$close
-      - get ||
-      - constant procedure 1 #f
+        - set ||
+        - constant procedure 2 #f
+          - constant 2
+          - get 2
+          - call 2 #f ||
+          - get 1
+          - if
+            - constant 1
+            - continue
+          - constant 0
+          - call 2 #f ||
+        - call 1 #f $$close
+        - set ||
         - constant procedure 1 #f
           - get 0
-          - constant #f
-          - call 2 #f ||
+          - call 1 #f ||
           - if
-            - constant "unknown library"
-            - get 3
+            - get 0
+            - call 1 #f ||
+            - constant #f
             - call 2 #f ||
-            - continue
+            - if
+              - get 0
+              - call 1 #f ||
+              - get 48
+              - call 2 #f ||
+              - if
+                - get 0
+                - call 1 #f ||
+                - constant 0
+                - call 2 #f ||
+              - constant #f
+            - constant #f
           - constant #f
-          - set 0
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 1 #f
           - get 0
           - call 1 #f ||
+          - if
+            - get 0
+            - call 1 #f ||
+          - constant #f
+          - get 1
+          - call 2 #f 32
         - call 1 #f $$close
-        - get 1
-        - get ||
-        - call 2 #f ||
-        - call 1 #f 1
-      - call 1 #f $$close
-      - get 4
-      - call 2 #f ||
-      - call 2 #f ||
-      - call 1 #f 1
-    - call 1 #f $$close
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 2
-        - get 1
-        - call 1 #f ||
-        - get 2
-        - call 1 #f ||
-        - call 1 #f ||
-        - if
+        - set ||
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+          - get 47
+          - constant 0
+          - get 2
+          - call 3 #f 35
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - get 2
+          - get 2
+          - call 1 #f ||
+          - get 3
+          - call 1 #f ||
+          - call 1 #f ||
+          - if
+            - get 2
+            - continue
+          - get 4
+          - get 4
+          - call 1 #f ||
+          - get 4
+          - call 3 #f ||
+          - call 1 #f ||
+          - call 3 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 5 #f
+          - get 2
+          - call 1 #f ||
+          - if
+            - get 1
+            - get 5
+            - get 5
+            - call 2 #f ||
+            - get 2
+            - call 3 #f 38
           - get 4
           - get 3
           - call 1 #f ||
+          - get 6
+          - constant #f
           - call 2 #f ||
-          - continue
-        - get 4
-        - get 3
-        - call 1 #f ||
-        - call 2 #f ||
-        - call 3 #f ||
-      - call 1 #f $$close
-      - constant list
-        - list
-          - ||
-          - $$syntax-rules
-          - $$...
-          - ()
+          - get 6
+          - get 6
+          - call 1 #f ||
+          - get 6
+          - get 6
+          - call 5 #f ||
+          - call 3 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 4 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 4
+                - call 1 #f ||
+                - if
+                  - get 9
+                  - get 5
+                  - get 8
+                  - call 3 #f 3
+                - get 9
+                - get 5
+                - get 11
+                - constant $procedure
+                - call 2 #f ||
+                - constant $procedure
+                - get 10
+                - call 1 #f ||
+                - call 3 #f 5
+                - call 3 #f ||
+              - call 1 #f $$close
+              - constant procedure 3 #f
+                - get 2
+                - get 2
+                - get 7
+                - get 8
+                - call 1 #f ||
+                - get 14
+                - if
+                  - constant 1
+                  - continue
+                - constant 0
+                - call 2 #f ||
+                - get 14
+                - call 2 #f ||
+                - get 4
+                - call 5 #f ||
+              - call 1 #f $$close
+              - call 1 #f 1
+            - call 1 #f $$close
+            - get 5
+            - call 1 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - get 3
+          - call 1 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - if
+            - get 0
+          - get 47
+          - constant 1
+          - get 2
+          - call 3 #f 35
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 3 #f
+          - get 1
+          - call 1 #f ||
+          - if
+            - get 50
+            - get 3
+            - get 3
+            - call 2 #f ||
+            - get 2
+            - call 3 #f 37
+          - get 1
+          - call 1 #f ||
+          - if
+            - constant procedure 1 #f
+              - get 0
+              - constant $$apply
+              - call 2 #f ||
+              - if
+                - get 4
+                - get 4
+                - call 1 #f ||
+                - constant #t
+                - get 5
+                - call 4 #f ||
+              - get 0
+              - constant $$begin
+              - call 2 #f ||
+              - if
+                - get 4
+                - get 4
+                - call 1 #f ||
+                - get 4
+                - call 3 #f ||
+              - get 0
+              - constant $$if
+              - call 2 #f ||
+              - if
+                - get 4
+                - get 4
+                - call 1 #f ||
+                - constant procedure 1 #f
+                  - get 54
+                  - get 9
+                  - get 9
+                  - call 1 #f ||
+                  - get 3
+                  - call 3 #f ||
+                  - get 10
+                  - get 10
+                  - call 1 #f ||
+                  - get 4
+                  - call 3 #f ||
+                  - call 3 #f 43
+                - call 1 #f $$close
+                - get 5
+                - call 1 #f ||
+                - if
+                  - constant ()
+                  - continue
+                - get 5
+                - call 1 #f 37
+                - call 1 #f 1
+                - set 1
+                - call 3 #f ||
+              - get 0
+              - constant $$lambda
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 0
+                  - call 1 #f 12
+                  - get 1
+                  - call 1 #f 32
+                  - call 1 #f ||
+                  - call 2 #f ||
+                  - get 7
+                  - constant #f
+                  - get 3
+                  - call 1 #f 14
+                  - call 2 #f ||
+                  - call 1 #f ||
+                  - call 2 #f ||
+                  - get 7
+                  - call 1 #f ||
+                  - constant ()
+                  - call 3 #f ||
+                  - constant ()
+                  - call 3 #f 36
+                  - constant 1
+                  - constant #f
+                  - call 2 #f ||
+                  - constant $$close
+                  - get 7
+                  - call 3 #f 41
+                  - call 2 #f 38
+                - call 1 #f $$close
+                - get 4
+                - call 1 #f ||
+                - call 1 #f 1
+              - get 0
+              - constant $$libraries
+              - call 2 #f ||
+              - if
+                - get 4
+                - call 1 #f ||
+                - call 1 #f ||
+                - get 3
+                - call 2 #f 36
+              - get 0
+              - constant $$macros
+              - call 2 #f ||
+              - if
+                - get 4
+                - call 1 #f ||
+                - call 1 #f ||
+                - get 3
+                - call 2 #f 36
+              - get 0
+              - constant $$optimizers
+              - call 2 #f ||
+              - if
+                - get 4
+                - call 1 #f ||
+                - call 1 #f ||
+                - get 3
+                - call 2 #f 36
+              - get 0
+              - constant $$quote
+              - call 2 #f ||
+              - if
+                - get 3
+                - call 1 #f ||
+                - get 3
+                - call 2 #f 36
+              - get 0
+              - constant $$set!
+              - call 2 #f ||
+              - if
+                - get 4
+                - get 4
+                - call 1 #f ||
+                - get 53
+                - get 7
+                - constant #f
+                - call 2 #f ||
+                - get 7
+                - call 1 #f ||
+                - call 2 #f ||
+                - get 6
+                - call 1 #f ||
+                - call 3 #f 41
+                - call 3 #f ||
+              - get 0
+              - constant $$symbols
+              - call 2 #f ||
+              - if
+                - get 4
+                - call 1 #f ||
+                - call 1 #f ||
+                - get 3
+                - call 2 #f 36
+              - get 0
+              - constant $$dynamic-symbols
+              - call 2 #f ||
+              - if
+                - get 4
+                - call 1 #f ||
+                - call 1 #f ||
+                - get 3
+                - call 2 #f 36
+              - get 4
+              - get 4
+              - constant #f
+              - get 5
+              - call 4 #f ||
+            - call 1 #f $$close
+            - get 2
+            - call 1 #f ||
+            - call 1 #f 1
+          - get 1
+          - get 1
+          - call 2 #f 34
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 1 #f
+          - get ||
+          - set ||
+          - constant procedure 1 #f
+            - get 0
+          - call 1 #f $$close
+          - set 30
+          - get 0
+          - set ||
+          - get 0
+          - set ||
+          - get 0
+          - set ||
+          - get 0
+          - set ||
+          - constant #f
+        - call 1 #f $$close
+        - constant procedure 0 #t
+          - constant #f
+        - call 1 #f $$close
+        - call 1 #f 1
+        - set 1
+        - set ||
+        - constant list
           - list
             - list
-              - ||
-              - list
-                - ||
-                - $$...
-              - list
-                - ||
-                - ||
-              - $$...
+              - stak
+              - rust
+          - list
             - list
+              - scheme
+              - r5rs
+            - (\* . ||)
+            - (+ . ||)
+            - (- . ||)
+            - (/ . ||)
+            - (< . ||)
+            - (<= . ||)
+            - (= . ||)
+            - (> . ||)
+            - (>= . ||)
+            - (abs . ||)
+            - (acos . ||)
+            - (and . ||)
+            - (angle . ||)
+            - (append . ||)
+            - (apply . ||)
+            - (asin . ||)
+            - (assoc . ||)
+            - (assq . ||)
+            - (assv . ||)
+            - (atan . ||)
+            - (begin . ||)
+            - (boolean? . ||)
+            - (caaaar . ||)
+            - (caaadr . ||)
+            - (caaar . ||)
+            - (caadar . ||)
+            - (caaddr . ||)
+            - (caadr . ||)
+            - (caar . ||)
+            - (cadaar . ||)
+            - (cadadr . ||)
+            - (cadar . ||)
+            - (caddar . ||)
+            - (cadddr . ||)
+            - (caddr . ||)
+            - (cadr . ||)
+            - (call-with-current-continuation . ||)
+            - (call-with-input-file . ||)
+            - (call-with-output-file . ||)
+            - (call-with-values . ||)
+            - (car . ||)
+            - (case . ||)
+            - (cdaaar . ||)
+            - (cdaadr . ||)
+            - (cdaar . ||)
+            - (cdadar . ||)
+            - (cdaddr . ||)
+            - (cdadr . ||)
+            - (cdar . ||)
+            - (cddaar . ||)
+            - (cddadr . ||)
+            - (cddar . ||)
+            - (cdddar . ||)
+            - (cddddr . ||)
+            - (cdddr . ||)
+            - (cddr . ||)
+            - (cdr . ||)
+            - (ceiling . ||)
+            - (char->integer . ||)
+            - (char-alphabetic? . ||)
+            - (char-ci<=? . ||)
+            - (char-ci<? . ||)
+            - (char-ci=? . ||)
+            - (char-ci>=? . ||)
+            - (char-ci>? . ||)
+            - (char-downcase . ||)
+            - (char-lower-case? . ||)
+            - (char-numeric? . ||)
+            - (char-ready? . ||)
+            - (char-upcase . ||)
+            - (char-upper-case? . ||)
+            - (char-whitespace? . ||)
+            - (char<=? . ||)
+            - (char<? . ||)
+            - (char=? . ||)
+            - (char>=? . ||)
+            - (char>? . ||)
+            - (char? . ||)
+            - (close-input-port . ||)
+            - (close-output-port . ||)
+            - (complex? . ||)
+            - (cond . ||)
+            - (cons . ||)
+            - (cos . ||)
+            - (current-input-port . ||)
+            - (current-output-port . ||)
+            - (define . ||)
+            - (define-syntax . ||)
+            - (delay . ||)
+            - (denominator . ||)
+            - (display . ||)
+            - (do . ||)
+            - (dynamic-wind . ||)
+            - (eof-object? . ||)
+            - (eq? . ||)
+            - (equal? . ||)
+            - (eqv? . ||)
+            - (eval . ||)
+            - (even? . ||)
+            - (exact->inexact . ||)
+            - (exact? . ||)
+            - (exp . ||)
+            - (expt . ||)
+            - (floor . ||)
+            - (for-each . ||)
+            - (force . ||)
+            - (gcd . ||)
+            - (if . ||)
+            - (imag-part . ||)
+            - (inexact->exact . ||)
+            - (inexact? . ||)
+            - (input-port? . ||)
+            - (integer->char . ||)
+            - (integer? . ||)
+            - (interaction-environment . ||)
+            - (lambda . ||)
+            - (lcm . ||)
+            - (length . ||)
+            - (let . ||)
+            - (let\* . ||)
+            - (let-syntax . ||)
+            - (letrec . ||)
+            - (letrec-syntax . ||)
+            - (list . ||)
+            - (list->string . ||)
+            - (list->vector . ||)
+            - (list-ref . ||)
+            - (list-tail . ||)
+            - (list? . ||)
+            - (load . ||)
+            - (log . ||)
+            - (magnitude . ||)
+            - (make-polar . ||)
+            - (make-rectangular . ||)
+            - (make-string . ||)
+            - (make-vector . ||)
+            - (map . ||)
+            - (max . ||)
+            - (member . ||)
+            - (memq . ||)
+            - (memv . ||)
+            - (min . ||)
+            - (modulo . ||)
+            - (negative? . ||)
+            - (newline . ||)
+            - (not . ||)
+            - (null-environment . ||)
+            - (null? . ||)
+            - (number->string . ||)
+            - (number? . ||)
+            - (numerator . ||)
+            - (odd? . ||)
+            - (open-input-file . ||)
+            - (open-output-file . ||)
+            - (or . ||)
+            - (output-port? . ||)
+            - (pair? . ||)
+            - (peek-char . ||)
+            - (positive? . ||)
+            - (procedure? . ||)
+            - (quasiquote . ||)
+            - (quote . ||)
+            - (quotient . ||)
+            - (rational? . ||)
+            - (rationalize . ||)
+            - (read . ||)
+            - (read-char . ||)
+            - (real-part . ||)
+            - (real? . ||)
+            - (remainder . ||)
+            - (reverse . ||)
+            - (round . ||)
+            - (scheme-report-environment . ||)
+            - (set! . ||)
+            - (set-car! . ||)
+            - (set-cdr! . ||)
+            - (sin . ||)
+            - (sqrt . ||)
+            - (string . ||)
+            - (string->list . ||)
+            - (string->number . ||)
+            - (string->symbol . ||)
+            - (string-append . ||)
+            - (string-ci<=? . ||)
+            - (string-ci<? . ||)
+            - (string-ci=? . ||)
+            - (string-ci>=? . ||)
+            - (string-ci>? . ||)
+            - (string-copy . ||)
+            - (string-fill! . ||)
+            - (string-length . ||)
+            - (string-ref . ||)
+            - (string-set! . ||)
+            - (string<=? . ||)
+            - (string<? . ||)
+            - (string=? . ||)
+            - (string>=? . ||)
+            - (string>? . ||)
+            - (string? . ||)
+            - (substring . ||)
+            - (symbol->string . ||)
+            - (symbol? . ||)
+            - (tan . ||)
+            - (truncate . ||)
+            - (values . ||)
+            - (vector . ||)
+            - (vector->list . ||)
+            - (vector-fill! . ||)
+            - (vector-length . ||)
+            - (vector-ref . ||)
+            - (vector-set! . ||)
+            - (vector? . ||)
+            - (with-input-from-file . ||)
+            - (with-output-to-file . ||)
+            - (write . ||)
+            - (write-char . ||)
+            - (zero? . ||)
+          - list
+            - list
+              - scheme
+              - eval
+            - (environment . ||)
+            - (eval . ||)
+          - list
+            - list
+              - scheme
+              - repl
+            - (interaction-environment . ||)
+          - list
+            - list
+              - scheme
+              - time
+            - (current-jiffy . ||)
+            - (current-second . ||)
+            - (jiffies-per-second . ||)
+          - list
+            - list
+              - scheme
+              - file
+            - (call-with-input-file . ||)
+            - (call-with-output-file . ||)
+            - (delete-file . ||)
+            - (file-exists? . ||)
+            - (open-binary-input-file . ||)
+            - (open-binary-output-file . ||)
+            - (open-input-file . ||)
+            - (open-output-file . ||)
+            - (with-input-from-file . ||)
+            - (with-output-to-file . ||)
+          - list
+            - list
+              - scheme
+              - process-context
+            - (command-line . ||)
+            - (emergency-exit . ||)
+            - (exit . ||)
+            - (get-environment-variable . ||)
+            - (get-environment-variables . ||)
+          - list
+            - list
+              - scheme
+              - lazy
+            - (delay . ||)
+            - (delay-force . ||)
+            - (force . ||)
+            - (promise? . ||)
+            - (make-promise . ||)
+          - list
+            - list
+              - scheme
+              - write
+            - (display . ||)
+            - (write . ||)
+          - list
+            - list
+              - scheme
+              - read
+            - (read . ||)
+          - list
+            - list
+              - scheme
+              - char
+            - (char-whitespace? . ||)
+            - (special-chars . ||)
+          - list
+            - list
+              - scheme
+              - cxr
+            - (caaar . ||)
+            - (caadr . ||)
+            - (cadar . ||)
+            - (caddr . ||)
+            - (cdaar . ||)
+            - (cdadr . ||)
+            - (cddar . ||)
+            - (cdddr . ||)
+            - (caaaar . ||)
+            - (caaadr . ||)
+            - (caadar . ||)
+            - (caaddr . ||)
+            - (cadaar . ||)
+            - (cadadr . ||)
+            - (caddar . ||)
+            - (cadddr . ||)
+            - (cdaaar . ||)
+            - (cdaadr . ||)
+            - (cdadar . ||)
+            - (cdaddr . ||)
+            - (cddaar . ||)
+            - (cddadr . ||)
+            - (cdddar . ||)
+            - (cddddr . ||)
+          - list
+            - list
+              - scheme
+              - inexact
+            - (exp . ||)
+            - (log . ||)
+          - list
+            - list
+              - scheme
+              - base
+            - (syntax-rules . ||)
+            - (define-syntax . ||)
+            - (\_ . ||)
+            - (... . ||)
+            - (define . ||)
+            - (lambda . ||)
+            - (let-syntax . ||)
+            - (letrec-syntax . ||)
+            - (begin . ||)
+            - (quasiquote . ||)
+            - (unquote . ||)
+            - (unquote-splicing . ||)
+            - (quote . ||)
+            - (set! . ||)
+            - (cond-expand . ||)
+            - (let . ||)
+            - (let\* . ||)
+            - (letrec . ||)
+            - (letrec\* . ||)
+            - (define-values . ||)
+            - (let-values . ||)
+            - (let\*-values . ||)
+            - (if . ||)
+            - (cond . ||)
+            - (case . ||)
+            - (else . ||)
+            - (=> . ||)
+            - (and . ||)
+            - (or . ||)
+            - (when . ||)
+            - (unless . ||)
+            - (do . ||)
+            - (base . ||)
+            - (library . ||)
+            - (r7rs . ||)
+            - (scheme . ||)
+            - (stak . ||)
+            - (rib . ||)
+            - (cons . ||)
+            - (close . ||)
+            - (rib? . ||)
+            - (rib-car . ||)
+            - (rib-cdr . ||)
+            - (rib-tag . ||)
+            - (rib-set-car! . ||)
+            - (rib-set-cdr! . ||)
+            - (eq? . ||)
+            - (apply . ||)
+            - (data-rib . ||)
+            - (eqv? . ||)
+            - (equal? . ||)
+            - (procedure? . ||)
+            - (boolean? . ||)
+            - (not . ||)
+            - (integer? . ||)
+            - (rational? . ||)
+            - (real? . ||)
+            - (complex? . ||)
+            - (number? . ||)
+            - (exact? . ||)
+            - (inexact? . ||)
+            - (zero? . ||)
+            - (positive? . ||)
+            - (negative? . ||)
+            - (even? . ||)
+            - (odd? . ||)
+            - (+ . ||)
+            - (- . ||)
+            - (\* . ||)
+            - (/ . ||)
+            - (remainder . ||)
+            - (quotient . ||)
+            - (truncate-remainder . ||)
+            - (truncate-quotient . ||)
+            - (modulo . ||)
+            - (floor-remainder . ||)
+            - (truncate . ||)
+            - (floor . ||)
+            - (ceiling . ||)
+            - (round . ||)
+            - (exact . ||)
+            - (inexact . ||)
+            - (abs . ||)
+            - (expt . ||)
+            - (= . ||)
+            - (< . ||)
+            - (> . ||)
+            - (<= . ||)
+            - (>= . ||)
+            - (min . ||)
+            - (max . ||)
+            - (char? . ||)
+            - (integer->char . ||)
+            - (char->integer . ||)
+            - (char=? . ||)
+            - (char<? . ||)
+            - (char<=? . ||)
+            - (char>? . ||)
+            - (char>=? . ||)
+            - (null? . ||)
+            - (pair? . ||)
+            - (list? . ||)
+            - (car . ||)
+            - (cdr . ||)
+            - (set-car! . ||)
+            - (set-cdr! . ||)
+            - (caar . ||)
+            - (cadr . ||)
+            - (cdar . ||)
+            - (cddr . ||)
+            - (list . ||)
+            - (make-list . ||)
+            - (length . ||)
+            - (map . ||)
+            - (for-each . ||)
+            - (list-ref . ||)
+            - (list-set! . ||)
+            - (list-tail . ||)
+            - (member . ||)
+            - (memq . ||)
+            - (memv . ||)
+            - (assoc . ||)
+            - (assq . ||)
+            - (assv . ||)
+            - (append . ||)
+            - (reverse . ||)
+            - (fold-left . ||)
+            - (fold-right . ||)
+            - (reduce-right . ||)
+            - (list-copy . ||)
+            - (bytevector? . ||)
+            - (bytevector-length . ||)
+            - (bytevector-u8-ref . ||)
+            - (list->bytevector . ||)
+            - (bytevector->list . ||)
+            - (vector? . ||)
+            - (vector . ||)
+            - (make-vector . ||)
+            - (vector-length . ||)
+            - (vector-ref . ||)
+            - (vector-set! . ||)
+            - (list->vector . ||)
+            - (vector->list . ||)
+            - (string? . ||)
+            - (list->string . ||)
+            - (string->list . ||)
+            - (string-append . ||)
+            - (string-length . ||)
+            - (string-ref . ||)
+            - (number->string . ||)
+            - (string->number . ||)
+            - (string-copy . ||)
+            - (substring . ||)
+            - (make-string . ||)
+            - (string=? . ||)
+            - (string<? . ||)
+            - (string>? . ||)
+            - (symbol? . ||)
+            - (symbol->string . ||)
+            - (string->uninterned-symbol . ||)
+            - (string->symbol . ||)
+            - (define-record-type . ||)
+            - (record? . ||)
+            - (values . ||)
+            - (call-with-values . ||)
+            - (call/cc . ||)
+            - (call-with-current-continuation . ||)
+            - (make-point . ||)
+            - (point? . ||)
+            - (point-depth . ||)
+            - (point-before . ||)
+            - (point-after . ||)
+            - (point-parent . ||)
+            - (current-point . ||)
+            - (set-current-point! . ||)
+            - (dynamic-wind . ||)
+            - (make-parameter . ||)
+            - (parameterize . ||)
+            - (error-object? . ||)
+            - (error-object-message . ||)
+            - (error-object-irritants . ||)
+            - (with-exception-handler . ||)
+            - (raise . ||)
+            - (raise-continuable . ||)
+            - (error . ||)
+            - (read-error . ||)
+            - (file-error . ||)
+            - (read-error? . ||)
+            - (file-error? . ||)
+            - (guard . ||)
+            - (unwind . ||)
+            - (eof-object . ||)
+            - (eof-object? . ||)
+            - (make-port . ||)
+            - (make-input-port . ||)
+            - (make-output-port . ||)
+            - (port? . ||)
+            - (input-port? . ||)
+            - (output-port? . ||)
+            - (textual-port? . ||)
+            - (binary-port? . ||)
+            - (current-input-port . ||)
+            - (current-output-port . ||)
+            - (current-error-port . ||)
+            - (close-port . ||)
+            - (close-input-port . ||)
+            - (close-output-port . ||)
+            - (call-with-port . ||)
+            - (read-u8 . ||)
+            - (peek-u8 . ||)
+            - (read-char . ||)
+            - (peek-char . ||)
+            - (write-u8 . ||)
+            - (write-char . ||)
+            - (write-string . ||)
+            - (write-bytevector . ||)
+            - (newline . ||)
+            - (write-value . ||)
+          - list
+            - list
+              - stak
+              - base
+            - (syntax-rules . ||)
+            - (define-syntax . ||)
+            - (\_ . ||)
+            - (... . ||)
+            - (define . ||)
+            - (lambda . ||)
+            - (let-syntax . ||)
+            - (letrec-syntax . ||)
+            - (begin . ||)
+            - (quasiquote . ||)
+            - (unquote . ||)
+            - (unquote-splicing . ||)
+            - (quote . ||)
+            - (set! . ||)
+            - (cond-expand . ||)
+            - (let . ||)
+            - (let\* . ||)
+            - (letrec . ||)
+            - (letrec\* . ||)
+            - (define-values . ||)
+            - (let-values . ||)
+            - (let\*-values . ||)
+            - (if . ||)
+            - (cond . ||)
+            - (case . ||)
+            - (else . ||)
+            - (=> . ||)
+            - (and . ||)
+            - (or . ||)
+            - (boolean-or . ||)
+            - (when . ||)
+            - (unless . ||)
+            - (do . ||)
+            - (base . ||)
+            - (library . ||)
+            - (r7rs . ||)
+            - (scheme . ||)
+            - (stak . ||)
+            - (pair-type . ||)
+            - (null-type . ||)
+            - (boolean-type . ||)
+            - (procedure-type . ||)
+            - (symbol-type . ||)
+            - (string-type . ||)
+            - (char-type . ||)
+            - (vector-type . ||)
+            - (bytevector-type . ||)
+            - (record-type . ||)
+            - (primitive . ||)
+            - (rib . ||)
+            - (cons . ||)
+            - (close . ||)
+            - (rib? . ||)
+            - (rib-car . ||)
+            - (rib-cdr . ||)
+            - (rib-tag . ||)
+            - (rib-set-car! . ||)
+            - (rib-set-cdr! . ||)
+            - (eq? . ||)
+            - (apply . ||)
+            - (data-rib . ||)
+            - (eqv? . ||)
+            - (equal? . ||)
+            - (procedure? . ||)
+            - (boolean? . ||)
+            - (not . ||)
+            - (integer? . ||)
+            - (rational? . ||)
+            - (real? . ||)
+            - (complex? . ||)
+            - (number? . ||)
+            - (exact? . ||)
+            - (inexact? . ||)
+            - (zero? . ||)
+            - (positive? . ||)
+            - (negative? . ||)
+            - (even? . ||)
+            - (odd? . ||)
+            - (+ . ||)
+            - (- . ||)
+            - (\* . ||)
+            - (/ . ||)
+            - (remainder . ||)
+            - (quotient . ||)
+            - (truncate-remainder . ||)
+            - (truncate-quotient . ||)
+            - (modulo . ||)
+            - (floor-remainder . ||)
+            - (truncate . ||)
+            - (floor . ||)
+            - (ceiling . ||)
+            - (round . ||)
+            - (exact . ||)
+            - (inexact . ||)
+            - (abs . ||)
+            - (exp . ||)
+            - (expt . ||)
+            - (log . ||)
+            - (= . ||)
+            - (< . ||)
+            - (> . ||)
+            - (<= . ||)
+            - (>= . ||)
+            - (min . ||)
+            - (max . ||)
+            - (char? . ||)
+            - (integer->char . ||)
+            - (char->integer . ||)
+            - (char=? . ||)
+            - (char<? . ||)
+            - (char<=? . ||)
+            - (char>? . ||)
+            - (char>=? . ||)
+            - (null? . ||)
+            - (pair? . ||)
+            - (list? . ||)
+            - (car . ||)
+            - (cdr . ||)
+            - (set-car! . ||)
+            - (set-cdr! . ||)
+            - (caar . ||)
+            - (cadr . ||)
+            - (cdar . ||)
+            - (cddr . ||)
+            - (list . ||)
+            - (make-list . ||)
+            - (length . ||)
+            - (map . ||)
+            - (for-each . ||)
+            - (filter . ||)
+            - (list-ref . ||)
+            - (list-set! . ||)
+            - (list-head . ||)
+            - (list-tail . ||)
+            - (member . ||)
+            - (memq . ||)
+            - (memv . ||)
+            - (assoc . ||)
+            - (assq . ||)
+            - (assv . ||)
+            - (append . ||)
+            - (reverse . ||)
+            - (fold-left . ||)
+            - (fold-right . ||)
+            - (reduce-right . ||)
+            - (memq-position . ||)
+            - (memv-position . ||)
+            - (member-position . ||)
+            - (list-copy . ||)
+            - (bytevector? . ||)
+            - (bytevector-length . ||)
+            - (bytevector-u8-ref . ||)
+            - (list->bytevector . ||)
+            - (bytevector->list . ||)
+            - (vector? . ||)
+            - (vector . ||)
+            - (make-vector . ||)
+            - (vector-length . ||)
+            - (vector-ref . ||)
+            - (vector-set! . ||)
+            - (list->vector . ||)
+            - (vector->list . ||)
+            - (string? . ||)
+            - (list->string . ||)
+            - (string->code-points . ||)
+            - (code-points->string . ||)
+            - (string->list . ||)
+            - (string-append . ||)
+            - (string-length . ||)
+            - (string-ref . ||)
+            - (number->string . ||)
+            - (string->number . ||)
+            - (string-copy . ||)
+            - (substring . ||)
+            - (make-string . ||)
+            - (string=? . ||)
+            - (string<? . ||)
+            - (string>? . ||)
+            - (symbol? . ||)
+            - (symbol->string . ||)
+            - (string->uninterned-symbol . ||)
+            - (define-record-type . ||)
+            - (record? . ||)
+            - (values . ||)
+            - (call-with-values . ||)
+        - set ||
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f ||
+              - if
+                - get 4
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 0
+                  - call 1 #f ||
+                - get 2
+                - call 1 #f ||
+                - call 1 #f 5
+              - call 1 #f $$close
+              - constant procedure 1 #f
+                - get 7
+                - get 1
+                - constant procedure 2 #f
+                  - get 1
+                  - get 1
+                  - call 1 #f ||
+                  - call 2 #f ||
+                - call 1 #f $$close
+                - call 3 #f ||
+              - call 1 #f $$close
+              - get 2
+              - call 1 #f ||
+              - call 1 #f 1
+              - set 1
+              - call 1 #f 1
+            - call 1 #f $$close
+            - set 1
+            - get ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 0
+                  - call 1 #f ||
+                - get 2
+              - call 1 #f $$close
+              - get 1
+              - get 4
+              - call 2 #f ||
+              - call 1 #f 1
+            - call 1 #f $$close
+            - get 3
+            - call 2 #f 18
+          - call 1 #f $$close
+          - get ||
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - constant #f
+              - call 2 #f ||
+              - if
+                - constant "unknown library"
+                - get 3
+                - call 2 #f ||
+                - continue
+              - constant #f
+              - set 0
+              - get 0
+              - call 1 #f ||
+            - call 1 #f $$close
+            - get 1
+            - get ||
+            - call 2 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - get 4
+          - call 2 #f ||
+          - call 2 #f ||
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 2
+            - get 1
+            - call 1 #f ||
+            - get 2
+            - call 1 #f ||
+            - call 1 #f ||
+            - if
+              - get 4
+              - get 3
+              - call 1 #f ||
+              - call 2 #f ||
+              - continue
+            - get 4
+            - get 3
+            - call 1 #f ||
+            - call 2 #f ||
+            - call 3 #f ||
+          - call 1 #f $$close
+          - constant list
+            - list
+              - ||
               - $$syntax-rules
-              - ||
-              - list
-                - ||
-                - $$...
-              - list
-                - ||
-                - ||
               - $$...
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - $$define-syntax
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - $$define-optimizer
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - (|| || || . ||)
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
+              - ()
               - list
-                - ||
-                - (|| || . ||)
-                - ||
-                - ||
-                - ||
-          - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - $$...
+                  - list
+                    - ||
+                    - ||
+                  - $$...
+                - list
+                  - $$syntax-rules
+                  - ||
+                  - list
+                    - ||
+                    - $$...
+                  - list
+                    - ||
+                    - ||
+                  - $$...
             - list
               - ||
-              - ||
-              - ||
-            - list
-              - $$define
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - $$lambda
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - "value"
               - ||
               - ()
               - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-          - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$define-syntax
+                  - ||
+                  - ||
             - list
               - ||
-              - "value"
               - ||
+              - ()
               - list
                 - list
                   - ||
                   - ||
-                - ||
-              - list
-                - ||
-                - (|| || || . ||)
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
+                  - ||
+                - list
+                  - $$define-optimizer
+                  - ||
+                  - ||
             - list
               - ||
-              - "value"
               - ||
+              - ()
               - list
                 - list
                   - ||
+                  - (|| || || . ||)
                   - ||
-                - ||
+                  - ||
+                  - ||
                 - list
+                  - ||
                   - ||
                   - list
                     - ||
@@ -6871,452 +6789,17 @@
                     - ||
                     - ||
                     - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "value"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - "value"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "value"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - "syntax"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "syntax"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - "syntax"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "syntax"
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - $$lambda
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - $$let-syntax
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - list
-                - ||
-                - ()
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - $$letrec-syntax
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - list
-                - ||
-                - ()
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - $$begin
-              - ||
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-            - #f
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-            - list
-              - $$quote
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - $$set!
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
               - list
                 - list
                   - ||
                   - ||
                   - ||
-                  - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
                 - list
-                  - ||
-                  - list
-                    - list
-                      - ||
-                      - ||
-                      - ||
-                    - ||
-                    - ||
+                  - $$define
                   - ||
                   - ||
-              - ||
-              - ||
-          - list
             - list
               - ||
-              - list
-                - list
-                  - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                  - ||
-                  - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
               - ||
               - list
                 - ||
@@ -7327,980 +6810,985 @@
                   - ||
                   - ||
                   - ||
-                - ||
-                - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
                 - list
+                  - $$lambda
                   - ||
                   - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
               - list
-                - ||
-                - list
-                  - ||
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ()
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                    - ||
-                    - ||
-                    - ||
-              - list
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - list
-                  - list
-                    - ||
-                    - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - #f
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - $$if
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - #f
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-            - #f
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-            - #f
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-            - #t
-          - list
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - #f
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-            - #f
-          - list
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-                  - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-            - #f
-          - list
-            - list
-              - ||
-              - ||
-            - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - #t
-              - list
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                  - ||
-                  - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - #f
-                  - ||
-                  - ||
-                - list
-                  - ||
-                  - ||
-                  - ||
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - "step"
-                      - ||
-                      - ||
-                      - ||
-                    - ||
-          - list
-            - list
-              - ||
-              - "step"
-              - ||
-            - ||
-          - list
-            - list
-              - ||
-              - "step"
-              - ||
-              - ||
-            - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - (|| || . ||)
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - ||
-                    - ||
-                  - list
-                    - ||
-                    - list
-                      - ||
-                      - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-              - (|| || || || . ||)
-              - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
                 - list
                   - ||
                   - ||
                   - list
                     - ||
                     - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ()
-              - ||
-            - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
                 - list
+                  - ||
+                  - "value"
                   - ||
                   - ()
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "value"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - list
+                    - ||
+                    - (|| || || . ||)
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
                   - ||
                 - list
+                  - ||
+                  - "value"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - (|| || . ||)
+                        - ||
+                        - ||
+                        - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "value"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - "value"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "value"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
                   - ||
                   - list
                     - ||
-                  - ||
-          - list
-            - list
-              - ||
+                    - list
+                      - list
+                        - ||
+                        - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
               - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ||
                 - list
                   - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - list
+                        - ||
+                        - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - "syntax"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "syntax"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - "syntax"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "syntax"
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - list
+                        - ||
+                        - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$lambda
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$let-syntax
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
                   - list
                     - ||
                     - ()
                     - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - list
-                      - ||
-                      - list
-                        - ||
-                        - ||
-                  - list
                     - ||
                     - ||
-                    - list
-                      - ||
-                      - ||
-                  - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - list
-                    - list
-                      - ||
-                      - list
-                        - ||
-                        - ||
-                  - list
-                    - ||
-                    - ||
-                    - list
-                      - ||
-                      - ||
-                  - ||
-          - list
             - list
               - ||
-              - (|| || || . ||)
               - ||
-            - list
-              - ||
+              - ()
               - list
-                - ||
-                - ||
                 - list
                   - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$letrec-syntax
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
                   - list
                     - ||
                     - ()
                     - ||
+                    - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
                   - ||
+                  - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$begin
+                  - ||
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                - #f
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
               - list
                 - ||
                 - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - $$quote
+                  - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$set!
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - list
+                          - ||
+                          - ||
+                          - ||
+                        - ||
+                        - ||
+                      - ||
+                      - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - list
+                    - ||
+                    - ()
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - list
+                    - ||
+                    - ()
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - list
+                    - ||
+                    - ()
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ()
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                        - ||
+                        - ||
+                        - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ()
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ()
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - list
+                      - list
+                        - ||
+                        - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - #f
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - $$if
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - #f
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                - #f
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                  - ||
                 - list
                   - ||
                   - list
@@ -8312,186 +7800,371 @@
                   - list
                     - ||
                     - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
                     - list
                       - ||
                       - ||
+                    - ||
+                    - ||
                   - ||
-              - ||
-              - list
-                - ||
-                - ||
+                  - ||
                 - list
                   - ||
                   - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                - #f
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                - #t
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - #f
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                - #f
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                      - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                - #f
+              - list
+                - list
+                  - ||
+                  - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - #t
+                  - list
+                    - ||
+                    - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                      - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - #f
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                      - list
+                        - ||
+                        - list
+                          - ||
+                          - "step"
+                          - ||
+                          - ||
+                          - ||
+                        - ||
+              - list
+                - list
+                  - ||
+                  - "step"
+                  - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - "step"
+                  - ||
+                  - ||
+                - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - (|| || . ||)
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
                     - list
                       - ||
                       - list
                         - ||
                         - ||
+                      - list
+                        - ||
+                        - list
+                          - ||
+                          - ||
                   - list
                     - ||
                     - ||
                     - list
                       - ||
                       - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - (|| || || || . ||)
                   - ||
-          - list
             - list
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ()
-                  - ||
-                - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - "multiple"
-              - list
-                - ||
-                - ||
-              - ()
-              - list
-                - ||
-                - ()
-                - ||
-                - ||
-                - ||
-          - list
-            - list
-              - ||
-              - "multiple"
-              - ()
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "multiple"
-              - list
-                - list
-                  - ||
-                  - ||
-                - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - "single"
               - ||
               - ||
               - ()
               - list
-                - ||
-                - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "single"
-              - ()
-              - ||
-              - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - "multiple"
-                  - ||
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - "single"
-              - (|| . ||)
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - "single"
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
                 - list
                   - ||
                   - ||
-              - ||
-          - list
-            - list
-              - ||
-              - "single"
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-              - list
-                - ||
-                - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-                - ()
-                - ||
-              - list
-                - ||
-                - (|| || . ||)
+                  - ||
+                  - ||
                 - list
                   - ||
-                  - "multiple"
                   - ||
                   - list
                     - ||
@@ -8499,331 +8172,585 @@
                     - list
                       - ||
                       - ||
-                  - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-                - ||
-                - ||
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ()
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
               - list
                 - list
                   - ||
                   - ||
-                - list
                   - ||
-                  - ||
-                - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
                   - ||
                   - ||
                 - list
                   - ||
                   - list
                     - ||
-              - list
-                - ||
-                - list
-                  - ||
-                  - ()
-                  - list
                     - ||
                     - ||
-                - list
-                  - ||
-                  - ()
+                    - ||
                   - list
+                    - ||
                     - ||
                     - list
+                      - ||
+                      - ||
                       - list
                         - ||
                         - ||
-                      - ||
-                    - ||
-                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
                 - list
                   - ||
                   - ()
-                  - list
-                    - ||
-                    - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
+                  - ||
+                - ||
               - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - list
-                - ||
                 - list
                   - ||
                   - list
                     - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
                   - list
+                    - ||
+                    - list
+                      - ||
+                      - ()
+                      - ||
+                    - list
+                      - ||
+                      - list
+                        - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
                     - ||
                     - list
                       - ||
                       - list
                         - ||
+                        - ()
+                        - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
                       - list
                         - list
                           - ||
                           - list
                             - ||
-                            - list
-                              - ||
-                            - list
-                              - ||
-                              - list
-                                - ||
-                                - ()
-                                - list
-                                  - ||
-                                  - list
-                                    - list
-                                      - ||
-                                      - ||
-                                  - list
-                                    - ||
-                                    - list
-                                      - ||
-                                      - list
-                                        - ||
-                                        - ()
-                                        - list
-                                          - ||
-                                          - ||
-                                    - ||
-                                    - ||
+                            - ||
+                      - list
+                        - ||
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                      - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - ||
+                      - list
+                        - ||
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - (|| || || . ||)
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - ||
+                        - ()
+                        - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - ||
+                      - list
+                        - ||
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                      - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - list
+                        - list
+                          - ||
+                          - list
+                            - ||
+                            - ||
+                      - list
+                        - ||
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ()
+                      - ||
+                    - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - "multiple"
+                  - list
+                    - ||
+                    - ||
+                  - ()
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                    - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - "multiple"
+                  - ()
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "multiple"
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - "single"
+                  - ||
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "single"
+                  - ()
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - "multiple"
+                      - ||
+                      - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - "single"
+                  - (|| . ||)
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - list
+                  - ||
+                  - "single"
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - "single"
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ()
+                    - ||
+                  - list
+                    - ||
+                    - (|| || . ||)
+                    - list
+                      - ||
+                      - "multiple"
+                      - ||
+                      - list
+                        - ||
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                      - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ()
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ()
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                    - ||
+                    - ||
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ()
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                    - list
+                      - ||
+                      - list
+                        - ||
+                  - list
+                    - ||
+                    - list
+                      - ||
+                      - ()
+                      - list
+                        - ||
+                        - ||
                     - list
                       - ||
                       - ()
@@ -8832,612 +8759,754 @@
                         - list
                           - list
                             - ||
-                            - list
-                              - ||
-                              - ||
-                              - ||
-                              - ||
-                        - list
+                            - ||
                           - ||
-                          - list
-                            - ||
-                            - ()
-                            - ||
-        - list
-          - ||
-          - ||
-          - list
-            - ||
-            - ||
-          - list
+                        - ||
+                        - ||
+                    - list
+                      - ||
+                      - ()
+                      - list
+                        - ||
+                        - ||
             - list
               - ||
               - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
+              - ()
               - list
                 - list
                   - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
                   - ||
-              - list
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-                - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - list
                   - ||
                   - ||
                 - list
-                  - ||
-                  - ||
-                  - ||
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-            - list
-              - ||
-              - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - list
-                  - ||
-                  - ||
-                  - ||
-                  - ||
-                  - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-          - list
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - ||
-              - ||
-              - ||
-            - list
-              - ||
-              - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-              - list
-                - ||
-                - ||
-                - ||
-                - ||
-                - ||
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - list
-          - ||
-          - ||
-          - ()
-          - list
-            - list
-              - ||
-              - ||
-            - list
-              - ||
-              - list
-                - list
-                  - ||
-                  - #f
-                - list
-                  - ||
-                  - #f
-              - list
-                - ||
-                - ()
-                - list
-                  - ||
-                  - ||
-                  - ||
                   - list
                     - ||
                     - list
                       - ||
+                      - list
+                        - ||
+                      - list
+                        - ||
+                        - list
+                          - ||
+                          - list
+                            - ||
+                          - list
+                            - list
+                              - ||
+                              - list
+                                - ||
+                                - list
+                                  - ||
+                                - list
+                                  - ||
+                                  - list
+                                    - ||
+                                    - ()
+                                    - list
+                                      - ||
+                                      - list
+                                        - list
+                                          - ||
+                                          - ||
+                                      - list
+                                        - ||
+                                        - list
+                                          - ||
+                                          - list
+                                            - ||
+                                            - ()
+                                            - list
+                                              - ||
+                                              - ||
+                                        - ||
+                                        - ||
+                        - list
+                          - ||
+                          - ()
+                          - list
+                            - ||
+                            - list
+                              - list
+                                - ||
+                                - list
+                                  - ||
+                                  - ||
+                                  - ||
+                                  - ||
+                            - list
+                              - ||
+                              - list
+                                - ||
+                                - ()
+                                - ||
+            - list
+              - ||
+              - ||
+              - list
+                - ||
+                - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                    - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - list
                       - ||
                       - ||
                     - list
                       - ||
                       - ||
-                      - #t
+                      - ||
+                      - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
                     - ||
-        - list
-          - ||
-          - ||
-          - ()
-          - list
+                - list
+                  - ||
+                  - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                      - ||
+                      - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+              - list
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - ||
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                  - list
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+                    - ||
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
             - list
               - ||
-              - ||
-            - list
               - ||
               - ()
               - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - list
+                    - list
+                      - ||
+                      - #f
+                    - list
+                      - ||
+                      - #f
+                  - list
+                    - ||
+                    - ()
+                    - list
+                      - ||
+                      - ||
+                      - ||
+                      - list
+                        - ||
+                        - list
+                          - ||
+                          - ||
+                          - ||
+                        - list
+                          - ||
+                          - ||
+                          - #t
+                        - ||
+            - list
+              - ||
+              - ||
+              - ()
+              - list
+                - list
+                  - ||
+                  - ||
+                - list
+                  - ||
+                  - ()
+                  - list
+                    - ||
+                    - ||
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+          - call 2 #f ||
+          - set 0
+          - constant procedure 1 #f
+            - get 2
+            - get 1
+            - call 2 #f ||
+          - call 1 #f $$close
+        - call 1 #f $$close
+        - constant 0
+        - constant ()
+        - constant ()
+        - constant ()
+        - call 4 #f ||
+        - constant ()
+        - call 2 #f ||
+        - call 1 #f 1
+        - set 1
+        - set ||
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - get 2
+            - get 1
+            - call 2 #f ||
+          - call 1 #f $$close
+        - call 1 #f $$close
+        - constant procedure 1 #f
+          - get 0
+          - call 1 #f ||
+          - get 1
+          - call 1 #f ||
+          - get 2
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 2 #f ||
+        - call 1 #f $$close
+        - constant list
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
                 - ||
                 - ||
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-        - (|| . ||)
-      - call 2 #f ||
-      - set 0
-      - constant procedure 1 #f
-        - get 2
-        - get 1
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - ||
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - 0
+          - list
+            - ||
+            - $$syntax-rules
+            - ||
+            - ()
+            - list
+              - list
+                - ||
+                - ||
+              - list
+                - ||
+                - ||
+                - #f
         - call 2 #f ||
-      - call 1 #f $$close
-    - call 1 #f $$close
-    - constant 0
-    - constant ()
-    - constant ()
-    - constant ()
-    - call 4 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 1 #f 1
-    - set 1
-    - set ||
-    - constant procedure 1 #f
-      - constant procedure 1 #f
-        - get 2
-        - get 1
+        - constant ()
         - call 2 #f ||
+        - call 1 #f 1
+        - set 1
+        - set ||
+        - constant procedure 1 #f
+          - constant ()
+          - constant #f
+          - call 2 #f ||
+          - get 1
+          - constant ()
+          - call 3 #f ||
+        - call 1 #f $$close
+        - set ||
+        - constant procedure 2 #f
+          - constant 0
+          - constant #f
+          - call 2 #f ||
+          - get 1
+          - get 3
+          - call 2 #f ||
+          - call 1 #f ||
+          - call 1 #f ||
+          - call 1 #f ||
+          - constant ()
+          - call 3 #f 31
+        - call 1 #f $$close
       - call 1 #f $$close
-    - call 1 #f $$close
-    - constant procedure 1 #f
-      - get 0
-      - call 1 #f ||
-      - get 1
-      - call 1 #f ||
-      - get 2
-      - call 1 #f ||
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - constant list
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - ||
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - 0
-      - list
-        - ||
-        - $$syntax-rules
-        - ||
-        - ()
-        - list
-          - list
-            - ||
-            - ||
-          - list
-            - ||
-            - ||
-            - #f
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 1 #f 1
-    - set 1
-    - set ||
-    - constant procedure 1 #f
-      - constant ()
       - constant #f
-      - call 2 #f ||
-      - get 1
-      - constant ()
-      - call 3 #f ||
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - constant #f
+      - call 48 #f 48
     - call 1 #f $$close
-    - set ||
+    - call 0 #f 0
+    - set 1
+    - set 2
     - constant procedure 2 #f
       - constant procedure 2 #f
         - get 0
@@ -9453,7 +9522,7 @@
       - get 2
       - call 3 #f ||
     - call 1 #f $$close
-    - set ||
+    - set 1
     - constant procedure 2 #f
       - constant procedure 1 #f
         - get 0
@@ -9474,75 +9543,26 @@
           - call 0 #f ||
           - get 4
           - call 1 #f ||
-          - call 2 #f ||
+          - call 2 #f 7
           - call 1 #f ||
-        - constant 0
-        - constant #f
-        - call 2 #f ||
         - get 3
-        - get 5
-        - call 2 #f ||
-        - call 1 #f ||
-        - call 1 #f ||
-        - call 1 #f ||
-        - constant ()
-        - call 3 #f 33
+        - get 3
+        - call 2 #f 8
         - call 0 #f 0
       - call 1 #f $$close
       - get 2
-      - call 1 #f 9
+      - call 1 #f ||
+      - if
+        - get 2
+        - call 1 #f ||
+        - continue
+      - constant #f
       - call 1 #f 1
     - call 1 #f $$close
   - call 1 #f $$close
   - constant #f
   - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - constant #f
-  - call 48 #f 48
+  - call 2 #f 2
 - call 1 #f $$close
 - call 0 #f 0
 - set 1
@@ -16554,293 +16574,628 @@
     - continue
   - constant #f
   - if
+    - constant let
+    - constant ()
     - get ||
-    - constant list
-      - list
-        - define
-        - dummy
-        - list
-          - let
-          - list
-            - list
-              - set-nothing
-              - list
-                - lambda
-                - xs
-                - #f
-          - list
-            - set!
-            - cons-rib
-            - cons
-          - list
-            - set!
-            - nop-rib
-            - list
-              - lambda
-              - list
-                - continuation
-              - continuation
-          - list
-            - set!
-            - macro-state-set-literals!
-            - set-nothing
-          - list
-            - set!
-            - macro-state-set-static-symbols!
-            - set-nothing
-          - list
-            - set!
-            - macro-state-set-dynamic-symbols!
-            - set-nothing
-          - list
-            - set!
-            - optimization-context-set-literals!
-            - set-nothing
-          - #f
-      - list
-        - define
-        - libraries
-        - list
-          - $$libraries
-      - list
-        - define
-        - list
-          - resolve-library-symbol
-          - name
-        - list
-          - let
-          - loop
-          - list
-            - list
-              - libraries
-              - libraries
-          - list
-            - cond
-            - list
-              - list
-                - null?
-                - libraries
-              - name
-            - list
-              - list
-                - let
-                - list
-                  - list
-                    - names
-                    - list
-                      - cdar
-                      - libraries
-                - list
-                  - member
-                  - name
-                  - names
-                  - list
-                    - lambda
-                    - list
-                      - name
-                      - pair
-                    - list
-                      - eq?
-                      - name
-                      - list
-                        - cdr
-                        - pair
-              - =>
-              - caar
-            - list
-              - else
-              - list
-                - loop
-                - list
-                  - cdr
-                  - libraries
-      - list
-        - define
-        - list
-          - expand-libraries
-          - environment
-          - expression
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - apply
-                - append
-                - list
-                  - map
-                  - list
-                    - lambda
-                    - list
-                      - name
-                    - list
-                      - let
-                      - list
-                        - list
-                          - pair
-                          - list
-                            - assoc
-                            - name
-                            - libraries
-                      - list
-                        - unless
-                        - pair
-                        - list
-                          - error
-                          - "unknown library"
-                          - name
-                      - list
-                        - cdr
-                        - pair
-                  - environment
-          - list
-            - relaxed-deep-map
-            - list
-              - lambda
-              - list
-                - x
-              - list
-                - cond
-                - list
-                  - list
-                    - assq
-                    - x
-                    - names
-                  - =>
-                  - cdr
-                - list
-                  - else
-                  - x
-            - expression
-      - list
-        - define
-        - expand-macros
-        - list
-          - let
-          - list
-            - list
-              - context
-              - list
-                - make-macro-context
-                - list
-                  - make-macro-state
-                  - 0
-                  - list
-                    - quote
-                    - ()
-                  - list
-                    - quote
-                    - ()
-                  - list
-                    - quote
-                    - ()
-                - list
-                  - quote
-                  - ()
-          - list
-            - for-each
-            - list
-              - lambda
-              - list
-                - pair
-              - list
-                - macro-context-set-last!
-                - context
-                - list
-                  - car
-                  - pair
-                - list
-                  - if
-                  - list
-                    - symbol?
-                    - list
-                      - cdr
-                      - pair
-                  - list
-                    - resolve-denotation
-                    - context
-                    - list
-                      - cdr
-                      - pair
-                  - list
-                    - make-transformer
-                    - context
-                    - list
-                      - cdr
-                      - pair
-            - list
-              - $$macros
-          - list
-            - lambda
-            - list
-              - expression
-            - list
-              - expand-macro
-              - context
-              - expression
-      - list
-        - define
-        - optimize
-        - list
-          - let
-          - list
-            - list
-              - context
-              - list
-                - make-optimization-context
-                - list
-                  - map
-                  - list
-                    - lambda
-                    - list
-                      - pair
-                    - list
-                      - cons
-                      - list
-                        - car
-                        - pair
-                      - list
-                        - make-optimizer
-                        - list
-                          - car
-                          - pair
-                        - list
-                          - cdr
-                          - pair
-                  - list
-                    - $$optimizers
-                - list
-                  - quote
-                  - ()
-          - list
-            - lambda
-            - list
-              - expression
-            - list
-              - optimize-expression
-              - context
-              - expression
-      - list
-        - define
-        - list
-          - compile
-          - expression
-        - list
-          - compile-expression
-          - list
-            - make-compilation-context
-            - list
-              - quote
-              - ()
-            - #f
-          - expression
-          - list
-            - quote
-            - ()
-    - get 2
+    - constant define
+    - constant dummy
+    - constant let
+    - constant set-nothing
+    - constant lambda
+    - constant xs
+    - constant #f
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant set!
+    - constant cons-rib
+    - constant cons
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant set!
+    - constant nop-rib
+    - constant lambda
+    - constant continuation
+    - constant ()
+    - call 2 #f ||
+    - constant continuation
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant set!
+    - constant macro-state-set-literals!
+    - constant set-nothing
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant set!
+    - constant macro-state-set-static-symbols!
+    - constant set-nothing
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant set!
+    - constant macro-state-set-dynamic-symbols!
+    - constant set-nothing
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant set!
+    - constant optimization-context-set-literals!
+    - constant set-nothing
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant #f
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant libraries
+    - constant $$libraries
+    - constant ()
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant resolve-library-symbol
+    - constant name
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant let
+    - constant loop
+    - constant libraries
+    - constant libraries
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant cond
+    - constant null?
+    - constant libraries
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant name
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant let
+    - constant names
+    - constant cdar
+    - constant libraries
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant member
+    - constant name
+    - constant names
+    - constant lambda
+    - constant name
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant eq?
+    - constant name
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant =>
+    - constant caar
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant else
+    - constant loop
+    - constant cdr
+    - constant libraries
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant expand-libraries
+    - constant environment
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant let
+    - constant names
+    - constant apply
+    - constant append
+    - constant map
+    - constant lambda
+    - constant name
+    - constant ()
+    - call 2 #f ||
+    - constant let
+    - constant pair
+    - constant assoc
+    - constant name
+    - constant libraries
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant unless
+    - constant pair
+    - constant error
+    - constant "unknown library"
+    - constant name
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant environment
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant relaxed-deep-map
+    - constant lambda
+    - constant x
+    - constant ()
+    - call 2 #f ||
+    - constant cond
+    - constant assq
+    - constant x
+    - constant names
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant =>
+    - constant cdr
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant else
+    - constant x
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant expand-macros
+    - constant let
+    - constant context
+    - constant make-macro-context
+    - constant make-macro-state
+    - constant 0
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant for-each
+    - constant lambda
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - constant macro-context-set-last!
+    - constant context
+    - constant car
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant if
+    - constant symbol?
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant resolve-denotation
+    - constant context
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant make-transformer
+    - constant context
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant $$macros
+    - constant ()
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant lambda
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - constant expand-macro
+    - constant context
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant optimize
+    - constant let
+    - constant context
+    - constant make-optimization-context
+    - constant map
+    - constant lambda
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - constant cons
+    - constant car
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant make-optimizer
+    - constant car
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant $$optimizers
+    - constant ()
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant lambda
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - constant optimize-expression
+    - constant context
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant compile
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant compile-expression
+    - constant make-compilation-context
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant #f
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant expression
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant lambda
+    - constant expression
+    - constant environment
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant make-procedure
+    - constant compile-arity
+    - constant 0
+    - constant #f
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant compile
+    - constant optimize
+    - constant expand-macros
+    - constant expand-libraries
+    - constant environment
+    - constant expression
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - get 1
     - call 1 #f ||
-    - call 3 #f ||
+    - call 2 #f ||
   - get 0
   - call 1 #f ||
   - call 1 #f ||

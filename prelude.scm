@@ -2572,7 +2572,8 @@
   (begin
     (define eval
       (let ()
-        ($$compiler)
+        ; TODO Name this function `compile` when `eval` environments are segregated.
+        (define compile-eval ($$compiler))
 
         (define (merge-environments one other)
           (fold-left
@@ -2584,7 +2585,7 @@
             other))
 
         (lambda (expression environment)
-          (case (predicate expression)
+          (case (and (pair? expression) (car expression))
             ((import)
               (unless (eq? environment (interaction-environment))
                 (error "invalid import in eval"))
@@ -2592,13 +2593,7 @@
                 (merge-environments (interaction-environment) (cdr expression))))
 
             (else
-              ((make-procedure
-                  (compile-arity 0 #f)
-                  (compile
-                    (optimize
-                      (expand-macros
-                        (expand-libraries environment expression))))
-                  '())))))))
+              ((compile-eval expression environment)))))))
 
     (define environment list)))
 
