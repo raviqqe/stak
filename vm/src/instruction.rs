@@ -6,7 +6,6 @@ pub enum Instruction {
     Get,
     Set,
     If,
-    Nop,
     Call,
 }
 
@@ -15,6 +14,5 @@ impl Instruction {
     pub const GET: Tag = Self::Get as _;
     pub const SET: Tag = Self::Set as _;
     pub const IF: Tag = Self::If as _;
-    pub const NOP: Tag = Self::Nop as _;
     pub const CALL: Tag = Self::Call as _;
 }

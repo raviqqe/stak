@@ -5,7 +5,7 @@
   (stak base))
 
 (define if-instruction 3)
-(define call-instruction 5)
+(define call-instruction 4)
 
 (define integer-base 128)
 (define number-base 16)
@@ -167,8 +167,6 @@
         "set")
       ((3)
         "if")
-      ((4)
-        "nop")
       (else
         (let ((arity (- instruction call-instruction)))
           (string-append

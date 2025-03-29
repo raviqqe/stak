@@ -3936,7 +3936,7 @@
     - set 45
     - constant 4
     - set 44
-    - constant 5
+    - constant 65535
     - set 43
     - constant list
       - list
@@ -3996,7 +3996,7 @@
     - call 1 #f $$close
     - set 31
     - constant procedure 3 #f
-      - get 46
+      - get 47
       - get 3
       - call 2 #f ||
       - get 2
@@ -4012,7 +4012,7 @@
     - call 1 #f $$close
     - set 29
     - constant procedure 1 #f
-      - get 45
+      - get 44
       - constant 0
       - get 2
       - call 3 #f 35
@@ -6294,23 +6294,28 @@
       - call 2 #f 34
     - call 1 #f $$close
     - set ||
-    - get ||
-    - set ||
     - constant procedure 1 #f
+      - get ||
+      - set ||
+      - constant procedure 1 #f
+        - get 0
+      - call 1 #f $$close
+      - set 30
       - get 0
+      - set ||
+      - get 0
+      - set ||
+      - get 0
+      - set ||
+      - get 0
+      - set ||
+      - constant #f
     - call 1 #f $$close
-    - set ||
     - constant procedure 0 #t
       - constant #f
     - call 1 #f $$close
-    - set ||
-    - get ||
-    - set ||
-    - get ||
-    - set ||
-    - get ||
-    - set ||
-    - get ||
+    - call 1 #f 1
+    - set 1
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
@@ -8650,6 +8655,7 @@
                 - ||
                 - ||
                 - ||
+        - (|| . ||)
         - (|| . ||)
         - (|| . ||)
         - (|| . ||)

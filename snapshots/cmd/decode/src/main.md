@@ -3185,7 +3185,7 @@
 - set ||
 - constant 3
 - set ||
-- constant 5
+- constant 4
 - set ||
 - constant 128
 - set ||
@@ -3717,12 +3717,6 @@
   - call 2 #f ||
   - if
     - constant "if"
-    - continue
-  - get 0
-  - constant 4
-  - call 2 #f ||
-  - if
-    - constant "nop"
     - continue
   - constant procedure 1 #f
     - constant "call "

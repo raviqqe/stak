@@ -2214,15 +2214,16 @@
   - target-procedure?
   - value
   - $$compiler
+  - dummy
+  - xs
   - cons-rib
   - nop-rib
   - continuation
-  - xs
   - macro-state-set-literals!
   - macro-state-set-static-symbols!
   - macro-state-set-dynamic-symbols!
   - optimization-context-set-literals!
-  - dummy
+  - set-nothing
   - rust
   - r5rs
   - acos
@@ -4227,7 +4228,7 @@
     - set 45
     - constant 4
     - set 44
-    - constant 5
+    - constant 65535
     - set 43
     - constant list
       - list
@@ -4287,7 +4288,7 @@
     - call 1 #f $$close
     - set 31
     - constant procedure 3 #f
-      - get 46
+      - get 47
       - get 3
       - call 2 #f ||
       - get 2
@@ -4303,7 +4304,7 @@
     - call 1 #f $$close
     - set 29
     - constant procedure 1 #f
-      - get 45
+      - get 44
       - constant 0
       - get 2
       - call 3 #f 35
@@ -6585,23 +6586,28 @@
       - call 2 #f 34
     - call 1 #f $$close
     - set ||
-    - get ||
-    - set ||
     - constant procedure 1 #f
+      - get ||
+      - set ||
+      - constant procedure 1 #f
+        - get 0
+      - call 1 #f $$close
+      - set 30
       - get 0
+      - set ||
+      - get 0
+      - set ||
+      - get 0
+      - set ||
+      - get 0
+      - set ||
+      - constant #f
     - call 1 #f $$close
-    - set ||
     - constant procedure 0 #t
       - constant #f
     - call 1 #f $$close
-    - set ||
-    - get ||
-    - set ||
-    - get ||
-    - set ||
-    - get ||
-    - set ||
-    - get ||
+    - call 1 #f 1
+    - set 1
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
@@ -9048,6 +9054,7 @@
         - (|| . ||)
         - (|| . ||)
         - (|| . ||)
+        - (|| . ||)
         - list
           - ||
           - ||
@@ -10489,12 +10496,12 @@
     - 3
   - list
     - define
-    - nop-instruction
+    - call-instruction
     - 4
   - list
     - define
-    - call-instruction
-    - 5
+    - nop-instruction
+    - 65535
   - list
     - define
     - primitives
@@ -14936,7 +14943,7 @@
         - rib?
         - codes
       - list
-        - eq?
+        - =
         - list
           - rib-tag
           - codes
@@ -15278,9 +15285,7 @@
                 - list
                   - continuation
                   - list
-                    - code-rib
-                    - nop-instruction
-                    - 0
+                    - nop-rib
                     - list
                       - marshal
                       - list
@@ -15480,12 +15485,12 @@
           - value
         - list
           - list
+          - nop-instruction
           - boolean-type
           - char-type
           - null-type
           - string-type
           - symbol-type
-          - nop-instruction
   - list
     - define
     - list
@@ -15498,12 +15503,6 @@
         - list
           - nop-code?
           - codes
-        - list
-          - eq?
-          - list
-            - rib-car
-            - codes
-          - 0
       - list
         - strip-nop-instructions
         - list
@@ -16560,34 +16559,45 @@
     - constant list
       - list
         - define
-        - cons-rib
-        - cons
-      - list
-        - define
+        - dummy
         - list
-          - nop-rib
-          - continuation
-        - continuation
-      - list
-        - define
-        - (dummy . xs)
-        - #f
-      - list
-        - define
-        - macro-state-set-literals!
-        - dummy
-      - list
-        - define
-        - macro-state-set-static-symbols!
-        - dummy
-      - list
-        - define
-        - macro-state-set-dynamic-symbols!
-        - dummy
-      - list
-        - define
-        - optimization-context-set-literals!
-        - dummy
+          - let
+          - list
+            - list
+              - set-nothing
+              - list
+                - lambda
+                - xs
+                - #f
+          - list
+            - set!
+            - cons-rib
+            - cons
+          - list
+            - set!
+            - nop-rib
+            - list
+              - lambda
+              - list
+                - continuation
+              - continuation
+          - list
+            - set!
+            - macro-state-set-literals!
+            - set-nothing
+          - list
+            - set!
+            - macro-state-set-static-symbols!
+            - set-nothing
+          - list
+            - set!
+            - macro-state-set-dynamic-symbols!
+            - set-nothing
+          - list
+            - set!
+            - optimization-context-set-literals!
+            - set-nothing
+          - #f
     - get 2
     - call 1 #f ||
     - call 3 #f ||

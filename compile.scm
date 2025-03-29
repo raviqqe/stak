@@ -21,8 +21,8 @@
     (define get-instruction 1)
     (define set-instruction 2)
     (define if-instruction 3)
-    (define nop-instruction 4)
-    (define call-instruction 5)
+    (define call-instruction 4)
+    (define nop-instruction 65535)
 
     ; Primitives
 
@@ -1275,7 +1275,7 @@
     (define (nop-code? codes)
      (and
       (rib? codes)
-      (eq? (rib-tag codes) nop-instruction)))
+      (= (rib-tag codes) nop-instruction)))
 
     (define (marshal-constant context value)
      (define (marshal value)
@@ -1369,7 +1369,7 @@
          cdr)
 
         (else
-         (let ((continuation (code-rib nop-instruction 0 (marshal (rib-cdr value) #f))))
+         (let ((continuation (nop-rib (marshal (rib-cdr value) #f))))
           (marshal-context-set-continuations!
            context
            (cons (cons value continuation) (marshal-context-continuations context)))
@@ -1427,18 +1427,15 @@
       (memq
        (rib-tag value)
        (list
+        nop-instruction ; for continuations
         boolean-type
         char-type
         null-type
         string-type
-        symbol-type
-        ; This is technically equivalent to `symbol-type`. But we include this check for sanity.
-        nop-instruction))))
+        symbol-type))))
 
     (define (strip-nop-instructions codes)
-     ; `symbol-type` is equal to `nop-instruction` although `car`s of symbols are
-     ; all `#f` and nop instructions' are `0`.
-     (if (and (nop-code? codes) (eq? (rib-car codes) 0))
+     (if (and (nop-code? codes))
       (strip-nop-instructions (rib-cdr codes))
       codes))
 
@@ -1705,13 +1702,15 @@
         (eq? (caar expression) '$$compiler))
       (append
         frontend
-        '((define cons-rib cons)
-          (define (nop-rib continuation) continuation)
-          (define (dummy . xs) #f)
-          (define macro-state-set-literals! dummy)
-          (define macro-state-set-static-symbols! dummy)
-          (define macro-state-set-dynamic-symbols! dummy)
-          (define optimization-context-set-literals! dummy))
+        '((define dummy
+           (let ((set-nothing (lambda xs #f)))
+            (set! cons-rib cons)
+            (set! nop-rib (lambda (continuation) continuation))
+            (set! macro-state-set-literals! set-nothing)
+            (set! macro-state-set-static-symbols! set-nothing)
+            (set! macro-state-set-dynamic-symbols! set-nothing)
+            (set! optimization-context-set-literals! set-nothing)
+            #f)))
         (cdr expression)))
     (else
       (cons

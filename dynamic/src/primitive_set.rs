@@ -73,14 +73,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
                 continue;
             }
 
-            let index = memory.car(cons).assume_number().to_i64() as _;
-
-            // Be conservative as foreign type tags can be used for something else.
-            if index >= self.values.len() {
-                continue;
-            }
-
-            marks.set(index, true);
+            marks.set(memory.car(cons).assume_number().to_i64() as _, true);
         }
 
         for (index, mark) in marks.into_iter().enumerate() {
@@ -264,7 +257,7 @@ mod tests {
             let cons = Cons::new((2 * index) as _);
 
             if memory.cdr(cons).tag() == Type::Foreign as _ {
-                memory.set_car(cons, Number::from_i64(1 << 16).into());
+                memory.set_cdr(cons, Number::from_i64(0).into());
             }
         }
     }

@@ -1,3 +1,5 @@
+use crate::Tag;
+
 /// A type in Scheme.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
 pub enum Type {
@@ -23,5 +25,5 @@ pub enum Type {
     /// A record.
     Record,
     /// A foreign object
-    Foreign,
+    Foreign = Tag::MAX as _,
 }
