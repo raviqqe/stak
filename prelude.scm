@@ -2465,7 +2465,7 @@
 
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
-        ((data-rib procedure-type (cons 0 '()) '()))
+        ((data-rib procedure-type (cons 0 '()) (rib #f '() 0)))
         ($halt)))
 
     (define (exit . rest)
