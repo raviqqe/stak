@@ -2572,7 +2572,7 @@
   (begin
     (define eval
       (let ()
-        (define compile ($$compiler))
+        (define compile-eval ($$compiler))
 
         (define (merge-environments one other)
           (fold-left
@@ -2592,7 +2592,7 @@
                 (merge-environments (interaction-environment) (cdr expression))))
 
             (else
-              ((compile expression environment)))))))
+              ((compile-eval expression environment)))))))
 
     (define environment list)))
 
