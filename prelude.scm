@@ -2567,78 +2567,12 @@
     (scheme base)
     (scheme cxr)
     (scheme repl)
-    (only (stak base)
-      data-rib
-      filter
-      list-head
-      memq-position
-      pair-type
-      procedure-type
-      rib
-      string->uninterned-symbol))
+    (only (stak base) fold-left rib string->uninterned-symbol))
 
   (begin
     (define eval
       (let ()
-        (define libraries ($$libraries))
-
         ($$compiler)
-
-        ; Utilities
-
-        (define (resolve-library-symbol name)
-          (let loop ((libraries libraries))
-            (cond
-              ((null? libraries)
-                name)
-              ((let ((names (cdar libraries)))
-                  (member
-                    name
-                    names
-                    (lambda (name pair)
-                      (eq? name (cdr pair)))))
-                =>
-                caar)
-              (else
-                (loop (cdr libraries))))))
-
-        ; Macro system
-
-        (define expand-macros
-          (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
-            (for-each
-              (lambda (pair)
-                (macro-context-set-last!
-                  context
-                  (car pair)
-                  (if (symbol? (cdr pair))
-                    (resolve-denotation context (cdr pair))
-                    (make-transformer context (cdr pair)))))
-              ($$macros))
-            (lambda (expression)
-              (expand-macro context expression))))
-
-        ; Optimization
-
-        (define optimize
-          (let ((context
-                  (make-optimization-context
-                    (map
-                      (lambda (pair)
-                        (cons
-                          (car pair)
-                          (make-optimizer (car pair) (cdr pair))))
-                      ($$optimizers))
-                    '())))
-            (lambda (expression)
-              (optimize-expression context expression))))
-
-        ; Compilation
-
-        (define (compile expression)
-          (compile-expression (make-compilation-context '() #f) expression '()))
-
-        ; Evaluation
 
         (define (merge-environments one other)
           (fold-left
@@ -2663,25 +2597,7 @@
                   (compile
                     (optimize
                       (expand-macros
-                        (let ((names
-                                (apply
-                                  append
-                                  (map
-                                    (lambda (name)
-                                      (let ((pair (assoc name libraries)))
-                                        (unless pair
-                                          (error "unknown library" name))
-                                        (cdr pair)))
-                                    environment))))
-                          (relaxed-deep-map
-                            (lambda (x)
-                              (cond
-                                ((assq x names) =>
-                                  cdr)
-
-                                (else
-                                  x)))
-                            expression)))))
+                        (expand-libraries environment expression))))
                   '())))))))
 
     (define environment list)))
