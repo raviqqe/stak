@@ -2584,7 +2584,7 @@
             other))
 
         (lambda (expression environment)
-          (case (predicate expression)
+          (case (and (pair? expression) (car expression))
             ((import)
               (unless (eq? environment (interaction-environment))
                 (error "invalid import in eval"))
