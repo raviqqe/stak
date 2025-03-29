@@ -1700,9 +1700,11 @@
         (pair? (car expression))
         (null? (cdar expression))
         (eq? (caar expression) '$$compiler))
-      (append
-        frontend
-        '((define dummy
+      (cons
+        `(let ()
+          ,@frontend
+
+          (define dummy
            (let ((set-nothing (lambda xs #f)))
             (set! cons-rib cons)
             (set! nop-rib (lambda (continuation) continuation))
@@ -1789,7 +1791,16 @@
           ; Compilation
 
           (define (compile expression)
-           (compile-expression (make-compilation-context '() #f) expression '())))
+           (compile-expression (make-compilation-context '() #f) expression '()))
+
+          (lambda (expression environment)
+           (make-procedure
+            (compile-arity 0 #f)
+            (compile
+             (optimize
+              (expand-macros
+               (expand-libraries environment expression))))
+            '())))
         (cdr expression)))
     (else
       (cons
