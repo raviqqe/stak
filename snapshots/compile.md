@@ -4226,9 +4226,9 @@
     - set 46
     - constant 3
     - set 45
-    - constant 4
-    - set 44
     - constant 5
+    - set 44
+    - constant 1024
     - set 43
     - constant list
       - list
@@ -4288,7 +4288,7 @@
     - call 1 #f $$close
     - set 31
     - constant procedure 3 #f
-      - get 46
+      - get 47
       - get 3
       - call 2 #f ||
       - get 2
@@ -4304,7 +4304,7 @@
     - call 1 #f $$close
     - set 29
     - constant procedure 1 #f
-      - get 45
+      - get 44
       - constant 0
       - get 2
       - call 3 #f 35
@@ -10496,12 +10496,12 @@
     - 3
   - list
     - define
-    - nop-instruction
-    - 4
-  - list
-    - define
     - call-instruction
     - 5
+  - list
+    - define
+    - nop-instruction
+    - 1024
   - list
     - define
     - primitives
@@ -14943,7 +14943,7 @@
         - rib?
         - codes
       - list
-        - eq?
+        - =
         - list
           - rib-tag
           - codes
@@ -15485,12 +15485,12 @@
           - value
         - list
           - list
+          - nop-instruction
           - boolean-type
           - char-type
           - null-type
           - string-type
           - symbol-type
-          - nop-instruction
   - list
     - define
     - list
@@ -15503,12 +15503,6 @@
         - list
           - nop-code?
           - codes
-        - list
-          - eq?
-          - list
-            - rib-car
-            - codes
-          - 0
       - list
         - strip-nop-instructions
         - list
