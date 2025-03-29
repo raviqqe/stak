@@ -2572,6 +2572,7 @@
   (begin
     (define eval
       (let ()
+        ; TODO Name this function `compile` when `eval` environments are segregated.
         (define compile-eval ($$compiler))
 
         (define (merge-environments one other)
