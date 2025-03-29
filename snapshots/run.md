@@ -6294,23 +6294,28 @@
       - call 2 #f 34
     - call 1 #f $$close
     - set ||
-    - get ||
-    - set ||
     - constant procedure 1 #f
+      - get ||
+      - set ||
+      - constant procedure 1 #f
+        - get 0
+      - call 1 #f $$close
+      - set 30
       - get 0
+      - set ||
+      - get 0
+      - set ||
+      - get 0
+      - set ||
+      - get 0
+      - set ||
+      - constant #f
     - call 1 #f $$close
-    - set ||
     - constant procedure 0 #t
       - constant #f
     - call 1 #f $$close
-    - set ||
-    - get ||
-    - set ||
-    - get ||
-    - set ||
-    - get ||
-    - set ||
-    - get ||
+    - call 1 #f 1
+    - set 1
     - set ||
     - constant procedure 1 #f
       - constant procedure 1 #f
@@ -8650,6 +8655,7 @@
                 - ||
                 - ||
                 - ||
+        - (|| . ||)
         - (|| . ||)
         - (|| . ||)
         - (|| . ||)
