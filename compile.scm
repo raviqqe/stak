@@ -1710,7 +1710,43 @@
             (set! macro-state-set-static-symbols! set-nothing)
             (set! macro-state-set-dynamic-symbols! set-nothing)
             (set! optimization-context-set-literals! set-nothing)
-            #f)))
+            #f))
+
+          ; Macro system
+
+          (define expand-macros
+           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
+            (for-each
+             (lambda (pair)
+              (macro-context-set-last!
+               context
+               (car pair)
+               (if (symbol? (cdr pair))
+                (resolve-denotation context (cdr pair))
+                (make-transformer context (cdr pair)))))
+             ($$macros))
+            (lambda (expression)
+             (expand-macro context expression))))
+
+          ; Optimization
+
+          (define optimize
+           (let ((context
+                  (make-optimization-context
+                   (map
+                    (lambda (pair)
+                     (cons
+                      (car pair)
+                      (make-optimizer (car pair) (cdr pair))))
+                    ($$optimizers))
+                   '())))
+            (lambda (expression)
+             (optimize-expression context expression))))
+
+          ; Compilation
+
+          (define (compile expression)
+           (compile-expression (make-compilation-context '() #f) expression '())))
         (cdr expression)))
     (else
       (cons

@@ -2602,41 +2602,28 @@
               (else
                 (loop (cdr libraries))))))
 
-        ; Macro system
+        ; Library system
 
-        (define expand-macros
-          (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
-            (for-each
-              (lambda (pair)
-                (macro-context-set-last!
-                  context
-                  (car pair)
-                  (if (symbol? (cdr pair))
-                    (resolve-denotation context (cdr pair))
-                    (make-transformer context (cdr pair)))))
-              ($$macros))
-            (lambda (expression)
-              (expand-macro context expression))))
-
-        ; Optimization
-
-        (define optimize
-          (let ((context
-                  (make-optimization-context
+        (define (expand-libraries environment expression)
+          (let ((names
+                  (apply
+                    append
                     (map
-                      (lambda (pair)
-                        (cons
-                          (car pair)
-                          (make-optimizer (car pair) (cdr pair))))
-                      ($$optimizers))
-                    '())))
-            (lambda (expression)
-              (optimize-expression context expression))))
+                      (lambda (name)
+                        (let ((pair (assoc name libraries)))
+                          (unless pair
+                            (error "unknown library" name))
+                          (cdr pair)))
+                      environment))))
+            (relaxed-deep-map
+              (lambda (x)
+                (cond
+                  ((assq x names) =>
+                    cdr)
 
-        ; Compilation
-
-        (define (compile expression)
-          (compile-expression (make-compilation-context '() #f) expression '()))
+                  (else
+                    x)))
+              expression)))
 
         ; Evaluation
 
@@ -2663,25 +2650,7 @@
                   (compile
                     (optimize
                       (expand-macros
-                        (let ((names
-                                (apply
-                                  append
-                                  (map
-                                    (lambda (name)
-                                      (let ((pair (assoc name libraries)))
-                                        (unless pair
-                                          (error "unknown library" name))
-                                        (cdr pair)))
-                                    environment))))
-                          (relaxed-deep-map
-                            (lambda (x)
-                              (cond
-                                ((assq x names) =>
-                                  cdr)
-
-                                (else
-                                  x)))
-                            expression)))))
+                        (expand-libraries environment expression))))
                   '())))))))
 
     (define environment list)))
