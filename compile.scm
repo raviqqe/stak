@@ -22,7 +22,7 @@
     (define set-instruction 2)
     (define if-instruction 3)
     (define call-instruction 4)
-    (define nop-instruction 1024)
+    (define nop-instruction 65535)
 
     ; Primitives
 
