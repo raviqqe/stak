@@ -105,6 +105,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    #[inline]
     fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand();
 
@@ -115,6 +116,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    #[inline]
     fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons();
         let value = self.memory.car(operand);
@@ -137,6 +139,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         self.memory.set_car(operand, value);
     }
 
+    #[inline]
     fn r#if(&mut self) {
         let value = self.memory.pop();
 
@@ -150,6 +153,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         );
     }
 
+    #[inline]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
