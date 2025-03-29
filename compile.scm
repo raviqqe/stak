@@ -1712,6 +1712,49 @@
             (set! optimization-context-set-literals! set-nothing)
             #f))
 
+          ; Utilities
+
+          (define libraries ($$libraries))
+
+          (define (resolve-library-symbol name)
+           (let loop ((libraries libraries))
+            (cond
+             ((null? libraries)
+              name)
+             ((let ((names (cdar libraries)))
+               (member
+                name
+                names
+                (lambda (name pair)
+                 (eq? name (cdr pair)))))
+              =>
+              caar)
+             (else
+              (loop (cdr libraries))))))
+
+          ; Library system
+
+          (define (expand-libraries environment expression)
+           (let ((names
+                  (apply
+                   append
+                   (map
+                    (lambda (name)
+                     (let ((pair (assoc name libraries)))
+                      (unless pair
+                       (error "unknown library" name))
+                      (cdr pair)))
+                    environment))))
+            (relaxed-deep-map
+             (lambda (x)
+              (cond
+               ((assq x names) =>
+                cdr)
+
+               (else
+                x)))
+             expression)))
+
           ; Macro system
 
           (define expand-macros
