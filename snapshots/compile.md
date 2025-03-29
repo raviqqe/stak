@@ -4228,7 +4228,7 @@
     - set 45
     - constant 4
     - set 44
-    - constant 1024
+    - constant 65535
     - set 43
     - constant list
       - list
@@ -10501,7 +10501,7 @@
   - list
     - define
     - nop-instruction
-    - 1024
+    - 65535
   - list
     - define
     - primitives
