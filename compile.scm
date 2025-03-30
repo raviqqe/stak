@@ -1655,6 +1655,8 @@
     (cond-expand
      (stak
       (define cons-rib cons)
+      (define rib-car car)
+      (define rib-cdr cdr)
       (define target-procedure? procedure?))
 
      (else
