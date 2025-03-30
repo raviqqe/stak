@@ -249,7 +249,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
-            count: (info / 2) as _,
+            count: info / 2,
             variadic: info % 2 == 1,
         }
     }
