@@ -13936,46 +13936,38 @@
               - pair
               - maps
         - list
-          - let
+          - cond
           - list
             - list
+              - assq
+              - name
               - names
-              - list
-                - cdr
-                - pair
+            - =>
+            - cdr
           - list
-            - cond
+            - else
             - list
+              - let
               - list
-                - assq
-                - name
-                - names
-              - =>
-              - cdr
-            - list
-              - else
-              - list
-                - let
                 - list
+                  - renamed
                   - list
-                    - renamed
+                    - string->uninterned-symbol
                     - list
-                      - string->uninterned-symbol
-                      - list
-                        - build-library-name
-                        - id
-                        - name
+                      - build-library-name
+                      - id
+                      - name
+              - list
+                - set-cdr!
+                - pair
                 - list
-                  - set-cdr!
-                  - pair
+                  - cons
                   - list
                     - cons
-                    - list
-                      - cons
-                      - name
-                      - renamed
-                    - names
-                - renamed
+                    - name
+                    - renamed
+                  - names
+              - renamed
   - list
     - define
     - list
