@@ -1297,7 +1297,7 @@
         (marshal #f)
         (marshal
          (if (memq value (marshal-context-symbols context))
-          (symbol->string (resolve-library-symbol (marshal-context-libraries context) value))
+          (symbol->string value)
           ""))))
 
       ((char? value)
