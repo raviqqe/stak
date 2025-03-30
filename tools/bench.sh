@@ -40,7 +40,6 @@ for file in $(ls */main.scm | sort | grep $filter); do
 
   hyperfine \
     -N \
-    --sort command \
     --input ../../compile.scm \
     ${reference:+--reference "$reference"} \
     -L script "$scripts" \
