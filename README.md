@@ -178,9 +178,9 @@ The Stak Scheme interpreter runs 2 to 4 times slower than Python 3 at computatio
 
 | Benchmark        | Stak (minimal [^1]) | Stak (full [^2]) |
 | ---------------- | ------------------: | ---------------: |
-| Fibonacci number |        2.04x slower |     3.19x slower |
-| Integer sum      |        2.23x slower |     3.96x slower |
-| Tak function     |        2.31x slower |     3.73x slower |
+| Fibonacci number |        1.87x slower |     3.11x slower |
+| Integer sum      |        2.04x slower |     3.71x slower |
+| Tak function     |        2.12x slower |     3.57x slower |
 
 ### Startup benchmarks
 
