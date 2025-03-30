@@ -1879,6 +1879,7 @@
   - dynamic-symbols
   - macro-context
   - state
+  - libraries
   - rule-context
   - definition-context
   - use-context
@@ -3733,6 +3734,7 @@
         - constant list
           - state
           - environment
+          - libraries
         - call 2 #f ||
         - set ||
         - get ||
@@ -3753,6 +3755,10 @@
         - constant environment
         - call 2 #f ||
         - set ||
+        - get ||
+        - constant libraries
+        - call 2 #f ||
+        - set ||
         - constant procedure 2 #f
           - get 1
           - call 1 #f ||
@@ -3760,7 +3766,9 @@
           - get 3
           - call 1 #f ||
           - call 2 #f ||
-          - call 2 #f ||
+          - get 3
+          - call 1 #f ||
+          - call 3 #f ||
         - call 1 #f $$close
         - set ||
         - constant procedure 3 #f
@@ -4802,8 +4810,10 @@
                     - get 0
                     - call 1 #f ||
                     - if
-                      - get 0
+                      - get 9
                       - call 1 #f ||
+                      - get 1
+                      - call 2 #f ||
                     - get 0
                   - call 1 #f $$close
                   - get 7
@@ -5563,6 +5573,53 @@
         - call 1 #f 1
         - set 1
         - set ||
+        - get ||
+        - set ||
+        - get ||
+        - set ||
+        - get ||
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f ||
+              - if
+                - get 4
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 0
+                  - call 1 #f ||
+                - get 2
+                - call 1 #f ||
+                - call 1 #f 5
+              - call 1 #f $$close
+              - constant procedure 1 #f
+                - get 7
+                - get 1
+                - constant procedure 2 #f
+                  - get 1
+                  - get 1
+                  - call 1 #f ||
+                  - call 2 #f ||
+                - call 1 #f $$close
+                - call 3 #f ||
+              - call 1 #f $$close
+              - get 2
+              - call 1 #f ||
+              - call 1 #f 1
+              - set 1
+              - call 1 #f 1
+            - call 1 #f $$close
+            - set 1
+            - get 3
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
         - constant list
           - list
             - list
@@ -6293,53 +6350,6 @@
             - (record? . ||)
             - (values . ||)
             - (call-with-values . ||)
-        - set ||
-        - get ||
-        - set ||
-        - get ||
-        - set ||
-        - get ||
-        - set ||
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - get 0
-              - call 1 #f ||
-              - if
-                - get 4
-              - constant procedure 1 #f
-                - get 0
-                - if
-                  - get 0
-                  - call 1 #f ||
-                - get 2
-                - call 1 #f ||
-                - call 1 #f 5
-              - call 1 #f $$close
-              - constant procedure 1 #f
-                - get 7
-                - get 1
-                - constant procedure 2 #f
-                  - get 1
-                  - get 1
-                  - call 1 #f ||
-                  - call 2 #f ||
-                - call 1 #f $$close
-                - call 3 #f ||
-              - call 1 #f $$close
-              - get 2
-              - call 1 #f ||
-              - call 1 #f 1
-              - set 1
-              - call 1 #f 1
-            - call 1 #f $$close
-            - set 1
-            - get ||
-            - call 1 #f 1
-          - call 1 #f $$close
-          - constant #f
-          - call 1 #f 1
-        - call 1 #f $$close
         - set ||
         - constant procedure 2 #f
           - constant procedure 1 #f
@@ -9153,7 +9163,8 @@
         - constant ()
         - call 4 #f ||
         - constant ()
-        - call 2 #f ||
+        - get ||
+        - call 3 #f ||
         - call 1 #f 1
         - set 1
         - set ||

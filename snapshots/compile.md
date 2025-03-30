@@ -1940,6 +1940,7 @@
   - macro-context-append
   - macro-context-set!
   - bindings
+  - macro-context-libraries
   - optimization-context
   - optimization-context?
   - literals
@@ -2066,7 +2067,6 @@
   - $$dynamic-symbols
   - $$symbols
   - metadata?
-  - metadata-libraries
   - metadata-macros
   - metadata-optimizers
   - metadata-dynamic-symbols
@@ -2087,6 +2087,7 @@
   - constants
   - continuations
   - marshal-context-symbols
+  - marshal-context-libraries
   - marshal-context-set-constants!
   - marshal-context-constants
   - marshalled
@@ -2098,6 +2099,7 @@
   - marshal-rib
   - make-marshal-context
   - metadata-symbols
+  - metadata-libraries
   - encode-context
   - encode-context?
   - null
@@ -2185,19 +2187,19 @@
   - macro-state-set-dynamic-symbols!
   - optimization-context-set-literals!
   - set-nothing
-  - $$libraries
   - cons-rib
   - rib-car
   - rib-cdr
   - resolve-library-symbol
   - loop
-  - libraries
+  - $$libraries
   - name
   - relaxed-deep-map
   - names
   - x
   - make-macro-context
   - make-macro-state
+  - libraries
   - macro-context-set-last!
   - resolve-denotation
   - make-transformer
@@ -4027,6 +4029,7 @@
         - constant list
           - state
           - environment
+          - libraries
         - call 2 #f ||
         - set ||
         - get ||
@@ -4047,6 +4050,10 @@
         - constant environment
         - call 2 #f ||
         - set ||
+        - get ||
+        - constant libraries
+        - call 2 #f ||
+        - set ||
         - constant procedure 2 #f
           - get 1
           - call 1 #f ||
@@ -4054,7 +4061,9 @@
           - get 3
           - call 1 #f ||
           - call 2 #f ||
-          - call 2 #f ||
+          - get 3
+          - call 1 #f ||
+          - call 3 #f ||
         - call 1 #f $$close
         - set ||
         - constant procedure 3 #f
@@ -5096,8 +5105,10 @@
                     - get 0
                     - call 1 #f ||
                     - if
-                      - get 0
+                      - get 9
                       - call 1 #f ||
+                      - get 1
+                      - call 2 #f ||
                     - get 0
                   - call 1 #f $$close
                   - get 7
@@ -5857,6 +5868,53 @@
         - call 1 #f 1
         - set 1
         - set ||
+        - get ||
+        - set ||
+        - get ||
+        - set ||
+        - get ||
+        - set ||
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f ||
+              - if
+                - get 4
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 0
+                  - call 1 #f ||
+                - get 2
+                - call 1 #f ||
+                - call 1 #f 5
+              - call 1 #f $$close
+              - constant procedure 1 #f
+                - get 7
+                - get 1
+                - constant procedure 2 #f
+                  - get 1
+                  - get 1
+                  - call 1 #f ||
+                  - call 2 #f ||
+                - call 1 #f $$close
+                - call 3 #f ||
+              - call 1 #f $$close
+              - get 2
+              - call 1 #f ||
+              - call 1 #f 1
+              - set 1
+              - call 1 #f 1
+            - call 1 #f $$close
+            - set 1
+            - get 3
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant #f
+          - call 1 #f 1
+        - call 1 #f $$close
+        - set ||
         - constant list
           - list
             - list
@@ -6587,53 +6645,6 @@
             - (record? . ||)
             - (values . ||)
             - (call-with-values . ||)
-        - set ||
-        - get ||
-        - set ||
-        - get ||
-        - set ||
-        - get ||
-        - set ||
-        - constant procedure 1 #f
-          - constant procedure 1 #f
-            - constant procedure 1 #f
-              - get 0
-              - call 1 #f ||
-              - if
-                - get 4
-              - constant procedure 1 #f
-                - get 0
-                - if
-                  - get 0
-                  - call 1 #f ||
-                - get 2
-                - call 1 #f ||
-                - call 1 #f 5
-              - call 1 #f $$close
-              - constant procedure 1 #f
-                - get 7
-                - get 1
-                - constant procedure 2 #f
-                  - get 1
-                  - get 1
-                  - call 1 #f ||
-                  - call 2 #f ||
-                - call 1 #f $$close
-                - call 3 #f ||
-              - call 1 #f $$close
-              - get 2
-              - call 1 #f ||
-              - call 1 #f 1
-              - set 1
-              - call 1 #f 1
-            - call 1 #f $$close
-            - set 1
-            - get ||
-            - call 1 #f 1
-          - call 1 #f $$close
-          - constant #f
-          - call 1 #f 1
-        - call 1 #f $$close
         - set ||
         - constant procedure 2 #f
           - constant procedure 1 #f
@@ -9257,7 +9268,8 @@
         - constant ()
         - call 4 #f ||
         - constant ()
-        - call 2 #f ||
+        - get ||
+        - call 3 #f ||
         - call 1 #f 1
         - set 1
         - set ||
@@ -11303,6 +11315,7 @@
       - make-macro-context
       - state
       - environment
+      - libraries
     - macro-context?
     - list
       - state
@@ -11311,6 +11324,9 @@
       - environment
       - macro-context-environment
       - macro-context-set-environment!
+    - list
+      - libraries
+      - macro-context-libraries
   - list
     - define
     - list
@@ -11328,6 +11344,9 @@
         - list
           - macro-context-environment
           - context
+      - list
+        - macro-context-libraries
+        - context
   - list
     - define
     - list
@@ -12649,6 +12668,9 @@
                       - value
                     - list
                       - resolve-library-symbol
+                      - list
+                        - macro-context-libraries
+                        - context
                       - value
                     - value
                 - list
@@ -13848,6 +13870,7 @@
     - define
     - list
       - resolve-library-symbol
+      - libraries
       - name
     - list
       - let\*
@@ -14460,6 +14483,7 @@
     - define
     - list
       - expand-macros
+      - libraries
       - expression
     - list
       - let\*
@@ -14483,6 +14507,7 @@
             - list
               - quote
               - ()
+            - libraries
         - list
           - expression
           - list
@@ -14914,12 +14939,16 @@
     - list
       - make-marshal-context
       - symbols
+      - libraries
       - constants
       - continuations
     - marshal-context?
     - list
       - symbols
       - marshal-context-symbols
+    - list
+      - libraries
+      - marshal-context-libraries
     - list
       - constants
       - marshal-context-constants
@@ -15025,6 +15054,9 @@
                 - symbol->string
                 - list
                   - resolve-library-symbol
+                  - list
+                    - marshal-context-libraries
+                    - context
                   - value
               - ""
       - list
@@ -15339,6 +15371,9 @@
         - make-marshal-context
         - list
           - metadata-symbols
+          - metadata
+        - list
+          - metadata-libraries
           - metadata
         - list
           - quote
@@ -16326,6 +16361,7 @@
         - dynamic-symbols
       - list
         - expand-macros
+        - libraries
         - expression1
     - list
       - define-values
@@ -16644,15 +16680,6 @@
     - call 2 #f ||
     - call 2 #f ||
     - constant define
-    - constant libraries
-    - constant $$libraries
-    - constant ()
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant define
     - constant cons-rib
     - constant cons
     - constant ()
@@ -16675,8 +16702,10 @@
     - call 2 #f ||
     - constant define
     - constant resolve-library-symbol
+    - constant libraries
     - constant name
     - constant ()
+    - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
     - constant let
@@ -16771,6 +16800,15 @@
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant libraries
+    - constant $$libraries
+    - constant ()
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
@@ -16926,7 +16964,9 @@
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
+    - constant libraries
     - constant ()
+    - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
