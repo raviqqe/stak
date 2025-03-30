@@ -41,7 +41,7 @@ export PATH=$STAK_ROOT:$PATH
 start=$(epoch)
 
 if [ $# -eq 0 ]; then
-  git ls-files '**/*.feature' | xargs ls -S | parallel -q tools/cucumber.sh ${tags:+-t "$tags"}
+  git ls-files '**/*.feature' | xargs ls -S | rush tools/cucumber.sh ${tags:+-t "$tags"} {}
 else
   bundler exec cucumber --publish-quiet --strict-undefined "$@"
 fi
