@@ -993,15 +993,13 @@
              (names (cdr pair)))
        (when (null? names)
         (library-context-set-name-maps! context (cons pair maps)))
-       (let ((names (cdr pair)))
-        (cond
-         ((assq name names) =>
-          cdr)
-
-         (else
-          (let ((renamed (string->uninterned-symbol (build-library-name id name))))
-           (set-cdr! pair (cons (cons name renamed) names))
-           renamed)))))))
+       (cond
+        ((assq name names) =>
+         cdr)
+        (else
+         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+          (set-cdr! pair (cons (cons name renamed) names))
+          renamed))))))
 
     (define (expand-import-set context importer-id qualify set)
      (define (expand qualify)
