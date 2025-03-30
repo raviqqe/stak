@@ -1722,13 +1722,11 @@
             (set! optimization-context-set-literals! set-nothing)
             #f))
 
-          (define libraries ($$libraries))
-
           (define cons-rib cons)
           (define rib-car car)
           (define rib-cdr cdr)
 
-          (define (resolve-library-symbol todo name)
+          (define (resolve-library-symbol libraries name)
            (let loop ((libraries libraries))
             (cond
              ((null? libraries)
@@ -1745,6 +1743,8 @@
               (loop (cdr libraries))))))
 
           ; Library system
+
+          (define libraries ($$libraries))
 
           (define (expand-libraries environment expression)
            (let ((names
