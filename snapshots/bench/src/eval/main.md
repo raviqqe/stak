@@ -110,10 +110,6 @@
 - constant 71
 - call 1 #f ||
 - set ||
-- get ||
-- set ||
-- get ||
-- set ||
 - constant procedure 3 #f
   - get 1
   - get 1
@@ -2127,8 +2123,6 @@
   - cons
   - close
   - rib?
-  - rib-car
-  - rib-cdr
   - car
   - cdr
   - rib-tag
@@ -5923,8 +5917,6 @@
             - (cons . ||)
             - (close . ||)
             - (rib? . ||)
-            - (rib-car . ||)
-            - (rib-cdr . ||)
             - (car . ||)
             - (cdr . ||)
             - (rib-tag . ||)
@@ -6155,8 +6147,6 @@
             - (cons . ||)
             - (close . ||)
             - (rib? . ||)
-            - (rib-car . ||)
-            - (rib-cdr . ||)
             - (car . ||)
             - (cdr . ||)
             - (rib-tag . ||)
@@ -8383,8 +8373,6 @@
             - (|| . ||)
             - (|| . ||)
             - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
             - list
               - ||
               - ||
@@ -8673,8 +8661,6 @@
                     - ||
                     - ||
                     - ||
-            - (|| . ||)
-            - (|| . ||)
             - (|| . ||)
             - (|| . ||)
             - (|| . ||)
