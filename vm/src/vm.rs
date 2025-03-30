@@ -38,7 +38,7 @@ macro_rules! profile_event {
 
 struct Arity {
     // A count does not include a variadic argument.
-    count: Number,
+    count: usize,
     variadic: bool,
 }
 
@@ -184,7 +184,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.memory.null()
                 };
 
-                for _ in 0..arguments.count.to_i64() {
+                for _ in 0..arguments.count {
                     let value = self.memory.pop();
                     list = self.memory.cons(value, list)?;
                 }
@@ -210,7 +210,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 self.memory
                     .set_code(self.code(self.memory.code()).assume_cons());
 
-                for _ in 0..parameters.count.to_i64() {
+                for _ in 0..parameters.count {
                     if self.memory.register() == self.memory.null() {
                         return Err(Error::ArgumentCount.into());
                     }
@@ -249,7 +249,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
-            count: Number::from_i64((info / 2) as _),
+            count: (info / 2) as _,
             variadic: info % 2 == 1,
         }
     }
