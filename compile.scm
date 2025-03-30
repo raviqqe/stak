@@ -232,15 +232,17 @@
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context state environment)
+     (make-macro-context state environment libraries)
      macro-context?
      (state macro-context-state)
-     (environment macro-context-environment macro-context-set-environment!))
+     (environment macro-context-environment macro-context-set-environment!)
+     (libraries macro-context-libraries))
 
     (define (macro-context-append context pairs)
      (make-macro-context
       (macro-context-state context)
-      (append pairs (macro-context-environment context))))
+      (append pairs (macro-context-environment context))
+      (macro-context-libraries context)))
 
     (define (macro-context-set! context name denotation)
      (let* ((environment (macro-context-environment context))
@@ -1143,8 +1145,8 @@
 
     ; Macro system
 
-    (define (expand-macros expression)
-     (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '()))
+    (define (expand-macros libraries expression)
+     (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '() libraries))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1632,7 +1634,7 @@
 
     (define (main source)
      (define-values (expression1 libraries) (expand-libraries source))
-     (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
+     (define-values (expression2 macros dynamic-symbols) (expand-macros libraries expression1))
      (define-values (expression3 optimizers) (optimize expression2))
      (define features (detect-features expression3))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
@@ -1722,7 +1724,7 @@
           (define rib-car car)
           (define rib-cdr cdr)
 
-          (define (resolve-library-symbol name)
+          (define (resolve-library-symbol context name)
            (let loop ((libraries libraries))
             (cond
              ((null? libraries)
@@ -1764,7 +1766,7 @@
           ; Macro system
 
           (define expand-macros
-           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
+           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '() libraries)))
             (for-each
              (lambda (pair)
               (macro-context-set-last!
