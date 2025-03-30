@@ -6,7 +6,6 @@ set -e
 
 if [ $(uname) = Linux ]; then
   sudo apt install chibi-scheme guile-3.0 lua5.4
-  curl -fsSL https://raw.githubusercontent.com/practical-scheme/get-gauche/master/get-gauche.sh | bash
 else
   brew install chibi-scheme gauche guile lua@5.4 pkgconf uutils-coreutils uutils-findutils
 fi
