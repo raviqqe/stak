@@ -224,7 +224,7 @@
       (if (eq? code continuation)
         (write-string "continue\n")
         (begin
-          (let ((operand (rib-car code)))
+          (let ((operand (car code)))
             (display-instruction (rib-tag code))
             (if (= (rib-tag code) if-instruction)
               (begin

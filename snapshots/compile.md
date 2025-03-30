@@ -601,14 +601,6 @@
   - constant #f
 - call 1 #f $$close
 - set ||
-- get ||
-- set ||
-- get ||
-- set ||
-- get ||
-- set ||
-- get ||
-- set ||
 - constant procedure 1 #f
   - get 0
   - call 1 #f ||
@@ -2186,7 +2178,6 @@
   - $$compiler
   - dummy
   - xs
-  - cons-rib
   - nop-rib
   - continuation
   - macro-state-set-literals!
@@ -2195,6 +2186,9 @@
   - optimization-context-set-literals!
   - set-nothing
   - $$libraries
+  - cons-rib
+  - rib-car
+  - rib-cdr
   - resolve-library-symbol
   - loop
   - libraries
@@ -2441,11 +2435,11 @@
   - cons
   - close
   - rib?
-  - rib-car
-  - rib-cdr
+  - car
+  - cdr
   - rib-tag
-  - rib-set-car!
-  - rib-set-cdr!
+  - set-car!
+  - set-cdr!
   - eq?
   - apply
   - data-rib
@@ -2504,10 +2498,6 @@
   - null?
   - pair?
   - list?
-  - car
-  - cdr
-  - set-car!
-  - set-cdr!
   - caar
   - cadr
   - cdar
@@ -2605,7 +2595,6 @@
       - get ||
       - call 1 #f ||
       - call 1 #f ||
-      - call 1 #f ||
       - get 4
       - call 2 #f ||
       - set 0
@@ -2614,8 +2603,6 @@
     - call 1 #f 4
   - call 1 #f $$close
   - get ||
-  - call 1 #f ||
-  - call 1 #f ||
   - call 1 #f ||
   - call 1 #f ||
   - call 1 #f ||
@@ -5850,8 +5837,6 @@
         - call 1 #f $$close
         - set ||
         - constant procedure 1 #f
-          - get ||
-          - set ||
           - constant procedure 1 #f
             - get 0
           - call 1 #f $$close
@@ -6244,11 +6229,11 @@
             - (cons . ||)
             - (close . ||)
             - (rib? . ||)
-            - (rib-car . ||)
-            - (rib-cdr . ||)
+            - (car . ||)
+            - (cdr . ||)
             - (rib-tag . ||)
-            - (rib-set-car! . ||)
-            - (rib-set-cdr! . ||)
+            - (set-car! . ||)
+            - (set-cdr! . ||)
             - (eq? . ||)
             - (apply . ||)
             - (data-rib . ||)
@@ -6305,10 +6290,6 @@
             - (null? . ||)
             - (pair? . ||)
             - (list? . ||)
-            - (car . ||)
-            - (cdr . ||)
-            - (set-car! . ||)
-            - (set-cdr! . ||)
             - (caar . ||)
             - (cadr . ||)
             - (cdar . ||)
@@ -6478,11 +6459,11 @@
             - (cons . ||)
             - (close . ||)
             - (rib? . ||)
-            - (rib-car . ||)
-            - (rib-cdr . ||)
+            - (car . ||)
+            - (cdr . ||)
             - (rib-tag . ||)
-            - (rib-set-car! . ||)
-            - (rib-set-cdr! . ||)
+            - (set-car! . ||)
+            - (set-cdr! . ||)
             - (eq? . ||)
             - (apply . ||)
             - (data-rib . ||)
@@ -6541,10 +6522,6 @@
             - (null? . ||)
             - (pair? . ||)
             - (list? . ||)
-            - (car . ||)
-            - (cdr . ||)
-            - (set-car! . ||)
-            - (set-cdr! . ||)
             - (caar . ||)
             - (cadr . ||)
             - (cdar . ||)
@@ -6610,6 +6587,12 @@
             - (record? . ||)
             - (values . ||)
             - (call-with-values . ||)
+        - set ||
+        - get ||
+        - set ||
+        - get ||
+        - set ||
+        - get ||
         - set ||
         - constant procedure 1 #f
           - constant procedure 1 #f
@@ -8702,10 +8685,6 @@
             - (|| . ||)
             - (|| . ||)
             - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
             - list
               - ||
               - ||
@@ -8994,8 +8973,6 @@
                     - ||
                     - ||
                     - ||
-            - (|| . ||)
-            - (|| . ||)
             - (|| . ||)
             - (|| . ||)
             - (|| . ||)
@@ -16404,6 +16381,20 @@
 - call 2 #f ||
 - call 2 #f ||
 - constant define
+- constant rib-car
+- constant car
+- constant ()
+- call 2 #f ||
+- call 2 #f ||
+- call 2 #f ||
+- constant define
+- constant rib-cdr
+- constant cdr
+- constant ()
+- call 2 #f ||
+- call 2 #f ||
+- call 2 #f ||
+- constant define
 - constant target-procedure?
 - constant procedure?
 - constant ()
@@ -16411,6 +16402,8 @@
 - call 2 #f ||
 - call 2 #f ||
 - constant ()
+- call 2 #f ||
+- call 2 #f ||
 - call 2 #f ||
 - call 2 #f ||
 - call 2 #f ||
@@ -16594,13 +16587,6 @@
     - constant ()
     - call 2 #f ||
     - constant set!
-    - constant cons-rib
-    - constant cons
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant set!
     - constant nop-rib
     - constant lambda
     - constant continuation
@@ -16653,7 +16639,6 @@
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
-    - call 2 #f ||
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
@@ -16663,6 +16648,27 @@
     - constant $$libraries
     - constant ()
     - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant cons-rib
+    - constant cons
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant rib-car
+    - constant car
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant define
+    - constant rib-cdr
+    - constant cdr
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
@@ -17182,6 +17188,9 @@
     - call 2 #f ||
     - call 2 #f ||
     - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
