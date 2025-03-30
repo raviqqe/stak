@@ -8,6 +8,7 @@ else
   brew install chibi-scheme gauche guile lua@5.4 pkgconf uutils-coreutils uutils-findutils
 fi
 
+# spell-checker: disable-next-line
 go install github.com/shenwei356/rush@latest
 cargo install stak
 
