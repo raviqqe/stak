@@ -1015,9 +1015,9 @@
 
     (define bytevector? (instance? bytevector-type))
 
-    (define bytevector-length rib-car)
+    (define bytevector-length car)
 
-    (define bytevector->list rib-cdr)
+    (define bytevector->list cdr)
 
     (define (list->bytevector x)
       (data-rib bytevector-type (length x) x))
@@ -1035,9 +1035,9 @@
     (define (make-vector length . rest)
       (list->vector (apply make-list (cons length rest))))
 
-    (define vector-length rib-car)
+    (define vector-length car)
 
-    (define vector->list rib-cdr)
+    (define vector->list cdr)
 
     (define (vector-ref vector index)
       (list-ref (vector->list vector) index))
@@ -1058,9 +1058,9 @@
     (define (code-points->string x)
       (string-rib x (length x)))
 
-    (define string-length rib-car)
+    (define string-length car)
 
-    (define string->code-points rib-cdr)
+    (define string->code-points cdr)
 
     (define (list->string x)
       (string-rib (map char->integer x) (length x)))
@@ -1221,7 +1221,7 @@
 
     (define symbol? (instance? symbol-type))
 
-    (define symbol->string rib-cdr)
+    (define symbol->string cdr)
 
     (define (string->uninterned-symbol x)
       (data-rib symbol-type #f x))
@@ -1265,17 +1265,17 @@
       (lambda (x)
         (and
           (record? x)
-          (eq? (rib-car x) type))))
+          (eq? (car x) type))))
 
     (define (record-getter type field)
       (let ((index (field-index type field)))
         (lambda (record)
-          (list-ref (rib-cdr record) index))))
+          (list-ref (cdr record) index))))
 
     (define (record-setter type field)
       (let ((index (field-index type field)))
         (lambda (record value)
-          (list-set! (rib-cdr record) index value))))
+          (list-set! (cdr record) index value))))
 
     (define (field-index type field)
       (memq-position field (cdr type)))
@@ -1659,14 +1659,14 @@
     (define dummy-procedure (lambda () #f))
 
     (define (call/cc receiver)
-      (let ((continuation (rib-car (rib-cdr (rib-cdr (rib-cdr (close dummy-procedure))))))
+      (let ((continuation (cadr (cddr (close dummy-procedure))))
             (point current-point))
         (receiver
           (lambda (argument)
             (travel-to-point! current-point point)
             (set-current-point! point)
             (rib-set-car!
-              (rib-cdr (rib-cdr (close dummy-procedure))) ; frame
+              (cddr (close dummy-procedure)) ; frame
               continuation)
             argument))))
 
