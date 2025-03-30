@@ -58,8 +58,6 @@
     cons
     close
     rib?
-    rib-car
-    rib-cdr
     car
     cdr
     rib-tag
@@ -582,8 +580,8 @@
     (define rib $$rib)
     (define close (primitive 1))
     (define rib? (primitive 2))
-    (define rib-car (primitive 3))
-    (define rib-cdr (primitive 4))
+    (define car (primitive 3))
+    (define cdr (primitive 4))
     (define rib-tag (primitive 5))
     (define set-car! (primitive 6))
     (define set-cdr! (primitive 7))
@@ -603,9 +601,6 @@
     (define memq (primitive 62))
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
-
-    (define car rib-car)
-    (define cdr rib-cdr)
 
     (define (data-rib type car cdr)
       (rib car cdr type))
@@ -1422,8 +1417,6 @@
     cons
     close
     rib?
-    rib-car
-    rib-cdr
     car
     cdr
     rib-tag
