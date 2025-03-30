@@ -1654,6 +1654,8 @@
   `(let ()
     (cond-expand
      (stak
+      (define rib-car car)
+      (define rib-cdr car)
       (define cons-rib cons)
       (define target-procedure? procedure?))
 
