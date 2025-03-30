@@ -604,6 +604,9 @@
     (define eqv? (primitive 70))
     (define equal-inner? (primitive 71))
 
+    (define car rib-car)
+    (define cdr rib-cdr)
+
     (define (data-rib type car cdr)
       (rib car cdr type))
 
@@ -628,8 +631,8 @@
         (eq? x y)
         (and
           (equal-inner? x y)
-          (equal? (rib-car x) (rib-car y))
-          (equal? (rib-cdr x) (rib-cdr y)))))
+          (equal? (car x) (car y))
+          (equal? (cdr x) (cdr y)))))
 
     ;; Procedure
 
@@ -812,7 +815,7 @@
     (define (integer->char x)
       (data-rib char-type x '()))
 
-    (define char->integer rib-car)
+    (define char->integer car)
 
     (define (char-compare compare)
       (lambda xs (apply compare (map char->integer xs))))
@@ -832,8 +835,6 @@
           (pair? x)
           (list? (cdr x)))))
 
-    (define car rib-car)
-    (define cdr rib-cdr)
     (define (caar x) (car (car x)))
     (define (cadr x) (car (cdr x)))
     (define (cdar x) (cdr (car x)))
