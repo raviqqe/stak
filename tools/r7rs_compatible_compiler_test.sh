@@ -6,7 +6,6 @@ set -e
 
 cd $(dirname $0)/..
 
-brew install chibi-scheme gauche guile
 interpreters='chibi-scheme gosh guile'
 
 cargo build --release
