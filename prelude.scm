@@ -60,9 +60,11 @@
     rib?
     rib-car
     rib-cdr
+    car
+    cdr
     rib-tag
-    rib-set-car!
-    rib-set-cdr!
+    set-car!
+    set-cdr!
     eq?
 
     apply
@@ -128,10 +130,6 @@
     null?
     pair?
     list?
-    car
-    cdr
-    set-car!
-    set-cdr!
     caar
     cadr
     cdar
@@ -587,8 +585,8 @@
     (define rib-car (primitive 3))
     (define rib-cdr (primitive 4))
     (define rib-tag (primitive 5))
-    (define rib-set-car! (primitive 6))
-    (define rib-set-cdr! (primitive 7))
+    (define set-car! (primitive 6))
+    (define set-cdr! (primitive 7))
     (define eq? (primitive 8))
     (define $< (primitive 9))
     (define $+ (primitive 10))
@@ -836,8 +834,6 @@
 
     (define car rib-car)
     (define cdr rib-cdr)
-    (define set-car! rib-set-car!)
-    (define set-cdr! rib-set-cdr!)
     (define (caar x) (car (car x)))
     (define (cadr x) (car (cdr x)))
     (define (cdar x) (cdr (car x)))
@@ -1427,9 +1423,11 @@
     rib?
     rib-car
     rib-cdr
+    car
+    cdr
     rib-tag
-    rib-set-car!
-    rib-set-cdr!
+    set-car!
+    set-cdr!
     eq?
 
     apply
@@ -1493,10 +1491,6 @@
     null?
     pair?
     list?
-    car
-    cdr
-    set-car!
-    set-cdr!
     caar
     cadr
     cdar
@@ -1665,7 +1659,7 @@
           (lambda (argument)
             (travel-to-point! current-point point)
             (set-current-point! point)
-            (rib-set-car!
+            (set-car!
               (cddr (close dummy-procedure)) ; frame
               continuation)
             argument))))
