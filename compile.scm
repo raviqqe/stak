@@ -599,7 +599,7 @@
           (relaxed-deep-map
            (lambda (value)
             (if (symbol? value)
-             (resolve-library-symbol value)
+             (resolve-library-symbol (macro-context-libraries context) value)
              value))
            (cdr expression))))
 
@@ -980,7 +980,7 @@
       (symbol->string name)))
 
     ; TODO Remove library symbol prefixes.
-    (define (resolve-library-symbol name)
+    (define (resolve-library-symbol libraries name)
      (let* ((string (symbol->string name))
             (position (memv-position library-symbol-separator (string->list string))))
       (if position
@@ -1266,9 +1266,10 @@
     ; Marshalling
 
     (define-record-type marshal-context
-     (make-marshal-context symbols constants continuations)
+     (make-marshal-context symbols libraries constants continuations)
      marshal-context?
      (symbols marshal-context-symbols)
+     (libraries marshal-context-libraries)
      (constants marshal-context-constants marshal-context-set-constants!)
      (continuations marshal-context-continuations marshal-context-set-continuations!))
 
@@ -1296,7 +1297,7 @@
         (marshal #f)
         (marshal
          (if (memq value (marshal-context-symbols context))
-          (symbol->string (resolve-library-symbol value))
+          (symbol->string (resolve-library-symbol (marshal-context-libraries context) value))
           ""))))
 
       ((char? value)
@@ -1382,7 +1383,10 @@
         (rib-tag value)))))
 
     (define (marshal metadata codes)
-     (marshal-rib (make-marshal-context (metadata-symbols metadata) '() '()) codes #f))
+     (marshal-rib
+      (make-marshal-context (metadata-symbols metadata) (metadata-libraries metadata) '() '())
+      codes
+      #f))
 
     ; Encoding
 
@@ -1724,7 +1728,7 @@
           (define rib-car car)
           (define rib-cdr cdr)
 
-          (define (resolve-library-symbol context name)
+          (define (resolve-library-symbol todo name)
            (let loop ((libraries libraries))
             (cond
              ((null? libraries)
