@@ -2067,6 +2067,7 @@
   - $$dynamic-symbols
   - $$symbols
   - metadata?
+  - metadata-libraries
   - metadata-macros
   - metadata-optimizers
   - metadata-dynamic-symbols
@@ -2087,7 +2088,6 @@
   - constants
   - continuations
   - marshal-context-symbols
-  - marshal-context-libraries
   - marshal-context-set-constants!
   - marshal-context-constants
   - marshalled
@@ -2099,7 +2099,6 @@
   - marshal-rib
   - make-marshal-context
   - metadata-symbols
-  - metadata-libraries
   - encode-context
   - encode-context?
   - null
@@ -14947,9 +14946,6 @@
       - symbols
       - marshal-context-symbols
     - list
-      - libraries
-      - marshal-context-libraries
-    - list
       - constants
       - marshal-context-constants
       - marshal-context-set-constants!
@@ -15052,12 +15048,7 @@
                   - context
               - list
                 - symbol->string
-                - list
-                  - resolve-library-symbol
-                  - list
-                    - marshal-context-libraries
-                    - context
-                  - value
+                - value
               - ""
       - list
         - list
@@ -15371,9 +15362,6 @@
         - make-marshal-context
         - list
           - metadata-symbols
-          - metadata
-        - list
-          - metadata-libraries
           - metadata
         - list
           - quote

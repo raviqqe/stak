@@ -1269,7 +1269,6 @@
      (make-marshal-context symbols libraries constants continuations)
      marshal-context?
      (symbols marshal-context-symbols)
-     (libraries marshal-context-libraries)
      (constants marshal-context-constants marshal-context-set-constants!)
      (continuations marshal-context-continuations marshal-context-set-continuations!))
 
@@ -1384,7 +1383,7 @@
 
     (define (marshal metadata codes)
      (marshal-rib
-      (make-marshal-context (metadata-symbols metadata) (metadata-libraries metadata) '() '())
+      (make-marshal-context (metadata-symbols metadata) '() '())
       codes
       #f))
 
