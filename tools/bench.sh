@@ -34,8 +34,14 @@ for file in $(ls */main.scm | sort | grep $filter); do
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file"
 
   if [ -r $base.py ]; then
-    scripts="$scripts,python3 $base.py"
+    reference="python3 $base.py"
   fi
 
-  hyperfine -N --sort command --input ../../compile.scm -L script "$scripts" "{script}"
+  hyperfine \
+    -N \
+    --sort command \
+    --input ../../compile.scm \
+    ${reference:+--reference "$reference"} \
+    -L script "$scripts" \
+    "{script}"
 done
