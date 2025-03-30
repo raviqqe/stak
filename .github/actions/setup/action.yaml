@@ -10,5 +10,6 @@ runs:
     - uses: homebrew/actions/setup-homebrew@master
       with:
         stable: true
+      if: ${{ !startsWith(runner.arch, "ARM") }}
     - run: tools/ci/setup.sh
       shell: bash
