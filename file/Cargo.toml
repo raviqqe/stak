@@ -17,7 +17,7 @@ heapless = { version = "0.8.0", default-features = false }
 rustix = { version = "1.0.3", default-features = false, features = [
   "fs",
 ], optional = true }
-stak-vm = { version = "0.10.9", path = "../vm" }
+stak-vm = { version = "0.10.10", path = "../vm" }
 
 [dev-dependencies]
 tempfile = "3.19.1"
