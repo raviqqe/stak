@@ -2723,12 +2723,19 @@
   - call 1 #f 1
   - set 1
   - if
-    - get ||
-    - constant 0
-    - constant ()
+    - constant procedure 0 #f
+      - constant #f
+    - call 1 #f ||
+    - call 1 #f ||
+    - call 1 #f ||
+    - call 1 #f ||
+    - constant list
+      - 0
     - call 2 #f ||
-    - constant ()
-    - call 3 #f ||
+    - set 0
+    - constant procedure 0 #f
+      - constant #f
+    - call 1 #f ||
     - call 0 #f 0
   - call 0 #f ||
 - call 1 #f ||
