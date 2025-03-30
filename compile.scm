@@ -1706,11 +1706,9 @@
         `(let ()
           ,@frontend
 
-          ; Utilities
-
-          ; Disable unused compiler functionalities.
           (define dummy
            (let ((set-nothing (lambda xs #f)))
+            (set! cons-rib cons)
             (set! nop-rib (lambda (continuation) continuation))
             (set! macro-state-set-literals! set-nothing)
             (set! macro-state-set-static-symbols! set-nothing)
@@ -1718,9 +1716,7 @@
             (set! optimization-context-set-literals! set-nothing)
             #f))
 
-          (define cons-rib cons)
-          (define rib-car car)
-          (define rib-cdr car)
+          ; Utilities
 
           (define libraries ($$libraries))
 
