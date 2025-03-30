@@ -97,23 +97,26 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
 
+            self.advance_code();
+
             trace_memory!(self);
         }
 
         Ok(())
     }
 
+    #[inline]
     fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand();
 
         trace!("constant", constant);
 
         self.memory.push(constant)?;
-        self.advance_code();
 
         Ok(())
     }
 
+    #[inline]
     fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons();
         let value = self.memory.car(operand);
@@ -122,11 +125,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.push(value)?;
-        self.advance_code();
 
         Ok(())
     }
 
+    #[inline]
     fn set(&mut self) {
         let operand = self.operand_cons();
         let value = self.memory.pop();
@@ -135,22 +138,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.set_car(operand, value);
-        self.advance_code();
     }
 
+    #[inline]
     fn r#if(&mut self) {
-        let value = self.memory.pop();
+        let cons = self.memory.stack();
 
-        self.memory.set_code(
-            (if value == self.memory.boolean(false).into() {
-                self.memory.cdr(self.memory.code())
-            } else {
-                self.operand()
-            })
-            .assume_cons(),
-        );
+        if self.memory.pop() != self.memory.boolean(false).into() {
+            self.memory.set_cdr(cons, self.operand());
+            self.memory.set_code(cons);
+        }
     }
 
+    #[inline]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
@@ -207,11 +207,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .into(),
                 )?;
                 self.memory.set_stack(stack);
-                self.memory.set_code(
-                    self.memory
-                        .cdr(self.code(self.memory.code()).assume_cons())
-                        .assume_cons(),
-                );
+                self.memory
+                    .set_code(self.code(self.memory.code()).assume_cons());
 
                 for _ in 0..parameters.count.to_i64() {
                     if self.memory.register() == self.memory.null() {
@@ -243,7 +240,6 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 self.primitive_set
                     .operate(&mut self.memory, primitive.to_i64() as _)?;
-                self.advance_code();
             }
         }
 

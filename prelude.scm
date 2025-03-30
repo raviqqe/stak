@@ -2453,7 +2453,9 @@
 
     (define (emergency-exit . rest)
       (if (or (null? rest) (eq? (car rest) #t))
-        ((data-rib procedure-type (cons 0 '()) '()))
+        (begin
+          (set-car! (car (cddr (close (lambda () #f)))) '(0))
+          ((lambda () #f)))
         ($halt)))
 
     (define (exit . rest)
