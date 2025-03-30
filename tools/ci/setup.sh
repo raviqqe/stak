@@ -3,7 +3,7 @@
 set -e
 
 if [ $(uname) = Linux ]; then
-  apt install chibi-scheme gauche guile lua
+  sudo apt install chibi-scheme gauche guile lua
 else
   brew install chibi-scheme gauche guile lua@5.4 pkgconf uutils-coreutils uutils-findutils
 fi
