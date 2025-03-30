@@ -996,7 +996,6 @@
        (cond
         ((assq name names) =>
          cdr)
-
         (else
          (let ((renamed (string->uninterned-symbol (build-library-name id name))))
           (set-cdr! pair (cons (cons name renamed) names))
