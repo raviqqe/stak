@@ -142,13 +142,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     #[inline]
     fn r#if(&mut self) {
+        let cons = self.memory.stack();
         let value = self.memory.pop();
+
         let code = if value == self.memory.boolean(false).into() {
             self.memory.code()
         } else {
-            let null = self.memory.null();
-            self.memory.set_cdr(null, self.operand());
-            null
+            self.memory.set_cdr(cons, self.operand());
+            cons
         };
 
         self.memory.set_code(code);
