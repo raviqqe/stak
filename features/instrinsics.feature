@@ -19,12 +19,12 @@ Feature: Intrinsics
       (define x (rib 0 #f #f 7))
 
       (write-u8 (+ 48 (rib-tag x)))
-      (write-u8 (if (rib-cdr x) 65 66))
+      (write-u8 (if (cdr x) 65 66))
 
-      (rib-set-cdr! x #t)
+      (set-cdr! x #t)
 
       (write-u8 (+ 48 (rib-tag x)))
-      (write-u8 (if (rib-cdr x) 65 66))
+      (write-u8 (if (cdr x) 65 66))
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "7B7A"
