@@ -134,6 +134,20 @@ Feature: Evaluation
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
+  Scenario: Do not access outer environment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (define x #t)
+
+      (eval
+        '(unless x (error "Oh, no!"))
+        (environment '(scheme base)))
+      """
+    When I run `stak main.scm`
+    Then the exit status should not be 0
+
   @gauche @guile @stak
   Scenario: Do not corrupt outer environment
     Given a file named "main.scm" with:
