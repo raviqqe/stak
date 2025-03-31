@@ -1760,11 +1760,7 @@
                       (unless pair
                        (error "unknown library" name))
                       (cdr pair)))
-                    environment)))
-                 (table
-                  (if (eq? environment (interaction-environment))
-                   interaction-symbol-table
-                   (make-symbol-table '()))))
+                    (environment-imports environment)))))
             (relaxed-deep-map
              (lambda (value)
               (cond
@@ -1773,7 +1769,9 @@
                ((assq value names) =>
                 cdr)
                (else
-                (string->symbol (symbol->string value) table))))
+                (string->symbol
+                 (symbol->string value)
+                 (environment-symbol-table environment)))))
              expression)))
 
           ; Macro system
