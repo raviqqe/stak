@@ -1397,10 +1397,7 @@
         (rib-tag value)))))
 
     (define (marshal metadata codes)
-     (marshal-rib
-      (make-marshal-context (metadata-symbols metadata) '() '())
-      codes
-      #f))
+     (marshal-rib (make-marshal-context (metadata-symbols metadata) '() '()) codes #f))
 
     ; Encoding
 
