@@ -4282,21 +4282,16 @@
                 - call 1 #f ||
                 - call 1 #f 5
               - call 1 #f $$close
-              - constant procedure 1 #f
-                - get 7
-                - get 1
-                - constant procedure 2 #f
-                  - get 1
-                  - get 1
-                  - call 1 #f ||
-                  - call 2 #f ||
-                - call 1 #f $$close
-                - call 3 #f ||
-              - call 1 #f $$close
+              - get 5
               - get 2
               - call 1 #f ||
-              - call 1 #f 1
-              - set 1
+              - constant procedure 2 #f
+                - get 1
+                - get 1
+                - call 1 #f ||
+                - call 2 #f ||
+              - call 1 #f $$close
+              - call 3 #f ||
               - call 1 #f 1
             - call 1 #f $$close
             - set 1
@@ -11633,28 +11628,22 @@
                 - string
         - list
           - list
-            - let
+            - member
+            - name
             - list
-              - list
-                - names
-                - list
-                  - cdar
-                  - libraries
+              - cdar
+              - libraries
             - list
-              - member
-              - name
-              - names
+              - lambda
               - list
-                - lambda
+                - name
+                - pair
+              - list
+                - eq?
+                - name
                 - list
-                  - name
+                  - cdr
                   - pair
-                - list
-                  - eq?
-                  - name
-                  - list
-                    - cdr
-                    - pair
           - =>
           - caar
         - list
