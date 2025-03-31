@@ -2570,15 +2570,6 @@
       (imports environment-imports environment-set-imports!)
       (mutable environment-mutable))
 
-    (define (merge-imports one other)
-      (fold-left
-        (lambda (names name)
-          (if (member name names)
-            names
-            (cons name names)))
-        one
-        other))
-
     (define (environment-append-imports! environment imports)
       (environment-set-imports!
         (fold-left
