@@ -1748,6 +1748,8 @@
 
           (define libraries ($$libraries))
 
+          (define interaction-symbol-table (make-symbol-table '()))
+
           (define (expand-libraries environment expression)
            (let ((names
                   (apply
@@ -1758,15 +1760,22 @@
                       (unless pair
                        (error "unknown library" name))
                       (cdr pair)))
-                    environment))))
+                    environment)))
+                 (table
+                  (if (eq? environment (interaction-environment))
+                   interaction-symbol-table
+                   (make-symbol-table '()))))
             (relaxed-deep-map
-             (lambda (name)
+             (lambda (value)
               (cond
-               ((assq name names) =>
+               ((not (symbol? value))
+                value)
+               ((assq value names) =>
                 cdr)
-
+               ((built-in-symbol? value)
+                value)
                (else
-                name)))
+                (string->symbol (symbol->string value) table))))
              expression)))
 
           ; Macro system
