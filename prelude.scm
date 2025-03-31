@@ -2572,6 +2572,7 @@
 
     (define (environment-append-imports! environment imports)
       (environment-set-imports!
+        environment
         (fold-left
           (lambda (names name)
             (if (member name names)
