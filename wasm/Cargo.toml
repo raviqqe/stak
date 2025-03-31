@@ -12,16 +12,16 @@ repository.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-stak-compiler = { version = "0.10.10", path = "../compiler" }
-stak-configuration = { version = "0.10.10", path = "../configuration" }
-stak-device = { version = "0.10.10", path = "../device", features = ["std"] }
-stak-file = { version = "0.10.10", path = "../file" }
-stak-macro = { version = "0.10.10", path = "../macro" }
-stak-module = { version = "0.10.10", path = "../module" }
-stak-process-context = { version = "0.10.10", path = "../process_context" }
-stak-r7rs = { version = "0.10.10", path = "../r7rs" }
-stak-time = { version = "0.10.10", path = "../time" }
-stak-vm = { version = "0.10.10", path = "../vm", features = ["float"] }
+stak-compiler = { version = "0.10.11", path = "../compiler" }
+stak-configuration = { version = "0.10.11", path = "../configuration" }
+stak-device = { version = "0.10.11", path = "../device", features = ["std"] }
+stak-file = { version = "0.10.11", path = "../file" }
+stak-macro = { version = "0.10.11", path = "../macro" }
+stak-module = { version = "0.10.11", path = "../module" }
+stak-process-context = { version = "0.10.11", path = "../process_context" }
+stak-r7rs = { version = "0.10.11", path = "../r7rs" }
+stak-time = { version = "0.10.11", path = "../time" }
+stak-vm = { version = "0.10.11", path = "../vm", features = ["float"] }
 wasm-bindgen = "0.2.97"
 
 [dev-dependencies]
@@ -30,7 +30,7 @@ stak-macro = { path = "../macro" }
 wasm-bindgen-test = "0.3.47"
 
 [build-dependencies]
-stak-build = { version = "0.10.10", path = "../build" }
+stak-build = { version = "0.10.11", path = "../build" }
 
 [lints]
 workspace = true

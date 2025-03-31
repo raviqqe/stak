@@ -31,15 +31,15 @@ std = [
 clap = { version = "4.5.34", features = ["derive"], optional = true }
 libc = { version = "0.2.171", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
-stak-configuration = { version = "0.10.10", path = "../configuration" }
-stak-device = { version = "0.10.10", path = "../device" }
-stak-file = { version = "0.10.10", path = "../file" }
-stak-macro = { version = "0.10.10", path = "../macro" }
-stak-process-context = { version = "0.10.10", path = "../process_context" }
-stak-r7rs = { version = "0.10.10", path = "../r7rs" }
-stak-time = { version = "0.10.10", path = "../time" }
-stak-util = { version = "0.10.10", path = "../util", optional = true }
-stak-vm = { version = "0.10.10", path = "../vm" }
+stak-configuration = { version = "0.10.11", path = "../configuration" }
+stak-device = { version = "0.10.11", path = "../device" }
+stak-file = { version = "0.10.11", path = "../file" }
+stak-macro = { version = "0.10.11", path = "../macro" }
+stak-process-context = { version = "0.10.11", path = "../process_context" }
+stak-r7rs = { version = "0.10.11", path = "../r7rs" }
+stak-time = { version = "0.10.11", path = "../time" }
+stak-util = { version = "0.10.11", path = "../util", optional = true }
+stak-vm = { version = "0.10.11", path = "../vm" }
 
 [dev-dependencies]
 stak = { path = "../root" }

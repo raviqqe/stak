@@ -18,15 +18,15 @@ trace_memory = ["stak-vm/trace_memory"]
 [dependencies]
 clap = { version = "4.5.34", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.10.10", path = "../../configuration" }
-stak-device = { version = "0.10.10", path = "../../device", features = ["std"] }
-stak-file = { version = "0.10.10", path = "../../file", features = ["std"] }
-stak-process-context = { version = "0.10.10", path = "../../process_context", features = [
+stak-configuration = { version = "0.10.11", path = "../../configuration" }
+stak-device = { version = "0.10.11", path = "../../device", features = ["std"] }
+stak-file = { version = "0.10.11", path = "../../file", features = ["std"] }
+stak-process-context = { version = "0.10.11", path = "../../process_context", features = [
   "std",
 ] }
-stak-r7rs = { version = "0.10.10", path = "../../r7rs" }
-stak-time = { version = "0.10.10", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.10.10", path = "../../vm" }
+stak-r7rs = { version = "0.10.11", path = "../../r7rs" }
+stak-time = { version = "0.10.11", path = "../../time", features = ["std"] }
+stak-vm = { version = "0.10.11", path = "../../vm" }
 
 [lints]
 workspace = true
