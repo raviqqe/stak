@@ -14999,7 +14999,6 @@
     - list
       - make-marshal-context
       - symbols
-      - libraries
       - constants
       - continuations
     - marshal-context?
