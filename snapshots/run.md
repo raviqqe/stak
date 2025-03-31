@@ -1891,7 +1891,6 @@
 - call 1 #f $$close
 - constant list
   - tuple
-  - symbol-table
   - symbols
   - point
   - depth
@@ -1904,6 +1903,8 @@
   - irritants
   - port
   - last-byte
+  - symbol-table
+  - mutable
   - $$rib
   - $$<
   - $$+
@@ -1989,10 +1990,11 @@
   - string>=?
   - tan
   - vector-fill!
-  - environment
-  - eval
   - repl
   - interaction-environment
+  - environment
+  - eval
+  - make-environment
   - time
   - current-jiffy
   - current-second
@@ -3207,11 +3209,64 @@
   - call 1 #f ||
 - call 1 #f $$close
 - set ||
-- constant ()
+- constant environment
+- constant list
+  - symbol-table
+  - libraries
+  - mutable
+- call 2 #f ||
+- set ||
+- get ||
 - call 1 #f ||
 - set ||
-- constant procedure 0 #f
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant symbol-table
+- call 2 #f ||
+- set ||
+- get ||
+- constant libraries
+- call 2 #f ||
+- set ||
+- get ||
+- constant libraries
+- call 2 #f ||
+- set ||
+- get ||
+- constant mutable
+- call 2 #f ||
+- set ||
+- constant procedure 2 #f
+  - get 1
   - constant procedure 2 #f
+    - get 0
+    - get 2
+    - call 2 #f ||
+    - if
+      - get 1
+    - get 0
+    - get 2
+    - call 2 #f ||
+  - call 1 #f $$close
+  - get 3
+  - call 1 #f ||
+  - get 3
+  - call 3 #f ||
+  - call 2 #f ||
+- call 1 #f $$close
+- set ||
+- constant procedure 0 #t
+  - constant ()
+  - call 1 #f ||
+  - get 1
+  - constant #f
+  - call 3 #f ||
+- call 1 #f $$close
+- set ||
+- constant procedure 0 #f
+  - constant procedure 1 #f
     - constant procedure 0 #f
       - constant procedure 49 #f
         - constant 0
@@ -5923,14 +5978,15 @@
           - list
             - list
               - scheme
-              - eval
-            - (environment . ||)
-            - (eval . ||)
+              - repl
+            - (interaction-environment . ||)
           - list
             - list
               - scheme
-              - repl
-            - (interaction-environment . ||)
+              - eval
+            - (environment . ||)
+            - (eval . ||)
+            - (make-environment . ||)
           - list
             - list
               - scheme
@@ -6430,7 +6486,7 @@
         - call 1 #f ||
         - set ||
         - constant procedure 2 #f
-          - constant procedure 2 #f
+          - constant procedure 1 #f
             - constant procedure 1 #f
               - get 0
               - call 1 #f ||
@@ -6445,16 +6501,17 @@
                   - call 1 #f ||
                 - get 2
                 - call 1 #f ||
-                - get 5
+                - get 8
+                - call 1 #f ||
                 - call 2 #f ||
               - call 1 #f $$close
               - get 1
-              - get 5
+              - get 4
               - call 2 #f ||
               - call 1 #f 1
             - call 1 #f $$close
-            - get 4
-            - call 2 #f 20
+            - get 3
+            - call 2 #f 19
           - call 1 #f $$close
           - get ||
           - constant procedure 1 #f
@@ -6478,17 +6535,10 @@
             - call 1 #f 1
           - call 1 #f $$close
           - get 4
-          - call 2 #f ||
-          - call 2 #f ||
-          - get 3
-          - call 0 #f ||
-          - call 2 #f ||
-          - if
-            - get ||
-            - continue
-          - constant ()
           - call 1 #f ||
-          - call 2 #f 2
+          - call 2 #f ||
+          - call 2 #f ||
+          - call 1 #f 1
         - call 1 #f $$close
         - set ||
         - constant procedure 1 #f
@@ -8902,10 +8952,6 @@
             - (|| . ||)
             - (|| . ||)
             - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
-            - (|| . ||)
             - list
               - ||
               - ||
@@ -8955,6 +9001,16 @@
                   - list
                     - ||
                     - ||
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
+            - (|| . ||)
             - (|| . ||)
             - (|| . ||)
             - (|| . ||)
@@ -9490,22 +9546,6 @@
     - call 1 #f $$close
     - call 0 #f 0
     - set 1
-    - set 2
-    - constant procedure 2 #f
-      - constant procedure 2 #f
-        - get 0
-        - get 2
-        - call 2 #f ||
-        - if
-          - get 1
-        - get 0
-        - get 2
-        - call 2 #f ||
-      - call 1 #f $$close
-      - get 2
-      - get 2
-      - call 3 #f ||
-    - call 1 #f $$close
     - set 1
     - constant procedure 2 #f
       - constant procedure 1 #f
@@ -9514,24 +9554,22 @@
         - call 2 #f ||
         - if
           - get 2
-          - call 0 #f ||
-          - call 2 #f ||
+          - call 1 #f ||
           - constant #f
           - call 2 #f ||
           - if
-            - constant "invalid import in eval"
+            - constant "import in immutable environment"
             - call 1 #f ||
             - continue
           - constant #f
           - set 0
-          - call 0 #f ||
+          - get 2
           - get 4
           - call 1 #f ||
-          - call 2 #f 7
-          - call 1 #f ||
+          - call 2 #f ||
         - get 3
         - get 3
-        - call 2 #f 8
+        - call 2 #f 7
         - call 0 #f 0
       - call 1 #f $$close
       - get 2
@@ -9545,13 +9583,10 @@
     - call 1 #f $$close
   - call 1 #f $$close
   - constant #f
-  - constant #f
-  - call 2 #f 2
+  - call 1 #f 1
 - call 1 #f $$close
 - call 0 #f 0
 - set 1
-- set ||
-- get ||
 - set ||
 - constant 200
 - call 1 #f ||
@@ -10203,6 +10238,19 @@
 - call 1 #f $$close
 - set ||
 - constant procedure 1 #f
+  - constant procedure 0 #f
+    - get 1
+  - call 1 #f $$close
+- call 1 #f $$close
+- constant ()
+- call 1 #f ||
+- constant ()
+- constant #t
+- call 3 #f ||
+- call 1 #f 1
+- set 1
+- set ||
+- constant procedure 1 #f
   - get 0
   - call 1 #f ||
   - if
@@ -10612,10 +10660,22 @@
 - get ||
 - set ||
 - constant procedure 1 #f
+  - get 0
+  - constant 5
+  - call 2 #f ||
+  - constant #f
+  - call 2 #f ||
+  - if
+    - constant "unsupported version for scheme report environment"
+    - get 1
+    - call 2 #f ||
+    - continue
+  - constant #f
+  - set 0
   - constant list
-    - list
-      - scheme
-      - r5rs
+    - scheme
+    - r5rs
+  - call 1 #f ||
 - call 1 #f $$close
 - set ||
 - constant 400
