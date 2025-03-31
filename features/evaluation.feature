@@ -68,130 +68,156 @@ Feature: Evaluation
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Use a `+` procedure
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
-
-      (write-u8 (eval '(+ 60 5) (environment '(scheme base))))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-  Scenario: Use a `display` procedure
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval) (scheme write))
-
-      (eval '(display "foo") (environment '(scheme write)))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "foo"
-
-  @gauche @guile @stak
-  Scenario: Use a `define` syntax with a variable
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
-
-      (eval
-        '(begin
-          (define x 65)
-          (write-u8 x))
-        (environment '(scheme base)))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
-  @gauche @guile @stak
-  Scenario: Use a `define` syntax with a procedure
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
-
-      (eval
-        '(begin
-          (define (f x)
-            (+ x 65))
-          (write-u8 (f 1)))
-        (environment '(scheme base)))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "B"
-
-  Scenario Outline: Use an `if` syntax
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base) (scheme eval))
-
-      (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<output>"
-
-    Examples:
-      | value | output |
-      | #f    | B      |
-      | #t    | A      |
-
-  @stak
-  Rule: Primitives
-    Scenario: Use a `$$begin` primitive
+  Rule: Environment
+    @gauche @guile @stak
+    Scenario: Use a `define` syntax with a variable
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
 
-        (write-u8 (eval '($$begin 42 65) (environment)))
+        (eval
+          '(begin
+            (define x 65)
+            (write-u8 x))
+          (environment '(scheme base)))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Use a `$$if` primitive with a false condition
+    @gauche @guile @stak
+    Scenario: Use a `define` syntax with a procedure
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
 
-        (write-u8 (eval '($$if #f 65 66) (environment)))
+        (eval
+          '(begin
+            (define (f x)
+              (+ x 65))
+            (write-u8 (f 1)))
+          (environment '(scheme base)))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "B"
 
-    Scenario: Use a `$$if` primitive with a true condition
+    Scenario: Do not access outer environment
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
 
-        (write-u8 (eval '($$if #t 65 66) (environment)))
+        (define x #t)
+
+        (eval
+          '(unless x (error "Oh, no!"))
+          (environment '(scheme base)))
+        """
+      When I run `stak main.scm`
+      Then the exit status should not be 0
+
+    @gauche @guile @stak
+    Scenario: Do not corrupt outer environment
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
+
+        (define x 65)
+
+        (eval
+          '(begin (define x 66))
+          (environment '(scheme base)))
+
+        (write-u8 x)
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Use a `$$lambda` primitive with no argument
+  Rule: Procedures
+    Scenario: Use a `+` procedure
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
 
-        (write-u8 (eval '(($$lambda () 65)) (environment)))
+        (write-u8 (eval '(+ 60 5) (environment '(scheme base))))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Use a `$$lambda` primitive with an argument
+    Scenario: Use a `display` procedure
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval) (scheme write))
+
+        (eval '(display "foo") (environment '(scheme write)))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "foo"
+
+    Scenario: Use a `set!` procedure
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
 
-        (write-u8 (eval '(($$lambda (x) x) 65) (environment)))
+        (write-u8
+          (eval
+            '(let ((x 0))
+              (set! x 65)
+              x)
+            (environment '(scheme base))))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-    Scenario: Use a `$$set!` primitive
+  Rule: Syntaxes
+    Scenario: Use a `begin` syntax
       Given a file named "main.scm" with:
         """scheme
         (import (scheme base) (scheme eval))
 
-        (write-u8 (eval '($$begin ($$set! x 65) x) (environment)))
+        (write-u8
+          (eval
+            '(begin 42 65)
+            (environment '(scheme base))))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
+
+    Scenario Outline: Use an `if` syntax
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
+
+        (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "<output>"
+
+      Examples:
+        | value | output |
+        | #f    | B      |
+        | #t    | A      |
+
+    Scenario: Use a `lambda` syntax with no argument
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
+
+        (write-u8
+          (eval
+            '((lambda () 65))
+            (environment '(scheme base))))
+        """
+      When I successfully run `stak main.scm`
+      Then the stdout should contain exactly "A"
+
+    Scenario: Use a `lambda` syntax with an argument
+      Given a file named "main.scm" with:
+        """scheme
+        (import (scheme base) (scheme eval))
+
+        (write-u8
+          (eval
+            '((lambda (x) x) 65)
+            (environment '(scheme base))))
         """
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"

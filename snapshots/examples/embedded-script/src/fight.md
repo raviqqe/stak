@@ -1824,39 +1824,76 @@
 - constant 102
 - call 1 #f ||
 - set ||
+- constant symbol-table
+- constant list
+  - symbols
+- call 2 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- call 1 #f ||
+- set ||
+- get ||
+- constant symbols
+- call 2 #f ||
+- set ||
+- get ||
+- constant symbols
+- call 2 #f ||
+- set ||
 - constant procedure 1 #f
-  - constant procedure 1 #f
+  - constant procedure 1 #t
     - constant procedure 1 #f
-      - get 0
+      - get 2
+      - call 1 #f ||
       - if
-        - get 0
-        - call 1 #f ||
+        - get 5
+        - continue
+      - get 2
+      - call 1 #f ||
+      - set 1
       - constant procedure 1 #f
         - get 0
-        - get 7
+        - if
+          - get 0
+          - call 1 #f ||
+        - constant procedure 1 #f
+          - get 4
+          - get 1
+          - get 6
+          - call 1 #f ||
+          - call 2 #f ||
+          - call 2 #f ||
+          - set 0
+          - get 0
+        - call 1 #f ||
+        - get 6
+        - call 1 #f ||
+        - call 1 #f 1
+      - call 1 #f ||
+      - get 4
+      - get 2
+      - call 1 #f ||
+      - constant procedure 2 #f
+        - get 1
+        - get 1
+        - call 1 #f ||
         - call 2 #f ||
-        - set 7
-        - get 0
       - call 1 #f ||
-      - get 3
-      - call 1 #f ||
+      - call 3 #f ||
       - call 1 #f 1
     - call 1 #f ||
-    - get 1
-    - get 4
-    - constant procedure 2 #f
-      - get 1
-      - get 1
-      - call 1 #f ||
-      - call 2 #f ||
-    - call 1 #f ||
-    - call 3 #f ||
+    - constant #f
     - call 1 #f 1
   - call 1 #f ||
 - call 1 #f ||
 - constant list
   - tuple
   - values
+  - symbol-table
+  - symbols
   - point
   - depth
   - before
@@ -1877,6 +1914,7 @@
   - person-wasted
   - person-pies
   - make-person
+- call 1 #f ||
 - call 1 #f 1
 - set 1
 - set ||
