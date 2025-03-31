@@ -131,7 +131,7 @@ Feature: Evaluation
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-  Rule: Procedure
+  Rule: Procedures
     Scenario: Use a `+` procedure
       Given a file named "main.scm" with:
         """scheme
@@ -167,7 +167,7 @@ Feature: Evaluation
       When I successfully run `stak main.scm`
       Then the stdout should contain exactly "A"
 
-  Rule: Syntax
+  Rule: Syntaxes
     Scenario: Use a `begin` syntax
       Given a file named "main.scm" with:
         """scheme
