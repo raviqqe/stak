@@ -88,6 +88,21 @@ Feature: Evaluation
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "foo"
 
+  Scenario Outline: Use an `if` syntax
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval))
+
+      (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "<output>"
+
+    Examples:
+      | value | output |
+      | #f    | B      |
+      | #t    | A      |
+
   @gauche @guile @stak
   Scenario: Use a `define` syntax with a variable
     Given a file named "main.scm" with:
@@ -119,20 +134,22 @@ Feature: Evaluation
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
-  Scenario Outline: Use an `if` syntax
+  @gauche @guile @stak
+  Scenario: Do not corrupt outer environment
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base) (scheme eval))
 
-      (eval '(write-u8 (if <value> 65 66)) (environment '(scheme base)))
+      (define x 65)
+
+      (eval
+        '(begin (define x 66))
+        (environment '(scheme base)))
+
+      (write-u8 x)
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "<output>"
-
-    Examples:
-      | value | output |
-      | #f    | B      |
-      | #t    | A      |
+    Then the stdout should contain exactly "A"
 
   @stak
   Rule: Primitives
