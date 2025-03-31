@@ -1544,6 +1544,7 @@
     symbol->string
     string->uninterned-symbol
     string->symbol
+    make-symbol-table
 
     define-record-type
     record?
