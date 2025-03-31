@@ -219,6 +219,10 @@
     (define (id->string id)
      (number->string id 32))
 
+    ; Library system
+
+    (define library-symbol-separator #\%)
+
     ; Macro system
 
     ;; Types
@@ -232,15 +236,31 @@
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context state environment)
+     (make-macro-context* state environment libraries)
      macro-context?
      (state macro-context-state)
-     (environment macro-context-environment macro-context-set-environment!))
+     (environment macro-context-environment macro-context-set-environment!)
+     (libraries macro-context-libraries))
+
+    (define (make-macro-context state environment libraries)
+     (make-macro-context*
+      state
+      environment
+      (map
+       (lambda (library)
+        (cons
+         (car library)
+         (map
+          (lambda (pair)
+           (cons (cdr pair) (car pair)))
+          (cdr library))))
+       libraries)))
 
     (define (macro-context-append context pairs)
-     (make-macro-context
+     (make-macro-context*
       (macro-context-state context)
-      (append pairs (macro-context-environment context))))
+      (append pairs (macro-context-environment context))
+      (macro-context-libraries context)))
 
     (define (macro-context-set! context name denotation)
      (let* ((environment (macro-context-environment context))
@@ -294,6 +314,21 @@
      (literals rule-context-literals))
 
     ;; Procedures
+
+    (define (resolve-data-symbol libraries name)
+     (let loop ((libraries libraries))
+      (cond
+       ((null? libraries)
+        (let* ((string (symbol->string name))
+               (position (memv-position library-symbol-separator (string->list string))))
+         (string->symbol
+          (if position
+           (string-copy string (+ position 1))
+           string))))
+       ((assq name (cdar libraries)) =>
+        cdr)
+       (else
+        (loop (cdr libraries))))))
 
     (define (resolve-denotation context expression)
      (cond
@@ -597,7 +632,7 @@
           (relaxed-deep-map
            (lambda (value)
             (if (symbol? value)
-             (resolve-library-symbol value)
+             (resolve-data-symbol (macro-context-libraries context) value)
              value))
            (cdr expression))))
 
@@ -962,8 +997,6 @@
 
     ;; Procedures
 
-    (define library-symbol-separator #\%)
-
     (define (library-symbol? name)
      (memv library-symbol-separator (string->list (symbol->string name))))
 
@@ -976,14 +1009,6 @@
       (id->string id)
       (list->string (list library-symbol-separator))
       (symbol->string name)))
-
-    ; TODO Remove library symbol prefixes.
-    (define (resolve-library-symbol name)
-     (let* ((string (symbol->string name))
-            (position (memv-position library-symbol-separator (string->list string))))
-      (if position
-       (string->symbol (string-copy string (+ position 1)))
-       name)))
 
     (define (rename-library-symbol context id name)
      (if (or (not id) (built-in-symbol? name))
@@ -1143,8 +1168,8 @@
 
     ; Macro system
 
-    (define (expand-macros expression)
-     (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '()))
+    (define (expand-macros libraries expression)
+     (let* ((context (make-macro-context (make-macro-state 0 '() '() '()) '() libraries))
             (expression (expand-macro context expression))
             (state (macro-context-state context)))
       (values
@@ -1294,7 +1319,7 @@
         (marshal #f)
         (marshal
          (if (memq value (marshal-context-symbols context))
-          (symbol->string (resolve-library-symbol value))
+          (symbol->string value)
           ""))))
 
       ((char? value)
@@ -1632,7 +1657,7 @@
 
     (define (main source)
      (define-values (expression1 libraries) (expand-libraries source))
-     (define-values (expression2 macros dynamic-symbols) (expand-macros expression1))
+     (define-values (expression2 macros dynamic-symbols) (expand-macros libraries expression1))
      (define-values (expression3 optimizers) (optimize expression2))
      (define features (detect-features expression3))
      (define metadata (compile-metadata features libraries macros optimizers dynamic-symbols expression3))
@@ -1716,29 +1741,13 @@
             (set! optimization-context-set-literals! set-nothing)
             #f))
 
-          (define libraries ($$libraries))
-
           (define cons-rib cons)
           (define rib-car car)
           (define rib-cdr cdr)
 
-          (define (resolve-library-symbol name)
-           (let loop ((libraries libraries))
-            (cond
-             ((null? libraries)
-              name)
-             ((let ((names (cdar libraries)))
-               (member
-                name
-                names
-                (lambda (name pair)
-                 (eq? name (cdr pair)))))
-              =>
-              caar)
-             (else
-              (loop (cdr libraries))))))
-
           ; Library system
+
+          (define libraries ($$libraries))
 
           (define (expand-libraries environment expression)
            (let ((names
@@ -1764,7 +1773,7 @@
           ; Macro system
 
           (define expand-macros
-           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '())))
+           (let ((context (make-macro-context (make-macro-state 0 '() '() '()) '() libraries)))
             (for-each
              (lambda (pair)
               (macro-context-set-last!
