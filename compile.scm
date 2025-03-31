@@ -1760,13 +1760,13 @@
                       (cdr pair)))
                     environment))))
             (relaxed-deep-map
-             (lambda (x)
+             (lambda (name)
               (cond
-               ((assq x names) =>
+               ((assq name names) =>
                 cdr)
 
                (else
-                x)))
+                name)))
              expression)))
 
           ; Macro system
