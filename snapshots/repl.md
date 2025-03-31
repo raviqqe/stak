@@ -3761,6 +3761,29 @@
         - constant libraries
         - call 2 #f ||
         - set ||
+        - constant procedure 3 #f
+          - get 2
+          - get 2
+          - constant procedure 1 #f
+            - get 0
+            - call 1 #f ||
+            - constant procedure 1 #f
+              - get 0
+              - call 1 #f ||
+              - get 1
+              - call 1 #f ||
+              - call 2 #f ||
+            - call 1 #f $$close
+            - get 2
+            - call 1 #f ||
+            - call 2 #f ||
+            - call 2 #f ||
+          - call 1 #f $$close
+          - get 3
+          - call 2 #f ||
+          - call 3 #f ||
+        - call 1 #f $$close
+        - set ||
         - constant procedure 2 #f
           - get 1
           - call 1 #f ||
@@ -3991,13 +4014,7 @@
               - get 5
               - get 2
               - call 1 #f ||
-              - constant procedure 2 #f
-                - get 1
-                - get 1
-                - call 1 #f ||
-                - call 2 #f ||
-              - call 1 #f $$close
-              - call 3 #f ||
+              - call 2 #f ||
               - call 1 #f 1
             - call 1 #f $$close
             - set 1
