@@ -311,13 +311,7 @@
           (if position
            (string-copy string (+ position 1))
            string))))
-       ((let ((names (cdar libraries)))
-         (member
-          name
-          names
-          (lambda (name pair)
-           (eq? name (cdr pair)))))
-        =>
+       ((member name (cdar libraries) (lambda (name pair) (eq? name (cdr pair)))) =>
         caar)
        (else
         (loop (cdr libraries))))))
