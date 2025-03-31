@@ -16760,9 +16760,7 @@
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
-    - constant #f
     - constant ()
-    - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
