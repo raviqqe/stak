@@ -2554,50 +2554,60 @@
     (define (current-second)
       (/ (current-jiffy) (jiffies-per-second)))))
 
-(define-library (scheme repl)
-  (export interaction-environment)
-
-  (import (only (scheme base) define make-parameter quote))
-
-  (begin
-    (define interaction-environment (make-parameter '()))))
-
 (define-library (scheme eval)
-  (export environment eval)
+  (export environment eval make-environment)
 
   (import
     (scheme base)
     (scheme cxr)
-    (scheme repl)
     (only (stak base) fold-left rib string->uninterned-symbol))
 
   (begin
+    (define-record-type environment
+      (make-environment symbol-table libraries mutable)
+      environment?
+      (symbol-table environment-symbol-table)
+      (imports environment-imports environment-set-imports!)
+      (mutable environment-mutable))
+
+    (define (environment-append-imports! environment imports)
+      (environment-set-imports!
+        environment
+        (fold-left
+          (lambda (names name)
+            (if (member name names)
+              names
+              (cons name names)))
+          (environment-imports environment)
+          imports)))
+
+    (define (environment . imports)
+      (make-environment (make-symbol-table '()) imports #f))
+
     (define eval
       (let ()
         ; TODO Name this function `compile` when `eval` environments are segregated.
         (define compile-eval ($$compiler))
 
-        (define (merge-environments one other)
-          (fold-left
-            (lambda (names name)
-              (if (member name names)
-                names
-                (cons name names)))
-            one
-            other))
-
         (lambda (expression environment)
           (case (and (pair? expression) (car expression))
             ((import)
-              (unless (eq? environment (interaction-environment))
-                (error "invalid import in eval"))
-              (interaction-environment
-                (merge-environments (interaction-environment) (cdr expression))))
+              (unless (environment-mutable environment)
+                (error "import in immutable environment"))
+              (environment-append-imports! environment (cdr expression)))
 
             (else
-              ((compile-eval expression environment)))))))
+              ((compile-eval expression environment)))))))))
 
-    (define environment list)))
+(define-library (scheme repl)
+  (export interaction-environment)
+
+  (import (scheme base) (scheme eval))
+
+  (begin
+    (define interaction-environment
+      (let ((environment (make-environment (make-symbol-table '()) '() #t)))
+        (lambda () environment)))))
 
 (define-library (scheme r5rs)
   (import
@@ -2833,7 +2843,9 @@
 
   (begin
     (define (scheme-report-environment version)
-      '((scheme r5rs)))))
+      (unless (= version 5)
+        (error "unsupported version for scheme report environment" version))
+      (environment '(scheme r5rs)))))
 
 (define-library (stak rust)
   (import (stak base) (scheme base))
