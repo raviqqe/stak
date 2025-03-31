@@ -1628,17 +1628,28 @@
 
     ; Symbol table
 
+    (define-record-type symbol-table
+      (make-symbol-table symbols)
+      symbol-table?
+      (symbols symbol-table-symbols symbol-table-set-symbols!))
+
     (define string->symbol
-      (let ((symbols ($$symbols)))
-        (lambda (x)
+      (let ((global-table (make-symbol-table ($$symbols))))
+        (lambda (name . rest)
+          (define table (if (null? rest) global-table (car rest)))
+
           (cond
-            ((member x symbols (lambda (x y) (equal? x (symbol->string y)))) =>
+            ((member
+                name
+                (symbol-table-symbols table)
+                (lambda (name symbol) (equal? name (symbol->string symbol))))
+              =>
               car)
 
             (else
-              (let ((x (string->uninterned-symbol x)))
-                (set! symbols (cons x symbols))
-                x))))))
+              (let ((name (string->uninterned-symbol name)))
+                (symbol-table-set-symbols! table (cons name (symbol-table-symbols table)))
+                name))))))
 
     ; Control
 
