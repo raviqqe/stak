@@ -1738,8 +1738,7 @@
             (set! macro-state-set-literals! set-nothing)
             (set! macro-state-set-static-symbols! set-nothing)
             (set! macro-state-set-dynamic-symbols! set-nothing)
-            (set! optimization-context-set-literals! set-nothing)
-            #f))
+            (set! optimization-context-set-literals! set-nothing)))
 
           (define cons-rib cons)
           (define rib-car car)
