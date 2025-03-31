@@ -1275,7 +1275,7 @@
     ; Marshalling
 
     (define-record-type marshal-context
-     (make-marshal-context symbols libraries constants continuations)
+     (make-marshal-context symbols constants continuations)
      marshal-context?
      (symbols marshal-context-symbols)
      (constants marshal-context-constants marshal-context-set-constants!)
