@@ -236,14 +236,28 @@
      (dynamic-symbols macro-state-dynamic-symbols macro-state-set-dynamic-symbols!))
 
     (define-record-type macro-context
-     (make-macro-context state environment libraries)
+     (make-macro-context* state environment libraries)
      macro-context?
      (state macro-context-state)
      (environment macro-context-environment macro-context-set-environment!)
      (libraries macro-context-libraries))
 
+    (define (make-macro-context state environment libraries)
+     (make-macro-context*
+      state
+      environment
+      (map
+       (lambda (library)
+        (cons
+         (car library)
+         (map
+          (lambda (pair)
+           (cons (cdr pair) (car pair)))
+          (cdr library))))
+       libraries)))
+
     (define (macro-context-append context pairs)
-     (make-macro-context
+     (make-macro-context*
       (macro-context-state context)
       (append pairs (macro-context-environment context))
       (macro-context-libraries context)))
@@ -311,8 +325,8 @@
           (if position
            (string-copy string (+ position 1))
            string))))
-       ((member name (cdar libraries) (lambda (name pair) (eq? name (cdr pair)))) =>
-        caar)
+       ((assq name (cdar libraries)) =>
+        cdr)
        (else
         (loop (cdr libraries))))))
 
