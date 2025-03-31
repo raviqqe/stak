@@ -219,6 +219,10 @@
     (define (id->string id)
      (number->string id 32))
 
+    (define (built-in-symbol? name)
+     (let ((name (symbol->string name)))
+      (equal? (substring name 0 (min 2 (string-length name))) "$$")))
+
     ; Library system
 
     (define library-symbol-separator #\%)
@@ -999,10 +1003,6 @@
 
     (define (library-symbol? name)
      (memv library-symbol-separator (string->list (symbol->string name))))
-
-    (define (built-in-symbol? name)
-     (let ((name (symbol->string name)))
-      (equal? (substring name 0 (min 2 (string-length name))) "$$")))
 
     (define (build-library-name id name)
      (string-append
