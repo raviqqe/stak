@@ -219,6 +219,10 @@
     (define (id->string id)
      (number->string id 32))
 
+    ; Library system
+
+    (define library-symbol-separator #\%)
+
     ; Macro system
 
     ;; Types
@@ -296,6 +300,27 @@
      (literals rule-context-literals))
 
     ;; Procedures
+
+    (define (resolve-data-symbol libraries name)
+     (let loop ((libraries libraries))
+      (cond
+       ((null? libraries)
+        (let* ((string (symbol->string name))
+               (position (memv-position library-symbol-separator (string->list string))))
+         (string->symbol
+          (if position
+           (string-copy string (+ position 1))
+           string))))
+       ((let ((names (cdar libraries)))
+         (member
+          name
+          names
+          (lambda (name pair)
+           (eq? name (cdr pair)))))
+        =>
+        caar)
+       (else
+        (loop (cdr libraries))))))
 
     (define (resolve-denotation context expression)
      (cond
@@ -599,7 +624,7 @@
           (relaxed-deep-map
            (lambda (value)
             (if (symbol? value)
-             (resolve-library-symbol (macro-context-libraries context) value)
+             (resolve-data-symbol (macro-context-libraries context) value)
              value))
            (cdr expression))))
 
@@ -964,8 +989,6 @@
 
     ;; Procedures
 
-    (define library-symbol-separator #\%)
-
     (define (library-symbol? name)
      (memv library-symbol-separator (string->list (symbol->string name))))
 
@@ -978,14 +1001,6 @@
       (id->string id)
       (list->string (list library-symbol-separator))
       (symbol->string name)))
-
-    ; TODO Remove library symbol prefixes.
-    (define (resolve-library-symbol libraries name)
-     (let* ((string (symbol->string name))
-            (position (memv-position library-symbol-separator (string->list string))))
-      (if position
-       (string->symbol (string-copy string (+ position 1)))
-       name)))
 
     (define (rename-library-symbol context id name)
      (if (or (not id) (built-in-symbol? name))
@@ -1724,22 +1739,6 @@
           (define cons-rib cons)
           (define rib-car car)
           (define rib-cdr cdr)
-
-          (define (resolve-library-symbol libraries name)
-           (let loop ((libraries libraries))
-            (cond
-             ((null? libraries)
-              name)
-             ((let ((names (cdar libraries)))
-               (member
-                name
-                names
-                (lambda (name pair)
-                 (eq? name (cdr pair)))))
-              =>
-              caar)
-             (else
-              (loop (cdr libraries))))))
 
           ; Library system
 
