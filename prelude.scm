@@ -2843,7 +2843,9 @@
 
   (begin
     (define (scheme-report-environment version)
-      '((scheme r5rs)))))
+      (unless (= version 5)
+        (error "unsupported version for scheme report environment" version))
+      (environment '(scheme r5rs)))))
 
 (define-library (stak rust)
   (import (stak base) (scheme base))
