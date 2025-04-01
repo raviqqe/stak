@@ -2586,8 +2586,7 @@
 
     (define eval
       (let ()
-        ; TODO Name this function `compile` when `eval` environments are segregated.
-        (define compile-eval ($$compiler))
+        (define compile ($$compiler))
 
         (lambda (expression environment)
           (case (and (pair? expression) (car expression))
@@ -2597,7 +2596,7 @@
               (environment-append-imports! environment (cdr expression)))
 
             (else
-              ((compile-eval expression environment)))))))))
+              ((compile expression environment)))))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
