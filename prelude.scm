@@ -2586,7 +2586,8 @@
 
     (define eval
       (let ()
-        (define compile ($$compiler))
+        ; TODO
+        (define compile-eval ($$compiler))
 
         (lambda (expression environment)
           (case (and (pair? expression) (car expression))
@@ -2596,7 +2597,7 @@
               (environment-append-imports! environment (cdr expression)))
 
             (else
-              ((compile expression environment)))))))))
+              ((compile-eval expression environment)))))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
