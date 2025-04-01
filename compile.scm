@@ -1827,8 +1827,7 @@
 ; Main
 
 (define (main)
-  ; TODO Name this function `compile` when `eval` environments are segregated.
-  (define compile-all
+  (define compile
     (eval
       compiler
       (environment
@@ -1846,6 +1845,6 @@
       (write-string "Usage: stak-compile < SOURCE_FILE > BYTECODE_FILE\n")
       (exit)))
 
-  (compile-all (incept (read-source))))
+  (compile (incept (read-source))))
 
 (main)

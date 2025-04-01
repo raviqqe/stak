@@ -2586,7 +2586,7 @@
 
     (define eval
       (let ()
-        ; TODO Name this function `compile` when `eval` environments are segregated.
+        ; TODO
         (define compile-eval ($$compiler))
 
         (lambda (expression environment)
