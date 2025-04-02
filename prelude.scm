@@ -255,9 +255,6 @@
         ((_ "value" arguments ((name value) ...) body1 body2 ...)
           (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
 
-        ((_ arguments (define-values names value) body1 body2 ...)
-          (lambda arguments (let-values ((names value)) body1 body2 ...)))
-
         ((_ arguments (define-syntax name value) body1 body2 ...)
           (lambda "syntax" arguments ((name value)) body1 body2 ...))
 
@@ -266,6 +263,12 @@
 
         ((_ "syntax" arguments ((name value) ...) body1 body2 ...)
           (lambda arguments (letrec-syntax ((name value) ...) body1 body2 ...)))
+
+        ((_ arguments (define-record-type item ...) body1 body2 ...)
+          (lambda arguments (define _r (begin (define-record-type item ...))) body1 body2 ...))
+
+        ((_ arguments (define-values names value) body1 body2 ...)
+          (lambda arguments (let-values ((names value)) body1 body2 ...)))
 
         ((_ arguments body1 body2 ...)
           ($$lambda arguments (begin body1 body2 ...)))))
