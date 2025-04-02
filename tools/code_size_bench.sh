@@ -6,10 +6,10 @@ set -e
 
 . $(dirname $0)/utility.sh
 
-brew install comby
-cargo install tokei
+cargo install ast-grep tokei
 
-comby -in-place '... mod tests { ... }' '' .rs
+sg -p 'mod tests { ... }' -r '' --lang rs
+sg -p '#[cfg(test)]' -r '' --lang rs
 cargo fmt --all
 
 for cargo_file in $(find . -name Cargo.toml | sort); do
