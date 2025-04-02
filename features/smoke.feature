@@ -110,7 +110,7 @@ Feature: Smoke
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Define a record type at the end of a function body
+  Scenario: Define a record type in the middle of a function body
     Given a file named "main.scm" with:
       """scheme
       (import (scheme base))
