@@ -118,6 +118,7 @@ Feature: Smoke
       (define x 65)
 
       (define (foo)
+        (define y 0)
         (define-record-type bar
           (make-bar)
           bar?)
