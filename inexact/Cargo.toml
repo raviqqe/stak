@@ -10,7 +10,7 @@ repository.workspace = true
 
 [dependencies]
 libm = { version = "0.2.11", default-features = false }
-stak-vm = { version = "0.10.11", path = "../vm" }
+stak-vm = { version = "0.10.12", path = "../vm" }
 
 [lints]
 workspace = true
