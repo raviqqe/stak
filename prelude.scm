@@ -231,7 +231,7 @@
           ($$define name value))))
 
     (define-syntax lambda
-      (syntax-rules (define define-values define-syntax)
+      (syntax-rules (define define-syntax define-record-type define-values)
         ; Optimize a case where there is only a body of a expression.
         ((_ arguments body)
           ($$lambda arguments body))
@@ -255,9 +255,6 @@
         ((_ "value" arguments ((name value) ...) body1 body2 ...)
           (lambda arguments (letrec* ((name value) ...) body1 body2 ...)))
 
-        ((_ arguments (define-values names value) body1 body2 ...)
-          (lambda arguments (let-values ((names value)) body1 body2 ...)))
-
         ((_ arguments (define-syntax name value) body1 body2 ...)
           (lambda "syntax" arguments ((name value)) body1 body2 ...))
 
@@ -266,6 +263,12 @@
 
         ((_ "syntax" arguments ((name value) ...) body1 body2 ...)
           (lambda arguments (letrec-syntax ((name value) ...) body1 body2 ...)))
+
+        ((_ arguments (define-record-type item ...) body1 body2 ...)
+          (lambda arguments (define _ (begin (define-record-type item ...))) body1 body2 ...))
+
+        ((_ arguments (define-values names value) body1 body2 ...)
+          (lambda arguments (let-values ((names value)) body1 body2 ...)))
 
         ((_ arguments body1 body2 ...)
           ($$lambda arguments (begin body1 body2 ...)))))
@@ -376,15 +379,18 @@
     ;; Binding
 
     (define-syntax let
-      (syntax-rules (define define-syntax)
+      (syntax-rules (define define-record-type define-syntax define-values)
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
-        ((_ () (define-values content ...) body1 body2 ...)
-          ((lambda () (define-values content ...) body1 body2 ...)))
+        ((_ () (define-record-type content ...) body1 body2 ...)
+          ((lambda () (define-record-type content ...) body1 body2 ...)))
 
         ((_ () (define-syntax content ...) body1 body2 ...)
           ((lambda () (define-syntax content ...) body1 body2 ...)))
+
+        ((_ () (define-values content ...) body1 body2 ...)
+          ((lambda () (define-values content ...) body1 body2 ...)))
 
         ; Optimize a case where no definition is in a body.
         ((_ () body1 body2 ...)
@@ -2586,7 +2592,7 @@
 
     (define eval
       (let ()
-        ; TODO
+        ; TODO Rename this function `compile` when `define-record-type` in `lambda` is implemented.
         (define compile-eval ($$compiler))
 
         (lambda (expression environment)
