@@ -21,7 +21,7 @@
     "astro": "^5.5.6",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.34.1",
-    "lucide-solid": "^0.486.0",
+    "lucide-solid": "^0.487.0",
     "nanostores": "^0.11.4",
     "solid-js": "^1.9.5",
     "vite-plugin-wasm": "^3.4.1"
