@@ -376,7 +376,7 @@
     ;; Binding
 
     (define-syntax let
-      (syntax-rules (define define-syntax)
+      (syntax-rules (define define-syntax define-values)
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
