@@ -9,7 +9,7 @@ set -e
 cargo install ast-grep tokei
 
 for pattern in 'mod tests { ... }' '#[cfg(test)]'; do
-  sg -p "$pattern" -r '' --lang rs
+  sg -Ul rs -p "$pattern" -r ''
 done
 
 cargo fmt --all
