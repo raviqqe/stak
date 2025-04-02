@@ -75,3 +75,13 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
     // Finally, run the module!
     engine.run(module)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn run() {
+        main().unwrap();
+    }
+}

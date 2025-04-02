@@ -39,3 +39,13 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
     vm.initialize(bytecodes.iter().copied())?;
     vm.run()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn run() {
+        main().unwrap()
+    }
+}
