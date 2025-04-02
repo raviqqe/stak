@@ -89,3 +89,23 @@ Feature: Smoke
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AB"
+
+  Scenario: Define a record type in a function body
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define x 65)
+
+      (define (foo)
+        (define-record-type bar
+          (make-bar)
+          bar?)
+        (define x 66)
+        #f)
+
+      (foo)
+      (write-u8 x)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
