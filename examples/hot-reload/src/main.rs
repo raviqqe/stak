@@ -78,8 +78,6 @@ mod tests {
 
     #[tokio::test]
     async fn handle() {
-        let (status, output) = calculate("2 3".into()).await.unwrap();
-
         assert_eq!(
             calculate("2 3".into()).await.unwrap(),
             (StatusCode::OK, "6")
