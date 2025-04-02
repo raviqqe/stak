@@ -15,16 +15,16 @@ float = ["stak-vm/float"]
 [dependencies]
 clap = { version = "4.5.35", features = ["derive"] }
 main_error = "0.1.2"
-stak-configuration = { version = "0.10.11", path = "../../configuration" }
-stak-device = { version = "0.10.11", path = "../../device", features = ["std"] }
-stak-file = { version = "0.10.11", path = "../../file", features = ["std"] }
-stak-process-context = { version = "0.10.11", path = "../../process_context", features = [
+stak-configuration = { version = "0.10.12", path = "../../configuration" }
+stak-device = { version = "0.10.12", path = "../../device", features = ["std"] }
+stak-file = { version = "0.10.12", path = "../../file", features = ["std"] }
+stak-process-context = { version = "0.10.12", path = "../../process_context", features = [
   "std",
 ] }
-stak-profiler = { version = "0.10.11", path = "../../profiler" }
-stak-r7rs = { version = "0.10.11", path = "../../r7rs" }
-stak-time = { version = "0.10.11", path = "../../time", features = ["std"] }
-stak-vm = { version = "0.10.11", path = "../../vm", features = ["profile"] }
+stak-profiler = { version = "0.10.12", path = "../../profiler" }
+stak-r7rs = { version = "0.10.12", path = "../../r7rs" }
+stak-time = { version = "0.10.12", path = "../../time", features = ["std"] }
+stak-vm = { version = "0.10.12", path = "../../vm", features = ["profile"] }
 
 [lints]
 workspace = true

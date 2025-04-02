@@ -10,7 +10,7 @@ repository.workspace = true
 
 [dependencies]
 glob = "0.3.2"
-stak-compiler = { version = "0.10.11", path = "../compiler" }
+stak-compiler = { version = "0.10.12", path = "../compiler" }
 tokio = { version = "1.44.1", features = [
   "fs",
   "io-util",
