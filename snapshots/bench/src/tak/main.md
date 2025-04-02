@@ -2113,21 +2113,18 @@
   - constant procedure 1 #f
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 0 #f
-          - get 5
-          - call 1 #f ||
-          - constant #f
-          - call 2 #f ||
-          - if
-            - constant "exception handler returned on non-continuable exception"
-            - get 4
-            - call 2 #f ||
-            - continue
-          - constant #f
-          - set 0
-          - get 1
+        - get 4
         - call 1 #f ||
-        - call 0 #f 0
+        - constant #f
+        - call 2 #f ||
+        - if
+          - constant "exception handler returned on non-continuable exception"
+          - get 3
+          - call 2 #f ||
+          - continue
+        - constant #f
+        - set 0
+        - get 0
       - call 1 #f ||
       - get 1
       - call 1 #f 6
@@ -2499,14 +2496,11 @@
 - constant procedure 0 #t
   - constant procedure 1 #f
     - constant procedure 1 #f
-      - constant procedure 0 #f
-        - get 3
-        - get 2
-        - call 2 #f ||
-        - set 0
-        - get 1
-      - call 1 #f ||
-      - call 0 #f 0
+      - get 2
+      - get 1
+      - call 2 #f ||
+      - set 0
+      - get 0
     - call 1 #f ||
     - get 1
     - call 1 #f ||
