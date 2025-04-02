@@ -8,7 +8,7 @@ set -e
 
 cargo install ast-grep tokei
 
-for pattern in 'mod tests { ... }' '#[cfg(test)]'; do
+for pattern in 'mod tests { $$$ }' '#[cfg(test)]'; do
   sg -Ul rs -p "$pattern" -r ''
 done
 
