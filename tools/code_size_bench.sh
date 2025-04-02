@@ -8,8 +8,10 @@ set -e
 
 cargo install ast-grep tokei
 
-sg -p 'mod tests { ... }' -r '' --lang rs
-sg -p '#[cfg(test)]' -r '' --lang rs
+for pattern in 'mod tests { ... }' '#[cfg(test)]'; do
+  sg -p "$pattern" -r '' --lang rs
+done
+
 cargo fmt --all
 
 for cargo_file in $(find . -name Cargo.toml | sort); do
