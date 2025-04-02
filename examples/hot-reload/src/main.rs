@@ -77,10 +77,10 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn handle() {
+    async fn calculate_sum() {
         assert_eq!(
-            calculate("2 3".into()).await.unwrap(),
-            (StatusCode::OK, "6")
+            calculate("(2 3)".into()).await.unwrap(),
+            (StatusCode::OK, "5".into())
         );
     }
 }
