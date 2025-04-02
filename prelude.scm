@@ -231,7 +231,7 @@
           ($$define name value))))
 
     (define-syntax lambda
-      (syntax-rules (define define-values define-syntax)
+      (syntax-rules (define define-syntax define-record-type define-values)
         ; Optimize a case where there is only a body of a expression.
         ((_ arguments body)
           ($$lambda arguments body))
@@ -376,15 +376,18 @@
     ;; Binding
 
     (define-syntax let
-      (syntax-rules (define define-syntax define-values)
+      (syntax-rules (define define-record-type define-syntax define-values)
         ((_ () (define content ...) body1 body2 ...)
           ((lambda () (define content ...) body1 body2 ...)))
 
-        ((_ () (define-values content ...) body1 body2 ...)
-          ((lambda () (define-values content ...) body1 body2 ...)))
+        ((_ () (define-record-type content ...) body1 body2 ...)
+          ((lambda () (define-record-type content ...) body1 body2 ...)))
 
         ((_ () (define-syntax content ...) body1 body2 ...)
           ((lambda () (define-syntax content ...) body1 body2 ...)))
+
+        ((_ () (define-values content ...) body1 body2 ...)
+          ((lambda () (define-values content ...) body1 body2 ...)))
 
         ; Optimize a case where no definition is in a body.
         ((_ () body1 body2 ...)
