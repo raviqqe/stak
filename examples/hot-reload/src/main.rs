@@ -71,3 +71,18 @@ fn run(
 fn decode_buffer(buffer: Vec<u8>) -> response::Result<String> {
     Ok(String::from_utf8(buffer).map_err(|error| error.to_string())?)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn handle() {
+        let (status, output) = calculate("2 3".into()).await.unwrap();
+
+        assert_eq!(
+            calculate("2 3".into()).await.unwrap(),
+            (StatusCode::OK, "6")
+        );
+    }
+}
