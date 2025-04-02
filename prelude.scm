@@ -2586,7 +2586,7 @@
 
     (define eval
       (let ()
-        ; TODO
+        ; TODO Rename this function `compile` when `define-record-type` in `lambda` is implemented.
         (define compile-eval ($$compiler))
 
         (lambda (expression environment)
