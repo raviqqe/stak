@@ -15,8 +15,8 @@ proc-macro = true
 proc-macro2 = { version = "1.0.94", features = ["proc-macro"] }
 quote = "1.0.40"
 syn = "2.0.100"
-stak-minifier = { version = "0.10.12", path = "../minifier" }
-stak-macro-util = { version = "0.10.12", path = "../macro-util" }
+stak-minifier = { version = "0.10.13", path = "../minifier" }
+stak-macro-util = { version = "0.10.13", path = "../macro-util" }
 
 [lints]
 workspace = true
