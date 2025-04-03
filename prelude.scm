@@ -2571,11 +2571,10 @@
 
   (begin
     (define-record-type environment
-      (make-environment symbol-table libraries mutable)
+      (make-environment symbol-table imports)
       environment?
       (symbol-table environment-symbol-table)
-      (imports environment-imports environment-set-imports!)
-      (mutable environment-mutable))
+      (imports environment-imports environment-set-imports!))
 
     (define (environment-append-imports! environment imports)
       (environment-set-imports!
@@ -2589,22 +2588,17 @@
           imports)))
 
     (define (environment . imports)
-      (make-environment (make-symbol-table '()) imports #f))
+      (make-environment (make-symbol-table '()) imports))
 
     (define eval
-      (let ()
-        ; TODO Rename this function `compile` when `define-record-type` in `lambda` is implemented.
-        (define compile-eval ($$compiler))
-
+      (let ((compile ($$compiler)))
         (lambda (expression environment)
           (case (and (pair? expression) (car expression))
             ((import)
-              (unless (environment-mutable environment)
-                (error "import in immutable environment"))
               (environment-append-imports! environment (cdr expression)))
 
             (else
-              ((compile-eval expression environment)))))))))
+              ((compile expression environment)))))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
@@ -2613,7 +2607,7 @@
 
   (begin
     (define interaction-environment
-      (let ((environment (make-environment (make-symbol-table '()) '() #t)))
+      (let ((environment (make-environment (make-symbol-table '()) '())))
         (lambda () environment)))))
 
 (define-library (scheme r5rs)
