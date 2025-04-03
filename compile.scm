@@ -1748,8 +1748,6 @@
 
           (define libraries ($$libraries))
 
-          (define interaction-symbol-table (make-symbol-table '()))
-
           (define (expand-libraries environment expression)
            (let ((names
                   (apply

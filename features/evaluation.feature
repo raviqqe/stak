@@ -68,6 +68,19 @@ Feature: Evaluation
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Define variables in an interaction environment
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme eval) (scheme repl))
+
+      (eval '(import (scheme base)) (interaction-environment))
+      (eval '(define x 42) (interaction-environment))
+      (eval '(define y 23) (interaction-environment))
+      (write-u8 (eval '(+ x y) (interaction-environment)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Rule: Environment
     @gauche @guile @stak
     Scenario: Use a `define` syntax with a variable
