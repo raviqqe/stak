@@ -73,6 +73,7 @@ Feature: Evaluation
       """scheme
       (import (scheme base) (scheme eval) (scheme repl))
 
+      (eval '(import (scheme base)) (interaction-environment))
       (eval '(define x 42) (interaction-environment))
       (eval '(define y 23) (interaction-environment))
       (write-u8 (eval '(+ x y) (interaction-environment)))
