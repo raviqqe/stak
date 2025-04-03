@@ -13,6 +13,7 @@ use stak::{
     vm::Vm,
 };
 
+static ADD_MODULE: UniversalModule = include_module!("add/main.scm");
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 
 // Interesting observation here is that startup latencies get higher
@@ -34,6 +35,21 @@ fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallErro
     vm.run()
 }
 
+fn stak_add(bencher: &mut Bencher) {
+    bencher.iter(|| {
+        run::<{ 1 << 16 }>(black_box(&ADD_MODULE)).unwrap();
+    })
+}
+
+fn lua_add(bencher: &mut Bencher) {
+    bencher.iter(|| {
+        Lua::new()
+            .load(black_box(r#"x = 1 + 2 + 3"#))
+            .exec()
+            .unwrap();
+    })
+}
+
 fn stak_empty(bencher: &mut Bencher) {
     bencher.iter(|| {
         run::<{ 1 << 8 }>(black_box(&EMPTY_MODULE)).unwrap();
@@ -48,7 +64,9 @@ fn lua_empty(bencher: &mut Bencher) {
 
 fn embed(criterion: &mut Criterion) {
     for (name, benchmark) in [
-        ("stak_empty", stak_empty as fn(&mut Bencher)),
+        ("stak_add", stak_add as fn(&mut Bencher)),
+        ("lua_add", lua_add),
+        ("stak_empty", stak_empty),
         ("lua_empty", lua_empty),
     ] {
         criterion.bench_function(&format!("embed_{name}"), benchmark);
