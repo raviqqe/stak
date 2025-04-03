@@ -55,7 +55,7 @@ fn stak_hello(bencher: &mut Bencher) {
 
 fn lua_hello(bencher: &mut Bencher) {
     bencher.iter(|| {
-        Lua::new().load(black_box("")).exec().unwrap();
+        Lua::new().load(black_box(r#"print("Hello, world!\n")"#)).exec().unwrap();
     })
 }
 
