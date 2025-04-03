@@ -37,13 +37,16 @@ fn run<const N: usize>(module: &'static UniversalModule) -> Result<(), SmallErro
 
 fn stak_add(bencher: &mut Bencher) {
     bencher.iter(|| {
-        run::<{ 1 << 14 }>(black_box(&ADD_MODULE)).unwrap();
+        run::<{ 1 << 16 }>(black_box(&ADD_MODULE)).unwrap();
     })
 }
 
 fn lua_add(bencher: &mut Bencher) {
     bencher.iter(|| {
-        Lua::new().load(black_box(r#"(1 + 2 + 3)"#)).exec().unwrap();
+        Lua::new()
+            .load(black_box(r#"x = 1 + 2 + 3"#))
+            .exec()
+            .unwrap();
     })
 }
 
