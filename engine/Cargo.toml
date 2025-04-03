@@ -15,21 +15,21 @@ std = ["stak-device/std"]
 [dependencies]
 any-fn = "0.6.1"
 cfg-elif = "0.6.3"
-stak-device = { version = "0.10.12", path = "../device" }
-stak-dynamic = { version = "0.10.12", path = "../dynamic" }
-stak-file = { version = "0.10.12", path = "../file" }
-stak-module = { version = "0.10.12", path = "../module" }
-stak-process-context = { version = "0.10.12", path = "../process_context" }
-stak-r7rs = { version = "0.10.12", path = "../r7rs" }
-stak-time = { version = "0.10.12", path = "../time" }
-stak-vm = { version = "0.10.12", path = "../vm" }
+stak-device = { version = "0.10.13", path = "../device" }
+stak-dynamic = { version = "0.10.13", path = "../dynamic" }
+stak-file = { version = "0.10.13", path = "../file" }
+stak-module = { version = "0.10.13", path = "../module" }
+stak-process-context = { version = "0.10.13", path = "../process_context" }
+stak-r7rs = { version = "0.10.13", path = "../r7rs" }
+stak-time = { version = "0.10.13", path = "../time" }
+stak-vm = { version = "0.10.13", path = "../vm" }
 
 [dev-dependencies]
 rand = "0.9.0"
 stak = { path = "../root" }
 
 [build-dependencies]
-stak-build = { version = "0.10.12", path = "../build" }
+stak-build = { version = "0.10.13", path = "../build" }
 
 [lints]
 workspace = true
