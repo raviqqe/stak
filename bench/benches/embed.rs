@@ -49,13 +49,16 @@ fn lua_empty(bencher: &mut Bencher) {
 
 fn stak_hello(bencher: &mut Bencher) {
     bencher.iter(|| {
-        run::<{ 1 << 8 }>(black_box(&HELLO_MODULE)).unwrap();
+        run::<{ 1 << 14 }>(black_box(&HELLO_MODULE)).unwrap();
     })
 }
 
 fn lua_hello(bencher: &mut Bencher) {
     bencher.iter(|| {
-        Lua::new().load(black_box(r#"print("Hello, world!\n")"#)).exec().unwrap();
+        Lua::new()
+            .load(black_box(r#"print("Hello, world!\n")"#))
+            .exec()
+            .unwrap();
     })
 }
 
