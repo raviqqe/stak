@@ -1933,7 +1933,6 @@
   - macro-state-set-id!
   - syntax
   - rule-context?
-  - rule-context-ellipsis
   - position
   - macro-context-generate-id!
   - bound-variables
@@ -4359,7 +4358,6 @@
                 - constant list
                   - definition-context
                   - use-context
-                  - ellipsis
                   - literals
                 - call 2 #f ||
                 - set ||
@@ -4375,10 +4373,6 @@
                 - set ||
                 - get ||
                 - constant use-context
-                - call 2 #f ||
-                - set ||
-                - get ||
-                - constant ellipsis
                 - call 2 #f ||
                 - set ||
                 - get ||
@@ -4984,9 +4978,8 @@
                                               - call 1 #f ||
                                               - get 17
                                               - get 8
-                                              - get 15
-                                              - get 14
-                                              - call 4 #f ||
+                                              - get 13
+                                              - call 3 #f ||
                                               - call 2 #f 2
                                             - call 1 #f $$close
                                             - set 1
@@ -11827,7 +11820,6 @@
       - make-rule-context
       - definition-context
       - use-context
-      - ellipsis
       - literals
     - rule-context?
     - list
@@ -11836,9 +11828,6 @@
     - list
       - use-context
       - rule-context-use-context
-    - list
-      - ellipsis
-      - rule-context-ellipsis
     - list
       - literals
       - rule-context-literals
@@ -12563,7 +12552,6 @@
                         - make-rule-context
                         - definition-context
                         - use-context
-                        - ellipsis
                         - literals
                   - list
                     - guard
