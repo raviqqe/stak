@@ -306,11 +306,10 @@
       (macro-state-set-dynamic-symbols! state (cons symbol symbols))))
 
     (define-record-type rule-context
-     (make-rule-context definition-context use-context ellipsis literals)
+     (make-rule-context definition-context use-context literals)
      rule-context?
      (definition-context rule-context-definition-context)
      (use-context rule-context-use-context)
-     (ellipsis rule-context-ellipsis)
      (literals rule-context-literals))
 
     ;; Procedures
@@ -501,7 +500,7 @@
            (unless (pair? rules)
             (error "invalid syntax" expression))
            (let ((rule (car rules))
-                 (rule-context (make-rule-context definition-context use-context ellipsis literals)))
+                 (rule-context (make-rule-context definition-context use-context literals)))
             (guard (value
                     ((not value)
                      (loop (cdr rules))))
