@@ -2591,17 +2591,14 @@
       (make-environment (make-symbol-table '()) imports))
 
     (define eval
-      (let ()
-        ; TODO Rename this function `compile` when `define-record-type` in `lambda` is implemented.
-        (define compile-eval ($$compiler))
-
+      (let ((compile ($$compiler)))
         (lambda (expression environment)
           (case (and (pair? expression) (car expression))
             ((import)
               (environment-append-imports! environment (cdr expression)))
 
             (else
-              ((compile-eval expression environment)))))))))
+              ((compile expression environment)))))))))
 
 (define-library (scheme repl)
   (export interaction-environment)
