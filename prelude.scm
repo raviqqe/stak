@@ -2597,8 +2597,6 @@
         (lambda (expression environment)
           (case (and (pair? expression) (car expression))
             ((import)
-              (unless (environment-mutable environment)
-                (error "import in immutable environment"))
               (environment-append-imports! environment (cdr expression)))
 
             (else
