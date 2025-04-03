@@ -1727,9 +1727,13 @@
         (eq? (caar expression) '$$compiler))
       (cons
         `(let ()
-          ,@frontend
+          ; Compiler frontend
 
-          ; Utilities
+          (define cons-rib cons)
+          (define rib-car car)
+          (define rib-cdr cdr)
+
+          ,@frontend
 
           ; Disable unused functionalities.
           (define dummy
@@ -1739,10 +1743,6 @@
             (set! macro-state-set-static-symbols! set-nothing)
             (set! macro-state-set-dynamic-symbols! set-nothing)
             (set! optimization-context-set-literals! set-nothing)))
-
-          (define cons-rib cons)
-          (define rib-car car)
-          (define rib-cdr cdr)
 
           ; Library system
 
