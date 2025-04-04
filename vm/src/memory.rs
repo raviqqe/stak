@@ -74,7 +74,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a code.
     #[inline]
-    pub fn set_code(&mut self, value: Cons) {
+    pub const fn set_code(&mut self, value: Cons) {
         self.code = value;
     }
 
@@ -86,7 +86,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a register.
     #[inline]
-    pub fn set_register(&mut self, value: Cons) {
+    pub const fn set_register(&mut self, value: Cons) {
         self.register = value;
     }
 
@@ -98,7 +98,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a stack.
     #[inline]
-    pub fn set_stack(&mut self, value: Cons) {
+    pub const fn set_stack(&mut self, value: Cons) {
         self.stack = value;
     }
 
@@ -120,7 +120,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a false value.
     #[inline]
-    pub(crate) fn set_false(&mut self, cons: Cons) {
+    pub(crate) const fn set_false(&mut self, cons: Cons) {
         self.r#false = cons;
     }
 

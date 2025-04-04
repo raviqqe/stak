@@ -78,7 +78,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Returns a mutable reference to a primitive set.
-    pub fn primitive_set_mut(&mut self) -> &mut T {
+    pub const fn primitive_set_mut(&mut self) -> &mut T {
         &mut self.primitive_set
     }
 
