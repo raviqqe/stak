@@ -91,18 +91,27 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 return Err(error);
             }
 
-            let error = self.memory.build_string("rust error")?;
-            self.memory.set_register(error);
-            let call = self.memory.allocate(
-                continuation,
+            self.memory.set_register(continuation.assume_cons());
+            let empty_string = self.memory.build_string("")?;
+            let symbol = self.memory.allocate(
+                self.memory.register().into(),
+                empty_string.set_tag(Type::Symbol as _).into(),
+            )?;
+            let code = self.memory.allocate(
+                symbol.into(),
                 self.memory.code().set_tag(Instruction::Call as _).into(),
             )?;
-            let constant = self.memory.allocate(
-                self.memory.register().into(),
-                call.set_tag(Instruction::Constant as _).into(),
-            )?;
+            self.memory.set_code(code);
 
-            self.memory.set_code(constant);
+            let error = self.memory.build_string("rust error")?;
+            let code = self.memory.allocate(
+                error.into(),
+                self.memory
+                    .code()
+                    .set_tag(Instruction::Constant as _)
+                    .into(),
+            )?;
+            self.memory.set_code(code);
         }
 
         Ok(())
