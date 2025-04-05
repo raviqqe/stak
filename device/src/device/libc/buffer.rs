@@ -51,7 +51,7 @@ pub struct BufferMut<'a> {
 
 impl<'a> BufferMut<'a> {
     /// Creates a mutable buffer.
-    pub fn new(data: &'a mut [u8]) -> Self {
+    pub const fn new(data: &'a mut [u8]) -> Self {
         Self { data, index: 0 }
     }
 

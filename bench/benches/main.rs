@@ -17,6 +17,7 @@ use std::{fs::read, io::Sink, path::Path};
 const HEAP_SIZE: usize = 1 << 18;
 const DEVICE_BUFFER_SIZE: usize = 1 << 8;
 
+static ADD_MODULE: UniversalModule = include_module!("add/main.scm");
 static EMPTY_MODULE: UniversalModule = include_module!("empty/main.scm");
 static EVAL_MODULE: UniversalModule = include_module!("eval/main.scm");
 static FIBONACCI_MODULE: UniversalModule = include_module!("fibonacci/main.scm");
@@ -58,6 +59,7 @@ fn run(module: &'static UniversalModule) -> Result<(), SmallError> {
 }
 
 static BENCHMARKS: &[(&str, &str, &UniversalModule)] = &[
+    ("add", "add", &ADD_MODULE),
     ("empty", "empty", &EMPTY_MODULE),
     ("eval", "eval_sum_10000000", &EVAL_MODULE),
     ("fibonacci", "fibonacci_32", &FIBONACCI_MODULE),
