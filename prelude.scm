@@ -1779,6 +1779,10 @@
     (define (with-exception-handler handler thunk)
       (let ((new (convert-exception-handler handler))
             (old (current-exception-handler)))
+        (set-cdr!
+          '()
+          (lambda (message)
+            (new (make-error-object #f message '()))))
         (parameterize ((current-exception-handler
                          (lambda (exception)
                            (parameterize ((current-exception-handler old))
