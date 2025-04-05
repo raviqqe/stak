@@ -91,8 +91,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 return Err(error);
             }
 
-            self.memory
-                .set_register(self.memory.build_string("rust error")?);
+            let error = self.memory.build_string("rust error")?;
+            self.memory.set_register(error);
             let call = self.memory.allocate(
                 continuation,
                 self.memory.code().set_tag(Instruction::Call as _).into(),
