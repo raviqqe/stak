@@ -87,7 +87,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         while let Err(error) = self.run_with_continuation() {
             let continuation = self.memory.cdr(self.memory.null());
 
-            if continuation.tag() != Type::Procedure as _ {
+            if continuation
+                .to_cons()
+                .map(|cons| self.memory.cdr(cons).tag() != Type::Procedure as _)
+                .unwrap_or(true)
+            {
                 return Err(error);
             }
 
