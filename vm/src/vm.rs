@@ -84,7 +84,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
-        while let Err(error) = self.run_with_exception_handler() {
+        while let Err(error) = self.run_with_continuation() {
             let continuation = self.memory.cdr(self.memory.null());
 
             if continuation.tag() != Type::Procedure as _ {
@@ -108,7 +108,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn run_with_exception_handler(&mut self) -> Result<(), T::Error> {
+    fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
