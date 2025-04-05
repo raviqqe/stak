@@ -57,6 +57,7 @@ mod memory;
 mod number;
 mod primitive_set;
 mod profiler;
+mod runtime_error;
 mod stack_slot;
 mod r#type;
 mod value;
