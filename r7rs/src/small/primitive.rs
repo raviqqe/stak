@@ -18,6 +18,7 @@ pub(super) enum Primitive {
     Exponentiation,
     Logarithm,
     Halt = 40,
+    HandleException,
     Null = 50,
     Pair,
     Assq = 60,
@@ -58,6 +59,7 @@ impl Primitive {
     pub const EXPONENTIATION: usize = Self::Exponentiation as _;
     pub const LOGARITHM: usize = Self::Logarithm as _;
     pub const HALT: usize = Self::Halt as _;
+    pub const HANDLE_EXCEPTION: usize = Self::HandleException as _;
     pub const NULL: usize = Self::Null as _;
     pub const PAIR: usize = Self::Pair as _;
     pub const ASSQ: usize = Self::Assq as _;
