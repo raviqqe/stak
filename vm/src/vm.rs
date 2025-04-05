@@ -103,7 +103,16 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             )?;
             let code = self.memory.allocate(
                 symbol.into(),
-                self.memory.code().set_tag(Instruction::Call as _).into(),
+                self.memory
+                    .code()
+                    .set_tag(
+                        Instruction::Call as u16
+                            + Self::build_arity(Arity {
+                                count: 1,
+                                variadic: false,
+                            }) as u16,
+                    )
+                    .into(),
             )?;
             self.memory.set_code(code);
 
@@ -290,6 +299,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             count: info / 2,
             variadic: info % 2 == 1,
         }
+    }
+
+    #[inline]
+    const fn build_arity(arity: Arity) -> usize {
+        2 * arity.count + arity.variadic as usize
     }
 
     #[inline]
