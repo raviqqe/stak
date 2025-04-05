@@ -87,7 +87,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         while let Err(error) = self.run_with_exception_handler() {
             let continuation = self.memory.cdr(self.memory.null());
 
-            if continuation == self.memory.null().into() {
+            if continuation.tag() != Type::Procedure as _ {
                 return Err(error);
             }
 
