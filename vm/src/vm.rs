@@ -84,6 +84,31 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
+        while let Err(error) = self.run_with_continuation() {
+            let continuation = self.memory.cdr(self.memory.null());
+
+            if continuation.tag() != Type::Procedure as _ {
+                return Err(error);
+            }
+
+            let error = self.memory.build_string("rust error")?;
+            self.memory.set_register(error);
+            let call = self.memory.allocate(
+                continuation,
+                self.memory.code().set_tag(Instruction::Call as _).into(),
+            )?;
+            let constant = self.memory.allocate(
+                self.memory.register().into(),
+                call.set_tag(Instruction::Constant as _).into(),
+            )?;
+
+            self.memory.set_code(constant);
+        }
+
+        Ok(())
+    }
+
+    fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
