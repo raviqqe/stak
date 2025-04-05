@@ -97,9 +97,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 continuation,
                 self.memory.code().set_tag(Instruction::Call as _).into(),
             )?;
-            let constant = self
-                .memory
-                .cons(self.memory.register().into(), call.into())?;
+            let constant = self.memory.allocate(
+                self.memory.register().into(),
+                call.set_tag(Instruction::Constant as _).into(),
+            )?;
 
             self.memory.set_code(constant);
         }
