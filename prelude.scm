@@ -2519,8 +2519,7 @@
       (call-with-port (open-output-file path) f))
 
     (define (delete-file path)
-      (unless ($delete-file (string->code-points path))
-        (error "cannot delete file")))
+      ($delete-file (string->code-points path)))
 
     (define (file-exists? path)
       ($exists-file (string->code-points path)))
@@ -2528,8 +2527,6 @@
     (define (open-file output)
       (lambda (path)
         (let ((descriptor ($open-file (string->code-points path) output)))
-          (unless descriptor
-            (error "cannot open file"))
           (make-port
             (lambda () ($read-file descriptor))
             (lambda (byte) ($write-file descriptor byte))
