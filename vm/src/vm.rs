@@ -99,8 +99,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             }
 
             self.memory.set_register(continuation);
-            let string = self.memory.build_raw_string("")?;
-            let string = self.memory.build_string(string)?;
+            let string = self.memory.build_string("")?;
             let symbol = self.memory.allocate(
                 self.memory.register().into(),
                 string.set_tag(Type::Symbol as _).into(),

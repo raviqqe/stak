@@ -363,9 +363,10 @@ impl<'a> Memory<'a> {
     }
 
     /// Builds a string.
-    pub fn build_string(&mut self, raw_string: Cons) -> Result<Cons, Error> {
-        let length = Number::from_i64(self.list_length(raw_string) as _).into();
-        self.allocate(length, raw_string.set_tag(Type::String as _).into())
+    pub fn build_string(&mut self, string: &str) -> Result<Cons, Error> {
+        let string = self.build_raw_string(string)?;
+        let length = Number::from_i64(self.list_length(string) as _).into();
+        self.allocate(length, string.set_tag(Type::String as _).into())
     }
 
     /// Builds a raw string.
