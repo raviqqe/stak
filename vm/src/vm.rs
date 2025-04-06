@@ -523,9 +523,13 @@ mod tests {
     struct FakePrimitiveSet {}
 
     impl PrimitiveSet for FakePrimitiveSet {
-        type Error = ();
+        type Error = Error;
 
-        fn operate(&mut self, _vm: &mut Memory<'_>, _primitive: u16) -> Result<(), Self::Error> {
+        fn operate(
+            &mut self,
+            _memory: &mut Memory<'_>,
+            _primitive: usize,
+        ) -> Result<(), Self::Error> {
             Ok(())
         }
     }
