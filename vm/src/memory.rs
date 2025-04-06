@@ -421,16 +421,6 @@ impl<'a> Memory<'a> {
         Ok(())
     }
 
-    /// Executes an operation that returns `Option<Value>`.
-    pub fn operate_option(
-        &mut self,
-        mut operate: impl FnMut(&mut Self) -> Option<Value>,
-    ) -> Result<(), Error> {
-        let value = operate(self).unwrap_or_else(|| self.boolean(false).into());
-        self.push(value)?;
-        Ok(())
-    }
-
     // Garbage collection
 
     fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {

@@ -9,6 +9,8 @@ use stak_vm::Exception;
 pub enum Error {
     /// A device error.
     Device(stak_device::PrimitiveError),
+    /// A file error.
+    File(stak_file::PrimitiveError),
     /// A halt of a virtual machine.
     Halt,
     /// A virtual machine error.
@@ -19,6 +21,7 @@ impl Exception for Error {
     fn is_critical(&self) -> bool {
         match self {
             Self::Device(error) => error.is_critical(),
+            Self::File(error) => error.is_critical(),
             Self::Halt => true,
             Self::Vm(error) => error.is_critical(),
         }
@@ -31,6 +34,7 @@ impl Display for Error {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         match self {
             Self::Device(error) => write!(formatter, "{error}"),
+            Self::File(error) => write!(formatter, "{error}"),
             Self::Halt => write!(formatter, "halt"),
             Self::Vm(error) => write!(formatter, "{error}"),
         }
@@ -46,5 +50,11 @@ impl From<stak_vm::Error> for Error {
 impl From<stak_device::PrimitiveError> for Error {
     fn from(error: stak_device::PrimitiveError) -> Self {
         Self::Device(error)
+    }
+}
+
+impl From<stak_file::PrimitiveError> for Error {
+    fn from(error: stak_file::PrimitiveError) -> Self {
+        Self::File(error)
     }
 }
