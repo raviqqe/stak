@@ -5,7 +5,12 @@
   min-width: 0;
 }
 
+.input {
+  min-height: 4rem;
+}
+
 .output {
+  composes: input;
   composes: textArea from "../../system.module.css";
   overflow: auto;
   flex: 1;

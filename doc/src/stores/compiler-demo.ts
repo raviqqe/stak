@@ -4,19 +4,14 @@ import { interpret as interpretProgram } from "../application/interpret.js";
 
 export const source = atom(
   `
-(import
-  (scheme base)
-  (scheme read)
-  (scheme write))
+(import (scheme base) (scheme read) (scheme write))
 
-(display
-  (apply string-append
-    (apply
-      append
-      (map
-        list
-        (map symbol->string (read))
-        '(" " "!")))))
+(define (fibonacci x)
+  (if (< x 2)
+     x
+     (+ (fibonacci (- x 1)) (fibonacci (- x 2)))))
+
+(write \`(answer ,(fibonacci (read))))
   `.trim(),
 );
 
@@ -31,7 +26,7 @@ export const compiling = computed(bytecodes, (output) => output === null);
 
 const output = atom<Uint8Array | null>(new Uint8Array());
 
-export const input = atom("(hello world)");
+export const input = atom("10");
 export const textOutput = computed(output, (output) =>
   output === null ? null : new TextDecoder().decode(output),
 );
