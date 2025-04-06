@@ -52,6 +52,7 @@ extern crate std;
 mod code;
 mod cons;
 mod error;
+mod exception;
 mod instruction;
 mod memory;
 mod number;
@@ -64,6 +65,7 @@ mod vm;
 
 pub use cons::{Cons, Tag};
 pub use error::Error;
+pub use exception::Exception;
 pub use memory::Memory;
 pub use number::{Number, NumberRepresentation};
 pub use primitive_set::PrimitiveSet;

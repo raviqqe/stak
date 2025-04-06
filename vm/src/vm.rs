@@ -1,7 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    Error, StackSlot,
+    Error, Exception, StackSlot,
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
@@ -13,7 +13,7 @@ use crate::{
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter};
+use core::fmt::{self, Display, Formatter, Write};
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -36,6 +36,7 @@ macro_rules! profile_event {
     };
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct Arity {
     // A count does not include a variadic argument.
     count: usize,
@@ -84,6 +85,56 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
     /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
+        while let Err(error) = self.run_with_continuation() {
+            if error.is_critical() {
+                return Err(error);
+            }
+
+            let Some(continuation) = self.memory.cdr(self.memory.null()).to_cons() else {
+                return Err(error);
+            };
+
+            if self.memory.cdr(continuation).tag() != Type::Procedure as _ {
+                return Err(error);
+            }
+
+            self.memory.set_register(continuation);
+            let string = self.memory.build_string("")?;
+            let symbol = self.memory.allocate(
+                self.memory.register().into(),
+                string.set_tag(Type::Symbol as _).into(),
+            )?;
+            let code = self.memory.allocate(
+                symbol.into(),
+                self.memory
+                    .code()
+                    .set_tag(
+                        Instruction::Call as u16
+                            + Self::build_arity(Arity {
+                                count: 1,
+                                variadic: false,
+                            }) as u16,
+                    )
+                    .into(),
+            )?;
+            self.memory.set_code(code);
+
+            self.memory.set_register(self.memory.null());
+            write!(&mut self.memory, "{error}").map_err(Error::from)?;
+            let code = self.memory.allocate(
+                self.memory.register().into(),
+                self.memory
+                    .code()
+                    .set_tag(Instruction::Constant as _)
+                    .into(),
+            )?;
+            self.memory.set_code(code);
+        }
+
+        Ok(())
+    }
+
+    fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
@@ -252,6 +303,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             count: info / 2,
             variadic: info % 2 == 1,
         }
+    }
+
+    #[inline]
+    const fn build_arity(arity: Arity) -> usize {
+        2 * arity.count + arity.variadic as usize
     }
 
     #[inline]
@@ -459,5 +515,58 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 impl<T: PrimitiveSet> Display for Vm<'_, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct FakePrimitiveSet {}
+
+    impl PrimitiveSet for FakePrimitiveSet {
+        type Error = Error;
+
+        fn operate(
+            &mut self,
+            _memory: &mut Memory<'_>,
+            _primitive: usize,
+        ) -> Result<(), Self::Error> {
+            Ok(())
+        }
+    }
+
+    type VoidVm = Vm<'static, FakePrimitiveSet>;
+
+    #[test]
+    fn arity() {
+        for arity in [
+            Arity {
+                count: 0,
+                variadic: false,
+            },
+            Arity {
+                count: 1,
+                variadic: false,
+            },
+            Arity {
+                count: 2,
+                variadic: false,
+            },
+            Arity {
+                count: 0,
+                variadic: true,
+            },
+            Arity {
+                count: 1,
+                variadic: true,
+            },
+            Arity {
+                count: 2,
+                variadic: true,
+            },
+        ] {
+            assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
+        }
     }
 }
