@@ -519,7 +519,6 @@ impl Display for Memory<'_> {
 }
 
 impl Write for Memory<'_> {
-    // TODO Consider sharing this logic with `Memmory::build_raw_string()`.
     fn write_str(&mut self, string: &str) -> fmt::Result {
         let mut list = self.null();
         self.build_intermediate_string(string, &mut list)
