@@ -10,4 +10,4 @@ mod clock;
 mod primitive_set;
 
 pub use clock::*;
-pub use primitive_set::{Primitive, TimePrimitiveSet};
+pub use primitive_set::{Primitive, PrimitiveError, TimePrimitiveSet};

@@ -9,7 +9,6 @@ use core::error::Error;
 pub use libc::LibcClock;
 #[cfg(feature = "std")]
 pub use os::OsClock;
-use stak_vm::Number;
 pub use void::VoidClock;
 
 /// A clock.
@@ -18,5 +17,5 @@ pub trait Clock {
     type Error: Error;
 
     /// Returns a current jiffy.
-    fn current_jiffy(&self) -> Result<Number, Self::Error>;
+    fn current_jiffy(&self) -> Result<u64, Self::Error>;
 }
