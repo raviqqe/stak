@@ -1780,7 +1780,7 @@
           (set-cdr!
             '()
             (lambda (message)
-              (handler (cons #f (make-error-object #f (code-points->string message) '())))))
+              (handler (cons #f (make-error-object 'runtime (code-points->string message) '())))))
           handler)))
 
     (define (with-exception-handler handler thunk)
