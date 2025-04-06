@@ -1783,7 +1783,7 @@
         (set-cdr!
           '()
           (lambda (message)
-            (new (make-error-object #f (code-points->string message) '()))))
+            (new (cons #f (make-error-object #f (code-points->string message) '())))))
         (parameterize ((current-exception-handler
                          (lambda (exception)
                            (parameterize ((current-exception-handler old))
