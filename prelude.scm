@@ -1779,6 +1779,7 @@
     (define (with-exception-handler handler thunk)
       (let ((new (convert-exception-handler handler))
             (old (current-exception-handler)))
+        ; TODO
         (set-cdr!
           '()
           (lambda (message)
