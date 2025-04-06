@@ -48,11 +48,10 @@ impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;
 
-                memory.push(if let Some(byte) = byte {
-                    Number::from_i64(byte as _).into()
-                } else {
-                    memory.boolean(false).into()
-                })?;
+                memory.push(byte.map_or_else(
+                    || memory.boolean(false).into(),
+                    |byte| Number::from_i64(byte as _).into(),
+                ))?;
             }
             Primitive::WRITE => self.write(memory, Device::write, PrimitiveError::WriteOutput)?,
             Primitive::WRITE_ERROR => {
