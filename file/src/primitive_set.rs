@@ -43,6 +43,8 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 self.file_system
                     .close(descriptor.to_i64() as _)
                     .map_err(|_| FileError::Close)?;
+
+                memory.push(memory.boolean(false).into())?;
             }
             Primitive::READ_FILE => {
                 let [descriptor] = memory.pop_numbers();
@@ -62,6 +64,8 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 self.file_system
                     .write(descriptor.to_i64() as _, byte.to_i64() as _)
                     .map_err(|_| FileError::Write)?;
+
+                memory.push(memory.boolean(false).into())?;
             }
             Primitive::DELETE_FILE => {
                 let [list] = memory.pop_many();
