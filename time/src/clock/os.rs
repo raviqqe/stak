@@ -17,8 +17,6 @@ impl Clock for OsClock {
     type Error = SystemTimeError;
 
     fn current_jiffy(&self) -> Result<usize, Self::Error> {
-        Ok(
-            SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos() as _
-        )
+        Ok(SystemTime::now().duration_since(UNIX_EPOCH)?.as_nanos() as _)
     }
 }

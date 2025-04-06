@@ -1,6 +1,5 @@
 use crate::Clock;
 use core::convert::Infallible;
-use stak_vm::Number;
 
 /// A void clock stopped a fixed time.
 #[derive(Debug, Default)]
@@ -16,7 +15,7 @@ impl VoidClock {
 impl Clock for VoidClock {
     type Error = Infallible;
 
-    fn current_jiffy(&self) -> Result<Number, Self::Error> {
+    fn current_jiffy(&self) -> Result<usize, Self::Error> {
         Ok(Default::default())
     }
 }
