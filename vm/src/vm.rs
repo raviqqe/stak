@@ -121,7 +121,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             self.memory.set_code(code);
 
             self.memory.set_register(self.memory.null());
-            write!(&mut self.memory, "{error}").map_err(|error| Error::from(error))?;
+            write!(&mut self.memory, "{error}").map_err(Error::from)?;
             let code = self.memory.allocate(
                 self.memory.register().into(),
                 self.memory
