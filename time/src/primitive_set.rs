@@ -1,9 +1,10 @@
 mod error;
 mod primitive;
 
+pub use self::error::PrimitiveError;
 pub use self::primitive::Primitive;
 use crate::Clock;
-use stak_vm::{Error, Memory, PrimitiveSet};
+use stak_vm::{Error, Memory, Number, PrimitiveSet};
 
 /// A primitive set for time.
 pub struct TimePrimitiveSet<T: Clock> {
@@ -23,13 +24,17 @@ impl<T: Clock> PrimitiveSet for TimePrimitiveSet<T> {
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::CURRENT_JIFFY => {
-                memory.push(Number::from_i64(
-                    self.clock
-                        .current_jiffy()
-                        .map_err(|_| PrimitiveError::CurrentJiffy)? as _,
-                ))?;
+                memory.push(
+                    Number::from_i64(
+                        self.clock
+                            .current_jiffy()
+                            .map_err(|_| PrimitiveError::CurrentJiffy)?
+                            as _,
+                    )
+                    .into(),
+                )?;
             }
-            _ => return Err(Error::IllegalPrimitive),
+            _ => return Err(Error::IllegalPrimitive.into()),
         }
 
         Ok(())
