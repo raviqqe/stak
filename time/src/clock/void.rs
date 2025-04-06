@@ -15,7 +15,7 @@ impl VoidClock {
 impl Clock for VoidClock {
     type Error = Infallible;
 
-    fn current_jiffy(&self) -> Result<usize, Self::Error> {
+    fn current_jiffy(&self) -> Result<u64, Self::Error> {
         Ok(Default::default())
     }
 }

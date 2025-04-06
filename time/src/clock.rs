@@ -17,5 +17,5 @@ pub trait Clock {
     type Error: Error;
 
     /// Returns a current jiffy.
-    fn current_jiffy(&self) -> Result<usize, Self::Error>;
+    fn current_jiffy(&self) -> Result<u64, Self::Error>;
 }
