@@ -1,5 +1,4 @@
 use super::Clock;
-use stak_vm::Number;
 use std::time::{SystemTime, SystemTimeError, UNIX_EPOCH};
 
 /// A clock provided by an operating system.

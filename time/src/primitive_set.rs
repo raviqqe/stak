@@ -1,3 +1,4 @@
+mod error;
 mod primitive;
 
 pub use self::primitive::Primitive;
@@ -17,7 +18,7 @@ impl<T: Clock> TimePrimitiveSet<T> {
 }
 
 impl<T: Clock> PrimitiveSet for TimePrimitiveSet<T> {
-    type Error = Error;
+    type Error = PrimitiveError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {

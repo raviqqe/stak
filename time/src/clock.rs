@@ -9,7 +9,6 @@ use core::error::Error;
 pub use libc::LibcClock;
 #[cfg(feature = "std")]
 pub use os::OsClock;
-use stak_vm::Number;
 pub use void::VoidClock;
 
 /// A clock.
