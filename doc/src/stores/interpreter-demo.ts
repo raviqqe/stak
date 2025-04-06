@@ -1,8 +1,7 @@
 import { atom, computed, task } from "nanostores";
 import { run as runProgram } from "../application/run.js";
 
-export const source = atom(
-  `
+export const exampleSource = `
 (import (scheme base) (scheme write))
 
 (define (fibonacci x)
@@ -13,8 +12,9 @@ export const source = atom(
 (display "Answer: ")
 (write (fibonacci 10))
 (newline)
-  `.trim(),
-);
+`.trim();
+
+export const source = atom(exampleSource);
 
 const run = computed(source, (source) =>
   task(async () => {
