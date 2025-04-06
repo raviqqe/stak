@@ -26,12 +26,11 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             Primitive::OPEN_FILE => {
                 let [list, output] = memory.pop_many();
                 let path = T::decode_path(memory, list).map_err(|_| FileError::PathDecode)?;
-                let output = output != memory.boolean(false).into();
 
                 memory.push(
                     Number::new(
                         self.file_system
-                            .open(path.as_ref(), output)
+                            .open(path.as_ref(), output != memory.boolean(false).into())
                             .map_err(|_| FileError::Open)? as _,
                     )
                     .into(),
