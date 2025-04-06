@@ -118,6 +118,10 @@ export default defineConfig({
               label: "Interpreter",
               link: "/demo/interpreter",
             },
+            {
+              label: "Compiler",
+              link: "/demo/compiler",
+            },
           ],
         },
 
