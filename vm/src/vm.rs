@@ -549,6 +549,16 @@ mod tests {
 
                 variadic: true,
             },
+            Arity {
+                count: 1,
+
+                variadic: true,
+            },
+            Arity {
+                count: 2,
+
+                variadic: true,
+            },
         ] {
             assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
         }
