@@ -303,3 +303,25 @@ Feature: Exception
       """
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
+
+  Scenario Outline: Catch a runtime error
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base) (scheme process-context))
+
+      (define (foo x)
+        x)
+
+      (with-exception-handler
+        (lambda (error)
+          (write-string (error-object-message error))
+          (exit 1))
+        (lambda () <expression>))
+      """
+    When I run `stak main.scm`
+    Then the stdout should contain exactly "<message>"
+    And the exit status should not be 0
+
+    Examples:
+      | expression       | message                |
+      | ((lambda (x) x)) | invalid argument count |
