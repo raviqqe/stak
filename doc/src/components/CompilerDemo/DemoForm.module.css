@@ -4,3 +4,8 @@
   gap: 1.5rem;
   align-items: stretch;
 }
+
+.program {
+  flex: 1;
+  min-height: 20rem;
+}

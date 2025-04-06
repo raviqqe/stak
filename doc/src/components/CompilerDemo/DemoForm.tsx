@@ -22,9 +22,9 @@ export const DemoForm = (): JSX.Element => {
       <Field style={{ flex: 1 }}>
         <Label for="source">Program</Label>
         <TextArea
+          class={styles.program}
           id="source"
           onChange={(source) => store.source.set(source)}
-          style={{ flex: 1 }}
           value={source()}
         />
         <ErrorMessage>{error()}</ErrorMessage>

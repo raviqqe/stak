@@ -19,6 +19,7 @@ export const DemoIo = (): JSX.Element => {
       <Field style={{ flex: 1 }}>
         <Label for="input">stdin</Label>
         <TextArea
+          class={styles.input}
           id="input"
           onChange={(input) => store.input.set(input)}
           style={{ flex: 1 }}
