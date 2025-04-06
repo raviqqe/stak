@@ -519,14 +519,18 @@ impl<T: PrimitiveSet> Display for Vm<'_, T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use stak_device::VoidDevice;
-    use stak_file::VoidFileSystem;
-    use stak_process_context::VoidProcessContext;
-    use stak_r7rs::SmallPrimitiveSet;
-    use stak_time::VoidClock;
 
-    type VoidVm =
-        Vm<'static, SmallPrimitiveSet<VoidDevice, VoidFileSystem, VoidProcessContext, VoidClock>>;
+    struct FakePrimitiveSet {}
+
+    impl PrimitiveSet for FakePrimitiveSet {
+        type Error = ();
+
+        fn operate(&mut self, _vm: &mut Memory<'_>, _primitive: u16) -> Result<(), Self::Error> {
+            Ok(())
+        }
+    }
+
+    type VoidVm = Vm<'static, FakePrimitiveSet>;
 
     #[test]
     fn arity() {
