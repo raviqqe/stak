@@ -1,4 +1,4 @@
-use crate::{RuntimeError, memory::Memory};
+use crate::{Exception, memory::Memory};
 
 /// A primitive set.
 ///
@@ -7,7 +7,7 @@ use crate::{RuntimeError, memory::Memory};
 /// identifier.
 pub trait PrimitiveSet: Sized {
     /// An error.
-    type Error: RuntimeError;
+    type Error: Exception;
 
     /// Runs a primitive on a virtual machine.
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error>;

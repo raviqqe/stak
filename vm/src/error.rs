@@ -1,4 +1,4 @@
-use crate::runtime_error::RuntimeError;
+use crate::exception::Exception;
 use core::{
     error,
     fmt::{self, Debug, Display, Formatter},
@@ -25,7 +25,7 @@ pub enum Error {
     ProcedureExpected,
 }
 
-impl RuntimeError for Error {
+impl Exception for Error {
     fn is_critical(&self) -> bool {
         match self {
             Self::ArgumentCount
