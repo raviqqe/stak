@@ -36,6 +36,7 @@ macro_rules! profile_event {
     };
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct Arity {
     // A count does not include a variadic argument.
     count: usize,
@@ -512,5 +513,44 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 impl<T: PrimitiveSet> Display for Vm<'_, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use stak_device::VoidDevice;
+    use stak_file::VoidFileSystem;
+    use stak_process_context::VoidProcessContext;
+    use stak_r7rs::SmallPrimitiveSet;
+    use stak_time::VoidClock;
+
+    type VoidVm =
+        Vm<'static, SmallPrimitiveSet<VoidDevice, VoidFileSystem, VoidProcessContext, VoidClock>>;
+
+    #[test]
+    fn arity() {
+        for arity in [
+            Arity {
+                count: 0,
+                variadic: false,
+            },
+            Arity {
+                count: 1,
+                variadic: false,
+            },
+            Arity {
+                count: 2,
+
+                variadic: false,
+            },
+            Arity {
+                count: 0,
+
+                variadic: true,
+            },
+        ] {
+            assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
+        }
     }
 }
