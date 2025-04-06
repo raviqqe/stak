@@ -49,14 +49,10 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             Primitive::READ_FILE => {
                 let [descriptor] = memory.pop_numbers();
 
-                memory.push(
-                    Number::new(
-                        self.file_system
-                            .read(descriptor.to_i64() as _)
-                            .map_err(|_| FileError::Read)? as _,
-                    )
-                    .into(),
-                )?;
+                memory.push(self.file_system.read(descriptor.to_i64() as _).map_or_else(
+                    |_| memory.boolean(false).into(),
+                    |byte| Number::new(byte as _).into(),
+                ))?;
             }
             Primitive::WRITE_FILE => {
                 let [descriptor, byte] = memory.pop_numbers();
