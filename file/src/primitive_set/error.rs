@@ -3,6 +3,7 @@ use core::{
     error,
     fmt::{self, Debug, Display, Formatter},
 };
+use stak_vm::Exception;
 
 /// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -11,6 +12,15 @@ pub enum PrimitiveError {
     File(FileError),
     /// A virtual machine error.
     Vm(stak_vm::Error),
+}
+
+impl Exception for PrimitiveError {
+    fn is_critical(&self) -> bool {
+        match self {
+            Self::File(_) => false,
+            Self::Vm(error) => error.is_critical(),
+        }
+    }
 }
 
 impl error::Error for PrimitiveError {}

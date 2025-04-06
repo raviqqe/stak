@@ -21,6 +21,7 @@ impl Exception for Error {
     fn is_critical(&self) -> bool {
         match self {
             Self::Device(error) => error.is_critical(),
+            Self::File(error) => error.is_critical(),
             Self::Halt => true,
             Self::Vm(error) => error.is_critical(),
         }
