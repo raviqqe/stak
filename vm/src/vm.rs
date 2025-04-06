@@ -541,22 +541,18 @@ mod tests {
             },
             Arity {
                 count: 2,
-
                 variadic: false,
             },
             Arity {
                 count: 0,
-
                 variadic: true,
             },
             Arity {
                 count: 1,
-
                 variadic: true,
             },
             Arity {
                 count: 2,
-
                 variadic: true,
             },
         ] {
