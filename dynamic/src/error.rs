@@ -3,6 +3,7 @@ use core::{
     error::Error,
     fmt::{self, Display, Formatter},
 };
+use stak_vm::Exception;
 
 /// An error.
 #[derive(Debug)]
@@ -26,6 +27,15 @@ impl From<AnyFnError> for DynamicError {
 impl From<stak_vm::Error> for DynamicError {
     fn from(error: stak_vm::Error) -> Self {
         Self::Vm(error)
+    }
+}
+
+impl Exception for DynamicError {
+    fn is_critical(&self) -> bool {
+        match self {
+            Self::AnyFn(_) | Self::ForeignValueExpected | Self::ValueIndex => true,
+            Self::Vm(error) => error.is_critical(),
+        }
     }
 }
 
