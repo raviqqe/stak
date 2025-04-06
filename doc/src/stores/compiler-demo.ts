@@ -1,9 +1,24 @@
 import { atom, computed } from "nanostores";
 import { compile as compileProgram } from "../application/compile.js";
 import { interpret as interpretProgram } from "../application/interpret.js";
-import { exampleSource } from "./interpreter-demo.js";
 
-export const source = atom(exampleSource);
+export const source = atom(
+  `
+(import
+  (scheme base)
+  (scheme read)
+  (scheme write))
+
+(display
+  (apply string-append
+    (apply
+      append
+      (map
+        list
+        (map symbol->string (read))
+        '(" " "!")))))
+  `.trim(),
+);
 
 const bytecodes = atom<Uint8Array | null>(new Uint8Array());
 
