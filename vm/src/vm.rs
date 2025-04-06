@@ -116,6 +116,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             )?;
             self.memory.set_code(code);
 
+            // TODO
             let error = self.memory.build_string("rust error")?;
             let code = self.memory.allocate(
                 error.into(),
