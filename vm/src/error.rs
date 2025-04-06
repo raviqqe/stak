@@ -31,12 +31,13 @@ impl Exception for Error {
     fn is_critical(&self) -> bool {
         match self {
             Self::ArgumentCount
-            | Self::BytecodeEnd
             | Self::IllegalPrimitive
             | Self::NumberExpected
             | Self::ConsExpected
             | Self::ProcedureExpected => false,
-            Self::Format(_) | Self::IllegalInstruction | Self::OutOfMemory => true,
+            Self::BytecodeEnd | Self::Format(_) | Self::IllegalInstruction | Self::OutOfMemory => {
+                true
+            }
         }
     }
 }

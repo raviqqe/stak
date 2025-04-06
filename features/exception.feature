@@ -308,7 +308,7 @@ Feature: Exception
   Scenario Outline: Catch a runtime error
     Given a file named "main.scm" with:
       """scheme
-      (import (scheme base) (scheme process-context))
+      (import (scheme base) (scheme process-context) (stak base))
 
       (define (foo x)
         x)
@@ -324,5 +324,7 @@ Feature: Exception
     And the exit status should not be 0
 
     Examples:
-      | expression       | message                |
-      | ((lambda (x) x)) | invalid argument count |
+      | expression         | message                |
+      | ((lambda (x) x))   | invalid argument count |
+      | ((primitive 4242)) | illegal primitive      |
+      | (#f)               | procedure expected     |
