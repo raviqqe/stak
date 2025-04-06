@@ -1,7 +1,9 @@
+mod error;
 mod primitive;
 
 pub use self::primitive::Primitive;
-use crate::FileSystem;
+use crate::{FileError, FileSystem};
+pub use error::PrimitiveError;
 use stak_vm::{Error, Memory, Number, PrimitiveSet};
 
 /// A primitive set for a file system.
@@ -26,7 +28,7 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
 }
 
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
-    type Error = Error;
+    type Error = PrimitiveError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
@@ -59,15 +61,16 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 self.file_system
                     .write(descriptor.to_i64() as _, byte.to_i64() as _)
             })?,
-            Primitive::DELETE_FILE => memory.operate_option(|memory| {
+            Primitive::DELETE_FILE => {
                 let [list] = memory.pop_many();
-                let path = T::decode_path(memory, list).ok()?;
-
+                let path = T::decode_path(memory, list)
+                    .map_err(|_| PrimitiveError::File(FileError::PathDecode))?;
                 self.file_system
                     .delete(path.as_ref())
-                    .ok()
-                    .map(|_| memory.boolean(true).into())
-            })?,
+                    .map_err(|_| PrimitiveError::File(FileError::Delete))?;
+
+                memory.push(memory.boolean(false).into())?;
+            }
             Primitive::EXISTS_FILE => memory.operate_option(|memory| {
                 let [list] = memory.pop_many();
                 let path = T::decode_path(memory, list).ok()?;
@@ -77,7 +80,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                     .ok()
                     .map(|value| memory.boolean(value).into())
             })?,
-            _ => return Err(Error::IllegalPrimitive),
+            _ => return Err(Error::IllegalPrimitive.into()),
         }
 
         Ok(())

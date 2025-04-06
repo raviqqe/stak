@@ -12,4 +12,4 @@ mod file_system;
 mod primitive_set;
 
 pub use file_system::*;
-pub use primitive_set::{FilePrimitiveSet, Primitive};
+pub use primitive_set::{FilePrimitiveSet, Primitive, PrimitiveError};
