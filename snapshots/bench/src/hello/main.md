@@ -2182,7 +2182,23 @@
   - call 1 #f ||
 - call 1 #f ||
 - call 1 #f ||
+- constant procedure 1 #f
+  - constant ()
+  - constant procedure 1 #f
+    - constant #f
+    - constant #f
+    - get 2
+    - call 1 #f ||
+    - constant ()
+    - call 3 #f ||
+    - call 2 #f ||
+    - call 1 #f 4
+  - call 1 #f ||
+  - call 2 #f ||
+  - set 0
+  - get 0
 - call 1 #f ||
+- call 2 #f ||
 - set ||
 - constant procedure 2 #f
   - constant procedure 2 #f
