@@ -1,7 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
-    Error, StackSlot,
+    Error, Exception, StackSlot,
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
@@ -13,7 +13,7 @@ use crate::{
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter};
+use core::fmt::{self, Display, Formatter, Write};
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -86,6 +86,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
         while let Err(error) = self.run_with_continuation() {
+            if error.is_critical() {
+                return Err(error);
+            }
+
             let continuation = self.memory.cdr(self.memory.null());
 
             if continuation
@@ -117,10 +121,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
             )?;
             self.memory.set_code(code);
 
-            // TODO
-            let error = self.memory.build_string("rust error")?;
+            self.memory.set_register(self.memory.null());
+            write!(&mut self.memory, "{error}").map_err(|error| Error::from(error))?;
             let code = self.memory.allocate(
-                error.into(),
+                self.memory.register().into(),
                 self.memory
                     .code()
                     .set_tag(Instruction::Constant as _)

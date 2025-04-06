@@ -5,7 +5,7 @@ use crate::{
     r#type::Type,
     value::Value,
 };
-use core::fmt::{self, Display, Formatter};
+use core::fmt::{self, Display, Formatter, Write};
 
 const CONS_FIELD_COUNT: usize = 2;
 
@@ -490,6 +490,19 @@ impl Display for Memory<'_> {
             }
 
             writeln!(formatter)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl Write for Memory<'_> {
+    fn write_str(&mut self, string: &str) -> fmt::Result {
+        for character in string.chars().rev() {
+            let string = self
+                .cons(Number::from_i64(character as _).into(), self.register())
+                .map_err(|_| fmt::Error)?;
+            self.set_register(string);
         }
 
         Ok(())
