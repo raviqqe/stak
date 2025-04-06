@@ -4,14 +4,15 @@
   align-items: center;
   gap: 0.5rem;
   font-size: inherit;
-  background-color: teal;
-  color: white;
+  background-color: var(--sl-color-text-accent);
+  color: var(--sl-color-text-invert);
   border-radius: 0.5rem;
   border: none;
   padding: 0.7rem 1rem;
   transition: transform 0.1s;
 
   &[disabled] {
+    color: white;
     background-color: dimgrey;
   }
 
