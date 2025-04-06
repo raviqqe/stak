@@ -108,7 +108,7 @@ impl FileSystem for LibcFileSystem {
     fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
         match fs::access(path, Access::EXISTS) {
             Ok(()) => Ok(true),
-            Err(number) if number == Errno::ACCESS => Ok(false),
+            Err(number) if number == Errno::NOENT => Ok(false),
             Err(_) => Err(FileError::Exists),
         }
     }
