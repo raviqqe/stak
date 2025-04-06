@@ -2,7 +2,6 @@ use core::{
     error,
     fmt::{self, Display, Formatter},
 };
-
 use stak_vm::Exception;
 
 /// An error of primitives.
