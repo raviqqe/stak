@@ -1774,7 +1774,14 @@
                         (error-object-irritants exception)))
                     (write-value exception))
                   (newline)
-                  ($halt))))))))
+                  ($halt))))))
+        (lambda (handler)
+          ; Set an exception handler for runtime errors.
+          (set-cdr!
+            '()
+            (lambda (message)
+              (handler (cons #f (make-error-object 'runtime (code-points->string message) '())))))
+          handler)))
 
     (define (with-exception-handler handler thunk)
       (let ((new (convert-exception-handler handler))

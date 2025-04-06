@@ -151,7 +151,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
             for (name, _) in self.functions.iter().rev() {
                 let list = memory.cons(memory.null().into(), memory.register())?;
                 memory.set_register(list);
-                let string = memory.build_string(name)?;
+                let string = memory.build_raw_string(name)?;
                 memory.set_car(memory.register(), string.into());
             }
 

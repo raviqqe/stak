@@ -2,6 +2,7 @@ use core::{
     error,
     fmt::{self, Display, Formatter},
 };
+use stak_vm::Exception;
 
 /// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -12,6 +13,16 @@ pub enum Error {
     Halt,
     /// A virtual machine error.
     Vm(stak_vm::Error),
+}
+
+impl Exception for Error {
+    fn is_critical(&self) -> bool {
+        match self {
+            Self::Device(error) => error.is_critical(),
+            Self::Halt => true,
+            Self::Vm(error) => error.is_critical(),
+        }
+    }
 }
 
 impl error::Error for Error {}

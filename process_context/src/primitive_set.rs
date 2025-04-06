@@ -25,7 +25,7 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
                 memory.set_register(memory.null());
 
                 for argument in self.process_context.command_line_rev() {
-                    let string = memory.build_string(argument)?;
+                    let string = memory.build_raw_string(argument)?;
                     let list = memory.cons(string.into(), memory.register())?;
                     memory.set_register(list);
                 }
@@ -40,10 +40,10 @@ impl<T: ProcessContext> PrimitiveSet for ProcessContextPrimitiveSet<T> {
                     let list = memory.cons(pair.into(), memory.register())?;
                     memory.set_register(list);
 
-                    let string = memory.build_string(key)?;
+                    let string = memory.build_raw_string(key)?;
                     memory.set_car_value(memory.car(memory.register()), string.into());
 
-                    let string = memory.build_string(value)?;
+                    let string = memory.build_raw_string(value)?;
                     memory.set_cdr_value(memory.car(memory.register()), string.into());
                 }
 

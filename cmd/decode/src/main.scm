@@ -121,7 +121,7 @@
       0)))
 
 (define (marshal-value! context value)
-  (when (rib? value)
+  (when (and (rib? value) (not (memq value '(#f #t ()))))
     (let ((a (marshal-value context (car value)))
           (d (marshal-value context (cdr value))))
       (if (eq? a 0)
