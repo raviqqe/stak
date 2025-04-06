@@ -23,12 +23,11 @@ impl<T: Clock> PrimitiveSet for TimePrimitiveSet<T> {
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::CURRENT_JIFFY => {
-                memory.push(
+                memory.push(Number::from_i64(
                     self.clock
                         .current_jiffy()
-                        .map(From::from)
-                        .unwrap_or(memory.boolean(false).into()),
-                )?;
+                        .map_err(|_| PrimitiveError::CurrentJiffy)? as _,
+                ))?;
             }
             _ => return Err(Error::IllegalPrimitive),
         }
