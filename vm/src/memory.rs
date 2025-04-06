@@ -392,7 +392,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Calculates a length of a list.
-    pub fn list_length(&mut self, mut list: Cons) -> usize {
+    pub fn list_length(&self, mut list: Cons) -> usize {
         let mut length = 0;
 
         while list != self.null() {
