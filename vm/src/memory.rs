@@ -497,6 +497,7 @@ impl Display for Memory<'_> {
 }
 
 impl Write for Memory<'_> {
+    // TODO Consider sharing this logic with `Memmory::build_raw_string()`.
     fn write_str(&mut self, string: &str) -> fmt::Result {
         for character in string.chars().rev() {
             let string = self
