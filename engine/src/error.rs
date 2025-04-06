@@ -4,6 +4,7 @@ use core::{
 };
 use stak_dynamic::DynamicError;
 use stak_r7rs::SmallError;
+use stak_vm::Exception;
 
 /// An engine error
 #[derive(Debug)]
@@ -31,6 +32,16 @@ impl From<SmallError> for EngineError {
 impl From<stak_vm::Error> for EngineError {
     fn from(error: stak_vm::Error) -> Self {
         Self::Vm(error)
+    }
+}
+
+impl Exception for EngineError {
+    fn is_critical(&self) -> bool {
+        match self {
+            Self::Dynamic(error) => error.is_critical(),
+            Self::Small(error) => error.is_critical(),
+            Self::Vm(error) => error.is_critical(),
+        }
     }
 }
 
