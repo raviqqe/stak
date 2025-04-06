@@ -32,9 +32,11 @@ impl<T: Device> DevicePrimitiveSet<T> {
         write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
         error: PrimitiveError,
     ) -> Result<(), PrimitiveError> {
-        let byte = memory.top().assume_number().to_i64() as u8;
+        let byte = memory.pop().assume_number().to_i64() as u8;
+        write(&mut self.device, byte).map_err(|_| error)?;
+        memory.push(memory.boolean(false).into())?;
 
-        write(&mut self.device, byte).map_err(|_| error)
+        Ok(())
     }
 }
 
@@ -43,11 +45,15 @@ impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            Primitive::READ => memory.operate_option::<T::Error>(|memory| {
+            Primitive::READ => {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;
 
-                Ok(byte.map(|byte| Number::from_i64(byte as _).into()))
-            })?,
+                memory.push(if let Some(byte) = byte {
+                    Number::from_i64(byte as _).into()
+                } else {
+                    memory.boolean(false).into()
+                })?;
+            }
             Primitive::WRITE => self.write(memory, Device::write, PrimitiveError::WriteOutput)?,
             Primitive::WRITE_ERROR => {
                 self.write(memory, Device::write_error, PrimitiveError::WriteError)?
