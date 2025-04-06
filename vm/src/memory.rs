@@ -362,21 +362,25 @@ impl<'a> Memory<'a> {
         list
     }
 
-    /// Builds a raw string.
-    pub fn build_raw_string(&mut self, string: &str) -> Result<Cons, Error> {
-        let mut list = self.null();
-
-        for character in string.chars().rev() {
-            list = self.cons(Number::from_i64(character as _).into(), list)?;
-        }
-
-        Ok(list)
-    }
-
     /// Builds a string.
     pub fn build_string(&mut self, raw_string: Cons) -> Result<Cons, Error> {
         let length = Number::from_i64(self.list_length(raw_string) as _).into();
         self.allocate(length, raw_string.set_tag(Type::String as _).into())
+    }
+
+    /// Builds a raw string.
+    pub fn build_raw_string(&mut self, string: &str) -> Result<Cons, Error> {
+        let mut list = self.null();
+        self.build_intermediate_string(string, &mut list)?;
+        Ok(list)
+    }
+
+    fn build_intermediate_string(&mut self, string: &str, list: &mut Cons) -> Result<(), Error> {
+        for character in string.chars().rev() {
+            *list = self.cons(Number::from_i64(character as _).into(), *list)?;
+        }
+
+        Ok(())
     }
 
     /// Executes an operation against a value at the top of a stack.
@@ -517,12 +521,10 @@ impl Display for Memory<'_> {
 impl Write for Memory<'_> {
     // TODO Consider sharing this logic with `Memmory::build_raw_string()`.
     fn write_str(&mut self, string: &str) -> fmt::Result {
-        for character in string.chars().rev() {
-            let string = self
-                .cons(Number::from_i64(character as _).into(), self.register())
-                .map_err(|_| fmt::Error)?;
-            self.set_register(string);
-        }
+        let mut list = self.null();
+        self.build_intermediate_string(string, &mut list)
+            .map_err(|_| fmt::Error)?;
+        self.set_register(list);
 
         Ok(())
     }
