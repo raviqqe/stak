@@ -94,14 +94,14 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
             if continuation
                 .to_cons()
-                .map(|cons| self.memory.cdr(cons).tag() != Type::Procedure as _)
-                .unwrap_or(true)
+                .map(|cons| self.memory.cdr(cons).tag())
+                != Some(Type::Procedure as _)
             {
                 return Err(error);
             }
 
             self.memory.set_register(continuation.assume_cons());
-            let empty_string = self.memory.build_string("")?;
+            let empty_string = self.memory.build_raw_string("")?;
             let symbol = self.memory.allocate(
                 self.memory.register().into(),
                 empty_string.set_tag(Type::Symbol as _).into(),

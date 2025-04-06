@@ -363,7 +363,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Builds a string.
-    pub fn build_string(&mut self, string: &str) -> Result<Cons, Error> {
+    pub fn build_raw_string(&mut self, string: &str) -> Result<Cons, Error> {
         let mut list = self.null();
 
         for character in string.chars().rev() {
