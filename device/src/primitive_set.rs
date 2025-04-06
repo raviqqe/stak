@@ -3,7 +3,7 @@ mod primitive;
 
 pub use self::{error::PrimitiveError, primitive::Primitive};
 use crate::Device;
-use stak_vm::{Memory, Number, PrimitiveSet, Value};
+use stak_vm::{Memory, Number, PrimitiveSet};
 
 /// A primitive set for a device.
 pub struct DevicePrimitiveSet<T: Device> {
@@ -43,14 +43,11 @@ impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            Primitive::READ => {
+            Primitive::READ => memory.operate_option::<T::Error>(|memory| {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;
 
-                memory.push(byte.map_or_else(
-                    || Value::from(memory.boolean(false)),
-                    |byte| Number::from_i64(byte as _).into(),
-                ))?;
-            }
+                Ok(byte.map(|byte| Number::from_i64(byte as _).into()))
+            })?,
             Primitive::WRITE => self.write(memory, Device::write, PrimitiveError::WriteOutput)?,
             Primitive::WRITE_ERROR => {
                 self.write(memory, Device::write_error, PrimitiveError::WriteError)?

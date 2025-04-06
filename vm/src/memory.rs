@@ -1,5 +1,5 @@
 use crate::{
-    Error,
+    Error, Exception,
     cons::{Cons, NEVER, Tag},
     number::Number,
     r#type::Type,
@@ -422,11 +422,11 @@ impl<'a> Memory<'a> {
     }
 
     /// Executes an operation that returns `Option<Value>`.
-    pub fn operate_option(
+    pub fn operate_option<E: Exception>(
         &mut self,
-        mut operate: impl FnMut(&mut Self) -> Option<Value>,
-    ) -> Result<(), Error> {
-        let value = operate(self).unwrap_or_else(|| self.boolean(false).into());
+        mut operate: impl FnMut(&mut Self) -> Result<Option<Value>, E>,
+    ) -> Result<(), E> {
+        let value = operate(self)?.unwrap_or_else(|| self.boolean(false).into());
         self.push(value)?;
         Ok(())
     }
