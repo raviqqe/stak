@@ -66,6 +66,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
             Primitive::DELETE_FILE => {
                 let [list] = memory.pop_many();
                 let path = T::decode_path(memory, list).map_err(|_| FileError::PathDecode)?;
+
                 self.file_system
                     .delete(path.as_ref())
                     .map_err(|_| FileError::Delete)?;
