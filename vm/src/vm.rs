@@ -90,21 +90,20 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 return Err(error);
             }
 
-            let continuation = self.memory.cdr(self.memory.null());
+            let Some(continuation) = self.memory.cdr(self.memory.null()).to_cons() else {
+                return Err(error);
+            };
 
-            if continuation
-                .to_cons()
-                .map(|cons| self.memory.cdr(cons).tag())
-                != Some(Type::Procedure as _)
-            {
+            if self.memory.cdr(continuation).tag() != Type::Procedure as _ {
                 return Err(error);
             }
 
-            self.memory.set_register(continuation.assume_cons());
-            let empty_string = self.memory.build_raw_string("")?;
+            self.memory.set_register(continuation);
+            let string = self.memory.build_raw_string("")?;
+            let string = self.memory.build_string(string)?;
             let symbol = self.memory.allocate(
                 self.memory.register().into(),
-                empty_string.set_tag(Type::Symbol as _).into(),
+                string.set_tag(Type::Symbol as _).into(),
             )?;
             let code = self.memory.allocate(
                 symbol.into(),

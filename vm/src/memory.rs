@@ -362,7 +362,7 @@ impl<'a> Memory<'a> {
         list
     }
 
-    /// Builds a string.
+    /// Builds a raw string.
     pub fn build_raw_string(&mut self, string: &str) -> Result<Cons, Error> {
         let mut list = self.null();
 
@@ -373,11 +373,29 @@ impl<'a> Memory<'a> {
         Ok(list)
     }
 
+    /// Builds a string.
+    pub fn build_string(&mut self, raw_string: Cons) -> Result<Cons, Error> {
+        let length = Number::from_i64(self.list_length(raw_string) as _).into();
+        self.allocate(length, raw_string.set_tag(Type::String as _).into())
+    }
+
     /// Executes an operation against a value at the top of a stack.
     pub fn operate_top(&mut self, operate: impl Fn(&Self, Value) -> Value) -> Result<(), Error> {
         let value = self.pop();
         self.push(operate(self, value))?;
         Ok(())
+    }
+
+    /// Calculates a length of a list.
+    pub fn list_length(&mut self, mut list: Cons) -> usize {
+        let mut length = 0;
+
+        while list != self.null() {
+            length += 1;
+            list = self.cdr(list).assume_cons();
+        }
+
+        length
     }
 
     /// Executes an unary number operation.
