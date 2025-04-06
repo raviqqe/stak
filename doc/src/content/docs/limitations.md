@@ -14,7 +14,3 @@ The other "full" implementations of [the R7RS-small standard](https://small.r7rs
 ## String and character representation
 
 Stak Scheme supports only ASCII characters but not multi-byte characters in Unicode in strings and characters.
-
-## Exception handling
-
-Stak Scheme does not raise certain runtime errors as exceptions. For example, you cannot catch argument count mismatches on procedure calls and out-of-memory errors.
