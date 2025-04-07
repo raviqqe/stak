@@ -10610,6 +10610,20 @@
 - set ||
 - get ||
 - set ||
+- constant procedure 1 #f
+  - get 0
+  - call 1 #f ||
+  - if
+    - constant "ERROR: "
+    - call 1 #f ||
+    - set 0
+    - get 0
+    - call 1 #f ||
+    - call 1 #f ||
+  - get 0
+  - call 1 #f ||
+- call 1 #f $$close
+- set write-value
 - constant procedure 0 #f
   - constant "> "
   - call 0 #f ||
@@ -10639,10 +10653,46 @@
         - set 1
         - if
           - constant #f
-        - call 0 #f ||
-        - call 0 #f ||
-        - call 2 #f ||
+        - constant procedure 1 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - constant procedure 0 #f
+                - constant procedure 1 #f
+                  - constant #t
+                  - if
+                    - get 0
+                  - constant procedure 0 #f
+                    - get 1
+                    - call 1 #f ||
+                  - call 1 #f $$close
+                  - call 1 #f 4
+                - call 1 #f $$close
+                - get 4
+                - call 1 #f 1
+              - call 1 #f $$close
+              - call 1 #f 5
+            - call 1 #f $$close
+            - call 1 #f ||
+            - call 0 #f 0
+          - call 1 #f $$close
+          - constant procedure 0 #f
+            - constant procedure 1 #f
+              - constant procedure 0 #f
+                - get 1
+              - call 1 #f $$close
+              - call 1 #f 5
+            - call 1 #f $$close
+            - call 0 #f ||
+            - call 0 #f ||
+            - call 2 #f ||
+            - call 1 #f 1
+          - call 1 #f $$close
+          - call 2 #f ||
+        - call 1 #f $$close
         - call 1 #f ||
+        - call 0 #f 0
+        - set 1
+        - call 1 #f write-value
         - set 0
         - call 0 #f ||
         - set 0

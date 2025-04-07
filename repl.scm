@@ -12,6 +12,13 @@
   (only (scheme time))
   (scheme write))
 
+(define (write-value value)
+  (if (error-object? value)
+    (begin
+      (display "ERROR: ")
+      (display (error-object-message value)))
+    (write value)))
+
 (define (main)
   (display "> " (current-error-port))
 
@@ -26,7 +33,9 @@
           #f)
 
         (else
-          (write (eval (read) (interaction-environment)))
+          (write-value
+            (guard (error (#t error))
+              (eval (read) (interaction-environment))))
           (newline)
           (main))))))
 
