@@ -27,7 +27,11 @@
 
         (else
           (write
-            (guard (value (#t value))
+            (guard
+              (error
+                ((error-object? error)
+                  (string-append "ERROR " (error-object-message error)))
+                (#t value))
               (eval (read) (interaction-environment))))
           (newline)
           (main))))))
