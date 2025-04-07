@@ -27,9 +27,10 @@
 
         (else
           (write
-            (guard (value
-                    ((not value)
-                      (loop (cdr rules))))
+            (guard
+              (value
+                ((not value)
+                  (loop (cdr rules))))
               (eval (read) (interaction-environment))))
           (newline)
           (main))))))
