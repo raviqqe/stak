@@ -29,7 +29,7 @@
           (write
             (guard
               (value
-                ((not value)
+                (#t
                   (loop (cdr rules))))
               (eval (read) (interaction-environment))))
           (newline)
