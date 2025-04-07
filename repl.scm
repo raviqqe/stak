@@ -15,7 +15,7 @@
 (define (write-value value)
   (if (error-object? value)
     (begin
-      (display "ERROR ")
+      (display "ERROR: ")
       (display (error-object-message value)))
     (write value)))
 
