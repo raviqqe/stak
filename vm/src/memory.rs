@@ -600,6 +600,15 @@ mod tests {
         assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
     }
 
+    #[test]
+    fn format() {
+        let mut heap = create_heap();
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        write!(&mut memory, "hello, ").unwrap();
+        write!(&mut memory, "world!").unwrap();
+    }
+
     mod stack {
         use super::*;
 
