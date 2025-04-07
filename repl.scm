@@ -26,7 +26,11 @@
           #f)
 
         (else
-          (write (eval (read) (interaction-environment)))
+          (write
+            (guard (value
+                    ((not value)
+                      (loop (cdr rules))))
+              (eval (read) (interaction-environment))))
           (newline)
           (main))))))
 
