@@ -19,7 +19,10 @@ pub enum PrimitiveError {
 
 impl Exception for PrimitiveError {
     fn is_critical(&self) -> bool {
-        false
+        match self {
+            Self::ReadInput | Self::WriteError | Self::WriteOutput => false,
+            Self::Vm(error) => error.is_critical(),
+        }
     }
 }
 
