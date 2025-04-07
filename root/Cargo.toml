@@ -32,17 +32,17 @@ std = [
 ]
 
 [dependencies]
-stak-device = { version = "0.10.13", path = "../device" }
-stak-dynamic = { version = "0.10.13", path = "../dynamic", optional = true }
-stak-engine = { version = "0.10.13", path = "../engine", optional = true }
-stak-file = { version = "0.10.13", path = "../file" }
-stak-macro = { version = "0.10.13", path = "../macro" }
-stak-module = { version = "0.10.13", path = "../module" }
-stak-process-context = { version = "0.10.13", path = "../process_context" }
-stak-r7rs = { version = "0.10.13", path = "../r7rs" }
-stak-sac = { version = "0.10.13", path = "../sac" }
-stak-time = { version = "0.10.13", path = "../time" }
-stak-vm = { version = "0.10.13", path = "../vm" }
+stak-device = { version = "0.10.14", path = "../device" }
+stak-dynamic = { version = "0.10.14", path = "../dynamic", optional = true }
+stak-engine = { version = "0.10.14", path = "../engine", optional = true }
+stak-file = { version = "0.10.14", path = "../file" }
+stak-macro = { version = "0.10.14", path = "../macro" }
+stak-module = { version = "0.10.14", path = "../module" }
+stak-process-context = { version = "0.10.14", path = "../process_context" }
+stak-r7rs = { version = "0.10.14", path = "../r7rs" }
+stak-sac = { version = "0.10.14", path = "../sac" }
+stak-time = { version = "0.10.14", path = "../time" }
+stak-vm = { version = "0.10.14", path = "../vm" }
 
 [dev-dependencies]
 any-fn = "0.6.1"
@@ -50,7 +50,7 @@ rand = "0.9.0"
 stak-build = { path = "../build" }
 
 [build-dependencies]
-stak-build = { version = "0.10.13", path = "../build" }
+stak-build = { version = "0.10.14", path = "../build" }
 
 [lints]
 workspace = true
