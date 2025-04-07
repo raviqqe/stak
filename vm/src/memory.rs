@@ -475,6 +475,28 @@ impl<'a> Memory<'a> {
     }
 }
 
+impl Write for Memory<'_> {
+    fn write_str(&mut self, string: &str) -> fmt::Result {
+        let mut list = self.null();
+        self.build_intermediate_string(string, &mut list)
+            .map_err(|_| fmt::Error)?;
+
+        if self.register() == self.null() {
+            self.set_register(list);
+        } else {
+            let mut head = self.register();
+
+            while self.cdr(head) != self.null().into() {
+                head = self.cdr(head).assume_cons();
+            }
+
+            self.set_cdr(head, list.into());
+        }
+
+        Ok(())
+    }
+}
+
 impl Display for Memory<'_> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         writeln!(formatter, "code: {}", self.code)?;
@@ -504,17 +526,6 @@ impl Display for Memory<'_> {
 
             writeln!(formatter)?;
         }
-
-        Ok(())
-    }
-}
-
-impl Write for Memory<'_> {
-    fn write_str(&mut self, string: &str) -> fmt::Result {
-        let mut list = self.null();
-        self.build_intermediate_string(string, &mut list)
-            .map_err(|_| fmt::Error)?;
-        self.set_register(list);
 
         Ok(())
     }
@@ -601,12 +612,44 @@ mod tests {
     }
 
     #[test]
-    fn format() {
+    fn format_string() {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
-        write!(&mut memory, "hello, ").unwrap();
-        write!(&mut memory, "world!").unwrap();
+        memory.set_register(memory.null());
+
+        write!(&mut memory, "foo").unwrap();
+
+        for character in "foo".chars() {
+            assert_eq!(
+                memory.car(memory.register()).assume_number().to_i64(),
+                character as _
+            );
+            memory.set_register(memory.cdr(memory.register()).assume_cons());
+        }
+
+        assert_eq!(memory.register(), memory.null());
+    }
+
+    #[test]
+    fn format_two_strings() {
+        let mut heap = create_heap();
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        memory.set_register(memory.null());
+
+        write!(&mut memory, "foo").unwrap();
+        write!(&mut memory, "bar").unwrap();
+
+        for character in "foobar".chars() {
+            assert_eq!(
+                memory.car(memory.register()).assume_number().to_i64(),
+                character as _
+            );
+            memory.set_register(memory.cdr(memory.register()).assume_cons());
+        }
+
+        assert_eq!(memory.register(), memory.null());
     }
 
     mod stack {
