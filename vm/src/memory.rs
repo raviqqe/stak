@@ -611,16 +611,25 @@ mod tests {
         assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
     }
 
-    fn assert_formatted_string(memory: &mut Memory, string: &str) {
+    fn assert_raw_string(memory: &Memory, mut cons: Cons, string: &str) {
         for character in string.chars() {
-            assert_eq!(
-                memory.car(memory.register()).assume_number().to_i64(),
-                character as _
-            );
-            memory.set_register(memory.cdr(memory.register()).assume_cons());
+            assert_eq!(memory.car(cons).assume_number().to_i64(), character as _);
+            cons = memory.cdr(cons).assume_cons();
         }
 
-        assert_eq!(memory.register(), memory.null());
+        assert_eq!(cons, memory.null());
+    }
+
+    #[test]
+    fn build_string() {
+        let mut heap = create_heap();
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        let string = memory.build_string("foo").unwrap();
+
+        assert_eq!(memory.car(string), Number::from_i64(3).into());
+        assert_eq!(memory.cdr(string).tag(), Type::String as _);
+        assert_raw_string(&memory, memory.cdr(string).assume_cons(), "foo");
     }
 
     #[test]
@@ -632,7 +641,7 @@ mod tests {
 
         memory.write_str("foo").unwrap();
 
-        assert_formatted_string(&mut memory, "foo");
+        assert_raw_string(&memory, memory.register(), "foo");
     }
 
     #[test]
@@ -645,7 +654,7 @@ mod tests {
         memory.write_str("foo").unwrap();
         memory.write_str("bar").unwrap();
 
-        assert_formatted_string(&mut memory, "foobar");
+        assert_raw_string(&memory, memory.register(), "foobar");
     }
 
     #[test]
@@ -659,7 +668,7 @@ mod tests {
 
         write!(&mut memory, "foo{FOO}bar").unwrap();
 
-        assert_formatted_string(&mut memory, "foo42bar");
+        assert_raw_string(&memory, memory.register(), "foo42bar");
     }
 
     mod stack {
