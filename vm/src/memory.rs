@@ -611,16 +611,8 @@ mod tests {
         assert_eq!(Value::from(memory.null()).to_cons().unwrap(), memory.null());
     }
 
-    #[test]
-    fn format_string() {
-        let mut heap = create_heap();
-        let mut memory = Memory::new(&mut heap).unwrap();
-
-        memory.set_register(memory.null());
-
-        write!(&mut memory, "foo").unwrap();
-
-        for character in "foo".chars() {
+    fn assert_formatted_string(memory: &mut Memory, string: &str) {
+        for character in string.chars() {
             assert_eq!(
                 memory.car(memory.register()).assume_number().to_i64(),
                 character as _
@@ -632,24 +624,42 @@ mod tests {
     }
 
     #[test]
+    fn format_string() {
+        let mut heap = create_heap();
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        memory.set_register(memory.null());
+
+        memory.write_str("foo").unwrap();
+
+        assert_formatted_string(&mut memory, "foo");
+    }
+
+    #[test]
     fn format_two_strings() {
         let mut heap = create_heap();
         let mut memory = Memory::new(&mut heap).unwrap();
 
         memory.set_register(memory.null());
 
-        write!(&mut memory, "foo").unwrap();
-        write!(&mut memory, "bar").unwrap();
+        memory.write_str("foo").unwrap();
+        memory.write_str("bar").unwrap();
 
-        for character in "foobar".chars() {
-            assert_eq!(
-                memory.car(memory.register()).assume_number().to_i64(),
-                character as _
-            );
-            memory.set_register(memory.cdr(memory.register()).assume_cons());
-        }
+        assert_formatted_string(&mut memory, "foobar");
+    }
 
-        assert_eq!(memory.register(), memory.null());
+    #[test]
+    fn format_templated_string() {
+        const FOO: usize = 42;
+
+        let mut heap = create_heap();
+        let mut memory = Memory::new(&mut heap).unwrap();
+
+        memory.set_register(memory.null());
+
+        write!(&mut memory, "foo{FOO}bar").unwrap();
+
+        assert_formatted_string(&mut memory, "foo42bar");
     }
 
     mod stack {
