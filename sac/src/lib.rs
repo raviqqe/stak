@@ -112,7 +112,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
-            rustix::exit,
+            rustix::process::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
             stak_macro::include_r7rs,

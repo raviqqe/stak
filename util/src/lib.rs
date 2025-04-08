@@ -8,16 +8,16 @@ mod mmap;
 use core::ffi::CStr;
 pub use heap::Heap;
 pub use mmap::Mmap;
+use rustix::{
+    fs::{self, Mode, OFlags, SeekFrom},
+    io,
+};
 
 /// Reads a file size at a path.
-pub fn read_file_size(path: &CStr) -> usize {
-    unsafe {
-        let file = libc::fopen(path.as_ptr(), c"rb" as *const _ as _);
-        libc::fseek(file, 0, libc::SEEK_END);
-        let size = libc::ftell(file) as _;
-        libc::fclose(file);
-        size
-    }
+pub fn read_file_size(path: &CStr) -> io::Result<usize> {
+    let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
+    fs::seek(&descriptor, SeekFrom::End(0))?;
+    Ok(fs::tell(descriptor)? as _)
 }
 
 #[cfg(test)]
