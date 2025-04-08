@@ -15,6 +15,7 @@ use rustix::{
 
 /// Reads a file size at a path.
 pub fn read_file_size(path: &CStr) -> io::Result<usize> {
+    // spell-checker: disable-next-line
     let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
     fs::seek(&descriptor, SeekFrom::End(0))?;
     Ok(fs::tell(descriptor)? as _)
