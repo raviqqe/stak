@@ -1,7 +1,7 @@
-use crate::read_file_size;
 use core::{ffi::CStr, ptr::null_mut, slice};
 use rustix::{
     fs::{self, Mode, OFlags},
+    io,
     mm::{MapFlags, ProtFlags, mmap, munmap},
 };
 
@@ -13,24 +13,24 @@ pub struct Mmap {
 
 impl Mmap {
     /// Creates a mmap opening a file at a path.
-    pub fn new(path: &CStr) -> Self {
-        let len = read_file_size(path);
+    pub fn new(path: &CStr) -> io::Result<Self> {
+        let len = fs::stat(path)?.st_size as _;
+        // spell-checker: disable-next-line
+        let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
 
-        Self {
+        Ok(Self {
             ptr: unsafe {
                 mmap(
                     null_mut(),
                     len,
                     ProtFlags::READ,
                     MapFlags::PRIVATE,
-                    // spell-checker: disable-next-line
-                    fs::open(path, OFlags::RDONLY, Mode::RUSR).unwrap(),
+                    descriptor,
                     0,
-                )
-                .unwrap()
+                )?
             } as _,
             len,
-        }
+        })
     }
 
     /// Returns a slice of bytes.
@@ -53,6 +53,6 @@ mod tests {
 
     #[test]
     fn read_file() {
-        Mmap::new(c"src/lib.rs");
+        Mmap::new(c"src/lib.rs").unwrap();
     }
 }

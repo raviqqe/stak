@@ -50,7 +50,7 @@ unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
     )
     .unwrap();
 
-    let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) });
+    let mmap = Mmap::new(unsafe { CStr::from_ptr(file as _) }).unwrap();
 
     vm.initialize(mmap.as_slice().iter().copied()).unwrap();
     vm.run().unwrap();
