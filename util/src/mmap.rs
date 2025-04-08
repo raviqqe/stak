@@ -27,8 +27,7 @@ impl Mmap {
                     // spell-checker: disable-next-line
                     fs::open(path, OFlags::RDONLY, Mode::RUSR).unwrap(),
                     0,
-                )
-                .unwrap()
+                )?
             } as _,
             len,
         })
