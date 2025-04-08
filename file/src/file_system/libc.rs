@@ -11,6 +11,7 @@ use stak_vm::{Memory, Value};
 const PATH_SIZE: usize = 128;
 const DEFAULT_FILE_CAPACITY: usize = 32;
 
+// TODO Use `heapless::CString`.
 pub struct CString(Vec<u8, PATH_SIZE>);
 
 impl CString {
