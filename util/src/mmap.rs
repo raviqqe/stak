@@ -16,6 +16,8 @@ impl Mmap {
     /// Creates a mmap opening a file at a path.
     pub fn new(path: &CStr) -> io::Result<Self> {
         let len = read_file_size(path)?;
+        // spell-checker: disable-next-line
+        let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
 
         Ok(Self {
             ptr: unsafe {
@@ -24,8 +26,7 @@ impl Mmap {
                     len,
                     ProtFlags::READ,
                     MapFlags::PRIVATE,
-                    // spell-checker: disable-next-line
-                    fs::open(path, OFlags::RDONLY, Mode::RUSR)?,
+                    descriptor,
                     0,
                 )?
             } as _,
