@@ -25,7 +25,7 @@ impl Mmap {
                     ProtFlags::READ,
                     MapFlags::PRIVATE,
                     // spell-checker: disable-next-line
-                    fs::open(path, OFlags::RDONLY, Mode::RUSR).unwrap(),
+                    fs::open(path, OFlags::RDONLY, Mode::RUSR)?,
                     0,
                 )?
             } as _,
