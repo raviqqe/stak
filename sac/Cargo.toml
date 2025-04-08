@@ -11,7 +11,7 @@ repository.workspace = true
 [features]
 float = ["stak-vm/float"]
 libc = [
-  "dep:libc",
+  "dep:rustix",
   "dep:stak-util",
   "stak-device/libc",
   "stak-file/libc",
@@ -29,8 +29,10 @@ std = [
 
 [dependencies]
 clap = { version = "4.5.35", features = ["derive"], optional = true }
-libc = { version = "0.2.171", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
+rustix = { version = "1.0.5", default-features = false, features = [
+  "process",
+], optional = true }
 stak-configuration = { version = "0.10.14", path = "../configuration" }
 stak-device = { version = "0.10.14", path = "../device" }
 stak-file = { version = "0.10.14", path = "../file" }
