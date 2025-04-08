@@ -54,6 +54,6 @@ mod tests {
 
     #[test]
     fn read_file() {
-        Mmap::new(c"src/lib.rs");
+        Mmap::new(c"src/lib.rs").unwrap();
     }
 }

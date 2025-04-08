@@ -27,6 +27,6 @@ mod tests {
 
     #[test]
     fn file_size() {
-        assert!(read_file_size(c"src/lib.rs") > 0);
+        assert!(read_file_size(c"src/lib.rs").unwrap() > 0);
     }
 }
