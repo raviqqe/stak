@@ -1,4 +1,3 @@
-use crate::read_file_size;
 use core::{ffi::CStr, ptr::null_mut, slice};
 use rustix::{
     fs::{self, Mode, OFlags},
@@ -15,7 +14,7 @@ pub struct Mmap {
 impl Mmap {
     /// Creates a mmap opening a file at a path.
     pub fn new(path: &CStr) -> io::Result<Self> {
-        let len = read_file_size(path)?;
+        let len = fs::stat(path)?.st_size as _;
         // spell-checker: disable-next-line
         let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
 
