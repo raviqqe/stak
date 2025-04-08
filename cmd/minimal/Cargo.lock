@@ -219,7 +219,7 @@ dependencies = [
 name = "stak-sac"
 version = "0.10.14"
 dependencies = [
- "rustix",
+ "libc",
  "stak-configuration",
  "stak-device",
  "stak-file",
