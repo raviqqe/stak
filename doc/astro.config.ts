@@ -74,9 +74,13 @@ export default defineConfig({
       logo: {
         src: "./public/icon.svg",
       },
-      social: {
-        github: "https://github.com/raviqqe/stak",
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/raviqqe/stak",
+        },
+      ],
       sidebar: [
         {
           label: "Home",
