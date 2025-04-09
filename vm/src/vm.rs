@@ -439,8 +439,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     let cons = self.memory.cons(value, self.memory.code())?;
                     self.memory.set_code(cons);
                 } else {
-                    let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
-                    let index = integer >> 1;
+                    let index = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
 
                     if index > 0 {
                         let cons = self.memory.tail(self.memory.code(), index as usize - 1);
@@ -451,14 +450,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         self.memory.set_code(head);
                     }
 
-                    let value = self.memory.car(self.memory.code());
-
-                    if integer & 1 == 0 {
-                        self.memory
-                            .set_code(self.memory.cdr(self.memory.code()).assume_cons());
-                    }
-
-                    self.memory.push(value)?;
+                    self.memory.push(self.memory.car(self.memory.code()))?;
                 }
             } else if head & 0b100 == 0 {
                 let cdr = self.memory.pop();

@@ -1582,16 +1582,12 @@
          ((and entry (encode-context-position context value)) =>
           (lambda (index)
            (decrement-count! entry)
-           (let ((removed (zero? (cdr entry)))
-                 (value (encode-context-remove! context index)))
-            (unless removed
-             (encode-context-push! context value))
-            (let-values (((head tail)
-                          (encode-integer-parts
-                           (+ (* 2 index) (if removed 0 1))
-                           share-base)))
-             (write-u8 (+ 1 (* 4 (+ 1 head))))
-             (encode-integer-tail tail)))))
+           (unless (zero? (cdr entry))
+            (encode-context-push! context (encode-context-remove! context index)))
+           (let-values (((head tail)
+                         (encode-integer-parts index share-base)))
+            (write-u8 (+ 1 (* 4 (+ 1 head))))
+            (encode-integer-tail tail))))
 
          (else
           (let ((tag (rib-tag value)))
@@ -1642,10 +1638,6 @@
         (lambda (pair) (> (cdr pair) 1))
         (encode-context-counts context)))
       (encode-rib context codes)
-
-      (let ((size (length (encode-context-dictionary context))))
-       (unless (zero? size)
-        (error "dictionary not empty" size)))
 
       (do ((counts (encode-context-counts context) (cdr counts)))
        ((null? counts))
