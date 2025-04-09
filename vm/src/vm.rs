@@ -465,7 +465,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let cdr = self.memory.pop();
                 let car = self.memory.top();
                 let tag = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
-                self.memory.set_raw_car(cons, car);
+                self.memory.set_car(cons, car);
                 self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _));
                 self.memory.set_top(cons.into());
             } else {
