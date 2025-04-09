@@ -427,11 +427,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
                 let cons = self.memory.stack();
-                let cdr = self.memory.top();
+                let cdr = self.memory.pop();
                 self.memory
                     .set_car(cons, Number::from_i64((head >> 1) as _).into());
-                self.memory.set_raw_cdr(cons, cdr);
-                self.memory.set_top(cons.into());
+                self.memory.set_cdr(cons, cdr);
+                self.memory.push(cons.into())?;
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
 
