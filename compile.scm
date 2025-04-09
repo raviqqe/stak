@@ -1582,8 +1582,7 @@
          ((and entry (encode-context-position context value)) =>
           (lambda (index)
            (decrement-count! entry)
-           (unless (zero? (cdr entry))
-            (encode-context-push! context (encode-context-remove! context index)))
+           (encode-context-push! context (encode-context-remove! context index))
            (let-values (((head tail)
                          (encode-integer-parts index share-base)))
             (write-u8 (+ 1 (* 4 (+ 1 head))))
