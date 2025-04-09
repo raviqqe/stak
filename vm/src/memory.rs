@@ -166,10 +166,16 @@ impl<'a> Memory<'a> {
 
     /// Peeks a value at the top of a stack.
     #[inline]
-    pub fn top(&mut self) -> Value {
+    pub fn top(&self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
         self.car(self.stack)
+    }
+
+    /// Sets a value at the top of a stack.
+    #[inline]
+    pub fn set_top(&mut self, value: Value) {
+        self.set_car(self.stack, value);
     }
 
     /// Allocates a cons with a default tag of [`Type::Pair`].
