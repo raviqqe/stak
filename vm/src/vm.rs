@@ -430,7 +430,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let cons = self
                     .memory
                     .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
-                self.memory.set_top(cons.into())?;
+                self.memory.set_top(cons.into());
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
 
@@ -465,7 +465,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let car = self.memory.top();
                 let tag = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
                 let cons = self.memory.allocate(car, cdr.set_tag(tag as _))?;
-                self.memory.set_top(cons.into())?;
+                self.memory.set_top(cons.into());
             } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(input, head >> 3, NUMBER_BASE)?)
