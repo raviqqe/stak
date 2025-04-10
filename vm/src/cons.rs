@@ -14,7 +14,7 @@ const DUMMY_INDEX: u64 = u64::MAX;
 ///
 /// - In `car`, its cons is moved already on garbage collection.
 /// - In `cdr`, nothing.
-pub const NEVER: Cons = Cons::new(DUMMY_INDEX);
+pub(crate) const NEVER: Cons = Cons::new(DUMMY_INDEX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;

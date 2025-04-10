@@ -423,7 +423,8 @@ impl<'a> Memory<'a> {
 
     // Garbage collection
 
-    fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {
+    /// Collects garbage memory blocks.
+    pub fn collect_garbages(&mut self, cons: Option<&mut Cons>) -> Result<(), Error> {
         self.allocation_index = 0;
         self.space = !self.space;
 

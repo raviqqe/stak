@@ -252,16 +252,6 @@ mod tests {
         }
     }
 
-    fn invalidate_foreign_values(memory: &mut Memory) {
-        for index in 0..(memory.size() / 2) {
-            let cons = Cons::new((2 * index) as _);
-
-            if memory.cdr(cons).tag() == Type::Foreign as _ {
-                memory.set_cdr(cons, Number::from_i64(0).into());
-            }
-        }
-    }
-
     #[test]
     fn create() {
         let mut functions = [
@@ -320,7 +310,8 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
-            invalidate_foreign_values(&mut memory);
+            memory.pop();
+            memory.collect_garbages(None).unwrap();
 
             primitive_set.collect_garbages(&memory);
 
