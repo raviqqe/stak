@@ -50,10 +50,10 @@ impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
         let mut memory = Self {
-            code: Cons::new(0),
-            stack: Cons::new(0),
-            r#false: Cons::new(0),
-            register: Cons::new(0),
+            code: NEVER,
+            stack: NEVER,
+            r#false: NEVER,
+            register: NEVER,
             allocation_index: 0,
             space: false,
             heap,

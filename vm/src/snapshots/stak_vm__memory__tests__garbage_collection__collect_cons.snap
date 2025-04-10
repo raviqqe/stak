@@ -1,8 +1,9 @@
 ---
 source: vm/src/memory.rs
 expression: memory
+snapshot_kind: text
 ---
-code: c100
-stack: c100
-100: n0 n0 <- code <- register <- stack
-102: c100 c100
+code: !
+stack: !
+100: c102 c102
+102: n0 n0
