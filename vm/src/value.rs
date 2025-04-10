@@ -100,11 +100,6 @@ impl Value {
         }
     }
 
-    #[inline]
-    pub(crate) const fn raw_eq(self, value: Self) -> bool {
-        self.0 == value.0
-    }
-
     const fn from_cons(cons: Cons) -> Self {
         Self(cons.to_raw())
     }
