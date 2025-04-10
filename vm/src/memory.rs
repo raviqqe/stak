@@ -305,13 +305,15 @@ impl<'a> Memory<'a> {
         self.set(cons.index() + index, value);
     }
 
+    /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
-    fn set_raw_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_car(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 0, value)
     }
 
+    /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
-    fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 1, value)
     }
 
