@@ -310,6 +310,7 @@ mod tests {
 
             assert_eq!(primitive_set.find_free(), None);
 
+            // Pop a return value from the foreign primitive.
             memory.pop();
             memory.collect_garbages(None).unwrap();
 
