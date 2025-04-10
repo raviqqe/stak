@@ -5,7 +5,7 @@ use core::fmt::{self, Display, Formatter};
 /// A tag.
 pub type Tag = u16;
 
-const DUMMY_INDEX: u64 = 0;
+const DUMMY_INDEX: u64 = u64::MAX;
 
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
@@ -14,7 +14,7 @@ const DUMMY_INDEX: u64 = 0;
 ///
 /// - In `car`, its cons is moved already on garbage collection.
 /// - In `cdr`, nothing.
-pub const NEVER: Cons = Cons::new(DUMMY_INDEX).set_tag(Tag::MAX);
+pub(crate) const NEVER: Cons = Cons::new(DUMMY_INDEX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -71,8 +71,8 @@ impl Cons {
     }
 
     #[inline]
-    pub(crate) const fn raw_eq(self, cons: Self) -> bool {
-        self.0 == cons.0
+    pub(crate) const fn index_eq(&self, other: Self) -> bool {
+        self.index() == other.index()
     }
 
     #[inline]
@@ -89,7 +89,7 @@ impl Cons {
 impl PartialEq for Cons {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        self.index() == other.index()
+        self.index_eq(*other)
     }
 }
 
@@ -106,7 +106,7 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self.raw_eq(NEVER) {
+        if *self == NEVER {
             return write!(formatter, "!");
         }
 
