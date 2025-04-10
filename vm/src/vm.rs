@@ -426,11 +426,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
-                let cdr = self.memory.pop();
+                let cdr = self.memory.top();
                 let cons = self
                     .memory
                     .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
-                self.memory.push(cons.into())?;
+                self.memory.set_top(cons.into());
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
 
@@ -461,11 +461,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.memory.push(value)?;
                 }
             } else if head & 0b100 == 0 {
+                let cons = self.memory.stack();
                 let cdr = self.memory.pop();
-                let car = self.memory.pop();
+                let car = self.memory.top();
                 let tag = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
-                let cons = self.memory.allocate(car, cdr.set_tag(tag as _))?;
-                self.memory.push(cons.into())?;
+                self.memory.set_car(cons, car);
+                self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _));
+                self.memory.set_top(cons.into());
             } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(input, head >> 3, NUMBER_BASE)?)

@@ -172,6 +172,12 @@ impl<'a> Memory<'a> {
         self.car(self.stack)
     }
 
+    /// Sets a value at the top of a stack.
+    #[inline]
+    pub fn set_top(&mut self, value: Value) {
+        self.set_car(self.stack, value);
+    }
+
     /// Allocates a cons with a default tag of [`Type::Pair`].
     #[inline]
     pub fn cons(&mut self, car: Value, cdr: Cons) -> Result<Cons, Error> {
@@ -299,13 +305,15 @@ impl<'a> Memory<'a> {
         self.set(cons.index() + index, value);
     }
 
+    /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
-    fn set_raw_car(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_car(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 0, value)
     }
 
+    /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
-    fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 1, value)
     }
 
