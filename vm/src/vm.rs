@@ -426,7 +426,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
-                debug_assert_ne!(self.memory.stack(), NEVER);
+                debug_assert!(!self.memory.stack().raw_eq(NEVER));
 
                 let cdr = self.memory.pop();
                 let cons = self
@@ -437,14 +437,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 let head = head >> 2;
 
                 if head == 0 {
-                    // TODO Validate the `code` field.
-                    // debug_assert_ne!(self.memory.code(), NEVER);
+                    debug_assert!(!self.memory.code().raw_eq(NEVER));
 
                     let value = self.memory.top();
                     let cons = self.memory.cons(value, self.memory.code())?;
                     self.memory.set_code(cons);
                 } else {
-                    debug_assert_ne!(self.memory.code(), NEVER);
+                    debug_assert!(!self.memory.code().raw_eq(NEVER));
 
                     let integer = Self::decode_integer_tail(input, head - 1, SHARE_BASE)?;
                     let index = integer >> 1;
@@ -468,7 +467,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.memory.push(value)?;
                 }
             } else if head & 0b100 == 0 {
-                debug_assert_ne!(self.memory.stack(), NEVER);
+                debug_assert!(!self.memory.stack().raw_eq(NEVER));
 
                 let cdr = self.memory.pop();
                 let car = self.memory.pop();
