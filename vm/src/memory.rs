@@ -166,7 +166,7 @@ impl<'a> Memory<'a> {
 
     /// Peeks a value at the top of a stack.
     #[inline]
-    pub fn top(&mut self) -> Value {
+    pub fn top(&self) -> Value {
         debug_assert_ne!(self.stack, self.null());
 
         self.car(self.stack)
