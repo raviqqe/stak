@@ -70,6 +70,7 @@ impl Cons {
         })
     }
 
+    #[inline]
     pub(crate) const fn index_eq(&self, other: Self) -> bool {
         self.index() == other.index()
     }
