@@ -125,7 +125,7 @@ impl<'a> Memory<'a> {
     }
 
     /// Pushes a value to a stack.
-    #[inline]
+    #[inline(always)]
     pub fn push(&mut self, value: Value) -> Result<(), Error> {
         self.stack = self.cons(value, self.stack)?;
 
@@ -349,18 +349,19 @@ impl<'a> Memory<'a> {
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
-    #[inline]
+    #[inline(always)]
     pub fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
-    #[inline]
+    #[inline(always)]
     pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
 
     /// Returns a tail of a list.
+    #[inline(always)]
     pub const fn tail(&self, mut list: Cons, mut index: usize) -> Cons {
         while index > 0 {
             list = self.cdr(list).assume_cons();
