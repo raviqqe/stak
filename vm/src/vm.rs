@@ -201,7 +201,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         }
     }
 
-    #[inline]
+    #[inline(always)]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
