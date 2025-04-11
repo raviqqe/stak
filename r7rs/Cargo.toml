@@ -9,10 +9,10 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-stak-device = { version = "0.10.14", path = "../device" }
-stak-file = { version = "0.10.14", path = "../file" }
-stak-inexact = { version = "0.10.14", path = "../inexact" }
-stak-native = { version = "0.10.14", path = "../native" }
-stak-process-context = { version = "0.10.14", path = "../process_context" }
-stak-time = { version = "0.10.14", path = "../time" }
-stak-vm = { version = "0.10.14", path = "../vm" }
+stak-device = { version = "0.10.15", path = "../device" }
+stak-file = { version = "0.10.15", path = "../file" }
+stak-inexact = { version = "0.10.15", path = "../inexact" }
+stak-native = { version = "0.10.15", path = "../native" }
+stak-process-context = { version = "0.10.15", path = "../process_context" }
+stak-time = { version = "0.10.15", path = "../time" }
+stak-vm = { version = "0.10.15", path = "../vm" }
