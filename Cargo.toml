@@ -43,7 +43,7 @@ keywords = ["interpreter", "language", "scheme"]
 license-file = "LICENSE"
 readme = "README.md"
 repository = "https://github.com/raviqqe/stak"
-version = "0.10.14"
+version = "0.10.15"
 
 [workspace.lints.rust]
 missing_docs = "deny"
