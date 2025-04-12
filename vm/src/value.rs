@@ -68,7 +68,7 @@ impl Value {
     #[inline]
     pub const fn is_cons(&self) -> bool {
         feature!(if ("float") {
-            nonbox::f64::u64::unbox_unsigned(self.0).is_some()
+            nonbox::f64::unbox_unsigned(self.0).is_some()
         } else {
             self.0 & 1 == 0
         })
