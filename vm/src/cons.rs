@@ -51,7 +51,7 @@ impl Cons {
     #[inline]
     const fn r#box(value: u64) -> Self {
         Self(feature!(if ("float") {
-            nonbox::f64::u64::box_unsigned(value)
+            nonbox::f64::box_unsigned(value)
         } else {
             value << 1
         }))
@@ -60,7 +60,7 @@ impl Cons {
     #[inline]
     const fn unbox(self) -> u64 {
         feature!(if ("float") {
-            if let Some(index) = nonbox::f64::u64::unbox_unsigned(self.0) {
+            if let Some(index) = nonbox::f64::unbox_unsigned(self.0) {
                 index
             } else {
                 DUMMY_INDEX
