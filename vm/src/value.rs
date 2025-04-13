@@ -67,8 +67,10 @@ impl Value {
     /// Checks if it is a cons.
     #[inline]
     pub const fn is_cons(&self) -> bool {
-        feature!(if ("float") {
-            nonbox::f64::unbox_unsigned(self.0).is_some()
+        feature!(if ("float62") {
+            nonbox::f62::is_boxed(self.0)
+        } else if ("float") {
+            nonbox::f64::is_boxed(self.0)
         } else {
             self.0 & 1 == 0
         })

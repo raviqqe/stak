@@ -10,6 +10,7 @@ repository.workspace = true
 
 [features]
 float = ["dep:nonbox"]
+float62 = ["float"]
 gc_always = []
 profile = []
 trace_instruction = []

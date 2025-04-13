@@ -5,7 +5,10 @@ use core::{
     ops::{Add, Div, Mul, Rem, Sub},
 };
 
-item::feature!(if ("float") {
+item::feature!(if ("float62") {
+    /// A number representation.
+    pub type NumberRepresentation = nonbox::f62::Float62;
+} else if ("float") {
     /// A number representation.
     pub type NumberRepresentation = f64;
 } else {
