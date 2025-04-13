@@ -3,16 +3,28 @@ log() {
   "$@"
 }
 
+build_bench_binary() {
+  (
+    cd $directory
+    cargo build --release "$@"
+  )
+}
+
 setup_bench() {
+  [ $# -le 1 ]
+
+  features=$1
+
   brew install chibi-scheme gauche guile
   cargo install hyperfine
 
-  for directory in . cmd/minimal; do
-    (
-      cd $directory
-      cargo build --release "$@"
-    )
-  done
+  if echo "$features" | grep i >/dev/null; then
+    stak_options='$foo'
+    mstak_options=foo
+  fi
+
+  build_bench_binary . -p stak -p stak-interpret $stak_options
+  build_bench_binary cmd/minimal -p mstak -p mstak-interpret $stak_options
 
   export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
