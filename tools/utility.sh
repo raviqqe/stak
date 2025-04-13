@@ -7,6 +7,7 @@ build_bench_binary() {
   (
     cd $1
     shift 1
+    cargo build --release
     cargo build --release "$@"
   )
 }
