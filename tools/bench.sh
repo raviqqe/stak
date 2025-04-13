@@ -2,29 +2,29 @@
 
 set -ex
 
-while getopts d option; do
+features=
+
+while getopts i option; do
   case $option in
-  d)
-    build_options=--no-default-features
+  i)
+    features=i
     ;;
   esac
 done
 
 shift $(expr $OPTIND - 1)
 
-[ $# -eq 0 ]
-
-cd $(dirname $0)/..
-
-. tools/utility.sh
-
-setup_bench $build_options
-
 filter=.
 
 if [ $# -gt 0 ]; then
   filter="$@"
 fi
+
+cd $(dirname $0)/..
+
+. tools/utility.sh
+
+setup_bench $features
 
 cd bench/src
 

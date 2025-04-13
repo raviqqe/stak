@@ -19,7 +19,7 @@ jobs:
           - macos-15
         options:
           -
-          - -d
+          - -i
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
