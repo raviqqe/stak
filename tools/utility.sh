@@ -19,12 +19,11 @@ setup_bench() {
   cargo install hyperfine
 
   if echo "$features" | grep i >/dev/null; then
-    stak_options='$foo'
-    mstak_options=foo
+    stak_options='--no-default-features --features std'
   fi
 
   build_bench_binary . -p stak -p stak-interpret $stak_options
-  build_bench_binary cmd/minimal -p mstak -p mstak-interpret $stak_options
+  build_bench_binary cmd/minimal -p mstak -p mstak-interpret
 
   export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
 
