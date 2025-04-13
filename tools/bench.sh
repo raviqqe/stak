@@ -6,7 +6,7 @@ features=
 
 while getopts i option; do
   case $option in
-  d)
+  i)
     features=i
     ;;
   esac
