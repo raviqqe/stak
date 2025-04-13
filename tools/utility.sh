@@ -5,7 +5,8 @@ log() {
 
 build_bench_binary() {
   (
-    cd $directory
+    cd $1
+    shift 1
     cargo build --release "$@"
   )
 }
@@ -18,7 +19,7 @@ setup_bench() {
   brew install chibi-scheme gauche guile
   cargo install hyperfine
 
-  if echo "$features" | grep i >/dev/null; then
+  if echo $features | grep i >/dev/null; then
     stak_options='--no-default-features --features std'
   fi
 
