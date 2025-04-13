@@ -72,7 +72,9 @@ impl Number {
 
     #[inline]
     pub(crate) const fn to_raw(self) -> u64 {
-        feature!(if ("float") {
+        feature!(if ("float62") {
+            self.0.to_bits()
+        } else if ("float") {
             self.0.to_bits()
         } else {
             self.0 as _
