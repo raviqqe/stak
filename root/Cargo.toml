@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [features]
-default = ["float62", "std"]
+default = ["float", "std"]
 alloc = ["dep:stak-dynamic", "dep:stak-engine"]
 float = ["stak-sac/float", "stak-vm/float"]
 float62 = ["stak-sac/float", "stak-vm/float62"]
