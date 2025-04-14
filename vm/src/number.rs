@@ -103,7 +103,7 @@ impl Number {
 impl Default for Number {
     #[inline]
     fn default() -> Self {
-        Self::new(NumberRepresentation::default())
+        Self::new(Default::default())
     }
 }
 
