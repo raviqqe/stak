@@ -62,11 +62,7 @@ impl Cons {
     #[inline]
     const fn unbox(self) -> u64 {
         feature!(if ("float62") {
-            if let Some(index) = nonbox::f62::unbox_payload(self.0) {
-                index
-            } else {
-                DUMMY_INDEX
-            }
+            nonbox::f62::unbox_payload_unchecked(self.0)
         } else if ("float") {
             if let Some(index) = nonbox::f64::unbox_unsigned(self.0) {
                 index
