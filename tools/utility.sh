@@ -20,7 +20,9 @@ setup_bench() {
   brew install chibi-scheme gauche guile
   cargo install hyperfine
 
-  if echo $features | grep i >/dev/null; then
+  if echo $features | grep b >/dev/null; then
+    stak_options='--no-default-features --features std,float62'
+  elif echo $features | grep i >/dev/null; then
     stak_options='--no-default-features --features std'
   fi
 
