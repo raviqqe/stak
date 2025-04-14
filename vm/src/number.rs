@@ -51,7 +51,7 @@ impl Number {
     #[inline]
     pub const fn to_i64(self) -> i64 {
         feature!(if ("float62") {
-            self.0.to_float_unchecked()
+            self.0.to_integer_unchecked()
         } else {
             self.to_representation() as _
         })
