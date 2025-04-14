@@ -18,7 +18,7 @@ trace_memory = []
 
 [dependencies]
 cfg-elif = "0.6.3"
-nonbox = { version = "0.5.8", optional = true }
+nonbox = { version = "0.5.9", optional = true }
 
 [dev-dependencies]
 insta = "1.42.1"
