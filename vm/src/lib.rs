@@ -61,6 +61,7 @@ mod profiler;
 mod stack_slot;
 mod r#type;
 mod value;
+mod value_inner;
 mod vm;
 
 pub use cons::{Cons, Tag};

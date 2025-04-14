@@ -1,20 +1,12 @@
-use crate::{Error, value::Value};
-use cfg_elif::{expr::feature, item};
+use crate::{Error, value::Value, value_inner};
+use cfg_elif::expr::feature;
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
 };
 
-item::feature!(if ("float62") {
-    /// A number representation.
-    pub type NumberRepresentation = nonbox::f62::Float62;
-} else if ("float") {
-    /// A number representation.
-    pub type NumberRepresentation = f64;
-} else {
-    /// A number representation.
-    pub type NumberRepresentation = i64;
-});
+/// A number representation.
+pub type NumberRepresentation = value_inner::NumberRepresentation;
 
 /// A number.
 ///
