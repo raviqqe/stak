@@ -17,7 +17,7 @@
     "@astrojs/starlight": "^0.33.1",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
-    "@raviqqe/stak": "^0.10.14",
+    "@raviqqe/stak": "^0.10.15",
     "astro": "^5.6.1",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.34.1",
