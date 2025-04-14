@@ -40,30 +40,48 @@ impl Number {
     /// Converts `i64` into a number.
     #[inline]
     pub const fn from_i64(number: i64) -> Self {
-        Self::new(number as _)
+        Self::new(feature!(if ("float62") {
+            nonbox::f62::Float62::from_integer(number)
+        } else {
+            number as _
+        }))
     }
 
     /// Converts a number to `i64`.
     #[inline]
     pub const fn to_i64(self) -> i64 {
-        self.to_representation() as _
+        feature!(if ("float62") {
+            self.0.to_float_unchecked()
+        } else {
+            self.to_representation() as _
+        })
     }
 
     /// Converts `f64` to a number.
     #[inline]
     pub const fn from_f64(number: f64) -> Self {
-        Self::new(number as _)
+        Self::new(feature!(if ("float62") {
+            nonbox::f62::Float62::from_float(number)
+        } else {
+            number as _
+        }))
     }
 
     /// Converts a number to `f64`.
     #[inline]
     pub const fn to_f64(self) -> f64 {
-        self.to_representation() as _
+        feature!(if ("float62") {
+            self.0.to_float_unchecked()
+        } else {
+            self.to_representation() as _
+        })
     }
 
     #[inline]
     pub(crate) const fn from_raw(raw: u64) -> Self {
-        Self(feature!(if ("float") {
+        Self(feature!(if ("float62") {
+            nonbox::f62::Float62::from_bits(raw)
+        } else if ("float") {
             f64::from_bits(raw)
         } else {
             raw as _
@@ -85,7 +103,7 @@ impl Number {
 impl Default for Number {
     #[inline]
     fn default() -> Self {
-        Self::new(0 as _)
+        Self::new(NumberRepresentation::default())
     }
 }
 
