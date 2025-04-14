@@ -28,7 +28,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
                 let path = T::decode_path(memory, list).map_err(|_| FileError::PathDecode)?;
 
                 memory.push(
-                    Number::new(
+                    Number::from_i64(
                         self.file_system
                             .open(path.as_ref(), output != memory.boolean(false).into())
                             .map_err(|_| FileError::Open)? as _,
@@ -50,7 +50,7 @@ impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
 
                 memory.push(self.file_system.read(descriptor.to_i64() as _).map_or_else(
                     |_| memory.boolean(false).into(),
-                    |byte| Number::new(byte as _).into(),
+                    |byte| Number::from_i64(byte as _).into(),
                 ))?;
             }
             Primitive::WRITE_FILE => {

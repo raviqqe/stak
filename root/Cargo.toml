@@ -12,6 +12,7 @@ repository.workspace = true
 default = ["float", "std"]
 alloc = ["dep:stak-dynamic", "dep:stak-engine"]
 float = ["stak-sac/float", "stak-vm/float"]
+float62 = ["stak-sac/float", "stak-vm/float62"]
 hot-reload = ["stak-macro/hot-reload"]
 libc = [
   "stak-device/libc",

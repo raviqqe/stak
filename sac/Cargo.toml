@@ -10,6 +10,7 @@ repository.workspace = true
 
 [features]
 float = ["stak-vm/float"]
+float62 = ["stak-vm/float62"]
 libc = [
   "dep:libc",
   "dep:stak-util",

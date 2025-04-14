@@ -4,12 +4,8 @@ set -ex
 
 features=
 
-while getopts i option; do
-  case $option in
-  i)
-    features=i
-    ;;
-  esac
+while getopts bi option; do
+  features="$option$features"
 done
 
 shift $(expr $OPTIND - 1)

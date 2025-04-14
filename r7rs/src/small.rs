@@ -90,7 +90,7 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         memory.operate_top(|memory, value| {
             field(memory, value)
                 .to_cons()
-                .map(|cons| Number::new(cons.tag() as _))
+                .map(|cons| Number::from_i64(cons.tag() as _))
                 .unwrap_or_default()
                 .into()
         })?;

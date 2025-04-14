@@ -48,7 +48,9 @@ impl Cons {
 
     #[inline]
     const fn r#box(value: u64) -> Self {
-        Self(feature!(if ("float") {
+        Self(feature!(if ("float62") {
+            nonbox::f62::box_payload(value)
+        } else if ("float") {
             nonbox::f64::box_unsigned(value)
         } else {
             value << 1
@@ -57,7 +59,9 @@ impl Cons {
 
     #[inline]
     const fn unbox(self) -> u64 {
-        feature!(if ("float") {
+        feature!(if ("float62") {
+            nonbox::f62::unbox_payload_unchecked(self.0)
+        } else if ("float") {
             nonbox::f64::unbox_unsigned_unchecked(self.0)
         } else {
             self.0 >> 1
