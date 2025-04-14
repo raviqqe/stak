@@ -5,8 +5,6 @@ use core::fmt::{self, Display, Formatter};
 /// A tag.
 pub type Tag = u16;
 
-const DUMMY_INDEX: u64 = u64::MAX;
-
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
@@ -14,7 +12,7 @@ const DUMMY_INDEX: u64 = u64::MAX;
 ///
 /// - In `car`, its cons is moved already on garbage collection.
 /// - In `cdr`, nothing.
-pub(crate) const NEVER: Cons = Cons::new(DUMMY_INDEX);
+pub(crate) const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -64,11 +62,7 @@ impl Cons {
         feature!(if ("float62") {
             nonbox::f62::unbox_payload_unchecked(self.0)
         } else if ("float") {
-            if let Some(index) = nonbox::f64::unbox_unsigned(self.0) {
-                index
-            } else {
-                DUMMY_INDEX
-            }
+            nonbox::f64::unbox_unsigned_unchecked(self.0)
         } else {
             self.0 >> 1
         })
