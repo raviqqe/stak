@@ -972,9 +972,9 @@ dependencies = [
 
 [[package]]
 name = "nonbox"
-version = "0.5.5"
+version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2c58884dfa85955c1f0cfb861512c7fd90809161255d00be74eaaea98fdc75f4"
+checksum = "b4a6d45da2b2f8aeb4dc33e5741224d437c3536d85c8149d7a5a71fe405578a6"
 
 [[package]]
 name = "notify"
