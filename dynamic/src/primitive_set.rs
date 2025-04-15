@@ -67,7 +67,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
-            let cons = unsafe { Cons::new((memory.allocation_start() + 2 * index) as _) };
+            let cons = Cons::new((memory.allocation_start() + 2 * index) as _);
 
             if memory.cdr(cons).tag() != Type::Foreign as _ {
                 continue;

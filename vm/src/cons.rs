@@ -11,7 +11,7 @@ pub type Tag = u16;
 ///
 /// - In `car`, its cons is moved already on garbage collection.
 /// - In `cdr`, nothing.
-pub(crate) const NEVER: Cons = unsafe { Cons::new(u64::MAX) };
+pub(crate) const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -22,13 +22,8 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
-    ///
-    /// # Safety
-    ///
-    /// The given index must be valid in a heap passed to
-    /// [`Memory::new`](crate::Memory::new).
     #[inline]
-    pub const unsafe fn new(index: u64) -> Self {
+    pub const fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
 
