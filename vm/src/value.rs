@@ -1,8 +1,8 @@
 use crate::{
     cons::{Cons, Tag},
     number::Number,
+    value_inner,
 };
-use cfg_elif::expr::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -67,13 +67,7 @@ impl Value {
     /// Checks if it is a cons.
     #[inline]
     pub const fn is_cons(&self) -> bool {
-        feature!(if ("float62") {
-            nonbox::f62::is_payload(self.0)
-        } else if ("float") {
-            nonbox::f64::is_boxed(self.0)
-        } else {
-            self.0 & 1 == 0
-        })
+        value_inner::is_cons(self.0)
     }
 
     /// Checks if it is a number.

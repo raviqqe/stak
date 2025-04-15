@@ -10,7 +10,7 @@ use stak_inexact::InexactPrimitiveSet;
 use stak_native::{EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
-use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
+use stak_vm::{Memory, Number, PrimitiveSet, Tag, Type, Value};
 
 /// A primitive set that covers [the R7RS small](https://standards.scheme.org/corrected-r7rs/r7rs.html).
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clock> {
@@ -51,15 +51,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
 
     fn operate_comparison(
         memory: &mut Memory,
-        operate: fn(NumberRepresentation, NumberRepresentation) -> bool,
+        operate: fn(Number, Number) -> bool,
     ) -> Result<(), Error> {
         let [x, y] = memory.pop_numbers();
 
-        memory.push(
-            memory
-                .boolean(operate(x.to_representation(), y.to_representation()))
-                .into(),
-        )?;
+        memory.push(memory.boolean(operate(x, y)).into())?;
         Ok(())
     }
 
