@@ -256,12 +256,12 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn at(&self, index: usize) -> Value {
-        unsafe { *self.heap.as_ptr().add(index % N) }
+        unsafe { *self.heap.as_ptr().add(index % self.heap.len()) }
     }
 
     #[inline]
     fn at_mut(&mut self, index: usize) -> &mut Value {
-        unsafe { &mut *self.heap.as_mut_ptr().add(index % N) }
+        unsafe { &mut *self.heap.as_mut_ptr().add(index % self.heap.len()) }
     }
 
     #[inline]
