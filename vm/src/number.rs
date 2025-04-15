@@ -32,7 +32,7 @@ impl Number {
     /// Converts `i64` into a number.
     #[inline]
     pub const fn from_i64(number: i64) -> Self {
-        Self(value_inner::from_i64(number))
+        Self::new(value_inner::from_i64(number))
     }
 
     /// Converts a number to `i64`.
@@ -44,7 +44,7 @@ impl Number {
     /// Converts `f64` to a number.
     #[inline]
     pub const fn from_f64(number: f64) -> Self {
-        Self(value_inner::from_f64(number))
+        Self::new(value_inner::from_f64(number))
     }
 
     /// Converts a number to `f64`.
