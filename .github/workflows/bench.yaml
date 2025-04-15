@@ -44,12 +44,11 @@ jobs:
         options:
           -
           - --features float62
-          - --no-default-features
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: cargo bench
+      - run: cargo bench ${{ matrix.options }}
   codspeed:
     runs-on: ubuntu-latest
     steps:
