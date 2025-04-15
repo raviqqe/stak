@@ -32,6 +32,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
 
   if [ -r $base.py ]; then
     reference="python3 $base.py"
+    scripts="micropython $base.py,$scripts"
   fi
 
   hyperfine \
