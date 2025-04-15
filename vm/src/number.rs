@@ -20,7 +20,7 @@ impl Number {
     /// Creates a number.
     #[inline]
     pub const fn new(number: NumberRepresentation) -> Self {
-        Self(feature!(if ("float") { number } else { (number << 1) | 1 }))
+        Self(value_inner::from_number(number))
     }
 
     /// Converts a number to a number representation.
