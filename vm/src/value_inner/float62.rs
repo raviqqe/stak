@@ -43,11 +43,6 @@ pub const fn from_f64(number: f64) -> NumberRepresentation {
 }
 
 #[inline]
-pub const fn from_f64(number: f64) -> NumberRepresentation {
-    Float62::from_float(number)
-}
-
-#[inline]
 pub const fn to_f64(number: NumberRepresentation) -> f64 {
     number.to_float_unchecked()
 }
