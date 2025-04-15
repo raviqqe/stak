@@ -3,7 +3,6 @@ use crate::{
     number::Number,
     value_inner,
 };
-use cfg_elif::expr::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
