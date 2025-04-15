@@ -38,11 +38,17 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/code_size_bench.sh
   rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          -
+          - --features float62
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: cargo bench
+      - run: cargo bench ${{ matrix.options }}
   codspeed:
     runs-on: ubuntu-latest
     steps:
