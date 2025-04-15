@@ -9,9 +9,9 @@ item::feature!(if ("float62") {
 });
 
 item::feature!(if ("float62") {
-    pub use float62::*;
+    pub(crate) use float62::*;
 } else if ("float") {
-    pub use float64::*;
+    pub(crate) use float64::*;
 } else {
-    pub use integer63::*;
+    pub(crate) use integer63::*;
 });

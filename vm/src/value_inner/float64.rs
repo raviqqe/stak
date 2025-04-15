@@ -46,3 +46,13 @@ pub const fn from_f64(number: f64) -> NumberRepresentation {
 pub const fn to_f64(number: NumberRepresentation) -> f64 {
     number
 }
+
+#[inline]
+pub const fn from_raw(raw: u64) -> NumberRepresentation {
+    f64::from_bits(raw)
+}
+
+#[inline]
+pub const fn to_raw(number: NumberRepresentation) -> u64 {
+    number.to_bits()
+}

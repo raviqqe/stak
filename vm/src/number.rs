@@ -1,5 +1,4 @@
 use crate::{Error, value::Value, value_inner};
-use cfg_elif::expr::feature;
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
@@ -55,24 +54,12 @@ impl Number {
 
     #[inline]
     pub(crate) const fn from_raw(raw: u64) -> Self {
-        Self(feature!(if ("float62") {
-            nonbox::f62::Float62::from_bits(raw)
-        } else if ("float") {
-            f64::from_bits(raw)
-        } else {
-            raw as _
-        }))
+        Self(value_inner::from_raw(raw))
     }
 
     #[inline]
     pub(crate) const fn to_raw(self) -> u64 {
-        feature!(if ("float62") {
-            self.0.to_bits()
-        } else if ("float") {
-            self.0.to_bits()
-        } else {
-            self.0 as _
-        })
+        value_inner::to_raw(self.0)
     }
 }
 
