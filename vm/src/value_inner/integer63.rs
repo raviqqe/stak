@@ -27,7 +27,7 @@ pub const fn to_number(number: NumberRepresentation) -> NumberRepresentation {
 
 #[inline]
 pub const fn from_i64(number: i64) -> NumberRepresentation {
-    number as _
+    from_number(number)
 }
 
 #[inline]
