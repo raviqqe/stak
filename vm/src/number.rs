@@ -43,7 +43,7 @@ impl Number {
     /// Converts `f64` to a number.
     #[inline]
     pub const fn from_f64(number: f64) -> Self {
-        Self::new(value_inner::from_f64(number))
+        Self(value_inner::from_f64(number))
     }
 
     /// Converts a number to `f64`.
@@ -141,10 +141,19 @@ mod tests {
     }
 
     #[test]
-    fn to_i64() {
+    fn integer() {
         assert_eq!(Number::default().to_i64(), 0);
         assert_eq!(Number::from_i64(42).to_i64(), 42);
         assert_eq!(Number::from_i64(-1).to_i64(), -1);
+    }
+
+    #[test]
+    fn float() {
+        assert_eq!(Number::default().to_f64(), 0.0);
+        assert_eq!(Number::from_f64(1.0).to_f64(),1.0);
+        assert_eq!(Number::from_f64(42.0).to_f64(), 42.0);
+        assert_eq!(Number::from_f64(-1.0).to_f64(), -1.0);
+        assert_eq!(Number::from_f64(-42.0).to_f64(), -42.0);
     }
 
     #[test]
