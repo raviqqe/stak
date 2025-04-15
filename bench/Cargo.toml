@@ -1,0 +1,27 @@
+[package]
+name = "stak-bench"
+version.workspace = true
+publish = false
+edition.workspace = true
+
+[dependencies]
+mlua = { version = "0.10.3", features = ["lua54"] }
+stak = { version = "0.10.15", path = "../root" }
+stak-compiler = { version = "0.10.15", path = "../compiler" }
+
+[dev-dependencies]
+criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
+
+[build-dependencies]
+stak-build = { version = "0.10.15", path = "../build" }
+
+[lints]
+workspace = true
+
+[[bench]]
+name = "main"
+harness = false
+
+[[bench]]
+name = "embed"
+harness = false

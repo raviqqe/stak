@@ -1,3 +1,4 @@
+use crate::exception::Exception;
 use core::{
     error,
     fmt::{self, Debug, Display, Formatter},
@@ -12,6 +13,8 @@ pub enum Error {
     ConsExpected,
     /// An unexpected end of bytecodes.
     BytecodeEnd,
+    /// A format error.
+    Format(fmt::Error),
     /// An illegal instruction detected.
     IllegalInstruction,
     /// An illegal primitive detected.
@@ -24,6 +27,21 @@ pub enum Error {
     ProcedureExpected,
 }
 
+impl Exception for Error {
+    fn is_critical(&self) -> bool {
+        match self {
+            Self::ArgumentCount
+            | Self::IllegalPrimitive
+            | Self::NumberExpected
+            | Self::ConsExpected
+            | Self::ProcedureExpected => false,
+            Self::BytecodeEnd | Self::Format(_) | Self::IllegalInstruction | Self::OutOfMemory => {
+                true
+            }
+        }
+    }
+}
+
 impl error::Error for Error {}
 
 impl Display for Error {
@@ -32,11 +50,18 @@ impl Display for Error {
             Self::ArgumentCount => write!(formatter, "invalid argument count"),
             Self::BytecodeEnd => write!(formatter, "unexpected end of bytecodes"),
             Self::ConsExpected => write!(formatter, "cons expected"),
+            Self::Format(error) => write!(formatter, "{error}"),
             Self::IllegalInstruction => write!(formatter, "illegal instruction"),
             Self::IllegalPrimitive => write!(formatter, "illegal primitive"),
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
         }
+    }
+}
+
+impl From<fmt::Error> for Error {
+    fn from(error: fmt::Error) -> Self {
+        Self::Format(error)
     }
 }

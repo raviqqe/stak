@@ -8,16 +8,16 @@ use proc_macro::TokenStream;
 use proc_macro2::Literal;
 use quote::quote;
 use stak_macro_util::{convert_result, read_source_file};
-use syn::{parse_macro_input, LitStr};
+use syn::{LitStr, parse_macro_input};
 
 /// Minifies source codes in Scheme.
 ///
 /// # Examples
 ///
 /// ```rust
-/// const PROGRAM: &str = stak_minifier_macro::minify!("( foo  bar )\n\n(baz)");
+/// const SCRIPT: &str = stak_minifier_macro::minify!("( foo  bar )\n\n(baz)");
 ///
-/// assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
+/// assert_eq!(SCRIPT, "(foo bar)\n(baz)\n");
 /// ```
 #[proc_macro]
 pub fn minify(input: TokenStream) -> TokenStream {
@@ -31,9 +31,9 @@ pub fn minify(input: TokenStream) -> TokenStream {
 /// # Examples
 ///
 /// ```rust
-/// const PROGRAM: &str = stak_minifier_macro::include_minified!("foo.scm");
+/// const SCRIPT: &str = stak_minifier_macro::include_minified!("foo.scm");
 ///
-/// assert_eq!(PROGRAM, "(foo bar)\n(baz)\n");
+/// assert_eq!(SCRIPT, "(foo bar)\n(baz)\n");
 /// ```
 #[proc_macro]
 pub fn include_minified(input: TokenStream) -> TokenStream {

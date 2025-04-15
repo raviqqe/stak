@@ -3,7 +3,7 @@ mod primitive;
 
 pub use self::{error::PrimitiveError, primitive::Primitive};
 use crate::Device;
-use stak_vm::{Memory, Number, PrimitiveSet, Value};
+use stak_vm::{Memory, Number, PrimitiveSet};
 
 /// A primitive set for a device.
 pub struct DevicePrimitiveSet<T: Device> {
@@ -22,7 +22,7 @@ impl<T: Device> DevicePrimitiveSet<T> {
     }
 
     /// Returns a mutable reference to a device.
-    pub fn device_mut(&mut self) -> &mut T {
+    pub const fn device_mut(&mut self) -> &mut T {
         &mut self.device
     }
 
@@ -32,9 +32,11 @@ impl<T: Device> DevicePrimitiveSet<T> {
         write: fn(&mut T, u8) -> Result<(), <T as Device>::Error>,
         error: PrimitiveError,
     ) -> Result<(), PrimitiveError> {
-        let byte = memory.top().assume_number().to_i64() as u8;
+        let byte = memory.pop().assume_number().to_i64() as u8;
+        write(&mut self.device, byte).map_err(|_| error)?;
+        memory.push(memory.boolean(false).into())?;
 
-        write(&mut self.device, byte).map_err(|_| error)
+        Ok(())
     }
 }
 
@@ -47,7 +49,7 @@ impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;
 
                 memory.push(byte.map_or_else(
-                    || Value::from(memory.boolean(false)),
+                    || memory.boolean(false).into(),
                     |byte| Number::from_i64(byte as _).into(),
                 ))?;
             }

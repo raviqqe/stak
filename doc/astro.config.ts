@@ -42,10 +42,6 @@ const listItems = async (directory: string): Promise<Item[]> =>
 
 export default defineConfig({
   base: "/stak",
-  image: {
-    service: { entrypoint: "astro/assets/services/sharp" },
-    remotePatterns: [{ protocol: "https" }],
-  },
   vite: {
     plugins: [wasm()],
     worker: {
@@ -57,6 +53,7 @@ export default defineConfig({
     solid(),
     starlight({
       title: "Stak Scheme",
+      customCss: ["./src/index.css"],
       favicon: "/icon.svg",
       head: [
         {
@@ -77,14 +74,61 @@ export default defineConfig({
       logo: {
         src: "./public/icon.svg",
       },
-      social: {
-        github: "https://github.com/raviqqe/stak",
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/raviqqe/stak",
+        },
+      ],
       sidebar: [
         {
           label: "Home",
           link: "/",
         },
+        {
+          label: "Guides",
+          items: [
+            {
+              label: "Install",
+              link: "/install",
+            },
+            {
+              label: "Embedding Scheme in Rust",
+              link: "/embedding-scripts",
+            },
+            {
+              label: "Running in no-std and no-alloc environment",
+              link: "/no-std-no-alloc",
+            },
+            {
+              label: "Hot reloading",
+              link: "/hot-reload",
+            },
+            {
+              label: "Writing a Scheme subset",
+              link: "/writing-scheme-subset",
+            },
+          ],
+        },
+        {
+          label: "Limitations",
+          link: "/limitations",
+        },
+        {
+          label: "Demo",
+          items: [
+            {
+              label: "Interpreter",
+              link: "/demo/interpreter",
+            },
+            {
+              label: "Compiler",
+              link: "/demo/compiler",
+            },
+          ],
+        },
+
         {
           label: "Examples",
           items: await listItems("examples"),
@@ -93,5 +137,8 @@ export default defineConfig({
     }),
   ],
   prefetch: { prefetchAll: true },
+  redirects: {
+    "/demo": "/interpreter-demo",
+  },
   site: "https://raviqqe.github.io/stak",
 });

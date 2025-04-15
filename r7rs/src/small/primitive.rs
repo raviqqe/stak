@@ -1,13 +1,10 @@
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(super) enum Primitive {
     Rib,
-    Cons,
     Close,
     IsRib,
     Car,
     Cdr,
-    #[expect(dead_code)]
-    Rib3, // deprecated
     Tag,
     SetCar,
     SetCdr,
@@ -20,9 +17,14 @@ pub(super) enum Primitive {
     Remainder,
     Exponentiation,
     Logarithm,
-    Halt,
-    Null,
+    Halt = 40,
+    Null = 50,
     Pair,
+    Assq = 60,
+    Cons,
+    Memq,
+    Eqv = 70,
+    EqualInner,
     Read = 100,
     Write,
     WriteError,
@@ -39,7 +41,6 @@ pub(super) enum Primitive {
 
 impl Primitive {
     pub const RIB: usize = Self::Rib as _;
-    pub const CONS: usize = Self::Cons as _;
     pub const CLOSE: usize = Self::Close as _;
     pub const IS_RIB: usize = Self::IsRib as _;
     pub const CAR: usize = Self::Car as _;
@@ -59,6 +60,11 @@ impl Primitive {
     pub const HALT: usize = Self::Halt as _;
     pub const NULL: usize = Self::Null as _;
     pub const PAIR: usize = Self::Pair as _;
+    pub const ASSQ: usize = Self::Assq as _;
+    pub const CONS: usize = Self::Cons as _;
+    pub const MEMQ: usize = Self::Memq as _;
+    pub const EQV: usize = Self::Eqv as _;
+    pub const EQUAL_INNER: usize = Self::EqualInner as _;
     pub const READ: usize = Self::Read as _;
     pub const WRITE: usize = Self::Write as _;
     pub const WRITE_ERROR: usize = Self::WriteError as _;

@@ -12,21 +12,30 @@ concurrency:
   group: document-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
+  rust_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: cargo +nightly doc --all-features
+  web_build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
-      - run: tools/document.sh
-      - run: rm doc/dist/rust/.lock
+      - run: tools/document.sh -l
+      - uses: actions/upload-artifact@v4
+        with:
+          name: document
+          path: doc/dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
-  document_lint:
+  web_lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,10 +45,33 @@ jobs:
         working-directory: doc
       - run: npm run lint
         working-directory: doc
+  web_test:
+    needs:
+      - web_build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: actions/download-artifact@v4
+        with:
+          name: document
+          path: doc/dist
+      - run: npm ci
+        working-directory: doc
+      - run: npm run preview &
+        working-directory: doc
+      - run: >
+          go run github.com/raviqqe/muffet/v2@latest
+          --accepted-status-codes 200,403
+          --buffer-size 8192
+          --exclude https://www.gnu.org/software/.*
+          http://localhost:4321/stak/
   document:
     needs:
-      - build
-      - document_lint
+      - rust_build
+      - web_build
+      - web_lint
+      - web_test
     if: always()
     runs-on: ubuntu-latest
     steps:

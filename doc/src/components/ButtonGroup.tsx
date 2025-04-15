@@ -6,5 +6,5 @@ interface Props {
 }
 
 export const ButtonGroup = (props: Props): JSX.Element => (
-  <div class={styles.container}>{props.children}</div>
+  <div class={styles.root}>{props.children}</div>
 );

@@ -1,5 +1,9 @@
-use crate::{read_file_size, validate};
 use core::{ffi::CStr, ptr::null_mut, slice};
+use rustix::{
+    fs::{self, Mode, OFlags},
+    io,
+    mm::{MapFlags, ProtFlags, mmap, munmap},
+};
 
 /// A mmap.
 pub struct Mmap {
@@ -9,23 +13,24 @@ pub struct Mmap {
 
 impl Mmap {
     /// Creates a mmap opening a file at a path.
-    pub fn new(path: &CStr) -> Self {
-        let len = read_file_size(path);
+    pub fn new(path: &CStr) -> io::Result<Self> {
+        let len = fs::stat(path)?.st_size as _;
+        // spell-checker: disable-next-line
+        let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
 
-        Self {
+        Ok(Self {
             ptr: unsafe {
-                libc::mmap(
+                mmap(
                     null_mut(),
                     len,
-                    libc::PROT_READ,
-                    libc::MAP_PRIVATE,
-                    // spell-checker: disable-next-line
-                    libc::open(path.as_ptr(), libc::O_RDONLY),
+                    ProtFlags::READ,
+                    MapFlags::PRIVATE,
+                    descriptor,
                     0,
-                )
+                )?
             } as _,
             len,
-        }
+        })
     }
 
     /// Returns a slice of bytes.
@@ -37,7 +42,7 @@ impl Mmap {
 impl Drop for Mmap {
     fn drop(&mut self) {
         unsafe {
-            validate(libc::munmap(self.ptr as _, self.len));
+            munmap(self.ptr as _, self.len).unwrap();
         }
     }
 }
@@ -48,6 +53,6 @@ mod tests {
 
     #[test]
     fn read_file() {
-        Mmap::new(c"src/lib.rs");
+        Mmap::new(c"src/lib.rs").unwrap();
     }
 }

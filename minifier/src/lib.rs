@@ -8,11 +8,11 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::VoidClock;
 use stak_vm::Vm;
-use std::io::{empty, Read, Write};
+use std::io::{Read, Write, empty};
 
 /// Minifies given source codes.
 pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
-    const PROGRAM: &[u8] = include_r7rs!("minify.scm");
+    const BYTECODE: &[u8] = include_r7rs!("minify.scm");
 
     let mut heap = vec![Default::default(); DEFAULT_HEAP_SIZE];
     let mut vm = Vm::new(
@@ -25,7 +25,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
         ),
     )?;
 
-    vm.initialize(PROGRAM.iter().copied())?;
+    vm.initialize(BYTECODE.iter().copied())?;
     vm.run()?;
 
     Ok(())

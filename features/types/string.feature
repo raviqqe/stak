@@ -6,7 +6,7 @@ Feature: String
 
       (write-string "Hello, world!")
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Convert a string to a list
@@ -16,7 +16,7 @@ Feature: String
 
       (for-each write-char (string->list "Hello, world!"))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Convert a list to a string
@@ -26,7 +26,7 @@ Feature: String
 
       (write-string (list->string (string->list "Hello, world!")))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "Hello, world!"
 
   Scenario Outline: Append strings
@@ -36,7 +36,7 @@ Feature: String
 
       (write-string (string-append <values>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -54,7 +54,7 @@ Feature: String
 
       (write-char (string-ref "<string>" <index>))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "<output>"
 
     Examples:
@@ -73,7 +73,7 @@ Feature: String
 
       (write-u8 (if (= (string-length "<value>") <length>) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -90,7 +90,7 @@ Feature: String
 
       (write-u8 (if (equal? (substring "<value>" <start> <end>) "<output>") 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -110,6 +110,44 @@ Feature: String
       | abc   | 1     | 3   | bc     |
       | abc   | 0     | 3   | abc    |
 
+  Scenario Outline: Make a string
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (= (string-length (make-string <length>)) <length>) 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | length |
+      | 0      |
+      | 1      |
+      | 2      |
+      | 3      |
+
+  Scenario Outline: Make a string with a character
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (write-u8 (if (equal? (make-string <length> <character>) "<output>") 65 66))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
+    Examples:
+      | length | character | output |
+      | 0      | #\\A      |        |
+      | 1      | #\\A      | A      |
+      | 2      | #\\A      | AA     |
+      | 3      | #\\A      | AAA    |
+      | 0      | #\\B      |        |
+      | 1      | #\\B      | B      |
+      | 2      | #\\B      | BB     |
+      | 3      | #\\B      | BBB    |
+
   Scenario Outline: Check string equality
     Given a file named "main.scm" with:
       """scheme
@@ -117,7 +155,7 @@ Feature: String
 
       (write-u8 (if (string=? "<value>" "<value>") 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -134,7 +172,7 @@ Feature: String
 
       (write-u8 (if (string=? "<left>" "<right>") 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
     Examples:
@@ -157,7 +195,7 @@ Feature: String
 
       (write-u8 (if (string<? "<left>" "<right>") 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:
@@ -176,7 +214,7 @@ Feature: String
 
       (write-u8 (if (not (string<? "<left>" "<right>")) 65 66))
       """
-    When I successfully run `scheme main.scm`
+    When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
     Examples:

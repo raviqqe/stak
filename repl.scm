@@ -6,11 +6,18 @@
   (only (scheme file))
   (only (scheme inexact))
   (only (scheme lazy))
-  (only (scheme process-context))
+  (scheme process-context)
   (scheme read)
   (scheme repl)
   (only (scheme time))
   (scheme write))
+
+(define (write-value value)
+  (if (error-object? value)
+    (begin
+      (display "ERROR: ")
+      (display (error-object-message value)))
+    (write value)))
 
 (define (main)
   (display "> " (current-error-port))
@@ -26,8 +33,18 @@
           #f)
 
         (else
-          (write (eval (read) (interaction-environment)))
+          (write-value
+            (guard (error (#t error))
+              (eval (read) (interaction-environment))))
           (newline)
           (main))))))
+
+(let ((arguments (command-line)))
+  (when (or
+         (member "-h" arguments)
+         (member "--help" arguments))
+    (write-string "The Stak Scheme REPL interpreter.\n\n")
+    (write-string "Usage: stak-repl\n")
+    (exit)))
 
 (main)

@@ -2,6 +2,7 @@ use core::{
     error,
     fmt::{self, Display, Formatter},
 };
+use stak_vm::Exception;
 
 /// An error of primitives.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -14,6 +15,15 @@ pub enum PrimitiveError {
     WriteError,
     /// A failure to write to standard output.
     WriteOutput,
+}
+
+impl Exception for PrimitiveError {
+    fn is_critical(&self) -> bool {
+        match self {
+            Self::ReadInput | Self::WriteError | Self::WriteOutput => false,
+            Self::Vm(error) => error.is_critical(),
+        }
+    }
 }
 
 impl error::Error for PrimitiveError {}

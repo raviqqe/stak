@@ -1,0 +1,15 @@
+[package]
+name = "stak-native"
+description = "Optimized primitives of native functions for Stak Scheme"
+version.workspace = true
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+stak-vm = { version = "0.10.15", path = "../vm" }
+
+[lints]
+workspace = true

@@ -1,6 +1,7 @@
 #[cfg(feature = "profile")]
 use crate::profiler::Profiler;
 use crate::{
+    Error, Exception, StackSlot,
     code::{INTEGER_BASE, NUMBER_BASE, SHARE_BASE, TAG_BASE},
     cons::{Cons, NEVER},
     instruction::Instruction,
@@ -9,11 +10,10 @@ use crate::{
     primitive_set::PrimitiveSet,
     r#type::Type,
     value::{TypedValue, Value},
-    Error, StackSlot,
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter};
+use core::fmt::{self, Display, Formatter, Write};
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -36,9 +36,10 @@ macro_rules! profile_event {
     };
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct Arity {
     // A count does not include a variadic argument.
-    count: Number,
+    count: usize,
     variadic: bool,
 }
 
@@ -54,7 +55,7 @@ pub struct Vm<'a, T: PrimitiveSet> {
 // volatile variables live across garbage collections.
 impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Creates a virtual machine.
-    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, T::Error> {
+    pub fn new(heap: &'a mut [Value], primitive_set: T) -> Result<Self, Error> {
         Ok(Self {
             primitive_set,
             memory: Memory::new(heap)?,
@@ -78,12 +79,62 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Returns a mutable reference to a primitive set.
-    pub fn primitive_set_mut(&mut self) -> &mut T {
+    pub const fn primitive_set_mut(&mut self) -> &mut T {
         &mut self.primitive_set
     }
 
-    /// Runs a virtual machine.
+    /// Runs bytecodes on a virtual machine.
     pub fn run(&mut self) -> Result<(), T::Error> {
+        while let Err(error) = self.run_with_continuation() {
+            if error.is_critical() {
+                return Err(error);
+            }
+
+            let Some(continuation) = self.memory.cdr(self.memory.null()).to_cons() else {
+                return Err(error);
+            };
+
+            if self.memory.cdr(continuation).tag() != Type::Procedure as _ {
+                return Err(error);
+            }
+
+            self.memory.set_register(continuation);
+            let string = self.memory.build_string("")?;
+            let symbol = self.memory.allocate(
+                self.memory.register().into(),
+                string.set_tag(Type::Symbol as _).into(),
+            )?;
+            let code = self.memory.allocate(
+                symbol.into(),
+                self.memory
+                    .code()
+                    .set_tag(
+                        Instruction::Call as u16
+                            + Self::build_arity(Arity {
+                                count: 1,
+                                variadic: false,
+                            }) as u16,
+                    )
+                    .into(),
+            )?;
+            self.memory.set_code(code);
+
+            self.memory.set_register(self.memory.null());
+            write!(&mut self.memory, "{error}").map_err(Error::from)?;
+            let code = self.memory.allocate(
+                self.memory.register().into(),
+                self.memory
+                    .code()
+                    .set_tag(Instruction::Constant as _)
+                    .into(),
+            )?;
+            self.memory.set_code(code);
+        }
+
+        Ok(())
+    }
+
+    fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
@@ -94,9 +145,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instruction::GET => self.get()?,
                 Instruction::SET => self.set(),
                 Instruction::IF => self.r#if(),
-                Instruction::NOP => self.advance_code(),
                 code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
             }
+
+            self.advance_code();
 
             trace_memory!(self);
         }
@@ -104,18 +156,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn constant(&mut self) -> Result<(), T::Error> {
+    #[inline]
+    fn constant(&mut self) -> Result<(), Error> {
         let constant = self.operand();
 
         trace!("constant", constant);
 
         self.memory.push(constant)?;
-        self.advance_code();
 
         Ok(())
     }
 
-    fn get(&mut self) -> Result<(), T::Error> {
+    #[inline]
+    fn get(&mut self) -> Result<(), Error> {
         let operand = self.operand_cons();
         let value = self.memory.car(operand);
 
@@ -123,11 +176,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.push(value)?;
-        self.advance_code();
 
         Ok(())
     }
 
+    #[inline]
     fn set(&mut self) {
         let operand = self.operand_cons();
         let value = self.memory.pop();
@@ -136,22 +189,19 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("value", value);
 
         self.memory.set_car(operand, value);
-        self.advance_code();
     }
 
+    #[inline]
     fn r#if(&mut self) {
-        let value = self.memory.pop();
+        let cons = self.memory.stack();
 
-        self.memory.set_code(
-            (if value == self.memory.boolean(false).into() {
-                self.memory.cdr(self.memory.code())
-            } else {
-                self.operand()
-            })
-            .assume_cons(),
-        );
+        if self.memory.pop() != self.memory.boolean(false).into() {
+            self.memory.set_cdr(cons, self.operand());
+            self.memory.set_code(cons);
+        }
     }
 
+    #[inline(always)]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
@@ -159,7 +209,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         trace!("procedure", procedure);
         trace!("return", r#return);
 
-        if self.environment(procedure).tag() != Type::Procedure as u16 {
+        if self.environment(procedure).tag() != Type::Procedure as _ {
             return Err(Error::ProcedureExpected.into());
         }
 
@@ -185,7 +235,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.memory.null()
                 };
 
-                for _ in 0..arguments.count.to_i64() {
+                for _ in 0..arguments.count {
                     let value = self.memory.pop();
                     list = self.memory.cons(value, list)?;
                 }
@@ -208,13 +258,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                         .into(),
                 )?;
                 self.memory.set_stack(stack);
-                self.memory.set_code(
-                    self.memory
-                        .cdr(self.code(self.memory.code()).assume_cons())
-                        .assume_cons(),
-                );
+                self.memory
+                    .set_code(self.code(self.memory.code()).assume_cons());
 
-                for _ in 0..parameters.count.to_i64() {
+                for _ in 0..parameters.count {
                     if self.memory.register() == self.memory.null() {
                         return Err(Error::ArgumentCount.into());
                     }
@@ -244,20 +291,26 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 
                 self.primitive_set
                     .operate(&mut self.memory, primitive.to_i64() as _)?;
-                self.advance_code();
             }
         }
 
         Ok(())
     }
 
+    #[inline]
     const fn parse_arity(info: usize) -> Arity {
         Arity {
-            count: Number::from_i64((info / 2) as _),
+            count: info / 2,
             variadic: info % 2 == 1,
         }
     }
 
+    #[inline]
+    const fn build_arity(arity: Arity) -> usize {
+        2 * arity.count + arity.variadic as usize
+    }
+
+    #[inline]
     fn advance_code(&mut self) {
         let mut code = self.memory.cdr(self.memory.code()).assume_cons();
 
@@ -284,11 +337,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     const fn operand_cons(&self) -> Cons {
-        self.resolve_variable(self.operand())
-    }
-
-    const fn resolve_variable(&self, operand: Value) -> Cons {
-        match operand.to_typed() {
+        match self.operand().to_typed() {
             TypedValue::Cons(cons) => cons,
             TypedValue::Number(index) => self.memory.tail(self.memory.stack(), index.to_i64() as _),
         }
@@ -377,11 +426,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     fn decode_ribs(&mut self, input: &mut impl Iterator<Item = u8>) -> Result<Cons, Error> {
         while let Some(head) = input.next() {
             if head & 1 == 0 {
-                let cdr = self.memory.pop();
+                let cdr = self.memory.top();
                 let cons = self
                     .memory
                     .allocate(Number::from_i64((head >> 1) as _).into(), cdr)?;
-                self.memory.push(cons.into())?;
+                self.memory.set_top(cons.into());
             } else if head & 0b10 == 0 {
                 let head = head >> 2;
 
@@ -412,11 +461,13 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     self.memory.push(value)?;
                 }
             } else if head & 0b100 == 0 {
+                let cons = self.memory.stack();
                 let cdr = self.memory.pop();
-                let car = self.memory.pop();
-                let r#type = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
-                let cons = self.memory.allocate(car, cdr.set_tag(r#type as _))?;
-                self.memory.push(cons.into())?;
+                let car = self.memory.top();
+                let tag = Self::decode_integer_tail(input, head >> 3, TAG_BASE)?;
+                self.memory.set_car(cons, car);
+                self.memory.set_raw_cdr(cons, cdr.set_tag(tag as _));
+                self.memory.set_top(cons.into());
             } else {
                 self.memory.push(
                     Self::decode_number(Self::decode_integer_tail(input, head >> 3, NUMBER_BASE)?)
@@ -466,5 +517,58 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
 impl<T: PrimitiveSet> Display for Vm<'_, T> {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         write!(formatter, "{}", &self.memory)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct FakePrimitiveSet {}
+
+    impl PrimitiveSet for FakePrimitiveSet {
+        type Error = Error;
+
+        fn operate(
+            &mut self,
+            _memory: &mut Memory<'_>,
+            _primitive: usize,
+        ) -> Result<(), Self::Error> {
+            Ok(())
+        }
+    }
+
+    type VoidVm = Vm<'static, FakePrimitiveSet>;
+
+    #[test]
+    fn arity() {
+        for arity in [
+            Arity {
+                count: 0,
+                variadic: false,
+            },
+            Arity {
+                count: 1,
+                variadic: false,
+            },
+            Arity {
+                count: 2,
+                variadic: false,
+            },
+            Arity {
+                count: 0,
+                variadic: true,
+            },
+            Arity {
+                count: 1,
+                variadic: true,
+            },
+            Arity {
+                count: 2,
+                variadic: true,
+            },
+        ] {
+            assert_eq!(VoidVm::parse_arity(VoidVm::build_arity(arity)), arity);
+        }
     }
 }

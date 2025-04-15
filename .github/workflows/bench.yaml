@@ -6,7 +6,9 @@ on:
   pull_request:
 concurrency:
   group: bench-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+env:
+  GUILE_AUTO_COMPILE: 0
 jobs:
   interpret:
     strategy:
@@ -17,7 +19,8 @@ jobs:
           - macos-15
         options:
           -
-          - -d
+          - -i
+          - -b
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
@@ -26,11 +29,42 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
+  code_size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/code_size_bench.sh
+  rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          -
+          - --features float62
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: cargo bench ${{ matrix.options }}
+  codspeed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: cargo install --features vendored-openssl cargo-codspeed
+      - run: cargo codspeed build
+      - uses: codspeedhq/action@v3
+        with:
+          run: cargo codspeed run
+          token: ${{ secrets.CODSPEED_TOKEN }}
   bench:
     needs:
       - interpret
+      - code_size
+      - rust
     if: always()
     runs-on: ubuntu-latest
     steps:

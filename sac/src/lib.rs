@@ -1,8 +1,10 @@
 //! Utilities to build executable binaries from bytecode files.
 
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
 #[cfg(feature = "std")]
+#[doc(hidden)]
 pub extern crate std;
 
 #[doc(hidden)]
@@ -27,10 +29,20 @@ pub mod __private {
     pub use std;
 }
 
-/// Defines a `main` function that executes a source file at a given path.
+/// Defines a `main` function that runs a given source file.
+///
+/// The R7RS standard libraries are based on [the `std` crate](https://doc.rust-lang.org/std/).
 ///
 /// The given source file is compiled into bytecodes and bundled into a
 /// resulting binary.
+///
+/// # Examples
+///
+/// ```rust
+/// use stak::sac::main;
+///
+/// main!("main.scm");
+/// ```
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! main {
@@ -54,7 +66,7 @@ macro_rules! main {
         };
 
         #[derive(clap::Parser)]
-        #[command(about, version)]
+        #[command(disable_help_flag = true, ignore_errors = true, version)]
         struct Arguments {
             #[arg()]
             arguments: Vec<String>,
@@ -83,7 +95,9 @@ macro_rules! main {
     };
 }
 
-/// Defines a `main` function that executes a source file at a given path.
+/// Defines a `main` function that runs a given source file.
+///
+/// The R7RS standard libraries are based on [the `libc` crate](https://docs.rs/libc).
 ///
 /// The given source file is compiled into bytecodes and bundled into a
 /// resulting binary.
@@ -115,7 +129,7 @@ macro_rules! libc_main {
             unsafe { exit(1) }
         }
 
-        #[cfg_attr(not(test), no_mangle)]
+        #[cfg_attr(not(test), unsafe(no_mangle))]
         unsafe extern "C" fn main(argc: isize, argv: *const *const i8) -> isize {
             let mut heap = Heap::new($heap_size, Default::default);
             let mut vm = Vm::new(

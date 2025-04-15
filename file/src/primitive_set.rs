@@ -1,11 +1,10 @@
+mod error;
 mod primitive;
 
 pub use self::primitive::Primitive;
-use crate::FileSystem;
-use heapless::Vec;
-use stak_vm::{Error, Memory, Number, PrimitiveSet, Value};
-
-const PATH_SIZE: usize = 128;
+use crate::{FileError, FileSystem};
+pub use error::PrimitiveError;
+use stak_vm::{Error, Memory, Number, PrimitiveSet};
 
 /// A primitive set for a file system.
 pub struct FilePrimitiveSet<T: FileSystem> {
@@ -17,93 +16,77 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
     pub const fn new(file_system: T) -> Self {
         Self { file_system }
     }
-
-    fn operate_option<'a>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&mut Memory<'a>) -> Option<Value>,
-    ) -> Result<(), Error> {
-        let value = operate(memory).unwrap_or_else(|| memory.boolean(false).into());
-        memory.push(value)?;
-        Ok(())
-    }
-
-    fn operate_result<'a, E>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&mut Memory<'a>) -> Result<(), E>,
-    ) -> Result<(), Error> {
-        let result = operate(memory);
-        memory.push(memory.boolean(result.is_ok()).into())?;
-        Ok(())
-    }
-
-    fn decode_path(memory: &mut Memory, mut list: Value) -> Option<Vec<u8, PATH_SIZE>> {
-        let mut path = Vec::<_, PATH_SIZE>::new();
-
-        while list.assume_cons() != memory.null() {
-            path.push(memory.car_value(list).assume_number().to_i64() as u8)
-                .ok()?;
-            list = memory.cdr_value(list);
-        }
-
-        path.push(0).ok()?;
-
-        Some(path)
-    }
 }
 
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
-    type Error = Error;
+    type Error = PrimitiveError;
 
     fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
-            Primitive::OPEN_FILE => Self::operate_option(memory, |memory| {
+            Primitive::OPEN_FILE => {
                 let [list, output] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
-                let output = output != memory.boolean(false).into();
+                let path = T::decode_path(memory, list).map_err(|_| FileError::PathDecode)?;
 
-                self.file_system
-                    .open(&path, output)
-                    .ok()
-                    .map(|descriptor| Number::new(descriptor as _).into())
-            })?,
-            Primitive::CLOSE_FILE => Self::operate_result(memory, |memory| {
-                let [descriptor] = memory.pop_numbers();
-
-                self.file_system.close(descriptor.to_i64() as _)
-            })?,
-            Primitive::READ_FILE => Self::operate_option(memory, |memory| {
+                memory.push(
+                    Number::from_i64(
+                        self.file_system
+                            .open(path.as_ref(), output != memory.boolean(false).into())
+                            .map_err(|_| FileError::Open)? as _,
+                    )
+                    .into(),
+                )?;
+            }
+            Primitive::CLOSE_FILE => {
                 let [descriptor] = memory.pop_numbers();
 
                 self.file_system
-                    .read(descriptor.to_i64() as _)
-                    .ok()
-                    .map(|byte| Number::new(byte as _).into())
-            })?,
-            Primitive::WRITE_FILE => Self::operate_result(memory, |memory| {
+                    .close(descriptor.to_i64() as _)
+                    .map_err(|_| FileError::Close)?;
+
+                memory.push(memory.boolean(false).into())?;
+            }
+            Primitive::READ_FILE => {
+                let [descriptor] = memory.pop_numbers();
+
+                memory.push(self.file_system.read(descriptor.to_i64() as _).map_or_else(
+                    |_| memory.boolean(false).into(),
+                    |byte| Number::from_i64(byte as _).into(),
+                ))?;
+            }
+            Primitive::WRITE_FILE => {
                 let [descriptor, byte] = memory.pop_numbers();
 
                 self.file_system
                     .write(descriptor.to_i64() as _, byte.to_i64() as _)
-            })?,
-            Primitive::DELETE_FILE => Self::operate_option(memory, |memory| {
+                    .map_err(|_| FileError::Write)?;
+
+                memory.push(memory.boolean(false).into())?;
+            }
+            Primitive::DELETE_FILE => {
                 let [list] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                let path = T::decode_path(memory, list).map_err(|_| FileError::PathDecode)?;
 
                 self.file_system
-                    .delete(&path)
-                    .ok()
-                    .map(|_| memory.boolean(true).into())
-            })?,
-            Primitive::EXISTS_FILE => Self::operate_option(memory, |memory| {
-                let [list] = memory.pop_many();
-                let path = Self::decode_path(memory, list)?;
+                    .delete(path.as_ref())
+                    .map_err(|_| FileError::Delete)?;
 
-                self.file_system
-                    .exists(&path)
-                    .ok()
-                    .map(|value| memory.boolean(value).into())
-            })?,
-            _ => return Err(Error::IllegalPrimitive),
+                memory.push(memory.boolean(false).into())?;
+            }
+            Primitive::EXISTS_FILE => {
+                let [list] = memory.pop_many();
+                let path = T::decode_path(memory, list).map_err(|_| FileError::PathDecode)?;
+
+                memory.push(
+                    memory
+                        .boolean(
+                            self.file_system
+                                .exists(path.as_ref())
+                                .map_err(|_| FileError::Exists)?,
+                        )
+                        .into(),
+                )?;
+            }
+            _ => return Err(Error::IllegalPrimitive.into()),
         }
 
         Ok(())

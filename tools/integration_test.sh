@@ -27,6 +27,7 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
+brew install chibi-scheme gauche guile parallel
 bundler install
 
 cargo build --profile release_test --features $features
@@ -35,8 +36,8 @@ cargo build --profile release_test --features $features
   cargo build --release
 )
 
-export STAK_ROOT=$PWD
-export PATH=$PWD/tools/scheme/$interpreter:$PATH
+export STAK_ROOT=$PWD/tools/scheme/$interpreter
+export PATH=$STAK_ROOT:$PATH
 
 start=$(epoch)
 

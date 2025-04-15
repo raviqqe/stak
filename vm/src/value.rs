@@ -1,8 +1,8 @@
 use crate::{
     cons::{Cons, Tag, NEVER},
     number::Number,
+    value_inner,
 };
-use cfg_exif::feature;
 use core::fmt::{self, Display, Formatter};
 
 /// A value.
@@ -71,11 +71,7 @@ impl Value {
     /// Checks if it is a cons.
     #[inline]
     pub const fn is_cons(&self) -> bool {
-        feature!(if ("float") {
-            nonbox::f64::u64::unbox_unsigned(self.0).is_some()
-        } else {
-            self.0 & 1 == 0
-        })
+        value_inner::is_cons(self.0)
     }
 
     /// Checks if it is a number.
@@ -102,11 +98,6 @@ impl Value {
         } else {
             self
         }
-    }
-
-    #[inline]
-    pub(crate) const fn raw_eq(self, value: Self) -> bool {
-        self.0 == value.0
     }
 
     const fn from_cons(cons: Cons) -> Self {
@@ -157,7 +148,7 @@ impl Display for Value {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Type;
+    use crate::{Type, cons::NEVER};
 
     #[test]
     fn convert_cons() {

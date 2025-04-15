@@ -6,16 +6,22 @@ use self::primitive::Primitive;
 use core::ops::{Add, Div, Mul, Rem, Sub};
 use stak_device::{Device, DevicePrimitiveSet};
 use stak_file::{FilePrimitiveSet, FileSystem};
+use stak_inexact::InexactPrimitiveSet;
+use stak_native::{EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
-use stak_vm::{Memory, Number, NumberRepresentation, PrimitiveSet, Tag, Type, Value};
+use stak_vm::{Memory, Number, PrimitiveSet, Tag, Type, Value};
 
-/// A primitive set that covers R7RS small.
+/// A primitive set that covers [the R7RS small](https://standards.scheme.org/corrected-r7rs/r7rs.html).
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clock> {
     device: DevicePrimitiveSet<D>,
     file: FilePrimitiveSet<F>,
     process_context: ProcessContextPrimitiveSet<P>,
     time: TimePrimitiveSet<C>,
+    inexact: InexactPrimitiveSet,
+    equal: EqualPrimitiveSet,
+    type_check: TypeCheckPrimitiveSet,
+    list: ListPrimitiveSet,
 }
 
 impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D, F, P, C> {
@@ -26,6 +32,10 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
             file: FilePrimitiveSet::new(file_system),
             process_context: ProcessContextPrimitiveSet::new(process_context),
             time: TimePrimitiveSet::new(clock),
+            inexact: Default::default(),
+            equal: Default::default(),
+            type_check: Default::default(),
+            list: Default::default(),
         }
     }
 
@@ -39,45 +49,13 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         self.device.device_mut()
     }
 
-    fn operate_top<'a>(
-        memory: &mut Memory<'a>,
-        operate: impl Fn(&Memory<'a>, Value) -> Value,
-    ) -> Result<(), Error> {
-        let x = memory.pop();
-        memory.push(operate(memory, x))?;
-        Ok(())
-    }
-
-    fn operate_unary(memory: &mut Memory, operate: fn(Number) -> Number) -> Result<(), Error> {
-        let [x] = memory.pop_numbers();
-
-        memory.push(operate(x).into())?;
-
-        Ok(())
-    }
-
-    fn operate_binary(
-        memory: &mut Memory,
-        operate: fn(Number, Number) -> Number,
-    ) -> Result<(), Error> {
-        let [x, y] = memory.pop_numbers();
-
-        memory.push(operate(x, y).into())?;
-
-        Ok(())
-    }
-
     fn operate_comparison(
         memory: &mut Memory,
-        operate: fn(NumberRepresentation, NumberRepresentation) -> bool,
+        operate: fn(Number, Number) -> bool,
     ) -> Result<(), Error> {
         let [x, y] = memory.pop_numbers();
 
-        memory.push(
-            memory
-                .boolean(operate(x.to_representation(), y.to_representation()))
-                .into(),
-        )?;
+        memory.push(memory.boolean(operate(x, y)).into())?;
         Ok(())
     }
 
@@ -87,6 +65,9 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         Ok(())
     }
 
+    // We mark this `inline(always)` to make sure inline the `set_field` functions
+    // everywhere.
+    #[inline(always)]
     fn set_field<'a>(
         memory: &mut Memory<'a>,
         set_field: fn(&mut Memory<'a>, Value, Value),
@@ -102,26 +83,15 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> SmallPrimitiveSet<D,
         memory: &mut Memory<'a>,
         field: impl Fn(&Memory<'a>, Value) -> Value,
     ) -> Result<(), Error> {
-        Self::operate_top(memory, |vm, value| {
-            field(vm, value)
+        memory.operate_top(|memory, value| {
+            field(memory, value)
                 .to_cons()
-                .map(|cons| Number::new(cons.tag() as _))
+                .map(|cons| Number::from_i64(cons.tag() as _))
                 .unwrap_or_default()
                 .into()
-        })
-    }
+        })?;
 
-    fn check_type(memory: &mut Memory, r#type: Type) -> Result<(), Error> {
-        Self::operate_top(memory, |memory, value| {
-            memory
-                .boolean(
-                    value
-                        .to_cons()
-                        .map(|cons| memory.cdr(cons).tag() == r#type as _)
-                        .unwrap_or_default(),
-                )
-                .into()
-        })
+        Ok(())
     }
 }
 
@@ -137,12 +107,6 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
 
                 Self::rib(memory, car, cdr, tag.assume_number().to_i64() as _)?;
             }
-            // Optimize a cons.
-            Primitive::CONS => {
-                let [car, cdr] = memory.pop_many();
-
-                Self::rib(memory, car, cdr, Type::Pair as _)?;
-            }
             Primitive::CLOSE => {
                 let closure = memory.pop();
 
@@ -153,11 +117,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                     Type::Procedure as _,
                 )?;
             }
-            Primitive::IS_RIB => Self::operate_top(memory, |memory, value| {
-                memory.boolean(value.is_cons()).into()
-            })?,
-            Primitive::CAR => Self::operate_top(memory, Memory::car_value)?,
-            Primitive::CDR => Self::operate_top(memory, Memory::cdr_value)?,
+            Primitive::IS_RIB => {
+                memory.operate_top(|memory, value| memory.boolean(value.is_cons()).into())?
+            }
+            Primitive::CAR => memory.operate_top(Memory::car_value)?,
+            Primitive::CDR => memory.operate_top(Memory::cdr_value)?,
             Primitive::TAG => Self::tag(memory, Memory::cdr_value)?,
             Primitive::SET_CAR => Self::set_field(memory, Memory::set_car_value)?,
             Primitive::SET_CDR => Self::set_field(memory, Memory::set_cdr_value)?,
@@ -166,24 +130,24 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
                 memory.push(memory.boolean(x == y).into())?;
             }
             Primitive::LESS_THAN => Self::operate_comparison(memory, |x, y| x < y)?,
-            Primitive::ADD => Self::operate_binary(memory, Add::add)?,
-            Primitive::SUBTRACT => Self::operate_binary(memory, Sub::sub)?,
-            Primitive::MULTIPLY => Self::operate_binary(memory, Mul::mul)?,
-            Primitive::DIVIDE => Self::operate_binary(memory, Div::div)?,
-            Primitive::REMAINDER => Self::operate_binary(memory, Rem::rem)?,
-            Primitive::EXPONENTIATION => {
-                Self::operate_unary(memory, |x| Number::from_f64(libm::exp(x.to_f64())))?
-            }
-            Primitive::LOGARITHM => {
-                Self::operate_unary(memory, |x| Number::from_f64(libm::log(x.to_f64())))?
-            }
+            Primitive::ADD => memory.operate_binary(Add::add)?,
+            Primitive::SUBTRACT => memory.operate_binary(Sub::sub)?,
+            Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
+            Primitive::DIVIDE => memory.operate_binary(Div::div)?,
+            Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
+            Primitive::EXPONENTIATION | Primitive::LOGARITHM => self
+                .inexact
+                .operate(memory, primitive - Primitive::EXPONENTIATION)?,
             Primitive::HALT => return Err(Error::Halt),
-            // Optimize type checks.
-            // TODO Use `Self::check_type()`.
-            Primitive::NULL => Self::operate_top(memory, |memory, value| {
-                memory.boolean(value == memory.null().into()).into()
-            })?,
-            Primitive::PAIR => Self::check_type(memory, Type::Pair)?,
+            Primitive::NULL | Primitive::PAIR => self
+                .type_check
+                .operate(memory, primitive - Primitive::NULL)?,
+            Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ => {
+                self.list.operate(memory, primitive - Primitive::ASSQ)?
+            }
+            Primitive::EQV | Primitive::EQUAL_INNER => {
+                self.equal.operate(memory, primitive - Primitive::EQV)?
+            }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
                 self.device.operate(memory, primitive - Primitive::READ)?
             }

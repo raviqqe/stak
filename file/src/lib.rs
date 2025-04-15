@@ -1,5 +1,6 @@
 //! File systems.
 
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
 #[cfg(test)]
@@ -11,4 +12,4 @@ mod file_system;
 mod primitive_set;
 
 pub use file_system::*;
-pub use primitive_set::{FilePrimitiveSet, Primitive};
+pub use primitive_set::{FilePrimitiveSet, Primitive, PrimitiveError};

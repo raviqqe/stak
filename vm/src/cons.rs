@@ -1,11 +1,8 @@
-use crate::{value::Value, Error};
-use cfg_exif::feature;
+use crate::{Error, value::Value, value_inner};
 use core::fmt::{self, Display, Formatter};
 
 /// A tag.
 pub type Tag = u16;
-
-const DUMMY_INDEX: u64 = 0;
 
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
@@ -14,7 +11,7 @@ const DUMMY_INDEX: u64 = 0;
 ///
 /// - In `car`, its cons is moved already on garbage collection.
 /// - In `cdr`, nothing.
-pub const NEVER: Cons = unsafe { Cons::new(DUMMY_INDEX) }.set_tag(Tag::MAX);
+pub(crate) const NEVER: Cons = Cons::new(u64::MAX);
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -55,29 +52,17 @@ impl Cons {
 
     #[inline]
     const fn r#box(value: u64) -> Self {
-        Self(feature!(if ("float") {
-            nonbox::f64::u64::box_unsigned(value)
-        } else {
-            value << 1
-        }))
+        Self(value_inner::box_cons(value))
     }
 
     #[inline]
     const fn unbox(self) -> u64 {
-        feature!(if ("float") {
-            if let Some(index) = nonbox::f64::u64::unbox_unsigned(self.0) {
-                index
-            } else {
-                DUMMY_INDEX
-            }
-        } else {
-            self.0 >> 1
-        })
+        value_inner::unbox_cons(self.0)
     }
 
     #[inline]
-    pub(crate) const fn raw_eq(self, cons: Self) -> bool {
-        self.0 == cons.0
+    pub(crate) const fn index_eq(&self, other: Self) -> bool {
+        self.index() == other.index()
     }
 
     #[inline]
@@ -94,7 +79,7 @@ impl Cons {
 impl PartialEq for Cons {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        self.index() == other.index()
+        self.index_eq(*other)
     }
 }
 
@@ -111,7 +96,7 @@ impl TryFrom<Value> for Cons {
 
 impl Display for Cons {
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
-        if self.raw_eq(NEVER) {
+        if *self == NEVER {
             return write!(formatter, "!");
         }
 

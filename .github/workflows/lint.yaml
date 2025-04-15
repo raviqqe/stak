@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: streetsidesoftware/cspell-action@main
+      - uses: streetsidesoftware/cspell-action@v6
         with:
           files: "**/*.{feature,md,rs,scm,sh,toml}"
   unused_dependencies:
@@ -46,6 +46,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: raviqqe/markdown-link-check@v1
+        with:
+          paths: README.md examples
   lint:
     needs:
       - clippy

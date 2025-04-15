@@ -1,4 +1,9 @@
-use super::{error::LibcError, Read, Write};
+use super::{Read, Write, error::LibcError};
+use rustix::{
+    fd::BorrowedFd,
+    io,
+    stdio::{stderr, stdin, stdout},
+};
 
 /// A stdin.
 #[derive(Debug, Default)]
@@ -18,7 +23,16 @@ impl Read for Stdin {
         let mut bytes = [0];
 
         Ok(
-            if unsafe { libc::read(libc::STDIN_FILENO, &mut bytes as *mut _ as _, 1) } == 1 {
+            if io::read(
+                #[allow(unused_unsafe)]
+                unsafe {
+                    stdin()
+                },
+                &mut bytes,
+            )
+            .map_err(|_| LibcError::Stdin)?
+                == 1
+            {
                 Some(bytes[0])
             } else {
                 None
@@ -42,7 +56,14 @@ impl Write for Stdout {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(libc::STDOUT_FILENO, byte, LibcError::Stdout)
+        write(
+            #[allow(unused_unsafe)]
+            unsafe {
+                stdout()
+            },
+            byte,
+            LibcError::Stdout,
+        )
     }
 }
 
@@ -61,14 +82,19 @@ impl Write for Stderr {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(libc::STDERR_FILENO, byte, LibcError::Stderr)
+        write(
+            #[allow(unused_unsafe)]
+            unsafe {
+                stderr()
+            },
+            byte,
+            LibcError::Stderr,
+        )
     }
 }
 
-fn write(fd: i32, byte: u8, error: LibcError) -> Result<(), LibcError> {
-    let mut bytes = [byte];
-
-    if unsafe { libc::write(fd, &mut bytes as *mut _ as _, 1) } == 1 {
+fn write(fd: BorrowedFd, byte: u8, error: LibcError) -> Result<(), LibcError> {
+    if io::write(fd, &[byte]).map_err(|_| error)? == 1 {
         Ok(())
     } else {
         Err(error)

@@ -6,5 +6,5 @@ interface Props {
 }
 
 export const ErrorMessage = (props: Props): JSX.Element => (
-  <>{props.children && <p class={styles.container}>{props.children}</p>}</>
+  <>{props.children && <p class={styles.root}>{props.children}</p>}</>
 );

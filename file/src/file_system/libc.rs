@@ -1,95 +1,138 @@
-use super::{FileDescriptor, FileError, FileSystem};
-use core::ffi::c_int;
-// spell-checker: disable-next-line
-use libc::{F_OK, S_IRUSR, S_IWUSR};
+use super::{FileDescriptor, FileError, FileSystem, utility::decode_path};
+use core::ffi::CStr;
+use heapless::{FnvIndexMap, Vec};
+use rustix::{
+    fd::{AsFd, BorrowedFd, OwnedFd},
+    fs::{self, Access, Mode, OFlags},
+    io::{self, Errno},
+};
+use stak_vm::{Memory, Value};
+
+const PATH_SIZE: usize = 128;
+const DEFAULT_FILE_CAPACITY: usize = 32;
+
+// TODO Use `heapless::CString`.
+pub struct CString(Vec<u8, PATH_SIZE>);
+
+impl CString {
+    const fn new(vector: Vec<u8, PATH_SIZE>) -> Self {
+        Self(vector)
+    }
+}
+
+impl AsRef<CStr> for CString {
+    fn as_ref(&self) -> &CStr {
+        CStr::from_bytes_with_nul(&self.0).expect("null-terminated string")
+    }
+}
 
 /// A file system based on the libc API.
-#[derive(Debug)]
-pub struct LibcFileSystem {}
+#[derive(Debug, Default)]
+pub struct LibcFileSystem<const N: usize = DEFAULT_FILE_CAPACITY> {
+    descriptor: FileDescriptor,
+    files: FnvIndexMap<FileDescriptor, OwnedFd, N>,
+}
 
 impl LibcFileSystem {
     /// Creates a file system.
-    pub const fn new() -> Self {
-        Self {}
+    pub fn new() -> Self {
+        Self::default()
     }
 
-    fn execute(error: FileError, callback: impl Fn() -> c_int) -> Result<(), FileError> {
-        if callback() == 0 {
-            Ok(())
-        } else {
-            Err(error)
-        }
+    fn file(&mut self, descriptor: FileDescriptor) -> Result<BorrowedFd, FileError> {
+        Ok(self
+            .files
+            .get(&descriptor)
+            .ok_or(FileError::InvalidFileDescriptor)?
+            .as_fd())
     }
 }
 
 impl FileSystem for LibcFileSystem {
+    type Path = CStr;
+    type PathBuf = CString;
     type Error = FileError;
 
-    fn open(&self, path: &[u8], output: bool) -> Result<FileDescriptor, Self::Error> {
-        let descriptor = unsafe {
-            libc::open(
-                path as *const _ as _,
-                if output {
-                    // spell-checker: disable-next-line
-                    libc::O_WRONLY | libc::O_CREAT | libc::O_TRUNC
-                } else {
-                    // spell-checker: disable-next-line
-                    libc::O_RDONLY
-                },
+    fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
+        let file = fs::open(
+            path,
+            if output {
                 // spell-checker: disable-next-line
-                (S_IRUSR | S_IWUSR) as c_int,
-            )
-        };
+                OFlags::WRONLY | OFlags::CREATE | OFlags::TRUNC
+            } else {
+                // spell-checker: disable-next-line
+                OFlags::RDONLY
+            },
+            // spell-checker: disable-next-line
+            Mode::RUSR | Mode::WUSR,
+        )
+        .map_err(|_| FileError::Open)?;
 
-        if descriptor >= 0 {
-            Ok(descriptor as _)
-        } else {
-            Err(FileError::Open)
-        }
+        let descriptor = self.descriptor;
+
+        self.files
+            .insert(descriptor, file)
+            .map_err(|_| FileError::InvalidFileDescriptor)?;
+        self.descriptor = self.descriptor.wrapping_add(1);
+
+        Ok(descriptor)
     }
 
-    fn close(&self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
-        Self::execute(FileError::Close, || unsafe { libc::close(descriptor as _) })
+    fn close(&mut self, descriptor: FileDescriptor) -> Result<(), Self::Error> {
+        self.files.remove(&descriptor);
+
+        Ok(())
     }
 
-    fn read(&self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
+    fn read(&mut self, descriptor: FileDescriptor) -> Result<u8, Self::Error> {
         let mut buffer = [0u8; 1];
 
-        if unsafe { libc::read(descriptor as _, &mut buffer as *mut _ as _, 1) } == 1 {
-            Ok(buffer[0])
-        } else {
+        if io::read(self.file(descriptor)?, &mut buffer).map_err(|_| FileError::Read)? == 0 {
             Err(FileError::Read)
+        } else {
+            Ok(buffer[0])
         }
     }
 
-    fn write(&self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
-        Self::execute(FileError::Write, || {
-            let buffer = [byte];
-            (unsafe { libc::write(descriptor as _, &buffer as *const _ as _, 1) } != 1) as i32
-        })
+    fn write(&mut self, descriptor: FileDescriptor, byte: u8) -> Result<(), Self::Error> {
+        let buffer = [byte];
+
+        io::write(self.file(descriptor)?, &buffer).map_err(|_| FileError::Write)?;
+
+        Ok(())
     }
 
-    fn delete(&self, path: &[u8]) -> Result<(), Self::Error> {
-        Self::execute(FileError::Delete, || unsafe {
-            libc::remove(path as *const _ as _)
-        })
+    fn delete(&mut self, path: &Self::Path) -> Result<(), Self::Error> {
+        fs::unlink(path).map_err(|_| FileError::Delete)
     }
 
-    fn exists(&self, path: &[u8]) -> Result<bool, Self::Error> {
-        Ok(unsafe { libc::access(path as *const _ as _, F_OK) } == 0)
+    fn exists(&self, path: &Self::Path) -> Result<bool, Self::Error> {
+        match fs::access(path, Access::EXISTS) {
+            Ok(()) => Ok(true),
+            // spell-checker: disable-next-line
+            Err(number) if number == Errno::NOENT => Ok(false),
+            Err(_) => Err(FileError::Exists),
+        }
     }
-}
 
-impl Default for LibcFileSystem {
-    fn default() -> Self {
-        Self::new()
+    fn decode_path(memory: &Memory, list: Value) -> Result<Self::PathBuf, Self::Error> {
+        let mut path = decode_path::<PATH_SIZE>(memory, list).ok_or(FileError::PathDecode)?;
+
+        path.push(0).map_err(|_| FileError::PathDecode)?;
+
+        Ok(CString::new(path))
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::fs;
+    use alloc::ffi::CString;
+    use std::{fs, path::Path};
+
+    fn decode_c_str(path: &Path) -> CString {
+        CString::new(path.as_os_str().as_encoded_bytes()).unwrap()
+    }
 
     #[test]
     fn close() {
@@ -97,11 +140,9 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
-        let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), false)
-            .unwrap();
+        let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
         file_system.close(descriptor).unwrap();
     }
 
@@ -110,13 +151,11 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
         fs::write(&path, [42]).unwrap();
 
-        let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), false)
-            .unwrap();
+        let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
 
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
     }
@@ -126,18 +165,14 @@ mod tests {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("foo");
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
-        let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), true)
-            .unwrap();
+        let descriptor = file_system.open(&decode_c_str(&path), true).unwrap();
 
         file_system.write(descriptor, 42).unwrap();
         file_system.close(descriptor).unwrap();
 
-        let descriptor = file_system
-            .open(path.as_os_str().as_encoded_bytes(), false)
-            .unwrap();
+        let descriptor = file_system.open(&decode_c_str(&path), false).unwrap();
         assert_eq!(file_system.read(descriptor).unwrap(), 42);
         file_system.close(descriptor).unwrap();
     }
@@ -148,11 +183,9 @@ mod tests {
         let path = directory.path().join("foo");
         fs::write(&path, []).unwrap();
 
-        let file_system = LibcFileSystem::new();
+        let mut file_system = LibcFileSystem::new();
 
-        file_system
-            .delete(path.as_os_str().as_encoded_bytes())
-            .unwrap();
+        file_system.delete(&decode_c_str(&path)).unwrap();
 
         assert!(!path.exists());
     }
@@ -165,8 +198,6 @@ mod tests {
 
         let file_system = LibcFileSystem::new();
 
-        assert!(file_system
-            .exists(path.as_os_str().as_encoded_bytes())
-            .unwrap());
+        assert!(file_system.exists(&decode_c_str(&path)).unwrap());
     }
 }

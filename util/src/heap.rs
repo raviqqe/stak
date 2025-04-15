@@ -22,12 +22,12 @@ impl<T> Heap<T> {
     }
 
     /// Returns a slice.
-    pub fn as_slice(&mut self) -> &[T] {
+    pub const fn as_slice(&mut self) -> &[T] {
         unsafe { slice::from_raw_parts(self.ptr as _, self.len) }
     }
 
     /// Returns a mutable slice.
-    pub fn as_slice_mut(&mut self) -> &mut [T] {
+    pub const fn as_slice_mut(&mut self) -> &mut [T] {
         unsafe { slice::from_raw_parts_mut(self.ptr as _, self.len) }
     }
 }

@@ -1,0 +1,19 @@
+[package]
+name = "no-std-no-alloc"
+version.workspace = true
+publish = false
+edition.workspace = true
+keywords.workspace = true
+license-file.workspace = true
+readme.workspace = true
+repository.workspace = true
+
+[dependencies]
+heapless = "0.8.0"
+stak = { version = "0.10.15", path = "../../root", default-features = false }
+
+[build-dependencies]
+stak-build = { version = "0.10.15", path = "../../build" }
+
+[lints]
+workspace = true

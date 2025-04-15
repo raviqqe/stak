@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+directory=$(dirname $0)/../../..
+
+script=$1
+shift 1
+
+cat $directory/prelude.scm $script | stak-compile >main.bc
+stak-interpret main.bc "$@"

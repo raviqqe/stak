@@ -24,20 +24,24 @@
 //!         VoidProcessContext::new(),
 //!         VoidClock::new(),
 //!     ),
-//! ).unwrap();
+//! )
+//! .unwrap();
 //!
-//! const PROGRAM: &[u8] = compile_r7rs!(r#"
+//! const BYTECODE: &[u8] = compile_r7rs!(
+//!     r#"
 //!     (import (scheme write))
 //!
 //!     (display "Hello, world!")
-//! "#);
+//!     "#
+//! );
 //!
-//! vm.initialize(PROGRAM.iter().copied()).unwrap();
+//! vm.initialize(BYTECODE.iter().copied()).unwrap();
 //! vm.run().unwrap();
 //!
 //! assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
 //! ```
 
+#![cfg_attr(all(doc, not(doctest)), feature(doc_auto_cfg))]
 #![no_std]
 
 #[cfg(test)]
@@ -48,6 +52,7 @@ extern crate std;
 mod code;
 mod cons;
 mod error;
+mod exception;
 mod instruction;
 mod memory;
 mod number;
@@ -56,15 +61,17 @@ mod profiler;
 mod stack_slot;
 mod r#type;
 mod value;
+mod value_inner;
 mod vm;
 
 pub use cons::{Cons, Tag};
 pub use error::Error;
+pub use exception::Exception;
 pub use memory::Memory;
-pub use number::{Number, NumberRepresentation};
+pub use number::Number;
 pub use primitive_set::PrimitiveSet;
 pub use profiler::Profiler;
-pub use r#type::Type;
 pub use stack_slot::StackSlot;
+pub use r#type::Type;
 pub use value::Value;
 pub use vm::Vm;
