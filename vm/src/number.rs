@@ -1,20 +1,12 @@
-use crate::{Error, value::Value};
-use cfg_elif::{expr::feature, item};
+use crate::{
+    Error,
+    value::Value,
+    value_inner::{self, NumberInner},
+};
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
 };
-
-item::feature!(if ("float62") {
-    /// A number representation.
-    pub type NumberRepresentation = nonbox::f62::Float62;
-} else if ("float") {
-    /// A number representation.
-    pub type NumberRepresentation = f64;
-} else {
-    /// A number representation.
-    pub type NumberRepresentation = i64;
-});
 
 /// A number.
 ///
@@ -22,81 +14,51 @@ item::feature!(if ("float62") {
 /// enabled, it represents a 64-bit floating-point number.
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 #[cfg_attr(not(feature = "float"), derive(Eq, Ord))]
-pub struct Number(NumberRepresentation);
+pub struct Number(NumberInner);
 
 impl Number {
-    /// Creates a number.
     #[inline]
-    pub const fn new(number: NumberRepresentation) -> Self {
-        Self(feature!(if ("float") { number } else { (number << 1) | 1 }))
+    const fn new(number: NumberInner) -> Self {
+        Self(value_inner::from_number(number))
     }
 
-    /// Converts a number to a number representation.
     #[inline]
-    pub const fn to_representation(self) -> NumberRepresentation {
-        feature!(if ("float") { self.0 } else { self.0 >> 1 })
+    const fn to_representation(self) -> NumberInner {
+        value_inner::to_number(self.0)
     }
 
     /// Converts `i64` into a number.
     #[inline]
     pub const fn from_i64(number: i64) -> Self {
-        Self::new(feature!(if ("float62") {
-            nonbox::f62::Float62::from_integer(number)
-        } else {
-            number as _
-        }))
+        Self(value_inner::from_i64(number))
     }
 
     /// Converts a number to `i64`.
     #[inline]
     pub const fn to_i64(self) -> i64 {
-        feature!(if ("float62") {
-            self.0.to_integer_unchecked()
-        } else {
-            self.to_representation() as _
-        })
+        value_inner::to_i64(self.0)
     }
 
     /// Converts `f64` to a number.
     #[inline]
     pub const fn from_f64(number: f64) -> Self {
-        Self::new(feature!(if ("float62") {
-            nonbox::f62::Float62::from_float(number)
-        } else {
-            number as _
-        }))
+        Self(value_inner::from_f64(number))
     }
 
     /// Converts a number to `f64`.
     #[inline]
     pub const fn to_f64(self) -> f64 {
-        feature!(if ("float62") {
-            self.0.to_float_unchecked()
-        } else {
-            self.to_representation() as _
-        })
+        value_inner::to_f64(self.0)
     }
 
     #[inline]
     pub(crate) const fn from_raw(raw: u64) -> Self {
-        Self(feature!(if ("float62") {
-            nonbox::f62::Float62::from_bits(raw)
-        } else if ("float") {
-            f64::from_bits(raw)
-        } else {
-            raw as _
-        }))
+        Self(value_inner::from_raw(raw))
     }
 
     #[inline]
     pub(crate) const fn to_raw(self) -> u64 {
-        feature!(if ("float62") {
-            self.0.to_bits()
-        } else if ("float") {
-            self.0.to_bits()
-        } else {
-            self.0 as _
-        })
+        value_inner::to_raw(self.0)
     }
 }
 
@@ -178,10 +140,19 @@ mod tests {
     }
 
     #[test]
-    fn to_i64() {
+    fn integer() {
         assert_eq!(Number::default().to_i64(), 0);
         assert_eq!(Number::from_i64(42).to_i64(), 42);
         assert_eq!(Number::from_i64(-1).to_i64(), -1);
+    }
+
+    #[test]
+    fn float() {
+        assert_eq!(Number::default().to_f64(), 0.0);
+        assert_eq!(Number::from_f64(1.0).to_f64(), 1.0);
+        assert_eq!(Number::from_f64(42.0).to_f64(), 42.0);
+        assert_eq!(Number::from_f64(-1.0).to_f64(), -1.0);
+        assert_eq!(Number::from_f64(-42.0).to_f64(), -42.0);
     }
 
     #[test]
