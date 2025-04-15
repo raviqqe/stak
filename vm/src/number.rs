@@ -32,21 +32,13 @@ impl Number {
     /// Converts `i64` into a number.
     #[inline]
     pub const fn from_i64(number: i64) -> Self {
-        Self::new(feature!(if ("float62") {
-            nonbox::f62::Float62::from_integer(number)
-        } else {
-            number as _
-        }))
+        Self(value_inner::from_i64(number))
     }
 
     /// Converts a number to `i64`.
     #[inline]
     pub const fn to_i64(self) -> i64 {
-        feature!(if ("float62") {
-            self.0.to_integer_unchecked()
-        } else {
-            self.to_representation() as _
-        })
+        value_inner::to_i64(self.0)
     }
 
     /// Converts `f64` to a number.

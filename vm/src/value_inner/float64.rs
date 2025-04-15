@@ -26,3 +26,13 @@ pub const fn from_number(number: NumberRepresentation) -> NumberRepresentation {
 pub const fn to_number(number: NumberRepresentation) -> NumberRepresentation {
     number
 }
+
+#[inline]
+pub const fn from_i64(number: i64) -> NumberRepresentation {
+    number as _
+}
+
+#[inline]
+pub const fn to_i64(number: NumberRepresentation) -> i64 {
+    number as _
+}
