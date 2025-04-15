@@ -55,6 +55,7 @@
     "libm",
     "memq",
     "memv",
+    "micropython",
     "minifier",
     "mlua",
     "mmap",
