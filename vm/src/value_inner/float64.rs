@@ -49,7 +49,7 @@ pub const fn to_f64(number: NumberRepresentation) -> f64 {
 
 #[inline]
 pub const fn from_raw(raw: u64) -> NumberRepresentation {
-    f64::from_bits(raw)
+    NumberRepresentation::from_bits(raw)
 }
 
 #[inline]
