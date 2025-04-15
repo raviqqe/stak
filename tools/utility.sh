@@ -17,7 +17,7 @@ setup_bench() {
 
   features=$1
 
-  brew install chibi-scheme gauche guile
+  brew install chibi-scheme gauche guile micropython
   cargo install hyperfine
 
   if echo $features | grep b >/dev/null; then
