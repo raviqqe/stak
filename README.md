@@ -173,7 +173,7 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
 
 The Stak Scheme interpreter runs 1.6 to 2.3 times slower than Python 3 at computationally heavy tasks depending on its configuration and benchmarks. For all the benchmark results, see [the GitHub Action](https://github.com/raviqqe/stak/actions/workflows/bench.yaml).
 
-- Baseline: Python 3.12
+- Baseline: Python 3.13
 - Environment: Ubuntu 24.04, x86-64
 
 | Benchmark        | Stak (minimal [^1]) | Stak (full [^2]) |
