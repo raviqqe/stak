@@ -34,7 +34,12 @@ pub const fn from_i64(number: i64) -> NumberInner {
 
 #[inline]
 pub const fn to_i64(number: NumberInner) -> i64 {
-    number.to_integer_unchecked()
+    let Some(integer) = number.to_integer() else {
+        // Unlikely
+        return number.to_float_unchecked() as _;
+    };
+
+    integer
 }
 
 #[inline]
@@ -44,7 +49,12 @@ pub const fn from_f64(number: f64) -> NumberInner {
 
 #[inline]
 pub const fn to_f64(number: NumberInner) -> f64 {
-    number.to_float_unchecked()
+    let Some(integer) = number.to_integer() else {
+        // Unlikely
+        return number.to_float_unchecked();
+    };
+
+    integer as _
 }
 
 #[inline]
