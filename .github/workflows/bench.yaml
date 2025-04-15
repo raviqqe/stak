@@ -38,6 +38,13 @@ jobs:
       - uses: ./.github/actions/setup
       - run: tools/code_size_bench.sh
   rust:
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          -
+          - --features float62
+          - --no-default-features
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
