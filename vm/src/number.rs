@@ -1,7 +1,7 @@
 use crate::{
     Error,
     value::Value,
-    value_inner::{self, NumberRepresentation},
+    value_inner::{self, NumberInner},
 };
 use core::{
     fmt::{self, Display, Formatter},
@@ -14,16 +14,16 @@ use core::{
 /// enabled, it represents a 64-bit floating-point number.
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 #[cfg_attr(not(feature = "float"), derive(Eq, Ord))]
-pub struct Number(NumberRepresentation);
+pub struct Number(NumberInner);
 
 impl Number {
     #[inline]
-    const fn new(number: NumberRepresentation) -> Self {
+    const fn new(number: NumberInner) -> Self {
         Self(value_inner::from_number(number))
     }
 
     #[inline]
-    const fn to_representation(self) -> NumberRepresentation {
+    const fn to_representation(self) -> NumberInner {
         value_inner::to_number(self.0)
     }
 
