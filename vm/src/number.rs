@@ -79,7 +79,7 @@ impl Number {
 impl Default for Number {
     #[inline]
     fn default() -> Self {
-        Self::from_i64(0)
+        Self::new(Default::default())
     }
 }
 
