@@ -36,3 +36,18 @@ pub const fn from_i64(number: i64) -> NumberRepresentation {
 pub const fn to_i64(number: NumberRepresentation) -> i64 {
     number.to_integer_unchecked()
 }
+
+#[inline]
+pub const fn from_f64(number: f64) -> NumberRepresentation {
+    Float62::from_float(number)
+}
+
+#[inline]
+pub const fn from_f64(number: f64) -> NumberRepresentation {
+    Float62::from_float(number)
+}
+
+#[inline]
+pub const fn to_f64(number: NumberRepresentation) -> f64 {
+    number.to_float_unchecked()
+}

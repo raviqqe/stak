@@ -36,3 +36,13 @@ pub const fn from_i64(number: i64) -> NumberRepresentation {
 pub const fn to_i64(number: NumberRepresentation) -> i64 {
     number as _
 }
+
+#[inline]
+pub const fn from_f64(number: f64) -> NumberRepresentation {
+    number
+}
+
+#[inline]
+pub const fn to_f64(number: NumberRepresentation) -> f64 {
+    number
+}
