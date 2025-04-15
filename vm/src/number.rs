@@ -1,11 +1,12 @@
-use crate::{Error, value::Value, value_inner};
+use crate::{
+    Error,
+    value::Value,
+    value_inner::{self, NumberRepresentation},
+};
 use core::{
     fmt::{self, Display, Formatter},
     ops::{Add, Div, Mul, Rem, Sub},
 };
-
-/// A number representation.
-pub type NumberRepresentation = value_inner::NumberRepresentation;
 
 /// A number.
 ///
@@ -16,15 +17,13 @@ pub type NumberRepresentation = value_inner::NumberRepresentation;
 pub struct Number(NumberRepresentation);
 
 impl Number {
-    /// Creates a number.
     #[inline]
-    pub const fn new(number: NumberRepresentation) -> Self {
+    const fn new(number: NumberRepresentation) -> Self {
         Self(value_inner::from_number(number))
     }
 
-    /// Converts a number to a number representation.
     #[inline]
-    pub const fn to_representation(self) -> NumberRepresentation {
+    const fn to_representation(self) -> NumberRepresentation {
         value_inner::to_number(self.0)
     }
 
@@ -150,7 +149,7 @@ mod tests {
     #[test]
     fn float() {
         assert_eq!(Number::default().to_f64(), 0.0);
-        assert_eq!(Number::from_f64(1.0).to_f64(),1.0);
+        assert_eq!(Number::from_f64(1.0).to_f64(), 1.0);
         assert_eq!(Number::from_f64(42.0).to_f64(), 42.0);
         assert_eq!(Number::from_f64(-1.0).to_f64(), -1.0);
         assert_eq!(Number::from_f64(-42.0).to_f64(), -42.0);

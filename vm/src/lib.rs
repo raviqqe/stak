@@ -68,7 +68,7 @@ pub use cons::{Cons, Tag};
 pub use error::Error;
 pub use exception::Exception;
 pub use memory::Memory;
-pub use number::{Number, NumberRepresentation};
+pub use number::Number;
 pub use primitive_set::PrimitiveSet;
 pub use profiler::Profiler;
 pub use stack_slot::StackSlot;
