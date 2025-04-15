@@ -19,3 +19,8 @@ pub const fn is_cons(value: u64) -> bool {
 pub const fn from_number(number: NumberRepresentation) -> NumberRepresentation {
     (number << 1) | 1
 }
+
+#[inline]
+pub const fn to_number(number: NumberRepresentation) -> NumberRepresentation {
+    number >> 1
+}

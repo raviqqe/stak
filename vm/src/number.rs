@@ -26,7 +26,7 @@ impl Number {
     /// Converts a number to a number representation.
     #[inline]
     pub const fn to_representation(self) -> NumberRepresentation {
-        feature!(if ("float") { self.0 } else { self.0 >> 1 })
+        value_inner::to_number(self.0)
     }
 
     /// Converts `i64` into a number.
