@@ -7,7 +7,7 @@ pub type Tag = u16;
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
-/// If this value is in a `car` field in a cons, that means its cons is moved
+/// If this value is in a `car` field in a cons, that means the cons is moved
 /// already on garbage collection. See also [`crate::Memory::collect_garbages`].
 pub(crate) const NEVER: Cons = unsafe { Cons::new(1) }; // A cons can never point an odd index.
 
