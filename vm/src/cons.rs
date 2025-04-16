@@ -7,11 +7,9 @@ pub type Tag = u16;
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
-/// This value means:
-///
-/// - In `car`, its cons is moved already on garbage collection.
-/// - In `cdr`, nothing.
-pub(crate) const NEVER: Cons = Cons::new(u64::MAX);
+/// If this value is in a `car` field in a cons, that means its cons is moved
+/// already on garbage collection. See also [`Memory::collect_garabages`].
+pub(crate) const NEVER: Cons = Cons::new(1); // A cons can never point an odd index.
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
