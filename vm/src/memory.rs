@@ -255,13 +255,18 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
+    const fn index(&self, index: usize) -> usize {
+        if index < self.heap.len() { index } else { 0 }
+    }
+
+    #[inline(never)]
     const fn at(&self, index: usize) -> Value {
-        unsafe { *self.heap.as_ptr().add(index % self.heap.len()) }
+        unsafe { *self.heap.as_ptr().add(self.index(index)) }
     }
 
     #[inline]
     fn at_mut(&mut self, index: usize) -> &mut Value {
-        unsafe { &mut *self.heap.as_mut_ptr().add(index % self.heap.len()) }
+        unsafe { &mut *self.heap.as_mut_ptr().add(self.index(index)) }
     }
 
     #[inline]
