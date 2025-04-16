@@ -38,7 +38,7 @@ impl<T> Heap<T> {
 
 impl<T> Drop for Heap<T> {
     fn drop(&mut self) {
-        // SAFETY: The preivous `malloc` call is guaranteed to have succeeded.
+        // SAFETY: The previous `malloc` call is guaranteed to have succeeded.
         unsafe { libc::free(self.ptr as _) }
     }
 }
