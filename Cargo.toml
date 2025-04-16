@@ -50,6 +50,13 @@ missing_docs = "deny"
 warnings = "deny"
 
 [workspace.lints.clippy]
+cargo = "deny"
+complexity = "deny"
+correctness = "deny"
+perf = "deny"
+style = "deny"
+suspicious = "deny"
+
 alloc_instead_of_core = "deny"
 dbg_macro = "deny"
 derive_partial_eq_without_eq = "deny"
