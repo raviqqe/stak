@@ -38,7 +38,7 @@ members = [
 ]
 
 [workspace.package]
-categories = ["Compilers"]
+categories = ["Compilers", "No standard library", "WebAssembly"]
 edition = "2024"
 keywords = ["interpreter", "language", "scheme"]
 license-file = "LICENSE"
