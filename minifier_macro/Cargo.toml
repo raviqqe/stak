@@ -1,12 +1,13 @@
 [package]
 name = "stak-minifier-macro"
 description = "Macros to minify Stak Scheme source codes"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [lib]
 proc-macro = true
@@ -15,8 +16,8 @@ proc-macro = true
 proc-macro2 = { version = "1.0.94", features = ["proc-macro"] }
 quote = "1.0.40"
 syn = "2.0.100"
-stak-minifier = { version = "0.10.15", path = "../minifier" }
-stak-macro-util = { version = "0.10.15", path = "../macro-util" }
+stak-minifier = { version = "0.10.16", path = "../minifier" }
+stak-macro-util = { version = "0.10.16", path = "../macro-util" }
 
 [lints]
 workspace = true

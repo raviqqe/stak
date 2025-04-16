@@ -16,6 +16,7 @@ impl LibcProcessContext {
     /// arguments to the `main` function in C.
     pub const unsafe fn new(argc: isize, argv: *const *const i8) -> Self {
         Self {
+            // SAFETY: Operating systems guarantee the length of `argv` to be `argc`.
             arguments: unsafe { slice::from_raw_parts(argv, argc as _) },
         }
     }
@@ -23,10 +24,10 @@ impl LibcProcessContext {
 
 impl ProcessContext for LibcProcessContext {
     fn command_line_rev(&self) -> impl IntoIterator<Item = &str> {
-        self.arguments
-            .iter()
-            .rev()
-            .map(|&argument| unsafe { CStr::from_ptr(argument as _) }.to_str().unwrap())
+        self.arguments.iter().rev().map(|&argument| {
+            // SAFETY: Operating systems guarantee elements in `argv` to be C strings.
+            unsafe { CStr::from_ptr(argument as _) }.to_str().unwrap()
+        })
     }
 
     fn environment_variables(&self) -> impl IntoIterator<Item = (&str, &str)> {
