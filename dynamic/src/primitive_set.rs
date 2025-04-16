@@ -67,7 +67,7 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
         let mut marks = bitvec![0; self.values.len()];
 
         for index in 0..(memory.allocation_index() / 2) {
-            // SAFETY: The cons indicies are guaranteed to be within a heap.
+            // SAFETY: The cons indices are guaranteed to be within a heap.
             let cons = unsafe { Cons::new((memory.allocation_start() + 2 * index) as _) };
 
             if memory.cdr(cons).tag() != Type::Foreign as _ {
