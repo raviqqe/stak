@@ -153,6 +153,7 @@ mod tests {
 
     #[test]
     fn convert_cons() {
+        // SAFETY: For testing.
         let cons = unsafe { Cons::new(42) };
 
         assert_eq!(Value::from(cons).to_cons().unwrap(), cons);
@@ -162,6 +163,7 @@ mod tests {
     fn convert_tagged_cons() {
         const TAG: Tag = 0b111;
 
+        // SAFETY: For testing.
         let cons = unsafe { Cons::new(42) }.set_tag(TAG);
         let converted = Value::from(cons).to_cons().unwrap();
 

@@ -263,25 +263,27 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn at(&self, index: usize) -> Value {
+        assert_heap_access!(self, index);
+
         // SAFETY: The given index is always extracted from a valid cons.
         unsafe { *self.heap.as_ptr().add(index) }
     }
 
     #[inline]
-    fn at_mut(&mut self, index: usize) -> &mut Value {
+    const fn at_mut(&mut self, index: usize) -> &mut Value {
+        assert_heap_access!(self, index);
+
         // SAFETY: The given index is always extracted from a valid cons.
         unsafe { &mut *self.heap.as_mut_ptr().add(index) }
     }
 
     #[inline]
     const fn get(&self, index: usize) -> Value {
-        assert_heap_access!(self, index);
         self.at(index)
     }
 
     #[inline]
-    fn set(&mut self, index: usize, value: Value) {
-        assert_heap_access!(self, index);
+    const fn set(&mut self, index: usize, value: Value) {
         *self.at_mut(index) = value
     }
 
@@ -358,12 +360,12 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
+    const fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
         *self.at_mut(cons.index()) = value
     }
 
     #[inline]
-    fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
+    const fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
         *self.at_mut(cons.index() + 1) = value;
     }
 

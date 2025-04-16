@@ -119,6 +119,7 @@ mod tests {
 
     #[test]
     fn tag() {
+        // SAFETY: For testing.
         let cons = unsafe { Cons::new(42) };
 
         assert_eq!(cons.index(), 42);
@@ -137,11 +138,13 @@ mod tests {
 
     #[test]
     fn reset_tag() {
+        // SAFETY: For testing.
         assert_eq!(unsafe { Cons::new(42) }.set_tag(2).set_tag(1).tag(), 1);
     }
 
     #[test]
     fn set_too_large_tag() {
+        // SAFETY: For testing.
         let cons = unsafe { Cons::new(0) }.set_tag(Tag::MAX);
 
         assert_eq!(cons.index(), 0);
