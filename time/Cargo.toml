@@ -1,12 +1,13 @@
 [package]
 name = "stak-time"
 description = "Time library for Stak Scheme"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [features]
 libc = ["dep:rustix"]
@@ -16,7 +17,7 @@ std = []
 rustix = { version = "1.0.5", default-features = false, features = [
   "time",
 ], optional = true }
-stak-vm = { version = "0.10.15", path = "../vm" }
+stak-vm = { version = "0.10.16", path = "../vm" }
 
 [lints]
 workspace = true

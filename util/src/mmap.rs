@@ -19,6 +19,7 @@ impl Mmap {
         let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
 
         Ok(Self {
+            // SAFETY: The passed pointer is null.
             ptr: unsafe {
                 mmap(
                     null_mut(),
@@ -35,15 +36,15 @@ impl Mmap {
 
     /// Returns a slice of bytes.
     pub const fn as_slice(&self) -> &[u8] {
+        // SAFETY: `self.ptr` is guaranteed to have the length of `self.len`.
         unsafe { slice::from_raw_parts(self.ptr, self.len) }
     }
 }
 
 impl Drop for Mmap {
     fn drop(&mut self) {
-        unsafe {
-            munmap(self.ptr as _, self.len).unwrap();
-        }
+        // SAFETY: We ensure that the `mmap` call succeeds.
+        unsafe { munmap(self.ptr as _, self.len).unwrap() }
     }
 }
 

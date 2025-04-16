@@ -1,16 +1,17 @@
 [package]
 name = "stak-build"
 description = "Build scripts for Stak Scheme"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [dependencies]
 glob = "0.3.2"
-stak-compiler = { version = "0.10.15", path = "../compiler" }
+stak-compiler = { version = "0.10.16", path = "../compiler" }
 tokio = { version = "1.44.2", features = [
   "fs",
   "io-util",
