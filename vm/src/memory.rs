@@ -260,7 +260,7 @@ impl<'a> Memory<'a> {
         if index < self.heap.len() { index } else { 0 }
     }
 
-    #[inline(never)]
+    #[inline]
     const fn at(&self, index: usize) -> Value {
         unsafe { *self.heap.as_ptr().add(self.index(index)) }
     }
