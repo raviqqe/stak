@@ -23,7 +23,16 @@ impl Read for Stdin {
         let mut bytes = [0];
 
         Ok(
-            if io::read(stdin(), &mut bytes).map_err(|_| LibcError::Stdin)? == 1 {
+            if io::read(
+                #[allow(unused_unsafe)]
+                unsafe {
+                    stdin()
+                },
+                &mut bytes,
+            )
+            .map_err(|_| LibcError::Stdin)?
+                == 1
+            {
                 Some(bytes[0])
             } else {
                 None
@@ -47,7 +56,14 @@ impl Write for Stdout {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(stdout(), byte, LibcError::Stdout)
+        write(
+            #[allow(unused_unsafe)]
+            unsafe {
+                stdout()
+            },
+            byte,
+            LibcError::Stdout,
+        )
     }
 }
 
@@ -66,7 +82,14 @@ impl Write for Stderr {
     type Error = LibcError;
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write(stderr(), byte, LibcError::Stderr)
+        write(
+            #[allow(unused_unsafe)]
+            unsafe {
+                stderr()
+            },
+            byte,
+            LibcError::Stderr,
+        )
     }
 }
 
