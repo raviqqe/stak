@@ -56,6 +56,7 @@ impl Value {
         if self.is_number() {
             NEVER
         } else {
+            // SAFETY: We checked that this is not a number above.
             unsafe { Cons::from_raw(self.0) }
         }
     }

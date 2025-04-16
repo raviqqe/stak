@@ -11,6 +11,7 @@ const CONS_FIELD_COUNT: usize = 2;
 
 macro_rules! assert_heap_access {
     ($self:expr, $index:expr) => {
+        // SAFETY: This cons is created temporarily and not used for indexing a heap.
         assert_heap_cons!($self, unsafe {
             Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
         });
@@ -48,6 +49,11 @@ pub struct Memory<'a> {
 impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
+        // We check a heap size to guarantee `NEVER` cons's index of `1` to be valid.
+        if heap.len() < 2 {
+            return Err(Error::OutOfMemory);
+        }
+
         let mut memory = Self {
             code: NEVER,
             stack: NEVER,
@@ -206,6 +212,8 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
+        // SAFETY: The OOM check above guarantees that `self.allocation_end()` is still within a
+        // heap.
         let cons = unsafe { Cons::new(self.allocation_end() as u64) };
         self.allocation_index += CONS_FIELD_COUNT;
 
@@ -255,11 +263,13 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn at(&self, index: usize) -> Value {
+        // SAFETY: The given index is always extracted from a valid cons.
         unsafe { *self.heap.as_ptr().add(index) }
     }
 
     #[inline]
     fn at_mut(&mut self, index: usize) -> &mut Value {
+        // SAFETY: The given index is always extracted from a valid cons.
         unsafe { &mut *self.heap.as_mut_ptr().add(index) }
     }
 
@@ -523,6 +533,7 @@ impl Display for Memory<'_> {
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
+            // SAFETY: The index calculated above is always within a heap.
             let cons = unsafe { Cons::new(index as u64) };
 
             write!(
