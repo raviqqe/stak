@@ -58,11 +58,6 @@ impl Cons {
         value_inner::unbox_cons(self.0)
     }
 
-    #[inline]
-    pub(crate) const fn index_eq(&self, other: Self) -> bool {
-        self.index() == other.index()
-    }
-
     /// Creates a cons from its raw representation.
     ///
     /// # Safety
@@ -82,7 +77,7 @@ impl Cons {
 impl PartialEq for Cons {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        self.index_eq(*other)
+        self.index() == other.index()
     }
 }
 
