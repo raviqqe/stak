@@ -7,7 +7,7 @@ pub type Tag = u16;
 /// An unreachable cons. In other words, it is a "null" pointer but not `null`
 /// in Scheme.
 ///
-/// If this value is in a `car` field in a cons, that means its cons is moved
+/// If this value is in a `car` field in a cons, that means the cons is moved
 /// already on garbage collection. See also [`crate::Memory::collect_garbages`].
 pub(crate) const NEVER: Cons = unsafe { Cons::new(1) }; // A cons can never point an odd index.
 
@@ -58,11 +58,6 @@ impl Cons {
         value_inner::unbox_cons(self.0)
     }
 
-    #[inline]
-    pub(crate) const fn index_eq(&self, other: Self) -> bool {
-        self.index() == other.index()
-    }
-
     /// Creates a cons from its raw representation.
     ///
     /// # Safety
@@ -82,7 +77,7 @@ impl Cons {
 impl PartialEq for Cons {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
-        self.index_eq(*other)
+        self.index() == other.index()
     }
 }
 
