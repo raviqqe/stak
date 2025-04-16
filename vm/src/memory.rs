@@ -9,20 +9,17 @@ use core::fmt::{self, Display, Formatter, Write};
 
 const CONS_FIELD_COUNT: usize = 2;
 
-macro_rules! assert_heap_access {
+macro_rules! assert_heap_index {
     ($self:expr, $index:expr) => {
-        assert_heap_cons!(
-            $self,
-            Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
-        );
+        debug_assert!($self.allocation_start() <= $index);
+        debug_assert!($index < $self.allocation_end());
     };
 }
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if !$cons.index_eq(NEVER) {
-            debug_assert!($self.allocation_start() <= $cons.index());
-            debug_assert!($cons.index() < $self.allocation_end());
+        if $cons != NEVER {
+            assert_heap_index!($self, $cons.index());
         }
     };
 }
@@ -49,6 +46,11 @@ pub struct Memory<'a> {
 impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
+        // We check a heap size to guarantee `NEVER` cons's index of `1` to be valid.
+        if heap.len() < 2 {
+            return Err(Error::OutOfMemory);
+        }
+
         let mut memory = Self {
             code: NEVER,
             stack: NEVER,
@@ -174,7 +176,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a value at the top of a stack.
     #[inline]
-    pub fn set_top(&mut self, value: Value) {
+    pub const fn set_top(&mut self, value: Value) {
         self.set_car(self.stack, value);
     }
 
@@ -207,7 +209,9 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        let cons = Cons::new(self.allocation_end() as u64);
+        // SAFETY: The OOM check above guarantees that `self.allocation_end()` is still within a
+        // heap.
+        let cons = unsafe { Cons::new(self.allocation_end() as u64) };
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_heap_cons!(self, cons);
@@ -255,15 +259,27 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    const fn get(&self, index: usize) -> Value {
-        assert_heap_access!(self, index);
-        self.heap[index]
+    const fn at(&self, index: usize) -> Value {
+        // SAFETY: The given index is always extracted from a valid cons.
+        unsafe { *self.heap.as_ptr().add(index) }
     }
 
     #[inline]
-    fn set(&mut self, index: usize, value: Value) {
-        assert_heap_access!(self, index);
-        self.heap[index] = value
+    const fn at_mut(&mut self, index: usize) -> &mut Value {
+        // SAFETY: The given index is always extracted from a valid cons.
+        unsafe { &mut *self.heap.as_mut_ptr().add(index) }
+    }
+
+    #[inline]
+    const fn get(&self, index: usize) -> Value {
+        assert_heap_index!(self, index);
+        self.at(index)
+    }
+
+    #[inline]
+    const fn set(&mut self, index: usize, value: Value) {
+        assert_heap_index!(self, index);
+        *self.at_mut(index) = value
     }
 
     /// Returns a value of a `car` field in a cons.
@@ -280,12 +296,12 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn unchecked_car(&self, cons: Cons) -> Value {
-        self.heap[cons.index()]
+        self.at(cons.index())
     }
 
     #[inline]
     const fn unchecked_cdr(&self, cons: Cons) -> Value {
-        self.heap[cons.index() + 1]
+        self.at(cons.index() + 1)
     }
 
     /// Returns a value of a `car` field in a value assumed as a cons.
@@ -301,24 +317,24 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
+    const fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
         self.set(cons.index() + index, value);
     }
 
     /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
-    pub fn set_raw_car(&mut self, cons: Cons, value: Value) {
+    pub const fn set_raw_car(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 0, value)
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
-    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+    pub const fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 1, value)
     }
 
     #[inline]
-    fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
+    const fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
         self.set_raw_field(
             cons,
             index,
@@ -328,35 +344,35 @@ impl<'a> Memory<'a> {
 
     /// Sets a value to a `car` field in a cons.
     #[inline]
-    pub fn set_car(&mut self, cons: Cons, value: Value) {
+    pub const fn set_car(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
     #[inline]
-    pub fn set_cdr(&mut self, cons: Cons, value: Value) {
+    pub const fn set_cdr(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 1, value)
     }
 
     #[inline]
-    fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index()] = value
+    const fn set_unchecked_car(&mut self, cons: Cons, value: Value) {
+        *self.at_mut(cons.index()) = value
     }
 
     #[inline]
-    fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
-        self.heap[cons.index() + 1] = value;
+    const fn set_unchecked_cdr(&mut self, cons: Cons, value: Value) {
+        *self.at_mut(cons.index() + 1) = value;
     }
 
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline(always)]
-    pub fn set_car_value(&mut self, cons: Value, value: Value) {
+    pub const fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
     #[inline(always)]
-    pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
+    pub const fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
 
@@ -514,7 +530,8 @@ impl Display for Memory<'_> {
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
-            let cons = Cons::new(index as u64);
+            // SAFETY: The index calculated above is always within a heap.
+            let cons = unsafe { Cons::new(index as u64) };
 
             write!(
                 formatter,
