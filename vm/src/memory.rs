@@ -18,7 +18,9 @@ macro_rules! assert_heap_index {
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        assert_heap_index!($self, $cons.index());
+        if $cons != NEVER {
+            assert_heap_index!($self, $cons.index());
+        }
     };
 }
 
