@@ -63,6 +63,11 @@ impl Cons {
         self.index() == other.index()
     }
 
+    /// Creates a cons from its raw representation.
+    ///
+    /// # Safety
+    ///
+    /// The given raw representation must be a valid cons on a heap.
     #[inline]
     pub(crate) const unsafe fn from_raw(raw: u64) -> Self {
         Self(raw)
