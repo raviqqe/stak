@@ -1,12 +1,13 @@
 [package]
 name = "stak-sac"
 description = "Stand-Alone Complex for Stak Scheme"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [features]
 float = ["stak-vm/float"]
@@ -44,3 +45,6 @@ stak-vm = { version = "0.10.16", path = "../vm" }
 
 [dev-dependencies]
 stak = { path = "../root" }
+
+[lints]
+workspace = true

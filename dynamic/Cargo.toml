@@ -1,12 +1,13 @@
 [package]
 name = "stak-dynamic"
 description = "Dynamic primitives for Stak Scheme"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [dependencies]
 any-fn = { version = "0.6.1" }
