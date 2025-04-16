@@ -1,12 +1,13 @@
 [package]
 name = "stak-minifier"
 description = "Stak Scheme source code minifier"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [dependencies]
 stak-configuration = { version = "0.10.16", path = "../configuration" }

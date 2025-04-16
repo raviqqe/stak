@@ -1,12 +1,13 @@
 [package]
 name = "stak-build"
 description = "Build scripts for Stak Scheme"
-version.workspace = true
+categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
 license-file.workspace = true
 readme.workspace = true
 repository.workspace = true
+version.workspace = true
 
 [dependencies]
 glob = "0.3.2"
