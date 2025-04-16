@@ -256,6 +256,7 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn index(&self, index: usize) -> usize {
+        // `csel` instead of `beq`
         if index < self.heap.len() { index } else { 0 }
     }
 
