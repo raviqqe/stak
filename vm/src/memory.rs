@@ -9,21 +9,16 @@ use core::fmt::{self, Display, Formatter, Write};
 
 const CONS_FIELD_COUNT: usize = 2;
 
-macro_rules! assert_heap_access {
+macro_rules! assert_heap_index {
     ($self:expr, $index:expr) => {
-        // SAFETY: This cons is created temporarily and not used for indexing a heap.
-        assert_heap_cons!($self, unsafe {
-            Cons::new(($index / CONS_FIELD_COUNT * CONS_FIELD_COUNT) as u64)
-        });
+        debug_assert!($self.allocation_start() <= $index);
+        debug_assert!($index < $self.allocation_end());
     };
 }
 
 macro_rules! assert_heap_cons {
     ($self:expr, $cons:expr) => {
-        if !$cons.index_eq(NEVER) {
-            debug_assert!($self.allocation_start() <= $cons.index());
-            debug_assert!($cons.index() < $self.allocation_end());
-        }
+        assert_heap_index!($self, $cons.index());
     };
 }
 
@@ -263,7 +258,7 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn at(&self, index: usize) -> Value {
-        assert_heap_access!(self, index);
+        assert_heap_index!(self, index);
 
         // SAFETY: The given index is always extracted from a valid cons.
         unsafe { *self.heap.as_ptr().add(index) }
@@ -271,7 +266,7 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn at_mut(&mut self, index: usize) -> &mut Value {
-        assert_heap_access!(self, index);
+        assert_heap_index!(self, index);
 
         // SAFETY: The given index is always extracted from a valid cons.
         unsafe { &mut *self.heap.as_mut_ptr().add(index) }
