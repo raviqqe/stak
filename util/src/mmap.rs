@@ -19,6 +19,7 @@ impl Mmap {
         let descriptor = fs::open(path, OFlags::RDONLY, Mode::RUSR)?;
 
         Ok(Self {
+            // SAFETY: The passed pointer is null.
             ptr: unsafe {
                 mmap(
                     null_mut(),
