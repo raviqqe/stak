@@ -174,7 +174,7 @@ impl<'a> Memory<'a> {
 
     /// Sets a value at the top of a stack.
     #[inline]
-    pub fn set_top(&mut self, value: Value) {
+    pub const fn set_top(&mut self, value: Value) {
         self.set_car(self.stack, value);
     }
 
@@ -317,24 +317,24 @@ impl<'a> Memory<'a> {
     }
 
     #[inline]
-    fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
+    const fn set_raw_field(&mut self, cons: Cons, index: usize, value: Value) {
         self.set(cons.index() + index, value);
     }
 
     /// Sets a raw value to a `car` field in a cons overwriting its tag.
     #[inline]
-    pub fn set_raw_car(&mut self, cons: Cons, value: Value) {
+    pub const fn set_raw_car(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 0, value)
     }
 
     /// Sets a raw value to a `cdr` field in a cons overwriting its tag.
     #[inline]
-    pub fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
+    pub const fn set_raw_cdr(&mut self, cons: Cons, value: Value) {
         self.set_raw_field(cons, 1, value)
     }
 
     #[inline]
-    fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
+    const fn set_field(&mut self, cons: Cons, index: usize, value: Value) {
         self.set_raw_field(
             cons,
             index,
@@ -344,13 +344,13 @@ impl<'a> Memory<'a> {
 
     /// Sets a value to a `car` field in a cons.
     #[inline]
-    pub fn set_car(&mut self, cons: Cons, value: Value) {
+    pub const fn set_car(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 0, value)
     }
 
     /// Sets a value to a `cdr` field in a cons.
     #[inline]
-    pub fn set_cdr(&mut self, cons: Cons, value: Value) {
+    pub const fn set_cdr(&mut self, cons: Cons, value: Value) {
         self.set_field(cons, 1, value)
     }
 
@@ -366,13 +366,13 @@ impl<'a> Memory<'a> {
 
     /// Sets a value to a `car` field in a value assumed as a cons.
     #[inline(always)]
-    pub fn set_car_value(&mut self, cons: Value, value: Value) {
+    pub const fn set_car_value(&mut self, cons: Value, value: Value) {
         self.set_car(cons.assume_cons(), value);
     }
 
     /// Sets a value to a `cdr` field in a value assumed as a cons.
     #[inline(always)]
-    pub fn set_cdr_value(&mut self, cons: Value, value: Value) {
+    pub const fn set_cdr_value(&mut self, cons: Value, value: Value) {
         self.set_cdr(cons.assume_cons(), value);
     }
 
