@@ -8,7 +8,7 @@ pub type Tag = u16;
 /// in Scheme.
 ///
 /// If this value is in a `car` field in a cons, that means its cons is moved
-/// already on garbage collection. See also [`Memory::collect_garabages`].
+/// already on garbage collection. See also [`Memory::collect_garbages`].
 pub(crate) const NEVER: Cons = Cons::new(1); // A cons can never point an odd index.
 
 const TAG_SIZE: usize = Tag::BITS as usize;
