@@ -258,27 +258,25 @@ impl<'a> Memory<'a> {
 
     #[inline]
     const fn at(&self, index: usize) -> Value {
-        assert_heap_index!(self, index);
-
         // SAFETY: The given index is always extracted from a valid cons.
         unsafe { *self.heap.as_ptr().add(index) }
     }
 
     #[inline]
     const fn at_mut(&mut self, index: usize) -> &mut Value {
-        assert_heap_index!(self, index);
-
         // SAFETY: The given index is always extracted from a valid cons.
         unsafe { &mut *self.heap.as_mut_ptr().add(index) }
     }
 
     #[inline]
     const fn get(&self, index: usize) -> Value {
+        assert_heap_index!(self, index);
         self.at(index)
     }
 
     #[inline]
     const fn set(&mut self, index: usize, value: Value) {
+        assert_heap_index!(self, index);
         *self.at_mut(index) = value
     }
 
