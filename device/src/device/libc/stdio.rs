@@ -24,6 +24,7 @@ impl Read for Stdin {
 
         Ok(
             if io::read(
+                // SAFETY: We do not modify the file descriptor of `stdin`.
                 #[allow(unused_unsafe)]
                 unsafe {
                     stdin()
@@ -57,6 +58,7 @@ impl Write for Stdout {
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         write(
+            // SAFETY: We do not modify the file descriptor of `stdout`.
             #[allow(unused_unsafe)]
             unsafe {
                 stdout()
@@ -83,6 +85,7 @@ impl Write for Stderr {
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         write(
+            // SAFETY: We do not modify the file descriptor of `stderr`.
             #[allow(unused_unsafe)]
             unsafe {
                 stderr()
