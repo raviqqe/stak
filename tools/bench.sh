@@ -21,14 +21,14 @@ setup() {
 
   case $feature in
   i63)
-    stak_options='--no-default-features --features std'
+    build_options='--no-default-features --features std'
     ;;
   f62)
-    stak_options='--no-default-features --features std,float62'
+    build_options='--no-default-features --features std,float62'
     ;;
   esac
 
-  build_binary . -p stak -p stak-interpret $stak_options
+  build_binary . -p stak -p stak-interpret $build_options
   build_binary cmd/minimal -p mstak -p mstak-interpret
 
   export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
