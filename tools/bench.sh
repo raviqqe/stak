@@ -2,10 +2,50 @@
 
 set -ex
 
-features=
+build_binary() {
+  (
+    cd $1
+    shift 1
+    cargo build --release
+    cargo build --release "$@"
+  )
+}
 
-while getopts bi option; do
-  features="$option$features"
+setup() {
+  [ $# -le 1 ]
+
+  feature=$1
+
+  brew install chibi-scheme gambit-scheme gauche guile micropython
+  cargo install hyperfine
+
+  case $feature in
+  i63)
+    build_options='--no-default-features --features std'
+    ;;
+  f62)
+    build_options='--no-default-features --features std,float62'
+    ;;
+  esac
+
+  build_binary . -p stak -p stak-interpret $build_options
+  build_binary cmd/minimal -p mstak -p mstak-interpret
+
+  export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+
+  for file in bench/src/*/main.scm; do
+    cat prelude.scm $file | stak-compile >${file%.scm}.bc
+  done
+}
+
+feature=
+
+while getopts f: option; do
+  case $option in
+  f)
+    feature=$OPTARG
+    ;;
+  esac
 done
 
 shift $(expr $OPTIND - 1)
@@ -20,7 +60,7 @@ cd $(dirname $0)/..
 
 . tools/utility.sh
 
-setup_bench $features
+setup $feature
 
 cd bench/src
 
@@ -29,6 +69,10 @@ for file in $(ls */main.scm | sort | grep $filter); do
 
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file"
   reference=
+
+  if [ $(dirname $base) != eval ]; then
+    scripts="$scripts,gsi $file"
+  fi
 
   if [ -r $base.py ]; then
     reference="python3 $base.py"
