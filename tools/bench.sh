@@ -40,8 +40,12 @@ setup() {
 
 feature=
 
-while getopts bi option; do
-  features="$option$features"
+while getopts f: option; do
+  case $option in
+  f)
+    feature=$OPTARG
+    ;;
+  esac
 done
 
 shift $(expr $OPTIND - 1)
