@@ -60,7 +60,7 @@ cd $(dirname $0)/..
 
 . tools/utility.sh
 
-setup_bench $features
+setup $features
 
 cd bench/src
 
