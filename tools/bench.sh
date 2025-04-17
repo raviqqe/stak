@@ -67,8 +67,12 @@ cd bench/src
 for file in $(ls */main.scm | sort | grep $filter); do
   base=${file%.scm}
 
-  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file,gsi $file"
+  scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file"
   reference=
+
+  if ! echo $base | grep eval >/dev/null; then
+    scripts="$scripts,gsi $file"
+  fi
 
   if [ -r $base.py ]; then
     reference="python3 $base.py"
