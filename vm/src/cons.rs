@@ -31,7 +31,7 @@ impl Cons {
     }
 
     /// Returns a memory address on heap.
-    #[inline]
+    #[inline(never)]
     pub const fn index(self) -> usize {
         (self.unbox() >> TAG_SIZE) as _
     }
