@@ -209,8 +209,8 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        // SAFETY: The OOM check above guarantees that `self.allocation_end()` is still within a
-        // heap.
+        // SAFETY: The OOM check above guarantees that `self.allocation_end()` is still
+        // within a heap.
         let cons = unsafe { Cons::new(self.allocation_end() as u64) };
         self.allocation_index += CONS_FIELD_COUNT;
 

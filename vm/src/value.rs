@@ -54,7 +54,10 @@ impl Value {
         debug_assert!(self.is_cons());
 
         if self.is_number() {
-            NEVER
+            // We do not use `NEVER` here because it leads to a big immediate value and
+            // sometimes extra instructions for certain inner value representations.
+            // SAFETY: 0 is always a valid index due to heap size checks.
+            unsafe { Cons::new(0) }
         } else {
             // SAFETY: We checked that this is not a number above.
             unsafe { Cons::from_raw(self.0) }
