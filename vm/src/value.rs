@@ -49,7 +49,7 @@ impl Value {
     }
 
     /// Converts a value to a cons assuming its type.
-    #[inline(never)]
+    #[inline]
     pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
