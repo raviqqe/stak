@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, NEVER, Tag},
+    cons::{Cons, Tag},
     number::Number,
     value_inner,
 };
