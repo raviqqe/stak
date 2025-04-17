@@ -70,7 +70,7 @@ for file in $(ls */main.scm | sort | grep $filter); do
   scripts="stak $file,mstak $file,stak-interpret $base.bc,mstak-interpret $base.bc,chibi-scheme $file,gosh $file,guile $file"
   reference=
 
-  if ! echo $base | grep eval >/dev/null; then
+  if [ $(dirname $base) != eval ]; then
     scripts="$scripts,gsi $file"
   fi
 
