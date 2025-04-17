@@ -3,7 +3,7 @@ resolver = "2"
 members = ["interpret", "run"]
 
 [workspace.package]
-categories = ["Compilers", "No standard library", "WebAssembly"]
+categories = ["compilers", "no-std", "no-std::no-alloc", "wasm"]
 edition = "2024"
 keywords = ["interpreter", "language", "scheme"]
 license-file = "../../LICENSE"
