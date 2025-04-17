@@ -19,8 +19,8 @@ jobs:
           - macos-15
         options:
           -
-          - -i
-          - -b
+          - -f i63
+          - -f f62
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
     runs-on: ${{ matrix.os }}
