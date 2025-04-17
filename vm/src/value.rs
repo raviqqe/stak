@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, NEVER, Tag},
+    cons::{Cons, Tag},
     number::Number,
     value_inner,
 };
@@ -54,7 +54,7 @@ impl Value {
         debug_assert!(self.is_cons());
 
         if self.is_number() {
-            NEVER
+            unsafe { Cons::new(0) }
         } else {
             // SAFETY: We checked that this is not a number above.
             unsafe { Cons::from_raw(self.0) }
