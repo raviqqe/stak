@@ -10,7 +10,7 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
-stak-vm = { version = "0.10.16", path = "../vm" }
+stak-vm = { version = "0.10.17", path = "../vm" }
 
 [dev-dependencies]
 indoc = "2.0.6"
