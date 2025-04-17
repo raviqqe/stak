@@ -9,7 +9,7 @@ pub type Tag = u16;
 ///
 /// If this value is in a `car` field in a cons, that means the cons is moved
 /// already on garbage collection. See also [`crate::Memory::collect_garbages`].
-pub(crate) const NEVER: Cons = Cons::new(1); // A cons can never point an odd index.
+pub(crate) const NEVER: Cons = unsafe { Cons::new(1) }; // A cons can never point an odd index.
 
 const TAG_SIZE: usize = Tag::BITS as usize;
 const TAG_MASK: u64 = Tag::MAX as u64;
@@ -20,8 +20,13 @@ pub struct Cons(u64);
 
 impl Cons {
     /// Creates a cons from a memory address on heap.
+    ///
+    /// # Safety
+    ///
+    /// The given index must be valid in a heap passed to
+    /// [`Memory::new`](crate::Memory::new).
     #[inline]
-    pub const fn new(index: u64) -> Self {
+    pub const unsafe fn new(index: u64) -> Self {
         Self::r#box(index << TAG_SIZE)
     }
 
@@ -53,8 +58,13 @@ impl Cons {
         value_inner::unbox_cons(self.0)
     }
 
+    /// Creates a cons from its raw representation.
+    ///
+    /// # Safety
+    ///
+    /// The given raw representation must be a valid cons on a heap.
     #[inline]
-    pub(crate) const fn from_raw(raw: u64) -> Self {
+    pub(crate) const unsafe fn from_raw(raw: u64) -> Self {
         Self(raw)
     }
 
@@ -104,7 +114,8 @@ mod tests {
 
     #[test]
     fn tag() {
-        let cons = Cons::new(42);
+        // SAFETY: For testing.
+        let cons = unsafe { Cons::new(42) };
 
         assert_eq!(cons.index(), 42);
         assert_eq!(cons.tag(), 0);
@@ -122,12 +133,14 @@ mod tests {
 
     #[test]
     fn reset_tag() {
-        assert_eq!(Cons::new(42).set_tag(2).set_tag(1).tag(), 1);
+        // SAFETY: For testing.
+        assert_eq!(unsafe { Cons::new(42) }.set_tag(2).set_tag(1).tag(), 1);
     }
 
     #[test]
     fn set_too_large_tag() {
-        let cons = Cons::new(0).set_tag(Tag::MAX);
+        // SAFETY: For testing.
+        let cons = unsafe { Cons::new(0) }.set_tag(Tag::MAX);
 
         assert_eq!(cons.index(), 0);
         assert_eq!(cons.tag(), TAG_MASK as Tag);
