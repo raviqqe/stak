@@ -511,7 +511,6 @@ impl Display for Memory<'_> {
 
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
-            // SAFETY: The index calculated above is always within a heap.
             let cons = Cons::new(index as u64);
 
             write!(
