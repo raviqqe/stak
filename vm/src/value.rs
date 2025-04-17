@@ -53,12 +53,7 @@ impl Value {
     pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
-        if self.is_number() {
-            NEVER
-        } else {
-            // SAFETY: We checked that this is not a number above.
-            unsafe { Cons::from_raw(self.0) }
-        }
+        unsafe { Cons::from_raw(self.0) }
     }
 
     /// Converts a value to a number assuming its type.
