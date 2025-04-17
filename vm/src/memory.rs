@@ -209,9 +209,7 @@ impl<'a> Memory<'a> {
             return Err(Error::OutOfMemory);
         }
 
-        // SAFETY: The OOM check above guarantees that `self.allocation_end()` is still within a
-        // heap.
-        let cons = unsafe { Cons::new(self.allocation_end() as u64) };
+        let cons = Cons::new(self.allocation_end() as u64);
         self.allocation_index += CONS_FIELD_COUNT;
 
         assert_heap_cons!(self, cons);
@@ -531,7 +529,7 @@ impl Display for Memory<'_> {
         for index in 0..self.allocation_index / 2 {
             let index = self.allocation_start() + 2 * index;
             // SAFETY: The index calculated above is always within a heap.
-            let cons = unsafe { Cons::new(index as u64) };
+            let cons = Cons::new(index as u64);
 
             write!(
                 formatter,

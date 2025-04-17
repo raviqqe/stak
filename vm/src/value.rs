@@ -1,5 +1,5 @@
 use crate::{
-    cons::{Cons, NEVER, Tag},
+    cons::{Cons, Tag},
     number::Number,
     value_inner,
 };
@@ -53,12 +53,7 @@ impl Value {
     pub const fn assume_cons(self) -> Cons {
         debug_assert!(self.is_cons());
 
-        if self.is_number() {
-            NEVER
-        } else {
-            // SAFETY: We checked that this is not a number above.
-            unsafe { Cons::from_raw(self.0) }
-        }
+        Cons::from_raw(self.0)
     }
 
     /// Converts a value to a number assuming its type.
@@ -153,8 +148,7 @@ mod tests {
 
     #[test]
     fn convert_cons() {
-        // SAFETY: For testing.
-        let cons = unsafe { Cons::new(42) };
+        let cons = Cons::new(42);
 
         assert_eq!(Value::from(cons).to_cons().unwrap(), cons);
     }
@@ -163,8 +157,7 @@ mod tests {
     fn convert_tagged_cons() {
         const TAG: Tag = 0b111;
 
-        // SAFETY: For testing.
-        let cons = unsafe { Cons::new(42) }.set_tag(TAG);
+        let cons = Cons::new(42).set_tag(TAG);
         let converted = Value::from(cons).to_cons().unwrap();
 
         assert_eq!(converted, cons);
