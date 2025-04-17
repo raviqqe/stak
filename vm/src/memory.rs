@@ -46,11 +46,6 @@ pub struct Memory<'a> {
 impl<'a> Memory<'a> {
     /// Creates a memory.
     pub fn new(heap: &'a mut [Value]) -> Result<Self, Error> {
-        // We check a heap size to guarantee `NEVER` cons's index of `1` to be valid.
-        if heap.len() < 2 {
-            return Err(Error::OutOfMemory);
-        }
-
         let mut memory = Self {
             code: NEVER,
             stack: NEVER,
