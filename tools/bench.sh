@@ -2,7 +2,43 @@
 
 set -ex
 
-features=
+build_binary() {
+  (
+    cd $1
+    shift 1
+    cargo build --release
+    cargo build --release "$@"
+  )
+}
+
+setup() {
+  [ $# -le 1 ]
+
+  feature=$1
+
+  brew install chibi-scheme gambit-scheme gauche guile micropython
+  cargo install hyperfine
+
+  case $feature in
+  i63)
+    stak_options='--no-default-features --features std'
+    ;;
+  f62)
+    stak_options='--no-default-features --features std,float62'
+    ;;
+  esac
+
+  build_binary . -p stak -p stak-interpret $stak_options
+  build_binary cmd/minimal -p mstak -p mstak-interpret
+
+  export PATH=$PWD/target/release:$PWD/cmd/minimal/target/release:$PATH
+
+  for file in bench/src/*/main.scm; do
+    cat prelude.scm $file | stak-compile >${file%.scm}.bc
+  done
+}
+
+feature=
 
 while getopts bi option; do
   features="$option$features"
