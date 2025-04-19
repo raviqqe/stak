@@ -2,13 +2,14 @@ import * as monaco from "monaco-editor";
 import { createUniqueId, onMount, type JSX } from "solid-js";
 
 interface Props {
+  class?: string;
   id?: string;
   onChange: (text: string) => void;
   value?: string;
 }
 
-export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
-  id = id ?? createUniqueId();
+export const CodeEditor = (props: Props): JSX.Element => {
+  const id = props.id ?? createUniqueId();
 
   onMount(() => {
     self.MonacoEnvironment = {
@@ -47,10 +48,10 @@ export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
     }
 
     monaco.editor.create(element, {
-      value,
+      value: props.value,
       language: "javascript",
     });
   });
 
-  return <div id={id} />;
+  return <div class={props.class} id={id} />;
 };
