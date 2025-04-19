@@ -1,8 +1,12 @@
 import Quill from "quill";
 import hljs from "highlight.js";
-import { createUniqueId, onMount } from "solid-js";
+import { createUniqueId, onMount, type JSX } from "solid-js";
 
-export const CodeEditor = () => {
+interface Props {
+  onChange: (text: string) => void;
+}
+
+export const CodeEditor = ({ onChange }: Props): JSX.Element => {
   const id = createUniqueId();
   let quill: Quill | undefined;
 
