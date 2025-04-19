@@ -14,6 +14,7 @@ export const DemoForm = (): JSX.Element => {
       <Field>
         <Label for="source">Program</Label>
         <CodeEditor
+          class={styles.textArea}
           id="source"
           onChange={(source) => store.source.set(source)}
           value={source()}
