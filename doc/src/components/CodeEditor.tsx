@@ -48,8 +48,11 @@ export const CodeEditor = (props: Props): JSX.Element => {
     }
 
     monaco.editor.create(element, {
-      value: props.value,
       language: "javascript",
+      lineNumbers: "off",
+      minimap: { enabled: false },
+      theme: "vs-dark",
+      value: props.value,
     });
   });
 
