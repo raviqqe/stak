@@ -17,6 +17,7 @@ export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
       modules: {
         syntax: { hljs },
       },
+      theme: "snow",
     });
 
     quill.setText(value ?? "");
