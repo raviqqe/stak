@@ -1,4 +1,4 @@
-import * as monaco from "monaco-editor";
+import { editor } from "monaco-editor";
 import { type JSX, createMemo, createUniqueId, onMount } from "solid-js";
 
 interface Props {
@@ -18,7 +18,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
       throw new Error("Editor element not found");
     }
 
-    monaco.editor.create(element, {
+    editor.create(element, {
       automaticLayout: true,
       language: "scheme",
       lineNumbers: "off",
