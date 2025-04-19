@@ -1,10 +1,10 @@
 import { useStore } from "@nanostores/solid";
 import type { JSX } from "solid-js";
 import * as store from "../../stores/interpreter-demo.js";
+import { CodeEditor } from "../CodeEditor.js";
 import { Field } from "../Field.jsx";
 import { Label } from "../Label.jsx";
 import styles from "./DemoForm.module.css";
-import { CodeEditor } from "../CodeEditor.js";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);

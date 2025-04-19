@@ -1,5 +1,5 @@
 import * as monaco from "monaco-editor";
-import { createMemo, createUniqueId, type JSX, onMount } from "solid-js";
+import { type JSX, createMemo, createUniqueId, onMount } from "solid-js";
 
 interface Props {
   class?: string;

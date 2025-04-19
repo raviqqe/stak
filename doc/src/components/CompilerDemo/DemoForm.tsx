@@ -4,11 +4,11 @@ import type { JSX } from "solid-js";
 import * as store from "../../stores/compiler-demo.js";
 import { Button } from "../Button.jsx";
 import { ButtonGroup } from "../ButtonGroup.jsx";
+import { CodeEditor } from "../CodeEditor.js";
 import { ErrorMessage } from "../ErrorMessage.jsx";
 import { Field } from "../Field.jsx";
 import { Label } from "../Label.jsx";
 import styles from "./DemoForm.module.css";
-import { CodeEditor } from "../CodeEditor.js";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);
