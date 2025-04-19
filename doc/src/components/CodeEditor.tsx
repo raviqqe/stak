@@ -1,18 +1,18 @@
-import Quill from 'quill';
-import hljs from 'highlight.js';
-import { createUniqueId, onMount } from 'solid-js';
+import Quill from "quill";
+import hljs from "highlight.js";
+import { createUniqueId, onMount } from "solid-js";
 
 export const CodeEditor = () => {
   const id = createUniqueId();
+  let quill: Quill | undefined;
 
   onMount(() => {
-    new Quill(id, {
+    quill = new Quill(id, {
       modules: {
         syntax: { hljs },
-      }
-    })
-  })
+      },
+    });
+  });
 
-  return <div id={id}></div>
-
-}
+  return <div id={id}></div>;
+};
