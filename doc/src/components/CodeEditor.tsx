@@ -1,5 +1,5 @@
 import * as monaco from "monaco-editor";
-import { createUniqueId, onMount, type JSX } from "solid-js";
+import { createMemo, createUniqueId, type JSX, onMount } from "solid-js";
 
 interface Props {
   class?: string;
@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const CodeEditor = (props: Props): JSX.Element => {
-  const id = props.id ?? createUniqueId();
+  const id = createMemo(() => props.id ?? createUniqueId());
 
   onMount(() => {
     self.MonacoEnvironment = {
@@ -41,7 +41,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
         }
       },
     };
-    const element = document.getElementById(id);
+    const element = document.getElementById(id());
 
     if (!element) {
       throw new Error("editor element not found");
@@ -57,5 +57,5 @@ export const CodeEditor = (props: Props): JSX.Element => {
     });
   });
 
-  return <div class={props.class} id={id} />;
+  return <div class={props.class} id={id()} />;
 };
