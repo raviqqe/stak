@@ -15,7 +15,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
     const element = document.getElementById(id());
 
     if (!element) {
-      throw new Error("editor element not found");
+      throw new Error("Editor element not found");
     }
 
     monaco.editor.create(element, {
