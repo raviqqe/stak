@@ -16,6 +16,8 @@ export const CodeEditor = ({ onChange }: Props): JSX.Element => {
         syntax: { hljs },
       },
     });
+
+    quill.on("text-change", () => onChange(quill?.getText() ?? ""));
   });
 
   return <div id={id}></div>;
