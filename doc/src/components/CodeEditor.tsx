@@ -46,8 +46,8 @@ export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
       throw new Error("editor element not found");
     }
 
-    const editor = monaco.editor.create(element, {
-      value: "function hello() {\n\talert('Hello world!');\n}",
+    monaco.editor.create(element, {
+      value,
       language: "javascript",
     });
   });
