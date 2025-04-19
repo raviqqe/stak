@@ -48,6 +48,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
     }
 
     monaco.editor.create(element, {
+      automaticLayout: true,
       language: "javascript",
       lineNumbers: "off",
       minimap: { enabled: false },
