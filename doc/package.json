@@ -21,10 +21,9 @@
     "astro": "^5.7.3",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.35.0",
-    "highlight.js": "^11.11.1",
     "lucide-solid": "^0.488.0",
+    "monaco-editor": "^0.52.2",
     "nanostores": "^0.11.4",
-    "quill": "^2.0.3",
     "solid-js": "^1.9.5",
     "vite-plugin-wasm": "^3.4.1"
   },
