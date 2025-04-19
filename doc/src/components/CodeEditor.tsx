@@ -12,35 +12,6 @@ export const CodeEditor = (props: Props): JSX.Element => {
   const id = createMemo(() => props.id ?? createUniqueId());
 
   onMount(() => {
-    self.MonacoEnvironment = {
-      getWorker: (workerId: string, label: string) => {
-        const getWorkerModule = (_moduleUrl: string, label: string) => {
-          const url = self.MonacoEnvironment?.getWorkerUrl?.(workerId, label);
-
-          if (!url) {
-            throw new Error("No worker URL");
-          }
-
-          return new Worker(url, {
-            name: label,
-            type: "module",
-          });
-        };
-
-        switch (label) {
-          case "scheme":
-            return getWorkerModule(
-              "/monaco-editor/esm/vs/language/scheme/scheme.worker?worker",
-              label,
-            );
-          default:
-            return getWorkerModule(
-              "/monaco-editor/esm/vs/editor/editor.worker?worker",
-              label,
-            );
-        }
-      },
-    };
     const element = document.getElementById(id());
 
     if (!element) {
