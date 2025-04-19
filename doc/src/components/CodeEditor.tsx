@@ -26,6 +26,10 @@ export const CodeEditor = (props: Props): JSX.Element => {
       theme: "vs-dark",
       value: props.value,
     });
+
+    for (const model of editor.getModels()) {
+      model.onDidChangeContent(() => props.onChange(model.getValue()));
+    }
   });
 
   return <div class={props.class} id={id()} />;
