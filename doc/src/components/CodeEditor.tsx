@@ -3,11 +3,12 @@ import hljs from "highlight.js";
 import { createUniqueId, onMount, type JSX } from "solid-js";
 
 interface Props {
+  id?: string;
   onChange: (text: string) => void;
 }
 
-export const CodeEditor = ({ onChange }: Props): JSX.Element => {
-  const id = createUniqueId();
+export const CodeEditor = ({ id, onChange }: Props): JSX.Element => {
+  id = id ?? createUniqueId();
   let quill: Quill | undefined;
 
   onMount(() => {

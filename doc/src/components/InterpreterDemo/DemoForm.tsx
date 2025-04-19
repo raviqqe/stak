@@ -3,8 +3,8 @@ import type { JSX } from "solid-js";
 import * as store from "../../stores/interpreter-demo.js";
 import { Field } from "../Field.jsx";
 import { Label } from "../Label.jsx";
-import { TextArea } from "../TextArea.jsx";
 import styles from "./DemoForm.module.css";
+import { CodeEditor } from "../CodeEditor.js";
 
 export const DemoForm = (): JSX.Element => {
   const source = useStore(store.source);
@@ -13,8 +13,7 @@ export const DemoForm = (): JSX.Element => {
     <form class={styles.root}>
       <Field>
         <Label for="source">Program</Label>
-        <TextArea
-          class={styles.textArea}
+        <CodeEditor
           id="source"
           onChange={(source) => store.source.set(source)}
           value={source()}
