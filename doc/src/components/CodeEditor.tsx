@@ -17,12 +17,11 @@ export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
       modules: {
         syntax: { hljs },
       },
-      theme: "snow",
     });
 
     quill.setText(value ?? "");
     quill.on("text-change", () => onChange(quill?.getText() ?? ""));
   });
 
-  return <div id={id} />;
+  return <pre id={id} />;
 };
