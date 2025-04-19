@@ -4,7 +4,10 @@ import { interpret as interpretProgram } from "../application/interpret.js";
 
 export const source = atom(
   `
-(import (scheme base) (scheme read) (scheme write))
+(import
+  (scheme base)
+  (scheme read)
+  (scheme write))
 
 (define (fibonacci x)
   (if (< x 2)
