@@ -22,6 +22,7 @@
     "classnames": "^2.5.1",
     "es-toolkit": "^1.35.0",
     "lucide-solid": "^0.488.0",
+    "monaco-editor": "^0.52.2",
     "nanostores": "^0.11.4",
     "solid-js": "^1.9.5",
     "vite-plugin-wasm": "^3.4.1"

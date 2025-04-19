@@ -4,10 +4,10 @@ import type { JSX } from "solid-js";
 import * as store from "../../stores/compiler-demo.js";
 import { Button } from "../Button.jsx";
 import { ButtonGroup } from "../ButtonGroup.jsx";
+import { CodeEditor } from "../CodeEditor.js";
 import { ErrorMessage } from "../ErrorMessage.jsx";
 import { Field } from "../Field.jsx";
 import { Label } from "../Label.jsx";
-import { TextArea } from "../TextArea.jsx";
 import styles from "./DemoForm.module.css";
 
 export const DemoForm = (): JSX.Element => {
@@ -21,7 +21,7 @@ export const DemoForm = (): JSX.Element => {
     <form class={styles.root}>
       <Field style={{ flex: 1 }}>
         <Label for="source">Program</Label>
-        <TextArea
+        <CodeEditor
           class={styles.program}
           id="source"
           onChange={(source) => store.source.set(source)}
