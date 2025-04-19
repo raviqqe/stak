@@ -5,21 +5,23 @@ import { createUniqueId, onMount, type JSX } from "solid-js";
 interface Props {
   id?: string;
   onChange: (text: string) => void;
+  value?: string;
 }
 
-export const CodeEditor = ({ id, onChange }: Props): JSX.Element => {
+export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
   id = id ?? createUniqueId();
   let quill: Quill | undefined;
 
   onMount(() => {
-    quill = new Quill(id, {
+    quill = new Quill("#" + id, {
       modules: {
         syntax: { hljs },
       },
     });
 
+    quill.setText(value ?? "");
     quill.on("text-change", () => onChange(quill?.getText() ?? ""));
   });
 
-  return <div id={id}></div>;
+  return <div id={id} />;
 };
