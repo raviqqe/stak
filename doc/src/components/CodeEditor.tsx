@@ -52,5 +52,5 @@ export const CodeEditor = ({ id, value, onChange }: Props): JSX.Element => {
     });
   });
 
-  return <pre id={id} />;
+  return <div id={id} />;
 };
