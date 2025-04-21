@@ -1,37 +1,13 @@
 import { atom, computed, task } from "nanostores";
 import { run as runProgram } from "../application/run.js";
+import { init, Wasmer } from "@wasmer/sdk";
 
-export const source = atom(
-  `
-(import (scheme base) (scheme write))
+await init();
 
-(define (fibonacci x)
-  (if (< x 2)
-     x
-     (+
-        (fibonacci (- x 1))
-        (fibonacci (- x 2)))))
+const pkg = await Wasmer.fromRegistry("python/python");
+const instance = await pkg.entrypoint.run({
+  args: ["-c", "print('Hello, World!')"],
+});
 
-(display "Answer: ")
-(write (fibonacci 10))
-(newline)
-  `.trim(),
-);
-
-const run = computed(source, (source) =>
-  task(async () => {
-    try {
-      return await runProgram(source);
-    } catch (error) {
-      return error as Error;
-    }
-  }),
-);
-
-export const output = computed(run, (output) =>
-  output instanceof Error ? null : new TextDecoder().decode(output),
-);
-
-export const error = computed(run, (error) =>
-  error instanceof Error ? error : null,
-);
+const { code, stdout } = await instance.wait();
+console.log(`Python exited with ${code}: ${stdout}`);
