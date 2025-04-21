@@ -22,6 +22,7 @@ export const ReplDemo = (props: Props): JSX.Element => {
     <TextArea
       class={props.class}
       onChange={(newText) => {
+        console.log(newText, stdin());
         setText(newText);
         stdin()?.getWriter().write(newText.slice(text.length));
       }}

@@ -5,7 +5,7 @@ const initialization = computed(atom(), () => task(init));
 
 const pkg = computed(initialization, () =>
   task(async () =>
-    Wasmer.fromFile(await (await fetch("/stak/stak-repl.wasm")).bytes()),
+    Wasmer.fromWasm(await (await fetch("/stak/stak-repl.wasm")).bytes()),
   ),
 );
 
