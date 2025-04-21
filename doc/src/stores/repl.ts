@@ -1,13 +1,19 @@
 import { atom, computed, task } from "nanostores";
-import { run as runProgram } from "../application/run.js";
 import { init, Wasmer } from "@wasmer/sdk";
 
-const initialize = computed(atom(), () => task(init));
+const initialization = computed(atom(), () => task(init));
 
-const pkg = await Wasmer.fromRegistry("python/python");
-const instance = await pkg.entrypoint.run({
-  args: ["-c", "print('Hello, World!')"],
-});
+const pkg = computed(initialization, () =>
+  task(async () => Wasmer.fromRegistry("python/python")),
+);
+
+const instance = computed(pkg, (pkg) =>
+  task(async () =>
+    pkg?.entrypoint?.run({
+      args: ["-c", "print('Hello, World!')"],
+    }),
+  ),
+);
 
 const { code, stdout } = await instance.wait();
 console.log(`Python exited with ${code}: ${stdout}`);
