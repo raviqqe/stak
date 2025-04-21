@@ -2,7 +2,7 @@ import { atom, computed, task } from "nanostores";
 import { run as runProgram } from "../application/run.js";
 import { init, Wasmer } from "@wasmer/sdk";
 
-const initialize = task(init);
+const initialize = computed(atom(), () => task(init));
 
 const pkg = await Wasmer.fromRegistry("python/python");
 const instance = await pkg.entrypoint.run({
