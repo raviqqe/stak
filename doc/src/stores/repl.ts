@@ -8,12 +8,8 @@ const pkg = computed(initialization, () =>
 );
 
 const instance = computed(pkg, (pkg) =>
-  task(async () =>
-    pkg?.entrypoint?.run({
-      args: ["-c", "print('Hello, World!')"],
-    }),
-  ),
+  task(async () => pkg?.entrypoint?.run()),
 );
 
-const { code, stdout } = await instance.wait();
-console.log(`Python exited with ${code}: ${stdout}`);
+export const stdin = computed(instance, (instance) => instance?.stdin);
+export const stdout = computed(instance, (instance) => instance?.stdout);
