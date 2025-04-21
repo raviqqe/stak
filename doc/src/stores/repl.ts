@@ -4,9 +4,13 @@ import { init, Wasmer } from "@wasmer/sdk";
 const initialization = computed(atom(), () => task(init));
 
 const pkg = computed(initialization, () =>
-  task(async () =>
-    Wasmer.fromFile(await (await fetch("/stak/stak-repl.wasm")).bytes()),
-  ),
+  task(async () => {
+    const response = await fetch("/stak/stak-repl.wasm");
+    console.log(await response.text());
+    return true
+      ? Wasmer.fromRegistry("python/python")
+      : Wasmer.fromFile(await response.bytes());
+  }),
 );
 
 const instance = computed(pkg, (pkg) =>
