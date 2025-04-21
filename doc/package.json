@@ -18,6 +18,7 @@
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
     "@raviqqe/stak": "^0.10.17",
+    "@wasmer/sdk": "^0.9.0",
     "astro": "^5.7.3",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.35.0",
