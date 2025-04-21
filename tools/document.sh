@@ -16,6 +16,8 @@ shift $(expr $OPTIND - 1)
 
 cd $(dirname $0)/..
 
+cargo build --release --target wasm32-wasip2 --bin stak-repl
+
 directory=doc/src/content/docs/examples
 
 rm -rf $directory/*
