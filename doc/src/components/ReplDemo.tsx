@@ -1,5 +1,5 @@
 import * as store from "../stores/repl.js";
-import { createSignal, onMount, type JSX } from "solid-js";
+import { createEffect, createSignal, type JSX } from "solid-js";
 import { useStore } from "@nanostores/solid";
 import { TextArea } from "./TextArea.js";
 
@@ -12,7 +12,7 @@ export const ReplDemo = (props: Props): JSX.Element => {
   const stdout = useStore(store.stdout);
   const [text, setText] = createSignal("");
 
-  onMount(async () => {
+  createEffect(async () => {
     for await (const output of stdout() ?? []) {
       setText(text + output);
     }
