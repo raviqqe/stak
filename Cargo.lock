@@ -1446,6 +1446,7 @@ name = "stak-async"
 version = "0.10.17"
 dependencies = [
  "bumpalo",
+ "stak-vm",
 ]
 
 [[package]]

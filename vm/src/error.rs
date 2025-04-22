@@ -25,6 +25,8 @@ pub enum Error {
     OutOfMemory,
     /// A procedure expected.
     ProcedureExpected,
+    /// A yield.
+    Yield,
 }
 
 impl Exception for Error {
@@ -35,9 +37,11 @@ impl Exception for Error {
             | Self::NumberExpected
             | Self::ConsExpected
             | Self::ProcedureExpected => false,
-            Self::BytecodeEnd | Self::Format(_) | Self::IllegalInstruction | Self::OutOfMemory => {
-                true
-            }
+            Self::BytecodeEnd
+            | Self::Format(_)
+            | Self::IllegalInstruction
+            | Self::OutOfMemory
+            | Self::Yield => true,
         }
     }
 }
@@ -56,6 +60,7 @@ impl Display for Error {
             Self::NumberExpected => write!(formatter, "number expected"),
             Self::OutOfMemory => write!(formatter, "out of memory"),
             Self::ProcedureExpected => write!(formatter, "procedure expected"),
+            Self::Yield => write!(formatter, "yield"),
         }
     }
 }
