@@ -18,8 +18,9 @@ impl<A: Allocator, E> AsyncContext<A, E> {
 
     /// Yields a future.
     pub fn r#yield<T: Future<Output = Value>>(&self, future: T) -> Result<(), E> {
-        let future = Box::<dyn Future<Output = Value>, A>::new_in(future, self.allocator);
-
-        Err((self.r#yield)(future))
+        Err((self.r#yield)(Box::<dyn Future<Output = Value>>::new_in(
+            future,
+            self.allocator,
+        )))
     }
 }
