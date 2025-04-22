@@ -1,17 +1,21 @@
-use crate::{Device, ReadWriteDevice};
-use std::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
+use crate::Device;
+use tokio::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
 pub struct TokioDevice {
-    device: ReadWriteDevice<Stdin, Stdout, Stderr>,
+    stdin: Stdin,
+    stdout: Stdout,
+    stderr: Stderr,
 }
 
 impl TokioDevice {
     /// Creates a device.
     pub fn new() -> Self {
         Self {
-            device: ReadWriteDevice::new(stdin(), stdout(), stderr()),
+            stdin: stdin(),
+            stdout: stdout(),
+            stderr: stderr(),
         }
     }
 }
