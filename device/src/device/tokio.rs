@@ -1,5 +1,5 @@
 use crate::Device;
-use tokio::io::{AsyncReadExt, Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
+use tokio::io::{AsyncReadExt, Error,AsyncWriteExt, Stderr, Stdin, Stdout, stderr, stdin, stdout};
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
@@ -30,12 +30,16 @@ impl Device for TokioDevice {
         todo!("store future into async context")
     }
 
-    fn write(&mut self, _byte: u8) -> Result<(), Self::Error> {
-        todo!()
+    fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
+        let _future = self.stdout.write_u8(byte);
+
+        todo!("store future into async context")
     }
 
-    fn write_error(&mut self, _byte: u8) -> Result<(), Self::Error> {
-        todo!()
+    fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
+        let _future = self.stderr.write_u8(byte);
+
+        todo!("store future into async context")
     }
 }
 
