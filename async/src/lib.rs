@@ -24,3 +24,17 @@ impl<A: Allocator, E> AsyncContext<A, E> {
         )))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use allocator_api2::alloc::Global;
+    use stak_vm::Number;
+
+    #[tokio::test]
+    async fn r#yield() {
+        let context = AsyncContext::new(Global, |future| future);
+
+        context.r#yield(async { Number::from_i64(42).into() });
+    }
+}

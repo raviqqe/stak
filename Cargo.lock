@@ -1448,6 +1448,7 @@ dependencies = [
  "allocator-api2",
  "bumpalo",
  "stak-vm",
+ "tokio",
 ]
 
 [[package]]
