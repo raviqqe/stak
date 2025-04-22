@@ -1,9 +1,10 @@
 use crate::Device;
-use tokio::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
+use tokio::io::{AsyncReadExt, Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
 pub struct TokioDevice {
+    // TODO Add an async context field.
     stdin: Stdin,
     stdout: Stdout,
     stderr: Stderr,
@@ -24,14 +25,16 @@ impl Device for TokioDevice {
     type Error = Error;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        self.device.read()
+        let _future = self.stdin.read_u8();
+
+        todo!("store future into async context")
     }
 
-    fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
+    fn write(&mut self, _byte: u8) -> Result<(), Self::Error> {
         todo!()
     }
 
-    fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
+    fn write_error(&mut self, _byte: u8) -> Result<(), Self::Error> {
         todo!()
     }
 }

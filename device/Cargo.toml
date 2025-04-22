@@ -21,6 +21,7 @@ rustix = { version = "1.0.5", default-features = false, features = [
 stak-vm = { version = "0.10.17", path = "../vm" }
 tokio = { version = "1.44.2", default-features = false, features = [
   "io-std",
+  "io-util",
 ], optional = true }
 
 [lints]
