@@ -6,6 +6,8 @@ pub mod libc;
 mod read_write;
 #[cfg(feature = "std")]
 mod stdio;
+#[cfg(feature = "tokio")]
+mod tokio;
 mod void;
 
 pub use buffer_error::BufferError;
