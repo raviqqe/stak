@@ -3,11 +3,11 @@ use std::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
-pub struct StdioDevice {
+pub struct TokioDevice {
     device: ReadWriteDevice<Stdin, Stdout, Stderr>,
 }
 
-impl StdioDevice {
+impl TokioDevice {
     /// Creates a device.
     pub fn new() -> Self {
         Self {
@@ -16,7 +16,7 @@ impl StdioDevice {
     }
 }
 
-impl Device for StdioDevice {
+impl Device for TokioDevice {
     type Error = Error;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
@@ -32,7 +32,7 @@ impl Device for StdioDevice {
     }
 }
 
-impl Default for StdioDevice {
+impl Default for TokioDevice {
     fn default() -> Self {
         Self::new()
     }
