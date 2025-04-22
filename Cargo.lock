@@ -1433,6 +1433,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-async"
+version = "0.10.17"
+
+[[package]]
 name = "stak-bench"
 version = "0.10.17"
 dependencies = [

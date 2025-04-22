@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "async",
   "bench",
   "build",
   "cmd/compile",
