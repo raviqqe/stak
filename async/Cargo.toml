@@ -1,5 +1,6 @@
 [package]
 name = "stak-async"
+description = "Asynchronous context for Stak Scheme"
 categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
