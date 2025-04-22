@@ -28,11 +28,11 @@ impl Device for TokioDevice {
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        self.device.write(byte)
+        todo!()
     }
 
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        self.device.write_error(byte)
+        todo!()
     }
 }
 
