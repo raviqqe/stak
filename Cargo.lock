@@ -1445,6 +1445,7 @@ dependencies = [
 name = "stak-async"
 version = "0.10.17"
 dependencies = [
+ "allocator-api2",
  "bumpalo",
  "stak-vm",
 ]
