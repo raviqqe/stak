@@ -1647,6 +1647,7 @@ dependencies = [
 name = "stak-profile"
 version = "0.10.17"
 dependencies = [
+ "cassette",
  "clap",
  "main_error",
  "stak-configuration",
