@@ -100,7 +100,11 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
 {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = memory.pop_many();
@@ -135,36 +139,52 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::EXPONENTIATION | Primitive::LOGARITHM => self
-                .inexact
-                .operate(memory, primitive - Primitive::EXPONENTIATION)?,
+            Primitive::EXPONENTIATION | Primitive::LOGARITHM => {
+                self.inexact
+                    .operate(memory, primitive - Primitive::EXPONENTIATION)
+                    .await?
+            }
             Primitive::HALT => return Err(Error::Halt),
-            Primitive::NULL | Primitive::PAIR => self
-                .type_check
-                .operate(memory, primitive - Primitive::NULL)?,
+            Primitive::NULL | Primitive::PAIR => {
+                self.type_check
+                    .operate(memory, primitive - Primitive::NULL)
+                    .await?
+            }
             Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ => {
-                self.list.operate(memory, primitive - Primitive::ASSQ)?
+                self.list
+                    .operate(memory, primitive - Primitive::ASSQ)
+                    .await?
             }
             Primitive::EQV | Primitive::EQUAL_INNER => {
-                self.equal.operate(memory, primitive - Primitive::EQV)?
+                self.equal
+                    .operate(memory, primitive - Primitive::EQV)
+                    .await?
             }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
-                self.device.operate(memory, primitive - Primitive::READ)?
+                self.device
+                    .operate(memory, primitive - Primitive::READ)
+                    .await?
             }
             Primitive::OPEN_FILE
             | Primitive::CLOSE_FILE
             | Primitive::READ_FILE
             | Primitive::WRITE_FILE
             | Primitive::DELETE_FILE
-            | Primitive::EXISTS_FILE => self
-                .file
-                .operate(memory, primitive - Primitive::OPEN_FILE)?,
-            Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => self
-                .process_context
-                .operate(memory, primitive - Primitive::COMMAND_LINE)?,
-            Primitive::CURRENT_JIFFY => self
-                .time
-                .operate(memory, primitive - Primitive::CURRENT_JIFFY)?,
+            | Primitive::EXISTS_FILE => {
+                self.file
+                    .operate(memory, primitive - Primitive::OPEN_FILE)
+                    .await?
+            }
+            Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => {
+                self.process_context
+                    .operate(memory, primitive - Primitive::COMMAND_LINE)
+                    .await?
+            }
+            Primitive::CURRENT_JIFFY => {
+                self.time
+                    .operate(memory, primitive - Primitive::CURRENT_JIFFY)
+                    .await?
+            }
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 
