@@ -215,6 +215,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "325918d6fe32f23b19878fe4b34794ae41fc19ddbe53b10571a4874d44ffd39b"
 
 [[package]]
+name = "cassette"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1739a992acb2205d0998d198b47ca52d42963c3067309d0b7440708e3e590ccf"
+
+[[package]]
 name = "cast"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1544,6 +1550,7 @@ dependencies = [
 name = "stak-interpret"
 version = "0.10.17"
 dependencies = [
+ "cassette",
  "clap",
  "main_error",
  "stak-configuration",

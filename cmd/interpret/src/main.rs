@@ -6,6 +6,7 @@
 //! stak-interpret foo.bc
 //! ```
 
+use cassette::block_on;
 use clap::Parser;
 use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
@@ -44,5 +45,5 @@ fn main() -> Result<(), MainError> {
 
     vm.initialize(read(&arguments.file)?)?;
 
-    Ok(vm.run()?)
+    Ok(block_on(vm.run())?)
 }
