@@ -303,14 +303,14 @@ mod tests {
             primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
         }
 
-        #[test]
-        fn collect_one() {
+        #[tokio::test]
+        async fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 1).unwrap();
+            primitive_set.operate(&mut memory, 1).await.unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
@@ -323,14 +323,14 @@ mod tests {
             assert_eq!(primitive_set.find_free(), Some(0));
         }
 
-        #[test]
-        fn keep_one() {
+        #[tokio::test]
+        async fn keep_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 1).unwrap();
+            primitive_set.operate(&mut memory, 1).await.unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 

@@ -17,3 +17,6 @@ stak-vm = { version = "0.10.17", path = "../vm" }
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+tokio = { version = "1.44.2", features = ["macros", "rt-multi-thread"] }
