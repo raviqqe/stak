@@ -1,19 +1,20 @@
 use crate::Device;
-use tokio::io::{AsyncReadExt, Error,AsyncWriteExt, Stderr, Stdin, Stdout, stderr, stdin, stdout};
+use stak_async::AsyncContext;
+use tokio::io::{AsyncReadExt, AsyncWriteExt, Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
 
 /// A standard I/O device of a current process.
-#[derive(Debug)]
-pub struct TokioDevice {
-    // TODO Add an async context field.
+pub struct TokioDevice<'a> {
+    context: &'a AsyncContext<'a>,
     stdin: Stdin,
     stdout: Stdout,
     stderr: Stderr,
 }
 
-impl TokioDevice {
+impl<'a> TokioDevice<'a> {
     /// Creates a device.
-    pub fn new() -> Self {
+    pub fn new(context: &'a AsyncContext<'a>) -> Self {
         Self {
+            context,
             stdin: stdin(),
             stdout: stdout(),
             stderr: stderr(),
@@ -21,13 +22,11 @@ impl TokioDevice {
     }
 }
 
-impl Device for TokioDevice {
+impl<'a> Device for TokioDevice<'a> {
     type Error = Error;
 
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        let _future = self.stdin.read_u8();
-
-        todo!("store future into async context")
+        self.context.r#yield(self.stdin.read_u8())?
     }
 
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
@@ -40,11 +39,5 @@ impl Device for TokioDevice {
         let _future = self.stderr.write_u8(byte);
 
         todo!("store future into async context")
-    }
-}
-
-impl Default for TokioDevice {
-    fn default() -> Self {
-        Self::new()
     }
 }

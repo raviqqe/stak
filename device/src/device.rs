@@ -17,6 +17,8 @@ pub use fixed_buffer::FixedBufferDevice;
 pub use read_write::ReadWriteDevice;
 #[cfg(feature = "std")]
 pub use stdio::StdioDevice;
+#[cfg(feature = "tokio")]
+pub use tokio::TokioDevice;
 pub use void::*;
 
 /// A device.
