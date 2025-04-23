@@ -33,6 +33,7 @@ jobs:
           - --no-default-features
           - --features libc,std
           - --features float62
+          - --features tokio
           - --features gc_always --exclude stak-compiler
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}

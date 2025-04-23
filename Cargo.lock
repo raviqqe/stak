@@ -1498,6 +1498,7 @@ name = "stak-device"
 version = "0.10.17"
 dependencies = [
  "rustix",
+ "stak-async",
  "stak-vm",
  "tokio",
 ]
