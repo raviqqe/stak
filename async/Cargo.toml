@@ -10,8 +10,6 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
-allocator-api2 = "0.2.21"
-bumpalo = { version = "3.17.0", features = ["allocator-api2"] }
 stak-vm = { version = "0.10.17", path = "../vm" }
 
 [lints]
