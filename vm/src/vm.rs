@@ -84,8 +84,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Runs bytecodes on a virtual machine.
-    pub fn run(&mut self) -> Result<(), T::Error> {
-        while let Err(error) = self.run_with_continuation() {
+    pub async fn run(&mut self) -> Result<(), T::Error> {
+        while let Err(error) = self.run_with_continuation().await {
             if error.is_critical() {
                 return Err(error);
             }
@@ -134,7 +134,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    fn run_with_continuation(&mut self) -> Result<(), T::Error> {
+    async fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
@@ -145,7 +145,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instruction::GET => self.get()?,
                 Instruction::SET => self.set(),
                 Instruction::IF => self.r#if(),
-                code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
+                code => {
+                    self.call(instruction, code as usize - Instruction::CALL as usize)
+                        .await?
+                }
             }
 
             self.advance_code();
@@ -202,7 +205,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[inline(always)]
-    fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
+    async fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
 
@@ -290,7 +293,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 }
 
                 self.primitive_set
-                    .operate(&mut self.memory, primitive.to_i64() as _)?;
+                    .operate(&mut self.memory, primitive.to_i64() as _)
+                    .await?;
             }
         }
 
