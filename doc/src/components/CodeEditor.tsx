@@ -41,9 +41,9 @@ export const CodeEditor = (props: Props): JSX.Element => {
   });
 
   createEffect(() => {
-    for (const model of instance()?.getModel() ?? []) {
-      model.onDidChangeContent(() => props.onChange(model.getValue()));
-    }
+    const model = instance()?.getModel();
+
+    model?.onDidChangeContent(() => props.onChange(model.getValue()));
   });
 
   return <div class={props.class} id={id()} />;
