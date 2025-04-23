@@ -1,4 +1,4 @@
-//! Asynchronous context for Stak Scheme.
+//! Asynchronous contexts for Stak Scheme.
 
 #![no_std]
 
@@ -8,6 +8,7 @@ use core::cell::Cell;
 use stak_vm::{Error, Value};
 
 /// An asynchronous context.
+// TODO Allow injecting allocators when the allocator API is stabilized.
 #[derive(Default)]
 pub struct AsyncContext<'a> {
     future: Cell<Option<Box<dyn Future<Output = Value> + 'a>>>,
