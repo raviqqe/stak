@@ -13,7 +13,6 @@ version.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-cassette = "0.3.0"
 stak-compiler = { version = "0.10.17", path = "../compiler" }
 stak-configuration = { version = "0.10.17", path = "../configuration" }
 stak-device = { version = "0.10.17", path = "../device", features = ["std"] }

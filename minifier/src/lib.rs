@@ -1,6 +1,5 @@
 //! Scheme source code minifier.
 
-use cassette::block_on;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
 use stak_file::VoidFileSystem;
@@ -27,7 +26,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     )?;
 
     vm.initialize(BYTECODE.iter().copied())?;
-    block_on(vm.run())?;
+    vm.run()?;
 
     Ok(())
 }

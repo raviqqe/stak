@@ -6,7 +6,6 @@
 //! stak-profile --profile profile.txt foo.bc
 //! ```
 
-use cassette::block_on;
 use clap::Parser;
 use main_error::MainError;
 use stak_configuration::DEFAULT_HEAP_SIZE;
@@ -95,7 +94,7 @@ fn main() -> Result<(), MainError> {
             .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;
-            block_on(vm.run())?;
+            vm.run()?;
         }
         Command::Analyze(arguments) => {
             let reader = stdin().lock();
