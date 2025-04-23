@@ -9,7 +9,9 @@ use core::cell::Cell;
 use stak_vm::{Error, Value};
 
 /// An asynchronous context.
-// TODO Allow injecting allocators when the allocator API is stabilized.
+///
+/// Curently, the context requires a global allocator for storing `dyn Future` temporarily.
+/// We will allow injecting allocators when the allocator API is stabilized.
 #[derive(Default)]
 pub struct AsyncContext<'a> {
     future: Cell<Option<Box<dyn Future<Output = Value> + 'a>>>,
