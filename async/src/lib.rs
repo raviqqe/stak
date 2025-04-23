@@ -18,9 +18,8 @@ impl<A: Allocator, E> AsyncContext<A, E> {
     }
 
     /// Yields a future.
-    pub fn r#yield(&self, future: impl Future<Output = Value> + Sized) -> Result<(), E> {
-        let future: Pin<Box<dyn Future<Output = Value>, A>> =
-            Box::pin_in(async move { future.await }, self.allocator);
+    pub fn r#yield(&self, future: impl Future<Output = Value> + 'static) -> Result<(), E> {
+        let future: Pin<Box<dyn Future<Output = Value>, A>> = Box::pin_in(future, self.allocator);
 
         Err((self.r#yield)(future))
     }
