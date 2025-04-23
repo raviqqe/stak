@@ -21,7 +21,11 @@ impl<T: FileSystem> FilePrimitiveSet<T> {
 impl<T: FileSystem> PrimitiveSet for FilePrimitiveSet<T> {
     type Error = PrimitiveError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         match primitive {
             Primitive::OPEN_FILE => {
                 let [list, output] = memory.pop_many();

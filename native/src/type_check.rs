@@ -27,7 +27,11 @@ impl TypeCheckPrimitiveSet {
 impl PrimitiveSet for TypeCheckPrimitiveSet {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         match primitive {
             TypeCheckPrimitive::NULL => memory.operate_top(|memory, value| {
                 memory.boolean(value == memory.null().into()).into()

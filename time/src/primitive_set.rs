@@ -20,7 +20,11 @@ impl<T: Clock> TimePrimitiveSet<T> {
 impl<T: Clock> PrimitiveSet for TimePrimitiveSet<T> {
     type Error = PrimitiveError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         match primitive {
             Primitive::CURRENT_JIFFY => {
                 memory.push(

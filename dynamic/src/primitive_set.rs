@@ -144,7 +144,11 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
 impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         if primitive == 0 {
             memory.set_register(memory.null());
 
