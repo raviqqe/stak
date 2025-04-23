@@ -1470,7 +1470,6 @@ dependencies = [
 name = "stak-compiler"
 version = "0.10.17"
 dependencies = [
- "cassette",
  "indoc",
  "stak-configuration",
  "stak-device",
@@ -1551,7 +1550,6 @@ dependencies = [
 name = "stak-interpret"
 version = "0.10.17"
 dependencies = [
- "cassette",
  "clap",
  "main_error",
  "stak-configuration",

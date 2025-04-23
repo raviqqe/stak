@@ -13,7 +13,11 @@ use crate::{
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::fmt::{self, Display, Formatter, Write};
+use core::{
+    fmt::{self, Display, Formatter, Write},
+    pin::pin,
+    task::{Context, Poll, Waker},
+};
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -84,7 +88,18 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Runs bytecodes on a virtual machine.
-    pub async fn run(&mut self) -> Result<(), T::Error> {
+    pub fn run(&mut self) -> Result<(), T::Error> {
+        let Poll::Ready(result) =
+            pin!(self.run_async()).poll(&mut Context::from_waker(Waker::noop()))
+        else {
+            panic!("asynchronous operation not supported")
+        };
+
+        result
+    }
+
+    /// Runs bytecodes on a virtual machine asynchronously.
+    pub async fn run_async(&mut self) -> Result<(), T::Error> {
         while let Err(error) = self.run_with_continuation().await {
             if error.is_critical() {
                 return Err(error);

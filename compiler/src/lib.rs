@@ -3,7 +3,6 @@
 mod error;
 
 pub use self::error::CompileError;
-use cassette::block_on;
 use core::env;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
@@ -58,7 +57,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 
-    block_on(vm.run()).map_err(|error| {
+    vm.run().map_err(|error| {
         if error_message.is_empty() {
             CompileError::Run(error)
         } else {

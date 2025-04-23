@@ -20,10 +20,16 @@ impl<'a, 'b> Engine<'a, 'b> {
         })
     }
 
-    /// Runs a module.
+    /// Runs a module synchronously.
+    pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
+        self.vm.initialize(module.bytecode().iter().copied())?;
+        self.vm.run()
+    }
+
+    /// Runs a module asynchronously.
     pub async fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
-        self.vm.run().await
+        self.vm.run_async().await
     }
 
     /// Registers a type compatible between Scheme and Rust.
