@@ -27,7 +27,11 @@ impl EqualPrimitiveSet {
 impl PrimitiveSet for EqualPrimitiveSet {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         match primitive {
             EqualPrimitive::EQV => {
                 let [x, y] = memory.pop_many();
