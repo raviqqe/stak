@@ -53,9 +53,10 @@ impl PrimitiveSet for EnginePrimitiveSet<'_, '_> {
     ) -> Result<(), Self::Error> {
         if primitive >= DYNAMIC_PRIMITIVE_OFFSET {
             self.dynamic
-                .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)?
+                .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)
+                .await?
         } else {
-            self.small.operate(memory, primitive)?
+            self.small.operate(memory, primitive).await?
         }
 
         Ok(())
