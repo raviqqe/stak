@@ -18,6 +18,7 @@ stak-r7rs = { version = "0.10.17", path = "../r7rs" }
 stak-process-context = { version = "0.10.17", path = "../process_context" }
 stak-vm = { version = "0.10.17", path = "../vm" }
 stak-time = { version = "0.10.17", path = "../time" }
+cassette = "0.3.0"
 
 [dev-dependencies]
 pretty_assertions = "1.4.1"

@@ -9,6 +9,7 @@ pub extern crate std;
 
 #[doc(hidden)]
 pub mod __private {
+    pub use cassette;
     #[cfg(feature = "std")]
     pub use clap;
     #[cfg(feature = "libc")]
@@ -54,6 +55,7 @@ macro_rules! main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
+            cassette::block_on,
             clap::{self, Parser},
             main_error::MainError,
             stak_device::StdioDevice,
@@ -90,7 +92,7 @@ macro_rules! main {
 
             vm.initialize(include_r7rs!($path).iter().copied())?;
 
-            Ok(vm.run()?)
+            Ok(block_on(vm.run())?)
         }
     };
 }
@@ -112,6 +114,7 @@ macro_rules! libc_main {
     };
     ($path:expr, $heap_size:expr) => {
         use $crate::__private::{
+            cassette::block_on,
             libc::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
@@ -144,7 +147,7 @@ macro_rules! libc_main {
             .unwrap();
 
             vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
-            vm.run().unwrap();
+            block_on(vm.run()).unwrap();
 
             0
         }

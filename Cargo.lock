@@ -1594,6 +1594,7 @@ dependencies = [
 name = "stak-minifier"
 version = "0.10.17"
 dependencies = [
+ "cassette",
  "pretty_assertions",
  "stak-configuration",
  "stak-device",
@@ -1694,6 +1695,7 @@ dependencies = [
 name = "stak-sac"
 version = "0.10.17"
 dependencies = [
+ "cassette",
  "clap",
  "libc",
  "main_error",
