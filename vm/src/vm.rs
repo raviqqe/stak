@@ -548,7 +548,7 @@ mod tests {
     impl PrimitiveSet for FakePrimitiveSet {
         type Error = Error;
 
-        fn operate(
+        async fn operate(
             &mut self,
             _memory: &mut Memory<'_>,
             _primitive: usize,
