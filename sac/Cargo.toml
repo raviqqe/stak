@@ -30,7 +30,6 @@ std = [
 ]
 
 [dependencies]
-cassette = "0.3.0"
 clap = { version = "4.5.37", features = ["derive"], optional = true }
 libc = { version = "0.2.172", default-features = false, optional = true }
 main_error = { version = "0.1.2", optional = true }
