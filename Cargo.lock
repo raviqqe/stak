@@ -1746,6 +1746,7 @@ dependencies = [
 name = "stak-wasm"
 version = "0.10.17"
 dependencies = [
+ "cassette",
  "stak-build",
  "stak-compiler",
  "stak-configuration",
