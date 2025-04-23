@@ -7,14 +7,17 @@ use stak_vm::Value;
 
 /// An asynchronous context.
 #[derive(Debug)]
-pub struct AsyncContext<A: Allocator, E> {
+pub struct AsyncContext<'a, A: Allocator + 'a, E> {
     allocator: A,
-    r#yield: fn(Pin<Box<dyn Future<Output = Value>, A>>) -> E,
+    r#yield: fn(Pin<Box<dyn Future<Output = Value> + 'a, A>>) -> E,
 }
 
-impl<'a, A: Allocator + Copy + 'a, E> AsyncContext<A, E> {
+impl<'a, A: Allocator + Copy + 'a, E> AsyncContext<'a, A, E> {
     /// Creates a context.
-    pub fn new(allocator: A, r#yield: fn(Pin<Box<dyn Future<Output = Value>, A>>) -> E) -> Self {
+    pub fn new(
+        allocator: A,
+        r#yield: fn(Pin<Box<dyn Future<Output = Value> + 'a, A>>) -> E,
+    ) -> Self {
         Self { allocator, r#yield }
     }
 
