@@ -1,6 +1,7 @@
 //! Asynchronous context for Stak Scheme.
 
 use allocator_api2::{alloc::Allocator, boxed::Box};
+use core::mem::forget;
 use core::pin::Pin;
 use stak_vm::Value;
 
@@ -11,17 +12,21 @@ pub struct AsyncContext<A: Allocator, E> {
     r#yield: fn(Pin<Box<dyn Future<Output = Value>, A>>) -> E,
 }
 
-impl<A: Allocator, E> AsyncContext<A, E> {
+impl<'a, A: Allocator + Copy + 'a, E> AsyncContext<A, E> {
     /// Creates a context.
     pub fn new(allocator: A, r#yield: fn(Pin<Box<dyn Future<Output = Value>, A>>) -> E) -> Self {
         Self { allocator, r#yield }
     }
 
     /// Yields a future.
-    pub fn r#yield(&self, future: impl Future<Output = Value>) -> Result<(), E> {
-        let future: Pin<Box<dyn Future<Output = Value>, A>> = Box::pin_in(future, self.allocator);
+    pub fn r#yield(&self, mut value: impl Future<Output = Value> + 'a) -> Result<(), E> {
+        let future: &mut (dyn Future<Output = Value> + 'a) = &mut value;
+        let future: Box<dyn Future<Output = Value> + 'a, A> =
+            unsafe { Box::from_raw_in(future, self.allocator) };
 
-        Err((self.r#yield)(future))
+        forget(value);
+
+        Err((self.r#yield)(future.into()))
     }
 }
 
