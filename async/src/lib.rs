@@ -1,48 +1,54 @@
 //! Asynchronous context for Stak Scheme.
 
-use allocator_api2::{alloc::Allocator, boxed::Box};
-use core::mem::forget;
-use core::pin::Pin;
-use stak_vm::Value;
+#![no_std]
+
+extern crate alloc;
+use alloc::boxed::Box;
+use core::cell::Cell;
+use stak_vm::{Error, Value};
 
 /// An asynchronous context.
-#[derive(Debug)]
-pub struct AsyncContext<'a, A: Allocator + 'a, E> {
-    allocator: A,
-    r#yield: fn(Pin<Box<dyn Future<Output = Value> + 'a, A>>) -> E,
+#[derive(Default)]
+pub struct AsyncContext<'a> {
+    future: Cell<Option<Box<dyn Future<Output = Value> + 'a>>>,
 }
 
-impl<'a, A: Allocator + Copy + 'a, E> AsyncContext<'a, A, E> {
+impl<'a> AsyncContext<'a> {
     /// Creates a context.
-    pub fn new(
-        allocator: A,
-        r#yield: fn(Pin<Box<dyn Future<Output = Value> + 'a, A>>) -> E,
-    ) -> Self {
-        Self { allocator, r#yield }
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Takes a future.
+    pub fn take_future(&self) -> Box<dyn Future<Output = Value> + 'a> {
+        self.future.take().unwrap()
     }
 
     /// Yields a future.
-    pub fn r#yield(&self, mut value: impl Future<Output = Value> + 'a) -> Result<(), E> {
-        let future: &mut (dyn Future<Output = Value> + 'a) = &mut value;
-        let future: Box<dyn Future<Output = Value> + 'a, A> =
-            unsafe { Box::from_raw_in(future, self.allocator) };
+    pub fn r#yield(&self, future: impl Future<Output = Value> + 'a) -> Result<(), Error> {
+        self.future.set(Some(Box::new(future)));
 
-        forget(value);
-
-        Err((self.r#yield)(future.into()))
+        Err(Error::Yield)
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use allocator_api2::alloc::Global;
     use stak_vm::Number;
 
     #[tokio::test]
     async fn r#yield() {
-        let context = AsyncContext::new(Global, |future| future);
+        let context = AsyncContext::new();
 
-        context.r#yield(async { Number::from_i64(42).into() });
+        let error = context
+            .r#yield(async { Number::from_i64(42).into() })
+            .unwrap_err();
+
+        assert_eq!(error, Error::Yield);
+
+        let future = context.take_future();
+
+        assert_eq!(Box::into_pin(future).await, Number::from_i64(42).into());
     }
 }
