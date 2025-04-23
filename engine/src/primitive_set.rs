@@ -46,7 +46,11 @@ impl<'a, 'b> EnginePrimitiveSet<'a, 'b> {
 impl PrimitiveSet for EnginePrimitiveSet<'_, '_> {
     type Error = EngineError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    async fn operate(
+        &mut self,
+        memory: &mut Memory<'_>,
+        primitive: usize,
+    ) -> Result<(), Self::Error> {
         if primitive >= DYNAMIC_PRIMITIVE_OFFSET {
             self.dynamic
                 .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)?

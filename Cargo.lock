@@ -1470,6 +1470,7 @@ dependencies = [
 name = "stak-compiler"
 version = "0.10.17"
 dependencies = [
+ "cassette",
  "indoc",
  "stak-configuration",
  "stak-device",
