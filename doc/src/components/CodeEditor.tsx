@@ -18,18 +18,19 @@ export const CodeEditor = (props: Props): JSX.Element => {
       throw new Error("Editor element not found");
     }
 
-    editor.create(element, {
-      automaticLayout: true,
-      language: "scheme",
-      lineNumbers: "off",
-      minimap: { enabled: false },
-      theme: "vs-dark",
-      value: props.value,
-    });
+    const model = editor
+      .create(element, {
+        automaticLayout: true,
+        language: "scheme",
+        lineNumbers: "off",
+        minimap: { enabled: false },
+        theme: "vs-dark",
+        value: props.value,
+      })
+      .getModel();
+    const onChange = props.onChange;
 
-    for (const model of editor.getModels()) {
-      model.onDidChangeContent(() => props.onChange(model.getValue()));
-    }
+    model?.onDidChangeContent(() => onChange(model.getValue()));
   });
 
   return <div class={props.class} id={id()} />;
