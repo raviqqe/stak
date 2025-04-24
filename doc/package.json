@@ -12,13 +12,13 @@
     "format": "biome format --write ."
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.3.0",
-    "@astrojs/solid-js": "^5.0.8",
+    "@astrojs/sitemap": "^3.3.1",
+    "@astrojs/solid-js": "^5.0.9",
     "@astrojs/starlight": "^0.34.0",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^0.5.0",
     "@raviqqe/stak": "^0.10.17",
-    "astro": "^5.7.4",
+    "astro": "^5.7.5",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.35.0",
     "lucide-solid": "^0.503.0",
