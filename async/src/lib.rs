@@ -10,7 +10,7 @@ use stak_vm::{Error, Value};
 
 /// An asynchronous context.
 ///
-/// Curently, the context requires a global allocator for storing `dyn Future` temporarily.
+/// Currently, the context requires a global allocator for storing `dyn Future` temporarily.
 /// We will allow injecting allocators when the allocator API is stabilized.
 #[derive(Default)]
 pub struct AsyncContext<'a> {
