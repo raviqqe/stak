@@ -10,10 +10,10 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
-stak-device = { version = "0.10.17", path = "../device" }
-stak-file = { version = "0.10.17", path = "../file" }
-stak-inexact = { version = "0.10.17", path = "../inexact" }
-stak-native = { version = "0.10.17", path = "../native" }
-stak-process-context = { version = "0.10.17", path = "../process_context" }
-stak-time = { version = "0.10.17", path = "../time" }
-stak-vm = { version = "0.10.17", path = "../vm" }
+stak-device = { version = "0.10.18", path = "../device" }
+stak-file = { version = "0.10.18", path = "../file" }
+stak-inexact = { version = "0.10.18", path = "../inexact" }
+stak-native = { version = "0.10.18", path = "../native" }
+stak-process-context = { version = "0.10.18", path = "../process_context" }
+stak-time = { version = "0.10.18", path = "../time" }
+stak-vm = { version = "0.10.18", path = "../vm" }

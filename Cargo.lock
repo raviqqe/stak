@@ -427,7 +427,7 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "custom-vm"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak",
  "stak-build",
@@ -447,7 +447,7 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "embedded-script"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "any-fn",
  "rand",
@@ -634,7 +634,7 @@ dependencies = [
 
 [[package]]
 name = "hot-reload"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "axum",
  "stak",
@@ -963,7 +963,7 @@ dependencies = [
 
 [[package]]
 name = "no-std-no-alloc"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "heapless",
  "stak",
@@ -1414,7 +1414,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "any-fn",
  "rand",
@@ -1434,7 +1434,7 @@ dependencies = [
 
 [[package]]
 name = "stak-bench"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "codspeed-criterion-compat",
  "mlua",
@@ -1445,7 +1445,7 @@ dependencies = [
 
 [[package]]
 name = "stak-build"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "glob",
  "stak-compiler",
@@ -1455,14 +1455,14 @@ dependencies = [
 
 [[package]]
 name = "stak-compile"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-compiler"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "indoc",
  "stak-configuration",
@@ -1476,18 +1476,18 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.10.17"
+version = "0.10.18"
 
 [[package]]
 name = "stak-decode"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-device"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -1495,7 +1495,7 @@ dependencies = [
 
 [[package]]
 name = "stak-dynamic"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "any-fn",
  "bitvec",
@@ -1505,7 +1505,7 @@ dependencies = [
 
 [[package]]
 name = "stak-engine"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "any-fn",
  "cfg-elif",
@@ -1524,7 +1524,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "heapless",
  "rustix",
@@ -1534,7 +1534,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "libm",
  "stak-vm",
@@ -1542,7 +1542,7 @@ dependencies = [
 
 [[package]]
 name = "stak-interpret"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "clap",
  "main_error",
@@ -1557,7 +1557,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "cfg-elif",
  "proc-macro2",
@@ -1575,7 +1575,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1584,7 +1584,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "pretty_assertions",
  "stak-configuration",
@@ -1599,7 +1599,7 @@ dependencies = [
 
 [[package]]
 name = "stak-minifier-macro"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1610,35 +1610,35 @@ dependencies = [
 
 [[package]]
 name = "stak-minify"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-module"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "hmr",
 ]
 
 [[package]]
 name = "stak-native"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-process-context"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-vm",
 ]
 
 [[package]]
 name = "stak-profile"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "clap",
  "main_error",
@@ -1654,7 +1654,7 @@ dependencies = [
 
 [[package]]
 name = "stak-profiler"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "indoc",
  "pretty_assertions",
@@ -1663,7 +1663,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -1676,14 +1676,14 @@ dependencies = [
 
 [[package]]
 name = "stak-repl"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "stak-sac"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "clap",
  "libc",
@@ -1702,7 +1702,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -1710,7 +1710,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "libc",
  "rustix",
@@ -1718,7 +1718,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "cfg-elif",
  "insta",
@@ -1733,7 +1733,7 @@ dependencies = [
 
 [[package]]
 name = "stak-wasm"
-version = "0.10.17"
+version = "0.10.18"
 dependencies = [
  "stak-build",
  "stak-compiler",
