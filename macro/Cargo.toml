@@ -14,7 +14,6 @@ proc-macro = true
 
 [features]
 async = [
-  "stak-compiler/async",
   "stak-device/async",
   "stak-file/async",
   "stak-process-context/async",
