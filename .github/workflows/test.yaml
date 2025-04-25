@@ -35,7 +35,6 @@ jobs:
         options:
           -
           - --no-default-features
-          - --all-features
           - --features libc,std
           - --features float62
           - --features async
