@@ -62,7 +62,7 @@ fn run_vm(
     )?;
 
     vm.initialize(bytecodes.iter().copied())?;
-    vm.run()
+    vm.run_sync()
 }
 
 /// A fibonacci calculation error.

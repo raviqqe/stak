@@ -7,7 +7,6 @@ use stak_macro::include_r7rs;
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::{SmallError, SmallPrimitiveSet};
 use stak_time::VoidClock;
-use stak_util::block_on;
 use stak_vm::Vm;
 use std::io::{Read, Write, empty};
 
@@ -27,7 +26,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     )?;
 
     vm.initialize(BYTECODE.iter().copied())?;
-    block_on!(vm.run())?;
+    vm.run_sync()?;
 
     Ok(())
 }
