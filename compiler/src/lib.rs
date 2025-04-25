@@ -3,7 +3,6 @@
 mod error;
 
 pub use self::error::CompileError;
-use cfg_elif::expr;
 use core::env;
 use stak_configuration::DEFAULT_HEAP_SIZE;
 use stak_device::ReadWriteDevice;
@@ -11,6 +10,7 @@ use stak_file::VoidFileSystem;
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
+use stak_util::block_on;
 use stak_vm::Vm;
 use std::io::{Read, Write};
 
@@ -58,12 +58,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 
-    expr::feature!(if ("async") {
-        noop_executor::block_on
-    } else {
-        core::convert::identity
-    })(vm.run())
-    .map_err(|error| {
+    block_on!(vm.run()).map_err(|error| {
         if error_message.is_empty() {
             CompileError::Run(error)
         } else {

@@ -13,7 +13,15 @@ version.workspace = true
 proc-macro = true
 
 [features]
-async = ["stak-compiler/async"]
+async = [
+  "stak-compiler/async",
+  "stak-device/async",
+  "stak-file/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "stak-vm/async",
+]
 hot-reload = []
 
 [dependencies]
