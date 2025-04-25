@@ -9,9 +9,6 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
-[features]
-async = ["stak-util/async", "stak-vm/async"]
-
 [dependencies]
 stak-configuration = { version = "0.10.18", path = "../configuration" }
 stak-device = { version = "0.10.18", path = "../device", features = ["std"] }
