@@ -15,13 +15,13 @@ async = []
 [dependencies]
 cfg-elif = "0.6.3"
 noop-executor = "0.1.0"
-stak-configuration = { version = "0.10.17", path = "../configuration" }
-stak-device = { version = "0.10.17", path = "../device", features = ["std"] }
-stak-file = { version = "0.10.17", path = "../file" }
-stak-process-context = { version = "0.10.17", path = "../process_context" }
-stak-r7rs = { version = "0.10.17", path = "../r7rs" }
-stak-time = { version = "0.10.17", path = "../time" }
-stak-vm = { version = "0.10.17", path = "../vm" }
+stak-configuration = { version = "0.10.18", path = "../configuration" }
+stak-device = { version = "0.10.18", path = "../device", features = ["std"] }
+stak-file = { version = "0.10.18", path = "../file" }
+stak-process-context = { version = "0.10.18", path = "../process_context" }
+stak-r7rs = { version = "0.10.18", path = "../r7rs" }
+stak-time = { version = "0.10.18", path = "../time" }
+stak-vm = { version = "0.10.18", path = "../vm" }
 
 [dev-dependencies]
 indoc = "2.0.6"
