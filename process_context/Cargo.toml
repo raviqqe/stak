@@ -10,6 +10,7 @@ repository.workspace = true
 version.workspace = true
 
 [features]
+async = ["winter-maybe-async/async"]
 libc = []
 std = []
 
