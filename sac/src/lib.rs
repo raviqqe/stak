@@ -18,12 +18,12 @@ pub mod __private {
     pub use stak_configuration;
     pub use stak_device;
     pub use stak_file;
+    #[cfg(feature = "libc")]
+    pub use stak_libc;
     pub use stak_macro;
     pub use stak_process_context;
     pub use stak_r7rs;
     pub use stak_time;
-    #[cfg(feature = "libc")]
-    pub use stak_util;
     pub use stak_vm;
     #[cfg(feature = "std")]
     pub use std;
@@ -115,11 +115,11 @@ macro_rules! libc_main {
             libc::exit,
             stak_device::libc::{ReadWriteDevice, Stderr, Stdin, Stdout},
             stak_file::LibcFileSystem,
+            stak_libc::Heap,
             stak_macro::include_r7rs,
             stak_process_context::LibcProcessContext,
             stak_r7rs::SmallPrimitiveSet,
             stak_time::LibcClock,
-            stak_util::Heap,
             stak_vm::Vm,
         };
 

@@ -14,7 +14,7 @@ float = ["stak-vm/float"]
 float62 = ["stak-vm/float62"]
 libc = [
   "dep:libc",
-  "dep:stak-util",
+  "dep:stak-libc",
   "stak-device/libc",
   "stak-file/libc",
   "stak-process-context/libc",
@@ -36,11 +36,11 @@ main_error = { version = "0.1.2", optional = true }
 stak-configuration = { version = "0.10.18", path = "../configuration" }
 stak-device = { version = "0.10.18", path = "../device" }
 stak-file = { version = "0.10.18", path = "../file" }
+stak-libc = { version = "0.10.18", path = "../libc", optional = true }
 stak-macro = { version = "0.10.18", path = "../macro" }
 stak-process-context = { version = "0.10.18", path = "../process_context" }
 stak-r7rs = { version = "0.10.18", path = "../r7rs" }
 stak-time = { version = "0.10.18", path = "../time" }
-stak-util = { version = "0.10.18", path = "../util", optional = true }
 stak-vm = { version = "0.10.18", path = "../vm" }
 
 [dev-dependencies]

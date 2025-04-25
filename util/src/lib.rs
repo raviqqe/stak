@@ -2,12 +2,6 @@
 
 #![no_std]
 
-mod heap;
-mod mmap;
-
-pub use heap::Heap;
-pub use mmap::Mmap;
-
 #[doc(hidden)]
 pub mod __private {
     pub use cfg_elif;

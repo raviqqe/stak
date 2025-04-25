@@ -81,12 +81,18 @@ dependencies = [
  "libc",
  "stak-device",
  "stak-file",
+ "stak-libc",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-util",
  "stak-vm",
 ]
+
+[[package]]
+name = "noop-executor"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9d38c94f32c818a514051ceac7c15c85f37c9977c0075c791f26a12426ca6032"
 
 [[package]]
 name = "proc-macro2"
@@ -148,6 +154,7 @@ version = "0.10.18"
 dependencies = [
  "rustix",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -157,6 +164,7 @@ dependencies = [
  "heapless",
  "rustix",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -165,6 +173,15 @@ version = "0.10.18"
 dependencies = [
  "libm",
  "stak-vm",
+ "winter-maybe-async",
+]
+
+[[package]]
+name = "stak-libc"
+version = "0.10.18"
+dependencies = [
+ "libc",
+ "rustix",
 ]
 
 [[package]]
@@ -193,6 +210,7 @@ name = "stak-native"
 version = "0.10.18"
 dependencies = [
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -200,6 +218,7 @@ name = "stak-process-context"
 version = "0.10.18"
 dependencies = [
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -213,6 +232,7 @@ dependencies = [
  "stak-process-context",
  "stak-time",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -223,11 +243,11 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
+ "stak-libc",
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-util",
  "stak-vm",
 ]
 
@@ -237,14 +257,15 @@ version = "0.10.18"
 dependencies = [
  "rustix",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
 name = "stak-util"
 version = "0.10.18"
 dependencies = [
- "libc",
- "rustix",
+ "cfg-elif",
+ "noop-executor",
 ]
 
 [[package]]
@@ -252,6 +273,8 @@ name = "stak-vm"
 version = "0.10.18"
 dependencies = [
  "cfg-elif",
+ "stak-util",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -343,3 +366,13 @@ name = "windows_x86_64_msvc"
 version = "0.52.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
+
+[[package]]
+name = "winter-maybe-async"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaa132be74e602b707f1dab5a69c38496445e54ee940e7c281c02b15007241bd"
+dependencies = [
+ "quote",
+ "syn",
+]

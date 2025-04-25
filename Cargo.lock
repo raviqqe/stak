@@ -1569,6 +1569,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "stak-libc"
+version = "0.10.18"
+dependencies = [
+ "libc",
+ "rustix",
+]
+
+[[package]]
 name = "stak-macro"
 version = "0.10.18"
 dependencies = [
@@ -1708,11 +1716,11 @@ dependencies = [
  "stak-configuration",
  "stak-device",
  "stak-file",
+ "stak-libc",
  "stak-macro",
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
- "stak-util",
  "stak-vm",
 ]
 
@@ -1730,9 +1738,7 @@ name = "stak-util"
 version = "0.10.18"
 dependencies = [
  "cfg-elif",
- "libc",
  "noop-executor",
- "rustix",
 ]
 
 [[package]]

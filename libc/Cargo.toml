@@ -1,6 +1,6 @@
 [package]
-name = "stak-util"
-description = "Stak Scheme utilities"
+name = "stak-libc"
+description = "Stak Scheme libc utilities"
 categories.workspace = true
 edition.workspace = true
 keywords.workspace = true
@@ -10,8 +10,11 @@ repository.workspace = true
 version.workspace = true
 
 [dependencies]
-cfg-elif = "0.6.3"
-noop-executor = "0.1.0"
+libc = { version = "0.2.172", default-features = false }
+rustix = { version = "1.0.5", default-features = false, features = [
+  "fs",
+  "mm",
+] }
 
 [lints]
 workspace = true
