@@ -233,6 +233,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
 mod tests {
     use super::*;
     use any_fn::{Ref, r#fn, value};
+    use winter_maybe_async::maybe_await;
 
     const HEAP_SIZE: usize = 1 << 8;
 
@@ -291,8 +292,6 @@ mod tests {
     }
 
     mod garbage_collection {
-        use winter_maybe_async::maybe_await;
-
         use super::*;
 
         #[test]
