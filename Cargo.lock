@@ -1608,6 +1608,7 @@ dependencies = [
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
+ "stak-util",
  "stak-vm",
 ]
 
@@ -1665,6 +1666,7 @@ dependencies = [
  "stak-profiler",
  "stak-r7rs",
  "stak-time",
+ "stak-util",
  "stak-vm",
 ]
 
@@ -1730,7 +1732,9 @@ dependencies = [
 name = "stak-util"
 version = "0.10.18"
 dependencies = [
+ "cfg-elif",
  "libc",
+ "noop-executor",
  "rustix",
 ]
 

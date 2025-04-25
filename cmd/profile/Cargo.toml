@@ -10,6 +10,7 @@ repository.workspace = true
 version.workspace = true
 
 [features]
+async = ["stak-util/async", "stak-vm/async"]
 default = ["float"]
 float = ["stak-vm/float"]
 
@@ -25,6 +26,7 @@ stak-process-context = { version = "0.10.18", path = "../../process_context", fe
 stak-profiler = { version = "0.10.18", path = "../../profiler" }
 stak-r7rs = { version = "0.10.18", path = "../../r7rs" }
 stak-time = { version = "0.10.18", path = "../../time", features = ["std"] }
+stak-util = { version = "0.10.18", path = "../../util" }
 stak-vm = { version = "0.10.18", path = "../../vm", features = ["profile"] }
 
 [lints]

@@ -9,8 +9,13 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
+[features]
+async = []
+
 [dependencies]
+cfg-elif = "0.6.3"
 libc = { version = "0.2.172", default-features = false }
+noop-executor = "0.1.0"
 rustix = { version = "1.0.5", default-features = false, features = [
   "fs",
   "mm",

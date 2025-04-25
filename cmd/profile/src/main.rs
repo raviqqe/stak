@@ -18,6 +18,7 @@ use stak_profiler::{
 };
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::OsClock;
+use stak_util::block_on;
 use stak_vm::Vm;
 use std::{
     fs::{OpenOptions, read},
@@ -94,7 +95,7 @@ fn main() -> Result<(), MainError> {
             .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;
-            vm.run()?;
+            block_on!(vm.run())?;
         }
         Command::Analyze(arguments) => {
             let reader = stdin().lock();
