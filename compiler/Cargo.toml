@@ -9,17 +9,6 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
-[features]
-async = [
-  "stak-device/async",
-  "stak-file/async",
-  "stak-process-context/async",
-  "stak-r7rs/async",
-  "stak-time/async",
-  "stak-util/async",
-  "stak-vm/async",
-]
-
 [dependencies]
 cfg-elif = "0.6.3"
 noop-executor = "0.1.0"
@@ -29,7 +18,6 @@ stak-file = { version = "0.10.18", path = "../file" }
 stak-process-context = { version = "0.10.18", path = "../process_context" }
 stak-r7rs = { version = "0.10.18", path = "../r7rs" }
 stak-time = { version = "0.10.18", path = "../time" }
-stak-util = { version = "0.10.18", path = "../util" }
 stak-vm = { version = "0.10.18", path = "../vm" }
 
 [dev-dependencies]

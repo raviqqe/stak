@@ -10,7 +10,6 @@ use stak_file::VoidFileSystem;
 use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
-use stak_util::block_on;
 use stak_vm::Vm;
 use std::io::{Read, Write};
 
@@ -58,7 +57,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 
-    block_on!(vm.run()).map_err(|error| {
+    vm.run_sync().map_err(|error| {
         if error_message.is_empty() {
             CompileError::Run(error)
         } else {
