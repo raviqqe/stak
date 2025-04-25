@@ -2,9 +2,9 @@ use crate::{EngineError, primitive_set::EnginePrimitiveSet};
 use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
+use stak_util::block_on;
 use stak_vm::{Error, Value, Vm};
 use winter_maybe_async::{maybe_async, maybe_await};
-use stak_util::block_on;
 
 /// A scripting engine.
 pub struct Engine<'a, 'b> {
