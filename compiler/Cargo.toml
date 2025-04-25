@@ -10,7 +10,15 @@ repository.workspace = true
 version.workspace = true
 
 [features]
-async = []
+async = [
+  "stak-device/async",
+  "stak-file/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "stak-util/async",
+  "stak-vm/async",
+]
 
 [dependencies]
 cfg-elif = "0.6.3"
