@@ -45,7 +45,7 @@ mod bare {
         const MODULE: &[u8] = compile_bare!("($$define x 42)");
 
         vm.initialize(MODULE.iter().copied()).unwrap();
-        vm.run().unwrap();
+        vm.run_sync().unwrap();
     }
 
     #[test]
@@ -56,7 +56,7 @@ mod bare {
         const MODULE: &[u8] = include_bare!("../tests/empty.scm");
 
         vm.initialize(MODULE.iter().copied()).unwrap();
-        vm.run().unwrap();
+        vm.run_sync().unwrap();
     }
 }
 
@@ -77,7 +77,7 @@ mod r7rs {
         );
 
         vm.initialize(MODULE.iter().copied()).unwrap();
-        vm.run().unwrap();
+        vm.run_sync().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
     }
@@ -98,7 +98,7 @@ mod r7rs {
         );
 
         vm.initialize(MODULE.iter().copied()).unwrap();
-        vm.run().unwrap();
+        vm.run_sync().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"A, ");
     }
@@ -119,7 +119,7 @@ mod r7rs {
         );
 
         vm.initialize(MODULE.iter().copied()).unwrap();
-        vm.run().unwrap();
+        vm.run_sync().unwrap();
 
         assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
     }
@@ -132,6 +132,6 @@ mod r7rs {
         const MODULE: &[u8] = include_r7rs!("../tests/empty.scm");
 
         vm.initialize(MODULE.iter().copied()).unwrap();
-        vm.run().unwrap();
+        vm.run_sync().unwrap();
     }
 }

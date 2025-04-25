@@ -20,7 +20,7 @@ stak-process-context = { version = "0.10.0", path = "../../../process_context", 
 ] }
 stak-r7rs = { version = "0.10.0", path = "../../../r7rs" }
 stak-time = { version = "0.10.0", path = "../../../time", features = ["libc"] }
-stak-util = { version = "0.10.0", path = "../../../util" }
+stak-libc = { version = "0.10.0", path = "../../../libc" }
 stak-vm = { version = "0.10.0", path = "../../../vm" }
 
 [lints]

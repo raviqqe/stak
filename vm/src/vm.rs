@@ -14,6 +14,8 @@ use crate::{
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
 use core::fmt::{self, Display, Formatter, Write};
+use stak_util::block_on;
+use winter_maybe_async::{maybe_async, maybe_await};
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -83,9 +85,15 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         &mut self.primitive_set
     }
 
+    /// Runs bytecodes on a virtual machine synchronously.
+    pub fn run_sync(&mut self) -> Result<(), T::Error> {
+        block_on!(self.run())
+    }
+
     /// Runs bytecodes on a virtual machine.
+    #[maybe_async]
     pub fn run(&mut self) -> Result<(), T::Error> {
-        while let Err(error) = self.run_with_continuation() {
+        while let Err(error) = maybe_await!(self.run_with_continuation()) {
             if error.is_critical() {
                 return Err(error);
             }
@@ -134,6 +142,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
+    #[maybe_async]
     fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
@@ -145,7 +154,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instruction::GET => self.get()?,
                 Instruction::SET => self.set(),
                 Instruction::IF => self.r#if(),
-                code => self.call(instruction, code as usize - Instruction::CALL as usize)?,
+                code => maybe_await!(
+                    self.call(instruction, code as usize - Instruction::CALL as usize)
+                )?,
             }
 
             self.advance_code();
@@ -202,6 +213,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[inline(always)]
+    #[maybe_async]
     fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
@@ -289,8 +301,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     }
                 }
 
-                self.primitive_set
-                    .operate(&mut self.memory, primitive.to_i64() as _)?;
+                maybe_await!(
+                    self.primitive_set
+                        .operate(&mut self.memory, primitive.to_i64() as _)
+                )?;
             }
         }
 
@@ -529,6 +543,7 @@ mod tests {
     impl PrimitiveSet for FakePrimitiveSet {
         type Error = Error;
 
+        #[maybe_async]
         fn operate(
             &mut self,
             _memory: &mut Memory<'_>,

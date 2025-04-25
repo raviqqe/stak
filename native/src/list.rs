@@ -1,4 +1,5 @@
 use stak_vm::{Error, Memory, PrimitiveSet, Type};
+use winter_maybe_async::maybe_async;
 
 /// A list primitive.
 pub enum ListPrimitive {
@@ -30,7 +31,8 @@ impl ListPrimitiveSet {
 impl PrimitiveSet for ListPrimitiveSet {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             ListPrimitive::ASSQ => {
                 let [x, xs] = memory.pop_many();

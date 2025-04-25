@@ -10,6 +10,15 @@ repository.workspace = true
 version.workspace = true
 
 [features]
+async = [
+  "stak-device/async",
+  "stak-file/async",
+  "stak-macro/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "winter-maybe-async/async",
+]
 float = ["dep:nonbox"]
 float62 = ["float"]
 gc_always = []
@@ -20,6 +29,8 @@ trace_memory = []
 [dependencies]
 cfg-elif = "0.6.3"
 nonbox = { version = "0.5.10", optional = true }
+stak-util = { version = "0.10.18", path = "../util" }
+winter-maybe-async = "0.12.0"
 
 [dev-dependencies]
 insta = "1.42.1"

@@ -73,7 +73,7 @@ fn run_scheme(module: &UniversalModule) -> Result<(), EngineError> {
     let mut engine = Engine::new(&mut heap, &mut functions)?;
 
     // Finally, run the module!
-    engine.run(module)
+    engine.run_sync(module)
 }
 
 #[cfg(test)]

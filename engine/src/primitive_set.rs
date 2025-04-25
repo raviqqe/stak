@@ -7,6 +7,7 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::{Memory, PrimitiveSet};
+use winter_maybe_async::{maybe_async, maybe_await};
 
 const DYNAMIC_PRIMITIVE_OFFSET: usize = 1000;
 
@@ -46,12 +47,15 @@ impl<'a, 'b> EnginePrimitiveSet<'a, 'b> {
 impl PrimitiveSet for EnginePrimitiveSet<'_, '_> {
     type Error = EngineError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         if primitive >= DYNAMIC_PRIMITIVE_OFFSET {
-            self.dynamic
-                .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)?
+            maybe_await!(
+                self.dynamic
+                    .operate(memory, primitive - DYNAMIC_PRIMITIVE_OFFSET)
+            )?
         } else {
-            self.small.operate(memory, primitive)?
+            maybe_await!(self.small.operate(memory, primitive))?
         }
 
         Ok(())

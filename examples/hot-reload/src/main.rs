@@ -65,7 +65,7 @@ fn run(
     )?;
 
     vm.initialize(bytecodes.iter().copied())?;
-    vm.run()
+    vm.run_sync()
 }
 
 fn decode_buffer(buffer: Vec<u8>) -> response::Result<String> {

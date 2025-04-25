@@ -9,6 +9,18 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
+[features]
+async = [
+  "stak-device/async",
+  "stak-file/async",
+  "stak-inexact/async",
+  "stak-native/async",
+  "stak-process-context/async",
+  "stak-time/async",
+  "stak-vm/async",
+  "winter-maybe-async/async",
+]
+
 [dependencies]
 stak-device = { version = "0.10.18", path = "../device" }
 stak-file = { version = "0.10.18", path = "../file" }
@@ -17,3 +29,4 @@ stak-native = { version = "0.10.18", path = "../native" }
 stak-process-context = { version = "0.10.18", path = "../process_context" }
 stak-time = { version = "0.10.18", path = "../time" }
 stak-vm = { version = "0.10.18", path = "../vm" }
+winter-maybe-async = "0.12.0"

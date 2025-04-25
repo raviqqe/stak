@@ -37,7 +37,7 @@ fn run(bytecodes: &[u8]) -> Result<(), SmallError> {
     )?;
 
     vm.initialize(bytecodes.iter().copied())?;
-    vm.run()
+    vm.run_sync()
 }
 
 #[cfg(test)]

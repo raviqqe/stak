@@ -4,6 +4,7 @@ use any_fn::AnyFn;
 use bitvec::bitvec;
 use core::any::TypeId;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
+use winter_maybe_async::maybe_async;
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
@@ -144,7 +145,8 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
 impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         if primitive == 0 {
             memory.set_register(memory.null());
 
@@ -231,6 +233,7 @@ impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
 mod tests {
     use super::*;
     use any_fn::{Ref, r#fn, value};
+    use winter_maybe_async::maybe_await;
 
     const HEAP_SIZE: usize = 1 << 8;
 
@@ -299,14 +302,14 @@ mod tests {
             primitive_set.collect_garbages(&Memory::new(&mut heap).unwrap());
         }
 
-        #[test]
-        fn collect_one() {
+        #[tokio::test]
+        async fn collect_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 1).unwrap();
+            maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
@@ -319,14 +322,14 @@ mod tests {
             assert_eq!(primitive_set.find_free(), Some(0));
         }
 
-        #[test]
-        fn keep_one() {
+        #[tokio::test]
+        async fn keep_one() {
             let mut heap = [Default::default(); HEAP_SIZE];
             let mut functions = [("make-foo", r#fn(|| Foo { bar: 42 }))];
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 1).unwrap();
+            maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 

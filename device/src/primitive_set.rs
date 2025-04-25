@@ -4,6 +4,7 @@ mod primitive;
 pub use self::{error::PrimitiveError, primitive::Primitive};
 use crate::Device;
 use stak_vm::{Memory, Number, PrimitiveSet};
+use winter_maybe_async::maybe_async;
 
 /// A primitive set for a device.
 pub struct DevicePrimitiveSet<T: Device> {
@@ -43,7 +44,8 @@ impl<T: Device> DevicePrimitiveSet<T> {
 impl<T: Device> PrimitiveSet for DevicePrimitiveSet<T> {
     type Error = PrimitiveError;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::READ => {
                 let byte = self.device.read().map_err(|_| PrimitiveError::ReadInput)?;

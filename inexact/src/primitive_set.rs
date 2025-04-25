@@ -1,6 +1,7 @@
 use crate::primitive::Primitive;
 use libm::{exp, log};
 use stak_vm::{Error, Memory, Number, PrimitiveSet};
+use winter_maybe_async::maybe_async;
 
 /// A primitive set for inexact number operations.
 #[derive(Debug, Default)]
@@ -16,7 +17,8 @@ impl InexactPrimitiveSet {
 impl PrimitiveSet for InexactPrimitiveSet {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::EXPONENTIATION => {
                 memory.operate_unary(|x| Number::from_f64(exp(x.to_f64())))?

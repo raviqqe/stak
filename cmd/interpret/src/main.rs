@@ -44,5 +44,5 @@ fn main() -> Result<(), MainError> {
 
     vm.initialize(read(&arguments.file)?)?;
 
-    Ok(vm.run()?)
+    Ok(vm.run_sync()?)
 }

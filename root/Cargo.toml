@@ -10,6 +10,16 @@ repository.workspace = true
 version.workspace = true
 
 [features]
+async = [
+  "stak-device/async",
+  "stak-dynamic/async",
+  "stak-engine/async",
+  "stak-file/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "stak-vm/async",
+]
 default = ["float", "std"]
 alloc = ["dep:stak-dynamic", "dep:stak-engine"]
 float = ["stak-sac/float", "stak-vm/float"]

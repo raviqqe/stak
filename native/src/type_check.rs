@@ -1,4 +1,5 @@
 use stak_vm::{Error, Memory, PrimitiveSet, Type};
+use winter_maybe_async::maybe_async;
 
 /// A type check primitive.
 pub enum TypeCheckPrimitive {
@@ -27,7 +28,8 @@ impl TypeCheckPrimitiveSet {
 impl PrimitiveSet for TypeCheckPrimitiveSet {
     type Error = Error;
 
-    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             TypeCheckPrimitive::NULL => memory.operate_top(|memory, value| {
                 memory.boolean(value == memory.null().into()).into()

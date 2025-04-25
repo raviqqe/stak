@@ -2,7 +2,9 @@ use crate::{EngineError, primitive_set::EnginePrimitiveSet};
 use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
+use stak_util::block_on;
 use stak_vm::{Error, Value, Vm};
+use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A scripting engine.
 pub struct Engine<'a, 'b> {
@@ -20,10 +22,16 @@ impl<'a, 'b> Engine<'a, 'b> {
         })
     }
 
+    /// Runs a module synchronously.
+    pub fn run_sync<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
+        block_on!(self.run(module))
+    }
+
     /// Runs a module.
+    #[maybe_async]
     pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
-        self.vm.run()
+        maybe_await!(self.vm.run())
     }
 
     /// Registers a type compatible between Scheme and Rust.

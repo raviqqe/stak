@@ -57,7 +57,7 @@ pub fn compile_bare(source: impl Read, target: impl Write) -> Result<(), Compile
 
     vm.initialize(COMPILER_BYTECODES.iter().copied())?;
 
-    vm.run().map_err(|error| {
+    vm.run_sync().map_err(|error| {
         if error_message.is_empty() {
             CompileError::Run(error)
         } else {

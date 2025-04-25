@@ -26,7 +26,7 @@ pub fn minify(reader: impl Read, writer: impl Write) -> Result<(), SmallError> {
     )?;
 
     vm.initialize(BYTECODE.iter().copied())?;
-    vm.run()?;
+    vm.run_sync()?;
 
     Ok(())
 }
