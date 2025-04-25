@@ -10,7 +10,6 @@ repository.workspace = true
 version.workspace = true
 
 [features]
-async = ["stak-sac/async"]
 default = ["float"]
 float = ["stak-sac/float"]
 
