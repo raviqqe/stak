@@ -1,4 +1,5 @@
 use stak_vm::{Error, Memory, PrimitiveSet, Type};
+use winter_maybe_async::maybe_async;
 
 /// An equality primitive.
 pub enum EqualPrimitive {
@@ -27,11 +28,8 @@ impl EqualPrimitiveSet {
 impl PrimitiveSet for EqualPrimitiveSet {
     type Error = Error;
 
-    async fn operate(
-        &mut self,
-        memory: &mut Memory<'_>,
-        primitive: usize,
-    ) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             EqualPrimitive::EQV => {
                 let [x, y] = memory.pop_many();

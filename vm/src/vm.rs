@@ -13,11 +13,8 @@ use crate::{
 };
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
-use core::{
-    fmt::{self, Display, Formatter, Write},
-    pin::pin,
-    task::{Context, Poll, Waker},
-};
+use core::fmt::{self, Display, Formatter, Write};
+use winter_maybe_async::{maybe_async, maybe_await};
 
 macro_rules! trace {
     ($prefix:literal, $data:expr) => {
@@ -88,19 +85,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Runs bytecodes on a virtual machine.
+    #[maybe_async]
     pub fn run(&mut self) -> Result<(), T::Error> {
-        let Poll::Ready(result) =
-            pin!(self.run_async()).poll(&mut Context::from_waker(Waker::noop()))
-        else {
-            panic!("asynchronous operation not supported")
-        };
-
-        result
-    }
-
-    /// Runs bytecodes on a virtual machine asynchronously.
-    pub async fn run_async(&mut self) -> Result<(), T::Error> {
-        while let Err(error) = self.run_with_continuation().await {
+        while let Err(error) = maybe_await!(self.run_with_continuation()) {
             if error.is_critical() {
                 return Err(error);
             }
@@ -149,7 +136,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
         Ok(())
     }
 
-    async fn run_with_continuation(&mut self) -> Result<(), T::Error> {
+    #[maybe_async]
+    fn run_with_continuation(&mut self) -> Result<(), T::Error> {
         while self.memory.code() != self.memory.null() {
             let instruction = self.memory.cdr(self.memory.code()).assume_cons();
 
@@ -160,10 +148,9 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                 Instruction::GET => self.get()?,
                 Instruction::SET => self.set(),
                 Instruction::IF => self.r#if(),
-                code => {
+                code => maybe_await!(
                     self.call(instruction, code as usize - Instruction::CALL as usize)
-                        .await?
-                }
+                )?,
             }
 
             self.advance_code();
@@ -220,7 +207,8 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     #[inline(always)]
-    async fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
+    #[maybe_async]
+    fn call(&mut self, instruction: Cons, arity: usize) -> Result<(), T::Error> {
         let r#return = instruction == self.memory.null();
         let procedure = self.procedure();
 
@@ -307,9 +295,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
                     }
                 }
 
-                self.primitive_set
-                    .operate(&mut self.memory, primitive.to_i64() as _)
-                    .await?;
+                maybe_await!(
+                    self.primitive_set
+                        .operate(&mut self.memory, primitive.to_i64() as _)
+                )?;
             }
         }
 
@@ -548,7 +537,8 @@ mod tests {
     impl PrimitiveSet for FakePrimitiveSet {
         type Error = Error;
 
-        async fn operate(
+        #[maybe_async]
+        fn operate(
             &mut self,
             _memory: &mut Memory<'_>,
             _primitive: usize,

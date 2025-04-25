@@ -1,4 +1,5 @@
 use crate::{Exception, memory::Memory};
+use winter_maybe_async::maybe_async;
 
 /// A primitive set.
 ///
@@ -10,9 +11,6 @@ pub trait PrimitiveSet: Sized {
     type Error: Exception;
 
     /// Runs a primitive on a virtual machine.
-    fn operate(
-        &mut self,
-        memory: &mut Memory,
-        primitive: usize,
-    ) -> impl Future<Output = Result<(), Self::Error>>;
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory, primitive: usize) -> Result<(), Self::Error>;
 }

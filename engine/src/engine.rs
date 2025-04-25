@@ -3,6 +3,7 @@ use any_fn::AnyFn;
 use stak_dynamic::SchemeValue;
 use stak_module::Module;
 use stak_vm::{Error, Value, Vm};
+use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A scripting engine.
 pub struct Engine<'a, 'b> {
@@ -20,16 +21,11 @@ impl<'a, 'b> Engine<'a, 'b> {
         })
     }
 
-    /// Runs a module synchronously.
+    /// Runs a module.
+    #[maybe_async]
     pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.initialize(module)?;
-        self.vm.run()
-    }
-
-    /// Runs a module asynchronously.
-    pub async fn run_async<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
-        self.initialize(module)?;
-        self.vm.run_async().await
+        maybe_await!(self.vm.run())
     }
 
     fn initialize<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {

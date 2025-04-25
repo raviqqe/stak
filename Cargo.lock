@@ -977,6 +977,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00a1e8c84d8aeb4ec354397389bd76938171b0df15ad864e30520386ca16dcd4"
 
 [[package]]
+name = "noop-executor"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9d38c94f32c818a514051ceac7c15c85f37c9977c0075c791f26a12426ca6032"
+
+[[package]]
 name = "notify"
 version = "8.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1464,7 +1470,9 @@ dependencies = [
 name = "stak-compiler"
 version = "0.10.17"
 dependencies = [
+ "cfg-elif",
  "indoc",
+ "noop-executor",
  "stak-configuration",
  "stak-device",
  "stak-file",
@@ -1491,6 +1499,7 @@ version = "0.10.17"
 dependencies = [
  "rustix",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1502,6 +1511,7 @@ dependencies = [
  "heapless",
  "stak-vm",
  "tokio",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1521,6 +1531,7 @@ dependencies = [
  "stak-r7rs",
  "stak-time",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1531,6 +1542,7 @@ dependencies = [
  "rustix",
  "stak-vm",
  "tempfile",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1539,6 +1551,7 @@ version = "0.10.17"
 dependencies = [
  "libm",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1628,6 +1641,7 @@ name = "stak-native"
 version = "0.10.17"
 dependencies = [
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1635,6 +1649,7 @@ name = "stak-process-context"
 version = "0.10.17"
 dependencies = [
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1673,6 +1688,7 @@ dependencies = [
  "stak-process-context",
  "stak-time",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1707,6 +1723,7 @@ version = "0.10.17"
 dependencies = [
  "rustix",
  "stak-vm",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -1730,6 +1747,7 @@ dependencies = [
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
+ "winter-maybe-async",
 ]
 
 [[package]]
@@ -2128,6 +2146,16 @@ name = "winsafe"
 version = "0.0.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d135d17ab770252ad95e9a872d365cf3090e3be864a34ab46f48555993efc904"
+
+[[package]]
+name = "winter-maybe-async"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaa132be74e602b707f1dab5a69c38496445e54ee940e7c281c02b15007241bd"
+dependencies = [
+ "quote",
+ "syn",
+]
 
 [[package]]
 name = "wit-bindgen-rt"

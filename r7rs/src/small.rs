@@ -11,6 +11,7 @@ use stak_native::{EqualPrimitiveSet, ListPrimitiveSet, TypeCheckPrimitiveSet};
 use stak_process_context::{ProcessContext, ProcessContextPrimitiveSet};
 use stak_time::{Clock, TimePrimitiveSet};
 use stak_vm::{Memory, Number, PrimitiveSet, Tag, Type, Value};
+use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A primitive set that covers [the R7RS small](https://standards.scheme.org/corrected-r7rs/r7rs.html).
 pub struct SmallPrimitiveSet<D: Device, F: FileSystem, P: ProcessContext, C: Clock> {
@@ -100,11 +101,8 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
 {
     type Error = Error;
 
-    async fn operate(
-        &mut self,
-        memory: &mut Memory<'_>,
-        primitive: usize,
-    ) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         match primitive {
             Primitive::RIB => {
                 let [car, cdr, tag] = memory.pop_many();
@@ -139,31 +137,22 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             Primitive::MULTIPLY => memory.operate_binary(Mul::mul)?,
             Primitive::DIVIDE => memory.operate_binary(Div::div)?,
             Primitive::REMAINDER => memory.operate_binary(Rem::rem)?,
-            Primitive::EXPONENTIATION | Primitive::LOGARITHM => {
+            Primitive::EXPONENTIATION | Primitive::LOGARITHM => maybe_await!(
                 self.inexact
                     .operate(memory, primitive - Primitive::EXPONENTIATION)
-                    .await?
-            }
+            )?,
             Primitive::HALT => return Err(Error::Halt),
             Primitive::NULL | Primitive::PAIR => {
-                self.type_check
-                    .operate(memory, primitive - Primitive::NULL)
-                    .await?
+                maybe_await!(self.type_check.operate(memory, primitive - Primitive::NULL))?
             }
             Primitive::ASSQ | Primitive::CONS | Primitive::MEMQ => {
-                self.list
-                    .operate(memory, primitive - Primitive::ASSQ)
-                    .await?
+                maybe_await!(self.list.operate(memory, primitive - Primitive::ASSQ))?
             }
             Primitive::EQV | Primitive::EQUAL_INNER => {
-                self.equal
-                    .operate(memory, primitive - Primitive::EQV)
-                    .await?
+                maybe_await!(self.equal.operate(memory, primitive - Primitive::EQV))?
             }
             Primitive::READ | Primitive::WRITE | Primitive::WRITE_ERROR => {
-                self.device
-                    .operate(memory, primitive - Primitive::READ)
-                    .await?
+                maybe_await!(self.device.operate(memory, primitive - Primitive::READ))?
             }
             Primitive::OPEN_FILE
             | Primitive::CLOSE_FILE
@@ -171,20 +160,16 @@ impl<D: Device, F: FileSystem, P: ProcessContext, C: Clock> PrimitiveSet
             | Primitive::WRITE_FILE
             | Primitive::DELETE_FILE
             | Primitive::EXISTS_FILE => {
-                self.file
-                    .operate(memory, primitive - Primitive::OPEN_FILE)
-                    .await?
+                maybe_await!(self.file.operate(memory, primitive - Primitive::OPEN_FILE))?
             }
-            Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => {
+            Primitive::COMMAND_LINE | Primitive::ENVIRONMENT_VARIABLES => maybe_await!(
                 self.process_context
                     .operate(memory, primitive - Primitive::COMMAND_LINE)
-                    .await?
-            }
-            Primitive::CURRENT_JIFFY => {
+            )?,
+            Primitive::CURRENT_JIFFY => maybe_await!(
                 self.time
                     .operate(memory, primitive - Primitive::CURRENT_JIFFY)
-                    .await?
-            }
+            )?,
             _ => return Err(stak_vm::Error::IllegalPrimitive.into()),
         }
 

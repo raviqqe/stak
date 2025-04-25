@@ -4,6 +4,7 @@ use any_fn::AnyFn;
 use bitvec::bitvec;
 use core::any::TypeId;
 use stak_vm::{Cons, Error, Memory, Number, PrimitiveSet, Type, Value};
+use winter_maybe_async::maybe_async;
 
 const MAXIMUM_ARGUMENT_COUNT: usize = 16;
 
@@ -144,11 +145,8 @@ impl<'a, 'b> DynamicPrimitiveSet<'a, 'b> {
 impl PrimitiveSet for DynamicPrimitiveSet<'_, '_> {
     type Error = DynamicError;
 
-    async fn operate(
-        &mut self,
-        memory: &mut Memory<'_>,
-        primitive: usize,
-    ) -> Result<(), Self::Error> {
+    #[maybe_async]
+    fn operate(&mut self, memory: &mut Memory<'_>, primitive: usize) -> Result<(), Self::Error> {
         if primitive == 0 {
             memory.set_register(memory.null());
 
@@ -293,6 +291,8 @@ mod tests {
     }
 
     mod garbage_collection {
+        use winter_maybe_async::maybe_await;
+
         use super::*;
 
         #[test]
@@ -310,7 +310,7 @@ mod tests {
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 1).await.unwrap();
+            maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
@@ -330,7 +330,7 @@ mod tests {
             let mut primitive_set = DynamicPrimitiveSet::new(&mut functions);
             let mut memory = Memory::new(&mut heap).unwrap();
 
-            primitive_set.operate(&mut memory, 1).await.unwrap();
+            maybe_await!(primitive_set.operate(&mut memory, 1)).unwrap();
 
             assert_eq!(primitive_set.find_free(), None);
 
