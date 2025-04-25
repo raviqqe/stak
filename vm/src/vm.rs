@@ -86,6 +86,10 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Runs bytecodes on a virtual machine synchronously.
+    ///
+    /// # Panics
+    ///
+    /// Panics if asynchronous operations occur during the run.
     pub fn run_sync(&mut self) -> Result<(), T::Error> {
         block_on!(self.run())
     }
