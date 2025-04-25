@@ -16,11 +16,15 @@ jobs:
           -
           - --no-default-features
           - --all-features
+          - --features libc,std
+          - --features float62
+          - --features async
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: cargo build --locked ${{ matrix.options }}
+      - run: cargo test --no-run --locked ${{ matrix.options }}
   unit_test:
     strategy:
       fail-fast: false
@@ -31,8 +35,10 @@ jobs:
         options:
           -
           - --no-default-features
+          - --all-features
           - --features libc,std
           - --features float62
+          - --features async
           - --features gc_always --exclude stak-compiler
         exclude:
           - os: ${{ github.ref == 'refs/heads/main' && 'none' || 'macos-15' }}
