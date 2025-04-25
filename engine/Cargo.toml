@@ -16,7 +16,6 @@ async = [
   "stak-time/async",
   "stak-process-context/async",
   "stak-r7rs/async",
-  "stak-util/async",
   "stak-vm/async",
   "winter-maybe-async/async",
 ]

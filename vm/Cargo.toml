@@ -17,7 +17,6 @@ async = [
   "stak-process-context/async",
   "stak-r7rs/async",
   "stak-time/async",
-  "stak-util/async",
   "winter-maybe-async/async",
 ]
 float = ["dep:nonbox"]
