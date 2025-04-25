@@ -10,7 +10,7 @@ repository.workspace = true
 version.workspace = true
 
 [features]
-async = ["winter-maybe-async/async"]
+async = ["stak-vm/async", "winter-maybe-async/async"]
 
 [dependencies]
 any-fn = { version = "0.6.1" }
