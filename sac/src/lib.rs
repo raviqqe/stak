@@ -90,7 +90,7 @@ macro_rules! main {
 
             vm.initialize(include_r7rs!($path).iter().copied())?;
 
-            Ok(vm.run()?)
+            Ok(vm.run_sync()?)
         }
     };
 }
