@@ -17,7 +17,6 @@ stak-macro = { version = "0.10.18", path = "../macro" }
 stak-process-context = { version = "0.10.18", path = "../process_context" }
 stak-r7rs = { version = "0.10.18", path = "../r7rs" }
 stak-time = { version = "0.10.18", path = "../time" }
-stak-util = { version = "0.10.18", path = "../util" }
 stak-vm = { version = "0.10.18", path = "../vm" }
 
 [dev-dependencies]
