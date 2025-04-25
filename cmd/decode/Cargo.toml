@@ -9,6 +9,9 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
+[features]
+async = ["stak-sac/async"]
+
 [dependencies]
 stak-sac = { version = "0.10.18", path = "../../sac", features = [
   "float",
