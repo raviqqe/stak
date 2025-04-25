@@ -24,14 +24,8 @@ impl<'a, 'b> Engine<'a, 'b> {
     /// Runs a module.
     #[maybe_async]
     pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
-        self.initialize(module)?;
-        maybe_await!(self.vm.run())
-    }
-
-    fn initialize<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
-
-        Ok(())
+        maybe_await!(self.vm.run())
     }
 
     /// Registers a type compatible between Scheme and Rust.
