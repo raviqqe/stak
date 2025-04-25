@@ -1470,9 +1470,7 @@ dependencies = [
 name = "stak-compiler"
 version = "0.10.18"
 dependencies = [
- "cfg-elif",
  "indoc",
- "noop-executor",
  "stak-configuration",
  "stak-device",
  "stak-file",
