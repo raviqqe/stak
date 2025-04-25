@@ -10,7 +10,16 @@ repository.workspace = true
 version.workspace = true
 
 [features]
-async = ["stak-util/async", "winter-maybe-async/async"]
+async = [
+  "stak-device/async",
+  "stak-file/async",
+  "stak-macro/async",
+  "stak-process-context/async",
+  "stak-r7rs/async",
+  "stak-time/async",
+  "stak-util/async",
+  "winter-maybe-async/async",
+]
 float = ["dep:nonbox"]
 float62 = ["float"]
 gc_always = []
