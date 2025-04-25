@@ -20,7 +20,7 @@ pub mod __private {
 macro_rules! block_on {
     ($value:expr) => {
         $crate::__private::cfg_elif::expr::feature!(if ("async") {
-            $crate::__private::noop_excutor::block_on($value)
+            $crate::__private::noop_executor::block_on($value)
         } else {
             $crate::__private::core::convert::identity($value)
         })

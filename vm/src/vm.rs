@@ -14,6 +14,7 @@ use crate::{
 #[cfg(feature = "profile")]
 use core::cell::RefCell;
 use core::fmt::{self, Display, Formatter, Write};
+use stak_util::block_on;
 use winter_maybe_async::{maybe_async, maybe_await};
 
 macro_rules! trace {
@@ -82,6 +83,11 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// Returns a mutable reference to a primitive set.
     pub const fn primitive_set_mut(&mut self) -> &mut T {
         &mut self.primitive_set
+    }
+
+    /// Runs bytecodes on a virtual machine synchronously.
+    pub fn run_sync(&mut self) -> Result<(), T::Error> {
+        block_on!(self.run())
     }
 
     /// Runs bytecodes on a virtual machine.

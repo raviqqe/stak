@@ -1751,6 +1751,7 @@ dependencies = [
  "stak-process-context",
  "stak-r7rs",
  "stak-time",
+ "stak-util",
  "winter-maybe-async",
 ]
 
