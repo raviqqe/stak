@@ -9,9 +9,6 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
-[features]
-async = ["stak-compiler/async"]
-
 [dependencies]
 glob = "0.3.2"
 stak-compiler = { version = "0.10.18", path = "../compiler" }
