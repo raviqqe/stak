@@ -10,7 +10,6 @@ repository.workspace = true
 version.workspace = true
 
 [features]
-async = ["stak-vm/async"]
 float = ["stak-vm/float"]
 float62 = ["stak-vm/float62"]
 libc = [
