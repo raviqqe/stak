@@ -94,15 +94,13 @@ pub async fn repl(heap_size: usize) -> Result<Vec<u8>, JsError> {
     let mut heap = vec![Default::default(); heap_size];
     let mut output = vec![];
     let mut error = vec![];
-    let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
-    let mut file_entries = [Default::default(); 1];
 
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
-            ReadWriteDevice::new(input, &mut output, &mut error),
-            MemoryFileSystem::new(&files, &mut file_entries),
-            MemoryProcessContext::new(&["scheme", MAIN_FILE], &[]),
+            TokioDevice::new(input, &mut output, &mut error),
+            VoidFileSystem::new(),
+            VoidProcessContext::new(),
             VoidClock::new(),
         ),
     )?;
