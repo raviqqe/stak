@@ -1,7 +1,3 @@
-use core::{
-    error::Error,
-    fmt::{self, Display, Formatter},
-};
 use stak_device::Device;
 use stak_file::VoidFileSystem;
 use stak_macro::include_module;
@@ -10,6 +6,7 @@ use stak_process_context::VoidProcessContext;
 use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
+use std::io;
 use wasm_bindgen::prelude::*;
 use winter_maybe_async::{maybe_async, maybe_await};
 
@@ -55,7 +52,7 @@ pub async fn repl(heap_size: usize) -> Result<(), JsError> {
 struct JsDevice {}
 
 impl Device for JsDevice {
-    type Error = DeviceError;
+    type Error = io::Error;
 
     #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
@@ -78,16 +75,5 @@ impl Device for JsDevice {
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
         maybe_await!(write_stderr(byte));
         Ok(())
-    }
-}
-
-#[derive(Debug)]
-pub enum DeviceError {}
-
-impl Error for DeviceError {}
-
-impl Display for DeviceError {
-    fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
-        write!(formatter, "{:?}", self)
     }
 }
