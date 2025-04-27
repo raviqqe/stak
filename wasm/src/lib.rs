@@ -88,7 +88,7 @@ extern "C" {
 
 /// Runs a REPL interepreter.
 #[wasm_bindgen]
-pub async fn repl(heap_size: usize) -> Result<Vec<u8>, JsError> {
+pub async fn repl(heap_size: usize) -> Result<(), JsError> {
     const MAIN_FILE: &str = "main.scm";
 
     let mut heap = vec![Default::default(); heap_size];
@@ -111,12 +111,13 @@ pub async fn repl(heap_size: usize) -> Result<Vec<u8>, JsError> {
             .iter()
             .copied(),
     )?;
-    vm.run_sync()
+    vm.run()
         .map_err(|vm_error| match str::from_utf8(&error) {
             Ok(error) if !error.is_empty() => JsError::new(error),
             Ok(_) => JsError::from(vm_error),
             Err(error) => JsError::from(error),
-        })?;
+        })
+        .await?;
 
-    Ok(output)
+    Ok(())
 }
