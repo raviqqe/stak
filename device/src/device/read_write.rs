@@ -1,5 +1,6 @@
 use crate::Device;
 use std::io::{Error, Read, Write};
+use winter_maybe_async::maybe_async;
 
 /// A device based on [`Read`](Read) and [`Write`](Write) traits.
 #[derive(Clone, Copy, Debug)]
@@ -62,24 +63,25 @@ mod tests {
     use super::*;
     use alloc::vec;
     use std::io::empty;
+    use stak_util::block_on;
 
     #[test]
     fn read() {
         let mut device = ReadWriteDevice::new([1, 2, 3].as_slice(), empty(), empty());
 
-        assert_eq!(device.read().unwrap(), Some(1));
-        assert_eq!(device.read().unwrap(), Some(2));
-        assert_eq!(device.read().unwrap(), Some(3));
-        assert_eq!(device.read().unwrap(), None);
+        assert_eq!(block_on!(device.read()).unwrap(), Some(1));
+        assert_eq!(block_on!(device.read()).unwrap(), Some(2));
+        assert_eq!(block_on!(device.read()).unwrap(), Some(3));
+        assert_eq!(block_on!(device.read()).unwrap(), None);
     }
 
     #[test]
     fn write() {
         let mut device = ReadWriteDevice::new(empty(), vec![], empty());
 
-        device.write(1).unwrap();
-        device.write(2).unwrap();
-        device.write(3).unwrap();
+        block_on!(device.write(1)).unwrap();
+        block_on!(device.write(2)).unwrap();
+        block_on!(device.write(3)).unwrap();
 
         assert_eq!(device.output(), &[1, 2, 3]);
     }
@@ -88,9 +90,9 @@ mod tests {
     fn write_error() {
         let mut device = ReadWriteDevice::new(empty(), empty(), vec![]);
 
-        device.write_error(1).unwrap();
-        device.write_error(2).unwrap();
-        device.write_error(3).unwrap();
+        block_on!(device.write_error(1)).unwrap();
+        block_on!(device.write_error(2)).unwrap();
+        block_on!(device.write_error(3)).unwrap();
 
         assert_eq!(device.error(), &[1, 2, 3]);
     }

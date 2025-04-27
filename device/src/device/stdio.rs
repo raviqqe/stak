@@ -1,7 +1,6 @@
-use winter_maybe_async::maybe_async;
-
 use crate::{Device, ReadWriteDevice};
 use std::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
+use winter_maybe_async::maybe_async;
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
