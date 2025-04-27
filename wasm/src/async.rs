@@ -1,3 +1,4 @@
+use core::error::Error;
 use core::fmt::{self, Display, Formatter};
 use stak_device::Device;
 use stak_file::VoidFileSystem;
@@ -45,7 +46,7 @@ pub async fn repl(heap_size: usize) -> Result<(), JsError> {
 struct JsDevice {}
 
 impl Device for JsDevice {
-    type Error = JsError;
+    type Error = DeviceError;
 
     async fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         let byte = read_stdin().await;
