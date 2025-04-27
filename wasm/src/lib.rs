@@ -83,22 +83,19 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
 #[wasm_bindgen]
 extern "C" {
     async fn read_stdin() -> JsValue;
-    async fn write_stdout(byte: usize);
+    async fn write_stdout(byte: u8);
+    async fn write_stderr(byte: u8);
 }
 
 /// Runs a REPL interepreter.
 #[wasm_bindgen]
 pub async fn repl(heap_size: usize) -> Result<(), JsError> {
-    const MAIN_FILE: &str = "main.scm";
-
     let mut heap = vec![Default::default(); heap_size];
-    let mut output = vec![];
-    let mut error = vec![];
 
     let mut vm = Vm::new(
         &mut heap,
         SmallPrimitiveSet::new(
-            TokioDevice::new(input, &mut output, &mut error),
+            TokioDevice::new(),
             VoidFileSystem::new(),
             VoidProcessContext::new(),
             VoidClock::new(),
@@ -111,13 +108,7 @@ pub async fn repl(heap_size: usize) -> Result<(), JsError> {
             .iter()
             .copied(),
     )?;
-    vm.run()
-        .map_err(|vm_error| match str::from_utf8(&error) {
-            Ok(error) if !error.is_empty() => JsError::new(error),
-            Ok(_) => JsError::from(vm_error),
-            Err(error) => JsError::from(error),
-        })
-        .await?;
+    vm.run().await?;
 
     Ok(())
 }
