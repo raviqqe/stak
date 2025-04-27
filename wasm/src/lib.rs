@@ -80,6 +80,12 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
     Ok(output)
 }
 
+#[wasm_bindgen]
+extern "C" {
+    async fn read_stdin() -> JsValue;
+    async fn write_stdout(byte: usize);
+}
+
 /// Runs a REPL interepreter.
 #[wasm_bindgen]
 pub async fn repl(heap_size: usize) -> Result<Vec<u8>, JsError> {
