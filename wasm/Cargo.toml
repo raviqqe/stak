@@ -9,6 +9,9 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
+[features]
+async = []
+
 [lib]
 crate-type = ["cdylib", "rlib"]
 

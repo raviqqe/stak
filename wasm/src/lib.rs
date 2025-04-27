@@ -1,5 +1,10 @@
 //! A Stak Scheme interpreter in WASM.
 
+#[cfg(feature = "async")]
+mod r#async;
+
+#[cfg(feature = "async")]
+pub use r#async::repl;
 use core::str;
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
@@ -78,37 +83,4 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
         })?;
 
     Ok(output)
-}
-
-#[wasm_bindgen]
-extern "C" {
-    async fn read_stdin() -> JsValue;
-    async fn write_stdout(byte: u8);
-    async fn write_stderr(byte: u8);
-}
-
-/// Runs a REPL interepreter.
-#[wasm_bindgen]
-pub async fn repl(heap_size: usize) -> Result<(), JsError> {
-    let mut heap = vec![Default::default(); heap_size];
-
-    let mut vm = Vm::new(
-        &mut heap,
-        SmallPrimitiveSet::new(
-            TokioDevice::new(),
-            VoidFileSystem::new(),
-            VoidProcessContext::new(),
-            VoidClock::new(),
-        ),
-    )?;
-
-    vm.initialize(
-        include_module!("run.scm", stak_module)
-            .bytecode()
-            .iter()
-            .copied(),
-    )?;
-    vm.run().await?;
-
-    Ok(())
 }
