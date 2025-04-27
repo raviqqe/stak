@@ -1,4 +1,5 @@
 use crate::{BufferError, Device};
+use winter_maybe_async::maybe_async;
 
 /// A fixed buffer device.
 #[derive(Debug)]
@@ -38,6 +39,7 @@ impl<'a, const O: usize, const E: usize> FixedBufferDevice<'a, O, E> {
 impl<const O: usize, const E: usize> Device for FixedBufferDevice<'_, O, E> {
     type Error = BufferError;
 
+    #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         Ok(if let Some(&byte) = self.input.get(self.input_index) {
             self.input_index += 1;
@@ -48,6 +50,7 @@ impl<const O: usize, const E: usize> Device for FixedBufferDevice<'_, O, E> {
         })
     }
 
+    #[maybe_async]
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         let Some(output) = self.output.get_mut(self.output_index) else {
             return Err(BufferError::Write);
@@ -59,6 +62,7 @@ impl<const O: usize, const E: usize> Device for FixedBufferDevice<'_, O, E> {
         Ok(())
     }
 
+    #[maybe_async]
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
         let Some(error) = self.error.get_mut(self.error_index) else {
             return Err(BufferError::Write);
