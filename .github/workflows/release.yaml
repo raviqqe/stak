@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: cargo install wasm-pack
-      - run: wasm-pack build --features async --target web wasm
+      - run: wasm-pack build --target web wasm -- --features async
       - run: |
           jq '. + input' pkg/package.json package.json > /tmp/package.json
           mv /tmp/package.json pkg
