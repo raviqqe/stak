@@ -33,6 +33,7 @@ impl<I: Read, O: Write, E: Write> ReadWriteDevice<I, O, E> {
 impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
     type Error = Error;
 
+    #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
         let mut buffer = [0u8; 1];
 
@@ -41,12 +42,14 @@ impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
         Ok(if count == 0 { None } else { Some(buffer[0]) })
     }
 
+    #[maybe_async]
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
         self.output.write_all(&[byte])?;
 
         Ok(())
     }
 
+    #[maybe_async]
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
         self.error.write_all(&[byte])?;
 

@@ -16,6 +16,7 @@ pub use read_write::ReadWriteDevice;
 #[cfg(feature = "std")]
 pub use stdio::StdioDevice;
 pub use void::*;
+use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A device.
 pub trait Device {
@@ -23,23 +24,31 @@ pub trait Device {
     type Error: Error;
 
     /// Reads from standard input.
+    #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error>;
     /// Writes to standard output.
+    #[maybe_async]
     fn write(&mut self, byte: u8) -> Result<(), Self::Error>;
     /// Writes to standard error.
+    #[maybe_async]
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error>;
 }
 
 impl<T: Device> Device for &mut T {
     type Error = T::Error;
 
+    #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        (**self).read()
+        maybe_await!((**self).read())
     }
+
+    #[maybe_async]
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        (**self).write(byte)
+        maybe_await!((**self).write(byte))
     }
+
+    #[maybe_async]
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        (**self).write_error(byte)
+        maybe_await!((**self).write_error(byte))
     }
 }
