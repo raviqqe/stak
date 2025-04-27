@@ -17,7 +17,7 @@ extern "C" {
     async fn write_stderr(byte: u8);
 }
 
-/// Runs a REPL interepreter.
+/// Runs a REPL interpreter.
 #[wasm_bindgen]
 pub async fn repl(heap_size: usize) -> Result<(), JsError> {
     let mut heap = vec![Default::default(); heap_size];
