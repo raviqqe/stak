@@ -62,8 +62,8 @@ impl<I: Read, O: Write, E: Write> Device for ReadWriteDevice<I, O, E> {
 mod tests {
     use super::*;
     use alloc::vec;
-    use std::io::empty;
     use stak_util::block_on;
+    use std::io::empty;
 
     #[test]
     fn read() {

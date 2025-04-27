@@ -1,6 +1,6 @@
 use crate::{Device, ReadWriteDevice};
 use std::io::{Error, Stderr, Stdin, Stdout, stderr, stdin, stdout};
-use winter_maybe_async::maybe_async;
+use winter_maybe_async::{maybe_async, maybe_await};
 
 /// A standard I/O device of a current process.
 #[derive(Debug)]
@@ -22,17 +22,17 @@ impl Device for StdioDevice {
 
     #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        self.device.read()
+        maybe_await!(self.device.read())
     }
 
     #[maybe_async]
     fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        self.device.write(byte)
+        maybe_await!(self.device.write(byte))
     }
 
     #[maybe_async]
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        self.device.write_error(byte)
+        maybe_await!(self.device.write_error(byte))
     }
 }
 
