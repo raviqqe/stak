@@ -79,3 +79,40 @@ pub fn run(source: &str, input: &[u8], heap_size: usize) -> Result<Vec<u8>, JsEr
 
     Ok(output)
 }
+
+/// Runs a REPL interepreter.
+#[wasm_bindgen]
+pub async fn repl(heap_size: usize) -> Result<Vec<u8>, JsError> {
+    const MAIN_FILE: &str = "main.scm";
+
+    let mut heap = vec![Default::default(); heap_size];
+    let mut output = vec![];
+    let mut error = vec![];
+    let files = [(MAIN_FILE.as_bytes(), source.as_bytes())];
+    let mut file_entries = [Default::default(); 1];
+
+    let mut vm = Vm::new(
+        &mut heap,
+        SmallPrimitiveSet::new(
+            ReadWriteDevice::new(input, &mut output, &mut error),
+            MemoryFileSystem::new(&files, &mut file_entries),
+            MemoryProcessContext::new(&["scheme", MAIN_FILE], &[]),
+            VoidClock::new(),
+        ),
+    )?;
+
+    vm.initialize(
+        include_module!("run.scm", stak_module)
+            .bytecode()
+            .iter()
+            .copied(),
+    )?;
+    vm.run_sync()
+        .map_err(|vm_error| match str::from_utf8(&error) {
+            Ok(error) if !error.is_empty() => JsError::new(error),
+            Ok(_) => JsError::from(vm_error),
+            Err(error) => JsError::from(error),
+        })?;
+
+    Ok(output)
+}
