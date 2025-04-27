@@ -1,3 +1,4 @@
+use core::fmt::{self, Display, Formatter};
 use stak_device::Device;
 use stak_file::VoidFileSystem;
 use stak_macro::include_module;
@@ -13,30 +14,6 @@ extern "C" {
     async fn read_stdin() -> JsValue;
     async fn write_stdout(byte: u8);
     async fn write_stderr(byte: u8);
-}
-
-struct JsDevice {}
-
-impl Device for JsDevice {
-    async fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        let byte = read_stdin().await;
-
-        if byte.is_null() {
-            Ok(None)
-        } else {
-            Ok(Some(byte.as_f64().unwrap() as u8))
-        }
-    }
-
-    async fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write_stdout(byte).await;
-        Ok(())
-    }
-
-    async fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write_stderr(byte).await;
-        Ok(())
-    }
 }
 
 /// Runs a REPL interepreter.
@@ -63,4 +40,41 @@ pub async fn repl(heap_size: usize) -> Result<(), JsError> {
     vm.run().await?;
 
     Ok(())
+}
+
+struct JsDevice {}
+
+impl Device for JsDevice {
+    type Error = JsError;
+
+    async fn read(&mut self) -> Result<Option<u8>, Self::Error> {
+        let byte = read_stdin().await;
+
+        if byte.is_null() {
+            Ok(None)
+        } else {
+            Ok(Some(byte.as_f64().unwrap() as u8))
+        }
+    }
+
+    async fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
+        write_stdout(byte).await;
+        Ok(())
+    }
+
+    async fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
+        write_stderr(byte).await;
+        Ok(())
+    }
+}
+
+#[derive(Debug)]
+pub enum DeviceError {}
+
+impl Error for DeviceError {}
+
+impl Display for DeviceError {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
+        write!(formatter, "{:?}", self)
+    }
 }
