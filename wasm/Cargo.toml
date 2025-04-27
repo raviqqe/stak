@@ -9,6 +9,9 @@ readme.workspace = true
 repository.workspace = true
 version.workspace = true
 
+[package.metadata.cargo-machete]
+ignored = ["wasm-bindgen-futures"]
+
 [features]
 async = [
   "stak-compiler/async",
