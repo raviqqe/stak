@@ -1,5 +1,7 @@
-use core::error::Error;
-use core::fmt::{self, Display, Formatter};
+use core::{
+    error::Error,
+    fmt::{self, Display, Formatter},
+};
 use stak_device::Device;
 use stak_file::VoidFileSystem;
 use stak_macro::include_module;
@@ -13,13 +15,13 @@ use winter_maybe_async::{maybe_async, maybe_await};
 
 #[wasm_bindgen]
 extern "C" {
-#[allow(improper_ctypes_definitions)]
+    #[allow(improper_ctypes_definitions)]
     #[maybe_async]
     fn read_stdin() -> JsValue;
-#[allow(improper_ctypes_definitions)]
+    #[allow(improper_ctypes_definitions)]
     #[maybe_async]
     fn write_stdout(byte: u8);
-#[allow(improper_ctypes_definitions)]
+    #[allow(improper_ctypes_definitions)]
     #[maybe_async]
     fn write_stderr(byte: u8);
 }

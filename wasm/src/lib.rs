@@ -2,8 +2,8 @@
 
 mod repl;
 
-pub use repl::repl;
 use core::str;
+pub use repl::repl;
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;
 use stak_file::{MemoryFileSystem, VoidFileSystem};
