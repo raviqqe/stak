@@ -1492,7 +1492,6 @@ dependencies = [
  "rustix",
  "stak-util",
  "stak-vm",
- "tokio",
  "winter-maybe-async",
 ]
 
