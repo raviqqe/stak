@@ -79,7 +79,6 @@ impl<const O: usize, const E: usize> Device for FixedBufferDevice<'_, O, E> {
 mod tests {
     use super::*;
     use stak_util::block_on;
-    use winter_maybe_async::maybe_await;
 
     #[test]
     fn read() {
@@ -98,17 +97,12 @@ mod tests {
         assert_eq!(device.output(), [42]);
     }
 
-    #[maybe_async]
-    #[cfg_attr(feature = "async", tokio::test)]
-    #[cfg_attr(not(feature = "async"), test)]
+    #[test]
     fn write_error() {
         let mut device = FixedBufferDevice::<0, 1>::new(&[]);
 
-        assert_eq!(maybe_await!(device.write_error(42)), Ok(()));
-        assert_eq!(
-            maybe_await!(device.write_error(42)),
-            Err(BufferError::Write)
-        );
+        assert_eq!(block_on!(device.write_error(42)), Ok(()));
+        assert_eq!(block_on!(device.write_error(42)), Err(BufferError::Write));
         assert_eq!(device.error(), [42]);
     }
 }
