@@ -37,6 +37,7 @@ stak-time = { version = "0.10.19", path = "../time" }
 stak-vm = { version = "0.10.19", path = "../vm", features = ["float"] }
 wasm-bindgen = "0.2.97"
 wasm-bindgen-futures = "0.4.50"
+winter-maybe-async = "0.12.0"
 
 [dev-dependencies]
 stak-configuration = { path = "../configuration" }

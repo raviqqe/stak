@@ -9,12 +9,16 @@ use stak_r7rs::SmallPrimitiveSet;
 use stak_time::VoidClock;
 use stak_vm::Vm;
 use wasm_bindgen::prelude::*;
+use winter_maybe_async::{maybe_async, maybe_await};
 
 #[wasm_bindgen]
 extern "C" {
-    async fn read_stdin() -> JsValue;
-    async fn write_stdout(byte: u8);
-    async fn write_stderr(byte: u8);
+    #[maybe_async]
+    fn read_stdin() -> JsValue;
+    #[maybe_async]
+    fn write_stdout(byte: u8);
+    #[maybe_async]
+    fn write_stderr(byte: u8);
 }
 
 /// Runs a REPL interpreter.
@@ -38,7 +42,7 @@ pub async fn repl(heap_size: usize) -> Result<(), JsError> {
             .iter()
             .copied(),
     )?;
-    vm.run().await?;
+    maybe_await!(vm.run())?;
 
     Ok(())
 }
@@ -48,23 +52,26 @@ struct JsDevice {}
 impl Device for JsDevice {
     type Error = DeviceError;
 
-    async fn read(&mut self) -> Result<Option<u8>, Self::Error> {
-        let byte = read_stdin().await;
+    #[maybe_async]
+    fn read(&mut self) -> Result<Option<u8>, Self::Error> {
+        let byte = maybe_await!(read_stdin());
 
         if byte.is_null() {
             Ok(None)
         } else {
-            Ok(Some(byte.as_f64().unwrap() as u8))
+            Ok(Some(byte.as_f64().unwrap() as _))
         }
     }
 
-    async fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write_stdout(byte).await;
+    #[maybe_async]
+    fn write(&mut self, byte: u8) -> Result<(), Self::Error> {
+        maybe_await!(write_stdout(byte));
         Ok(())
     }
 
-    async fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
-        write_stderr(byte).await;
+    #[maybe_async]
+    fn write_error(&mut self, byte: u8) -> Result<(), Self::Error> {
+        maybe_await!(write_stderr(byte));
         Ok(())
     }
 }

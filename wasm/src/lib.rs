@@ -1,10 +1,8 @@
 //! A Stak Scheme interpreter in WASM.
 
-#[cfg(feature = "async")]
-mod r#async;
+mod repl;
 
-#[cfg(feature = "async")]
-pub use r#async::repl;
+pub use repl::repl;
 use core::str;
 use stak_compiler::compile_r7rs;
 use stak_device::ReadWriteDevice;

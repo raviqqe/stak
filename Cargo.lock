@@ -1772,6 +1772,7 @@ dependencies = [
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-bindgen-test",
+ "winter-maybe-async",
 ]
 
 [[package]]
