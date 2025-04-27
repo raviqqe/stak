@@ -13,10 +13,13 @@ use winter_maybe_async::{maybe_async, maybe_await};
 
 #[wasm_bindgen]
 extern "C" {
+#[allow(improper_ctypes_definitions)]
     #[maybe_async]
     fn read_stdin() -> JsValue;
+#[allow(improper_ctypes_definitions)]
     #[maybe_async]
     fn write_stdout(byte: u8);
+#[allow(improper_ctypes_definitions)]
     #[maybe_async]
     fn write_stderr(byte: u8);
 }
