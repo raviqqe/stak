@@ -1,4 +1,4 @@
-use stak_device::{Device};
+use stak_device::Device;
 use stak_file::VoidFileSystem;
 use stak_macro::include_module;
 use stak_module::Module;
