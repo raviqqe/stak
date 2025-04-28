@@ -29,6 +29,7 @@
     "comby",
     "cond",
     "coreutils",
+    "ctypes",
     "doctest",
     "elif",
     "embeddable",
