@@ -9,19 +9,24 @@ use stak_vm::Vm;
 use std::io;
 use wasm_bindgen::prelude::*;
 use winter_maybe_async::{maybe_async, maybe_await};
+use cfg_elif::item;
 
-#[wasm_bindgen]
-extern "C" {
-    #[allow(improper_ctypes_definitions)]
-    #[maybe_async]
-    fn read_stdin() -> JsValue;
-    #[allow(improper_ctypes_definitions)]
-    #[maybe_async]
-    fn write_stdout(byte: u8);
-    #[allow(improper_ctypes_definitions)]
-    #[maybe_async]
-    fn write_stderr(byte: u8);
-}
+item::feature!(if ("async") {
+    // `maybe_async` does not work here because `wasm_bindgen`'s expansion happens first.
+    #[wasm_bindgen]
+    extern "C" {
+        async fn read_stdin() -> JsValue;
+        async fn write_stdout(byte: u8);
+        async fn write_stderr(byte: u8);
+    }
+} else {
+    #[wasm_bindgen]
+    extern "C" {
+        fn read_stdin() -> JsValue;
+        fn write_stdout(byte: u8);
+        fn write_stderr(byte: u8);
+    }
+});
 
 /// Runs a REPL interpreter.
 #[maybe_async]

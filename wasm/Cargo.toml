@@ -28,6 +28,7 @@ async = [
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+cfg-elif = "0.6.3"
 stak-compiler = { version = "0.10.19", path = "../compiler" }
 stak-configuration = { version = "0.10.19", path = "../configuration" }
 stak-device = { version = "0.10.19", path = "../device", features = ["std"] }
