@@ -1,3 +1,4 @@
+use cfg_elif::item;
 use stak_device::Device;
 use stak_file::VoidFileSystem;
 use stak_macro::include_module;
@@ -9,10 +10,10 @@ use stak_vm::Vm;
 use std::io;
 use wasm_bindgen::prelude::*;
 use winter_maybe_async::{maybe_async, maybe_await};
-use cfg_elif::item;
 
 item::feature!(if ("async") {
-    // `maybe_async` does not work here because `wasm_bindgen`'s expansion happens first.
+    // `maybe_async` does not work here because `wasm_bindgen`'s expansion happens
+    // first.
     #[wasm_bindgen]
     extern "C" {
         async fn read_stdin() -> JsValue;
