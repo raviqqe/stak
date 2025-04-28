@@ -24,8 +24,8 @@ extern "C" {
 }
 
 /// Runs a REPL interpreter.
-#[wasm_bindgen]
 #[maybe_async]
+#[wasm_bindgen]
 pub fn repl(heap_size: usize) -> Result<(), JsError> {
     let mut heap = vec![Default::default(); heap_size];
 
