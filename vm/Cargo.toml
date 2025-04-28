@@ -29,7 +29,7 @@ trace_memory = []
 [dependencies]
 cfg-elif = "0.6.3"
 nonbox = { version = "0.5.10", optional = true }
-stak-util = { version = "0.10.19", path = "../util" }
+stak-util = { version = "0.10.20", path = "../util" }
 winter-maybe-async = "0.12.0"
 
 [dev-dependencies]
