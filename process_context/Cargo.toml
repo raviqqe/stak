@@ -18,5 +18,5 @@ std = []
 workspace = true
 
 [dependencies]
-stak-vm = { version = "0.10.19", path = "../vm" }
+stak-vm = { version = "0.10.20", path = "../vm" }
 winter-maybe-async = "0.12.0"

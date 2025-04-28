@@ -11,7 +11,7 @@ version.workspace = true
 
 [dependencies]
 glob = "0.3.2"
-stak-compiler = { version = "0.10.19", path = "../compiler" }
+stak-compiler = { version = "0.10.20", path = "../compiler" }
 tokio = { version = "1.44.2", features = [
   "fs",
   "io-util",
