@@ -10,20 +10,24 @@ const input = new ReadableStream<number>({
 });
 const reader = input.getReader();
 
-(window as unknown as { readInput: () => Promise<number> }).readInput =
-  async () => {
-    const result = await reader.read();
+const global = self as unknown as {
+  readInput: () => Promise<number>;
+  writeOutput: (byte: number) => Promise<void>;
+  writeError: (byte: number) => Promise<void>;
+};
 
-    if (result.done) {
-      throw new Error("Input stream closed");
-    }
+global.readInput = async () => {
+  const result = await reader.read();
 
-    return result.value;
-  };
+  if (result.done) {
+    throw new Error("Input stream closed");
+  }
 
-(
-  window as unknown as { writeOutput: (byte: number) => Promise<void> }
-).writeOutput = async (byte: number) => postMessage(new Uint8Array([byte]));
+  return result.value;
+};
+global.writeOutput = async (byte: number) =>
+  postMessage(new Uint8Array([byte]));
+global.writeError = global.writeOutput;
 
 await init({});
 await repl(2 ** 22);
