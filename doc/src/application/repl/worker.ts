@@ -25,9 +25,8 @@ global.read_stdin = async () => {
 
   return result.value;
 };
-global.write_stdout = async (byte: number) =>
+global.write_stdout = global.write_stderr = async (byte: number) =>
   postMessage(new Uint8Array([byte]));
-global.write_stderr = global.write_stdout;
 
 await init({});
 await repl(2 ** 22);
