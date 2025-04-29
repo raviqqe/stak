@@ -1,7 +1,7 @@
 import { useStore } from "@nanostores/solid";
 import { Boxes, CirclePlay } from "lucide-solid";
 import type { JSX } from "solid-js";
-import * as store from "../../stores/compiler-demo.js";
+import * as store from "../../stores/compiler.js";
 import { Button } from "../Button.jsx";
 import { ButtonGroup } from "../ButtonGroup.jsx";
 import { CodeEditor } from "../CodeEditor.js";
