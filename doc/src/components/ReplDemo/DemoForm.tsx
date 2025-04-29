@@ -20,13 +20,13 @@ export const DemoForm = (): JSX.Element => {
   });
 
   createEffect(() => {
-    void (async () => {
+    void (async (output) => {
       const decoder = new TextDecoder();
 
-      for await (const chunk of output()) {
+      for await (const chunk of output) {
         setValue((value) => value + decoder.decode(chunk));
       }
-    })();
+    })(output());
   });
 
   return (
