@@ -11,9 +11,12 @@ const input = new ReadableStream<number>({
 const reader = input.getReader();
 
 const global = self as unknown as {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   read_stdin: () => Promise<number>;
-  write_stdout: (byte: number) => Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   write_stderr: (byte: number) => Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  write_stdout: (byte: number) => Promise<void>;
 };
 
 global.read_stdin = async () => {
@@ -25,8 +28,8 @@ global.read_stdin = async () => {
 
   return result.value;
 };
-global.write_stdout = global.write_stderr = async (byte: number) =>
-  postMessage(new Uint8Array([byte]));
+global.write_stdout = global.write_stderr = (byte: number) =>
+  Promise.resolve(postMessage(new Uint8Array([byte])));
 
 await init();
 await repl(2 ** 22);
