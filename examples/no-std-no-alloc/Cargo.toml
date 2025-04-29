@@ -9,7 +9,7 @@ readme.workspace = true
 repository.workspace = true
 
 [dependencies]
-heapless = "0.8.0"
+heapless = "0.9.0"
 stak = { version = "0.10.21", path = "../../root", default-features = false }
 
 [build-dependencies]
