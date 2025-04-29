@@ -1,8 +1,8 @@
 import { useStore } from "@nanostores/solid";
-import { createEffect, createSignal, onMount, type JSX } from "solid-js";
+import { type JSX, createEffect, createSignal, onMount } from "solid-js";
+import * as store from "../../stores/repl.js";
 import { CodeEditor } from "../CodeEditor";
 import * as styles from "./DemoForm.module.css";
-import * as store from "../../stores/repl.js";
 
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
