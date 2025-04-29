@@ -2,7 +2,7 @@ import { useStore } from "@nanostores/solid";
 import { type JSX, createEffect, createSignal, onMount } from "solid-js";
 import * as store from "../../stores/repl.js";
 import { CodeEditor } from "../CodeEditor";
-import * as styles from "./DemoForm.module.css";
+import styles from "./DemoForm.module.css";
 
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
@@ -20,8 +20,10 @@ export const DemoForm = (): JSX.Element => {
   });
 
   createEffect(async () => {
+    const decoder = new TextDecoder();
+
     for await (const chunk of output()) {
-      setValue((value) => value + chunk);
+      setValue((value) => value + decoder.decode(chunk));
     }
   });
 

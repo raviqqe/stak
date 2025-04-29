@@ -29,9 +29,9 @@ export const runStreamWorker = <T, S>(
 ): ReadableStream<S> => {
   const worker = createWorker();
 
-  const output = new ReadableStream({
+  const output = new ReadableStream<S>({
     start: (controller) => {
-      worker.addEventListener("message", (event: MessageEvent<Result<S>>) =>
+      worker.addEventListener("message", (event: MessageEvent<S>) =>
         controller.enqueue(event.data),
       );
     },
