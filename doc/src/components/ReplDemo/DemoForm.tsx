@@ -19,12 +19,14 @@ export const DemoForm = (): JSX.Element => {
     );
   });
 
-  createEffect(async () => {
-    const decoder = new TextDecoder();
+  createEffect(() => {
+    void (async () => {
+      const decoder = new TextDecoder();
 
-    for await (const chunk of output()) {
-      setValue((value) => value + decoder.decode(chunk));
-    }
+      for await (const chunk of output()) {
+        setValue((value) => value + decoder.decode(chunk));
+      }
+    })();
   });
 
   return (
