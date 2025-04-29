@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: daily
   - package-ecosystem: github-actions
-    directory: /tools/ci/github/setup
+    directory: /.github/actions/setup
     schedule:
       interval: daily
   - package-ecosystem: cargo
