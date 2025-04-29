@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/solid";
 import type { JSX } from "solid-js";
-import * as store from "../../stores/compiler-demo.js";
+import * as store from "../../stores/compiler.js";
 import { ErrorMessage } from "../ErrorMessage.jsx";
 import { Field } from "../Field.jsx";
 import { Label } from "../Label.jsx";
