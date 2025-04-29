@@ -46,7 +46,7 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
     )?;
 
     vm.initialize(
-        include_module!("run.scm", stak_module)
+        include_module!("repl.scm", stak_module)
             .bytecode()
             .iter()
             .copied(),
