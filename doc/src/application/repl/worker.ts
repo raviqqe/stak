@@ -1,8 +1,14 @@
-import init, { interpret } from "@raviqqe/stak";
-import { handleWorkerMessage } from "../handle-worker-message";
+import init, { repl } from "@raviqqe/stak";
 
-handleWorkerMessage(
-  init,
-  ({ input, program }: { input: Uint8Array; program: Uint8Array }) =>
-    interpret(program, input, 2 ** 22),
-);
+await init({});
+
+const input = [];
+
+addEventListener("message", (event) => {
+  input.push(event.data);
+});
+const foo = {
+  readInput: () => {},
+  writeOutput: (byte: number) => postMessage(new Uint8Array([byte])),
+};
+await repl(2 ** 22);
