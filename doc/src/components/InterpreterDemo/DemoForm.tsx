@@ -1,6 +1,6 @@
 import { useStore } from "@nanostores/solid";
 import type { JSX } from "solid-js";
-import * as store from "../../stores/interpreter-demo.js";
+import * as store from "../../stores/interpreter.js";
 import { CodeEditor } from "../CodeEditor.js";
 import { Field } from "../Field.jsx";
 import { Label } from "../Label.jsx";
