@@ -1,6 +1,7 @@
 import { useStore } from "@nanostores/solid";
 import { createEffect, createSignal, onMount, type JSX } from "solid-js";
 import { CodeEditor } from "../CodeEditor";
+import * as styles from "./DemoForm.module.css";
 import * as store from "../../stores/repl.js";
 
 export const DemoForm = (): JSX.Element => {
@@ -26,6 +27,7 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <CodeEditor
+      class={styles.textArea}
       id="source"
       onChange={(source) => putInput()?.(new TextEncoder().encode(source))}
       value={value()}
