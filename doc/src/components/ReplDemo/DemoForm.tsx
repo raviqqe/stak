@@ -1,9 +1,9 @@
 import { useStore } from "@nanostores/solid";
 import { createEffect, createSignal, onMount, type JSX } from "solid-js";
-import { CodeEditor } from "./CodeEditor";
-import * as store from "../stores/repl.js";
+import { CodeEditor } from "../CodeEditor";
+import * as store from "../../stores/repl.js";
 
-export const ReplDemo = (): JSX.Element => {
+export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
   const [putInput, setPutInput] = createSignal<(bytes: Uint8Array) => void>();
   const [value, setValue] = createSignal("");
