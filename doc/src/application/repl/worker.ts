@@ -11,12 +11,12 @@ const input = new ReadableStream<number>({
 const reader = input.getReader();
 
 const global = self as unknown as {
-  readInput: () => Promise<number>;
-  writeOutput: (byte: number) => Promise<void>;
-  writeError: (byte: number) => Promise<void>;
+  read_stdin: () => Promise<number>;
+  write_stdout: (byte: number) => Promise<void>;
+  write_stderr: (byte: number) => Promise<void>;
 };
 
-global.readInput = async () => {
+global.read_stdin = async () => {
   const result = await reader.read();
 
   if (result.done) {
@@ -25,9 +25,9 @@ global.readInput = async () => {
 
   return result.value;
 };
-global.writeOutput = async (byte: number) =>
+global.write_stdout = async (byte: number) =>
   postMessage(new Uint8Array([byte]));
-global.writeError = global.writeOutput;
+global.write_stderr = global.write_stdout;
 
 await init({});
 await repl(2 ** 22);
