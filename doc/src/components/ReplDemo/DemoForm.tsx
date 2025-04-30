@@ -45,7 +45,7 @@ export const DemoForm = (): JSX.Element => {
       value().match(promptPattern)?.length === 2 &&
       value().endsWith(prompt)
     ) {
-      put('(write-string "Hello, world!")\n');
+      put('(write-string "Hello, world!\\n")\n');
     }
   });
 
