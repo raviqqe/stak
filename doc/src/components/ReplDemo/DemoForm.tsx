@@ -10,6 +10,8 @@ import * as store from "../../stores/repl.js";
 import { CodeEditor } from "../CodeEditor";
 import styles from "./DemoForm.module.css";
 
+const prompt = "> ";
+
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
   const [sendInput, setSendInput] = createSignal<(bytes: Uint8Array) => void>();
@@ -30,8 +32,13 @@ export const DemoForm = (): JSX.Element => {
   });
 
   createEffect(() => {
-    if (value() == "> ") {
+    if (value() === prompt) {
       putInput()?.("(import (scheme base))\n");
+    } else if (
+      value().match(prompt)?.length === 2 &&
+      value().endsWith(prompt)
+    ) {
+      putInput()?.(`(write-string "Hello, world!")\n`);
     }
   });
 
