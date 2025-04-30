@@ -16,6 +16,7 @@ const source = [
   "(import (scheme base) (scheme write))",
   '(write-string "Hello, world!\\n")',
   "(define (fibonacci x) (if (< x 2) x (+ (fibonacci (- x 1)) (fibonacci (- x 2)))))",
+  "(fibonacci 10)",
 ];
 
 export const DemoForm = (): JSX.Element => {
