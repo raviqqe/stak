@@ -8,6 +8,7 @@ import {
 } from "solid-js";
 
 interface Props {
+  autoBrackets?: boolean;
   class?: string;
   id?: string;
   onChange: (text: string) => void;
@@ -27,6 +28,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
     }
 
     instance = editor.create(element, {
+      autoClosingBrackets: props.autoBrackets === false ? "never" : undefined,
       automaticLayout: true,
       language: "scheme",
       lineNumbers: "off",

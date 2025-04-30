@@ -65,6 +65,7 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <CodeEditor
+      autoBrackets={false}
       class={styles.root}
       id="source"
       onChange={(newValue) => {
