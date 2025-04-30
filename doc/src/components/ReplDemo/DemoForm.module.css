@@ -1,4 +1,11 @@
 .root {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.repl {
   flex: 1;
   min-height: 20rem;
 }

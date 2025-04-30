@@ -9,6 +9,8 @@ import {
 import * as store from "../../stores/repl.js";
 import { CodeEditor } from "../CodeEditor";
 import styles from "./DemoForm.module.css";
+import { Field } from "../Field.js";
+import { Label } from "../Label.js";
 
 const prompt = "> ";
 const promptPattern = new RegExp(prompt, "g");
@@ -66,23 +68,28 @@ export const DemoForm = (): JSX.Element => {
   });
 
   return (
-    <CodeEditor
-      autoBrackets={false}
-      class={styles.root}
-      id="source"
-      onChange={(newValue) => {
-        const input = newValue.slice(value().length);
+    <form class={styles.root}>
+      <Field style={{ flex: 1 }}>
+        <Label for="repl">Try it out!</Label>
+        <CodeEditor
+          autoBrackets={false}
+          class={styles.repl}
+          id="repl"
+          onChange={(newValue) => {
+            const input = newValue.slice(value().length);
 
-        if (
-          !input.includes("\n") &&
-          input.match("(")?.length === input.match(")")?.length
-        ) {
-          return;
-        }
+            if (
+              !input.includes("\n") &&
+              input.match("(")?.length === input.match(")")?.length
+            ) {
+              return;
+            }
 
-        putInput()(input);
-      }}
-      value={value()}
-    />
+            putInput()(input);
+          }}
+          value={value()}
+        />
+      </Field>
+    </form>
   );
 };
