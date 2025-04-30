@@ -11,7 +11,7 @@ import { CodeEditor } from "../CodeEditor";
 import styles from "./DemoForm.module.css";
 
 const prompt = "> ";
-const promptRegex = new RegExp(prompt, "g");
+const promptPattern = new RegExp(prompt, "g");
 
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
@@ -42,7 +42,7 @@ export const DemoForm = (): JSX.Element => {
     if (value() === prompt) {
       put("(import (scheme base))\n");
     } else if (
-      promptRegex.exec(value())?.length === 2 &&
+      value().match(promptPattern)?.length === 2 &&
       value().endsWith(prompt)
     ) {
       put('(write-string "Hello, world!")\n');
