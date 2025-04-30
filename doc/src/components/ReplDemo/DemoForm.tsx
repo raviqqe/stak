@@ -33,7 +33,15 @@ export const DemoForm = (): JSX.Element => {
     <CodeEditor
       class={styles.textArea}
       id="source"
-      onChange={(source) => putInput()?.(new TextEncoder().encode(source))}
+      onChange={(newValue) => {
+        const input = newValue.slice(value.length);
+
+        if (!input.includes("\n")) {
+          return;
+        }
+
+        putInput()?.(new TextEncoder().encode(input));
+      }}
       value={value()}
     />
   );

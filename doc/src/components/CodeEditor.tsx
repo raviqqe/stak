@@ -37,9 +37,8 @@ export const CodeEditor = (props: Props): JSX.Element => {
       .getModel();
     const onChange = props.onChange;
 
-    model?.onDidChangeContent((event) => {
-      console.log(event);
-      if (event.isEolChange && model) {
+    model?.onDidChangeContent(() => {
+      if (model) {
         onChange(model.getValue());
       }
     });
