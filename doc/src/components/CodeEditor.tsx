@@ -47,7 +47,10 @@ export const CodeEditor = (props: Props): JSX.Element => {
   createEffect(() => {
     if (props.value) {
       instance?.setValue(props.value);
-      instance?.setPosition({ lineNumber: Infinity, column: Infinity });
+      instance?.setPosition({
+        lineNumber: Number.POSITIVE_INFINITY,
+        column: Number.POSITIVE_INFINITY,
+      });
     }
   });
 
