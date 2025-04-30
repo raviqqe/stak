@@ -8,9 +8,9 @@ import {
 } from "solid-js";
 import * as store from "../../stores/repl.js";
 import { CodeEditor } from "../CodeEditor";
-import styles from "./DemoForm.module.css";
 import { Field } from "../Field.js";
 import { Label } from "../Label.js";
+import styles from "./DemoForm.module.css";
 
 const prompt = "> ";
 const promptPattern = new RegExp(prompt, "g");
