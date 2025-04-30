@@ -24,7 +24,6 @@ export const DemoForm = (): JSX.Element => {
       const decoder = new TextDecoder();
 
       for await (const chunk of output) {
-        console.log(chunk);
         setValue((value) => value + decoder.decode(chunk));
       }
     })(output());
