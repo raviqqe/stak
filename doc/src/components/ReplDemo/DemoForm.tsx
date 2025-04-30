@@ -48,7 +48,7 @@ export const DemoForm = (): JSX.Element => {
         value().match(promptPattern)?.length === index + 1 &&
         value().endsWith(prompt)
       ) {
-        put(line + "\n");
+        put(`${line}\n`);
       }
     }
   });
@@ -70,7 +70,10 @@ export const DemoForm = (): JSX.Element => {
       onChange={(newValue) => {
         const input = newValue.slice(value().length);
 
-        if (!input.includes("\n")) {
+        if (
+          !input.includes("\n") &&
+          input.match("(")?.length === input.match(")")?.length
+        ) {
           return;
         }
 
