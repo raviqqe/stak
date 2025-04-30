@@ -37,19 +37,15 @@ export const CodeEditor = (props: Props): JSX.Element => {
     const model = instance.getModel();
     const onChange = props.onChange;
 
-    model?.onDidChangeContent(() => {
-      if (model) {
-        onChange(model.getValue());
-      }
-    });
+    model?.onDidChangeContent(() => onChange(model.getValue()));
   });
 
   createEffect(() => {
     if (props.value) {
       instance?.setValue(props.value);
       instance?.setPosition({
-        lineNumber: Number.POSITIVE_INFINITY,
         column: Number.POSITIVE_INFINITY,
+        lineNumber: Number.POSITIVE_INFINITY,
       });
     }
   });

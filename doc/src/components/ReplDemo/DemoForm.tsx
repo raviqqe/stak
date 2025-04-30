@@ -11,14 +11,19 @@ import { CodeEditor } from "../CodeEditor";
 import styles from "./DemoForm.module.css";
 
 const prompt = "> ";
+const promptRegex = new RegExp(prompt, "g");
 
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
   const [sendInput, setSendInput] = createSignal<(bytes: Uint8Array) => void>();
   const [value, setValue] = createSignal("");
-  const putInput = createMemo(() => (input: string) => {
-    setValue((value) => value + input);
-    sendInput()?.(new TextEncoder().encode(input));
+  const putInput = createMemo(() => {
+    const send = sendInput();
+
+    return (input: string) => {
+      setValue((value) => value + input);
+      send?.(new TextEncoder().encode(input));
+    };
   });
 
   onMount(() => {
@@ -32,13 +37,15 @@ export const DemoForm = (): JSX.Element => {
   });
 
   createEffect(() => {
+    const put = putInput();
+
     if (value() === prompt) {
-      putInput()?.("(import (scheme base))\n");
+      put("(import (scheme base))\n");
     } else if (
-      value().match(prompt)?.length === 2 &&
+      promptRegex.exec(value())?.length === 2 &&
       value().endsWith(prompt)
     ) {
-      putInput()?.(`(write-string "Hello, world!")\n`);
+      put('(write-string "Hello, world!")\n');
     }
   });
 
@@ -63,7 +70,7 @@ export const DemoForm = (): JSX.Element => {
           return;
         }
 
-        putInput()?.(input);
+        putInput()(input);
       }}
       value={value()}
     />
