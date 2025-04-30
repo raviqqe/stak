@@ -16,9 +16,6 @@ interface Props {
 
 export const CodeEditor = (props: Props): JSX.Element => {
   let instance: ReturnType<typeof editor.create> | undefined;
-  let model:
-    | ReturnType<ReturnType<typeof editor.create>["getModel"]>
-    | undefined;
 
   const id = createMemo(() => props.id ?? createUniqueId());
 
@@ -37,7 +34,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
       theme: "vs-dark",
       value: props.value,
     });
-    model = instance.getModel();
+    const model = instance.getModel();
     const onChange = props.onChange;
 
     model?.onDidChangeContent(() => {
@@ -49,7 +46,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
 
   createEffect(() => {
     if (props.value) {
-      model?.setValue(props.value);
+      instance?.setValue(props.value);
       instance?.setPosition({ lineNumber: Infinity, column: Infinity });
     }
   });
