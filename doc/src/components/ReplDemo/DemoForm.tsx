@@ -31,7 +31,7 @@ export const DemoForm = (): JSX.Element => {
 
   return (
     <CodeEditor
-      class={styles.textArea}
+      class={styles.root}
       id="source"
       onChange={(newValue) => {
         const input = newValue.slice(value().length);
