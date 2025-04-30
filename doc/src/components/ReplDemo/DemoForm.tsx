@@ -12,6 +12,10 @@ import styles from "./DemoForm.module.css";
 
 const prompt = "> ";
 const promptPattern = new RegExp(prompt, "g");
+const source = [
+  "(import (scheme base))",
+  '(write-string "Hello, world!\\n")\n',
+];
 
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
@@ -39,13 +43,13 @@ export const DemoForm = (): JSX.Element => {
   createEffect(() => {
     const put = putInput();
 
-    if (value() === prompt) {
-      put("(import (scheme base))\n");
-    } else if (
-      value().match(promptPattern)?.length === 2 &&
-      value().endsWith(prompt)
-    ) {
-      put('(write-string "Hello, world!\\n")\n');
+    for (const [index, line] of source.entries()) {
+      if (
+        value().match(promptPattern)?.length === index + 1 &&
+        value().endsWith(prompt)
+      ) {
+        put(line + "\n");
+      }
     }
   });
 
