@@ -12,10 +12,7 @@ import styles from "./DemoForm.module.css";
 
 const prompt = "> ";
 const promptPattern = new RegExp(prompt, "g");
-const source = [
-  "(import (scheme base))",
-  '(write-string "Hello, world!\\n")\n',
-];
+const source = ["(import (scheme base))", '(write-string "Hello, world!\\n")'];
 
 export const DemoForm = (): JSX.Element => {
   const output = useStore(store.output);
