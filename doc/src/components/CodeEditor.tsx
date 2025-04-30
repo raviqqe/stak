@@ -1,5 +1,11 @@
 import { editor } from "monaco-editor";
-import { type JSX, createMemo, createUniqueId, onMount } from "solid-js";
+import {
+  type JSX,
+  createEffect,
+  createMemo,
+  createUniqueId,
+  onMount,
+} from "solid-js";
 
 interface Props {
   class?: string;
@@ -10,6 +16,7 @@ interface Props {
 
 export const CodeEditor = (props: Props): JSX.Element => {
   const id = createMemo(() => props.id ?? createUniqueId());
+  let model: ReturnType<ReturnType<typeof editor.create>["getModel"]> | null;
 
   onMount(() => {
     const element = document.getElementById(id());
@@ -18,7 +25,7 @@ export const CodeEditor = (props: Props): JSX.Element => {
       throw new Error("Editor element not found");
     }
 
-    const model = editor
+    model = editor
       .create(element, {
         automaticLayout: true,
         language: "scheme",
@@ -30,7 +37,17 @@ export const CodeEditor = (props: Props): JSX.Element => {
       .getModel();
     const onChange = props.onChange;
 
-    model?.onDidChangeContent(() => onChange(model.getValue()));
+    model?.onDidChangeContent(() => {
+      if (model) {
+        onChange(model.getValue());
+      }
+    });
+  });
+
+  createEffect(() => {
+    if (props.value) {
+      model?.setValue(props.value);
+    }
   });
 
   return <div class={props.class} id={id()} />;
