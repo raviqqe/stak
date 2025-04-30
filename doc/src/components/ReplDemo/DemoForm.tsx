@@ -34,7 +34,7 @@ export const DemoForm = (): JSX.Element => {
       class={styles.textArea}
       id="source"
       onChange={(newValue) => {
-        const input = newValue.slice(value.length);
+        const input = newValue.slice(value().length);
 
         if (!input.includes("\n")) {
           return;
