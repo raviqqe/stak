@@ -40,6 +40,7 @@ export const DemoForm = (): JSX.Element => {
           return;
         }
 
+        setValue((value) => value + input);
         putInput()?.(new TextEncoder().encode(input));
       }}
       value={value()}
