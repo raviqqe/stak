@@ -30,7 +30,7 @@ impl<'a> MemoryFileSystem<'a> {
 
 impl FileSystem for MemoryFileSystem<'_> {
     type Path = [u8];
-    type PathBuf = Vec<u8, PATH_SIZE>;
+    type PathBuf = Vec<u8, PATH_SIZE, usize>;
     type Error = FileError;
 
     fn open(&mut self, path: &Self::Path, output: bool) -> Result<FileDescriptor, Self::Error> {
