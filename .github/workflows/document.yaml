@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: cargo +nightly doc --all-features
-  document_build:
+  web_build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
-  document_lint:
+  web_lint:
     defaults:
       run:
         working-directory: doc
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm ci
       - run: npm run lint
-  document_test:
+  web_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -61,9 +61,9 @@ jobs:
           --buffer-size 8192
           --exclude https://www.gnu.org/software/.*
           http://localhost:4321/stak/
-  document_release_test:
+  web_release_test:
     needs:
-      - document_build
+      - web_build
     runs-on: ubuntu-latest
     steps:
       - run: >
@@ -75,9 +75,9 @@ jobs:
   document:
     needs:
       - rust_build
-      - document_build
-      - document_lint
-      - document_test
+      - web_build
+      - web_lint
+      - web_test
     if: always()
     runs-on: ubuntu-latest
     steps:
