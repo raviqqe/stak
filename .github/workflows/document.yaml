@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - run: cargo +nightly doc --all-features
-  web_build:
+  document_build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           path: doc/dist
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
-  web_lint:
+  document_lint:
     defaults:
       run:
         working-directory: doc
@@ -46,9 +46,7 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm ci
       - run: npm run lint
-  web_test:
-    needs:
-      - web_build
+  document_test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -63,12 +61,23 @@ jobs:
           --buffer-size 8192
           --exclude https://www.gnu.org/software/.*
           http://localhost:4321/stak/
+  document_release_test:
+    needs:
+      - document_build
+    runs-on: ubuntu-latest
+    steps:
+      - run: >
+          go run github.com/raviqqe/muffet/v2@latest
+          --accepted-status-codes 200,403
+          --buffer-size 8192
+          --exclude https://www.gnu.org/software/.*
+          http://raviqqe.com/stak
   document:
     needs:
       - rust_build
-      - web_build
-      - web_lint
-      - web_test
+      - document_build
+      - document_lint
+      - document_test
     if: always()
     runs-on: ubuntu-latest
     steps:
