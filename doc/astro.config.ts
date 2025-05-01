@@ -59,6 +59,13 @@ export default defineConfig({
         {
           tag: "link",
           attrs: {
+            rel: "sitemap",
+            href: "/stak/sitemap-index.xml",
+          },
+        },
+        {
+          tag: "link",
+          attrs: {
             rel: "manifest",
             href: "/stak/manifest.json",
           },
