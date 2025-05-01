@@ -25,7 +25,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
-      - run: tools/document.sh -l
+      - run: tools/document.sh
       - uses: actions/upload-artifact@v4
         with:
           name: document
@@ -36,28 +36,23 @@ jobs:
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
   web_lint:
+    defaults:
+      run:
+        working-directory: doc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - run: npm ci
-        working-directory: doc
       - run: npm run lint
-        working-directory: doc
   web_test:
-    needs:
-      - web_build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: actions/download-artifact@v4
-        with:
-          name: document
-          path: doc/dist
-      - run: npm ci
-        working-directory: doc
+      - uses: actions/setup-node@v4
+      - run: tools/document.sh -l
       - run: npm run preview &
         working-directory: doc
       - run: >
@@ -66,6 +61,18 @@ jobs:
           --buffer-size 8192
           --exclude https://www.gnu.org/software/.*
           http://localhost:4321/stak/
+  web_release_test:
+    needs:
+      - web_build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: >
+          go run github.com/raviqqe/muffet/v2@latest
+          --accepted-status-codes 200,403
+          --buffer-size 8192
+          --exclude https://www.gnu.org/software/.*
+          https://raviqqe.github.io/stak
   document:
     needs:
       - rust_build
