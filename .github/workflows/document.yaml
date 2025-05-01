@@ -25,7 +25,7 @@ jobs:
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - uses: actions/configure-pages@v5
-      - run: tools/document.sh -l
+      - run: tools/document.sh
       - uses: actions/upload-artifact@v4
         with:
           name: document
@@ -36,15 +36,16 @@ jobs:
       - uses: actions/deploy-pages@v4
         if: github.ref == 'refs/heads/main'
   web_lint:
+    defaults:
+      run:
+        working-directory: doc
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
       - run: npm ci
-        working-directory: doc
       - run: npm run lint
-        working-directory: doc
   web_test:
     needs:
       - web_build
@@ -52,12 +53,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - uses: actions/download-artifact@v4
-        with:
-          name: document
-          path: doc/dist
-      - run: npm ci
-        working-directory: doc
+      - uses: actions/setup-node@v4
+      - run: tools/document.sh
       - run: npm run preview &
         working-directory: doc
       - run: >
