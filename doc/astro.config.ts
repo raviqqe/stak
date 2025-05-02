@@ -73,7 +73,7 @@ export default defineConfig({
         {
           tag: "script",
           attrs: {
-            dataDomain: "raviqqe.com",
+            "data-domain": "raviqqe.com",
             defer: true,
             src: "https://plausible.io/js/plausible.js",
           },
