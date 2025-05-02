@@ -70,6 +70,14 @@ export default defineConfig({
             content: "/stak/icon.svg",
           },
         },
+        {
+          tag: "script",
+          attrs: {
+            dataDomain: "raviqqe.com",
+            defer: true,
+            src: "https://plausible.io/js/plausible.js",
+          },
+        },
       ],
       logo: {
         src: "./public/icon.svg",
