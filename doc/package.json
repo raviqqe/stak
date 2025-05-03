@@ -20,7 +20,7 @@
     "@raviqqe/stak": "^0.10.21",
     "astro": "^5.7.10",
     "classnames": "^2.5.1",
-    "es-toolkit": "^1.36.0",
+    "es-toolkit": "^1.37.1",
     "lucide-solid": "^0.503.0",
     "monaco-editor": "^0.52.2",
     "nanostores": "^0.11.4",
