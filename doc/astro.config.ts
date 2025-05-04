@@ -148,5 +148,5 @@ export default defineConfig({
   redirects: {
     "/demo": "/interpreter-demo",
   },
-  site: "https://raviqqe.github.io/stak",
+  site: "https://raviqqe.com/stak",
 });
