@@ -51,7 +51,7 @@ pub fn repl(heap_size: usize) -> Result<(), JsError> {
             .iter()
             .copied(),
     )?;
-    maybe_await!(vm.run())?;
+    maybe_await!(vm.run_async())?;
 
     Ok(())
 }
