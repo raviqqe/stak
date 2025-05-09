@@ -57,9 +57,9 @@ checksum = "d750af042f7ef4f724306de029d18836c26c1765a54a6a3f094cbd23a7267ffa"
 
 [[package]]
 name = "libm"
-version = "0.2.13"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9627da5196e5d8ed0b0495e61e518847578da83483c37288316d9b2e03a7f72"
+checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
 
 [[package]]
 name = "linux-raw-sys"
@@ -69,14 +69,14 @@ checksum = "6db9c683daf087dc577b7506e9695b3d556a9f3849903fa28186283afd6809e9"
 
 [[package]]
 name = "mstak"
-version = "0.5.21"
+version = "0.5.22"
 dependencies = [
  "stak-sac",
 ]
 
 [[package]]
 name = "mstak-interpret"
-version = "0.5.21"
+version = "0.5.22"
 dependencies = [
  "libc",
  "stak-device",
@@ -114,9 +114,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "1.0.5"
+version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d97817398dd4bb2e6da002002db259209759911da105da92bec29ccb12cf58bf"
+checksum = "c71e83d6afe7ff64890ec6b71d6a69bb8a610ab78ce364b3352876bb4c801266"
 dependencies = [
  "bitflags",
  "errno",
@@ -133,7 +133,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 
 [[package]]
 name = "stak-compiler"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "stak-configuration",
  "stak-device",
@@ -146,11 +146,11 @@ dependencies = [
 
 [[package]]
 name = "stak-configuration"
-version = "0.10.21"
+version = "0.10.22"
 
 [[package]]
 name = "stak-device"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -159,7 +159,7 @@ dependencies = [
 
 [[package]]
 name = "stak-file"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "heapless",
  "rustix",
@@ -169,7 +169,7 @@ dependencies = [
 
 [[package]]
 name = "stak-inexact"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "libm",
  "stak-vm",
@@ -178,7 +178,7 @@ dependencies = [
 
 [[package]]
 name = "stak-libc"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "libc",
  "rustix",
@@ -186,7 +186,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "cfg-elif",
  "proc-macro2",
@@ -198,7 +198,7 @@ dependencies = [
 
 [[package]]
 name = "stak-macro-util"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -207,7 +207,7 @@ dependencies = [
 
 [[package]]
 name = "stak-native"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -215,7 +215,7 @@ dependencies = [
 
 [[package]]
 name = "stak-process-context"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "stak-vm",
  "winter-maybe-async",
@@ -223,7 +223,7 @@ dependencies = [
 
 [[package]]
 name = "stak-r7rs"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "stak-device",
  "stak-file",
@@ -237,7 +237,7 @@ dependencies = [
 
 [[package]]
 name = "stak-sac"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "libc",
  "stak-configuration",
@@ -253,7 +253,7 @@ dependencies = [
 
 [[package]]
 name = "stak-time"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "rustix",
  "stak-vm",
@@ -262,7 +262,7 @@ dependencies = [
 
 [[package]]
 name = "stak-util"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "cfg-elif",
  "noop-executor",
@@ -270,7 +270,7 @@ dependencies = [
 
 [[package]]
 name = "stak-vm"
-version = "0.10.21"
+version = "0.10.22"
 dependencies = [
  "cfg-elif",
  "stak-util",
