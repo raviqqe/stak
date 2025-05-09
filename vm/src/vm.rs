@@ -91,12 +91,12 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     ///
     /// Panics if asynchronous operations occur during the run.
     pub fn run(&mut self) -> Result<(), T::Error> {
-        block_on!(self.run())
+        block_on!(self.run_async())
     }
 
     /// Runs bytecodes on a virtual machine.
     #[maybe_async]
-    pub fn run(&mut self) -> Result<(), T::Error> {
+    pub fn run_async(&mut self) -> Result<(), T::Error> {
         while let Err(error) = maybe_await!(self.run_with_continuation()) {
             if error.is_critical() {
                 return Err(error);
