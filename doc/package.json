@@ -14,11 +14,11 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.3.1",
     "@astrojs/solid-js": "^5.0.10",
-    "@astrojs/starlight": "^0.34.2",
+    "@astrojs/starlight": "^0.34.3",
     "@biomejs/biome": "^1.9.4",
     "@nanostores/solid": "^1.0.0",
     "@raviqqe/stak": "^0.10.21",
-    "astro": "^5.7.11",
+    "astro": "^5.7.12",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.37.2",
     "lucide-solid": "^0.508.0",
