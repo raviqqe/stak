@@ -90,7 +90,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     /// # Panics
     ///
     /// Panics if asynchronous operations occur during the run.
-    pub fn run_sync(&mut self) -> Result<(), T::Error> {
+    pub fn run(&mut self) -> Result<(), T::Error> {
         block_on!(self.run())
     }
 

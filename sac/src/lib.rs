@@ -90,7 +90,7 @@ macro_rules! main {
 
             vm.initialize(include_r7rs!($path).iter().copied())?;
 
-            Ok(vm.run_sync()?)
+            Ok(vm.run()?)
         }
     };
 }
@@ -144,7 +144,7 @@ macro_rules! libc_main {
             .unwrap();
 
             vm.initialize(include_r7rs!($path).iter().copied()).unwrap();
-            vm.run_sync().unwrap();
+            vm.run().unwrap();
 
             0
         }

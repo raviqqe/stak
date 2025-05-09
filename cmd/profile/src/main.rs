@@ -94,7 +94,7 @@ fn main() -> Result<(), MainError> {
             .with_profiler(&mut profiler);
 
             vm.initialize(read(&arguments.bytecode_file)?)?;
-            vm.run_sync()?;
+            vm.run()?;
         }
         Command::Analyze(arguments) => {
             let reader = stdin().lock();
