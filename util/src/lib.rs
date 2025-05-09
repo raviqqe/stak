@@ -5,7 +5,6 @@
 #[doc(hidden)]
 pub mod __private {
     pub use cfg_elif;
-    pub use core;
     pub use noop_executor;
 }
 
@@ -17,7 +16,7 @@ macro_rules! block_on {
         $crate::__private::cfg_elif::expr::feature!(if ("async") {
             $crate::__private::noop_executor::block_on($value)
         } else {
-            $crate::__private::core::convert::identity($value)
+            $value
         })
     };
 }

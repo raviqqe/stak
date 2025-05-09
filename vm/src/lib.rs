@@ -36,7 +36,7 @@
 //! );
 //!
 //! vm.initialize(BYTECODE.iter().copied()).unwrap();
-//! vm.run_sync().unwrap();
+//! vm.run().unwrap();
 //!
 //! assert_eq!(vm.primitive_set().device().output(), b"Hello, world!");
 //! ```

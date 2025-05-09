@@ -27,15 +27,15 @@ impl<'a, 'b> Engine<'a, 'b> {
     /// # Panics
     ///
     /// Panics if asynchronous operations occur during the run.
-    pub fn run_sync<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
-        block_on!(self.run(module))
+    pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
+        block_on!(self.run_async(module))
     }
 
     /// Runs a module.
     #[maybe_async]
-    pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
+    pub fn run_async<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
-        maybe_await!(self.vm.run())
+        maybe_await!(self.vm.run_async())
     }
 
     /// Registers a type compatible between Scheme and Rust.

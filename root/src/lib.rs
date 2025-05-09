@@ -72,7 +72,7 @@ pub mod device {
     //!     )?;
     //!
     //!     vm.initialize(bytecodes.iter().copied())?;
-    //!     vm.run_sync()
+    //!     vm.run()
     //! }
     //! ```
 
@@ -199,7 +199,7 @@ pub mod vm {
     //!     // Initialize a virtual machine with bytecodes.
     //!     vm.initialize(bytecodes.iter().copied())?;
     //!     // Run bytecodes on a virtual machine.
-    //!     vm.run_sync()
+    //!     vm.run()
     //! }
     //! ```
 
