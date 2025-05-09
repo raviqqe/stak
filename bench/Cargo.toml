@@ -6,14 +6,14 @@ edition.workspace = true
 
 [dependencies]
 mlua = { version = "0.10.4", features = ["lua54"] }
-stak = { version = "0.10.21", path = "../root" }
-stak-compiler = { version = "0.10.21", path = "../compiler" }
+stak = { version = "0.10.22", path = "../root" }
+stak-compiler = { version = "0.10.22", path = "../compiler" }
 
 [dev-dependencies]
 criterion = { package = "codspeed-criterion-compat", version = "2.7.2" }
 
 [build-dependencies]
-stak-build = { version = "0.10.21", path = "../build" }
+stak-build = { version = "0.10.22", path = "../build" }
 
 [lints]
 workspace = true
