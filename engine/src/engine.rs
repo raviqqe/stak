@@ -28,7 +28,7 @@ impl<'a, 'b> Engine<'a, 'b> {
     ///
     /// Panics if asynchronous operations occur during the run.
     pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
-        block_on!(self.run(module))
+        block_on!(self.run_async(module))
     }
 
     /// Runs a module.
