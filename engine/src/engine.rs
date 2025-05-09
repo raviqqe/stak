@@ -33,7 +33,7 @@ impl<'a, 'b> Engine<'a, 'b> {
 
     /// Runs a module.
     #[maybe_async]
-    pub fn run<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
+    pub fn run_async<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
         maybe_await!(self.vm.run())
     }
