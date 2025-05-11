@@ -2031,6 +2031,7 @@
   - char
   - char-whitespace?
   - special-chars
+  - case-lambda
   - cxr
   - caaar
   - caadr
@@ -6063,6 +6064,11 @@
                                       - char
                                     - (char-whitespace? . ||)
                                     - (special-chars . ||)
+                                  - list
+                                    - list
+                                      - scheme
+                                      - case-lambda
+                                    - (case-lambda . ||)
                                   - list
                                     - list
                                       - scheme
