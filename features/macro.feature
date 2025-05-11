@@ -416,6 +416,21 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
+  Scenario: Define a self-recursive local macro
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (let-syntax (
+        (foo
+          (syntax-rules ()
+            ((_ x)
+              x))))
+        (write-u8 (foo 65)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
       """scheme
