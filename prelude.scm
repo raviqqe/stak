@@ -2075,22 +2075,22 @@
         ((_ (parameters body0 ...) ...)
           (lambda arguments
             (let ((arity (length arguments)))
-              (let-syntax ((clause
-                             (syntax-rules ::: ()
-                               ((_)
-                                 (error "no matching clause"))
-                               ((_ ((parameter :::) . body) . rest)
-                                 (if (= (length '(parameter :::)) arity)
-                                   (apply
-                                     (lambda (parameter :::) . body)
-                                     arguments)
-                                   (clause . rest)))
-                               ((_ ((parameter ::: . tail) . body) . rest)
-                                 (if (<= (length '(parameter :::)) arity)
-                                   (apply
-                                     (lambda (parameter ::: . tail) . body)
-                                     arguments)
-                                   (clause . rest))))))
+              (letrec-syntax ((clause
+                                (syntax-rules ::: ()
+                                  ((_)
+                                    (error "no matching clause"))
+                                  ((_ ((parameter :::) . body) . rest)
+                                    (if (= (length '(parameter :::)) arity)
+                                      (apply
+                                        (lambda (parameter :::) . body)
+                                        arguments)
+                                      (clause . rest)))
+                                  ((_ ((parameter ::: . tail) . body) . rest)
+                                    (if (<= (length '(parameter :::)) arity)
+                                      (apply
+                                        (lambda (parameter ::: . tail) . body)
+                                        arguments)
+                                      (clause . rest))))))
                 (clause (parameters body0 ...) ...)))))))))
 
 (define-library (scheme char)
