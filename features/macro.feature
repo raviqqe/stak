@@ -182,6 +182,21 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "AB"
 
+  Scenario: Match a custom ellipsis pattern
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules many ()
+          ((_ x many)
+            (x many))))
+
+      (foo write-u8 65)
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "A"
+
   Scenario: Match two ellipses at different levels
     Given a file named "main.scm" with:
       """scheme
