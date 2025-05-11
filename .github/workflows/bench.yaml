@@ -31,12 +31,6 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
-  rust_loc:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - run: tools/rust_loc_bench.sh
   rust:
     strategy:
       fail-fast: false
@@ -60,11 +54,24 @@ jobs:
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
+  bytecode_size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/bytecode_size_bench.sh
+  rust_loc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/rust_loc_bench.sh
   bench:
     needs:
       - interpret
-      - rust_loc
       - rust
+      - bytecode_size
+      - rust_loc
     if: always()
     runs-on: ubuntu-latest
     steps:
