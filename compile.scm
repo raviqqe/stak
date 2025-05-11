@@ -1025,9 +1025,9 @@
           (set-cdr! pair (cons (cons name renamed) names))
           renamed))))))
 
-    (define (expand-import-set context qualify set)
+    (define (expand-import-set qualify set)
      (define (expand qualify)
-      (expand-import-set context importer-id qualify (cadr set)))
+      (expand-import-set qualify (cadr set)))
 
      (case (predicate set)
       ((except)
@@ -1070,7 +1070,6 @@
       (lambda (set)
        (let-values (((set qualify)
                      (expand-import-set
-                      context
                       (lambda (name)
                        (and
                         (or
