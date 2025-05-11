@@ -2071,19 +2071,19 @@
       (syntax-rules ()
         ((_ (parameters body0 ...) ...)
           (lambda arguments
-            (let ((len (length arguments)))
+            (let ((arity (length arguments)))
               (let-syntax ((clause
                              (syntax-rules ::: ()
-                               ((cl)
+                               ((_)
                                  (error "no matching clause"))
-                               ((cl ((p :::) . body) . rest)
+                               ((_ ((p :::) . body) . rest)
                                  (if (= len (length '(p :::)))
                                    (apply (lambda (p :::)
                                            .
                                            body)
                                      arguments)
                                    (cl . rest)))
-                               ((cl ((p ::: . tail) . body)
+                               ((_ ((p ::: . tail) . body)
                                    .
                                    rest)
                                  (if (>= len (length '(p :::)))
