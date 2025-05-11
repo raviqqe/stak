@@ -210,6 +210,8 @@
     ($$define-syntax syntax-rules
       ($$syntax-rules $$... ()
         ((_ (literal $$...) (pattern body) $$...)
+          ($$syntax-rules ... (literal $$...) (pattern body) $$...))
+        ((_ (literal $$...) (pattern body) $$...)
           ($$syntax-rules ... (literal $$...) (pattern body) $$...))))
 
     ($$define-syntax define-syntax
