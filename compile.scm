@@ -223,6 +223,46 @@
 
     (define library-symbol-separator #\%)
 
+    (define (expand-import-set set qualify)
+     (define (expand qualify)
+      (expand-import-set (cadr set) qualify))
+
+     (case (predicate set)
+      ((except)
+       (let ((names (cddr set)))
+        (expand
+         (lambda (name)
+          (if (memq name names)
+           #f
+           (qualify name))))))
+
+      ((only)
+       (let ((names (cddr set)))
+        (expand
+         (lambda (name)
+          (if (memq name names)
+           (qualify name)
+           #f)))))
+
+      ((prefix)
+       (expand
+        (lambda (name)
+         (qualify (symbol-append (caddr set) name)))))
+
+      ((rename)
+       (expand
+        (lambda (name)
+         (qualify
+          (cond
+           ((assq name (cddr set)) =>
+            cadr)
+
+           (else
+            name))))))
+
+      (else
+       (values set qualify))))
+
     ; Macro system
 
     ;; Types
@@ -1025,46 +1065,6 @@
           (set-cdr! pair (cons (cons name renamed) names))
           renamed))))))
 
-    (define (expand-import-set set qualify)
-     (define (expand qualify)
-      (expand-import-set (cadr set) qualify))
-
-     (case (predicate set)
-      ((except)
-       (let ((names (cddr set)))
-        (expand
-         (lambda (name)
-          (if (memq name names)
-           #f
-           (qualify name))))))
-
-      ((only)
-       (let ((names (cddr set)))
-        (expand
-         (lambda (name)
-          (if (memq name names)
-           (qualify name)
-           #f)))))
-
-      ((prefix)
-       (expand
-        (lambda (name)
-         (qualify (symbol-append (caddr set) name)))))
-
-      ((rename)
-       (expand
-        (lambda (name)
-         (qualify
-          (cond
-           ((assq name (cddr set)) =>
-            cadr)
-
-           (else
-            name))))))
-
-      (else
-       (values set qualify))))
-
     (define (expand-import-sets context importer-id importer-symbols sets)
      (flat-map
       (lambda (set)
@@ -1752,10 +1752,10 @@
                   (apply
                    append
                    (map
-                    (lambda (name)
-                     (let ((pair (assoc name libraries)))
+                    (lambda (set)
+                     (let ((pair (assoc set libraries)))
                       (unless pair
-                       (error "unknown library" name))
+                       (error "unknown library" set))
                       (cdr pair)))
                     (environment-imports environment)))))
             (relaxed-deep-map
