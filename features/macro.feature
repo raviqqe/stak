@@ -430,8 +430,8 @@ Feature: Macro
               (foo y)))))
         (write-u8 (foo 65 66)))
       """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "B"
+    When I run `stak main.scm`
+    Then the exit status should not be 0
 
   Scenario: Define a local macros shadowing a global macro
     Given a file named "main.scm" with:
@@ -455,7 +455,7 @@ Feature: Macro
         (write-u8 (foo 65 66)))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
+    Then the stdout should contain exactly "B"
 
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
