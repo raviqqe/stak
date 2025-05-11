@@ -427,7 +427,7 @@ Feature: Macro
             ((_ x)
               x)
             ((_ x y)
-              y))))
+              (foo y)))))
         (write-u8 (foo 65 66)))
       """
     When I successfully run `stak main.scm`
