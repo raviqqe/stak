@@ -1089,16 +1089,38 @@
     (define (expand-import-sets context importer-id importer-symbols sets)
      (flat-map
       (lambda (set)
-       (expand-import-set
-        context
-        importer-id
-        (lambda (name)
-         (and
-          (or
-           (not importer-symbols)
-           (memq name (force importer-symbols)))
-          name))
-        set))
+       (let-values (((name qualify)
+                     (expand-import-set
+                      context
+                      (lambda (name)
+                       (and
+                        (or
+                         (not importer-symbols)
+                         (memq name (force importer-symbols)))
+                        name))
+                      set)))
+        (let ((library (library-context-find context set)))
+         (append
+          (if (library-context-import! context set)
+           '()
+           (append
+            (expand-import-sets
+             context
+             (library-id library)
+             (library-symbols library)
+             (library-imports library))
+            (library-body library)))
+          (flat-map
+           (lambda (names)
+            (let ((name (qualify (car names))))
+             (if name
+              (list
+               (list
+                '$$alias
+                (rename-library-symbol context importer-id name)
+                (cdr names)))
+              '())))
+           (library-exports library))))))
       sets))
 
     (define (expand-library-expression context body-symbols expression)
