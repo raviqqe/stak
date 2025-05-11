@@ -433,6 +433,30 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "B"
 
+  Scenario: Define a local macros shadowing a global macro
+    Given a file named "main.scm" with:
+      """scheme
+      (import (scheme base))
+
+      (define-syntax foo
+        (syntax-rules ()
+          ((_ x y)
+            x)))
+
+      (let-syntax (
+        (foo
+          (syntax-rules ()
+            ((_ x y)
+              y)))
+        (bar
+          (syntax-rules ()
+            ((_ x y)
+              (foo x y)))))
+        (write-u8 (foo 65 66)))
+      """
+    When I successfully run `stak main.scm`
+    Then the stdout should contain exactly "B"
+
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
       """scheme
