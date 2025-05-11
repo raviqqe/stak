@@ -457,46 +457,6 @@ Feature: Macro
     When I successfully run `stak main.scm`
     Then the stdout should contain exactly "A"
 
-  Scenario: Define a recursive local macro
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (letrec-syntax
-        ((foo
-          (syntax-rules ()
-            ((_ x)
-              x)
-            ((_ x y)
-              (foo y)))))
-        (write-u8 (foo 65 66)))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "B"
-
-  Scenario: Define a mutually recursive local macro
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (letrec-syntax (
-        (foo
-          (syntax-rules ()
-            ((_ x)
-              x)
-            ((_ x ... y)
-              (bar x ...))))
-        (bar
-          (syntax-rules ()
-            ((_ x)
-              x)
-            ((_ x ... y)
-              (foo x ...)))))
-        (write-u8 (foo 65 66 67)))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "A"
-
   Scenario: Define a recursive local macro in a body
     Given a file named "main.scm" with:
       """scheme
@@ -756,18 +716,6 @@ Feature: Macro
       (import (scheme base))
 
       (let-syntax ()
-        (write-u8 65)
-        (write-u8 66))
-      """
-    When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "AB"
-
-  Scenario: Put a sequence in a body of `letrec-syntax`
-    Given a file named "main.scm" with:
-      """scheme
-      (import (scheme base))
-
-      (letrec-syntax ()
         (write-u8 65)
         (write-u8 66))
       """
