@@ -60,11 +60,18 @@ jobs:
         with:
           run: cargo codspeed run
           token: ${{ secrets.CODSPEED_TOKEN }}
+  bytecode_size:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: tools/bytecode_size_bench.sh
   bench:
     needs:
       - interpret
       - code_size
       - rust
+      - bytecode_size
     if: always()
     runs-on: ubuntu-latest
     steps:
