@@ -2080,13 +2080,13 @@
                                   ((_)
                                     (error "no matching clause"))
                                   ((_ ((parameter :::) . body) . rest)
-                                    (if (= (length '(parameter :::)) arity)
+                                    (if (= arity (length '(parameter :::)))
                                       (apply
                                         (lambda (parameter :::) . body)
                                         arguments)
                                       (clause . rest)))
                                   ((_ ((parameter ::: . tail) . body) . rest)
-                                    (if (<= (length '(parameter :::)) arity)
+                                    (if (>= arity (length '(parameter :::)))
                                       (apply
                                         (lambda (parameter ::: . tail) . body)
                                         arguments)
