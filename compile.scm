@@ -1753,10 +1753,20 @@
                    append
                    (map
                     (lambda (set)
-                     (let ((pair (assoc set libraries)))
-                      (unless pair
-                       (error "unknown library" set))
-                      (cdr pair)))
+                     (let-values (((set qualify)
+                                   (expand-import-set set (lambda (name) name))))
+                      (let ((pair (assoc set libraries)))
+                       (unless pair
+                        (error "unknown library" set))
+                       (apply
+                        append
+                        (map
+                         (lambda (pair)
+                          (let ((name (qualify (car pair))))
+                           (if name
+                            (list (cons name (cdr pair)))
+                            '())))
+                         (cdr pair))))))
                     (environment-imports environment)))))
             (relaxed-deep-map
              (lambda (value)
