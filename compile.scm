@@ -1025,7 +1025,7 @@
           (set-cdr! pair (cons (cons name renamed) names))
           renamed))))))
 
-    (define (expand-import-set context importer-id qualify set)
+    (define (expand-import-set context qualify set)
      (define (expand qualify)
       (expand-import-set context importer-id qualify (cadr set)))
 
@@ -1063,33 +1063,12 @@
             name))))))
 
       (else
-       (let ((library (library-context-find context set)))
-        (append
-         (if (library-context-import! context set)
-          '()
-          (append
-           (expand-import-sets
-            context
-            (library-id library)
-            (library-symbols library)
-            (library-imports library))
-           (library-body library)))
-         (flat-map
-          (lambda (names)
-           (let ((name (qualify (car names))))
-            (if name
-             (list
-              (list
-               '$$alias
-               (rename-library-symbol context importer-id name)
-               (cdr names)))
-             '())))
-          (library-exports library)))))))
+       (values set qualify))))
 
     (define (expand-import-sets context importer-id importer-symbols sets)
      (flat-map
       (lambda (set)
-       (let-values (((name qualify)
+       (let-values (((set qualify)
                      (expand-import-set
                       context
                       (lambda (name)
