@@ -2028,6 +2028,7 @@
   - char
   - char-whitespace?
   - special-chars
+  - case-lambda
   - cxr
   - caaar
   - caadr
@@ -6084,6 +6085,11 @@
                                   - list
                                     - list
                                       - scheme
+                                      - case-lambda
+                                    - (case-lambda . ||)
+                                  - list
+                                    - list
+                                      - scheme
                                       - cxr
                                     - (caaar . ||)
                                     - (caadr . ||)
@@ -8945,6 +8951,103 @@
                                             - ||
                                             - ||
                                             - ||
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - (|| . ||)
+                                    - list
+                                      - ||
+                                      - ||
+                                      - ()
+                                      - list
+                                        - list
+                                          - ||
+                                          - list
+                                            - ||
+                                            - ||
+                                            - ||
+                                          - ||
+                                        - list
+                                          - ||
+                                          - ||
+                                          - list
+                                            - ||
+                                            - list
+                                              - list
+                                                - ||
+                                                - list
+                                                  - ||
+                                                  - ||
+                                            - list
+                                              - ||
+                                              - list
+                                                - list
+                                                  - ||
+                                                  - list
+                                                    - ||
+                                                    - ||
+                                                    - ()
+                                                    - list
+                                                      - list
+                                                        - ||
+                                                      - list
+                                                        - ||
+                                                        - "no matching clause"
+                                                    - list
+                                                      - (|| ((|| ||) . ||) . ||)
+                                                      - list
+                                                        - ||
+                                                        - list
+                                                          - ||
+                                                          - ||
+                                                          - list
+                                                            - ||
+                                                            - list
+                                                              - ||
+                                                              - list
+                                                                - ||
+                                                                - ||
+                                                        - list
+                                                          - ||
+                                                          - (|| (|| ||) . ||)
+                                                          - ||
+                                                        - (|| . ||)
+                                                    - list
+                                                      - (|| ((|| || . ||) . ||) . ||)
+                                                      - list
+                                                        - ||
+                                                        - list
+                                                          - ||
+                                                          - ||
+                                                          - list
+                                                            - ||
+                                                            - list
+                                                              - ||
+                                                              - list
+                                                                - ||
+                                                                - ||
+                                                        - list
+                                                          - ||
+                                                          - (|| (|| || . ||) . ||)
+                                                          - ||
+                                                        - (|| . ||)
+                                              - list
+                                                - ||
+                                                - list
+                                                  - ||
+                                                  - ||
+                                                  - ||
+                                                - ||
                                     - (|| . ||)
                                     - (|| . ||)
                                     - (|| . ||)

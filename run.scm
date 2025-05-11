@@ -1,6 +1,7 @@
 ; We import all libraries here because the compiler strips any unimported libraries.
 (import
   (scheme base)
+  (only (scheme case-lambda))
   (scheme char)
   (only (scheme cxr))
   (only (scheme eval) eval)
