@@ -26,9 +26,11 @@ pub trait Device {
     /// Reads from standard input.
     #[maybe_async]
     fn read(&mut self) -> Result<Option<u8>, Self::Error>;
+
     /// Writes to standard output.
     #[maybe_async]
     fn write(&mut self, byte: u8) -> Result<(), Self::Error>;
+
     /// Writes to standard error.
     #[maybe_async]
     fn write_error(&mut self, byte: u8) -> Result<(), Self::Error>;
