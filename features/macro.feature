@@ -452,10 +452,10 @@ Feature: Macro
           (syntax-rules ()
             ((_ x y)
               (foo x y)))))
-        (write-u8 (foo 65 66)))
+        (write-u8 (bar 65 66)))
       """
     When I successfully run `stak main.scm`
-    Then the stdout should contain exactly "B"
+    Then the stdout should contain exactly "A"
 
   Scenario: Define a recursive local macro
     Given a file named "main.scm" with:
