@@ -2079,23 +2079,18 @@
                              (syntax-rules ::: ()
                                ((_)
                                  (error "no matching clause"))
-                               ((_ ((p :::) . body) . rest)
-                                 (if (= len (length '(p :::)))
-                                   (apply (lambda (p :::)
-                                           .
-                                           body)
-                                     arguments)
-                                   (cl . rest)))
-                               ((_ ((p ::: . tail) . body)
-                                   .
-                                   rest)
-                                 (if (>= len (length '(p :::)))
+                               ((_ ((parameter :::) . body) . rest)
+                                 (if (= (length '(parameter :::)) arity)
                                    (apply
-                                     (lambda (p ::: . tail)
-                                       .
-                                       body)
+                                     (lambda (parameter :::) . body)
                                      arguments)
-                                   (cl . rest))))))
+                                   (clause . rest)))
+                               ((_ ((parameter ::: . tail) . body) . rest)
+                                 (if (<= (length '(parameter :::)) arity)
+                                   (apply
+                                     (lambda (parameter ::: . tail) . body)
+                                     arguments)
+                                   (clause . rest))))))
                 (clause (parameters body0 ...) ...)))))))))
 
 (define-library (scheme char)
