@@ -1025,9 +1025,9 @@
           (set-cdr! pair (cons (cons name renamed) names))
           renamed))))))
 
-    (define (expand-import-set qualify set)
+    (define (expand-import-set set qualify)
      (define (expand qualify)
-      (expand-import-set qualify (cadr set)))
+      (expand-import-set (cadr set) qualify))
 
      (case (predicate set)
       ((except)
@@ -1070,13 +1070,13 @@
       (lambda (set)
        (let-values (((set qualify)
                      (expand-import-set
+                      set
                       (lambda (name)
                        (and
                         (or
                          (not importer-symbols)
                          (memq name (force importer-symbols)))
-                        name))
-                      set)))
+                        name)))))
         (let ((library (library-context-find context set)))
          (append
           (if (library-context-import! context set)
