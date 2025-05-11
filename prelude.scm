@@ -2072,7 +2072,7 @@
   (begin
     (define-syntax case-lambda
       (syntax-rules ()
-        ((_ (parameters body0 ...) ...)
+        ((_ (parameters outer-body ...) ...)
           (lambda arguments
             (let ((arity (length arguments)))
               (letrec-syntax ((clause
@@ -2091,7 +2091,7 @@
                                         (lambda (parameter ::: . tail) . body)
                                         arguments)
                                       (clause . rest))))))
-                (clause (parameters body0 ...) ...)))))))))
+                (clause (parameters outer-body ...) ...)))))))))
 
 (define-library (scheme char)
   (export char-whitespace? special-chars)
