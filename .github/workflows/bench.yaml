@@ -31,12 +31,12 @@ jobs:
         with:
           python-version: "3.13"
       - run: tools/bench.sh ${{ matrix.options }}
-  code_size:
+  rust_loc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: tools/code_size_bench.sh
+      - run: tools/rust_loc_bench.sh
   rust:
     strategy:
       fail-fast: false
@@ -69,7 +69,7 @@ jobs:
   bench:
     needs:
       - interpret
-      - code_size
+      - rust_loc
       - rust
       - bytecode_size
     if: always()
