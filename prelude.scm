@@ -211,6 +211,7 @@
       ($$syntax-rules $$... ()
         ((_ (literal $$...) (pattern body) $$...)
           ($$syntax-rules ... (literal $$...) (pattern body) $$...))
+
         ((_ ellipsis (literal $$...) (pattern body) $$...)
           ($$syntax-rules ellipsis (literal $$...) (pattern body) $$...))))
 
