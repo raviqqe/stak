@@ -2061,6 +2061,40 @@
     (define (cdddar x) (cdr (cddar x)))
     (define (cddddr x) (cdr (cdddr x)))))
 
+(define-library (scheme case-lambda)
+  (export case-lambda)
+
+  (import (scheme base))
+
+  (begin
+    (define-syntax case-lambda
+      (syntax-rules ()
+        ((_ (parameters body0 ...) ...)
+          (lambda arguments
+            (let ((len (length arguments)))
+              (let-syntax ((clause
+                             (syntax-rules ::: ()
+                               ((cl)
+                                 (error "no matching clause"))
+                               ((cl ((p :::) . body) . rest)
+                                 (if (= len (length '(p :::)))
+                                   (apply (lambda (p :::)
+                                           .
+                                           body)
+                                     arguments)
+                                   (cl . rest)))
+                               ((cl ((p ::: . tail) . body)
+                                   .
+                                   rest)
+                                 (if (>= len (length '(p :::)))
+                                   (apply
+                                     (lambda (p ::: . tail)
+                                       .
+                                       body)
+                                     arguments)
+                                   (cl . rest))))))
+                (clause (parameters body0 ...) ...)))))))))
+
 (define-library (scheme char)
   (export char-whitespace? special-chars)
 
