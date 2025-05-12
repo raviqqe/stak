@@ -95,6 +95,7 @@ impl<'a, T: PrimitiveSet> Vm<'a, T> {
     }
 
     /// Runs bytecodes on a virtual machine.
+    #[cfg_attr(not(feature = "async"), doc(hidden))]
     #[maybe_async]
     pub fn run_async(&mut self) -> Result<(), T::Error> {
         while let Err(error) = maybe_await!(self.run_with_continuation()) {

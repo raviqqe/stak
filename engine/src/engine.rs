@@ -32,6 +32,7 @@ impl<'a, 'b> Engine<'a, 'b> {
     }
 
     /// Runs a module.
+    #[cfg_attr(not(feature = "async"), doc(hidden))]
     #[maybe_async]
     pub fn run_async<'c>(&mut self, module: &'c impl Module<'c>) -> Result<(), EngineError> {
         self.vm.initialize(module.bytecode().iter().copied())?;
