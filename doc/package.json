@@ -21,7 +21,7 @@
     "astro": "^5.7.12",
     "classnames": "^2.5.1",
     "es-toolkit": "^1.37.2",
-    "lucide-solid": "^0.508.0",
+    "lucide-solid": "^0.509.0",
     "monaco-editor": "^0.52.2",
     "nanostores": "^1.0.1",
     "solid-js": "^1.9.6",
