@@ -1073,9 +1073,7 @@
                       set
                       (lambda (name)
                        (and
-                        (or
-                         (not importer-symbols)
-                         (memq name (force importer-symbols)))
+                        (memq name (force importer-symbols))
                         name)))))
         (let ((library (library-context-find context set)))
          (append
