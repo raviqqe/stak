@@ -1920,6 +1920,10 @@
   - list-position
   - ys
   - f
+  - except
+  - only
+  - prefix
+  - symbol-append
   - macro-state
   - macro-state?
   - static-symbols
@@ -1980,6 +1984,7 @@
   - bindings
   - resolve-data-symbol
   - macro-context-libraries
+  - expand
   - optimization-context
   - optimization-context?
   - literals
@@ -2052,23 +2057,15 @@
   - maps
   - build-library-name
   - renamed
-  - except
-  - only
-  - prefix
-  - symbol-append
-  - expand
+  - importer-symbols
   - library-context-find
   - library-context-import!
   - library-id
   - library-symbols
   - library-imports
   - library-body
-  - qualify
   - $$alias
-  - expand-import-set
   - importer-id
-  - importer-symbols
-  - set
   - sets
   - body
   - library-context-id
@@ -2088,7 +2085,6 @@
   - make-library-context
   - deep-unique
   - library-predicates
-  - flat-map
   - expand-library-expression
   - body-symbols
   - library-exports
@@ -2229,6 +2225,10 @@
   - optimization-context-set-literals!
   - set-nothing
   - $$libraries
+  - expand-import-set
+  - set
+  - flat-map
+  - qualify
   - name
   - environment-imports
   - relaxed-deep-map
@@ -3592,25 +3592,25 @@
   - call 1 #f $$close
 - call 1 #f $$close
 - constant procedure 0 #f
-  - constant procedure 52 #f
+  - constant procedure 53 #f
+    - get ||
+    - set 53
     - get ||
     - set 52
     - get ||
     - set 51
-    - get ||
-    - set 50
     - constant 0
-    - set 49
+    - set 50
     - constant 1
-    - set 48
+    - set 49
     - constant 2
-    - set 47
+    - set 48
     - constant 3
-    - set 46
+    - set 47
     - constant 4
-    - set 45
+    - set 46
     - constant 65535
-    - set 44
+    - set 45
     - constant list
       - list
         - $$rib
@@ -3633,25 +3633,25 @@
       - list
         - $$/
         - 13
-    - set 43
+    - set 44
     - constant 0
-    - set 42
+    - set 43
     - constant 1
-    - set 41
+    - set 42
     - constant 2
-    - set 40
+    - set 41
     - constant 3
-    - set 39
+    - set 40
     - constant 4
-    - set 38
+    - set 39
     - constant 5
-    - set 37
+    - set 38
     - constant 6
-    - set 36
+    - set 37
     - constant 7
-    - set 35
+    - set 36
     - constant 8
-    - set 34
+    - set 35
     - constant procedure 0 #t
       - get 0
       - call 0 #f ||
@@ -3660,59 +3660,59 @@
       - call 0 #f ||
       - call 1 #f ||
     - call 1 #f $$close
-    - set 33
+    - set 34
     - constant procedure 3 #f
       - get 1
       - get 1
       - get 4
       - call 3 #f ||
     - call 1 #f $$close
-    - set 32
+    - set 33
     - constant procedure 3 #f
-      - get 48
+      - get 49
       - get 3
       - call 2 #f ||
+      - get 2
+      - get 2
+      - call 3 #f 39
+    - call 1 #f $$close
+    - set 32
+    - constant procedure 2 #f
+      - get 52
       - get 2
       - get 2
       - call 3 #f 38
     - call 1 #f $$close
     - set 31
-    - constant procedure 2 #f
-      - get 51
-      - get 2
+    - constant procedure 1 #f
+      - get 46
+      - constant 0
       - get 2
       - call 3 #f 37
     - call 1 #f $$close
     - set 30
-    - constant procedure 1 #f
-      - get 45
-      - constant 0
-      - get 2
-      - call 3 #f 36
-    - call 1 #f $$close
-    - set 29
     - constant procedure 3 #f
       - get 1
       - get 1
       - get 4
       - call 3 #f ||
     - call 1 #f $$close
-    - set 28
+    - set 29
     - constant procedure 3 #f
-      - get 42
+      - get 43
       - get 3
       - get 3
-      - call 2 #f 58
+      - call 2 #f 59
       - get 2
-      - call 3 #f 34
+      - call 3 #f 35
     - call 1 #f $$close
-    - set 27
+    - set 28
     - constant procedure 1 #f
       - get 0
+      - call 1 #f 54
       - call 1 #f 53
-      - call 1 #f 52
     - call 1 #f $$close
-    - set 26
+    - set 27
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 2 #f
@@ -3740,17 +3740,17 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f $$close
-    - set 25
+    - set 26
     - constant procedure 1 #f
       - get 0
       - call 1 #f ||
       - if
         - get 0
         - call 1 #f ||
-        - call 1 #f 26
+        - call 1 #f 27
       - get 0
     - call 1 #f $$close
-    - set 24
+    - set 25
     - constant procedure 2 #f
       - get 1
       - call 1 #f ||
@@ -3759,12 +3759,12 @@
         - get 1
         - call 1 #f ||
         - get 1
-        - call 2 #f 27
+        - call 2 #f 28
       - get 1
       - get 1
       - call 2 #f ||
     - call 1 #f $$close
-    - set 23
+    - set 24
     - constant procedure 2 #f
       - get 0
       - call 1 #f ||
@@ -3784,10 +3784,10 @@
       - get 3
       - get 3
       - call 1 #f ||
-      - call 2 #f 28
+      - call 2 #f 29
       - call 2 #f 2
     - call 1 #f $$close
-    - set 22
+    - set 23
     - constant procedure 2 #f
       - get 0
       - constant 0
@@ -3801,10 +3801,10 @@
       - get 2
       - constant 1
       - call 2 #f ||
-      - call 2 #f 26
+      - call 2 #f 27
       - call 2 #f ||
     - call 1 #f $$close
-    - set 21
+    - set 22
     - constant procedure 2 #f
       - constant procedure 1 #f
         - constant procedure 2 #f
@@ -3832,7 +3832,7 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f $$close
-    - set 20
+    - set 21
     - constant procedure 2 #t
       - constant procedure 1 #f
         - get 2
@@ -3849,34 +3849,34 @@
           - call 2 #f 4
         - call 1 #f $$close
         - get 4
-        - call 2 #f 27
+        - call 2 #f 28
       - call 1 #f $$close
       - constant #f
       - call 1 #f 1
+    - call 1 #f $$close
+    - set 20
+    - constant procedure 2 #f
+      - get 1
+      - get 1
+      - get ||
+      - call 3 #f 25
     - call 1 #f $$close
     - set 19
     - constant procedure 2 #f
       - get 1
       - get 1
       - get ||
-      - call 3 #f 24
+      - call 3 #f 25
     - call 1 #f $$close
     - set 18
     - constant procedure 2 #f
-      - get 1
-      - get 1
       - get ||
-      - call 3 #f 24
+      - get 2
+      - get 2
+      - call 2 #f ||
+      - call 2 #f ||
     - call 1 #f $$close
     - set 17
-    - constant procedure 2 #f
-      - get ||
-      - get 2
-      - get 2
-      - call 2 #f ||
-      - call 2 #f ||
-    - call 1 #f $$close
-    - set 16
     - constant procedure 1 #f
       - constant procedure 1 #f
         - constant procedure 2 #f
@@ -3901,7 +3901,7 @@
       - constant #f
       - call 1 #f 1
     - call 1 #f $$close
-    - set 15
+    - set 16
     - constant procedure 2 #f
       - get 0
       - call 1 #f ||
@@ -3911,7 +3911,7 @@
           - get 4
           - get 4
           - call 1 #f ||
-          - call 2 #f 21
+          - call 2 #f 22
           - call 2 #f ||
         - call 1 #f $$close
         - get 1
@@ -3921,7 +3921,7 @@
       - get 0
       - call 1 #f 2
     - call 1 #f $$close
-    - set 14
+    - set 15
     - constant procedure 2 #f
       - get 0
       - call 1 #f ||
@@ -3929,16 +3929,16 @@
         - get 1
         - get 1
         - call 1 #f ||
-        - call 2 #f 17
+        - call 2 #f 18
         - get 2
         - get 2
         - call 1 #f ||
-        - call 2 #f 18
+        - call 2 #f 19
         - call 2 #f ||
       - get 0
       - call 1 #f 2
     - call 1 #f $$close
-    - set 13
+    - set 14
     - constant procedure 2 #f
       - get 1
       - if
@@ -3950,7 +3950,7 @@
         - constant #f
       - constant #f
     - call 1 #f $$close
-    - set 12
+    - set 13
     - constant procedure 1 #f
       - get 0
       - call 1 #f ||
@@ -3970,10 +3970,10 @@
       - call 1 #f $$close
       - get 1
       - call 1 #f ||
-      - call 1 #f 14
+      - call 1 #f 15
       - call 1 #f 1
     - call 1 #f $$close
-    - set 11
+    - set 12
     - constant procedure 1 #f
       - get 0
       - call 1 #f ||
@@ -3988,20 +3988,20 @@
         - call 1 #f ||
         - get 1
         - call 1 #f ||
-        - call 1 #f 13
+        - call 1 #f 14
         - call 2 #f ||
-        - call 1 #f 13
+        - call 1 #f 14
       - get 0
       - call 1 #f ||
       - if
         - get 0
         - call 1 #f ||
-        - call 1 #f 12
+        - call 1 #f 13
         - get 1
         - call 1 #f ||
-        - call 1 #f 13
+        - call 1 #f 14
         - call 2 #f ||
-        - call 1 #f 12
+        - call 1 #f 13
       - get 0
       - call 1 #f ||
       - if
@@ -4009,7 +4009,7 @@
         - call 1 #f ||
       - constant ()
     - call 1 #f $$close
-    - set 10
+    - set 11
     - constant procedure 2 #f
       - constant procedure 1 #f
         - get 0
@@ -4022,7 +4022,7 @@
       - get 1
       - call 2 #f ||
     - call 1 #f $$close
-    - set 9
+    - set 10
     - constant procedure 2 #f
       - constant procedure 1 #f
         - get 0
@@ -4030,9 +4030,9 @@
         - call 1 #f 4
       - call 1 #f $$close
       - get 1
-      - call 2 #f 26
+      - call 2 #f 27
     - call 1 #f $$close
-    - set 8
+    - set 9
     - constant procedure 1 #f
       - get 0
       - constant 0
@@ -4047,7 +4047,7 @@
     - call 3 #f ||
     - call 1 #f 1
     - set 1
-    - set 7
+    - set 8
     - constant procedure 1 #f
       - get 0
       - call 1 #f ||
@@ -4056,7 +4056,7 @@
         - call 1 #f ||
       - constant #f
     - call 1 #f $$close
-    - set 6
+    - set 7
     - constant procedure 1 #f
       - get 0
       - call 1 #f ||
@@ -4064,11 +4064,11 @@
         - constant 1
         - get 1
         - call 1 #f ||
-        - call 1 #f 8
+        - call 1 #f 9
         - call 2 #f ||
       - constant 0
     - call 1 #f $$close
-    - set 5
+    - set 6
     - constant procedure 1 #f
       - get 0
       - call 1 #f ||
@@ -4077,7 +4077,7 @@
         - call 1 #f ||
         - get 1
         - call 1 #f ||
-        - call 1 #f 7
+        - call 1 #f 8
         - call 2 #f ||
       - get 0
       - call 1 #f ||
@@ -4092,7 +4092,7 @@
       - get 1
       - call 2 #f ||
     - call 1 #f $$close
-    - set 4
+    - set 5
     - constant procedure 0 #t
       - get ||
       - get ||
@@ -4101,14 +4101,107 @@
       - call 2 #f ||
       - call 1 #f ||
     - call 1 #f $$close
-    - set 3
+    - set 4
     - constant procedure 1 #f
       - get 0
       - constant 32
       - call 2 #f ||
     - call 1 #f $$close
-    - set 2
+    - set 3
     - constant #\%
+    - set 2
+    - constant procedure 2 #f
+      - constant procedure 1 #f
+        - constant procedure 1 #f
+          - get 5
+          - call 1 #f ||
+          - get 1
+          - call 2 #f 9
+        - call 1 #f $$close
+        - set 1
+        - constant procedure 1 #f
+          - get 0
+          - constant except
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 0
+                - get 3
+                - call 2 #f ||
+                - if
+                  - constant #f
+                - get 0
+                - call 1 #f 9
+              - call 1 #f $$close
+              - call 1 #f 5
+            - call 1 #f $$close
+            - get 6
+            - call 1 #f ||
+            - call 1 #f 1
+          - get 0
+          - constant only
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 0
+                - get 3
+                - call 2 #f ||
+                - if
+                  - get 0
+                  - call 1 #f 9
+                - constant #f
+              - call 1 #f $$close
+              - call 1 #f 5
+            - call 1 #f $$close
+            - get 6
+            - call 1 #f ||
+            - call 1 #f 1
+          - get 0
+          - constant prefix
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - get 7
+              - call 1 #f ||
+              - get 1
+              - call 2 #f 14
+              - call 1 #f 7
+            - call 1 #f $$close
+            - call 1 #f 3
+          - get 0
+          - constant rename
+          - call 2 #f ||
+          - if
+            - constant procedure 1 #f
+              - constant procedure 1 #f
+                - get 0
+                - if
+                  - get 0
+                  - call 1 #f ||
+                - get 2
+              - call 1 #f $$close
+              - get 1
+              - get 9
+              - call 1 #f ||
+              - call 2 #f ||
+              - call 1 #f 1
+              - set 1
+              - call 1 #f 7
+            - call 1 #f $$close
+            - call 1 #f 3
+          - get 5
+          - get 5
+          - call 2 #f ||
+        - call 1 #f $$close
+        - get 4
+        - call 1 #f 13
+        - call 1 #f 1
+      - call 1 #f $$close
+      - constant #f
+      - call 1 #f 1
+    - call 1 #f $$close
     - set 1
     - constant procedure 0 #f
       - constant procedure 1 #f
@@ -4268,7 +4361,7 @@
                     - call 2 #f ||
                   - get 1
                   - get 1
-                  - call 2 #f 45
+                  - call 2 #f 46
                 - call 1 #f $$close
                 - get 3
                 - call 1 #f ||
@@ -4418,10 +4511,10 @@
                             - get 2
                             - call 1 #f ||
                           - call 1 #f $$close
-                          - get 31
+                          - get 32
                           - get 2
                           - call 1 #f ||
-                          - call 2 #f 50
+                          - call 2 #f 51
                           - call 1 #f 1
                         - call 1 #f $$close
                         - get 5
@@ -4468,7 +4561,7 @@
                 - constant procedure 2 #f
                   - get 1
                   - call 1 #f 14
-                  - call 1 #f 26
+                  - call 1 #f 27
                   - constant "$"
                   - get 2
                   - call 1 #f ||
@@ -4635,7 +4728,7 @@
                           - get 5
                           - call 2 #f ||
                           - call 4 #f ||
-                          - call 2 #f 49
+                          - call 2 #f 50
                         - call 1 #f $$close
                         - set 7
                         - constant procedure 3 #f
@@ -4703,7 +4796,7 @@
                                   - call 1 #f ||
                                   - get 6
                                   - get 3
-                                  - call 2 #f 67
+                                  - call 2 #f 68
                                   - call 3 #f 17
                                   - get 6
                                   - call 1 #f ||
@@ -4714,10 +4807,10 @@
                                   - call 2 #f ||
                                 - call 1 #f $$close
                                 - get 3
-                                - call 1 #f 57
+                                - call 1 #f 58
                                 - get 5
                                 - call 1 #f ||
-                                - call 1 #f 58
+                                - call 1 #f 59
                                 - call 2 #f ||
                                 - call 1 #f 1
                               - get 2
@@ -4783,7 +4876,7 @@
                                   - call 1 #f $$close
                                   - get ||
                                   - get 4
-                                  - call 2 #f 57
+                                  - call 2 #f 58
                                   - call 1 #f 1
                                 - call 1 #f $$close
                                 - constant procedure 1 #f
@@ -4793,7 +4886,7 @@
                                   - call 2 #f ||
                                 - call 1 #f $$close
                                 - get 2
-                                - call 2 #f 55
+                                - call 2 #f 56
                                 - call 1 #f 1
                               - call 1 #f $$close
                               - constant procedure 1 #f
@@ -4803,7 +4896,7 @@
                                 - call 2 #f ||
                               - call 1 #f $$close
                               - get 7
-                              - call 2 #f 67
+                              - call 2 #f 68
                               - call 1 #f 1
                             - call 1 #f $$close
                             - get 3
@@ -5039,7 +5132,7 @@
                               - call 1 #f $$close
                               - get 1
                               - get 3
-                              - call 1 #f 53
+                              - call 1 #f 54
                               - call 2 #f 29
                               - call 1 #f 1
                             - call 1 #f $$close
@@ -5229,7 +5322,7 @@
                                         - call 2 #f 33
                                       - call 1 #f $$close
                                       - get 4
-                                      - call 2 #f 62
+                                      - call 2 #f 63
                                       - call 1 #f 1
                                     - call 1 #f $$close
                                     - get 9
@@ -5241,7 +5334,7 @@
                                       - call 2 #f ||
                                     - call 1 #f $$close
                                     - get 3
-                                    - call 1 #f 52
+                                    - call 1 #f 53
                                     - call 2 #f ||
                                     - call 2 #f 40
                                     - call 1 #f 1
@@ -5262,7 +5355,7 @@
                                   - call 1 #f $$close
                                   - get 7
                                   - call 1 #f ||
-                                  - call 2 #f 54
+                                  - call 2 #f 55
                                   - call 2 #f 37
                                   - get 6
                                   - call 1 #f ||
@@ -5296,7 +5389,7 @@
                                       - constant #f
                                     - call 1 #f $$close
                                     - get 3
-                                    - call 2 #f 57
+                                    - call 2 #f 58
                                     - call 2 #f 40
                                     - call 1 #f 1
                                   - call 1 #f $$close
@@ -5320,7 +5413,7 @@
                                   - call 1 #f $$close
                                   - get 7
                                   - call 1 #f ||
-                                  - call 2 #f 58
+                                  - call 2 #f 59
                                   - call 2 #f ||
                                 - constant procedure 1 #f
                                   - get 0
@@ -5435,7 +5528,7 @@
                                     - get 2
                                     - call 1 #f ||
                                     - call 2 #f 7
-                                    - call 2 #f 64
+                                    - call 2 #f 65
                                   - get 1
                                   - call 1 #f ||
                                   - if
@@ -5657,7 +5750,7 @@
                                 - call 2 #f 8
                               - call 1 #f $$close
                               - get 2
-                              - call 2 #f 61
+                              - call 2 #f 62
                               - call 1 #f 1
                             - call 1 #f $$close
                             - set 1
@@ -5712,7 +5805,7 @@
                                   - get 1
                                   - get 3
                                   - call 1 #f ||
-                                  - call 2 #f 85
+                                  - call 2 #f 86
                                   - call 1 #f 1
                                 - call 1 #f $$close
                                 - set 16
@@ -5739,11 +5832,11 @@
                                     - if
                                       - get 0
                                       - call 1 #f ||
-                                      - get 112
+                                      - get 113
                                       - call 2 #f ||
                                       - if
                                         - get 0
-                                        - call 1 #f 116
+                                        - call 1 #f 117
                                         - constant 0
                                         - call 2 #f ||
                                       - constant #f
@@ -5756,10 +5849,10 @@
                                   - call 1 #f 16
                                   - if
                                     - get 0
-                                    - call 1 #f 115
+                                    - call 1 #f 116
                                   - constant #f
                                   - get 1
-                                  - call 2 #f 96
+                                  - call 2 #f 97
                                 - call 1 #f $$close
                                 - set 13
                                 - constant procedure 1 #f
@@ -5767,10 +5860,10 @@
                                   - call 1 #f ||
                                   - if
                                     - get 0
-                                  - get 111
+                                  - get 112
                                   - constant 0
                                   - get 2
-                                  - call 3 #f 99
+                                  - call 3 #f 100
                                 - call 1 #f $$close
                                 - set 12
                                 - constant procedure 3 #f
@@ -5801,7 +5894,7 @@
                                     - get 5
                                     - call 2 #f 24
                                     - get 2
-                                    - call 3 #f 102
+                                    - call 3 #f 103
                                   - get 4
                                   - get 3
                                   - call 1 #f ||
@@ -5872,22 +5965,22 @@
                                   - call 1 #f ||
                                   - if
                                     - get 0
-                                  - get 111
+                                  - get 112
                                   - constant 1
                                   - get 2
-                                  - call 3 #f 99
+                                  - call 3 #f 100
                                 - call 1 #f $$close
                                 - set 8
                                 - constant procedure 3 #f
                                   - get 1
                                   - call 1 #f ||
                                   - if
-                                    - get 114
+                                    - get 115
                                     - get 3
                                     - get 3
                                     - call 2 #f 22
                                     - get 2
-                                    - call 3 #f 101
+                                    - call 3 #f 102
                                   - get 1
                                   - call 1 #f ||
                                   - if
@@ -5919,7 +6012,7 @@
                                         - get 4
                                         - call 1 #f ||
                                         - constant procedure 1 #f
-                                          - get 118
+                                          - get 119
                                           - get 9
                                           - get 9
                                           - call 1 #f ||
@@ -5930,7 +6023,7 @@
                                           - call 1 #f ||
                                           - get 4
                                           - call 3 #f 21
-                                          - call 3 #f 107
+                                          - call 3 #f 108
                                         - call 1 #f $$close
                                         - get 5
                                         - call 1 #f ||
@@ -5938,7 +6031,7 @@
                                           - constant ()
                                           - continue
                                         - get 5
-                                        - call 1 #f 101
+                                        - call 1 #f 102
                                         - call 1 #f 1
                                         - set 1
                                         - call 3 #f 15
@@ -5948,15 +6041,15 @@
                                       - if
                                         - constant procedure 1 #f
                                           - get 0
-                                          - call 1 #f 76
+                                          - call 1 #f 77
                                           - get 1
-                                          - call 1 #f 96
+                                          - call 1 #f 97
                                           - call 1 #f ||
                                           - call 2 #f 24
                                           - get 7
                                           - constant #f
                                           - get 3
-                                          - call 1 #f 78
+                                          - call 1 #f 79
                                           - call 2 #f ||
                                           - call 1 #f ||
                                           - call 2 #f 28
@@ -5965,14 +6058,14 @@
                                           - constant ()
                                           - call 3 #f 22
                                           - constant ()
-                                          - call 3 #f 100
+                                          - call 3 #f 101
                                           - constant 1
                                           - constant #f
                                           - call 2 #f 25
                                           - constant $$close
                                           - get 7
-                                          - call 3 #f 105
-                                          - call 2 #f 102
+                                          - call 3 #f 106
+                                          - call 2 #f 103
                                         - call 1 #f $$close
                                         - get 4
                                         - call 1 #f ||
@@ -5985,7 +6078,7 @@
                                         - call 1 #f ||
                                         - call 1 #f ||
                                         - get 3
-                                        - call 2 #f 100
+                                        - call 2 #f 101
                                       - get 0
                                       - constant $$macros
                                       - call 2 #f ||
@@ -5994,7 +6087,7 @@
                                         - call 1 #f ||
                                         - call 1 #f ||
                                         - get 3
-                                        - call 2 #f 100
+                                        - call 2 #f 101
                                       - get 0
                                       - constant $$optimizers
                                       - call 2 #f ||
@@ -6003,7 +6096,7 @@
                                         - call 1 #f ||
                                         - call 1 #f ||
                                         - get 3
-                                        - call 2 #f 100
+                                        - call 2 #f 101
                                       - get 0
                                       - constant $$quote
                                       - call 2 #f ||
@@ -6011,7 +6104,7 @@
                                         - get 3
                                         - call 1 #f ||
                                         - get 3
-                                        - call 2 #f 100
+                                        - call 2 #f 101
                                       - get 0
                                       - constant $$set!
                                       - call 2 #f ||
@@ -6019,7 +6112,7 @@
                                         - get 4
                                         - get 4
                                         - call 1 #f ||
-                                        - get 117
+                                        - get 118
                                         - get 7
                                         - constant #f
                                         - call 2 #f 27
@@ -6028,7 +6121,7 @@
                                         - call 2 #f 26
                                         - get 6
                                         - call 1 #f 23
-                                        - call 3 #f 105
+                                        - call 3 #f 106
                                         - call 3 #f 15
                                       - get 0
                                       - constant $$symbols
@@ -6038,7 +6131,7 @@
                                         - call 1 #f ||
                                         - call 1 #f ||
                                         - get 3
-                                        - call 2 #f 100
+                                        - call 2 #f 101
                                       - get 0
                                       - constant $$dynamic-symbols
                                       - call 2 #f ||
@@ -6047,7 +6140,7 @@
                                         - call 1 #f ||
                                         - call 1 #f ||
                                         - get 3
-                                        - call 2 #f 100
+                                        - call 2 #f 101
                                       - get 4
                                       - get 4
                                       - constant #f
@@ -6059,14 +6152,14 @@
                                     - call 1 #f 1
                                   - get 1
                                   - get 1
-                                  - call 2 #f 98
+                                  - call 2 #f 99
                                 - call 1 #f $$close
                                 - set 7
                                 - constant procedure 1 #f
                                   - constant procedure 1 #f
                                     - get 0
                                   - call 1 #f $$close
-                                  - set 94
+                                  - set 95
                                   - get 0
                                   - set ||
                                   - get 0
@@ -6847,33 +6940,63 @@
                                       - call 1 #f 1
                                     - call 1 #f $$close
                                     - get 3
-                                    - call 2 #f 82
+                                    - call 2 #f 83
                                   - call 1 #f $$close
-                                  - get ||
                                   - constant procedure 1 #f
-                                    - constant procedure 1 #f
-                                      - get 0
-                                      - constant #f
-                                      - call 2 #f ||
-                                      - if
-                                        - constant "unknown library"
-                                        - get 3
-                                        - call 2 #f ||
-                                        - continue
-                                      - constant #f
-                                      - set 0
-                                      - get 0
-                                      - call 1 #f ||
+                                    - constant procedure 0 #f
+                                      - get 1
+                                      - constant procedure 1 #f
+                                        - get 0
+                                      - call 1 #f $$close
+                                      - call 2 #f 72
                                     - call 1 #f $$close
-                                    - get 1
-                                    - get 13
+                                    - constant procedure 2 #f
+                                      - constant procedure 2 #f
+                                        - constant procedure 1 #f
+                                          - get 0
+                                          - constant #f
+                                          - call 2 #f ||
+                                          - if
+                                            - constant "unknown library"
+                                            - get 4
+                                            - call 2 #f ||
+                                            - continue
+                                          - constant #f
+                                          - set 0
+                                          - constant procedure 1 #f
+                                            - constant procedure 1 #f
+                                              - get 0
+                                              - if
+                                                - get 0
+                                                - get 3
+                                                - call 1 #f ||
+                                                - call 2 #f ||
+                                                - call 1 #f ||
+                                              - constant ()
+                                            - call 1 #f $$close
+                                            - get 1
+                                            - call 1 #f ||
+                                            - call 1 #f 6
+                                            - call 1 #f 1
+                                          - call 1 #f $$close
+                                          - get 1
+                                          - call 1 #f ||
+                                          - call 2 #f 96
+                                        - call 1 #f $$close
+                                        - get 2
+                                        - get 19
+                                        - call 2 #f ||
+                                        - call 1 #f 1
+                                      - call 1 #f $$close
+                                      - get 2
+                                      - get 2
+                                      - call 2 #f 2
+                                    - call 1 #f $$close
                                     - call 2 #f ||
-                                    - call 1 #f 1
                                   - call 1 #f $$close
-                                  - get 4
+                                  - get 3
                                   - call 1 #f ||
-                                  - call 2 #f ||
-                                  - call 2 #f ||
+                                  - call 2 #f 85
                                   - call 1 #f 1
                                 - call 1 #f $$close
                                 - set 4
@@ -9702,7 +9825,7 @@
                                   - call 1 #f 6
                                   - call 1 #f 5
                                   - constant ()
-                                  - call 3 #f 95
+                                  - call 3 #f 96
                                 - call 1 #f $$close
                               - call 1 #f $$close
                               - constant #f
@@ -9834,7 +9957,8 @@
   - constant #f
   - constant #f
   - constant #f
-  - call 52 #f 52
+  - constant #f
+  - call 53 #f 53
 - call 1 #f $$close
 - call 0 #f 0
 - set 1
@@ -11568,6 +11692,130 @@
     - define
     - library-symbol-separator
     - #\%
+  - list
+    - define
+    - list
+      - expand-import-set
+      - set
+      - qualify
+    - list
+      - define
+      - list
+        - expand
+        - qualify
+      - list
+        - expand-import-set
+        - list
+          - cadr
+          - set
+        - qualify
+    - list
+      - case
+      - list
+        - predicate
+        - set
+      - list
+        - list
+          - except
+        - list
+          - let
+          - list
+            - list
+              - names
+              - list
+                - cddr
+                - set
+          - list
+            - expand
+            - list
+              - lambda
+              - list
+                - name
+              - list
+                - if
+                - list
+                  - memq
+                  - name
+                  - names
+                - #f
+                - list
+                  - qualify
+                  - name
+      - list
+        - list
+          - only
+        - list
+          - let
+          - list
+            - list
+              - names
+              - list
+                - cddr
+                - set
+          - list
+            - expand
+            - list
+              - lambda
+              - list
+                - name
+              - list
+                - if
+                - list
+                  - memq
+                  - name
+                  - names
+                - list
+                  - qualify
+                  - name
+                - #f
+      - list
+        - list
+          - prefix
+        - list
+          - expand
+          - list
+            - lambda
+            - list
+              - name
+            - list
+              - qualify
+              - list
+                - symbol-append
+                - list
+                  - caddr
+                  - set
+                - name
+      - list
+        - list
+          - rename
+        - list
+          - expand
+          - list
+            - lambda
+            - list
+              - name
+            - list
+              - qualify
+              - list
+                - cond
+                - list
+                  - list
+                    - assq
+                    - name
+                    - list
+                      - cddr
+                      - set
+                  - =>
+                  - cadr
+                - list
+                  - else
+                  - name
+      - list
+        - else
+        - list
+          - values
+          - set
+          - qualify
   - list
     - define-record-type
     - macro-state
@@ -14340,207 +14588,6 @@
   - list
     - define
     - list
-      - expand-import-set
-      - context
-      - importer-id
-      - qualify
-      - set
-    - list
-      - define
-      - list
-        - expand
-        - qualify
-      - list
-        - expand-import-set
-        - context
-        - importer-id
-        - qualify
-        - list
-          - cadr
-          - set
-    - list
-      - case
-      - list
-        - predicate
-        - set
-      - list
-        - list
-          - except
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - expand
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - #f
-                - list
-                  - qualify
-                  - name
-      - list
-        - list
-          - only
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - expand
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - list
-                  - qualify
-                  - name
-                - #f
-      - list
-        - list
-          - prefix
-        - list
-          - expand
-          - list
-            - lambda
-            - list
-              - name
-            - list
-              - qualify
-              - list
-                - symbol-append
-                - list
-                  - caddr
-                  - set
-                - name
-      - list
-        - list
-          - rename
-        - list
-          - expand
-          - list
-            - lambda
-            - list
-              - name
-            - list
-              - qualify
-              - list
-                - cond
-                - list
-                  - list
-                    - assq
-                    - name
-                    - list
-                      - cddr
-                      - set
-                  - =>
-                  - cadr
-                - list
-                  - else
-                  - name
-      - list
-        - else
-        - list
-          - let
-          - list
-            - list
-              - library
-              - list
-                - library-context-find
-                - context
-                - set
-          - list
-            - append
-            - list
-              - if
-              - list
-                - library-context-import!
-                - context
-                - set
-              - list
-                - quote
-                - ()
-              - list
-                - append
-                - list
-                  - expand-import-sets
-                  - context
-                  - list
-                    - library-id
-                    - library
-                  - list
-                    - library-symbols
-                    - library
-                  - list
-                    - library-imports
-                    - library
-                - list
-                  - library-body
-                  - library
-            - list
-              - flat-map
-              - list
-                - lambda
-                - list
-                  - names
-                - list
-                  - let
-                  - list
-                    - list
-                      - name
-                      - list
-                        - qualify
-                        - list
-                          - car
-                          - names
-                  - list
-                    - if
-                    - name
-                    - list
-                      - list
-                      - list
-                        - list
-                        - list
-                          - quote
-                          - $$alias
-                        - list
-                          - rename-library-symbol
-                          - context
-                          - importer-id
-                          - name
-                        - list
-                          - cdr
-                          - names
-                    - list
-                      - quote
-                      - ()
-              - list
-                - library-exports
-                - library
-  - list
-    - define
-    - list
       - expand-import-sets
       - context
       - importer-id
@@ -14553,28 +14600,105 @@
         - list
           - set
         - list
-          - expand-import-set
-          - context
-          - importer-id
+          - let-values
           - list
-            - lambda
             - list
-              - name
-            - list
-              - and
               - list
-                - or
+                - set
+                - qualify
+              - list
+                - expand-import-set
+                - set
                 - list
-                  - not
-                  - importer-symbols
-                - list
-                  - memq
-                  - name
+                  - lambda
                   - list
-                    - force
-                    - importer-symbols
-              - name
-          - set
+                    - name
+                  - list
+                    - and
+                    - list
+                      - memq
+                      - name
+                      - list
+                        - force
+                        - importer-symbols
+                    - name
+          - list
+            - let
+            - list
+              - list
+                - library
+                - list
+                  - library-context-find
+                  - context
+                  - set
+            - list
+              - append
+              - list
+                - if
+                - list
+                  - library-context-import!
+                  - context
+                  - set
+                - list
+                  - quote
+                  - ()
+                - list
+                  - append
+                  - list
+                    - expand-import-sets
+                    - context
+                    - list
+                      - library-id
+                      - library
+                    - list
+                      - library-symbols
+                      - library
+                    - list
+                      - library-imports
+                      - library
+                  - list
+                    - library-body
+                    - library
+              - list
+                - flat-map
+                - list
+                  - lambda
+                  - list
+                    - names
+                  - list
+                    - let
+                    - list
+                      - list
+                        - name
+                        - list
+                          - qualify
+                          - list
+                            - car
+                            - names
+                    - list
+                      - if
+                      - name
+                      - list
+                        - list
+                        - list
+                          - list
+                          - list
+                            - quote
+                            - $$alias
+                          - list
+                            - rename-library-symbol
+                            - context
+                            - importer-id
+                            - name
+                          - list
+                            - cdr
+                            - names
+                      - list
+                        - quote
+                        - ()
+                - list
+                  - library-exports
+                  - library
       - sets
   - list
     - define
@@ -17051,17 +17175,41 @@
     - call 2 #f ||
     - constant let
     - constant names
-    - constant apply
-    - constant append
-    - constant map
+    - constant flat-map
+    - constant lambda
+    - constant set
+    - constant ()
+    - call 2 #f ||
+    - constant let-values
+    - constant set
+    - constant qualify
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant expand-import-set
+    - constant set
     - constant lambda
     - constant name
+    - constant ()
+    - call 2 #f ||
+    - constant name
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
     - constant ()
     - call 2 #f ||
     - constant let
     - constant pair
     - constant assoc
-    - constant name
+    - constant set
     - constant libraries
     - constant ()
     - call 2 #f ||
@@ -17076,7 +17224,63 @@
     - constant pair
     - constant error
     - constant "unknown library"
+    - constant set
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant flat-map
+    - constant lambda
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - constant let
     - constant name
+    - constant qualify
+    - constant car
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - constant if
+    - constant name
+    - constant list
+    - constant cons
+    - constant name
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant quote
+    - constant ()
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
@@ -17094,6 +17298,14 @@
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
@@ -17102,10 +17314,6 @@
     - constant environment-imports
     - constant environment
     - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
     - constant ()
