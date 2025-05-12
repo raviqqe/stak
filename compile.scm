@@ -1109,9 +1109,9 @@
     (define (expand-library-expression context body-symbols expression)
      (case (and (pair? expression) (car expression))
       ((define-library)
-       (let* ((id (library-context-id context))
-              (exports (collect-library-bodies 'export expression))
-              (bodies (collect-library-bodies 'begin expression)))
+       (let ((id (library-context-id context))
+             (exports (collect-library-bodies 'export expression))
+             (bodies (collect-library-bodies 'begin expression)))
         (library-context-add!
          context
          (make-library
