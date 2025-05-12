@@ -1099,19 +1099,19 @@
            (library-exports library))))))
       sets))
 
+    (define (collect-library-bodies predicate expression)
+     (flat-map
+      cdr
+      (filter
+       (lambda (body) (eq? (car body) predicate))
+       (cddr expression))))
+
     (define (expand-library-expression context body-symbols expression)
      (case (and (pair? expression) (car expression))
       ((define-library)
-       (let* ((collect-bodies
-               (lambda (predicate)
-                (flat-map
-                 cdr
-                 (filter
-                  (lambda (body) (eq? (car body) predicate))
-                  (cddr expression)))))
-              (id (library-context-id context))
-              (exports (collect-bodies 'export))
-              (bodies (collect-bodies 'begin)))
+       (let* ((id (library-context-id context))
+              (exports (collect-library-bodies 'export expression))
+              (bodies (collect-library-bodies 'begin expression)))
         (library-context-add!
          context
          (make-library
@@ -1123,7 +1123,7 @@
              (cons (caddr name) (rename-library-symbol context id (cadr name)))
              (cons name (rename-library-symbol context id name))))
            exports)
-          (collect-bodies 'import)
+          (collect-library-bodies 'import expression)
           (relaxed-deep-map
            (lambda (value)
             (if (symbol? value)
@@ -1744,6 +1744,7 @@
           ; Library system
 
           (define libraries ($$libraries))
+          (define library-thunks '())
 
           (define (expand-libraries environment expression)
            (let ((names
@@ -1811,14 +1812,19 @@
           (define (compile expression)
            (compile-expression (make-compilation-context '() #f) expression '()))
 
-          (lambda (expression environment)
+          (define (compile-thunk expression environment)
            (make-procedure
             (compile-arity 0 #f)
             (compile
              (optimize
               (expand-macros
                (expand-libraries environment expression))))
-            '())))
+            '()))
+
+          (lambda (expression environment)
+           (if (and (pair? expression) (eq? (car expression) 'define-library))
+            #f ; TODO
+            (compile-thunk expression environment))))
         (cdr expression)))
     (else
       (cons
