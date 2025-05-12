@@ -14616,16 +14616,11 @@
                   - list
                     - and
                     - list
-                      - or
+                      - memq
+                      - name
                       - list
-                        - not
+                        - force
                         - importer-symbols
-                      - list
-                        - memq
-                        - name
-                        - list
-                          - force
-                          - importer-symbols
                     - name
           - list
             - let
