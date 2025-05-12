@@ -6651,14 +6651,13 @@
                                     - get 3
                                     - call 2 #f 83
                                   - call 1 #f $$close
-                                  - get ||
                                   - constant procedure 1 #f
                                     - constant procedure 0 #f
                                       - get 1
                                       - constant procedure 1 #f
                                         - get 0
                                       - call 1 #f $$close
-                                      - call 2 #f 73
+                                      - call 2 #f 72
                                     - call 1 #f $$close
                                     - constant procedure 2 #f
                                       - constant procedure 2 #f
@@ -6673,7 +6672,6 @@
                                             - continue
                                           - constant #f
                                           - set 0
-                                          - get ||
                                           - constant procedure 1 #f
                                             - constant procedure 1 #f
                                               - get 0
@@ -6687,16 +6685,15 @@
                                             - call 1 #f $$close
                                             - get 1
                                             - call 1 #f ||
-                                            - call 1 #f 7
+                                            - call 1 #f 6
                                             - call 1 #f 1
                                           - call 1 #f $$close
-                                          - get 2
+                                          - get 1
                                           - call 1 #f ||
-                                          - call 2 #f ||
-                                          - call 2 #f ||
+                                          - call 2 #f 96
                                         - call 1 #f $$close
                                         - get 2
-                                        - get 20
+                                        - get 19
                                         - call 2 #f ||
                                         - call 1 #f 1
                                       - call 1 #f $$close
@@ -6706,10 +6703,9 @@
                                     - call 1 #f $$close
                                     - call 2 #f ||
                                   - call 1 #f $$close
-                                  - get 4
+                                  - get 3
                                   - call 1 #f ||
-                                  - call 2 #f ||
-                                  - call 2 #f ||
+                                  - call 2 #f 85
                                   - call 1 #f 1
                                 - call 1 #f $$close
                                 - set 4
