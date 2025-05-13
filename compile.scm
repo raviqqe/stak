@@ -1036,7 +1036,7 @@
       (symbol->string name)))
 
     (define (rename-library-symbol context id name)
-     (if (or (not id) (built-in-symbol? name))
+     (if (built-in-symbol? name)
       name
       (let* ((maps (library-context-name-maps context))
              (pair (or (assq id maps) (cons id '())))
@@ -1129,12 +1129,13 @@
     (define (expand-libraries expression)
      (let* ((context (make-library-context '() '()))
             (expressions (cdr expression))
-            (import-sets (flat-map
-                          (lambda (expression)
-                           (if (eq? (predicate expression) 'import)
-                            (cdr expression)
-                            '()))
-                          expressions)))
+            (import-sets
+             (flat-map
+              (lambda (expression)
+               (if (eq? (predicate expression) 'import)
+                (cdr expression)
+                '()))
+              expressions)))
       (for-each
        (lambda (expression)
         (when (eq? (predicate expression) 'define-library)

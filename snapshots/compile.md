@@ -14069,13 +14069,8 @@
     - list
       - if
       - list
-        - or
-        - list
-          - not
-          - id
-        - list
-          - built-in-symbol?
-          - name
+        - built-in-symbol?
+        - name
       - name
       - list
         - let\*
