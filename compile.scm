@@ -1058,9 +1058,9 @@
      (flat-map
       (lambda (set)
        (let-values (((set _) (expand-import-set set (lambda (name) name))))
-        (let ((library (library-context-find context set)))
-         (if (library-context-import! context set)
-          '()
+        (if (library-context-import! context set)
+         '()
+         (let ((library (library-context-find context set)))
           (append
            (expand-library-bodies context (library-imports library))
            (library-body library))))))
