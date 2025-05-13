@@ -1143,33 +1143,32 @@
 
     (define (expand-libraries expression)
      (let ((context (make-library-context '() '()))
+           (expressions (cdr expression))
            (body-symbols
             (delay
              (deep-unique
               (filter
                (lambda (expression)
                 (not (and (pair? expression) (memq (car expression) library-predicates))))
-               (cdr expression)))))
-           (imports
-            (filter
-             (lambda (expression) (eq? (predicate expression) 'import))
-             (cdr expression))))
+               (cdr expression))))))
       (for-each
        (lambda (expression)
         (when (eq? (predicate expression) 'define-library)
          (expand-library-definition context body-symbols expression)))
-       (cdr expression))
+       expressions)
       (values
        (cons
         (car expression)
         (append
          (flat-map
           (lambda (expression)
-           (expand-import-sets context #f body-symbols (cdr expression)))
-          imports)
+           (if (eq? (predicate expression) 'import)
+            (expand-import-sets context #f body-symbols (cdr expression))
+            '()))
+          expressions)
          (filter
           (lambda (expression) (not (memq (predicate expression) library-predicates)))
-          (cdr expression))))
+          expressions)))
        (map-values
         library-exports
         (map-values library-state-library (library-context-libraries context))))))
