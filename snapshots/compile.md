@@ -1919,6 +1919,7 @@
   - n
   - list-position
   - ys
+  - deep-unique
   - f
   - except
   - only
@@ -2036,9 +2037,7 @@
   - compile-call
   - constant-rib
   - library?
-  - library-id
   - imports
-  - library-symbols
   - library-state
   - library-state?
   - library-context
@@ -2061,7 +2060,6 @@
   - library-context-import!
   - library-imports
   - library-body
-  - importer-id
   - library-context-find
   - sets
   - body
@@ -2070,20 +2068,19 @@
   - library-context-add!
   - make-library
   - rename
+  - exports
   - collect-bodies
+  - imported-names
   - rename-library-symbol
   - id
-  - exports
   - bodies
   - make-library-context
   - import
-  - body-symbols
-  - deep-unique
   - define-library
   - add-library-definition!
   - expand-library-bodies
   - resolve-library-symbols
-  - expand-import-sets
+  - parse-import-sets
   - import-sets
   - predicate
   - library-predicates
@@ -2226,7 +2223,7 @@
   - optimization-context-set-literals!
   - set-nothing
   - $$libraries
-  - expand-import-set
+  - parse-import-set
   - set
   - flat-map
   - qualify
@@ -11294,7 +11291,7 @@
   - list
     - define
     - list
-      - expand-import-set
+      - parse-import-set
       - set
       - qualify
     - list
@@ -11303,7 +11300,7 @@
         - expand
         - qualify
       - list
-        - expand-import-set
+        - parse-import-set
         - list
           - cadr
           - set
@@ -13863,16 +13860,11 @@
     - library
     - list
       - make-library
-      - id
       - name
       - exports
       - imports
       - body
-      - symbols
     - library?
-    - list
-      - id
-      - library-id
     - list
       - name
       - library-name
@@ -13885,9 +13877,6 @@
     - list
       - body
       - library-body
-    - list
-      - symbols
-      - library-symbols
   - list
     - define-record-type
     - library-state
@@ -14180,7 +14169,7 @@
                 - set
                 - \_
               - list
-                - expand-import-set
+                - parse-import-set
                 - set
                 - list
                   - lambda
@@ -14188,23 +14177,23 @@
                     - name
                   - name
           - list
-            - let
+            - if
             - list
+              - library-context-import!
+              - context
+              - set
+            - list
+              - quote
+              - ()
+            - list
+              - let
               - list
-                - library
                 - list
-                  - library-context-find
-                  - context
-                  - set
-            - list
-              - if
-              - list
-                - library-context-import!
-                - context
-                - set
-              - list
-                - quote
-                - ()
+                  - library
+                  - list
+                    - library-context-find
+                    - context
+                    - set
               - list
                 - append
                 - list
@@ -14220,9 +14209,8 @@
   - list
     - define
     - list
-      - expand-import-sets
+      - parse-import-sets
       - context
-      - importer-id
       - sets
     - list
       - flat-map
@@ -14238,7 +14226,7 @@
                 - set
                 - qualify
               - list
-                - expand-import-set
+                - parse-import-set
                 - set
                 - list
                   - lambda
@@ -14368,106 +14356,101 @@
             - list
               - quote
               - begin
-      - list
-        - let
         - list
+          - imported-names
           - list
-            - names
-            - list
-              - expand-import-sets
-              - context
-              - id
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - import
-        - list
-          - library-context-add!
-          - context
-          - list
-            - make-library
-            - id
-            - list
-              - cadr
-              - expression
-            - list
-              - map
-              - list
-                - lambda
-                - list
-                  - name
-                - list
-                  - let\*
-                  - list
-                    - list
-                      - symbol
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - name
-                    - list
-                      - symbol
-                      - list
-                        - cond
-                        - list
-                          - list
-                            - assq
-                            - name
-                            - names
-                          - =>
-                          - cdr
-                        - list
-                          - else
-                          - symbol
-                  - list
-                    - if
-                    - list
-                      - eq?
-                      - list
-                        - predicate
-                        - name
-                      - list
-                        - quote
-                        - rename
-                    - list
-                      - cons
-                      - list
-                        - caddr
-                        - name
-                      - symbol
-                    - list
-                      - cons
-                      - name
-                      - symbol
-              - exports
+            - parse-import-sets
+            - context
             - list
               - collect-bodies
               - list
                 - quote
                 - import
+      - list
+        - library-context-add!
+        - context
+        - list
+          - make-library
+          - list
+            - cadr
+            - expression
+          - list
+            - map
             - list
-              - resolve-library-symbols
-              - names
+              - lambda
               - list
-                - lambda
-                - list
-                  - name
-                - list
-                  - rename-library-symbol
-                  - context
-                  - id
-                  - name
-              - bodies
-            - list
-              - delay
+                - name
               - list
-                - deep-unique
+                - let
+                - list
+                  - list
+                    - pair
+                    - list
+                      - if
+                      - list
+                        - eq?
+                        - list
+                          - predicate
+                          - name
+                        - list
+                          - quote
+                          - rename
+                      - list
+                        - cons
+                        - list
+                          - caddr
+                          - name
+                        - list
+                          - cadr
+                          - name
+                      - list
+                        - cons
+                        - name
+                        - name
                 - list
                   - cons
-                  - exports
-                  - bodies
+                  - list
+                    - car
+                    - pair
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - assq
+                        - list
+                          - cdr
+                          - pair
+                        - imported-names
+                      - =>
+                      - cdr
+                    - list
+                      - else
+                      - list
+                        - rename-library-symbol
+                        - context
+                        - id
+                        - list
+                          - cdr
+                          - pair
+            - exports
+          - list
+            - collect-bodies
+            - list
+              - quote
+              - import
+          - list
+            - resolve-library-symbols
+            - imported-names
+            - list
+              - lambda
+              - list
+                - name
+              - list
+                - rename-library-symbol
+                - context
+                - id
+                - name
+            - bodies
   - list
     - define
     - library-predicates
@@ -14524,34 +14507,6 @@
                   - quote
                   - ()
             - expressions
-        - list
-          - body-symbols
-          - list
-            - delay
-            - list
-              - deep-unique
-              - list
-                - filter
-                - list
-                  - lambda
-                  - list
-                    - expression
-                  - list
-                    - not
-                    - list
-                      - and
-                      - list
-                        - pair?
-                        - expression
-                      - list
-                        - memq
-                        - list
-                          - car
-                          - expression
-                        - library-predicates
-                - list
-                  - cdr
-                  - expression
       - list
         - for-each
         - list
@@ -14589,9 +14544,8 @@
             - list
               - resolve-library-symbols
               - list
-                - expand-import-sets
+                - parse-import-sets
                 - context
-                - #f
                 - import-sets
               - list
                 - lambda
@@ -16859,7 +16813,7 @@
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
-    - constant expand-import-set
+    - constant parse-import-set
     - constant set
     - constant lambda
     - constant name
