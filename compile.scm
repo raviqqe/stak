@@ -1106,15 +1106,17 @@
         (cadr expression)
         (map
          (lambda (name)
-          (let* ((renamed (eq? (predicate name) 'rename))
-                 (name (if renamed (cadr name) name)))
+          (let ((pair
+                 (if (eq? (predicate name) 'rename)
+                  (cons (caddr name) (cadr name))
+                  (cons name name))))
            (cons
-            (if renamed (caddr name) name)
+            (car pair)
             (cond
-             ((assq name imported-names) =>
+             ((assq (cdr pair) imported-names) =>
               cdr)
              (else
-              (rename-library-symbol context id name))))))
+              (rename-library-symbol context id (cdr pair)))))))
          exports)
         (collect-bodies 'import)
         (resolve-library-symbols
