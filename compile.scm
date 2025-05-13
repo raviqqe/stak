@@ -1099,7 +1099,7 @@
            (library-exports library))))))
       sets))
 
-    (define (expand-library-expression context body-symbols expression)
+    (define (expand-library-definition context body-symbols expression)
      (case (and (pair? expression) (car expression))
       ((define-library)
        (let* ((collect-bodies
@@ -1167,7 +1167,7 @@
               (car expression)
               (flat-map
                (lambda (expression)
-                (expand-library-expression context body-symbols expression))
+                (expand-library-definition context body-symbols expression))
                (cdr expression)))))
       (values
        expression
