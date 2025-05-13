@@ -1142,14 +1142,17 @@
     (define library-predicates '(define-library import))
 
     (define (split-library-expressions expressions)
-     (let-values (((libraries imports expressions) (split-library-expressions expressions)))
-      (case (predicate (car expression))
-       ((define-library)
-        (loop (cons) (cdr expressions)))
-       ((import)
-        (loop () (cdr expressions)))
-       (else
-        (values libraries imports expressions)))))
+     (if (null? expressions)
+      (values '() '() '())
+      (let-values (((libraries imports expressions)
+                    (split-library-expressions (cdr expressions))))
+       (case (predicate (car expression))
+        ((define-library)
+         (loop (cons) (cdr expressions)))
+        ((import)
+         (loop () (cdr expressions)))
+        (else
+         (values libraries imports expressions))))))
 
     (define (expand-libraries expression)
      (let* ((context (make-library-context '() '()))
