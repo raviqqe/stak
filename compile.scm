@@ -1065,30 +1065,6 @@
           (set-cdr! pair (cons (cons name renamed) names))
           renamed))))))
 
-    (define (expand-import-sets context importer-id importer-symbols sets)
-     (flat-map
-      (lambda (set)
-       (let-values (((set qualify)
-                     (expand-import-set
-                      set
-                      (lambda (name)
-                       (and
-                        (memq name (force importer-symbols))
-                        name)))))
-        (let ((library (library-context-find context set)))
-         (flat-map
-          (lambda (names)
-           (let ((name (qualify (car names))))
-            (if name
-             (list
-              (list
-               '$$alias
-               (rename-library-symbol context importer-id name)
-               (cdr names)))
-             '())))
-          (library-exports library)))))
-      sets))
-
     (define (expand-library-bodies context sets)
      (flat-map
       (lambda (set)
@@ -1101,7 +1077,7 @@
            (library-body library))))))
       sets))
 
-    (define (expand-import-sets-2 context importer-id sets)
+    (define (expand-import-sets context importer-id sets)
      (flat-map
       (lambda (set)
        (let-values (((set qualify) (expand-import-set set (lambda (name) name))))
@@ -1114,6 +1090,18 @@
          (library-exports (library-context-find context set)))))
       sets))
 
+    (define (resolve-library-symbols names rename expression)
+     (relaxed-deep-map
+      (lambda (value)
+       (cond
+        ((not (symbol? value))
+         value)
+        ((assq value names) =>
+         cdr)
+        (else
+         (rename value))))
+      expression))
+
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (flat-map
@@ -1125,7 +1113,7 @@
      (let ((id (library-context-id context))
            (exports (collect-bodies 'export))
            (bodies (collect-bodies 'begin)))
-      (let ((names (expand-import-sets-2 context id (collect-bodies 'import))))
+      (let ((names (expand-import-sets context id (collect-bodies 'import))))
        (library-context-add!
         context
         (make-library
@@ -1145,15 +1133,9 @@
              (cons name symbol))))
           exports)
          (collect-bodies 'import)
-         (relaxed-deep-map
-          (lambda (value)
-           (cond
-            ((not (symbol? value))
-             value)
-            ((assq value names) =>
-             cdr)
-            (else
-             (rename-library-symbol context id value))))
+         (resolve-library-symbols
+          names
+          (lambda (name) (rename-library-symbol context id name))
           bodies)
          (delay (deep-unique (cons exports bodies))))))))
 
@@ -1185,13 +1167,12 @@
         (car expression)
         (append
          (expand-library-bodies context import-sets)
-         (flat-map
-          (lambda (set)
-           (expand-import-sets context #f body-symbols (list set)))
-          import-sets)
-         (filter
-          (lambda (expression) (not (memq (predicate expression) library-predicates)))
-          expressions)))
+         (resolve-library-symbols
+          (expand-import-sets context #f import-sets)
+          (lambda (name) name)
+          (filter
+           (lambda (expression) (not (memq (predicate expression) library-predicates)))
+           expressions))))
        (map-values
         library-exports
         (map-values library-state-library (library-context-libraries context))))))
