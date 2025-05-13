@@ -1145,7 +1145,7 @@
            (cons name (rename-library-symbol context id name))))
          exports)
         (collect-bodies 'import)
-        (let ((names (expand-import-sets-2 context id foo)))
+        (let ((names (expand-import-sets-2 context id '() (collect-bodies 'import))))
          (relaxed-deep-map
           (lambda (value)
            (if (symbol? value)
