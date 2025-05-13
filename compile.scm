@@ -592,17 +592,6 @@
 
       ((pair? expression)
        (case (resolve (car expression))
-        (($$alias)
-         (macro-context-set-last!
-          context
-          (cadr expression)
-          (resolve (caddr expression)))
-         (macro-context-append-literal!
-          context
-          (cadr expression)
-          (caddr expression))
-         #f)
-
         (($$define)
          (let ((name (cadr expression)))
           (macro-context-set! context name name)
