@@ -1099,6 +1099,28 @@
            (library-exports library))))))
       sets))
 
+    (define (expand-import-sets-2 context importer-id importer-symbols sets)
+     (flat-map
+      (lambda (set)
+       (let-values (((set qualify)
+                     (expand-import-set
+                      set
+                      (lambda (name)
+                       (and
+                        (memq name (force importer-symbols))
+                        name)))))
+        (flat-map
+         (lambda (names)
+          (let ((name (qualify (car names))))
+           (if name
+            (list
+             (cons
+              (rename-library-symbol context importer-id name)
+              (cdr names)))
+            '())))
+         (library-exports (library-context-find context set)))))
+      sets))
+
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (flat-map
