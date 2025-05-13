@@ -1099,7 +1099,7 @@
            (library-exports library))))))
       sets))
 
-    (define (add-library-definition context expression)
+    (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (flat-map
        cdr
@@ -1145,7 +1145,7 @@
       (for-each
        (lambda (expression)
         (when (eq? (predicate expression) 'define-library)
-         (add-library-definition context expression)))
+         (add-library-definition! context expression)))
        expressions)
       (values
        (cons
