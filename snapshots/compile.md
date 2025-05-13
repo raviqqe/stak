@@ -2011,7 +2011,6 @@
   - argument-count
   - drop?
   - compile-drop
-  - expressions
   - arity
   - compile-raw-call
   - arguments
@@ -2072,21 +2071,22 @@
   - export
   - library-context-add!
   - make-library
-  - predicate
   - rename
   - collect-bodies
   - rename-library-symbol
   - id
   - exports
   - bodies
-  - expand-import-sets
-  - define-library
-  - import
   - make-library-context
   - deep-unique
-  - library-predicates
-  - expand-library-expression
+  - define-library
+  - add-library-definition!
+  - import
+  - expand-import-sets
   - body-symbols
+  - predicate
+  - library-predicates
+  - expressions
   - library-exports
   - map-values
   - library-state-library
@@ -14703,165 +14703,131 @@
   - list
     - define
     - list
-      - expand-library-expression
+      - add-library-definition!
       - context
-      - body-symbols
       - expression
     - list
-      - case
+      - define
       - list
-        - and
+        - collect-bodies
+        - predicate
+      - list
+        - flat-map
+        - cdr
         - list
-          - pair?
-          - expression
-        - list
-          - car
-          - expression
+          - filter
+          - list
+            - lambda
+            - list
+              - body
+            - list
+              - eq?
+              - list
+                - car
+                - body
+              - predicate
+          - list
+            - cddr
+            - expression
+    - list
+      - let
       - list
         - list
-          - define-library
-        - list
-          - let\*
+          - id
           - list
-            - list
-              - collect-bodies
-              - list
-                - lambda
-                - list
-                  - predicate
-                - list
-                  - flat-map
-                  - cdr
-                  - list
-                    - filter
-                    - list
-                      - lambda
-                      - list
-                        - body
-                      - list
-                        - eq?
-                        - list
-                          - car
-                          - body
-                        - predicate
-                    - list
-                      - cddr
-                      - expression
-            - list
-              - id
-              - list
-                - library-context-id
-                - context
-            - list
-              - exports
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - export
-            - list
-              - bodies
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - begin
-          - list
-            - library-context-add!
+            - library-context-id
             - context
+        - list
+          - exports
+          - list
+            - collect-bodies
             - list
-              - make-library
-              - id
+              - quote
+              - export
+        - list
+          - bodies
+          - list
+            - collect-bodies
+            - list
+              - quote
+              - begin
+      - list
+        - library-context-add!
+        - context
+        - list
+          - make-library
+          - id
+          - list
+            - cadr
+            - expression
+          - list
+            - map
+            - list
+              - lambda
               - list
-                - cadr
-                - expression
+                - name
               - list
-                - map
+                - if
                 - list
-                  - lambda
+                  - eq?
                   - list
+                    - predicate
                     - name
                   - list
-                    - if
+                    - quote
+                    - rename
+                - list
+                  - cons
+                  - list
+                    - caddr
+                    - name
+                  - list
+                    - rename-library-symbol
+                    - context
+                    - id
                     - list
-                      - eq?
-                      - list
-                        - predicate
-                        - name
-                      - list
-                        - quote
-                        - rename
-                    - list
-                      - cons
-                      - list
-                        - caddr
-                        - name
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - list
-                          - cadr
-                          - name
-                    - list
-                      - cons
+                      - cadr
                       - name
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - name
+                - list
+                  - cons
+                  - name
+                  - list
+                    - rename-library-symbol
+                    - context
+                    - id
+                    - name
+            - exports
+          - list
+            - collect-bodies
+            - list
+              - quote
+              - import
+          - list
+            - relaxed-deep-map
+            - list
+              - lambda
+              - list
+                - value
+              - list
+                - if
+                - list
+                  - symbol?
+                  - value
+                - list
+                  - rename-library-symbol
+                  - context
+                  - id
+                  - value
+                - value
+            - bodies
+          - list
+            - delay
+            - list
+              - deep-unique
+              - list
+                - cons
                 - exports
-              - list
-                - collect-bodies
-                - list
-                  - quote
-                  - import
-              - list
-                - relaxed-deep-map
-                - list
-                  - lambda
-                  - list
-                    - value
-                  - list
-                    - if
-                    - list
-                      - symbol?
-                      - value
-                    - list
-                      - rename-library-symbol
-                      - context
-                      - id
-                      - value
-                    - value
                 - bodies
-              - list
-                - delay
-                - list
-                  - deep-unique
-                  - list
-                    - cons
-                    - exports
-                    - bodies
-          - list
-            - quote
-            - ()
-      - list
-        - list
-          - import
-        - list
-          - expand-import-sets
-          - context
-          - #f
-          - body-symbols
-          - list
-            - cdr
-            - expression
-      - list
-        - else
-        - list
-          - list
-          - expression
   - list
     - define
     - library-predicates
@@ -14876,7 +14842,7 @@
       - expand-libraries
       - expression
     - list
-      - let\*
+      - let
       - list
         - list
           - context
@@ -14888,6 +14854,11 @@
             - list
               - quote
               - ()
+        - list
+          - expressions
+          - list
+            - cdr
+            - expression
         - list
           - body-symbols
           - list
@@ -14916,13 +14887,36 @@
                 - list
                   - cdr
                   - expression
+      - list
+        - for-each
         - list
-          - expression
+          - lambda
           - list
-            - cons
+            - expression
+          - list
+            - when
             - list
-              - car
+              - eq?
+              - list
+                - predicate
+                - expression
+              - list
+                - quote
+                - define-library
+            - list
+              - add-library-definition!
+              - context
               - expression
+        - expressions
+      - list
+        - values
+        - list
+          - cons
+          - list
+            - car
+            - expression
+          - list
+            - append
             - list
               - flat-map
               - list
@@ -14930,16 +14924,42 @@
                 - list
                   - expression
                 - list
-                  - expand-library-expression
-                  - context
-                  - body-symbols
-                  - expression
+                  - if
+                  - list
+                    - eq?
+                    - list
+                      - predicate
+                      - expression
+                    - list
+                      - quote
+                      - import
+                  - list
+                    - expand-import-sets
+                    - context
+                    - #f
+                    - body-symbols
+                    - list
+                      - cdr
+                      - expression
+                  - list
+                    - quote
+                    - ()
+              - expressions
+            - list
+              - filter
               - list
-                - cdr
-                - expression
-      - list
-        - values
-        - expression
+                - lambda
+                - list
+                  - expression
+                - list
+                  - not
+                  - list
+                    - memq
+                    - list
+                      - predicate
+                      - expression
+                    - library-predicates
+              - expressions
         - list
           - map-values
           - library-exports

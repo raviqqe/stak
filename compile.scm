@@ -1099,66 +1099,67 @@
            (library-exports library))))))
       sets))
 
-    (define (expand-library-expression context body-symbols expression)
-     (case (and (pair? expression) (car expression))
-      ((define-library)
-       (let* ((collect-bodies
-               (lambda (predicate)
-                (flat-map
-                 cdr
-                 (filter
-                  (lambda (body) (eq? (car body) predicate))
-                  (cddr expression)))))
-              (id (library-context-id context))
-              (exports (collect-bodies 'export))
-              (bodies (collect-bodies 'begin)))
-        (library-context-add!
-         context
-         (make-library
-          id
-          (cadr expression)
-          (map
-           (lambda (name)
-            (if (eq? (predicate name) 'rename)
-             (cons (caddr name) (rename-library-symbol context id (cadr name)))
-             (cons name (rename-library-symbol context id name))))
-           exports)
-          (collect-bodies 'import)
-          (relaxed-deep-map
-           (lambda (value)
-            (if (symbol? value)
-             (rename-library-symbol context id value)
-             value))
-           bodies)
-          (delay (deep-unique (cons exports bodies)))))
-        '()))
+    (define (add-library-definition! context expression)
+     (define (collect-bodies predicate)
+      (flat-map
+       cdr
+       (filter
+        (lambda (body) (eq? (car body) predicate))
+        (cddr expression))))
 
-      ((import)
-       (expand-import-sets context #f body-symbols (cdr expression)))
-
-      (else
-       (list expression))))
+     (let ((id (library-context-id context))
+           (exports (collect-bodies 'export))
+           (bodies (collect-bodies 'begin)))
+      (library-context-add!
+       context
+       (make-library
+        id
+        (cadr expression)
+        (map
+         (lambda (name)
+          (if (eq? (predicate name) 'rename)
+           (cons (caddr name) (rename-library-symbol context id (cadr name)))
+           (cons name (rename-library-symbol context id name))))
+         exports)
+        (collect-bodies 'import)
+        (relaxed-deep-map
+         (lambda (value)
+          (if (symbol? value)
+           (rename-library-symbol context id value)
+           value))
+         bodies)
+        (delay (deep-unique (cons exports bodies)))))))
 
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '()))
-            (body-symbols
-             (delay
-              (deep-unique
-               (filter
-                (lambda (expression)
-                 (not (and (pair? expression) (memq (car expression) library-predicates))))
-                (cdr expression)))))
-            (expression
-             (cons
-              (car expression)
-              (flat-map
+     (let ((context (make-library-context '() '()))
+           (expressions (cdr expression))
+           (body-symbols
+            (delay
+             (deep-unique
+              (filter
                (lambda (expression)
-                (expand-library-expression context body-symbols expression))
-               (cdr expression)))))
+                (not (and (pair? expression) (memq (car expression) library-predicates))))
+               (cdr expression))))))
+      (for-each
+       (lambda (expression)
+        (when (eq? (predicate expression) 'define-library)
+         (add-library-definition! context expression)))
+       expressions)
       (values
-       expression
+       (cons
+        (car expression)
+        (append
+         (flat-map
+          (lambda (expression)
+           (if (eq? (predicate expression) 'import)
+            (expand-import-sets context #f body-symbols (cdr expression))
+            '()))
+          expressions)
+         (filter
+          (lambda (expression) (not (memq (predicate expression) library-predicates)))
+          expressions)))
        (map-values
         library-exports
         (map-values library-state-library (library-context-libraries context))))))
