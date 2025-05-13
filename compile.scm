@@ -1141,15 +1141,15 @@
 
     (define library-predicates '(define-library import))
 
-    (define (split-library-expressions expression)
-     (let loop ((libraries '()) (imports '()) (expression expression))
-      (case (predicate expression)
+    (define (split-library-expressions expressions)
+     (let-values (((libraries imports expressions) (split-library-expressions expressions)))
+      (case (predicate (car expression))
        ((define-library)
-        foo)
+        (loop (cons) (cdr expressions)))
        ((import)
-        foo)
+        (loop () (cdr expressions)))
        (else
-        (values libraries imports expression)))))
+        (values libraries imports expressions)))))
 
     (define (expand-libraries expression)
      (let* ((context (make-library-context '() '()))
