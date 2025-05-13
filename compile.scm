@@ -1141,6 +1141,10 @@
 
     (define library-predicates '(define-library import))
 
+    (define (split-library-predicates expression)
+     (let loop ((foo))
+      (values libraries imports expression)))
+
     (define (expand-libraries expression)
      (let* ((context (make-library-context '() '()))
             (body-symbols
