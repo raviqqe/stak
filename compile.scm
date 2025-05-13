@@ -1099,16 +1099,10 @@
            (library-exports library))))))
       sets))
 
-    (define (expand-import-sets-2 context importer-id importer-symbols sets)
+    (define (expand-import-sets-2 context importer-id sets)
      (flat-map
       (lambda (set)
-       (let-values (((set qualify)
-                     (expand-import-set
-                      set
-                      (lambda (name)
-                       (and
-                        (memq name (force importer-symbols))
-                        name)))))
+       (let-values (((set qualify) (expand-import-set set (lambda (name) name))))
         (flat-map
          (lambda (names)
           (let ((name (qualify (car names))))
@@ -1144,7 +1138,7 @@
            (cons name (rename-library-symbol context id name))))
          exports)
         (collect-bodies 'import)
-        (let ((names (expand-import-sets-2 context id (delay (deep-unique (cons exports bodies))) (collect-bodies 'import))))
+        (let ((names (expand-import-sets-2 context id (collect-bodies 'import))))
          (relaxed-deep-map
           (lambda (value)
            (cond
