@@ -1100,44 +1100,36 @@
       sets))
 
     (define (expand-library-definition context body-symbols expression)
-     (case (and (pair? expression) (car expression))
-      ((define-library)
-       (let* ((collect-bodies
-               (lambda (predicate)
-                (flat-map
-                 cdr
-                 (filter
-                  (lambda (body) (eq? (car body) predicate))
-                  (cddr expression)))))
-              (id (library-context-id context))
-              (exports (collect-bodies 'export))
-              (bodies (collect-bodies 'begin)))
-        (library-context-add!
-         context
-         (make-library
-          id
-          (cadr expression)
-          (map
-           (lambda (name)
-            (if (eq? (predicate name) 'rename)
-             (cons (caddr name) (rename-library-symbol context id (cadr name)))
-             (cons name (rename-library-symbol context id name))))
-           exports)
-          (collect-bodies 'import)
-          (relaxed-deep-map
-           (lambda (value)
-            (if (symbol? value)
-             (rename-library-symbol context id value)
-             value))
-           bodies)
-          (delay (deep-unique (cons exports bodies)))))
-        '()))
-
-      ((import)
-       (expand-import-sets context #f body-symbols (cdr expression)))
-
-      (else
-       (list expression))))
+     (let* ((collect-bodies
+             (lambda (predicate)
+              (flat-map
+               cdr
+               (filter
+                (lambda (body) (eq? (car body) predicate))
+                (cddr expression)))))
+            (id (library-context-id context))
+            (exports (collect-bodies 'export))
+            (bodies (collect-bodies 'begin)))
+      (library-context-add!
+       context
+       (make-library
+        id
+        (cadr expression)
+        (map
+         (lambda (name)
+          (if (eq? (predicate name) 'rename)
+           (cons (caddr name) (rename-library-symbol context id (cadr name)))
+           (cons name (rename-library-symbol context id name))))
+         exports)
+        (collect-bodies 'import)
+        (relaxed-deep-map
+         (lambda (value)
+          (if (symbol? value)
+           (rename-library-symbol context id value)
+           value))
+         bodies)
+        (delay (deep-unique (cons exports bodies)))))
+      '()))
 
     (define library-predicates '(define-library import))
 
