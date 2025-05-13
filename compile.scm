@@ -223,13 +223,13 @@
     (define library-symbol-separator #\%)
 
     (define (parse-import-set set qualify)
-     (define (expand qualify)
+     (define (parse qualify)
       (parse-import-set (cadr set) qualify))
 
      (case (predicate set)
       ((except)
        (let ((names (cddr set)))
-        (expand
+        (parse
          (lambda (name)
           (if (memq name names)
            #f
@@ -237,19 +237,19 @@
 
       ((only)
        (let ((names (cddr set)))
-        (expand
+        (parse
          (lambda (name)
           (if (memq name names)
            (qualify name)
            #f)))))
 
       ((prefix)
-       (expand
+       (parse
         (lambda (name)
          (qualify (symbol-append (caddr set) name)))))
 
       ((rename)
-       (expand
+       (parse
         (lambda (name)
          (qualify
           (cond
@@ -1076,7 +1076,7 @@
          (library-exports (library-context-find context set)))))
       sets))
 
-    (define (resolve-library-symbols names rename expression)
+    (define (expand-library-expression names rename expression)
      (relaxed-deep-map
       (lambda (value)
        (cond
@@ -1119,7 +1119,7 @@
               (rename-library-symbol context id (cdr pair)))))))
          exports)
         (collect-bodies 'import)
-        (resolve-library-symbols
+        (expand-library-expression
          imported-names
          (lambda (name) (rename-library-symbol context id name))
          bodies)))))
@@ -1146,7 +1146,7 @@
         (car expression)
         (append
          (expand-library-bodies context import-sets)
-         (resolve-library-symbols
+         (expand-library-expression
           (parse-import-sets context import-sets)
           (lambda (name) name)
           (filter
