@@ -1144,12 +1144,16 @@
            (cons name (rename-library-symbol context id name))))
          exports)
         (collect-bodies 'import)
-        (let ((names (expand-import-sets-2 context id '() (collect-bodies 'import))))
+        (let ((names (expand-import-sets-2 context id (delay (deep-unique (cons exports bodies))) (collect-bodies 'import))))
          (relaxed-deep-map
           (lambda (value)
-           (if (symbol? value)
-            (rename-library-symbol context id value)
-            value))
+           (cond
+            ((not (symbol? value))
+             value)
+            ((assq value names) =>
+             cdr)
+            (else
+             (rename-library-symbol context id value))))
           bodies))
         (delay (deep-unique (cons exports bodies)))))))
 
