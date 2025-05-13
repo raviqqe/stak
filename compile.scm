@@ -1133,14 +1133,7 @@
                            (if (eq? (predicate expression) 'import)
                             (cdr expression)
                             '()))
-                          expressions))
-            (body-symbols
-             (delay
-              (deep-unique
-               (filter
-                (lambda (expression)
-                 (not (and (pair? expression) (memq (car expression) library-predicates))))
-                (cdr expression))))))
+                          expressions)))
       (for-each
        (lambda (expression)
         (when (eq? (predicate expression) 'define-library)
