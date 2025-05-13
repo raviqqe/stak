@@ -8,7 +8,6 @@
   (scheme cxr)
   (scheme eval)
   (scheme inexact)
-  (scheme lazy)
   (scheme process-context)
   (scheme read)
   (scheme write))
@@ -223,9 +222,9 @@
 
     (define library-symbol-separator #\%)
 
-    (define (expand-import-set set qualify)
+    (define (parse-import-set set qualify)
      (define (expand qualify)
-      (expand-import-set (cadr set) qualify))
+      (parse-import-set (cadr set) qualify))
 
      (case (predicate set)
       ((except)
@@ -592,17 +591,6 @@
 
       ((pair? expression)
        (case (resolve (car expression))
-        (($$alias)
-         (macro-context-set-last!
-          context
-          (cadr expression)
-          (resolve (caddr expression)))
-         (macro-context-append-literal!
-          context
-          (cadr expression)
-          (caddr expression))
-         #f)
-
         (($$define)
          (let ((name (cadr expression)))
           (macro-context-set! context name name)
@@ -984,14 +972,12 @@
     ;; Types
 
     (define-record-type library
-     (make-library id name exports imports body symbols)
+     (make-library name exports imports body)
      library?
-     (id library-id)
      (name library-name)
      (exports library-exports)
      (imports library-imports)
-     (body library-body)
-     (symbols library-symbols))
+     (body library-body))
 
     (define-record-type library-state
      (make-library-state library imported)
@@ -1050,7 +1036,7 @@
       (symbol->string name)))
 
     (define (rename-library-symbol context id name)
-     (if (or (not id) (built-in-symbol? name))
+     (if (built-in-symbol? name)
       name
       (let* ((maps (library-context-name-maps context))
              (pair (or (assq id maps) (cons id '())))
@@ -1065,39 +1051,42 @@
           (set-cdr! pair (cons (cons name renamed) names))
           renamed))))))
 
-    (define (expand-import-sets context importer-id importer-symbols sets)
+    (define (expand-library-bodies context sets)
      (flat-map
       (lambda (set)
-       (let-values (((set qualify)
-                     (expand-import-set
-                      set
-                      (lambda (name)
-                       (and
-                        (memq name (force importer-symbols))
-                        name)))))
-        (let ((library (library-context-find context set)))
-         (append
-          (if (library-context-import! context set)
-           '()
-           (append
-            (expand-import-sets
-             context
-             (library-id library)
-             (library-symbols library)
-             (library-imports library))
-            (library-body library)))
-          (flat-map
-           (lambda (names)
-            (let ((name (qualify (car names))))
-             (if name
-              (list
-               (list
-                '$$alias
-                (rename-library-symbol context importer-id name)
-                (cdr names)))
-              '())))
-           (library-exports library))))))
+       (let-values (((set _) (parse-import-set set (lambda (name) name))))
+        (if (library-context-import! context set)
+         '()
+         (let ((library (library-context-find context set)))
+          (append
+           (expand-library-bodies context (library-imports library))
+           (library-body library))))))
       sets))
+
+    (define (parse-import-sets context sets)
+     (flat-map
+      (lambda (set)
+       (let-values (((set qualify) (parse-import-set set (lambda (name) name))))
+        (flat-map
+         (lambda (names)
+          (let ((name (qualify (car names))))
+           (if name
+            (list (cons name (cdr names)))
+            '())))
+         (library-exports (library-context-find context set)))))
+      sets))
+
+    (define (resolve-library-symbols names rename expression)
+     (relaxed-deep-map
+      (lambda (value)
+       (cond
+        ((not (symbol? value))
+         value)
+        ((assq value names) =>
+         cdr)
+        (else
+         (rename value))))
+      expression))
 
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
@@ -1109,39 +1098,44 @@
 
      (let ((id (library-context-id context))
            (exports (collect-bodies 'export))
-           (bodies (collect-bodies 'begin)))
+           (bodies (collect-bodies 'begin))
+           (imported-names (parse-import-sets context (collect-bodies 'import))))
       (library-context-add!
        context
        (make-library
-        id
         (cadr expression)
         (map
          (lambda (name)
-          (if (eq? (predicate name) 'rename)
-           (cons (caddr name) (rename-library-symbol context id (cadr name)))
-           (cons name (rename-library-symbol context id name))))
+          (let ((pair
+                 (if (eq? (predicate name) 'rename)
+                  (cons (caddr name) (cadr name))
+                  (cons name name))))
+           (cons
+            (car pair)
+            (cond
+             ((assq (cdr pair) imported-names) =>
+              cdr)
+             (else
+              (rename-library-symbol context id (cdr pair)))))))
          exports)
         (collect-bodies 'import)
-        (relaxed-deep-map
-         (lambda (value)
-          (if (symbol? value)
-           (rename-library-symbol context id value)
-           value))
-         bodies)
-        (delay (deep-unique (cons exports bodies)))))))
+        (resolve-library-symbols
+         imported-names
+         (lambda (name) (rename-library-symbol context id name))
+         bodies)))))
 
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let ((context (make-library-context '() '()))
-           (expressions (cdr expression))
-           (body-symbols
-            (delay
-             (deep-unique
-              (filter
-               (lambda (expression)
-                (not (and (pair? expression) (memq (car expression) library-predicates))))
-               (cdr expression))))))
+     (let* ((context (make-library-context '() '()))
+            (expressions (cdr expression))
+            (import-sets
+             (flat-map
+              (lambda (expression)
+               (if (eq? (predicate expression) 'import)
+                (cdr expression)
+                '()))
+              expressions)))
       (for-each
        (lambda (expression)
         (when (eq? (predicate expression) 'define-library)
@@ -1151,15 +1145,13 @@
        (cons
         (car expression)
         (append
-         (flat-map
-          (lambda (expression)
-           (if (eq? (predicate expression) 'import)
-            (expand-import-sets context #f body-symbols (cdr expression))
-            '()))
-          expressions)
-         (filter
-          (lambda (expression) (not (memq (predicate expression) library-predicates)))
-          expressions)))
+         (expand-library-bodies context import-sets)
+         (resolve-library-symbols
+          (parse-import-sets context import-sets)
+          (lambda (name) name)
+          (filter
+           (lambda (expression) (not (memq (predicate expression) library-predicates)))
+           expressions))))
        (map-values
         library-exports
         (map-values library-state-library (library-context-libraries context))))))
@@ -1751,7 +1743,7 @@
                   (flat-map
                    (lambda (set)
                     (let-values (((set qualify)
-                                  (expand-import-set set (lambda (name) name))))
+                                  (parse-import-set set (lambda (name) name))))
                      (let ((pair (assoc set libraries)))
                       (unless pair
                        (error "unknown library" set))
@@ -1785,9 +1777,7 @@
               (macro-context-set-last!
                context
                (car pair)
-               (if (symbol? (cdr pair))
-                (resolve-denotation context (cdr pair))
-                (make-transformer context (cdr pair)))))
+               (make-transformer context (cdr pair))))
              ($$macros))
             (lambda (expression)
              (expand-macro context expression))))

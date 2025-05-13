@@ -1919,6 +1919,7 @@
   - n
   - list-position
   - ys
+  - deep-unique
   - f
   - except
   - only
@@ -1978,6 +1979,7 @@
   - macro-context-append-literal!
   - macro-context-append-static-symbol!
   - rename-variable
+  - resolve-denotation
   - transformer
   - macro-context-append
   - macro-context-set!
@@ -2056,15 +2058,10 @@
   - maps
   - build-library-name
   - renamed
-  - importer-symbols
-  - library-context-find
   - library-context-import!
-  - library-id
-  - library-symbols
   - library-imports
   - library-body
-  - $$alias
-  - importer-id
+  - library-context-find
   - sets
   - body
   - library-context-id
@@ -2072,18 +2069,20 @@
   - library-context-add!
   - make-library
   - rename
+  - exports
   - collect-bodies
+  - imported-names
   - rename-library-symbol
   - id
-  - exports
   - bodies
   - make-library-context
-  - deep-unique
+  - import
   - define-library
   - add-library-definition!
-  - import
-  - expand-import-sets
-  - body-symbols
+  - expand-library-bodies
+  - resolve-library-symbols
+  - parse-import-sets
+  - import-sets
   - predicate
   - library-predicates
   - expressions
@@ -2225,7 +2224,7 @@
   - optimization-context-set-literals!
   - set-nothing
   - $$libraries
-  - expand-import-set
+  - parse-import-set
   - set
   - flat-map
   - qualify
@@ -2239,7 +2238,6 @@
   - make-macro-state
   - libraries
   - macro-context-set-last!
-  - resolve-denotation
   - make-transformer
   - $$macros
   - expand-macro
@@ -5231,26 +5229,6 @@
                             - if
                               - constant procedure 1 #f
                                 - get 0
-                                - constant $$alias
-                                - call 2 #f ||
-                                - if
-                                  - get 6
-                                  - get 6
-                                  - call 1 #f ||
-                                  - get 7
-                                  - call 1 #f ||
-                                  - call 1 #f 5
-                                  - call 3 #f 36
-                                  - set 0
-                                  - get 6
-                                  - get 6
-                                  - call 1 #f ||
-                                  - get 7
-                                  - call 1 #f ||
-                                  - call 3 #f 34
-                                  - set 0
-                                  - constant #f
-                                - get 0
                                 - constant $$define
                                 - call 2 #f ||
                                 - if
@@ -7005,15 +6983,6 @@
                                     - get 2
                                     - get 1
                                     - call 1 #f ||
-                                    - get 2
-                                    - call 1 #f ||
-                                    - call 1 #f ||
-                                    - if
-                                      - get 4
-                                      - get 3
-                                      - call 1 #f ||
-                                      - call 2 #f 52
-                                      - continue
                                     - get 4
                                     - get 3
                                     - call 1 #f ||
@@ -8919,168 +8888,6 @@
                                             - ||
                                             - ||
                                             - ||
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
                                     - list
                                       - ||
                                       - ||
@@ -9369,106 +9176,6 @@
                                             - ||
                                             - ||
                                             - ||
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
                                     - list
                                       - ||
                                       - ||
@@ -9518,126 +9225,6 @@
                                           - list
                                             - ||
                                             - ||
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
-                                    - (|| . ||)
                                   - call 2 #f ||
                                   - set 0
                                   - constant procedure 1 #f
@@ -11695,7 +11282,7 @@
   - list
     - define
     - list
-      - expand-import-set
+      - parse-import-set
       - set
       - qualify
     - list
@@ -11704,7 +11291,7 @@
         - expand
         - qualify
       - list
-        - expand-import-set
+        - parse-import-set
         - list
           - cadr
           - set
@@ -13062,30 +12649,6 @@
               - expression
           - list
             - list
-              - $$alias
-            - list
-              - macro-context-set-last!
-              - context
-              - list
-                - cadr
-                - expression
-              - list
-                - resolve
-                - list
-                  - caddr
-                  - expression
-            - list
-              - macro-context-append-literal!
-              - context
-              - list
-                - cadr
-                - expression
-              - list
-                - caddr
-                - expression
-            - #f
-          - list
-            - list
               - $$define
             - list
               - let
@@ -14288,16 +13851,11 @@
     - library
     - list
       - make-library
-      - id
       - name
       - exports
       - imports
       - body
-      - symbols
     - library?
-    - list
-      - id
-      - library-id
     - list
       - name
       - library-name
@@ -14310,9 +13868,6 @@
     - list
       - body
       - library-body
-    - list
-      - symbols
-      - library-symbols
   - list
     - define-record-type
     - library-state
@@ -14505,13 +14060,8 @@
     - list
       - if
       - list
-        - or
-        - list
-          - not
-          - id
-        - list
-          - built-in-symbol?
-          - name
+        - built-in-symbol?
+        - name
       - name
       - list
         - let\*
@@ -14588,10 +14138,65 @@
   - list
     - define
     - list
-      - expand-import-sets
+      - expand-library-bodies
       - context
-      - importer-id
-      - importer-symbols
+      - sets
+    - list
+      - flat-map
+      - list
+        - lambda
+        - list
+          - set
+        - list
+          - let-values
+          - list
+            - list
+              - list
+                - set
+                - \_
+              - list
+                - parse-import-set
+                - set
+                - list
+                  - lambda
+                  - list
+                    - name
+                  - name
+          - list
+            - if
+            - list
+              - library-context-import!
+              - context
+              - set
+            - list
+              - quote
+              - ()
+            - list
+              - let
+              - list
+                - list
+                  - library
+                  - list
+                    - library-context-find
+                    - context
+                    - set
+              - list
+                - append
+                - list
+                  - expand-library-bodies
+                  - context
+                  - list
+                    - library-imports
+                    - library
+                - list
+                  - library-body
+                  - library
+      - sets
+  - list
+    - define
+    - list
+      - parse-import-sets
+      - context
       - sets
     - list
       - flat-map
@@ -14607,99 +14212,85 @@
                 - set
                 - qualify
               - list
-                - expand-import-set
+                - parse-import-set
                 - set
                 - list
                   - lambda
                   - list
                     - name
-                  - list
-                    - and
-                    - list
-                      - memq
-                      - name
-                      - list
-                        - force
-                        - importer-symbols
-                    - name
+                  - name
           - list
-            - let
+            - flat-map
             - list
+              - lambda
               - list
-                - library
-                - list
-                  - library-context-find
-                  - context
-                  - set
-            - list
-              - append
+                - names
               - list
-                - if
+                - let
                 - list
-                  - library-context-import!
-                  - context
-                  - set
-                - list
-                  - quote
-                  - ()
-                - list
-                  - append
                   - list
-                    - expand-import-sets
-                    - context
+                    - name
                     - list
-                      - library-id
-                      - library
-                    - list
-                      - library-symbols
-                      - library
-                    - list
-                      - library-imports
-                      - library
-                  - list
-                    - library-body
-                    - library
-              - list
-                - flat-map
-                - list
-                  - lambda
-                  - list
-                    - names
-                  - list
-                    - let
-                    - list
+                      - qualify
                       - list
-                        - name
-                        - list
-                          - qualify
-                          - list
-                            - car
-                            - names
+                        - car
+                        - names
+                - list
+                  - if
+                  - name
+                  - list
                     - list
-                      - if
+                    - list
+                      - cons
                       - name
                       - list
-                        - list
-                        - list
-                          - list
-                          - list
-                            - quote
-                            - $$alias
-                          - list
-                            - rename-library-symbol
-                            - context
-                            - importer-id
-                            - name
-                          - list
-                            - cdr
-                            - names
-                      - list
-                        - quote
-                        - ()
-                - list
-                  - library-exports
-                  - library
+                        - cdr
+                        - names
+                  - list
+                    - quote
+                    - ()
+            - list
+              - library-exports
+              - list
+                - library-context-find
+                - context
+                - set
       - sets
+  - list
+    - define
+    - list
+      - resolve-library-symbols
+      - names
+      - rename
+      - expression
+    - list
+      - relaxed-deep-map
+      - list
+        - lambda
+        - list
+          - value
+        - list
+          - cond
+          - list
+            - list
+              - not
+              - list
+                - symbol?
+                - value
+            - value
+          - list
+            - list
+              - assq
+              - value
+              - names
+            - =>
+            - cdr
+          - list
+            - else
+            - list
+              - rename
+              - value
+      - expression
   - list
     - define
     - list
@@ -14751,12 +14342,21 @@
             - list
               - quote
               - begin
+        - list
+          - imported-names
+          - list
+            - parse-import-sets
+            - context
+            - list
+              - collect-bodies
+              - list
+                - quote
+                - import
       - list
         - library-context-add!
         - context
         - list
           - make-library
-          - id
           - list
             - cadr
             - expression
@@ -14767,35 +14367,57 @@
               - list
                 - name
               - list
-                - if
+                - let
                 - list
-                  - eq?
                   - list
-                    - predicate
-                    - name
-                  - list
-                    - quote
-                    - rename
-                - list
-                  - cons
-                  - list
-                    - caddr
-                    - name
-                  - list
-                    - rename-library-symbol
-                    - context
-                    - id
+                    - pair
                     - list
-                      - cadr
-                      - name
+                      - if
+                      - list
+                        - eq?
+                        - list
+                          - predicate
+                          - name
+                        - list
+                          - quote
+                          - rename
+                      - list
+                        - cons
+                        - list
+                          - caddr
+                          - name
+                        - list
+                          - cadr
+                          - name
+                      - list
+                        - cons
+                        - name
+                        - name
                 - list
                   - cons
-                  - name
                   - list
-                    - rename-library-symbol
-                    - context
-                    - id
-                    - name
+                    - car
+                    - pair
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - assq
+                        - list
+                          - cdr
+                          - pair
+                        - imported-names
+                      - =>
+                      - cdr
+                    - list
+                      - else
+                      - list
+                        - rename-library-symbol
+                        - context
+                        - id
+                        - list
+                          - cdr
+                          - pair
             - exports
           - list
             - collect-bodies
@@ -14803,31 +14425,18 @@
               - quote
               - import
           - list
-            - relaxed-deep-map
+            - resolve-library-symbols
+            - imported-names
             - list
               - lambda
               - list
-                - value
+                - name
               - list
-                - if
-                - list
-                  - symbol?
-                  - value
-                - list
-                  - rename-library-symbol
-                  - context
-                  - id
-                  - value
-                - value
+                - rename-library-symbol
+                - context
+                - id
+                - name
             - bodies
-          - list
-            - delay
-            - list
-              - deep-unique
-              - list
-                - cons
-                - exports
-                - bodies
   - list
     - define
     - library-predicates
@@ -14842,7 +14451,7 @@
       - expand-libraries
       - expression
     - list
-      - let
+      - let\*
       - list
         - list
           - context
@@ -14860,33 +14469,30 @@
             - cdr
             - expression
         - list
-          - body-symbols
+          - import-sets
           - list
-            - delay
+            - flat-map
             - list
-              - deep-unique
+              - lambda
               - list
-                - filter
+                - expression
+              - list
+                - if
                 - list
-                  - lambda
+                  - eq?
                   - list
+                    - predicate
                     - expression
                   - list
-                    - not
-                    - list
-                      - and
-                      - list
-                        - pair?
-                        - expression
-                      - list
-                        - memq
-                        - list
-                          - car
-                          - expression
-                        - library-predicates
+                    - quote
+                    - import
                 - list
                   - cdr
                   - expression
+                - list
+                  - quote
+                  - ()
+            - expressions
       - list
         - for-each
         - list
@@ -14918,48 +14524,35 @@
           - list
             - append
             - list
-              - flat-map
-              - list
-                - lambda
-                - list
-                  - expression
-                - list
-                  - if
-                  - list
-                    - eq?
-                    - list
-                      - predicate
-                      - expression
-                    - list
-                      - quote
-                      - import
-                  - list
-                    - expand-import-sets
-                    - context
-                    - #f
-                    - body-symbols
-                    - list
-                      - cdr
-                      - expression
-                  - list
-                    - quote
-                    - ()
-              - expressions
+              - expand-library-bodies
+              - context
+              - import-sets
             - list
-              - filter
+              - resolve-library-symbols
+              - list
+                - parse-import-sets
+                - context
+                - import-sets
               - list
                 - lambda
                 - list
-                  - expression
+                  - name
+                - name
+              - list
+                - filter
                 - list
-                  - not
+                  - lambda
                   - list
-                    - memq
+                    - expression
+                  - list
+                    - not
                     - list
-                      - predicate
-                      - expression
-                    - library-predicates
-              - expressions
+                      - memq
+                      - list
+                        - predicate
+                        - expression
+                      - library-predicates
+                - expressions
         - list
           - map-values
           - library-exports
@@ -17206,7 +16799,7 @@
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
-    - constant expand-import-set
+    - constant parse-import-set
     - constant set
     - constant lambda
     - constant name
@@ -17474,27 +17067,6 @@
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
-    - constant if
-    - constant symbol?
-    - constant cdr
-    - constant pair
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant resolve-denotation
-    - constant context
-    - constant cdr
-    - constant pair
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
     - constant make-transformer
     - constant context
     - constant cdr
@@ -17503,11 +17075,6 @@
     - call 2 #f ||
     - call 2 #f ||
     - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
