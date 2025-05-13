@@ -1925,6 +1925,7 @@
   - only
   - prefix
   - symbol-append
+  - parse
   - macro-state
   - macro-state?
   - static-symbols
@@ -2080,7 +2081,7 @@
   - define-library
   - add-library-definition!
   - expand-library-bodies
-  - resolve-library-symbols
+  - expand-library-expression
   - parse-import-sets
   - import-sets
   - predicate
@@ -11288,7 +11289,7 @@
     - list
       - define
       - list
-        - expand
+        - parse
         - qualify
       - list
         - parse-import-set
@@ -11313,7 +11314,7 @@
                 - cddr
                 - set
           - list
-            - expand
+            - parse
             - list
               - lambda
               - list
@@ -11340,7 +11341,7 @@
                 - cddr
                 - set
           - list
-            - expand
+            - parse
             - list
               - lambda
               - list
@@ -11359,7 +11360,7 @@
         - list
           - prefix
         - list
-          - expand
+          - parse
           - list
             - lambda
             - list
@@ -11376,7 +11377,7 @@
         - list
           - rename
         - list
-          - expand
+          - parse
           - list
             - lambda
             - list
@@ -14259,7 +14260,7 @@
   - list
     - define
     - list
-      - resolve-library-symbols
+      - expand-library-expression
       - names
       - rename
       - expression
@@ -14425,7 +14426,7 @@
               - quote
               - import
           - list
-            - resolve-library-symbols
+            - expand-library-expression
             - imported-names
             - list
               - lambda
@@ -14528,7 +14529,7 @@
               - context
               - import-sets
             - list
-              - resolve-library-symbols
+              - expand-library-expression
               - list
                 - parse-import-sets
                 - context
