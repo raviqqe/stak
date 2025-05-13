@@ -1110,10 +1110,7 @@
          (lambda (names)
           (let ((name (qualify (car names))))
            (if name
-            (list
-             (cons
-              (rename-library-symbol context importer-id name)
-              (cdr names)))
+            (list (cons name (cdr names)))
             '())))
          (library-exports (library-context-find context set)))))
       sets))
@@ -1129,19 +1126,26 @@
      (let ((id (library-context-id context))
            (exports (collect-bodies 'export))
            (bodies (collect-bodies 'begin)))
-      (library-context-add!
-       context
-       (make-library
-        id
-        (cadr expression)
-        (map
-         (lambda (name)
-          (if (eq? (predicate name) 'rename)
-           (cons (caddr name) (rename-library-symbol context id (cadr name)))
-           (cons name (rename-library-symbol context id name))))
-         exports)
-        (collect-bodies 'import)
-        (let ((names (expand-import-sets-2 context id (collect-bodies 'import))))
+      (let ((names (expand-import-sets-2 context id (collect-bodies 'import))))
+       (library-context-add!
+        context
+        (make-library
+         id
+         (cadr expression)
+         (map
+          (lambda (name)
+           (let* ((symbol (rename-library-symbol context id name))
+                  (symbol
+                   (cond
+                    ((assq name names) =>
+                     cdr)
+                    (else
+                     symbol))))
+            (if (eq? (predicate name) 'rename)
+             (cons (caddr name) symbol)
+             (cons name symbol))))
+          exports)
+         (collect-bodies 'import)
          (relaxed-deep-map
           (lambda (value)
            (cond
@@ -1151,8 +1155,8 @@
              cdr)
             (else
              (rename-library-symbol context id value))))
-          bodies))
-        (delay (deep-unique (cons exports bodies)))))))
+          bodies)
+         (delay (deep-unique (cons exports bodies))))))))
 
     (define library-predicates '(define-library import))
 
