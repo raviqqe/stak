@@ -1077,15 +1077,6 @@
                         name)))))
         (let ((library (library-context-find context set)))
          (append
-          (if (library-context-import! context set)
-           '()
-           (append
-            (expand-import-sets
-             context
-             (library-id library)
-             (library-symbols library)
-             (library-imports library))
-            (library-body library)))
           (flat-map
            (lambda (names)
             (let ((name (qualify (car names))))
@@ -1097,6 +1088,18 @@
                 (cdr names)))
               '())))
            (library-exports library))))))
+      sets))
+
+    (define (expand-library-bodies context sets)
+     (flat-map
+      (lambda (set)
+       (let-values (((set _) (expand-import-set set (lambda (name) name))))
+        (let ((library (library-context-find context set)))
+         (if (library-context-import! context set)
+          '()
+          (append
+           (expand-library-bodies context (library-imports library))
+           (library-body library))))))
       sets))
 
     (define (expand-import-sets-2 context importer-id sets)
@@ -1154,15 +1157,21 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let ((context (make-library-context '() '()))
-           (expressions (cdr expression))
-           (body-symbols
-            (delay
-             (deep-unique
-              (filter
-               (lambda (expression)
-                (not (and (pair? expression) (memq (car expression) library-predicates))))
-               (cdr expression))))))
+     (let* ((context (make-library-context '() '()))
+            (expressions (cdr expression))
+            (import-sets (flat-map
+                          (lambda (expression)
+                           (if (eq? (predicate expression) 'import)
+                            (cdr expression)
+                            '()))
+                          expressions))
+            (body-symbols
+             (delay
+              (deep-unique
+               (filter
+                (lambda (expression)
+                 (not (and (pair? expression) (memq (car expression) library-predicates))))
+                (cdr expression))))))
       (for-each
        (lambda (expression)
         (when (eq? (predicate expression) 'define-library)
@@ -1172,6 +1181,7 @@
        (cons
         (car expression)
         (append
+         (expand-library-bodies context import-sets)
          (flat-map
           (lambda (expression)
            (if (eq? (predicate expression) 'import)
