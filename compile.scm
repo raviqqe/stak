@@ -1100,16 +1100,16 @@
       sets))
 
     (define (expand-library-definition context body-symbols expression)
-     (let* ((collect-bodies
-             (lambda (predicate)
-              (flat-map
-               cdr
-               (filter
-                (lambda (body) (eq? (car body) predicate))
-                (cddr expression)))))
-            (id (library-context-id context))
-            (exports (collect-bodies 'export))
-            (bodies (collect-bodies 'begin)))
+     (define (collect-bodies predicate)
+      (flat-map
+       cdr
+       (filter
+        (lambda (body) (eq? (car body) predicate))
+        (cddr expression))))
+
+     (let ((id (library-context-id context))
+           (exports (collect-bodies 'export))
+           (bodies (collect-bodies 'begin)))
       (library-context-add!
        context
        (make-library
@@ -1128,8 +1128,7 @@
            (rename-library-symbol context id value)
            value))
          bodies)
-        (delay (deep-unique (cons exports bodies)))))
-      '()))
+        (delay (deep-unique (cons exports bodies)))))))
 
     (define library-predicates '(define-library import))
 
