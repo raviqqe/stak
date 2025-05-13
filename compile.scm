@@ -973,14 +973,12 @@
     ;; Types
 
     (define-record-type library
-     (make-library id name exports imports body symbols)
+     (make-library name exports imports body)
      library?
-     (id library-id)
      (name library-name)
      (exports library-exports)
      (imports library-imports)
-     (body library-body)
-     (symbols library-symbols))
+     (body library-body))
 
     (define-record-type library-state
      (make-library-state library imported)
@@ -1066,7 +1064,7 @@
            (library-body library))))))
       sets))
 
-    (define (expand-import-sets context importer-id sets)
+    (define (expand-import-sets context sets)
      (flat-map
       (lambda (set)
        (let-values (((set qualify) (expand-import-set set (lambda (name) name))))
@@ -1102,11 +1100,10 @@
      (let ((id (library-context-id context))
            (exports (collect-bodies 'export))
            (bodies (collect-bodies 'begin)))
-      (let ((names (expand-import-sets context id (collect-bodies 'import))))
+      (let ((names (expand-import-sets context (collect-bodies 'import))))
        (library-context-add!
         context
         (make-library
-         id
          (cadr expression)
          (map
           (lambda (name)
@@ -1124,8 +1121,7 @@
          (resolve-library-symbols
           names
           (lambda (name) (rename-library-symbol context id name))
-          bodies)
-         (delay (deep-unique (cons exports bodies))))))))
+          bodies))))))
 
     (define library-predicates '(define-library import))
 
@@ -1156,7 +1152,7 @@
         (append
          (expand-library-bodies context import-sets)
          (resolve-library-symbols
-          (expand-import-sets context #f import-sets)
+          (expand-import-sets context import-sets)
           (lambda (name) name)
           (filter
            (lambda (expression) (not (memq (predicate expression) library-predicates)))
