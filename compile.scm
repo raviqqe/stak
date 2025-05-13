@@ -1149,8 +1149,8 @@
         (let-values (((libraries imports expressions)
                       (split-library-expressions (cdr expressions))))
          (if (eq? (predicate expression) 'define-library)
-          (value (cons expression libraries) imports expressions)
-          (value libraries (cons expression imports) expressions)))
+          (values (cons expression libraries) imports expressions)
+          (values libraries (cons expression imports) expressions)))
         (values libraries imports (cons expression expressions))))))
 
     (define (expand-libraries expression)
