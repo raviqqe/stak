@@ -1066,6 +1066,7 @@
           renamed))))))
 
     (define (expand-import-sets context importer-id importer-symbols sets)
+     (debug (expand-import-sets-2 context importer-id importer-symbols sets))
      (flat-map
       (lambda (set)
        (let-values (((set qualify)
