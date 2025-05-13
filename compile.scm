@@ -1145,12 +1145,13 @@
            (cons name (rename-library-symbol context id name))))
          exports)
         (collect-bodies 'import)
-        (relaxed-deep-map
-         (lambda (value)
-          (if (symbol? value)
-           (rename-library-symbol context id value)
-           value))
-         bodies)
+        (let ((names (expand-import-sets-2 context id foo)))
+         (relaxed-deep-map
+          (lambda (value)
+           (if (symbol? value)
+            (rename-library-symbol context id value)
+            value))
+          bodies))
         (delay (deep-unique (cons exports bodies)))))))
 
     (define library-predicates '(define-library import))
