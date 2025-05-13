@@ -1141,38 +1141,38 @@
 
     (define library-predicates '(define-library import))
 
-    (define (split-library-expressions expressions)
-     (values
-      (filter (lambda (expression) (eq? (predicate expression) 'define-library)) expressions)
-      (filter (lambda (expression) (eq? (predicate expression) 'import)) expressions)
-      (filter (lambda (expression) (not (memq (predicate expression) library-predicates))) expressions)))
-
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '()))
-            (body-symbols
-             (delay
-              (deep-unique
-               (filter
-                (lambda (expression)
-                 (not (and (pair? expression) (memq (car expression) library-predicates))))
-                (cdr expression))))))
-      (let-values (((libraries imports expressions) (split-library-expressions (cdr expression))))
-       (for-each
-        (lambda (library)
-         (expand-library-definition context body-symbols library))
-        libraries)
-       (values
-        (cons
-         (car expression)
-         (append
-          (flat-map
-           (lambda (expression)
-            (expand-import-sets context #f body-symbols (cdr expression)))
-           imports)
-          expressions))
-        (map-values
-         library-exports
-         (map-values library-state-library (library-context-libraries context)))))))
+     (let ((context (make-library-context '() '()))
+           (body-symbols
+            (delay
+             (deep-unique
+              (filter
+               (lambda (expression)
+                (not (and (pair? expression) (memq (car expression) library-predicates))))
+               (cdr expression)))))
+           (imports
+            (filter
+             (lambda (expression) (eq? (predicate expression) 'import))
+             (cdr expression))))
+      (for-each
+       (lambda (expression)
+        (when (eq? (predicate expression) 'define-library)
+         (expand-library-definition context body-symbols expression)))
+       (cdr expression))
+      (values
+       (cons
+        (car expression)
+        (append
+         (flat-map
+          (lambda (expression)
+           (expand-import-sets context #f body-symbols (cdr expression)))
+          imports)
+         (filter
+          (lambda (expression) (not (memq (predicate expression) library-predicates)))
+          (cdr expression))))
+       (map-values
+        library-exports
+        (map-values library-state-library (library-context-libraries context))))))
 
     ; Macro system
 
