@@ -1076,18 +1076,17 @@
                         (memq name (force importer-symbols))
                         name)))))
         (let ((library (library-context-find context set)))
-         (append
-          (flat-map
-           (lambda (names)
-            (let ((name (qualify (car names))))
-             (if name
+         (flat-map
+          (lambda (names)
+           (let ((name (qualify (car names))))
+            (if name
+             (list
               (list
-               (list
-                '$$alias
-                (rename-library-symbol context importer-id name)
-                (cdr names)))
-              '())))
-           (library-exports library))))))
+               '$$alias
+               (rename-library-symbol context importer-id name)
+               (cdr names)))
+             '())))
+          (library-exports library)))))
       sets))
 
     (define (expand-library-bodies context sets)
@@ -1187,11 +1186,9 @@
         (append
          (expand-library-bodies context import-sets)
          (flat-map
-          (lambda (expression)
-           (if (eq? (predicate expression) 'import)
-            (expand-import-sets context #f body-symbols (cdr expression))
-            '()))
-          expressions)
+          (lambda (set)
+           (expand-import-sets context #f body-symbols (list set)))
+          import-sets)
          (filter
           (lambda (expression) (not (memq (predicate expression) library-predicates)))
           expressions)))
