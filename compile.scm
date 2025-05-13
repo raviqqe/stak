@@ -1777,9 +1777,7 @@
               (macro-context-set-last!
                context
                (car pair)
-               (if (symbol? (cdr pair))
-                (resolve-denotation context (cdr pair))
-                (make-transformer context (cdr pair)))))
+               (make-transformer context (cdr pair))))
              ($$macros))
             (lambda (expression)
              (expand-macro context expression))))
