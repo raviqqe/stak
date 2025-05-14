@@ -224,45 +224,44 @@
 
     (define library-symbol-separator #\%)
 
-    (define (parse-import-set set qualify)
-     (define (parse qualify)
-      (parse-import-set (cadr set) qualify))
+    (define (parse-import-set set)
+     (let loop ((set set) (qualify (lambda (name) name)))
+      (let ((loop (lambda (qualify) (loop (cadr set) qualify))))
+       (case (predicate set)
+        ((except)
+         (loop
+          (let ((names (cddr set)))
+           (lambda (name)
+            (if (memq name names)
+             #f
+             (qualify name))))))
 
-     (case (predicate set)
-      ((except)
-       (let ((names (cddr set)))
-        (parse
-         (lambda (name)
-          (if (memq name names)
-           #f
-           (qualify name))))))
+        ((only)
+         (loop
+          (let ((names (cddr set)))
+           (lambda (name)
+            (if (memq name names)
+             (qualify name)
+             #f)))))
 
-      ((only)
-       (let ((names (cddr set)))
-        (parse
-         (lambda (name)
-          (if (memq name names)
-           (qualify name)
-           #f)))))
+        ((prefix)
+         (loop
+          (lambda (name)
+           (qualify (symbol-append (caddr set) name)))))
 
-      ((prefix)
-       (parse
-        (lambda (name)
-         (qualify (symbol-append (caddr set) name)))))
+        ((rename)
+         (loop
+          (lambda (name)
+           (qualify
+            (cond
+             ((assq name (cddr set)) =>
+              cadr)
 
-      ((rename)
-       (parse
-        (lambda (name)
-         (qualify
-          (cond
-           ((assq name (cddr set)) =>
-            cadr)
+             (else
+              name))))))
 
-           (else
-            name))))))
-
-      (else
-       (values set qualify))))
+        (else
+         (cons set qualify))))))
 
     ; Macro system
 
@@ -1026,7 +1025,7 @@
     (define (expand-library-bodies context sets)
      (flat-map
       (lambda (set)
-       (let-values (((set _) (parse-import-set set (lambda (name) name))))
+       (let ((set (car (parse-import-set set))))
         (if (library-context-import! context set)
          (let ((library (library-context-find context set)))
           (append
@@ -1038,14 +1037,14 @@
     (define (parse-import-sets context sets)
      (flat-map
       (lambda (set)
-       (let-values (((set qualify) (parse-import-set set (lambda (name) name))))
+       (let ((pair (parse-import-set set)))
         (flat-map
          (lambda (names)
-          (let ((name (qualify (car names))))
+          (let ((name ((cdr pair) (car names))))
            (if name
             (list (cons name (cdr names)))
             '())))
-         (library-exports (library-context-find context set)))))
+         (library-exports (library-context-find context (car pair))))))
       sets))
 
     (define (expand-library-expression rename expression)
@@ -1716,18 +1715,19 @@
            (let ((names
                   (flat-map
                    (lambda (set)
-                    (let-values (((set qualify)
-                                  (parse-import-set set (lambda (name) name))))
-                     (let ((pair (assoc set libraries)))
-                      (unless pair
-                       (error "unknown library" set))
-                      (flat-map
-                       (lambda (pair)
-                        (let ((name (qualify (car pair))))
-                         (if name
-                          (list (cons name (cdr pair)))
-                          '())))
-                       (cdr pair)))))
+                    (let* ((pair (parse-import-set set))
+                           (set (car pair))
+                           (qualify (cdr pair))
+                           (pair (assoc set libraries)))
+                     (unless pair
+                      (error "unknown library" set))
+                     (flat-map
+                      (lambda (pair)
+                       (let ((name (qualify (car pair))))
+                        (if name
+                         (list (cons name (cdr pair)))
+                         '())))
+                      (cdr pair))))
                    (environment-imports environment))))
             (relaxed-deep-map
              (lambda (value)
