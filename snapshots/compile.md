@@ -2041,7 +2041,6 @@
   - imports
   - library-context
   - library-context?
-  - name-maps
   - library-context-set-libraries!
   - library-name
   - library-context-imported
@@ -2049,11 +2048,6 @@
   - imported
   - id->string
   - library-symbol-separator
-  - library-context-name-maps
-  - library-context-set-name-maps!
-  - maps
-  - build-library-name
-  - renamed
   - library-context-import!
   - library-imports
   - library-body
@@ -2061,15 +2055,16 @@
   - sets
   - body
   - library-context-id
+  - build-library-name
+  - id
+  - renamed
   - export
   - library-context-add!
   - make-library
   - rename
   - exports
   - collect-bodies
-  - imported-names
-  - rename-library-symbol
-  - id
+  - rename-symbol
   - bodies
   - make-library-context
   - import
@@ -13865,7 +13860,6 @@
       - make-library-context
       - libraries
       - imported
-      - name-maps
     - library-context?
     - list
       - libraries
@@ -13875,10 +13869,6 @@
       - imported
       - library-context-imported
       - library-context-set-imported!
-    - list
-      - name-maps
-      - library-context-name-maps
-      - library-context-set-name-maps!
   - list
     - define
     - list
@@ -14026,91 +14016,6 @@
   - list
     - define
     - list
-      - rename-library-symbol
-      - context
-      - id
-      - name
-    - list
-      - if
-      - list
-        - built-in-symbol?
-        - name
-      - name
-      - list
-        - let\*
-        - list
-          - list
-            - maps
-            - list
-              - library-context-name-maps
-              - context
-          - list
-            - pair
-            - list
-              - or
-              - list
-                - assq
-                - id
-                - maps
-              - list
-                - cons
-                - id
-                - list
-                  - quote
-                  - ()
-          - list
-            - names
-            - list
-              - cdr
-              - pair
-        - list
-          - when
-          - list
-            - null?
-            - names
-          - list
-            - library-context-set-name-maps!
-            - context
-            - list
-              - cons
-              - pair
-              - maps
-        - list
-          - cond
-          - list
-            - list
-              - assq
-              - name
-              - names
-            - =>
-            - cdr
-          - list
-            - else
-            - list
-              - let
-              - list
-                - list
-                  - renamed
-                  - list
-                    - string->uninterned-symbol
-                    - list
-                      - build-library-name
-                      - id
-                      - name
-              - list
-                - set-cdr!
-                - pair
-                - list
-                  - cons
-                  - list
-                    - cons
-                    - name
-                    - renamed
-                  - names
-              - renamed
-  - list
-    - define
-    - list
       - expand-library-bodies
       - context
       - sets
@@ -14233,7 +14138,6 @@
     - define
     - list
       - expand-library-expression
-      - names
       - rename
       - expression
     - list
@@ -14243,26 +14147,14 @@
         - list
           - value
         - list
-          - cond
+          - if
           - list
-            - list
-              - not
-              - list
-                - symbol?
-                - value
+            - symbol?
             - value
           - list
-            - list
-              - assq
-              - value
-              - names
-            - =>
-            - cdr
-          - list
-            - else
-            - list
-              - rename
-              - value
+            - rename
+            - value
+          - value
       - expression
   - list
     - define
@@ -14294,13 +14186,68 @@
             - cddr
             - expression
     - list
+      - define
+      - id
+      - list
+        - library-context-id
+        - context
+    - list
+      - define
+      - names
+      - list
+        - parse-import-sets
+        - context
+        - list
+          - collect-bodies
+          - list
+            - quote
+            - import
+    - list
+      - define
+      - list
+        - rename-symbol
+        - name
+      - list
+        - cond
+        - list
+          - list
+            - built-in-symbol?
+            - name
+          - name
+        - list
+          - list
+            - assq
+            - name
+            - names
+          - =>
+          - cdr
+        - list
+          - else
+          - list
+            - let
+            - list
+              - list
+                - renamed
+                - list
+                  - string->uninterned-symbol
+                  - list
+                    - build-library-name
+                    - id
+                    - name
+            - list
+              - set!
+              - names
+              - list
+                - cons
+                - list
+                  - cons
+                  - name
+                  - renamed
+                - names
+            - renamed
+    - list
       - let
       - list
-        - list
-          - id
-          - list
-            - library-context-id
-            - context
         - list
           - exports
           - list
@@ -14315,16 +14262,6 @@
             - list
               - quote
               - begin
-        - list
-          - imported-names
-          - list
-            - parse-import-sets
-            - context
-            - list
-              - collect-bodies
-              - list
-                - quote
-                - import
       - list
         - library-context-add!
         - context
@@ -14372,25 +14309,10 @@
                     - car
                     - pair
                   - list
-                    - cond
+                    - rename-symbol
                     - list
-                      - list
-                        - assq
-                        - list
-                          - cdr
-                          - pair
-                        - imported-names
-                      - =>
                       - cdr
-                    - list
-                      - else
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - list
-                          - cdr
-                          - pair
+                      - pair
             - exports
           - list
             - collect-bodies
@@ -14399,16 +14321,7 @@
               - import
           - list
             - expand-library-expression
-            - imported-names
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - rename-library-symbol
-                - context
-                - id
-                - name
+            - rename-symbol
             - bodies
   - list
     - define
@@ -14430,9 +14343,6 @@
           - context
           - list
             - make-library-context
-            - list
-              - quote
-              - ()
             - list
               - quote
               - ()
@@ -14506,14 +14416,30 @@
             - list
               - expand-library-expression
               - list
-                - parse-import-sets
-                - context
-                - import-sets
-              - list
-                - lambda
+                - let
                 - list
-                  - name
-                - name
+                  - list
+                    - names
+                    - list
+                      - parse-import-sets
+                      - context
+                      - import-sets
+                - list
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - assq
+                        - name
+                        - names
+                      - =>
+                      - cdr
+                    - list
+                      - else
+                      - name
               - list
                 - filter
                 - list
