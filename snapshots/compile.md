@@ -1915,7 +1915,6 @@
   - type
   - code
   - procedure-code
-  - result
   - n
   - list-position
   - ys
@@ -2118,6 +2117,7 @@
   - constants
   - continuations
   - marshal-context-symbols
+  - bytes->list
   - marshal-context-set-constants!
   - marshal-context-constants
   - marshalled
@@ -3709,27 +3709,25 @@
     - set 27
     - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 2 #f
-          - get 1
-          - get 6
+        - constant procedure 1 #f
+          - get 0
+          - get 5
           - call 1 #f ||
           - call 2 #f ||
           - if
-            - get 5
-            - get 2
+            - get 4
+            - get 1
             - call 2 #f ||
             - constant 1
-            - get 3
-            - call 2 #f ||
             - get 2
-            - call 2 #f 6
             - call 2 #f ||
-          - get 0
+            - call 1 #f 4
+            - call 2 #f ||
+          - constant ()
         - call 1 #f $$close
         - set 1
         - constant 0
-        - constant ()
-        - call 2 #f 2
+        - call 1 #f 1
       - call 1 #f $$close
       - constant #f
       - call 1 #f 1
@@ -10670,7 +10668,7 @@
   - list
     - define
     - list
-      - bytevector->list
+      - bytes->list
       - xs
     - list
       - let
@@ -10679,11 +10677,6 @@
         - list
           - index
           - 0
-        - list
-          - result
-          - list
-            - quote
-            - ()
       - list
         - if
         - list
@@ -10704,8 +10697,9 @@
               - -
               - 1
               - index
-            - result
-        - result
+        - list
+          - quote
+          - ()
   - list
     - define
     - list
@@ -15189,7 +15183,7 @@
           - list
             - marshal
             - list
-              - bytevector->list
+              - bytes->list
               - value
       - list
         - else
