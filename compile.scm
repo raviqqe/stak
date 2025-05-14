@@ -982,11 +982,10 @@
      (body library-body))
 
     (define-record-type library-context
-     (make-library-context libraries imported name-maps)
+     (make-library-context libraries imported)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
-     (imported library-context-imported library-context-set-imported!)
-     (name-maps library-context-name-maps library-context-set-name-maps!))
+     (imported library-context-imported library-context-set-imported!))
 
     (define (library-context-id context)
      (length (library-context-libraries context)))
