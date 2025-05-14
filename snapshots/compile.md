@@ -2042,7 +2042,6 @@
   - library-context
   - library-context?
   - library-context-set-libraries!
-  - library-name
   - library-context-imported
   - library-context-set-imported!
   - imported
@@ -13836,14 +13835,10 @@
     - library
     - list
       - make-library
-      - name
       - exports
       - imports
       - body
     - library?
-    - list
-      - name
-      - library-name
     - list
       - exports
       - library-exports
@@ -13907,6 +13902,7 @@
     - list
       - library-context-add!
       - context
+      - name
       - library
     - list
       - library-context-set-libraries!
@@ -13915,9 +13911,7 @@
         - cons
         - list
           - cons
-          - list
-            - library-name
-            - library
+          - name
           - library
         - list
           - library-context-libraries
@@ -14266,10 +14260,10 @@
         - library-context-add!
         - context
         - list
+          - cadr
+          - expression
+        - list
           - make-library
-          - list
-            - cadr
-            - expression
           - list
             - map
             - list
