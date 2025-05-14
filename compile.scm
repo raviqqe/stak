@@ -980,10 +980,10 @@
      (body library-body))
 
     (define-record-type library-context
-     (make-library-context libraries name-maps)
+     (make-library-context libraries imported name-maps)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
-     (imported-names library-context-imported-names library-context-set-imported-names!)
+     (imported library-context-imported library-context-set-imported!)
      (name-maps library-context-name-maps library-context-set-name-maps!))
 
     (define (library-context-id context)
@@ -1005,10 +1005,11 @@
        (library-context-libraries context))))
 
     (define (library-context-import! context name)
-     (let* ((state (library-context-assoc context name))
-            (imported (library-state-imported state)))
-      (library-state-set-imported! state #t)
-      imported))
+     (let* ((names (library-context-imported context))
+            (imported (member name names)))
+      (unless imported
+       (library-context-set-imported! context (cons name names)))
+      (not imported)))
 
     ;; Procedures
 
@@ -1117,7 +1118,7 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '()))
+     (let* ((context (make-library-context '() '() '()))
             (expressions (cdr expression))
             (import-sets
              (flat-map
