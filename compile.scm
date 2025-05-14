@@ -1028,22 +1028,6 @@
       (list->string (list library-symbol-separator))
       (symbol->string name)))
 
-    (define (rename-library-symbol context id name)
-     (if (built-in-symbol? name)
-      name
-      (let* ((maps (library-context-name-maps context))
-             (pair (or (assq id maps) (cons id '())))
-             (names (cdr pair)))
-       (when (null? names)
-        (library-context-set-name-maps! context (cons pair maps)))
-       (cond
-        ((assq name names) =>
-         cdr)
-        (else
-         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
-          (set-cdr! pair (cons (cons name renamed) names))
-          renamed))))))
-
     (define (expand-library-bodies context sets)
      (flat-map
       (lambda (set)
@@ -1080,6 +1064,22 @@
         (else
          (rename value))))
       expression))
+
+    (define (rename-library-symbol context id name)
+     (if (built-in-symbol? name)
+      name
+      (let* ((maps (library-context-name-maps context))
+             (pair (or (assq id maps) (cons id '())))
+             (names (cdr pair)))
+       (when (null? names)
+        (library-context-set-name-maps! context (cons pair maps)))
+       (cond
+        ((assq name names) =>
+         cdr)
+        (else
+         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+          (set-cdr! pair (cons (cons name renamed) names))
+          renamed))))))
 
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
