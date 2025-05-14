@@ -1077,9 +1077,7 @@
       (if (built-in-symbol? name)
        name
        (cond
-        ((assq (cdr pair) imports) =>
-         cdr)
-        ((assq name names) =>
+        ((or (assq name imports) (assq name names)) =>
          cdr)
         (else
          (let ((renamed (string->uninterned-symbol (build-library-name id name))))
@@ -1126,8 +1124,12 @@
         (append
          (expand-library-bodies context import-sets)
          (expand-library-expression
-          (parse-import-sets context import-sets)
-          (lambda (name) name)
+          (lambda (name)
+           (cond
+            ((assq name (parse-import-sets context import-sets)) =>
+             cdr)
+            (else
+             name)))
           (filter
            (lambda (expression) (not (memq (predicate expression) library-predicates)))
            expressions))))
