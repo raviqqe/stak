@@ -3816,94 +3816,106 @@
     - set 3
     - constant #\%
     - set 2
-    - constant procedure 2 #f
+    - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 5
-          - call 1 #f ||
-          - get 1
-          - call 2 #f 9
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - constant except
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - get 3
+                    - call 2 #f ||
+                    - if
+                      - constant #f
+                    - get 0
+                    - call 1 #f 9
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - call 1 #f 3
+              - get 0
+              - constant only
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - get 3
+                    - call 2 #f ||
+                    - if
+                      - get 0
+                      - call 1 #f 9
+                    - constant #f
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - call 1 #f 3
+              - get 0
+              - constant prefix
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 7
+                  - call 1 #f ||
+                  - get 1
+                  - call 2 #f 18
+                  - call 1 #f 7
+                - call 1 #f $$close
+                - call 1 #f 3
+              - get 0
+              - constant rename
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - if
+                      - get 0
+                      - call 1 #f ||
+                    - get 2
+                  - call 1 #f $$close
+                  - get 1
+                  - get 9
+                  - call 1 #f ||
+                  - call 2 #f ||
+                  - call 1 #f 1
+                  - set 1
+                  - call 1 #f 7
+                - call 1 #f $$close
+                - call 1 #f 3
+              - get 5
+              - get 5
+              - call 2 #f ||
+            - call 1 #f $$close
+            - get 4
+            - call 1 #f 17
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 4
+            - call 1 #f ||
+            - get 1
+            - call 2 #f 8
+          - call 1 #f $$close
+          - call 1 #f 1
         - call 1 #f $$close
         - set 1
+        - get 2
         - constant procedure 1 #f
           - get 0
-          - constant except
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - get 3
-                - call 2 #f ||
-                - if
-                  - constant #f
-                - get 0
-                - call 1 #f 9
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant only
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - get 3
-                - call 2 #f ||
-                - if
-                  - get 0
-                  - call 1 #f 9
-                - constant #f
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant prefix
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 7
-              - call 1 #f ||
-              - get 1
-              - call 2 #f 14
-              - call 1 #f 7
-            - call 1 #f $$close
-            - call 1 #f 3
-          - get 0
-          - constant rename
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - if
-                  - get 0
-                  - call 1 #f ||
-                - get 2
-              - call 1 #f $$close
-              - get 1
-              - get 9
-              - call 1 #f ||
-              - call 2 #f ||
-              - call 1 #f 1
-              - set 1
-              - call 1 #f 7
-            - call 1 #f $$close
-            - call 1 #f 3
-          - get 5
-          - get 5
-          - call 2 #f ||
         - call 1 #f $$close
-        - get 4
-        - call 1 #f 13
-        - call 1 #f 1
+        - call 2 #f 2
       - call 1 #f $$close
       - constant #f
       - call 1 #f 1
@@ -6629,56 +6641,56 @@
                                     - call 2 #f 83
                                   - call 1 #f $$close
                                   - constant procedure 1 #f
-                                    - constant procedure 0 #f
-                                      - get 1
+                                    - constant procedure 1 #f
                                       - constant procedure 1 #f
-                                        - get 0
-                                      - call 1 #f $$close
-                                      - call 2 #f 72
-                                    - call 1 #f $$close
-                                    - constant procedure 2 #f
-                                      - constant procedure 2 #f
                                         - constant procedure 1 #f
-                                          - get 0
-                                          - constant #f
-                                          - call 2 #f ||
-                                          - if
-                                            - constant "unknown library"
-                                            - get 4
-                                            - call 2 #f ||
-                                            - continue
-                                          - constant #f
-                                          - set 0
                                           - constant procedure 1 #f
+                                            - get 0
+                                            - constant #f
+                                            - call 2 #f ||
+                                            - if
+                                              - constant "unknown library"
+                                              - get 5
+                                              - call 2 #f ||
+                                              - continue
+                                            - constant #f
+                                            - set 0
                                             - constant procedure 1 #f
-                                              - get 0
-                                              - if
+                                              - constant procedure 1 #f
                                                 - get 0
-                                                - get 3
-                                                - call 1 #f ||
-                                                - call 2 #f ||
-                                                - call 1 #f ||
-                                              - constant ()
+                                                - if
+                                                  - get 0
+                                                  - get 3
+                                                  - call 1 #f ||
+                                                  - call 2 #f ||
+                                                  - call 1 #f ||
+                                                - constant ()
+                                              - call 1 #f $$close
+                                              - get 1
+                                              - call 1 #f ||
+                                              - call 1 #f 6
+                                              - call 1 #f 1
                                             - call 1 #f $$close
                                             - get 1
                                             - call 1 #f ||
-                                            - call 1 #f 6
-                                            - call 1 #f 1
+                                            - call 2 #f 95
                                           - call 1 #f $$close
-                                          - get 1
-                                          - call 1 #f ||
-                                          - call 2 #f 96
+                                          - get 3
+                                          - get 18
+                                          - call 2 #f ||
+                                          - call 1 #f 1
                                         - call 1 #f $$close
-                                        - get 2
-                                        - get 19
-                                        - call 2 #f ||
+                                        - get 3
+                                        - call 1 #f ||
                                         - call 1 #f 1
                                       - call 1 #f $$close
-                                      - get 2
-                                      - get 2
-                                      - call 2 #f 2
+                                      - get 1
+                                      - call 1 #f ||
+                                      - call 1 #f 1
                                     - call 1 #f $$close
-                                    - call 2 #f ||
+                                    - get 1
+                                    - call 1 #f 71
+                                    - call 1 #f 1
                                   - call 1 #f $$close
                                   - get 3
                                   - call 1 #f ||

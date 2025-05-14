@@ -1924,7 +1924,6 @@
   - only
   - prefix
   - symbol-append
-  - parse
   - macro-state
   - macro-state?
   - static-symbols
@@ -2053,6 +2052,7 @@
   - library-context-find
   - sets
   - body
+  - predicate
   - library-context-id
   - build-library-name
   - id
@@ -2073,7 +2073,7 @@
   - expand-library-expression
   - parse-import-sets
   - import-sets
-  - predicate
+  - maybe-car
   - library-predicates
   - expressions
   - map-values
@@ -4096,94 +4096,106 @@
     - set 3
     - constant #\%
     - set 2
-    - constant procedure 2 #f
+    - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 5
-          - call 1 #f ||
-          - get 1
-          - call 2 #f 9
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - constant except
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - get 3
+                    - call 2 #f ||
+                    - if
+                      - constant #f
+                    - get 0
+                    - call 1 #f 9
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - call 1 #f 3
+              - get 0
+              - constant only
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - get 3
+                    - call 2 #f ||
+                    - if
+                      - get 0
+                      - call 1 #f 9
+                    - constant #f
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - call 1 #f 3
+              - get 0
+              - constant prefix
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 7
+                  - call 1 #f ||
+                  - get 1
+                  - call 2 #f 18
+                  - call 1 #f 7
+                - call 1 #f $$close
+                - call 1 #f 3
+              - get 0
+              - constant rename
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - if
+                      - get 0
+                      - call 1 #f ||
+                    - get 2
+                  - call 1 #f $$close
+                  - get 1
+                  - get 9
+                  - call 1 #f ||
+                  - call 2 #f ||
+                  - call 1 #f 1
+                  - set 1
+                  - call 1 #f 7
+                - call 1 #f $$close
+                - call 1 #f 3
+              - get 5
+              - get 5
+              - call 2 #f ||
+            - call 1 #f $$close
+            - get 4
+            - call 1 #f 17
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 4
+            - call 1 #f ||
+            - get 1
+            - call 2 #f 8
+          - call 1 #f $$close
+          - call 1 #f 1
         - call 1 #f $$close
         - set 1
+        - get 2
         - constant procedure 1 #f
           - get 0
-          - constant except
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - get 3
-                - call 2 #f ||
-                - if
-                  - constant #f
-                - get 0
-                - call 1 #f 9
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant only
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - get 3
-                - call 2 #f ||
-                - if
-                  - get 0
-                  - call 1 #f 9
-                - constant #f
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant prefix
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 7
-              - call 1 #f ||
-              - get 1
-              - call 2 #f 14
-              - call 1 #f 7
-            - call 1 #f $$close
-            - call 1 #f 3
-          - get 0
-          - constant rename
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - if
-                  - get 0
-                  - call 1 #f ||
-                - get 2
-              - call 1 #f $$close
-              - get 1
-              - get 9
-              - call 1 #f ||
-              - call 2 #f ||
-              - call 1 #f 1
-              - set 1
-              - call 1 #f 7
-            - call 1 #f $$close
-            - call 1 #f 3
-          - get 5
-          - get 5
-          - call 2 #f ||
         - call 1 #f $$close
-        - get 4
-        - call 1 #f 13
-        - call 1 #f 1
+        - call 2 #f 2
       - call 1 #f $$close
       - constant #f
       - call 1 #f 1
@@ -6909,56 +6921,56 @@
                                     - call 2 #f 83
                                   - call 1 #f $$close
                                   - constant procedure 1 #f
-                                    - constant procedure 0 #f
-                                      - get 1
+                                    - constant procedure 1 #f
                                       - constant procedure 1 #f
-                                        - get 0
-                                      - call 1 #f $$close
-                                      - call 2 #f 72
-                                    - call 1 #f $$close
-                                    - constant procedure 2 #f
-                                      - constant procedure 2 #f
                                         - constant procedure 1 #f
-                                          - get 0
-                                          - constant #f
-                                          - call 2 #f ||
-                                          - if
-                                            - constant "unknown library"
-                                            - get 4
-                                            - call 2 #f ||
-                                            - continue
-                                          - constant #f
-                                          - set 0
                                           - constant procedure 1 #f
+                                            - get 0
+                                            - constant #f
+                                            - call 2 #f ||
+                                            - if
+                                              - constant "unknown library"
+                                              - get 5
+                                              - call 2 #f ||
+                                              - continue
+                                            - constant #f
+                                            - set 0
                                             - constant procedure 1 #f
-                                              - get 0
-                                              - if
+                                              - constant procedure 1 #f
                                                 - get 0
-                                                - get 3
-                                                - call 1 #f ||
-                                                - call 2 #f ||
-                                                - call 1 #f ||
-                                              - constant ()
+                                                - if
+                                                  - get 0
+                                                  - get 3
+                                                  - call 1 #f ||
+                                                  - call 2 #f ||
+                                                  - call 1 #f ||
+                                                - constant ()
+                                              - call 1 #f $$close
+                                              - get 1
+                                              - call 1 #f ||
+                                              - call 1 #f 6
+                                              - call 1 #f 1
                                             - call 1 #f $$close
                                             - get 1
                                             - call 1 #f ||
-                                            - call 1 #f 6
-                                            - call 1 #f 1
+                                            - call 2 #f 95
                                           - call 1 #f $$close
-                                          - get 1
-                                          - call 1 #f ||
-                                          - call 2 #f 96
+                                          - get 3
+                                          - get 18
+                                          - call 2 #f ||
+                                          - call 1 #f 1
                                         - call 1 #f $$close
-                                        - get 2
-                                        - get 19
-                                        - call 2 #f ||
+                                        - get 3
+                                        - call 1 #f ||
                                         - call 1 #f 1
                                       - call 1 #f $$close
-                                      - get 2
-                                      - get 2
-                                      - call 2 #f 2
+                                      - get 1
+                                      - call 1 #f ||
+                                      - call 1 #f 1
                                     - call 1 #f $$close
-                                    - call 2 #f ||
+                                    - get 1
+                                    - call 1 #f 71
+                                    - call 1 #f 1
                                   - call 1 #f $$close
                                   - get 3
                                   - call 1 #f ||
@@ -11168,7 +11180,7 @@
   - list
     - define
     - list
-      - predicate
+      - maybe-car
       - expression
     - list
       - and
@@ -11268,125 +11280,142 @@
     - list
       - parse-import-set
       - set
-      - qualify
     - list
-      - define
+      - let
+      - loop
       - list
-        - parse
-        - qualify
-      - list
-        - parse-import-set
         - list
-          - cadr
           - set
-        - qualify
-    - list
-      - case
-      - list
-        - predicate
-        - set
-      - list
+          - set
         - list
-          - except
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - parse
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - #f
-                - list
-                  - qualify
-                  - name
-      - list
-        - list
-          - only
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - parse
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - list
-                  - qualify
-                  - name
-                - #f
-      - list
-        - list
-          - prefix
-        - list
-          - parse
+          - qualify
           - list
             - lambda
             - list
               - name
+            - name
+      - list
+        - let
+        - list
+          - list
+            - loop
             - list
-              - qualify
+              - lambda
               - list
-                - symbol-append
+                - qualify
+              - list
+                - loop
                 - list
-                  - caddr
+                  - cadr
                   - set
-                - name
-      - list
+                - qualify
         - list
-          - rename
-        - list
-          - parse
+          - case
           - list
-            - lambda
+            - maybe-car
+            - set
+          - list
             - list
-              - name
+              - except
             - list
-              - qualify
+              - loop
               - list
-                - cond
+                - let
                 - list
                   - list
-                    - assq
-                    - name
+                    - names
                     - list
                       - cddr
                       - set
-                  - =>
-                  - cadr
                 - list
-                  - else
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - if
+                    - list
+                      - memq
+                      - name
+                      - names
+                    - #f
+                    - list
+                      - qualify
+                      - name
+          - list
+            - list
+              - only
+            - list
+              - loop
+              - list
+                - let
+                - list
+                  - list
+                    - names
+                    - list
+                      - cddr
+                      - set
+                - list
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - if
+                    - list
+                      - memq
+                      - name
+                      - names
+                    - list
+                      - qualify
+                      - name
+                    - #f
+          - list
+            - list
+              - prefix
+            - list
+              - loop
+              - list
+                - lambda
+                - list
                   - name
-      - list
-        - else
-        - list
-          - values
-          - set
-          - qualify
+                - list
+                  - qualify
+                  - list
+                    - symbol-append
+                    - list
+                      - caddr
+                      - set
+                    - name
+          - list
+            - list
+              - rename
+            - list
+              - loop
+              - list
+                - lambda
+                - list
+                  - name
+                - list
+                  - qualify
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - assq
+                        - name
+                        - list
+                          - cddr
+                          - set
+                      - =>
+                      - cadr
+                    - list
+                      - else
+                      - name
+          - list
+            - else
+            - list
+              - cons
+              - set
+              - qualify
   - list
     - define-record-type
     - macro-state
@@ -12336,7 +12365,7 @@
           - resolve-denotation
           - definition-context
           - list
-            - predicate
+            - maybe-car
             - transformer
         - list
           - list
@@ -14020,20 +14049,15 @@
         - list
           - set
         - list
-          - let-values
+          - let
           - list
             - list
+              - set
               - list
-                - set
-                - \_
-              - list
-                - parse-import-set
-                - set
+                - car
                 - list
-                  - lambda
-                  - list
-                    - name
-                  - name
+                  - parse-import-set
+                  - set
           - list
             - if
             - list
@@ -14077,20 +14101,13 @@
         - list
           - set
         - list
-          - let-values
+          - let
           - list
             - list
-              - list
-                - set
-                - qualify
+              - pair
               - list
                 - parse-import-set
                 - set
-                - list
-                  - lambda
-                  - list
-                    - name
-                  - name
           - list
             - flat-map
             - list
@@ -14103,7 +14120,9 @@
                   - list
                     - name
                     - list
-                      - qualify
+                      - list
+                        - cdr
+                        - pair
                       - list
                         - car
                         - names
@@ -14126,7 +14145,9 @@
               - list
                 - library-context-find
                 - context
-                - set
+                - list
+                  - car
+                  - pair
       - sets
   - list
     - define
@@ -14280,7 +14301,7 @@
                       - list
                         - eq?
                         - list
-                          - predicate
+                          - maybe-car
                           - name
                         - list
                           - quote
@@ -14361,7 +14382,7 @@
                 - list
                   - eq?
                   - list
-                    - predicate
+                    - maybe-car
                     - expression
                   - list
                     - quote
@@ -14384,7 +14405,7 @@
             - list
               - eq?
               - list
-                - predicate
+                - maybe-car
                 - expression
               - list
                 - quote
@@ -14445,7 +14466,7 @@
                     - list
                       - memq
                       - list
-                        - predicate
+                        - maybe-car
                         - expression
                       - library-predicates
                 - expressions
@@ -16686,33 +16707,34 @@
     - constant set
     - constant ()
     - call 2 #f ||
-    - constant let-values
-    - constant set
-    - constant qualify
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
+    - constant let\*
+    - constant pair
     - constant parse-import-set
     - constant set
-    - constant lambda
-    - constant name
-    - constant ()
-    - call 2 #f ||
-    - constant name
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
-    - constant let
+    - call 2 #f ||
+    - constant set
+    - constant car
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant qualify
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
     - constant pair
     - constant assoc
     - constant set
@@ -16725,6 +16747,9 @@
     - call 2 #f ||
     - call 2 #f ||
     - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
     - call 2 #f ||
     - constant unless
     - constant pair
@@ -16806,10 +16831,6 @@
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
