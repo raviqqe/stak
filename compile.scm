@@ -974,9 +974,8 @@
     ;; Types
 
     (define-record-type library
-     (make-library name exports imports body)
+     (make-library exports imports body)
      library?
-     (name library-name)
      (exports library-exports)
      (imports library-imports)
      (body library-body))
@@ -997,12 +996,10 @@
       (else
        (error "unknown library" name))))
 
-    (define (library-context-add! context library)
+    (define (library-context-add! context name library)
      (library-context-set-libraries!
       context
-      (cons
-       (cons (library-name library) library)
-       (library-context-libraries context))))
+      (cons (cons name library) (library-context-libraries context))))
 
     (define (library-context-import! context name)
      (let* ((names (library-context-imported context))
@@ -1085,8 +1082,8 @@
            (bodies (collect-bodies 'begin)))
       (library-context-add!
        context
+       (cadr expression)
        (make-library
-        (cadr expression)
         (map
          (lambda (name)
           (let ((pair
