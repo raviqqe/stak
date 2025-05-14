@@ -2050,7 +2050,6 @@
   - library-imports
   - library-body
   - library-context-find
-  - sets
   - body
   - predicate
   - library-context-id
@@ -2058,11 +2057,11 @@
   - id
   - renamed
   - export
+  - collect-bodies
   - library-context-add!
   - make-library
   - rename
   - exports
-  - collect-bodies
   - rename-symbol
   - bodies
   - make-library-context
@@ -2071,8 +2070,8 @@
   - add-library-definition!
   - expand-library-bodies
   - expand-library-expression
-  - parse-import-sets
-  - import-sets
+  - collect-imported-names
+  - sets
   - maybe-car
   - library-predicates
   - expressions
@@ -14041,57 +14040,47 @@
     - list
       - expand-library-bodies
       - context
-      - sets
+      - names
     - list
       - flat-map
       - list
         - lambda
         - list
-          - set
+          - name
         - list
-          - let
+          - if
           - list
-            - list
-              - set
-              - list
-                - car
-                - list
-                  - parse-import-set
-                  - set
+            - library-context-import!
+            - context
+            - name
           - list
-            - if
+            - let
             - list
-              - library-context-import!
-              - context
-              - set
-            - list
-              - let
               - list
+                - library
                 - list
-                  - library
-                  - list
-                    - library-context-find
-                    - context
-                    - set
-              - list
-                - append
-                - list
-                  - expand-library-bodies
+                  - library-context-find
                   - context
-                  - list
-                    - library-imports
-                    - library
-                - list
-                  - library-body
-                  - library
+                  - name
             - list
-              - quote
-              - ()
-      - sets
+              - append
+              - list
+                - expand-library-bodies
+                - context
+                - list
+                  - library-imports
+                  - library
+              - list
+                - library-body
+                - library
+          - list
+            - quote
+            - ()
+      - names
   - list
     - define
     - list
-      - parse-import-sets
+      - collect-imported-names
       - context
       - sets
     - list
@@ -14099,55 +14088,47 @@
       - list
         - lambda
         - list
-          - set
+          - pair
         - list
-          - let
+          - flat-map
           - list
+            - lambda
             - list
-              - pair
-              - list
-                - parse-import-set
-                - set
-          - list
-            - flat-map
+              - names
             - list
-              - lambda
+              - let
               - list
-                - names
-              - list
-                - let
                 - list
-                  - list
-                    - name
-                    - list
-                      - list
-                        - cdr
-                        - pair
-                      - list
-                        - car
-                        - names
-                - list
-                  - if
                   - name
                   - list
                     - list
+                      - cdr
+                      - pair
                     - list
-                      - cons
-                      - name
-                      - list
-                        - cdr
-                        - names
-                  - list
-                    - quote
-                    - ()
-            - list
-              - library-exports
+                      - car
+                      - names
               - list
-                - library-context-find
-                - context
+                - if
+                - name
                 - list
-                  - car
-                  - pair
+                  - list
+                  - list
+                    - cons
+                    - name
+                    - list
+                      - cdr
+                      - names
+                - list
+                  - quote
+                  - ()
+          - list
+            - library-exports
+            - list
+              - library-context-find
+              - context
+              - list
+                - car
+                - pair
       - sets
   - list
     - define
@@ -14208,15 +14189,22 @@
         - context
     - list
       - define
-      - names
+      - sets
       - list
-        - parse-import-sets
-        - context
+        - map
+        - parse-import-set
         - list
           - collect-bodies
           - list
             - quote
             - import
+    - list
+      - define
+      - names
+      - list
+        - collect-imported-names
+        - context
+        - sets
     - list
       - define
       - list
@@ -14330,10 +14318,9 @@
                       - pair
             - exports
           - list
-            - collect-bodies
-            - list
-              - quote
-              - import
+            - map
+            - car
+            - sets
           - list
             - expand-library-expression
             - rename-symbol
@@ -14370,30 +14357,33 @@
             - cdr
             - expression
         - list
-          - import-sets
+          - sets
           - list
-            - flat-map
+            - map
+            - parse-import-set
             - list
-              - lambda
+              - flat-map
               - list
-                - expression
-              - list
-                - if
+                - lambda
                 - list
-                  - eq?
+                  - expression
+                - list
+                  - if
                   - list
-                    - maybe-car
+                    - eq?
+                    - list
+                      - maybe-car
+                      - expression
+                    - list
+                      - quote
+                      - import
+                  - list
+                    - cdr
                     - expression
                   - list
                     - quote
-                    - import
-                - list
-                  - cdr
-                  - expression
-                - list
-                  - quote
-                  - ()
-            - expressions
+                    - ()
+              - expressions
       - list
         - for-each
         - list
@@ -14427,7 +14417,10 @@
             - list
               - expand-library-bodies
               - context
-              - import-sets
+              - list
+                - map
+                - car
+                - sets
             - list
               - expand-library-expression
               - list
@@ -14436,9 +14429,9 @@
                   - list
                     - names
                     - list
-                      - parse-import-sets
+                      - collect-imported-names
                       - context
-                      - import-sets
+                      - sets
                 - list
                   - lambda
                   - list
@@ -16717,7 +16710,7 @@
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
-    - constant set
+    - constant name
     - constant car
     - constant pair
     - constant ()
@@ -16737,7 +16730,7 @@
     - call 2 #f ||
     - constant pair
     - constant assoc
-    - constant set
+    - constant name
     - constant libraries
     - constant ()
     - call 2 #f ||
@@ -16755,7 +16748,7 @@
     - constant pair
     - constant error
     - constant "unknown library"
-    - constant set
+    - constant name
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
