@@ -1124,12 +1124,13 @@
         (append
          (expand-library-bodies context import-sets)
          (expand-library-expression
-          (lambda (name)
-           (cond
-            ((assq name (parse-import-sets context import-sets)) =>
-             cdr)
-            (else
-             name)))
+          (let ((names (parse-import-sets context import-sets)))
+           (lambda (name)
+            (cond
+             ((assq name names) =>
+              cdr)
+             (else
+              name))))
           (filter
            (lambda (expression) (not (memq (predicate expression) library-predicates)))
            expressions))))
