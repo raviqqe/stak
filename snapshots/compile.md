@@ -2039,17 +2039,13 @@
   - constant-rib
   - library?
   - imports
-  - library-state
-  - library-state?
   - library-context
   - library-context?
   - name-maps
   - library-context-set-libraries!
   - library-name
-  - make-library-state
-  - library-context-assoc
-  - library-state-imported
-  - library-state-set-imported!
+  - library-context-imported
+  - library-context-set-imported!
   - imported
   - id->string
   - library-symbol-separator
@@ -2086,9 +2082,8 @@
   - predicate
   - library-predicates
   - expressions
-  - library-exports
   - map-values
-  - library-state-library
+  - library-exports
   - library-context-libraries
   - macro-context-state
   - macro-state-literals
@@ -13865,25 +13860,11 @@
       - library-body
   - list
     - define-record-type
-    - library-state
-    - list
-      - make-library-state
-      - library
-      - imported
-    - library-state?
-    - list
-      - library
-      - library-state-library
-    - list
-      - imported
-      - library-state-imported
-      - library-state-set-imported!
-  - list
-    - define-record-type
     - library-context
     - list
       - make-library-context
       - libraries
+      - imported
       - name-maps
     - library-context?
     - list
@@ -13891,13 +13872,27 @@
       - library-context-libraries
       - library-context-set-libraries!
     - list
+      - imported
+      - library-context-imported
+      - library-context-set-imported!
+    - list
       - name-maps
       - library-context-name-maps
       - library-context-set-name-maps!
   - list
     - define
     - list
-      - library-context-assoc
+      - library-context-id
+      - context
+    - list
+      - length
+      - list
+        - library-context-libraries
+        - context
+  - list
+    - define
+    - list
+      - library-context-find
       - context
       - name
     - list
@@ -13920,28 +13915,6 @@
   - list
     - define
     - list
-      - library-context-id
-      - context
-    - list
-      - length
-      - list
-        - library-context-libraries
-        - context
-  - list
-    - define
-    - list
-      - library-context-find
-      - context
-      - name
-    - list
-      - library-state-library
-      - list
-        - library-context-assoc
-        - context
-        - name
-  - list
-    - define
-    - list
       - library-context-add!
       - context
       - library
@@ -13955,10 +13928,7 @@
           - list
             - library-name
             - library
-          - list
-            - make-library-state
-            - library
-            - #f
+          - library
         - list
           - library-context-libraries
           - context
@@ -13972,21 +13942,29 @@
       - let\*
       - list
         - list
-          - state
+          - names
           - list
-            - library-context-assoc
+            - library-context-imported
             - context
-            - name
         - list
           - imported
           - list
-            - library-state-imported
-            - state
+            - member
+            - name
+            - names
       - list
-        - library-state-set-imported!
-        - state
-        - #t
-      - imported
+        - unless
+        - imported
+        - list
+          - library-context-set-imported!
+          - context
+          - list
+            - cons
+            - name
+            - names
+      - list
+        - not
+        - imported
   - list
     - define
     - list
@@ -14164,9 +14142,6 @@
               - context
               - set
             - list
-              - quote
-              - ()
-            - list
               - let
               - list
                 - list
@@ -14186,6 +14161,9 @@
                 - list
                   - library-body
                   - library
+            - list
+              - quote
+              - ()
       - sets
   - list
     - define
@@ -14458,6 +14436,9 @@
             - list
               - quote
               - ()
+            - list
+              - quote
+              - ()
         - list
           - expressions
           - list
@@ -14552,11 +14533,8 @@
           - map-values
           - library-exports
           - list
-            - map-values
-            - library-state-library
-            - list
-              - library-context-libraries
-              - context
+            - library-context-libraries
+            - context
   - list
     - define
     - list

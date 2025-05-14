@@ -981,19 +981,17 @@
      (imports library-imports)
      (body library-body))
 
-    (define-record-type library-state
-     (make-library-state library imported)
-     library-state?
-     (library library-state-library)
-     (imported library-state-imported library-state-set-imported!))
-
     (define-record-type library-context
-     (make-library-context libraries name-maps)
+     (make-library-context libraries imported name-maps)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
+     (imported library-context-imported library-context-set-imported!)
      (name-maps library-context-name-maps library-context-set-name-maps!))
 
-    (define (library-context-assoc context name)
+    (define (library-context-id context)
+     (length (library-context-libraries context)))
+
+    (define (library-context-find context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
        cdr)
@@ -1001,26 +999,19 @@
       (else
        (error "unknown library" name))))
 
-    (define (library-context-id context)
-     (length (library-context-libraries context)))
-
-    (define (library-context-find context name)
-     (library-state-library (library-context-assoc context name)))
-
     (define (library-context-add! context library)
      (library-context-set-libraries!
       context
       (cons
-       (cons
-        (library-name library)
-        (make-library-state library #f))
+       (cons (library-name library) library)
        (library-context-libraries context))))
 
     (define (library-context-import! context name)
-     (let* ((state (library-context-assoc context name))
-            (imported (library-state-imported state)))
-      (library-state-set-imported! state #t)
-      imported))
+     (let* ((names (library-context-imported context))
+            (imported (member name names)))
+      (unless imported
+       (library-context-set-imported! context (cons name names)))
+      (not imported)))
 
     ;; Procedures
 
@@ -1058,11 +1049,11 @@
       (lambda (set)
        (let-values (((set _) (parse-import-set set (lambda (name) name))))
         (if (library-context-import! context set)
-         '()
          (let ((library (library-context-find context set)))
           (append
            (expand-library-bodies context (library-imports library))
-           (library-body library))))))
+           (library-body library)))
+         '())))
       sets))
 
     (define (parse-import-sets context sets)
@@ -1129,7 +1120,7 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '()))
+     (let* ((context (make-library-context '() '() '()))
             (expressions (cdr expression))
             (import-sets
              (flat-map
@@ -1154,9 +1145,7 @@
           (filter
            (lambda (expression) (not (memq (predicate expression) library-predicates)))
            expressions))))
-       (map-values
-        library-exports
-        (map-values library-state-library (library-context-libraries context))))))
+       (map-values library-exports (library-context-libraries context)))))
 
     ; Macro system
 
