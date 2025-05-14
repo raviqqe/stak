@@ -1065,7 +1065,7 @@
      (define sets (map parse-import-set (collect-bodies 'import)))
      (define names (collect-imported-names context sets))
 
-     (define (rename-symbol name)
+     (define (resolve-symbol name)
       (cond
        ((built-in-symbol? name)
         name)
@@ -1076,22 +1076,20 @@
          (set! names (cons (cons name renamed) names))
          renamed))))
 
-     (let ((exports (collect-bodies 'export))
-           (bodies (collect-bodies 'begin)))
-      (library-context-add!
-       context
-       (cadr expression)
-       (make-library
+     (library-context-add!
+      context
+      (cadr expression)
+      (make-library
+       (map-values
+        resolve-symbol
         (map
          (lambda (name)
-          (let ((pair
-                 (if (eq? (maybe-car name) 'rename)
-                  (cons (caddr name) (cadr name))
-                  (cons name name))))
-           (cons (car pair) (rename-symbol (cdr pair)))))
-         exports)
-        (map car sets)
-        (expand-library-expression rename-symbol bodies)))))
+          (if (eq? (maybe-car name) 'rename)
+           (cons (caddr name) (cadr name))
+           (cons name name)))
+         (collect-bodies 'export)))
+       (map car sets)
+       (expand-library-expression resolve-symbol (collect-bodies 'begin)))))
 
     (define library-predicates '(define-library import))
 
