@@ -2037,6 +2037,7 @@
   - compile-call
   - constant-rib
   - library?
+  - exports
   - imports
   - library-context
   - library-context?
@@ -2056,14 +2057,12 @@
   - build-library-name
   - id
   - renamed
-  - export
-  - collect-bodies
   - library-context-add!
   - make-library
   - rename
-  - exports
-  - rename-symbol
-  - bodies
+  - export
+  - resolve-symbol
+  - collect-bodies
   - make-library-context
   - import
   - define-library
@@ -14208,7 +14207,7 @@
     - list
       - define
       - list
-        - rename-symbol
+        - resolve-symbol
         - name
       - list
         - cond
@@ -14249,30 +14248,16 @@
                 - names
             - renamed
     - list
-      - let
+      - library-context-add!
+      - context
       - list
-        - list
-          - exports
-          - list
-            - collect-bodies
-            - list
-              - quote
-              - export
-        - list
-          - bodies
-          - list
-            - collect-bodies
-            - list
-              - quote
-              - begin
+        - cadr
+        - expression
       - list
-        - library-context-add!
-        - context
+        - make-library
         - list
-          - cadr
-          - expression
-        - list
-          - make-library
+          - map-values
+          - resolve-symbol
           - list
             - map
             - list
@@ -14280,51 +14265,44 @@
               - list
                 - name
               - list
-                - let
+                - if
                 - list
+                  - eq?
                   - list
-                    - pair
-                    - list
-                      - if
-                      - list
-                        - eq?
-                        - list
-                          - maybe-car
-                          - name
-                        - list
-                          - quote
-                          - rename
-                      - list
-                        - cons
-                        - list
-                          - caddr
-                          - name
-                        - list
-                          - cadr
-                          - name
-                      - list
-                        - cons
-                        - name
-                        - name
+                    - maybe-car
+                    - name
+                  - list
+                    - quote
+                    - rename
                 - list
                   - cons
                   - list
-                    - car
-                    - pair
+                    - caddr
+                    - name
                   - list
-                    - rename-symbol
-                    - list
-                      - cdr
-                      - pair
-            - exports
+                    - cadr
+                    - name
+                - list
+                  - cons
+                  - name
+                  - name
+            - list
+              - collect-bodies
+              - list
+                - quote
+                - export
+        - list
+          - map
+          - car
+          - sets
+        - list
+          - expand-library-expression
+          - resolve-symbol
           - list
-            - map
-            - car
-            - sets
-          - list
-            - expand-library-expression
-            - rename-symbol
-            - bodies
+            - collect-bodies
+            - list
+              - quote
+              - begin
   - list
     - define
     - library-predicates
