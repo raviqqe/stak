@@ -1114,7 +1114,7 @@
     (define library-predicates '(define-library import))
 
     (define (expand-libraries expression)
-     (let* ((context (make-library-context '() '() '()))
+     (let* ((context (make-library-context '() '()))
             (expressions (cdr expression))
             (import-sets
              (flat-map
