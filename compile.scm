@@ -192,7 +192,7 @@
      (let ((x (/ 1 10000000 100000000)))
       (if (zero? x) 1 x)))
 
-    (define (predicate expression)
+    (define (maybe-car expression)
      (and (pair? expression) (car expression)))
 
     (define (count-parameters parameters)
@@ -227,7 +227,7 @@
     (define (parse-import-set set)
      (let loop ((set set) (qualify (lambda (name) name)))
       (let ((loop (lambda (qualify) (loop (cadr set) qualify))))
-       (case (predicate set)
+       (case (maybe-car set)
         ((except)
          (loop
           (let ((names (cddr set)))
@@ -523,7 +523,7 @@
 
     (define (make-transformer definition-context transformer)
      (let-values (((transformer definition-context) (expand-outer-macro definition-context transformer)))
-      (case (resolve-denotation definition-context (predicate transformer))
+      (case (resolve-denotation definition-context (maybe-car transformer))
        (($$syntax-rules)
         (let* ((ellipsis (resolve-denotation definition-context (cadr transformer)))
                (literals (caddr transformer))
@@ -1086,7 +1086,7 @@
         (map
          (lambda (name)
           (let ((pair
-                 (if (eq? (predicate name) 'rename)
+                 (if (eq? (maybe-car name) 'rename)
                   (cons (caddr name) (cadr name))
                   (cons name name))))
            (cons (car pair) (rename-symbol (cdr pair)))))
@@ -1102,13 +1102,13 @@
             (import-sets
              (flat-map
               (lambda (expression)
-               (if (eq? (predicate expression) 'import)
+               (if (eq? (maybe-car expression) 'import)
                 (cdr expression)
                 '()))
               expressions)))
       (for-each
        (lambda (expression)
-        (when (eq? (predicate expression) 'define-library)
+        (when (eq? (maybe-car expression) 'define-library)
          (add-library-definition! context expression)))
        expressions)
       (values
@@ -1125,7 +1125,7 @@
              (else
               name))))
           (filter
-           (lambda (expression) (not (memq (predicate expression) library-predicates)))
+           (lambda (expression) (not (memq (maybe-car expression) library-predicates)))
            expressions))))
        (map-values library-exports (library-context-libraries context)))))
 
