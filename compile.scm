@@ -994,7 +994,6 @@
      (cond
       ((assoc name (library-context-libraries context)) =>
        cdr)
-
       (else
        (error "unknown library" name))))
 
