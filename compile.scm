@@ -1061,9 +1061,6 @@
       expression))
 
     (define (add-library-definition! context expression)
-     (define id (library-context-id context))
-     (define names '())
-
      (define (collect-bodies predicate)
       (flat-map
        cdr
@@ -1071,13 +1068,14 @@
         (lambda (body) (eq? (car body) predicate))
         (cddr expression))))
 
-     (define imports (parse-import-sets context (collect-bodies 'import)))
+     (define id (library-context-id context))
+     (define names (parse-import-sets context (collect-bodies 'import)))
 
      (define (rename-symbol name)
       (cond
        ((built-in-symbol? name)
         name)
-       ((or (assq name imports) (assq name names)) =>
+       ((assq name names) =>
         cdr)
        (else
         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
