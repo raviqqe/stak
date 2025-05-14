@@ -1066,7 +1066,6 @@
 
     (define (add-library-definition! context expression)
      (define id (library-context-id context))
-
      (define names '())
 
      (define (rename-symbol name)
