@@ -1924,7 +1924,6 @@
   - only
   - prefix
   - symbol-append
-  - parse
   - macro-state
   - macro-state?
   - static-symbols
@@ -2038,48 +2037,41 @@
   - compile-call
   - constant-rib
   - library?
+  - exports
   - imports
   - library-context
   - library-context?
-  - name-maps
   - library-context-set-libraries!
-  - library-name
   - library-context-imported
   - library-context-set-imported!
   - imported
   - id->string
   - library-symbol-separator
-  - library-context-name-maps
-  - library-context-set-name-maps!
-  - maps
-  - build-library-name
-  - renamed
   - library-context-import!
   - library-imports
   - library-body
   - library-context-find
-  - sets
   - body
+  - predicate
   - library-context-id
-  - export
+  - build-library-name
+  - id
+  - renamed
   - library-context-add!
   - make-library
   - rename
-  - exports
+  - export
+  - resolve-symbol
   - collect-bodies
-  - imported-names
-  - rename-library-symbol
-  - id
-  - bodies
   - make-library-context
   - import
   - define-library
   - add-library-definition!
   - expand-library-bodies
   - expand-library-expression
-  - parse-import-sets
-  - import-sets
-  - predicate
+  - collect-imported-names
+  - sets
+  - maybe-car
   - library-predicates
   - expressions
   - map-values
@@ -4102,94 +4094,106 @@
     - set 3
     - constant #\%
     - set 2
-    - constant procedure 2 #f
+    - constant procedure 1 #f
       - constant procedure 1 #f
-        - constant procedure 1 #f
-          - get 5
-          - call 1 #f ||
-          - get 1
-          - call 2 #f 9
+        - constant procedure 2 #f
+          - constant procedure 1 #f
+            - constant procedure 1 #f
+              - get 0
+              - constant except
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - get 3
+                    - call 2 #f ||
+                    - if
+                      - constant #f
+                    - get 0
+                    - call 1 #f 9
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - call 1 #f 3
+              - get 0
+              - constant only
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - get 3
+                    - call 2 #f ||
+                    - if
+                      - get 0
+                      - call 1 #f 9
+                    - constant #f
+                  - call 1 #f $$close
+                - call 1 #f $$close
+                - get 6
+                - call 1 #f ||
+                - call 1 #f 1
+                - set 1
+                - call 1 #f 3
+              - get 0
+              - constant prefix
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - get 7
+                  - call 1 #f ||
+                  - get 1
+                  - call 2 #f 18
+                  - call 1 #f 7
+                - call 1 #f $$close
+                - call 1 #f 3
+              - get 0
+              - constant rename
+              - call 2 #f ||
+              - if
+                - constant procedure 1 #f
+                  - constant procedure 1 #f
+                    - get 0
+                    - if
+                      - get 0
+                      - call 1 #f ||
+                    - get 2
+                  - call 1 #f $$close
+                  - get 1
+                  - get 9
+                  - call 1 #f ||
+                  - call 2 #f ||
+                  - call 1 #f 1
+                  - set 1
+                  - call 1 #f 7
+                - call 1 #f $$close
+                - call 1 #f 3
+              - get 5
+              - get 5
+              - call 2 #f ||
+            - call 1 #f $$close
+            - get 4
+            - call 1 #f 17
+            - call 1 #f 1
+          - call 1 #f $$close
+          - constant procedure 1 #f
+            - get 4
+            - call 1 #f ||
+            - get 1
+            - call 2 #f 8
+          - call 1 #f $$close
+          - call 1 #f 1
         - call 1 #f $$close
         - set 1
+        - get 2
         - constant procedure 1 #f
           - get 0
-          - constant except
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - get 3
-                - call 2 #f ||
-                - if
-                  - constant #f
-                - get 0
-                - call 1 #f 9
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant only
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - get 3
-                - call 2 #f ||
-                - if
-                  - get 0
-                  - call 1 #f 9
-                - constant #f
-              - call 1 #f $$close
-              - call 1 #f 5
-            - call 1 #f $$close
-            - get 6
-            - call 1 #f ||
-            - call 1 #f 1
-          - get 0
-          - constant prefix
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - get 7
-              - call 1 #f ||
-              - get 1
-              - call 2 #f 14
-              - call 1 #f 7
-            - call 1 #f $$close
-            - call 1 #f 3
-          - get 0
-          - constant rename
-          - call 2 #f ||
-          - if
-            - constant procedure 1 #f
-              - constant procedure 1 #f
-                - get 0
-                - if
-                  - get 0
-                  - call 1 #f ||
-                - get 2
-              - call 1 #f $$close
-              - get 1
-              - get 9
-              - call 1 #f ||
-              - call 2 #f ||
-              - call 1 #f 1
-              - set 1
-              - call 1 #f 7
-            - call 1 #f $$close
-            - call 1 #f 3
-          - get 5
-          - get 5
-          - call 2 #f ||
         - call 1 #f $$close
-        - get 4
-        - call 1 #f 13
-        - call 1 #f 1
+        - call 2 #f 2
       - call 1 #f $$close
       - constant #f
       - call 1 #f 1
@@ -6915,56 +6919,56 @@
                                     - call 2 #f 83
                                   - call 1 #f $$close
                                   - constant procedure 1 #f
-                                    - constant procedure 0 #f
-                                      - get 1
+                                    - constant procedure 1 #f
                                       - constant procedure 1 #f
-                                        - get 0
-                                      - call 1 #f $$close
-                                      - call 2 #f 72
-                                    - call 1 #f $$close
-                                    - constant procedure 2 #f
-                                      - constant procedure 2 #f
                                         - constant procedure 1 #f
-                                          - get 0
-                                          - constant #f
-                                          - call 2 #f ||
-                                          - if
-                                            - constant "unknown library"
-                                            - get 4
-                                            - call 2 #f ||
-                                            - continue
-                                          - constant #f
-                                          - set 0
                                           - constant procedure 1 #f
+                                            - get 0
+                                            - constant #f
+                                            - call 2 #f ||
+                                            - if
+                                              - constant "unknown library"
+                                              - get 5
+                                              - call 2 #f ||
+                                              - continue
+                                            - constant #f
+                                            - set 0
                                             - constant procedure 1 #f
-                                              - get 0
-                                              - if
+                                              - constant procedure 1 #f
                                                 - get 0
-                                                - get 3
-                                                - call 1 #f ||
-                                                - call 2 #f ||
-                                                - call 1 #f ||
-                                              - constant ()
+                                                - if
+                                                  - get 0
+                                                  - get 3
+                                                  - call 1 #f ||
+                                                  - call 2 #f ||
+                                                  - call 1 #f ||
+                                                - constant ()
+                                              - call 1 #f $$close
+                                              - get 1
+                                              - call 1 #f ||
+                                              - call 1 #f 6
+                                              - call 1 #f 1
                                             - call 1 #f $$close
                                             - get 1
                                             - call 1 #f ||
-                                            - call 1 #f 6
-                                            - call 1 #f 1
+                                            - call 2 #f 95
                                           - call 1 #f $$close
-                                          - get 1
-                                          - call 1 #f ||
-                                          - call 2 #f 96
+                                          - get 3
+                                          - get 18
+                                          - call 2 #f ||
+                                          - call 1 #f 1
                                         - call 1 #f $$close
-                                        - get 2
-                                        - get 19
-                                        - call 2 #f ||
+                                        - get 3
+                                        - call 1 #f ||
                                         - call 1 #f 1
                                       - call 1 #f $$close
-                                      - get 2
-                                      - get 2
-                                      - call 2 #f 2
+                                      - get 1
+                                      - call 1 #f ||
+                                      - call 1 #f 1
                                     - call 1 #f $$close
-                                    - call 2 #f ||
+                                    - get 1
+                                    - call 1 #f 71
+                                    - call 1 #f 1
                                   - call 1 #f $$close
                                   - get 3
                                   - call 1 #f ||
@@ -11174,7 +11178,7 @@
   - list
     - define
     - list
-      - predicate
+      - maybe-car
       - expression
     - list
       - and
@@ -11274,125 +11278,142 @@
     - list
       - parse-import-set
       - set
-      - qualify
     - list
-      - define
+      - let
+      - loop
       - list
-        - parse
-        - qualify
-      - list
-        - parse-import-set
         - list
-          - cadr
           - set
-        - qualify
-    - list
-      - case
-      - list
-        - predicate
-        - set
-      - list
+          - set
         - list
-          - except
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - parse
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - #f
-                - list
-                  - qualify
-                  - name
-      - list
-        - list
-          - only
-        - list
-          - let
-          - list
-            - list
-              - names
-              - list
-                - cddr
-                - set
-          - list
-            - parse
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - if
-                - list
-                  - memq
-                  - name
-                  - names
-                - list
-                  - qualify
-                  - name
-                - #f
-      - list
-        - list
-          - prefix
-        - list
-          - parse
+          - qualify
           - list
             - lambda
             - list
               - name
+            - name
+      - list
+        - let
+        - list
+          - list
+            - loop
             - list
-              - qualify
+              - lambda
               - list
-                - symbol-append
+                - qualify
+              - list
+                - loop
                 - list
-                  - caddr
+                  - cadr
                   - set
-                - name
-      - list
+                - qualify
         - list
-          - rename
-        - list
-          - parse
+          - case
           - list
-            - lambda
+            - maybe-car
+            - set
+          - list
             - list
-              - name
+              - except
             - list
-              - qualify
+              - loop
               - list
-                - cond
+                - let
                 - list
                   - list
-                    - assq
-                    - name
+                    - names
                     - list
                       - cddr
                       - set
-                  - =>
-                  - cadr
                 - list
-                  - else
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - if
+                    - list
+                      - memq
+                      - name
+                      - names
+                    - #f
+                    - list
+                      - qualify
+                      - name
+          - list
+            - list
+              - only
+            - list
+              - loop
+              - list
+                - let
+                - list
+                  - list
+                    - names
+                    - list
+                      - cddr
+                      - set
+                - list
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - if
+                    - list
+                      - memq
+                      - name
+                      - names
+                    - list
+                      - qualify
+                      - name
+                    - #f
+          - list
+            - list
+              - prefix
+            - list
+              - loop
+              - list
+                - lambda
+                - list
                   - name
-      - list
-        - else
-        - list
-          - values
-          - set
-          - qualify
+                - list
+                  - qualify
+                  - list
+                    - symbol-append
+                    - list
+                      - caddr
+                      - set
+                    - name
+          - list
+            - list
+              - rename
+            - list
+              - loop
+              - list
+                - lambda
+                - list
+                  - name
+                - list
+                  - qualify
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - assq
+                        - name
+                        - list
+                          - cddr
+                          - set
+                      - =>
+                      - cadr
+                    - list
+                      - else
+                      - name
+          - list
+            - else
+            - list
+              - cons
+              - set
+              - qualify
   - list
     - define-record-type
     - macro-state
@@ -12342,7 +12363,7 @@
           - resolve-denotation
           - definition-context
           - list
-            - predicate
+            - maybe-car
             - transformer
         - list
           - list
@@ -13841,14 +13862,10 @@
     - library
     - list
       - make-library
-      - name
       - exports
       - imports
       - body
     - library?
-    - list
-      - name
-      - library-name
     - list
       - exports
       - library-exports
@@ -13865,7 +13882,6 @@
       - make-library-context
       - libraries
       - imported
-      - name-maps
     - library-context?
     - list
       - libraries
@@ -13875,10 +13891,6 @@
       - imported
       - library-context-imported
       - library-context-set-imported!
-    - list
-      - name-maps
-      - library-context-name-maps
-      - library-context-set-name-maps!
   - list
     - define
     - list
@@ -13917,6 +13929,7 @@
     - list
       - library-context-add!
       - context
+      - name
       - library
     - list
       - library-context-set-libraries!
@@ -13925,9 +13938,7 @@
         - cons
         - list
           - cons
-          - list
-            - library-name
-            - library
+          - name
           - library
         - list
           - library-context-libraries
@@ -14026,214 +14037,102 @@
   - list
     - define
     - list
-      - rename-library-symbol
+      - expand-library-bodies
       - context
-      - id
-      - name
+      - names
     - list
-      - if
+      - flat-map
       - list
-        - built-in-symbol?
-        - name
-      - name
-      - list
-        - let\*
+        - lambda
         - list
+          - name
+        - list
+          - if
           - list
-            - maps
-            - list
-              - library-context-name-maps
-              - context
+            - library-context-import!
+            - context
+            - name
           - list
-            - pair
+            - let
             - list
-              - or
               - list
-                - assq
-                - id
-                - maps
+                - library
+                - list
+                  - library-context-find
+                  - context
+                  - name
+            - list
+              - append
               - list
-                - cons
-                - id
+                - expand-library-bodies
+                - context
+                - list
+                  - library-imports
+                  - library
+              - list
+                - library-body
+                - library
+          - list
+            - quote
+            - ()
+      - names
+  - list
+    - define
+    - list
+      - collect-imported-names
+      - context
+      - sets
+    - list
+      - flat-map
+      - list
+        - lambda
+        - list
+          - pair
+        - list
+          - flat-map
+          - list
+            - lambda
+            - list
+              - names
+            - list
+              - let
+              - list
+                - list
+                  - name
+                  - list
+                    - list
+                      - cdr
+                      - pair
+                    - list
+                      - car
+                      - names
+              - list
+                - if
+                - name
+                - list
+                  - list
+                  - list
+                    - cons
+                    - name
+                    - list
+                      - cdr
+                      - names
                 - list
                   - quote
                   - ()
           - list
-            - names
+            - library-exports
             - list
-              - cdr
-              - pair
-        - list
-          - when
-          - list
-            - null?
-            - names
-          - list
-            - library-context-set-name-maps!
-            - context
-            - list
-              - cons
-              - pair
-              - maps
-        - list
-          - cond
-          - list
-            - list
-              - assq
-              - name
-              - names
-            - =>
-            - cdr
-          - list
-            - else
-            - list
-              - let
-              - list
-                - list
-                  - renamed
-                  - list
-                    - string->uninterned-symbol
-                    - list
-                      - build-library-name
-                      - id
-                      - name
-              - list
-                - set-cdr!
-                - pair
-                - list
-                  - cons
-                  - list
-                    - cons
-                    - name
-                    - renamed
-                  - names
-              - renamed
-  - list
-    - define
-    - list
-      - expand-library-bodies
-      - context
-      - sets
-    - list
-      - flat-map
-      - list
-        - lambda
-        - list
-          - set
-        - list
-          - let-values
-          - list
-            - list
-              - list
-                - set
-                - \_
-              - list
-                - parse-import-set
-                - set
-                - list
-                  - lambda
-                  - list
-                    - name
-                  - name
-          - list
-            - if
-            - list
-              - library-context-import!
+              - library-context-find
               - context
-              - set
-            - list
-              - let
               - list
-                - list
-                  - library
-                  - list
-                    - library-context-find
-                    - context
-                    - set
-              - list
-                - append
-                - list
-                  - expand-library-bodies
-                  - context
-                  - list
-                    - library-imports
-                    - library
-                - list
-                  - library-body
-                  - library
-            - list
-              - quote
-              - ()
-      - sets
-  - list
-    - define
-    - list
-      - parse-import-sets
-      - context
-      - sets
-    - list
-      - flat-map
-      - list
-        - lambda
-        - list
-          - set
-        - list
-          - let-values
-          - list
-            - list
-              - list
-                - set
-                - qualify
-              - list
-                - parse-import-set
-                - set
-                - list
-                  - lambda
-                  - list
-                    - name
-                  - name
-          - list
-            - flat-map
-            - list
-              - lambda
-              - list
-                - names
-              - list
-                - let
-                - list
-                  - list
-                    - name
-                    - list
-                      - qualify
-                      - list
-                        - car
-                        - names
-                - list
-                  - if
-                  - name
-                  - list
-                    - list
-                    - list
-                      - cons
-                      - name
-                      - list
-                        - cdr
-                        - names
-                  - list
-                    - quote
-                    - ()
-            - list
-              - library-exports
-              - list
-                - library-context-find
-                - context
-                - set
+                - car
+                - pair
       - sets
   - list
     - define
     - list
       - expand-library-expression
-      - names
       - rename
       - expression
     - list
@@ -14243,26 +14142,14 @@
         - list
           - value
         - list
-          - cond
+          - if
           - list
-            - list
-              - not
-              - list
-                - symbol?
-                - value
+            - symbol?
             - value
           - list
-            - list
-              - assq
-              - value
-              - names
-            - =>
-            - cdr
-          - list
-            - else
-            - list
-              - rename
-              - value
+            - rename
+            - value
+          - value
       - expression
   - list
     - define
@@ -14294,45 +14181,83 @@
             - cddr
             - expression
     - list
-      - let
+      - define
+      - id
       - list
-        - list
-          - id
-          - list
-            - library-context-id
-            - context
-        - list
-          - exports
-          - list
-            - collect-bodies
-            - list
-              - quote
-              - export
-        - list
-          - bodies
-          - list
-            - collect-bodies
-            - list
-              - quote
-              - begin
-        - list
-          - imported-names
-          - list
-            - parse-import-sets
-            - context
-            - list
-              - collect-bodies
-              - list
-                - quote
-                - import
-      - list
-        - library-context-add!
+        - library-context-id
         - context
+    - list
+      - define
+      - sets
+      - list
+        - map
+        - parse-import-set
         - list
-          - make-library
+          - collect-bodies
           - list
-            - cadr
-            - expression
+            - quote
+            - import
+    - list
+      - define
+      - names
+      - list
+        - collect-imported-names
+        - context
+        - sets
+    - list
+      - define
+      - list
+        - resolve-symbol
+        - name
+      - list
+        - cond
+        - list
+          - list
+            - built-in-symbol?
+            - name
+          - name
+        - list
+          - list
+            - assq
+            - name
+            - names
+          - =>
+          - cdr
+        - list
+          - else
+          - list
+            - let
+            - list
+              - list
+                - renamed
+                - list
+                  - string->uninterned-symbol
+                  - list
+                    - build-library-name
+                    - id
+                    - name
+            - list
+              - set!
+              - names
+              - list
+                - cons
+                - list
+                  - cons
+                  - name
+                  - renamed
+                - names
+            - renamed
+    - list
+      - library-context-add!
+      - context
+      - list
+        - cadr
+        - expression
+      - list
+        - make-library
+        - list
+          - map-values
+          - resolve-symbol
           - list
             - map
             - list
@@ -14340,76 +14265,44 @@
               - list
                 - name
               - list
-                - let
+                - if
                 - list
+                  - eq?
                   - list
-                    - pair
-                    - list
-                      - if
-                      - list
-                        - eq?
-                        - list
-                          - predicate
-                          - name
-                        - list
-                          - quote
-                          - rename
-                      - list
-                        - cons
-                        - list
-                          - caddr
-                          - name
-                        - list
-                          - cadr
-                          - name
-                      - list
-                        - cons
-                        - name
-                        - name
+                    - maybe-car
+                    - name
+                  - list
+                    - quote
+                    - rename
                 - list
                   - cons
                   - list
-                    - car
-                    - pair
+                    - caddr
+                    - name
                   - list
-                    - cond
-                    - list
-                      - list
-                        - assq
-                        - list
-                          - cdr
-                          - pair
-                        - imported-names
-                      - =>
-                      - cdr
-                    - list
-                      - else
-                      - list
-                        - rename-library-symbol
-                        - context
-                        - id
-                        - list
-                          - cdr
-                          - pair
-            - exports
+                    - cadr
+                    - name
+                - list
+                  - cons
+                  - name
+                  - name
+            - list
+              - collect-bodies
+              - list
+                - quote
+                - export
+        - list
+          - map
+          - car
+          - sets
+        - list
+          - expand-library-expression
+          - resolve-symbol
           - list
             - collect-bodies
             - list
               - quote
-              - import
-          - list
-            - expand-library-expression
-            - imported-names
-            - list
-              - lambda
-              - list
-                - name
-              - list
-                - rename-library-symbol
-                - context
-                - id
-                - name
-            - bodies
+              - begin
   - list
     - define
     - library-predicates
@@ -14436,39 +14329,39 @@
             - list
               - quote
               - ()
-            - list
-              - quote
-              - ()
         - list
           - expressions
           - list
             - cdr
             - expression
         - list
-          - import-sets
+          - sets
           - list
-            - flat-map
+            - map
+            - parse-import-set
             - list
-              - lambda
+              - flat-map
               - list
-                - expression
-              - list
-                - if
+                - lambda
                 - list
-                  - eq?
+                  - expression
+                - list
+                  - if
                   - list
-                    - predicate
+                    - eq?
+                    - list
+                      - maybe-car
+                      - expression
+                    - list
+                      - quote
+                      - import
+                  - list
+                    - cdr
                     - expression
                   - list
                     - quote
-                    - import
-                - list
-                  - cdr
-                  - expression
-                - list
-                  - quote
-                  - ()
-            - expressions
+                    - ()
+              - expressions
       - list
         - for-each
         - list
@@ -14480,7 +14373,7 @@
             - list
               - eq?
               - list
-                - predicate
+                - maybe-car
                 - expression
               - list
                 - quote
@@ -14502,18 +14395,37 @@
             - list
               - expand-library-bodies
               - context
-              - import-sets
+              - list
+                - map
+                - car
+                - sets
             - list
               - expand-library-expression
               - list
-                - parse-import-sets
-                - context
-                - import-sets
-              - list
-                - lambda
+                - let
                 - list
-                  - name
-                - name
+                  - list
+                    - names
+                    - list
+                      - collect-imported-names
+                      - context
+                      - sets
+                - list
+                  - lambda
+                  - list
+                    - name
+                  - list
+                    - cond
+                    - list
+                      - list
+                        - assq
+                        - name
+                        - names
+                      - =>
+                      - cdr
+                    - list
+                      - else
+                      - name
               - list
                 - filter
                 - list
@@ -14525,7 +14437,7 @@
                     - list
                       - memq
                       - list
-                        - predicate
+                        - maybe-car
                         - expression
                       - library-predicates
                 - expressions
@@ -16766,36 +16678,37 @@
     - constant set
     - constant ()
     - call 2 #f ||
-    - constant let-values
-    - constant set
-    - constant qualify
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
+    - constant let\*
+    - constant pair
     - constant parse-import-set
     - constant set
-    - constant lambda
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
     - constant name
-    - constant ()
-    - call 2 #f ||
-    - constant name
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
+    - constant car
+    - constant pair
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
-    - constant let
+    - call 2 #f ||
+    - constant qualify
+    - constant cdr
+    - constant pair
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
+    - constant ()
+    - call 2 #f ||
+    - call 2 #f ||
     - constant pair
     - constant assoc
-    - constant set
+    - constant name
     - constant libraries
     - constant ()
     - call 2 #f ||
@@ -16806,11 +16719,14 @@
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
+    - call 2 #f ||
     - constant unless
     - constant pair
     - constant error
     - constant "unknown library"
-    - constant set
+    - constant name
     - constant ()
     - call 2 #f ||
     - call 2 #f ||
@@ -16886,10 +16802,6 @@
     - call 2 #f ||
     - constant ()
     - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - call 2 #f ||
-    - constant ()
     - call 2 #f ||
     - call 2 #f ||
     - call 2 #f ||
