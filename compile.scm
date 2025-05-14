@@ -73,13 +73,15 @@
     (define (procedure-code procedure)
      (rib-cdr (rib-car procedure)))
 
-    (define (bytevector->list xs)
-     (let loop ((index 0) (result '()))
+    ; Because we have the `bytevector->list` procedure in Stak Scheme's standard library and
+    ; the `bytevector-u8-ref` procedure in the standard library uses `bytevector->list` internally and
+    ; Stak Scheme allows overwriting imported symbols,
+    ; we intentionally name this procedure differently from `bytevector->list`.
+    (define (bytes->list xs)
+     (let loop ((index 0))
       (if (< index (bytevector-length xs))
-       (cons
-        (bytevector-u8-ref xs index)
-        (loop (+ 1 index) result))
-       result)))
+       (cons (bytevector-u8-ref xs index) (loop (+ 1 index)))
+       '())))
 
     (define (last-cdr xs)
      (if (pair? xs)
@@ -1328,7 +1330,7 @@
        (data-rib vector-type (vector-length value) (marshal (vector->list value))))
 
       ((bytevector? value)
-       (data-rib bytevector-type (bytevector-length value) (marshal (bytevector->list value))))
+       (data-rib bytevector-type (bytevector-length value) (marshal (bytes->list value))))
 
       (else
        (error "invalid type"))))
