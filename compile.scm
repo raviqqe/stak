@@ -1065,23 +1065,22 @@
          (rename value))))
       expression))
 
-    (define (rename-library-symbol context id name)
-     (if (built-in-symbol? name)
-      name
-      (let* ((maps (library-context-name-maps context))
-             (pair (or (assq id maps) (cons id '())))
-             (names (cdr pair)))
-       (when (null? names)
-        (library-context-set-name-maps! context (cons pair maps)))
+    (define (add-library-definition! context expression)
+     (define id (library-context-id context))
+
+     (define names '())
+
+     (define (rename-symbol name)
+      (if (built-in-symbol? name)
+       name
        (cond
         ((assq name names) =>
          cdr)
         (else
          (let ((renamed (string->uninterned-symbol (build-library-name id name))))
-          (set-cdr! pair (cons (cons name renamed) names))
-          renamed))))))
+          (set! names (cons (cons name renamed) names))
+          renamed)))))
 
-    (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (flat-map
        cdr
@@ -1089,8 +1088,7 @@
         (lambda (body) (eq? (car body) predicate))
         (cddr expression))))
 
-     (let ((id (library-context-id context))
-           (exports (collect-bodies 'export))
+     (let ((exports (collect-bodies 'export))
            (bodies (collect-bodies 'begin))
            (imported-names (parse-import-sets context (collect-bodies 'import))))
       (library-context-add!
@@ -1109,13 +1107,10 @@
              ((assq (cdr pair) imported-names) =>
               cdr)
              (else
-              (rename-library-symbol context id (cdr pair)))))))
+              (rename-symbol (cdr pair)))))))
          exports)
         (collect-bodies 'import)
-        (expand-library-expression
-         imported-names
-         (lambda (name) (rename-library-symbol context id name))
-         bodies)))))
+        (expand-library-expression imported-names rename-symbol bodies)))))
 
     (define library-predicates '(define-library import))
 
