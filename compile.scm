@@ -1052,32 +1052,17 @@
          (library-exports (library-context-find context set)))))
       sets))
 
-    (define (expand-library-expression names rename expression)
+    (define (expand-library-expression rename expression)
      (relaxed-deep-map
       (lambda (value)
-       (cond
-        ((not (symbol? value))
-         value)
-        ((assq value names) =>
-         cdr)
-        (else
-         (rename value))))
+       (if (symbol? value)
+        (rename value)
+        value))
       expression))
 
     (define (add-library-definition! context expression)
      (define id (library-context-id context))
      (define names '())
-
-     (define (rename-symbol name)
-      (if (built-in-symbol? name)
-       name
-       (cond
-        ((assq name names) =>
-         cdr)
-        (else
-         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
-          (set! names (cons (cons name renamed) names))
-          renamed)))))
 
      (define (collect-bodies predicate)
       (flat-map
@@ -1086,9 +1071,23 @@
         (lambda (body) (eq? (car body) predicate))
         (cddr expression))))
 
+     (define imports (parse-import-sets context (collect-bodies 'import)))
+
+     (define (rename-symbol name)
+      (if (built-in-symbol? name)
+       name
+       (cond
+        ((assq (cdr pair) imports) =>
+         cdr)
+        ((assq name names) =>
+         cdr)
+        (else
+         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+          (set! names (cons (cons name renamed) names))
+          renamed)))))
+
      (let ((exports (collect-bodies 'export))
-           (bodies (collect-bodies 'begin))
-           (imported-names (parse-import-sets context (collect-bodies 'import))))
+           (bodies (collect-bodies 'begin)))
       (library-context-add!
        context
        (make-library
@@ -1099,16 +1098,10 @@
                  (if (eq? (predicate name) 'rename)
                   (cons (caddr name) (cadr name))
                   (cons name name))))
-           (cons
-            (car pair)
-            (cond
-             ((assq (cdr pair) imported-names) =>
-              cdr)
-             (else
-              (rename-symbol (cdr pair)))))))
+           (cons (car pair) (rename-symbol (cdr pair)))))
          exports)
         (collect-bodies 'import)
-        (expand-library-expression imported-names rename-symbol bodies)))))
+        (expand-library-expression rename-symbol bodies)))))
 
     (define library-predicates '(define-library import))
 
