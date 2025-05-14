@@ -979,19 +979,17 @@
      (imports library-imports)
      (body library-body))
 
-    (define-record-type library-state
-     (make-library-state library imported)
-     library-state?
-     (library library-state-library)
-     (imported library-state-imported library-state-set-imported!))
-
     (define-record-type library-context
      (make-library-context libraries name-maps)
      library-context?
      (libraries library-context-libraries library-context-set-libraries!)
+     (imported-names library-context-imported-names library-context-set-imported-names!)
      (name-maps library-context-name-maps library-context-set-name-maps!))
 
-    (define (library-context-assoc context name)
+    (define (library-context-id context)
+     (length (library-context-libraries context)))
+
+    (define (library-context-find context name)
      (cond
       ((assoc name (library-context-libraries context)) =>
        cdr)
@@ -999,19 +997,11 @@
       (else
        (error "unknown library" name))))
 
-    (define (library-context-id context)
-     (length (library-context-libraries context)))
-
-    (define (library-context-find context name)
-     (library-state-library (library-context-assoc context name)))
-
     (define (library-context-add! context library)
      (library-context-set-libraries!
       context
       (cons
-       (cons
-        (library-name library)
-        (make-library-state library #f))
+       (cons (library-name library) library)
        (library-context-libraries context))))
 
     (define (library-context-import! context name)
