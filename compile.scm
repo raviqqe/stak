@@ -1047,11 +1047,11 @@
       (lambda (set)
        (let-values (((set _) (parse-import-set set (lambda (name) name))))
         (if (library-context-import! context set)
-         '()
          (let ((library (library-context-find context set)))
           (append
            (expand-library-bodies context (library-imports library))
-           (library-body library))))))
+           (library-body library)))
+         '())))
       sets))
 
     (define (parse-import-sets context sets)
@@ -1143,9 +1143,7 @@
           (filter
            (lambda (expression) (not (memq (predicate expression) library-predicates)))
            expressions))))
-       (map-values
-        library-exports
-        (map-values library-state-library (library-context-libraries context))))))
+       (map-values library-exports (library-context-libraries context)))))
 
     ; Macro system
 
