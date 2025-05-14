@@ -1022,29 +1022,27 @@
       (list->string (list library-symbol-separator))
       (symbol->string name)))
 
-    (define (expand-library-bodies context sets)
+    (define (expand-library-bodies context names)
      (flat-map
-      (lambda (set)
-       (let ((set (car (parse-import-set set))))
-        (if (library-context-import! context set)
-         (let ((library (library-context-find context set)))
-          (append
-           (expand-library-bodies context (library-imports library))
-           (library-body library)))
-         '())))
-      sets))
+      (lambda (name)
+       (if (library-context-import! context name)
+        (let ((library (library-context-find context name)))
+         (append
+          (expand-library-bodies context (library-imports library))
+          (library-body library)))
+        '()))
+      names))
 
-    (define (parse-import-sets context sets)
+    (define (collect-imported-names context sets)
      (flat-map
-      (lambda (set)
-       (let ((pair (parse-import-set set)))
-        (flat-map
-         (lambda (names)
-          (let ((name ((cdr pair) (car names))))
-           (if name
-            (list (cons name (cdr names)))
-            '())))
-         (library-exports (library-context-find context (car pair))))))
+      (lambda (pair)
+       (flat-map
+        (lambda (names)
+         (let ((name ((cdr pair) (car names))))
+          (if name
+           (list (cons name (cdr names)))
+           '())))
+        (library-exports (library-context-find context (car pair)))))
       sets))
 
     (define (expand-library-expression rename expression)
@@ -1064,7 +1062,8 @@
         (cddr expression))))
 
      (define id (library-context-id context))
-     (define names (parse-import-sets context (collect-bodies 'import)))
+     (define sets (map parse-import-set (collect-bodies 'import)))
+     (define names (collect-imported-names context sets))
 
      (define (rename-symbol name)
       (cond
@@ -1091,7 +1090,7 @@
                   (cons name name))))
            (cons (car pair) (rename-symbol (cdr pair)))))
          exports)
-        (collect-bodies 'import)
+        (map car sets)
         (expand-library-expression rename-symbol bodies)))))
 
     (define library-predicates '(define-library import))
@@ -1099,13 +1098,15 @@
     (define (expand-libraries expression)
      (let* ((context (make-library-context '() '()))
             (expressions (cdr expression))
-            (import-sets
-             (flat-map
-              (lambda (expression)
-               (if (eq? (maybe-car expression) 'import)
-                (cdr expression)
-                '()))
-              expressions)))
+            (sets
+             (map
+              parse-import-set
+              (flat-map
+               (lambda (expression)
+                (if (eq? (maybe-car expression) 'import)
+                 (cdr expression)
+                 '()))
+               expressions))))
       (for-each
        (lambda (expression)
         (when (eq? (maybe-car expression) 'define-library)
@@ -1115,9 +1116,9 @@
        (cons
         (car expression)
         (append
-         (expand-library-bodies context import-sets)
+         (expand-library-bodies context (map car sets))
          (expand-library-expression
-          (let ((names (parse-import-sets context import-sets)))
+          (let ((names (collect-imported-names context sets)))
            (lambda (name)
             (cond
              ((assq name names) =>
@@ -1716,11 +1717,11 @@
                   (flat-map
                    (lambda (set)
                     (let* ((pair (parse-import-set set))
-                           (set (car pair))
+                           (name (car pair))
                            (qualify (cdr pair))
-                           (pair (assoc set libraries)))
+                           (pair (assoc name libraries)))
                      (unless pair
-                      (error "unknown library" set))
+                      (error "unknown library" name))
                      (flat-map
                       (lambda (pair)
                        (let ((name (qualify (car pair))))
