@@ -1074,15 +1074,15 @@
      (define imports (parse-import-sets context (collect-bodies 'import)))
 
      (define (rename-symbol name)
-      (if (built-in-symbol? name)
-       name
-       (cond
-        ((or (assq name imports) (assq name names)) =>
-         cdr)
-        (else
-         (let ((renamed (string->uninterned-symbol (build-library-name id name))))
-          (set! names (cons (cons name renamed) names))
-          renamed)))))
+      (cond
+       ((built-in-symbol? name)
+        name)
+       ((or (assq name imports) (assq name names)) =>
+        cdr)
+       (else
+        (let ((renamed (string->uninterned-symbol (build-library-name id name))))
+         (set! names (cons (cons name renamed) names))
+         renamed))))
 
      (let ((exports (collect-bodies 'export))
            (bodies (collect-bodies 'begin)))
