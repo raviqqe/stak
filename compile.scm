@@ -1775,19 +1775,14 @@
           (define (compile expression)
            (compile-expression (make-compilation-context '() #f) expression '()))
 
-          (define (compile-thunk expression environment)
+          (lambda (expression environment)
            (make-procedure
             (compile-arity 0 #f)
             (compile
              (optimize
               (expand-macros
                (expand-libraries environment expression))))
-            '()))
-
-          (lambda (expression environment)
-           (if (and (pair? expression) (eq? (car expression) 'define-library))
-            #f ; TODO
-            (compile-thunk expression environment))))
+            '())))
         (cdr expression)))
     (else
       (cons
