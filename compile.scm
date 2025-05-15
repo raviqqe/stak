@@ -263,6 +263,14 @@
         (else
          (cons set qualify))))))
 
+    (define (resolve-library-symbols resolve expression)
+     (relaxed-deep-map
+      (lambda (value)
+       (if (symbol? value)
+        (resolve value)
+        value))
+      expression))
+
     ; Macro system
 
     ;; Types
@@ -1045,14 +1053,6 @@
         (library-exports (library-context-find context (car pair)))))
       sets))
 
-    (define (resolve-library-symbols resolve expression)
-     (relaxed-deep-map
-      (lambda (value)
-       (if (symbol? value)
-        (resolve value)
-        value))
-      expression))
-
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (flat-map
@@ -1728,16 +1728,14 @@
                          '())))
                       (cdr pair))))
                    (environment-imports environment))))
-            (relaxed-deep-map
-             (lambda (value)
+            (resolve-library-symbols
+             (lambda (name)
               (cond
-               ((not (symbol? value))
-                value)
-               ((assq value names) =>
+               ((assq name names) =>
                 cdr)
                (else
                 (string->symbol
-                 (symbol->string value)
+                 (symbol->string name)
                  (environment-symbol-table environment)))))
              expression)))
 
