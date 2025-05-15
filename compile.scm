@@ -263,6 +263,14 @@
         (else
          (cons set qualify))))))
 
+    (define (resolve-library-symbols resolve expression)
+     (relaxed-deep-map
+      (lambda (value)
+       (if (symbol? value)
+        (resolve value)
+        value))
+      expression))
+
     ; Macro system
 
     ;; Types
@@ -1045,14 +1053,6 @@
         (library-exports (library-context-find context (car pair)))))
       sets))
 
-    (define (expand-library-expression rename expression)
-     (relaxed-deep-map
-      (lambda (value)
-       (if (symbol? value)
-        (rename value)
-        value))
-      expression))
-
     (define (add-library-definition! context expression)
      (define (collect-bodies predicate)
       (flat-map
@@ -1089,7 +1089,7 @@
            (cons name name)))
          (collect-bodies 'export)))
        (map car sets)
-       (expand-library-expression resolve-symbol (collect-bodies 'begin)))))
+       (resolve-library-symbols resolve-symbol (collect-bodies 'begin)))))
 
     (define library-predicates '(define-library import))
 
@@ -1115,7 +1115,7 @@
         (car expression)
         (append
          (expand-library-bodies context (map car sets))
-         (expand-library-expression
+         (resolve-library-symbols
           (let ((names (collect-imported-names context sets)))
            (lambda (name)
             (cond
@@ -1728,16 +1728,14 @@
                          '())))
                       (cdr pair))))
                    (environment-imports environment))))
-            (relaxed-deep-map
-             (lambda (value)
+            (resolve-library-symbols
+             (lambda (name)
               (cond
-               ((not (symbol? value))
-                value)
-               ((assq value names) =>
+               ((assq name names) =>
                 cdr)
                (else
                 (string->symbol
-                 (symbol->string value)
+                 (symbol->string name)
                  (environment-symbol-table environment)))))
              expression)))
 
