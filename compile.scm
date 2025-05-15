@@ -1045,11 +1045,11 @@
         (library-exports (library-context-find context (car pair)))))
       sets))
 
-    (define (expand-library-expression rename expression)
+    (define (resolve-library-symbols resolve expression)
      (relaxed-deep-map
       (lambda (value)
        (if (symbol? value)
-        (rename value)
+        (resolve value)
         value))
       expression))
 
@@ -1089,7 +1089,7 @@
            (cons name name)))
          (collect-bodies 'export)))
        (map car sets)
-       (expand-library-expression resolve-symbol (collect-bodies 'begin)))))
+       (resolve-library-symbols resolve-symbol (collect-bodies 'begin)))))
 
     (define library-predicates '(define-library import))
 
@@ -1115,7 +1115,7 @@
         (car expression)
         (append
          (expand-library-bodies context (map car sets))
-         (expand-library-expression
+         (resolve-library-symbols
           (let ((names (collect-imported-names context sets)))
            (lambda (name)
             (cond
